@@ -140,7 +140,7 @@ git commit -m "type: description"
 
 ### When a skill cannot finish — durable friction
 
-All sixteen in-session skills point here rather than restating this contract. A skill run writes
+All seventeen in-session skills point here rather than restating this contract. A skill run writes
 friction only when the invoked ritual **cannot complete one of its declared steps** because a required
 input is missing or contradictory outside a declared normal gate, a dispatch / tool / runtime fails, or
 an ambiguous, contradictory or breached rule leaves the result incorrect or incomplete.
@@ -419,23 +419,38 @@ notes/java/
 
 ### Interview prep — in-session rules
 
-→ Question format and quality bar in `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`; to build/audit a topic's Q&A run `notes/prompts/knowledge/interview-prep/interview-prep-audit.md` (the entry point — author + cold reviewer subagents per topic).
+→ Question format, stable IDs and lifecycle in
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`; build/audit one topic's
+market-selected Q&A with `interview-prep-audit`, then build the cross-topic CORE order with
+`interview-prep-route-prompt` once every required bank for the level is current.
 
 - Add questions naturally as concepts are learned — not in one batch at the end
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
+- Every new question is unrefined. Victor explicitly adds `[refined]` only after accepting it; no
+  writer may alter a refined block or infer that state from quality.
 
 ### Study state and the 13:30 closing ritual
 
-Authored is not studied. The notes pipeline's `Status: complete/refined` says the bilingual artifact
-exists and passed its quality gates; it does not say Victor has studied it. Every notes-plan entry
-therefore has an independent `Studied: pending | YYYY-MM-DD` field. Interview prep keeps its existing
-question-level `[x]` marker as the studied state; no second Q&A tracker or planning prompt duplicates it.
+Authored is not refined, and refined is not studied. The notes pipeline's `Status: complete/refined`
+says the bilingual artifact exists and passed its quality gates; it does not say Victor has studied it.
+Every notes-plan entry therefore has an independent `Studied: pending | YYYY-MM-DD` field.
 
-When Victor closes the 13:30 notes/interview-prep block, `study-block-close` records only the units the
-session proves he actively studied: it dates eligible complete/refined note entries, mirrors `[x]` on
-the exact bilingual questions worked, then recounts `PROGRESS.md` `## Study progress`. It asks nothing,
-never infers study from a file merely existing, and leaves a pending/stale target unchanged. A material
-note edit resets its `Studied` field to `pending`; the next active study pass sets the new date.
+Interview questions have exactly three states on their bilingual bold lines: no marker = unrefined;
+`[refined]` = Victor accepted the complete block and its content is frozen byte-for-byte;
+`[refined] [studied]` = a final PASS through active recall on that exact frozen version. Appending the studied
+marker to both question lines is the only permitted mutation while refined. Only Victor assigns/refuses
+`[refined]`; only `study-block-close` assigns `[studied]`. A TODO or explicit reopen removes both before
+editing. Stable bilingual IDs identify questions. `interview-prep-route-prompt` stores only the ordered
+CORE IDs for one level, never answers or duplicate study state.
+
+When Victor starts interview prep, `interview-prep-block-open` resolves the current CORE route, presents
+one refined question without its answer, accepts dictation or typed text equally, and grades
+PASS/BORDERLINE/FAIL. When he closes the block, `study-block-close` records only the units the session
+proves he actively studied: it dates eligible complete/refined note entries, mirrors `[studied]` only on
+exact refined bilingual question IDs with a final PASS, then recounts `PROGRESS.md` `## Study progress`
+as Notes studied + Interview CORE studied + Interview bank studied. It asks nothing, never infers study
+from a file merely existing, and leaves a pending/stale target unchanged. A material note edit resets
+its `Studied` field to `pending`; reopening an interview question resets both question state markers.
 
 `Study progress` is separate from `Coverage demonstrated`: the former measures consolidation, the
 latter measures concepts applied in code. SQL exercises and timed simulations remain separate under

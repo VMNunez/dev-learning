@@ -83,7 +83,11 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   half of REC-053 and is now forbidden.
 
 Interview-prep has no per-file plan. Existing topic banks may still receive inline Q&A under the
-interview standard; the 13:30 closing ritual, not this writer, owns their `[x]` studied markers.
+interview standard. Allocate the next stable bilingual question ID; every new question is unrefined.
+Only Victor's explicit confirmation may append `[refined]` in both languages. Once present, the whole
+bilingual block is immutable. A TODO on that block or an explicit reopen first removes `[refined]` and
+`[studied]` from both languages, then permits the edit; the changed version must be refined and studied
+again. The 13:30 closing ritual, not this writer, owns `[studied]` after a final active-recall PASS.
 
 ## What this skill does NOT do
 

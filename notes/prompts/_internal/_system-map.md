@@ -89,10 +89,15 @@ not his. Full rule in `_session-rules.md`.
                               │
                               ▼
   A. KNOWLEDGE   /coverage ─► /coverage-verify ─► /notes-plan ─► /notes-audit ─► en+es pair
-                     │                                  ▲              │
-                     │                        (⚠ stale flag)     /interview-prep-audit
-                     │                                  │              │
-                     │              coverage-bullet-add ┘   /notes-and-interview-prep
+                     │                                  ▲
+                     │                        (⚠ stale flag)
+                     │                                  │
+                     │              coverage-bullet-add ┘
+                     └──► /interview-prep-audit ─► unrefined Q&A ─► /interview-prep-route
+                                                               │              │
+                                                      Victor refines     interview-prep-block-open
+                                                                              │
+                                                                      study-block-close ─► PROGRESS
                      │
                      ├──► notes/coverage/{level}.md ──────────────┬──────────────┐
                      │                                            │              │
@@ -161,22 +166,27 @@ The root of everything. Coverage defines *what junior means*; every other chain 
    `complete` / `refined`. It refuses to run on a plan whose fingerprint is stale — that is why step 3
    is not optional.
 
-5. **`/interview-prep-audit {level} {topic}`** — the Q&A bank for that topic and level. Its prerequisite
-   is the **whole** notes plan being complete, not one note.
-   → writes fingerprinted `notes/interview-prep/{LEVEL}/en/*.md` + `es/*.md`, including standalone
-   Spring; Angular Material deliberately shares Angular's bank.
+5. **`/interview-prep-audit {level} {topic}`** — builds that topic's market-selected Q&A bank from
+   current coverage + evidence. The selected notes plan must be current; pending junior entries are
+   allowed because every authored question remains unrefined until Victor accepts it. Middle/senior
+   still require their earlier-level progression gates.
+   → writes fingerprinted, stable-ID `notes/interview-prep/{LEVEL}/en/*.md` + `es/*.md`, including
+   standalone Spring; Angular Material deliberately shares Angular's bank. Coverage bounds the level
+   but does not demand one question per bullet.
 
-6. **`/notes-and-interview-prep {topic}`** — closes notes → Q&A gaps in the bank; Q&A → notes gaps are
-   routed to coverage or the owning planned entry, never authored around `/notes-plan` + `/notes-audit`.
+6. **`/interview-prep-route {level}`** — after every required bank is current, selects the globally
+   weighted CORE subset from ⭐⭐⭐ questions and fingerprints the state-stripped question inventory.
+   → writes `notes/interview-prep/routes/{LEVEL}.md`, IDs and navigation labels only, never answers.
 
 7. **When every topic has that level: `/coverage-audit {level}`** — the convergence pass over the global
    mirror (level boundaries, missing topics, ownership overlaps) — **then `/roadmap-review`**.
 
-**In-session on this chain:** `study-content-writer` may refine only an existing complete pair,
-loads the same standard, keeps both languages aligned, and resets that entry's `Studied` state. A
-missing or pending entry goes back to `/notes-plan` + `/notes-audit`; inline creation is forbidden.
-When the 13:30 block ends, `study-block-close` dates the exact notes studied, mirrors `[x]` on the exact
-Q&A worked, and recounts `PROGRESS.md` `Study progress`.
+**In-session on this chain:** `study-content-writer` keeps bilingual note/Q&A edits at their standards.
+Only Victor assigns `[refined]`; that freezes the complete question block, and an explicit reopen/TODO
+clears both lifecycle markers before editing. `interview-prep-block-open` resolves the CORE route,
+presents one refined question, accepts dictation or text, and grades PASS/BORDERLINE/FAIL without
+writing. When the 13:30 block ends, `study-block-close` dates exact notes, mirrors `[studied]` only on
+refined IDs with final PASS, and recounts Notes + CORE + full-bank `PROGRESS.md` study cells.
 
 **The sideways door: `_cross-topic-inbox.md`.** When any coverage run — or `coverage-bullet-add` in a
 daily session — finds a concept owned by a *different* topic, it never writes into that topic's file. It
@@ -329,8 +339,9 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/{topic}/coverage/{LEVEL}.md` **+ mirror** `notes/coverage/{LEVEL}.md` | `/coverage`, `/coverage-audit` (bulk) · `coverage-bullet-add` (one bullet) · `coverage-mark` (project markers) · `sql-step-close` (drill markers, SQL only) | everything downstream |
 | `notes/{topic}/coverage/verify-{LEVEL}.md` | `/coverage-verify` | `/notes-plan` (advisory), `/coverage` update |
 | `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | `/notes-plan` (whole route) · `/coverage` (`Plan status: stale` only) · `/notes-audit` (concept/status + studied reset) · `study-content-writer` (studied reset only) · `study-block-close` (studied date only) | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit`, `/progress-update` |
-| `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · in session, guided by `study-content-writer` for an existing complete, non-frozen pair only | `/notes-and-interview-prep`, Victor |
-| `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit`, `/notes-and-interview-prep`, `/simulation-review`, `/code-review-practice`, `study-block-close` (`[x]` only) | `/simulator`, `/progress-update` |
+| `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · in session, guided by `study-content-writer` for an existing complete, non-frozen pair only | Victor |
+| `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` (unrefined/reopen/refine) · `study-block-close` (`[studied]` only) | `/interview-prep-route`, `interview-prep-block-open`, `/simulator`, `/progress-update` |
+| `notes/interview-prep/routes/{LEVEL}.md` | `/interview-prep-route` only | `interview-prep-block-open`, `study-block-close`, `/progress-update` |
 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` |
 | `PROGRESS.md` | **section by section — see §8** | `/plan-audit`, `/roadmap-review`, `/project-brief`, `/review-audit`, `/cv`, `/linkedin`, `/sql-exercises` |
 | `ROADMAP.md` | `/roadmap-review` (+ `/plan-audit` marks the chosen project) | `/project-brief`, `/hr-screen`, the SQL gates |
@@ -350,12 +361,12 @@ files: the system that describes and checks the system, which has writers like e
 | `practice/simulations/{type}/NN-*.md` (spec) | `/simulation-generator` (whole spec) · `simulation-block-close` and `/simulation-review` (attempt header only) | Victor · `simulation-block-open` · `simulation-grade` / `/simulation-review` |
 | `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `simulation-block-close` (self-assessment/attempt) · `/simulation-review` (status/history) | `/simulation-plan`, `/progress-update`, every simulation skill |
 | `practice/simulations/MISTAKES.md` | `/simulation-review` (graded gaps/corrections) · `simulation-block-close` (friction) | `/simulation-plan`, `simulation-block-open`, `simulation-grade`, revision points |
-| `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit` |
+| `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit`, `/interview-prep-route` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, `/system-check`, and prompts that gate on it |
-| `notes/prompts/_internal/_skill-friction.md` | any of the sixteen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
+| `notes/prompts/_internal/_skill-friction.md` | any of the seventeen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
-| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 14 of the 30 prompts also name it directly. It **outranks this map** |
+| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 15 of the 30 prompts also name it directly. It **outranks this map** |
 | `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` includes its open/accepted rows in the operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
 | `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | run by hand and by `/system-check` before and after its semantic audit — see §12. The only automated check in the system |
@@ -375,7 +386,7 @@ This is the file you asked about, and the one where "who writes it" is least obv
 |---|---|---|
 | `## Professional level by topic` | **`/progress-update`** — the only writer of the table | needs all 13 topics at once, which no ritual can compute. `step-complete` / `backlog-task-close` may update a single **evidence cell** when a step or fix earns it |
 | `## Coverage demonstrated` | **`/coverage`, `coverage-mark`, and `coverage-bullet-add`** | each **recounts** the affected cells and the `Total` row from the coverage files when it changes scope or markers. `step-complete` deliberately does **not** touch this table: a memory-derived copy would overwrite the recounted one |
-| `## Study progress` | **`study-block-close`** | dates / `[x]` are primary state; this section is their per-level roll-up. `/progress-update` measures it as D9 and reports drift |
+| `## Study progress` | **`study-block-close`** | notes dates and bilingual `[refined] [studied]` IDs are primary state; the current route supplies the CORE denominator. This section rolls up Notes + CORE + full bank per level; `/progress-update` measures it as D9 and reports drift |
 | `## Projects` | **`step-complete`** / **`backlog-task-close`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new` |
 | `## Practice completed → Exercise route` | **`sql-grade`'s cold subagent** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
 | `→ Timed simulations` | **`/simulation-review`** | counted by explicit level + track from `practice/simulations/TRACKER.md`; `/progress-update` audits it |
@@ -389,7 +400,7 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 
 ## 9 — The skills, one row each
 
-All sixteen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
+All seventeen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
 | Skill | Fires when | What it writes | Hands off to |
@@ -400,8 +411,9 @@ identical file to the other in the same commit.**
 | `readme-concept-add` | same event, README side | one entry, routed **by audience** to the global / backend / frontend README | — |
 | `backlog-task-open` | Victor picks up a backlog task | only a `⏸ Deferred YYYY-MM-DD — reason` marker, and only on that verdict | the teach-first explanation, or `backlog-task-close` |
 | `backlog-task-close` | a backlog task is done | coverage bullet + marker · README entry · `PLANNING.md` rules + §0 · `PROGRESS.md` · collapses the task into the `## Closed` ledger | `coverage-bullet-add`, `coverage-mark`, `readme-concept-add` |
-| `study-content-writer` | refining an existing complete note or writing Q&A **outside** the audit prompts | the `en/` + `es/` files to the same bar · notes-plan `Studied` reset after note prose changes | `/notes-plan` + `/notes-audit` when the note is missing/pending; Victor hand-back when refined |
-| `study-block-close` | Victor ends the 13:30 notes/interview-prep block | notes-plan `Studied` dates · exact bilingual Q&A `[x]` markers · `PROGRESS.md` Study progress | — |
+| `study-content-writer` | refining an existing complete note or writing/refining Q&A **outside** the audit prompts | note EN/ES + studied reset · unrefined stable-ID Q&A · `[refined]` only on Victor's explicit acceptance · explicit reopen clears both Q&A state markers | `/notes-plan` + `/notes-audit` when the note is missing/pending; `study-block-close` after active recall |
+| `interview-prep-block-open` | Victor starts or continues interview-prep active recall | **nothing — read-only**; resolves current CORE, accepts dictation/text, grades PASS/BORDERLINE/FAIL | `study-block-close` with exact final-PASS IDs |
+| `study-block-close` | Victor ends the 13:30 notes/interview-prep block | notes-plan `Studied` dates · exact refined bilingual Q&A `[studied]` markers after PASS · `PROGRESS.md` Notes/CORE/bank study rows | — |
 | `sql-block-open` | the 12:30 block starts | **nothing — read-only** | — |
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
@@ -416,8 +428,10 @@ write cells describe success and expected no-op / ineligibility paths; on an obs
 step, every skill additionally appends one `FRIC-NNNN` row without changing or partially closing its
 normal target.
 
-**Rituals ask zero questions.** That is a design rule, not a style: a manual gate in the middle of a
-mechanical ritual is how the ritual stops being run. A step that cannot close is *reported* and left
+**Mechanical and closing rituals ask zero questions.** That is a design rule, not a style: a manual
+gate in the middle of a mechanical ritual is how it stops being run. `interview-prep-block-open` is the
+intentional exception because asking and grading one interview question is its product, not a gate.
+A step that cannot close is *reported* and left
 open, never blocked on an answer.
 
 ---

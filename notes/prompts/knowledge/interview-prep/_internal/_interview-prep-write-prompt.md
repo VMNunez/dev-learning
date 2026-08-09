@@ -6,8 +6,8 @@ result to `_interview-prep-review-prompt.md` (the reviewer). It is documented he
 can point a subagent at it; you can also run it standalone to build/audit a single topic.
 
 **What it does.** Takes one topic's Q&A files (`en/{FILE}.md` + `es/{FILE}.md`) and does the full
-audit: syncs the two languages, resolves TODOs, checks coverage, assigns priority markers, fixes
-format, and adds every realistic question the topic needs. It leaves the work in the tree — it does
+audit: syncs the two languages, resolves TODOs, checks coverage traceability, assigns stable IDs and
+priority markers, fixes format, and adds the realistic market questions the topic needs. It leaves the work in the tree — it does
 **not** commit. Under `interview-prep-audit` the orchestrator owns the one topic commit; only the
 standalone author → reviewer flow lets the reviewer commit.
 
@@ -77,9 +77,9 @@ You are auditing Victor's interview preparation. Do deep work on the scope you a
 wander outside it. **When the audit orchestrator dispatches you, `{SECTION}` is one exact `##`
 heading** — author/audit just that section (in both `en/` and `es/`), read it in full, and return a
 **question-by-question trace** (each question with PASS or the change you made) as proof you finished
-it. **Respect the studied marker**: a question whose bold line ends in `[x]` (in either language) is
-content Victor has already studied — apply only the always-allowed structural fixes from the standard
-and report weak ones instead of rewriting; everything unmarked you may rewrite freely to reach the bar. A section is the deep-work unit; never take on the whole file in one pass under the orchestrator.
+it. **Respect the lifecycle**: a question carrying `[refined]` in either language is frozen
+byte-for-byte, whether or not it also carries `[studied]`; report defects instead of rewriting it.
+Everything unmarked may be rewritten freely to reach the bar. A section is the deep-work unit; never take on the whole file in one pass under the orchestrator.
 (`SECTION = all` on a standalone run means the whole file — then work section by section within it.)
 
 Before starting, read:
@@ -87,7 +87,7 @@ Before starting, read:
 - notes/prompts/_internal/_shared-context.md — Victor's profile, projects, and the Spanish job market 2026.
 - notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md — THE bar. Every definition
   (question types, priority markers, question format, the answer quality bar, the bilingual contract,
-  studied-content-is-final via the `[x]` marker, section-complete) lives there. Apply it in full; this prompt only adds the
+  stable IDs, refined/studied lifecycle, section-complete) lives there. Apply it in full; this prompt only adds the
   audit *flow*.
 
 ## Scope — this run touches exactly two files
@@ -150,15 +150,15 @@ change.
 always rewriting a passive answer to "I used", always adding a project reference), report it in the
 summary as a recommended one-sentence rule to add to the standard. Do not add the rule yourself.
 
-## Step 3 — coverage/{LEVEL}.md check (full mode only)
+## Step 3 — coverage/{LEVEL}.md traceability check (full mode only)
 
 Read the topic's coverage: `notes/{FILE}/coverage/{LEVEL}.md` (for spring-boot, `notes/spring-boot/coverage/{LEVEL}.md`;
 for java, `notes/java/coverage/{LEVEL}.md`). **For `angular`, also read `notes/angular-material/coverage/{LEVEL}.md`** —
 Angular Material has no interview-prep file of its own; by convention its questions live in `angular.md`
-under Material sections, so its coverage items must be verified here too or they go untested. If it
-exists, list every concept and verify each one that belongs in the run's scope has at least one
-question. Treat any uncovered concept as a required addition in Step 6.4, and label it
-"coverage/{LEVEL}.md concept — added". If the selected coverage file does not exist, stop and run
+under Material sections. Use coverage to bound the selected level and map each admitted question to
+one or more current concepts; do not require one question per bullet. A pedagogical bullet with no
+realistic interview angle is a valid no-op. A realistic market question outside coverage is a coverage
+gap and is reported rather than silently admitted. If the selected coverage file does not exist, stop and run
 `coverage-prompt` for that topic and level.
 
 ## Step 4 — Priority markers
@@ -185,8 +185,8 @@ Fix violations in both files and report what was fixed.
 > on coverage/{LEVEL}.md and your knowledge of what the target screenings ask.
 
 **6.1 Missing topics.** Topics not covered in `{SECTION}` that the target companies would ask, given
-the stack. Include every coverage/{LEVEL}.md concept with no question and every `often`/`sometimes` item from
-the market-question list. One sentence per topic on why they ask it. If a topic you identify is NOT in
+the stack. Include every `often`/`sometimes` item from the market-question list, deduplicated by tested
+concept. One sentence per topic on why they ask it. If a topic you identify is NOT in
 coverage/{LEVEL}.md, flag it `[coverage gap]` so Victor can add it there separately.
 
 **6.2 Weak answers (report only — never rewrite without a TODO).** Answers that fail the quality bar in
@@ -197,12 +197,14 @@ and list it in the summary. Victor adds a TODO; the fix lands next run.
 **6.3 Imbalances.** Count questions by type (definitions in the standard). Report count and percentage
 per section. Flag any section missing Decision-based or Pressure entirely, and feed that into 6.4.
 
-**6.4 Missing questions.** Every realistic question the target companies would ask that is not yet in
-`{SECTION}`. Do not cap at 3–5 — add until the section is genuinely interview-ready. Each new question:
+**6.4 Missing questions.** Every often/sometimes realistic question the target companies would ask that
+is not yet in `{SECTION}`. Stop when those concepts are covered; do not add trivia or alternate
+phrasings merely to make the bank exhaustive. Each new question:
 follow the question format in the standard (bold question + marker + blank line + answer in Victor's
 voice + the level-appropriate tip if Conceptual / Red flag if Decision-based or Pressure + a **real, cited code
 block** if it is the kind of question an interviewer poses with code — see "Sourcing real code"),
-reference a real project when it is about a pattern or decision, and add to BOTH files (translated). If a question logically
+reference a real project when it is about a pattern or decision, allocate the next stable selected-level
+topic ID, and add to BOTH files (translated). If a question logically
 belongs in a different section than `{SECTION}`, note it in the summary instead of adding it here.
 Flag any new question whose concept is not in coverage/{LEVEL}.md with `[coverage gap]`.
 

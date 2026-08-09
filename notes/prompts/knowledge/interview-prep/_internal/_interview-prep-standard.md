@@ -6,11 +6,11 @@ no configuration and does nothing on its own. Four prompts read it:
 - `_interview-prep-write-prompt.md` (author) reads it to **build/audit one topic's** Q&A to this bar.
 - `_interview-prep-review-prompt.md` (reviewer) reads it to **audit the authored Q&A** against this bar.
 - `interview-prep-audit.md` (orchestrator) reads it to enforce fingerprints, parity and section gates.
-- `notes-and-interview-prep-prompt.md` reads it to reuse the **question format** when it adds
-  cross-reference questions.
+- `interview-prep-route-prompt.md` reads it to resolve stable question identities and build the
+  selected level's CORE study route without duplicating answers.
 
 They used to carry their own copy of these rules; keeping them here once means the four can never
-drift. Each prompt adds only its own *flow* (author vs cold review vs cross-reference) on top of this
+drift. Each prompt adds only its own *flow* (author vs cold review vs route selection) on top of this
 standard.
 
 ---
@@ -23,10 +23,12 @@ one professional level**, built to prepare Victor for the target role and progre
 every question and answer is measured against what a real interviewer would expect from a candidate
 at the selected level.
 
-It is **derived from `coverage/{LEVEL}.md`**: every item in the selected topic and level must have at
-least one question. Coverage says *what* to test; this file turns each item into a question the way an
-interviewer would actually ask it, and an answer the way Victor would actually say it out loud.
-Questions from different levels never share a file.
+It is **bounded by `coverage/{LEVEL}.md`**, but it is not a question-by-bullet mirror. Coverage says
+what Victor is learning at the selected level; current market evidence decides which of those concepts
+are worth testing in an interview. One realistic question may exercise several related coverage
+concepts, and a pedagogical coverage bullet may legitimately produce no direct interview question.
+Every question must be level-appropriate and either map to current coverage or be reported as a
+coverage gap before it is admitted. Questions from different levels never share a file.
 
 Every Q&A file stores the exact lowercase SHA-256 digest of its source coverage file's **scope bytes** —
 its exact UTF-8 bytes with every trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, per "Evidence markers" in
@@ -78,33 +80,38 @@ Notes and Q&A both live in two languages, and the two files are **never allowed 
 
 ---
 
-## Studied content is final — the `[x]` marker
+## Question identity and lifecycle
 
-Victor marks every question he has **already studied** with `[x]` at the end of the bold question
-line, after the priority marker:
+Every question has one stable bilingual identifier inside the bold text:
 
-**What is `@Transactional` and what does it do?** ⭐⭐⭐ [x]
+**[SB-J-004] What is `@Transactional` and what does it do?** ⭐⭐⭐ [refined] [studied]
 
-He marks it in `es/` (the file he studies from); any pipeline pass that touches the question mirrors
-the marker to `en/`. A question carrying `[x]` in **either** file counts as studied. Everything
-without `[x]` is fair game — rewrite it freely to raise it to the bar.
+The identifier is immutable and identical in `en/` and `es/`. Format:
+`{TOPIC}-{LEVEL}-{NNN}`, with level `J`, `M`, or `S` and these topic prefixes:
+`ANG`, `SPR`, `SB`, `JAVA`, `ARC`, `SEC`, `TS`, `SQL`, `JS`, `CSS`, `GIT`, `GEN`.
+Allocate the next unused number within that topic and level; never recycle an ID after deletion.
 
-**On a studied (`[x]`) question, allowed without a TODO:**
-- Resolve TODO markers (a TODO from Victor always overrides `[x]` — he is asking for the change).
-- Assign or fix the priority marker; reorder by priority within a section (never across sections).
-- Fix structural format violations (missing blank line between question and answer).
-- Add a missing level-appropriate interview tip (Conceptual) or Red flag (Decision-based / Pressure).
-- Mirror the `[x]` marker itself between `en/` and `es/`.
+Question state has exactly three valid forms:
 
-**NOT allowed on a studied question without a TODO:**
-- Change the wording of the question.
-- Rewrite or rephrase the answer.
-- "Strengthen" it on your own judgment.
+- **Unrefined** — no state marker. The author/reviewer may rewrite any part of the bilingual block.
+- **Refined** — `[refined]`. Victor alone confirms this transition after the question, answer,
+  priority, code and translation are to his taste. From then on the complete bilingual question content
+  is frozen byte-for-byte; the only permitted line mutation is the later lifecycle append described
+  below.
+- **Refined + studied** — `[refined] [studied]`. The content remains frozen; the marker proves Victor
+  completed a successful active-recall cycle on this exact version.
 
-If a studied answer is weak but has no TODO, **report it** — do not change it. Victor adds a TODO, and
-the fix lands on the next run. (Exception: if Victor explicitly asks in the same conversation to fix
-the reported weak answers, rewrite them — mirrored to both files.) Adding new questions is always
-allowed; new questions are born unmarked.
+`[studied]` without `[refined]` is malformed. Appending ` [studied]` to both bold question lines after
+a final active-recall PASS is the sole mutation allowed while refined; every other byte remains fixed.
+A content pipeline may mirror an existing state marker between languages, but may never assign
+`[refined]`, assign `[studied]`, or change refined content. If it finds
+a factual, structural, priority or translation problem in a refined question, it reports the exact
+problem and leaves the block untouched.
+
+Only Victor can reopen a refined question, either by explicitly saying so or by adding a TODO to that
+question. Reopening removes both state markers in both languages before any edit: the previously
+studied version no longer exists, so its study evidence cannot survive. The corrected question must be
+refined and studied again. Adding a new question is always allowed; it is born unrefined.
 
 ---
 
@@ -156,19 +163,26 @@ Place the marker at the end of the bold question line, after the question mark:
 
 Within each section, order questions ⭐⭐⭐ → ⭐⭐ → ⭐.
 
+Stars express frequency **within the topic**; they do not define the cross-topic emergency route.
+`interview-prep-route-prompt` selects a separate, globally weighted CORE subset from the ⭐⭐⭐
+questions. This prevents every section's fundamentals from becoming one unmanageably large "must
+study first" list.
+
 ---
 
 ## Question format
 
 Every question follows this structure. Mandatory elements:
 
-**Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
+**[TOPIC-L-NNN] Question as an interviewer at a Spanish consultancy would ask it?** ⭐⭐⭐
 
 Answer in 1–2 sentences — what Victor would actually say out loud. Include a real example from his
 projects when the question is about a pattern or a decision.
 
 - There must be a **blank line** between the bold question and the answer.
 - Every question has a **priority marker** at the end of the bold line.
+- Every question has one stable selected-level ID, identical in both languages.
+- State markers, when present, follow the priority marker in the exact order `[refined] [studied]`.
 
 Optional elements after the answer, by type:
 - **Conceptual only** — a blank line, then a level-appropriate tip. Junior files preserve the existing
@@ -199,6 +213,7 @@ practice-driven insertion, so each prompt references them here instead of restat
   `Consejo de entrevista:`.
 - **Deduplicate by concept, not wording.** Before adding, scan the target section for a question that
   already tests the same concept. If one exists, skip it — even if the phrasing differs.
+- **Allocate a stable ID.** Use the next unused selected-level topic ID and mirror it to both languages.
 - **Place under the matching `##` section**, creating the section only if none fits. Then reorder
   within that section so markers run ⭐⭐⭐ → ⭐⭐ → ⭐.
 - **Priority marker** per the "Priority markers" section above (⭐⭐⭐ filter-level, ⭐⭐ deeper, ⭐ niche).
@@ -268,15 +283,17 @@ person would answer by talking.
 ## When a section is complete
 
 A section is done only when ALL hold:
-- Every `coverage/{LEVEL}.md` concept that belongs in the section has at least one question.
-- Every question a Spanish consultancy would realistically ask about the topic is covered.
+- Every often/sometimes market question appropriate to the selected coverage scope is covered.
+- Every question is traceable to selected-level coverage, or its missing concept is reported as a
+  coverage gap rather than silently admitted.
 - The type ratio is roughly on target (or, for <5 questions, at least 1 Decision-based question present).
 - Every question is realistic, well-worded, and answered in Victor's voice per the quality bar above.
 - Every question an interviewer would pose with code carries a real, cited snippet (see "Real code").
 - At least one Decision-based question references a real project by name.
 - Every question has a priority marker; within the section they run ⭐⭐⭐ → ⭐⭐ → ⭐.
+- Every question has a stable ID with exact bilingual parity.
 - Every answer passes the "explain every word" test, or carries a TODO flagging it for rewrite.
 - `en/` and `es/` are in sync — same sections, same questions, same order.
 
-Do not stop at 2–3 questions per section. A candidate can be filtered because one topic was thin —
-better to cover the realistic level requirements than to leave a gap an interviewer finds first.
+Do not chase exhaustiveness for its own sake. Stop when the realistic market questions for this level
+are covered with no duplicates; pedagogical completeness belongs to notes, not to the Q&A bank.

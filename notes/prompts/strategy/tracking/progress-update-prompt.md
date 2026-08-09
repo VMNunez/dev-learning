@@ -111,8 +111,9 @@ Read:
    (which project is active). the shared session rules is already loaded into your context by the supported agent runtime; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
 3. For each topic row in `Professional level by topic`, inspect the selected level's persistent notes
-   plan at headings/status/studied-field level and the interview-prep fingerprint plus `[x]` counts.
-   These artifacts distinguish authored from studied consolidation; do not load their prose.
+   plan at headings/status/studied-field level and the interview-prep bank fingerprint plus lifecycle
+   counts. Read the selected level's interview CORE route metadata too. These artifacts distinguish
+   authored, refined and studied consolidation; do not load their prose.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
@@ -293,8 +294,8 @@ Refresh the matrix without duplicating coverage concepts:
 
 - `Knowledge consolidation`: report notes **authored** (`complete`/`refined` over all plan entries)
   separately from notes **studied** (`Studied: YYYY-MM-DD` over the same entries), then report whether
-  the selected-level Q&A fingerprint is current and its `[x] / total questions` studied count. A stale
-  or incomplete denominator is named as such, never rendered as `0%`.
+  the selected-level Q&A fingerprint and CORE route are current, with refined/studied CORE and full-bank
+  counts. A stale or incomplete denominator is named as such, never rendered as `0%`.
 - `Practical evidence`: **preserve, then add.** `step-complete` and `backlog-task-close` write this
   cell in session, so what is already there is a record, not a draft — keep every explicit entry and
   append only project, exercise, simulation, or unaided-recall evidence this run verified. This is the
@@ -355,17 +356,19 @@ the two read together.
 
 ### D9 — `Study progress` — measured, never written here
 
-**Owner: `study-block-close`.** Recompute the two rows with the same contract the ritual uses:
+**Owner: `study-block-close`.** Recompute the three rows with the same contract the ritual uses:
 
 - Notes, per level: dated `Studied:` entries over all numbered entries, but only when every required
   registered-topic plan exists, is `current`, and its coverage fingerprint matches. A missing legacy
   `Studied` field is an unstudied entry, not a missing denominator.
-- Interview questions, per level: question identities carrying `[x]` in either language over all
-  English master question identities, using exactly the standard's bold `?**` + priority marker +
-  optional `[x]` shape (never every bold line). A one-sided marker counts once and is reported as
-  mirror drift for `study-block-close`; the audit itself does not repair it. Count only when every
-  required topic bank exists, both languages carry current coverage fingerprints, and
-  parity passes. Angular Material shares Angular's bank; all other registered topics own their file.
+- Interview CORE, per level: stable question IDs carrying both `[refined]` and `[studied]` in both
+  languages over all IDs selected by the current `notes/interview-prep/routes/{LEVEL}.md`. The route's
+  inventory fingerprint must match the current English-bank inventory. A one-sided marker counts once
+  and is reported as mirror drift for `study-block-close`; the audit itself does not repair it.
+- Interview bank, per level: stable question IDs carrying both `[refined]` and `[studied]` in both
+  languages over all English master question identities. Count only when every required topic bank
+  exists, both languages carry current coverage fingerprints, stable-ID parity passes, and no duplicate
+  ID exists. Angular Material shares Angular's bank; all other registered topics own their file.
 
 Compare the result with `PROGRESS.md` and emit one drift row per mismatched cell. `—` is required when
 the denominator gate is not met; never sum only the current subset and present it as a level total.

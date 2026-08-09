@@ -112,7 +112,7 @@ own catalog check already fails on.
 
 | Group | Prompts |
 |---|---|
-| Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
+| Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `interview-prep-route-prompt` |
 | Projects | `project-brief-prompt`, `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-plan-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
@@ -122,7 +122,7 @@ Two flavors among these 30, both launched the same way (paste config into a new 
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `project-brief-prompt`,
   `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
-  `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
+  `coverage-audit-prompt`, `interview-prep-route-prompt`, plus `coverage-prompt`,
   `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, `simulation-plan-prompt`, and
   `system-check-prompt` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
@@ -208,11 +208,11 @@ consume one of these sources of truth.
 | `knowledge/notes/_internal/_notes-review-prompt.md` | *Internal (stage B — English reviewer).* Independent auditor for **one `en/`** file: fixes what falls short in English. The `es/` does not exist yet. Never touches `es/`, never commits. | `_note-quality-standard.md`, the one `en/` file, sibling files | the audited `en/*.md` |
 | `knowledge/notes/_internal/_notes-translate-prompt.md` | *Internal (stage T — translator).* Takes the finished, canonical `en/` file and produces/re-syncs its `es/` counterpart: exact structural parity, native-Spanish prose, clears leftover `es/` TODO markers. Does not change the English, does not commit. | the canonical `en/` file, the existing `es/` (if any), `_note-quality-standard.md` | that one `es/*.md` |
 | `knowledge/notes/_internal/_notes-review-es-prompt.md` | *Internal (stage C — Spanish reviewer, `en/`-blind).* Reads only the planned `es/` file, fixes calque/flow, marks that persistent-plan entry complete, resets its studied state after changed prose, and commits the pair plus plan. | `_note-quality-standard.md`, one `es/` file, persistent plan | the `es/*.md`, plan concept/status/studied metadata, one atomic commit |
-| `knowledge/interview-prep/interview-prep-audit.md` | Level-aware interview Q&A audit, including the standalone Spring topic. Uses and fingerprints `coverage/{LEVEL}.md`, writes isolated `{LEVEL}/en` + `{LEVEL}/es` banks, and enforces the progression gates. | its internal pieces, selected topic coverage, `_job-market-evidence.md`, selected-level interview-prep en/es | selected-level interview-prep en/es, one atomic commit per topic |
-| `knowledge/interview-prep/_internal/_interview-prep-standard.md` | *Internal.* The **shared Q&A standard** the audit orchestrator, author, reviewer, and cross-reference prompts read (fingerprints, question types + ratio, priority markers, question format, the answer quality bar — realistic/well-worded/Victor's voice, real cited code from his projects, bilingual contract, studied-content-is-final via the `[x]` marker, section-complete). Not runnable. | — | — |
-| `knowledge/interview-prep/_internal/_interview-prep-write-prompt.md` | *Internal (author).* Full audit of one topic at the selected level: en/es sync, TODOs, coverage check, priorities and question quality. | `_interview-prep-standard.md`, `notes/{topic}/coverage/{LEVEL}.md`, interview-prep en/es | interview-prep en/es working tree |
-| `knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` | *Internal (reviewer).* Independent second pass on **one** selected-level section/topic: enforces realistic, level-calibrated questions with real anchors and keeps en/es aligned. | `_interview-prep-standard.md`, selected-level interview-prep en/es | the audited selected-level pair, one atomic commit |
-| `knowledge/interview-prep/notes-and-interview-prep-prompt.md` | Cross-checks selected-level notes and Q&A after verifying the Q&A coverage fingerprint. It closes notes → prep gaps in Q&A; prep → notes gaps are routed to coverage / the owning planned entry and never bypass `/notes-plan` + `/notes-audit`. | selected-level topic coverage, notes plan, notes + interview-prep en/es | selected-level interview-prep en/es; durable self-report findings for coverage/notes-audit handoff |
+| `knowledge/interview-prep/interview-prep-audit.md` | Level-aware market-selected Q&A audit, including standalone Spring. Uses current coverage as the level boundary rather than a one-question-per-bullet checklist; live web/evidence analysis selects realistic questions, stable IDs preserve identity, and every new or rewritten question remains unrefined until Victor accepts it. Pending junior notes are allowed once the selected notes plan is current; earlier-level progression gates still protect middle/senior. | its internal pieces, selected topic coverage + current notes plan, `_job-market-evidence.md`, selected-level interview-prep en/es | selected-level interview-prep en/es, one atomic commit per topic |
+| `knowledge/interview-prep/interview-prep-route-prompt.md` | Builds one cross-topic CORE study order for a selected level after every required bank is current. Selects a globally weighted subset of ⭐⭐⭐ questions, stores stable IDs and navigation labels only, and fingerprints the state-stripped question inventory so refining/studying does not stale the route. | all selected-level EN/ES banks, `_interview-prep-standard.md`, `_shared-context.md`, `_job-market-evidence.md`, `ROADMAP.md` | `notes/interview-prep/routes/{LEVEL}.md` |
+| `knowledge/interview-prep/_internal/_interview-prep-standard.md` | *Internal.* Shared Q&A standard for the audit, author, reviewer, route and in-session skills: coverage-bounded market selection, fingerprints, stable bilingual IDs, question types/priorities, realistic answers in Victor's voice, and the three-state lifecycle (unrefined → `[refined]` frozen → `[refined] [studied]`). Not runnable. | — | — |
+| `knowledge/interview-prep/_internal/_interview-prep-write-prompt.md` | *Internal (author).* Audits one selected-level section: en/es sync, TODO/reopen handling, coverage traceability, stable IDs, priorities and market question quality. Never edits a refined block. | `_interview-prep-standard.md`, selected coverage, interview-prep en/es | interview-prep en/es working tree |
+| `knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` | *Internal (reviewer).* Independent second pass on one selected-level section; fixes unrefined questions, reports defects in frozen ones, and keeps IDs/state bilingual. Under the orchestrator it never commits. | `_interview-prep-standard.md`, selected-level interview-prep en/es | the audited selected-level pair in the working tree |
 
 ### Projects — plan, document, review
 
@@ -329,8 +329,10 @@ Each generated file, with who writes it and who depends on it:
 - **`notes/cv/cv-bullets.md`** — written by `portfolio-audit` → read by `cv-prompt` (one polished
   bullet per project, reused as-is).
 - **`interview-prep/{LEVEL}/en/*.md` + `{LEVEL}/es/*.md`** — written by `interview-prep-audit`,
-  `notes-and-interview-prep`, `simulation-review`, `code-review`, `study-block-close` → read by
-  `simulator` and `progress-update`.
+  `simulation-review`, `code-review`, `study-content-writer`, and `study-block-close` (`[studied]`
+  only) → read by `interview-prep-route`, `interview-prep-block-open`, `simulator` and `progress-update`.
+- **`interview-prep/routes/{LEVEL}.md`** — written only by `interview-prep-route` → read by
+  `interview-prep-block-open`, `study-block-close`, and `progress-update`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-audit` → read by `simulator`.
 - **`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `sql-plan-prompt`, audited and extended by
   `sql-plan-audit` → read by `sql-exercises` (every run takes its topic, count and focus from the
@@ -365,10 +367,11 @@ Pipeline view:
 coverage-prompt / coverage-audit ─► notes/coverage/{junior|middle|senior}.md
         │
         ├─► notes-plan ─► notes-audit (one TOPIC + LEVEL + NOTE) ─► en-author → en-reviewer → translator → es-reviewer ─► one EN/ES pair ─┐
-        ├─► interview-prep-audit ─► interview-prep/*.md ─┐
-        │        └─ notes-and-interview-prep keeps both in sync
-        │                                                   │
-        ▼                                                   ▼
+        ├─► interview-prep-audit ─► unrefined Q&A ─► Victor refines ─► interview-prep-route
+        │                                                             │
+        │                                      interview-prep-block-open ─► study-block-close
+        │                                                             │
+        ▼                                                             ▼
 progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.md   simulator
                         ▲                              │                  ▲ (reads Q&A)
                         │            ┌─────────────────┼───────────────┐ │
@@ -431,15 +434,21 @@ Practice (its own loop, fed by coverage):
      sections in both languages, proves with a diff that it changed nothing else, marks the consumed
      concepts `[x]`, clears the queue, and leaves the status `refined`. Set it back to `pending`
      yourself to unfreeze it.
-6. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated level Q&A;
-   it stops if that topic's notes plan is stale, pending, or missing either language file
-7. `notes-and-interview-prep` — reconcile the completed notes and Q&A in both directions
-8. After all topics have that level, run `coverage-audit`, then `roadmap-review`
+6. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated, unrefined level
+   Q&A from current coverage + market evidence; the plan must be current, but junior entries may still
+   be pending
+7. As Victor learns the supporting notes, refine questions in session; only his explicit
+   `[refined]` transition freezes a bilingual question block
+8. After every required topic bank for the level is current, run `interview-prep-route` to build the
+   globally weighted CORE order
+9. `interview-prep-block-open` asks one refined CORE question at a time; `study-block-close` writes
+   `[studied]` only after a final PASS
+10. After all topics have that level, run `coverage-audit`, then `roadmap-review`
 
 The unit changes at each stage: coverage and planning process one **topic + level**; `notes-audit`
-processes one **planned file pair**; `interview-prep-audit` processes the completed **topic + level**
-Q&A (deep work remains one section per agent). Never launch interview prep merely because one note
-finished—the complete selected-level notes plan is its prerequisite.
+processes one **planned file pair**; `interview-prep-audit` processes one **topic + level** Q&A bank
+(deep work remains one section per agent); `interview-prep-route` processes the complete selected-level
+bank inventory. Authoring, refinement and study are deliberately separate states.
 
 **The SQL track (the daily 12:30 block)**
 1. `coverage-prompt` (`TOPIC = sql`) → `coverage-verify` → `coverage-prompt` again to close the gaps —
@@ -492,11 +501,11 @@ Per-target prompts (one topic / file / project / type at a time) also accept **`
 target field, so you don't have to run them folder by folder. Set the field to `all` and the prompt
 processes every target in order, one commit per target. Full rules: `notes/prompts/_internal/_batch-mode.md`.
 
-- **Supports `all`:** `interview-prep-audit`,
-  `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-audit`, `review-audit`,
+- **Supports `all`:** `interview-prep-audit` (`FILE = all`); `readme-audit`, `review-audit`,
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**), `code-review` (`TYPE = all`).
 - **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`,
+  `interview-prep-route`,
   `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run).
 - **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-check`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.

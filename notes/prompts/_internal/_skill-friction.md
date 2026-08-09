@@ -1,6 +1,6 @@
 # Skill friction
 
-Durable evidence for an **observable failed step** in one of the sixteen in-session skills. The source
+Durable evidence for an **observable failed step** in one of the seventeen in-session skills. The source
 contract is `_session-rules.md` → "When a skill cannot finish — durable friction"; this file is only its
 event sink and must not restate or widen that trigger.
 

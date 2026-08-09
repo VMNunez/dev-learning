@@ -89,17 +89,18 @@ workflow to the first project that established it rather than to code inside tha
 
 Share of the accepted study route Victor has actively studied. This is independent from authoring:
 a notes file can exist without having been studied, and a Q&A bank can be authored while its questions
-remain unpractised. `study-block-close` recounts these cells from notes-plan `Studied:` dates and Q&A
-`[x]` markers at the end of the 13:30 block.
+remain unrefined or unpractised. `study-block-close` recounts these cells from notes-plan `Studied:`
+dates, the current CORE route, and exact bilingual `[refined] [studied]` question markers.
 
 | Track | Junior | Middle | Senior |
 |---|---|---|---|
 | Notes studied | — | — | — |
-| Interview questions studied | — | — | — |
+| Interview CORE studied | — | — | — |
+| Interview bank studied | — | — | — |
 
-`—` means the level has no complete, current denominator yet: at least one required notes plan or Q&A
-bank is missing, stale, or has not passed bilingual parity. It never means `0%`; once the route is
-current, an honest zero is printed as `0/N (0%)`.
+`—` means the level has no complete, current denominator yet: at least one required notes plan, Q&A
+bank or CORE route is missing, stale, or has not passed bilingual ID/state parity. It never means `0%`;
+once the relevant denominator is current, an honest zero is printed as `0/N (0%)`.
 
 ---
 

@@ -11,7 +11,7 @@ Configuration from the user: $ARGUMENTS
 
 Rules:
 - The prompt's own config block and instructions are authoritative — execute them exactly
-  (notes-plan completion gate → market analysis → adversarial gap-hunt → per-section author →
-  per-section reviewer → bilingual selected-level commit).
+  (coverage-bounded level gate → market analysis → adversarial gap-hunt → per-section author →
+  per-section reviewer → stable IDs and bilingual selected-level commit).
 - If the configuration is empty or incomplete, ask for the missing config-block values before launching any subagent.
 - If DRY_RUN was not given, default it to `true`.

@@ -4,7 +4,8 @@ description: >
   Close the daily 13:30 notes/interview-prep block whenever Victor ends it ("cierro el bloque de
   estudio", "hasta aquí las notas", "terminé estas preguntas", "done with interview prep"). Record
   only what the session proves he actively studied: date the completed/refined notes-plan entries,
-  mirror [x] onto the exact interview questions worked, and recount PROGRESS.md Study progress.
+  mirror `[studied]` onto exact refined interview questions that earned a final PASS, and recount
+  CORE plus full-bank progress in PROGRESS.md.
   Authored is not studied, so never infer marks from files merely existing. Ask nothing and block on
   nothing: an ineligible target is reported and left unchanged.
 ---
@@ -43,16 +44,18 @@ For each note actually studied:
 
 ## 3 — Mark interview questions studied
 
-For every exact question Victor worked:
+For every exact question whose final verdict in this block was `PASS`:
 
 1. Resolve the selected level's English/Spanish topic pair.
-2. Require both files, current coverage fingerprints in both according to
-   `_interview-prep-standard.md` (Angular requires both Angular and Angular Material), and structural
-   parity for the exact question.
-3. Append ` [x]` to the bold question line in both languages. Preserve priority stars and answer
-   prose byte-for-byte. An already marked question is a no-op.
-4. A missing/stale fingerprint, missing counterpart, or ambiguous question identity is reported and
-   left unchanged. Never mark neighbouring questions by association.
+2. Resolve it by stable ID and require both files, current coverage fingerprints in both according to
+   `_interview-prep-standard.md` (Angular requires both Angular and Angular Material), and exact
+   bilingual parity for the complete question block.
+3. Require `[refined]` in both languages. A `BORDERLINE`, `FAIL`, merely read answer, or unrefined
+   question is not study completion. Dictated and typed answers are equivalent evidence.
+4. Append ` [studied]` after `[refined]` on the bold question line in both languages. Preserve every
+   other byte of the frozen blocks. An already studied question is a no-op.
+5. A missing/stale fingerprint, missing counterpart, duplicate ID, malformed lifecycle, or ambiguous
+   PASS is reported and left unchanged. Never mark neighbouring questions by association.
 
 ## 4 — Recount `PROGRESS.md` Study progress
 
@@ -62,17 +65,19 @@ Recount from primary sources after the marks:
   all numbered entries across the registered topics' `notes-plan-{LEVEL}.md` files. Print `—` when
   any required plan is missing, `Plan status` is not `current`, or its coverage fingerprint is
   stale; never print a plausible percentage over an incomplete route.
-- **Interview questions studied, per level:** denominator = all unique English master question
-  identities; numerator = identities whose English line or structurally paired Spanish line carries
-  `[x]`. Mirror a one-sided legacy marker before writing the count. A countable question is exactly the
-  standard's format: bold text ending in `?**`, one priority marker, optional `[x]` — never any other
-  bold line. Print `—` until every required topic
-  bank exists, both languages have current fingerprints and parity passes. Angular Material shares
-  Angular's bank; every other registered topic owns its own topic file.
+- **Interview CORE studied, per level:** denominator = unique IDs in the current
+  `notes/interview-prep/routes/{LEVEL}.md`; numerator = those IDs carrying `[refined] [studied]` in the
+  exact bilingual bank pair. Print `—` when the route is missing/stale, its inventory fingerprint
+  differs, an ID does not resolve exactly once, or any required bank fails fingerprint/parity.
+- **Interview bank studied, per level:** denominator = all unique English master question IDs across
+  every required current bank; numerator = IDs carrying `[refined] [studied]` in both languages. Print
+  `—` until every required topic bank exists, has current coverage fingerprints, valid IDs/lifecycle
+  and exact bilingual parity. Angular Material shares Angular's bank; every other registered topic owns
+  its own topic file.
 - Cell format when valid: `X/Y (P%)`, whole-number percentage. A level with no admitted route is
   `—`.
 
-Rewrite only the two rows in `## Study progress`. SQL and simulations stay under
+Rewrite only the three rows in `## Study progress`. SQL and simulations stay under
 `## Practice completed`; coverage evidence stays under `## Coverage demonstrated`.
 
 ## 5 — Commit atomically
@@ -88,5 +93,5 @@ Commit message:
 
 ## 6 — Report
 
-Report notes marked, questions marked, ineligible targets, the two per-level counts, and the commit.
+Report notes marked, question IDs marked, ineligible targets, the three per-level counts, and the commit.
 The ritual asks zero questions and leaves every unresolved target open.

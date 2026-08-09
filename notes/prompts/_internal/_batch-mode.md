@@ -12,7 +12,7 @@ the same way. Each prompt links here and lists its own ordered targets under a "
 In the configuration block, set the target field to `all` instead of a single value. The exact field
 name depends on the prompt (it is named in each prompt's "Batch targets" note):
 
-- coverage / notes / notes+interview-prep → `TOPIC = all`
+- coverage / notes → `TOPIC = all`
 - interview-prep audit → `FILE = all`
 - readme-audit / review-audit / portfolio-audit → `PROJECT_PATH = all`
 - plan-audit (review mode only) → `PROJECT = all` (**review mode only** — new mode plans a single next project, so it stays one at a time)

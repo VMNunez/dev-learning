@@ -146,7 +146,7 @@ $pipelinePromptPaths = @(
     'knowledge\coverage\coverage-prompt.md',
     'knowledge\coverage\coverage-verify-prompt.md',
     'knowledge\interview-prep\interview-prep-audit.md',
-    'knowledge\interview-prep\notes-and-interview-prep-prompt.md',
+    'knowledge\interview-prep\interview-prep-route-prompt.md',
     'knowledge\notes\notes-audit.md',
     'knowledge\notes\notes-plan-prompt.md',
     'practice\sql\sql-plan-audit.md',
@@ -211,6 +211,7 @@ $referencePathPattern = '(?<![A-Za-z0-9_./-])(notes|practice|projects|personal|k
 $declaredOutputPatterns = @(
     '^notes/cv/cv-bullets\.md$'                       # portfolio-audit
     '^notes/interview-prep/(hr-screen|SESSION-LOG)\.md$'  # hr-screen, simulator
+    '^notes/interview-prep/routes/(junior|middle|senior)\.md$' # interview-prep-route
     # Both bounded to the real filename shape: an unbounded `.+` swallowed a typo or a rename in the
     # very file names the SQL track resolves "the current exercise file" by.
     '^practice/sql/(junior|middle|senior)/([0-9]{2}|R[1-9])-[a-z0-9-]+\.sql$'  # sql-exercises

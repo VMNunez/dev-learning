@@ -72,6 +72,8 @@ file worth studying:
   Decision-based question present (the floor).
 - **Priority markers** — every question has one; the proportion check holds (not more than half a
   section is ⭐⭐⭐); each section runs ⭐⭐⭐ → ⭐⭐ → ⭐.
+- **Stable identity** — every question has one valid selected-level topic ID, identical in both
+  languages and not reused anywhere in the bank.
 - **Format** — blank line between question and answer; the level-appropriate tip on every Conceptual question; Red flag
   on Decision-based/Pressure where warranted.
 - **Real code where warranted** — every question an interviewer would pose with code (Pressure
@@ -102,14 +104,12 @@ scope, including any questions you just added.
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in both `{FILE}` files — you are the last quality pass, not an
-advisor. But your freedom to rewrite is **scoped by the studied marker**: any question carrying `[x]`
-at the end of its bold line (in either file) is content Victor has already studied — the standard's
-"studied content is final" rule binds you there: apply only the always-allowed structural fixes
-(markers, ordering, format, missing level-appropriate tip / Red flag, mirroring the `[x]` itself) and **report**
-anything below bar as a weak answer for Victor to TODO. Every question **without** `[x]` is fair game:
-rewording an unrealistic question, tightening an answer into Victor's voice, and reclassifying a type
-are all your job on unmarked content. Never add or remove an `[x]` yourself (mirroring an existing one
-between `en/` and `es/` is the only exception). Preserve every question that is already at bar; only
+advisor. But your freedom to rewrite is **scoped by the lifecycle**: any question carrying `[refined]`
+in either file is frozen byte-for-byte, whether or not it also carries `[studied]`. Mirror a missing
+state marker only; otherwise **report** anything below bar and do not edit that block. Every unrefined
+question is fair game: rewording an unrealistic question, tightening an answer into Victor's voice,
+assigning its stable ID and reclassifying a type are all your job. Never assign `[refined]` or
+`[studied]`; only Victor and the study closing ritual own those transitions. Preserve every question that is already at bar; only
 change what misses it. If the topic is genuinely already at bar, change nothing and record it as PASS.
 
 ## Finish
