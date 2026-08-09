@@ -1,6 +1,6 @@
 ---
 description: Route a planned simulation review, correction, or hint through the cold simulation-grade skill
-argument-hint: LEVEL=junior STEP=N SIMULATION_FILE=... [MODE=review|correction|hint]
+argument-hint: LEVEL=junior|middle|senior STEP=N SIMULATION_FILE=... [MODE=review|correction|hint] [TIME_USED=minutes] [SELF_ASSESSMENT=Solid|Good|Weak|Failed]
 ---
 
 Do not execute `notes/prompts/practice/simulations/simulation-review-prompt.md` in this conversation.
@@ -11,6 +11,6 @@ the only entry point and dispatches one cold subagent to read
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- Review mode requires the solution plus exact TIME_USED and SELF_ASSESSMENT; hint mode requires the partial solution only.
+- `MODE` defaults to `review`; first review requires the solution plus exact `TIME_USED` and `SELF_ASSESSMENT`, while hint mode requires the partial solution only.
 - Never grade locally or bypass the skill if dispatch fails.
 - Correction mode never rewrites the original timed verdict or time.
