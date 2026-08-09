@@ -113,12 +113,10 @@ English-only note as `keep`, `move <current level> -> <correct level>`, `renumbe
 
 ## Coverage fingerprint
 
-Calculate the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
-trailing marker stripped, project (` ✅ NN-slug — {evidence}`) and drill (` ✅ sql:{file-slug}`) alike,
-using the canonical command in "Evidence markers" in `_coverage-standard.md` rather than a hand-written
-pattern: its two expressions run in a load-bearing order. Markers record where a concept was
-demonstrated or drilled, not what the scope is, so a
-closed step must never look like a stale plan.
+Calculate the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** using the canonical command in
+"Evidence markers" in `_coverage-standard.md`, which alone defines the byte normalisation and marker
+stripping. Never reproduce or approximate that definition locally. Markers record where a concept was
+demonstrated or drilled, not what the scope is, so a closed step must never look like a stale plan.
 
 The plan stores it as:
 

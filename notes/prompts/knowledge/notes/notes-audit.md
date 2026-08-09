@@ -55,10 +55,9 @@ Before dispatching any role:
    one line and leave it alone. Never apply it inside this run.
 3. Require `NOTE` to be exactly two digits.
 4. Require exactly one `## {NOTE} — ...` entry in `PLAN`.
-5. Calculate SHA-256 over `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every trailing
-   marker stripped, project (` ✅ NN-slug — {evidence}`) and drill (` ✅ sql:{file-slug}`) alike, using the
-   canonical command in "Evidence markers" in
-   `_coverage-standard.md`. Stop with `run notes-plan-prompt` when it differs from `Coverage SHA-256` in
+5. Calculate SHA-256 over `COVERAGE`'s **scope bytes** using the canonical command in "Evidence markers"
+   in `_coverage-standard.md`, which alone defines the byte normalisation and marker stripping. Never
+   reproduce or approximate that definition locally. Stop with `run notes-plan-prompt` when it differs from `Coverage SHA-256` in
    `PLAN`, and say in the stop message that markers were stripped first.
 6. Require `Plan status: current`. `coverage-prompt` sets `stale` on a plan whose coverage moved under
    it, so this is a real gate, not a formality — a `stale` header stops the run with

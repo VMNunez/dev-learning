@@ -30,9 +30,10 @@ concepts, and a pedagogical coverage bullet may legitimately produce no direct i
 Every question must be level-appropriate and either map to current coverage or be reported as a
 coverage gap before it is admitted. Questions from different levels never share a file.
 
-Every Q&A file stores the exact lowercase SHA-256 digest of its source coverage file's **scope bytes** —
-its exact UTF-8 bytes with every trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, per "Evidence markers" in
-`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`:
+Every Q&A file stores the exact lowercase SHA-256 digest of its source coverage file's **scope bytes**,
+computed only with "Evidence markers" in
+`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`. That canonical contract alone defines
+the byte normalisation and marker stripping; do not reproduce or approximate it here:
 
 ```text
 Coverage SHA-256: <64 lowercase hexadecimal characters>

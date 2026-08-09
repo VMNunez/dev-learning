@@ -259,16 +259,19 @@ this*, and it is written only by `sql-step-close`, only from exercises a cold gr
 
 ### Markers are excluded from the coverage digest
 
-Four downstream prompts — `notes-plan`, `notes-audit`, `coverage-verify`, `interview-prep-audit` — store a
-`Coverage SHA-256` over a coverage file to certify *which scope their output was mapped against*. Evidence
-markers are not scope. If they entered the digest, every closed step would change the bytes and forge a
-"the plan owes a remap" signal for work that has not moved an inch.
+Downstream plans, verification artifacts, Q&A banks, project briefs, and practice routes store a
+`Coverage SHA-256` over a coverage file to certify *which scope their output was mapped against*; other
+consumers compare that fingerprint as a freshness gate. Evidence markers are not scope. If they entered
+the digest, every closed step would change the bytes and forge a "the plan owes a remap" signal for work
+that has not moved an inch.
 
-So the digest is computed over the file's **scope bytes**: the exact UTF-8 bytes of the file with every
-trailing evidence marker removed — for each line, drop a trailing ` ✅ NN-slug — {evidence}` (the space, the mark, the
-space, the project folder name) **together with its ` — {evidence}` clause when one is present**, and
-nothing else. No other normalisation: no trimming, case folding, or reordering. Two files that differ
-only in their markers therefore have the same digest, which is exactly the intent.
+So the digest is computed over the file's **scope bytes**: first remove every carriage-return byte
+(`CR`, `\r`) so LF, CRLF, and mixed-line-ending checkouts represent the same content; then remove every
+trailing evidence marker — for each line, drop a trailing ` ✅ NN-slug — {evidence}` (the space, the mark,
+the space, the project folder name) **together with its ` — {evidence}` clause when one is present**.
+That CR normalisation is the only byte normalisation: no trimming, case folding, reordering, or other
+rewriting. Two files that differ only in line-ending style or evidence markers therefore have the same
+digest, which is exactly the intent.
 
 The evidence clause is stripped for the same reason the marker is: it records what a *project* built, so
 it changes whenever a step or backlog task closes, while the curriculum's scope has not moved. Leaving it
@@ -280,8 +283,12 @@ One canonical command, so every prompt produces the same digest for the same sco
 invalidated by the format change:
 
 ```bash
-sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+( — .*)?$//; s/ ✅ sql:[0-9]{2}-[a-z0-9-]+$//' notes/{topic}/coverage/{LEVEL}.md | sha256sum
+tr -d '\r' < notes/{topic}/coverage/{LEVEL}.md | sed -E 's/ ✅ [0-9]{2}-[a-z0-9-]+( — .*)?$//; s/ ✅ sql:[0-9]{2}-[a-z0-9-]+$//' | sha256sum
 ```
+
+`tr -d '\r'` is explicit and load-bearing: without it, `sed` may remove `CR` implicitly in a text-mode
+environment such as Git Bash while preserving it on Linux, WSL, macOS, or a container. The same checkout
+would then produce different fingerprints depending on which `sed` happened to run.
 
 **The two expressions run in that order and the order is load-bearing.** The project marker is stripped
 first because its evidence clause is free text that would otherwise swallow anything to its left; only

@@ -97,11 +97,11 @@ reported for `sql-plan-audit`, never fixed.
 
 ## Coverage fingerprint
 
-Calculate the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with
-every trailing ` ✅ NN-slug — {evidence}` evidence marker stripped, using the canonical command in
-"Evidence markers" in `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`. Markers record
-where a concept was demonstrated, not what the scope is, so a closed project step must never make a
-current plan look stale.
+Calculate the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** using the canonical command in
+"Evidence markers" in `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, which alone
+defines the byte normalisation and marker stripping. Never reproduce or approximate that definition
+locally. Markers record where a concept was demonstrated, not what the scope is, so a closed project
+step must never make a current plan look stale.
 
 `PLAN` stores it as:
 

@@ -355,10 +355,9 @@ foreach ($level in $coverageLevels) {
 function Get-CoverageDigest {
     param([string]$Path)
     # Byte-faithful reimplementation of the canonical command in
-    # `_coverage-standard.md`. That command is `sed | sha256sum` under Git Bash,
-    # whose sed does text-mode I/O and drops every CR before the expressions run,
-    # so the stored digests are over CR-free bytes. Reproduce it, do not "fix" it:
-    # this must agree with what every prompt computes, not with what is tidier.
+    # `_coverage-standard.md`: `tr -d '\r'` normalises LF, CRLF, and mixed-line-ending
+    # checkouts before sed strips the two marker forms. The CR removal is explicit in
+    # both implementations so the digest does not depend on sed's text-mode behaviour.
     $latin1 = [System.Text.Encoding]::GetEncoding(28591)
     $text = $latin1.GetString([System.IO.File]::ReadAllBytes($Path)) -replace "`r", ''
     $mark = [regex]::Escape($latin1.GetString([System.Text.Encoding]::UTF8.GetBytes([char]0x2705)))

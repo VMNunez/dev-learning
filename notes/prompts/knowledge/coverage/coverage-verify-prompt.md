@@ -70,10 +70,9 @@ must not supply proposed gaps or raise the selected-level floor.
    section; ignore only that expected heading-depth difference. Any other heading, bullet, or ordering
    difference means a mirror is stale, `coverage-prompt` has not finished, and there is nothing
    trustworthy to verify.
-4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** — its exact UTF-8 bytes with every
-   trailing marker stripped, project and drill alike, using the canonical command in "Evidence markers" in
-   `_coverage-standard.md` rather than a hand-written pattern; its two expressions run in a load-bearing
-   order. This is what the findings file stamps, so `coverage-prompt` can tell
+4. Compute the lowercase SHA-256 digest of `COVERAGE`'s **scope bytes** using the canonical command in
+   "Evidence markers" in `_coverage-standard.md`, which alone defines the byte normalisation and marker
+   stripping. Never reproduce or approximate that definition locally. This is what the findings file stamps, so `coverage-prompt` can tell
    whether its verify-gap fast path is judging today's scope. Fingerprint only `COVERAGE`; earlier
    levels are not fingerprinted.
 5. For middle, state that the junior gate must be consolidated; for senior, junior and middle. The gate
