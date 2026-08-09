@@ -16,7 +16,7 @@ in halves:
 | File | Owns |
 |---|---|
 | `notes/prompts/_internal/_session-rules.md` | the session contract: the rituals, the commit boundary, the non-negotiables |
-| `notes/prompts/README.md` | the prompt catalogue: what each of the 29 prompts reads and generates, batch mode, run order |
+| `notes/prompts/README.md` | the prompt catalogue: what each of the 30 prompts reads and generates, batch mode, run order |
 | each `SKILL.md` (`.claude/skills/` + `.agents/skills/`) | the exact steps of one ritual |
 
 If this map disagrees with any of them, they win and this file is wrong.
@@ -75,10 +75,10 @@ curriculum.
 (`notes/`, `notes/prompts/`, skills and commands, **the session-rule files themselves**, `PROGRESS.md`,
 any `PLANNING.md` / `README.md` / `PROJECT-BACKLOG.md`, `projects/briefs/`, `practice/sql/MISTAKES.md`
 and the SQL plan files, and `ROADMAP.md` — that last one by `roadmap-review` alone and only on a clean
-run). **Anything Victor produces himself** — project code, the `.sql` exercises, and everything *else*
-under `practice/` (simulations, leetcode) — is never auto-committed; the agent only prints the commands.
-The word doing the work is *himself*: the SQL plan files and `MISTAKES.md` also live under `practice/`
-and are the system's, not his. Full rule in `_session-rules.md`.
+run). **Anything Victor produces himself** — project code, SQL answers, timed-simulation solutions, and
+leetcode solutions — is never auto-committed; the agent only prints the commands. The SQL and simulation
+plans, mistake logs, tracker, and generated test specs also live under `practice/`, but are the system's,
+not his. Full rule in `_session-rules.md`.
 
 ---
 
@@ -117,6 +117,12 @@ and are the system's, not his. Full rule in `_session-rules.md`.
                                         MISTAKES.md ◄── sql-block-close        /evidence-intake
                                              │                                     (loop closes)
                                         R1–R5 revision points
+
+  C2. SIMULATIONS  coverage + PROGRESS ─► /simulation-plan ─► route ─► /simulation-generator
+                                                                  │              │
+                                                                  └─► open ─► timed attempt ─► close
+                                                                                              │
+                                                    MISTAKES ◄─ correction ◄─ simulation-grade
 ```
 
 `/system-check` sits outside Chains A–D. It consumes the machinery and both maps as one explicit global
@@ -263,9 +269,32 @@ gates, revision cadence, the §8c technique table). `practice/sql/{LEVEL}/PLANNI
    names any revision point now due, and states which techniques a simulation may now ask for (§8c).
 6. **Revision points R1–R5** take their focus from `MISTAKES.md` — `## Open` rows first, highest count
    first; when a span has no open rows, `## Fricción` for that span.
-7. **`/simulation-generator TYPE = sql`** may only use techniques from **closed** steps.
+7. A later **`/simulation-plan`** may admit SQL only from the techniques §8c says are unlocked; its
+   route-driven `/simulation-generator` independently re-checks that fence.
 8. **After the level's last step:** gate **G3** `/progress-update`, then **G4** `/roadmap-review`, then
    `/sql-plan middle`.
+
+### The timed-simulation loop (coverage + evidence → plan → attempt → correction)
+
+This is a separate practice route, not an extension of the SQL exercise counters:
+
+1. **`/progress-update`** must have an empty drift report; readiness cannot be planned from a stale
+   professional-level/evidence matrix.
+2. **`/simulation-plan {LEVEL}`** reads selected-level coverage, PROGRESS/project evidence, existing
+   specs/TRACKER/MISTAKES, and SQL's unlocked-technique fence. It creates the level-neutral doctrine when
+   missing and the fingerprinted route for that level. Coverage is the ceiling; evidence decides ready.
+3. **`simulation-block-open`** reads the route pointer and gives one next moment. A missing planned spec
+   hands off to `/simulation-generator`; a ready spec hands off to the timed attempt; an open correction
+   always wins over a new test.
+4. **`/simulation-generator`** materialises exactly one planned step. It cannot accept free-form focus,
+   difficulty, time, or track.
+5. **`simulation-block-close`** records exact time, stated self-assessment, Assisted state, and friction
+   already spoken. It never grades.
+6. **`simulation-grade`** dispatches `/simulation-review` cold. Pass closes; Borderline/Fail opens
+   mandatory correction rows in simulation MISTAKES. Correction review never rewrites the timed verdict.
+   A corrected Fail still needs the later reinforcement test to Pass.
+7. **Level close:** every route step closed, no open correction, and at least one Pass in every admitted
+   track; then `/progress-update` audits the timed-simulation roll-up before the next level is planned.
 
 ---
 
@@ -311,18 +340,22 @@ files: the system that describes and checks the system, which has writers like e
 | `{project}/PROJECT-BACKLOG.md` | `/review-audit` (tasks) · `backlog-task-open` (`⏸ Deferred`) · `backlog-task-close` (`## Closed`) | `/portfolio-audit` (open High/Medium block the verdict), every session start |
 | `notes/cv/cv-bullets.md` | `/portfolio-audit` | `/cv` |
 | `dev/portfolio/VMNunez/README.md` (**separate repo**, never committed from here) | `/profile-readme` (`sync` / `optimize`) · `/portfolio-audit` on a ✅ Ready verdict — two writers, two triggers | recruiters; the profile repo's own adapter carries the gap list |
-| `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) · `/sql-plan` did the one-time split that created it | every SQL prompt and skill · `/simulation-generator TYPE = sql` (§8/§8c closed-step fence) |
+| `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) · `/sql-plan` did the one-time split that created it | every SQL prompt and skill · `/simulation-plan` and `/simulation-generator` (§8/§8c closed-step fence) |
 | `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` | any coverage run · `coverage-bullet-add` (a concept another topic owns) | `/coverage` (its own heading, Step 1) · `/coverage-audit` (all headings) |
 | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/sql-plan` (creates) · `/sql-plan-audit` (extends) · `sql-grade`'s subagent (counts/status) | `/sql-exercises`, `sql-block-open` |
 | `practice/sql/MISTAKES.md` | `sql-grade`'s subagent (`## Open`) · `sql-block-close` (`## Fricción`) | the R1–R5 revision points |
 | `practice/sql/{LEVEL}/NN-*.sql` | **Victor** (the grader only appends `-- ✅ Corregido`) | `sql-grade` |
-| `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `/simulation-review` (status) | `/progress-update`, `/simulation-review` |
+| `practice/simulations/PLANNING.md` (doctrine) | `/simulation-plan` (creates once) · `/simulation-generator`, `/simulation-review`, `simulation-block-close` (§0/state only) | every simulation prompt and skill |
+| `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/simulation-plan` (creates/reconciles) · `/simulation-generator` (generation/state) · `/simulation-review` and `simulation-grade` (verdict/correction/history) · `simulation-block-close` (attempt handoff) | every simulation prompt and skill · `/progress-update` |
+| `practice/simulations/{type}/NN-*.md` (spec) | `/simulation-generator` (whole spec) · `simulation-block-close` and `/simulation-review` (attempt header only) | Victor · `simulation-block-open` · `simulation-grade` / `/simulation-review` |
+| `practice/simulations/TRACKER.md` | `/simulation-generator` (rows) · `simulation-block-close` (self-assessment/attempt) · `/simulation-review` (status/history) | `/simulation-plan`, `/progress-update`, every simulation skill |
+| `practice/simulations/MISTAKES.md` | `/simulation-review` (graded gaps/corrections) · `simulation-block-close` (friction) | `/simulation-plan`, `simulation-block-open`, `simulation-grade`, revision points |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, `/system-check`, and prompts that gate on it |
-| `notes/prompts/_internal/_skill-friction.md` | any of the thirteen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
+| `notes/prompts/_internal/_skill-friction.md` | any of the sixteen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
-| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 13 of the 29 prompts also name it directly. It **outranks this map** |
+| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 14 of the 30 prompts also name it directly. It **outranks this map** |
 | `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` includes its open/accepted rows in the operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
 | `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | run by hand and by `/system-check` before and after its semantic audit — see §12. The only automated check in the system |
@@ -356,7 +389,7 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 
 ## 9 — The skills, one row each
 
-All thirteen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
+All sixteen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
 | Skill | Fires when | What it writes | Hands off to |
@@ -373,6 +406,9 @@ identical file to the other in the same commit.**
 | `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
 | `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
 | `sql-block-close` | the block ends | `MISTAKES.md` `## Fricción` only | — |
+| `simulation-block-open` | a timed-simulation block starts | **nothing — read-only** | the one current route moment |
+| `simulation-grade` | a planned attempt/correction is ready | nothing directly; one cold subagent executes `/simulation-review` and its tracking/correction writes | correction loop or next route step |
+| `simulation-block-close` | the timer/block ends | attempt handoff in doctrine/route/spec/TRACKER · simulation `MISTAKES.md` friction already stated | `simulation-grade` |
 | `map-sync` | machinery changed **or** a prompt / `SKILL.md` / standard / other `_internal/` file was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
 
 Every row inherits `_session-rules.md` → "When a skill cannot finish — durable friction". The table's
@@ -421,6 +457,10 @@ The things a run leaves behind that are easy to miss.
 - **The recorded-debt sweep is explicit, not continuous.** `/system-check` reads tracker flags, open or
   accepted recommendations, project backlog priorities/deferred markers and due project/SQL gates into
   one owner-routed queue. It reports and prioritises them; it never clears another owner's debt.
+- **A timed verdict is immutable evidence.** Corrections close learning gaps but never turn a historical
+  Borderline/Fail/Assisted attempt into a Pass or change its recorded time. A Fail additionally opens a
+  later reinforcement step; otherwise correction would erase the very interview-condition signal the
+  track exists to measure.
 
 ---
 
@@ -434,6 +474,8 @@ The things a run leaves behind that are easy to miss.
 | `PROGRESS.md` looks wrong before a gate | `/progress-update`, then repair with the ritual its drift report names |
 | `ROADMAP.md` has dates, or a stale gap table | `/roadmap-review` |
 | the SQL route ran out of steps | `/sql-plan-audit` (extends), or `/sql-plan {next level}` |
+| simulations have no level route, the route is stale, or the current spec has free-form scope | `/simulation-plan {level}`; then `/simulation-generator` only for its current missing spec |
+| a timed simulation is Borderline/Fail or has open correction rows | fix only those rows, then say `corrige las correcciones`; `simulation-grade` runs the cold correction review |
 | a project is built but never reviewed | `/readme-audit` → `/review-audit` → `/portfolio-audit` |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |

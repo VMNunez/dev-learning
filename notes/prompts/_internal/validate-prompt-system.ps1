@@ -8,7 +8,7 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 
-$expectedRunnableCount = 29
+$expectedRunnableCount = 30
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -151,6 +151,7 @@ $pipelinePromptPaths = @(
     'knowledge\notes\notes-plan-prompt.md',
     'practice\sql\sql-plan-audit.md',
     'practice\sql\sql-plan-prompt.md',
+    'practice\simulations\simulation-plan-prompt.md',
     'projects\plan\plan-audit.md',
     'projects\plan\project-brief-prompt.md',
     'projects\portfolio\portfolio-audit.md',
@@ -161,8 +162,8 @@ $pipelinePromptPaths = @(
     'system\system-check-prompt.md'
 )
 
-if ($pipelinePromptPaths.Count -ne 17) {
-    Add-ValidationError "Expected 17 pipeline prompts; found $($pipelinePromptPaths.Count)."
+if ($pipelinePromptPaths.Count -ne 18) {
+    Add-ValidationError "Expected 18 pipeline prompts; found $($pipelinePromptPaths.Count)."
 }
 
 foreach ($prompt in $runnable) {
@@ -214,6 +215,8 @@ $declaredOutputPatterns = @(
     # very file names the SQL track resolves "the current exercise file" by.
     '^practice/sql/(junior|middle|senior)/([0-9]{2}|R[1-9])-[a-z0-9-]+\.sql$'  # sql-exercises
     '^practice/simulations/[a-z-]+/[0-9]{2}-[a-z0-9-]+\.md$'                   # simulation-generator
+    '^practice/simulations/PLANNING\.md$'                                      # simulation-plan first run
+    '^practice/simulations/(junior|middle|senior)/PLANNING-(junior|middle|senior)\.md$' # level route
 )
 # Deliberately outside the repository; _external-path-preflight.md governs these.
 $externalPathPatterns = @('^personal/')
@@ -225,6 +228,7 @@ $historicalReferences = @{
     '_internal\_recommendation-ledger.md'                        = @('notes/coverage.md', 'practice/sql/01-basics.sql')
     'strategy\tracking\progress-update-prompt.md'                = @('practice/sql/01-basics.sql', 'practice/sql/02-joins/exercises.sql')
     'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
+    'strategy\tracking\_internal\_last-run-report.md'            = @('practice/sql/02-joins.sql')
 }
 
 $referenceScan = @()
@@ -503,7 +507,7 @@ if (-not $skillSection.Success) {
 # The slash command is the launcher's own filename, never the prompt name minus its
 # suffix. Guessing it is wrong for `code-review-prompt`, which launches deliberately as
 # `/code-review-practice` because the host agent's own diff review already owns
-# `/code-review` - true of both adapters, see README.md "The 29 runnable prompts".
+# `/code-review` - true of both adapters, see README.md "The 30 runnable prompts".
 $launcherCommands = @{}
 foreach ($claudeLauncher in $claudeLaunchers) {
     $launcherTarget = [regex]::Match(

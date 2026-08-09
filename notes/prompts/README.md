@@ -12,7 +12,7 @@ projects are completed.
 This file is the map: what each prompt does, what it reads and generates, and how the same workflows run in Claude Code and Codex.
 
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README covers the
-> 29 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
+> 30 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
 > `study-block-close`, `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts and
 > observable skill failures a run leaves behind, and the improvement loop itself — why machinery is
 > reopened from evidence (§12).
@@ -38,7 +38,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 29 files and must reference the same 29 canonical entry points.
+Both launcher catalogs contain exactly 30 files and must reference the same 30 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
 checks five invariants nothing else can see: that `.claude/skills/` and `.agents/skills/` hold the
@@ -79,12 +79,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 29 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 30 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **29 files, listed below.**
+  conversation, or just use its slash command. **30 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -94,10 +94,10 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 29 runnable prompts — each with its own slash command
+### The 30 runnable prompts — each with its own slash command
 
 **The command is the prompt's filename minus the `-prompt` suffix** — `coverage-prompt` → `/coverage`,
-`progress-update-prompt` → `/progress-update`. Twenty-one of the 29 work that way; seven files carry no
+`progress-update-prompt` → `/progress-update`. Twenty-two of the 30 work that way; seven files carry no
 `-prompt` suffix at all — the `*-audit.md` orchestrators — so their command *is* the filename
 (`/review-audit`). That is a *filename* glob and not a command one: `/coverage-audit` also ends in
 `-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other nineteen. **One
@@ -114,20 +114,20 @@ own catalog check already fails on.
 |---|---|
 | Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `notes-and-interview-prep-prompt` |
 | Projects | `project-brief-prompt`, `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
-| Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
+| Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-plan-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 | System | `system-check-prompt` |
 
-Two flavors among these 29, both launched the same way (paste config into a new chat):
+Two flavors among these 30, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `project-brief-prompt`,
   `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `notes-and-interview-prep-prompt`, plus `coverage-prompt`,
-  `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, and
+  `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, `simulation-plan-prompt`, and
   `system-check-prompt` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
-  finished result (and, where noted, a commit) with no further input from you. **Seventeen prompts**, and
-  the set is defined by which self-report they run: these seventeen execute `_pipeline-self-report.md`.
+  finished result (and, where noted, a commit) with no further input from you. **Eighteen prompts**, and
+  the set is defined by which self-report they run: these eighteen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -152,6 +152,7 @@ declared output of every prompt.
 `_concept-extraction-standard.md`, `_roadmap-standard.md`, `_application-standard.md`,
 `_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
 `_sql-exercises-review.md`,
+`_simulation-plan-standard.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_skill-friction.md` (observable
 failed skill steps, consumed by the next prompt close-out),
 `system/_internal/_system-check-report.md` (the latest explicit whole-system audit: inventory coverage,
@@ -255,8 +256,10 @@ down a flat list of ten files:
 | `practice/sql/_internal/_sql-exercise-seeds.md` | *Internal.* Per-topic **structure and concrete exercise ideas** for `sql-exercises` Step 3 — the traps worth building a question around and each topic's Challenge. A run reads **only its own topic's block**. Scope still comes from `coverage-junior.md`, never from here. Not runnable. | — | — |
 | `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** the doctrine (`PLANNING.md`) and one level's route (`PLANNING-{LEVEL}.md`) against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), each fenced to the file its `Edits` column names, history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. It never writes a route from nothing (that is `sql-plan-prompt`) and never recomputes the fingerprint. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, both plan files, `notes/sql/coverage/{LEVEL}.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` |
 | `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. `reinforce` mode: extra `[Repaso]` practice over a file I name, counted against nothing and safe on a closed step. Config is exactly five keys — `MODE`, `TOPIC`, `LEVEL`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING-{LEVEL}.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (the step: topic, count, focus), `notes/sql/coverage/{LEVEL}.md`, `PROGRESS.md`, the exercise files `practice/sql/{LEVEL}/NN-name.sql` | **Mode-conditional — the close-out checks only its own mode's list.** `practice` mode: `practice/sql/{LEVEL}/NN-name.sql`. `review` mode: `practice/sql/MISTAKES.md`, the SQL table in `PROGRESS.md`, and `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — §1 counts, §3 statuses and the §2 `[x]` bullets, the progress fields the planner only preserves. Naming the other mode's file as "not applicable" is required; silently counting it as satisfied is not. |
-| `practice/simulations/simulation-generator-prompt.md` | Creates new level-labelled timed test specs (Angular / Spring Boot / SQL) in the existing format — the producer for the simulation bank. | `practice/simulations/{type}/` (existing specs), `practice/simulations/TRACKER.md`; in SQL mode, `practice/sql/PLANNING.md` §8/§8c | new `practice/simulations/{type}/NN-*.md`; level-labelled rows + counts in `practice/simulations/TRACKER.md` |
-| `practice/simulations/simulation-review-prompt.md` | Grades a finished timed simulation, gives a 3-score ideal solution, writes the per-level simulation roll-up, and adds questions only to the selected-level Q&A bank. `hint` mode guides mid-test. | the simulation spec, level-labelled tracker, selected-level Q&A, + my pasted code | tracker, spec header, `PROGRESS.md` timed simulations, selected-level interview-prep pair |
+| `practice/simulations/_internal/_simulation-plan-standard.md` | *Internal.* The doctrine/route split, evidence and readiness inputs, route schema, timed-verdict/correction semantics, and ten cross-file invariants. Not runnable. | — | — |
+| `practice/simulations/simulation-plan-prompt.md` | **Orchestrator.** Turns selected-level coverage plus demonstrated readiness into an ordered Angular / Spring Boot / SQL route. Coverage is the ceiling; project, progress and closed-SQL-step evidence decide what is ready. Preserves attempt history and uses one cold route reviewer. | `_simulation-plan-standard.md`, selected-level topic coverage, `_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, SQL doctrine/route, existing specs, TRACKER, MISTAKES | `practice/simulations/PLANNING.md` when missing; `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` |
+| `practice/simulations/simulation-generator-prompt.md` | Materialises the current route step; focus, difficulty, time, track, and path come only from the selected-level route. | simulation doctrine + selected route, standard, existing specs, TRACKER; SQL §8/§8c fence | planned `practice/simulations/{type}/NN-*.md`; TRACKER row/count; route generation/state; doctrine/route §0 |
+| `practice/simulations/simulation-review-prompt.md` | Canonical cold reviewer used directly or by `simulation-grade`. First review preserves the timed verdict and opens mandatory corrections; correction mode closes only recorded gaps; hint mode makes the attempt Assisted. | doctrine + selected route, spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A, submitted solution/correction | spec + TRACKER history, route + §0, MISTAKES, `PROGRESS.md` timed simulations, selected-level Q&A pair |
 | `practice/interview/code-review-prompt.md` | Generates a flawed snippet to critique, grades the review, and records gaps only in the selected-level Q&A bank. | snippet generated fresh; selected-level Q&A | selected-level interview-prep pair |
 | `practice/interview/simulator-prompt.md` | Runs a live mock **technical** interview from one selected-level Q&A bank, scores each answer, and tracks weak areas. | `interview-prep/{LEVEL}/{lang}/*.md`, `interview-prep/projects/*`, session log | session log |
 | `practice/interview/hr-screen-prompt.md` | Runs a live mock **HR** call (stage 2): motivation, career-change story, availability, salary, "why us". Non-technical. | profile + situation from `_shared-context.md`, `ROADMAP.md` | `interview-prep/hr-screen.md` (polished answers) **when the run produced any — if it did not, the close-out says so explicitly rather than passing on an empty list** |
@@ -335,15 +338,23 @@ Each generated file, with who writes it and who depends on it:
   plays, and its `Coverage SHA-256` is what says whether it still maps the whole checklist.*
 - **`practice/sql/PLANNING.md`** — the level-neutral **doctrine** (step loop, done-condition formats,
   closing ritual, revision mechanism, gates, invariants), written by `sql-plan-audit` → read by every
-  SQL prompt and skill and by `simulation-generator` in `TYPE = sql`, which takes its closed-step
-  fence and technique mapping from §8/§8c. One doctrine, three routes.
+  SQL prompt and skill and by `simulation-plan` / the route-driven `simulation-generator`, which take
+  their closed-step fence and technique mapping from §8/§8c. One doctrine, three routes.
 - **`practice/sql/MISTAKES.md`** — written by `sql-exercises` in `review` mode (one row per failed
   concept, with its `coverage-junior.md` section and how many times it has come back) → read by the revision
   points R1–R5 in `PLANNING.md` §8b, which take their focus from its open rows, highest count first.
+- **`practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `simulation-plan`, then advanced by
+  `simulation-generator`, `simulation-review`, `simulation-block-close`, and their skills → read by
+  every simulation prompt/skill. *Coverage says what is in scope; this route says what is ready and next.*
+- **`practice/simulations/PLANNING.md`** — the level-neutral timed-attempt doctrine and §0 pointer,
+  created once by `simulation-plan` and advanced by the simulation rituals. One doctrine, three routes.
 - **`practice/simulations/{type}/NN-*.md`** (the test specs) — written by `simulation-generator` (and the
-  original bank by hand) → read by `simulation-review` (and by me, to take the test).
-- **`practice/simulations/TRACKER.md`** — written by `simulation-generator` (new rows) and `simulation-review`
-  (status) → read by `progress-update` and by `simulation-review` itself (recurring-weakness check).
+  original bank by hand), with attempt headers updated by `simulation-block-close` / `simulation-review`
+  → read by Victor, `simulation-block-open`, and the cold reviewer.
+- **`practice/simulations/TRACKER.md`** — written by `simulation-generator`, `simulation-block-close`, and
+  `simulation-review` → read by `progress-update`, the plan, and the simulation rituals.
+- **`practice/simulations/MISTAKES.md`** — graded gaps from `simulation-review` plus friction-without-failure
+  from `simulation-block-close` → read by planning, opening, correction review, and revision points.
 - **`interview-prep/SESSION-LOG.md`** — written and read by `simulator` (tracks weak areas between
   sessions).
 - **`interview-prep/hr-screen.md`** — optionally written by `hr-screen` (polished stage-2 answers).
@@ -376,7 +387,12 @@ Practice (its own loop, fed by coverage):
                                        the doctrine)               └─► simulation-generator (sql)
                                                                           (only closed steps)
 
-  simulation-generator ─► simulations/{type}/ ─► simulation-review ─► TRACKER + topic Q&A ─► simulator
+  coverage + PROGRESS ─► simulation-plan ─► PLANNING-{LEVEL}.md ─► simulation-generator ─► spec
+                                                        │                              │
+                                                        └─► open ─► timed attempt ─► close ─► simulation-grade
+                                                                                               │
+                                                   MISTAKES ◄─ correction loop ◄─ simulation-review
+                                                                                               └─► TRACKER + PROGRESS + topic Q&A
 ```
 
 ---
@@ -436,9 +452,24 @@ finished—the complete selected-level notes plan is its prerequisite.
    `sql-exercises` (`MODE = review`) to grade. The step's topic, count and focus come from the route
 5. at each revision point R1–R5 (every 3 scored files): `sql-exercises` again, focused on the open
    rows of `MISTAKES.md`
-6. `simulation-generator` (`TYPE = sql`) — the first timed test is due once Step 5 closes; it refuses
-   to use techniques from steps you have not closed
+6. once the SQL simulation readiness gate opens, `simulation-plan` admits only techniques from closed
+   steps; its route-driven `simulation-generator` independently rechecks the same §8c fence
 7. after the last step: `progress-update`, then `roadmap-review` — then `sql-plan` for the next level
+
+**The timed-simulation track**
+1. `progress-update` — repair its drift first; readiness cannot be planned from a stale level matrix
+2. `simulation-plan` (`LEVEL = junior`) — maps selected-level coverage plus demonstrated project/SQL
+   evidence into `practice/simulations/junior/PLANNING-junior.md`
+3. `simulation-block-open` — names the one current step, spec, timer, conditions, and correction gate
+4. if the planned spec does not exist, `simulation-generator` materialises exactly that route step
+5. complete the test under timer conditions, then `simulation-block-close` records time,
+   self-assessment, attempt state, and friction already stated
+6. say `corrige la simulación` — `simulation-grade` dispatches the canonical reviewer cold. Pass closes
+   the step; Borderline/Fail opens correction rows without changing the timed verdict
+7. fix only those rows and say `corrige las correcciones`; a Fail additionally needs the route's later
+   reinforcement test to Pass before its learning step can close
+8. when every route step closes with no open correction and every admitted track has a Pass, run
+   `progress-update`, then plan the next level
 
 **Applying**
 1. `portfolio-audit` on each finished project (produces cv-bullets)
@@ -464,10 +495,9 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 - **Supports `all`:** `interview-prep-audit`,
   `notes-and-interview-prep` (`TOPIC`/`FILE = all`); `readme-audit`, `review-audit`,
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
-  `sql-exercises` (`TOPIC = all`, **practice mode only**),
-  `simulation-generator`, `code-review` (`TYPE = all`).
-- **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`, and
-  `project-brief` (one decision per run — `all` would mean choosing several next projects at once).
+  `sql-exercises` (`TOPIC = all`, **practice mode only**), `code-review` (`TYPE = all`).
+- **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`,
+  `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run).
 - **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-check`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`

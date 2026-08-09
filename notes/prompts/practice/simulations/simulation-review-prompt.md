@@ -1,312 +1,150 @@
 # Simulation Review Prompt
 
-> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+> **Runtime contract:** Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching any
+> role and use its active-platform mapping.
 
-Use in a **separate conversation**. Fill in the configuration block, paste the prompt into a new chat, then paste your solution code at the very end.
+This is the canonical cold reviewer for one planned timed simulation. It can be launched directly, but
+the daily-session entry point is `simulation-grade`, which resolves the route and dispatches this prompt
+without teaching context.
 
-Run this after you finish a timed simulation — no notes, no AI, timer stopped. You get the kind of feedback a real consultancy test reviewer would give.
+> **▶ Run first:** `simulation-plan-prompt` for this LEVEL, then complete/close the timed attempt.
 
-**Before running this prompt:** fill in your own `Self-assessment` column in TRACKER.md (✅ Solid / 🔧 Good / ⚠️ Weak / ❌ Failed). The prompt updates `Status` and `Date` — it does not touch `Self-assessment`.
-
-> **▶ Run first:** nothing — run it after finishing a simulation, with your solution pasted at the end.
-
----
-
-**How to use:**
-
-1. In the configuration block: delete all `SIMULATION_FILE` lines except the one you are reviewing
-2. Fill in `TIME_USED`, `MODE`, and `LEVEL`
-3. Paste the entire prompt into a new chat
-4. Paste your code below it — after the last line of the prompt
-
----
-
-````
-## Configuration — edit only this block
-
-SIMULATION_FILE = practice/simulations/angular/01-task-form.md
-SIMULATION_FILE = practice/simulations/angular/02-user-search.md
-SIMULATION_FILE = practice/simulations/angular/03-product-filter.md
-SIMULATION_FILE = practice/simulations/angular/04-login-form.md
-SIMULATION_FILE = practice/simulations/angular/05-expense-dashboard.md
-SIMULATION_FILE = practice/simulations/spring-boot/01-task-api.md
-SIMULATION_FILE = practice/simulations/spring-boot/02-product-api.md
-SIMULATION_FILE = practice/simulations/spring-boot/03-user-api.md
-SIMULATION_FILE = practice/simulations/spring-boot/04-order-api.md
-SIMULATION_FILE = practice/simulations/spring-boot/05-employee-api.md
-SIMULATION_FILE = practice/simulations/sql/01-bookstore.md
-SIMULATION_FILE = practice/simulations/sql/02-employees.md
-SIMULATION_FILE = practice/simulations/sql/03-ecommerce.md
-SIMULATION_FILE = practice/simulations/sql/04-university.md
-SIMULATION_FILE = practice/simulations/sql/05-inventory.md
-← delete all lines above except the one you are reviewing.
-  For a spec created later by simulation-generator (06+), just write its path here
-  (e.g. practice/simulations/spring-boot/06-invoice-api.md) — the list above is only the original bank.
-
-TIME_USED       = [minutes used — exact, no rounding — e.g. 74]
-MODE            = [review | hint — leave blank for review]
+```
 LEVEL           = [junior | middle | senior]
-
-TYPE is auto-detected from SIMULATION_FILE — do not fill it in:
-- path contains /angular/     → angular
-- path contains /spring-boot/ → spring-boot
-- path contains /sql/         → sql
-
-MODE behaviour:
-- review (default, blank): run after finishing the simulation — full scoring, feedback, ideal solution, interview questions, TRACKER update
-- hint: run when stuck mid-simulation — reads your partial code and guides you one step at a time; skip to the Hint mode section at the end of this prompt
-
-In review mode, require `LEVEL` to match both the simulation spec's `Level` field and its TRACKER row
-before scoring or writing. For an original-bank spec/row that predates the field, the only permitted
-migration is `junior`; any other missing field or disagreement is reported and the run stops without
-updates. Hint mode writes nothing and does not perform this migration.
-
----
-
-## Context
-
-Before starting, read the shared session rules (teaching rules) and `notes/prompts/_internal/_shared-context.md`
-(my profile, and what Spanish consultancies look for).
-
-I just completed the simulation at {SIMULATION_FILE} under real conditions: no notes,
-no documentation, no AI. {TIME_USED} minutes used. My code is pasted at the end of this chat.
-
-**If MODE = hint:** skip Steps 1–5 and go directly to the Hint mode section at the end of
-this prompt. Ignore TIME_USED.
-**If MODE = review or blank:** continue with Step 1 below.
-
----
-
-## Step 1 — Read the spec
-
-Read {SIMULATION_FILE}. Understand exactly what was asked: requirements, acceptance criteria,
-data or constraints given, and expected output or behaviour.
-
-Do not look at my code yet. First, list the requirements as you understand them — numbered,
-one per line. This list is the scoring basis for Step 2.
-
-Note the time limit stated in the spec — you will compare it against {TIME_USED} in Step 2.
-
----
-
-## Step 2 — Score my solution
-
-Read the code pasted at the end of this chat.
-
-Score each dimension:
-- **3 — Strong:** a senior developer would accept this without changes
-- **2 — Acceptable:** works but has noticeable issues a reviewer would flag
-- **1 — Weak:** missing, broken, or fundamentally wrong approach
-
-Core dimensions are marked *(core)*. A score of 1 in any core dimension triggers Borderline or Fail.
-Secondary dimensions affect quality but not the overall verdict on their own.
-
-**Angular simulations:**
-| Dimension | Score (1–3) | Notes |
-|-----------|-------------|-------|
-| Requirements met (X/Y from Step 1) *(core)* | | |
-| Reactive forms — FormGroup, validators, error messages wired *(core)* | | |
-| HTTP service — correct method, URL, error handled *(core)* | | |
-| TypeScript — interfaces defined, no `any` | | |
-| Patterns — service for HTTP, smart/dumb split where relevant | | |
-| Edge cases — loading state, empty state, error state | | |
-
-If the spec explicitly requires tests, add this row:
-| Tests — written and meaningful | | |
-
-**Spring Boot simulations:**
-| Dimension | Score (1–3) | Notes |
-|-----------|-------------|-------|
-| Requirements met (X/Y from Step 1) *(core)* | | |
-| Layered architecture — controller handles HTTP only *(core)* | | |
-| DTOs — request and response separate from entity *(core)* | | |
-| Validation — @Valid, @NotBlank, @NotNull on request DTOs | | |
-| Error handling — @RestControllerAdvice or manual try/catch in service | | |
-| HTTP conventions — correct status codes (201, 204, 404, 400, 409) | | |
-
-If the spec explicitly requires tests, add this row:
-| Tests — written and meaningful | | |
-
-**SQL simulations:**
-| Dimension | Score (1–3) | Notes |
-|-----------|-------------|-------|
-| Requirements met (X/Y from Step 1) *(core)* | | |
-| Query correctness — right result returned *(core)* | | |
-| JOIN type correct for each query *(core)* | | |
-| Aggregates and GROUP BY / HAVING used correctly | | |
-| NULL handling — IS NULL, COALESCE where needed | | |
-| PostgreSQL features used where they help (ILIKE, ::, DISTINCT ON) | | |
-
-**Overall verdict:**
-- **Pass** — Requirements met scored 2 or 3, and no other core dimension scored 1
-- **Borderline** — Requirements met scored 2 or 3, and exactly 1 other core dimension scored 1
-- **Fail** — Requirements met scored 1, OR both other core dimensions scored 1
-
-"Other" means the 2 core dimensions besides Requirements met — each simulation type has exactly 2 of them. If Requirements met = 1, the verdict is always Fail regardless of other scores.
-
-Compare {TIME_USED} to the spec time limit:
-- If exceeded: note which parts took the most time and why. Distinguish between time lost on
-  syntax (fixable with practice) vs time lost on design decisions (requires deeper project
-  experience).
-- If under or on time: note it briefly — finishing within the limit signals confidence in the
-  material.
-
----
-
-## Step 3 — Detailed feedback
-
-For every requirement NOT fully met:
-- Quote the requirement text
-- Describe what was missing or wrong
-- Show the corrected version in a code block
-
-For every dimension scored 1:
-- Quote the problematic code
-- Explain why it is wrong (one sentence)
-- Show the corrected version
-
-Name 1–2 things done well (applies to any verdict, not just Pass). One line each.
-Only mention real strengths — no false positives. If nothing stands out, skip this.
-
-**Pattern check — before closing this step:**
-Read practice/simulations/TRACKER.md. Count completed simulations for the same TYPE (angular / spring-boot / sql)
-that show ❌ Fail or ⚠️ Borderline status. Then add 1 if the current verdict is also ❌ Fail or
-⚠️ Borderline. If the combined total is 2 or more, flag it:
-"Recurring pattern: [N] of your [TYPE] simulations resulted in Borderline or Fail. In this session
-the weakest dimensions were: [list dimensions that scored 1 or 2 from Step 2]. Prioritise these
-before the next one."
-If no previous completed simulations of this type exist in TRACKER.md (this is the first one),
-skip this check.
-
-**Ideal solution:**
-Write a complete, clean solution that scores 3 on every dimension — all files needed to
-satisfy every requirement. Add a brief inline comment on each non-obvious decision (why
-this approach, not what the code does). This is the reference Victor compares against his
-own version.
-
----
-
-## Step 4 — Interview questions
-
-**If verdict is Borderline or Fail:** write 2–3 questions targeting the specific gaps in this
-solution — not generic questions about the technology.
-
-**If verdict is Pass:** write 1 question. If the Step 2 scorecard shows any dimension scored 1
-or 2, target the most important gap. If every dimension scored 3, write a reinforcement question
-about the strongest pattern applied correctly in this solution.
-
-Route each question to the topic file for the simulation TYPE:
-- Angular → `notes/interview-prep/{LEVEL}/{en,es}/angular.md`
-- Spring Boot → `notes/interview-prep/{LEVEL}/{en,es}/spring-boot.md`
-- SQL → `notes/interview-prep/{LEVEL}/{en,es}/sql.md`
-
-Before adding a question, require the target pair's stored coverage fingerprint(s) to match the
-current `{LEVEL}` coverage. If stale or missing, include the proposed question in the review report
-and request a full `interview-prep-audit`; do not write into a stale bank.
-
-Then add each following **"Adding questions from outside the audit (practice prompts)"** in
-`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — it defines the question format,
-the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
-here. Anchor the answer to this simulation or a real project when the question is about a pattern or
-decision ("I chose…", "I used…", not "it is used").
-
----
-
-## Step 5 — Update the tracker
-
-Update three files:
-
-**practice/simulations/TRACKER.md** — find the row for {SIMULATION_FILE} and update:
-- **Level:** {LEVEL}; if an existing original-bank row lacks it, migrate that row as junior only
-- **Status:** ✅ Pass / ⚠️ Borderline / ❌ Fail (from Step 2 verdict)
-- **Date:** today's date
-
-**{SIMULATION_FILE}** — update the header fields at the top of the spec:
-- **Level:** {LEVEL} (insert it for an original-bank spec that predates the field)
-- **Status:** same value as TRACKER.md
-- **Date completed:** today's date
-
-Leave **Self-assessment** untouched in both files — Victor fills that himself before running
-this prompt.
-
-**PROGRESS.md** — refresh the `### Timed simulations` table inside `## Practice completed` (the
-section replaced the old `## Simulations` bullet list on 2026-08-03). Once the TRACKER.md row above is
-updated, recount from TRACKER.md itself (it is small and already open) and rewrite the table:
-
-Write a per-level roll-up first (`Junior`, `Middle`, `Senior`, `Total`), then one track table for every
-level that has rows. Each table keeps `Track | Completed | Pass | Borderline | Fail`; its denominators
-come from TRACKER rows matching both that level and track. A level with no rows is `—` in the roll-up,
-not `0/0`, and has no detail table. `Total` sums level numerators and denominators without merging the
-level rows themselves.
-
-Three counting rules, each easy to get silently wrong:
-- **Count the `Status` column, never `Self-assessment`.** The two columns use different scales —
-  Status is Pass/Borderline/Fail, Self-assessment is Solid/Good/Weak/Failed. Counting the wrong one
-  yields plausible numbers and no error.
-- **`X completed` = Pass + Borderline only.** A ❌ Fail appears in the breakdown but does not count
-  as completed. `Total` sums the level numerators against the sum of the level denominators currently
-  present in TRACKER.md; it is `15` only while those are the only fifteen admitted rows.
-- **Rows still ⏳ Pending count as nothing** — skip them.
-
-This section has one writer: this prompt, which holds the Step 2 verdict. `progress-update-prompt.md`
-Steps C and D4 independently recount and report drift but never overwrite it. Their counting and
-level-split rules must still remain identical.
-
-PROGRESS.md follows the active branch (the shared session rules 2026-07-14 — `main` only receives merges via PR),
-so it commits alongside the other two.
-
-Then show the commit message:
-
-```
-git add {SIMULATION_FILE} practice/simulations/TRACKER.md PROGRESS.md
-```
-If (and only if) questions were added, also stage the two exact Q&A files:
-```
-git add notes/interview-prep/{LEVEL}/en/{topic}.md notes/interview-prep/{LEVEL}/es/{topic}.md
+STEP            = [route step number]
+SIMULATION_FILE = [exact spec path]
+TIME_USED       = [exact minutes; required for first review]
+SELF_ASSESSMENT = [Solid | Good | Weak | Failed; required for first review]
+MODE            = [review | correction | hint] -> default: review
 ```
 
-```
-git commit -m "docs: simulation {type} {NN} — [Pass/Borderline/Fail], {TIME_USED}min"
-```
+The solution or correction is pasted/attached after the prompt. Track is derived from the spec path.
 
----
+## 0 — Guards
 
-## Hint mode
+Read `_session-rules.md`, `_shared-context.md`, `_simulation-plan-standard.md`, doctrine, selected route,
+spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A pair, and the previous review self-report.
 
-*This section only runs when MODE = hint. Victor is mid-simulation and needs help to advance.
-Do not run Steps 1–5. Do not score, do not update TRACKER.md, do not add interview questions.*
+Require route STEP to own SIMULATION_FILE and LEVEL to agree across route/spec/tracker. A legacy spec
+without level may migrate to junior only. In first review require exact time and self-assessment. In
+correction mode require an immutable prior verdict plus open MISTAKES rows. Hint writes nothing.
 
-**H1 — Read the spec**
-Read {SIMULATION_FILE}. List every requirement, numbered — the same way Step 1 would.
+Never review a different step because the named file looks similar. Never edit Victor's solution.
 
-**H2 — Read the partial code**
-Read the code pasted at the end of this chat. For each requirement from H1, mark:
-- ✅ done — implemented correctly
-- ⚠️ started — attempt exists but has a problem (describe the problem in one sentence)
-- ❌ missing — not attempted yet
+## 1 — Requirements before code
 
-**H3 — Guide the next step**
-Pick the first ⚠️ or ❌ item. For that item only:
-- If ⚠️: name the mistake in one sentence, explain why it is wrong, then ask Victor to fix it
-- If ❌: explain the concept behind this requirement in 2–3 sentences, name the exact file
-  or class where to write it, then ask Victor to try it
+Read the spec before the solution. List each acceptance requirement, numbered. In correction mode list
+only the open recorded gaps; in hint mode list all requirements and continue at Hint below.
 
-Do not write the code. Do not address any other requirement in this run.
-Victor pastes the updated code and runs this prompt again for the next step.
+## 2 — Score a first review
 
----
+Score 1–3 with evidence. Requirements plus the two marked core dimensions decide the verdict.
 
----
+### Angular
 
-## Final step — write the self-report
+| Dimension | Core |
+|---|---|
+| Requirements met (X/Y) | yes |
+| Reactive forms and validation | yes |
+| HTTP/service correctness | yes |
+| TypeScript types; no `any` | no |
+| Component/service boundaries | no |
+| loading/empty/error/success states | no |
 
-Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
-against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
-`notes/prompts/practice/simulations/_internal/_last-run-report-simulation-review.md`, its own commit, then the refinement step.
+### Spring Boot
 
-> **Run-start check (step 0):** that file's Step 5 — before anything else, read
-> `notes/prompts/practice/simulations/_internal/_last-run-report-simulation-review.md` and surface its Verdict in one line if `Status` is `open`.
+| Dimension | Core |
+|---|---|
+| Requirements met (X/Y) | yes |
+| Layered architecture | yes |
+| DTO boundary | yes |
+| Bean Validation | no |
+| Error handling | no |
+| HTTP conventions | no |
 
+### SQL
 
-[paste your solution below this line]
-````
+| Dimension | Core |
+|---|---|
+| Requirements met (X/Y) | yes |
+| Query correctness | yes |
+| JOIN/relationship logic | yes |
+| aggregates/grouping | no |
+| NULL handling | no |
+| appropriate PostgreSQL features | no |
+
+Add a tests dimension only when the spec requires tests.
+
+- Pass: Requirements ≥2 and neither other core is 1.
+- Borderline: Requirements ≥2 and exactly one other core is 1.
+- Fail: Requirements is 1 or both other cores are 1.
+- Assisted: a hint was used; report the quality verdict too, but it does not satisfy the route Pass gate.
+
+Compare exact time to the limit and distinguish syntax friction from design friction. Give requirement-
+by-requirement corrections and one complete ideal solution that would score 3. Quote only the minimum
+problematic code needed.
+
+## 3 — Correction review
+
+Do not rescore the whole test. For each open MISTAKES row, mark `fixed` or `still open` against the
+submitted correction. Show only remaining defects and the minimal corrected reference.
+
+Closing every row never changes the original tracker/spec verdict or TIME_USED:
+
+- a corrected Borderline closes its route learning step;
+- a corrected Fail remains open until the route's reinforcement step earns a Pass;
+- a partial correction leaves only unresolved rows open.
+
+## 4 — Record gaps and Q&A
+
+On first review, upsert one `practice/simulations/MISTAKES.md` `## Open` row per unmet requirement or
+score-1 dimension: ID, date, level:step, track, concept, evidence, verdict, status open. Score-2 items are
+feedback, not mandatory correction rows. Correction mode changes only matching row status/evidence.
+
+For Borderline/Fail add 2–3 targeted bilingual questions; for Pass add one. First require the selected-
+level bank fingerprints to match current coverage and follow the interview-prep standard's outside-audit
+rules. A stale bank receives proposed questions in the report only.
+
+## 5 — Synchronise tracking
+
+First review:
+
+- spec: Level, Route step, Status, Date completed, Time used, Self-assessment;
+- TRACKER: same level/status/date/self-assessment (add Time used only if the table carries that column);
+- route: review history and timed verdict; `closed ✅`, `correction-required`, or assisted state;
+- doctrine/route §0: next correction moment or next open step;
+- PROGRESS timed simulations: recount from TRACKER by level and track. Completed = Pass + Borderline;
+  Fail and Assisted appear in breakdown but do not count as completed.
+
+Correction mode updates only MISTAKES, route, and §0 pointers. It never increments PROGRESS or rewrites
+spec/TRACKER history.
+
+If first-review verdict is Fail, ensure the route has a later reinforcement step targeting its open
+gaps. Add the step without renumbering or rewriting prior history; if safe insertion is impossible,
+leave a route finding and keep the current step open.
+
+## 6 — Commits and report
+
+All changed simulation specs/tracking files, PROGRESS, and Q&A are system-authored tracking artifacts
+under the session-rule exception. Make atomic commits by concern with status immediately before staging
+and committing:
+
+1. `docs(simulations): review {track} simulation {NN} — {verdict}` — spec, tracker, route, doctrine,
+   MISTAKES, PROGRESS.
+2. `docs(interview-prep): add {track} simulation review questions` — only when Q&A changed.
+
+Report requirements, scorecard/correction matrix, verdict, time, open/closed gaps, recurring pattern
+from same-track MISTAKES, tracking parity, next route moment, and commits.
+
+## Hint
+
+Hint mode writes nothing. Mark each requirement done/started/missing from the partial solution, select
+the first unfinished one, explain its concept and exact target file/class, and ask Victor to try it.
+Never give code. Record in chat that using the hint makes a later review Assisted.
+
+## Final step — self-report
+
+Execute `_single-shot-self-report.md` in full. Write `_internal/_last-run-report-simulation-review.md`,
+update `_run-tracker.md`, and commit those two prompt-system files separately.
+
+[paste or attach the solution/correction below]

@@ -113,6 +113,23 @@ grows after the route was planned makes the cell stale, and a stale cell does no
 `sql-plan-audit` prerequisite. The flag here is written by `sql-plan-audit` when its fingerprint check
 fails, since no daily-session skill touches this route.
 
+## Timed-simulation track
+
+`simulation-plan` writes one evidence-gated route per level. The route's own §2/§3 remains the source
+for step state; this table records the latest planning run only.
+
+| Level | Simulation plan | Route progress |
+|---|---|---|
+| junior | | |
+| middle | | |
+| senior | | |
+
+`Route progress` is `X/Y steps closed` from `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`; a level
+with no route stays blank. `simulation-review` updates it after a first review or correction. A changed
+coverage manifest makes the plan cell stale; changed PROGRESS evidence is surfaced by
+`simulation-block-open` and adjudicated by the next `/simulation-plan` run rather than auto-staling the
+route on every project update.
+
 ## Per-project prompts
 
 | Project | project-brief | plan-audit | review-audit | readme-audit | portfolio-audit |
