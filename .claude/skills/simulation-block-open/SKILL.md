@@ -43,4 +43,3 @@ the attempt Assisted and ineligible for the Pass gate. Never start a timer or cl
 
 Return at most six lines: step/track/level, spec/state, next moment, timer and conditions, up to three
 open gaps/friction items, and one drift line if needed. No encouragement and no menu.
-

@@ -45,4 +45,3 @@ the prompt line count and `read to EOF`.
 - Correction incomplete: keep the step open and name only the remaining gaps.
 
 Report which branch ran. The review prompt owns all tracking writes and commits; do not reproduce them.
-

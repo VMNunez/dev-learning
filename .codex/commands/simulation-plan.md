@@ -12,4 +12,3 @@ Rules:
 - Default only MODE to update; LEVEL is required.
 - Plan only. Never generate a spec, grade an attempt, or edit solution code.
 - Use Codex collaboration tools for the one cold reviewer; do not invent model identifiers.
-

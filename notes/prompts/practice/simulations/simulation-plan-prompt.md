@@ -114,4 +114,3 @@ Then execute `notes/prompts/_internal/_pipeline-self-report.md` in full. Write
 `notes/prompts/practice/simulations/_internal/_last-run-report-simulation-plan.md`, update the Simulation
 track section of `_run-tracker.md`, and commit those two files separately. A blocked or dry-run outcome
 still performs this close-out after target resolution.
-

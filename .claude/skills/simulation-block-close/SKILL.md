@@ -41,4 +41,3 @@ exception; commit only files actually changed, with status immediately before st
 
 End with: attempt facts, friction count, and exactly one next action — attach/paste the solution and say
 `corrige la simulación`, or provide the missing close field. Never grade here.
-

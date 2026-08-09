@@ -149,4 +149,3 @@ them. Never hide deferred scope inside prose in a step.
 8. Existing history is preserved across plan updates.
 9. `simulation-block-open` and `simulation-block-close` ask zero questions and never start grading.
 10. Victor's solution code is never edited or committed by the system.
-
