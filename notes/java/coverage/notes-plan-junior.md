@@ -1,6 +1,6 @@
 # Java Junior Notes Plan
 
-Plan status: stale
+Plan status: current
 Coverage: notes/java/coverage/junior.md
 Coverage SHA-256: b821625786a7ef5628df043fdd431f7c27d2f8de1926300eba1f81f16ade4f76
 Generated: 2026-08-02
