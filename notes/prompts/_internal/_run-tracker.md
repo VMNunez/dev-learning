@@ -160,7 +160,7 @@ consumer reads freshness from the file itself.
 | coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed · ⚠ stale 2026-08-04 (+14 bullets) |
 | progress-update | 2026-08-08 — completed — `MODE = active` (07-timetrack + SQL + simulations); level matrix refreshed from the current notes plans; coverage, project status and simulation counts matched; no actionable drift |
 | roadmap-review | 2026-08-08 — completed — ran after `progress-update` on REC-042's per-level marker rewire; aligned the active-project gate, exact SQL coverage-heading statuses, phase markers and Project 08 gap candidates; two cold reviews passed; REC-050 closed in `1e10f42` |
-| system-check | 2026-08-09 — blocked — fresh 187-path EOF inventory at `80d30f4`; eight launcher public argument-contract mismatches survived the prior launcher fix and a cold re-dispatch; no map/ledger patch or final reviewer |
+| system-check | 2026-08-09 — completed — maps corrected: 187-path EOF inventory at `4c77723f`, 19/19 dispatches, launcher argument-contract parity now 30/30 (the gate that blocked the two prior runs); nine false claims repaired across both maps (4 README, 5 system-map), cold reviewer `approve-with-tightening`; `REC-067` filed for the missing validator check; debt queue led by 07-timetrack's stale §0 vs 3 open backend Highs — `0902b9fe` |
 
 ## Single-shot prompt executions
 
