@@ -1,20 +1,21 @@
 # System check report
 
 Date: 2026-08-09  
-Starting commit: `33aed69362a402dce801ba016b91161c9e09951d`  
+Starting commit: `80d30f4314f3c6c9dc6186c0019bbd6dd2fc740d`  
 Branch: `fix/backend-backlog`  
 Status: blocked
 
 ## Global verdict
 
-**Blocked — incomplete audit.** The disk inventory and semantic manifests were completed, but the
-launcher parity gate failed and a cold bounded re-dispatch confirmed the failure. The run therefore
-publishes no global map verdict, applies no map correction, creates no recommendation, and does not
-dispatch the final reviewer.
+**Blocked — incomplete audit.** All 187 frozen inventory paths were assigned exactly once and read to
+EOF, but strict launcher argument-contract parity failed. One cold bounded re-dispatch independently
+confirmed the same class of failure. The run therefore applies no map correction, creates or updates no
+recommendation, and does not dispatch the final reviewer.
 
 ## Inventory and dispatch coverage
 
-The frozen inventory contained **187 unique paths**:
+Frozen inventory SHA-256: `D9B3721E9FD0E8C930851D5959A957611506C096228501DA3C25CD902A789061`.
+The path set and digest matched at inventory freeze and after all analyst waves.
 
 | Concern | Manifest owners | EOF coverage |
 |---|---:|---:|
@@ -26,8 +27,7 @@ The frozen inventory contained **187 unique paths**:
 | Tracker, ledger, backlogs, project plans, and SQL gate sources | 18 | 18/18 |
 | **Total** | **187** | **187/187** |
 
-Manifest ownership duplicates: **0**. Unassigned inventory paths: **0**. The complete path + SHA-256
-snapshot matched the frozen starting snapshot after the analyst waves.
+Manifest ownership duplicates: **0**. Unassigned inventory paths: **0**.
 
 Dispatches completed:
 
@@ -42,110 +42,101 @@ Dispatches completed:
 
 ## Validator
 
-### Baseline
+The direct invocation was blocked by the local PowerShell execution policy. Re-running the same script
+with a per-process `-ExecutionPolicy Bypass` changed no system policy and exited successfully.
 
-The first direct invocation was blocked by the local PowerShell execution policy. Re-running the same
-validator with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File` changed no system policy and
-completed successfully.
-
-The validator reported PASS for 30 canonical prompts, both 30-launcher catalogues, canonical target
-parity, delegation, runtime isolation, entry-point/self-report contracts, representative dry runs,
-external-path failure simulation, thin adapters, 128 path references, 17 normalized skill mirrors,
+Baseline PASS results covered 30 canonical prompts, both 30-launcher catalogues, canonical target
+parity, full delegation, runtime isolation, entry-point/self-report contracts, representative dry runs,
+the external-path failure simulation, thin adapters, 129 path references, 17 normalized skill mirrors,
 coverage mirrors, and registration in both maps.
 
-It also reported, without repairing, four notes-plan verification files whose stored coverage digest
-is superseded: Architecture junior, General junior, Java junior, and Spring Boot junior.
-
-### Final
-
-The final validator exited successfully with the same PASS set and the same four superseded
-notes-plan fingerprint reports. Its structural launcher check does not compare launcher argument hints
-against canonical prompt configuration, so it does not contradict the semantic launcher-gate failure.
+The validator also reported, without repairing, four notes-plan verification files whose stored
+coverage digest is superseded: Architecture junior, General junior, Java junior, and Spring Boot junior.
+Its launcher check is structural and does not compare public hints with canonical configuration, so its
+PASS does not contradict the semantic launcher failure below.
 
 ## Failed completeness gate
 
-Filename parity, canonical-target parity, public command names, and full delegation passed for all 30
-launcher pairs. Strict argument-contract parity failed:
+Filename parity, canonical-target parity, public command names, target existence, and full delegation
+passed for all 30 launcher pairs. Skill parity passed for 17/17 pairs after line-ending normalization;
+the sole byte difference was `sql-grade/SKILL.md`, whose logical content is identical and differs only
+by CRLF/LF terminators.
 
-| Launcher | Evidence |
+Strict public argument-contract parity failed. The cold re-dispatch checked the affected launchers and
+canonical targets to EOF and confirmed these mismatches:
+
+| Launcher | Confirmed mismatch |
 |---|---|
-| `sql-exercises` | Claude advertises `practice|reinforce`; Codex advertises `practice|review`; the canonical prompt supports all three modes. |
-| `code-review-practice` | Both adapters omit required `LEVEL`; the canonical prompt stops when it is absent. |
-| `coverage-audit` | Both adapters omit required `MODE=update|dry-run`. |
-| `progress-update` | Both say “no args”, hiding `MODE=active|all`. |
-| `simulator` | Both omit required `LEVEL`, present required `LANGUAGE` as optional, and omit optional `MAX_QUESTIONS`. |
-| `review-audit` | Both omit the material `REVIEW_SCOPE=full|backend|frontend` override. |
+| `cv` | Omits public personal/project keys, advertises an invalid `CAMBRIDGE=auto`, and hides the tailor-only `BASE_CV` rule. |
+| `evidence-intake` | Omits optional search-only `FOCUS`. |
+| `simulation-review` | Omits `TIME_USED`, `SELF_ASSESSMENT`, the assessment enum, and the default review mode from its public hint. |
+| `tracker` | Omits `CONTACTO` and `CV_USADO` and obscures mode-specific requiredness. |
+| `code-review-practice` | Advertises only the default difficulty, not `intro|standard|challenge`, and omits the low-count normalization. |
+| `plan-audit` | Hides that `PROJECT` must be blank in new mode and is required as path/`all` only in review mode. |
+| `sql-exercises` | Abbreviates `TOPIC`, omits revision points/`all`, hides reinforce-mode `FILE` requiredness and count normalization. |
+| `simulator` | Abbreviates `TOPIC`, narrows `SECTION` incorrectly, and omits mode-dependent question-count defaults. |
 
-A fresh cold mechanical checker re-read the 14 affected launchers and seven canonical targets to EOF
-and returned **FAIL**. Because launchers are authoritative machinery and this audit may not edit them,
-the Step 3 gate could not be repaired inside the run.
-
-Skill parity passed for 17/17 pairs after line-ending normalization. Sixteen pairs were byte-identical;
-the Claude `sql-grade` mirror differed only by mixed CRLF/LF terminators and had identical normalized
-content.
+`coverage` passed the bounded re-check. Because launchers are authoritative machinery and this audit may
+not edit them, Step 3 cannot close inside this run.
 
 ## Map reconciliation
 
-No map patch was drafted, reviewed, or applied after the blocking gate. The completed manifests did
-surface positive contradictions, including:
+No map patch was drafted, reviewed, or applied. The complete manifests and map-claim inventory surfaced
+positive contradictions, but the failed completeness gate forbids a global absence claim or a
+`maps verified` / `maps corrected` verdict. Examples requiring a later completed audit include:
 
-- README and system-map counts disagree on 18 versus 17 pipeline orchestrators;
-- project run order disagrees with the G3–G8 gate order and omits G6 in some routes;
-- several catalogue rows omit material reads/writes, especially notes-plan note mutations, SQL
-  `PROGRESS.md` writes, simulation fingerprint inputs, and close-out outputs;
-- the writer registry omits real readers/writers such as notes-plan over note files, review-audit over
-  its existing backlog, and simulator over `SESSION-LOG.md`;
-- multiple internal components are classified as never directly launchable while their own contracts
-  declare standalone execution;
-- several skill §9 rows omit public triggers or overstate outputs.
+- stale runnable-count language in the single-shot contract and system-map improvement loop;
+- catalogue/internal rows that misstate commit ownership or omit material reads and writes;
+- chain-order disagreement around README review and project review;
+- writer-registry gaps and stale skill trigger/write/handoff cells;
+- family contracts that disagree internally about dry-run commits, lifecycle ownership, trace schemas,
+  and direct-versus-orchestrator commit responsibility.
 
-These are **evidence, not approved corrections**. A partial audit may report positive contradictions
-but may not claim absences or publish `maps verified` / `maps corrected`.
+These are evidence only. Authoritative prompts, skills, standards, maps, and ledgers were not edited.
 
 ## Operational-debt queue
 
 ### Correctness and security blockers
 
-- **13 open High backlog tasks**: 3 in TimeTrack, 3 in HR Portal, 3 in Meal Finder, 2 in Expense
-  Tracker, 1 in Task Manager, and 1 in Weather App. Owner: `backlog-task-open`, Victor's fix, then
+- **13 open High backlog tasks**: 3 TimeTrack, 3 HR Portal, 3 Meal Finder, 2 Expense Tracker,
+  1 Task Manager, and 1 Weather App. Owner: `backlog-task-open`, Victor's fix, then
   `backlog-task-close`, one task at a time.
-- TimeTrack G3 is not signed off: its §0 says the backend condition is met, while the current backlog
-  still contains 3 High and 10 Medium tasks. The Highs and the merge of `fix/backend-backlog` must close
-  before G3 can sign off.
+- **42 open Medium backlog tasks** across projects 01–07, routed through the same one-task chain.
+- TimeTrack §0 is stale: it claims all backend tasks are closed and G3 is ready, while the newer backlog
+  has 3 High and 10 Medium tasks. Close the three Highs and refresh §0 through the final close ritual
+  before merging `fix/backend-backlog` or starting Step 7a.
 
-### Due stale prerequisites
+### Due and stale prerequisites
 
-- `coverage-audit` junior is `⚠ stale 2026-08-04 (+14 bullets)`. Owner: `/coverage-audit LEVEL=junior`.
-- Seven junior notes plans are stale: Angular, Architecture, Security, TypeScript, JavaScript, SQL, and
-  General. CSS and Git junior plans are still empty after their upstream coverage work. Owner:
-  `/notes-plan {topic} junior`.
-- Junior interview banks remain empty and REC-046 remains open. Owner: `/interview-prep-audit` per bank,
-  then `/interview-prep-route LEVEL=junior MODE=update`.
+- `system-check` remains blocked on launcher argument-contract parity. Resolve the machinery defect with
+  its normal recommendation/cold-review ritual, then rerun `/system-check`.
+- Junior notes-plan cells are stale for Angular, Architecture, Security, TypeScript, JavaScript, SQL,
+  and General; CSS and Git are empty. Owner: `/notes-plan` for each topic at junior level.
+- Junior `coverage-audit` is stale by 14 bullets. Owner: `/coverage-audit LEVEL=junior`.
+- Junior interview-bank cells are empty and REC-046 remains open. Owner: `/interview-prep-audit` per
+  required bank, followed by `/interview-prep-route LEVEL=junior`.
+- SQL Step 0 remains open at 20/30; no SQL gate is overdue. Next owner: `/sql-exercises` practice for
+  basics, then `sql-grade` and `sql-step-close`.
 
-### Not yet due
-
-- TimeTrack frontend G4 and gates G5–G8 have not met their preconditions.
-- SQL remains in Step 0 at 20/30; no SQL gate or revision point is due.
-- The deferred TimeTrack `@Version` hardening trigger has not opened.
-- Simulation plan cells and later-level plan cells are pending, not automatically overdue.
-
-### Existing recommendations and improvements
+### Recommendations and deferred work
 
 - Open: REC-046, REC-054, and REC-055(e). Accepted: none.
-- Open Medium backlog tasks: **42** across projects 01–07.
-- `_skill-friction.md` contains no rows; there was nothing to adjudicate.
+- REC-054 remains deliberately last; REC-055(e) is gated on it.
+- No `Deferred` marker is currently due. TimeTrack optimistic locking remains gated on Spring Boot
+  middle coverage or a real simultaneous-manager requirement.
 
 ## Architecture findings
 
-The family manifests found cross-system issues in launcher contracts, writer ownership, lifecycle
-rules, standalone/internal classification, incomplete rollback paths, conflicting commit ownership,
-and gate sequencing. No new `REC-NNN` was created because the completeness gate failed before
-reconciliation and final review. These findings remain evidence in this blocked report only.
+The cold family manifests identified repeated cross-system defects in public configuration surfaces,
+writer/commit ownership, lifecycle-marker authority, close-out sequencing, trace requirements, gate
+ordering, and direct-versus-dispatched execution. Several source contracts also contain contradictions
+that a map correction cannot repair. No new `REC-NNN` was created because Step 3 failed before
+reconciliation and cold final review; these findings remain evidence in this blocked report only.
 
 ## Final reviewer
 
-Not dispatched. Step 7 is reachable only after the Step 3 completeness gate closes. There is therefore
-no `approve`, `approve-with-tightening`, or `reject` verdict for a map patch.
+Not dispatched. Step 7 is reachable only after Step 3 closes, so there is no `approve`,
+`approve-with-tightening`, or `reject` verdict for a map patch.
 
 ## Outcome
 
