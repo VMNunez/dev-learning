@@ -253,7 +253,9 @@ gates, revision cadence, the §8c technique table). `practice/sql/{LEVEL}/PLANNI
 **route** for one level (steps, files, targets, counts). One doctrine, three routes.
 
 1. **`/coverage sql junior`** (+ `/coverage-verify`) → `notes/sql/coverage/junior.md` + mirror.
-2. **`/sql-plan junior`** → the route, fingerprinted against that coverage. Re-run when coverage grows.
+2. **`/sql-plan junior`** → the route, fingerprinted against that coverage, **plus the level's
+   `Exercise route` projection in `PROGRESS.md`** (its own commit, separate from the route's). Re-run
+   when coverage grows.
 3. **`/sql-plan-audit`** → audits *and extends* both files; writes steps for coverage sections nothing
    claims yet.
 4. **The block itself**, five moments:
@@ -353,7 +355,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/interview-prep/routes/{LEVEL}.md` | `/interview-prep-route` only | `interview-prep-block-open`, `study-block-close`, `/progress-update` |
 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` |
 | `PROGRESS.md` | **section by section — see §8** | `/plan-audit`, `/roadmap-review`, `/project-brief`, `/review-audit`, `/cv`, `/linkedin`, `/sql-exercises` |
-| `ROADMAP.md` | `/roadmap-review` (+ `/plan-audit` marks the chosen project) | `/project-brief`, `/hr-screen`, the SQL gates |
+| `ROADMAP.md` | `/roadmap-review` (+ `/plan-audit` marks the chosen project) | `/project-brief` · `plan-audit`'s and `/portfolio-audit`'s authors · the apply family (`/cv`, `/linkedin`, `/cover-letter`, `/hr-screen`) · `/evidence-intake` · `/interview-prep-audit` and `/interview-prep-route` · `/simulation-plan` · `/sql-plan` and `/sql-plan-audit` · the SQL gates |
 | `projects/briefs/project-brief-{NN}.md` | `/project-brief` | `/plan-audit MODE = new` (refuses a stale one) |
 | `{project}/PLANNING.md` | `/plan-audit` · `step-complete` (✅ + §0) · `backlog-task-close` (rules section + §0) | `/readme-audit`, `/review-audit`, `/portfolio-audit`, `/progress-update`, `/roadmap-review`, every session |
 | `{project}/README.md` (+ backend/frontend) | `/readme-audit` (whole file) · `readme-concept-add` (one entry) | `/portfolio-audit`, recruiters |
@@ -395,10 +397,10 @@ This is the file you asked about, and the one where "who writes it" is least obv
 | Section | Its writer | Notes |
 |---|---|---|
 | `## Professional level by topic` | **`/progress-update`** — the only writer of the table | needs all 13 topics at once, which no ritual can compute. `step-complete` / `backlog-task-close` may update a single **evidence cell** when a step or fix earns it |
-| `## Coverage demonstrated` | **`/coverage`, `coverage-mark`, and `coverage-bullet-add`** | each **recounts** the affected cells and the `Total` row from the coverage files when it changes scope or markers. `step-complete` deliberately does **not** touch this table: a memory-derived copy would overwrite the recounted one |
+| `## Coverage demonstrated` | **`/coverage`, `/coverage-audit`, `coverage-mark`, and `coverage-bullet-add`** | each **recounts** the affected cells and the `Total` row from the coverage files when it changes scope or markers. `step-complete` deliberately does **not** touch this table: a memory-derived copy would overwrite the recounted one |
 | `## Study progress` | **`study-block-close`** | notes dates and bilingual `[refined] [studied]` IDs are primary state; the current route supplies the CORE denominator. This section rolls up Notes + CORE + full bank per level; `/progress-update` measures it as D9 and reports drift |
 | `## Projects` | **`step-complete`** / **`backlog-task-close`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new` |
-| `## Practice completed → Exercise route` | **`sql-grade`'s cold subagent** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
+| `## Practice completed → Exercise route` | **`/sql-plan` (seeds/re-syncs the projection) · `sql-grade`'s cold subagent (moves the counts)** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
 | `→ Timed simulations` | **`/simulation-review`** | counted by explicit level + track from `practice/simulations/TRACKER.md`; `/progress-update` audits it |
 | `→ LeetCode` | nothing yet — gated behind the ROADMAP gates | |
 
@@ -518,7 +520,7 @@ and `_session-rules.md` says the same to the session: *"The system is built — 
 editing them."* So an edit is never a decision someone makes; it is the last
 step of a chain that starts with a run, and every link exists because the previous one was skipped once.
 
-1. **A run ends by executing its self-report contract** — five bullets for the seventeen orchestrators
+1. **A run ends by executing its self-report contract** — five bullets for the eighteen orchestrators
    (`_pipeline-self-report.md`), three for the twelve single-shot prompts
    (`_single-shot-self-report.md`). It reports the **machinery, never the content**, and carries a
    `Status:` line — `open` or `applied in <hash>` — which is what makes a live finding distinguishable
