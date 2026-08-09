@@ -9,10 +9,15 @@ projects are completed.
 > before it (or `nothing`). You never have to cross-check the dependency map below before running one —
 > the prompt tells you at the top.
 
-This file is the map: what each prompt does, what it reads and generates, and how the same workflows run in Claude Code and Codex.
+This file is the navigable prompt catalogue and run-order entry point. For every prompt, the public
+interface index, its family catalogue row and the run-order sections together own the command, run-first prerequisite,
+configuration/modes and received inputs, reads, writes/returns, dispatched roles/isolation, commit
+owner, handoffs/gates, and explicit exclusions. `/system-check` audits those fields against the
+canonical machinery; the catalogue is derived and never overrides the prompt it describes.
 
-> **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README covers the
-> 30 runnable prompts. The system map adds the in-session rituals (`step-complete`, `coverage-mark`,
+> **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README owns the
+> per-prompt facts for the 30 runnable prompts. The system map owns the per-skill facts for the
+> in-session rituals (`step-complete`, `coverage-mark`,
 > `study-block-close`, `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts and
 > observable skill failures a run leaves behind, and the improvement loop itself — why machinery is
 > reopened from evidence (§12).
@@ -57,6 +62,10 @@ that — and it found `profile-readme` missing from every section of the map on 
 fingerprint one **reports and never repairs**: clearing a stale flag without running `/notes-plan` is the
 lie the flag exists to prevent, so a disagreement prints as `REPORT:` and only a plan claiming `current`
 against a moved fingerprint fails the run.
+
+`/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map
+invariants still block, while the live coverage-mirror and plan/route fingerprint checks are explicitly
+skipped. Ordinary manual runs omit the switch and retain the full operational checks above.
 
 ---
 
@@ -132,6 +141,51 @@ Two flavors among these 30, both launched the same way (paste config into a new 
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
 
+### Public interface index
+
+This is the compact half the family catalogue rows below deliberately do not repeat. **Config** is the
+user-supplied/received input; **O** means hands-off orchestrator with the cold roles named in its family
+row, **S** means single-shot or live interactive prompt. For commit ownership, **agent** means the
+pipeline commits its system-authored repo outputs under the session contract, **Victor** means his
+project/SQL/solution work remains his commit, and **external/output** means no commit in this repo.
+The family row remains the owner of exact reads and writes; this index owns public invocation,
+isolation/dispatch class, commit owner, and the boundary or gate most likely to be confused. The
+run-first cell restates each prompt's own `▶ Run first` header; where a project gate exists it is named
+separately, because a gate sequences the chain and a prerequisite constrains the run.
+
+| Command → canonical prompt | Config / received input | Runtime · commit owner | Run-first / handoff / explicit boundary |
+|---|---|---|---|
+| `/coverage` → `coverage-prompt` | `TOPIC`, `LEVEL`, optional `NOTES_PATH`, `MODE=update\|dry-run` | O · agent | registered topic only; preserves refined locks; hands gaps across topics through the inbox |
+| `/coverage-verify` → `coverage-verify-prompt` | `TOPIC`, `LEVEL`, `MODE=update\|dry-run` | O · agent | after coverage; advisory findings only, never edits coverage or blocks notes-plan |
+| `/coverage-audit` → `coverage-audit-prompt` | `LEVEL`, `MODE=update\|dry-run` | O · agent | all topics at that level must exist; convergence, not per-topic authoring |
+| `/evidence-intake` → `evidence-intake-prompt` | `MODE=paste\|search`, optional `FOCUS`; posting text in paste mode | S · agent | evidence only; never edits coverage directly |
+| `/notes-plan` → `notes-plan-prompt` | `TOPIC`, `LEVEL`, `MODE=update\|dry-run` | O · agent | after coverage; plans one topic+level and writes no note prose |
+| `/notes-audit` → `notes-audit` | `TOPIC`, `LEVEL`, `NOTE` | O, four cold stages · agent | requires a current plan; exactly one planned EN/ES pair, never an arbitrary path or `all` |
+| `/interview-prep-audit` → `interview-prep-audit` | `LEVEL`, `FILE=topic\|all`, `SECTION`, `MODE=full\|correct`, `DRY_RUN` | O, market/gap/author/reviewer roles · agent | current coverage+plan; never edits a refined block |
+| `/interview-prep-route` → `interview-prep-route-prompt` | `LEVEL`, `MODE=update\|dry-run` | O · agent | every required bank must be current; stores IDs/order, never answers |
+| `/project-brief` → `project-brief-prompt` | optional `NUMBER` (blank derives next), `CANDIDATE=blank\|name` | O, cold second opinion · agent | after clean progress audit; decides scope, never writes the plan |
+| `/plan-audit` → `plan-audit` | `MODE=new\|review`, `PROJECT=blank\|path\|all` | O, author/advisor/reviewers · agent | new mode consumes/dispatches brief; review `all` only; no `DRY_RUN` |
+| `/review-audit` → `review-audit` | `PROJECT_PATH=path\|all`, `REVIEW_SCOPE=full\|backend\|frontend` | O, cold per-slice roles · agent | G3/G4; writes/commits backlog only, never project code |
+| `/readme-audit` → `readme-audit` | `PROJECT_PATH=path\|all` | O, author+reviewer per README · Victor | run-first nothing; as project gate **G5** it runs after every High from G3/G4 is fixed; pipeline does not commit project README work |
+| `/portfolio-audit` → `portfolio-audit` | `PROJECT_PATH=path\|all`, `DRY_RUN` | O, author+reviewer per bank section · agent; external profile commit is Victor's | after `readme-audit` **and** `review-audit`, i.e. G5 + empty G6; final go/no-go, never replaces review |
+| `/sql-plan` → `sql-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | coverage first; plans only, never writes/grades `.sql` or schedules other tracks |
+| `/sql-plan-audit` → `sql-plan-audit` | `SCOPE=full\|extend`, `LEVEL` | O, four cold specialists · agent | existing route required; exercises-only; never edits Victor's `.sql` files |
+| `/sql-exercises` → `sql-exercises-prompt` | `MODE`, `TOPIC`, optional `LEVEL`, `COUNT`, `FILE` | S · Victor owns the `.sql` answers and their commit; agent owns the review-mode MISTAKES/`PROGRESS.md`/route writes | after `/sql-plan {LEVEL}`; focus/review derived; legacy review grades but does not invoke step close |
+| `/simulation-plan` → `simulation-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | clean progress snapshot first; plans routes only, never specs/grades/solutions |
+| `/simulation-generator` → `simulation-generator-prompt` | `LEVEL`, `STEP=current\|N` | S · agent for generated artifacts | route required; no free-form focus/difficulty/time/track |
+| `/simulation-review` → `simulation-review-prompt` | `LEVEL`, `STEP`, `SIMULATION_FILE`, `MODE`, conditional `TIME_USED`/`SELF_ASSESSMENT`, submitted solution | S launcher → cold `simulation-grade` path · agent for tracking, Victor for solution | after `/simulation-plan` for this LEVEL and a closed attempt; never grades locally; timed verdict/time are immutable |
+| `/code-review-practice` → `code-review-prompt` | `TYPE`, `LEVEL`, optional `DIFFICULTY`, `ISSUE_COUNT`, `FOCUS`; Victor's critique | S, live critique · agent for logs/Q&A | waits for Victor before revealing planted issues; not the host diff-review command |
+| `/simulator` → `simulator-prompt` | `MODE`, `LEVEL`, `LANGUAGE`, conditional `TOPIC`/`SECTION`, optional `MAX_QUESTIONS`; live answers | S, live interview · agent for logs/gaps | interview bank first; one question at a time, never reveals answer first |
+| `/hr-screen` → `hr-screen-prompt` | optional `LANGUAGE`, `MAX_QUESTIONS`; live answers | S, live interview · agent for logs/gaps | non-technical only; never substitutes for `/simulator` |
+| `/progress-update` → `progress-update-prompt` | optional `MODE=active\|all` | O, cold per-project/SQL analysis · agent | run before brief/CV and G6; writes only `Professional level by topic`, reports other drift |
+| `/roadmap-review` → `roadmap-review-prompt` | no config; current repo state | O, fact gatherers+doer+cold reviewers · agent | after `/progress-update` and the owning gates; ROADMAP only, never repairs upstream state |
+| `/cv` → `cv-prompt` | `MODE`, profile fields, projects, conditional `BASE_CV`; pasted offer for tailor | S · external for the CV itself; in `tailor` the agent commits `_job-market-evidence.md` | after `/progress-update`; CV files live outside the repo; no unsupported claim |
+| `/linkedin` → `linkedin-prompt` | optional extra user context | S · output only | progress evidence first; returns paste-ready sections/posts, writes no repo file |
+| `/cover-letter` → `cover-letter-prompt` | `MODE`, `EMPRESA`, `PUESTO`, optional `CONTACTO`; pasted offer | S · output only | after `/progress-update` (optionally `/cv tailor`); offer required; tailored text only, no repo file |
+| `/profile-readme` → `profile-readme-prompt` | `MODE=sync\|optimize` | S · external repo, Victor commits | after `/portfolio-audit` when a project just reached ✅ Ready; sync never silently expands to optimize; never commits the portfolio repo from here |
+| `/tracker` → `tracker-prompt` | `MODE=log\|update\|analyze` plus conditional application fields | S · external/output | external tracker only; analyze hands recurring gaps to evidence-intake |
+| `/system-check` → `system-check-prompt` | no config; explicit invocation | O, family/root/skill/launcher/map analysts + cold final reviewer · agent | machinery only; never live-state/status sweep, source repair, automatic gate, or partial verdict |
+
 Either way, **every run writes its own `_last-run-report*.md` and updates `_run-tracker.md`.**
 Orchestrators record target-level state; `notes-audit` additionally records every planned EN/ES pair,
 and single-shot prompts update their latest-execution table. Completed, blocked, and dry-run outcomes
@@ -155,8 +209,9 @@ declared output of every prompt.
 `_simulation-plan-standard.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_skill-friction.md` (observable
 failed skill steps, consumed by the next prompt close-out),
-`system/_internal/_system-check-report.md` (the latest explicit whole-system audit: inventory coverage,
-map corrections, operational debt, architecture recommendations, and the cold-review verdict),
+`system/_internal/_system-check-report.md` (the latest explicit machinery audit: inventory and boundary
+coverage, README catalogue reconciliation, system-map wiring/skill reconciliation, architecture
+recommendations, and the cold-review verdict),
 `_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: skill-friction
 reconciliation, close-out check against declared outputs, tracker update, three bullets, refinement behind a cold reviewer),
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
@@ -286,7 +341,7 @@ accurate; `apply/` produces the job-application material.
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
-| `system/system-check-prompt.md` | **Explicit, global, on-demand audit — never a per-commit gate.** Builds a disk-derived manifest of every runnable prompt, internal component, launcher, and mirrored skill; proves every assigned file was read to EOF; checks every relevant catalogue, chain, writer, ownership, skill, debt, symptom, and improvement-loop claim; corrects only the two derived maps; then sweeps recorded operational debt and routes cross-system improvements to the recommendation ledger. A cold final reviewer must approve the complete reconciliation before it may publish a global verdict. | every runnable prompt and non-report internal Markdown component (historical last-run reports and this prompt's output report are excluded from the inventory; only its own previous `Status:` is checked at run start), `validate-prompt-system.ps1`, both launcher catalogues, paired skills, `_run-tracker.md`, `_recommendation-ledger.md`, every project backlog and the project/SQL gate sections needed for the debt sweep | `notes/prompts/README.md`, `_internal/_system-map.md`, `system/_internal/_system-check-report.md`, and justified recommendation-ledger rows; never source prompts, skills, standards, plans, backlogs, or debt records |
+| `system/system-check-prompt.md` | **Explicit, global, on-demand machinery audit — never a per-commit gate.** Builds a disk-derived manifest of every canonical runnable prompt and internal contract/component, both launcher catalogues, mirrored skills, the validator, and the two derived maps. It proves every inventory item was read to EOF, reconciles this catalogue and the wiring/skill map under their one-owner split, and routes only genuine cross-system machinery improvements to the recommendation ledger. A cold final reviewer must approve the complete reconciliation before it may publish a global verdict. | canonical prompts and the explicitly enumerated internal prompt/standard/contract set, including `_shared-context.md`; `validate-prompt-system.ps1 -MachineryOnly`; both launcher catalogues; paired skills; both maps; `_recommendation-ledger.md` for its improvement-loop contract and finding deduplication. Live project/learning/practice/application artifacts, trackers, evidence state, notes-plan freshness and debt counts are excluded from the inventory even when a prompt names their path pattern | `notes/prompts/README.md`, `_internal/_system-map.md`, `system/_internal/_system-check-report.md`, and justified recommendation-ledger rows; never source prompts, skills, standards or live artifacts |
 
 ---
 
@@ -413,9 +468,12 @@ Practice (its own loop, fed by coverage):
    to think a project ahead, or to contest a choice before any design work exists
 3. `plan-audit` (`MODE = new`) — plan it, get PLANNING.md (author + reviewer, hands-off)
 4. build it, step by step (daily sessions)
-5. `readme-audit` — fix the README(s) after each big feature
-6. `review-audit` — code review when the project is complete
-7. `portfolio-audit` — final gate before adding it to CV/LinkedIn
+5. `review-audit` — run the backend and frontend review gates when each tier is complete
+6. fix every open High from those reviews
+7. `readme-audit` — reconcile the README(s) after the reviewed implementation is stable
+8. `progress-update` (`MODE = active`) — its drift report must be empty
+9. `portfolio-audit` — final gate before adding the project to CV/LinkedIn
+10. `roadmap-review` after a ✅ Ready portfolio verdict
 
 **Auditing knowledge (one topic)**
 1. `coverage-prompt` — define/refresh exactly one topic and level (Angular and Angular Material separately)
@@ -496,6 +554,10 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 
 - Run `system-check` only when Victor explicitly asks for it, normally after a substantial group of
   prompt/skill changes or before a deliberate whole-system refinement pass.
+- It audits the complete machinery and the two documents derived from it. It may record that a prompt
+  reads or writes a `PLANNING.md`, backlog, SQL route, notes plan, tracker or application artifact, but
+  it never opens those live artifacts, counts their state, or lets them enter the denominator or block
+  the verdict. Their own task, step, SQL, practice and application rituals own operational truth.
 - It is not part of the daily workflow and never runs before ordinary commits. `map-sync` remains the
   incremental change/read ritual; the PowerShell validator remains the token-free structural check.
 

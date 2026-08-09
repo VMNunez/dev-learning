@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
-    [string]$RepositoryRoot
+    [string]$RepositoryRoot,
+    [switch]$MachineryOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -299,6 +300,10 @@ foreach ($relative in ($claudeManifest.Keys + $agentManifest.Keys | Sort-Object 
 # `_coverage-standard.md` calls the mirrors generated artifacts over the topic
 # sources; a writer that touches one and not the other introduces drift that
 # nothing else announces.
+$coverageLevels = @()
+$topicCoverageRoots = @()
+$fingerprintReports = [System.Collections.Generic.List[string]]::new()
+if (-not $MachineryOnly) {
 $coverageLevels = @('junior', 'middle', 'senior')
 $topicCoverageRoots = @(
     Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'notes') -Directory |
@@ -369,7 +374,6 @@ function Get-CoverageDigest {
     }
     return Get-Sha256Hex ($latin1.GetBytes($lines -join "`n"))
 }
-$fingerprintReports = [System.Collections.Generic.List[string]]::new()
 foreach ($topic in $topicCoverageRoots) {
     foreach ($level in $coverageLevels) {
         $planPath = Join-Path $topic.FullName "coverage\notes-plan-$level.md"
@@ -523,6 +527,7 @@ foreach ($topic in $topicCoverageRoots) {
         }
     }
 }
+}
 
 # --- Invariant 5: the maps know the machinery exists -------------------------
 # The two-map rule and the `map-sync` ritual both fire on judgement, so neither
@@ -665,11 +670,17 @@ Write-Output 'PASS: external-path failure simulation'
 Write-Output 'PASS: thin session adapters share one rules source'
 Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, both path forms)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
-Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
-Write-Output "PASS: both maps know the machinery exists ($($diskSkills.Count) skills, $expectedRunnableCount prompts registered)"
-if ($fingerprintReports.Count -eq 0) {
-    Write-Output 'PASS: every notes plan agrees with its coverage fingerprint'
+if ($MachineryOnly) {
+    Write-Output 'SKIP: live coverage, notes-plan, SQL-route, and simulation-route state (machinery-only mode)'
 } else {
-    Write-Output "REPORT: $($fingerprintReports.Count) notes plan(s) disagree with their coverage fingerprint - reported, never repaired:"
-    $fingerprintReports | ForEach-Object { Write-Output "  - $_" }
+    Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
+}
+Write-Output "PASS: both maps know the machinery exists ($($diskSkills.Count) skills, $expectedRunnableCount prompts registered)"
+if (-not $MachineryOnly) {
+    if ($fingerprintReports.Count -eq 0) {
+        Write-Output 'PASS: every notes plan agrees with its coverage fingerprint'
+    } else {
+        Write-Output "REPORT: $($fingerprintReports.Count) notes plan(s) disagree with their coverage fingerprint - reported, never repaired:"
+        $fingerprintReports | ForEach-Object { Write-Output "  - $_" }
+    }
 }

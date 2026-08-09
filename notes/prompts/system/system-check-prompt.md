@@ -9,20 +9,25 @@ hands-off orchestrator and uses its role, isolation, whole-file, and close-out c
 
 ## Purpose
 
-Establish whether the two derived maps still tell the truth about the machinery:
+Establish whether the two derived maps completely and truthfully document the prompt-and-skill
+machinery:
 
-- `notes/prompts/README.md` — every runnable and internal prompt component, what it does, what it reads,
-  what it generates or updates, prerequisites, launcher parity, grouping, and run order.
-- `notes/prompts/_internal/_system-map.md` — cross-prompt chains, writers and readers, `PROGRESS.md`
-  ownership, skills, triggers, handoffs, gates, debts, symptoms, and the improvement loop.
+- `notes/prompts/README.md` — the navigable prompt catalogue and run-order entry point. It owns each
+  prompt's public command, run-first prerequisite, configuration/modes and received inputs, files and
+  contracts read, files written or values returned, dispatched roles/isolation, commit owner,
+  handoffs/gates, and explicit exclusions.
+- `notes/prompts/_internal/_system-map.md` — the comprehensive wiring reference. It owns cross-system
+  chains and file ownership plus each skill's trigger, received inputs, reads, writes/returns, isolation,
+  commit owner, handoffs/gates, and explicit exclusions.
 
-The audit also surfaces operational debt already recorded by the system, so Victor receives one
-prioritised view instead of having to notice each stale flag or overdue gate independently.
+Each fact has one owner. The other map links to that owner when repetition would create a rule fork.
+This audit checks the machinery and its documentation; it never measures whether Victor has already
+run or applied that machinery.
 
 ## Boundaries
 
 - **The machinery wins.** A disagreement is repaired in the maps; never edit a prompt, `SKILL.md`,
-  standard, launcher, project plan, backlog, tracker debt, or source artifact to make a map look right.
+  standard, launcher, or live artifact to make a map look right.
 - **Derived files may be corrected.** This prompt may edit only `notes/prompts/README.md`,
   `notes/prompts/_internal/_system-map.md`, its audit report, the recommendation ledger for findings,
   and the universal run report/tracker files required by the close-out contract.
@@ -31,6 +36,11 @@ prioritised view instead of having to notice each stale flag or overdue gate ind
   refactor the machinery that produced it.
 - **Explicit invocation only.** Do not schedule, infer, or chain this run from another prompt or skill.
 - **Global only.** There is no target or batch mode. A partial inventory cannot produce a global verdict.
+- **Machinery only.** A path pattern, schema, ownership rule, or gate declared by a prompt/skill is in
+  scope as machinery. The live artifact governed by it is not. Never traverse project `PLANNING.md` or
+  `PROJECT-BACKLOG.md` files, SQL doctrine/routes, coverage or notes-plan state, practice trackers,
+  project/application state, or their debt counts. They are excluded from the inventory, denominator,
+  report, snapshot, and blocking conditions even when a source prompt names them as inputs or outputs.
 - **No single-agent fallback.** If the required cold roles cannot be dispatched, close as `blocked`
   through `_pipeline-self-report.md`; do not publish a partial map correction.
 
@@ -50,8 +60,10 @@ prioritised view instead of having to notice each stale flag or overdue gate ind
    change and refuse to stage it.
 2. Read this prompt's previous `_last-run-report.md` `Status:` line if the file exists, following the
    run-start rule in `_pipeline-self-report.md`. Surface an open finding; never apply it before this run.
-3. Run `notes/prompts/_internal/validate-prompt-system.ps1` as the mechanical baseline. Record every
-   `PASS`, `REPORT`, and failure. A structural failure does not replace the semantic audit.
+3. Run `notes/prompts/_internal/validate-prompt-system.ps1 -MachineryOnly` as the mechanical baseline.
+   Record every `PASS`, `SKIP`, and failure. The switch preserves machinery invariants while preventing
+   live coverage/plan/route state from blocking this audit. A structural failure does not replace the
+   semantic audit.
 4. Record the starting commit hash for provenance. The frozen working-tree snapshot is built only after
    Step 1 has established its authoritative path denominator.
 
@@ -59,16 +71,27 @@ prioritised view instead of having to notice each stale flag or overdue gate ind
 
 The orchestrator enumerates, from disk rather than from either map:
 
-- every runnable prompt under `notes/prompts/`;
-- every internal Markdown component under each prompt family, excluding `_last-run-report*.md` and the
-  output report of this prompt;
-- the root prompt-system contracts and PowerShell validator;
+- every runnable prompt returned by the validator's canonical rule: recursive `*.md`, excluding
+  `README.md`, `_internal/` directories, and filenames beginning with `_`; assert that this set equals
+  the canonical targets referenced by both launcher catalogues;
+- every internal `*-prompt.md`, `*-standard.md`, and `*-rationale.md`, plus the three SQL branch/seed
+  components (`_sql-exercises-practice.md`, `_sql-exercises-review.md`, `_sql-exercise-seeds.md`) and
+  the coverage ownership contract (`_topic-ownership.md`);
+- the root contracts `_session-rules.md`, `_agent-runtime-standard.md`, `_batch-mode.md`,
+  `_external-path-preflight.md`, `_pipeline-self-report.md`, `_single-shot-self-report.md`, and
+  `_recommendation-ledger.md`, plus `_shared-context.md` (the shared canonical runtime input) and the
+  PowerShell validator;
 - `notes/prompts/README.md` and `notes/prompts/_internal/_system-map.md` themselves, as the two objects
   under review;
 - every skill directory in both adapters, paired by relative path;
-- every launcher in both adapter catalogues, paired by filename;
-- every `PROJECT-BACKLOG.md` whole, the §0/§23 sections of every project `PLANNING.md`, and the SQL
-  doctrine §9 plus route status sections needed for the debt sweep.
+- every launcher in both adapter catalogues, paired by filename.
+
+Exclude generated reports (`_last-run-report*.md` and this prompt's output report), runtime/evidence
+state (`_run-tracker.md`, `_skill-friction.md`, `_job-market-evidence.md`, `_cross-topic-inbox.md`), and
+every live artifact outside the machinery set above. `_recommendation-ledger.md` remains in scope for
+its improvement-loop contract and for deduplicating new machinery findings, but its open rows are not
+an operational-debt queue. Do not follow a path merely because an audited file names it: record the
+declared pattern or contract in the manifest and stop at the machinery boundary.
 
 Save the counts in the working report. The inventory is the denominator: every audited file must later
 have exactly one manifest owner, and every launcher/skill mirror must have exactly one pair. A second
@@ -93,7 +116,7 @@ One family is one directory containing runnable prompts and its `_internal/` com
 2. Reads implementation steps, not only headers or frontmatter.
 3. Returns one manifest row per runnable prompt with:
    `command · run-first prerequisite · configuration/modes · roles/dispatches · reads · writes/returns ·
-   commit owner · handoffs/gates/debts · close-out contract`.
+   commit owner · handoffs/gates · explicit exclusions · close-out contract`.
 4. Returns one manifest row per internal component with:
    `read by · purpose/authority · reads · writes/returns · ownership claims it establishes`.
 5. Names contradictions inside the family separately from map disagreements. It does not edit files.
@@ -110,16 +133,13 @@ Dispatch three independent analysts:
 - **Launcher analyst, tier `mechanical`:** proves filename and canonical-target parity, command names,
   delegation, argument contracts, and the runnable-prompt denominator.
 
-### 2C — map claims and operational debt
+### 2C — map claims
 
-Dispatch two more independent analysts:
+Dispatch one independent analyst:
 
 - **Map-claims analyst, tier `standard`:** reads `notes/prompts/README.md` and
   `notes/prompts/_internal/_system-map.md` to EOF and returns a location-indexed inventory of every claim
   Step 4 must rule on. It extracts claims only; it never treats them as expected truth.
-- **Debt analyst, tier `standard`:** reads `_run-tracker.md` and `_recommendation-ledger.md`, every project
-  backlog to EOF, the named project plan sections, and the SQL doctrine/route sections from Step 1. It
-  returns the Step 5 queue evidence and owns that debt corpus in the completeness denominator.
 
 No analyst receives either map's claims as instructions. The maps are the objects under review, not the
 source from which the expected answer is reconstructed.
@@ -131,11 +151,11 @@ Before comparing a single map row:
 1. Match analyst reports against the Step 1 inventory.
 2. Reject a report missing any assigned file, any EOF declaration, or any requested manifest field.
 3. Re-dispatch only the failed bounded concern, cold.
-4. Recompute the Step 0 path + hash manifest and stop on any change.
+4. Recompute the Step 1 path + hash manifest and stop on any change.
 5. Require `audited files = inventory files`, `duplicate manifest ownership = 0`, `unassigned files = 0`, and
    launcher/skill mirror parity proven.
 
-If the gate cannot close, take the blocked branch in Step 8 and then execute the pipeline close-out. A
+If the gate cannot close, take the blocked branch in Step 7 and then execute the pipeline close-out. A
 partial sweep may report positive contradictions but may not claim an absence or edit maps.
 
 ## Step 4 — reconcile the two maps
@@ -145,15 +165,23 @@ name hit.
 
 ### `notes/prompts/README.md`
 
-Check all counts and group lists; every catalogue row's description, reads, and generates/updates cells;
-internal-component rows; run-first dependencies; launcher naming and parity; orchestrator/single-shot
-classification; batch/global status; and typical run order.
+Check all counts and group lists; every catalogue row's public command, run-first prerequisite,
+configuration/modes and received inputs, reads, writes/returns, dispatched roles and isolation, commit
+owner, handoffs/gates, and explicit exclusions; internal-component rows; launcher naming and parity;
+orchestrator/single-shot classification; batch/global status; and typical run order.
 
 ### `notes/prompts/_internal/_system-map.md`
 
 Check the opening system properties; every chain step in §§2–6; every applicable writer/reader row in
-§7; all `PROGRESS.md` ownership claims in §8; every skill row in §9; every debt in §10; every symptom
-route in §11; and the improvement/validation loop in §12.
+§7; all `PROGRESS.md` ownership claims in §8; every skill row in §9 — trigger, received inputs, reads,
+writes/returns, isolation, commit owner, handoffs/gates, and explicit exclusions; every machinery debt
+in §10; every symptom route in §11; and the improvement/validation loop in §12. Operational state is
+never loaded to verify a structural claim: verify the prompt or skill contract that declares the path,
+schema, owner, or gate.
+
+Enforce the documentation split while reconciling: `README.md` owns per-prompt facts and run order;
+`_system-map.md` owns per-skill facts and cross-system wiring. Replace duplicate rule text in the
+non-owning document with a link to its owner.
 
 For each discrepancy record:
 
@@ -163,22 +191,7 @@ Draft corrections for all map occurrences supported by evidence, but do not appl
 final review. Never broaden a correction past what the manifests prove, and never rewrite an authoritative
 file to agree with a derived one.
 
-## Step 5 — operational-debt sweep
-
-Independently of map truth, collect and prioritise:
-
-- every live `⚠ stale` flag and prerequisite-relevant empty cell in `_run-tracker.md`;
-- every `open` or `accepted` recommendation in `_recommendation-ledger.md`;
-- every open High/Medium backlog task;
-- every `⏸ Deferred` backlog marker whose named gate is now due;
-- each project §0/§23 gate and SQL doctrine §9 gate whose observable precondition is satisfied but whose
-  required prompt/ritual has not closed it.
-
-Return one queue ordered by: blocking correctness/security work, due gates, stale prerequisites, then
-non-blocking improvements. Every row names the evidence, why it is due now, and the exact prompt or
-ritual that clears it. Do not clear or repair the debt in this run.
-
-## Step 6 — architecture findings for later refinement
+## Step 5 — architecture findings for later refinement
 
 Using the manifests and corrected map as evidence, identify only cross-system findings that a per-file
 audit cannot see: overlapping writers, missing consumers, broken feedback loops, orphan outputs,
@@ -188,9 +201,9 @@ Reconcile each genuine improvement with `_recommendation-ledger.md`: update an e
 the same problem; create a new `REC-NNN` only when it is distinct. Preserve the ledger's resolution and
 cold-review rules. Do not implement the recommendation.
 
-## Step 7 — cold final review
+## Step 6 — cold final review
 
-Recompute the Step 0 path + hash manifest, then dispatch one cold `reviewer`, tier `deep`, with the
+Recompute the Step 1 path + hash manifest, then dispatch one cold `reviewer`, tier `deep`, with the
 complete manifests, both current maps, the proposed map patch, and the draft system-check report. The
 reviewer checks:
 
@@ -199,28 +212,31 @@ reviewer checks:
 - every occurrence of a changed claim was updated;
 - no authoritative machinery file was edited;
 - corrections and recommendations are separated correctly;
-- the debt queue names an actual owner and observable due condition;
+- the README/system-map ownership split is complete and contains no rule fork;
+- no live artifact or operational-state claim entered the inventory, denominator, report, or verdict;
 - the final global verdict is no broader than the completed audit.
 
 Return `approve`, `approve-with-tightening`, or `reject`, with specific corrections. Apply only an
-approved form. A rejection takes the blocked Step 8 branch with no map or ledger edits.
+approved form. A rejection takes the blocked Step 7 branch with no map or ledger edits.
 
-## Step 8 — report, validate, and commit the audit
+## Step 7 — report, validate, and commit the audit
 
 Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
 
 1. date, starting commit, branch, and `Status: complete | blocked`;
 2. inventory and dispatch coverage counts;
 3. validator baseline and final result;
-4. map corrections, including explicit `verified — no change` sections;
-5. prioritised operational-debt queue;
-6. architecture findings linked to their recommendation IDs;
-7. final reviewer verdict;
-8. global verdict: `maps verified`, `maps corrected`, or `blocked — incomplete audit`.
+4. README catalogue coverage and corrections, including explicit `verified — no change` sections;
+5. system-map wiring/skill coverage and corrections, including explicit `verified — no change` sections;
+6. boundary proof: the excluded live-artifact classes and confirmation that none entered the denominator;
+7. architecture findings linked to their recommendation IDs;
+8. final reviewer verdict;
+9. global verdict: `maps verified`, `maps corrected`, or `blocked — incomplete audit`.
 
 **Completed branch:** apply the reviewer-approved map patch and justified recommendation rows, then run
-the validator again. Inspect `git diff` and prove that only the declared maps, audit report, and justified
-ledger rows changed. Run `git status` immediately before staging and again immediately before committing.
+the validator again with `-MachineryOnly`. Inspect `git diff` and prove that only the declared maps,
+audit report, and justified ledger rows changed. Run `git status` immediately before staging and again
+immediately before committing.
 Commit those files atomically as:
 
 `docs: audit and synchronize prompt system`
@@ -230,10 +246,10 @@ the durable evidence that the full sweep happened.
 
 **Blocked branch:** discard any unapproved draft correction, write the report with
 `Status: blocked`, the completed evidence, the failed gate and `blocked — incomplete audit`, and commit
-that report alone as `docs: record blocked prompt system audit`. Then continue to Step 9 so the separate
+that report alone as `docs: record blocked prompt system audit`. Then continue to Step 8 so the separate
 pipeline report and tracker commit also records the blocked outcome.
 
-## Step 9 — pipeline close-out
+## Step 8 — pipeline close-out
 
 Execute the close-out checks, ledger reconciliation, report, tracker and commit rules in
 `notes/prompts/_internal/_pipeline-self-report.md`. Its report is about how this audit pipeline behaved,
@@ -253,9 +269,9 @@ in the committed audit report and must not be misreported as a skipped step.
 A run is `completed` only when all of these are true:
 
 - every inventory file was read to EOF and appears exactly once in the manifests;
-- every README and system-map claim in scope was checked;
+- every README prompt-contract field and every system-map wiring/skill field in scope was checked;
 - every supported correction survived the cold final review;
-- the operational-debt queue is complete and owner-routed;
+- no live project, learning, practice, application, or debt state entered the audit denominator;
 - the final validator exits successfully;
 - the audit commit and the separate self-report commit both pass their stat checks.
 

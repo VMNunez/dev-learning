@@ -21,6 +21,15 @@ in halves:
 
 If this map disagrees with any of them, they win and this file is wrong.
 
+**The two derived maps have one owner per fact.** `README.md` owns every prompt's public interface and
+exact per-prompt contract: command, run-first prerequisite, configuration/received inputs, reads,
+writes/returns, dispatched roles/isolation, commit owner, local handoffs/gates, and exclusions. This map
+owns relationships that exist only across components: chain order, file-level writer/consumer edges,
+section ownership, debts/symptoms/improvement flow, and the complete per-skill contract in §9. The chain
+sections below use prompt names and endpoint files only as adjacency labels; their per-prompt details
+link back to the README and never override its row. `/system-check` audits both halves together and
+rejects a genuine duplicate rule fork.
+
 **How it stays true.** It is hand-written and nothing regenerates it, so it is kept in sync by a rule
 rather than by a build step: `_session-rules.md` → **"The two maps follow every change to the machinery"**.
 Any edit to a prompt or a skill — a ledger item applied, a self-report's at-end refinement, a new or
@@ -105,11 +114,11 @@ not his. Full rule in `_session-rules.md`.
                      │            ▲                                              │
                      │            │                     build ─► step-complete ──┤
                      │            │                                              │
-                     │            │        /readme-audit · /review-audit ─► PROJECT-BACKLOG.md
-                     │            │                     │                        │
+                     │            │        /review-audit ─► PROJECT-BACKLOG.md / Highs
+                     │            │                              │
                      │            │        backlog-task-open ─► backlog-task-close
-                     │            │                                              │
-                     │            │                            /portfolio-audit ─┴─► cv-bullets.md
+                     │            │                              │ fixed Highs
+                     │            │        /readme-audit ─► /progress-update ─► /portfolio-audit ─► cv-bullets.md
                      │            └── /roadmap-review ─► ROADMAP.md                    │
                      │                                                                 ▼
   C. SQL             └──► /sql-plan ─► PLANNING-{LEVEL}.md              D. APPLY   /cv · /linkedin
@@ -130,212 +139,72 @@ not his. Full rule in `_session-rules.md`.
                                                     MISTAKES ◄─ correction ◄─ simulation-grade
 ```
 
-`/system-check` sits outside Chains A–D. It consumes the machinery and both maps as one explicit global
-audit after substantial changes; it never becomes a prerequisite of their ordinary runs or commits.
+`/system-check` sits outside Chains A–D. It consumes the canonical machinery, both launcher catalogues,
+mirrored skills, the validator and both maps as one explicit global audit after substantial changes; it
+never becomes a prerequisite of their ordinary runs or commits. Its machinery-only boundary — declared
+path patterns in, the live artifacts governed by them out — is stated by
+[its README catalogue row](../README.md#system--audit-the-machinery-system) and owned by the prompt's own
+`Boundaries` section; §10 records only the gotcha it creates.
 
 ---
 
 ## 3 — Chain A: knowledge (coverage → notes → Q&A)
 
-The root of everything. Coverage defines *what junior means*; every other chain consumes it.
+Exact command contracts live in the [README public interface index](../README.md#public-interface-index) and its [family catalogue](../README.md#the-prompts--what-each-one-reads-and-generates). This section owns only cross-component order and durable edges.
 
-1. **`/coverage {topic} {level}`** — defines or refreshes the scope of one topic at one level, anchored
-   to real job postings in `_job-market-evidence.md`.
-   → writes `notes/{topic}/coverage/{LEVEL}.md` **and its global mirror** `notes/coverage/{LEVEL}.md`
-   (every coverage writer writes both), files gaps owned by other topics into `_cross-topic-inbox.md`,
-   consumes applicable `verify-{LEVEL}.md` gaps, stamps `Plan status: stale` on every notes plan whose
-   fingerprint it just invalidated, and recounts the affected `PROGRESS.md` `Coverage demonstrated`
-   cells because the denominator moved.
+    /coverage → /coverage-verify ─┐
+         └───────────────────────┴→ /notes-plan → /notes-audit → bilingual notes
+         └→ /interview-prep-audit → /interview-prep-route
+                                          └→ interview-prep-block-open → study-block-close → PROGRESS.md
 
-2. **`/coverage-verify {topic} {level}`** — a cold reviewer checks that scope is *complete* for the job
-   target, including the earlier levels it depends on.
-   → writes `notes/{topic}/coverage/verify-{LEVEL}.md` (verdict + gaps). **Advisory**: a `gaps` verdict
-   never blocks step 3. The gaps feed back into a `/coverage` update run — that is the loop you meant
-   by "si encuentra gaps se ejecuta coverage otra vez".
+    all topics at one level → /coverage-audit → /roadmap-review
 
-3. **`/notes-plan {topic} {level}`** — turns the checklist into a study map: which note file teaches
-   which bullet, in what order, each bullet mapped **exactly once**.
-   → writes `notes/{topic}/coverage/notes-plan-{LEVEL}.md`, carrying a `Coverage SHA-256` fingerprint of
-   the coverage file it was built from. Each entry separates authored `Status` from its independent
-   `Studied` date. It writes no prose.
-
-4. **`/notes-audit {topic} {level} {note}`** — builds **one** planned file pair through four cold stages
-   (English author → English reviewer → translator → Spanish reviewer).
-   → writes `notes/{topic}/{level}/en/NN-*.md` + `es/NN-*.md`, marks that entry's concepts `[x]` in the
-   plan, resets `Studied` when prose changes, and commits the three atomically. Repeat once per pending entry until the plan is all
-   `complete` / `refined`. It refuses to run on a plan whose fingerprint is stale — that is why step 3
-   is not optional.
-
-5. **`/interview-prep-audit {level} {topic}`** — builds that topic's market-selected Q&A bank from
-   current coverage + evidence. The selected notes plan must be current; pending junior entries are
-   allowed because every authored question remains unrefined until Victor accepts it. Middle/senior
-   still require their earlier-level progression gates.
-   → writes fingerprinted, stable-ID `notes/interview-prep/{LEVEL}/en/*.md` + `es/*.md`, including
-   standalone Spring; Angular Material deliberately shares Angular's bank. Coverage bounds the level
-   but does not demand one question per bullet.
-
-6. **`/interview-prep-route {level}`** — after every required bank is current, selects the globally
-   weighted CORE subset from ⭐⭐⭐ questions and fingerprints the state-stripped question inventory.
-   → writes `notes/interview-prep/routes/{LEVEL}.md`, IDs and navigation labels only, never answers.
-
-7. **When every topic has that level: `/coverage-audit {level}`** — the convergence pass over the global
-   mirror (level boundaries, missing topics, ownership overlaps) — **then `/roadmap-review`**.
-
-**In-session on this chain:** `study-content-writer` keeps bilingual note/Q&A edits at their standards.
-Only Victor assigns `[refined]`; that freezes the complete question block, and an explicit reopen/TODO
-clears both lifecycle markers before editing. `interview-prep-block-open` resolves the CORE route,
-presents one refined question, accepts dictation or text, and grades PASS/BORDERLINE/FAIL without
-writing. When the 13:30 block ends, `study-block-close` dates exact notes, mirrors `[studied]` only on
-refined IDs with final PASS, and recounts Notes + CORE + full-bank `PROGRESS.md` study cells.
-
-**The sideways door: `_cross-topic-inbox.md`.** When any coverage run — or `coverage-bullet-add` in a
-daily session — finds a concept owned by a *different* topic, it never writes into that topic's file. It
-files a proposal under that topic's heading in
-`notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md`. Each `/coverage` run reads its own
-heading and processes it in Step 2; `/coverage-audit` sweeps every heading. This is the only
-durable handoff *between* topics, and it is why an inline bullet that lands in the wrong topic is a real
-failure rather than a cosmetic one.
+_cross-topic-inbox.md is the durable edge between topic owners: coverage producers file foreign-topic proposals there, and the owning /coverage run consumes its heading. An inline coverage-bullet-add creates a durable /notes-plan remap debt rather than editing a fingerprinted plan by hand.
 
 ---
 
 ## 4 — Chain B: projects (decide → plan → build → review → gate)
 
-1. **`/progress-update`** — run it *first*, and repair whatever its drift report names. It is an
-   **auditor**: it writes one table and measures the rest (see §8).
-2. **`/project-brief`** — decides *which* project, on one page, with a mandatory cold second opinion.
-   → `projects/briefs/project-brief-{NN}.md`. Gap analysis keys on the `✅ NN-slug` evidence markers in
-   coverage, never on `PROGRESS.md`.
-3. **`/plan-audit MODE = new`** — designs the project the brief chose: full 24-section plan, an
-   architecture advisor, then seven cold specialist reviewers.
-   → `{project}/PLANNING.md`, a new row in `PROGRESS.md` `## Projects`, a mark in `ROADMAP.md`.
-4. **Build it, step by step, in the daily sessions.** Each finished step fires **`step-complete`** — see
-   §9; it is the ritual that touches the most files in the whole system.
-5. **`/readme-audit`** — README(s) to the standard, one author+reviewer pair per README (gate **G5**).
-6. **`/review-audit`** — code + correctness + security + tests, by vertical slice.
-   → `PROJECT-BACKLOG.md` (**auto-committed** — the file is never written by Victor).
-7. **Per backlog task, in session:** **`backlog-task-open`** triages it before any teaching (five
-   verdicts; a *wrong moment* verdict writes a `⏸ Deferred` marker and nothing else) → the teach-first
-   explanation → **`backlog-task-close`** pushes the concept back into the seven places the plan never
-   knew about it.
-8. **`/portfolio-audit`** — the go/no-go gate (**G7**).
-   → `notes/interview-prep/projects/{project}.md`, `notes/cv/cv-bullets.md`, and on ✅ Ready the profile
-   README in the separate `dev/portfolio/VMNunez` repo.
+Exact command contracts live in the [README public interface index](../README.md#public-interface-index) and its [family catalogue](../README.md#the-prompts--what-each-one-reads-and-generates). This section owns only chain order and project gates.
 
-**The gates (`PLANNING.md` §23), which are what actually sequences this chain:**
+    /progress-update → /project-brief → /plan-audit MODE=new → build
+    → step-complete (G1)
+    → /review-audit G3/G4 → fix every High
+    → /readme-audit G5 → empty /progress-update G6
+    → /portfolio-audit G7 → /roadmap-review G8
 
-| Gate | Fires when | Run |
-|---|---|---|
-| **G1** | every step's done condition passes | *no prompt* — the `step-complete` skill, in session |
-| **G2** | only if the plan or branch strategy moves mid-build | `/plan-audit MODE = review` |
-| **G3** | the backend is complete | `/review-audit REVIEW_SCOPE = backend` |
-| **G4** | the frontend steps are complete | `/review-audit REVIEW_SCOPE = frontend` |
-| **G5** | every **High** from G3/G4 is fixed | `/readme-audit` |
-| **G6** | after G5, before the portfolio gate | `/progress-update MODE = active` |
-| **G7** | after G5 **and** G6 | `/portfolio-audit` |
-| **G8** | G7 returned ✅ Ready | `/roadmap-review` |
-
-The chain is `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. **G6 closes on an empty drift report, not on
-the run having happened** — a run that names drift leaves it open until the owner it names has repaired
-it.
-
-> **Careful with the letter G.** The project gates above live in each `PLANNING.md` §23. The SQL track
-> has its *own* G1–G4 in `practice/sql/PLANNING.md` §9, and they are different gates: SQL's **G3** is
-> `progress-update` (project G3 is a backend review), SQL's **G4** is `roadmap-review` (project G4 is a
-> frontend review). Always say which §23/§9 you mean.
+backlog-task-open → teach/fix → backlog-task-close is the per-finding loop between G3/G4 and G5. G2 sits off this line: it fires only when the plan or branch strategy moves mid-build, and runs `/plan-audit MODE=review`. PLANNING.md §23 is authoritative for these gates; SQL's separately named G1–G4 belong to practice/sql/PLANNING.md §9 and do not redefine this chain. G6 closes only on an empty drift report.
 
 ---
 
 ## 5 — Chain C: SQL (the 12:30 block)
 
-Two plan files, and confusing them is the classic mistake:
-`practice/sql/PLANNING.md` is the **level-neutral doctrine** (the step loop, done-condition formats,
-gates, revision cadence, the §8c technique table). `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` is the
-**route** for one level (steps, files, targets, counts). One doctrine, three routes.
+Exact command contracts live in the [README public interface index](../README.md#public-interface-index) and its [family catalogue](../README.md#the-prompts--what-each-one-reads-and-generates). This section owns only SQL and simulation wiring.
 
-1. **`/coverage sql junior`** (+ `/coverage-verify`) → `notes/sql/coverage/junior.md` + mirror.
-2. **`/sql-plan junior`** → the route, fingerprinted against that coverage, **plus the level's
-   `Exercise route` projection in `PROGRESS.md`** (its own commit, separate from the route's). Re-run
-   when coverage grows.
-3. **`/sql-plan-audit`** → audits *and extends* both files; writes steps for coverage sections nothing
-   claims yet.
-4. **The block itself**, five moments:
-   - **`sql-block-open`** — read-only orientation: which step, which file, how many unanswered, which
-     Moment comes next. It also reaches **into chain A** — it opens
-     `notes/sql/coverage/notes-plan-{LEVEL}.md`, finds the entry claiming this step's coverage bullets,
-     and says whether the theory note behind the step is worth reading first or still needs
-     `/notes-audit`. That is the only link between the exercise track and the notes track. Writes
-     nothing; a stale §0 is *reported*, never silently repaired.
-   - **`/sql-exercises MODE = practice`** → `practice/sql/{LEVEL}/NN-name.sql`. Topic, count and focus
-     come from the route, never pasted.
-   - Victor answers them in pgAdmin. His file, his commit.
-   - **`sql-grade`** — refuses a partially answered file, then runs the review prompt in a **cold
-     subagent** (it must not remember teaching him the answer). That subagent writes `MISTAKES.md`
-     `## Open`, the `Exercise route` tables in `PROGRESS.md`, the route's §1 counts / §2 checkboxes /
-     §3 status, and the doctrine's §0.
-   - **`sql-block-close`** — writes exactly one thing: `MISTAKES.md` `## Fricción`, the concepts that
-     cost him time and that he then got *right*. Nothing else in the track can see those, because a
-     grader only records failures.
-5. **`sql-step-close`** fires automatically when a step's last file scores ≥ 80%. Its own work is the
-   **drill markers**: `✅ sql:{file-slug}` on every coverage bullet the step's scored exercises actually
-   drilled, in the topic file and the mirror. It also re-checks the `Total` arithmetic in `PROGRESS.md`,
-   names any revision point now due, and states which techniques a simulation may now ask for (§8c).
-6. **Revision points R1–R5** take their focus from `MISTAKES.md` — `## Open` rows first, highest count
-   first; when a span has no open rows, `## Fricción` for that span.
-7. A later **`/simulation-plan`** may admit SQL only from the techniques §8c says are unlocked; its
-   route-driven `/simulation-generator` independently re-checks that fence.
-8. **After the level's last step:** gate **G3** `/progress-update`, then **G4** `/roadmap-review`, then
-   `/sql-plan middle`.
+    notes/sql coverage → /sql-plan → /sql-plan-audit → level route
+    → sql-block-open → /sql-exercises → Victor answers → sql-grade (cold)
+    → sql-block-close / sql-step-close → drill markers + §8c readiness → /simulation-plan
 
-### The timed-simulation loop (coverage + evidence → plan → attempt → correction)
+    coverage + PROGRESS → /simulation-plan → route
+    → simulation-block-open → /simulation-generator → timed attempt
+    → simulation-block-close → simulation-grade (cold)
+    → correction or later reinforcement when required
 
-This is a separate practice route, not an extension of the SQL exercise counters:
-
-1. **`/progress-update`** must have an empty drift report; readiness cannot be planned from a stale
-   professional-level/evidence matrix.
-2. **`/simulation-plan {LEVEL}`** reads selected-level coverage, PROGRESS/project evidence, existing
-   specs/TRACKER/MISTAKES, and SQL's unlocked-technique fence. It creates the level-neutral doctrine when
-   missing and the fingerprinted route for that level. It alone authors reinforcement successors.
-   Coverage is the ceiling; evidence decides ready.
-3. **`simulation-block-open`** recomputes the coverage manifest and progress snapshot before it gives one
-   next moment. A moved manifest or unadjudicated progress snapshot routes back to `/simulation-plan`.
-   A missing planned spec
-   hands off to `/simulation-generator`; a ready spec hands off to the timed attempt; an open correction
-   always wins over a new test.
-4. **`/simulation-generator`** materialises exactly one planned step. It cannot accept free-form focus,
-   difficulty, time, or track.
-5. **`simulation-block-close`** records explicit attempted/Assisted state, exact time, stated
-   self-assessment, and friction already spoken. It never grades.
-6. **`simulation-grade`** is the only review door and dispatches `/simulation-review` cold. Pass closes;
-   Borderline/Fail opens mandatory correction rows in simulation MISTAKES. Fixed rows move atomically to
-   Closed. A corrected Fail or reviewed Assisted attempt becomes reinforcement-required;
-   `/simulation-plan` resolves stable IDs from Closed (or the original Assisted focus) and authors the
-   linked test, whose unaided Pass closes both learning states without rewriting the original verdict or time.
-7. **Level close:** every route step closed, no open correction, and at least one Pass in every admitted
-   track; then `/progress-update` audits the timed-simulation roll-up before the next level is planned.
+SQL revision returns through MISTAKES.md and the doctrine's G3/G4 gates. Simulation grading preserves the original timed verdict and returns only its tracking/progress effects to later planning.
 
 ---
 
 ## 6 — Chain D: apply (and how the loop closes)
 
-`/portfolio-audit` → `notes/cv/cv-bullets.md` → **`/cv`** (one-page Spanish CV) · **`/linkedin`** ·
-per offer: **`/cv tailor`** + **`/cover-letter`** → **`/tracker log`** → outcomes with `/tracker update`
-→ **`/tracker analyze`** surfaces skill gaps → **`/evidence-intake`** turns real postings into
-`_job-market-evidence.md` → which is what **`/coverage`** reads to decide what junior means.
+Exact command contracts live in the [README public interface index](../README.md#public-interface-index) and its [family catalogue](../README.md#the-prompts--what-each-one-reads-and-generates). This section owns only application/evidence wiring.
 
-That is the market-to-coverage loop: what the market rejects you for becomes coverage scope. Practice
-has its own shorter feedback loops: SQL and timed simulations feed their MISTAKES rows into revision /
-reinforcement, while the three interview surfaces write and retry their own rows in
-`practice/interview/MISTAKES.md`. Practice gaps do not author coverage bullets; they point at existing
-scope or become Q&A through the owning prompt.
+    /portfolio-audit → project interview evidence + CV evidence
+    → /cv · /linkedin · /profile-readme
 
-**`/profile-readme`** sits beside that line rather than on it — `sync` (fact deltas only) or `optimize`
-(a full re-evaluation against the job target) for the GitHub profile README, which lives in the separate
-`dev/portfolio/VMNunez` repo. `/portfolio-audit` writes that same README, but only on a ✅ Ready verdict,
-so the file has **two writers on different triggers** and §7 records both.
+    one offer → /cv MODE=tailor + /cover-letter → /tracker
+    recurring gap → /evidence-intake → _job-market-evidence.md → /coverage
 
-The apply prompts write **outside the repo** — into `personal/job-search/`, and for `/profile-readme`
-into the separate portfolio repo — never committed from here, so their close-out checks the file's
-**mtime is from this run**, not merely that it exists.
+Practice tracks keep their own mistake/correction loops. §7 owns file writers and commit boundaries; the README owns every command's inputs, outputs and exclusions.
 
 ---
 
@@ -347,7 +216,7 @@ files: the system that describes and checks the system, which has writers like e
 
 | File | Written by | Read by |
 |---|---|---|
-| `notes/{topic}/coverage/{LEVEL}.md` **+ mirror** `notes/coverage/{LEVEL}.md` | `/coverage`, `/coverage-audit` (bulk) · `coverage-bullet-add` (one bullet) · `coverage-mark` (project markers) · `sql-step-close` (drill markers, SQL only) | everything downstream |
+| `notes/{topic}/coverage/{LEVEL}.md` **+ mirror** `notes/coverage/{LEVEL}.md` | `/coverage`, `/coverage-audit` (bulk) · `coverage-bullet-add` (one bullet) · `coverage-mark` (project markers) · `sql-step-close` (drill markers, SQL only) | everything downstream. **A practice gap never authors a bullet here**: `/simulator`, `/hr-screen`, `/code-review-practice` and the simulation loop point at existing scope or become Q&A through the owning prompt — the writer list above is exhaustive |
 | `notes/{topic}/coverage/verify-{LEVEL}.md` | `/coverage-verify` | `/notes-plan` (advisory), `/coverage` update |
 | `notes/{topic}/coverage/notes-plan-{LEVEL}.md` | `/notes-plan` (whole route) · `/coverage` (`Plan status: stale` only) · `/notes-audit` (concept/status + studied reset) · `study-content-writer` (studied reset only) · `study-block-close` (studied date only) | `/notes-audit` (fingerprint gate), `/coverage`, `/interview-prep-audit`, `/progress-update` |
 | `notes/{topic}/{level}/en|es/*.md` | `/notes-audit` · in session, guided by `study-content-writer` for an existing complete, non-frozen pair only | Victor |
@@ -374,14 +243,14 @@ files: the system that describes and checks the system, which has writers like e
 | `practice/simulations/MISTAKES.md` | `/simulation-review` (graded gaps/corrections) · `simulation-block-close` (friction) | `/simulation-plan`, `simulation-block-open`, `simulation-grade`, revision points |
 | `practice/interview/MISTAKES.md` | `/simulator` · `/hr-screen` · `/code-review-practice` (their own performance gaps) | the same three prompts, each consuming only its own surface rows |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit`, `/interview-prep-route` |
-| `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you, `/system-check`, and prompts that gate on it |
-| `notes/prompts/_internal/_skill-friction.md` | any of the seventeen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (every `open` row, before their own recommendations) · `/system-check` |
+| `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you and prompts that gate on it; `/system-check` reaches it only through the universal pipeline close-out, never as semantic-audit inventory |
+| `notes/prompts/_internal/_skill-friction.md` | any of the seventeen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (including `/system-check`'s universal close-out), never the machinery audit's inventory or verdict |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
 | `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 15 of the 30 prompts also name it directly. It **outranks this map** |
-| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` includes its open/accepted rows in the operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
+| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` audits its improvement-loop contract and uses current rows only to deduplicate machinery findings, never to build an operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
-| `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | run by hand and by `/system-check` before and after its semantic audit — see §12. The only automated check in the system |
+| `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | full mode by hand; `/system-check` uses `-MachineryOnly` before and after its semantic audit so live coverage/plan/route state cannot block — see §12. The only automated check in the system |
 | `notes/prompts/_internal/_shared-context.md` | **by hand.** No prompt writes it; the market file beside it (`_job-market-evidence.md`) is the one that gets fed automatically | almost every prompt. `_session-rules.md`'s "Who I am" bullets are its condensed copy, so the two drift apart unless they are edited together |
 | `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` | **by hand, through its own admission contract, with explicit authorization.** A coverage run that meets an unregistered topic **stops** — it never infers a boundary and never registers one silently | `/coverage`, `/coverage-audit`, `/roadmap-review`, `coverage-bullet-add` (altitude routing), and every prompt whose `TOPIC` field reads "one registered topic" |
 | `personal/job-search/**` (**outside the repo**, never committed from here) | `/cv` (`master/`, `applications/`) · `/tracker` (`tracker.csv`, `applications/<empresa>-<puesto>/`) | the whole apply family — `/cv`, `/cover-letter` and `/linkedin` through `_application-standard.md`, `/profile-readme` for `internship-daw.md`. Existence proves nothing here: a close-out checks the **mtime is from this run** |
@@ -399,7 +268,7 @@ This is the file you asked about, and the one where "who writes it" is least obv
 | `## Professional level by topic` | **`/progress-update`** — the only writer of the table | needs all 13 topics at once, which no ritual can compute. `step-complete` / `backlog-task-close` may update a single **evidence cell** when a step or fix earns it |
 | `## Coverage demonstrated` | **`/coverage`, `/coverage-audit`, `coverage-mark`, and `coverage-bullet-add`** | each **recounts** the affected cells and the `Total` row from the coverage files when it changes scope or markers. `step-complete` deliberately does **not** touch this table: a memory-derived copy would overwrite the recounted one |
 | `## Study progress` | **`study-block-close`** | notes dates and bilingual `[refined] [studied]` IDs are primary state; the current route supplies the CORE denominator. This section rolls up Notes + CORE + full bank per level; `/progress-update` measures it as D9 and reports drift |
-| `## Projects` | **`step-complete`** / **`backlog-task-close`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new` |
+| `## Projects` | **`step-complete`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new`; backlog closes update `Professional level by topic` evidence when earned, not this status cell |
 | `## Practice completed → Exercise route` | **`/sql-plan` (seeds/re-syncs the projection) · `sql-grade`'s cold subagent (moves the counts)** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
 | `→ Timed simulations` | **`/simulation-review`** | counted by explicit level + track from `practice/simulations/TRACKER.md`; `/progress-update` audits it |
 | `→ LeetCode` | nothing yet — gated behind the ROADMAP gates | |
@@ -415,25 +284,25 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 All seventeen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
-| Skill | Fires when | What it writes | Hands off to |
-|---|---|---|---|
-| `step-complete` | a learning-plan step is finished | the done-condition check (gate **G1**'s real trigger) · `PLANNING.md` ✅ · `PLANNING.md` **§0** repointed at the next step · `PROGRESS.md` Projects row **and the `Professional level by topic` evidence cell** when the step earns it (§8) | `coverage-bullet-add`, `coverage-mark`, `readme-concept-add` |
-| `coverage-bullet-add` | a step/task taught a concept the checklist lacks | the bullet, in **both** coverage files, routed by **altitude** via `_topic-ownership.md` · a cross-topic proposal in `_cross-topic-inbox.md` when another topic owns it · the `⚠ stale` flag in `_run-tracker.md` · recounts `PROGRESS.md` `Coverage demonstrated` after a bullet write | reports the `/notes-plan` remap it owes |
-| `coverage-mark` | a concept was applied in project code | ` ✅ NN-slug — {evidence}` on the existing bullet, both files · recounts `Coverage demonstrated` | — |
-| `readme-concept-add` | same event, README side | one entry, routed **by audience** to the global / backend / frontend README | — |
-| `backlog-task-open` | Victor picks up a backlog task | only a `⏸ Deferred YYYY-MM-DD — reason` marker, and only on that verdict | the teach-first explanation, or `backlog-task-close` |
-| `backlog-task-close` | a backlog task is done | coverage bullet + marker · README entry · `PLANNING.md` rules + §0 · `PROGRESS.md` · collapses the task into the `## Closed` ledger | `coverage-bullet-add`, `coverage-mark`, `readme-concept-add` |
-| `study-content-writer` | refining an existing complete note or writing/refining Q&A **outside** the audit prompts | note EN/ES + studied reset · unrefined stable-ID Q&A · `[refined]` only on Victor's explicit acceptance · explicit reopen clears both Q&A state markers | `/notes-plan` + `/notes-audit` when the note is missing/pending; `study-block-close` after active recall |
-| `interview-prep-block-open` | Victor starts or continues interview-prep active recall | **nothing — read-only**; resolves current CORE, accepts dictation/text, grades PASS/BORDERLINE/FAIL | `study-block-close` with exact final-PASS IDs |
-| `study-block-close` | Victor ends the 13:30 notes/interview-prep block | notes-plan `Studied` dates · exact refined bilingual Q&A `[studied]` markers after PASS · `PROGRESS.md` Notes/CORE/bank study rows | — |
-| `sql-block-open` | the 12:30 block starts | **nothing — read-only** | — |
-| `sql-grade` | "corrige el 02" | nothing directly; a **cold subagent** writes `MISTAKES.md`, `PROGRESS.md`, the route, the doctrine §0 | `sql-step-close` on ≥ 80% + last file |
-| `sql-step-close` | a step's last file scores ≥ 80% | `✅ sql:{file-slug}` drill markers on coverage + mirror · §0 verify · `Total` arithmetic · the §8c unlocked line | names the due gate / revision point |
-| `sql-block-close` | the block ends | `MISTAKES.md` `## Fricción` only | — |
-| `simulation-block-open` | a timed-simulation block starts | **nothing — read-only**; verifies manifest + progress snapshot | `/simulation-plan` on drift, else the one current route moment |
-| `simulation-grade` | a planned attempt/correction is ready | nothing directly; one cold subagent executes `/simulation-review` and its tracking/correction writes | correction loop or next route step |
-| `simulation-block-close` | the timer/block ends | explicit attempted/Assisted handoff in doctrine/route/spec/TRACKER · simulation `MISTAKES.md` friction already stated | `simulation-grade` |
-| `map-sync` | machinery changed **or** a prompt / `SKILL.md` / standard / other `_internal/` file was read whole | the rows about *that* file in `README.md` and this map — every one of them, not the first that comes to mind · nothing else | — |
+| Skill | Trigger + received input | Primary reads | Writes / returns | Commit owner + isolation | Handoffs, gates + explicit exclusions |
+|---|---|---|---|---|---|
+| `step-complete` | a learning-plan step is finished; done-condition evidence + active project | active `PLANNING.md` step/§0/§23, tests/run evidence, project docs, `PROGRESS.md`, relevant coverage | done-condition trace · `PLANNING.md` ✅ + §0 next pointer · `PROGRESS.md` status/evidence | agent commits tracking/docs; Victor's code and code commit remain untouched | calls `coverage-bullet-add`, `coverage-mark`, `readme-concept-add`; not for backlog tasks or merely compiling code |
+| `coverage-bullet-add` | a completed step/task taught a concept absent from coverage | concept/evidence, `_topic-ownership.md`, both coverage copies, `_cross-topic-inbox.md`, tracker and coverage totals | missing bullet in both copies, or cross-topic proposal · stale-plan flag · recounted coverage cells · owed-remap return | agent commits its notes/tracking writes; no code | never adds an evidence marker or performs `/notes-plan`; hands the existing bullet to `coverage-mark` |
+| `coverage-mark` | a concept was applied in project code; project slug + falsifiable evidence | matching bullet in topic coverage + global mirror, `PROGRESS.md` coverage totals | `✅ NN-slug — {evidence}` on both copies · recounted cells | agent commits coverage/tracking only | never authors a bullet, marks study, or treats an unmarked bullet as uncovered |
+| `readme-concept-add` | a step/task applied a concept; project + audience | README standard, project layout and existing global/backend/frontend READMEs | one entry in the audience-owned README/section | agent commits project documentation only | no restructuring, unrelated cleanup, screenshots or audit-pipeline work |
+| `backlog-task-open` | Victor selects one project backlog task | named code, governing `PLANNING.md`, Closed ledger, all consumers, level evidence, other open tasks | five-verdict return; only `⏸ Deferred YYYY-MM-DD — gate` on the defer route | agent commits that marker only; no project-code edit | teach-first cycle, or `backlog-task-close` for dropped/already-resolved/false-positive; never re-reviews or closes a fix |
+| `backlog-task-close` | a backlog fix/decision is complete and evidenced | task + fix/commit evidence, coverage, README, `PLANNING.md`, `PROGRESS.md`, backlog ledger | coverage bullet/marker where eligible · README entry · plan rule/§0 · `Professional level by topic` evidence when earned · one-line Closed ledger | session authorship boundary: agent-owned docs/tracking; Victor owns the fix code commit | calls the three focused writer skills; not for learning-plan steps or ordinary commits |
+| `study-content-writer` | daily-session note or Q&A authoring/refinement request | note/Q&A standards, coverage/plan, EN/ES counterpart, target files | bilingual note/Q&A changes · studied reset · stable IDs · `[refined]` only on Victor's explicit acceptance | commit governed by the session/adapter authorship contract, not this skill; no cold audit pipeline | routes missing/pending notes to `/notes-plan` + `/notes-audit`, active recall to `study-block-close`; excludes project docs and prompt machinery |
+| `interview-prep-block-open` | Victor starts/continues active recall; one answer at a time | CORE route, lifecycle/answer-quality standard sections, bilingual bank pair, `PROGRESS.md` study orientation | read-only orientation + PASS/BORDERLINE/FAIL return | no write or commit; grading stays in-session | hands exact final-PASS IDs to `study-block-close`; never reveals answers first or assigns `[studied]` |
+| `study-block-close` | Victor ends the notes/interview block; facts already proved in-session | completed/refined plan entries, exact refined bilingual Q&A IDs, CORE route, `PROGRESS.md` | note `Studied` dates · Q&A `[studied]` after final PASS · recounted Notes/CORE/bank rows | agent commits notes/tracking | never infers study, asks questions, or marks authored-but-unstudied content |
+| `sql-block-open` | the 12:30 SQL block starts | SQL doctrine §0, selected route, current exercise, MISTAKES, relevant notes plan, `PROGRESS.md` | read-only next-moment orientation | no write or commit | reports stale §0; never generates, grades, closes, or silently repairs |
+| `sql-grade` | Victor says an answered SQL file is ready | doctrine/route, complete answer file, coverage and grading contract | no direct grading; one **cold subagent** writes MISTAKES/tracking/route/doctrine state and returns the score | agent owns authorized tracking writes; Victor owns `.sql` answers and their commit | refuses partial files; calls `sql-step-close` only on ≥80% + last file; never generates exercises |
+| `sql-step-close` | the last file of a SQL step scored ≥80% | scored files, route/doctrine, both SQL coverage copies, `PROGRESS.md`, MISTAKES/revision state | drill markers · §0/Total checks · §8c readiness · due-gate return | agent commits coverage/tracking; never Victor's SQL answers | names revision/level gates; never grades or closes a daily block |
+| `sql-block-close` | Victor ends the SQL block; friction already stated | current route and MISTAKES plus stated friction | `## Fricción` rows only + tomorrow-start return | agent commits the authorized MISTAKES write; Victor owns `.sql` | never grades, infers friction, closes a step, or generates exercises |
+| `simulation-block-open` | a timed-simulation block starts | doctrine/route, coverage/progress snapshots, specs, TRACKER, MISTAKES | read-only one-next-moment orientation | no write or commit | `/simulation-plan` on drift, otherwise generator/attempt/correction; never starts timer, grades or edits |
+| `simulation-grade` | a planned attempt or correction is ready and complete | route/doctrine, spec, submitted solution/correction, TRACKER, MISTAKES | no direct grade; one cold `/simulation-review` performs authorised tracking/correction writes | agent commits system-owned simulation artifacts; Victor's submitted solution stays untouched | refuses incomplete inputs; routes Borderline/Fail to corrections and preserves the original timed verdict |
+| `simulation-block-close` | timer/block ends; stated time, assessment and friction | doctrine/route/spec/TRACKER/MISTAKES plus facts already stated | attempted/Assisted handoff + stated friction | agent commits system-owned simulation tracking; never Victor's solution | hands to `simulation-grade`; never grades, infers assessment, or changes timed verdict |
+| `map-sync` | machinery changed, or one prompt/skill/internal contract was read whole | changed/read file plus every licensed occurrence in `README.md` and this map | corrected derived-map rows, or an explicit verified/unaffected verdict | agent commits a read-path map fix separately or a change-path fix with the machinery | never sweeps, blocks, edits machinery to match a map, or rules outside the read licence |
 
 Every row inherits `_session-rules.md` → "When a skill cannot finish — durable friction". The table's
 write cells describe success and expected no-op / ineligibility paths; on an observable failed declared
@@ -480,9 +349,10 @@ The things a run leaves behind that are easy to miss.
   written by the review prompt and the two backlog skills, never by Victor.
 - **A skill edited in one adapter is edited in both, in the same commit.** They drifted silently once
   (2026-07-30 → 2026-08-01) and Codex ran a ritual two revisions old. `diff` the pair before committing.
-- **The recorded-debt sweep is explicit, not continuous.** `/system-check` reads tracker flags, open or
-  accepted recommendations, project backlog priorities/deferred markers and due project/SQL gates into
-  one owner-routed queue. It reports and prioritises them; it never clears another owner's debt.
+- **Machinery paths are contracts, not an invitation to traverse live state.** `/system-check` verifies
+  that prompts and skills declare the right path patterns, schemas, owners and gates, but excludes the
+  governed project, learning, SQL, practice and application artifacts from its inventory, denominator,
+  report and blocking conditions. Their existing task/step/block rituals own operational truth.
 - **A timed verdict is immutable evidence.** Corrections close learning gaps but never turn a historical
   Borderline/Fail/Assisted attempt into a Pass or change its recorded time. A Fail additionally opens a
   later reinforcement step; otherwise correction would erase the very interview-condition signal the
@@ -502,12 +372,12 @@ The things a run leaves behind that are easy to miss.
 | the SQL route ran out of steps | `/sql-plan-audit` (extends), or `/sql-plan {next level}` |
 | simulations have no level route, the route is stale, or the current spec has free-form scope | `/simulation-plan {level}`; then `/simulation-generator` only for its current missing spec |
 | a timed simulation is Borderline/Fail or has open correction rows | fix only those rows, then say `corrige las correcciones`; `simulation-grade` runs the cold correction review |
-| a project is built but never reviewed | `/readme-audit` → `/review-audit` → `/portfolio-audit` |
+| a project is built but never reviewed | `/review-audit` (G3/G4) → fix every High → `/readme-audit` (G5) → empty `/progress-update` (G6) → `/portfolio-audit` (G7) |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
 | `_skill-friction.md` has an `open` row | run any runnable prompt; its close-out adjudicates the row before its own recommendations |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
-| after substantial machinery changes, you need every prompt/skill claim and recorded debt checked together | `/system-check` — explicit global audit; never an ordinary-commit gate |
+| after substantial machinery changes, you need every prompt/skill contract and both derived maps checked together | `/system-check` — explicit machinery audit; never an ordinary-commit gate and never an operational-status sweep |
 
 ---
 
@@ -587,11 +457,17 @@ which is why the read trigger exists at all. Nor does it repair: on the fingerpr
 `/notes-plan` is the lie the flag exists to prevent — but a plan claiming `current` against a moved
 fingerprint **fails the run**.
 
+The optional `-MachineryOnly` switch exists so `/system-check` can run the validator without a live
+learning artifact entering its blocking conditions; ordinary manual validation keeps the full mode. Which
+invariants it skips is stated once, in `README.md`, with the rest of the validator's contract — the map
+records only that the two-map invariant above is **not** among them.
+
 ### The explicit semantic sweep
 
 `/system-check` complements the validator and `map-sync`; it replaces neither. When Victor launches it
-after substantial machinery changes, cold family manifests read the complete prompt/skill system to EOF,
-the orchestrator reconciles every relevant claim in both maps, a cold final reviewer gates the global
-verdict, and the run writes the durable system-check report plus an owner-routed debt queue. It may correct
-the two derived maps and file recommendations, but never edits source machinery or clears recorded debt.
+after substantial machinery changes, cold family manifests read the complete canonical prompt/skill
+machinery to EOF, the orchestrator reconciles the README-owned prompt contracts and this map's wiring
+and skill contracts, and a cold final reviewer gates the global verdict. The durable report proves both
+the inventory boundary and the reconciliation. It may correct the two derived maps and file machinery
+recommendations, but never opens or reports live project, learning, SQL, practice or application state.
 Because it is token-intensive, it is **explicit only** — never scheduled, inferred, or run per commit.
