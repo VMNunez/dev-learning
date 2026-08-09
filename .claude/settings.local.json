@@ -79,7 +79,18 @@
       "PowerShell(git commit -m \"docs\\(prompts\\): ledger - REC-063 closes its owed validator layer, which found profile-readme absent from the entire map\")",
       "Bash(grep -n \"^#\\\\{2,3\\\\} \" notes/prompts/README.md)",
       "PowerShell(powershell.exe -NoProfile -File \"notes\\\\prompts\\\\_internal\\\\validate-prompt-system.ps1\" -RepositoryRoot \"C:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\" ; \"EXIT=$LASTEXITCODE\")",
-      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"notes\\\\prompts\\\\_internal\\\\validate-prompt-system.ps1\")"
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"notes\\\\prompts\\\\_internal\\\\validate-prompt-system.ps1\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\notes\\\\prompts\\\\_internal\\\\validate-prompt-system.ps1\"; \"EXIT=$LASTEXITCODE\")",
+      "PowerShell($root = \"C:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\"; Write-Output \"=== claude SKILL.md files ===\"; Get-ChildItem \"$root\\\\.claude\\\\skills\" -Recurse -Filter SKILL.md | ForEach-Object { $_.FullName.Replace\\($root,\"\"\\) }; Write-Output \"=== agents SKILL.md files ===\"; Get-ChildItem \"$root\\\\.agents\\\\skills\" -Recurse -Filter SKILL.md | ForEach-Object { $_.FullName.Replace\\($root,\"\"\\) }; Write-Output \"=== any other files in trees ===\"; Get-ChildItem \"$root\\\\.claude\\\\skills\",\"$root\\\\.agents\\\\skills\" -Recurse -File | Where-Object { $_.Name -ne \"SKILL.md\" } | ForEach-Object { $_.FullName.Replace\\($root,\"\"\\) })",
+      "PowerShell($root = \"C:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\"; Get-ChildItem \"$root\\\\.claude\\\\skills\" -Recurse -Filter SKILL.md | ForEach-Object { $n=$_.Directory.Name; $a=$_.FullName; $b=\"$root\\\\.agents\\\\skills\\\\$n\\\\SKILL.md\"; $ha=\\(Get-FileHash -Algorithm SHA256 $a\\).Hash; $hb=\\(Get-FileHash -Algorithm SHA256 $b\\).Hash; $sa=\\(Get-Item $a\\).Length; $sb=\\(Get-Item $b\\).Length; \"{0,-28} {1} {2} {3} a={4} b={5}\" -f $n, $ha.Substring\\(0,12\\), $hb.Substring\\(0,12\\), $\\(if\\($ha -eq $hb\\){'MATCH'}else{'DRIFT'}\\), $sa, $sb })",
+      "PowerShell($root = \"C:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\"; Get-ChildItem \"$root\\\\.claude\\\\skills\" -Recurse -Filter SKILL.md | ForEach-Object { $n=$_.Directory.Name; $c=\\(Get-Content $_.FullName | Measure-Object -Line\\).Lines; \"{0,-28} {1}\" -f $n, $c })",
+      "PowerShell(git add notes/prompts/README.md notes/prompts/_internal/_system-map.md notes/prompts/_internal/_recommendation-ledger.md notes/prompts/system/_internal/_system-check-report.md)",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"notes\\\\prompts\\\\_internal\\\\validate-prompt-system.ps1\" -MachineryOnly; \"EXIT=$LASTEXITCODE\")",
+      "PowerShell(powershell -NoProfile -ExecutionPolicy Bypass -File \"notes\\\\prompts\\\\_internal\\\\validate-prompt-system.ps1\"; \"EXIT=$LASTEXITCODE\")",
+      "Bash(grep -n \"^#\\\\{1,4\\\\} \" notes/prompts/README.md)",
+      "Bash(grep -n \"^#\\\\{1,4\\\\} \\\\|^## \" notes/prompts/_internal/_system-map.md)",
+      "PowerShell(git commit -m \"fix\\(prompts\\): scope system-check to the machinery and split the two maps by owner\")",
+      "PowerShell(git commit -m \"docs\\(prompts\\): ledger - REC-068 closed under a cold approve-with-tightening, REC-069 opened\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Victor\\Documents\\main\\dev\\learning\\.claude\\skills\\step-complete",
