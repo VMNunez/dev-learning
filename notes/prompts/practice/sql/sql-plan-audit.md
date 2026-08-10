@@ -209,11 +209,16 @@ graded work is nobody's.
 its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, record the
 gap in the self-report and continue — never silently accept a partial trace.
 
-**A specialist that dies mid-run is resumed, not re-dispatched.** Silence is not acceptance — never
-advance to the next specialist without its trace. `SendMessage` to its agent id restores its
-transcript: tell it what is already on disk and have it write the fixes it had already concluded. This
-does not consume the concern's re-dispatch. If the resume also fails, then re-dispatch cold — that one
-does count.
+**A specialist that dies mid-run takes the dispatch ladder in `_agent-runtime-standard.md` → "Dispatch
+contract"** — read what it persisted, else resume it, else re-dispatch it cold — and never advance to
+the next specialist without its trace. Two things that ladder cannot say and this prompt must. Its
+**first** rung is load-bearing here and the easiest to skip: these specialists write their fixes
+straight into the plan files and never commit, so a dead one has usually already left part of its work
+in the tree — read those files before treating it as lost. And a **resume is free** — where the runtime
+can restore the agent's transcript, tell it what is already on disk and have it write the fixes it had
+already concluded; that spends neither of Phase 2's two re-dispatch counts, the acceptance check's above
+and **Ripples'** below. Only the cold re-dispatch after a failed resume spends **Ripples'**
+one-per-concern-per-run budget.
 
 **Ripples.** If a fix invalidates a concern already reviewed, re-dispatch that one — **at most one
 re-dispatch per concern per run**. Remaining ripples go in the self-report, except a verified factual

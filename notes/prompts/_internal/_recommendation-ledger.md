@@ -111,6 +111,20 @@ kind of row** (here `## Friction`, which the same standard calls not a correctio
 inside the test), and it **scopes what the owning definition does not** (here `for the level`, which made
 the level-agnostic original the stricter of the two across levels — the reverse of what the row claimed).
 
+**A pointer names its target; a direction is not a target.** From `REC-086`, whose two worst defects
+were introduced by the very edit that collapsed a fork into a pointer. The collapse itself was right;
+what went wrong is that the sentences left standing around it inherited deixis the original never
+needed. A self-contained restatement needs no directional word — it says the whole rule in place — so
+the moment it becomes a pointer, every *this*, *that*, *above*, *below* and *this section* around it
+starts resolving against a file it no longer restates. Both failed here: "neither re-dispatch count in
+**this section**" scoped the claim in a word the file reserves for three other things (`Section A-E` of
+the standard, `## ` sections of a coverage file, `§N` of the plan) — `REC-074`'s second-vocabulary smell
+— and "the concern's one-per-run budget **below**" pointed into a region holding **two** once-only
+re-dispatches, where the wrong reading spends the history gate's retry and aborts the run without
+committing. **When you collapse a restatement into a pointer, re-read every relative word in the
+surrounding paragraph and replace each with the name of the thing.** A pointer a reader can mis-resolve
+is worse than the fork it replaced: the fork at least said what it meant.
+
 **Authoring a value and correcting one are different rights, and an ownership fence that names one
 grants or denies both.** From `REC-073`. `_sql-plan-standard.md` named `sql-plan-audit` the doctrine's
 single writer while the closing ritual had been rewriting its §0 for a week; and the first draft of the
@@ -285,14 +299,16 @@ queue came to refill at the speed it drained. So **the scope test is applied to 
 too, at the moment it returns**, together with the incidental-finding bar below: a finding outside the
 machinery is written into the closing line of the row whose review found it, and never opened.
 
-**What is left is the machinery's own text and checks: four workable rows, plus `REC-054` accruing.**
+**What is left is the machinery's own checking layer: two workable rows, both validator invariants, plus
+`REC-054` accruing.** The count here was wrong by one before `REC-086` closed — it read "four workable
+rows, plus `REC-054`" over a table of four rows total, so it counted the accruing row twice. Say the
+workable number and name the accruing one separately; they are not summed.
 
 | ID | Source | Recommendation | State | Resolution |
 |---|---|---|---|---|
 | REC-054 | Victor, 2026-08-06, alongside the two-map rule; **reshaped 2026-08-10 on Victor's own falsification of it** | **The lived-day review cannot be scheduled, because its evidence does not exist — so it stops being an audit that is run and becomes a verdict that accrues while Victor studies.** What it judges is unchanged and is still the only question nothing else in the system asks: do the current 08:00, 12:30 and 13:30 loops fit a real day, are the interview opener's grading and the block closers cheap enough to keep running, what does each block leave unrecorded, and does ritual load outweigh the work it records. Its original day snapshot is also still obsolete — the 13:30 block now has `interview-prep-block-open` plus `study-block-close`, authored/refined/studied state is separated, and there are seventeen mirrored skills. What changed is that **there is nothing to judge yet**: the rituals have barely been exercised, so the review has no input and would fabricate one. Three parts, in order. **(a) A capture point — built 2026-08-10, `_internal/_ritual-friction.md`.** `_skill-friction.md` accepts only an observable *failed declared step* (`FRIC-NNNN`), so the complaint that will actually occur — "this ritual ate the block", "nothing ever reads this output", "I do it by hand anyway" — was unrecordable and died in the session it was said in. It is the machinery-level instance of exactly what `sql-block-close` was built for: **friction without failure**. It is a separate file on purpose: `FRIC` rows are adjudicated by the next close-out's four-condition bar and can become a `REC`, which is the one thing (b) forbids, and one file holding two kinds of row under a consumer that counts them is the `REC-074` smell. **(b) The rule that keeps this out of the refill loop:** a ritual-friction line **never opens a `REC` and never dispatches a cold reviewer**. One line, written as it is said, accumulating. **(c) The verdict, per ritual, once its evidence is enough to rule on** — kept, thinned, or deleted. This is the only item in this ledger licensed to **remove** machinery; every other row has added a check, a pointer or a rule | accruing | **Not workable, never scheduled, and it gates nothing** — it is the one `accruing` row and the reason that state exists. Its original sequencing said to run it once the machinery stopped moving, and that premise was the wrong one: the binding constraint was never **motion**, it was **absence of use**, which no amount of waiting for the machinery to settle repairs. Its input is the `RITF` rows themselves plus whatever `_run-tracker.md` shows has actually run — not a measurement pass built for it, which is what `REC-070` (b) was and why that row is gone. Do not schedule it and do not let it block a row again. **(a) shipped 2026-08-10** — the sink, its `_session-rules.md` trigger and its `_system-map.md` §7 and §11 rows — so the row is now fillable and what remains is (b) holding in practice and (c) having something to rule on. **(b) is not a build: it is a prohibition**, and it is stated in all three places at once (the sink, the session rule, this row) rather than in one, because the failure it prevents is a future session skipping straight to a `REC`. `REC-055` (e) was parked with it and is **unparked 2026-08-10**: a map that states *which* rituals fire in which block is a structural description, and this row is a verdict on whether they are worth their cost — the two do not collide, and the second is not a prerequisite for the first. Maps unaffected by this reshaping — no prompt, skill, writer, trigger or file existence changes |
 | REC-067 | `/system-check`, 2026-08-09 (global audit; carries forward the `open` finding of the 2026-08-09 blocked run) | **Make launcher public argument contracts mechanically falsifiable.** `validate-prompt-system.ps1` proves filename parity, canonical-target parity, full delegation and runtime isolation across both catalogues, but nothing checks that a launcher's advertised **configuration keys and MODE values** match the canonical prompt's own config block, or each other. The two prior runs found eight such mismatches by prose review alone, and the fix (`80d30f43`, `4c77723f`) was likewise unverified by any check — this audit re-proved 30/30 parity by hand, which is exactly the evidence that the guarantee is manual and will drift again silently. A launcher that advertises a key the prompt does not accept is invisible to every automated layer the system has | open | Not a map defect: both maps describe the launchers correctly, and the argument contracts are currently correct. The gap is in the **checking layer**, so the fix site is `validate-prompt-system.ps1` (a sixth invariant), not either map. Apply the preamble's *"a check is not finished until it has been made to fail"*. Note the parser must tolerate both catalogues' legitimate platform-specific lines (e.g. `.codex/commands/simulation-plan.md`'s "do not invent model identifiers"), which are adapter translation, not workflow duplication |
 | REC-084 | residue of `REC-057`, promoted 2026-08-10 | **A declared exercise path that is well-formed but wrong is invisible to every check.** The validator's `$referencePathPattern` (L208) matches path *shape* only, so a realistic typo such as `03-jions.sql` passes: the file it names does not exist, and nothing cross-checks declared exercise paths against `PLANNING-{LEVEL}.md` §1's own file list. `REC-057` bounded the pattern and then verified by mutation that a plausible fake still survives | open | This is a **design change, not a pattern fix** — the check needs a second source to compare against, which is why `REC-057` left it rather than widening a regex. Apply the preamble's *a check is not finished until it has been made to fail*. Worth folding in with `REC-067`, which also adds a validator invariant, if both are done at once. Maps unaffected — the validator is not a map |
-| REC-086 | cold reviewer on `REC-080`, 2026-08-10 | **`sql-plan-audit.md` L212 now restates a rule the runtime standard owns.** "A specialist that dies mid-run is resumed, not re-dispatched… if the resume also fails, then re-dispatch cold" was the machinery's only mid-flight-death rule and it is the one `REC-080` promoted into `_agent-runtime-standard.md`'s dispatch ladder. The two **agree today**, which is exactly when a fork is invisible — and this copy names no other file, so a pointer grep never reaches it | open | Deliberately left out of `c4fa62c6`: a contract change must not hide inside a prompt commit, which is the same rule that kept `REC-080` out of `REC-078`'s batch. The `SendMessage` mechanics is what the standard cannot say and **stays**; only the rule sentence collapses into a pointer, per the preamble's *a derived section states only what its source cannot say*. Check the surrounding re-dispatch caps still read correctly once the sentence is a pointer — `sql-plan-audit.md` L209 and L218 each carry their own count. Maps unaffected |
 
 ## Closed
 
@@ -386,11 +402,13 @@ instead. Ordered by ID.
 - `REC-082` — a skill written as a slash command in `progress-update-prompt.md`'s drift-report example; fixed to the bare name, and the convention stated where it is owned — `_session-rules.md`, not the derived maps, which its cold reviewer corrected along with a false universal the fix had written into `README.md` · `_system-map.md` unaffected, `README.md` edited as the rule's site and not as a map — `161f5db2`
 - `REC-083` — G4's justification argued from the backend's date after `REC-051` retired the clock; the owner now argues from what G3 reviewed and routes the exception to a re-fired G3 instead of an untracked run · the project plan's word-identical copy was **not** hand-edited — it crosses §7's writer fence and became `REC-087`, which its cold reviewer widened by two further defects in the same table and which was itself rejected as a ledger item on the same fence · maps unaffected — `0d17e220`
 - `REC-085` — **rejected as a ledger item, not as work.** `practice/sql/PLANNING.md` mis-states who refreshes its own §0 in three places: §0's header says "update it at the start of every session" (L25), the Moment 4 bullet attributes the §0 header to the level's **route** file (L209), and §4 item 5 still calls the close's commit manual — while §0 belongs to the doctrine, its live values are written by `_sql-exercises-review.md` 4d on a step close and verified by `sql-step-close`, which also commits. Rejected on the ownership half of the scope test: the doctrine's declared writer is `/sql-plan-audit`, hand-editing it here would breach the very fence `REC-073` was writing, and `_sql-plan-standard.md` already names all three sites as checks so the audit cannot fix one and leave two. It closes at gate G1b, on the run — two sites verified live on disk 2026-08-10 · maps unaffected — `{commit}`
+- `REC-086` — the mid-flight-death rule in `sql-plan-audit.md` was not merely forked but **narrowing**: it began at "is resumed" and had silently dropped the ladder's first rung, *read what it persisted* — the load-bearing one here, since these specialists write straight into the plan files and never commit, so a dead one always leaves work in the tree. Collapsed into a pointer, and the row's *"the `SendMessage` mechanics stays"* was **half wrong and corrected**: the substance stays, the Claude tool name comes out under `REC-007`'s precedent and the standard's own first sentence, `.codex/` being a real second adapter where it does not exist. Promoted *a pointer names its target; a direction is not a target* — its cold reviewer returned `approve-with-tightening` on three defects, all three introduced by the fix, one pointing "below" into a region with **two** once-only re-dispatches where the wrong reading aborts the run · incidental, below the bar and recorded here rather than opened: `tracker-prompt.md` L99 names `WebFetch` the same way but its stated fallback yields the same artefact on either adapter — the structural half is that `validate-prompt-system.ps1` L117's `$exclusivePattern` carries **no tool names at all**, which is why both survived 30 files at PASS, and that belongs to the `REC-067`/`REC-084` session · maps unaffected, verified on both — `{commit}`
 - `REC-087` — **rejected as a ledger item, not as work.** `07-timetrack/PLANNING.md` §23 owes three repairs: (a) its G4 cell keeps the date framing `REC-083` removed from `_planning-standard.md` and lacks the `PROJECT_PATH` added in `c9270c1c`; (b) its G6 cell is a live forked rule — the standard names `cv-prompt`, `project-brief` and `review-audit` as `PROGRESS.md`'s readers, the plan names "G7 and `cv-prompt`" plus an owner list the standard does not have; (c) the substantive one, the gate list ends at G4 while §22 puts Step 8 (backend tests) and Step 11 (Docker) *after* the branch that triggers it, so the backend gains code after its last review gate with certainty and no §23 box tracks it — decide there whether 07 re-fires G3 scoped `backend`, or §22 moves the backend work before G4. Rejected on the ownership half of the scope test: §7 names `/plan-audit`, `step-complete` and `backlog-task-close` as this file's writers and a machinery session is none of them. The owner's half already shipped in `0d17e220`, so the standard is the source to resync **from**; it closes at `/plan-audit MODE = review` gate G2, whose tracker cell exists · maps unaffected — `{commit}`
 
 ## Suggested order for the open items
 
-Added 2026-08-06 as a wave plan for twenty-odd rows; **rewritten 2026-08-10, when the scope test left four.**
+Added 2026-08-06 as a wave plan for twenty-odd rows; **rewritten 2026-08-10, when the scope test left
+four, and down to one item the same day as two of them closed.**
 Waves 1-6 are all closed and Wave 7 was dissolved, so the sequencing history they carried has gone where the
 rest of this file's history lives — `git log -p`. Three rules produced the old order and still produce this
 one: **a correction that stops a wrong run comes before a build**, **an item blocked on evidence is run, not
@@ -398,18 +416,13 @@ edited**, and **a chain is walked from its denominator up**. Wave 2's lesson out
 once wrong across eleven items: **budget the sweep, never the edit** — every row so far lived in more places
 than it named, and in three of four cases it was the *cold reviewer*, not the sweep, that found the last site.
 
-**1. `REC-055` (e) — the map's per-day view. ✅ Closed 2026-08-10, and it behaved exactly like every
-residue before it:** the edit was one section, and the *rulings* inside it were nine — a falsified premise
-(a block is not a clock), a column deliberately not built to avoid forking §9, and three restatement forks
-the fix itself introduced and its cold reviewer caught. It did pay for itself the way it promised: the read
-it required was the `map-sync` read trigger, and the numbers now on the map are measured rather than
-recalled.
+**Items 1 and 2 closed on 2026-08-10 — `REC-055` (e), the map's per-day view, and `REC-086`, the forked
+mid-flight-death rule. Both confirmed the same thing about the two "smallest" rows on a table:** the edit
+was one section and one paragraph respectively, and the *rulings* inside them were nine and three. Every
+one of `REC-086`'s three was **introduced by the fix**, in the paragraph the row called the smallest on
+the table — which is the argument against ever sizing a row by its diff. What is left is one item.
 
-**2. `REC-086` — the forked mid-flight-death rule in `sql-plan-audit.md` L212.** Smallest row on the table:
-one sentence collapses into a pointer at `_agent-runtime-standard.md`, the `SendMessage` mechanics stay, and
-the two re-dispatch caps either side of it get re-read. Independent of everything else.
-
-**3. `REC-067` + `REC-084` together — the two validator invariants.** One analysis, one file, one session:
+**1. `REC-067` + `REC-084` together — the two validator invariants.** One analysis, one file, one session:
 both add a check to `validate-prompt-system.ps1`, and both are the same *kind* of gap — a population the
 system computes and never cross-checks against the prose or the plan that quotes it (`REC-071` is a third
 instance, already closed). The preamble's *a check is not finished when it passes; it is finished when it has
@@ -419,11 +432,11 @@ catalogues' legitimate platform-specific lines, which are adapter translation an
 
 **`REC-054` is not in this order and never will be** — it is `accruing`, not queued.
 
-**Two orderings that look right and are not.** Doing the validator pair first because it is the most
-"engineering" of the three: it is the longest, it touches the one file whose failure mode is silent, and it
-leaves the map — the thing that makes every future audit cheap — stale for another week. And batching rows
-because they share a file: the four `system-check-prompt.md` rows shared an *analysis* and never a priority,
-and batching by file is how a row that fails the bar ships on the back of one that does not.
+**The ordering that looks right and is not:** batching rows because they share a file. The four
+`system-check-prompt.md` rows shared an *analysis* and never a priority, and batching by file is how a row
+that fails the bar ships on the back of one that does not. `REC-067` + `REC-084` are batched on the first
+ground and not the second — the shared file is a convenience, the shared *kind of gap* is the reason. If
+the analysis splits once it starts, split the session too.
 
 New self-reports append or update a row in `## Open`. A historical report remains immutable evidence;
 its wording does not determine current status. The ledger does.
