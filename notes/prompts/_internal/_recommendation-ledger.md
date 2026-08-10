@@ -311,8 +311,9 @@ on 056 is the explicit prompt recorded in `## Closed`, not the earlier read-only
 **`REC-055` (e)**, the map's missing per-day view, is written **out of** `REC-054` in Wave 7, never
 before it.
 
-**Where the 2026-08-10 audit items land (`REC-067`, `REC-069`, `REC-071`-`REC-077`, added as they were
-raised).** Not a wave: they split by what each one is waiting on. **Four were corrections that block
+**Where the 2026-08-10 audit items land (`REC-067` from the day before, plus `REC-069` and
+`REC-070`-`REC-081` — thirteen rows raised in one day, added as they were raised).** Not a wave: they
+split by what each one is waiting on. **Four were corrections that block
 nothing and need no ruling — `REC-069`, `REC-071`, `REC-072` and `REC-073`, all four closed by
 2026-08-10.** Wave 2's lesson governed every one of them and was never once wrong: **budget the sweep,
 never the edit** — each lived in more places than its row named (`REC-069` in four project standards,
@@ -324,13 +325,37 @@ aligned: `REC-074` (one gate, two closing conditions) and `REC-075`, **both clos
 with an explicit ruling** — and `REC-075`'s closure carries a lesson for the four still open: the row's own framing ("opposite *reliability*") was
 wrong, and the draft written from it asserted that nothing verified the coverage mirror while
 `validate-prompt-system.ps1` had been proving that exact invariant on every run. **Before writing that
-the system does not check something, run the check it does have.** The residue is `REC-081`. **`REC-076` and `REC-077` are one analysis**, same file and same
-steps, and they come **before the next `/system-check` run**, not after it — the run that would surface
-them again is the run they make untrustworthy. **`REC-070` is unblocked**: its stated precondition was
+the system does not check something, run the check it does have.** The residue is `REC-081`, which waits
+on one ruling it must not be allowed to skip: changing what a gate hashes **moves the gate**, so it is
+sequenced behind an explicit decision to re-baseline every stored brief digest at once.
+
+**The `system-check-prompt.md` cluster is four rows and it is not one tier.** They share a file, so they
+share an *analysis*; they do not share a priority, and batching them by file is how a row that fails the
+bar ships on the back of one that does not.
+
+- **`REC-076` + `REC-079` go first, as one analysis.** Same file and the same Step 4: they are the two
+  directions of one hole — claim → evidence and evidence → claim — and they are the only two of the four
+  whose defect has already reached a **published** cell. They come **before the next `/system-check`
+  run**, not after it: the run that would surface them again is the run they make untrustworthy.
+- **`REC-078` rides with them if that analysis is already open, and never justifies opening it.** Same
+  prompt and same run's evidence, but it **fails bar condition 3 as observed** and its branch has been
+  executed twice with the missing spec improvised correctly both times. It is cheap *because* the file is
+  already open; alone it is a rule about a path nothing has yet got wrong.
+- **`REC-077` + `REC-080` are one failure mode in two layers and must not join the batch.** Both are the
+  session-limit death with no persistence, but `REC-080`'s fix sites are `_pipeline-self-report.md`,
+  `_single-shot-self-report.md` and **this file's step 3** — folding it into a prompt edit would hide a
+  contract change inside a prompt commit. If only one half is done, do the **reviewer's**: it is the last
+  gate, it runs once, it holds its whole judgement in context, and its death leaves an edited working
+  tree no contract describes.
+
+**`REC-070` is unblocked**: its stated precondition was
 `/system-check` running once in its `REC-068` form, which happened on 2026-08-10 and produced the
 baseline commit its freshness check needs. It still sequences after `REC-054`. And `REC-054` is still
-Wave 7 and still last: **seven rows opened on 2026-08-10 is the definition of machinery that has not
-stopped moving**, and its whole value depends on reviewing one that has.
+Wave 7 and still last: **thirteen rows raised on 2026-08-10 is the definition of machinery that has not
+stopped moving**, and its whole value depends on reviewing one that has. That count was previously
+written as "seven", meaning `REC-071`-`REC-077`, and stayed accidentally true after six of those closed
+and six more opened — so it is now stated as the **dated, immutable** figure rather than a live one, which
+is `REC-071`'s lesson (a hand-maintained count in prose goes stale silently) applied to this paragraph.
 
 **Two orderings that look right and are not.** Starting the chain at `REC-047` part 2 — the marking is
 the visible half, but it marks against a list that does not exist yet and reports to a target nobody has
