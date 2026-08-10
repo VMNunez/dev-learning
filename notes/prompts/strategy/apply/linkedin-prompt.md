@@ -2,6 +2,9 @@
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
+> **External-path preflight:** Before reading or writing `personal/job-search/`, execute
+> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+
 Use in a **separate conversation**. No configuration needed — paste the whole prompt into a new chat.
 
 Run this when you are ready to update your LinkedIn profile before applying.

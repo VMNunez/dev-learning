@@ -2,8 +2,9 @@
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
-> **External-path preflight:** Before reading or writing `dev/portfolio/VMNunez`, execute
-> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+> **External-path preflight:** Before reading or writing `dev/portfolio/VMNunez` or
+> `personal/job-search/`, execute `notes/prompts/_internal/_external-path-preflight.md`. Stop before any
+> write if it fails.
 
 Use in a **separate conversation**, ideally inside the supported agent runtime so it can read across both repos.
 No configuration needed — paste the whole prompt into a new chat.
