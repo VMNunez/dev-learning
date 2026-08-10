@@ -135,8 +135,8 @@ Always close with the verdict, in this vocabulary — it is what makes a skip vi
 **It never sweeps.** It only ever reaches the files a session happened to open or edit, so rows about
 prompts nobody runs stay unverified — and it cannot tell you which ones those are. `/system-check` is the
 separate explicit sweep: Victor launches it after substantial machinery changes, never per commit or as
-an automatic extension of this ritual. `REC-054` remains the different future review of whether the
-settled machinery adds up to a workable day. A local `map: verified` still means only the licensed rows
+an automatic extension of this ritual. `REC-054` remains the different question of whether the
+machinery adds up to a workable day — a verdict that accrues from use, never a scheduled review. A local `map: verified` still means only the licensed rows
 were checked; it is never a freshness guarantee for the whole map.
 
 **It never blocks.** A verification that stops the work stops being run — the zero-questions rule every

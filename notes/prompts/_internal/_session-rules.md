@@ -650,8 +650,10 @@ zero-questions rule that skills are built on, applied to the map. And it only ev
 session happened to open: rows about prompts nobody runs stay unverified, and this rule cannot say which
 ones those are. The explicit, token-intensive `/system-check` now owns that global sweep **only when
 Victor launches it**, normally after substantial machinery changes; it is never inferred, scheduled or
-run per commit. `REC-054` remains a different future review: whether the settled machinery adds up to a
-workable day, not whether the two maps describe it truthfully.
+run per commit. `REC-054` remains a different question: whether the machinery adds up to a
+workable day, not whether the two maps describe it truthfully. It is a verdict that **accrues from use**,
+not a review that is scheduled — reshaped 2026-08-10, because waiting for the machinery to settle never
+produces the one thing that review needs, which is days actually lived with the rituals in place.
 
 The system is built — **run the prompts, don't keep editing them.** If you feel the urge to polish
 the machinery, take it as the signal to go use it instead.

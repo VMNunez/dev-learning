@@ -51,7 +51,8 @@ read of any depth rules on a **contradiction**; only a whole read rules on an ab
 in **its own commit** and the verdict is said out loud: `map: verified — {rows}` / `map: corrected —
 {row}` / `map: not verified — partial read`. It never blocks and never sweeps, so rows about prompts
 nobody opens stay unverified between explicit global audits. `/system-check` is that on-demand sweep;
-`REC-054` remains the later review of whether the settled machinery adds up to a workable day.
+`REC-054` is the separate question of whether the machinery adds up to a workable day — a verdict that
+accrues from use, never a scheduled review.
 
 **Both triggers are walked by the `map-sync` ritual** (§9), which exists for the same reason
 `step-complete` does: the rules above were already written and the observed failure is *partial*
