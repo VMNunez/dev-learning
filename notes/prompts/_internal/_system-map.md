@@ -10,6 +10,8 @@ in halves:
 3. **What a run leaves behind that nobody asked for** — the debts and flags in §10.
 4. **How the system improves itself** — why a prompt is frozen, what unfreezes one, and the single
    automated check that guards the whole thing (§12).
+5. **What fires inside one day**, block by block, and how unevenly the load falls across them (§13) —
+   the view every other section cuts the opposite way, by track.
 
 **It is derived, not authoritative.** Three files outrank it and each owns a different half:
 
@@ -479,3 +481,76 @@ and skill contracts, and a cold final reviewer gates the global verdict. The dur
 the inventory boundary and the reconciliation. It may correct the two derived maps and file machinery
 recommendations, but never opens or reports live project, learning, SQL, practice or application state.
 Because it is token-intensive, it is **explicit only** — never scheduled, inferred, or run per commit.
+
+---
+
+## 13 — The day, block by block
+
+Every other section cuts the system by **track** — knowledge, projects, SQL, apply. This one cuts it by
+**hour**, because that is the only axis on which the load is actually paid: all four chains can meet
+inside a single day, and no other section shows what any one of them costs *there*.
+
+**A block is not a clock** — `_session-rules.md` → "Daily study blocks" owns that rule and states it in
+full. What belongs here is the machinery half of it, which no single file can say: **every opener and
+closer below triggers on an *utterance* ("vamos con el SQL", "cierro el bloque") or on the work itself
+reaching a state, and no skill reads the clock to decide anything** — several stamp a *date* (`⏸ Deferred
+YYYY-MM-DD`, a `Studied` date, a `RITF` row), which is a record, never a condition. The `08:00` / `12:30` / `13:30` labels are
+therefore names for *which* block, never a schedule any component obeys — which is also why a skill can
+be assigned to a block at all without anything having to know what hour it is.
+
+**The blocks themselves — their approximate hours, their order and what each is for — are owned by
+`_session-rules.md` → "Daily study blocks", and are deliberately not restated here.** The `Block` column
+below carries only the four bare values `_ritual-friction.md` already uses (`08:00`, `12:30`, `13:30`,
+`machinery`), so a friction row and this table can never be in two vocabularies. What this section adds is
+the one column neither file has: *which rituals fire inside the block*. **What each of them writes is §9's
+column and is not duplicated here** — this table answers "when", §9 answers "what". Nothing here is a
+verdict on whether a block's load is worth paying: that is `_recommendation-ledger.md` → `REC-054` (c),
+and it accrues from use. Prompts are absent by construction — a prompt runs in a cold conversation
+outside the session (§1), so it costs the block only the minutes Victor spends launching it and reading
+its result.
+
+| Block | Skills that can fire | Opener | Closer | Cold dispatch inside the block | Declared steps · contract size |
+|---|---|---|---|---|---|
+| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 36 steps · ~1,411 lines |
+| `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~810 lines |
+| `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 14 steps · ~274 lines |
+| `machinery` | `map-sync` | — | — | none | 5 steps · ~143 lines |
+
+Counts are `SKILL.md` numbered steps **including lettered sub-steps** — `1a`, `3b` carry their own
+declared work, and they are not written at a uniform heading level, so a count that excludes them is both
+lower and unreproducible — plus file length, measured 2026-08-10 in `.claude/skills/`; the `.agents/`
+mirror carries the same content by contract (§10), so either adapter gives the same numbers. They are a proxy for contract weight, not for
+minutes — only a `RITF-NNNN` row measures those, and only from a day that was actually lived.
+
+**The four asymmetries the table exists to show.** All four are observations, and each is a candidate a
+`RITF-NNNN` row would later be ruled against:
+
+- **The heaviest block has the least structure.** 08:00 carries 1,411 lines of ritual contract — more
+  than the other three combined — with no opener and no closer. Its recording is event-driven instead:
+  finishing a step fires `step-complete`, closing a backlog task fires `backlog-task-close`, and each of
+  those calls the three focused writer skills, unconditionally rather than as a ceiling. **Closing one
+  backlog task therefore walks four skills and 9 + 7 + 6 + 4 declared steps** — the longest single path
+  in the system.
+- **Every block's trace is conditional, and only one block has no ritual that could leave one.** 12:30
+  and 13:30 each *have* a block-level closer, but what it writes still depends on the block producing
+  something: `sql-block-close` commits only if a `## Fricción` row was actually added and otherwise
+  **returns** tomorrow's starting point rather than writing it, and `study-block-close` marks nothing
+  without a final PASS or a completed plan entry. 08:00 differs in kind, not degree — a morning that
+  finishes no step and closes no task has no ritual to fire at all. A morning that *does* close a task
+  leaves the widest trace of any block in the day.
+- **Grading is cold only in the 12:30 block.** SQL and simulations both push the score into a subagent
+  that never saw the teaching; the 08:00 block's `done condition` and the 13:30 block's PASS/FAIL are
+  judged in-session, with full context. That is deliberate in both directions — one measures performance
+  under interview conditions, the other measures whether the work is finished — but it means only one
+  block pays a dispatch inside the hour.
+- **One skill in seventeen is allowed to ask a question.** `interview-prep-block-open`, because asking
+  and grading one question *is* its product — the intentional exception to §9's rule that **mechanical
+  and closing** rituals ask zero questions. That rule is narrower than "no skill ever waits": authoring
+  skills legitimately do, and `study-content-writer` waits for Victor's explicit acceptance before
+  `[refined]` is set. What no ritual does is stall a block on an answer it needs to finish: a step that
+  cannot close is reported and the target left open.
+
+**Where a skill belongs to no single block.** `study-content-writer` fires wherever note or Q&A prose is
+written in a daily session — its home is 13:30, but a note written during the project block is the same
+trigger, and it is counted above only once. `map-sync` fires on any read or change of the machinery in
+any session at all, which is why it takes the fourth `Block` value rather than one of the three hours.
