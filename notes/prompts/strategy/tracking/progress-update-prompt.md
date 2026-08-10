@@ -329,8 +329,14 @@ and yours. One row per topic, one column per level, each cell the share of that 
 bullets carrying an evidence marker.
 
 Count from the **topic** files, `notes/{topic}/coverage/{LEVEL}.md`, never from the
-`notes/coverage/{LEVEL}.md` mirror: the mirror can lag its topics, and a denominator that depends on
-which file you opened is not a measurement. Two counts per file, no file contents loaded:
+`notes/coverage/{LEVEL}.md` mirror. This is `_coverage-standard.md`'s mirror rule, not a local
+preference, and its reason is **not** that the mirror is untrustworthy — the validator proves the two
+files identical, line by line, on every run. It is that a **measurement** is taken from the declared
+source of truth, because these figures are copied into `PROGRESS.md`, which records no provenance, and
+because the commands below are two `grep -c` per file with nothing loaded. Authoritative *and* free is
+why the rule bites here and not at `roadmap-review`'s cross-topic gap enumeration, where the same
+choice would cost thirteen reads and the validator's parity line already buys the mirror. Two counts
+per file:
 
 ```bash
 grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md      # total   — the denominator

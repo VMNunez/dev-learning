@@ -14,8 +14,12 @@ gap analysis → update living sections → apply → independent review) on top
 
 ## What each file is for
 
-- `notes/coverage/junior.md` — SOURCE OF TRUTH for what Victor must learn **and for what he has already
-  demonstrated**: every concept needed for a junior Angular + Spring Boot role at a Spanish consultancy,
+- `notes/coverage/junior.md` — the **global junior mirror**: the complete cross-topic statement of what
+  Victor must learn **and of what he has already demonstrated**. The sources of truth are the topic
+  files `notes/{topic}/coverage/junior.md`; this pipeline enumerates from the mirror under
+  `_coverage-standard.md`, "When a prompt may read a mirror instead of the topics", which is why
+  subagent 2a must quote the validator's parity line before it produces a gap list. It carries every
+  concept needed for a junior Angular + Spring Boot role at a Spanish consultancy,
   each bullet carrying a `✅ NN-slug` evidence marker once a project proves it. **An unmarked bullet is the
   gap.** The rules — both marker forms, the drill marker that does not count, demonstration never study —
   are in `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, "Evidence markers".

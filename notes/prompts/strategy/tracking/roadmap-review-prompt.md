@@ -56,7 +56,10 @@ Step 0 also includes the run-start check stated above this fenced block.
 > silent 2000-line truncation limit. Subagent 2a and Reviewer 2 must run `wc -l` on it before
 > reading, use `offset` passes to the real end if needed, and state **"N lines, read to EOF"** in
 > their report — treat a report without that line as unusable (re-dispatch once; if it fails again,
-> flag it in the self-report instead of merging from a possibly truncated read).
+> flag it in the self-report instead of merging from a possibly truncated read). That file is the
+> **mirror**, not the sources of truth, so 2a carries a second verifiable line: the parity check
+> `_coverage-standard.md` requires before any prompt may enumerate from a mirror. Reviewer 2 does not
+> repeat it — one proof per run is the point of it being cheap.
 
 First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
@@ -104,8 +107,16 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 
 > Read `notes/coverage/junior.md` — it is both the target (every concept required for the job) **and** the
 > record of what has been demonstrated, which the bullets carry themselves as evidence markers. Read the
-> "Evidence markers" section of `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` before
-> you start; the four rules below are the ones this analysis lives or dies by.
+> "Evidence markers" and "When a prompt may read a mirror instead of the topics" sections of
+> `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` before you start; the four rules
+> below are the ones this analysis lives or dies by.
+>
+> **You are reading the mirror, not the sources of truth, and the standard permits that only on a
+> proved parity.** This is a cross-topic enumeration, the one use the mirror exists for — thirteen
+> topic files would saturate your context and the doer's. The permission is conditional: run the
+> validator below first and quote its parity line, and if that proof is missing, stop there. Do not
+> switch to the topic files instead — a run that silently changes its input has hidden the drift
+> rather than announced it.
 >
 > 1. **A bullet with no `✅ NN-slug` project marker is the gap.** A bullet carrying one is covered, and its
 >    `NN-slug` names the project that covers it — say which when it matters.
@@ -137,6 +148,25 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > Run `wc -l notes/coverage/junior.md` before reading it (silent 2000-line Read truncation — use `offset`
 > passes if needed) and include "N lines, read to EOF" in your report.
 >
+> **The parity proof, before you trust a single bullet.** You are enumerating from a copy, so quote the
+> evidence that the copy is exact — do not improvise a counting check, one already exists and is
+> stronger. Run `notes/prompts/_internal/validate-prompt-system.ps1` **with no switches**, through the
+> PowerShell tool (this machine has Windows PowerShell 5.1 and no `pwsh`; the script resolves the
+> repository root from its own location, so any working directory works). Copy its
+> `PASS: coverage mirror parity (N topics x N levels)` line into your report verbatim. It means every
+> top-level bullet of every topic file appears in the mirror's section for that topic, same
+> capitalisation, same multiplicity — order and non-bullet lines are outside the check, which is exactly
+> what an enumeration needs. **`/system-check` runs the same script with `-MachineryOnly`; that mode
+> skips this invariant and prints `SKIP: live coverage…`, so its output is not a proof here.**
+>
+> **If the line is absent, reads `SKIP`, or the script exits non-zero, report that and stop without
+> producing a gap list**: every number below it would be unsafe. Note the script prints nothing at all
+> when it fails, so an unrelated failure (a broken path, skill-mirror drift) also hides the parity
+> line — say which failure you actually saw, and do not report a mirror problem you did not observe.
+> The doer surfaces it and `/coverage-audit` repairs a real mirror drift — never repair either coverage
+> file yourself. The `REPORT:` lines about notes-plan fingerprints print only on a passing run and do
+> not block you.
+>
 > **Report size is contracted, and holding the contract is the hard part.** Roughly two thirds of the
 > ~1359 junior bullets are unmarked, so one line per gap is an unusable report that saturates the doer's
 > context. Return **only**:
@@ -146,7 +176,8 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > 2. Per topic, **at most 8** unmarked bullets quoted verbatim, ranked by what those interviews ask
 >    first. These are the only ones the doer plans against.
 > 3. The SQL topic list.
-> 4. The read-to-EOF line and the Angular-exception count.
+> 4. The read-to-EOF line, the validator's `PASS: coverage mirror parity` line verbatim, and the
+>    Angular-exception count.
 >
 > No excerpts of covered material, no reasoning trace, no full enumeration.
 
@@ -159,6 +190,14 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > Do not return full step descriptions or code.
 
 The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.md yourself.
+
+**A missing parity proof in 2a stops the run**, and it is the one report you may not work around: do
+not re-dispatch 2a against the topic files, do not fix either coverage file, and do not edit
+`ROADMAP.md` from a partial list. Write the report with the validator's output, name `/coverage-audit`
+as the repair, and leave `ROADMAP.md` untouched — a gap analysis built on a drifted mirror is worse
+than no run, because the file it writes carries no sign that its input was wrong. Carry the passing
+line into the Step 7 report too: it is what makes this run's central input falsifiable by a later
+reader, at no token cost.
 The old "borderline" group is gone with the marker rewire — a bullet either carries a project marker or it
 does not, so there is nothing left to adjudicate by wording. Its one successor is the Angular-backfill
 exclusion: carry 2a's count of it into the Step 7 report, because until that backfill lands the Angular

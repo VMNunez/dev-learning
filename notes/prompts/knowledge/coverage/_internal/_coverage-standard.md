@@ -1,6 +1,8 @@
 # Coverage standard — levelled learning scope
 
-This is the shared contract for `coverage-prompt.md` and `coverage-audit-prompt.md`.
+This is the shared contract for `coverage-prompt.md` and `coverage-audit-prompt.md`, which implement it.
+It is also the file every downstream reader cites for the artifact model, the evidence markers and the
+rule below on reading a mirror — a rule stated here binds them too, not only the two prompts above.
 
 ## Artifact model
 
@@ -17,6 +19,45 @@ Three global mirrors — one per level — provide cross-topic analysis:
 - `notes/coverage/senior.md`
 
 The mirrors are generated artifacts. Topic files are the sources of truth.
+
+### When a prompt may read a mirror instead of the topics
+
+The pair is **one artefact**: every writer of a bullet or a marker writes both files, verbatim, in the
+same commit. Unlike almost every other invariant in this system, that one is **mechanically verified** —
+`notes/prompts/_internal/validate-prompt-system.ps1` invariant 2 compares the two files' top-level `- `
+bullets as an exact, **case-sensitive multiset**, per topic section, across all three levels, and
+**fails** (it does not merely report) on one bullet present in only one of them. Bullet *order*,
+headings and indented sub-lines are outside the check — which is precisely the guarantee an enumeration
+needs and not the guarantee a diff would give. A green run prints
+`PASS: coverage mirror parity (N topics x N levels)`; under `-MachineryOnly` it prints `SKIP: live
+coverage…` instead, which is evidence of nothing.
+
+So the rule below is **not** that a mirror is less trustworthy than its topics. It is about what a read
+is *for*. Three cases, and only the middle one carries a precondition.
+
+**A spot lookup is free.** Checking whether one bullet exists, or what markers its neighbours carry, may
+read whichever file is already open. It produces no number another file will carry and no list anyone
+plans against, so parity cannot change the answer without the validator failing anyway.
+(`review-audit`, `_review-standard` and `backlog-task-open` all use the mirror this way, correctly.)
+
+**A cross-topic enumeration may use the mirror, on a quoted proof.** A gap list, an inventory, any pass
+where opening thirteen topic files instead of one is the difference between a bounded read and a
+saturated context. The precondition is that the run has **seen the validator's
+`PASS: coverage mirror parity` line in that same run and quotes it** — a stronger proof than any
+counting check a prompt could improvise, and it costs no tokens. If the line is absent, reads `SKIP`, or
+the validator fails, **report and stop.** Never fall back to the topic files silently — a run that
+quietly swaps its input has hidden the drift instead of announcing it — and never repair the mirror in
+passing: the writer that touched one file and not the other is the defect, and `/coverage-audit` owns
+the repair.
+
+**A measurement is read from the topic files.** Any count, share or denominator another file will carry:
+they are the declared sources of truth, the figures land in files that record no provenance, and the
+reads are two `grep -c` per file with no contents loaded. Authoritative *and* free is why this one is
+required rather than merely preferred — see `progress-update-prompt.md` D8, which owns the counting
+rule itself. **Known exception, unruled:** `project-brief-prompt.md` counts markers from the mirror and,
+with `plan-audit.md`, computes a `Coverage SHA-256` over it, while the canonical digest command below
+names the topic file. Those two are a freshness gate, not a report, and changing what they hash moves
+the gate — so they stay as they are until that is ruled on separately.
 
 ## Progression gate
 

@@ -342,7 +342,11 @@ The things a run leaves behind that are easy to miss.
   `Pending additions:` and `/notes-audit` appends in a diff-proved append-only mode.
 - **The two coverage files are one artefact.** `notes/{topic}/coverage/{LEVEL}.md` and the SQL/topic
   section of `notes/coverage/{LEVEL}.md` carry the same bullets verbatim. Any writer that touches one
-  and not the other has introduced drift that nothing announces.
+  and not the other has introduced drift — **and this is one of the few invariants a machine catches**,
+  by `validate-prompt-system.ps1` (README.md states it; §12 explains why it is not restated here).
+  Which readers may use the mirror instead of the topic files, and on what proof, is
+  `_coverage-standard.md`'s rule and not this map's — `roadmap-review` 2a, `project-brief`,
+  `plan-audit`, `review-audit` and `backlog-task-open` all read it today.
 - **A gate closes on an empty drift report, not on the run having happened.** True for G6
   (`progress-update` in a project) and G3 (after the SQL level's last step).
 - **`PROJECT-BACKLOG.md` auto-commits in any flow**, not just inside `/review-audit` — the file is
