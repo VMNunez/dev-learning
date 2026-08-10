@@ -101,6 +101,7 @@ selectable by planning or opening. Show only remaining defects and the minimal c
 
 Closing every row never changes the original tracker/spec verdict or TIME_USED:
 
+- a corrected Pass closes its route step;
 - a corrected Borderline closes its route learning step;
 - a corrected Fail moves to `reinforcement-required` until `/simulation-plan` authors a linked
   reinforcement step and that step earns a Pass;
@@ -110,8 +111,11 @@ Closing every row never changes the original tracker/spec verdict or TIME_USED:
 
 On first review, upsert one `practice/simulations/MISTAKES.md` `## Open` row per unmet requirement or
 score-1 dimension. IDs are monotonic `SIM-NNNN`, derived from the highest ID in both sections; never
-reuse an ID. Store ID, date, level:step, track, concept, evidence, verdict, status open. Score-2 items are
-feedback, not mandatory correction rows. Correction mode removes every fixed row from `## Open` and
+reuse an ID. Store ID, date, level:step, track, concept, evidence, verdict, status open. A score-2
+dimension is feedback in this report and never becomes a row; every row written here is a mandatory
+correction row whatever the verdict, so a Pass that left a requirement unmet or scored 1 on a non-core
+dimension is `correction-required` until they close (standard, *Review and correction semantics*).
+Correction mode removes every fixed row from `## Open` and
 appends `ID | closed date | level:step | concept | correction evidence` to `## Closed`; unresolved rows
 remain byte-for-byte except for appended evidence. Verify that no closed ID remains under `## Open`.
 
@@ -150,10 +154,13 @@ step and also set the linked step to `closed ✅` only when all its MISTAKES row
 `Redeemed by: <current step> · <date>` on the linked step. Preserve its original timed verdict, time, review history,
 spec, TRACKER row, and PROGRESS statistics exactly.
 
-After every Pass/correction transition, evaluate the level-close condition. When every planned step is
-`closed ✅`, no MISTAKES row is open for the level, and every admitted track has a Pass, set
-`Level status: closed ✅`, repoint doctrine/route §0 to `/progress-update`, and name that audit as the
-next gate. Otherwise leave level status open.
+After every Pass/correction transition, evaluate the level-close condition **exactly as
+`_simulation-plan-standard.md` defines it under "Revision points and level close"** — that section owns
+the condition and this one only executes it: every planned step `closed ✅`, no correction open for this
+level, and every admitted track with at least one Pass. Never re-derive it as a MISTAKES row count:
+`## Friction` rows and rows recorded at another level are not corrections and never enter the test. When
+it holds, set `Level status: closed ✅`, repoint doctrine/route §0 to `/progress-update`, and name that
+audit as the next gate. Otherwise leave level status open.
 
 ## 6 — Commits and report
 

@@ -130,10 +130,26 @@ Redeemed by: — | <route step · date>
 ### §4 — Revision points and level close
 
 At least one revision point follows every three reviewed tests. It draws first from open `MISTAKES.md`
-rows, then recent friction. The level closes only when every planned step is `closed ✅`, no correction
-is open, and every track admitted by the route has at least one Pass. A Fail never counts as completed;
-a corrected Fail or reviewed Assisted attempt moves to `reinforcement-required` and remains unchanged
-in timed statistics. When the
+rows, then recent friction.
+
+**The level-close condition is defined here and nowhere else.** The level closes only when every planned
+step is `closed ✅`, no correction is open **for this level**, and every track admitted by the route has
+at least one Pass. Its clauses use the vocabulary of section 6 of this standard on purpose: a
+*correction* is a step in `correction-required`, never a row read on its own — section 6 fixes when a
+`MISTAKES.md` `## Open` row puts its step in that state, so the first two clauses check the same fact
+from both ends. Two consequences follow from that wording and neither survives a paraphrase in row
+vocabulary: `MISTAKES.md`'s `## Friction` rows never enter the condition — friction is dated evidence,
+not a correction backlog — and a row recorded at another level never blocks this one, because rows are
+stored `level:step`.
+
+Everything else **points here**. Where a reader genuinely will not follow the pointer — the executing
+`simulation-review-prompt.md` §5, doctrine §9, and the timed-simulation chain step in
+`notes/prompts/README.md` — the restatement is diffed against this paragraph in the commit that touches
+either side, because a paraphrase in row vocabulary moves the gate without announcing it. That is
+exactly what `REC-074` found.
+
+A Fail never counts as completed; a corrected Fail or reviewed Assisted attempt moves to
+`reinforcement-required` and remains unchanged in timed statistics. When the
 linked reinforcement step passes, the cold reviewer closes both the reinforcement step and the failed
 step's learning state, records `Redeemed by`, and never changes the failed timed verdict or time. The
 review that satisfies the final level condition writes `Level status: closed ✅`, repoints §0 to the
@@ -146,9 +162,16 @@ them. Never hide deferred scope inside prose in a step.
 
 ## 6 — Review and correction semantics
 
+Every `MISTAKES.md` `## Open` row a first review writes — one per unmet requirement and one per score-1
+dimension, core or not — **is a mandatory correction row, whatever the timed verdict was**. A score-2
+dimension is feedback in the review report and never becomes a row, so an open row always has a
+correction behind it and the two are never counted separately. A step holding one of its own open rows is
+`correction-required` and not `closed ✅`; that is what the Pass bullet below means for an attempt that
+left a requirement unmet or scored 1 on a non-core dimension and still earned the verdict.
+
 - `Pass`: closes the step when no mandatory correction remains.
-- `Borderline`: opens correction rows for every score-1 dimension and unmet requirement; the step is
-  `correction-required` until a cold correction review closes them.
+- `Borderline`: the step is `correction-required` until a cold correction review closes every row the
+  first review opened.
 - `Fail`: same correction gate, then a new reinforcement step is required. Fixing the old solution does
   not convert the timed Fail into a Pass.
 - `hint` breaks unaided conditions. The attempt may still be reviewed for learning, but its timed

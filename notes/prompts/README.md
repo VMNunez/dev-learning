@@ -540,7 +540,8 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 5. complete the test under timer conditions, then `simulation-block-close` records explicit
    attempted/Assisted state, time, self-assessment, and friction already stated
 6. say `corrige la simulación` — `simulation-grade` is the only door and dispatches the canonical
-   reviewer cold. Pass closes; Borderline/Fail opens correction rows without changing timed evidence
+   reviewer cold. Pass closes unless the review opened correction rows; Borderline/Fail always open
+   them, without changing timed evidence
 7. fix only those rows and say `corrige las correcciones`; a corrected Fail or reviewed Assisted attempt
    becomes `reinforcement-required`. `simulation-plan` resolves the stable IDs from MISTAKES Closed (or
    the original focus for a clean Assisted attempt), authors the linked successor, and that test's Pass

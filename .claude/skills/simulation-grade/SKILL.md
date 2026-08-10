@@ -42,8 +42,8 @@ the prompt line count and `read to EOF`.
 - Pass: route step closes unless the reviewer opened a mandatory correction.
 - Borderline: step becomes `correction-required`; name the open gaps and the correction command.
 - Fail: same correction gate, and the route must also contain or create a later reinforcement step.
-- Correction clean: close the MISTAKES rows; Borderline may close its learning step, while a Fail still
-  needs the reinforcement Pass. Never change the original tracker/spec verdict or time.
+- Correction clean: close the MISTAKES rows; Pass and Borderline may close their learning step, while a
+  Fail still needs the reinforcement Pass. Never change the original tracker/spec verdict or time.
 - Correction incomplete: keep the step open and name only the remaining gaps.
 - Hint: the cold subagent writes nothing, explains the first unfinished concept, and labels the later
   attempt Assisted.
