@@ -169,6 +169,26 @@ close-out adjudicates it against that close-out's existing four-condition bar an
 loop catches observable failed steps only; a skill that finishes silently with a wrong result still
 needs human review, `map-sync`, the validator, or an explicit `/system-check` to expose it.
 
+### When a ritual works and is not worth it — ritual friction
+
+The rule above only fires on a **failed** step, which leaves the most common complaint with nowhere to
+go: the ritual completed exactly as declared and still cost more than it gave. Victor lost the block to
+it, or it wrote into a file nobody reads, or he did the work by hand anyway. That is not a defect in any
+file, so nothing triggers, and it dies in the session it was said in.
+
+**Whenever Victor says a ritual costs more than it gives** — "this ate the block", "nobody reads this",
+"I do it by hand anyway", "why am I updating five files for a two-line fix" — append one row to
+`notes/prompts/_internal/_ritual-friction.md` (`RITF-NNNN`) and carry on with what you were doing. Write
+what it cost in falsifiable terms — the minutes, the files touched, the output nobody read — never
+"it is heavy".
+
+Four things it must never do, and they are the point of it: **it never opens a `REC-NNN`, never
+dispatches a cold reviewer, never blocks or asks a question, and is never argued with.** The row records
+what he observed; whether the ritual is justified is decided later, over several rows, by
+`_recommendation-ledger.md` → `REC-054` (c) — the one ruling in this system licensed to *remove*
+machinery. Skipping straight to a recommendation is how the ledger came to refill itself as fast as it
+drained, which is what this sink exists to avoid.
+
 ### After every learning plan step is completed — update these files without being asked
 
 (The platform's `step-complete` skill fires on this event and walks this exact checklist —
