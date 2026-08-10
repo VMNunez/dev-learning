@@ -7,7 +7,7 @@ audits against.
 
 | File | Holds | Written by |
 |------|-------|-----------|
-| `practice/sql/PLANNING.md` — *the doctrine* | the step loop, the done-condition formats, the closing ritual, branch rules, the revision mechanism, quality gates, invariants, closure, the out-of-scope fence. Identical whichever level is being drilled. | `sql-plan-audit` |
+| `practice/sql/PLANNING.md` — *the doctrine* | the step loop, the done-condition formats, the closing ritual, branch rules, the revision mechanism, quality gates, invariants, closure, the out-of-scope fence. Identical whichever level is being drilled. | `sql-plan-audit` — **except §0's live values, which the closing ritual writes; Section E has the full writer set** |
 | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — *the route* | that level's exercise files, its steps, its progress table, its coverage fingerprint. | `sql-plan-prompt` |
 
 One doctrine, three routes. The doctrine is written once because a step loop that says something
@@ -52,7 +52,7 @@ Its two inputs, and it never invents beyond them:
 
 | § | Section | Must contain |
 |---|---------|--------------|
-| 0 | Session quick reference | Current level · current step · current branch · done condition · next revision point · blocked on · last updated. Seven rows, no prose — it is the first thing read in a session, and the level row is what tells the reader which route file the other six refer to. |
+| 0 | Session quick reference | Current level · current step · current branch · done condition · next revision point · blocked on · last updated. Seven rows, no prose — it is the first thing read in a session, and the level row is what tells the reader which route file the other six refer to. **Which seven rows exist is the doctrine's; the values of five of them are not** — *current level, current step, done condition, next revision point* and *last updated* are rewritten by the closing ritual, and this file is not their author. Section E carries the split. **`Current branch` and `Blocked on` have no writer anywhere in the machinery**: state that as a finding, and do not invent one for them. |
 | 1 | Inputs | The two files above and what each owns, plus the doctrine/route split. |
 | 2 | The step loop | Every moment of a step, with its trigger and the exact config to paste. Exercise prompts only. |
 | 3 | Done-condition format | The closed list of testable formats. |
@@ -280,11 +280,29 @@ format or quality bar.
 | The route: steps, files, counts, statuses, fingerprint | `sql-plan-prompt.md` (writes) · `sql-plan-audit.md` (audits) | — the route file *is* this |
 | Progress *inside* the route: §1 counts, §3 statuses, §2 `[x]` bullets | `sql-exercises-prompt.md` (review mode) | — the planner writes these fields' *structure*, never their values; it reads them, preserves them, and never reverses one. Only a scored exercise moves them. |
 | The `PROGRESS.md` projection of the route | `sql-plan-prompt.md` (seeds the level's rows and re-syncs them on a replan) · `sql-exercises-prompt.md` (moves the counts: `practice` the written denominator, `review` the graded numerators) · `sql-plan-audit.md` (audits, invariant 15) | — which figures it carries; never its layout, which is PROGRESS.md's own |
-| The doctrine: loop, formats, ritual, gates, invariants | `sql-plan-audit.md` | — the doctrine file *is* this. `sql-plan-prompt` reads it and reports findings against it; it edits it exactly once, in the one-time route migration. |
+| The doctrine's **rules**: loop, formats, ritual, gates, invariants, closure, fence — and **which seven rows §0 carries** | `sql-plan-audit.md` | — the doctrine file *is* this. `sql-plan-prompt` reads it and reports findings against it; it edits it exactly once, in the one-time route migration. |
+| The **live values** inside doctrine §0: current step, done condition, next revision point, current level, last updated | `_sql-exercises-review.md` step 4d (writes them the moment a step closes; `sql-grade` commits the file) · `sql-step-close` step 2 (verifies and repairs what 4d left wrong) · `sql-plan-audit.md` (reconciles them against the route under invariants 5 and 6) | — which rows exist and what each must hold; never their values, which it may correct but does not author. `sql-block-open` reads §0 and reports a stale one, repairing nothing. |
 | The concept list | `notes/sql/coverage/{LEVEL}.md` | which sections and bullets a step claims |
 | How much of the route is done | `PROGRESS.md` → `## Practice completed` | that generating and grading update it (the concept inventory lives in `notes/sql/coverage/{LEVEL}.md`, not there — its concept list was deleted 2026-08-03) |
 | The mistake log | `practice/sql/MISTAKES.md` (written by the review run) | that revision points read it |
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
 | Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: readiness only** — which techniques the closed steps unlock, and therefore what may be asked for today. Never the config, never the format. |
+
+**Structure and values split inside the doctrine exactly as they do inside the route** (the third row
+above): the planner writes the route's progress *fields* and only a scored exercise moves their values,
+and in the same way `sql-plan-audit` writes §0's *rows* while it only ever **corrects** what they say —
+authoring a value there is the closing ritual's, and a §0 the audit rewrote from scratch is a §0 that
+lost the close it was recording. The fence used to name `sql-plan-audit` as the doctrine's single
+writer, with the one-time migration as its only carve-out, and that stopped being true the day the
+closing ritual was automated: §0 is a doctrine section by A1, and `_sql-exercises-review.md` gained a
+step that rewrites it. Corrected 2026-08-10 (`REC-073`). The reason the repair belongs to the ritual and
+not to this prompt: §0 is read at the start of **every** block while a step closes thirteen times at
+junior, so a fence sending its repair to a prompt Victor runs at a gate would guarantee the staleness
+§0 exists to prevent. **The mechanism is correct and has never fired** — no step has closed since 4d was
+written — so its first close is the one to read the report of.
+
+**Consequence for an audit run:** the doctrine states who writes §0 in **three** places, and all three
+are checked against this table, not §4 alone — §0's own header line, §2's Moment 4 bullet, and §4's
+*"What a close touches, and who writes it"* list. A count of one is how two of them were missed.
 
 A finding outside this table is reported to Victor as a recommendation, never fixed in the plan.

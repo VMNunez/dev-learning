@@ -11,7 +11,11 @@ coverage section and every prompt change leaves them slightly less true.
 
 **The plan is two files** (`_sql-plan-standard.md`, Section A) and this prompt audits both:
 
-- `practice/sql/PLANNING.md` — **the doctrine**, level-neutral. This prompt owns it outright.
+- `practice/sql/PLANNING.md` — **the doctrine**, level-neutral. This prompt owns its **rules** outright.
+  It does not **author** §0's live values — the grading subagent writes them the moment a step closes and
+  `sql-step-close` verifies them — but it does **correct** them: specialists 3 and 4 reconcile §0 against
+  the route under invariants 5 and 6 and fix what disagrees, in place, like any other finding.
+  `_sql-plan-standard.md` Section E carries the full writer set.
 - `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — **the route** for the selected level. Written by
   `sql-plan-prompt`; audited, corrected and extended here.
 

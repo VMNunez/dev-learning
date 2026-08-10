@@ -78,8 +78,9 @@ Dispatch **one** subagent per run, and give it no conversation context beyond th
   contamination is the entire reason this step is a subagent and not you.
 
 The prompt owns everything from here: the second cold pass before any marker is written, the
-`[Repaso]` exclusions, `PROGRESS.md`, the `{PLAN}` §3 row, the §2 checkboxes, the §0 header, and
-`MISTAKES.md`. **Do not re-derive, second-guess or "improve" any of it.** If its output contradicts
+`[Repaso]` exclusions, `PROGRESS.md`, the `{PLAN}` §3 row and its §2 checkboxes, the **doctrine's** §0
+quick reference when the step closes — `{PLAN}` has no §0, and §0 is a doctrine section
+(`_sql-plan-standard.md` A1) whose live values the grading run writes — and `MISTAKES.md`. **Do not re-derive, second-guess or "improve" any of it.** If its output contradicts
 this file, the two have drifted — report that; do not paper over it.
 
 ---
@@ -139,6 +140,7 @@ If `sql-step-close` ran, it reports its own commits; do not stage its files here
 | Score | 9/10 (90%) — segunda pasada: 9 ✅ confirmados, 0 revertidos |
 | MISTAKES.md | 1 fila abierta (`NULLS LAST`), 0 cerradas |
 | PROGRESS.md | junior roll-up 29/200, fila del archivo 10/10, filas `Total` recalculadas |
-| Route file | §3 step 0 → `closed ✅`, §2 checkboxes 8/9 marcados, §0 → step 1 |
+| Route file | §3 step 0 → `closed ✅`, §2 checkboxes 8/9 marcados |
+| Doctrina §0 | 4d disparó — Current step → step 1, Done condition y Last updated reescritos (el `{PLAN}` no tiene §0) |
 | Branch taken | ≥ 80% y último archivo del step → `sql-step-close` invocado |
-| Commits | mine: MISTAKES.md, PROGRESS.md, PLANNING-junior.md · yours: the `.sql` (commands below) |
+| Commits | mine: MISTAKES.md, PROGRESS.md, PLANNING-junior.md, PLANNING.md (4d disparó) · yours: the `.sql` (commands below) |
