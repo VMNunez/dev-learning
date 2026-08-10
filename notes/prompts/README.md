@@ -184,7 +184,7 @@ separately, because a gate sequences the chain and a prerequisite constrains the
 | `/cover-letter` → `cover-letter-prompt` | `MODE`, `EMPRESA`, `PUESTO`, optional `CONTACTO`; pasted offer | S · output only | after `/progress-update` (optionally `/cv tailor`); offer required; tailored text only, no repo file |
 | `/profile-readme` → `profile-readme-prompt` | `MODE=sync\|optimize` | S · external repo, Victor commits | after `/portfolio-audit` when a project just reached ✅ Ready; sync never silently expands to optimize; never commits the portfolio repo from here |
 | `/tracker` → `tracker-prompt` | `MODE=log\|update\|analyze` plus conditional application fields | S · external/output | external tracker only; analyze hands recurring gaps to evidence-intake |
-| `/system-check` → `system-check-prompt` | no config; explicit invocation | O, family/root/skill/launcher/map analysts + cold final reviewer · agent | machinery only; never live-state/status sweep, source repair, automatic gate, or partial verdict |
+| `/system-check` → `system-check-prompt` | no config; explicit invocation | O, family/root/skill/launcher analysts + cold final reviewer · agent; the orchestrator reads both maps itself | machinery only; never live-state/status sweep, source repair, automatic gate, or partial verdict |
 
 Either way, **every run writes its own `_last-run-report*.md` and updates `_run-tracker.md`.**
 Orchestrators record target-level state; `notes-audit` additionally records every planned EN/ES pair,

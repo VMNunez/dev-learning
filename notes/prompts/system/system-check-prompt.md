@@ -82,7 +82,11 @@ The orchestrator enumerates, from disk rather than from either map:
   `_recommendation-ledger.md`, plus `_shared-context.md` (the shared canonical runtime input) and the
   PowerShell validator;
 - `notes/prompts/README.md` and `notes/prompts/_internal/_system-map.md` themselves, as the two objects
-  under review;
+  under review. These two are the only inventory items with **no analyst manifest owner**: since
+  `REC-079` the orchestrator reads them itself in Step 4. They stay in the inventory and in the path +
+  hash snapshot, and are excluded from Step 3's `audited files` / `unassigned files` denominators; their
+  read-to-EOF evidence is the two `N lines, read to EOF` declarations at the head of Step 4's claim
+  ledger;
 - every skill directory in both adapters, paired by relative path;
 - every launcher in both adapter catalogues, paired by filename.
 
@@ -133,16 +137,15 @@ Dispatch three independent analysts:
 - **Launcher analyst, tier `mechanical`:** proves filename and canonical-target parity, command names,
   delegation, argument contracts, and the runnable-prompt denominator.
 
-### 2C — map claims
-
-Dispatch one independent analyst:
-
-- **Map-claims analyst, tier `standard`:** reads `notes/prompts/README.md` and
-  `notes/prompts/_internal/_system-map.md` to EOF and returns a location-indexed inventory of every claim
-  Step 4 must rule on. It extracts claims only; it never treats them as expected truth.
-
 No analyst receives either map's claims as instructions. The maps are the objects under review, not the
-source from which the expected answer is reconstructed.
+source from which the expected answer is reconstructed — **and for the same reason no analyst extracts
+them either.** A third sub-step, `2C — map claims`, dispatched one `standard` analyst to return a
+location-indexed inventory of every claim Step 4 must rule on. It was **deleted 2026-08-10 (`REC-079`)**
+and must not be reintroduced. Two consecutive runs demoted its return — to nothing on 2026-08-09, to a
+cross-check on 2026-08-10 — and the extraction was 434 lines against 1101 in the two maps, 39% of the
+object, so **size was not what made it a worse input; being derived was.** A derived paraphrase can omit
+a claim in a way nothing downstream can see, and the audit's completeness would then rest on a list whose
+own completeness nothing checks. Step 4 builds its claim ledger from the maps directly.
 
 ## Step 3 — completeness gate
 
@@ -150,27 +153,69 @@ Before comparing a single map row:
 
 1. Match analyst reports against the Step 1 inventory.
 2. Reject a report missing any assigned file, any EOF declaration, or any requested manifest field.
-3. Re-dispatch only the failed bounded concern, cold.
-4. Recompute the Step 1 path + hash manifest and stop on any change.
-5. Require `audited files = inventory files`, `duplicate manifest ownership = 0`, `unassigned files = 0`, and
-   launcher/skill mirror parity proven.
+3. **A present field is not a complete one.** The manifests' access fields — `reads` and
+   `writes/returns` on every 2A row, `read by` on component rows, and the skill analyst's `reads` /
+   `writes` — are enumerations, so each must name every path or prompt it claims **and cite the line or
+   section that proves each one**, and must state `none` explicitly rather than being omitted or left
+   blank. A field listing paths without per-item evidence is incomplete and is re-dispatched exactly
+   like a missing one. This raises the floor; it does **not** prove exhaustiveness — a manifest citing
+   three of four paths still passes, which is precisely why the absence rule below and Step 4's
+   `unverifiable` disposition exist. The maps' `Written by` cells are not a manifest field at all:
+   Direction 2 derives them by inverting `writes/returns`.
+4. Re-dispatch only the failed bounded concern, cold.
+5. Recompute the Step 1 path + hash manifest and stop on any change.
+6. Require `audited files = inventory files − 2` (the two maps have no analyst owner — see Step 1),
+   `duplicate manifest ownership = 0`, `unassigned files = 0` over that same set, and launcher/skill
+   mirror parity proven.
 
-If the gate cannot close, take the blocked branch in Step 7 and then execute the pipeline close-out. A
-partial sweep may report positive contradictions but may not claim an absence or edit maps.
+If the gate cannot close, take the blocked branch in Step 7 and then execute the pipeline close-out. **A
+run that took the blocked branch** additionally may not edit either map.
+
+**The absence rule governs every verdict this prompt writes, not only a blocked one.** A sweep may report
+a positive contradiction from any amount of evidence, but it may assert an **absence** — `verified — no
+change`, "every field checked", "no correction owed" — only over evidence that is itself complete. A run
+whose gate *closes* is not exempt: closing proves every file was read and every field was present, never
+that any field was exhaustive. Where the manifests cannot settle a cell, the honest output is Step 4's
+`unverifiable` disposition, never silence.
+
+This is **not** the map-sync read licence in `_session-rules.md` → "a read of any depth rules on a
+contradiction; only a whole read rules on an absence", which bounds a reader over a **source file** by
+read depth. Here the evidence is a **derived manifest**, so a whole read of the source is necessary and
+not sufficient.
 
 ## Step 4 — reconcile the two maps
 
 The orchestrator compares the completed manifests against every relevant claim, not merely the first
-name hit.
+name hit. **Reconciliation runs in two directions and is not finished until both have.**
 
-### `notes/prompts/README.md`
+**Build the claim ledger first, and build it from the maps themselves.** Read both maps to EOF and
+enumerate every claim in the scope below as one row. This is the orchestrator's own work and is never
+dispatched: the maps are the object under review, so an extraction of them is a paraphrase that can drop
+a claim invisibly (`REC-079`). **Rule cell by cell, never section by section** — a section-level pass is
+what published two false `README.md` cells on 2026-08-10, both falsifiable from manifests the
+orchestrator was already holding.
+
+Give every row exactly one disposition:
+
+- `correct` — the manifests **positively support** the cell as written. Only these may be covered by a
+  `verified — no change` section in Step 7.
+- `incorrect` — the manifests contradict it; draft the correction.
+- `unverifiable` — the completed manifests neither support nor contradict it. **This is a finding, not a
+  pass.** Record every one in the report with the evidence that would settle it. Silence here is the
+  overclaim the absence rule above forbids. A cell may be recorded `unverifiable` only after **one
+  bounded attempt to settle it has failed** — a re-dispatch of the owning bounded concern under Step 3,
+  or the orchestrator's own read of the single named source file — and the report states which was tried.
+
+### Direction 1 — claim → evidence
+
+#### `notes/prompts/README.md`
 
 Check all counts and group lists; every catalogue row's public command, run-first prerequisite,
 configuration/modes and received inputs, reads, writes/returns, dispatched roles and isolation, commit
 owner, handoffs/gates, and explicit exclusions; internal-component rows; launcher naming and parity;
 orchestrator/single-shot classification; batch/global status; and typical run order.
 
-### `notes/prompts/_internal/_system-map.md`
+#### `notes/prompts/_internal/_system-map.md`
 
 Check the opening system properties; every chain step in §§2–6; every applicable writer/reader row in
 §7; all `PROGRESS.md` ownership claims in §8; every skill row in §9 — trigger, received inputs, reads,
@@ -182,6 +227,16 @@ schema, owner, or gate.
 Enforce the documentation split while reconciling: `README.md` owns per-prompt facts and run order;
 `_system-map.md` owns per-skill facts and cross-system wiring. Replace duplicate rule text in the
 non-owning document with a link to its owner.
+
+### Direction 2 — evidence → claim
+
+Direction 1 catches a **false** cell. It cannot catch an **incomplete** one: a `Written by` cell naming
+two of five writers agrees with every manifest that names those two, so the omission is invisible to any
+number of passes run claim-first. Walk the completed manifests in the opposite direction — for every
+access fact a manifest asserts (each path a prompt reads, each file it writes, each writer or reader a
+component records), assert that the fact **reached** the map cell that owns it. A fact held in the
+manifests with no home in either map is a missing-claim finding and is corrected exactly like a false
+one. This direction is mandatory, and its coverage count and its findings are both reported.
 
 For each discrepancy record:
 
@@ -207,7 +262,10 @@ Recompute the Step 1 path + hash manifest, then dispatch one cold `reviewer`, ti
 complete manifests, both current maps, the proposed map patch, and the draft system-check report. The
 reviewer checks:
 
-- every inventory item has evidence;
+- every inventory item has evidence — the two maps' evidence being Step 4's claim ledger and its two
+  EOF declarations;
+- every claim-ledger row carries one disposition, **both** reconciliation directions ran, and no
+  `verified — no change` section covers a cell not dispositioned `correct`;
 - every proposed correction follows from that evidence;
 - every occurrence of a changed claim was updated;
 - no authoritative machinery file was edited;
@@ -226,12 +284,19 @@ Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
 1. date, starting commit, branch, and `Status: complete | blocked`;
 2. inventory and dispatch coverage counts;
 3. validator baseline and final result;
-4. README catalogue coverage and corrections, including explicit `verified — no change` sections;
-5. system-map wiring/skill coverage and corrections, including explicit `verified — no change` sections;
+4. README catalogue coverage and corrections — **on a run that reached Step 4**: its claim-ledger counts
+   by disposition, `verified — no change` sections covering **only** cells dispositioned `correct`, every
+   `unverifiable` cell named with the evidence that would settle it, and the evidence → claim sweep's
+   coverage count and findings;
+5. system-map wiring/skill coverage and corrections, on those same four terms;
 6. boundary proof: the excluded live-artifact classes and confirmation that none entered the denominator;
 7. architecture findings linked to their recommendation IDs;
 8. final reviewer verdict;
-9. global verdict: `maps verified`, `maps corrected`, or `blocked — incomplete audit`.
+9. global verdict: `maps verified`, `maps corrected`, or `blocked — incomplete audit`. The first two
+   assert an absence, so each must carry Step 4's `unverifiable` count and **neither may be written as an
+   unqualified claim of completeness while that count is above zero** — say what was not settled, in the
+   verdict line itself. The qualified form is the literal plus the residue, e.g.
+   `maps corrected — 4 corrections applied; 3 cells unverifiable (listed in §4)`.
 
 **Completed branch:** apply the reviewer-approved map patch and justified recommendation rows, then run
 the validator again with `-MachineryOnly`. Inspect `git diff` and prove that only the declared maps,
@@ -268,8 +333,11 @@ in the committed audit report and must not be misreported as a skipped step.
 
 A run is `completed` only when all of these are true:
 
-- every inventory file was read to EOF and appears exactly once in the manifests;
-- every README prompt-contract field and every system-map wiring/skill field in scope was checked;
+- every analyst-owned inventory file was read to EOF and appears exactly once in the manifests, and both
+  maps carry the orchestrator's own `N lines, read to EOF` declaration at the head of Step 4's claim
+  ledger;
+- every README prompt-contract field and every system-map wiring/skill field in scope carries exactly one
+  Step 4 disposition, and **both** reconciliation directions ran;
 - every supported correction survived the cold final review;
 - no live project, learning, practice, application, or debt state entered the audit denominator;
 - the final validator exits successfully;
