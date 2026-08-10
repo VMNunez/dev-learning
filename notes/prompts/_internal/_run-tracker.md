@@ -174,6 +174,7 @@ work; prompts with no target use `global`.
 | cv-prompt | | | pending | |
 | evidence-intake-prompt | | | pending | |
 | hr-screen-prompt | | | pending | |
+| interview-prep-route-prompt | | | pending | |
 | linkedin-prompt | | | pending | |
 | profile-readme-prompt | | | pending | |
 | simulation-generator-prompt | | | pending | |
