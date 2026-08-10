@@ -17,8 +17,9 @@ application **today**? It produces four things (see `_portfolio-standard.md`):
 4. If ✅ Ready — a **direct update of Victor's GitHub profile README** (`dev/portfolio/VMNunez`, a
    separate repo) to feature the project.
 
-It is the last link in the per-project chain: `plan-audit` → build → `readme-audit` → `review-audit`
-→ **portfolio-audit**.
+This is the closing project gate, **G7** — it runs after G5 (`readme-audit`) and a clean G6
+(`progress-update`), and it is the last gate that reads the project itself (`roadmap-review` / G8
+follows). The gate order and every trigger are owned by `_planning-standard.md` §23.
 
 > **▶ Run first:** `readme-audit` **and** `review-audit` — this gate assumes the README is correct
 > and the code has been reviewed (the verdict reads `PROJECT-BACKLOG.md`, which `review-audit` writes).

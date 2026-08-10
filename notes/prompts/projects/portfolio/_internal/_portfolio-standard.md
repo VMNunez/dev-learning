@@ -24,8 +24,9 @@ in a job application right now — not "ready eventually", ready today?** It pro
    from the learning flow — the orchestrator prints the commit + push commands for that repo
    (procedure: `portfolio-audit.md`, Phase 3).
 
-It is the last link in the per-project chain: `plan-audit` → build → `readme-audit` → `review-audit`
-→ **portfolio gate**.
+This is the closing project gate, **G7** — it runs after G5 (`readme-audit`) and a clean G6
+(`progress-update`), and it is the last gate that reads the project itself (`roadmap-review` / G8
+follows). The gate order and every trigger are owned by `_planning-standard.md` §23.
 
 ---
 

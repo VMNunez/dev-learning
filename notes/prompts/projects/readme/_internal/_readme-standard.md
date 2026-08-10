@@ -14,7 +14,9 @@ after a project or a big feature, or whenever a README feels stale — and alway
 `portfolio-audit` (that gate assumes the READMEs are already correct). It is a **write/fix** job: the
 author and reviewer edit the README files directly, they do not just report.
 
-Chain: `plan-audit` → build → **this readme review** → `review-audit` → `portfolio-audit`.
+This readme review is the project's **G5** gate — it runs after every High from G3/G4 (`review-audit`)
+is fixed and committed, and before G7 (`portfolio-audit`), which reads the READMEs it produces. The gate
+order and every trigger are owned by `_planning-standard.md` §23.
 
 ---
 
