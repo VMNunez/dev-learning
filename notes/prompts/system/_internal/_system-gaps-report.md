@@ -38,6 +38,10 @@ not one of the eleven files named below as *the file that would settle a finding
 38 candidate subjects. Content keys, never run-scoped numbers, so the deferred set can be matched by
 the next run.
 
+**All ten detectors ran; none returned nothing.** D1 ×7 · D2 ×3 · D3 ×5 · D4 ×6 · D5 ×1 · D6 ×3 ·
+D7 ×3 · D8 ×3 · D9 ×5 · D10 ×4 (two candidates are counted under the detector that produced them first;
+`D5:R1–R5#mid-step-due` also satisfies D4, and `D3:PROGRESS.md#Timed simulations` also satisfies D4).
+
 ### Promoted
 
 | Content key | Det. | Evidence | Disposition | Outcome |
