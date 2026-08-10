@@ -87,6 +87,11 @@ condensed copy, so keep the two in sync.
 
 ## Daily study blocks (from June 2)
 
+**The times below are approximations, not triggers.** A block opens when Victor says it opens, or from
+the context a conversation starts in — never because a clock reached an hour. The hours name *which*
+block is meant and roughly when it usually falls; a block that runs at a different time, twice, or not at
+all on a given day is normal and is not drift. Nothing in the system may read a time to decide anything.
+
 - **08:00–12:30 — active project with the coding agent** (4h total, split by a 30min breakfast break).
   The main learning block. The agent guides, Victor implements. Goal: depend less on AI over time.
 - **12:30–13:30 — SQL then practice.** SQL exercises until all SQL topics are solid, then
