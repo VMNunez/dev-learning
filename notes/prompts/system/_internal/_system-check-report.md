@@ -1,171 +1,175 @@
-# System-check report — whole prompt and skill system
+# System check — machinery audit report
 
-Date: 2026-08-09
-Starting commit: `4c77723f`
+Date: 2026-08-10
+Starting commit: `2c1e10fb38e5c232700774351a70609e7fa08e4d`
 Branch: `fix/backend-backlog`
 Status: complete
 
-**Global verdict: maps corrected** — nine false claims across the two derived maps, all repaired.
-
----
-
 ## 1 — Inventory and dispatch coverage
 
-Frozen path + SHA-256 manifest built from the Step 1 inventory, asserted `snapshot paths = inventory
-paths`, and recomputed unchanged before reconciliation and before the final review.
+Enumerated from disk, never from either map. **167 audited paths**, each with exactly one manifest owner,
+zero unassigned, zero duplicate owners.
 
-| | Count |
-|---|---|
-| Runnable prompts | 30 |
-| Internal Markdown components (incl. both maps and the 12 root contracts) | 45 |
-| PowerShell validator | 1 |
-| Skills, both adapters (17 × 2) | 34 |
-| Launchers, both catalogues (30 × 2) | 60 |
-| `PROJECT-BACKLOG.md` | 7 |
-| Project `PLANNING.md` (§0/§23 scoped) | 7 |
-| SQL doctrine + junior route | 2 |
-| **Total audited paths** | **187** |
+| Class | Count | Manifest owner |
+|---|---|---|
+| Canonical runnable prompts | 30 | 13 family analysts |
+| Internal components (`*-prompt` / `*-standard` / `*-rationale`, the 3 SQL branch/seed files, `_topic-ownership.md`) | 32 | the same 13 family analysts |
+| Root contracts + validator | 9 | root-contract analyst |
+| The two maps under review | 2 | map-claims analyst |
+| Skill files, both adapters (17 pairs) | 34 | skill analyst |
+| Launchers, both catalogues (30 pairs) | 60 | launcher analyst |
+| **Total** | **167** | 17 cold roles |
 
-Manifest digest `22DE2C038B1C2C6466FADEDC8EDB9CCE732E1C3F378193D5B6BE5B8DF70583E4`, identical at Step 1,
-Step 3 and Step 7. The only dirty file in the tree, `.claude/settings.local.json`, is outside the
-inventory; it was preserved and never staged.
+Frozen path + SHA-256 snapshot built from exactly that path set; `snapshot paths = inventory paths`
+asserted before dispatch and recomputed twice — before reconciliation and before the final review —
+with **zero drift** each time. The one dirty file in the tree, `.claude/settings.local.json`, is outside
+the inventory and was preserved unstaged.
 
-**Dispatches: 19 required, 19 completed.** 13 family analysts (`standard`), root-contract analyst
-(`deep`), skill analyst (`deep`), launcher analyst (`mechanical`), map-claims analyst (`standard`),
-debt analyst (`standard`), cold final reviewer (`deep`). The first final-reviewer dispatch was killed
-by a runtime session limit before returning a verdict and was re-dispatched cold once; no other role
-failed. No analyst received either map's claims as instructions.
+Dispatches: **17 required, 17 completed** — 13 family `analyst` (standard), 1 root-contract `analyst`
+(deep), 1 skill `analyst` (deep), 1 launcher `mechanical checker`, 1 map-claims `analyst` (standard) —
+plus the Step 6 cold `reviewer` (deep). No single-agent fallback was taken at any point.
 
-**Completeness gate: closed.** `audited files = inventory files` (187 = 187) · `duplicate manifest
-ownership = 0` · `unassigned files = 0` · every assigned file carries an `N lines, read to EOF`
-declaration · launcher and skill mirror parity both proven mechanically.
+Every assigned file was declared `N lines, read to EOF`: 62 across the family manifests, 9 root, 2 maps,
+17 `.claude` skill copies (their 17 `.agents` twins proven identical by SHA-256 rather than re-read, per
+Step 2B), 60 launchers.
+
+Nine analysts of one wave were killed mid-dispatch by a runtime session limit. Three of them had already
+written complete manifests to disk and were kept; the other six were re-dispatched cold in two smaller
+batches, per Step 3's re-dispatch rule. The path + hash manifest was recomputed after the re-dispatch and
+had not moved.
 
 ## 2 — Validator baseline and final result
 
-Baseline and final run are identical: **12 PASS, exit 0**, with one `REPORT:` block naming four notes
-plans whose `Coverage SHA-256` no longer matches their coverage file (`architecture`, `general`,
-`java`, `spring-boot` — junior verify files claiming `complete`). That is the fingerprint contract
-reporting and deliberately not repairing; it is carried into the debt queue below, not silenced.
+Baseline `validate-prompt-system.ps1 -MachineryOnly`: **11 PASS, 1 SKIP, 0 failures.**
+PASS: 30 canonical prompts · 30 Claude launchers · 30 Codex launchers · launcher target parity, full
+delegation and canonical runtime isolation · runnable prompt entry-point and self-report contracts ·
+representative contract dry runs · external-path failure simulation · thin session adapters share one
+rules source · path references resolve (129 files, both path forms) · skill mirror parity (17 files per
+adapter) · both maps know the machinery exists (17 skills, 30 prompts registered).
+SKIP: live coverage, notes-plan, SQL-route and simulation-route state — the switch working as designed.
 
-## 3 — Map corrections
+Final result after applying the approved patch: **11 PASS, 1 SKIP, 0 failures** — unchanged.
 
-Nine corrections, all approved by the cold final reviewer and applied verbatim.
+## 3 — `README.md` catalogue coverage
 
-### `notes/prompts/README.md`
+**Corrected — two cells; everything else verified with no change.**
 
-| # | Claim | Correction |
+Verified with no change:
+
+- Counts and group lists: 30 runnable · 30 + 30 launchers · 13 families · the 8/5/9/7/1 group table
+  summing to 30 · 22 suffix-drops + 7 `*-audit` files + the deliberate `/code-review-practice` exception ·
+  18 orchestrators / 12 single-shot. All re-derived from disk.
+- **All 30 public-interface-index rows**: command → canonical prompt, config / received input,
+  runtime · commit owner, run-first / handoff / boundary. The 30 run-first cells were re-derived by
+  extracting every prompt's own `▶ Run first` header; the config cells from each prompt's own config block.
+- Family catalogue rows, internal-component rows, launcher naming and parity, orchestrator/single-shot
+  classification, batch/global status, typical run order, and the `/system-check` row's own reads, writes
+  and machinery-only boundary.
+
+Corrected:
+
+- **R1 — L336, `/cover-letter` Reads cell.** It omitted `personal/job-search/internship-daw.md`, which
+  `cover-letter-prompt.md` L58 names in its own body ("stack per `_shared-context.md` /
+  `personal/job-search/internship-daw.md` — the ground truth"). README owns per-prompt reads, so the
+  owner's cell is the one place that fact must appear. Added, with the access mode named.
+- **R2 — L237-239, the `Written by` cell of all three coverage hub rows.** They named only
+  `coverage-prompt` and `coverage-audit-prompt`, while `_system-map.md` §7 lists five writers and declares
+  its list exhaustive; the skill manifest independently confirms three in-session writers
+  (`coverage-bullet-add`, `coverage-mark`, `sql-step-close`). The same table's `PROGRESS.md` row already
+  lists in-session rituals, so the omission contradicted the table's own convention. Corrected in all
+  three rows, with a link to §7 as the owner of the complete list.
+
+## 4 — `_system-map.md` wiring and skill coverage
+
+**Corrected — four cells; everything else verified with no change.**
+
+Verified with no change:
+
+- §1 two-engine properties and the commit boundary.
+- §2-§6 chain order and the `/system-check`-sits-outside note.
+- §7 writer registry — every row except the three below.
+- §8 all seven `PROGRESS.md` section-ownership claims, cross-checked against the seven skills that write
+  the file.
+- **§9 — all seventeen skill rows** (trigger, received inputs, reads, writes/returns, isolation, commit
+  owner, handoffs/gates, explicit exclusions) against the skill manifest. No row falsified.
+- §10 all eleven debts, flags and gotchas; §11 all fourteen symptom routes; §12 steps 1-7 and the
+  skill-friction sub-loop.
+
+Corrected:
+
+- **C1 — §7, `_session-rules.md` row.** "15 of the 30 prompts also name it directly" → **16**. A bounded
+  grep over exactly the 30 canonical prompts returns 16; the sixteenth is `system-check-prompt.md`, whose
+  only occurrence (L80) names the file as an item of its own audit **inventory** rather than as a contract
+  it obeys — which is why the cell read 15. The count is corrected and that distinction named, so the
+  number stays falsifiable.
+- **C2 — §7, `personal/job-search/**` row, `Read by` cell.** It collapsed the whole apply family into
+  "through `_application-standard.md`", which is false for three of the five prompts: `cover-letter` names
+  `internship-daw.md` directly (L58), `cv` reads `master/` and `archive/` by name (L95), and `tracker`
+  reads `tracker.csv` (L93) and every `applications/*/outcome.md` in `analyze` (L144). Replaced with a
+  per-prompt access-mode enumeration. The `Written by` cell is untouched — `REC-055`'s ruling that
+  `/cover-letter` only *suggests* a save path and writes nothing was re-verified and holds.
+- **C3 — §12, "The one automated check".** The fingerprint `REPORT:`-versus-fail rule was restated in
+  full, two sentences after the same subsection declares that `README.md` owns the validator's invariants
+  and that restating them "is how this section would fork from them". `README.md` L62-64 states the rule
+  in a strictly broader form. Replaced with a pointer; the map-owned half — "cannot tell whether a cell is
+  true", which motivates the read trigger and exists nowhere else — is kept.
+- **C4 — §7, `practice/sql/MISTAKES.md` row.** Writers named only "`sql-grade`'s subagent (`## Open`)",
+  but `sql-exercises-prompt.md` L381 documents `MODE = review` as a still-live second door to the same
+  grading branch ("still works and grades identically… nothing hands off to `sql-step-close`"), and
+  `README.md` L400 already attributes the write to it. The two maps disagreed; §7 now names both doors.
+
+## 5 — Boundary proof
+
+Excluded from the inventory, denominator, report, snapshot and blocking conditions: project `PLANNING.md`
+/ `PROGRESS.md` / `README.md` / `PROJECT-BACKLOG.md` / `ROADMAP.md`; SQL doctrine, routes, `.sql` answers
+and `MISTAKES.md`; simulation doctrine, routes, specs, `TRACKER.md` and `MISTAKES.md`; coverage files,
+their mirrors, `verify-*.md` and notes plans; notes and interview-prep prose and routes;
+`personal/job-search/**` and the external portfolio repo; and the runtime/evidence state files
+`_run-tracker.md`, `_skill-friction.md`, `_job-market-evidence.md`, `_cross-topic-inbox.md`, every
+`_last-run-report*.md`, and the previous `_system-check-report.md`.
+
+Every analyst carried an explicit instruction not to follow a path merely because an audited file names
+it. No live artifact was opened and no live path's existence was tested; where a manifest recorded such a
+path it was recorded as a declared pattern or ownership contract only.
+
+`_recommendation-ledger.md` stayed in scope only for its improvement-loop contract and for deduplicating
+new findings; its open rows were not read as an operational-debt queue.
+
+## 6 — Architecture findings
+
+Five cross-system findings, deduplicated against every `## Open` row (REC-046, 054, 055, 067, 069, 070)
+and against the `## Closed` lines. Filed as **REC-071 … REC-075**; none is implemented by this run.
+
+| ID | Finding | Class |
 |---|---|---|
-| E1 | L103 "a suffix-drop like the other **nineteen**" | → **twenty-one**. 30 prompts − 7 no-suffix `-audit.md` files − 1 deliberate exception (`code-review-prompt` → `/code-review-practice`) = 22 suffix-drops, as the same paragraph states; `/coverage-audit` is one of them. Nineteen was correct at 28 runnable prompts (`REC-055` still records "28 runnables") and was left behind when the system grew to 30 |
-| E2 | L182 hub table names `plan-audit` as a reader of `notes/coverage/junior.md` | → `project-brief` is the only whole read; `plan-audit` merely digests the file to test a brief's freshness. `plan-audit.md` L156: "The author no longer loads `notes/coverage/junior.md` into context". README contradicted itself against its own L221/L224 |
-| E3 | L202 `coverage-audit` "Generates / updates" omits two real writes | → added the `PROGRESS.md` `Coverage demonstrated` refresh (`coverage-audit-prompt.md` L168: "in that same commit"), the routed `_cross-topic-inbox.md` entries, and the topic level files it corrects |
-| E4 | L254 `sql-plan-prompt` "Generates / updates" omits `PROGRESS.md` | → added the level's `Exercise route` tables under `## Practice completed` (`sql-plan-prompt.md` L323, L350: "the plan and PROGRESS.md **separately**") |
+| REC-071 | `_single-shot-self-report.md` states a 29/17/12 runnable population; disk, the validator and both maps say 30/18/12 | stale cross-system count in a root contract |
+| REC-072 | `cover-letter-prompt.md` reads an external path with no `_external-path-preflight.md` banner, unlike the other prompts that touch it | inconsistent application of a shared contract |
+| REC-073 | `_sql-plan-standard.md` names one doctrine writer; `_sql-exercises-review.md` 4d and `sql-step-close` also write it | contested write ownership, map already correct |
+| REC-074 | the simulation level-close gate reads "no correction is open" in the standard and "no MISTAKES row is open" in the prompt that executes it | one gate, two conditions |
+| REC-075 | `progress-update` D8 forbids counting from the coverage mirror; `roadmap-review` 2a treats it as authoritative | duplicated decision, taken oppositely |
 
-### `notes/prompts/_internal/_system-map.md`
+Considered and deliberately not filed: the 30 Claude launchers omit the `_agent-runtime-standard.md`
+pre-read line all 30 Codex launchers carry (verified 0/30 against 30/30) — the canonical prompt itself
+carries the instruction and the Codex line is adapter translation guarding against invented model
+identifiers, exactly as `README.md` L41-42 describes; and four intra-family inconsistencies the manifests
+surfaced (simulation commit-prefix drift, `review-audit`'s `PROJECT_PATH` enum gap, the coverage family's
+`_last-run-report` naming asymmetry, and the SQL family's split `PROGRESS.md` commit discipline), all of
+which fail condition 3 of the four-condition bar — cost, not result.
 
-| # | Claim | Correction |
-|---|---|---|
-| E5 | §5 step 2 describes `/sql-plan` as writing only the route | → added its `PROGRESS.md` `Exercise route` projection, in its own commit. Same evidence as E4; this is the chain-step occurrence of the same omission |
-| E6 | §7 `ROADMAP.md` "Read by" names 3 readers | → 13. Independently re-derived: 17 prompts name the file, minus 4 that name it only to **exclude** it as scope evidence (`/coverage`, `/coverage-verify`, `/coverage-audit`, `/tracker`) and minus its writer `/roadmap-review`. README's own catalogue rows already listed `ROADMAP.md` for eight of the missing readers, so the two maps contradicted each other |
-| E7 | §8 `## Coverage demonstrated` writer list omits `/coverage-audit` | → added. Positive contradiction against §8, which the read licence says survives any depth of read |
-| E8 | §8 `Exercise route` writer is "`sql-grade`'s cold subagent" alone | → `/sql-plan` seeds/re-syncs the projection, `sql-grade`'s subagent moves the counts. `_sql-plan-standard.md` Section E names three roles; the auditor (`sql-plan-audit`) was deliberately not added, since it never edits |
-| E9 | §12 "five bullets for the **seventeen** orchestrators … three for the twelve single-shot" | → **eighteen**. 17 + 12 = 29 against 30 runnable prompts. README L129-131 says eighteen; the set was re-counted from the family manifests. Seventeen is the skill count |
+## 7 — Final reviewer verdict
 
-### Verified — no change
+`cold reviewer: approve-with-tightening`.
 
-These claims were checked against source and found **true**; they are recorded so a later reader can
-tell a checked row from an unvisited one:
+It passed checks 1, 2, 4 and 5 (inventory evidence, correction-to-evidence, no machinery file edited,
+corrections separated from recommendations) and **failed 3, 6, 7 and 8**, each with a specific defect —
+and its value was in the half the audit had ruled clean. It falsified two `README.md` cells the audit had
+declared verified (R1 and R2 above), widened C2 from one omission to three by reading `tracker-prompt.md`
+and `cv-prompt.md` itself, and found the `practice/sql/MISTAKES.md` second door (C4). It also ruled that
+the draft report's own §5 breached the machinery-only boundary by asserting that two live paths do not
+exist on disk — the Boundaries name the *report* explicitly — and that §3's "every field verified"
+and §8's verdict both overclaimed. All five required tightenings were applied, in the form specified;
+its four findings were each re-verified against disk before being applied, not taken on its word.
 
-- §7 "15 of the 30 prompts also name `_session-rules.md` directly" — grep returns exactly 15.
-- README L100-101 "Twenty-two of the 30 work that way; seven files carry no `-prompt` suffix" — both correct.
-- README L129/L131 eighteen orchestrators / twelve single-shot — confirmed prompt by prompt.
-- README L41-59 — all five validator invariants exist in the script.
-- README L510-521 batch-mode buckets — every listed prompt's mode matches its own config block.
-- §4 gate table **G1-G8** — matches `_planning-standard.md`, which defines them.
-- §5 SQL **G3/G4** — matches `practice/sql/PLANNING.md` §9.
-- §9 — all seventeen skills have a row; the validator proves §9 ↔ disk in both directions.
-- §7 `coverage-bullet-add` is the only skill that writes `_run-tracker.md` — grep confirms.
-- Launcher parity: filename 30/30 · canonical target 30/30 · command name 30/30 · **argument contract
-  30/30** (the gate that blocked the two previous runs now passes).
-- Skill mirror parity: git stores an **identical blob** for all 17 pairs.
+## 8 — Global verdict
 
-**One finding withdrawn on cold review.** A claim that four `SKILL.md` files
-(`interview-prep-block-open`, `simulation-block-open`, `simulation-block-close`, `simulation-grade`)
-carry no pointer to the durable-friction contract was a **false positive** from a grep for
-`durable friction` that missed the hyphenated `durable-friction`. All four do point at
-`_session-rules.md`, in their own paraphrase; `_session-rules.md` L141 requires only that skills
-"point here rather than restating this contract" and mandates no citation format. No recommendation
-filed.
-
-**Not a defect.** `.claude/skills/sql-grade/SKILL.md` holds CRLF where its mirror holds LF. The
-committed blobs are byte-identical (`063d7d2…`), `core.autocrlf=true` with no `.gitattributes`
-explains the working tree, README L44-46 documents that the validator compares line-ending-normalised
-for exactly this reason, and the ledger preamble already records the same false alarm under `REC-057`.
-
-## 4 — Operational-debt queue
-
-Reported and prioritised only; this run clears nothing.
-
-### A — Blocking correctness / security
-
-1. **`07-timetrack` §0 is factually stale and asserts a gate condition that is not met.** §0
-   (`Last updated: 2026-08-04`) says "every backend task at every priority is closed" and that G3's
-   condition is "met, action pending: PR". `PROJECT-BACKLOG.md` (backend Last Reviewed **2026-08-06**,
-   i.e. newer) carries **3 open High** backend tasks, including a **leaked PostgreSQL password and
-   BCrypt admin hash still reachable in pushed history** (`f17c01e`, `21f5221`), a `JwtFilter` returning
-   500 instead of 401 on a blank token, and undocumented required env vars. → fix the three Highs, then
-   `step-complete` to repoint §0; only then is the `fix/backend-backlog` PR a G3 sign-off.
-
-### B — Due gates
-
-2. **`REC-054`** (whole-system + lived-day review) — its stated precondition is now true: Waves 1-6 are
-   all closed, Wave 6 as of today. Unblocks `REC-055(e)`, which is scoped to be written out of it. →
-   the ledger's own four-step resolution procedure.
-3. **`coverage-audit` is `⚠ stale 2026-08-04 (+14 bullets)`** — the 2026-08-01 global convergence claim
-   no longer holds. → `/coverage-audit junior`.
-4. **`07-timetrack` G3** — blocked behind item 1.
-
-### C — Stale prerequisites (each blocks `/notes-audit` for that topic)
-
-5. `/notes-plan` owed on seven junior topics, flagged in `_run-tracker.md`: **SQL `+40 bullets`**
-   (largest), architecture `+4`, security `+2`, typescript `+2`, javascript `+1`, angular and general
-   (fingerprint only).
-6. **CSS and Git have never had `/notes-plan` run at all**, though `Coverage J` and `Verify J` are both
-   `completed` — first run, not a re-run.
-7. The validator's four `REPORT:` fingerprint disagreements (`architecture`, `general`, `java`,
-   `spring-boot` junior verify files claiming `complete` against a moved digest) belong to the same
-   queue and are cleared by the same `/notes-plan` runs, never by editing the flag.
-
-### D — Non-blocking
-
-8. Timed-simulation track has **no route at any level** — `Simulation plan` and `Route progress` are
-   empty for junior/middle/senior. → `/simulation-plan junior`, after item 2's `progress-update` gate.
-9. `Notes file executions` holds **one** row (`java junior 00`) against dozens of planned entries.
-10. All twelve single-shot prompts show `pending` — never run.
-11. 34 Medium + 25 Low open backlog items across projects 01-06; no gate depends on them.
-
-## 5 — Architecture findings
-
-- **`REC-067` (new)** — launcher public argument contracts are not mechanically falsifiable. The
-  validator proves filename, target, delegation and runtime isolation, but nothing compares a
-  launcher's advertised config keys and MODE values against the canonical prompt's own config block.
-  Eight mismatches were found by prose review in the two prior runs, the fix was likewise unverified,
-  and this run re-proved 30/30 by hand — which is the evidence that the guarantee is manual and will
-  drift silently again. Fix site is the validator, not either map. Carries forward the `open` finding
-  of the 2026-08-09 blocked run.
-- No existing ledger row was updated: `REC-046`, `REC-054` and `REC-055(e)` are unrelated to anything
-  this audit found, and no finding duplicated them.
-
-## 6 — Final reviewer verdict
-
-`approve-with-tightening`. All nine map edits confirmed against disk with correct line citations, no
-missed sibling occurrences (both maps grepped for every corrected claim), no over-reach — the reviewer
-independently re-derived E6's reader list and both counts in E1 and E9 and reached the same figures.
-The single tightening was to the classification section, not to any edit: the durable-friction finding
-was ruled a false positive and dropped, as recorded above.
-
-## 7 — Boundary observed
-
-Only the two derived maps, this report, and one new ledger row were written. No prompt, `SKILL.md`,
-standard, launcher, project plan, backlog, tracker debt or recorded gate was edited to make the audit
-pass. Per this prompt's Step 9 boundary, no at-end prompt refinement ran inside the audit — the
-`_last-run-report.md` finding it earns stays `open` for a later, separately authorised adjudication.
+**maps corrected** — `_system-map.md` in four cells, `README.md` in two.
