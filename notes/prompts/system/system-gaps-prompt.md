@@ -175,7 +175,12 @@ Dispatch **one `analyst`, tier `deep`, cold**, with both maps and the ten detect
 returns its own candidates with their content keys. This is not the `REC-079` pattern: the analyst's
 return is redundant coverage checked against the orchestrator's own reading, never the denominator the
 analysis rests on. Report both counts and every key only one side found; a key only the analyst found is
-carried through Steps 3 and 4 by the orchestrator before it can be promoted.
+carried through Steps 3 and 4 by the orchestrator before it can be promoted. Reconcile by subject, not by
+key string: where one side merged what the other split, re-key both to the finer subject before
+comparing, and report the result as a partition of the union — both, orchestrator only, analyst only —
+whose sizes add up. A row may still be drafted over merged subjects in Step 6; it is the comparison that
+must be fine-grained, because a subject lost inside a merge is invisible to a count that never separated
+it.
 
 Then deduplicate the merged set against, in this order:
 
