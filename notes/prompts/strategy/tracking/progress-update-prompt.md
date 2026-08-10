@@ -401,7 +401,7 @@ One row per edited cell; `—` and one line saying so if the matrix was already 
 
 | Section | What PROGRESS.md says | What the sources say | Owner to re-run |
 |---|---|---|---|
-| Coverage demonstrated · Java junior | `47/128 (37%)` | `49/128 (38%)` | `/coverage-mark` wrote a marker without refreshing the cell — re-run it, or `/coverage-audit junior` |
+| Coverage demonstrated · Java junior | `47/128 (37%)` | `49/128 (38%)` | `coverage-mark` wrote a marker without refreshing the cell — re-run it, or `/coverage-audit junior` |
 | Projects · 07 | `Steps 1–6 done, Step 7 next` | plan has no ✅ on 7a | `step-complete`, or add the ✅ to PLANNING.md |
 
 **An empty drift report is the good outcome, and it is what closes G6** — say so explicitly rather

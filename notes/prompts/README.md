@@ -119,6 +119,19 @@ read from its launcher's own filename**, and both catalogs are held to identical
 that way, and falls back to dropping the suffix only for a prompt with no launcher at all — a state its
 own catalog check already fails on.
 
+**The slash is the launcher's.** Every `/name` token this system *defines* is a launcher file present in
+both catalogues — that is what makes it derivable, and it is the guarantee the paragraph above exists to
+protect. Two kinds of slash token are therefore not derivable from this rule and must not be read as
+launchers: the host agent's own built-ins, of which `/code-review` above is the one this repo has to
+name, and the in-session **skills**, which have no launcher file and are written bare in prose —
+`coverage-mark`, `step-complete`, never `/coverage-mark`. `_internal/_system-map.md` §1 and §9 own what a
+skill is and how it starts; `_session-rules.md` owns the naming rule itself. A violation is found by a
+bounded grep for `(?<![A-Za-z0-9-])/<skill-name>(?![A-Za-z0-9-])` over `notes/prompts/`, both skill trees
+and both launcher catalogues, discarding hits inside a file path; on 2026-08-10 it returned exactly one
+real violation, this system's own drift-report example. It still returns three lines today — this
+paragraph's own negative example, the same example in `_session-rules.md`, and the ledger row quoting the
+defect — so read every hit before calling it a defect.
+
 | Group | Prompts |
 |---|---|
 | Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `interview-prep-route-prompt` |

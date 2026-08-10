@@ -559,6 +559,13 @@ run practice, and keep ROADMAP.md / PROGRESS.md / the three coverage levels in s
 `PROGRESS.md` section by section → `notes/prompts/_internal/_system-map.md`.** Derived and
 reference-only: this file and the README outrank it.
 
+**A skill is named bare; only a launcher takes a slash.** A `/name` written in any repo file is either a
+launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's own built-ins
+(`/code-review`, `/model`). The seventeen in-session skills have neither, so they are written
+`coverage-mark`, `step-complete` — never `/coverage-mark`. Writing a skill with a slash hands the reader a
+command that does not exist, which is the same defect the launcher-naming rule in
+`notes/prompts/README.md` exists to prevent.
+
 ### The two maps follow every change to the machinery
 
 (The platform's `map-sync` skill fires on both triggers below — the change and the whole read — and
