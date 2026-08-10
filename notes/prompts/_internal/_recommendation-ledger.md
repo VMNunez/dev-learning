@@ -1,11 +1,27 @@
 # Prompt-system recommendation ledger
 
-Self-report recommendations use one of four states:
+Self-report recommendations use one of four states — a close-out writes `open` or `accepted` and nothing
+else, which is what the two self-report contracts and `_system-map.md` §12 state. A fifth, `accruing`, is
+raised by hand only:
 
 - `open` — observed and not yet adjudicated.
 - `accepted` — agreed, with implementation still pending.
 - `applied` — implemented and verified, then collapsed into `## Closed`.
 - `rejected` — intentionally not implemented, then collapsed the same way, with the reason kept.
+- `accruing` — not workable and never scheduled: its input is **lived use**, so it fills up rather than
+  being run, and it is not part of the queue. `REC-054` only; a second one would be a smell.
+
+**This ledger holds defects in the *machinery* — a prompt, a skill, a standard, a launcher, the validator
+or either map — and nothing else.** Scope stated 2026-08-10, when three rows were deleted for failing it.
+Three tests, in order. **Is the wrong thing a file or a cell?** A prompt that would produce the right
+output if someone ran it is a cell in `_run-tracker.md`, never a row (the `REC-046` rule below). **Whose
+file is it?** A defect in a project's `PLANNING.md`, a practice doctrine, a coverage or a notes file is
+owed to that file's declared writer, and a machinery session may not hand-edit it — so it is ours only
+where the *owner's* text is also wrong, which is `REC-083`'s split. **Does it need a lived day?** Anything
+measured from how much a ritual has actually been used is evidence that accrues (`accruing` above), never
+work that is queued. A finding that fails these tests is still written down — in the `## Closed` line of
+the row that found it, or in the tracker cell that owns it — it is simply not carried here, because a
+ledger holding operational worklists is one nobody can drain.
 
 ## How an item is resolved
 
@@ -243,37 +259,41 @@ branch to overclaim** (`REC-065`'s trigger-narrower-than-scope, second instance 
 a disposition that costs nothing to assign will absorb everything, so it must require a bounded attempt
 to settle first.
 
+**A map's freshness is verified from git, never by re-auditing.** From `REC-070` (a), promoted when that
+row was deleted as out of scope. `/system-check` is the most token-expensive thing in the system and must
+stay rare, so nothing may trigger it merely to ask whether a map is current. The cheap chain is:
+`validate-prompt-system.ps1` first — it costs no tokens and its invariant 5 catches the one failure
+`map-sync` cannot, a prompt or skill that exists and no map registered — then take as the **suspect set**
+every commit touching `notes/prompts/`, either skill tree or either launcher catalogue since the last
+`_system-check-report.md` baseline that carries **no** map edit, because `map-sync`'s contract puts the map
+edit in the same commit as the machinery change or declares `maps unaffected` out loud. Read only that
+subset from disk and trust the rest of the map as written. This is also the only thing that makes a
+`maps unaffected` declaration falsifiable, which today is a sentence in a report that nothing checks.
+
 ## Open
 
-**Frozen 2026-08-10 — no row is resolved one at a time until the system review has run.** The four-step
-procedure above works and is not the problem; the **rate** is. Every resolution dispatches a cold reviewer,
-a cold reviewer is paid to find things, and what it finds becomes a row — `REC-081`, `REC-086` and
-`REC-087` were each raised by the reviewer of a *different* row — so the queue refills at about the speed
-it drains, and the items that would judge the machinery as a whole get postponed by the small ones
-forever.
+**Unfrozen 2026-08-10, the same day it was frozen, and the table is scoped instead.** The freeze said no
+row is resolved one at a time until a whole-system review has run, and its unfreeze condition was
+`REC-070` (b) — which has now been **deleted** under the scope test above, so the gate could never open.
+A gate that cannot open does not slow a table down, it stops it, and this is the second condition on this
+table to fail that way in one day.
 
-**The unfreeze condition was itself unsatisfiable, and is corrected here (2026-08-10).** It read
-"`REC-054` and `REC-070` run as **one pass**", and Victor falsified the `REC-054` half the same day it was
-written: that review measures the machinery against a **lived** study day, and the days have not been
-lived. The rituals have barely been exercised, twelve single-shot prompts still read `pending` in
-`_run-tracker.md`, and there is no evidence to review — a run today would ask six questions, get "I have
-not used it" six times, and manufacture a verdict about rituals nobody has executed. **A gate that cannot
-open does not slow a table down, it stops it.** So what unfreezes this table is now **`REC-070` (b)
-alone**: the usage measurement — what has ever run, what has ever fired, what nothing consumes — which is
-mechanical, cheap, and is also the one input `REC-054` lacks. That measurement then decides which of the
-remaining rows still deserve to be open. Until it runs, a new observation may still be **written** here as
-evidence; it may not be **worked**.
+What the freeze was defending against is real and survives as a rule rather than a stop: every resolution
+dispatches a cold reviewer, a cold reviewer is paid to find things, and what it finds becomes a row —
+`REC-081`, `REC-086` and `REC-087` were each raised by the reviewer of a *different* row, which is how the
+queue came to refill at the speed it drained. So **the scope test is applied to the reviewer's findings
+too, at the moment it returns**, together with the incidental-finding bar below: a finding outside the
+machinery is written into the closing line of the row whose review found it, and never opened.
+
+**What is left is the machinery's own text and checks: four workable rows, plus `REC-054` accruing.**
 
 | ID | Source | Recommendation | State | Resolution |
 |---|---|---|---|---|
-| REC-054 | Victor, 2026-08-06, alongside the two-map rule; **reshaped 2026-08-10 on Victor's own falsification of it** | **The lived-day review cannot be scheduled, because its evidence does not exist — so it stops being an audit that is run and becomes a verdict that accrues while Victor studies.** What it judges is unchanged and is still the only question nothing else in the system asks: do the current 08:00, 12:30 and 13:30 loops fit a real day, are the interview opener's grading and the block closers cheap enough to keep running, what does each block leave unrecorded, and does ritual load outweigh the work it records. Its original day snapshot is also still obsolete — the 13:30 block now has `interview-prep-block-open` plus `study-block-close`, authored/refined/studied state is separated, and there are seventeen mirrored skills. What changed is that **there is nothing to judge yet**: the rituals have barely been exercised, so the review has no input and would fabricate one. Three parts, in order. **(a) A capture point — built 2026-08-10, `_internal/_ritual-friction.md`.** `_skill-friction.md` accepts only an observable *failed declared step* (`FRIC-NNNN`), so the complaint that will actually occur — "this ritual ate the block", "nothing ever reads this output", "I do it by hand anyway" — was unrecordable and died in the session it was said in. It is the machinery-level instance of exactly what `sql-block-close` was built for: **friction without failure**. It is a separate file on purpose: `FRIC` rows are adjudicated by the next close-out's four-condition bar and can become a `REC`, which is the one thing (b) forbids, and one file holding two kinds of row under a consumer that counts them is the `REC-074` smell. **(b) The rule that keeps this out of the refill loop:** a ritual-friction line **never opens a `REC` and never dispatches a cold reviewer**. One line, written as it is said, accumulating. **(c) The verdict, per ritual, once its evidence is enough to rule on** — kept, thinned, or deleted. This is the only item in this ledger licensed to **remove** machinery; every other row has added a check, a pointer or a rule | open | **No longer "deliberately last", and it no longer gates this table** — see the corrected freeze note above. Its original sequencing said to run it once the machinery stopped moving, and that premise was the wrong one: the binding constraint was never **motion**, it was **absence of use**, which no amount of waiting for the machinery to settle repairs. `REC-070` (b) now runs *before* it, not after, and supplies the input it lacks — which rituals have ever fired at all. Do not schedule it and do not let it block a row again. **(a) shipped 2026-08-10** — the sink, its `_session-rules.md` trigger and its `_system-map.md` §7 and §11 rows — so the row is now fillable and what remains is (b) holding in practice and (c) having something to rule on. **(b) is not a build: it is a prohibition**, and it is stated in all three places at once (the sink, the session rule, this row) rather than in one, because the failure it prevents is a future session skipping straight to a `REC`. `REC-055` (e) still writes out of it and is parked with it, or the map asserts a per-day view the verdict then re-describes. Maps unaffected by this reshaping — no prompt, skill, writer, trigger or file existence changes |
-| REC-055 | Victor, 2026-08-06: "¿le ves gaps al system-map?" | **`_system-map.md` states the machinery and not the loop that maintains it — five gaps, all of them in the map, none in the system.** (a) The improvement loop is missing entirely: nothing says prompts are **frozen by design**, or states the chain that unfreezes one. (b) `validate-prompt-system.ps1`, the only automated check that exists, is absent from the map. (c) The §7 registry omits files that have real writers. (d) `_session-rules.md` has no writer anywhere — the most authoritative file in the system. **(e) There is no per-day view:** the blocks (08:00 / 12:30 / 15:30) and their uneven ritual load appear nowhere on the map | open | **(a)-(d) applied 2026-08-07 in `7bcc5bc`; only (e) is still open.** (e) is written **out of** `REC-054`, never before it, or the map asserts a day the verdict then re-describes — and since `REC-054` no longer runs on a date (reshaped 2026-08-10, Wave 7 dissolved), (e) is **parked with it**, not queued behind a wave. Maps affected when (e) lands — the map is itself the fix site |
+| REC-054 | Victor, 2026-08-06, alongside the two-map rule; **reshaped 2026-08-10 on Victor's own falsification of it** | **The lived-day review cannot be scheduled, because its evidence does not exist — so it stops being an audit that is run and becomes a verdict that accrues while Victor studies.** What it judges is unchanged and is still the only question nothing else in the system asks: do the current 08:00, 12:30 and 13:30 loops fit a real day, are the interview opener's grading and the block closers cheap enough to keep running, what does each block leave unrecorded, and does ritual load outweigh the work it records. Its original day snapshot is also still obsolete — the 13:30 block now has `interview-prep-block-open` plus `study-block-close`, authored/refined/studied state is separated, and there are seventeen mirrored skills. What changed is that **there is nothing to judge yet**: the rituals have barely been exercised, so the review has no input and would fabricate one. Three parts, in order. **(a) A capture point — built 2026-08-10, `_internal/_ritual-friction.md`.** `_skill-friction.md` accepts only an observable *failed declared step* (`FRIC-NNNN`), so the complaint that will actually occur — "this ritual ate the block", "nothing ever reads this output", "I do it by hand anyway" — was unrecordable and died in the session it was said in. It is the machinery-level instance of exactly what `sql-block-close` was built for: **friction without failure**. It is a separate file on purpose: `FRIC` rows are adjudicated by the next close-out's four-condition bar and can become a `REC`, which is the one thing (b) forbids, and one file holding two kinds of row under a consumer that counts them is the `REC-074` smell. **(b) The rule that keeps this out of the refill loop:** a ritual-friction line **never opens a `REC` and never dispatches a cold reviewer**. One line, written as it is said, accumulating. **(c) The verdict, per ritual, once its evidence is enough to rule on** — kept, thinned, or deleted. This is the only item in this ledger licensed to **remove** machinery; every other row has added a check, a pointer or a rule | accruing | **Not workable, never scheduled, and it gates nothing** — it is the one `accruing` row and the reason that state exists. Its original sequencing said to run it once the machinery stopped moving, and that premise was the wrong one: the binding constraint was never **motion**, it was **absence of use**, which no amount of waiting for the machinery to settle repairs. Its input is the `RITF` rows themselves plus whatever `_run-tracker.md` shows has actually run — not a measurement pass built for it, which is what `REC-070` (b) was and why that row is gone. Do not schedule it and do not let it block a row again. **(a) shipped 2026-08-10** — the sink, its `_session-rules.md` trigger and its `_system-map.md` §7 and §11 rows — so the row is now fillable and what remains is (b) holding in practice and (c) having something to rule on. **(b) is not a build: it is a prohibition**, and it is stated in all three places at once (the sink, the session rule, this row) rather than in one, because the failure it prevents is a future session skipping straight to a `REC`. `REC-055` (e) was parked with it and is **unparked 2026-08-10**: a map that states *which* rituals fire in which block is a structural description, and this row is a verdict on whether they are worth their cost — the two do not collide, and the second is not a prerequisite for the first. Maps unaffected by this reshaping — no prompt, skill, writer, trigger or file existence changes |
+| REC-055 | Victor, 2026-08-06: "¿le ves gaps al system-map?" | **`_system-map.md` states the machinery and not the loop that maintains it — five gaps, all of them in the map, none in the system.** (a) The improvement loop is missing entirely: nothing says prompts are **frozen by design**, or states the chain that unfreezes one. (b) `validate-prompt-system.ps1`, the only automated check that exists, is absent from the map. (c) The §7 registry omits files that have real writers. (d) `_session-rules.md` has no writer anywhere — the most authoritative file in the system. **(e) There is no per-day view:** the blocks (08:00 / 12:30 / 15:30) and their uneven ritual load appear nowhere on the map | open | **(a)-(d) applied 2026-08-07 in `7bcc5bc`; only (e) is still open, and it is now the row this table is built to want.** (e) was parked behind `REC-054` on the reasoning that a map must not assert a day the lived-day verdict would then re-describe. **Unparked 2026-08-10:** those are different claims — (e) states *which* rituals fire in which block and what each writes, which is structure and is knowable today from the seventeen skills' own triggers; `REC-054` rules on whether that load is worth paying, which needs lived days. The second is not a prerequisite for the first, and (e) is in fact the cheapest way to see the load `REC-054` will later judge. Build it from the skills' frontmatter and declared steps, never from memory of the schedule. Maps affected — the map is itself the fix site |
 | REC-067 | `/system-check`, 2026-08-09 (global audit; carries forward the `open` finding of the 2026-08-09 blocked run) | **Make launcher public argument contracts mechanically falsifiable.** `validate-prompt-system.ps1` proves filename parity, canonical-target parity, full delegation and runtime isolation across both catalogues, but nothing checks that a launcher's advertised **configuration keys and MODE values** match the canonical prompt's own config block, or each other. The two prior runs found eight such mismatches by prose review alone, and the fix (`80d30f43`, `4c77723f`) was likewise unverified by any check — this audit re-proved 30/30 parity by hand, which is exactly the evidence that the guarantee is manual and will drift again silently. A launcher that advertises a key the prompt does not accept is invisible to every automated layer the system has | open | Not a map defect: both maps describe the launchers correctly, and the argument contracts are currently correct. The gap is in the **checking layer**, so the fix site is `validate-prompt-system.ps1` (a sixth invariant), not either map. Apply the preamble's *"a check is not finished until it has been made to fail"*. Note the parser must tolerate both catalogues' legitimate platform-specific lines (e.g. `.codex/commands/simulation-plan.md`'s "do not invent model identifiers"), which are adapter translation, not workflow duplication |
-| REC-070 | Victor, 2026-08-10, on what the two maps are actually for | **Author the machinery evaluator on top of the two maps, verifying their freshness from git rather than re-auditing, and give the usage dimension an owner.** Victor does not study `README.md` or `_system-map.md` and does not intend to: their purpose is to let a later agent judge the machinery for gaps, improvements and parts that are never used. Reading them instead of re-reading 30 prompts and 17 skills is the intended economy, and it is `map-sync` — not `/system-check` — that keeps them true between explicit audits, because a global audit is the most token-expensive thing in the system and must stay rare. Three conditions. **(a) Verify freshness cheaply; never trigger `/system-check`.** Run `validate-prompt-system.ps1` first — it costs no tokens and its invariant 5 catches the one failure `map-sync` cannot, a prompt or skill that exists and no map registered. Then use git, not a re-read: `map-sync`'s contract puts the map edit **in the same commit** as the machinery change, or the run declares `maps unaffected` out loud, so every commit touching `notes/prompts/`, either skill tree or either launcher catalogue since the last `_system-check-report.md` baseline that carries no map edit is the **suspect set**. Read only that subset from disk and trust the rest of the map as written. This also makes the `maps unaffected` declaration falsifiable for the first time — today it is a sentence in a report that nothing checks. **(b) The usage dimension, which the maps do not carry and should not.** Nothing in the system measures whether a prompt has ever run, whether a skill has ever fired, whether a declared output was ever written, or whether a gate has ever closed. The evidence exists — `_run-tracker.md`, every `{family}/_internal/_last-run-report*.md`, `_skill-friction.md`, the `## Closed` ledger lines, and `git log` over the same paths — and `REC-068` deliberately removed the tracker from `/system-check`'s inventory, so this question now has no owner anywhere. **(c) No duplication:** structural findings (overlapping writers, missing consumers, broken loops, orphan outputs) are `/system-check` Step 5's, and cost-against-benefit per ritual is `REC-054`'s lived-day half. The report must render a **diagram**, not only tables: an orphan output or a dead-end chain is visible at a glance in a graph and invisible in a row | open | Do not author before `/system-check` has run once in its `REC-068` form — that run is the baseline commit the freshness check needs, and its Step 5 output measures how much of the structural half already exists, after which this may collapse into *grow Step 5 a usage input and a diagram* rather than a second global prompt. Design it as a cheap, repeatable pass: the validator, a bounded git query, the two maps, the run evidence — not a fan-out of cold readers over the machinery, which is what makes `/system-check` expensive and explicit. Then settle the split axis raised the same day: the current cut puts prompts in `README.md` and skills in `_system-map.md`, one engine per file, where a cut by *kind of question* (component catalogue / wiring) may serve an automated reader better — the evaluator consumes whichever shape the maps end in. **Sequencing reversed 2026-08-10:** this row said to sequence after `REC-054`, whose lived-day verdict would decide which rituals are worth measuring at all. That verdict has no evidence to be made from, and (b) is what produces it — so **(b) runs first and feeds `REC-054`**, which also makes (b) this table's unfreeze condition. Maps affected when applied — a new runnable prompt adds a catalogue row, a §7 writer row, a §9/§11 entry and a launcher pair in both adapters |
-| REC-087 | cold reviewer on `REC-083`, 2026-08-10; owed to `/plan-audit MODE = review` at gate G2 | **`projects/07-timetrack/PLANNING.md` §23 owes three repairs its owner must make, two of them found while checking a third.** **(a)** Its G4 cell still carries the date framing `REC-083` removed from `_planning-standard.md` in `0d17e220`, and now also lacks the `PROJECT_PATH` added in `c9270c1c`. **(b)** Its G6 cell is a **live forked rule**: the standard names `cv-prompt`, `project-brief` and `review-audit` as `PROGRESS.md`'s readers, the plan names "G7 and `cv-prompt`" plus an owner list the standard does not have — two statements of one rule, neither derivable from the other. **(c)** The gate list ends at G4 while §22 puts **Step 8 (backend tests)** and **Step 11 (Docker)** *after* the branch that triggers it, so this project's backend gains code after its last review gate with certainty, and no §23 box tracks it | open | **Not ours to fix**, on `REC-085`'s precedent and the preamble rule this row's parent established: §7 names `/plan-audit`, `step-complete` and `backlog-task-close` as this file's writers and a machinery session is none of them. The `_planning-standard.md` half already shipped, so the standard is the correct source to resync **from** — do not re-derive the wording. (c) is the substantive one and is a real plan defect, not a wording drift: decide whether 07 re-fires G3 scoped `backend` after Step 8, or whether §22 moves the backend work before G4. (a) and (b) are then mechanical. Maps unaffected — the fix changes no file's writer, trigger or existence |
 | REC-084 | residue of `REC-057`, promoted 2026-08-10 | **A declared exercise path that is well-formed but wrong is invisible to every check.** The validator's `$referencePathPattern` (L208) matches path *shape* only, so a realistic typo such as `03-jions.sql` passes: the file it names does not exist, and nothing cross-checks declared exercise paths against `PLANNING-{LEVEL}.md` §1's own file list. `REC-057` bounded the pattern and then verified by mutation that a plausible fake still survives | open | This is a **design change, not a pattern fix** — the check needs a second source to compare against, which is why `REC-057` left it rather than widening a regex. Apply the preamble's *a check is not finished until it has been made to fail*. Worth folding in with `REC-067`, which also adds a validator invariant, if both are done at once. Maps unaffected — the validator is not a map |
 | REC-086 | cold reviewer on `REC-080`, 2026-08-10 | **`sql-plan-audit.md` L212 now restates a rule the runtime standard owns.** "A specialist that dies mid-run is resumed, not re-dispatched… if the resume also fails, then re-dispatch cold" was the machinery's only mid-flight-death rule and it is the one `REC-080` promoted into `_agent-runtime-standard.md`'s dispatch ladder. The two **agree today**, which is exactly when a fork is invisible — and this copy names no other file, so a pointer grep never reaches it | open | Deliberately left out of `c4fa62c6`: a contract change must not hide inside a prompt commit, which is the same rule that kept `REC-080` out of `REC-078`'s batch. The `SendMessage` mechanics is what the standard cannot say and **stays**; only the rule sentence collapses into a pointer, per the preamble's *a derived section states only what its source cannot say*. Check the surrounding re-dispatch caps still read correctly once the sentence is a pointer — `sql-plan-audit.md` L209 and L218 each carry their own count. Maps unaffected |
-| REC-085 | residue of `REC-073`, promoted 2026-08-10; owed to `/sql-plan-audit` at gate G1b | **`practice/sql/PLANNING.md` mis-states who refreshes its own §0, in three places.** §0's header says "Update it at the start of every session" (L25), and the Moment 4 bullet attributes the §0 header to **the level's route file** (L209) — but §0 belongs to this doctrine, and its live values are written by `_sql-exercises-review.md` 4d on a step close and verified by `sql-step-close`. §4 item 5 also still calls the close's commit manual, when `sql-grade` and `sql-step-close` commit the doc files themselves | open | **Not fixable by a machinery session:** the doctrine's declared owner is `/sql-plan-audit`, and hand-editing it here would breach the very ownership fence `REC-073` was writing. `_sql-plan-standard.md` already names all three sites as checks so the audit cannot fix one and leave two. Two sites verified live on disk 2026-08-10 (L25, L209); the audit sweeps for the third. Maps unaffected |
 
 ## Closed
 
@@ -351,6 +371,7 @@ instead. Ordered by ID.
 - `REC-066` — the coverage rationale is retained history, not a live run input; single-shot Step 3 now stages the report **and** `_run-tracker.md` · maps: corrected in its own commit — `7f7a9123`, `d298c636`
 - `REC-068` — `/system-check` narrowed to a **machinery** audit (live state out of its inventory, denominator and blocking conditions; 9 steps → 8; validator gains `-MachineryOnly`), and the two maps split by owner: `README.md` owns per-prompt facts, `_system-map.md` owns wiring and per-skill contracts · maps: both — `0d1b8a5d`
 - `REC-069` — the inverted per-project gate chain lived in **four** project standards, not the one the row named; all four now state their gate position and point at `_planning-standard.md` §23 · maps unaffected — `d1a60c92`
+- `REC-070` — **rejected as a ledger item, not as a question.** It asked for a machinery evaluator built on the two maps, whose load-bearing half (b) was the **usage** dimension: has this prompt ever run, has this skill ever fired, does anything consume this output. Rejected on the scope test promoted with it — that is `_run-tracker.md`'s question, and the tracker answers it better than a new global prompt would (twelve `pending` single-shot rows and thirteen empty `Interview J` cells name their targets exactly, where the evaluator would have produced a report about them). Its (a) is a real ruling and was **promoted to the preamble** rather than deleted — *a map's freshness is verified from git, never by re-auditing*. Its (c) split axis was already settled by `REC-068` (README owns per-prompt facts, `_system-map.md` owns wiring and per-skill contracts), and the diagram it wanted is a `/system-check` Step 5 improvement, filed only if a run ever needs it · maps unaffected — `{commit}`
 - `REC-071` — the stale runnable count in `_single-shot-self-report.md` was **deleted, not corrected**: an unguarded third copy of a number the validator asserts in code and both maps publish · maps unaffected — `dc2bef68`
 - `REC-072` — the external-path preflight banner was missing from **three** prompts, not one; `profile-readme-prompt.md` also had to name its second external path · maps unaffected — `e2c32a36`
 - `REC-073` — the SQL doctrine fence named one writer and there were four: **authoring a value and correcting one are different rights** (promoted) · maps: README carried the false cell · residue promoted to `REC-085` — `5af88b7b`
@@ -363,139 +384,44 @@ instead. Ordered by ID.
 - `REC-080` — the row asked for persistence "before returning" and that is the one moment a mid-flight death never reaches: the reviewer now writes each finding **as it reaches it**, and a launch failure, a runtime error and a session-limit death became one case taking one ladder — read what it persisted, resume, re-dispatch once — so a death is not a failed dispatch until that ladder is exhausted · maps: system-map — `c4fa62c6`
 - `REC-081` — **rejected.** `project-brief` and `plan-audit` compute their freshness digest over the coverage **mirror** while `_coverage-standard.md`'s canonical command names the **topic** files. Rejected because it is already documented there as a named exception, so nothing reads as silently violated, and because changing what a gate hashes *moves the gate*: every stored brief digest was computed over the mirror, so a switch would mark all of them `superseded` at once for no gain in what the gate actually decides. Re-open only if a brief is ever wrongly refused as stale · maps unaffected — `{commit}`
 - `REC-082` — a skill written as a slash command in `progress-update-prompt.md`'s drift-report example; fixed to the bare name, and the convention stated where it is owned — `_session-rules.md`, not the derived maps, which its cold reviewer corrected along with a false universal the fix had written into `README.md` · `_system-map.md` unaffected, `README.md` edited as the rule's site and not as a map — `161f5db2`
-- `REC-083` — G4's justification argued from the backend's date after `REC-051` retired the clock; the owner now argues from what G3 reviewed and routes the exception to a re-fired G3 instead of an untracked run · the project plan's word-identical copy was **not** hand-edited — it crosses §7's writer fence and became `REC-087`, which its cold reviewer widened by two further defects in the same table · maps unaffected — `0d17e220`
+- `REC-083` — G4's justification argued from the backend's date after `REC-051` retired the clock; the owner now argues from what G3 reviewed and routes the exception to a re-fired G3 instead of an untracked run · the project plan's word-identical copy was **not** hand-edited — it crosses §7's writer fence and became `REC-087`, which its cold reviewer widened by two further defects in the same table and which was itself rejected as a ledger item on the same fence · maps unaffected — `0d17e220`
+- `REC-085` — **rejected as a ledger item, not as work.** `practice/sql/PLANNING.md` mis-states who refreshes its own §0 in three places: §0's header says "update it at the start of every session" (L25), the Moment 4 bullet attributes the §0 header to the level's **route** file (L209), and §4 item 5 still calls the close's commit manual — while §0 belongs to the doctrine, its live values are written by `_sql-exercises-review.md` 4d on a step close and verified by `sql-step-close`, which also commits. Rejected on the ownership half of the scope test: the doctrine's declared writer is `/sql-plan-audit`, hand-editing it here would breach the very fence `REC-073` was writing, and `_sql-plan-standard.md` already names all three sites as checks so the audit cannot fix one and leave two. It closes at gate G1b, on the run — two sites verified live on disk 2026-08-10 · maps unaffected — `{commit}`
+- `REC-087` — **rejected as a ledger item, not as work.** `07-timetrack/PLANNING.md` §23 owes three repairs: (a) its G4 cell keeps the date framing `REC-083` removed from `_planning-standard.md` and lacks the `PROJECT_PATH` added in `c9270c1c`; (b) its G6 cell is a live forked rule — the standard names `cv-prompt`, `project-brief` and `review-audit` as `PROGRESS.md`'s readers, the plan names "G7 and `cv-prompt`" plus an owner list the standard does not have; (c) the substantive one, the gate list ends at G4 while §22 puts Step 8 (backend tests) and Step 11 (Docker) *after* the branch that triggers it, so the backend gains code after its last review gate with certainty and no §23 box tracks it — decide there whether 07 re-fires G3 scoped `backend`, or §22 moves the backend work before G4. Rejected on the ownership half of the scope test: §7 names `/plan-audit`, `step-complete` and `backlog-task-close` as this file's writers and a machinery session is none of them. The owner's half already shipped in `0d17e220`, so the standard is the source to resync **from**; it closes at `/plan-audit MODE = review` gate G2, whose tracker cell exists · maps unaffected — `{commit}`
 
 ## Suggested order for the open items
 
-Added 2026-08-06. The rows above are the authority on *what* each item is; this is the order that keeps
-them from tripping over each other. Three rules produced it: **a correction that stops a wrong run comes
-before a build**, **an item blocked on evidence is run, not edited**, and **a chain is walked from its
-denominator up**, never from the visible end.
+Added 2026-08-06 as a wave plan for twenty-odd rows; **rewritten 2026-08-10, when the scope test left four.**
+Waves 1-6 are all closed and Wave 7 was dissolved, so the sequencing history they carried has gone where the
+rest of this file's history lives — `git log -p`. Three rules produced the old order and still produce this
+one: **a correction that stops a wrong run comes before a build**, **an item blocked on evidence is run, not
+edited**, and **a chain is walked from its denominator up**. Wave 2's lesson outranks all three and was never
+once wrong across eleven items: **budget the sweep, never the edit** — every row so far lived in more places
+than it named, and in three of four cases it was the *cold reviewer*, not the sweep, that found the last site.
 
-**Wave 1 — the plan family, before project 08 is planned. ✅ Closed 2026-08-06.** `REC-041` → `REC-036`,
-both corrupting `MODE = new`, which is what plans project 08. Project 08 can now be planned.
+**1. `REC-055` (e) — the map's per-day view.** First because it is the only open row that *adds* description
+rather than repairing one, and it is the shortest path to the thing the two maps exist for: seeing the whole
+load in one place. It is bounded — the seventeen skills' triggers and declared steps are the source — and its
+read is the `map-sync` read trigger, so it pays for itself by testing every row it touches on the way past.
 
-**Wave 2 — the corrections that block nothing. ✅ Closed 2026-08-08.** `REC-040`, `REC-051`, `REC-053`,
-`REC-057` and `REC-055` (a)-(d) are all done; `REC-053`'s systemic half closed with Wave 4 and
-`REC-055` (e) is parked with `REC-054` (Wave 7 dissolved 2026-08-10).
-**"Free" and "minutes each" have been the wrong label on every one of them** — 053 lived in five places
-across three files, 051 in six rather than the three its row named, and 057 turned out to be four checks
-*plus* thirty repairs in a file its row never mentions. That is step 1 of the preamble: budget the sweep,
-never the edit. `REC-060` came out of `REC-057` and does **not** join this wave — it is a ruling about a
-rule every prompt depends on, not a correction.
+**2. `REC-086` — the forked mid-flight-death rule in `sql-plan-audit.md` L212.** Smallest row on the table:
+one sentence collapses into a pointer at `_agent-runtime-standard.md`, the `SendMessage` mechanics stay, and
+the two re-dispatch caps either side of it get re-read. Independent of everything else.
 
-**Wave 3 — run what is blocked on evidence. ✅ Closed 2026-08-08.** `REC-050` ran at G8 after
-REC-042's rewire, consumed the preserved SQL drift, and passed both cold reviewers.
+**3. `REC-067` + `REC-084` together — the two validator invariants.** One analysis, one file, one session:
+both add a check to `validate-prompt-system.ps1`, and both are the same *kind* of gap — a population the
+system computes and never cross-checks against the prose or the plan that quotes it (`REC-071` is a third
+instance, already closed). The preamble's *a check is not finished when it passes; it is finished when it has
+been made to fail* governs both, and `REC-057` proved it the expensive way: four checks, three wrong on first
+contact, one of them invisible until a deliberate defect was injected. `REC-067`'s parser must tolerate both
+catalogues' legitimate platform-specific lines, which are adapter translation and not workflow duplication.
 
-**Wave 4 — the tracking chain. ✅ Machinery closed 2026-08-08.** `REC-047`, `REC-048` and the systemic
-half of `REC-053` are closed. The ruling kept authored, studied, demonstrated and practised as separate
-states; `study-block-close` now owns the 13:30 study evidence and every new PROGRESS cell has one writer.
-`REC-046` held the leftover — the content-side interview-prep audits that make its denominator current —
-and was **closed 2026-08-10 as tracker state, not a recommendation**: running those audits is what the
-`Interview J` columns of `_run-tracker.md` are for. Until they run the Q&A cells correctly remain `—`,
-which is `_session-rules.md`'s rule and not this row's.
+**`REC-054` is not in this order and never will be** — it is `accruing`, not queued.
 
-**Wave 5 — the consumers, re-read after the chain. ✅ Closed 2026-08-08.** `REC-049` was rejected after
-re-verification: `project-brief` had keyed its gap analysis on project evidence markers since its birth,
-before the recommendation opened, and `plan-audit MODE = new` already consumed the durable decision
-without re-deriving it.
-
-**Wave 6 — new machinery. ✅ Closed 2026-08-09.** `REC-052` and its required feedback half
-`REC-059` landed after Wave 4's counters. The route is plan-driven, timed evidence is immutable, and
-both timed-build and live-interview weaknesses now feed a consumed retry/reinforcement loop.
-
-**Wave 7 — dissolved 2026-08-10. The last wave is 6.** It held `REC-054` alone, sequenced not by
-dependency but by **state**: its two claims were said to be worth making only about machinery that had
-stopped moving, so running it earlier would audit a moving target and spend the one cold read that matters
-on a version that will not survive. That reasoning is still sound and its premise was the wrong one. The
-binding constraint on a lived-day review is not that the machinery keeps moving — it is that **the days
-have not been lived**, and waiting for the machinery to settle does not produce a single day of use. A wave
-is a sequencing device for work that is ready and merely out of order; `REC-054` in its reshaped form is
-never "ready" on a date, it **fills up**. So it leaves the wave numbering entirely, and `REC-055` (e) is
-parked with it rather than inheriting a wave number from it.
-
-**Where the map-review items land (`REC-055`-`REC-059`, added 2026-08-06).** They are not a wave of
-their own: three slot into waves that already exist, and two are gated on other work. **`REC-057`** (the
-untested invariants), **`REC-055` (a)-(d)** and **`REC-056`** (`/system-check`) are done. The final ruling
-on 056 is the explicit prompt recorded in `## Closed`, not the earlier read-only/session-start sketch.
-**`REC-059`** was not a separate build — it closed inside `REC-052` in Wave 6. And
-**`REC-055` (e)**, the map's missing per-day view, is written **out of** `REC-054`, never
-before it — and is therefore parked with it now that `REC-054` has no run date (Wave 7 dissolved).
-
-**Where the 2026-08-10 audit items land (`REC-067` from the day before, plus `REC-069` and
-`REC-070`-`REC-081` — thirteen rows raised in one day, added as they were raised).** Not a wave: they
-split by what each one is waiting on. **Four were corrections that block
-nothing and need no ruling — `REC-069`, `REC-071`, `REC-072` and `REC-073`, all four closed by
-2026-08-10.** Wave 2's lesson governed every one of them and was never once wrong: **budget the sweep,
-never the edit** — each lived in more places than its row named (`REC-069` in four project standards,
-`REC-072` in three prompts, `REC-073` in seven sites across a standard, three prompts, a map and a
-mirrored skill), and in three of the four it was the **cold reviewer**, not the sweep, that found the
-last site. `REC-071` still has a second site in `REC-067`'s shape (a population the validator computes
-and never cross-checks against the prose quoting it). **Two are rulings, not edits**, and must not be silently
-aligned: `REC-074` (one gate, two closing conditions) and `REC-075`, **both closed 2026-08-10, each
-with an explicit ruling** — and `REC-075`'s closure carries a lesson for the four still open: the row's own framing ("opposite *reliability*") was
-wrong, and the draft written from it asserted that nothing verified the coverage mirror while
-`validate-prompt-system.ps1` had been proving that exact invariant on every run. **Before writing that
-the system does not check something, run the check it does have.** The residue is `REC-081`, which waits
-on one ruling it must not be allowed to skip: changing what a gate hashes **moves the gate**, so it is
-sequenced behind an explicit decision to re-baseline every stored brief digest at once.
-
-**The `system-check-prompt.md` cluster was four rows and it was never one tier.** They share a file, so
-they share an *analysis*; they do not share a priority, and batching them by file is how a row that fails
-the bar ships on the back of one that does not.
-
-- **`REC-076` + `REC-079` — closed 2026-08-10 as one analysis, and they went first for the right
-  reason.** Same file and the same Step 4: the two directions of one hole — claim → evidence and
-  evidence → claim — and the only two of the four whose defect had already reached a **published** cell.
-  They landed **before the next `/system-check` run**, which was the whole point: the run that would have
-  surfaced them again is the run they made untrustworthy.
-- **`REC-078` rides with them if that analysis is already open, and never justifies opening it.** Same
-  prompt and same run's evidence, but it **fails bar condition 3 as observed** and its branch has been
-  executed twice with the missing spec improvised correctly both times. It is cheap *because* the file is
-  already open; alone it is a rule about a path nothing has yet got wrong.
-- **`REC-077` + `REC-080` were one failure mode in two layers, and the reviewer's half went first —
-  correctly. `REC-080` closed 2026-08-10; `REC-077` stays open.** Two lessons from doing it in that
-  order. The fix landed in a **fourth** file the row never named, `_agent-runtime-standard.md`: the
-  three named sites all restate a term (`cannot be dispatched`) that the runtime standard owns, so
-  widening the term at the owner reached eleven sites at once and editing the three would have forked
-  it. And the first draft was **rejected** for widening it too far — the row's own framing, *a death is
-  a failed dispatch*, would have converted the two runs that survived a session limit by re-dispatching
-  (`/system-check` 2026-08-10's nine analysts, `review-audit` 2026-08-06's batch of four) into mandatory
-  `blocked` closes, and contradicted `sql-plan-audit.md`'s standing rule that a dead specialist is
-  **resumed**. A row that names a defect can still be wrong about its direction.
-
-**`REC-070` is unblocked**: its stated precondition was
-`/system-check` running once in its `REC-068` form, which happened on 2026-08-10 and produced the
-baseline commit its freshness check needs. **Its order against `REC-054` was reversed the same day, and
-this paragraph previously argued the reverse of what it now says.** It read: `REC-070` sequences after
-`REC-054`, and `REC-054` is Wave 7 and last, because *thirteen rows raised on 2026-08-10 is the definition
-of machinery that has not stopped moving* and a lived-day review is only worth making about machinery that
-has stopped. The row count was right and the inference from it was wrong — motion was never what blocked
-`REC-054`; **absence of use** was, and the two are not the same constraint. `REC-070` (b) is what measures
-that absence, so it goes first and its output is the input `REC-054` was missing. The thirteen-row figure
-stays as written because it is **dated and immutable** rather than a live count: it was previously written
-as "seven", meaning `REC-071`-`REC-077`, and stayed accidentally true after six of those closed and six
-more opened — `REC-071`'s lesson (a hand-maintained count in prose goes stale silently) applied to this
-paragraph.
-
-**The four promoted residues (`REC-082`-`REC-085`, 2026-08-10).** All four were open work parked inside a
-`## Closed` line, which is the wrong carrier: a closed line is an index entry, and nothing re-measures
-what sits in one. The proof is the fifth, `REC-045`'s — **checked on promotion and closed as a false
-positive**, having sat there unexamined since it was written. None of the four blocks anything and all
-are small. `REC-085` is **not ours to fix**: the SQL doctrine's owner is `/sql-plan-audit`, so it closes
-at gate G1b, never in a machinery session. `REC-084` folds into `REC-067` if both validator invariants
-get written at once. **`REC-082` and `REC-083` closed on 2026-08-10** — expected to be one-sentence
-corrections, and neither was: each carried a convention question that had to be ruled on and sited before
-the sentence could be written, and each cold reviewer returned `approve-with-tightening` over defects the
-fix had introduced rather than over the original finding. `REC-083` also fenced out half of its own scope,
-which is now `REC-087`. Read that as calibration for the two that remain: a residue promoted out of a
-`## Closed` line is small in *edit* size, never reliably in *ruling* size.
-
-**Two orderings that look right and are not.** Starting the chain at `REC-047` part 2 — the marking is
-the visible half, but it marks against a list that does not exist yet and reports to a target nobody has
-chosen. And building `REC-052` early because it is the most exciting — a simulation track whose closing
-ritual has no PROGRESS.md cell to write ends up with the same hand-maintained tracker it was meant to
-replace.
+**Two orderings that look right and are not.** Doing the validator pair first because it is the most
+"engineering" of the three: it is the longest, it touches the one file whose failure mode is silent, and it
+leaves the map — the thing that makes every future audit cheap — stale for another week. And batching rows
+because they share a file: the four `system-check-prompt.md` rows shared an *analysis* and never a priority,
+and batching by file is how a row that fails the bar ships on the back of one that does not.
 
 New self-reports append or update a row in `## Open`. A historical report remains immutable evidence;
 its wording does not determine current status. The ledger does.
