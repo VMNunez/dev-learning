@@ -9,7 +9,7 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 
-$expectedRunnableCount = 30
+$expectedRunnableCount = 31
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -160,11 +160,12 @@ $pipelinePromptPaths = @(
     'projects\review\review-audit.md',
     'strategy\tracking\progress-update-prompt.md',
     'strategy\tracking\roadmap-review-prompt.md',
-    'system\system-check-prompt.md'
+    'system\system-check-prompt.md',
+    'system\system-gaps-prompt.md'
 )
 
-if ($pipelinePromptPaths.Count -ne 18) {
-    Add-ValidationError "Expected 18 pipeline prompts; found $($pipelinePromptPaths.Count)."
+if ($pipelinePromptPaths.Count -ne 19) {
+    Add-ValidationError "Expected 19 pipeline prompts; found $($pipelinePromptPaths.Count)."
 }
 
 foreach ($prompt in $runnable) {
@@ -219,6 +220,7 @@ $declaredOutputPatterns = @(
     '^practice/simulations/[a-z-]+/[0-9]{2}-[a-z0-9-]+\.md$'                   # simulation-generator
     '^practice/simulations/PLANNING\.md$'                                      # simulation-plan first run
     '^practice/simulations/(junior|middle|senior)/PLANNING-(junior|middle|senior)\.md$' # level route
+    '^notes/prompts/system/_internal/_system-gaps-report\.md$'                 # system-gaps first run
 )
 # Deliberately outside the repository; _external-path-preflight.md governs these.
 $externalPathPatterns = @('^personal/')
@@ -587,7 +589,7 @@ if (-not $skillSection.Success) {
 # The slash command is the launcher's own filename, never the prompt name minus its
 # suffix. Guessing it is wrong for `code-review-prompt`, which launches deliberately as
 # `/code-review-practice` because the host agent's own diff review already owns
-# `/code-review` - true of both adapters, see README.md "The 30 runnable prompts".
+# `/code-review` - true of both adapters, see README.md "The 31 runnable prompts".
 $launcherCommands = @{}
 foreach ($claudeLauncher in $claudeLaunchers) {
     $launcherTarget = [regex]::Match(

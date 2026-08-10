@@ -160,6 +160,7 @@ consumer reads freshness from the file itself.
 | coverage-audit | 2026-08-01 — completed — junior update; 1,344-item floor converged; 497 markers preserved; mirror parity; cold review passed · ⚠ stale 2026-08-04 (+14 bullets) |
 | progress-update | 2026-08-08 — completed — `MODE = active` (07-timetrack + SQL + simulations); level matrix refreshed from the current notes plans; coverage, project status and simulation counts matched; no actionable drift |
 | roadmap-review | 2026-08-08 — completed — ran after `progress-update` on REC-042's per-level marker rewire; aligned the active-project gate, exact SQL coverage-heading statuses, phase markers and Project 08 gap candidates; two cold reviews passed; REC-050 closed in `1e10f42` |
+| system-gaps | never run — added 2026-08-10 |
 | system-check | 2026-08-10 — completed — maps corrected: first run under the `REC-068` machinery-only scope, 167-path EOF inventory at `2c1e10fb`, 17/17 dispatches (one nine-agent wave killed by a session limit, six re-dispatched cold); six false claims repaired (4 system-map, 2 README), `REC-071`–`REC-075` filed; cold reviewer `approve-with-tightening` failed 4 of 8 checks and falsified two cells the audit had passed — `ab7df7b7` |
 
 ## Single-shot prompt executions

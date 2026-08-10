@@ -18,7 +18,7 @@ in halves:
 | File | Owns |
 |---|---|
 | `notes/prompts/_internal/_session-rules.md` | the session contract: the rituals, the commit boundary, the non-negotiables |
-| `notes/prompts/README.md` | the prompt catalogue: what each of the 30 prompts reads and generates, batch mode, run order |
+| `notes/prompts/README.md` | the prompt catalogue: what each of the 31 prompts reads and generates, batch mode, run order |
 | each `SKILL.md` (`.claude/skills/` + `.agents/skills/`) | the exact steps of one ritual |
 
 If this map disagrees with any of them, they win and this file is wrong.
@@ -149,6 +149,14 @@ path patterns in, the live artifacts governed by them out — is stated by
 [its README catalogue row](../README.md#system--audit-the-machinery-system) and owned by the prompt's own
 `Boundaries` section; §10 records only the gotcha it creates.
 
+`/system-gaps` sits outside them too, and asks the one question no chain asks about itself: **what is
+missing from the diagram above.** Its evidence is this map and the README, read whole and nothing else —
+which is what makes it cheap enough to re-run as the machinery grows, and what fixes its ceiling: it can
+only find a hole the two maps are already describing the edges of. It corrects nothing, and it may not
+open the file that would settle a finding, so an absence it reports has two branches — the machinery
+lacks it, or these maps omit it — and resolving that is `/system-check`'s or `map-sync`'s work, never its
+own. §11 carries its symptom row; §12 places it in the improvement loop.
+
 ---
 
 ## 3 — Chain A: knowledge (coverage → notes → Q&A)
@@ -249,10 +257,11 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you and prompts that gate on it; `/system-check` reaches it only through the universal pipeline close-out, never as semantic-audit inventory |
 | `notes/prompts/_internal/_skill-friction.md` | any of the seventeen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (including `/system-check`'s universal close-out), never the machinery audit's inventory or verdict |
 | `notes/prompts/_internal/_ritual-friction.md` | **any session, the moment Victor says a ritual cost more than it gave** — `_session-rules.md` → "When a ritual works and is not worth it". Not a skill's own contract and not a prompt close-out: the ritual succeeded, so nothing in it fired. Only `Status` changes after insertion, written by the ruling | `_recommendation-ledger.md` → `REC-054` (c) **only**. Explicitly not a work queue: no close-out adjudicates it, no cold reviewer is dispatched over it, and it never becomes a `REC` |
-| `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step | anyone orienting in the system — which is why a wrong row is worse than a missing one |
+| `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step. **`/system-gaps` reads both and writes neither** — it is the one prompt that takes these two files as its whole evidence, which is exactly why it is forbidden to correct them | anyone orienting in the system — which is why a wrong row is worse than a missing one; `/system-check` (as the object it audits) and `/system-gaps` (as the only evidence it has) |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
+| `notes/prompts/system/_internal/_system-gaps-report.md` | `/system-gaps` only, overwritten on each explicit run — including a blocked or dry run | Victor; **the next `/system-gaps`, which is not optional**: the candidates deferred over the five-row promotion cap keep their rank there and nowhere else, so an unread report silently drops the queue it exists to carry |
 | `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 16 of the 30 prompts also name it directly (`/system-check` audits it rather than obeying it). It **outranks this map** |
-| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · **Victor, or a session acting on his instruction, raising an item by hand** — `REC-046`, `REC-054`, `REC-055`, `REC-070`, `REC-076` and `REC-077` have no originating run, and this is the only entry point that does not · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` audits its improvement-loop contract and uses current rows only to deduplicate machinery findings, never to build an operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
+| `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · **Victor, or a session acting on his instruction, raising an item by hand** — `REC-046`, `REC-054`, `REC-055`, `REC-070`, `REC-076` and `REC-077` have no originating run, and this is the only entry point that does not · `/system-gaps` for gap findings that clear its promotion bar, at most five rows a run · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` audits its improvement-loop contract and uses current rows only to deduplicate machinery findings, never to build an operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
 | `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | full mode by hand; `/system-check` uses `-MachineryOnly` before and after its semantic audit so live coverage/plan/route state cannot block — see §12. The only automated check in the system |
 | `notes/prompts/_internal/_shared-context.md` | **by hand.** No prompt writes it; the market file beside it (`_job-market-evidence.md`) is the one that gets fed automatically | almost every prompt. `_session-rules.md`'s "Who I am" bullets are its condensed copy, so the two drift apart unless they are edited together |
@@ -388,6 +397,7 @@ The things a run leaves behind that are easy to miss.
 | `_ritual-friction.md` has three `open` rows naming one ritual | that ritual is due a ruling under `_recommendation-ledger.md` → `REC-054` (c) — kept, thinned or deleted. The only ruling licensed to *remove* machinery |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
 | after substantial machinery changes, you need every prompt/skill contract and both derived maps checked together | `/system-check` — explicit machinery audit; never an ordinary-commit gate and never an operational-status sweep |
+| the suspicion is not that a row is **wrong** but that something is **missing** — a file nothing writes, a block with no closer, a debt nothing clears, a gate nobody runs | `/system-gaps` — reads only these two maps, so it is cheap enough to re-run as the system grows; it registers findings and corrects nothing, and an absence it reports still has two branches until `/system-check` or `map-sync` opens the file |
 
 ---
 
@@ -400,7 +410,7 @@ and `_session-rules.md` says the same to the session: *"The system is built — 
 editing them."* So an edit is never a decision someone makes; it is the last
 step of a chain that starts with a run, and every link exists because the previous one was skipped once.
 
-1. **A run ends by executing its self-report contract** — five bullets for the eighteen orchestrators
+1. **A run ends by executing its self-report contract** — five bullets for the nineteen orchestrators
    (`_pipeline-self-report.md`), three for the twelve single-shot prompts
    (`_single-shot-self-report.md`). It reports the **machinery, never the content**, and carries a
    `Status:` line — `open` or `applied in <hash>` — which is what makes a live finding distinguishable
@@ -481,6 +491,31 @@ and skill contracts, and a cold final reviewer gates the global verdict. The dur
 the inventory boundary and the reconciliation. It may correct the two derived maps and file machinery
 recommendations, but never opens or reports live project, learning, SQL, practice or application state.
 Because it is token-intensive, it is **explicit only** — never scheduled, inferred, or run per commit.
+
+### The cheap sweep for what is missing
+
+Everything above checks whether the machinery is **described truthfully**. `/system-gaps` checks whether
+it is **complete**, and it is the one entry point to the loop that begins from neither a run nor a read
+of a machinery file: it takes this map and the README as its whole evidence, builds a typed edge ledger
+from them — writer, reader, trigger, chain step, gate, debt, handoff — and runs ten named detectors over
+the joins. What it finds is a file nothing writes, an output nobody reads, a section whose only writers
+are cold prompts while the state is produced in a daily block, a block-level event nothing records, a
+handoff to something with no row, a gate with no owner, a debt nothing clears, a symptom with no route, a
+contested write with no order, and machinery nothing ever tells you to run.
+
+Two rules make it honest rather than merely cheap, and both follow from its own boundary. **It discharges
+a candidate only against a quoted sentence** from either map declaring that absence deliberate — §8's
+LeetCode row, §13's `**none**` closer, §7's `by hand` writers — because a detector that re-raises design
+is a detector nobody keeps running. And **a finding built on absence names both branches**: these maps
+are derived, so *nothing writes X* and *§7 omits X's writer* are indistinguishable from here, and the row
+names the single file whose read would settle it rather than guessing. That read belongs to
+`/system-check` or `map-sync`. It is the same licence `_session-rules.md` grants any whole read — an
+absence is a finding only over a file read to EOF, and the file read here is the **map**, so the finding
+is about the map's account of the system.
+
+Its ledger rows are capped at five a run against the ranking in its own report, which is the second
+place in this system where a queue is deliberately bounded rather than drained faster, and for the reason
+the ledger preamble already records.
 
 ---
 

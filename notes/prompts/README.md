@@ -16,7 +16,7 @@ owner, handoffs/gates, and explicit exclusions. `/system-check` audits those fie
 canonical machinery; the catalogue is derived and never overrides the prompt it describes.
 
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README owns the
-> per-prompt facts for the 30 runnable prompts. The system map owns the per-skill facts for the
+> per-prompt facts for the 31 runnable prompts. The system map owns the per-skill facts for the
 > in-session rituals (`step-complete`, `coverage-mark`,
 > `study-block-close`, `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts and
 > observable skill failures a run leaves behind, and the improvement loop itself — why machinery is
@@ -43,7 +43,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
-Both launcher catalogs contain exactly 30 files and must reference the same 30 canonical entry points.
+Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
 checks five invariants nothing else can see: that `.claude/skills/` and `.agents/skills/` hold the
@@ -88,12 +88,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 30 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 31 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **30 files, listed below.**
+  conversation, or just use its slash command. **31 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
   "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -103,13 +103,13 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 30 runnable prompts — each with its own slash command
+### The 31 runnable prompts — each with its own slash command
 
 **The command is the prompt's filename minus the `-prompt` suffix** — `coverage-prompt` → `/coverage`,
-`progress-update-prompt` → `/progress-update`. Twenty-two of the 30 work that way; seven files carry no
+`progress-update-prompt` → `/progress-update`. Twenty-three of the 31 work that way; seven files carry no
 `-prompt` suffix at all — the `*-audit.md` orchestrators — so their command *is* the filename
 (`/review-audit`). That is a *filename* glob and not a command one: `/coverage-audit` also ends in
-`-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other twenty-one. **One
+`-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other twenty-two. **One
 deliberate exception, and it must not be "repaired":** `code-review-prompt` launches as
 **`/code-review-practice`**, because `/code-review` is the host agent's own built-in diff review —
 renaming it back re-collides with that command, and both launcher files state the reason in their own
@@ -138,18 +138,18 @@ defect — so read every hit before calling it a defect.
 | Projects | `project-brief-prompt`, `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-plan-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
-| System | `system-check-prompt` |
+| System | `system-check-prompt`, `system-gaps-prompt` |
 
-Two flavors among these 30, both launched the same way (paste config into a new chat):
+Two flavors among these 31, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `project-brief-prompt`,
   `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
   `coverage-audit-prompt`, `interview-prep-route-prompt`, plus `coverage-prompt`,
   `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, `simulation-plan-prompt`, and
-  `system-check-prompt` (they run the orchestrator contract
+  the two system prompts `system-check-prompt` and `system-gaps-prompt` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
-  finished result (and, where noted, a commit) with no further input from you. **Eighteen prompts**, and
-  the set is defined by which self-report they run: these eighteen execute `_pipeline-self-report.md`.
+  finished result (and, where noted, a commit) with no further input from you. **Nineteen prompts**, and
+  the set is defined by which self-report they run: these nineteen execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -198,6 +198,7 @@ separately, because a gate sequences the chain and a prerequisite constrains the
 | `/profile-readme` → `profile-readme-prompt` | `MODE=sync\|optimize` | S · external repo, Victor commits | after `/portfolio-audit` when a project just reached ✅ Ready; sync never silently expands to optimize; never commits the portfolio repo from here |
 | `/tracker` → `tracker-prompt` | `MODE=log\|update\|analyze` plus conditional application fields | S · external/output | external tracker only; analyze hands recurring gaps to evidence-intake |
 | `/system-check` → `system-check-prompt` | no config; explicit invocation | O, family/root/skill/launcher analysts + cold final reviewer · agent; the orchestrator reads both maps itself | machinery only; never live-state/status sweep, source repair, automatic gate, or partial verdict |
+| `/system-gaps` → `system-gaps-prompt` | `MODE=update\|dry-run`; explicit invocation | O, one cold independent analyst + cold reviewer · agent; the orchestrator reads both maps itself | the two maps are the only evidence — no prompt, skill, standard or live artifact is opened; corrects nothing, caps the ledger at five rows a run, and never states one branch of an absence as fact |
 
 Either way, **every run writes its own `_last-run-report*.md` and updates `_run-tracker.md`.**
 Orchestrators record target-level state; `notes-audit` additionally records every planned EN/ES pair,
@@ -225,6 +226,9 @@ failed skill steps, consumed by the next prompt close-out),
 `system/_internal/_system-check-report.md` (the latest explicit machinery audit: inventory and boundary
 coverage, README catalogue reconciliation, system-map wiring/skill reconciliation, architecture
 recommendations, and the cold-review verdict),
+`system/_internal/_system-gaps-report.md` (the latest gap sweep: the edge ledger built from the two maps,
+every candidate with its detector, evidence and disposition, and the candidates deferred over the
+five-row promotion cap — which is where the next run gets its ranking),
 `_single-shot-self-report.md` (the same contract for the twelve non-orchestrator prompts: skill-friction
 reconciliation, close-out check against declared outputs, tracker update, three bullets, refinement behind a cold reviewer),
 `_pipeline-self-report.md` (the shared final step every orchestrator runs: five bullets on how the run
@@ -355,6 +359,7 @@ accurate; `apply/` produces the job-application material.
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
 | `system/system-check-prompt.md` | **Explicit, global, on-demand machinery audit — never a per-commit gate.** Builds a disk-derived manifest of every canonical runnable prompt and internal contract/component, both launcher catalogues, mirrored skills, the validator, and the two derived maps. It proves every inventory item was read to EOF, reconciles this catalogue and the wiring/skill map under their one-owner split, and routes only genuine cross-system machinery improvements to the recommendation ledger. A cold final reviewer must approve the complete reconciliation before it may publish a global verdict. | canonical prompts and the explicitly enumerated internal prompt/standard/contract set, including `_shared-context.md`; `validate-prompt-system.ps1 -MachineryOnly`; both launcher catalogues; paired skills; both maps; `_recommendation-ledger.md` for its improvement-loop contract and finding deduplication. Live project/learning/practice/application artifacts, trackers, evidence state, notes-plan freshness and debt counts are excluded from the inventory even when a prompt names their path pattern | `notes/prompts/README.md`, `_internal/_system-map.md`, `system/_internal/_system-check-report.md`, and justified recommendation-ledger rows; never source prompts, skills, standards or live artifacts |
+| `system/system-gaps-prompt.md` | **Finds what the machinery does not cover, from the two derived maps alone.** Builds a typed edge ledger — writes, reads, fires-on, follows, gates, clears, hands-off — by reading both maps to EOF itself, then runs ten named detectors over it: unwritten file, orphan output, cold-only writer on in-session state, unrecorded event, broken handoff, ownerless gate, uncleared debt, unrouted symptom, contested write with no order, unreachable machinery. Every candidate is discharged by a quoted licence sentence or survives with a disposition; a finding resting on absence names **both** branches (the machinery lacks it · the maps omit it) and the one file that would settle it, because this prompt may not open that file. One cold independent analyst re-runs the detectors, one cold reviewer gates the ledger rows. Deliberately cheap and re-runnable: it is the counterpart of `/system-check`, which reads the machinery and asks whether the maps are *true* | `notes/prompts/README.md` and `_internal/_system-map.md`, whole; `_recommendation-ledger.md` (`## Open` + `## Closed`, for deduplication only); its own previous report. **Nothing else — no prompt, skill, standard, launcher, validator or live artifact, not even the file a finding is about** | `system/_internal/_system-gaps-report.md` (every candidate, always) and at most five new `## Open` rows in `_recommendation-ledger.md`; **never a map, a prompt, a skill or any live artifact** — a finding that is a map defect is routed to `/system-check` or `map-sync` |
 
 ---
 
@@ -578,6 +583,12 @@ bank inventory. Authoring, refinement and study are deliberately separate states
   the verdict. Their own task, step, SQL, practice and application rituals own operational truth.
 - It is not part of the daily workflow and never runs before ordinary commits. `map-sync` remains the
   incremental change/read ritual; the PowerShell validator remains the token-free structural check.
+- `system-gaps` asks the opposite question and pays a fraction of the price: not *are the maps true*, but
+  *does the system they describe have holes*. It reads only the two maps, so it can be run whenever the
+  machinery has grown — after a batch of ledger items, after a new ritual — without the token cost that
+  keeps `system-check` explicit and rare. It never corrects a map: a candidate that turns out to be a map
+  defect is handed back to `system-check` or `map-sync`, which are the two things allowed to read the
+  file that would settle it.
 
 ---
 
@@ -593,7 +604,7 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 - **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`,
   `interview-prep-route`,
   `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run).
-- **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-check`, `cv`,
+- **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-check`, `system-gaps`, `cv`,
   `linkedin`, and `simulator` full mode — these cover everything in one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`
   for the full global pass.
