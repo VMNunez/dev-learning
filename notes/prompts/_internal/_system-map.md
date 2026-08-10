@@ -412,10 +412,12 @@ step of a chain that starts with a run, and every link exists because the previo
    result, not just the cost** · not already covered somewhere the run failed to look. **Condition 3
    kills most findings.** Friction is recorded in the Verdict and stops there, and a rejected finding
    names its failed condition so the same zombie is not re-proposed next run.
-5. **A cold reviewer — mandatory, no exceptions.** The drafted edit goes to one cold subagent with four
-   inputs, the fourth being **the whole prompt file read to EOF**, which is what makes condition 4 and
+5. **A cold reviewer — mandatory, no exceptions.** The drafted edit goes to one cold subagent with five
+   inputs, one being **the whole prompt file read to EOF**, which is what makes condition 4 and
    the contradiction check answerable at all. It returns `approve` / `approve-with-tightening` / `reject`, and only what it
-   approves is applied. A reject — or a reviewer that could not be dispatched — leaves the finding
+   approves is applied. A reject — or a reviewer that could not be dispatched (a death is not that until
+   its scratch file, a resume and one re-dispatch have all failed — `_agent-runtime-standard.md`) —
+   leaves the finding
    `open`: a postponed finding is recoverable through its `Status` line, a self-approved bad edit is not.
    **The verdict line is the only trace the gate ran**; an applied edit without one is indistinguishable
    on disk from a self-approval and must be read as one.

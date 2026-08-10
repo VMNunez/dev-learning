@@ -36,7 +36,17 @@ the role split. Correct isolation matters more than reproducing a historical mod
 - Every whole-file assignment inherits the repository rule: count lines first, read to the real EOF,
   and begin the report with `N lines, read to EOF`.
 - If a role cannot be dispatched, the orchestrator performs the role locally only when the prompt
-  explicitly permits a single-agent fallback; otherwise stop without partial commits.
+  explicitly permits a single-agent fallback; otherwise stop without partial commits. **A launch
+  failure, a runtime error and a session limit that kills a role mid-flight are the same case**: read
+  whatever the role persisted, else resume it where the runtime allows, else re-dispatch it once — a
+  prompt's own retry rule overrides that count — and only one that still returns no usable result is a
+  role that could not be dispatched. Silence is never acceptance.
+- **A `reviewer` is dispatched with a scratch path, writes each finding there as it reaches it, and
+  writes its verdict there before returning** — never holding its judgement in context to the end; the
+  orchestrator reads that path when the reviewer dies. A persisted file is the verdict only if it
+  carries the `N lines, read to EOF` proof and one of the three verdict tokens; anything else is a
+  partial return and takes the ladder above, never an approval. On a final review gate this is the one
+  dispatch failure that destroys work already done: it runs once, and nothing downstream recovers it.
 
 ## Runnable close-out contract
 
@@ -72,6 +82,8 @@ The runtime never changes who owns an artifact:
 - Prompt-system machinery and explicitly authorized study documentation may be committed by the
   orchestrator when the canonical prompt permits it.
 - Victor's project code and practice answers are never auto-committed.
+- A runtime scratch write outside the repository is not a repository write and crosses no authorship or
+  commit boundary.
 - A dry run never commits target artifacts.
 - Before every authorized commit, inspect status immediately before staging and immediately before
   committing. Stage only the declared outputs.

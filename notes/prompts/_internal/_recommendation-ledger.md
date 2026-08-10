@@ -29,7 +29,16 @@ down, and the three items before it each cost more than they were budgeted for.
    The reviewer then caught items doing real damage on exactly that footing: `REC-041-B` was falsifying
    the very sentence its own predecessor had just added as a root fix, and `REC-051` would have stopped
    a tier that had never been reviewed at all — `07-timetrack`'s frontend, on its own scheduled gate. A
-   fix being factual does not make it safe.
+   fix being factual does not make it safe. **A gate that cannot be *reached* leaves the row `open` and
+   the working tree accounted for.** Step 2 has already written the fix to disk — unlike the self-report
+   refinement gate, where the edit is still a draft in context — so a dead reviewer leaves an edited,
+   uncommitted tree that reads exactly like an applied fix on the next `git status`. Run the standard's
+   dispatch ladder to its end. Only when it is exhausted does the edit stop waiting, and **parking it is the equal of reverting, not the lesser option** — a resume may have to
+   wait for the next session's budget, so park the edit with the row naming where it sits and what it is
+   still owed. What is forbidden is neither: an edited tree with nothing recording why.
+   **One reviewer per row, dispatched one at a time** — a batched reviewer would have to be cold on
+   unrelated analyses at once, and three parallel deep reviewers is what met the session limit on
+   2026-08-10.
 4. **Collapse the row into `## Closed`** — one line: the ID, what it was, the commit. Before
    collapsing, promote any rule the row established that governs **future** work into this preamble. A
    rule that other items obey must not stay buried in a row about something else; that is how the

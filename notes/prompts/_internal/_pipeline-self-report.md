@@ -190,8 +190,9 @@ reject one, name the failed condition in the Verdict so the same zombie is not r
 self-report exists to surface what broke, so every finding arrives framed "fix me", and the author of
 the fix is the same tired context that just ran a long pipeline: two reasons the edit needs a second,
 independent pair of eyes. Draft the edit, then dispatch **one cold `role-appropriate` subagent
-(`reasoning tier: deep`** — this is the quality gate and it fires rarely) with four inputs: the finding
-as the report states it, the current prompt section it targets, your drafted replacement, and **the whole
+(`reasoning tier: deep`** — this is the quality gate and it fires rarely) with five inputs: the finding
+as the report states it, the current prompt section it targets, your drafted replacement, the scratch path
+it persists to as it works, and **the whole
 prompt file, read end-to-end**. The last one is not context, it is what makes two of the questions
 answerable: condition 4 asks whether the text already handles this *somewhere the run failed to look*,
 and nothing about a quoted section can answer that — a reviewer given excerpts approves near-duplicates
@@ -201,7 +202,9 @@ one verdict — **approve / approve-with-tightening / reject** — answering: do
 bar conditions; is every fact in it correct; **is this already stated elsewhere in the file, or does it
 contradict something there**; can the same fix be made by **tightening an existing line
 instead of adding one**; and does applying it make any now-redundant or stale text removable. Apply only
-what it approves, in the form it approves. If it rejects — or you cannot dispatch it — the finding stays
+what it approves, in the form it approves. If it rejects — or you cannot dispatch it, as
+`_agent-runtime-standard.md` defines that (a death is not a failed dispatch until its ladder is
+exhausted) — the finding stays
 `open`: a postponed finding is recoverable via its `Status` line, a self-approved bad edit is not. The
 tie always goes to `open`, never to editing on your own. **Record the verdict in the report** — one line,
 `cold reviewer: approve | approve-with-tightening | reject`, beside the Verdict. It is the only trace the
