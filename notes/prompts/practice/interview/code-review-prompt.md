@@ -146,15 +146,19 @@ Route each question to the topic file for {TYPE}:
 - spring-boot → `notes/interview-prep/{LEVEL}/{en,es}/spring-boot.md`
 - sql → `notes/interview-prep/{LEVEL}/{en,es}/sql.md`
 
-Before adding a question, require the target pair's stored coverage fingerprint(s) to match the
-current `{LEVEL}` coverage. If stale or missing, report the question in chat and route the user to a
-full `interview-prep-audit`; do not write into a stale bank.
+One gate, checked once before the batch, not per question: the target pair's stored coverage
+fingerprint(s) must match the current `{LEVEL}` coverage. If stale or missing, every question for this
+run is **proposed only** — reported in chat, named as proposed, nothing written — and the user is
+routed to a full `interview-prep-audit`. Dedupe-by-concept still applies on that path: do not propose
+a question the bank already covers.
 
 Then add each following **"Adding questions from outside the audit (practice prompts)"** in
-`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — it defines the question format,
-the bilingual rule, dedupe-by-concept, placement, and priority-marker reordering. Do not restate them
-here. Answer in first person ("I check…", "I move it to…") and anchor to this exercise or a real
-project when the question is about a pattern or decision.
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`, **in full and as it
+stands**, together with every section it invokes. That section is the contract for an insertion; this
+prompt deliberately does not summarise it, because a summary here is a second copy that drifts.
+Answer in first person ("I check…", "I move it to…") and anchor to this exercise or a real project
+when the question is about a pattern or decision. A defect you notice in an existing refined question
+is reported in chat alongside the questions, never fixed.
 
 ---
 
@@ -172,8 +176,23 @@ git add notes/interview-prep/{LEVEL}/en/{TYPE}.md notes/interview-prep/{LEVEL}/e
 git commit -m "docs: code-review practice {TYPE} — add questions for [main gap]"
 ```
 
-If no questions were added (clean review), print: "Clean review — nothing to add. Run again with a
-higher DIFFICULTY or a different FOCUS."
+If questions were added, print below the commit commands the route-stale line the standard's
+outside-audit section makes every insertion owe:
+`route stale — run /interview-prep-route LEVEL={LEVEL} MODE=update`.
+Then say that this pair must be committed before any `interview-prep-audit` is run on the topic —
+this prompt does not commit it, and an audit started over an uncommitted insertion absorbs it into
+its own topic commit.
+
+If questions were **proposed** rather than added (stale bank), print no commit commands and no
+route-stale line: nothing was written, so nothing is stale. Print the proposed questions verbatim so
+they survive the run, and name `interview-prep-audit` as what clears the gate.
+
+Name any candidate skipped by dedupe-by-concept and the question that already covers it, whether some
+questions were added or all were skipped — a bank that already covers the gap is a result, not an
+empty run.
+
+If no candidates were found at all (clean review), print: "Clean review — nothing to add. Run again
+with a higher DIFFICULTY or a different FOCUS."
 
 ---
 

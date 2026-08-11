@@ -58,8 +58,9 @@ Store it as:
 Question inventory SHA-256: <64 lowercase hexadecimal characters>
 ```
 
-Refining or studying a question does not stale the route. Adding, removing, rewording or reprioritising
-a question does.
+Refining or studying a question does not stale the route. Adding, removing, rewording, reprioritising
+or **reordering** a question does — the inventory is built in file order, so a pure reorder changes the
+digest.
 
 ## Selection algorithm
 

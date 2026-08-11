@@ -27,7 +27,10 @@ not user configuration and the platform launchers never accept it as an argument
 ## 0 — Guards
 
 Read `_session-rules.md`, `_shared-context.md`, `_simulation-plan-standard.md`, doctrine, selected route,
-spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A pair, and the previous review self-report.
+spec, TRACKER, MISTAKES, PROGRESS, selected-level Q&A pair, and the previous review self-report. When
+the review will add questions, also read
+`notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — its "Adding questions
+from outside the audit" section is the contract for every insertion.
 
 Require the dispatch envelope `ENTRYPOINT: simulation-grade` before every mode. If absent, stop without grading or writing
 and instruct the caller to use `simulation-grade`. This is the only door to a state-writing review.
@@ -122,8 +125,10 @@ appends `ID | closed date | level:step | concept | correction evidence` to `## C
 remain byte-for-byte except for appended evidence. Verify that no closed ID remains under `## Open`.
 
 For Borderline/Fail add 2–3 targeted bilingual questions; for Pass add one. First require the selected-
-level bank fingerprints to match current coverage and follow the interview-prep standard's outside-audit
-rules. A stale bank receives proposed questions in the report only.
+level bank fingerprints to match current coverage. Then follow "Adding questions from outside the
+audit" in `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` in full,
+together with every section it invokes. A stale bank receives proposed questions in the report only. A
+defect noticed in an existing refined question is reported the same way and never fixed.
 
 ## 5 — Synchronise tracking
 
@@ -175,7 +180,12 @@ and committing:
 2. `docs(interview-prep): add {track} simulation review questions` — only when Q&A changed.
 
 Report requirements, scorecard/correction matrix, verdict, time, open/closed gaps, recurring pattern
-from same-track MISTAKES, tracking parity, next route moment, and commits.
+from same-track MISTAKES, tracking parity, next route moment, and commits — plus, when the Q&A step
+produced them, proposed-only questions for a stale bank, and any defect noticed in an existing refined
+question. When the Q&A bank changed, the report also carries, as its own line,
+`route stale — run /interview-prep-route LEVEL={LEVEL} MODE=update` — the standard's outside-audit
+section makes every insertion owe it, and it is the *interview-prep* route, a different file from the
+simulation route named above.
 
 ## Hint
 

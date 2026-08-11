@@ -1,17 +1,44 @@
 # Interview-prep standard — what a good interview-prep file contains
 
 This is the **shared standard** for interview-prep Q&A files. It is not a runnable prompt — it holds
-no configuration and does nothing on its own. Four prompts read it:
+no configuration and does nothing on its own. Its readers fall into four groups, and the list is
+open — every **writer** of a Q&A file reads this file and is listed here rather than treated as an
+exception. Read-only judges are not required to: `/simulator` grades Victor *against* the bank and
+`/progress-update` counts it, neither reads this standard, and neither appears below.
+
+**The audit pipeline**, which owns the whole bank and reads every section as a mandate:
 
 - `_interview-prep-write-prompt.md` (author) reads it to **build/audit one topic's** Q&A to this bar.
 - `_interview-prep-review-prompt.md` (reviewer) reads it to **audit the authored Q&A** against this bar.
 - `interview-prep-audit.md` (orchestrator) reads it to enforce fingerprints, parity and section gates.
-- `interview-prep-route-prompt.md` reads it to resolve stable question identities and build the
-  selected level's CORE study route without duplicating answers.
 
-They used to carry their own copy of these rules; keeping them here once means the four can never
-drift. Each prompt adds only its own *flow* (author vs cold review vs route selection) on top of this
-standard.
+**`interview-prep-route-prompt.md`**, which writes no Q&A file at all — it reads the ID, priority and
+lifecycle sections to resolve stable question identities and build the selected level's CORE study
+route without duplicating answers, and the fingerprint and bilingual-parity contracts for its entry
+guards.
+
+**The practice prompts**, which append one or a few questions per run and audit nothing:
+
+- `practice/simulations/simulation-review-prompt.md` and `practice/interview/code-review-prompt.md`
+  enter through "Adding questions from outside the audit" below — the one section addressed to them,
+  and the one they follow **in full**, together with every section it invokes: the question format,
+  the question types, "Priority markers", "Question identity and lifecycle", "Real code — from real
+  projects", the bilingual contract, the fingerprint contract in "What an interview-prep file is", and
+  the "answer in Victor's voice" bar. The fingerprint *contract* is here; the *check step* is not —
+  each consumer prompt runs its own and refuses to write into a stale bank. What they are *not* bound
+  by is the audit's job: they never **rewrite** a
+  question they did not just write, however far from this bar it sits. Judging one is not rewriting
+  it — they still deduplicate against existing questions and still report a defect they notice, which
+  is the only thing they may do about one.
+
+**The in-session skills**, each scoped by its own `SKILL.md`: `study-content-writer` (unrefined,
+reopened or refining content), `interview-prep-block-open` (the lifecycle and answer-quality sections,
+read-only) and `study-block-close`, whose only write **in a Q&A file** is `[studied]`, though it reads
+the fingerprint and bilingual-parity contracts to decide whether it may make it.
+
+These rules used to live in each reader's own copy; keeping them here once means the readers can never
+drift. Each adds only its own *flow* (author vs cold review vs route selection vs practice insertion)
+on top of this standard.
 
 ---
 
@@ -104,8 +131,15 @@ Question state has exactly three valid forms:
 
 `[studied]` without `[refined]` is malformed. Appending ` [studied]` to both bold question lines after
 a final active-recall PASS is the sole mutation allowed while refined; every other byte remains fixed.
-A content pipeline may mirror an existing state marker between languages, but may never assign
-`[refined]`, assign `[studied]`, or change refined content. If it finds
+A content pipeline is any prompt or skill that writes a Q&A file. One may never assign `[refined]` and
+never change refined content; `[studied]` is assigned by `study-block-close` alone, under the append
+rule above. **Mirroring** an existing marker onto its twin is not assigning it, and one reader may do
+it — `_interview-prep-review-prompt.md`, whose job is parity; every other pipeline reports the
+one-sided marker and leaves it, `study-block-close` included, even though `/progress-update` reports
+mirror drift to it. The single exception is `interview-prep-audit`'s one-time legacy migration, which
+converts `[x]` to `[refined] [studied]` under its own rule: it is exempt from the two assignment
+prohibitions and from nothing else — the blocks it touches were never refined, so it never needs to
+change refined content and is not licensed to. If it finds
 a factual, structural, priority or translation problem in a refined question, it reports the exact
 problem and leaves the block untouched.
 
@@ -203,8 +237,45 @@ The practice prompts (`simulation-review`, `code-review-practice`) add a questio
 Q&A file whenever a gap surfaces during practice — not through the full audit pipeline. They follow
 the **same** structure above (bold question + priority marker + blank line + answer in Victor's voice
 + the level-appropriate tip if Conceptual / Red flag if Decision-based or Pressure + a real cited code block where an
-interviewer would pose it with code). On top of that structure, these four rules govern every
-practice-driven insertion, so each prompt references them here instead of restating them:
+interviewer would pose it with code). On top of that structure, the rules below govern every
+practice-driven insertion, so each prompt references them here instead of restating them.
+
+**A practice prompt is a content pipeline** under "Question identity and lifecycle" above, and takes
+its three prohibitions: it may never assign `[refined]`, assign `[studied]`, or change refined content.
+It does **not** take the parity-mirror permission alongside them: that permission is scoped to the
+reader whose declared job is repairing parity, and an appender's is not. A defect it notices in an
+existing refined question — including a state marker present in one language and missing in the
+other — is therefore reported in its own output and left untouched, exactly as the author and
+reviewer report one.
+
+**Do not run a practice prompt against a topic whose `/interview-prep-audit` is still open.** No
+automatic path puts two writers on one pair — there is no scheduler, no queue and nothing running in
+the background. The only path is Victor's own hands, and it is an inviting one: an audit is designed
+to be left alone (`FILE = all` is twelve topics of unattended work), and both practice prompts are
+run in a separate conversation, so opening one while an audit grinds is the natural thing to do. It
+is also the one thing that corrupts what this section exists to protect: both writers allocate "the
+next unused ID" from independent reads of the same file, and the bank ends with **duplicate IDs** —
+which the route prompt's guard then refuses and `study-block-close` reports as ineligible.
+
+**No gate is built for it, because none would work.** The coverage fingerprint cannot see it: the
+digest is over the *coverage* file, so an audit that rewrote every question in the bank leaves it
+matching. The working tree cannot either — the audit's longest stages are read-only, so the target
+pair is clean through them, and clean for every topic a `FILE = all` run has not reached yet. This
+one is a rule for Victor, not a check for a prompt, and it is written here because here is where a
+future reader will come looking for it.
+
+**The reachable hazard is sequential, and it is the one to guard.** The audit's pre-commit `git
+status` check whitelists exactly the `en/` + `es/` pair an insertion touches, so an insertion still
+sitting uncommitted when an audit later starts on that topic is swept **into** the audit's topic
+commit — attributed to a run that did not write it, in a commit whose message does not mention it. So
+**an insertion is committed by the run that made it**, or, where the prompt hands its commands to
+Victor instead, that run states plainly that the pair must be committed before any audit is run on
+that topic. That is the whole of the contract here; there is nothing for an insertion to detect.
+
+**Position is structural, not content**, so the freeze does not pin a refined question to a line
+number — the audit already fixes ordering directly as a structural repair, and reordering a section is
+not authoring. A practice insertion may therefore reorder its target section like any other writer;
+what it may not do is change a single byte *inside* a refined block while doing so.
 
 - **Selected level only.** The caller must resolve the current professional level and add the question
   only to `notes/interview-prep/{LEVEL}/en/{topic}.md` and its Spanish twin. Never default silently
@@ -215,8 +286,18 @@ practice-driven insertion, so each prompt references them here instead of restat
 - **Deduplicate by concept, not wording.** Before adding, scan the target section for a question that
   already tests the same concept. If one exists, skip it — even if the phrasing differs.
 - **Allocate a stable ID.** Use the next unused selected-level topic ID and mirror it to both languages.
+  The new question is **born unrefined** and carries no state marker in either language.
 - **Place under the matching `##` section**, creating the section only if none fits. Then reorder
-  within that section so markers run ⭐⭐⭐ → ⭐⭐ → ⭐.
+  within that section so markers run ⭐⭐⭐ → ⭐⭐ → ⭐, refined blocks included, and apply the identical
+  order to `es/` — position is one of the things the two languages keep in sync.
+- **Report the route as stale.** Both adding a question and reordering a section stale
+  `notes/interview-prep/routes/{LEVEL}.md`, whose question inventory is a digest over the bank's
+  English question lines, state markers stripped, *in file order* — which is why appending `[studied]`
+  stales nothing and moving a block stales it. The insertion never repairs the route: it prints
+  `route stale — run /interview-prep-route LEVEL={LEVEL} MODE=update` as a line of its own report.
+  `interview-prep-block-open` gates the next study block on that same fingerprint and emits the same
+  handoff, so this line does not prevent a failure — it moves the handoff to the run that caused it,
+  where the level is already resolved.
 - **Priority marker** per the "Priority markers" section above (⭐⭐⭐ filter-level, ⭐⭐ deeper, ⭐ niche).
 
 ---
