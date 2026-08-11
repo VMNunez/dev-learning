@@ -230,10 +230,39 @@ plus the README standard, which does not auto-load. This section remains the sou
   convention deliberately kept lands in "Tradeoffs". Never assume the section — the standard owns it.
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed. On a **split step**, the ✅ goes on the sub-step (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one.
 - `projects/0X-projectname/PLANNING.md` **§0 Session quick reference** — repoint it at the *next* step:
-  current step, branch, the next step's done condition verbatim, next gate, and `Last updated`. Nothing
-  else in the system writes §0, and it calls itself the authoritative pointer to the live step, so a
-  ritual that skips it leaves the next session opening on a finished step. If the close made a §23 gate
-  due, say so and name the prompt that gate runs.
+  current step, branch, the next step's done condition verbatim, next gate, and `Last updated`. It calls
+  itself the authoritative pointer to the live step, so a ritual that skips it leaves the next session
+  opening on a finished step. **§0 has two writers in a daily session, not one** — this ritual and
+  `backlog-task-close` — and they own different cells, so neither reverts the other's (partition added
+  2026-08-11, `REC-091`; the old "nothing else in the system writes §0" was false the day the close
+  ritual gained its own §0 cells):
+  - `Current step` and `Current branch` are **this** ritual's. The close writes `Current step` only when
+    no §15 step closed earlier in the same session — when the backlog branch *is* the live work — and
+    `Current branch` only when its own fix ends that branch's work per §22.
+  - `Done condition` belongs to whichever ritual wrote `Current step`, because it has to describe the
+    step that cell names — the next §15 step's condition verbatim here, a gate's sign-off condition
+    when the close owns the pointer.
+  - `Next gate` is **derived, not owned**, and the cell holds two things. *Which gate it names* is the
+    first gate in §23's chain not yet **signed off**, given the current `Current step` — a gate whose
+    trigger fired but whose sign-off is still pending is still that gate — read off the gate's own
+    sign-off condition, the backlog's open High/Medium state and §22's merge status, so whoever moves
+    `Current step` re-derives this cell instead of copying it. (`_planning-standard.md` invariant 10
+    words this as "whose trigger has not fired yet", which read literally names G1 mid-step; the
+    standard's wording is owed a repair — `REC-093`.) *Whether that gate is blocked, signable or pending
+    an action* is the backlog side of the same question, which `backlog-task-close` writes as a qualifier
+    on the derived gate because a last open **High** clearing is the event that moves it.
+    Neither ritual silently reverts the other; when both cannot hold, the derivation wins and the report
+    says the qualifier was dropped.
+  - `Phase` — restated, and it moves only across a real phase boundary. `Last updated` — today, always,
+    from both rituals.
+
+  **The order is not fixed**: whichever event happens first that morning runs first, and the ritual that
+  writes §0 **second reads it as the first one left it**, never as the pre-session state. Each has its
+  own on-disk signal, and they are not interchangeable: this ritual reads the backlog's `## Closed` lines,
+  which are dated and which only the close writes; the close reads
+  `git log -p --since=midnight -- {PROJECT_PATH}/PLANNING.md` for a commit adding a §15 `✅`, because its
+  own ledger dates would only detect itself. `Last updated` proves nothing either way, since both stamp
+  it. If the close made a §23 gate due, say so and name the prompt that gate runs.
 - When a project is fully done, remind Victor to update the "Current study progress" section in this file and the project table in PROGRESS.md
 
 **Interview-prep is not part of this ritual** (dropped 2026-07-13) — do not add interview questions automatically on step completion. Add them only when Victor asks, in session, or via `interview-prep-audit`.
@@ -288,8 +317,14 @@ never the only one:
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
   to the **rules section** it belongs to; never invent a retroactive step
 - `projects/0X-name/PLANNING.md` **§0** — `Last updated` on every close without exception, plus any cell
-  the close made false: `Current step` when the task was gating the next §15 step, `Next gate` and
-  `Done condition` when it was the last open **High** and a gate's sign-off condition is now met.
+  the close made false, under the two-writer partition stated in the step ritual above: `Current step`
+  when the task was gating the next §15 step **and no §15 step closed earlier in the same session** (it
+  is `step-complete`'s cell otherwise); `Done condition` only when this close owns `Current step`, since
+  it has to describe the step that cell names; `Current branch` only when the fix ends that branch's
+  work per §22; `Phase` only when the close crossed a real phase boundary, which a fix almost never does;
+  and on `Next gate`, the blocked/signable **qualifier** when the last open **High** clears and a gate's
+  sign-off condition is met — which gate the cell names stays derived, and neither ritual reverts the
+  other silently. If the step ritual already ran today, read §0 as it left it.
 - `PROGRESS.md` — **status only** (see the rule above): the `Professional level by topic` evidence cell
   when the fix earns it. The `Coverage demonstrated` table belongs to the coverage skills, which recount
   it from the files; the concept itself lives in the coverage file, not here.
