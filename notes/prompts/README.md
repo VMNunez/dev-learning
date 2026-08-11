@@ -46,7 +46,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
-checks six invariants nothing else can see: that both catalogues advertise the **same** arguments for a
+checks seven invariants nothing else can see: that both catalogues advertise the **same** arguments for a
 command and that every key a launcher advertises is one the canonical prompt's own `## Configuration`
 block accepts, in both directions — a key the prompt accepts and neither launcher mentions fails too,
 while an optional derived key explained in a launcher's `Rules` instead of its `argument-hint` passes.
@@ -58,9 +58,33 @@ three counts, so the reach of the check is read off the line rather than assumed
 `.claude/skills/` and `.agents/skills/` hold the same files with the same content (compared line-ending-normalised, because `core.autocrlf` decides
 whether a working-tree file holds CRLF or LF, not its author); that every
 `notes/{topic}/coverage/{LEVEL}.md` and its section of `notes/coverage/{LEVEL}.md` carry the same
-bullets; that each plan's `Plan status` agrees with its `Coverage SHA-256`; and that every path a
+bullets; that each plan's `Plan status` agrees with its `Coverage SHA-256` — in all three shapes that
+contract takes: a topic's `notes-plan-{LEVEL}.md`, a SQL route's `PLANNING-{LEVEL}.md`, and a simulation
+route, which fingerprints a **manifest** of every coverage file in its §1 rather than one file and also
+carries a `Progress snapshot` of `PROGRESS.md` and a `Level status`, so a moved snapshot reports rather
+than fails; that a `verify-{LEVEL}.md` claiming `complete` or `gaps` against a moved digest is reported
+under the schema's own word for that state, `superseded`; and that every path a
 prompt, skill or adapter names resolves — against the repository root **or** against `notes/prompts/`,
-both of which are legitimate forms here; and that **both maps know the machinery exists** — every skill
+both of which are legitimate forms here; that a **declared** output path is a real file name and not
+merely a well-formed one — a file a prompt has not written yet cannot be required to exist, so it is
+exempted from that resolution by *shape*, and shape passed `03-jions.sql` exactly as readily as
+`03-joins.sql`, which matters because `sql-exercises-prompt.md` restates the file list as the `TOPIC`
+table a run resolves its target by. The 50 declared SQL exercise references are checked against the 20
+file names in their level's own `PLANNING-{LEVEL}.md` §1, harvested from its table **rows** because that
+section holds two tables whose headers are in different languages and its prose legitimately names
+retired files. It runs one direction only — a route file nothing cites is not a defect — and the PASS
+line prints the names harvested, the references checked and the references it **could not** check. That
+last count is the reach: a level with no route on disk would have nothing to compare against and prints
+`REPORT:` rather than passing quietly — `middle` and `senior` have no route today, so the count reads `0`
+until something cites them. Three limits stay uncovered, and are named here rather than left to be
+assumed: the 15 simulation specs under `practice/simulations/{track}/`, which have no route file on disk
+to check against at all; the `_last-run-report*` family, exempted by filename alone — 16 distinct report
+names are cited against 12 that exist, and the mapping from a report's name to the prompt that writes it
+is defined nowhere, so a typo there is invisible; and **casing on a path that does exist**, since
+`Test-Path` on Windows is case-insensitive, so `01-Basics.sql` resolves against `01-basics.sql` and only
+a case-sensitive filesystem would notice. This invariant is **skipped** under `-MachineryOnly`: what it
+blocks on is a machinery file, but its oracle is a live route, and the switch exists so live plan and
+route state cannot block `/system-check`. And that **both maps know the machinery exists** — every skill
 directory has a row in `_system-map.md` §9 and the reverse, §9's spelled-out count matches the
 directories on disk, and every runnable prompt is named somewhere in the map and has an entry in this
 file. That last one is the only layer that catches a *non-firing*: the two-map rule and the `map-sync`
@@ -72,8 +96,9 @@ lie the flag exists to prevent, so a disagreement prints as `REPORT:` and only a
 against a moved fingerprint fails the run.
 
 `/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map
-invariants still block, while the live coverage-mirror and plan/route fingerprint checks are explicitly
-skipped. Ordinary manual runs omit the switch and retain the full operational checks above.
+invariants still block, while the live coverage-mirror, the plan/route fingerprint checks and the
+declared-exercise-name cross-check are explicitly skipped — the last of those because its oracle is a
+live route even though the file it would fail is machinery. Ordinary manual runs omit the switch and retain the full operational checks above.
 
 ---
 

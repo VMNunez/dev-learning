@@ -59,6 +59,51 @@ function Get-Sha256Hex {
     return (-join ($digest | ForEach-Object { $_.ToString('x2') }))
 }
 
+function Get-SqlRouteFileNames {
+    # Invariant 7's second source: the authorised exercise and revision file names for one
+    # level, taken from its route's section 1.
+    #
+    # Harvested from the FIRST CELL of each table row, never from a parsed table. Section 1 holds
+    # two tables whose headers are in different languages - `| File | Step(s) |` for the exercises
+    # and `| Archivo | Punto |` for the revision points - so any locator that keys on a header
+    # reads one table and reports the other's five files as typos. Reading a row's first cell is
+    # blind to the header and works on both.
+    #
+    # The first cell and not the whole row, because only that column names the authorised file;
+    # every other cell is free prose that legitimately names OTHER files. Five of the twenty rows
+    # already do - each revision row's trigger cell names the exercise that fires it - and a
+    # whole-row harvest let a retired name or a typo sitting in a status or trigger cell authorise
+    # itself, which is the exact hole this invariant exists to close.
+    #
+    # Rows and not the whole section, for the same reason one step out: the section's prose names
+    # retired files - `02-joins.sql` appears as "the old ..., now renumbered `03-joins.sql`".
+    param([string]$PlanPath)
+
+    # The section sign is built from its code point and never written as a literal. This file
+    # carries no UTF-8 BOM, so Windows PowerShell 5.1 reads it as ANSI and a literal section sign
+    # arrives as two mojibake characters that match nothing. The first draft of this locator did
+    # write it literally, harvested zero names, and compared nothing while printing a clean PASS.
+    $sectionSign = [char]0x00A7
+    $names = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $inSection = $false
+    foreach ($line in [System.IO.File]::ReadAllLines($PlanPath)) {
+        if ($line -cmatch "^##\s+$($sectionSign)1\b") { $inSection = $true; continue }
+        if ($inSection -and $line -cmatch "^##\s+$sectionSign") { break }
+        if (-not $inSection -or $line -notmatch '^\|') { continue }
+        $cells = $line.Split('|')
+        if ($cells.Count -lt 2) { continue }
+        # Every backticked name in that one cell, not just the first: a cell naming two authorised
+        # files would otherwise authorise one and leave the other reading as a typo, and the reach
+        # number would quietly drop by one with nothing announcing it.
+        foreach ($row in [regex]::Matches($cells[1], '`(?<name>(?:[0-9]{2}|R[1-9])-[a-z0-9-]+\.sql)`')) {
+            [void]$names.Add($row.Groups['name'].Value)
+        }
+    }
+    # `,` so the set is returned as one object: a bare `return` enumerates a collection into the
+    # pipeline, and the caller would receive 20 loose strings instead of the set.
+    return ,$names
+}
+
 function Test-ExternalPathPreflight {
     param([string[]]$RequiredInputs)
 
@@ -256,6 +301,7 @@ $historicalReferences = @{
     'strategy\tracking\_internal\_last-run-report.md'            = @('practice/sql/02-joins.sql')
 }
 
+$sqlExerciseReferences = [System.Collections.Generic.List[object]]::new()
 $referenceScan = @()
 $referenceScan += Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md'
 foreach ($skillRoot in @($claudeSkills, $agentSkills)) {
@@ -273,20 +319,100 @@ foreach ($file in $referenceScan) {
         # `...` anywhere in a path suppressed real dead references such as `.../en/...nope.md`.
         if ($reference -cmatch '[{}]|0X|NN-|-\.\.\.') { continue }
         if ([System.IO.Path]::GetFileName($reference) -like '_last-run-report*') { continue }
-        if ($declaredOutputPatterns | Where-Object { $reference -match $_ }) { continue }
-        if ($externalPathPatterns | Where-Object { $reference -match $_ }) { continue }
+        # The historical allowlist is consulted FIRST, ahead of both the shape exemptions and
+        # invariant 7's collection below. It is the narrowest exemption in the chain - an exact
+        # path, scoped to the one file allowed to cite it - so nothing downstream should be able
+        # to overrule it. Ordered after the collection, it could not: a retired exercise path
+        # named by a file recounting the renumbering that retired it was banked as a live
+        # reference before its own exemption was ever reached, and failed the run.
         $exempt = $false
         foreach ($citingFile in $historicalReferences.Keys) {
-            if ($relativeSource.EndsWith($citingFile) -and $reference -in $historicalReferences[$citingFile]) {
+            if ($relativeSource.EndsWith($citingFile) -and $reference -cin $historicalReferences[$citingFile]) {
                 $exempt = $true
                 break
             }
         }
         if ($exempt) { continue }
+        # Invariant 7's population, collected here because this is the last point at which a
+        # declared SQL exercise path is still visible: the next line exempts it from existence
+        # by shape, and shape is not name. Adjudicated after this loop, against the level route.
+        $sqlExerciseReference = [regex]::Match(
+            $reference,
+            '^practice/sql/(?<level>junior|middle|senior)/(?<file>(?:[0-9]{2}|R[1-9])-[a-z0-9-]+\.sql)$'
+        )
+        if ($sqlExerciseReference.Success) {
+            $sqlExerciseReferences.Add([pscustomobject]@{
+                Level  = $sqlExerciseReference.Groups['level'].Value
+                File   = $sqlExerciseReference.Groups['file'].Value
+                Source = $relativeSource
+            })
+        }
+        # -cmatch / -cin, not -match / -in: PowerShell's default comparisons are case-insensitive,
+        # which is how invariant 5 came to exempt two prompts by accident. Every pattern here
+        # already carries its real casing, so this narrows nothing legitimate - it stops
+        # `03-JOINS.sql` being waved through as a declared output it is not.
+        if ($declaredOutputPatterns | Where-Object { $reference -cmatch $_ }) { continue }
+        if ($externalPathPatterns | Where-Object { $reference -cmatch $_ }) { continue }
         $windowsPath = $reference.Replace('/', '\')
         if (Test-Path -LiteralPath (Join-Path $RepositoryRoot $windowsPath) -PathType Leaf) { continue }
         if (Test-Path -LiteralPath (Join-Path $promptRoot $windowsPath) -PathType Leaf) { continue }
         Add-ValidationError "Dead path reference '$reference' resolves against neither the repository root nor notes/prompts/ (from $relativeSource)."
+    }
+}
+
+# --- Invariant 7: a declared exercise path is a real file name ---------------
+# Invariant 4 exempts declared outputs by SHAPE, because a file a prompt has not written yet
+# must not fail the run. Shape is not name: `03-jions.sql` has the same shape as `03-joins.sql`,
+# so a plausible typo was exempt and the run stayed green. No pattern can close that - it needs
+# a second source holding the real names, which is why REC-057 left it as a design change.
+#
+# That source is the level's own route. It is load-bearing rather than cosmetic because
+# `sql-exercises-prompt.md` restates the file list twice - once as the `FILE` config values and
+# once as the `TOPIC` -> file table a run resolves its target by - so a typo in the second one
+# writes an exercise to a new, wrong file.
+#
+# ONE DIRECTION: reference -> route. A route file that nothing cites is not a defect; the route
+# plans files years before a prompt mentions them. The reverse reading fails on that alone.
+#
+# SKIPPED under -MachineryOnly, alongside the live coverage and fingerprint checks, even though
+# what it blocks on is a machinery file. The test is not who owns the file that fails, it is who
+# owns the ORACLE: this invariant's second source is PLANNING-{LEVEL}.md, a live learning artifact
+# written by /sql-plan, and the switch exists precisely so live plan and route state cannot enter
+# /system-check's blocking conditions. Ungated, a legitimate route rename fails an audit that is
+# contractually barred from opening the route to see why. Ordinary manual runs keep the check.
+$sqlRouteNames = @{}
+$sqlRouteReports = [System.Collections.Generic.List[string]]::new()
+$sqlNamesHarvested = 0
+$sqlReferencesChecked = 0
+$sqlReferencesUnverified = 0
+foreach ($level in @('junior', 'middle', 'senior')) {
+    if ($MachineryOnly) { break }
+    $sqlRoutePath = Join-Path $RepositoryRoot "practice\sql\$level\PLANNING-$level.md"
+    if (-not (Test-Path -LiteralPath $sqlRoutePath -PathType Leaf)) { continue }
+    $sqlRouteNames[$level] = Get-SqlRouteFileNames $sqlRoutePath
+    # `$null -eq` explicitly: a property access on $null yields $null rather than throwing, so a
+    # locator that returned nothing at all would have added $null here and slipped past a bare
+    # `.Count -eq 0` test. That is precisely how the first draft of this check passed.
+    if ($null -eq $sqlRouteNames[$level] -or $sqlRouteNames[$level].Count -eq 0) {
+        # A route whose section 1 yields nothing is a locator failure, not an empty level:
+        # a comparison against an empty set passes every reference exactly as loudly as a
+        # real one would, which is the one outcome this invariant must never produce.
+        Add-ValidationError "SQL route $level exists but no exercise file names were harvested from its section 1; the locator no longer matches the route's tables."
+    } else {
+        $sqlNamesHarvested += $sqlRouteNames[$level].Count
+    }
+}
+foreach ($sqlReference in $sqlExerciseReferences) {
+    if ($MachineryOnly) { break }
+    if (-not $sqlRouteNames.ContainsKey($sqlReference.Level)) {
+        # Named, not swallowed: what a check cannot settle must not become a silent pass.
+        $sqlReferencesUnverified++
+        $sqlRouteReports.Add("$($sqlReference.Level)/$($sqlReference.File) (from $($sqlReference.Source)) - no practice/sql/$($sqlReference.Level)/PLANNING-$($sqlReference.Level).md to check the name against; run /sql-plan $($sqlReference.Level) to make it verifiable.")
+        continue
+    }
+    $sqlReferencesChecked++
+    if (-not $sqlRouteNames[$sqlReference.Level].Contains($sqlReference.File)) {
+        Add-ValidationError "Declared SQL exercise '$($sqlReference.File)' is well-formed but is not a file in practice/sql/$($sqlReference.Level)/PLANNING-$($sqlReference.Level).md section 1 (from $($sqlReference.Source))."
     }
 }
 
@@ -471,7 +597,12 @@ if (Test-Path -LiteralPath $simulationRoot -PathType Container) {
         $statusMatch = [regex]::Match($simulationText, '(?m)^Plan status:\s*(?<status>current|stale)\s*$')
         $manifestMatch = [regex]::Match($simulationText, '(?m)^Coverage manifest SHA-256:\s*(?<sha>[0-9a-f]{64})\s*$')
         $progressMatch = [regex]::Match($simulationText, '(?m)^Progress snapshot:\s*(?<sha>[0-9a-f]{64})\s*$')
-        $levelStatusMatch = [regex]::Match($simulationText, '(?m)^Level status:\s*(?<status>open|closed ✅)\s*$')
+        # Same encoding trap as Get-SqlRouteFileNames: written as a literal, this check mark is
+        # read as ANSI mojibake and `closed` can never match, so the first level to close would
+        # have been failed for "lacking level status metadata" it plainly carries. Found while
+        # adding invariant 7; no route file exists yet, so it has never run.
+        $closedMark = [char]0x2705
+        $levelStatusMatch = [regex]::Match($simulationText, "(?m)^Level status:\s*(?<status>open|closed $closedMark)\s*`$")
         if (-not ($statusMatch.Success -and $manifestMatch.Success -and $progressMatch.Success -and $levelStatusMatch.Success)) {
             Add-ValidationError "Simulation route lacks Plan status / manifest / progress snapshot / level status metadata: $simulationName."
             continue
@@ -898,9 +1029,18 @@ Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'
 Write-Output 'PASS: thin session adapters share one rules source'
 Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, both path forms)"
+if (-not $MachineryOnly) {
+    # The counts are incremented where the comparison happens, not derived afterwards: a comparison
+    # that quietly compares nothing passes exactly as loudly as one that compares everything.
+    Write-Output "PASS: declared SQL exercise names match their level route ($sqlNamesHarvested names harvested, $sqlReferencesChecked references checked, $sqlReferencesUnverified unverified)"
+    if ($sqlRouteReports.Count -gt 0) {
+        Write-Output "REPORT: $($sqlRouteReports.Count) declared SQL exercise path(s) have no route to check against:"
+        $sqlRouteReports | ForEach-Object { Write-Output "  - $_" }
+    }
+}
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 if ($MachineryOnly) {
-    Write-Output 'SKIP: live coverage, notes-plan, SQL-route, and simulation-route state (machinery-only mode)'
+    Write-Output 'SKIP: live coverage, notes-plan, SQL-route (including declared exercise names), and simulation-route state (machinery-only mode)'
 } else {
     Write-Output "PASS: coverage mirror parity ($($topicCoverageRoots.Count) topics x $($coverageLevels.Count) levels)"
 }
