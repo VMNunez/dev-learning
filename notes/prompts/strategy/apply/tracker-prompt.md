@@ -96,7 +96,7 @@ judge which skills the offers keep asking for. You do **not** need to write any 
    ask one short question rather than guessing.
 3. **Append** the row — never reorder or touch existing rows.
 4. Create `personal/job-search/applications/<empresa>-<puesto>/` (lowercase, hyphens for spaces) and,
-   inside it, `job_posting.md` with the offer text if you have the URL or pasted text (WebFetch the URL;
+   inside it, `job_posting.md` with the offer text if you have the URL or pasted text (fetch the URL;
    if it fails, ask the user to paste it — **never reconstruct a posting from memory**). Start an
    `outcome.md` with status `aplicado` and the date.
 5. Confirm: show the appended row and the folder created.

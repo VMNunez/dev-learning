@@ -114,7 +114,13 @@ foreach ($claudeLauncher in $claudeLaunchers) {
     }
 }
 
-$exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b'
+# The tool names are REC-086's residue: this pattern carried none, which is why two canonical
+# files told the agent to call a Claude tool by name and still passed 30 files at PASS. Only
+# names that cannot be an ordinary English word or a unix tool are listed - `Bash`, `Grep`,
+# `Read`, `Write`, `Edit` and `Glob` are deliberately absent, because "Git Bash" and "Grep all
+# three topic files" are legitimate prose and a check that cries wolf on them gets disabled.
+# That half stays uncovered on purpose; it is named here so nothing reads this as complete.
+$exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b|\b(SendMessage|WebFetch|WebSearch|TodoWrite|NotebookEdit|ExitPlanMode|AskUserQuestion|TaskOutput)\b'
 $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md' |
     Where-Object {
         $_.Name -ne 'README.md' -and
