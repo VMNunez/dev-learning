@@ -400,6 +400,7 @@ The things a run leaves behind that are easy to miss.
 | a ritual completed as declared and was **not worth its cost** — it ate the block, nobody reads its output, the work got done by hand anyway | append one `RITF-NNNN` row to `_ritual-friction.md` and carry on. It opens **no** `REC` and dispatches **no** cold reviewer |
 | `_ritual-friction.md` has three `open` rows naming one ritual | that ritual is due a ruling under `_recommendation-ledger.md` → `REC-054` (c) — kept, thinned or deleted. The only ruling licensed to *remove* machinery |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
+| a `_last-run-report*.md` says `applied in <hash>` and carries no `cold reviewer:` verdict, or its `Status:` field is missing or states neither state | `_internal/validate-prompt-system.ps1` — the applied edit is read as a **self-approval** and stays that way; the only other way out is correcting the `Status` to `open` **when the hash it names is not a prompt edit**, which is a claim `git show` settles, never a way to make the red go away |
 | after substantial machinery changes, you need every prompt/skill contract and both derived maps checked together | `/system-check` — explicit machinery audit; never an ordinary-commit gate and never an operational-status sweep |
 | the suspicion is not that a row is **wrong** but that something is **missing** — a file nothing writes, a block with no closer, a debt nothing clears, a gate nobody runs | `/system-gaps` — reads only these two maps, so it is cheap enough to re-run as the system grows; it registers findings and corrects nothing, and an absence it reports still has two branches until `/system-check` or `map-sync` opens the file |
 
@@ -440,7 +441,8 @@ step of a chain that starts with a run, and every link exists because the previo
    leaves the finding
    `open`: a postponed finding is recoverable through its `Status` line, a self-approved bad edit is not.
    **The verdict line is the only trace the gate ran**; an applied edit without one is indistinguishable
-   on disk from a self-approval and must be read as one.
+   on disk from a self-approval and must be read as one. `validate-prompt-system.ps1` checks that pairing,
+   under the invariant `README.md` states.
 6. **The edit lands under both map rules** — the change test and the read test in "How it stays true" —
    the hash goes into the report's `Status:`, and the ledger row collapses into `## Closed` after any
    rule it established is **promoted into the ledger's preamble**. A rule that governs future work must

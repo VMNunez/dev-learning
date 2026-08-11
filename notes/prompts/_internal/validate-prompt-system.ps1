@@ -416,6 +416,99 @@ foreach ($sqlReference in $sqlExerciseReferences) {
     }
 }
 
+# --- Invariant 8: an applied self-report carries its cold-review verdict -----
+# _system-map.md section 12 step 5: "The verdict line is the only trace the gate ran; an applied
+# edit without one is indistinguishable on disk from a self-approval and must be read as one."
+# Nothing looked for it, so the one rule that stops a saturated context from editing a prompt on
+# its own say-so was checked only by the context it constrains.
+#
+# NOT skipped under -MachineryOnly, unlike invariant 7 above. The test is who owns the ORACLE, and
+# here the object under test and the oracle are the same file - a report under notes/prompts/.
+# No live learning artifact is opened. The two exemptions these files already carry (the
+# runtime-isolation pattern and invariant 4's path resolution, both because a report is transcribed
+# from a run rather than authored) say their CONTENT is evidence; they do not make them live state.
+#
+# TWO PASSES, and they are deliberately different.
+#   Status detection is per PHYSICAL LINE. The field is written four ways - bare or bolded, hash
+#   bare or backticked, one hash or two joined by a middle dot or by `and`, with or without
+#   trailing prose - and every one of them keeps `Status:` and `applied in` on one line. It is
+#   matched as a FIELD and not as a substring: prose legitimately quotes the field ("the previous
+#   report's `Status: applied` needed no surfacing"), so the text before it must be empty or end at
+#   a middle-dot separator.
+#   Verdict detection allows ONE OPTIONAL WRAP at each seam inside the token, and nothing more. The
+#   token appears on its own line, inline in the Status line, indented and bolded inside a bullet,
+#   backticked mid-paragraph, and - in system/_last-run-report.md - SPLIT ACROSS A HARD LINE BREAK.
+#   These files are hand-wrapped at ~100 columns, so a line-anchored or single-line pattern reads
+#   that last form as a missing gate. The first draft healed the wrap by flattening the WHOLE FILE,
+#   and the cold reviewer proved that is a false pass: with every newline collapsed, a paragraph
+#   ending "...went to the cold reviewer:" and the next one opening "approve, with two tightenings"
+#   satisfies it, as does any report quoting its own contract. `\n?` at each seam covers the same
+#   five forms and cannot cross a blank line, because a blank line is two newlines.
+#
+# The token is required verbatim and case-sensitively; prose is not the trace. "Two cold reviews
+# passed" and "the cold reviewer approved" both appear in reports that ran the gate correctly, and
+# accepting them would trade a bounded test for a judgement about English.
+#
+# Made to fail before it was trusted, which is where three of these rules come from. Injected at
+# once: an applied report carrying only the prose form; a report with no Status field; `Cold
+# Reviewer:` (wrong case); `cold reviewer: approved` (unbounded token); a real verdict deleted; a
+# real verdict re-wrapped. All six were reported, none masked another, and a report quoting
+# `Status: applied in <hash>` in prose correctly stayed OUT of the population. The two defects the
+# injection pass did NOT find are the two the cold reviewer did - the flattening above, and a
+# Status VALUE outside the closed set - which is why the value is now enforced rather than counted.
+#
+# The middle dot is built from its code point. This file carries no UTF-8 BOM, so PowerShell 5.1
+# reads it as ANSI and a literal one arrives as two characters that match nothing, for ever, in
+# silence - the trap that made the first draft of the section-1 locator harvest zero names.
+$middleDot = [char]0x00B7
+$selfReports = @(Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '_last-run-report*.md')
+$reportsScanned = 0
+$reportsApplied = 0
+$selfReportReports = [System.Collections.Generic.List[string]]::new()
+foreach ($report in $selfReports) {
+    $reportName = $report.FullName.Substring($RepositoryRoot.Length + 1).Replace('\', '/')
+    $reportText = [System.IO.File]::ReadAllText($report.FullName) -replace "`r`n", "`n"
+    $reportsScanned++
+
+    $statusCandidates = @([regex]::Matches($reportText, '(?m)^(?<prefix>.*?)\*{0,2}Status:\*{0,2}(?<rest>.*)$'))
+    $statusFields = @(
+        $statusCandidates | Where-Object {
+            $_.Groups['prefix'].Value -eq '' -or
+            $_.Groups['prefix'].Value -cmatch "$middleDot[ \t]*`$"
+        }
+    )
+    # The schema first. A report with no Status field would drop out of the population in silence,
+    # and a check that exempts part of its own population is worse than no check.
+    if ($statusFields.Count -eq 0) {
+        Add-ValidationError "Self-report carries no 'Status:' field, so nothing can tell an applied edit from an open finding: $reportName."
+        continue
+    }
+    # The VALUE is a closed set of two, and it is enforced rather than merely counted. Membership of
+    # the population below turns on the literal `applied in`, so `Status: applied (commit abc)` would
+    # otherwise leave the population with no error and no counter - an escape available to exactly
+    # the context this check exists to constrain, which is what the cold reviewer caught.
+    foreach ($statusField in $statusFields) {
+        if ($statusField.Groups['rest'].Value -cnotmatch '^[ \t]*(open|applied in)\b') {
+            Add-ValidationError "Self-report's 'Status:' field states neither 'open' nor 'applied in <hash>': $reportName."
+        }
+    }
+    # A Status-shaped line the prefix filter dropped is prose quoting the field, which is legitimate
+    # and common - but one carrying `applied in` is the one shape where a real field could be hiding
+    # behind a bullet marker. Named rather than swallowed; it cannot be settled without reading it.
+    foreach ($dropped in @($statusCandidates | Where-Object { $_ -notin $statusFields })) {
+        if ($dropped.Groups['rest'].Value -cmatch '\bapplied in\b') {
+            $selfReportReports.Add("$reportName has a 'Status: ... applied in' outside the field position, read as prose and not counted.")
+        }
+    }
+    if (-not @($statusFields | Where-Object { $_.Groups['rest'].Value -cmatch '\bapplied in\b' })) { continue }
+    $reportsApplied++
+
+    # One optional wrap per seam, never a flattened file: see the note above.
+    if ($reportText -cnotmatch 'cold[ \t]*\n?[ \t`*]*reviewer:[ \t`*]*\n?[ \t`*]*(approve-with-tightening|approve|reject)(?![A-Za-z0-9-])') {
+        Add-ValidationError "Self-report declares 'applied in <hash>' but carries no 'cold reviewer: approve|approve-with-tightening|reject' verdict; on disk that is indistinguishable from a self-approval: $reportName."
+    }
+}
+
 # --- Invariant 1: the two skill adapters are one artifact -------------------
 # Editing one without the other let Codex run a ritual two revisions old for
 # three days in Jul 2026 with nothing announcing it.
@@ -1037,6 +1130,16 @@ if (-not $MachineryOnly) {
         Write-Output "REPORT: $($sqlRouteReports.Count) declared SQL exercise path(s) have no route to check against:"
         $sqlRouteReports | ForEach-Object { Write-Output "  - $_" }
     }
+}
+# Outside the -MachineryOnly branch on purpose: the oracle is a machinery file, so this one runs in
+# both modes. Two numbers, not three: a verdict mismatch is a hard error, so a "verdicts matched"
+# count could never differ from the applied count on any run that reaches this line - unlike
+# invariant 7's `unverified`, which can. The second number is the reach: a scan that found no
+# applied report compared no gates and would otherwise pass as loudly as one that checked them all.
+Write-Output "PASS: applied self-reports carry a cold-review verdict ($reportsScanned scanned, $reportsApplied applied)"
+if ($selfReportReports.Count -gt 0) {
+    Write-Output "REPORT: $($selfReportReports.Count) self-report(s) name an applied hash outside the Status field:"
+    $selfReportReports | ForEach-Object { Write-Output "  - $_" }
 }
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 if ($MachineryOnly) {

@@ -46,7 +46,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
-checks seven invariants nothing else can see: that both catalogues advertise the **same** arguments for a
+checks eight invariants nothing else can see: that both catalogues advertise the **same** arguments for a
 command and that every key a launcher advertises is one the canonical prompt's own `## Configuration`
 block accepts, in both directions — a key the prompt accepts and neither launcher mentions fails too,
 while an optional derived key explained in a launcher's `Rules` instead of its `argument-hint` passes.
@@ -84,7 +84,31 @@ is defined nowhere, so a typo there is invisible; and **casing on a path that do
 `Test-Path` on Windows is case-insensitive, so `01-Basics.sql` resolves against `01-basics.sql` and only
 a case-sensitive filesystem would notice. This invariant is **skipped** under `-MachineryOnly`: what it
 blocks on is a machinery file, but its oracle is a live route, and the switch exists so live plan and
-route state cannot block `/system-check`. And that **both maps know the machinery exists** — every skill
+route state cannot block `/system-check`. And that **a self-report claiming an applied edit carries the
+cold-review verdict line**: `_system-map.md` §12 step 5 makes that line the only trace the quality gate
+ran, and nothing used to look for it, so the one rule that stops a saturated context from editing a
+prompt on its own say-so was checked only by the context it constrains. Every `_last-run-report*.md`
+under `notes/prompts/` must carry a parseable `Status:` **field** — a report without one would leave the
+population in silence — and one whose field reads `applied in <hash>` must also carry
+`cold reviewer: approve | approve-with-tightening | reject`. The field is matched as a field and not as a
+substring, because report prose legitimately quotes it, and its **value** is a closed set of those two
+states rather than a free field — `Status: applied (commit abc)` would otherwise leave the population
+with no error at all. The verdict is matched with **one optional wrap allowed per seam** of the token,
+because it is written five ways — on its own line, inline in the `Status:` field, indented and bolded
+inside a bullet, backticked mid-paragraph, and split across a hard line break at ~100 columns. One wrap
+and no more: healing the file by flattening every newline instead makes a paragraph that ends "…went to
+the cold reviewer:" and a next one opening "approve" into a passing gate. Prose is not the trace: "two
+cold reviews passed" does not count, since accepting it would trade a bounded test for a judgement about
+English. The PASS line prints reports scanned and reports claiming `applied`, the second being the reach.
+**Three limits, named rather than assumed:** it proves the token is *present*, never that a reviewer ran
+— a hand-typed line passes, and so does a report that quotes this contract verbatim; where a `Status:`
+names two hashes it cannot say which edit the verdict covers; and the token is matched
+**case-sensitively**, so a sentence-initial `Cold reviewer:` fails the run rather than passing it. It
+does **not** close the
+`_last-run-report*` path limit above, which is about report names that are cited and do not exist. It is
+**not** skipped under `-MachineryOnly` — the object under test and the oracle are the same machinery
+file — which is the opposite answer to the declared-exercise check above, reached by the same test: the
+oracle decides the mode, not the file that would fail. And that **both maps know the machinery exists** — every skill
 directory has a row in `_system-map.md` §9 and the reverse, §9's spelled-out count matches the
 directories on disk, and every runnable prompt is named somewhere in the map and has an entry in this
 file. That last one is the only layer that catches a *non-firing*: the two-map rule and the `map-sync`
@@ -95,8 +119,9 @@ fingerprint one **reports and never repairs**: clearing a stale flag without run
 lie the flag exists to prevent, so a disagreement prints as `REPORT:` and only a plan claiming `current`
 against a moved fingerprint fails the run.
 
-`/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map
-invariants still block, while the live coverage-mirror, the plan/route fingerprint checks and the
+`/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map/report
+invariants still block — the last of those being the cold-review verdict check, whose oracle is a
+machinery file — while the live coverage-mirror, the plan/route fingerprint checks and the
 declared-exercise-name cross-check are explicitly skipped — the last of those because its oracle is a
 live route even though the file it would fail is machinery. Ordinary manual runs omit the switch and retain the full operational checks above.
 
