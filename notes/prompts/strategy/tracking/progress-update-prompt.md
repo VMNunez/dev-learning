@@ -27,7 +27,7 @@ One optional setting — pick a `MODE` (see below); if you omit it, the prompt d
 
 Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block
 of sessions, or before `cv-prompt` and `project-brief`, which build on it. **A clean drift report is
-the useful outcome** — it is what closes gate G6, and it costs one run to obtain.
+the useful outcome** — it is what closes gate G6 and SQL G3, and it costs one run to obtain.
 
 **Coverage is read for one thing only: counting evidence markers (D8).** Coverage defines what Victor
 must *learn*; PROGRESS.md records what he *has learned*. The two stayed separate until the `✅ NN-slug — {evidence}`
@@ -404,8 +404,9 @@ One row per edited cell; `—` and one line saying so if the matrix was already 
 | Coverage demonstrated · Java junior | `47/128 (37%)` | `49/128 (38%)` | `coverage-mark` wrote a marker without refreshing the cell — re-run it, or `/coverage-audit junior` |
 | Projects · 07 | `Steps 1–6 done, Step 7 next` | plan has no ✅ on 7a | `step-complete`, or add the ✅ to PLANNING.md |
 
-**An empty drift report is the good outcome, and it is what closes G6** — say so explicitly rather
-than printing an empty table with no verdict. Order rows by how much the consumer cares:
+**An empty drift report is the good outcome, and it is what closes both gates that read it** — G6 in a
+project's `PLANNING.md` §23, and SQL G3, whose rule is `practice/sql/PLANNING.md` §9 and whose box is
+ticked in its §11 — say so explicitly rather than printing an empty table with no verdict. Order rows by how much the consumer cares:
 `Coverage demonstrated` and `Professional level by topic` are read by `project-brief`, `review-audit`
 and `backlog-task-open`; the `Practice completed` tables are read only by their own writers.
 
@@ -414,12 +415,48 @@ and `backlog-task-open`; the `Practice completed` tables are read only by their 
 add one line after the tables naming the project and suggesting Victor add the missing ✅ to that
 step's heading in PLANNING.md — that makes the next run self-sufficient.
 
+**The record — the report is a file, not only a chat message.** After printing, write everything you
+just printed to `notes/prompts/strategy/tracking/_internal/_last-drift-report.md`, overwriting the
+previous run's — **every run, the clean one included**, which is otherwise the outcome that leaves no
+trace at all: a run whose matrix was already accurate does not commit `PROGRESS.md` either. It is read
+by whoever ticks those two boxes, by hand and days later, when this chat is gone. Header, then the two
+tables verbatim:
+
+```
+# Progress-update drift report
+
+Date: YYYY-MM-DD · MODE = {MODE} · Branch: <branch>
+Scope: <the project paths this run audited> · SQL: <audited | aborted by Step B's guard>
+Verdict: no drift | N drift rows — open until each Owner named below has re-run
+```
+
+**The scope line is what makes a gate tick falsifiable**, so it is never omitted: `MODE = active`
+audits one project, so a clean verdict is evidence for that project's gate and for no other's. A
+section you could not measure is a D6 finding, and it reaches the verdict line as drift, never as
+silence.
+
 ---
 
 ## Step F — Commit
 
-**Only if D7 edited something.** A run whose matrix was already accurate produces a report and no
-commit; say that plainly instead of committing an unchanged file.
+**The drift report commits on every run, alone and first.** It is machinery under `notes/prompts/`,
+so commit it directly — and never fold it into the matrix commit below, whose hygiene check exists to
+prove that nothing but `PROGRESS.md` rode along with it:
+
+```
+git add notes/prompts/strategy/tracking/_internal/_last-drift-report.md
+```
+
+```
+git commit -m "docs: progress-update drift report — {MODE}, [scope]"
+```
+
+Run `git status` before the add and again before the commit: `PROGRESS.md` is modified and unstaged at
+this point, so the add must name the report path and nothing else. `git show --stat HEAD` must list one
+file.
+
+**The matrix commit happens only if D7 edited something.** A run whose matrix was already accurate
+says that plainly instead of committing an unchanged file.
 
 PROGRESS.md follows the active branch per the shared session rules (2026-07-14 — `main` only receives merges via
 PR). Per the commit-hygiene rule, run
@@ -434,9 +471,12 @@ git add PROGRESS.md
 git commit -m "docs: refresh PROGRESS.md level matrix — [main change, e.g. 'Spring Boot evidence for Step 6, SQL next gate']"
 ```
 
-> **Auto-commit note.** Victor's global rule is "never auto-commit." This orchestrator may run the
-> commit itself (same lift already granted to the notes-audit orchestrator) **only when the matrix edit
-> is clean**. If anything is uncertain, print the two blocks above and let Victor run them instead.
+> **Auto-commit note.** Victor's global rule is "never auto-commit." The drift-report commit above sits
+> outside it — `notes/prompts/` is machinery this orchestrator commits directly — and it happens on every
+> run, the clean one included. The lift on **`PROGRESS.md`** is the narrower one: this orchestrator may
+> run the matrix commit itself (same lift already granted to the notes-audit orchestrator) **only when the
+> matrix edit is clean**. If anything is uncertain, print the `git add PROGRESS.md` and `git commit`
+> blocks and let Victor run them instead.
 > **Never commit a repair to a section this prompt does not own** — that is the owner's commit, in the
 > owner's run.
 

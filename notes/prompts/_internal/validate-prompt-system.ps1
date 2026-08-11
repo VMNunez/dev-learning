@@ -119,6 +119,8 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
     Where-Object {
         $_.Name -ne 'README.md' -and
         $_.Name -notlike '_last-run-report*' -and
+        # Generated report, same class as `_last-run-report*`: its content is copied from a run, not authored.
+        $_.Name -ne '_last-drift-report.md' -and
         $_.Name -notin @(
             '_session-rules.md',
             '_agent-runtime-standard.md',
@@ -221,6 +223,8 @@ $declaredOutputPatterns = @(
     '^practice/simulations/PLANNING\.md$'                                      # simulation-plan first run
     '^practice/simulations/(junior|middle|senior)/PLANNING-(junior|middle|senior)\.md$' # level route
     '^notes/prompts/system/_internal/_system-gaps-report\.md$'                 # system-gaps first run
+    # Both path forms: the prompt writes the repo-root one, both maps the notes/prompts-relative one.
+    '^(notes/prompts/)?strategy/tracking/_internal/_last-drift-report\.md$'    # progress-update, every run
 )
 # Deliberately outside the repository; _external-path-preflight.md governs these.
 $externalPathPatterns = @('^personal/')
