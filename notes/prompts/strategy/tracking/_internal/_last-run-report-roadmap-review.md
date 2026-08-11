@@ -1,6 +1,6 @@
 # Pipeline self-report — roadmap-review
 
-**Date:** 2026-08-08 · **Target:** `ROADMAP.md` (branch `fix/backend-backlog`) · **Status:** applied in 4886805
+**Date:** 2026-08-08 · **Target:** `ROADMAP.md` (branch `fix/backend-backlog`) · **Status:** open
 
 1. **Plan vs reality** — `progress-update` ran first, then the two fact-gatherers and two sequential
    cold reviewers ran in the required order. Their evidence supports that the machinery ran: the
