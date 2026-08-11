@@ -591,6 +591,26 @@ launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's 
 command that does not exist, which is the same defect the launcher-naming rule in
 `notes/prompts/README.md` exists to prevent.
 
+### Who writes a standard or a shared contract
+
+The rulebooks — every `_*-standard.md`, the root `_internal/_agent-runtime-standard.md` among them,
+plus `_batch-mode.md` and both self-report contracts (`_single-shot-self-report.md`,
+`_pipeline-self-report.md`) — are written **by hand: by a session resolving a
+`_recommendation-ledger.md` item, or by Victor. Never by a prompt run, never by a skill, never by a
+build step.**
+
+A run that finds its own rulebook wrong does not fix it. The at-end refinement in both self-report
+contracts is scoped to **the prompt file that just executed** — that whole file is what its cold
+reviewer is handed — and both confine their reconciliation to prompt-change recommendations. So a
+defect in a standard leaves the run as a `REC-NNN`, which the ledger's scope line admits by name, and
+is repaired by whoever picks that item up under the four-step procedure in its preamble. The
+prohibition binds hardest on the two self-report contracts, because they are where the cold-review
+gate itself is written: a run authorized to edit them is a run authorized to delete its own gate.
+
+This is authorship, not Git. The non-negotiable **"No git side effects on code"** lets the agent commit
+anything under `notes/prompts/`; that the two are different rights is the ledger preamble's rule, and it
+owns it.
+
 ### The two maps follow every change to the machinery
 
 (The platform's `map-sync` skill fires on both triggers below — the change and the whole read — and
