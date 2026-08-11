@@ -78,7 +78,7 @@ last count is the reach: a level with no route on disk would have nothing to com
 `REPORT:` rather than passing quietly — `middle` and `senior` have no route today, so the count reads `0`
 until something cites them. Three limits stay uncovered, and are named here rather than left to be
 assumed: the 15 simulation specs under `practice/simulations/{track}/`, which have no route file on disk
-to check against at all; the `_last-run-report*` family, exempted by filename alone — 16 distinct report
+to check against at all; the `_last-run-report*` family, exempted by filename alone — 24 distinct report
 names are cited against 12 that exist, and the mapping from a report's name to the prompt that writes it
 is defined nowhere, so a typo there is invisible; and **casing on a path that does exist**, since
 `Test-Path` on Windows is case-insensitive, so `01-Basics.sql` resolves against `01-basics.sql` and only
