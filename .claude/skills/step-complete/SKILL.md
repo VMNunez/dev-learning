@@ -203,17 +203,16 @@ Rewrite these cells, and only these:
   belongs to whoever wrote `Current step`, because it has to describe the step that cell names.
 - **Next gate** — from §23, and **it is derived, not owned.** The cell holds two different things and the
   partition splits them there:
-  - **Which gate it names is derived**: the first gate in §23's **chain** that is **not yet signed off**,
-    given the current `Current step`. A gate whose trigger has already fired but whose sign-off is still
-    pending is *still* that gate — 07's `G3 sign-off — condition met, action pending` is the live
-    example, and skipping ahead to G4 because G3's trigger fired is the wrong-order error the invariant
-    exists to catch. Derive it from three things you can read: the gate's own **sign-off condition** in
-    §23, `PROJECT-BACKLOG.md`'s open High/Medium state, and §22's merge status for the branch the gate
-    names. So moving `Current step` obliges you to re-derive this cell rather than copy what was in it.
-    (`_planning-standard.md` invariant 10 words this as "the first one whose trigger has not fired yet".
-    Read literally across all of §23 that names G1 during any in-progress step, which is not what its own
-    example means; the chain scoping and the sign-off predicate are that intent. The standard's wording
-    is owed a repair — `REC-093` — and until it lands, this is the reading to apply.)
+  - **Which gate it names is derived**: the first gate in §23's **chain** that is **not yet signed off**.
+    A gate whose trigger has already fired but whose sign-off is still pending is *still* that gate —
+    07's `G3 sign-off — condition met, action pending` is the live example, and skipping ahead to G4
+    because G3's trigger fired is the wrong-order error the invariant exists to catch. Derive it from
+    four things you can read: the gate's **closure-checklist box** at the end of §23, any stricter
+    sign-off its own §23 gate cell states, `PROJECT-BACKLOG.md`'s open High/Medium state, and §22's
+    merge status for the branch the gate names — a fix on an unmerged branch has not signed anything
+    off. All four are live state, so re-derive this cell every run rather than copying what was in it.
+    (The rule is `_planning-standard.md` invariant 10, and its quality-gate rules are where *signed off*
+    is defined.)
   - **Whether that gate is blocked, signable or pending an action** is the same question seen from the
     backlog, and `backlog-task-close` states it as a qualifier because a last open **High** clearing is
     the event that moves it. Keep that qualifier on the re-derived gate (`G3 — signable, last High

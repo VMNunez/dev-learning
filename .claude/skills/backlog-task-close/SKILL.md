@@ -230,12 +230,12 @@ close made false:
   is the case that matters: §23 signs G3 off only when every High is fixed and merged, so that close is
   what turns the gate from blocked to signable. Say it in §0, and say it in the report. The cell holds
   two things and only one of them is yours:
-  - **which gate it names** is derived — the first gate in §23's **chain** **not yet signed off**, given
-    the current `Current step`; a gate whose trigger fired but whose sign-off is still pending is still
+  - **which gate it names** is derived — the first gate in §23's **chain** **not yet signed off**; a
+    gate whose trigger fired but whose sign-off is still pending is still
     that gate. If a step close moved `Current step` today, the derivation decides the name, not this
-    ritual's preference. (`_planning-standard.md` invariant 10 words it as "the first one whose trigger
-    has not fired yet"; that literal reading names G1 mid-step, which its own example contradicts. The
-    standard's wording is owed a repair — `REC-093`.);
+    ritual's preference. (The rule is `_planning-standard.md` invariant 10, whose quality-gate rules
+    define *signed off* as the gate's closure-checklist box being tickable of the project branch as it
+    stands, plus any stricter sign-off the plan's own §23 gate cell states.);
   - **whether that gate is blocked or signable** is a fact about the backlog, which only this ritual can
     see. Write it as a qualifier on the derived gate (`G3 — signable, last High merged`), so it survives
     a later re-derivation instead of being overwritten by one.

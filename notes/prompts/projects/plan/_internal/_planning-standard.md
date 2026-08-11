@@ -46,11 +46,14 @@ A living table, updated at the start of every session. Columns: **Current step �
 condition · Next gate · Phase · Last updated**. Write it with dashes when creating a new plan; the first
 session fills it in. The **Current branch** must be the exact `feat/…` branch from §22 that covers the
 current step — this is what the coding agent reads first each session, so the branch is right there next to the
-step instead of buried in §22. **Next gate** names the next §23 gate and what triggers it.
+step instead of buried in §22. **Next gate** names the gate invariant 10 derives, and what that gate is
+still waiting on. Which gate that is, and what the cell holds once every gate is signed off, are
+invariant 10's to state; do not restate the derivation here.
 - **Pass:** present. If the project is in progress, Current step names a real step, Current branch is
   the §22 branch whose range contains that step (not a dash, not `main`, not the project branch), Done
   condition is specific (not a dash) and follows the done-condition format below, and Next gate names a
-  real §23 gate.
+  real §23 gate — or, once every chain gate is signed off, the closure checklist's last box — as
+  invariant 10 derives, which is where that check is made.
 
 ### 1. Project title and one-line description
 Plain language, says what the app does and who uses it.
@@ -471,6 +474,16 @@ do not drop a gate or invent extra ones.
 `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. G5 before G7 because the portfolio gate reads the READMEs;
 G6 before G7 because it reads PROGRESS; G3/G4 before G7 because it reads the backlog.
 
+**A gate is *signed off* when its box in the closure checklist below can be truthfully ticked of the
+project branch as it stands.** A fix sitting on an unmerged branch has fixed nothing the gate can read,
+so its box is not yet tickable — "condition met, action pending" is a state *before* sign-off, not a
+form of it. The box is the floor, never the ceiling: a plan's own §23 gate cell may state a stricter
+sign-off — naming the branch its fixes must be merged into, for instance — and where it does, both
+conditions hold. A trigger and a sign-off are also different events: G3's trigger is the backend branch
+merging, its sign-off is the review having run **and** every High it found being fixed on the project
+branch. So a gate whose trigger has already fired while its box is still untickable is **not** signed
+off, and it is still the gate the project is on.
+
 ### Closure checklist — the project's definition of done
 
 The plan must end §23 with this checklist, so **the project is never declared finished early**. Copy it
@@ -517,8 +530,20 @@ Cross-checks between sections. A finished plan satisfies all of them; the review
    the **frontend** branch — so if §22's phases were reordered, the gates moved with them. A gate whose
    trigger names a branch that is not in §22 is a stale gate.
 10. **§0 Next gate vs §23** — the Next gate in §0 is one of the gates defined in §23, and it is the
-   first one whose trigger has not fired yet given the §0 Current step. A plan pointing at G5 (READMEs)
-   while the backend review (G3) has never run is wrong — the prerequisite chain forbids it.
+   first gate in §23's **prerequisite chain** — `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`, quoted
+   from the chain line under the gate table — that is **not yet signed off**, as the paragraph
+   immediately under that chain line defines *signed off*. G3 and G4 share the chain's first position;
+   where neither is signed off, the backend tier is reviewed first, so G3 comes first. A plan pointing
+   at G5 (READMEs) while the backend review (G3) has never run is wrong — the prerequisite chain forbids
+   it. And a gate whose **trigger** has fired while its closure-checklist box is still untickable is
+   *still* that gate: a plan whose backend branch has merged but whose G3 Highs are unfixed, or fixed on
+   a branch that has not merged, names G3 and never G4. The predicate is the chain's, not all of §23's,
+   so G1 — which holds no chain position — is never this cell's answer. When every chain gate is signed
+   off, the cell names the closure checklist's last box, the project branch's PR into `main`, and reads
+   `—` once that lands. **Published limit:** a plan review settles the chain *order* from §0/§22/§23
+   alone and cannot settle the sign-off *truth-value* — G3/G4/G5/G7 turn on `PROJECT-BACKLOG.md` and G6
+   on a drift report, neither of which any review scope reads. It checks the order, reports the
+   truth-value as unverifiable, and leaves it to the two §0 rituals, which do read the backlog.
 11. **Visual QA checklist vs learning plan (§14 ↔ §15)** — §14's visual QA checklist exists, and the
    last frontend step in §15 names it in its done condition. A checklist nobody is required to run is
    decoration.

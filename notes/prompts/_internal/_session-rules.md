@@ -243,13 +243,13 @@ plus the README standard, which does not auto-load. This section remains the sou
     step that cell names — the next §15 step's condition verbatim here, a gate's sign-off condition
     when the close owns the pointer.
   - `Next gate` is **derived, not owned**, and the cell holds two things. *Which gate it names* is the
-    first gate in §23's chain not yet **signed off**, given the current `Current step` — a gate whose
-    trigger fired but whose sign-off is still pending is still that gate — read off the gate's own
-    sign-off condition, the backlog's open High/Medium state and §22's merge status, so whoever moves
-    `Current step` re-derives this cell instead of copying it. (`_planning-standard.md` invariant 10
-    words this as "whose trigger has not fired yet", which read literally names G1 mid-step; the
-    standard's wording is owed a repair — `REC-093`.) *Whether that gate is blocked, signable or pending
-    an action* is the backlog side of the same question, which `backlog-task-close` writes as a qualifier
+    first gate in §23's chain not yet **signed off** — a gate whose
+    trigger fired but whose sign-off is still pending is still that gate — read off the gate's
+    closure-checklist box at the end of §23, any stricter sign-off its own §23 cell states, the
+    backlog's open High/Medium state and §22's merge status, so whoever moves `Current step` re-derives
+    this cell instead of copying it. (The rule is `_planning-standard.md` invariant 10, whose
+    quality-gate rules define *signed off*.) *Whether that gate is blocked, signable or pending an
+    action* is the backlog side of the same question, which `backlog-task-close` writes as a qualifier
     on the derived gate because a last open **High** clearing is the event that moves it.
     Neither ritual silently reverts the other; when both cannot hold, the derivation wins and the report
     says the qualifier was dropped.
