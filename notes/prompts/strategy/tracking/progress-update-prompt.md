@@ -383,7 +383,7 @@ the denominator gate is not met; never sum only the current subset and present i
 
 ## Step E — Write the matrix, then print the drift report
 
-**The edit.** Apply D7 as **targeted in-place edits** (Edit tool, one edit per change) to
+**The edit.** Apply D7 as **targeted in-place edits** (one edit per change, never a rewrite) to
 `Professional level by topic` and nothing else. Then run `git diff PROGRESS.md`: **every hunk must fall
 inside that table.** A hunk anywhere else means an edit escaped its section — revert it and report the
 section as drift instead. This diff check is the mechanical guard behind the whole ownership contract.

@@ -116,17 +116,28 @@ foreach ($claudeLauncher in $claudeLaunchers) {
 
 # The tool names are REC-086's residue: this pattern carried none, which is why two canonical
 # files told the agent to call a Claude tool by name and still passed 30 files at PASS. Only
-# names that cannot be an ordinary English word or a unix tool are listed - `Bash`, `Grep`,
-# `Read`, `Write`, `Edit` and `Glob` are deliberately absent, because "Git Bash" and "Grep all
-# three topic files" are legitimate prose and a check that cries wolf on them gets disabled.
-# That half stays uncovered on purpose; it is named here so nothing reads this as complete.
-$exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b|\b(SendMessage|WebFetch|WebSearch|TodoWrite|NotebookEdit|ExitPlanMode|AskUserQuestion|TaskOutput)\b'
+# names that cannot be an ordinary English word or a unix tool are listed.
+#
+# What stays UNCOVERED, named so nothing reads this as complete:
+#   - the bare words `Bash`, `Grep`, `Read`, `Write`, `Edit`, `Glob`. "Git Bash" and "Grep all
+#     three topic files" are legitimate prose, and a check that cries wolf gets disabled.
+#   - the `X tool` form, which is live in 13 canonical files. Twelve of them are "the Read tool
+#     truncates at 2000 lines silently", which restates `_session-rules.md` - a file exempt from
+#     this pattern by name, and the owner of that rule. Policing the restatements while the
+#     owner is exempt would fail files for using their own rulebook's words; the fork itself is
+#     a REC-064 problem for whoever unifies that sentence, not a runtime-isolation defect.
+#     The one instruction-form use, `progress-update-prompt.md`'s "Edit tool", was reworded;
+#     `_coverage-prompt-rationale.md`'s "Grep tool" is retained history and stays as written.
+$exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b|\b(SendMessage|WebFetch|WebSearch|TodoWrite|NotebookEdit|ExitPlanMode|AskUserQuestion|TaskOutput|MultiEdit|BashOutput|SlashCommand|KillShell)\b'
 $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md' |
     Where-Object {
         $_.Name -ne 'README.md' -and
         $_.Name -notlike '_last-run-report*' -and
         # Generated report, same class as `_last-run-report*`: its content is copied from a run, not authored.
         $_.Name -ne '_last-drift-report.md' -and
+        # The two friction sinks are the same class again: a row is transcribed from what
+        # happened, so a `FRIC` line saying which tool died is evidence, not an instruction.
+        $_.Name -notin @('_skill-friction.md', '_ritual-friction.md') -and
         $_.Name -notin @(
             '_session-rules.md',
             '_agent-runtime-standard.md',
@@ -671,9 +682,16 @@ function Get-ConfigArguments {
             $close = $value.IndexOf(']')
             if ($close -ge 0) { $value = $value.Substring(0, $close) }
         }
-        # First declaration wins: a key restated further down the block is the same key.
-        if (-not $arguments.Contains($declaration.Groups['key'].Value)) {
-            $arguments[$declaration.Groups['key'].Value] = $value.Trim()
+        # A key declared twice is UNIONED, not overwritten and not first-wins. Two prompts
+        # declare one per mode - `plan-audit`'s `PROJECT` (blank in new mode, a path list in
+        # review mode) and `tracker`'s `EMPRESA`/`PUESTO` (log vs update) - so taking either
+        # declaration alone states half a contract, and the half it picks is an accident of
+        # order.
+        $key = $declaration.Groups['key'].Value
+        if ($arguments.Contains($key)) {
+            $arguments[$key] = ($arguments[$key] + ' | ' + $value.Trim()).Trim()
+        } else {
+            $arguments[$key] = $value.Trim()
         }
     }
     return $arguments
@@ -697,6 +715,16 @@ function Get-HintArguments {
         # exemption of a third of the population, which is worse than no check.
         $close = $value.IndexOfAny([char[]]@(']', '['))
         if ($close -ge 0) { $value = $value.Substring(0, $close) }
+        # In a HINT - and only in a hint - a value list is written without spaces, so the first
+        # whitespace ends it and what follows is prose for the reader. Keeping the prose made
+        # `MODE=update|dryrun (default update)` a token containing a space, which the closed
+        # test then declined to compare and the wrong value passed. (The config block writes
+        # `[a | b]` WITH spaces, which is why this cut belongs here and not in that test: doing
+        # it there truncated every prompt-side list to its first value and failed 30 launchers.)
+        $value = ($value.Trim() -split '\s')[0]
+        # First wins, and the caller compares this count against the raw `KEY=` token count to
+        # catch the duplicate: a hint declaring one key twice is malformed rather than a union,
+        # since only one of the two can be what the launcher accepts.
         if (-not $arguments.Contains($keys[$i].Groups['key'].Value)) {
             $arguments[$keys[$i].Groups['key'].Value] = $value.Trim()
         }
@@ -712,12 +740,18 @@ function Get-HintArguments {
 # at all, and neither side may quietly widen the other.
 function Get-ClosedEnumeration {
     param([string]$Value)
-    $tokens = @(($Value -split '\|') | ForEach-Object { $_.Trim() })
-    if ($tokens.Count -lt 2) { return $null }
+    $tokens = @(($Value -split '\|') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+    # A ONE-value list is comparable and used to be exempt: `[MODE=updat]` against
+    # `[update | dry-run]` passed silently. One token is a membership claim, not a set claim,
+    # and the caller tests it as one.
+    if ($tokens.Count -lt 1) { return $null }
     foreach ($token in $tokens) {
         if ($token -cnotmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$') { return $null }
     }
-    return @($tokens | Sort-Object)
+    # `,@(...)`: PowerShell unrolls a returned array, so a ONE-value list came back as a bare
+    # string and `$values[0]` then indexed its first character - the membership finding read
+    # "advertises 'MODE = u'". The unary comma preserves the array through the return.
+    return ,@($tokens | Sort-Object)
 }
 
 # Counted and published, because a value check that quietly compares nothing passes just as
@@ -726,6 +760,7 @@ function Get-ClosedEnumeration {
 # the PASS line says how many were, so the number is falsifiable by reading it.
 $argumentKeysChecked = 0
 $argumentValuesCompared = 0
+$argumentHintPairs = 0
 
 foreach ($claudeLauncher in $claudeLaunchers) {
     $codexLauncher = Join-Path $codexRoot $claudeLauncher.Name
@@ -745,6 +780,9 @@ foreach ($claudeLauncher in $claudeLaunchers) {
         Add-ValidationError "The two catalogues advertise different arguments for $($claudeLauncher.Name)."
         continue
     }
+    # Counted here, where the pair was actually compared. Printing the runnable-prompt count in
+    # its place was true only by an argument the reader of the PASS line cannot see.
+    $argumentHintPairs++
 
     $target = [regex]::Match($claudeText, 'notes/prompts/(?![A-Za-z0-9_./-]*_internal/)[A-Za-z0-9_./-]+\.md')
     if (-not $target.Success) { continue }  # already reported by Get-LauncherTargets
@@ -752,18 +790,26 @@ foreach ($claudeLauncher in $claudeLaunchers) {
     if (-not (Test-Path -LiteralPath $promptPath -PathType Leaf)) { continue }  # already reported as a dead path
 
     $hintArguments = Get-HintArguments $claudeHint.Groups['hint'].Value
+    $hintKeyTokens = @([regex]::Matches($claudeHint.Groups['hint'].Value, '(?<![A-Za-z0-9_])[A-Z][A-Z0-9_]{1,}='))
+    # .PSBase.Count throughout, never .Count: member access on a dictionary resolves a KEY of
+    # that name first, and `sql-exercises` has a `COUNT` argument - so `$hintArguments.Count`
+    # returned the string `N` and reported that launcher as declaring a duplicate key.
+    if ($hintKeyTokens.Count -ne $hintArguments.PSBase.Count) {
+        Add-ValidationError "$($claudeLauncher.Name) declares the same argument key twice in its argument-hint."
+        continue
+    }
     $configBlock = Get-PromptConfigBlock ([System.IO.File]::ReadAllText($promptPath))
     # A prompt that takes no arguments has no block, and its launcher advertises no key. Both
     # halves are read off shape, so no prompt is exempt by name.
     if ($null -eq $configBlock) {
-        if ($hintArguments.Count -gt 0) {
-            Add-ValidationError "$($claudeLauncher.Name) advertises $($hintArguments.Count) argument(s) but $($target.Value) has no locatable '## Configuration' block."
+        if ($hintArguments.PSBase.Count -gt 0) {
+            Add-ValidationError "$($claudeLauncher.Name) advertises $($hintArguments.PSBase.Count) argument(s) but $($target.Value) has no locatable '## Configuration' block."
         }
         continue
     }
     $configArguments = Get-ConfigArguments $configBlock
-    if ($hintArguments.Count -eq 0 -and $configArguments.Count -gt 0) {
-        Add-ValidationError "$($target.Value) declares $($configArguments.Count) configuration key(s) that $($claudeLauncher.Name) advertises none of."
+    if ($hintArguments.PSBase.Count -eq 0 -and $configArguments.PSBase.Count -gt 0) {
+        Add-ValidationError "$($target.Value) declares $($configArguments.PSBase.Count) configuration key(s) that $($claudeLauncher.Name) advertises none of."
         continue
     }
 
@@ -777,17 +823,26 @@ foreach ($claudeLauncher in $claudeLaunchers) {
         $configValues = Get-ClosedEnumeration $configArguments[$key]
         if ($null -eq $hintValues -or $null -eq $configValues) { continue }
         $argumentValuesCompared++
-        if (@(Compare-Object $configValues $hintValues -CaseSensitive).Count -gt 0) {
+        # A single advertised value is a MEMBERSHIP claim against the prompt's set; two or more
+        # are a claim to be the same set. Testing only the second exempted every one-value hint.
+        if ($hintValues.Count -eq 1 -and $configValues.Count -gt 1) {
+            if ($hintValues[0] -cnotin $configValues) {
+                Add-ValidationError "$($claudeLauncher.Name) advertises '$key = $($hintValues[0])', which is not one of the values $($target.Value) accepts ('$($configValues -join '|')')."
+            }
+        } elseif (@(Compare-Object $configValues $hintValues -CaseSensitive).Count -gt 0) {
             Add-ValidationError "$($claudeLauncher.Name) advertises '$key = $($hintValues -join '|')' where $($target.Value) accepts '$($configValues -join '|')'."
         }
     }
     foreach ($key in $configArguments.Keys) {
         # The hint is not the whole contract: an optional derived key such as coverage's
         # NOTES_PATH is deliberately kept out of the hint and explained in the launcher's
-        # Rules instead. Named anywhere in the launcher is the test - bounded and
-        # case-sensitive, per REC-065.
-        if ($claudeText -cnotmatch "(?<![A-Za-z0-9_])$([regex]::Escape($key))(?![A-Za-z0-9_])") {
-            Add-ValidationError "$($target.Value) accepts '$key', which $($claudeLauncher.Name) never mentions."
+        # Rules instead. Named anywhere in EITHER launcher is the test - the two hints are
+        # identical by the clause above, but the Rules bodies are genuinely platform-specific
+        # and are not mirrored, so reading only the Claude one would pass a key documented
+        # exclusively in the Codex catalogue. Bounded and case-sensitive, per REC-065.
+        $named = "(?<![A-Za-z0-9_])$([regex]::Escape($key))(?![A-Za-z0-9_])"
+        if ($claudeText -cnotmatch $named -and $codexText -cnotmatch $named) {
+            Add-ValidationError "$($target.Value) accepts '$key', which neither launcher for $($claudeLauncher.BaseName) mentions."
         }
     }
 }
@@ -837,7 +892,7 @@ Write-Output "PASS: $expectedRunnableCount canonical prompts"
 Write-Output "PASS: $expectedRunnableCount Claude launchers"
 Write-Output "PASS: $expectedRunnableCount Codex launchers"
 Write-Output 'PASS: launcher target parity, full delegation, and canonical runtime isolation'
-Write-Output "PASS: launcher argument contracts ($expectedRunnableCount identical hint pairs, $argumentKeysChecked keys both ways, $argumentValuesCompared closed enumerations compared)"
+Write-Output "PASS: launcher argument contracts ($argumentHintPairs identical hint pairs, $argumentKeysChecked keys both ways, $argumentValuesCompared closed enumerations compared)"
 Write-Output 'PASS: runnable prompt entry-point and self-report contracts'
 Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'

@@ -15,7 +15,7 @@ teaching context. A direct `/simulation-review` request is routed to that skill 
 LEVEL           = [junior | middle | senior]
 STEP            = [route step number]
 SIMULATION_FILE = [exact spec path]
-TIME_USED       = [exact minutes; required for first review]
+TIME_USED       = [exact minutes]                  <- required for first review
 SELF_ASSESSMENT = [Solid | Good | Weak | Failed]   <- required for first review
 MODE            = [review | correction | hint] -> default: review
 ```
