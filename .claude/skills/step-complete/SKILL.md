@@ -8,9 +8,10 @@ description: >
   completed step, and the real failure mode is doing it partially — updating PROGRESS.md but forgetting the
   ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all three, plus the step's coverage
   work — authoring the bullet for a concept the checklist is missing, and marking what the code
-  demonstrated — plus the two things nothing else in the system does: checking the step's **done
-  condition** actually passed (that is gate G1's real trigger, not "it feels finished"), and repointing
-  PLANNING **§0** at the next step so the following session opens on a true pointer — or flag why not.
+  demonstrated — plus the check nothing else in the system performs: that the step's **done
+  condition** actually passed (that is gate G1's real trigger, not "it feels finished"). It also repoints
+  PLANNING **§0** at the next step so the following session opens on a true pointer — or flags why not —
+  a table it shares with `backlog-task-close` under a stated cell partition.
   Interview-prep is NOT part of this ritual (dropped 2026-07-13 — Victor adds those separately,
   on request, not automatically on step completion). Do NOT trigger for ordinary commits mid-step,
   notes-only sessions, or the audit pipelines. (Projects 01-06 are closed - their extraction format,
@@ -166,26 +167,64 @@ taught. Fold its report rows into this ritual's final table.
 ## 5 — PLANNING §0: repoint the session quick reference
 
 §0 calls itself *"the authoritative pointer to the live step"*, and completing a step is the single
-event that invalidates every one of its cells. Nothing else writes it **in a daily session** —
-`progress-update` reads PLANNING and does not repair it, and `plan-audit` rewrites §0 only inside a G2
-plan pass — so a §0 left stale after a close stays stale until someone
-notices by hand, and the next session opens on a pointer that names a step already finished.
+event that invalidates every one of its cells. Outside a daily session the only thing that repairs it is
+`plan-audit` — `MODE = new` authors §0 with the rest of the plan, and `MODE = review` rewrites it inside
+a G2 pass; `progress-update` reads PLANNING and does not touch §0. So a §0 left stale after a close stays
+stale until someone notices by hand, and the next session opens on a pointer that names a finished step.
+
+**Inside a daily session §0 has two writers, this ritual and `backlog-task-close`** (partition added
+2026-08-11, `REC-091`; this section used to claim it was the only one, which stopped being true the day
+the close ritual gained its own §0 cells). Both fire in the 08:00 block, and a morning that finishes a
+step *and* closes a task runs them back to back:
+
+- **Read §0 as it stands before writing it**, never as the pre-session state — the close may already have
+  moved cells this morning. The signal that works is `PROJECT-BACKLOG.md`'s `## Closed`, whose lines are
+  dated: one dated today means a close ran. `Last updated` alone proves nothing, since both rituals stamp
+  it. If that is ambiguous, `git log -p --since=midnight -- {PROJECT_PATH}/PLANNING.md` settles it,
+  because both rituals commit that file themselves.
+- **The order is not fixed** — whichever event happens first in the morning runs first. So the rule is
+  the same in both directions: **the ritual that writes §0 second re-derives `Next gate` from §23 against
+  the `Current step` as it then stands**, and carries forward the sign-off fact the other one recorded.
+  Never assume you are the last writer of the morning.
 
 Rewrite these cells, and only these:
 
-- **Current step** — the step just closed becomes the next one, named as §15 names it (sub-step
+- **Current step** — **this ritual's cell.** A close writes it only when no §15 step closed earlier in
+  the same session. The step just closed becomes the next one, named as §15 names it (sub-step
   granularity on a split step). Carry over any *blocking prerequisite* the next step declares: 7a's
   own note about the account-password Medium is the model — a next step that is gated is not "next",
   it is "next once X merges", and §0 is where that is read.
-- **Current branch** — per §22. If the closed step was the last on its branch, say the branch is ready
-  to merge and name the one that opens next, rather than leaving the merged one as current.
+- **Current branch** — **this ritual's cell**, per §22. If the closed step was the last on its branch,
+  say the branch is ready to merge and name the one that opens next, rather than leaving the merged one
+  as current. A close touches it only when its own fix ends that branch's work — the same condition, in
+  every file that states it.
 - **Done condition** — replace with the *next* step's, verbatim from §15. Do not paraphrase it: this
-  cell is what step 0 of the next ritual checks against, and a paraphrase makes it uncheckable.
-- **Next gate** — from §23. State whether the closed step just satisfied a gate's trigger, since a
-  gate becoming due is the highest-value thing this table can say (G3 fires when the backend steps
-  finish, G4 when 7a–7d do).
-- **Phase** and **Last updated** — today's date, always. A `Last updated` that lags the ledger is how
-  everyone learns to distrust the table.
+  cell is what step 0 of the next ritual checks against, and a paraphrase makes it uncheckable. It
+  belongs to whoever wrote `Current step`, because it has to describe the step that cell names.
+- **Next gate** — from §23, and **it is derived, not owned.** The cell holds two different things and the
+  partition splits them there:
+  - **Which gate it names is derived**: the first gate in §23's **chain** that is **not yet signed off**,
+    given the current `Current step`. A gate whose trigger has already fired but whose sign-off is still
+    pending is *still* that gate — 07's `G3 sign-off — condition met, action pending` is the live
+    example, and skipping ahead to G4 because G3's trigger fired is the wrong-order error the invariant
+    exists to catch. Derive it from three things you can read: the gate's own **sign-off condition** in
+    §23, `PROJECT-BACKLOG.md`'s open High/Medium state, and §22's merge status for the branch the gate
+    names. So moving `Current step` obliges you to re-derive this cell rather than copy what was in it.
+    (`_planning-standard.md` invariant 10 words this as "the first one whose trigger has not fired yet".
+    Read literally across all of §23 that names G1 during any in-progress step, which is not what its own
+    example means; the chain scoping and the sign-off predicate are that intent. The standard's wording
+    is owed a repair — `REC-093` — and until it lands, this is the reading to apply.)
+  - **Whether that gate is blocked, signable or pending an action** is the same question seen from the
+    backlog, and `backlog-task-close` states it as a qualifier because a last open **High** clearing is
+    the event that moves it. Keep that qualifier on the re-derived gate (`G3 — signable, last High
+    merged`); drop it only when the re-derivation names a *different* gate, where it no longer applies.
+
+  If the derivation and the close's qualifier genuinely cannot both hold, **write the derived gate** and
+  say in the report that the qualifier was dropped and why. One cell, one value, derivation first.
+- **Phase** — restate it; it moves only when the project crosses a phase boundary, which a single step
+  rarely does.
+- **Last updated** — today's date, **always**, from both rituals. A `Last updated` that lags the ledger
+  is how everyone learns to distrust the table.
 
 Leave the rest of §0 alone; this is a repoint, not a rewrite of the plan.
 
@@ -237,5 +276,5 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Evidence marker | marked `✅ 07-timetrack` — 24/139 junior bullets demonstrated |
 | `/notes-plan` owed | yes — `/notes-plan spring-boot junior`, run once at end of session |
 | README | `backend` / Key patterns — 2 entries added; 1 concept already represented |
-| PLANNING §0 | repointed to Step 6 — branch `feat/reports`, done condition copied verbatim, dated today |
+| PLANNING §0 | repointed to Step 6 — branch `feat/reports`, done condition copied verbatim, phase unchanged, dated today · `Next gate` re-derived as G3, keeping this morning's close qualifier "signable, last High merged" (or: qualifier **dropped** — the re-derivation names G4, which the close's fact does not describe) |
 | Gate due | none yet (or: G3 backend review is now due — `review-audit REVIEW_SCOPE = backend`) |

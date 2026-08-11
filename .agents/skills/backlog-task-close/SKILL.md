@@ -5,7 +5,8 @@ description: >
   finished during a daily session — the moment Victor's fix for that task works and is committed, or he
   says it is done ("ya está la tarea del backlog", "cerrado lo del @Transactional", "marca esa tarea
   como hecha", "task done"). Marking the box ✅ is NOT the ritual: a closed task must also land its
-  concept in the topic's coverage file, the project README, PLANNING.md and PROGRESS.md, and only then
+  concept in the topic's coverage file, the project README, PLANNING.md — including its §0 quick
+  reference, a table it shares with `step-complete` under a stated cell partition — and PROGRESS.md, and only then
   collapse into a one-line entry in the backlog's Closed ledger so the file stops growing. The failure
   mode this exists for is a task that gets checked off and leaves no trace anywhere else — the fix ships
   but the learning is never recorded, and the backlog turns into a wall of dead prose. Do NOT trigger
@@ -184,24 +185,67 @@ When you do edit PLANNING.md, keep it to the plan's own voice and format; do not
 ### 3b — PLANNING §0: keep the session quick reference true
 
 §0 calls itself *"the authoritative pointer to the live step"*, and during a backlog-fix branch **the
-backlog is the live work** — §0's `Current step` reads `G3 backend backlog fix (not a §15 step)`
-precisely because that is where the project is. Nothing else writes this table in a daily session
-(`plan-audit` rewrites it only inside a G2 plan pass), so a run of closes that never touches it leaves
-the pointer dated to the first one.
+backlog is the live work** — `Current step` reads something like `G3 backend backlog fix (not a §15
+step)` precisely because that is where the project is. Read the live value; do not assume this one.
+Outside a daily session the only thing that repairs this
+table is `plan-audit` (`MODE = new` authors it, a G2 pass rewrites it), so a run of closes that never
+touches it leaves the pointer dated to the first one.
+
+**Inside a daily session §0 has two writers, this ritual and `step-complete`** (partition added
+2026-08-11, `REC-091`; this section used to claim it was the only one, and so did the other ritual —
+both were wrong). Both fire in the 08:00 block, so a morning that closes a task *and* finishes a step
+runs them back to back:
+
+- **Read §0 as it stands before writing it**, never as the pre-session state. Whether a step closed
+  earlier this morning is settled by **one command**, because §15's `✅` markers are undated and
+  `Last updated` is stamped by this ritual too:
+  `git log -p --since=midnight -- {PROJECT_PATH}/PLANNING.md` — both rituals commit that file
+  themselves, so a commit today whose diff adds a §15 `✅` is a step close. Do not use the backlog's
+  `## Closed` dates for this: those lines are written by *this* ritual, so they detect your own earlier
+  closes, not the step ritual. And nothing on disk states which step was live yesterday, so never infer
+  it from `Current step` alone.
+- **Do not overwrite the route cells** — `Current step`, and the `Done condition` that belongs to it,
+  are `step-complete`'s when a §15 step closed earlier in the same session. Repointing the plan at the
+  next step is the more informative statement, and a close that follows it must not degrade it back to
+  the backlog-fix pointer.
+- **The order is not fixed** — whichever event happens first in the morning runs first, so this ritual
+  may be either the first or the second writer. The rule that holds in both directions: **the one that
+  writes §0 second re-derives `Next gate` against the `Current step` as it then stands**, carrying the
+  other's fact forward.
 
 Unlike `step-complete`, most closes move only part of it. Check each cell and change only what the
 close made false:
 
 - **Last updated** — **always**, every close, today's date. This is the cell that makes the rest
   trustworthy, and it is the one a close forgets. It is never n/a.
-- **Current step** — when the close changes *what is being worked on*: the last task at a priority
-  clears, or the task was the one gating the next §15 step (7a's account-password Medium is the live
-  example — closing it removes a documented blocker and that sentence in §0 becomes wrong).
-- **Done condition** and **Next gate** — when the close satisfies a gate's sign-off condition. Closing
-  the last open **High** is the case that matters: §23 signs G3 off only when every High is fixed and
-  merged, so that close is what turns the gate from blocked to due. Say it in §0, and say it in the
-  report.
-- **Current branch** — only if the close ends the branch's work per §22.
+- **Current step** — when the close changes *what is being worked on* **and no §15 step closed earlier
+  in the same session**: the last task at a priority clears, or the task was the one gating the next
+  §15 step (7a's account-password Medium is the live example — closing it removes a documented blocker
+  and that sentence in §0 becomes wrong). If `step-complete` already repointed it today, leave its
+  pointer alone and say the close moved no route cell.
+- **Done condition** — only when this ritual owns `Current step` under the bullet above, because the
+  condition has to describe the step that cell names. When `step-complete` repointed it earlier today,
+  the condition is already the next §15 step's and this close leaves it alone.
+- **Next gate** — when the close satisfies a gate's sign-off condition. Closing the last open **High**
+  is the case that matters: §23 signs G3 off only when every High is fixed and merged, so that close is
+  what turns the gate from blocked to signable. Say it in §0, and say it in the report. The cell holds
+  two things and only one of them is yours:
+  - **which gate it names** is derived — the first gate in §23's **chain** **not yet signed off**, given
+    the current `Current step`; a gate whose trigger fired but whose sign-off is still pending is still
+    that gate. If a step close moved `Current step` today, the derivation decides the name, not this
+    ritual's preference. (`_planning-standard.md` invariant 10 words it as "the first one whose trigger
+    has not fired yet"; that literal reading names G1 mid-step, which its own example contradicts. The
+    standard's wording is owed a repair — `REC-093`.);
+  - **whether that gate is blocked or signable** is a fact about the backlog, which only this ritual can
+    see. Write it as a qualifier on the derived gate (`G3 — signable, last High merged`), so it survives
+    a later re-derivation instead of being overwritten by one.
+
+  Neither ritual silently reverts the other; when the invariant and the qualifier cannot both hold, the
+  invariant wins and the report says the qualifier was dropped.
+- **Current branch** — only if the close ends the branch's work per §22. Same condition in every file
+  that states it; a step closing in the same session does not change it.
+- **Phase** — only if the close moved the project across a phase boundary, which a backlog fix almost
+  never does. Say "unchanged" rather than skipping it silently.
 
 A close that legitimately moves none of these still updates `Last updated`. State which cells you
 changed, and say "no other cell moved" rather than staying silent — silence here is indistinguishable
