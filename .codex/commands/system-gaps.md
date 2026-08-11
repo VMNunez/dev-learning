@@ -1,6 +1,6 @@
 ---
 description: Detect and register what the machinery does not cover, from the two derived maps alone (orchestrator, runs inside Codex)
-argument-hint: MODE=update|dry-run (default update)
+argument-hint: [MODE=update|dry-run] (default update)
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.

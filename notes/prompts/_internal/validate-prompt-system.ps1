@@ -625,6 +625,167 @@ foreach ($prompt in $runnable) {
     }
 }
 
+# --- Invariant 6: a launcher's public argument contract matches its prompt ---
+# Filename parity, target parity, delegation and runtime isolation were all checked; what a
+# launcher *advertises* was not. Two /system-check runs found eight such mismatches by prose
+# review alone, and the fix that closed them was itself verified by hand - which is the
+# evidence that the guarantee is manual and will drift again in silence.
+#
+# The canonical config block is written in TWO forms and both are legitimate:
+#   (a) `## Configuration` as the first content line INSIDE the fence - the fence is what
+#       Victor pastes into a fresh chat, so the heading has to travel with it;
+#   (b) a `## Configuration` markdown heading whose next non-blank line opens the fence.
+# It is tied to that heading and never guessed, because a `## How to use - recipes` block
+# uses the very same `KEY = value` shape: a locator that takes the first fenced block with a
+# key finds the recipe instead, and reports 15 of 31 prompts as broken while all 31 are right.
+function Get-PromptConfigBlock {
+    param([string]$Text)
+    # LF first. Some of these files are checked out CRLF and some LF (core.autocrlf decides,
+    # not the author), and a `$`-anchored fence pattern silently matches nothing on the CRLF
+    # half - it reported 9 of 31 prompts as having no config block while all 31 had one.
+    $Text = $Text -replace "`r`n", "`n"
+    $insideForm = [regex]::Match($Text, '(?ms)^(?<fence>`{3,})[a-z]*\n(?<body>##[ \t]*Configuration\b.*?)^\k<fence>[ \t]*$')
+    $headingForm = [regex]::Match($Text, '(?ms)^##[ \t]*Configuration\b[^\n]*\n(?:[ \t]*\n)*(?<fence>`{3,})[a-z]*\n(?<body>.*?)^\k<fence>[ \t]*$')
+    $candidates = @(@($insideForm, $headingForm) | Where-Object { $_.Success } | Sort-Object Index)
+    if ($candidates.Count -eq 0) { return $null }
+    return $candidates[0].Groups['body'].Value
+}
+
+# `KEY = [a | b]  <- comment`: the brackets are syntax and everything after them is prose for
+# the reader, so both are stripped before a value is ever compared.
+function Get-ConfigArguments {
+    param([string]$Block)
+    $arguments = [ordered]@{}
+    foreach ($line in ($Block -split "`r?`n")) {
+        $declaration = [regex]::Match($line, '^(?<key>[A-Z][A-Z0-9_]{1,})[ \t]*=[ \t]*(?<value>.*)$')
+        if (-not $declaration.Success) { continue }
+        $value = $declaration.Groups['value'].Value.Trim()
+        if ($value.StartsWith('[')) {
+            $value = $value.Substring(1)
+            $close = $value.IndexOf(']')
+            if ($close -ge 0) { $value = $value.Substring(0, $close) }
+        }
+        # First declaration wins: a key restated further down the block is the same key.
+        if (-not $arguments.Contains($declaration.Groups['key'].Value)) {
+            $arguments[$declaration.Groups['key'].Value] = $value.Trim()
+        }
+    }
+    return $arguments
+}
+
+# An `argument-hint` is one line of space-separated tokens, and an optional argument is
+# written `[KEY=...]` - so a value runs to the closing bracket or to the next key, never to
+# the next space: `[SECTION=all|exact heading]` is one value list containing a space.
+function Get-HintArguments {
+    param([string]$Hint)
+    $arguments = [ordered]@{}
+    $keys = @([regex]::Matches($Hint, '(?<![A-Za-z0-9_])(?<key>[A-Z][A-Z0-9_]{1,})='))
+    for ($i = 0; $i -lt $keys.Count; $i++) {
+        $start = $keys[$i].Index + $keys[$i].Length
+        $end = if ($i + 1 -lt $keys.Count) { $keys[$i + 1].Index } else { $Hint.Length }
+        $value = $Hint.Substring($start, $end - $start)
+        # A value ends at its own closing bracket or at the one that OPENS the next optional
+        # argument - `MODE=paste|search [FOCUS=...]` is two arguments, not a value list whose
+        # last token is `[`. Cutting only on `]` left nine keys with an unmatched bracket in
+        # their value, which the closed-enumeration test then declined to compare: a silent
+        # exemption of a third of the population, which is worse than no check.
+        $close = $value.IndexOfAny([char[]]@(']', '['))
+        if ($close -ge 0) { $value = $value.Substring(0, $close) }
+        if (-not $arguments.Contains($keys[$i].Groups['key'].Value)) {
+            $arguments[$keys[$i].Groups['key'].Value] = $value.Trim()
+        }
+    }
+    return $arguments
+}
+
+# Only a CLOSED enumeration is comparable. `STEP = [current | <n>]` and `SECTION = [all |
+# ## Routing | ...]` are metavariables and open lists: the two files legitimately describe
+# them in different vocabularies, and REC-074's rule is that two statements of a rule cannot
+# be compared until their terms are defined in one place. So the shape decides - a set every
+# one of whose tokens is a bare identifier is compared exactly, anything else is not compared
+# at all, and neither side may quietly widen the other.
+function Get-ClosedEnumeration {
+    param([string]$Value)
+    $tokens = @(($Value -split '\|') | ForEach-Object { $_.Trim() })
+    if ($tokens.Count -lt 2) { return $null }
+    foreach ($token in $tokens) {
+        if ($token -cnotmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$') { return $null }
+    }
+    return @($tokens | Sort-Object)
+}
+
+# Counted and published, because a value check that quietly compares nothing passes just as
+# loudly as one that compares everything. Roughly half of these keys are metavariables or
+# free-form fields (`EMPRESA`, `<path>`, an exact heading) and are deliberately not compared;
+# the PASS line says how many were, so the number is falsifiable by reading it.
+$argumentKeysChecked = 0
+$argumentValuesCompared = 0
+
+foreach ($claudeLauncher in $claudeLaunchers) {
+    $codexLauncher = Join-Path $codexRoot $claudeLauncher.Name
+    if (-not (Test-Path -LiteralPath $codexLauncher -PathType Leaf)) { continue }  # already reported above
+    $claudeText = [System.IO.File]::ReadAllText($claudeLauncher.FullName)
+    $codexText = [System.IO.File]::ReadAllText($codexLauncher)
+    $claudeHint = [regex]::Match($claudeText, '(?m)^argument-hint:[ \t]*(?<hint>.*)$')
+    $codexHint = [regex]::Match($codexText, '(?m)^argument-hint:[ \t]*(?<hint>.*)$')
+    if (-not ($claudeHint.Success -and $codexHint.Success)) {
+        Add-ValidationError "Launcher lacks an argument-hint contract: $($claudeLauncher.Name)."
+        continue
+    }
+    # Catalogue equality first. It is exact, it costs nothing, and it is what lets every test
+    # below run once over the Claude catalogue and still cover both - do not "fix" that into
+    # a second loop.
+    if ($claudeHint.Groups['hint'].Value.Trim() -cne $codexHint.Groups['hint'].Value.Trim()) {
+        Add-ValidationError "The two catalogues advertise different arguments for $($claudeLauncher.Name)."
+        continue
+    }
+
+    $target = [regex]::Match($claudeText, 'notes/prompts/(?![A-Za-z0-9_./-]*_internal/)[A-Za-z0-9_./-]+\.md')
+    if (-not $target.Success) { continue }  # already reported by Get-LauncherTargets
+    $promptPath = Join-Path $RepositoryRoot $target.Value.Replace('/', '\')
+    if (-not (Test-Path -LiteralPath $promptPath -PathType Leaf)) { continue }  # already reported as a dead path
+
+    $hintArguments = Get-HintArguments $claudeHint.Groups['hint'].Value
+    $configBlock = Get-PromptConfigBlock ([System.IO.File]::ReadAllText($promptPath))
+    # A prompt that takes no arguments has no block, and its launcher advertises no key. Both
+    # halves are read off shape, so no prompt is exempt by name.
+    if ($null -eq $configBlock) {
+        if ($hintArguments.Count -gt 0) {
+            Add-ValidationError "$($claudeLauncher.Name) advertises $($hintArguments.Count) argument(s) but $($target.Value) has no locatable '## Configuration' block."
+        }
+        continue
+    }
+    $configArguments = Get-ConfigArguments $configBlock
+    if ($hintArguments.Count -eq 0 -and $configArguments.Count -gt 0) {
+        Add-ValidationError "$($target.Value) declares $($configArguments.Count) configuration key(s) that $($claudeLauncher.Name) advertises none of."
+        continue
+    }
+
+    foreach ($key in $hintArguments.Keys) {
+        $argumentKeysChecked++
+        if (-not $configArguments.Contains($key)) {
+            Add-ValidationError "$($claudeLauncher.Name) advertises '$key', which is not a configuration key of $($target.Value)."
+            continue
+        }
+        $hintValues = Get-ClosedEnumeration $hintArguments[$key]
+        $configValues = Get-ClosedEnumeration $configArguments[$key]
+        if ($null -eq $hintValues -or $null -eq $configValues) { continue }
+        $argumentValuesCompared++
+        if (@(Compare-Object $configValues $hintValues -CaseSensitive).Count -gt 0) {
+            Add-ValidationError "$($claudeLauncher.Name) advertises '$key = $($hintValues -join '|')' where $($target.Value) accepts '$($configValues -join '|')'."
+        }
+    }
+    foreach ($key in $configArguments.Keys) {
+        # The hint is not the whole contract: an optional derived key such as coverage's
+        # NOTES_PATH is deliberately kept out of the hint and explained in the launcher's
+        # Rules instead. Named anywhere in the launcher is the test - bounded and
+        # case-sensitive, per REC-065.
+        if ($claudeText -cnotmatch "(?<![A-Za-z0-9_])$([regex]::Escape($key))(?![A-Za-z0-9_])") {
+            Add-ValidationError "$($target.Value) accepts '$key', which $($claudeLauncher.Name) never mentions."
+        }
+    }
+}
+
 foreach ($adapterName in @('AGENTS.md', 'CLAUDE.md')) {
     $adapterPath = Join-Path $RepositoryRoot $adapterName
     $adapterText = [System.IO.File]::ReadAllText($adapterPath)
@@ -670,6 +831,7 @@ Write-Output "PASS: $expectedRunnableCount canonical prompts"
 Write-Output "PASS: $expectedRunnableCount Claude launchers"
 Write-Output "PASS: $expectedRunnableCount Codex launchers"
 Write-Output 'PASS: launcher target parity, full delegation, and canonical runtime isolation'
+Write-Output "PASS: launcher argument contracts ($expectedRunnableCount identical hint pairs, $argumentKeysChecked keys both ways, $argumentValuesCompared closed enumerations compared)"
 Write-Output 'PASS: runnable prompt entry-point and self-report contracts'
 Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'

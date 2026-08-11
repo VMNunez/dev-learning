@@ -46,8 +46,14 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
-checks five invariants nothing else can see: that `.claude/skills/` and `.agents/skills/` hold the
-same files with the same content (compared line-ending-normalised, because `core.autocrlf` decides
+checks six invariants nothing else can see: that both catalogues advertise the **same** arguments for a
+command, and that every key and closed value list a launcher advertises matches the canonical prompt's
+own `## Configuration` block — in both directions, so a key the prompt accepts and no launcher mentions
+also fails, while an optional derived key explained in the launcher's `Rules` instead of its
+`argument-hint` passes; the PASS line prints how many values it actually compared, because about half of
+them are metavariables or free-form fields (`EMPRESA`, `<path>`, an exact heading) that the two files
+legitimately word differently and that it therefore leaves alone; that `.claude/skills/` and
+`.agents/skills/` hold the same files with the same content (compared line-ending-normalised, because `core.autocrlf` decides
 whether a working-tree file holds CRLF or LF, not its author); that every
 `notes/{topic}/coverage/{LEVEL}.md` and its section of `notes/coverage/{LEVEL}.md` carry the same
 bullets; that each plan's `Plan status` agrees with its `Coverage SHA-256`; and that every path a

@@ -11,6 +11,8 @@ spec, grades an attempt, or edits Victor's solution.
 > **▶ Run first:** `progress-update` if its last run is stale or reported drift; repair that drift with
 > the owner it names. Coverage for every track admitted at this level must already exist.
 
+## Configuration
+
 ```
 LEVEL = [junior | middle | senior]
 MODE  = [update | dry-run]  -> default: update

@@ -6,8 +6,10 @@
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching any role. This prompt is a
 hands-off orchestrator and uses its role, isolation, whole-file, and close-out contracts exactly.
 
+## Configuration
+
 ```
-MODE = update | dry-run
+MODE = [update | dry-run]
 ```
 
 `update` promotes qualifying findings to the recommendation ledger. `dry-run` writes the report and

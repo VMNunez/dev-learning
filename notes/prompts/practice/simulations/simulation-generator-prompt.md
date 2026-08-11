@@ -8,9 +8,11 @@ level route. It never chooses free-form focus or difficulty: `/simulation-plan` 
 
 > **▶ Run first:** `simulation-plan-prompt` for this exact LEVEL.
 
+## Configuration
+
 ```
 LEVEL = [junior | middle | senior]
-STEP  = [current | number]  -> default: current
+STEP  = [current | <n>]  -> default: current
 ```
 
 ## 0 — Resolve and guard

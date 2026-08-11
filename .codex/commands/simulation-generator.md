@@ -1,6 +1,6 @@
 ---
 description: Materialise the next timed test already defined by a level's simulation route (runs inside Codex)
-argument-hint: LEVEL=junior|middle|senior [STEP=current|N]
+argument-hint: LEVEL=junior|middle|senior [STEP=current|<n>]
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.

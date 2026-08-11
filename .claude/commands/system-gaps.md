@@ -1,6 +1,6 @@
 ---
 description: Detect and register what the machinery does not cover, from the two derived maps alone (orchestrator, runs inside Claude Code)
-argument-hint: MODE=update|dry-run (default update)
+argument-hint: [MODE=update|dry-run] (default update)
 ---
 
 Read `notes/prompts/system/system-gaps-prompt.md` and execute it in full as the hands-off orchestrator it describes, running inside Claude Code.
