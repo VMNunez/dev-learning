@@ -211,7 +211,8 @@ Flag any new question whose concept is not in coverage/{LEVEL}.md with `[coverag
 ## Execution — apply, don't just report
 
 Apply all fixes directly to both files. **Do NOT commit and do NOT mark anything done** — an
-independent reviewer runs next and owns the commit. Leave your work in the working tree.
+independent reviewer runs next, and **you never commit** — who does is the commit-message bullet below.
+Leave your work in the working tree.
 
 Then report:
 - The coverage status for `{SECTION}` (or per section, if `all`): ✅ Complete / 🔧 Fixed / ➕ Added.

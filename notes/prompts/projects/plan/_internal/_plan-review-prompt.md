@@ -10,7 +10,8 @@ cold subagent owns a small, defined slice it cannot skim. It serves two callers:
 
 - **`new` mode** — after the author (subagent A) and the architecture advisor write a fresh plan, the
   orchestrator runs the specialist reviewers as the independent second pass, then commits the plan + the
-  ROADMAP.md / PROGRESS.md edits the author left in the working tree.
+  ROADMAP.md / PROGRESS.md edits the author left in the working tree — plus `PROJECT-BACKLOG.md` if
+  `whole-plan` fixed it.
 - **`review` mode** — run the same specialists on an existing plan (one project, or batched across all)
   to bring it back to standard.
 
@@ -70,6 +71,8 @@ focused context per reviewer; a specialist that reads everything defeats it.
   the plan, which is how a §3 row that no coverage bullet supports used to pass.
 - Other projects' `PLANNING.md` — **only** `ui-design`, and **only their §14**, to verify this plan's
   visual identity actually differs from the published ones. Read that section alone.
+- `{PROJECT}/PROJECT-BACKLOG.md` — **only** `whole-plan`, for its twelfth check, and the one file
+  outside `PLANNING.md` any scope may edit. Other scopes skip it entirely.
 
 **Apply the right format.** Per the standard's "Two project formats": full-stack (07+) → the full
 24-section audit; Angular (01–06) → audit only the sections that project actually has, plus the
@@ -159,7 +162,9 @@ its stated reason) directly — do not just note it.
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in `{PROJECT}/PLANNING.md` — you are the last quality pass,
-not an advisor that hands back a report to paste. Add missing sections, rewrite vague done conditions,
+not an advisor that hands back a report to paste. One fix lands outside the plan: `whole-plan`'s twelfth
+check reconciles `{PROJECT}/PROJECT-BACKLOG.md` **in the backlog file** (still without committing), and
+its trace row must say so, because that is what tells the orchestrator to stage it. Add missing sections, rewrite vague done conditions,
 fill incomplete tables, reconcile inconsistencies. Preserve the author's correct work; only change what
 misses the bar. If the plan is genuinely already at bar, change nothing and record it as PASS — do not
 rewrite good text to leave a mark.
@@ -184,7 +189,8 @@ once, after every concern's specialist has run. Leave your fixes in the working 
 **If `{SCOPE}` = all (standalone run):** never commit — commit authority belongs to the orchestrators
 (the shared session rules' auto-commit exception covers them, not a standalone reviewer). Leave all changes in the
 working tree and print the commit sequence for Victor:
-`git add {PROJECT}/PLANNING.md` · `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`
+`git add {PROJECT}/PLANNING.md` — **plus `{PROJECT}/PROJECT-BACKLOG.md` when your twelfth check fixed
+it** · `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`
 (`{DRY_RUN}` only affects whether you print the sequence as "ready to run" or as a preview).
 
 Then report the verdict + the audit summary (X critical · Y quality · Z consistency · W

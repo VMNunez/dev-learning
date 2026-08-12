@@ -41,7 +41,8 @@ My profile, the Spanish job market, and what consultancies look for are in
 explain every line and every decision in an interview.
 
 **Do NOT commit and do NOT edit any worklist.** Leave everything in the working tree. Report the files
-you touched and the one-line commit message you'd use — the reviewer runs next and owns the commit.
+you touched and the one-line commit message you'd use — the specialist reviewers run next and **the
+orchestrator** owns the commit; no reviewer in this flow commits, dispatched or standalone.
 
 ---
 

@@ -7,7 +7,7 @@ audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
 
 - `MODE = new` — plan the next project: take the chosen project and its gap bullets from the
   `project-brief` (dispatched as Phase 0 if none is current), write a complete PLANNING.md, then have
-  an independent reviewer audit and fix it before it commits.
+  the specialist reviewers audit and fix it before the orchestrator commits.
 - `MODE = review` — audit an existing PLANNING.md against the standard, fix what falls short, and
   commit (one project, or `PROJECT = all` for every project in turn).
 
@@ -145,7 +145,8 @@ Launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: fore
 > `BRIEF = projects/briefs/project-brief-{NUMBER}.md`. The brief is the decision — do not re-choose the
 > project and do not re-derive the gap analysis. Design it, write the complete `PLANNING.md` to the
 > contract in `_planning-standard.md`, and make the ROADMAP.md + PROGRESS.md edits. **Do NOT commit** —
-> an independent reviewer runs next and owns the commit. Leave all three files in the working tree.
+> independent reviewers run next and **the orchestrator** owns the commit; no reviewer in this flow ever
+> commits. Leave all three files in the working tree.
 > **Open your report with the brief's path, its `Coverage SHA-256`, and confirmation you read the brief
 > end to end**, then the project, the files touched, and the one-line commit message you'd use.
 
@@ -181,8 +182,7 @@ Do **not** hand one subagent the whole 24-section plan to audit **against the st
 the last sections. (The final `whole-plan` specialist does read the whole file, but it runs twelve
 enumerated coherence checks, not the standard's conformance checks. Different read, different risk.) Run
 the **specialist reviewers** defined in "Specialist review procedure" below over the just-authored plan.
-They fix directly and do not commit. Then go to "Finishing" (the orchestrator commits the plan + the
-ROADMAP.md / PROGRESS.md edits left in the working tree).
+They fix directly and do not commit. Then go to "Finishing" — the orchestrator makes the single commit.
 
 ## If MODE = review
 
@@ -218,7 +218,8 @@ re-run still fails the gate, **abort without committing** and report exactly whi
 never commit a plan that lost completed work.
 
 Then run the **specialist reviewers** defined in "Specialist review procedure" below over
-`{PROJECT}/PLANNING.md`, apply the gate, and go to "Finishing" (the orchestrator commits just the plan).
+`{PROJECT}/PLANNING.md`, apply the gate, and go to "Finishing" — the orchestrator makes the single
+commit.
 
 ---
 
@@ -312,11 +313,20 @@ working tree as-is and report what failed and why.
 Otherwise commit now — with the safety check first: run `git status` before the add and again before
 the commit, confirm only the intended files are staged (`git restore --staged` anything else — a
 project code file left staged from an earlier step must never ride along):
+
+**First, if `whole-plan`'s trace row reports a `PROJECT-BACKLOG.md` fix, add
+`{PROJECT}/PROJECT-BACKLOG.md` to whichever `git add` below applies** — in either mode, and never by
+default: an untouched backlog stays unstaged and the safety check above unstages it. Its twelfth check
+reconciles the backlog against the plan's recorded decisions and fixes it **in the backlog file**, so the
+reconciliation rides in this same commit rather than a second one, which would fork "one atomic commit
+per plan".
+
 - **`new` mode** (the author left ROADMAP.md + PROGRESS.md in the working tree with the plan): `git add
   {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
 - **`review` mode** (only the plan changed): `git add {PROJECT}/PLANNING.md`, then
   `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`.
+
 Report the commit made and each specialist's verdict/trace.
 
 ## Hard rules
@@ -331,12 +341,13 @@ Report the commit made and each specialist's verdict/trace.
 
 - **Auto-commit is authorized for this flow — always** (Victor retired the `DRY_RUN` condition
   2026-07-16). His global rule is "never auto-commit"; he lifted it for the audit orchestrators, and
-  the authorship boundary in the shared session rules holds: PLANNING.md / ROADMAP.md / PROGRESS.md are system
-  machinery, never his code or `practice/` work. **The orchestrator commits once** (the specialist
+  the authorship boundary in the shared session rules holds: PLANNING.md / ROADMAP.md / PROGRESS.md /
+  PROJECT-BACKLOG.md are system machinery, never his code or `practice/` work. **The orchestrator commits once** (the specialist
   reviewers never do) — unless a gate failed, in which case it aborts without committing. It applies
   nowhere else — normal sessions still hand Victor the command.
 - **One atomic commit per plan.** In new mode that single commit carries PLANNING.md + ROADMAP.md +
-  PROGRESS.md (they are one logical change: registering the new project). Never `git add .`.
+  PROGRESS.md (they are one logical change: registering the new project), and in **either** mode it also
+  carries `PROJECT-BACKLOG.md` when `whole-plan` fixed it. Never `git add .`.
 - **The plan is authored whole, reviewed by specialists — one concern per subagent.** Authoring needs
   the whole plan in one context (the sections cross-reference); review does not, so it is split into
   six cold specialists (architecture · data-model-api · ui-design · rules-security · steps-tests ·

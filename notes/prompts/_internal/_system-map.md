@@ -251,7 +251,7 @@ files: the system that describes and checks the system, which has writers like e
 | `projects/briefs/project-brief-{NN}.md` | `/project-brief` | `/plan-audit MODE = new` (refuses a stale one) |
 | `{project}/PLANNING.md` | `/plan-audit` · `step-complete` (✅ + §0 `Current step`, `Current branch`, the `Done condition` that names them) · `backlog-task-close` (rules section + §0; `Current step` and its `Done condition` only when no §15 step closed earlier that session, `Current branch` only when its own fix ends that branch's work per §22) · `Next gate` derived — the first §23-chain gate not yet signed off (`_planning-standard.md` invariant 10; its quality-gate rules define *signed off*, and an unmerged fix branch signs nothing off), the close writes the blocked/signable qualifier on it · `Phase`/`Last updated` from both — **two daily §0 writers, cells partitioned, order free, the second reads what the first left** (`REC-091`) | `/readme-audit`, `/review-audit`, `/portfolio-audit`, `/progress-update`, `/roadmap-review`, every session |
 | `{project}/README.md` (+ backend/frontend) | `/readme-audit` (whole file) · `readme-concept-add` (one entry) | `/portfolio-audit`, recruiters |
-| `{project}/PROJECT-BACKLOG.md` | `/review-audit` (tasks) · `backlog-task-open` (`⏸ Deferred`) · `backlog-task-close` (`## Closed`) | `/portfolio-audit` (open High/Medium block the verdict), every session start |
+| `{project}/PROJECT-BACKLOG.md` | `/review-audit` (tasks) · `backlog-task-open` (`⏸ Deferred`) · `backlog-task-close` (`## Closed`) · `/plan-audit`'s `whole-plan` specialist (its twelfth check, reconciling a task against a plan decision that superseded it — in **both** modes; the orchestrator stages the file only when that trace row reports a fix) | `/portfolio-audit` (open High/Medium block the verdict), every session start |
 | `notes/cv/cv-bullets.md` | `/portfolio-audit` | `/cv` |
 | `dev/portfolio/VMNunez/README.md` (**separate repo**, never committed from here) | `/profile-readme` (`sync` / `optimize`) · `/portfolio-audit` on a ✅ Ready verdict — two writers, two triggers | recruiters; the profile repo's own adapter carries the gap list |
 | `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) · `/sql-plan` did the one-time split that created it | every SQL prompt and skill · `/simulation-plan` and `/simulation-generator` (§8/§8c closed-step fence) |
@@ -379,7 +379,9 @@ The things a run leaves behind that are easy to miss.
   hand, long after the run, so the report is on disk — `strategy/tracking/_internal/_last-drift-report.md`,
   §7 — and its scope line is what says which project a clean verdict is evidence for.
 - **`PROJECT-BACKLOG.md` auto-commits in any flow**, not just inside `/review-audit` — the file is
-  written by the review prompt and the two backlog skills, never by Victor.
+  written by the review prompt, the two backlog skills and `/plan-audit`'s `whole-plan` specialist,
+  never by Victor. In `/plan-audit` it rides inside that run's single atomic plan commit, not one of
+  its own.
 - **A skill edited in one adapter is edited in both, in the same commit.** They drifted silently once
   (2026-07-30 → 2026-08-01) and Codex ran a ritual two revisions old. `diff` the pair before committing.
 - **Machinery paths are contracts, not an invitation to traverse live state.** `/system-check` verifies
