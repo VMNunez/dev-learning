@@ -472,7 +472,8 @@ do not drop a gate or invent extra ones.
 
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
 `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. G5 before G7 because the portfolio gate reads the READMEs;
-G6 before G7 because it reads PROGRESS; G3/G4 before G7 because it reads the backlog.
+G6 before G7 because G7's CV bullet is reused as-is by `cv-prompt`, which does read PROGRESS; G3/G4
+before G7 because it reads the backlog.
 
 **A gate is *signed off* when its box in the closure checklist below can be truthfully ticked of the
 project branch as it stands.** A fix sitting on an unmerged branch has fixed nothing the gate can read,

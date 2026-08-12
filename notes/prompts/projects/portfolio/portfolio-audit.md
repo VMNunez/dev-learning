@@ -17,12 +17,15 @@ application **today**? It produces four things (see `_portfolio-standard.md`):
 4. If ✅ Ready — a **direct update of Victor's GitHub profile README** (`dev/portfolio/VMNunez`, a
    separate repo) to feature the project.
 
-This is the closing project gate, **G7** — it runs after G5 (`readme-audit`) and a clean G6
-(`progress-update`), and it is the last gate that reads the project itself (`roadmap-review` / G8
-follows). The gate order and every trigger are owned by `_planning-standard.md` §23.
+This is the closing project gate, **G7** — it runs after G3/G4 (`review-audit`), G5 (`readme-audit`)
+and a clean G6 (`progress-update`), and it is the last gate that reads the project itself
+(`roadmap-review` / G8 follows). The gate order and every trigger are owned by `_planning-standard.md`
+§23; where this prompt and §23 disagree, **§23 wins**.
 
-> **▶ Run first:** `readme-audit` **and** `review-audit` — this gate assumes the README is correct
-> and the code has been reviewed (the verdict reads `PROJECT-BACKLOG.md`, which `review-audit` writes).
+> **▶ Run first:** `review-audit` (G3/G4), `readme-audit` (G5) **and** `progress-update` (G6) — §23's
+> full prerequisite chain, not a subset of it. This gate assumes the code has been reviewed (the verdict
+> reads `PROJECT-BACKLOG.md`, which `review-audit` writes), the READMEs are correct, and PROGRESS.md is
+> accurate — and G6 closes on a **clean drift report**, not on the run having happened.
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 
@@ -32,8 +35,11 @@ follows). The gate order and every trigger are owned by `_planning-standard.md` 
 `_portfolio-standard.md` (the bar) · `_portfolio-write-prompt.md` (question author) ·
 `_portfolio-review-prompt.md` (question reviewer).
 
-> **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits nothing, so you can
-> read the diff first. Once you trust it, `DRY_RUN = false` is fully hands-off.
+> **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits **none of the audit
+> outputs**, so you can read the diff first. (`DRY_RUN` governs the audit outputs only — the pipeline
+> self-report is prompt-system machinery and commits itself either way; see the final step.) Once you
+> trust it, `DRY_RUN = false` commits those outputs for you. Two hand steps always remain by design:
+> pruning the CV bullet options, and pushing the profile README from its own repo.
 
 ---
 
@@ -96,8 +102,9 @@ before the next — never overlap, since their subagents commit and parallel com
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
 summary table (`Project | Verdict | Questions`). **Context guard for batch runs:** with ~7 projects × up
 to 5 sections × 2 subagents, full decision-by-decision traces returned to you would saturate your own
-context. In `all` mode, tell each subagent to return only the **question count, the
-questions-vs-decisions ratio, and the list of uncovered decisions if the ratio is below 1** — not the
+context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
+author to its **question count and any decision it could not cover**, the reviewer to its **question
+count, its questions-vs-decisions ratio, and the uncovered decisions if that ratio is below 1** — not the
 full trace (the trace still drives their own work; it just stays in their context). Otherwise, for one project, follow the procedure.
 
 ## Single-project procedure
@@ -132,8 +139,9 @@ the wrong place to save):
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-review-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
-> thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED) and the
-> **decisions-vs-questions ratio for this section**.
+> thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED), the
+> **questions-vs-decisions ratio for this section**, and — only if that ratio is still below 1 — the
+> **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
 
 Wait for B. **Acceptance gate — act on B's ratio, don't just record it:** if B reports a
 questions-vs-decisions ratio below 1 (decisions found in the code area that still have no question), the
@@ -187,7 +195,11 @@ Print, in this order:
 4. GitHub description (one option) — **omit if ❌**.
 5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
    commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
-6. If ✅/⚠️: "Edit `notes/cv/cv-bullets.md` to keep only your chosen bullet before committing."
+6. If ✅/⚠️: both bullet options are in `notes/cv/cv-bullets.md`, and choosing between them is Victor's,
+   so it never blocks the run. With `{DRY_RUN}` = true print "edit `notes/cv/cv-bullets.md` to keep only
+   your chosen bullet **before running the commit below**"; with `{DRY_RUN}` = false the file is already
+   committed with both, so print "both options were committed — delete the one you don't want next time
+   you touch the CV".
 
 **If `{DRY_RUN}` = false:** commit atomically — with the safety check first: run `git status` before
 the add and again before the commit, confirm only the intended `notes/` files are staged
@@ -197,7 +209,8 @@ If ✅/⚠️ (cv-bullets was written):
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
 If ❌ (no cv-bullets): `git add notes/interview-prep/projects/«name».md`, then the same commit message.
 
-**If `{DRY_RUN}` = true:** commit nothing. Leave everything in the working tree and print the
+**If `{DRY_RUN}` = true:** commit none of the audit outputs (the final step's self-report still commits
+itself — it is machinery, not an audit output). Leave the rest in the working tree and print the
 `git add` + `git commit` sequence above, one command per code block, for Victor to run after reading
 the diff.
 

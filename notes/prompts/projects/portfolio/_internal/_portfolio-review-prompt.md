@@ -70,3 +70,6 @@ working tree. Report your **verdict** for `{SECTION}`:
 - `PASS` (no changes) or `FIXED` (a short bullet list of what you added/corrected and why).
 - This section's final question count and its **questions-vs-decisions ratio**, so the orchestrator can
   confirm the section is not thin.
+- **Only if that ratio is still below 1:** the list of decisions you found but left uncovered. The
+  orchestrator's acceptance gate re-dispatches you once with exactly that list, so a ratio below 1
+  reported without it makes the gate unenforceable.
