@@ -2,7 +2,7 @@
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
-> **External-path preflight:** Before reading or writing `personal/job-search/`, execute
+> **External-path preflight:** Before reading or writing `job-search/`, execute
 > `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
 
 Use in a **separate conversation**. Fill in the configuration block, then paste the offer at the end.
@@ -43,7 +43,7 @@ CONTACTO = [recruiter name if you have one — used to open the message | blank]
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared application standard.
 From it, a cover letter uses the **sources to read** (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`,
 `PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, and your existing CV in
-`personal/job-search`), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
+`job-search`), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
 **defensibility rule** (the bullet format and project-selection heuristic are CV/LinkedIn machinery —
 a ≤250-word letter has neither). This prompt does not repeat those rules — it adds only the
 cover-letter flow on top.
@@ -58,7 +58,7 @@ real evidence from your profile, never generic enthusiasm.
 - **Write in Spanish**, no buzzwords (no "apasionado", no "orientado a resultados"), no em-dashes, no
   clichés. Same voice as the CV.
 - **Every claim is defensible** — only mention a skill you can back up in an interview (defensibility
-  rule). Name the internship (stack per `_shared-context.md` / `personal/job-search/internship-daw.md`
+  rule). Name the internship (stack per `_shared-context.md` / `job-search/internship-daw.md`
   — the ground truth; never hardcode it here) and the full-stack project
   (`07-timetrack`, Angular + Spring Boot + PostgreSQL) as the concrete evidence.
 - **Connect their needs to your evidence** — read what the offer asks and match it to a specific thing
@@ -109,7 +109,7 @@ the recommended one.
 - Remind the user to log the application with `tracker-prompt` (`log` mode) if this is a new outreach, so
   the message/letter and its outcome are on record.
 - The letter/message is **output only** — it is not stored in the repo. If the user wants to keep a
-  formal letter, suggest saving it next to the tailored CV in `personal/job-search/applications/`.
+  formal letter, suggest saving it next to the tailored CV in `job-search/applications/`.
 
 ---
 

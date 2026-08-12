@@ -2,7 +2,7 @@
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
-> **External-path preflight:** Before reading or writing `personal/job-search/`, execute
+> **External-path preflight:** Before reading or writing `job-search/`, execute
 > `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
 
 Use in a **separate conversation**. No configuration needed — paste the whole prompt into a new chat.
@@ -19,7 +19,7 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md`. It defines the **sources to read**
 (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
-`notes/cv/cv-bullets.md`, and your existing CV in `personal/job-search`), the **universal bullet format**, the **skills pool** (required + preferred),
+`notes/cv/cv-bullets.md`, and your existing CV in `job-search`), the **universal bullet format**, the **skills pool** (required + preferred),
 the **Spanish / no-buzzword voice**, the **defensibility rule**, and the **project-selection
 heuristic**. This prompt does not repeat those rules — it adds only the LinkedIn-specific flow on top.
 

@@ -3,7 +3,7 @@
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
 > **External-path preflight:** Before reading or writing `dev/portfolio/VMNunez` or
-> `personal/job-search/`, execute `notes/prompts/_internal/_external-path-preflight.md`. Stop before any
+> `job-search/`, execute `notes/prompts/_internal/_external-path-preflight.md`. Stop before any
 > write if it fails.
 
 Use in a **separate conversation**, ideally inside the supported agent runtime so it can read across both repos.
@@ -40,7 +40,7 @@ MODE = [sync | optimize]
    known gaps. This prompt does not repeat that file; it only adds the flow on top.
 2. Read `dev/portfolio/VMNunez/README.md` — the current state.
 3. Read the sources that file's the shared session rules points to (`PROGRESS.md`, the active project's `PLANNING.md`
-   Section 0, `personal/job-search/internship-daw.md`, `notes/cv/cv-bullets.md` if it exists,
+   Section 0, `job-search/internship-daw.md`, `notes/cv/cv-bullets.md` if it exists,
    `notes/prompts/_internal/_shared-context.md`).
 
 ---

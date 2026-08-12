@@ -9,7 +9,7 @@ Configuration from the user: $ARGUMENTS
 
 Rules:
 - `EDUCATION`, `LOCATION`, `PHONE`, and `PROJECTS` may use `auto`; `CAMBRIDGE` must use one of the three canonical values in the hint and never accepts `auto`.
-- `BASE_CV` applies only to `tailor`; use a path or `auto` for the most recent master CV in `personal/job-search/master`.
+- `BASE_CV` applies only to `tailor`; use a path or `auto` for the most recent master CV in `job-search/master`.
 - `tailor` needs the job offer pasted; ask for it if missing, and append the posting to `notes/prompts/_internal/_job-market-evidence.md` as the prompt specifies.
-- Output goes to `personal/job-search/` **outside the repo** — never committed from here.
+- Output goes to `job-search/` **outside the repo** — never committed from here.
 - Every bullet must be defensible in an interview: nothing on the CV that Victor cannot explain.

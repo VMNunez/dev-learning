@@ -21,7 +21,7 @@ the run's own output files and its chat summary; this file records only how the 
 2. For every file named there, check it on disk: does it exist, and did *this run* write it? The probe is
    `git status` **and** `git log --name-only` back to this run's first commit — a prompt that already
    committed its content leaves a clean `git status`, which proves nothing. For an output **outside the
-   repo** (`personal/job-search/`, the portfolio repo), existence is not enough: a file left by an
+   repo** (`job-search/`, the portfolio repo), existence is not enough: a file left by an
    earlier run passes that test trivially, so check its **mtime is from this run**.
 3. Any declared output missing or untouched is a **skipped step**, and it goes in bullet 2 by name. So is
    one whose only change is cosmetic when the row promised real work — *touched* means the declared work

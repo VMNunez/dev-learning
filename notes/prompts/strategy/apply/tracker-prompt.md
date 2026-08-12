@@ -2,7 +2,7 @@
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
-> **External-path preflight:** Before reading or writing `personal/job-search/`, execute
+> **External-path preflight:** Before reading or writing `job-search/`, execute
 > `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
 
 Use in a **separate conversation** (ideally inside the supported agent runtime, so it can read/write the local files).
@@ -28,7 +28,7 @@ The tracker holds personal data (company names, contacts, feedback), so like you
 the repo and is never committed**. Only this prompt (which contains no personal data) lives in the repo.
 
 ```
-C:\Users\Victor\Documents\main\personal\job-search\
+C:\Users\Victor\Documents\main\job-search\
   tracker.csv                          ← one row per application (the source of truth)
   applications\
     empresa-puesto\
@@ -53,7 +53,7 @@ fecha,empresa,sector,puesto,canal,estado,contacto,nota_feedback,cv_usado,fuente_
 - **estado** — `aplicado` → `entrevista` → `oferta` → `contratado` / `rechazado` / `sin respuesta` / `retirada`
 - **contacto** — recruiter or contact name if you have one, else blank
 - **nota_feedback** — short dated note; the full version lives in `outcome.md`
-- **cv_usado** — filename of the tailored CV sent (from `personal/job-search/applications/`), else blank
+- **cv_usado** — filename of the tailored CV sent (from `job-search/applications/`), else blank
 - **fuente_url** — the offer URL
 
 ---
@@ -90,12 +90,12 @@ judge which skills the offers keep asking for. You do **not** need to write any 
 
 ## MODE = log — register a new application
 
-1. Read `personal/job-search/tracker.csv`. If it does not exist, create it with the header row above.
+1. Read `job-search/tracker.csv`. If it does not exist, create it with the header row above.
 2. Build the new row from the config block. Fill `fecha` with today's date and `estado` with `aplicado`.
    For `sector`, infer it from the company/offer if obvious (e.g. NTT Data → `consultora`); if unsure,
    ask one short question rather than guessing.
 3. **Append** the row — never reorder or touch existing rows.
-4. Create `personal/job-search/applications/<empresa>-<puesto>/` (lowercase, hyphens for spaces) and,
+4. Create `job-search/applications/<empresa>-<puesto>/` (lowercase, hyphens for spaces) and,
    inside it, `job_posting.md` with the offer text if you have the URL or pasted text (fetch the URL;
    if it fails, ask the user to paste it — **never reconstruct a posting from memory**). Start an
    `outcome.md` with status `aplicado` and the date.
@@ -173,7 +173,7 @@ judge which skills the offers keep asking for. You do **not** need to write any 
    a reconstruction. Feedback is recorded as the user reports it.
 4. **Idempotent.** Re-running on the same application appends new notes and stages; it never duplicates
    folders or rows.
-5. **Everything stays outside the repo.** The tracker and archive live in `personal/job-search/`; only
+5. **Everything stays outside the repo.** The tracker and archive live in `job-search/`; only
    this prompt is committed.
 
 ---
@@ -186,4 +186,3 @@ against this prompt's declared outputs in `notes/prompts/README.md`, the three b
 
 > **Run-start check (step 0):** that file's Step 5 — before anything else, read
 > `notes/prompts/strategy/apply/_internal/_last-run-report-tracker.md` and surface its Verdict in one line if `Status` is `open`.
-
