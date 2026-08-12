@@ -404,15 +404,11 @@ queue came to refill at the speed it drained. So **the scope test is applied to 
 too, at the moment it returns**, together with the incidental-finding bar below: a finding outside the
 machinery is written into the closing line of the row whose review found it, and never opened.
 
-**Four workable rows, plus `REC-054` accruing.** All five rows raised on 2026-08-10 by the first
-`/system-gaps` run — which found what the machinery does **not** cover from the two maps alone — closed
-on 2026-08-11: `REC-088`, `REC-089`, `REC-090`, `REC-091` and `REC-092`, the last of them. So did the
-machinery's own checking layer, `REC-084`, with its batch partner `REC-067`, and `REC-093`, raised by
-`REC-091`'s cold reviewer — the refill the rule above predicts — and closed the same day it was opened.
-The second `/system-gaps` run then opened `REC-094`–`REC-098`; `REC-094` closed on 2026-08-12. Say the
-workable number and name the accruing one separately; they are not summed. **An empty table is not a
-finished system**: it means the next row comes from a run, not from this file, and `/system-gaps` and
-`/system-check` are what produce one.
+**Zero workable rows, plus `REC-054` accruing.** The first `/system-gaps` run's five rows
+(`REC-088`–`REC-092`) closed on 2026-08-11; the second run's five (`REC-094`–`REC-098`) closed by
+2026-08-12. Say the workable number and name the accruing one separately; they are not summed. **An
+empty table is not a finished system**: it means the next row comes from a run, not from this file, and
+`/system-gaps` and `/system-check` are what produce one.
 
 **The `/system-gaps` rows carry a disposition the other rows do not, and it changes how they are
 resolved.** A row marked `absence` rests on nothing in either map saying the thing, so it names **both
@@ -425,7 +421,6 @@ itself, which is exactly why the row can only be half-decided when it arrives.
 | ID | Source | Recommendation | State | Resolution |
 |---|---|---|---|---|
 | REC-054 | Victor, 2026-08-06, alongside the two-map rule; **reshaped 2026-08-10 on Victor's own falsification of it** | **The lived-day review cannot be scheduled, because its evidence does not exist — so it stops being an audit that is run and becomes a verdict that accrues while Victor studies.** What it judges is unchanged and is still the only question nothing else in the system asks: do the current 08:00, 12:30 and 13:30 loops fit a real day, are the interview opener's grading and the block closers cheap enough to keep running, what does each block leave unrecorded, and does ritual load outweigh the work it records. Its original day snapshot is also still obsolete — the 13:30 block now has `interview-prep-block-open` plus `study-block-close`, authored/refined/studied state is separated, and there are seventeen mirrored skills. What changed is that **there is nothing to judge yet**: the rituals have barely been exercised, so the review has no input and would fabricate one. Three parts, in order. **(a) A capture point — built 2026-08-10, `_internal/_ritual-friction.md`.** `_skill-friction.md` accepts only an observable *failed declared step* (`FRIC-NNNN`), so the complaint that will actually occur — "this ritual ate the block", "nothing ever reads this output", "I do it by hand anyway" — was unrecordable and died in the session it was said in. It is the machinery-level instance of exactly what `sql-block-close` was built for: **friction without failure**. It is a separate file on purpose: `FRIC` rows are adjudicated by the next close-out's four-condition bar and can become a `REC`, which is the one thing (b) forbids, and one file holding two kinds of row under a consumer that counts them is the `REC-074` smell. **(b) The rule that keeps this out of the refill loop:** a ritual-friction line **never opens a `REC` and never dispatches a cold reviewer**. One line, written as it is said, accumulating. **(c) The verdict, per ritual, once its evidence is enough to rule on** — kept, thinned, or deleted. This is the only item in this ledger licensed to **remove** machinery; every other row has added a check, a pointer or a rule | accruing | **Not workable, never scheduled, and it gates nothing** — it is the one `accruing` row and the reason that state exists. Its original sequencing said to run it once the machinery stopped moving, and that premise was the wrong one: the binding constraint was never **motion**, it was **absence of use**, which no amount of waiting for the machinery to settle repairs. Its input is the `RITF` rows themselves plus whatever `_run-tracker.md` shows has actually run — not a measurement pass built for it, which is what `REC-070` (b) was and why that row is gone. Do not schedule it and do not let it block a row again. **(a) shipped 2026-08-10** — the sink, its `_session-rules.md` trigger and its `_system-map.md` §7 and §11 rows — so the row is now fillable and what remains is (b) holding in practice and (c) having something to rule on. **(b) is not a build: it is a prohibition**, and it is stated in all three places at once (the sink, the session rule, this row) rather than in one, because the failure it prevents is a future session skipping straight to a `REC`. `REC-055` (e) was parked with it and is **unparked 2026-08-10**: a map that states *which* rituals fire in which block is a structural description, and this row is a verdict on whether they are worth their cost — the two do not collide, and the second is not a prerequisite for the first. Maps unaffected by this reshaping — no prompt, skill, writer, trigger or file existence changes |
-| REC-098 | `/system-gaps` 2026-08-11 · `D1:personal/job-search/internship-daw.md` | **Absence:** `/cover-letter` and `/profile-readme` both read `internship-daw.md`, while §7's `personal/job-search/**` writer scope names no producer for it. Either the dependency has no provenance/provisioning, or the map omits its human/system writer; read `strategy/apply/_internal/_application-standard.md` to settle the branch. The standard then declares provenance, or §7 records the existing writer. | open | Cold gap review: `approve-with-tightening`; ranked above `archive/` because it has two direct readers rather than one |
 
 ## Closed
 
@@ -534,6 +529,7 @@ instead. Ordered by ID.
 - `REC-095` — `/hr-screen` had a complete live-call loop but no event that routed Victor into it; application work or a scheduled HR call now starts the first run, and open `hr-screen` mistake rows drive later retries without creating a gate or replacing `/simulator` · cold reviewer `approve` · maps: both — `00ce4303`
 - `REC-096` — the optional polished-answer file was not orphaned: `hr-screen-prompt.md` already makes it a Victor-facing study aid, while later mocks deliberately retry from `practice/interview/MISTAKES.md` without a script; both maps now declare that human reader and the non-consumer boundary · cold reviewer `approve-with-tightening`; maps: both — `895a7e57`
 - `REC-097` — Git history and the settling prompt read put the missing `projects/README.md` producer on the **machinery** branch: the index was created by hand, no prompt writes it, and `/project-brief` consumed it without a provisioning or freshness contract. Victor (or an explicitly instructed session) now owns its published inventory; Guard 5 refuses a missing file or unequal two-digit folder-prefix / `#` sets, and explicitly does not claim same-number rename detection · cold reviewer `approve-with-tightening`; its two tightenings bounded that comparison and added the §11 symptom route · maps: both — `0dd5d3ec`
+- `REC-098` — the settling read falsified the named absence: `internship-daw.md` existed under `main/job-search`, while every apply contract pointed at the nonexistent `main/personal/job-search`; the whole live apply surface now uses the real root, `_application-standard.md` names Victor as the hand writer of `internship-daw.md`/`archive`/`assets`, and §7 records the complete mixed writer set · cold reviewer `approve-with-tightening`; it found four live `/cv` and `/tracker` launchers still injecting the dead root, corrected before validation · external profile adapter corrected in its own working tree and left for Victor's separate-repo commit · maps: both — `5fa06429`
 
 ## Suggested order for the open items
 
@@ -563,10 +559,9 @@ it fail, none by reading — and the **second source** it needed on disk cost le
 that made that source trustworthy, which is the sweep-not-the-edit rule arriving one level down: not
 where the defect lives, but which *column* of the artefact actually holds the value.
 
-**Current order: `REC-098`.** The last provenance finding keeps the ranking `/system-gaps` assigned;
-the previous run's five rows all closed on
-2026-08-11, each settling read deciding the branch and each correction target being one of the two its
-disposition promised. **`REC-089` priced the rank
+**Current order: none.** The second `/system-gaps` run's five rows are closed, each settling read
+deciding the branch and each correction target being one of the two its disposition promised.
+**`REC-089` priced the rank
 honestly:** its settling read was one prompt and the fix landed in four files — the prompt, both maps
 and the validator, which refused it twice before passing. Budget the sweep, not the edit. **`REC-090`
 priced it a second way:** one script read, one invariant written, and the two defects that mattered were
