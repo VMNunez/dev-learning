@@ -47,7 +47,10 @@ it receives the brief, the sources, and the acceptance format — never this run
   **Never a per-technology concept list** — those were deleted on 2026-08-03 and PROGRESS is a status
   instrument now, not an inventory
 - `ROADMAP = ROADMAP.md` → the candidate ideas section, the phase table, and the gate list
-- `PROJECTS = projects/README.md` — the published projects and their domains, for the variety criterion
+- `PROJECTS = projects/README.md` — the published projects and their domains, for the variety
+  criterion. This is a hand-maintained inventory: Victor, or a session acting on his explicit
+  instruction, updates it whenever a top-level numbered project is added or removed, or its published
+  name, stack, or status changes. No prompt run writes it, including this one
 - `CONTEXT = notes/prompts/_internal/_shared-context.md`
 - `EVIDENCE = notes/prompts/_internal/_job-market-evidence.md`
 - `MARKER_STANDARD = notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` → "Evidence
@@ -76,10 +79,16 @@ it receives the brief, the sources, and the acceptance format — never this run
 4. **`PROGRESS` freshness.** Cross-check its `## Projects` table against `projects/` and the recent git
    history. A finished project not recorded, or a step done in code and not in the table, means
    **stop and report** "run `progress-update` first" rather than deciding on bad data.
-5. Read `COVERAGE` to the real end. It is the largest file in this pipeline (over 2000 lines) and the
+5. **`PROJECTS` provisioning and freshness.** Require the file to exist, then compare its numbered
+   rows with the top-level numbered project folders on disk: exact parity between each folder's
+   two-digit prefix and the table's `#` column. A missing file, a missing number, or an extra number
+   means **stop and report the exact mismatch**. Do not infer domain variety from an incomplete index
+   and do not repair this hand-maintained input inside the prompt run. This bounded check does not
+   claim to detect a same-number rename; the human writer owns the published name, stack, and status.
+6. Read `COVERAGE` to the real end. It is the largest file in this pipeline (over 2000 lines) and the
    Read tool truncates past 2000 silently: check `wc -l` first and read in passes with `offset`. A
    truncated read drops whole topics from the gap analysis with no error and a plausible result.
-6. Preserve unrelated working-tree changes.
+7. Preserve unrelated working-tree changes.
 
 ---
 
