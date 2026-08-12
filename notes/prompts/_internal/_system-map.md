@@ -571,7 +571,7 @@ its result.
 
 | Block | Skills that can fire | Opener | Closer | Cold dispatch inside the block | Declared steps · contract size |
 |---|---|---|---|---|---|
-| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 36 steps · ~1,494 lines |
+| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 36 steps · ~1,493 lines |
 | `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~810 lines |
 | `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 14 steps · ~274 lines |
 | `machinery` | `map-sync` | — | — | none | 5 steps · ~143 lines |
@@ -585,7 +585,7 @@ minutes — only a `RITF-NNNN` row measures those, and only from a day that was 
 **The four asymmetries the table exists to show.** All four are observations, and each is a candidate a
 `RITF-NNNN` row would later be ruled against:
 
-- **The heaviest block has the least structure.** 08:00 carries 1,494 lines of ritual contract — more
+- **The heaviest block has the least structure.** 08:00 carries 1,493 lines of ritual contract — more
   than the other three combined — with no opener and no closer. Its recording is event-driven instead:
   finishing a step fires `step-complete`, closing a backlog task fires `backlog-task-close`, and each of
   those calls the three focused writer skills, unconditionally rather than as a ceiling. **Closing one
