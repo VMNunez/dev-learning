@@ -619,6 +619,20 @@ run practice, and keep ROADMAP.md / PROGRESS.md / the three coverage levels in s
 `PROGRESS.md` section by section → `notes/prompts/_internal/_system-map.md`.** Derived and
 reference-only: this file and the README outrank it.
 
+### Before resolving a machinery task — read both maps first
+
+Any task that analyses, changes, adds, retires or repairs a prompt, `SKILL.md`, shared standard,
+launcher, validator, platform adapter or either derived map begins by reading
+`notes/prompts/README.md` **and** `notes/prompts/_internal/_system-map.md` whole. They are one orientation
+pair: the README supplies the prompt catalogue and public contracts; the system map supplies the
+cross-component wiring, writers, skills, debts and handoffs. Reading only the named file is not enough
+context for machinery work.
+
+This is an orientation gate, not an authority inversion. After both maps, read the actual affected
+machinery and let it decide the result: the maps are derived, never override a prompt, skill or standard,
+and do not license widening the task into `/system-check` or a whole-system audit. The ordinary
+`map-sync` read and change triggers still apply to everything opened or edited.
+
 **A skill is named bare; only a launcher takes a slash.** A `/name` written in any repo file is either a
 launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's own built-ins
 (`/code-review`, `/model`). The seventeen in-session skills have neither, so they are written

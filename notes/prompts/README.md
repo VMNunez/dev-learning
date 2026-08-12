@@ -15,6 +15,12 @@ configuration/modes and received inputs, reads, writes/returns, dispatched roles
 owner, handoffs/gates, and explicit exclusions. `/system-check` audits those fields against the
 canonical machinery; the catalogue is derived and never overrides the prompt it describes.
 
+> **Resolving machinery work? Read both maps whole first.** Before analysing or changing any prompt,
+> skill, standard, launcher, validator, platform adapter or either map, read this README together with
+> `_internal/_system-map.md`. They provide the catalogue and wiring context as one pair; then read the
+> affected source machinery, which remains authoritative. `_internal/_session-rules.md` owns this
+> orientation gate.
+
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README owns the
 > per-prompt facts for the 31 runnable prompts. The system map owns the per-skill facts for the
 > in-session rituals (`step-complete`, `coverage-mark`,

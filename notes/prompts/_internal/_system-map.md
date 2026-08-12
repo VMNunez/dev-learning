@@ -23,6 +23,12 @@ in halves:
 
 If this map disagrees with any of them, they win and this file is wrong.
 
+**Read both maps before resolving machinery work.** `_session-rules.md` owns the orientation gate: any
+task that analyses or changes a prompt, skill, standard, launcher, validator, platform adapter or either
+map first reads this file and `notes/prompts/README.md` whole. The pair supplies system context; the
+affected source machinery is read next and remains authoritative. This is not an automatic
+`/system-check` or permission to widen the task.
+
 **The two derived maps have one owner per fact.** `README.md` owns every prompt's public interface and
 exact per-prompt contract: command, run-first prerequisite, configuration/received inputs, reads,
 writes/returns, dispatched roles/isolation, commit owner, local handoffs/gates, and exclusions. This map
