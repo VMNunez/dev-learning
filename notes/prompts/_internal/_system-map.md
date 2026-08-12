@@ -221,6 +221,7 @@ Exact command contracts live in the [README public interface index](../README.md
     one offer → /cv MODE=tailor + /cover-letter → /tracker
     application work or a scheduled HR call → /hr-screen
     open hr-screen rows → /hr-screen retry → practice/interview/MISTAKES.md
+    accepted polished answers → notes/interview-prep/hr-screen.md → Victor reviews before a real call
     recurring gap → /evidence-intake → _job-market-evidence.md → /coverage
 
 Practice tracks keep their own mistake/correction loops. §7 owns file writers and commit boundaries; the README owns every command's inputs, outputs and exclusions.
@@ -242,6 +243,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/interview-prep/{LEVEL}/en|es/*.md` | `/interview-prep-audit` (whole bank) · `/simulation-review` and `/code-review-practice` (born-unrefined insertions only, under the whole of the standard's "Adding questions from outside the audit" — which is where that contract is stated, not here; each prompt gates once per run on a fresh fingerprint and falls back to proposing the questions instead — in its report for `/simulation-review`, in chat for `/code-review-practice`) · `study-content-writer` (unrefined/reopen/refine) · `study-block-close` (`[studied]` only) | `/interview-prep-route`, `interview-prep-block-open`, `/simulator`, `/progress-update` |
 | `notes/interview-prep/routes/{LEVEL}.md` | `/interview-prep-route` only | `interview-prep-block-open`, `study-block-close`, `/progress-update` |
 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` |
+| `notes/interview-prep/hr-screen.md` | `/hr-screen`, optionally and only when Victor accepts polished stage-2 answers | **Victor**, as a study aid before a real HR call. Later `/hr-screen` runs deliberately do not read it; their retry input is the surface's open rows in `practice/interview/MISTAKES.md` |
 | `PROGRESS.md` | **section by section — see §8** | `/plan-audit`, `/roadmap-review`, `/project-brief`, `/review-audit`, `/cv`, `/linkedin`, `/sql-exercises` |
 | `ROADMAP.md` | `/roadmap-review` (+ `/plan-audit` marks the chosen project) | `/project-brief` · `plan-audit`'s and `/portfolio-audit`'s authors · the apply family (`/cv`, `/linkedin`, `/cover-letter`, `/hr-screen`) · `/evidence-intake` · `/interview-prep-audit` and `/interview-prep-route` · `/simulation-plan` · `/sql-plan` and `/sql-plan-audit` · the SQL gates |
 | `projects/briefs/project-brief-{NN}.md` | `/project-brief` | `/plan-audit MODE = new` (refuses a stale one) |

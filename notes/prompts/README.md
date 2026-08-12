@@ -505,7 +505,10 @@ Each generated file, with who writes it and who depends on it:
   clean performance. Timed build simulations remain in their rubric-specific sink above.
 - **`interview-prep/SESSION-LOG.md`** — written and read by `simulator` (tracks weak areas between
   sessions).
-- **`interview-prep/hr-screen.md`** — optionally written by `hr-screen` (polished stage-2 answers).
+- **`interview-prep/hr-screen.md`** — optionally written by `hr-screen` when Victor accepts polished
+  stage-2 answers → read by Victor to review those answers before a real HR call. It is a human study
+  aid, not an input to later `/hr-screen` runs; retries consume open `hr-screen` rows from
+  `practice/interview/MISTAKES.md` so the mock remains unscripted.
 
 Pipeline view:
 
