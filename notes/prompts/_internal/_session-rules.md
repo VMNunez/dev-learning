@@ -101,6 +101,13 @@ all on a given day is normal and is not drift. Nothing in the system may read a 
   **angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git**
   (SQL is last because it is already practiced daily in the 12:30 block). Fridays from July: always CV + applications.
 
+**HR-screen practice has an event trigger, not a clock trigger.** When application work starts, or a
+real HR call is scheduled, run `/hr-screen` before that first call. Re-run it before later calls while
+`practice/interview/MISTAKES.md` still has open `hr-screen` rows; a clean retry of each row ends the
+loop. This is the non-technical stage-2 rehearsal and never substitutes for `/simulator`'s technical
+interview practice. Saving polished answers is optional and does not control whether the retry loop is
+open.
+
 ---
 
 ## Language rules — IMPORTANT

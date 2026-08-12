@@ -219,6 +219,8 @@ Exact command contracts live in the [README public interface index](../README.md
     → /cv · /linkedin · /profile-readme
 
     one offer → /cv MODE=tailor + /cover-letter → /tracker
+    application work or a scheduled HR call → /hr-screen
+    open hr-screen rows → /hr-screen retry → practice/interview/MISTAKES.md
     recurring gap → /evidence-intake → _job-market-evidence.md → /coverage
 
 Practice tracks keep their own mistake/correction loops. §7 owns file writers and commit boundaries; the README owns every command's inputs, outputs and exclusions.
@@ -400,6 +402,7 @@ The things a run leaves behind that are easy to miss.
 | simulations have no level route, the route is stale, or the current spec has free-form scope | `/simulation-plan {level}`; then `/simulation-generator` only for its current missing spec |
 | a timed simulation is Borderline/Fail or has open correction rows | fix only those rows, then say `corrige las correcciones`; `simulation-grade` runs the cold correction review |
 | the ROADMAP 12:30 block has reached `Stage 2 — Technical test simulation` | `/code-review-practice`; `README.md` → "The code-review-practice track" owns its no-prerequisite start, durable retry loop and progression |
+| application work starts, a real HR call is scheduled, or `practice/interview/MISTAKES.md` has open `hr-screen` rows | `/hr-screen`; `README.md` → "The HR-screen practice track" owns the first-call trigger, durable retry loop and separation from `/simulator` |
 | a project is built but never reviewed | `/review-audit` (G3/G4) → fix every High → `/readme-audit` (G5) → empty `/progress-update` (G6) → `/portfolio-audit` (G7) |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |

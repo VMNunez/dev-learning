@@ -651,6 +651,16 @@ bank inventory. Authoring, refinement and study are deliberately separate states
    `DIFFICULTY`. This is separate from the end-of-feature review of Victor's own diff in
    `_session-rules.md`.
 
+**The HR-screen practice track**
+1. When application work starts, or a real HR call is scheduled, run `/hr-screen` before that first
+   call. It is self-contained and defaults to the Spanish screen used by the target consultancies.
+2. Answer the live questions without a script. The prompt records every weak or red-flag answer as an
+   `hr-screen` row in `practice/interview/MISTAKES.md`; saving polished answers is optional.
+3. Before later calls, repeat `/hr-screen` while that sink still has open `hr-screen` rows. The prompt
+   asks those concepts first, and a clean deliberate retry closes each row.
+4. Keep this route separate from `/simulator`: `/hr-screen` rehearses non-technical stage 2;
+   `/simulator` rehearses the technical interview.
+
 **Applying**
 1. `portfolio-audit` on each finished project (produces cv-bullets)
 2. `cv-prompt` → one-page CV · `linkedin-prompt` → profile + posts
