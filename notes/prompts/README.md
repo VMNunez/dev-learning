@@ -245,7 +245,7 @@ separately, because a gate sequences the chain and a prerequisite constrains the
 | `/simulation-plan` → `simulation-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | clean progress snapshot first; plans routes only, never specs/grades/solutions |
 | `/simulation-generator` → `simulation-generator-prompt` | `LEVEL`, `STEP=current\|<n>` | S · agent for generated artifacts | route required; no free-form focus/difficulty/time/track |
 | `/simulation-review` → `simulation-review-prompt` | `LEVEL`, `STEP`, `SIMULATION_FILE`, `MODE`, conditional `TIME_USED`/`SELF_ASSESSMENT`, submitted solution | S launcher → cold `simulation-grade` path · agent for tracking, Victor for solution | after `/simulation-plan` for this LEVEL and a closed attempt; never grades locally; timed verdict/time are immutable |
-| `/code-review-practice` → `code-review-prompt` | `TYPE`, `LEVEL`, optional `DIFFICULTY`, `ISSUE_COUNT`, `FOCUS`; Victor's critique | S, live critique · agent for logs/Q&A | waits for Victor before revealing planted issues; not the host diff-review command |
+| `/code-review-practice` → `code-review-prompt` | `TYPE`, `LEVEL`, optional `DIFFICULTY`, `ISSUE_COUNT`, `FOCUS`; Victor's critique | S, live critique · agent for logs/Q&A | run-first nothing; self-contained; waits for Victor before revealing planted issues; not the host diff-review command |
 | `/simulator` → `simulator-prompt` | `MODE`, `LEVEL`, `LANGUAGE`, conditional `TOPIC`/`SECTION`, optional `MAX_QUESTIONS`; live answers | S, live interview · agent for logs/gaps | interview bank first; one question at a time, never reveals answer first |
 | `/hr-screen` → `hr-screen-prompt` | optional `LANGUAGE`, `MAX_QUESTIONS`; live answers | S, live interview · agent for logs/gaps | non-technical only; never substitutes for `/simulator` |
 | `/progress-update` → `progress-update-prompt` | optional `MODE=active\|all` | O, cold per-project/SQL analysis · agent | run before brief/CV and G6; writes only `Professional level by topic`, reports other drift to `_last-drift-report.md` |
@@ -627,6 +627,24 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 8. when every route step closes with no open correction and every admitted track has a Pass, run
    `progress-update`, then plan the next level
 
+**The code-review-practice track**
+1. Once ROADMAP's 12:30 block reaches `Stage 2 — Technical test simulation`, include
+   `/code-review-practice` alongside the route-driven timed simulations. It trains reviewing
+   unfamiliar, deliberately flawed code; it is not a timed route step and does not count toward the
+   15-simulation target.
+2. Choose `TYPE` and `LEVEL`. The prompt is self-contained and has no prerequisite. When
+   `practice/interview/MISTAKES.md` has open `code-review` rows for that level, leave `FOCUS` blank so
+   those concepts are planted first; otherwise set `FOCUS` to the concept being consolidated or leave
+   it blank for a market-relevant mix.
+3. Review the snippet without hints, then let the prompt grade missed issues and false positives. It
+   opens or updates a durable gap row for every missed issue or false positive; a row closes only when
+   its deliberately replanted issue is correctly identified and explained. A current Q&A bank receives
+   born-unrefined questions. With a stale or missing bank, the prompt writes nothing, prints the
+   deduplicated proposed questions in chat, and names `interview-prep-audit` as what clears the bank gate.
+4. Repeat until the selected level has no open `code-review` rows, then rotate `TYPE` or raise
+   `DIFFICULTY`. This is separate from the end-of-feature review of Victor's own diff in
+   `_session-rules.md`.
+
 **Applying**
 1. `portfolio-audit` on each finished project (produces cv-bullets)
 2. `cv-prompt` → one-page CV · `linkedin-prompt` → profile + posts
@@ -660,7 +678,7 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 
 - **Supports `all`:** `interview-prep-audit` (`FILE = all`); `readme-audit`, `review-audit`,
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
-  `sql-exercises` (`TOPIC = all`, **practice mode only**), `code-review` (`TYPE = all`).
+  `sql-exercises` (`TOPIC = all`, **practice mode only**), `/code-review-practice` (`TYPE = all`).
 - **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`,
   `interview-prep-route`,
   `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run).

@@ -393,6 +393,7 @@ The things a run leaves behind that are easy to miss.
 | the SQL route ran out of steps | `/sql-plan-audit` (extends), or `/sql-plan {next level}` |
 | simulations have no level route, the route is stale, or the current spec has free-form scope | `/simulation-plan {level}`; then `/simulation-generator` only for its current missing spec |
 | a timed simulation is Borderline/Fail or has open correction rows | fix only those rows, then say `corrige las correcciones`; `simulation-grade` runs the cold correction review |
+| the ROADMAP 12:30 block has reached `Stage 2 — Technical test simulation` | `/code-review-practice`; `README.md` → "The code-review-practice track" owns its no-prerequisite start, durable retry loop and progression |
 | a project is built but never reviewed | `/review-audit` (G3/G4) → fix every High → `/readme-audit` (G5) → empty `/progress-update` (G6) → `/portfolio-audit` (G7) |
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
