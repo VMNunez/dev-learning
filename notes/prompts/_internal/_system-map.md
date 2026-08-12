@@ -153,7 +153,8 @@ mirrored skills, the validator and both maps as one explicit global audit after 
 never becomes a prerequisite of their ordinary runs or commits. Its machinery-only boundary — declared
 path patterns in, the live artifacts governed by them out — is stated by
 [its README catalogue row](../README.md#system--audit-the-machinery-system) and owned by the prompt's own
-`Boundaries` section; §10 records only the gotcha it creates.
+`Boundaries` section. `_session-rules.md`'s machinery-only exception means the run does not open active
+project state even for session orientation; §10 records only the gotcha it creates.
 
 `/system-gaps` sits outside them too, and asks the one question no chain asks about itself: **what is
 missing from the diagram above.** Its evidence is this map and the README, read whole and nothing else —
@@ -271,7 +272,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step. **`/system-gaps` reads both and writes neither** — it is the one prompt that takes these two files as its whole evidence, which is exactly why it is forbidden to correct them | anyone orienting in the system — which is why a wrong row is worse than a missing one; `/system-check` (as the object it audits) and `/system-gaps` (as the only evidence it has) |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
 | `notes/prompts/system/_internal/_system-gaps-report.md` | `/system-gaps` only, overwritten on each explicit run — including a blocked or dry run | Victor; **the next `/system-gaps`, which is not optional**: the candidates deferred over the five-row promotion cap keep their rank there and nowhere else, so an unread report silently drops the queue it exists to carry |
-| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; 17 of the 31 prompts also name it directly (`/system-check` audits it rather than obeying it). It **outranks this map** |
+| `notes/prompts/_internal/_session-rules.md` (+ the two thin platform adapters that delegate to it) | **whoever changes the session contract, by hand** — §1's commit boundary names the session-rule files themselves, so it commits directly. Never a prompt, never a skill, never a build step | every session at start, through the platform adapter that delegates to it; its machinery-only exception replaces project-state orientation with branch + two-map orientation for an explicitly bounded machinery task. 17 of the 31 prompts also name it directly (`/system-check` audits its contract as machinery while obeying that exception). It **outranks this map** |
 | `notes/prompts/_internal/_recommendation-ledger.md` | **every close-out that produced a recommendation**, reconciling it into `## Open` before the report's bullets are written · `/system-check` for cross-system audit findings · **Victor, or a session acting on his instruction, raising an item by hand** — `REC-046`, `REC-054`, `REC-055`, `REC-070`, `REC-076` and `REC-077` have no originating run, and this is the only entry point that does not · `/system-gaps` for gap findings that clear its promotion bar, at most five rows a run · whoever resolves an item, collapsing it into `## Closed` and promoting any rule it established into the preamble | whoever picks up the next item; `/system-check` audits its improvement-loop contract and uses current rows only to deduplicate machinery findings, never to build an operational-debt queue. It is the current status source — a historical report is immutable evidence and its wording never overrides it |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
 | `notes/prompts/strategy/tracking/_internal/_last-drift-report.md` | `/progress-update` Step E only — **every run, the clean one included**, overwritten, committed alone and before the matrix commit. Not the same file as the close-out's `_last-run-report.md` beside it, which carries machinery evidence and is forbidden content | whoever ticks the two gate checklists that close on an empty drift report — see §10. The clean run is precisely the one with no other trace: it commits no `PROGRESS.md` |
@@ -384,7 +385,9 @@ The things a run leaves behind that are easy to miss.
 - **Machinery paths are contracts, not an invitation to traverse live state.** `/system-check` verifies
   that prompts and skills declare the right path patterns, schemas, owners and gates, but excludes the
   governed project, learning, SQL, practice and application artifacts from its inventory, denominator,
-  report and blocking conditions. Their existing task/step/block rituals own operational truth.
+  report and blocking conditions. Under `_session-rules.md`'s machinery-only exception, the exclusion
+  begins before Step 0: active-project planning, backlog and progress state are not opened for orientation.
+  Their existing task/step/block rituals own operational truth.
 - **A timed verdict is immutable evidence.** Corrections close learning gaps but never turn a historical
   Borderline/Fail/Assisted attempt into a Pass or change its recorded time. A Fail additionally opens a
   later reinforcement step; otherwise correction would erase the very interview-condition signal the
@@ -507,9 +510,11 @@ records only that the two-map invariant above is **not** among them.
 `/system-check` complements the validator and `map-sync`; it replaces neither. When Victor launches it
 after substantial machinery changes, cold family manifests read the complete canonical prompt/skill
 machinery to EOF, the orchestrator reconciles the README-owned prompt contracts and this map's wiring
-and skill contracts, and a cold final reviewer gates the global verdict. The durable report proves both
-the inventory boundary and the reconciliation. It may correct the two derived maps and file machinery
-recommendations, but never opens or reports live project, learning, SQL, practice or application state.
+and skill contracts through a physical-line-backed claim ledger and the stable-ID reverse ledger of
+every atomic manifest fact, and a cold final reviewer independently reproduces the line denominator before gating the
+global verdict. The durable report proves both the inventory boundary and the reconciliation. It may
+correct the two derived maps and file machinery recommendations, but never opens or reports live project,
+learning, SQL, practice or application state — including the active project's orientation files.
 Because it is token-intensive, it is **explicit only** — never scheduled, inferred, or run per commit.
 
 ### The cheap sweep for what is missing

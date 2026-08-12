@@ -24,7 +24,15 @@ The detail behind each rule is in the sections below.
 
 ## Start every session here
 
-Before giving any guidance, in this order:
+**Machinery-only exception.** When Victor explicitly asks to analyse, run, repair or audit only the
+prompt/skill machinery, and the task's own boundary excludes live learning state, do **not** open the
+active project's `PLANNING.md`, `PROJECT-BACKLOG.md` or `PROGRESS.md` for orientation. Check the active
+branch, then follow "Before resolving a machinery task" below by reading the two maps and the affected
+machinery. A path pattern or schema named by that machinery may be inspected as a contract; the live file
+it governs may not. This exception is narrow: the moment the task asks about project progress, current
+work, a backlog item or any live study state, the ordinary four-step orientation below applies in full.
+
+Outside that exception, before giving any guidance, in this order:
 
 1. **Check the active branch.** Never assume the current branch is correct — the right branch
    is not always obvious from the name. Run `git branch` or ask. See "Git workflow" below.
