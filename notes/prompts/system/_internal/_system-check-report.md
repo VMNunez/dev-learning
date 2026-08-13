@@ -1,14 +1,14 @@
 # System check — machinery audit report
 
-Date: 2026-08-12
-Starting commit: `000f5c792f60cc8015884c75c9477de1c37c63a8`
+Date: 2026-08-13
+Starting commit: `7ff18cd6533daec04a4354e4048251f4de834e82`
 Branch: `fix/backend-backlog`
 Status: blocked
 
 ## 1 — Admission and frozen inventory
 
-Both admission gates passed. Every writable audit output was clean, and every inventory path was clean
-relative to `HEAD` and the index. The frozen inventory contained **170 paths**:
+Both admission gates passed. Every writable audit output and every inventory path was clean relative to
+`HEAD` and the index. The disk-derived inventory contained **170 paths**:
 
 | Class | Count |
 |---|---:|
@@ -20,134 +20,120 @@ relative to `HEAD` and the index. The frozen inventory contained **170 paths**:
 | Launchers (31 mirrored pairs) | 62 |
 | **Total** | **170** |
 
-The starting path + SHA-256 snapshot was
-`9ab69d7f2ee7a140fe3fbe902183aa5efddfbd503d41bfa6309996aeda44d14f`. It was recomputed after
-the analyst waves with the same 170 paths and the same digest; dirty inventory paths remained **0**.
+The path + SHA-256 snapshot was
+`d2a7e8d17c9697b0bbea272b56cb031ef880311b215025186b8cd5c834aba7a4` before dispatch and after the
+manifest waves. Dirty inventory paths remained **0**.
 
-## 2 — Validator baseline
+## 2 — Validator baseline and final result
 
-`validate-prompt-system.ps1 -MachineryOnly` could not run under the host's default execution policy, so
-it was re-run with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File ... -MachineryOnly`. That
-bypass was process-local and did not change system or repository configuration.
+The host execution policy rejected the direct script invocation, so both validator runs used the
+process-local `powershell -NoProfile -ExecutionPolicy Bypass -File ... -MachineryOnly` form. No system
+or repository policy was changed.
 
-Baseline result: **13 PASS groups, 1 intentional SKIP group, 0 failures**.
+Baseline and final results were identical: **13 PASS groups, 1 intentional SKIP group, 0 failures**.
 
-- PASS: 31 canonical prompts; 31 Claude launchers; 31 Codex launchers.
-- PASS: launcher target parity, delegation, runtime isolation, and argument contracts (85 keys; 44
-  closed enumerations compared).
+- PASS: 31 canonical prompts, 31 Claude launchers, and 31 Codex launchers.
+- PASS: launcher target parity, full delegation, runtime isolation, and argument contracts (85 keys;
+  44 closed enumerations compared).
 - PASS: runnable entry-point/self-report contracts, representative dry runs, external-path failure
-  simulation, thin adapters, 133-file path resolution, 17-report cold-review tokens, 17 mirrored skills,
-  and both-map registration of all 17 skills and 31 prompts.
-- SKIP: live coverage, notes-plan, SQL-route/declared-exercise, and simulation-route state, as required by
-  machinery-only mode.
-
-Final validator result before the blocked-report commit: the same **13 PASS groups, 1 intentional SKIP
-group, 0 failures**.
+  simulation, thin adapters, 133-file path resolution, 17-report applied-edit verdict tokens, 17
+  mirrored skills, and registration of all 17 skills and 31 prompts in both maps.
+- SKIP: live coverage, notes-plan, SQL-route/declared-exercise, and simulation-route state, as required
+  by machinery-only mode.
 
 ## 3 — Manifest completeness gate
 
-The cold manifest gate closed after two bounded re-dispatches: the first simulation and portfolio
-returns had read their files to EOF but used alias IDs rather than the required
-`<inventory-path>::<field>::NN` schema. Their replacements passed.
+The gate closed after one bounded correction: the first interview-prep return duplicated one stable
+configuration ID; that concern corrected its numbering and revalidated with zero duplicates.
 
-| Concern | Files | Source lines read to EOF | Accepted atomic IDs |
+| Concern | Files read to EOF | Source lines | Accepted atomic facts |
 |---|---:|---:|---:|
-| Knowledge — coverage | 7 | 1,747 | 349 |
-| Knowledge — interview prep | 5 | 1,262 | 306 |
-| Knowledge — notes | 7 | 1,711 | 184 |
-| Practice — interview | 3 | 775 | 324 |
-| Practice — simulations | 4 | 633 | 305 |
-| Practice — SQL | 7 | 2,615 | 318 |
-| Projects — plan | 6 | 1,793 | 369 |
-| Projects — portfolio | 4 | 612 | 167 |
-| Projects — README | 4 | 538 | 136 |
-| Projects — review | 4 | 1,283 | 197 |
-| Strategy — apply | 6 | 1,077 | 229 |
-| Strategy — tracking | 4 | 1,213 | 293 |
-| System family | 2 | 740 | 217 |
-| Root contracts + validator | 9 | 3,373 | 156 |
-| Skills (one copy of 17 pairs) | 17 | 2,720 | 181 |
-| Launchers | 62 | 917 | 698 |
-| **Total** | **168 analyst-owned files** | — | **4,429** |
+| Knowledge — coverage | 7 | 1,750 | 476 |
+| Knowledge — interview prep | 5 | 1,263 | 350 |
+| Knowledge — notes | 7 | 1,711 | 420 |
+| Practice — interview | 3 | 778 | 171 |
+| Practice — simulations | 4 | 639 | 253 |
+| Practice — SQL | 7 | 2,615 | 376 |
+| Projects — plan | 6 | 1,812 | 262 |
+| Projects — portfolio | 4 | 667 | 161 |
+| Projects — README | 4 | 571 | 198 |
+| Projects — review | 4 | 1,284 | 277 |
+| Strategy — apply | 6 | 1,084 | 271 |
+| Strategy — tracking | 4 | 1,213 | 167 |
+| System family | 2 | 742 | 141 |
+| Root contracts + validator | 9 | 3,547 | 465 |
+| Skills (one decoded copy of 17 pairs) | 17 | 2,745 | 522 |
+| Launchers | 62 | 917 | 478 |
+| **Total** | **168 analyst-owned inventory files** | — | **4,988** |
 
 Results: `audited files = inventory files - 2 maps = 168`; unassigned files **0**; duplicate manifest
-ownership **0**; duplicate stable IDs **0**; 17/17 skill pairs and 31/31 launcher pairs proven. Every
-assigned file had an `N lines, read to EOF` declaration.
+ownership **0**; duplicate stable IDs **0**; 17/17 skill pairs and 31/31 launcher pairs proven. The
+skill inventories and decoded lines match; the sole byte-level difference is LF versus CRLF in the
+paired `sql-grade/SKILL.md`, which the validator's normalized parity contract accepts.
 
 ## 4 — Map reconciliation gate
 
 The orchestrator read both maps to EOF:
 
-- `notes/prompts/README.md`: **747 lines, read to EOF**.
-- `notes/prompts/_internal/_system-map.md`: **616 lines, read to EOF**.
+- `notes/prompts/README.md`: **752 lines, read to EOF**.
+- `notes/prompts/_internal/_system-map.md`: **624 lines, read to EOF**.
 
-The physical-line census began with this provisional classification:
+The complete physical-line census and provisional atomic ledger were persisted outside the repository:
 
-| Map | Physical | Claim-bearing | Context/syntax | Out of scope | Unclassified | Conflicts |
-|---|---:|---:|---:|---:|---:|---:|
-| `README.md` | 747 | 621 | 126 | 0 | 0 | 0 |
-| `_system-map.md` | 616 | 483 | 133 | 0 | 0 | 0 |
+| Map | Physical | Claim-bearing | Context/syntax | Out of scope | Atomic claims | Unclassified | Conflicts | Claim-bearing without claim |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `README.md` | 752 | 611 | 141 | 0 | 1,134 | 0 | 0 | 0 |
+| `_system-map.md` | 624 | 479 | 145 | 0 | 825 | 0 | 0 | 0 |
 
-The category sums equal each physical denominator. The atomic claim ledger did **not** close:
-claim-bearing lines with no accepted atomic claim remained **621** and **483** respectively. Therefore
-no section is published as `verified — no change`, and no partial correction is applied.
+The category sums equal each physical-line denominator. Unlike the previous blocked run, every
+claim-bearing line reached at least one provisional atomic row. The claim-to-evidence and reverse
+evidence-to-claim dispositions did **not** close: **1,959 claim rows** and **4,988 manifest facts** do not
+have complete accepted dispositions.
 
-The evidence-to-claim denominator was **4,429 accepted manifest facts**. It also did not close: the
-source machinery contains mutually exclusive facts in fields whose owner is the README or system map,
-so those facts cannot each receive an honest `documented`, `source-only by ownership split`, or
-`missing claim` disposition without first deciding which authoritative instruction is operative.
+The bounded settlement attempt was the source manifest itself: every owning file was read to EOF and
+the analysts separately recorded literal contradictions. Representative unresolved source clauses are:
 
-### First bounded unresolved cluster
+- the Spanish notes reviewer must read only the Spanish note, yet the same contract mandates the
+  standard, calibration note, directory, plan, and a diff that can expose the English note;
+- interview-prep correct mode says weak answers are report-only, while its mandatory reviewer is
+  required to fix those answers directly;
+- plan-audit gives incompatible terminal outcomes for the same failed specialist retry and gives
+  specialists both a bounded section read and a whole-plan read;
+- the README author component says the orchestrator owns the commit while the audit and standard hand
+  that project-file commit to Victor;
+- project review requires secret-bearing config findings to include the value verbatim and also forbids
+  transcribing any secret value;
+- several other families report the same class of mutually exclusive source-owned facts.
 
-The portfolio concern was re-dispatched cold once and then settled once more by the orchestrator reading
-all **228 lines of `portfolio-audit.md` to EOF**. The conflict remained:
+Those are not map corrections. The authoritative machinery contains both clauses, and this audit is
+forbidden to edit it or invent a third rule. At least one map-owned claim is therefore
+`unverifiable`; the remaining undispositioned rows cannot be covered by silence or a partial pass.
+Because `unverifiable > 0` and both reconciliation directions are incomplete, Step 4 failed.
 
-- G7 says it requires a clean G6 `progress-update`, while the explicit `Run first` list names only
-  `readme-audit` and `review-audit`.
-- `DRY_RUN = true` says it “commits nothing”, while the mandatory final step commits its self-report and
-  tracker even in dry-run.
-- `DRY_RUN = false` calls the flow fully hands-off and commits target files, while the same finish path
-  tells Victor to choose and delete one CV option before committing.
-- The reviewer is asked for a ratio and uncovered-decision list that its own return contract does not
-  consistently provide.
-
-This is not a map correction: the authoritative source itself contains both sides. The accepted
-portfolio manifest records nine contradictions after the retry. The same class appears independently in
-plan commit ownership, README commit granularity, SQL route authority, coverage marker preservation,
-single-shot self-report status handling, and skill commit/trigger contracts.
-
-Disposition: **unverifiable**. The evidence needed to settle it is an authorised source-machinery
-adjudication of the conflicting clauses; this audit is forbidden to perform that repair.
-
-Because `unverifiable > 0`, Step 4's completeness gate failed. The run did not proceed to architecture
-recommendations, a final reviewer, map corrections, or recommendation-ledger edits.
+No section is published as `verified — no change`. No map correction, architecture finding, or
+recommendation-ledger edit was applied, and the cold final reviewer was not dispatched.
 
 ## 5 — README catalogue coverage and corrections
 
-Blocked before a complete atomic-claim and reverse-ledger reconciliation. Corrections: **none applied**.
-No `verified — no change` claim is made.
+Blocked before complete claim and reverse-ledger reconciliation. Corrections: **none applied**.
 
 ## 6 — System-map wiring/skill coverage and corrections
 
-Blocked before a complete atomic-claim and reverse-ledger reconciliation. Corrections: **none applied**.
-One positive discrepancy was measured but deliberately left unapplied on the blocked branch:
-`_system-map.md` §13 says the 08:00 skill contracts total approximately 1,494 lines; the current six
-files total 1,493. A blocked run cannot edit either map.
+Blocked before complete claim and reverse-ledger reconciliation. Corrections: **none applied**.
 
 ## 7 — Boundary proof
 
-No active-project `PLANNING.md`, `PROJECT-BACKLOG.md`, or `PROGRESS.md` was opened. No project, SQL,
-simulation, coverage, notes-plan, tracker, application, job-search, external-profile, evidence, or debt
-state entered the inventory, snapshot, denominator, or verdict. Analysts recorded declared paths and
-schemas as machinery contracts only and did not follow them.
+No active-project `PLANNING.md`, `PROJECT-BACKLOG.md`, or `PROGRESS.md` was opened. No project,
+coverage, notes-plan, SQL, simulation, tracker, application, job-search, external-profile, evidence,
+friction, or operational-debt state entered the inventory, snapshot, denominator, or verdict. Analysts
+recorded declared paths and schemas as machinery contracts only.
 
-`_recommendation-ledger.md` was read only as an audited root contract and for deduplication context;
-its rows were not treated as an operational work queue. `_skill-friction.md` had no open rows at
-close-out.
+`_recommendation-ledger.md` was read only as an audited root contract and deduplication source; its rows
+were not treated as operational state. `_skill-friction.md` contained no open rows.
 
 ## 8 — Architecture findings
 
-Not run: Step 4 did not close. No new recommendation ID was created.
+Not run: Step 4 did not close. No recommendation ID was created by the audit.
 
 ## 9 — Final review state
 
@@ -157,5 +143,6 @@ Not run: Step 4 did not close. No new recommendation ID was created.
 
 **blocked — incomplete audit**
 
-The two maps remain byte-for-byte unchanged. This report is the durable evidence of the admitted run,
-the complete source inventory, the closed manifest gate, and the reconciliation gate that did not close.
+The two maps and authoritative machinery remain byte-for-byte unchanged. This report records the
+admitted run, the closed inventory/manifest gate, the complete physical-line census, and the Step 4
+reconciliation gate that did not close. It is not a partial global verdict.
