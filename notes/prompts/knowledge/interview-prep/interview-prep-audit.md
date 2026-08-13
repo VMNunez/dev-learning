@@ -119,6 +119,21 @@ You are the orchestrator for building Victor's interview Q&A, hands-off.
 > report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
 > direct commits, only merges via PR.
 
+> **Run baseline (step 0).** Record the current commit (`git rev-parse HEAD`) as `{BASELINE}`, and for
+> each topic, **before its first author dispatch**, run `git status --porcelain` on that topic's `en/` +
+> `es/` pair. This is the only moment the pre-run bytes of a section are still identifiable: the topic
+> commit stages that pair wholesale, so once a section subagent has edited it, nothing in the tree
+> distinguishes finished work from half-written work. A **clean** pair means `{BASELINE}` holds that
+> topic's pre-run bytes and the restore branch below is available; a **dirty** one means the tree
+> already carries changes this run did not make, so `{BASELINE}` is not its baseline and restoring is
+> unavailable for that topic. **Clean is not the same as present:** for a topic whose pair does not
+> exist yet — this run creates that skeleton below — `git status --porcelain` has no record to print,
+> which reads as clean while `git show {BASELINE}:…` would fail outright. Restoring is unavailable
+> there too, as the restore branch's own "existed under that exact heading at `{BASELINE}`" condition
+> independently says. Record which of the three it is and carry it to that topic's sections. This
+> is a **baseline-availability** check and nothing more — do not read it as a detector of who else wrote
+> to the pair, a question the standard rules on and this prompt does not.
+
 > **Verifiable reads (the shared session rules non-negotiable):** any subagent that must read a whole file (G reads
 > the full `en/` Q&A; A and B read both `en/`+`es/` files to locate their section) runs `wc -l`
 > first — the Read tool truncates at 2000 lines **silently** — and reads with `offset` passes to the
@@ -278,9 +293,41 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 > Respect the lifecycle: a `[refined]` question is frozen byte-for-byte, whether or not it also has
 > `[studied]`. Report every defect in it; rewrite only unrefined questions.
 
-Wait for A. If A reports it could not complete the section (blocked, missing context), skip that
-section's reviewer, note it, and move to the next section — do not leave a half-authored section for
-the reviewer.
+Wait for A. **If A returns `BLOCKED`** — it could not complete the section (missing context, or a gate
+its own prompt stops on) — that section gets no reviewer and no further work this run: note it and move
+to the next section. **Skipping B is not the whole disposition.** A has been editing the tree as it
+went, and the topic commit below stages the whole `en/` + `es/` pair, so a half-written section rides
+into a commit whose message says the topic was audited. The general branch is
+`_agent-runtime-standard.md`'s returned-blocked bullet; what follows is what this prompt binds its
+baseline, its span and its freshness marker to:
+
+- **Restore it** when **A** is the role that blocked, the section existed under that exact heading at
+  `{BASELINE}`, and that topic's pair was clean there: take the section's bytes from
+  `git show {BASELINE}:notes/interview-prep/{LEVEL}/en/{FILE}.md` and the `es/` twin, and write back
+  **that one section's span** in both files. Never restore the *file* and never run `git checkout --`
+  on the pair — the sections this run already finished are in those same two files, and that would
+  delete them.
+- **Leave it and declare it** in every other case: the pair was already dirty at `{BASELINE}`, A created
+  the section this run, the heading was renamed before the block so no span at `{BASELINE}` matches it,
+  A's report does not say what it changed, or — the case worth stating on its own — **it was B that
+  blocked**. Restoring after a completed author pass would revert to *before* A and throw away finished
+  work to undo a partial edit, which is the wrong trade in the one direction that loses something. The
+  partial work then stays in the tree, the section is named `blocked — partial` in the topic's commit
+  message body and in the final report, and the fingerprint rule under "Finish the topic" applies.
+
+Either way the section is **never** reported as complete, and every item of its slice counts as
+uncovered.
+
+> **A component that *returns* `BLOCKED` and a role that could not be dispatched are not the same
+> case, and only the first one commits.** The disposition above is for a subagent that came back and
+> told you what it left behind. A role that **died** — launch failure, runtime error, or a session
+> limit that killed it mid-flight — is `_agent-runtime-standard.md`'s dispatch contract instead: read
+> whatever it persisted, else resume it, else re-dispatch it once, and only if it still returns nothing
+> usable is it undispatchable. This prompt permits **no single-agent fallback** — the orchestrator never
+> authors or audits a section itself — so at that point you **stop without partial commits**: the topic
+> is not committed at all, the tree is left exactly as it stands for Victor to read, and the run closes
+> out `blocked` naming the topic, the section and the dead role. Committing a labelled topic there would
+> be the partial commit that contract forbids, and the killed role is the case that actually happens.
 
 **Reviewer (B).** Launch a fresh, independent `role-appropriate` subagent, `reasoning tier: deep`,
 `execution: foreground` (it rewrites weak questions freely — that is authoring, not checklist
@@ -295,12 +342,20 @@ verification):
 > files otherwise. `DRY_RUN = true`
 > means **fix only, do not
 > commit** — the orchestrator commits once per topic after every section. Return your verdict and a
-> **question-by-question trace for this section**.
+> **question-by-question trace for this section**. Write your findings and your verdict to
+> «scratch path for this section» as you reach them, before returning — if you cannot finish, that file
+> is the only thing that tells the orchestrator which bytes you already changed.
+
+Pass B a real scratch path. `_agent-runtime-standard.md` requires every `reviewer` dispatch to carry
+one and requires the orchestrator to read it when the reviewer dies — which is exactly the branch below,
+and it has no input without it.
 
 Wait for B. **Acceptance gate — verify the trace and the slice coverage (orchestrator).** Two checks
 before moving on, using the section slice you assembled (it is already in your context):
 - **Trace:** B's report must contain the question-by-question trace for this section. Missing or
-  partial trace → that was not a full audit.
+  partial trace → that was not a full audit. **A declared `BLOCKED` return is not a missing trace** —
+  it is a completed report of an incomplete job, and it goes to the disposition above rather than to
+  the retry below.
 - **Slice coverage:** every `often`/`sometimes` market question (M) and every gap (G) in this section's
   slice must now be covered by a question — confirmed by A's or B's trace. Uncovered items mean the
   section is not done, even if B said PASS.
@@ -309,6 +364,13 @@ If either check fails, re-dispatch B **once** for this section, listing the miss
 uncovered slice items so it knows exactly what to close. One retry maximum; if items are still
 uncovered after the retry, list them explicitly in the final summary instead of looping — never report
 the section as complete. Only then start the next section.
+
+**A section that does not close comes in two shapes, and they are disposed of differently.** *Uncovered
+slice items* after the retry are finished content that merely does not cover everything yet: keep every
+byte — restoring here would throw away good work — and declare the uncovered items. *A half-written
+section* — A returned `BLOCKED`, or B stopped mid-fix — takes the restore-or-declare branch above,
+because what sits in the tree is not content anyone finished. Both are reported as not-complete, and
+both make that topic's outcome `blocked` under "Finish the topic" below.
 
 ---
 
@@ -327,6 +389,22 @@ the cross-section view, so it belongs here, not in a per-section subagent:
   the Angular and Angular Material coverage fingerprints. A stale fingerprint is expected at run
   start and must be reported; only a successful full audit may refresh it. `MODE = correct` must stop
   on a missing or mismatched fingerprint and request `MODE = full`.
+  **A topic carrying half-written bytes must not ship a fingerprint that certifies it** — and *leaving*
+  the digest alone does not achieve that. The digest is over the **coverage** file, so on the common
+  path (a `MODE = full` re-audit of a topic whose coverage has not moved) it already matches, and
+  leaving it untouched ships a bank the run just declared unfinished with a *current* certificate. So on
+  the **leave-and-declare** branch — and only there — **delete the `Coverage SHA-256` line from both
+  language files** (both lines, for Angular). The standard defines a missing fingerprint as stale and
+  requiring a full audit, which is exactly the true statement about that bank, and it is what every
+  consumer that gates already acts on: `interview-prep-route`, `interview-prep-block-open` and
+  `study-block-close` all read this digest and bilingual parity, never a tracker cell. On the
+  **restore** branch, do nothing to it — the blocked section is back to its pre-run bytes, so the bank
+  is as certifiable as it was before.
+  **An `uncovered items` section does not stale the fingerprint either.** It is finished content, this
+  prompt declares it an acceptable end state ("list them explicitly instead of looping"), and the digest
+  attests that the bank is current *against coverage*, not that it is exhaustive. Staling the level's
+  bank over one uncovered `sometimes` question would make its CORE route unbuildable with no re-run that
+  clears it.
 
 Fix a stray duplicate or ordering issue directly (structural, not authoring). Then commit per
 `{DRY_RUN}` — **one atomic commit for the whole topic** (the `en/` + `es/` pair). **Safety check
@@ -334,6 +412,20 @@ before committing:** run `git status` before the add and again before the commit
 topic's `en/` + `es/` pair is staged, and `git restore --staged` anything else (a project code file
 left staged from an earlier step has ridden along into a notes commit before). This is the only
 commit; the section subagents never committed.
+
+**A topic whose sections all *returned*, one of them not-complete, still commits — but labelled.** The
+alternative is not discarding that work: it is leaving it uncommitted in the tree, which is what
+`notes-audit` and `plan-audit` do. It is rejected here for a different reason — this orchestrator is
+built to run unattended across twelve topics, so an uncommitted tree would be silently carried into the
+next topic's `git status` safety check and swept into *its* commit instead. Committing it under its own
+topic's message, labelled, is the honest version of the same bytes. (A **dead** role is the other case
+entirely and does not reach this paragraph: it stops without committing, above.) Name every
+not-complete section in the commit message body with its shape (`blocked — partial` / `uncovered
+items`), and record that topic's outcome in `_run-tracker.md` as **`blocked`**, never `completed` —
+`notes/prompts/_internal/_run-tracker.md` states that only a `completed` result satisfies a
+prerequisite. The tracker carries **both** shapes. The fingerprint rule above is narrower on purpose:
+only a `blocked — partial` section left in the tree drops the digest, because only that bank contains
+bytes nobody finished.
 
 **Context discipline (matters in `FILE = all`).** Once a topic is committed, condense everything you
 were holding for it — the M list, the G gaps, the per-section slices and traces — down to one verdict
@@ -345,7 +437,10 @@ holding eleven topics' worth of it is exactly the context saturation this per-se
 
 **If `{DRY_RUN}` = false:** everything is committed, one atomic commit per topic. Report the commits
 made and the per-topic verdict table (author status · reviewer verdict · commit). List any topic that
-failed so it can be re-run (`FILE` = that topic).
+failed so it can be re-run (`FILE` = that topic), and, for every topic recorded `blocked`, each
+not-complete section with its shape (`blocked — partial` restored / `blocked — partial` left in the
+tree / `uncovered items`) — a re-run has to know which sections it is closing and which of them still
+carry half-written bytes.
 
 **If `{DRY_RUN}` = true:** nothing was committed — all changes remain in the working tree for Victor
 to read. Print the atomic commit sequence to run after reviewing the diff, one topic per pair of blocks:

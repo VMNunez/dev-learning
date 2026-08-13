@@ -124,6 +124,15 @@ git commit -m "docs: audit {FILE} interview prep — <one-line summary> (reviewe
 
 **If `{DRY_RUN}` = true:** do not commit. Leave every change in the working tree for Victor to read.
 
+**If you cannot finish the section**, stop and open your report with `BLOCKED — <reason>`, then state
+which of the two files you already edited, which headings, and whether any edit is one-sided across
+`en/` and `es/`. You fix directly in the tree, so a review abandoned halfway leaves the section in a
+state no one authored; the orchestrator restores or declares it from this line, and cannot from a
+missing one. A partial audit is never reported as `PASS` or `FIXED`. **And it never commits — including
+on a standalone `DRY_RUN = false` run**, where the commit above is yours to make: committing a
+half-audited pair under a message that says it was reviewed is exactly the silent partial write this
+return exists to prevent. Leave the bytes, name them, and let Victor read the diff.
+
 Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (a short bullet list of what you corrected and why — especially any
   question you rewrote for realism/wording or any answer you tightened into Victor's voice).

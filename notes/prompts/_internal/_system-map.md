@@ -383,6 +383,24 @@ The things a run leaves behind that are easy to miss.
   written by the review prompt, the two backlog skills and `/plan-audit`'s `whole-plan` specialist,
   never by Victor. In `/plan-audit` it rides inside that run's single atomic plan commit, not one of
   its own.
+- **A committed artifact can be deliberately not finished, and what says so to a *machine* differs by
+  target.** When a per-section orchestrator's subagent *returns* `BLOCKED` after editing the shared
+  target — `interview-prep-audit` over a topic's `en/`+`es/` pair, `portfolio-audit` over a project's
+  question bank — the run disposes of that section (restore its span from the run's baseline when one
+  exists, else leave and declare it), commits the rest **labelled**, and records that target `blocked` in
+  `_run-tracker.md`. That tracker cell gates too — only a `completed` result satisfies a prerequisite —
+  and it is all the two targets have in common.
+  Beyond it they are **not** symmetric: a Q&A pair left holding unfinished bytes has its `Coverage
+  SHA-256` **deleted**, because `interview-prep-route`, `interview-prep-block-open` and
+  `study-block-close` all gate on that digest and on parity and read a missing one as stale — merely
+  *leaving* it would certify the bank,
+  since the digest is over the coverage file and does not move when a section blocks. A project question
+  bank has **no machine-readable marker at all** (no digest; `/simulator` reads it and gates on
+  nothing), so there the tracker cell and the commit label are the only marks that exist. Neither
+  prompt stales anything over a section that merely ended *under-covered* — that is finished content,
+  and staling a level's bank over it would make its CORE route unbuildable. A **dead** role is the
+  opposite case and commits nothing: `_agent-runtime-standard.md`'s dispatch contract owns both
+  branches, and each prompt owns only what its baseline, span and freshness marker are.
 - **A skill edited in one adapter is edited in both, in the same commit.** They drifted silently once
   (2026-07-30 → 2026-08-01) and Codex ran a ritual two revisions old. `diff` the pair before committing.
 - **Machinery paths are contracts, not an invitation to traverse live state.** `/system-check` verifies

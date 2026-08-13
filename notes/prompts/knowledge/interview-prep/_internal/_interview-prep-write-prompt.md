@@ -158,8 +158,9 @@ Angular Material has no interview-prep file of its own; by convention its questi
 under Material sections. Use coverage to bound the selected level and map each admitted question to
 one or more current concepts; do not require one question per bullet. A pedagogical bullet with no
 realistic interview angle is a valid no-op. A realistic market question outside coverage is a coverage
-gap and is reported rather than silently admitted. If the selected coverage file does not exist, stop and run
-`coverage-prompt` for that topic and level.
+gap and is reported rather than silently admitted. If the selected coverage file does not exist, stop
+and take the blocked return in "Execution" below, naming `coverage-prompt` for that topic and level as
+what unblocks it.
 
 ## Step 4 — Priority markers
 
@@ -213,6 +214,15 @@ Flag any new question whose concept is not in coverage/{LEVEL}.md with `[coverag
 Apply all fixes directly to both files. **Do NOT commit and do NOT mark anything done** — an
 independent reviewer runs next, and **you never commit** — who does is the commit-message bullet below.
 Leave your work in the working tree.
+
+**If you cannot finish, return the blocked shape the orchestrator waits on.** Stop, and open your report
+with `BLOCKED — <reason>` (a missing coverage file in Step 3, missing context, any gate this prompt
+stops you on). Then state **what you already changed**: which of the two files you edited, which
+headings, and whether any edit is one-sided across `en/` and `es/`. You have been editing the tree as
+you went, so those bytes are already there; the orchestrator's disposition of that half-written section
+— restore it from the run baseline, or leave and declare it — turns entirely on this line, and without
+it the only branch left open to it is leaving your partial work inside the topic commit. Never return a
+PASS trace for a section you did not finish.
 
 Then report:
 - The coverage status for `{SECTION}` (or per section, if `all`): ✅ Complete / 🔧 Fixed / ➕ Added.

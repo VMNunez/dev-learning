@@ -107,6 +107,13 @@ Do not commit. Leave the question file in the working tree. Report:
 - How many questions you wrote for this section (and how many were appended vs already there).
 - Any decision you found but could not cover with a question (with why).
 
+**If you cannot finish the section**, stop and open your report with `BLOCKED — <reason>`, then state
+**what you already wrote**: which questions landed in the file and under which heading. You write into a
+file every other section shares and the orchestrator commits it wholesale, so that line is the only
+thing that lets it restore or declare your half-written section instead of committing it as finished
+work. A decision you could not cover is **not** this — that is the bullet above, on a section you did
+finish.
+
 Build the **decision-by-decision trace** (every real decision/pattern/rule → its question) in your own
 context to drive exhaustiveness — do not paste it back: the reviewer is a cold subagent that re-walks
 the code itself, and full traces only saturate the orchestrator.

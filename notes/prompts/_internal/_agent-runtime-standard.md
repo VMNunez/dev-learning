@@ -41,6 +41,24 @@ the role split. Correct isolation matters more than reproducing a historical mod
   whatever the role persisted, else resume it where the runtime allows, else re-dispatch it once — a
   prompt's own retry rule overrides that count — and only one that still returns no usable result is a
   role that could not be dispatched. Silence is never acceptance.
+- **A role that *returns* blocked after editing the tree is the other half of that case, and it is not
+  the same half.** A dead role is handled above. A role that came back and said it could not finish has
+  already written bytes into the target, and where the orchestrator's commit stages that target
+  **wholesale** — one file, one pair, one bank — those bytes ride into a commit that reports the work as
+  done. So a component that writes into a shared target declares, in its return, that it is `BLOCKED`
+  and **what it already changed**; and the orchestrator disposes of that explicitly rather than only
+  skipping the next role. The two dispositions are: **restore** the affected span from the run's recorded
+  baseline when one is available — never the whole file, which holds work other roles finished this run —
+  or **leave it and declare it** in the commit message and the report when it is not. A partial write is
+  never left to ride in silently, and a target still holding bytes nobody finished never receives the
+  freshness marker its consumers gate on — a fingerprint, a `complete` status — nor a `completed`
+  outcome, which the close-out contract below already governs. Each prompt owns what its baseline, its
+  span and its freshness marker are; this bullet owns that the branch must exist.
+  **What separates this from the bullet above, which forbids the partial commit outright:** there, the
+  extent of the partial write is *unknown* — nothing came back to declare it, so nothing can label it
+  and no reader could tell the finished work from the abandoned. Here it is declared, bounded and named
+  in the commit itself. The rule is not "labelling makes a partial commit acceptable"; it is that an
+  undeclared partial write may not be committed at all.
 - **A `reviewer` is dispatched with a scratch path, writes each finding there as it reaches it, and
   writes its verdict there before returning** — never holding its judgement in context to the end; the
   orchestrator reads that path when the reviewer dies. A persisted file is the verdict only if it

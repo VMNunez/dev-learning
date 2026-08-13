@@ -92,6 +92,13 @@ before a ✅/⚠️ non-dry content commit.
 > report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
 > direct commits, only merges via PR.
 
+> **Run baseline (step 0).** Record the current commit (`git rev-parse HEAD`) as `{BASELINE}`, and per
+> project, before its first author dispatch, run `git status --porcelain` on
+> `notes/interview-prep/projects/«name».md`. Every section subagent writes into that one file and the
+> commit stages it wholesale, so this is the last moment a section's pre-run bytes are identifiable. A
+> clean file means `{BASELINE}` holds them and the restore branch below is available; a dirty one means
+> it does not. This is a baseline-availability check and nothing else.
+
 First read
 `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` so you know the verdict logic, the question
 bar, and the CV / GitHub formats. Then run the procedure below. You stay light on the heavy part: you
@@ -136,7 +143,25 @@ question file, so never overlap. For each section, run author then reviewer; nei
 > decision-by-decision trace in your own context to drive exhaustiveness, but return only the
 > **question count and any decision you could not cover** — the reviewer re-walks the code itself.
 
-Wait for A. Then **subagent B — reviewer (this section).** Launch a second, independent
+Wait for A. **If A returns `BLOCKED`** — it could not complete the section — that section gets no
+reviewer: note it and move to the next. Skipping B is not the whole disposition, because A has already
+written into the shared question file and the commit below stages that file wholesale. Take
+`_agent-runtime-standard.md`'s returned-blocked branch, which this prompt binds as: **restore** that
+section's span in `notes/interview-prep/projects/«name».md` from
+`git show {BASELINE}:notes/interview-prep/projects/«name».md` — that one section's span only, never the
+file, which holds the sections this run already finished — **but only when all three hold**: the file
+was **tracked** at `{BASELINE}`, that section's heading **existed in it there**, and the file was clean
+at `{BASELINE}`. Otherwise **leave it and declare it** as `blocked — partial`. The three conditions are
+not ceremony: this bank is **created by the first run**, and on that run the file does not exist, so
+`git status --porcelain` on it prints nothing at all — which reads as "clean" and would send you to a
+`git show` that fails with `fatal: path … does not exist`. The author is also told to create a missing
+heading, so a section can be clean-and-tracked and still have no span to restore. Either way the section
+is never reported as done and its uncovered decisions stand. A role that **died** rather than returned is the
+dispatch contract's other case: run its ladder, and if it is genuinely undispatchable, **stop without
+partial commits** — this prompt has no single-agent fallback, so the orchestrator never authors or
+audits a section itself.
+
+Then **subagent B — reviewer (this section).** Launch a second, independent
 `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground` (it re-walks the code hunting
 decisions the author missed — same judgment as authoring; this is the portfolio's go/no-go gate,
 the wrong place to save):
@@ -147,6 +172,11 @@ the wrong place to save):
 > thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED), the
 > **questions-vs-decisions ratio for this section**, and — only if that ratio is still below 1 — the
 > **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
+> Write your findings and verdict to «scratch path for this section» as you reach them, before
+> returning; if you cannot finish, say `BLOCKED — <reason>` and which questions you already changed.
+
+Pass B a real scratch path — `_agent-runtime-standard.md` requires it on every `reviewer` dispatch, and
+requires the orchestrator to read it when the reviewer dies.
 
 Wait for B. **Acceptance gate — act on B's ratio, don't just record it:** if B reports a
 questions-vs-decisions ratio below 1 (decisions found in the code area that still have no question), the
@@ -154,6 +184,13 @@ section is not done — re-dispatch subagent B **once** for the same section, te
 its own report listed as uncovered, so it adds the missing questions. One retry maximum; if the ratio is
 still below 1 after the retry, note the uncovered decisions in the final report instead of looping.
 Only then start the next section.
+
+**Two not-complete shapes, disposed of differently.** A ratio still below 1 is *finished* content that
+covers less than everything: keep every byte and declare the uncovered decisions. A **half-written**
+section — A or B returned `BLOCKED` — takes the restore-or-declare branch above, because nobody finished
+those bytes; a **B** block always takes the leave-and-declare side of it, since restoring would revert
+past A's finished pass to undo a partial edit. A declared `BLOCKED` is not a below-1 ratio and does not
+consume the one retry.
 
 **After all sections — orchestrator (light global scan).** Do a quick cross-section duplicate scan
 over the finished bank (the same decision or code path landing in two sections → keep it in the one
@@ -218,6 +255,19 @@ If ✅/⚠️ (cv-bullets was written):
 `git add notes/interview-prep/projects/«name».md notes/cv/cv-bullets.md`, then
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
 If ❌ (no cv-bullets): `git add notes/interview-prep/projects/«name».md`, then the same commit message.
+
+**A project with a section that returned `BLOCKED` still commits — but labelled.** Name every such
+section in the commit message body (`blocked — partial` restored / `blocked — partial` left in the
+tree), and record that project's outcome in `_run-tracker.md` as **`blocked`**, never `completed` —
+only a `completed` result satisfies a prerequisite. This says the **bank** contains bytes nobody
+finished; it does not by itself move the Phase 2 verdict, which the standard's verdict logic owns and
+computes from PLANNING.md and the backlog.
+
+**A section whose questions-vs-decisions ratio is still below 1 after its retry is not that**, and this
+rule deliberately does not reach it: it is finished content that covers less than everything, the
+acceptance gate above already declares noting it an acceptable end state, and what terminal effect that
+failed check should have on the run is an open question this prompt does not get to settle in passing.
+Note the uncovered decisions in the report, as that gate says, and leave the outcome alone.
 
 **If `{DRY_RUN}` = true:** commit none of the audit outputs (the final step's self-report still commits
 itself — it is machinery, not an audit output). Leave the rest in the working tree and print the

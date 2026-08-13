@@ -136,6 +136,11 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 > **Read-to-EOF guard:** run `wc -l` on the plan first; if it is near or over 2000 lines, read it in
 > passes with `offset` to the real end. Open your report with "N lines, read to EOF" — a report
 > without that line is rejected.
+>
+> **If you cannot finish**, stop and open your report with `BLOCKED — <reason>` instead, naming which
+> of the two plan files you already wrote to and which sections. You edit them directly and never
+> commit, so that line is what stops your half-applied fixes being committed as an audited plan. Do not
+> pad a trace with `blocked` rows to satisfy the row count.
 
 | # | Concern | Owns | Edits | Also reads |
 |---|---------|------|-------|------------|
@@ -208,6 +213,24 @@ graded work is nobody's.
 **Acceptance check.** A report is acceptable only with the read-to-EOF line **and** one row per check
 its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, record the
 gap in the self-report and continue — never silently accept a partial trace.
+
+**A specialist that *returns* blocked is not a formatting failure, and this check has to be told to
+catch it.** It counts rows: a specialist that applied half its fixes and stopped can still open with the
+read-to-EOF line and emit one row per check it owns, writing `blocked` in the verdict column, and pass
+— while its half-applied edits sit in the plan files, which Phase 4 stages wholesale. So a specialist
+that cannot finish **stops and opens its report with `BLOCKED — <reason>`, naming which of the two plan
+files it already wrote to and which sections** (`_agent-runtime-standard.md` requires a component
+writing into a wholesale-staged target to declare exactly that), and **a report opening with `BLOCKED`
+fails this acceptance check whatever its rows say**. Phase 4 already consumes that failure and refuses
+the commit, and that *is* the whole disposition here — nothing is committed, the partial fixes stay in
+the working tree, and the report names the files and sections holding them. No baseline or span restore
+is needed precisely because nothing lands.
+
+**It fails the check without taking the retry.** The protocol above re-dispatches once "quoting what
+was missing", which is inexecutable against a blocked report — nothing is missing from it — and a cold
+re-dispatch would start over on half-edited files while spending a budget the dead-specialist paragraph
+below already allocates. A declared `BLOCKED` is a complete report of an incomplete job: record it, do
+not re-dispatch on it, and let Phase 4's gate do the rest.
 
 **A specialist that dies mid-run takes the dispatch ladder in `_agent-runtime-standard.md` → "Dispatch
 contract"** — read what it persisted, else resume it, else re-dispatch it cold — and never advance to

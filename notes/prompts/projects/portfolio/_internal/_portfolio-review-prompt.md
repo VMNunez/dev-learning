@@ -73,3 +73,10 @@ working tree. Report your **verdict** for `{SECTION}`:
 - **Only if that ratio is still below 1:** the list of decisions you found but left uncovered. The
   orchestrator's acceptance gate re-dispatches you once with exactly that list, so a ratio below 1
   reported without it makes the gate unenforceable.
+
+Write your findings and this verdict to the scratch path you were dispatched with, as you reach them,
+before returning — the orchestrator reads that file if you die. **If you cannot finish**, stop and open
+your report with `BLOCKED — <reason>`, naming which questions you had already changed. That is not a
+ratio below 1: a below-1 ratio is a section you finished auditing that still lacks questions, and it
+keeps its bytes; a blocked one is half-edited and the orchestrator has to restore or declare it. Never
+report `PASS` or `FIXED` for a section you did not finish.
