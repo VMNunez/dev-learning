@@ -29,7 +29,7 @@ everything.
 > Angular also requires the Angular Material plan at the selected level because both topics share
 > `angular.md`. Optional: `evidence-intake` to refresh `_job-market-evidence.md`, which Stage M reads.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read `_internal/_last-run-report-interview-prep-audit.md` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against `_internal/_last-run-report-interview-prep-audit.md`; never restate the shared `Status:` meanings here.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_interview-prep-standard.md` (the bar) · `_interview-prep-write-prompt.md` (author) ·

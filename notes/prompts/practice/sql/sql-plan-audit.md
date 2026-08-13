@@ -26,10 +26,10 @@ or the plan simply feels out of date. It is safe to run repeatedly; a clean plan
 > reported, never written from nothing (see Hard rules). A stale `PROGRESS.md` is a finding, not a
 > prerequisite.
 
-> **Run-start check (step 0a):** execute the check in `notes/prompts/_internal/_pipeline-self-report.md` — read
-> `_last-run-report-sql-plan-audit.md` and, if its `Status` is `open`, surface the finding in one line
-> before proceeding. If the file does not exist, say "first run of this prompt" in one line and
-> continue — its absence is expected, not a failure.
+> **Run-start check (step 0a):** execute the decision table in
+> `notes/prompts/_internal/_pipeline-self-report.md` against `_last-run-report-sql-plan-audit.md`.
+> Never restate the shared `Status:` meanings here. If the file does not exist, say "first run of this
+> prompt" in one line and continue — its absence is expected, not a failure.
 
 **Internal pieces** (never launched directly): `_sql-plan-standard.md` (the bar) ·
 `notes/prompts/_internal/_pipeline-self-report.md` (the final step). Each specialist's mandate is its slice of

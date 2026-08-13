@@ -251,11 +251,11 @@ authoritative.
 
 ## Run-start check — read the last run's report
 
-Before anything else, read `notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md` (it may not
-exist yet — that is fine, skip silently). If it exists and its `Status:` line says `open`, surface the
-Verdict in **one line** before continuing:
+Before anything else, execute `_single-shot-self-report.md` Step 5 against
+`notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md` (it may not exist yet). Never
+restate the shared `Status:` meanings here.
 
-"Nota del último run: [verdict]."
+When Step 5 surfaces a finding, format its one line as: "Nota del último run: [verdict]."
 
 Then continue normally. This is the same discipline the orchestrators use, adapted for a single-shot
 prompt: the report is the only evidence that ever reopens a frozen prompt, and it is worthless if

@@ -97,8 +97,8 @@ prompt on its own say-so was checked only by the context it constrains. Every `_
 under `notes/prompts/` must carry a parseable `Status:` **field** — a report without one would leave the
 population in silence — and one whose field reads `applied in <hash>` must also carry
 `cold reviewer: approve | approve-with-tightening | reject`. The field is matched as a field and not as a
-substring, because report prose legitimately quotes it, and its **value** is a closed set of those two
-states rather than a free field — `Status: applied (commit abc)` would otherwise leave the population
+substring, because report prose legitimately quotes it, and its **value** is the closed set `clean` ·
+`open` · `rejected` · `applied in <hash>` rather than a free field — `Status: applied (commit abc)` would otherwise leave the population
 with no error at all. The verdict is matched with **one optional wrap allowed per seam** of the token,
 because it is written five ways — on its own line, inline in the `Status:` field, indented and bolded
 inside a bullet, backticked mid-paragraph, and split across a hard line break at ~100 columns. One wrap

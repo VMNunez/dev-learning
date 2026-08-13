@@ -62,8 +62,9 @@ must not supply proposed gaps or raise the selected-level floor.
 ## Step 0 — Guards and run-start check
 
 1. Stop on `main`.
-2. Read this prompt's `_internal/_last-run-report-coverage-verify.md` if it exists; surface an `open`
-   finding in one line and leave it alone.
+2. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's
+   `_internal/_last-run-report-coverage-verify.md` if it exists; never restate the shared `Status:`
+   meanings here.
 3. Stop if `COVERAGE` or a `PREREQUISITES` file is missing, or if any of them differs from its
    `## {TOPIC}` section in the matching `GLOBAL_MIRRORS` file. Compare canonical content rather than
    raw text: topic-file `##` section headings correspond to `###` headings inside the mirror's topic

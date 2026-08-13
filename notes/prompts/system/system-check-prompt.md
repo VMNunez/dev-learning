@@ -69,8 +69,9 @@ run or applied that machinery.
    admission refusal, not a partial audit. Preserve every unrelated change outside this writable set and
    refuse to stage it. Do not resolve an active project or perform the ordinary project-state orientation:
    this run has already taken the machinery-only exception in `Boundaries`.
-2. Read this prompt's previous `_last-run-report.md` `Status:` line if the file exists, following the
-   run-start rule in `_pipeline-self-report.md`. Surface an open finding; never apply it before this run.
+2. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's previous
+   `_last-run-report.md` if it exists. Never restate the shared `Status:` meanings or apply a surfaced
+   finding before this run.
 3. Run `notes/prompts/_internal/validate-prompt-system.ps1 -MachineryOnly` as the mechanical baseline.
    Record every `PASS`, `SKIP`, and failure. The switch preserves machinery invariants while preventing
    live coverage/plan/route state from blocking this audit. A structural failure does not replace the

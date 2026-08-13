@@ -11,9 +11,9 @@ is public posting data (no personal information), so it **is** committed to the 
 
 > **▶ Run first:** nothing — this is a starting point (it produces evidence others consume).
 
-> **Run-start check (step 0):** read `_internal/_last-run-report-evidence-intake.md`. If it does not
-> exist, say "first run of this prompt" in one line and continue. If its `Status` is `open`, print one
-> line naming the finding — then leave it alone; do not apply it in this run.
+> **Run-start check (step 0):** execute `_single-shot-self-report.md` Step 5 against
+> `_internal/_last-run-report-evidence-intake.md`. Never restate the shared `Status:` meanings here. If
+> the report does not exist, say "first run of this prompt" in one line and continue.
 
 > Why this matters: `_job-market-evidence.md` feeds `coverage-prompt` / `coverage-audit` as the
 > **complement** to the deep market analysis (see `_coverage-standard.md`, "Two sources"). More real

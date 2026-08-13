@@ -17,18 +17,36 @@ was hard. The machinery fact is "the overlap check did real work"; the list of o
 > paragraphs about what went *well*. That is the failure mode to avoid: this file exists to surface what
 > broke, and padding it with successes buries the one finding that should reopen a frozen prompt.
 
+## Shared self-report status vocabulary
+
+This section is the **single owner** of `Status:` for every `_last-run-report*.md`, including reports
+written through `_single-shot-self-report.md`. Consumers execute the run-start table below; they never
+restate these meanings inline.
+
+- `clean` — the Verdict leaves no prompt change pending. This includes a clean/blocked/no-run outcome
+  with no machinery defect worth applying.
+- `open` — the Verdict names a real prompt change that remains unapplied, including one parked because
+  its cold reviewer rejected the draft or could not complete.
+- `rejected` — a candidate was explicitly settled against one of the four bar conditions; the Verdict
+  names the failed condition.
+- `applied in <hash>` — the approved prompt edit landed in the named commit.
+
+The reports already on disk predate this vocabulary and legitimately use `open` for all three
+non-applied outcomes. Do not rewrite that historical evidence merely to normalize it. On the first
+later run, classify a legacy `open` from its Verdict: an explicit clean/no-run outcome is `clean`, an
+explicit failed bar condition is `rejected`, and anything else is a genuine `open` finding. The new
+report written at that run's close-out uses the vocabulary above, so this compatibility branch is
+self-clearing.
+
 ## What to write
 
 After the run's normal final step, write `_last-run-report.md` **in the `_internal/` subfolder of the
 orchestrator's own folder** (every family keeps its non-runnable files there, reports included)
 (overwrite the previous run's; if several orchestrators share a folder, use
 `_last-run-report-<orchestrator>.md`). Header: date + the run's target (topic / project / scope) + a
-**`Status:` line** — `open` if the Verdict names a change nobody has applied yet, or
-`applied in <hash>` once the prompt has been edited to address it. This one line is what lets a later
-reader tell a live finding from a done one at a glance, instead of re-deriving it from prose (on
-2026-07-19 a Verdict written as a to-do list had to be rewritten as a record precisely because the
-next reader would otherwise re-apply changes that already existed). A clean run's status is `open` and
-stays `open` — there was nothing to apply.
+**`Status:` line** — choose exactly one value from "Shared self-report status vocabulary" above. This
+one line is what lets a later reader tell a live finding from a settled one at a glance, instead of
+re-deriving it from prose. Only the bounded legacy-`open` branch still consults the Verdict.
 
 Before reconciling this run, consume any `open` rows in
 `notes/prompts/_internal/_skill-friction.md`. This is a serialized critical section: never delegate it
@@ -268,10 +286,10 @@ separate trigger or it rots (the `notes-write` gate sat four days for exactly th
 orchestrator's step 0 therefore includes this check — one glance, made cheap by the `Status` line:
 
 - Read this orchestrator's own `_last-run-report` (if one exists) and look at its `Status` line.
-- `applied in <hash>`, or a clean report → proceed silently.
-- `open` → print **one line** to Victor naming the open finding and its state: either it was *rejected
-  against the bar* (the Verdict says which condition — say so and move on, it is not a to-do), or it is
-  a genuine item a past run never applied.
+- `clean`, `rejected`, or `applied in <hash>` → proceed silently.
+- `open` → print **one line** to Victor naming the genuine item a past run never applied.
+- Legacy `open` → use the compatibility branch in "Shared self-report status vocabulary": proceed
+  silently for a clean/no-run or explicitly rejected Verdict; otherwise surface the finding once.
 - **Do not apply it here.** Editing the prompt and then immediately running it is the entangled
   before-and-run pattern the refinement step exists to avoid. Surfacing it is the whole job — one
   printed line at start is what breaks the silence that let a real defect sit for four days. If Victor

@@ -24,7 +24,7 @@ one command does everything.
 > `PROGRESS.md`. Phase 0 below dispatches `project-brief` for you when no current brief exists.
 > (`review` mode has no prerequisite.)
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_planning-standard.md` (the bar) · `_plan-write-prompt.md` (author) ·

@@ -11,7 +11,7 @@ finishes, `notes/coverage/junior.md` changes significantly, or it has been a whi
 
 > **▶ Run first:** `progress-update` — it reports drift in the `## Projects` table and the level matrix, which Steps 1, 3 and 4 read as fact. It has been an **auditor** since 2026-08-05: it names what is stale, it does not repair it — a wrong project status is fixed by `step-complete`, a missing coverage marker by `coverage-mark`.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`) and, if its `Status` is `open`, surface that finding in one line before proceeding — surface only, never apply it in this run.
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`); never restate the shared `Status:` meanings here.
 
 It runs as an **orchestrator**: two cold fact-gathering subagents feed a doer (the gap analysis and
 the active project's PLANNING.md summary — so neither `coverage-junior.md` nor a PLANNING.md ever loads into

@@ -50,9 +50,9 @@ sibling-level coverage files — guard 8 below cannot clear a bullet as level-ex
 Before dispatching any role:
 
 1. Stop on `main`.
-2. Read this prompt's `_internal/_last-run-report.md` if it exists and look at its `Status:` line, as
-   the run-start check in `_pipeline-self-report.md` requires: surface an `open` finding to Victor in
-   one line and leave it alone. Never apply it inside this run.
+2. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's
+   `_internal/_last-run-report.md` if it exists. Never restate the shared `Status:` meanings or apply a
+   surfaced finding inside this run.
 3. Require `NOTE` to be exactly two digits.
 4. Require exactly one `## {NOTE} — ...` entry in `PLAN`.
 5. Calculate SHA-256 over `COVERAGE`'s **scope bytes** using the canonical command in "Evidence markers"

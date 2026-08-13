@@ -82,8 +82,9 @@ own inference as an observation, which is exactly the failure the derived-file r
 
 1. Confirm the repository root and active branch. Record `git status --short`; preserve every unrelated
    change and refuse to stage it.
-2. Read this prompt's previous `_last-run-report-system-gaps.md` `Status:` line per the run-start rule in
-   `_pipeline-self-report.md`. Surface an open finding; never apply it inside this run.
+2. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's previous
+   `_last-run-report-system-gaps.md`. Never restate the shared `Status:` meanings or apply a surfaced
+   finding inside this run.
 3. Record the starting commit hash, and the two maps' line counts and SHA-256. Recompute both hashes
    immediately before writing the report; a map that changed mid-run stops the run as `blocked`, because
    half the evidence would then be from a system that no longer exists.

@@ -50,9 +50,9 @@ target/mode, outcome, and a concise result. A blocked run records the blocking g
 what was inspected without implying that outputs were written. Never turn a failed run into
 `completed` merely because its report and tracker update succeeded.
 
-Header: today's date · the run's configuration (the resolved key values) · a **`Status:` line** —
-`open` if the Verdict names a change nobody has applied yet, `applied in <hash>` once the prompt has
-been edited to address it. A clean run's status is `open` and stays `open`.
+Header: today's date · the run's configuration (the resolved key values) · a **`Status:` line** using
+the single vocabulary owned by `_pipeline-self-report.md` → "Shared self-report status vocabulary".
+Do not restate or extend that vocabulary here.
 
 Before reconciling this run, consume any `open` rows in
 `notes/prompts/_internal/_skill-friction.md`. This is a serialized critical section: never delegate it
@@ -166,7 +166,7 @@ what came out.
 ## Step 5 — Run-start check (this prompt's step 0, not its last)
 
 Every prompt using this file opens by reading its own `_last-run-report-<prompt-name>.md`. If it does
-not exist, say "first run of this prompt" in one line and continue. If its `Status` is `open`, print
-**one line** naming the finding: either it was rejected against the bar (say which condition, so it
-reads as settled, not as a to-do) or it is a real item no run has applied. **Do not apply it at the
-start** — editing a prompt and immediately running it entangles an unverified edit with the run.
+not exist, say "first run of this prompt" in one line and continue. Execute the run-start decision table
+owned by `_pipeline-self-report.md` → "Shared self-report status vocabulary", including its bounded
+legacy-`open` compatibility branch. **Do not apply a surfaced finding at the start** — editing a prompt
+and immediately running it entangles an unverified edit with the run.

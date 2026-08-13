@@ -50,7 +50,8 @@ use them to add, remove, or raise a coverage requirement.
 2. Inspect the tracker. Every topic must have a completed `coverage-prompt` cell for the selected level; otherwise stop and list the pending topics.
 3. Validate the ownership registry: every coverage topic appears exactly once, every adjacent
    relationship is reciprocal, and every mirror-position predecessor resolves into one acyclic order.
-4. Surface unresolved previous recommendations.
+4. Execute the run-start decision table in `_pipeline-self-report.md` against the previous
+   coverage-audit self-report; never restate the shared `Status:` meanings here.
 5. Plan all analysis, editing, validation, mirror rebuild, self-report, tracker update, and commits.
 6. Preserve unrelated working-tree changes.
 7. Build the complete locked-bullet registry before analysis. Stop on a broken freeze: a refined entry

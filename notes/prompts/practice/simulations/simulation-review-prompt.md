@@ -32,6 +32,9 @@ the review will add questions, also read
 `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` — its "Adding questions
 from outside the audit" section is the contract for every insertion.
 
+Execute `_single-shot-self-report.md` Step 5 against the previous review self-report before target
+work; never restate the shared `Status:` meanings here.
+
 Require the dispatch envelope `ENTRYPOINT: simulation-grade` before every mode. If absent, stop without grading or writing
 and instruct the caller to use `simulation-grade`. This is the only door to a state-writing review.
 

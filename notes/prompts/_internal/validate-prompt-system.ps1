@@ -461,6 +461,10 @@ foreach ($sqlReference in $sqlExerciseReferences) {
 # reads it as ANSI and a literal one arrives as two characters that match nothing, for ever, in
 # silence - the trap that made the first draft of the section-1 locator harvest zero names.
 $middleDot = [char]0x00B7
+$emDash = [char]0x2014
+$statusTerminatorPattern = "(?:[ \t]*\*{0,2})?(?:[ \t]*`$|[ \t]+(?:$middleDot|$emDash)[ \t]+.+`$)"
+$settledStatusPattern = "^[ \t]*(?:clean|open|rejected)$statusTerminatorPattern"
+$appliedStatusPattern = "^[ \t]*applied in[ \t]+[0-9a-f]{7,40}(?:[ \t]+and[ \t]+[0-9a-f]{7,40})*$statusTerminatorPattern"
 $selfReports = @(Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '_last-run-report*.md')
 $reportsScanned = 0
 $reportsApplied = 0
@@ -483,13 +487,15 @@ foreach ($report in $selfReports) {
         Add-ValidationError "Self-report carries no 'Status:' field, so nothing can tell an applied edit from an open finding: $reportName."
         continue
     }
-    # The VALUE is a closed set of two, and it is enforced rather than merely counted. Membership of
-    # the population below turns on the literal `applied in`, so `Status: applied (commit abc)` would
-    # otherwise leave the population with no error and no counter - an escape available to exactly
-    # the context this check exists to constrain, which is what the cold reviewer caught.
+    # The VALUE is a closed set of four, and it is enforced rather than merely counted. A settled value
+    # may end there or carry historical prose after one declared separator; `applied in` additionally
+    # requires one real abbreviated/full hex hash and permits the historical `and <hash>` shape.
+    # Prefix matching is deliberately insufficient: `open-ended`, `clean garbage`, or `applied in`
+    # would otherwise satisfy the public invariant while naming no legitimate state.
     foreach ($statusField in $statusFields) {
-        if ($statusField.Groups['rest'].Value -cnotmatch '^[ \t]*(open|applied in)\b') {
-            Add-ValidationError "Self-report's 'Status:' field states neither 'open' nor 'applied in <hash>': $reportName."
+        $statusValue = $statusField.Groups['rest'].Value
+        if ($statusValue -cnotmatch $settledStatusPattern -and $statusValue -cnotmatch $appliedStatusPattern) {
+            Add-ValidationError "Self-report's 'Status:' field is not clean|open|rejected|applied in <hash>: $reportName."
         }
     }
     # A Status-shaped line the prefix filter dropped is prose quoting the field, which is legitimate
@@ -500,7 +506,7 @@ foreach ($report in $selfReports) {
             $selfReportReports.Add("$reportName has a 'Status: ... applied in' outside the field position, read as prose and not counted.")
         }
     }
-    if (-not @($statusFields | Where-Object { $_.Groups['rest'].Value -cmatch '\bapplied in\b' })) { continue }
+    if (-not @($statusFields | Where-Object { $_.Groups['rest'].Value -cmatch $appliedStatusPattern })) { continue }
     $reportsApplied++
 
     # One optional wrap per seam, never a flattened file: see the note above.

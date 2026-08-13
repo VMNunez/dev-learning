@@ -61,10 +61,10 @@ it receives the brief, the sources, and the acceptance format — never this run
 
 ## Guards
 
-0. **Run-start check.** Execute the check in `notes/prompts/_internal/_pipeline-self-report.md` — read
-   `notes/prompts/projects/plan/_internal/_last-run-report-project-brief.md` (it may not exist yet;
-   skip silently) and, if its `Status:` line says `open`, surface the finding in **one line** and
-   continue. Never apply it here.
+0. **Run-start check.** Execute the decision table in
+   `notes/prompts/_internal/_pipeline-self-report.md` against
+   `notes/prompts/projects/plan/_internal/_last-run-report-project-brief.md` (it may not exist yet).
+   Never restate the shared `Status:` meanings or apply a surfaced finding here.
 1. **Branch guard.** Run `git branch --show-current`. Study materials commit on whatever branch is
    active; if you are on `main`, stop and ask which branch to use.
 2. **Resolve `NUMBER`.** List `projects/` and take the next number **above the highest existing

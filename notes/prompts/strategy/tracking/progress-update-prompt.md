@@ -21,7 +21,7 @@ tracker (which it reads directly — a subagent for one tiny file costs more con
 
 > **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit`, `cv-prompt` and `roadmap-review`, which read `PROGRESS.md`.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
 One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 

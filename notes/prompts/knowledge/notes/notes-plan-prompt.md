@@ -61,9 +61,9 @@ belong there.
    step 6; it may not be relocated across levels without its Spanish counterpart. Follow the
    repository's line-count and read-to-EOF rule.
 3. Stop on `main`.
-4. Read this prompt's `_internal/_last-run-report-notes-plan.md` if it exists and look at its `Status:`
-   line, exactly as the run-start check in `_pipeline-self-report.md` requires. An `open` finding is
-   surfaced to Victor in one line and left alone; never apply it inside the run it would affect. This is
+4. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's
+   `_internal/_last-run-report-notes-plan.md` if it exists. Never restate the shared `Status:` meanings
+   or apply a surfaced finding inside the run it would affect. This is
    the trigger that keeps an earlier run's finding from rotting — three of this prompt's ledger entries
    came out of `notes-plan` runs.
 5. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.

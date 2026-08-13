@@ -29,6 +29,9 @@ Read, in full:
 - `notes/prompts/practice/simulations/_internal/_simulation-plan-standard.md`
 - the previous `_internal/_last-run-report-simulation-plan.md`, if it exists
 
+Execute the run-start decision table in `_pipeline-self-report.md` against that previous report before
+target work; never restate the shared `Status:` meanings here.
+
 Validate `LEVEL`; default only `MODE`. Resolve:
 
 - `DOCTRINE = practice/simulations/PLANNING.md`

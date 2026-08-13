@@ -29,7 +29,7 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 
-> **Run-start check (step 0):** before anything else, run the check in `notes/prompts/_internal/_pipeline-self-report.md` — read this prompt's own `_last-run-report` and, if its `Status` is `open`, surface that finding in one line before proceeding.
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_portfolio-standard.md` (the bar) · `_portfolio-write-prompt.md` (question author) ·

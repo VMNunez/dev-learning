@@ -111,7 +111,8 @@ Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, th
 ## Step 0 — Guards and plan
 
 1. Stop on `main`.
-2. Surface any unresolved previous recommendation.
+2. Execute the run-start decision table in `_pipeline-self-report.md` against the previous
+   coverage-prompt self-report; never restate the shared `Status:` meanings here.
 3. Create a plan containing every step, validation, mirror rebuild, self-report, tracker update, and update-mode commits.
 4. Run `git status --short` and preserve unrelated changes.
 5. Confirm one topic only.

@@ -59,10 +59,10 @@ written by the closing ritual (`STANDARD` Section E has the writer set — do no
 
 ## Guards
 
-0. **Run-start check.** Execute the check in `notes/prompts/_internal/_pipeline-self-report.md` — read
-   `notes/prompts/practice/sql/_internal/_last-run-report-sql-plan.md` (it may not exist yet; skip
-   silently) and, if its `Status:` line says `open`, surface the finding in **one line** to Victor and
-   continue. Never apply it here.
+0. **Run-start check.** Execute the decision table in
+   `notes/prompts/_internal/_pipeline-self-report.md` against
+   `notes/prompts/practice/sql/_internal/_last-run-report-sql-plan.md` (it may not exist yet). Never
+   restate the shared `Status:` meanings or apply a surfaced finding here.
 1. Read the active adapter, `_session-rules.md`, `CONTEXT`, `STANDARD`, `COVERAGE`, `DOCTRINE`, and — when it
    exists — `PLAN`. Follow the repository's line-count and read-to-EOF rule on each; `DOCTRINE` and
    `PLAN` are long files and a partial read is how a step's history gets silently dropped.

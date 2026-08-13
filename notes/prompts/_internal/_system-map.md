@@ -419,7 +419,7 @@ The things a run leaves behind that are easy to miss.
 | a ritual completed as declared and was **not worth its cost** — it ate the block, nobody reads its output, the work got done by hand anyway | append one `RITF-NNNN` row to `_ritual-friction.md` and carry on. It opens **no** `REC` and dispatches **no** cold reviewer |
 | `_ritual-friction.md` has three `open` rows naming one ritual | that ritual is due a ruling under `_recommendation-ledger.md` → `REC-054` (c) — kept, thinned or deleted. The only ruling licensed to *remove* machinery |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
-| a `_last-run-report*.md` says `applied in <hash>` and carries no `cold reviewer:` verdict, or its `Status:` field is missing or states neither state | `_internal/validate-prompt-system.ps1` — the applied edit is read as a **self-approval** and stays that way; the only other way out is correcting the `Status` to `open` **when the hash it names is not a prompt edit**, which is a claim `git show` settles, never a way to make the red go away |
+| a `_last-run-report*.md` says `applied in <hash>` and carries no `cold reviewer:` verdict, or its `Status:` field is missing or outside `clean` · `open` · `rejected` · `applied in <hash>` | `_internal/validate-prompt-system.ps1` — the applied edit is read as a **self-approval** and stays that way; the only other way out is correcting the `Status` to the truthful value **when the hash it names is not a prompt edit**, which is a claim `git show` settles, never a way to make the red go away |
 | after substantial machinery changes, you need every prompt/skill contract and both derived maps checked together | `/system-check` — explicit machinery audit; never an ordinary-commit gate and never an operational-status sweep |
 | the suspicion is not that a row is **wrong** but that something is **missing** — a file nothing writes, a block with no closer, a debt nothing clears, a gate nobody runs | `/system-gaps` — reads only these two maps, so it is cheap enough to re-run as the system grows; it registers findings and corrects nothing, and an absence it reports still has two branches until `/system-check` or `map-sync` opens the file |
 
@@ -437,8 +437,9 @@ step of a chain that starts with a run, and every link exists because the previo
 1. **A run ends by executing its self-report contract** — five bullets for the nineteen orchestrators
    (`_pipeline-self-report.md`), three for the twelve single-shot prompts
    (`_single-shot-self-report.md`). It reports the **machinery, never the content**, and carries a
-   `Status:` line — `open` or `applied in <hash>` — which is what makes a live finding distinguishable
-   from a settled one at a glance instead of by re-reading prose.
+   `Status:` line from the vocabulary owned once in `_pipeline-self-report.md`: `clean`, `open`,
+   `rejected`, or `applied in <hash>`. Every prompt's run-start check points to that decision table
+   instead of reconstructing the meanings inline; only its bounded legacy-`open` branch reads a Verdict.
 2. **The close-out check runs first, and against disk.** Declared outputs from this prompt's `README.md`
    row, probed with `git status` **and** `git log --name-only`; for an orchestrator, also the count of
    mandated dispatches against the count actually dispatched — the half no file can prove. Nothing here
@@ -472,8 +473,8 @@ step of a chain that starts with a run, and every link exists because the previo
    not stay buried in a row about something else; that is how one precedent came to be cited seven times
    and misread every time.
 7. **The run-start check closes the loop.** The at-end refinement only ever sees *this* run's report, so
-   step 0 of every prompt reads its own last report and prints one line when the `Status` is still
-   `open`. Without it a finding rots — the `notes-write` gate sat open four days for exactly that reason.
+   step 0 of every prompt executes the shared status decision table against its own last report and
+   surfaces only a genuine `open`. Without it a finding rots — the `notes-write` gate sat open four days for exactly that reason.
    It **surfaces and never applies**: editing a prompt and then immediately running it entangles an
    unverified edit with the run.
 
