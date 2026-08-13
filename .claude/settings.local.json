@@ -141,7 +141,11 @@
       "Bash(git commit -m 'docs\\(prompts\\): REC-090 - roadmap-review'\\\\''s Status named a content commit, not a prompt edit *)",
       "Bash(grep -nE \"approve \\\\||\\\\| approve|reviewer:\\\\s*$|cold\\\\s*$\")",
       "Bash(echo \"--- exit $? \\(1 = none found\\) ---\")",
-      "Bash(grep -rhoE '\\\\*{0,2}Status:\\\\*{0,2}[^·]*' --include='_last-run-report*.md' .)"
+      "Bash(grep -rhoE '\\\\*{0,2}Status:\\\\*{0,2}[^·]*' --include='_last-run-report*.md' .)",
+      "PowerShell($s = \"step-complete\",\"backlog-task-open\",\"backlog-task-close\",\"coverage-bullet-add\",\"coverage-mark\",\"readme-concept-add\"; $t=0; foreach \\($n in $s\\) { $p = \"c:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\.claude\\\\skills\\\\$n\\\\SKILL.md\"; $c = \\(Get-Content $p | Measure-Object -Line\\).Lines; $t += $c; \"{0,-22} {1}\" -f $n,$c }; \"TOTAL $t\")",
+      "PowerShell($s = \"step-complete\",\"backlog-task-open\",\"backlog-task-close\",\"coverage-bullet-add\",\"coverage-mark\",\"readme-concept-add\"; foreach \\($base in \".claude\\\\skills\",\".agents\\\\skills\"\\) { $t=0; foreach \\($n in $s\\) { $p = Join-Path \"c:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\$base\" \"$n\\\\SKILL.md\"; if \\(Test-Path $p\\) { $t += \\(Get-Content $p\\).Count } else { \"MISSING $p\" } }; \"$base TOTAL $t\" }; Get-ChildItem \"c:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\.agents\" -ErrorAction SilentlyContinue | Select-Object -First 5 Name)",
+      "Bash(git --no-pager diff --stat)",
+      "Bash(git --no-pager log --oneline -2)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Victor\\Documents\\main\\dev\\learning\\.claude\\skills\\step-complete",
