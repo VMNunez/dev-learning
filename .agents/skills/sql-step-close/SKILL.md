@@ -4,11 +4,12 @@ description: >
   Run the closing ritual for a SQL step, invoked by sql-grade the moment a step's last exercise file
   scores ≥ 80% — and directly only when Victor says a step is done ("cierra el step 1", "close the SQL
   step"). This is Moment 5 and Section 4 of practice/sql/PLANNING.md. Grading already moved the
-  counters; what this owns is the part no grader can reach: the ✅ sql:{file-slug} drill markers on
-  every coverage bullet the step's scored exercises actually drilled, the doctrine's §0 quick
-  reference, a re-check that PROGRESS.md's Total rows really add up, the §8c readiness line saying
+  counters; what this owns is the part no grader can reach — the ✅ sql:{file-slug} drill markers on
+  every coverage bullet the step's scored exercises actually drilled, the §8c readiness line saying
   which techniques the close just unlocked for a simulation, and the level-closed check that nothing
-  else in the track performs. The failure mode this exists for is a step whose exercises are
+  else in the track performs — plus the two the grading run already wrote: the doctrine's §0 quick
+  reference, verified against what 4d left and never re-authored here, and PROGRESS.md's Total rows,
+  re-summed. The failure mode this exists for is a step whose exercises are
   all green while notes/sql/coverage/{LEVEL}.md still reads as if the concepts were never touched. It
   asks Victor nothing — a step it cannot close is reported and left open, never blocked on an answer.
   Do NOT use it to grade (that is sql-grade), to close a project step (that is step-complete), to add
@@ -103,6 +104,11 @@ explicitly in the report — this is the one place a reader would expect that de
 `practice/sql/PLANNING.md` §0 is read at the start of every 12:30 block, so it is the file that hurts
 most when stale. The grading subagent already rewrote it (its step 4d). **Verify, do not redo**: current
 step, done condition, next revision point, last updated. Fix only what is wrong, and say what you fixed.
+
+**You are not §0's author.** 4d writes its live values on a close; you verify them and repair what it
+left wrong. The full writer set is stated once, in
+`notes/prompts/practice/sql/_internal/_sql-plan-standard.md` **Section E**, sixth row — read it there,
+do not restate it. A §0 rewritten from scratch here is a §0 that lost the close it was recording.
 
 ---
 
