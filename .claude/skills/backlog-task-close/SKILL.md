@@ -340,7 +340,9 @@ to the ledger, with the reason in place of the concept tail: `→ dropped: super
 
 ## Commits
 
-Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per file.
+Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per **logical
+change**, which is the session rules' unit and not "per file": the bullets below deliberately put several
+files in one commit where they are one change, and never split one change across two.
 Everything below lands on the **active branch** (`main` only receives merges via PR).
 
 **You commit yourself:**
@@ -355,9 +357,11 @@ Everything below lands on the **active branch** (`main` only receives merges via
 - `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit`, by `backlog-task-open`
   (the `⏸ Deferred` marker) and by this skill, never by Victor, so the authorship boundary puts it on
   your side. Its own atomic commit, separate from the coverage one.
-- `PLANNING.md`, `README.md` — authorized 2026-08-01. The ritual writes these entries itself, so the
-  authorship boundary puts them on your side too. One atomic commit each — and PLANNING's carries both
-  the rules-section entry (step 3) and the §0 refresh (step 3b), which are one logical change.
+- `PLANNING.md` — authorized 2026-08-01. The ritual writes this entry itself, so the authorship boundary
+  puts it on your side. Its own atomic commit, carrying both the rules-section entry (step 3) and the §0
+  refresh (step 3b), which are one logical change.
+- The README — **not yours**: step 2 hands it to `readme-concept-add`, which writes the entry and commits
+  it under the same 2026-08-01 authorization, in one commit for that entry. Do not restage it here.
 
 **Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
 then `git commit` block), one command per block:
