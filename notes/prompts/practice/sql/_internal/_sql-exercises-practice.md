@@ -41,12 +41,18 @@ the file, not the schedule.
   neither pattern matches (the file has only a setup block), set N = 0. Do NOT regenerate the setup
   block in either case.
 
-  **If the file is in the legacy format, say so before generating:**
+  **If the file is in the legacy format, say so before generating.** The marker rule the message
+  below states is the review branch's — `_sql-exercises-review.md` Step 1 (what counts as already
+  settled) and Step 2b (where it is written, "on the header in both formats"). This message only
+  reports it, so on any disagreement the review branch wins and this text is the thing to fix: it
+  said the opposite until 2026-08-13, and `practice/sql/junior/PLANNING-junior.md` §1 records what
+  that cost when the same claim was corrected there on 2026-07-22.
+
   "Este archivo está en el formato antiguo (`-- #NN |`, sin marca `-- Your answer:`). Los ejercicios
   nuevos usarán el formato actual, así que el archivo quedará mixto — eso es normal y el modo review
-  lo maneja: lee ambos formatos y puntúa tus respuestas antiguas con normalidad. La única diferencia
-  es que los ejercicios antiguos no pueden llevar la marca `-- ✅ Corregido`, así que se re-leen en
-  cada review en vez de saltarse como cerrados. ¿Continúo? (sí / no)"
+  lo maneja: lee ambos formatos y puntúa tus respuestas antiguas con normalidad. La marca
+  `✅ Corregido <fecha>` va al final de la línea de cabecera en los dos formatos, así que un ejercicio
+  antiguo ya corregido se salta como cerrado igual que uno del formato actual. ¿Continúo? (sí / no)"
   Wait for an affirmative before continuing.
 
   **Then check the schema, which is a separate and more dangerous mismatch.** Read the setup block of
