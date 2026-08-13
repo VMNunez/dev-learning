@@ -96,17 +96,31 @@ Apply, to your slice only, the matching parts of the standard:
 Judge against what the code actually does — do not invent findings to fill space; if a lens is clean
 for this slice, say so.
 
-**Any finding about a config file must quote the offending line verbatim.** For anything you report in
-`application.properties` / `.yml` / `data.sql` / `docker-compose.yml` (hardcoded secret, `ddl-auto`,
-`show-sql`, a credential, a missing env var), put the exact line — value included — in the Finding cell,
-e.g. `app.jwt.secret=my-secret-key` **not** "the JWT secret is hardcoded". If you cannot quote the line,
-you have not read it and the finding does not exist. Config findings are the easiest to assert from
-memory of what such files *usually* look like, and a false one lands straight in the backlog as a High.
+**The verbatim config-line rule: any finding about a config file must quote the offending line
+verbatim** — except where the value is itself a secret, which the **secret-value form** rule in this
+section governs. For anything you report in `application.properties` / `.yml` / `data.sql` /
+`docker-compose.yml` (`ddl-auto`, `show-sql`, a missing env var where what is hardcoded is not itself a
+secret), put the exact line — value included —
+in the Finding cell, e.g. `spring.jpa.hibernate.ddl-auto=create-drop` **not** "`ddl-auto` is set wrong".
+If you cannot quote the line, you have not read it and the finding does not exist. Config findings are
+the easiest to assert from memory of what such files *usually* look like, and a false one lands straight
+in the backlog as a High.
 
 > **Why this rule is here.** On 2026-07-14 a reviewer reported "hardcoded JWT secret — High" against a
 > file whose actual line was `app.jwt.secret=${JWT_SECRET}` — correctly externalised. It was caught only
 > because a second slice happened to read the same file and contradicted it. Quoting the line makes the
 > mistake impossible to make without it being visible.
+
+**The secret-value form rule — quote the key, and the *form* of the value, never the value.** A line
+holding a hardcoded secret, an API key, a password, a token, a connection string or a DB credential falls
+under this prompt's **"Never transcribe the value of a secret"**, which wins over the verbatim
+config-line rule's "value included". What survives it is the whole evidence that rule exists to produce:
+the key quoted exactly, plus a verdict on the form of what follows it — `app.jwt.secret=` → **a literal
+value, not an `${ENV}` reference**. The 2026-07-14 mistake the verbatim config-line rule was written
+against was a mistake about the *form* of a value, never about its material, so naming the form settles
+it and the material adds nothing. A finding cited this way **is** quoted for the purpose of the verbatim
+config-line rule: it does not fall under that rule's "you have not read it and the finding does not
+exist", and it is raised at the same severity it would otherwise carry.
 
 ## Output — findings table + trace (no edits, no commit)
 
@@ -121,8 +135,8 @@ or untested §8 rule = High; leftover `console.log` = High; polish = Low). If a 
 **2. Trace** — list every file you read in this slice with a one-line note (reviewed / clean / N
 findings), **plus proof you read it to the end**: its line count and a short quote of its **last real
 line** (the closing method, selector, rule, or export — not a blank line or `}`). Format each row as
-`file (N lines, ends: «…last line…») — note`. This is the same principle as the config-line rule above,
-applied to coverage: a trace row you can only write after reaching the bottom of the file cannot be
+`file (N lines, ends: «…last line…») — note`. This is the same principle as the verbatim config-line
+rule, applied to coverage: a trace row you can only write after reaching the bottom of the file cannot be
 faked from the first screen. A row without the line count + closing quote does not count as read — the
 orchestrator treats that slice as not covered. **Do not edit any file.**
 
@@ -140,4 +154,6 @@ untracked" is the complete argument; the value adds nothing to it. It holds whet
 committed: your report feeds a `PROJECT-BACKLOG.md` that **is** committed, so a value copied here is one
 step from being the leak it was reporting. A secret that is genuinely exposed (committed, or hardcoded
 where an env var belongs) is still a finding — you are changing how you cite it, never whether you
-raise it.
+raise it. A config-file finding still carries its evidence under Step 2's **secret-value form** rule: the
+key quoted exactly and whether what follows it is a literal or an `${ENV}` reference, which is a
+statement about the line and carries none of its material.

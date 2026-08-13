@@ -360,6 +360,17 @@ to keep the list short.
 finding already parked there is not re-raised while its gate holds, and one whose gate has since moved
 leaves the section and becomes a normal task.
 
+**No secret value reaches the chat summary, the backlog, or the self-report.** Both slice reviewers cite
+a secret by location and kind only, and the flow reviewer's **secret-valued** config findings arrive as
+the key plus whether its value is a literal or an `${ENV}` reference — so an API key, password, token, connection
+string or signing secret should never reach you as a value. If one does, strip it before you write it
+anywhere: cite the file, the line and what the secret is, say it must be rotated and moved to an env var,
+and never paste the material, not even partially masked (a `7b6aec…` prefix still leaks material and
+confirms which key it is). This holds for the run's own self-report too — a reviewer that returned a raw
+value is a rule breach worth recording, and the breach is recorded by naming it, never by quoting the
+value as evidence. You commit both `PROJECT-BACKLOG.md` and that report, so a value copied into either is
+the leak it was reporting. This changes how a secret is cited, never whether it is raised.
+
 First print a brief chat summary: **Overall quality** (Strong/Good/Needs work + one sentence) · **Top
 findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Slices reviewed** (count) · **Beyond
 the current gate** (how many findings the level-fit pass parked, and how many lines it graduated back
