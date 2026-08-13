@@ -749,7 +749,7 @@ level out, *which files each hand-over command covers*, not which sentence wins.
 correctly leaves the commit unexecuted but still calls the orchestrator its owner; `REC-132` isolates
 whether that remaining word means execution, handoff, or stale residue after `REC-100`'s family sweep.
 
-**Current order: `REC-109` first; then safety and persistent-state risks `REC-133`, `REC-115`, `REC-118`,
+**Current order: `REC-109` first; then safety and persistent-state risks `REC-115`, `REC-118`,
 `REC-136`, `REC-140`; then broken or undefined terminal paths `REC-114`, `REC-121`, `REC-124`, `REC-125`,
 `REC-131`, `REC-137`; then authority and writer boundaries `REC-111`, `REC-119`, `REC-127`, `REC-132`,
 `REC-134`, `REC-135`; then the remaining bounded schema, read-scope and precedence rows `REC-110`,
