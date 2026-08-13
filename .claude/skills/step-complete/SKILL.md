@@ -109,8 +109,9 @@ Never re-create a `## Angular`-style list of concepts in PROGRESS.md. The concep
 coverage checklist in step 3 and nowhere else; a concept already covered there is not repeated —
 say so instead.
 
-PROGRESS.md follows the active branch (CLAUDE.md, 2026-07-14 — `main` only receives merges via PR) — commit
-it from the repo root.
+PROGRESS.md follows the active branch (`notes/prompts/_internal/_session-rules.md` → `Study materials
+follow the active branch — no direct commits to main`; `main` only receives merges via PR) — commit it
+from the repo root.
 
 ## 3 — Coverage: land the step's concepts on the checklist
 
@@ -258,8 +259,9 @@ project code file is staged alongside a doc file.
 
 ## If the whole project just finished
 
-Remind Victor to update the "Current study progress" section of CLAUDE.md and the projects table in
-PROGRESS.md, per CLAUDE.md.
+Remind Victor to update the `Current study progress` section of
+`notes/prompts/_internal/_session-rules.md` and the projects table in PROGRESS.md, as that shared
+session contract requires.
 
 ## Report back
 

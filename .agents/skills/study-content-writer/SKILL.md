@@ -34,7 +34,10 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
 These files are the single source of truth — do not summarize or approximate them from memory.
 Apply their format modes, signature elements, and rules exactly.
 
-## Step 2 — Apply the two rules that carry most of the weight (from CLAUDE.md)
+## Step 2 — Apply the two rules that carry most of the weight
+
+These two rules come from `notes/prompts/_internal/_session-rules.md` → `notes/ folder` →
+`Detail standard`; that shared session contract, not a platform adapter, owns them.
 
 1. **Explain the mechanism, not just the behaviour.** Say *why* it works, under the hood, step by
    step. Tracing the mechanism is the number-one reason Victor otherwise has to add TODOs.
@@ -92,7 +95,8 @@ again. The 13:30 closing ritual, not this writer, owns `[studied]` after a final
 ## What this skill does NOT do
 
 It does not run the audit pipeline and does not restructure the whole topic. Committing is governed
-by CLAUDE.md, not by this skill — in a daily session Claude MAY commit `notes/` files directly
-(atomic, no Co-Authored-By, double `git status` check), so after writing, follow that rule as usual.
+by `notes/prompts/_internal/_session-rules.md` → `No git side effects on code`, not by this skill — in
+a daily session the active agent MAY commit `notes/` files directly (atomic, no Co-Authored-By,
+double `git status` check), so after writing, follow that rule as usual.
 For a full topic build or audit, that is `/notes-audit` or `/interview-prep-audit` in a separate
 session — this skill is only for getting inline, in-session writing right.
