@@ -517,13 +517,19 @@ records only that the two-map invariant above is **not** among them.
 
 `/system-check` complements the validator and `map-sync`; it replaces neither. When Victor launches it
 after substantial machinery changes, cold family manifests read the complete canonical prompt/skill
-machinery to EOF, the orchestrator reconciles the README-owned prompt contracts and this map's wiring
-and skill contracts through a physical-line-backed claim ledger and the stable-ID reverse ledger of
-every atomic manifest fact, and a cold final reviewer independently reproduces the line denominator before gating the
-global verdict. The durable report proves both the inventory boundary and the reconciliation. It may
-correct the two derived maps and file machinery recommendations, but never opens or reports live project,
-learning, SQL, practice or application state — including the active project's orientation files.
-Because it is token-intensive, it is **explicit only** — never scheduled, inferred, or run per commit.
+machinery to EOF, and the README-owned prompt contracts and this map's wiring and skill contracts are
+reconciled through a physical-line-backed claim ledger and the stable-ID reverse ledger of every atomic
+manifest fact. **Both directions are ruled by bounded cold concerns** — one per map span, one per manifest
+concern, after two runs blocked proving one context cannot disposition them all (`REC-109`) — and each
+concern reads the map itself, since dividing the *source* into a paraphrase is what `REC-079` deleted. A
+cold final reviewer independently reproduces the partition and the line denominator before gating the
+global verdict. The durable report proves the inventory boundary and
+the reconciliation. It may correct the two derived maps and file machinery recommendations, but never
+opens or reports live project, learning, SQL, practice or application state — including the active
+project's orientation files. **A map claim its own source contradicts is a ledger row, not a blocked
+verdict**: the audit rules on the maps, and a source stating two mutually exclusive clauses is a defect it
+is forbidden to repair. Because it is token-intensive, it is **explicit only** — never scheduled,
+inferred, or run per commit.
 
 ### The cheap sweep for what is missing
 

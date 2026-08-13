@@ -94,11 +94,10 @@ The orchestrator enumerates, from disk rather than from either map:
   `_recommendation-ledger.md`, plus `_shared-context.md` (the shared canonical runtime input) and the
   PowerShell validator;
 - `notes/prompts/README.md` and `notes/prompts/_internal/_system-map.md` themselves, as the two objects
-  under review. These two are the only inventory items with **no analyst manifest owner**: since
-  `REC-079` the orchestrator reads them itself in Step 4. They stay in the inventory and in the path +
+  under review. These two are the only inventory items with **no analyst manifest owner**: they are ruled
+  on directly in Step 4 rather than manifested (`REC-079`). They stay in the inventory and in the path +
   hash snapshot, and are excluded from Step 3's `audited files` / `unassigned files` denominators; their
-  read-to-EOF evidence is the two `N lines, read to EOF` declarations at the head of Step 4's claim
-  ledger;
+  read-to-EOF evidence is the `N lines, read to EOF` declaration of every Step 4b concern;
 - every skill directory in both adapters, paired by relative path;
 - every launcher in both adapter catalogues, paired by filename.
 
@@ -116,7 +115,7 @@ role may read the same file for a different concern, but it never becomes a seco
 
 Now build the path + SHA-256 manifest from **exactly that inventory path set** and assert
 `snapshot paths = inventory paths` before dispatch. Recompute both the path set and hashes immediately
-before reconciliation and before the final review. A changed, added, missing, or previously untracked
+before each reconciliation wave (Steps 4b and 4c) and before the final review. A changed, added, missing, or previously untracked
 audited input stops the run as `blocked`; unrelated dirty files outside the inventory are preserved and
 do not invalidate the snapshot.
 
@@ -178,7 +177,9 @@ and must not be reintroduced. Two consecutive runs demoted its return — to not
 cross-check on 2026-08-10 — and the extraction was 434 lines against 1101 in the two maps, 39% of the
 object, so **size was not what made it a worse input; being derived was.** A derived paraphrase can omit
 a claim in a way nothing downstream can see, and the audit's completeness would then rest on a list whose
-own completeness nothing checks. Step 4 builds its claim ledger from the maps directly.
+own completeness nothing checks. Step 4's concerns build the claim ledger from the maps directly: dividing
+the **ruling** across bounded concerns that each read the map itself is not what that deletion forbids,
+which is dividing the **source** into a paraphrase somebody else rules on.
 
 ## Step 3 — completeness gate
 
@@ -199,6 +200,12 @@ Before comparing a single map row:
 6. Require `audited files = inventory files − 2` (the two maps have no analyst owner — see Step 1),
    `duplicate manifest ownership = 0`, `unassigned files = 0` over that same set, and launcher/skill
    mirror parity proven.
+7. On acceptance, persist every accepted manifest **verbatim** to an orchestrator-owned runtime scratch
+   directory, one file per concern, named by it. That directory is the accepted denominator's durable
+   copy and is what Step 4's concerns read, so no single context ever has to hold every manifest fact at
+   once; a scratch write outside the repository crosses no commit boundary
+   (`_agent-runtime-standard.md`). A manifest is never edited or added to after acceptance — a defect in
+   one is a re-dispatch under item 4.
 
 If the gate cannot close, take the blocked branch in Step 7 and then execute the pipeline close-out. **A
 run that took the blocked branch** additionally may not edit either map.
@@ -217,98 +224,89 @@ not sufficient.
 
 ## Step 4 — reconcile the two maps
 
-The orchestrator compares the completed manifests against every relevant claim, not merely the first
-name hit. **Reconciliation runs in two directions and is not finished until both have.**
+**Reconciliation runs in two directions and is not finished until both have.** Both are divided into
+bounded cold concerns, and `_internal/_system-check-reconcile-prompt.md` is the mandate each concern is
+dispatched with: it owns the per-direction steps, what counts as a claim in each map, the disposition
+vocabulary and the return contract, none of which are restated here. This step owns the denominator, the
+partition, the dispatch, the merge and the gate.
 
-**Build the claim ledger first, and build it from the maps themselves.** This is the orchestrator's own
-work and is never dispatched: the maps are the object under review, so a separate analyst's extraction
-would be a derived paraphrase (`REC-079`). The ledger itself therefore needs a mechanically checkable
-denominator rather than a trust claim:
+**Why the ruling is divided.** Two consecutive admitted runs closed the 168-file manifest gate and then
+failed to disposition 1,959 claim rows against 4,988 manifest facts in one context (`REC-109`); the second
+reached full atomization and died at the dispositions, so the wall is the ruling volume, not the census.
+What is divided is the **ruling** and never the source — Step 2's `2C` paragraph owns that distinction and
+every concern below reads the map file itself. **Rule atomic claim by atomic claim, never section by
+section**: a section-level pass is what published two false `README.md` cells on 2026-08-10, both
+falsifiable from manifests already in hand.
 
-1. Read both maps to EOF. The sole source denominator is their **physical lines, blank lines included**;
-   each has the stable ID `<map-path>::LNNNN`.
-2. Classify every line exactly once as `claim-bearing`, `context/syntax`, or `out of scope`. The latter
-   two require a reason. A multi-line assertion marks every participating line `claim-bearing`; a table
-   separator, heading, fence marker or blank line is `context/syntax`.
-3. Split the factual assertions on every claim-bearing line into atomic claim rows. One claim row asserts
-   one fact and cites one or more physical-line IDs plus table row/column coordinates when applicable.
-   Several claims may cite one line, and one claim may span several lines; the line's classification is
-   still singular. Every claim-bearing line must reach at least one atomic claim, and every atomic claim
-   must reach at least one claim-bearing line.
-4. Record `physical lines · claim-bearing · context/syntax · out of scope · atomic claims · unclassified
-   lines · conflicting classifications · claim-bearing lines with no claim` separately for each map.
-   The category counts must sum to physical lines. The two EOF declarations and these equalities are the
-   completeness proof the final reviewer independently recomputes.
+### 4a — denominator and partition
 
-**Rule atomic claim by atomic claim, never section by section** — a section-level pass is what published
-two false `README.md` cells on 2026-08-10, both falsifiable from manifests the orchestrator was already
-holding.
+1. `wc -l` each map. Its **physical lines, blank lines included**, are the sole source denominator; each
+   line has the stable ID `<map-path>::LNNNN`.
+2. Partition each map mechanically, so the final reviewer reproduces it rather than trusting it, and bound
+   a concern on **both** quantities — its lines and its table rows. Lines alone concentrate instead of
+   dividing: a catalogue row runs ~580 characters against ~75 for prose, so a line-only merge put 45% of
+   `README.md`'s text into one concern of twelve. `grep -n "^## "` gives the top-level sections; a concern
+   is one section, from its heading to the line before the next, plus one preamble concern for the lines
+   above the first heading. Then:
+   - walking in order, merge the next section into the current concern while the merged span stays
+     **≤ 150 physical lines and ≤ 25 table rows** (`^|` lines, separator rows excluded);
+   - a single section over either bound is **split at its own `^### ` sub-headings** — never inside a
+     table and never mid-row, because a cut through a table separates a claim from the row that
+     qualifies it;
+   - a section over bound with no sub-headings stays whole, and the report names it as the concern
+     carrying the most.
+3. Assert the spans are contiguous, non-overlapping, and cover exactly `1..N` for each map. Record the
+   partition — concern, map, first line, last line, lines, table rows — in the report.
 
-Give every row exactly one disposition:
+### 4b — Direction 1, claim → evidence
 
-- `correct` — the manifests **positively support** the cell as written. Only these may be covered by a
-  `verified — no change` section in Step 7.
-- `incorrect` — the manifests contradict it; draft the correction.
-- `unverifiable` — the completed manifests neither support nor contradict it. **This is a finding, not a
-  pass.** Record every one in the report with the evidence that would settle it. Silence here is the
-  overclaim the absence rule above forbids. A cell may be recorded `unverifiable` only after **one
-  bounded attempt to settle it has failed** — a re-dispatch of the owning bounded concern under Step 3,
-  or the orchestrator's own read of the single named source file — and the report states which was tried.
+Recompute the Step 1 path + hash manifest; any change stops the run as `blocked`. Then dispatch one cold
+`analyst`, tier `standard`, per 4a concern, in parallel waves bounded by the runtime's concurrency limit,
+each receiving `_internal/_system-check-reconcile-prompt.md`, `DIRECTION = claim`, its `MAP` and `SPAN`,
+the accepted-manifest directory, its own scratch return path, and the machinery boundary repeated.
 
-After those bounded attempts, `unverifiable > 0` fails the Step 4 completeness gate. Preserve the
-evidence and list every unresolved claim in the blocked report, but do not proceed to architecture
-findings, final review, map corrections or recommendations. A global absence verdict has no qualified
-form: this audit either settles every in-scope claim or closes `blocked — incomplete audit`.
+Merge only complete returns, then assert over the union:
 
-### Direction 1 — claim → evidence
+- every concern declared its map read to EOF. **These declarations are the two maps' read-to-EOF
+  evidence**, standing where the orchestrator's own once did — it partitions and merges, and the whole
+  reads it no longer performs are performed by the concerns and by the cold final reviewer;
+- each span's three classification counts sum to its length, the spans sum to each map's physical
+  denominator, and unclassified, conflicting, and claim-bearing-without-claim lines are zero;
+- every claim row carries exactly one disposition and cites at least one line ID **inside its own span**;
+  no two concerns claim the same line;
+- every `source-contradiction` row meets its bar — both clauses quoted, with their manifest fact IDs and
+  the one owning inventory path. A row that does not is incomplete and its concern is re-dispatched cold.
 
-#### `notes/prompts/README.md`
+### 4c — Direction 2, evidence → claim
 
-Check every current-machinery claim throughout the whole file, including all counts and group lists;
-every catalogue row's public command, run-first prerequisite,
-configuration/modes and received inputs, reads, writes/returns, dispatched roles and isolation, commit
-owner, handoffs/gates, and explicit exclusions; internal-component rows; launcher naming and parity;
-orchestrator/single-shot classification; the hub/writer tables; producer/consumer edges and diagrams;
-batch/global status; runtime tiers; and every typical run order. Historical narrative with no current
-contract is still line-classified but may be `out of scope` only with that explicit reason.
+Recompute the snapshot again, then dispatch one cold `analyst`, tier `standard`, per **Step 2 manifest
+concern**, with `DIRECTION = evidence`, that concern's accepted manifest, the merged Direction 1 claim
+ledger directory, both map paths, its own scratch path, and the boundary.
 
-#### `notes/prompts/_internal/_system-map.md`
+The reverse denominator is exactly the union of the stable manifest fact IDs accepted at Step 3. Merge and
+assert: the union of dispositioned IDs equals that denominator exactly — no fact twice, none missing, none
+invented; every `documented → <claim ID>` resolves to a real row in the merged ledger; every
+`source-only by ownership split` quotes the rule that keeps the fact out. Report the reverse denominator
+and counts for all three dispositions, per manifest field class.
 
-Check every current-machinery claim throughout the whole file: the opening system properties; every
-chain step in §§2–6; every applicable writer/reader row in
-§7; all `PROGRESS.md` ownership claims in §8; every skill row in §9 — trigger, received inputs, reads,
-writes/returns, isolation, commit owner, handoffs/gates, and explicit exclusions; every machinery debt
-in §10; every symptom route in §11; the improvement/validation loop in §12; and every block/trigger/load
-claim in §13. Historical narrative with no current contract may be `out of scope` only with that explicit
-reason. Operational state is
-never loaded to verify a structural claim: verify the prompt or skill contract that declares the path,
-schema, owner, or gate.
+### 4d — the completeness gate
 
-Enforce the documentation split while reconciling: `README.md` owns per-prompt facts and run order;
-`_system-map.md` owns per-skill facts and cross-system wiring. Replace duplicate rule text in the
-non-owning document with a link to its owner.
+- **`unverifiable > 0` fails the gate.** Preserve the evidence and list every unresolved claim in the
+  blocked report, but do not proceed to architecture findings, final review, map corrections or
+  recommendations. A global absence verdict has no qualified form: this audit either settles every
+  in-scope claim or closes `blocked — incomplete audit`.
+- **`source-contradiction > 0` does not fail it.** The question this audit asks is whether the maps
+  document the machinery truthfully, and a source stating two mutually exclusive clauses cannot be
+  documented truthfully by any wording; blocking on it makes the global verdict hostage to defects the run
+  is expressly forbidden to repair, which is exactly how the runs of 2026-08-12 and 2026-08-13 ended.
+  Each such row instead **(a)** is barred from every `verified — no change` section, **(b)** is named in
+  the report with both clauses and its owning path, and **(c)** is reconciled in Step 5 to exactly one
+  `REC-NNN`. A `source-contradiction` row that reaches Step 7 without a ledger ID fails the gate exactly
+  like an `unverifiable`.
 
-### Direction 2 — evidence → claim
-
-Direction 1 catches a **false** claim. It cannot catch an **incomplete** one: a cell naming two of five
-items agrees with every manifest fact about those two. Walk **every atomic manifest fact**, not only file
-access, in the opposite direction:
-
-- for runnable prompts: command, prerequisite, every configuration key/value or received input, each
-  role/dispatch/isolation fact, every read and write/return, commit owner, handoff/gate, exclusion and
-  close-out fact;
-- for internal components: every `read by`, purpose/authority, read, write/return and ownership fact;
-- for skills: trigger and received inputs, every read and write/return, isolation, commit owner,
-  handoff/gate and exclusion;
-- for root contracts, launchers and validator: every system-wide fact that belongs in either map under
-  the ownership split stated in `Purpose`.
-
-The reverse denominator is exactly the union of the stable manifest fact IDs accepted at Step 3. Give
-each ID exactly one reverse disposition: `documented → <claim-ledger ID>`,
-`source-only by ownership split → <authoritative source>`, or `missing claim`. Silence is not a fourth
-state. A manifest fact with no home in either map is corrected exactly like a false claim; a fact that
-legitimately stays in its authoritative source must name the ownership rule that keeps it out. Report the
-reverse denominator and counts for all three dispositions, per manifest field class.
+Enforce the documentation split while merging: `README.md` owns per-prompt facts and run order;
+`_system-map.md` owns per-skill facts and cross-system wiring. Duplicate rule text in the non-owning
+document is replaced by a link to its owner.
 
 For each discrepancy record:
 
@@ -324,6 +322,10 @@ Using the manifests and corrected map as evidence, identify only cross-system fi
 audit cannot see: overlapping writers, missing consumers, broken feedback loops, orphan outputs,
 unowned state, circular prerequisites, rituals whose load threatens execution, and duplicated decisions.
 
+**Every `source-contradiction` row from 4d is reconciled here too**, and this is the step that discharges
+it: the two conflicting clauses and their owning path are the finding, and the row is not settled until it
+carries exactly one ledger ID. It is a defect in the source, so the audit records it and repairs nothing.
+
 Reconcile each genuine improvement with `_recommendation-ledger.md`: update an existing item when it is
 the same problem; create a new `REC-NNN` only when it is distinct. Preserve the ledger's resolution and
 cold-review rules. Do not implement the recommendation.
@@ -337,19 +339,24 @@ Step 7 items 1–7 complete, item 8 set to `pending cold review`, and item 9 set
 report. The reviewer receives a **different** scratch path for its findings and verdict, under
 `_agent-runtime-standard.md`. Recompute the Step 1 path + hash manifest; if it moved, take the blocked
 branch with `not run — blocked before final-review dispatch`. Otherwise dispatch one cold `reviewer`,
-tier `deep`, with
-the complete manifests, both current maps, the physical-line + atomic-claim ledger, the complete reverse ledger,
+tier `deep`, with the accepted-manifest directory, both current maps, the 4a partition, the merged
+physical-line + atomic-claim ledger, the complete reverse ledger,
 the proposed map patch, and that immutable draft report. Its payload repeats the machinery-only boundary.
 The reviewer reads both maps to EOF and checks:
 
-- every inventory item has evidence — the two maps' evidence being Step 4's claim ledger and its two
-  EOF declarations;
+- every inventory item has evidence — the two maps' evidence being Step 4's claim ledger and the per-concern
+  EOF declarations behind it;
+- the 4a partition independently reproduces from `grep -n "^## "` and the ≤ 150-line merge rule, its spans
+  are contiguous, non-overlapping and exhaustive, and no claim row cites a line outside its own span;
 - the physical-line category denominator independently reproduces, every in-scope factual
   assertion became an atomic claim row, the category sum equals the physical-line denominator, and no
   `context/syntax` or `out of scope` line hides one;
 - every claim-ledger row carries one disposition, every manifest fact carries one reverse disposition,
   **both** reconciliation directions ran, and no
   `verified — no change` section covers a cell not dispositioned `correct`;
+- every `source-contradiction` row quotes both conflicting clauses with their manifest fact IDs, names one
+  owning inventory path, and carries exactly one ledger ID — the state is a route to Step 5, never a way
+  past a claim the manifests could have settled;
 - every proposed correction follows from that evidence;
 - every occurrence of a changed claim was updated;
 - no authoritative machinery file was edited;
@@ -368,19 +375,23 @@ Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
 1. date, starting commit, branch, and `Status: complete | blocked`;
 2. inventory and dispatch coverage counts;
 3. validator baseline and final result;
-4. README catalogue coverage and corrections — **on a run that reached Step 4**: its claim-ledger counts
-   by disposition, the physical-line category reconciliation with zero unclassified lines,
-   `verified — no change` sections covering **only** cells dispositioned `correct`, every `unverifiable`
-   claim named with the evidence that would settle it, and the evidence → claim sweep's complete
+4. README catalogue coverage and corrections — **on a run that reached Step 4**: the 4a partition table,
+   its claim-ledger counts by disposition, the physical-line category reconciliation with zero unclassified
+   lines, `verified — no change` sections covering **only** cells dispositioned `correct`, every
+   `unverifiable` claim named with the evidence that would settle it, every `source-contradiction` claim
+   named with both clauses, its owning path and its ledger ID, and the evidence → claim sweep's complete
    manifest-fact denominator, dispositions and findings;
-5. system-map wiring/skill coverage and corrections, on those same four terms;
+5. system-map wiring/skill coverage and corrections, on those same terms;
 6. boundary proof: the excluded live-artifact classes and confirmation that none entered the denominator;
 7. architecture findings linked to their recommendation IDs;
 8. exactly one final-review state: `approve`, `approve-with-tightening`, `reject`,
    `not completed — reviewer unavailable`, or `not run — blocked before final-review dispatch`;
 9. global verdict: `maps verified`, `maps corrected`, or `blocked — incomplete audit`. The first two
    assert an absence and therefore require `unverifiable: 0`. Any positive count forces
-   `blocked — incomplete audit`; `maps verified` and `maps corrected` have no qualified form.
+   `blocked — incomplete audit`; `maps verified` and `maps corrected` have no qualified form. The
+   `source-contradiction` count is printed beside the verdict and does **not** force the blocked branch
+   while every one of its rows carries a ledger ID: the verdict rules on the maps, and those rows rule on
+   the sources, which this run may not repair.
 
 **Completed branch:** apply the reviewer-approved map patch and justified recommendation rows, then run
 the validator again with `-MachineryOnly`. Inspect `git diff` and prove that only the declared maps,
@@ -429,13 +440,14 @@ in the committed audit report and must not be misreported as a skipped step.
 
 A run is `completed` only when all of these are true:
 
-- every analyst-owned inventory file was read to EOF and appears exactly once in the manifests, and both
-  maps carry the orchestrator's own `N lines, read to EOF` declaration at the head of Step 4's claim
-  ledger;
-- every atomic claim derived from every in-scope README prompt-contract field and system-map
+- every analyst-owned inventory file was read to EOF and appears exactly once in the manifests, and every
+  Step 4b concern carries its own `N lines, read to EOF` declaration for the map it ruled on;
+- the 4a partition is contiguous, non-overlapping and exhaustive over both maps; every atomic claim
+  derived from every in-scope README prompt-contract field and system-map
   wiring/skill field carries exactly one Step 4 disposition; both maps' physical-line category counts
   sum exactly, with zero unclassified/conflicting or claim-bearing-without-claim lines; every manifest
-  fact has one reverse disposition; `unverifiable = 0`; and **both** reconciliation directions ran;
+  fact has one reverse disposition; `unverifiable = 0`; every `source-contradiction` row carries both
+  clauses and one ledger ID; and **both** reconciliation directions ran;
 - every supported correction survived the cold final review;
 - no live project, learning, practice, application, or debt state entered the audit denominator;
 - no active-project `PLANNING.md`, `PROJECT-BACKLOG.md` or `PROGRESS.md` was opened even for orientation;
