@@ -6,6 +6,8 @@ README(s) must contain and how each section must be written**. All pieces of the
 - `_readme-write-prompt.md` (the **author**) reads the rules for the one README it is writing.
 - `_readme-review-prompt.md` (the **reviewer**) reads the same rules to audit that README.
 - `readme-audit.md` (the **orchestrator**) reads the "which READMEs" logic and the commit rule.
+- `readme-concept-add` (the **in-session skill**) reads "Which README owns a concept" plus the section
+  format it routes to, and the granularity half of the commit rule, which binds it too.
 
 ## What the readme review is for
 
@@ -204,7 +206,23 @@ structure → Backend and frontend details.**
 After fixing, the pieces record a **summary of changes** — one line per section changed:
 `[Section name] — what was wrong → what was fixed`, so Victor can review before committing.
 
-**Not auto-committed — by design.** README.md lives in the project folder and follows the project's
-**feature-branch → PR → main** workflow (it is not a study file on main). The orchestrator writes the
-fixes to the working tree and **hands Victor the commit command** — one per README actually changed, not
-all three by default. Commit message: `docs: update {PROJECT_PATH} README(s) — [one-line summary]`.
+**One granularity rule, and it binds both writers of a project README: the unit is the change, never the
+file.** A README commit covers every README that one piece of work touched — **never one commit per
+README**, and never `git add` on all three by default. State it in both directions, because it has been
+misread in both. Who runs that commit differs, and only that:
+
+- **`readme-audit.md` — not auto-committed, and it hands over one commit for the project.**
+  `_session-rules.md` *permits* the agent to commit a project's `README.md` directly (authorized
+  2026-08-01), so declining is this pipeline's own choice and the branch is **not** the reason — a README
+  commits on the active feature branch either way. The reason is the size of the object: this pipeline
+  rewrites whole files across up to three audiences, and the summary of changes above is what Victor
+  reads before that rewrite lands. So the orchestrator leaves the fixes in the working tree and hands
+  over one `git add` per README that actually changed, followed by **one** `git commit`:
+  `docs: update {PROJECT_PATH} README(s) — [one-line summary]`, whose plural is the tell that a single
+  command covers the set. A README whose author→reviewer pair did not complete is excluded from it.
+  Under `PROJECT_PATH = all` that is one such set per project; `readme-audit.md` owns how they are printed.
+- **`readme-concept-add` — commits its own entry, in one atomic commit for that entry.** It uses the
+  same 2026-08-01 permission the pipeline declines, because one line added to an existing section is not
+  a rewrite anyone needs to read first. Its unit is the concept, so a cross-tier concept — the global
+  README *plus* the tier that implements it, per "Which README owns a concept" — is still one commit.
+  The skill's own file owns the rest of its commit contract.

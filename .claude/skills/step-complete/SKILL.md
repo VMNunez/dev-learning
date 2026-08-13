@@ -235,7 +235,9 @@ is a gate that gets run late, out of order, or not at all.
 
 ## Commits
 
-These are docs/study updates, not project code. Do **not** bundle them — one atomic commit per file.
+These are docs/study updates, not project code. Do **not** bundle them — one atomic commit per **logical
+change**, which is the session rules' unit and not "per file": the bullets below deliberately put several
+files in one commit where they are one change, and never split one change across two.
 Everything lands on the **active branch** (`main` only receives merges via PR).
 
 - `notes/**/coverage/*.md` — committed by `coverage-bullet-add` and `coverage-mark` themselves, under the
@@ -246,8 +248,8 @@ Everything lands on the **active branch** (`main` only receives merges via PR).
   table edit and the marker are one logical change. So sequence this ritual's own PROGRESS.md edit (the
   `## Projects` status cell, and the evidence cell) **before** invoking them, and let their commit carry
   all of it. Only when step 3 wrote nothing at all does PROGRESS.md need a commit of its own here.
-- The README — committed by `readme-concept-add` itself, one commit per README actually changed. Do not
-  restage it here.
+- The README — committed by `readme-concept-add` itself, in **one** commit for the entry it wrote, even
+  when a cross-tier concept put that entry in two READMEs. Do not restage it here.
 - `PLANNING.md` — **you commit it yourself**, authorized 2026-08-01, one atomic commit covering both the
   step's ✅ (step 1) and the §0 repoint (step 5): they are the same logical change, and a §0 still pointing
   at a step whose ✅ already landed is the exact staleness step 5 exists to prevent.

@@ -83,9 +83,12 @@ here — not a longer bullet.
 ## 4 — Commit the README
 
 **You commit it yourself**, authorized 2026-08-01 — this skill writes the entry, so the authorship
-boundary puts the file on your side. One atomic commit per README actually changed, never all three by
-default, on the active branch. Apply the hygiene rule: `git status` immediately before the `add` and
-before the `commit`, so no project code file is staged alongside it.
+boundary puts the file on your side. **One atomic commit for the entry**, on the active branch, staging
+only the README(s) this run actually changed. The standard's granularity rule is that the unit is the
+change, never the file: a cross-tier concept lands in the global README *plus* the tier that implements
+it, and that is still one concept, so it is still **one** commit — never one per file. Apply the hygiene
+rule: `git status` immediately before the `add` and before the `commit`, so no project code file is
+staged alongside it.
 
 ```
 docs(readme): <what the entry names>

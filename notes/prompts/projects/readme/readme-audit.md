@@ -18,10 +18,12 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 **Internal pieces this orchestrates** (you never launch these directly):
 `_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer).
 
-> **Not auto-committed — by design.** Like `review-audit`, this writes README files inside the project
-> folder, which follow the project's **feature-branch → PR → main** workflow. The subagents fix the
-> files in the working tree and the orchestrator **hands Victor the commit command** — one per README
-> actually changed. There is no `DRY_RUN`.
+> **Not auto-committed — by design.** `_session-rules.md` permits the agent to commit a project's
+> `README.md` directly; this pipeline deliberately does not, because it rewrites whole files and the
+> summary of changes exists so Victor reads that rewrite before it lands. The subagents fix the files in
+> the working tree and the orchestrator **hands Victor one commit for the project** — one `git add` per
+> README that actually changed, never one commit per README and never all three by default. The rule is
+> owned by `_readme-standard.md` → "Summary + commit rule". There is no `DRY_RUN`.
 
 ---
 
@@ -74,8 +76,12 @@ Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered proj
 run the **single-project procedure below once per project**, finishing one before the next. Put each
 project's report under a `### [project]` heading, and after the last print the `_batch-mode.md` summary
 table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s generic
-`Target | Result | Files changed` one, and batch-mode's per-target commit rule is replaced here by the
-commit hand-over (READMEs are never auto-committed). Once a project is finished, carry forward only its
+`Target | Result | Files changed` one. Take `_batch-mode.md`'s "Commits" section in two halves: its
+**granularity holds** — one commit per target, and the target of this prompt is the **project**, never
+the individual README, so two projects are never squashed together — while the orchestrator **hands each
+set over instead of running it**, and a project's set is one `git add` per changed README plus one
+`git commit` rather than that section's single `add` + `commit` pair. Print every project's set together
+at the end, in project order. Once a project is finished, carry forward only its
 summary table row — drop its per-target detail from your working context before starting the next project.
 Otherwise, follow the procedure once.
 
@@ -138,8 +144,14 @@ one README, so skip this.
 ## Finishing
 
 Print a **summary of changes** across all targets (one line per section changed, grouped by README), then
-**hand Victor the commit** — do not run it (see the by-design note). Include only the READMEs that
-actually changed, one `git add` per file, e.g.:
+**hand Victor the commit** — do not run it, per the **Not auto-committed — by design** note at the top of
+this prompt.
+
+**What the set covers: one commit for this project**, staging one `git add` per README that actually
+changed — never one commit per README, and never all three by default. A target excluded by the Failure
+protocol is left out of the set even if its file changed. On `PROJECT_PATH = all`, one such set per
+project, printed together at the end in project order. Example, for a full-stack project whose three
+READMEs all changed:
 
 ```
 git add {PROJECT_PATH}/README.md
@@ -178,10 +190,13 @@ unless this report shows a real failure. Also print the report in chat.
 
 ## Hard rules
 
-- **Never auto-commit the READMEs.** They follow the project's feature-branch workflow; always hand
-  Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not extend to
-  them — same as `review-audit`.) The only file this flow commits itself is `_last-run-report.md` —
-  prompt-system machinery under the notes/prompts exception.
+- **Never auto-commit the READMEs.** Always hand Victor the command, and hand him **one commit for the
+  project**, not one per README. The permission exists — `_session-rules.md` lets the agent commit a
+  project's `README.md`, and `readme-concept-add` uses it — so the reason this flow declines it is the
+  whole-file rewrite, not the branch. (`plan-audit` auto-commits `PLANNING.md` and `review-audit`
+  auto-commits `PROJECT-BACKLOG.md`, both inside the project folder; that is their contract, not this
+  one's.) The only file this flow commits itself is `_last-run-report.md` — prompt-system machinery
+  under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.
