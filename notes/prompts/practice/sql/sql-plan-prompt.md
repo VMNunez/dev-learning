@@ -53,9 +53,15 @@ If a required role cannot be dispatched, stop unless its instruction explicitly 
 **Two files, one plan.** `DOCTRINE` holds the level-neutral half — the step loop, the done-condition
 formats, the closing ritual, the branch rules, the revision-point mechanism, the quality gates, the
 invariants, the closure condition, the out-of-scope fence. `PLAN` holds the level's own route — its
-exercise files, its steps, its progress table. **This prompt writes `PLAN` only.** A finding about
-`DOCTRINE` is reported, never fixed here; `sql-plan-audit` owns its rules, and its §0 live values are
-written by the closing ritual (`STANDARD` Section E has the writer set — do not restate it).
+exercise files, its steps, its progress table. **Of the two, this prompt authors `PLAN`; the only edit it
+may ever make to `DOCTRINE` is the one-time split below.** A finding about `DOCTRINE` is otherwise
+reported, never fixed here; `sql-plan-audit` owns its rules, and its §0 live values are written by the
+closing ritual (`STANDARD` Section E has the writer set — do not restate it).
+
+**The write set is wider than this pair.** Update mode also writes `{LEVEL}`'s two `Exercise route`
+tables in `PROGRESS.md` — the route's projection, assigned to this prompt by `STANDARD` Section E and
+invariant 15. "Update mode" below is the complete list, self-report and tracker included; nothing above
+it narrows that list.
 
 ## Guards
 
