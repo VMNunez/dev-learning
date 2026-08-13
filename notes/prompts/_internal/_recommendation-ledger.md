@@ -646,19 +646,21 @@ level out, *which files each hand-over command covers*, not which sentence wins.
 the other flow whose write prompt already names the orchestrator correctly, so the family sweep this row
 ran is spent for it.
 
-**Current order: `REC-101` → `REC-104` → `REC-105` → `REC-102` → `REC-100` → `REC-107`.** Re-set
-2026-08-12 after reviewing the six contradiction rows against disk. `REC-101` stays first because both
-self-report contracts govern how every later resolution records its result; its original blast-radius
-claim was wrong, but its vocabulary collision is still the denominator. `REC-104` is second on blast
-radius per *day* — the 08:00 rituals are the only machinery Victor touches every morning — and its sweep
+**Current order: `REC-107` → `REC-101` → `REC-104` → `REC-105` → `REC-102` → `REC-100`.** Re-set
+2026-08-13 after distinguishing the ledger-resolution trace from the prompt self-report vocabulary.
+`REC-107` goes first because it completes `REC-106`'s cold-review contract: every later recommendation,
+including `REC-101`, should close only after its `## Closed` line can persist that the mandatory reviewer
+ran. Its first scope remains the field itself; pricing an automated check still waits until the field has
+proved it gets written. `REC-101` follows because both self-report contracts govern every later prompt
+close-out; its original blast-radius claim was wrong, but its vocabulary collision is still that path's
+denominator. `REC-104` is next on blast radius per *day* — the 08:00 rituals are the only machinery
+Victor touches every morning — and its sweep
 may expose sibling commit/trigger contradictions before a narrower row assumes those contracts are
 settled. `REC-105` follows because it leaves a declared hands-off portfolio run with a persistent file
 that its downstream consumer cannot safely use as-is. `REC-102` comes next: its answer may reuse
 `REC-091`'s partition pattern, but only after reading the performer rather than the launcher summary.
 `REC-100` runs alone — its batch partner closed first and took the shared family sweep
-with it. `REC-107` is last and was added to the order when `REC-106` closed, which is what gave it
-something worth tracing: its minimum fix is one token in a `## Closed` line, and pricing the check comes
-after the field proves it gets written. `REC-103` is absent from
+with it. `REC-103` is absent from
 the order because it failed the defect and deduplication bars and is now closed as rejected.
 
 The second `/system-gaps` run's five rows are closed, each settling read
