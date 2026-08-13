@@ -1,15 +1,17 @@
-# Application standard — the shared rules both application prompts follow
+# Application standard — the shared job-application rules
 
 This is the **shared standard** for job-application materials. It is not a runnable prompt — it holds
-no configuration and does nothing on its own. Four prompts read it:
+no configuration and does nothing on its own. Five prompts read it:
 
 - `cv-prompt.md` reads it to **create/update the CV** for Spanish consultancy applications.
 - `linkedin-prompt.md` reads it to **write/update the LinkedIn profile**.
 - `cover-letter-prompt.md` reads it for the sources, voice, defensibility rule, and keyword awareness.
 - `tracker-prompt.md` reads it for the target-market context and the keyword pool (analyze mode).
+- `portfolio-audit.md` reads it to produce the one polished project bullet that the application
+  prompts consume.
 
-The prompts used to carry their own copy of these rules; keeping them here once means they can never drift.
-Each prompt adds only its own *flow* (CV structure vs LinkedIn sections) on top of this standard.
+The consumers used to carry their own copy of these rules; keeping them here once means they can never
+drift. Each adds only its own flow on top of this standard.
 
 ---
 

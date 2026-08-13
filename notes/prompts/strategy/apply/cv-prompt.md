@@ -45,8 +45,8 @@ BASE_CV    = [tailor mode only: path to the master CV to start from | auto — t
 
 ## Before starting
 
-First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared standard both
-application prompts follow. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
+First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared
+job-application standard. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
 `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
 `notes/cv/cv-bullets.md`, and your existing CV in `job-search`), the **universal bullet format**, the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
