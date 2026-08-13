@@ -167,12 +167,30 @@ Read `notes/prompts/strategy/apply/_internal/_application-standard.md` first —
 
 `[Verbo en pasado] [qué es] con [tecnologías clave] — [un resultado concreto o una decisión que demuestra profundidad]`
 
-Draft **two options**, save both to `notes/cv/cv-bullets.md` under a `## {PROJECT_PATH}` heading (replace
-the section if it exists). If the file does not exist, create it with the header:
+Draft **two options** and show both to Victor. The persistent file has a stricter contract: a committed
+`notes/cv/cv-bullets.md` contains **one chosen bullet per project**, because the apply prompts consume
+that entry as polished input rather than as a decision they are allowed to make.
+
+- With `DRY_RUN = true`, save both options under a `## {PROJECT_PATH}` heading (replace the section if
+  it exists) and leave them uncommitted for Victor to compare in the diff.
+- With `DRY_RUN = false`, save both options as pending working-tree output, present them, and **pause
+  before the content commit** for Victor to choose A or B. Delete the other option and the choice marker,
+  verify that exactly one bullet remains in the section, and only then continue toward the atomic commit.
+  In `PROJECT_PATH = all`, finish that choice and commit for the current project before starting the
+  next target. A dry batch instead leaves each target's two-option section uncommitted under the normal
+  dry-run contract.
+
+**File-wide integrity gate before every commit that stages `cv-bullets.md`:** scan the complete file,
+not only the current project. Every `## {PROJECT_PATH}` section must contain exactly one bullet and no
+`choose one` marker. On a non-dry run, any older two-option section pauses the commit for Victor's
+selection too; clean every such section before staging the file. On a dry run, the handoff tells Victor
+to satisfy this same whole-file gate before running the printed manual commit.
+
+If the file does not exist, create it with the header:
 ```markdown
 # CV Bullets
 
-One bullet per project. Edit each entry to keep only your chosen option.
+One polished bullet per project.
 Used by `cv-prompt` when drafting the Projects section of your CV.
 
 ---
@@ -185,6 +203,13 @@ Entry format:
 
 - [Option A]
 - [Option B]
+```
+
+Committed entry format:
+```markdown
+## {PROJECT_PATH}
+
+- [Chosen option]
 ```
 
 ---

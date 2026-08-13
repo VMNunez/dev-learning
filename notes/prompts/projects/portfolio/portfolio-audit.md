@@ -6,7 +6,8 @@
 > `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
 
 Run this **inside the supported agent runtime**. It is the only portfolio prompt Victor launches. It runs the **final
-go/no-go gate** on a finished project, hands-off: is it ready to show a recruiter and reference in a job
+go/no-go gate** on a finished project, with one declared human choice before an eligible non-dry commit:
+is it ready to show a recruiter and reference in a job
 application **today**? It produces four things (see `_portfolio-standard.md`):
 
 1. An **exhaustive bank of project-specific interview questions** — built **one bank section at a time**,
@@ -38,8 +39,9 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits **none of the audit
 > outputs**, so you can read the diff first. (`DRY_RUN` governs the audit outputs only — the pipeline
 > self-report is prompt-system machinery and commits itself either way; see the final step.) Once you
-> trust it, `DRY_RUN = false` commits those outputs for you. Two hand steps always remain by design:
-> pruning the CV bullet options, and pushing the profile README from its own repo.
+> trust it, `DRY_RUN = false` commits those outputs for you. For a ✅/⚠️ verdict, that commit pauses once
+> for Victor to choose the one CV bullet that may persist; a ❌ verdict has no choice gate. Pushing the
+> profile README from its own repo also remains a hand step by design.
 
 ---
 
@@ -82,7 +84,8 @@ Use PROJECT_PATH and DRY_RUN wherever the prompt refers to {PROJECT_PATH} and {D
 
 ---
 
-You are the orchestrator for the portfolio gate, hands-off.
+You are the orchestrator for the portfolio gate. Run hands-off except for the declared CV-bullet choice
+before a ✅/⚠️ non-dry content commit.
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
 > branch is currently active (the shared session rules) — a feature branch is the normal case; name it in the final
@@ -97,8 +100,10 @@ The verdict + CV bullet + GitHub description are short and deterministic, so you
 
 ## If PROJECT_PATH = all
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
-run the **single-project procedure below once per project**, fully finishing one (including its commit)
-before the next — never overlap, since their subagents commit and parallel commits race the git index.
+run the **single-project procedure below once per project**, fully finishing one before the next: with
+`{DRY_RUN} = false`, resolve any CV-bullet choice and commit that project; with `{DRY_RUN} = true`, finish
+its explicit no-commit handoff and leave its pending options under that project's own section. Never
+overlap, since their subagents edit shared files and parallel commits race the git index.
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
 summary table (`Project | Verdict | Questions`). **Context guard for batch runs:** with ~7 projects × up
 to 5 sections × 2 subagents, full decision-by-decision traces returned to you would saturate your own
@@ -195,13 +200,18 @@ Print, in this order:
 4. GitHub description (one option) — **omit if ❌**.
 5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
    commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
-6. If ✅/⚠️: both bullet options are in `notes/cv/cv-bullets.md`, and choosing between them is Victor's,
-   so it never blocks the run. With `{DRY_RUN}` = true print "edit `notes/cv/cv-bullets.md` to keep only
-   your chosen bullet **before running the commit below**"; with `{DRY_RUN}` = false the file is already
-   committed with both, so print "both options were committed — delete the one you don't want next time
-   you touch the CV".
+6. If ✅/⚠️, both draft options are in `notes/cv/cv-bullets.md`, but a committed section may contain
+   exactly one. With `{DRY_RUN}` = true print "edit `notes/cv/cv-bullets.md` to keep only your chosen
+   bullet **before running the commit below**; then scan the whole file and verify every project section
+   has exactly one bullet and no `choose one` marker". With `{DRY_RUN}` = false, present A and B and **pause
+   before the content commit** for Victor to choose one. Do not continue, start the next batch target,
+   or run the final self-report while that answer is pending. After the answer, delete the other option
+   and the choice marker, then run the same integrity gate over the **whole** `cv-bullets.md`: every
+   project section must have exactly one bullet and no choice marker. If an older section still has two
+   options, pause for Victor's selection there too and clean it before staging the file. In
+   `PROJECT_PATH = all`, resume and commit this project before starting the next one.
 
-**If `{DRY_RUN}` = false:** commit atomically — with the safety check first: run `git status` before
+**If `{DRY_RUN}` = false:** after the choice gate above when one applies, commit atomically — with the safety check first: run `git status` before
 the add and again before the commit, confirm only the intended `notes/` files are staged
 (`git restore --staged` anything else, especially project code left staged from an earlier step).
 If ✅/⚠️ (cv-bullets was written):
@@ -217,7 +227,11 @@ the diff.
 ## Hard rules
 
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
-  rule is "never auto-commit"; he lifted it for the audit orchestrators. It applies nowhere else.
+  rule is "never auto-commit"; he lifted it for the audit orchestrators. For a ✅/⚠️ verdict the
+  authorization begins only after Victor chooses the single CV bullet; it never authorizes committing
+  both options. It applies nowhere else.
+- **`cv-bullets.md` is staged only after its whole-file integrity gate passes.** Every project section
+  has exactly one bullet and no choice marker; validating only the section written this run is not enough.
 - **Questions are saved regardless of the verdict** — a ❌ still commits the question file.
 - **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
   orchestrator commits once, after every section's author→reviewer pair is done; the section subagents
