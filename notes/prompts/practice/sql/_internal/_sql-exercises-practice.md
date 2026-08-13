@@ -302,14 +302,14 @@ second topic appends to the first rather than creating a new file.
 `{FILE}` was already resolved by the shell (`sql-exercises-prompt.md`, under Resolution) from `{PLAN}`
 §1 before this branch opened. Use the resolved value; do not re-derive it.
 
-**One file, one schema (2026-07-22).** `practice/sql/junior/01-basics.sql` is closed and is not in this
-table: it carries the pre-canonical schema, so nothing is ever appended to it again. A file whose
-SETUP block does not match the canonical schema is never extended — start the next numbered file
-instead, and update `{PLAN}` §1 and §3.
+**One file, one schema (2026-07-22).** `practice/sql/junior/01-basics.sql` is closed: it carries the
+pre-canonical schema, so nothing is ever appended to it again. A file whose SETUP block does not match
+the canonical schema is never extended — start the next numbered file instead, and update `{PLAN}` §1
+and §3.
 
-If the folder does not exist, create it. **Never invent a path** — `{FILE}` came from the shell's path
-table and is the only path this run may write to; if the shell could not resolve one, it has already
-stopped.
+If the folder does not exist, create it. **Never invent a path** — the `{FILE}` the shell resolved
+from `{PLAN}` §1 is the only path this run may write to; if the shell could not resolve one, it has
+already stopped.
 
 For a **new file**: write the complete file (setup block + exercises).
 For **append**: read the existing file, then append the new exercises after the last line. Do not modify any existing content.

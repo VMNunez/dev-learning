@@ -243,9 +243,10 @@ Topic order (study order, and also the file-number order): basics, joins, group-
 nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
 normalization, data-types, ddl, indexes, live-database, report-queries. This order, the file
 numbering and the step numbering are kept in sync with `{PLAN}` — that file is the
-source of truth. Several topics deliberately share one file (joins + join-pitfalls, subqueries +
-ctes, dml + transactions, schema-design + normalization, data-types + ddl); the path table above is
-authoritative.
+source of truth. Four pairs of topics deliberately share one file, the second appending to the first
+— they are exactly the rows marked *(appends)* in the path table above, and `joins` and
+`join-pitfalls` are not among them: Steps 1 and 3, two files, two targets. That table is the
+**projection** the Resolution section defines.
 
 ---
 
