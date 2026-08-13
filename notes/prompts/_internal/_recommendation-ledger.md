@@ -75,11 +75,16 @@ down, and the three items before it each cost more than they were budgeted for.
    tokens were written for a drafted edit, and this path has already improvised a fourth (`revise`).
    Then the two-map test's own declaration, `maps unaffected` / `maps: <map> — <row>`, because the
    reviewer is the last gate before the commit that has to carry that edit.
-4. **Collapse the row into `## Closed`** — one line: the ID, what it was, the commit. Before
-   collapsing, promote any rule the row established that governs **future** work into this preamble. A
-   rule that other items obey must not stay buried in a row about something else; that is how the
-   `REC-025` precedent came to be cited seven times from inside a row about SQL specialists — and
-   misread every time, which is the second reason to promote a rule rather than cite it across rows.
+4. **Collapse the row into `## Closed`** — only a `sweep: complete` review returning `approve` or
+   `approve-with-tightening` may reach this step; `reject` and every incomplete sweep leave the row
+   open under step 3. The one-line closure carries the ID, what the item was,
+   `cold reviewer: approve | approve-with-tightening`, the two-map declaration, and the implementation
+   commit. This reviewer field starts with `REC-107`;
+   historical lines are not retrofitted. Before collapsing, promote any rule the row established that
+   governs **future** work into this preamble. A rule that other items obey must not stay buried in a
+   row about something else; that is how the `REC-025` precedent came to be cited seven times from
+   inside a row about SQL specialists — and misread every time, which is the second reason to promote a
+   rule rather than cite it across rows.
 
 **Collapsing rows by script: split on `(?<!\\)\|` and assert exactly 7 fields per row.** A plain
 `split('|')` silently deleted a just-written row on the first attempt, because cells legitimately carry
@@ -495,13 +500,12 @@ itself, which is exactly why the row can only be half-decided when it arrives.
 
 ## Closed
 
-**One line each: the ID, what it was, and the commit.** Nothing else — the full reasoning of every one of
-these lives verbatim in `git log -p` on this file, so restating it here buys nothing and costs the
-readability of `## Open`, which is what this ledger is for. Three things do earn their place in a line: a
-**rejected** item keeps its reason, because that reason is the only thing stopping the next analysis
-re-raising it; a **residue** clause names work the item left open; and the `maps` token says whether the
-two-map test was run. If a line needs a paragraph, the rule it established belongs in the preamble
-instead. Ordered by ID.
+**One line each, using the closure schema in step 4 above.** Nothing else — the full reasoning of every
+one of these lives verbatim in `git log -p` on this file, so restating it here buys nothing and costs the
+readability of `## Open`, which is what this ledger is for. Beyond the required fields, a **rejected**
+item keeps its reason, because that reason is the only thing stopping the next analysis re-raising it,
+and a **residue** clause names work the item left open. If a line needs a paragraph, the rule it
+established belongs in the preamble instead. Ordered by ID.
 
 - `REC-001` — a live-repo/dependency fact-check gate for the notes author — `—`
 - `REC-002` — coverage may take a controlled diff input when sections are restructured — `—`

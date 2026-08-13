@@ -463,9 +463,9 @@ step of a chain that starts with a run, and every link exists because the previo
    on disk from a self-approval and must be read as one. `validate-prompt-system.ps1` checks that pairing,
    under the invariant `README.md` states. **All of this describes the refinement gate. Resolving a
    ledger row runs the same mandatory gate over a different object** — a fix already on disk rather than
-   a draft — so its inputs, the two extra return lines it owes (`sweep:` and the maps declaration) and
-   its park-the-edit branch, where an incomplete sweep leaves the row `open` whatever the token said,
-   are `_recommendation-ledger.md`'s step 3 and not this item.
+   a draft — so its inputs, the two extra return lines it owes (`sweep:` and the maps declaration), its
+   park-the-edit branch, and the reviewer verdict persisted by the `## Closed` line are
+   `_recommendation-ledger.md`'s steps 3–4 and not this item.
 6. **The edit lands under both map rules** — the change test and the read test in "How it stays true" —
    the hash goes into the report's `Status:`, and the ledger row collapses into `## Closed` after any
    rule it established is **promoted into the ledger's preamble**. A rule that governs future work must
