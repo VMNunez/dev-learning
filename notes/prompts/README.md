@@ -74,10 +74,13 @@ prompt, skill or adapter names resolves — against the repository root **or** a
 both of which are legitimate forms here; that a **declared** output path is a real file name and not
 merely a well-formed one — a file a prompt has not written yet cannot be required to exist, so it is
 exempted from that resolution by *shape*, and shape passed `03-jions.sql` exactly as readily as
-`03-joins.sql`, which matters because `sql-exercises-prompt.md` restates the file list as the `TOPIC`
-table a run resolves its target by. The 50 declared SQL exercise references are checked against the 20
-file names in their level's own `PLANNING-{LEVEL}.md` §1, harvested from its table **rows** because that
-section holds two tables whose headers are in different languages and its prose legitimately names
+`03-joins.sql`, which matters because `sql-exercises-prompt.md` restates the route's file list twice
+— under the `FILE` key and in its junior path table — and **at junior** a run cross-checks the
+`{FILE}` it resolved from `PLANNING-junior.md` §1 against that table; no projection of the middle or
+senior routes is kept there, so nothing cross-checks theirs. The 50 declared SQL exercise references
+are checked against the 20 file names in their level's own `PLANNING-{LEVEL}.md` §1, harvested from
+its table **rows** because that section holds two tables whose headers are in different languages and
+its prose legitimately names
 retired files. It runs one direction only — a route file nothing cites is not a defect — and the PASS
 line prints the names harvested, the references checked and the references it **could not** check. That
 last count is the reach: a level with no route on disk would have nothing to compare against and prints
