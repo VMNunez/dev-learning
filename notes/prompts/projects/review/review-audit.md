@@ -181,7 +181,8 @@ to 06 will reproduce those three false Highs unless this line is passed down.
 
 **Angular 01–06** are **frontend-only**, not informational: map **frontend feature slices +
 `frontend-infra`**, skip Steps 1–2 (there is no backend, so no backend flow and **no security pass**),
-and run Steps 3, 4 and 5 in full — including writing `PROJECT-BACKLOG.md` and handing over the commit.
+and run Steps 3, 4 and 5 in full — including writing `PROJECT-BACKLOG.md` and **committing it yourself**,
+exactly as on a full-stack project (this pipeline never hands that commit over — see Step 5).
 Gate them on the `frontend` line only; their backlog's backend line stays `n/a — Angular-only`, and
 every task is tagged `[frontend]`. **Full-stack:** run every step.
 
@@ -287,7 +288,7 @@ concept coverage and only makes sense on a `full` run. Dispatch one `role-approp
 > ⚠️ Shallow / ❌ Missing with a one-line note (file:line for ✅/⚠️). Return only the table + the tally —
 > no code excerpts. **Do not edit any file.**
 
-### Step 5 — Merge into the backlog + hand over the commit (orchestrator)
+### Step 5 — Merge into the backlog + commit it (orchestrator)
 You now hold a findings table per slice (flow + security), plus the learning-objectives verdict.
 
 **First, verify coverage against your Step 0 map.** For each slice, compare the reviewer's trace with
