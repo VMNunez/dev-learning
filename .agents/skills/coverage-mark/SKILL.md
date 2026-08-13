@@ -169,8 +169,13 @@ it belongs in every report.
 
 `notes/{topic}/coverage/*.md` and `notes/coverage/*.md` are `notes/` study files — covered by the standing
 authorization, so **you commit them yourself**, on the active branch, `git status` immediately before the
-`add` and before the `commit`. One atomic commit for the marking, separate from any commit that added a
-new bullet in the same session:
+`add` and before the `commit`.
+
+The commit boundary depends on what this run wrote:
+
+- **Marker only** — one atomic marking commit, separate from an earlier authoring commit.
+- **Bullet + marker in the same run** — the calling `step-complete` or `backlog-task-close` ritual folds
+  authoring and marking into one coverage commit.
 
 ```
 docs(coverage): mark <concept> as demonstrated in project NN
@@ -179,9 +184,8 @@ docs(coverage): mark <concept> as demonstrated in project NN
 `PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the marker,
 and splitting them lets one land without the other.
 
-When called from `step-complete` or `backlog-task-close`, fold this into that ritual's coverage commit
-only if the same run also wrote the bullet; otherwise keep it separate. **Both rituals commit their own
-doc files now** (authorized 2026-07-30 for `PROJECT-BACKLOG.md`, 2026-08-01 for `PLANNING.md` /
+**Both calling rituals commit their own doc files now** (authorized 2026-07-30 for
+`PROJECT-BACKLOG.md`, 2026-08-01 for `PLANNING.md` /
 `PROGRESS.md` / `README.md`), so there is no longer any flow that hands coverage commits back to Victor
 — the old "in-session `backlog-task-close` hands its commits over" carve-out is gone. His side is the
 project code and `practice/`, and nothing this skill writes is either.
