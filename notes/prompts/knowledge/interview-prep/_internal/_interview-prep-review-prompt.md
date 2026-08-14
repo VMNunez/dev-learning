@@ -13,8 +13,9 @@ prompt is subagent A). You can also run it standalone to audit a single topic's 
 **How to use:**
 
 1. Fill in `LEVEL`, `FILE` (the topic filename without extension), and `SECTION`.
-2. Fill in `DRY_RUN` — `false` (fix, then commit) or `true` (fix only).
-3. Paste into a fresh conversation (or let the orchestrator dispatch it).
+2. Fill in `MODE` — the **same** value the author ran under (`full` or `correct`).
+3. Fill in `DRY_RUN` — `false` (fix, then commit) or `true` (fix only).
+4. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
 
@@ -24,9 +25,10 @@ prompt is subagent A). You can also run it standalone to audit a single topic's 
 LEVEL   = [junior | middle | senior]
 FILE    = [angular | css | javascript | typescript | sql | java | spring | spring-boot | architecture | git | general | security]
 SECTION = [all | ## Routing | ## Forms | ...]   ← must match the author's run
+MODE    = [full | correct]                      ← must match the author's run
 DRY_RUN = [false | true]
 
-Use LEVEL, FILE, SECTION, and DRY_RUN wherever the prompt refers to their placeholders.
+Use LEVEL, FILE, SECTION, MODE, and DRY_RUN wherever the prompt refers to their placeholders.
 
 ---
 
@@ -51,6 +53,31 @@ Before starting, read:
 - Both `en/{FILE}.md` and `es/{FILE}.md`, scoped to `{SECTION}` (or the whole file if `all`).
 - When a code block's citation looks doubtful, open the cited project file (paths in "Sourcing real
   code" of the write prompt) to confirm the snippet is real — a spot-check, not a full source read.
+
+## Mode — what you may fix
+
+Check `{MODE}` first. It decides **what you fix and what you only report** — never how hard you look:
+run every checklist point and trace every question in both modes, because a defect you may not fix is
+still a defect you must name.
+
+- **`full`** — the complete pass. Fix everything below, inside the lifecycle scope in "Fix, don't just
+  report".
+- **`correct`** — Victor has just written or edited this section himself and asked for it to be
+  **corrected, not rewritten**. The author ran under the same mode and its Step 6.2 handed you weak
+  answers as a *report* precisely so that nobody rewrites them; a reviewer that rewrites them behind it
+  produces exactly the `full`-mode diff the mode was chosen to avoid.
+
+| Check | `full` | `correct` |
+|---|---|---|
+| Priority markers · format · type **classification** · stable identity · bilingual integrity | fix | **fix** — these are the author's Steps 1, 4 and 5, which run in both modes |
+| Realistic question · well-worded · Victor's voice · every word defensible | fix | **report** — this is the standard's answer quality bar, which is what the author's 6.2 withholds |
+| The type **ratio** and the ≥1 Decision-based floor · a warranted code block that is missing | fix | **report** — closing either needs a question added or rewritten, and `correct` adds none |
+| A **false** citation or project anchor — code or a claim the named source does not contain | fix | **fix** — the one thing corrected in both modes. It is a falsehood, not a weakness, and the standard ranks an invented anchor as *worse than none*; `correct` narrows rewriting for quality, never the truthfulness of a claim about Victor's own code |
+
+**The one carve-out on the quality-bar row is Victor's own TODO**, and it is the author's rule taken
+verbatim — 6.2 is "report only, **never rewrite without a TODO**". A weak answer he has marked is a
+rewrite he asked for, and TODO resolution runs in both modes; anything unmarked is reported and left
+exactly as he wrote it.
 
 ## Audit checklist — run every point on every question in scope
 
@@ -94,8 +121,12 @@ file worth studying:
 
 Under the orchestrator, the market/gap slice (M questions + G gaps) is handed to the **author**, not to
 you — your acceptance is checked afterwards by the orchestrator against that slice, so your
-question-by-question trace must be complete enough to confirm each slice item is covered. If you are
-run **standalone** and a gap list is pasted into your prompt, then add every genuine gap yourself to
+question-by-question trace must be complete enough to confirm each slice item is covered. In
+`MODE = correct` there is no **market/gap** slice: the orchestrator skips both discovery stages because
+that mode adds no questions, so a gap list pasted alongside `correct` is a configuration conflict — add
+nothing, and name the conflict in your verdict. The slice is not empty, though — the orchestrator still
+routes its en/es sync mismatches into it in both modes, and those are yours to fix. If you are
+run **standalone** in `MODE = full` and a gap list is pasted into your prompt, then add every genuine gap yourself to
 the correct section of both `en/` and `es/`, in the standard's full format (bold question + marker +
 blank line + answer in Victor's voice + level-appropriate tip / Red flag / real cited code as the type warrants),
 skipping — and noting — any gap truly outside `{LEVEL}` scope. Then run the audit below over everything in
@@ -104,7 +135,13 @@ scope, including any questions you just added.
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in both `{FILE}` files — you are the last quality pass, not an
-advisor. But your freedom to rewrite is **scoped by the lifecycle**: any question carrying `[refined]`
+advisor. Your freedom to rewrite is bounded twice over, and the two bounds are independent: `{MODE}`
+above decides **which checks** you may act on, and the lifecycle below decides **which questions**. A
+check the mode makes report-only is reported even on an unrefined question; a `[refined]` question is
+reported even on a check the mode lets you fix. Taking the lifecycle bound as the only one is how a
+`correct` run comes to rewrite the answers it was told to leave alone.
+
+On the lifecycle: any question carrying `[refined]`
 in either file is frozen byte-for-byte, whether or not it also carries `[studied]`. Mirror a missing
 state marker only; otherwise **report** anything below bar and do not edit that block. Every unrefined
 question is fair game: rewording an unrealistic question, tightening an answer into Victor's voice,
@@ -128,15 +165,23 @@ git commit -m "docs: audit {FILE} interview prep — <one-line summary> (reviewe
 which of the two files you already edited, which headings, and whether any edit is one-sided across
 `en/` and `es/`. You fix directly in the tree, so a review abandoned halfway leaves the section in a
 state no one authored; the orchestrator restores or declares it from this line, and cannot from a
-missing one. A partial audit is never reported as `PASS` or `FIXED`. **And it never commits — including
+missing one. A partial audit is reported as **nothing but `BLOCKED`** — not `PASS`, not
+`PASS (with findings)`, not `FIXED`; the enumeration is closed on purpose, so a later verdict token
+cannot slip through it. **And it never commits — including
 on a standalone `DRY_RUN = false` run**, where the commit above is yours to make: committing a
 half-audited pair under a message that says it was reviewed is exactly the silent partial write this
 return exists to prevent. Leave the bytes, name them, and let Victor read the diff.
 
 Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (a short bullet list of what you corrected and why — especially any
-  question you rewrote for realism/wording or any answer you tightened into Victor's voice).
+  question you rewrote for realism/wording or any answer you tightened into Victor's voice). A section
+  you changed nothing in **but filed report-only findings against** is `PASS (with findings)`, never a
+  bare `PASS`, which claims the section is at bar.
 - The coverage status (✅/🔧/➕), the files touched, and — if committed — the commit hash.
+- **Your own report-only findings**, each with the check it failed and what a passing version would
+  need. In `MODE = correct` this is most of your output and it is the run's product, not a footnote:
+  the mode exists so Victor decides which of these become rewrites, next run, by marking them with a TODO.
 - Carry forward the author's summary blocks (weak answers, coverage gaps, TODO patterns) so Victor sees
-  them in the final report.
+  them in the final report — merged with the block above into one weak-answer list, each line saying
+  whether the author or you found it.
 ````

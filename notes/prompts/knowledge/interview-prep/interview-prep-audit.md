@@ -99,7 +99,9 @@ MODE = [full | correct]
          IDs, format, and all
          four audit sections (missing topics, weak answers, imbalances, missing questions).
        → correct: a focused "I just wrote/edited this file — correct it" pass (sync + TODOs + format/
-         priority tidy + weak-answer report only; adds no new questions).
+         priority tidy + weak-answer report only; adds no new questions). It binds **both** per-section
+         subagents: the author and the reviewer each fix the mechanical/parity half and report the
+         quality bar, so nothing rewrites what Victor just wrote.
 
 DRY_RUN = [false | true]
 
@@ -201,6 +203,8 @@ Which parts run depends on `{MODE}`:
 - **`full`** → whole-topic detection (**M**, **G**, sync/route) → per-section **A → B** (deep).
 - **`correct`** → per-section **A → B** only (skip M and G — correct mode adds no new questions, so the
   market list and gap hunt would have nothing to feed). The light en/es sync check still runs first.
+  **B runs under the same `correct` as A** — the mode narrows what each of them may rewrite; it never
+  drops the reviewer.
 
 M and G write nothing; A and B leave their work in the tree; **only the orchestrator commits, once per
 topic**, after all sections are done. Everything is sequential — never overlap sections or the two
@@ -286,7 +290,9 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 > ```
 > «paste this section's slice: M questions + G gaps for this heading»
 > ```
-> Do the section's TODOs, coverage traceability check, stable IDs, priority markers, and format for this section only. **Do NOT
+> Do the section's TODOs, stable IDs, priority markers and format for this section only, plus the
+> coverage traceability check in `full` — your own `{MODE}` block owns which of those a `correct` run
+> skips, and it binds over this sentence. **Do NOT
 > commit, do NOT mark anything done, do NOT touch other sections.** Leave your work in the tree. Return
 > a **question-by-question trace for this section** (each question with PASS or the change you made) as
 > proof you read it whole, plus the weak-answer / coverage-gap / TODO-pattern notes for this section.
@@ -330,21 +336,31 @@ uncovered.
 > be the partial commit that contract forbids, and the killed role is the case that actually happens.
 
 **Reviewer (B).** Launch a fresh, independent `role-appropriate` subagent, `reasoning tier: deep`,
-`execution: foreground` (it rewrites weak questions freely — that is authoring, not checklist
-verification):
+`execution: foreground` (in `full` it rewrites weak questions, which is authoring rather than checklist
+verification; in `correct` it must judge the same bar well enough to report it, which is the same
+judgment and not a cheaper one):
 
 > Read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` and execute it for
-> `FILE = «topic»`, `SECTION = «this exact heading»`, `DRY_RUN = true`. **Audit this one section
-> only**, in full in both `en/` + `es/`: realistic, well-worded, in Victor's voice, real cited code
-> where an interviewer poses the question with code, correct type ratio and priority order within the
-> section. Rewrite freely only unrefined questions. Questions carrying `[refined]` are frozen
-> byte-for-byte; **report** anything below bar there and do not fix it. Fix what falls short in both
-> files otherwise. `DRY_RUN = true`
+> `FILE = «topic»`, `SECTION = «this exact heading»`, `MODE = «mode»`, `DRY_RUN = true`. **Audit this
+> one section only**, in full in both `en/` + `es/`: realistic, well-worded, in Victor's voice, real
+> cited code where an interviewer poses the question with code, correct type ratio and priority order
+> within the section. Check every point under **both** modes — `{MODE}` decides what you may fix and
+> what you only report, and its own "Mode — what you may fix" section owns that partition. Rewrite
+> freely only unrefined questions, and only where the mode lets you. Questions carrying `[refined]` are
+> frozen byte-for-byte; **report** anything below bar there and do not fix it. Fix what falls short in
+> both files otherwise. `DRY_RUN = true`
 > means **fix only, do not
-> commit** — the orchestrator commits once per topic after every section. Return your verdict and a
+> commit** — the orchestrator commits once per topic after every section. Return your verdict, your
+> report-only findings, and a
 > **question-by-question trace for this section**. Write your findings and your verdict to
 > «scratch path for this section» as you reach them, before returning — if you cannot finish, that file
 > is the only thing that tells the orchestrator which bytes you already changed.
+
+**Pass B the same `{MODE}` you passed A.** The two halves of one section run under one mode or the mode
+means nothing: `correct` withholds the weak-answer rewrites from the author precisely so the section
+keeps the words Victor just wrote, and a reviewer dispatched without the mode makes them anyway —
+the same diff `full` would have produced, from a run he asked to only correct. It is the reviewer's
+`{MODE}` that binds it, not this dispatch's wording, which is why the key is passed rather than described.
 
 Pass B a real scratch path. `_agent-runtime-standard.md` requires every `reviewer` dispatch to carry
 one and requires the orchestrator to read it when the reviewer dies — which is exactly the branch below,
@@ -476,7 +492,9 @@ to run `interview-prep-route` after every required bank for the level is current
   are sequential too — never overlap, because they edit the same files and parallel commits race the
   git index, and a reviewer must never audit an unfinished section.
 - Never skip the `es/` mirror or the per-section reviewer pass. In `MODE = full`, never skip market
-  analysis or the gap-hunt; `MODE = correct` deliberately omits those two read-only discovery stages.
+  analysis or the gap-hunt; `MODE = correct` deliberately omits those two read-only discovery stages
+  and narrows what **both** per-section subagents may rewrite — it never drops the reviewer, and it is
+  passed to it.
 
 ### Final step — pipeline self-report
 
