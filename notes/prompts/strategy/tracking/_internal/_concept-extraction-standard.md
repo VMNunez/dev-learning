@@ -13,18 +13,26 @@ the steps you run; do not run the others.
 
 **What a dispatched subagent must NOT do:**
 - Do **not** read anything beyond this standard and the project's `PLANNING.md` — not the project's
-  code, README, or any other file. Everything you need is in the PLANNING.md and the `PROGRESS_HINT`.
-- Do **not** read or write `PROGRESS.md`. You cannot see it.
+  code, README, or any other file. Everything you need is in the PLANNING.md.
+- Do **not** read or write `PROGRESS.md`, and do **not** accept any part of it — a quoted cell, a step
+  count, a status string — from your launch instruction either. That file is what your report is
+  audited against, so a fact taken from it is a fact being checked against itself.
 - Do **not** commit anything. Report; the orchestrator decides what the report means.
 
 **What the orchestrator gives you** (in your launch instruction):
-- `PROJECT_PATH` — the project to audit (e.g. `projects/07-timetrack`).
-- `PROGRESS_HINT` — **the `Status` cell of this project's row in the `## Projects` table of
-  PROGRESS.md, verbatim** (e.g. `In progress ⏳ — Steps 1–6 done, backend backlog fully closed, Step 7a
-  next`). That one cell is the whole hint. Used **only** for the Format B step-status fallback below.
-  Treat it as a hint, never as the concept source. *(Corrected 2026-08-05: this used to name a
-  `### Project NN` summary heading and technology sub-headings, a heading class deleted from
-  PROGRESS.md on 2026-08-03 — the fallback pointed at text that no longer exists.)*
+- `PROJECT_PATH` — the project to audit (e.g. `projects/07-timetrack`). That is the whole input.
+
+> **Tombstone — `PROGRESS_HINT`, removed 2026-08-13 (`REC-136`). Do not restore it.** It was the
+> `Status` cell of this project's row in PROGRESS.md, quoted verbatim, and Step 2 below let it
+> **override** the `✅` markers whenever it claimed more completed steps. That status went back to
+> `progress-update`'s D5, whose whole job is to audit that same cell — so on the override path the
+> audited file supplied the fact used to audit itself, and the comparison agreed by construction. It
+> cost D5 exactly one of its two declared outcomes: "a plan missing a `✅` is a `PLANNING.md` fix" is
+> the case the override silently resolved, so that drift row could never be written. D6 states the rule
+> in one line — measure "never from the file you are auditing". The orchestrator holds the row already;
+> comparing it against the markers is *its* step, not yours. *(An earlier correction, 2026-08-05, had
+> already fixed what the hint pointed at: a `### Project NN` heading class deleted from PROGRESS.md on
+> 2026-08-03.)*
 
 ---
 
@@ -63,18 +71,23 @@ every Section 3 row counts.
 1. Look for step headings marked ✅ (e.g. `### Step 3 — Spring Security + JWT ✅`). A **split step**
    marks its children (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one,
    so read the sub-step level too.
-   - **At least one ✅ present:** those ✅ steps are the primary truth; steps without ✅ are not
-     complete. But if `PROGRESS_HINT` shows MORE steps done than the ✅ markers (e.g. ✅ on Steps 1–2
-     but the hint says Steps 1–3 done), prefer the higher count — an in-session update may have
-     advanced PROGRESS.md without adding the ✅.
-   - **No ✅ anywhere:** fall back to `PROGRESS_HINT` — read the step count out of that `Status` cell.
+   - **At least one ✅ present:** those ✅ steps are the step status, and they are its **only**
+     source. Steps without ✅ are not complete.
+   - **No ✅ anywhere:** the status is **not derivable from the markers**, and you say so. The
+     markers are the only source this audit takes — a §0 pointer or a §22 branch table is written by
+     the same ritual and is not read here — and the only file that would otherwise settle it is the
+     one this audit exists to check. An unmarked plan is a finding for the orchestrator, never a gap
+     for you to fill.
 2. The step marked "in progress" is **not** complete.
 
 Record the confirmed step status as a short string — e.g. `Steps 1–3 done, Step 4 in progress` or
-`all steps complete` — and return it, **stating how you derived it**: `(from ✅ markers)`,
-`(from PROGRESS_HINT — no ✅ markers in PLANNING.md)`, or `(hint overrode ✅ markers)`. The
-orchestrator compares the status against the projects table and flags low-confidence derivations in
-its report.
+`all steps complete` — and return it with its derivation. Formats B and C derive from the markers, so
+their note is `(from ✅ markers)`; Format A derives from the format itself, so its note is
+`(from Format A — every Format A project is Done ✓)` and no marker is read. When **Format B** carries
+no marker anywhere, return `not derivable — no ✅ markers in PLANNING.md` **in place of** the Format B
+status. In every branch, never substitute a step count from another source, and never report a plan as
+further along than its markers say. The orchestrator compares what you return against the projects
+table — a comparison that means nothing if your side of it came from that table.
 
 ---
 
@@ -134,7 +147,9 @@ warning not to reuse this table. A concept has exactly one destination — the c
 
 1. **Read verification:** the PLANNING.md's total line count and confirmation you read to EOF (Step 0).
 2. **Format detected:** A / B / C.
-3. **Confirmed step status:** the short string from Step 2, with its derivation note.
+3. **Confirmed step status:** the short string from Step 2 with the derivation note its format owns —
+   or, on the Format B no-marker branch, `not derivable — no ✅ markers in PLANNING.md`, which is a
+   complete report, not a failed one.
 
 Return no concept table, no PLANNING.md excerpts and no reasoning trace — those three lines are the
 entire report.

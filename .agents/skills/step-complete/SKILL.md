@@ -65,9 +65,11 @@ condition and not at the last commit is that a commit proves code exists, not th
 ## 1 — PLANNING.md: mark the step
 
 Append `✅` to the completed step's heading (e.g. `### Step 5 — TimeEntry workflow ✅`). Add a short
-note under the step only if something changed versus the plan. This marker is what makes
-`progress-update` runs self-sufficient (its Format B extraction reads ✅ before falling back to
-hints) — never skip it.
+note under the step only if something changed versus the plan. **This marker is the only step status
+`progress-update` can read** — since `REC-136` (2026-08-13) its Format B extraction has
+no other source and is forbidden to take one from `PROGRESS.md`, so a finished step left unmarked
+becomes a drift row against the very `Status` cell you write in step 2, and that row holds G6 open
+until the `✅` is added. Never skip it.
 
 **Split steps (`### Step 7 — Angular frontend (split into 7a / 7b / 7c / 7d)`) mark at two levels, and
 the order matters.** The ✅ goes on the **sub-step heading** that just finished (`#### Step 7a — Shell

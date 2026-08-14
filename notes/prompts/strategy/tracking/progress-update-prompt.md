@@ -126,9 +126,10 @@ Project paths, in order:
 - Full-stack: `projects/07-timetrack` (Format B) and any later ones in PROGRESS.md (Format C if they
   have a numbered Section 3, else Format B)
 
-For each project in scope, lift its `PROGRESS_HINT` from the PROGRESS.md you just read: the project's
-`## Projects` table row — its `Status` cell, verbatim. That one cell is the whole hint, and it is all a
-project subagent needs for the Format B step-status fallback.
+For each project in scope, keep its `## Projects` table row — its `Status` cell, verbatim — in **your
+own** notes for D5. It is the thing you audit, and it is **never** sent to a subagent: a step status
+derived from that cell and then compared against it agrees by construction, which is D6's rule and the
+defect `REC-136` removed on 2026-08-13. `PROJECT_PATH` is the whole launch input.
 
 ---
 
@@ -142,17 +143,18 @@ git-index contention); in `MODE: active` there is just one. Each subagent's inst
 
 > Read `notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` and execute **Steps 0,
 > 1 and 2 only** for `PROJECT_PATH = «path»`. Do not extract concepts — Step 3 is not yours, and Step 4
-> is a tombstone. Here is the `PROGRESS_HINT` for this project, the `Status` cell of its PROGRESS.md
-> row (use it only for the Format B step-status fallback):
-> ```
-> «the Status cell lifted in Step 0»
-> ```
+> is a tombstone. `PROJECT_PATH` is your whole input: you are given nothing out of PROGRESS.md, because
+> your report is what that file gets audited against.
 > Read ONLY the standard and this project's `PLANNING.md` — not the project's code, README, or any
 > other file. Do not read or write PROGRESS.md; do not commit. Report back **only** the three items
 > Step 5 keeps — the read verification (line count + read-to-EOF), the format detected, and the
 > confirmed step status with its derivation note — with no PLANNING.md excerpts and no reasoning
 > trace. If the read verification is missing or the subagent could not reach EOF, re-dispatch it once
 > quoting Step 0 — never accept a step status from a possibly truncated read.
+
+`not derivable — no ✅ markers in PLANNING.md` is a **complete** Format B report, not a failed one:
+D5 measures it against the row and decides there whether it is drift. Never re-dispatch to get a
+number out of it, and never supply one yourself from the row you are auditing.
 
 Wait for every project subagent to finish and collect its report. Keep the reports — D5 uses them.
 
@@ -272,6 +274,25 @@ ritual recorded (`backend backlog fully closed`). Overwriting it with a derived 
 silently, which is exactly the failure this demotion exists to stop. If the plan and the row disagree,
 say which is likely stale: a plan missing a `✅` is a `PLANNING.md` fix, a row behind the plan is a
 `step-complete` that did not finish.
+
+**A `not derivable` return is measured against the row, not reported blind.** A Format B plan
+carrying no `✅` anywhere is a primary fact — *no step is marked complete* — and comparing it with the
+row is your step, not the subagent's. Two outcomes, and the row decides which:
+
+- **The row also records no completed step** (`Not started 🔜`, or a status that neither names a
+  finished step nor points past the first one — `Step 1 in progress` qualifies, `Step 4 next` does
+  not, because it records Steps 1–3 done without naming them): plan and row agree. There is nothing
+  to repair and no drift row — a project between
+  `plan-audit MODE = new` and its first `step-complete` is *supposed* to carry no `✅`, and reporting
+  it would open a row no owner could ever clear and hold both gates short for the life of the project.
+- **The row claims one or more completed steps:** that is the drift, and it is the case D5 exists to
+  catch. Report it — the row's current text in the "What PROGRESS.md says" column,
+  `plan carries no ✅ marker` in the sources column, and `step-complete`, or adding the `✅` to the
+  finished step's heading, as the owner. This is what stops G6 closing on a project whose row claims
+  steps its plan never recorded.
+
+Until 2026-08-13 the subagent filled that gap from the `Status` cell itself and the comparison passed
+by construction, so the one case D5 exists to catch was the one it could not report (`REC-136`).
 
 There are no `### Project NN` blocks or technology sub-headings left (removed 2026-08-03). Do not
 re-create one, and do not look for one.
@@ -410,10 +431,11 @@ ticked in its §11 — say so explicitly rather than printing an empty table wit
 `Coverage demonstrated` and `Professional level by topic` are read by `project-brief`, `review-audit`
 and `backlog-task-open`; the `Practice completed` tables are read only by their own writers.
 
-**Low-confidence statuses:** if any project subagent derived its step status from the
-`PROGRESS_HINT` fallback (or the hint overrode the ✅ markers) rather than from ✅ markers alone,
-add one line after the tables naming the project and suggesting Victor add the missing ✅ to that
-step's heading in PLANNING.md — that makes the next run self-sufficient.
+**An unmarked plan D5 ruled drift is in the drift table, not in a footnote.** Where D5's second
+branch fired, the row reaches `_last-drift-report.md` verbatim like any other and holds the gate open
+until the `✅` is added; where its first branch fired, plan and row agreed and there is nothing to
+print. The line that used to sit here instead — a suggestion printed after the tables, whose
+persistence into the report file was never contracted — went with `REC-136`.
 
 **The record — the report is a file, not only a chat message.** After printing, write everything you
 just printed to `notes/prompts/strategy/tracking/_internal/_last-drift-report.md`, overwriting the
