@@ -14,7 +14,7 @@ Two modes:
 - **`letter`** — a formal one-page cover letter (for offers that ask for a *carta de presentación*)
 - **`message`** — a short 5–6 line message to send a recruiter on LinkedIn or by email
 
-> **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `cv-prompt` `tailor` first,
+> **▶ Run first:** `progress-update`, and its drift repaired, not merely run — it audits `PROGRESS.md`, it does not repair it. Optional: `cv-prompt` `tailor` first,
 > so the letter/message and the CV tell the same story for that offer.
 
 > **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5

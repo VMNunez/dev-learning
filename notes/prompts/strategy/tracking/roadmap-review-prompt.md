@@ -9,7 +9,7 @@ This prompt updates `ROADMAP.md` so it shows the optimal path from current progr
 of `notes/coverage/junior.md` — through projects, study blocks, and practice. Run it whenever a project
 finishes, `notes/coverage/junior.md` changes significantly, or it has been a while since the last check.
 
-> **▶ Run first:** `progress-update` — it reports drift in the `## Projects` table and the level matrix, which Steps 1, 3 and 4 read as fact. It has been an **auditor** since 2026-08-05: it names what is stale, it does not repair it — a wrong project status is fixed by `step-complete`, a missing coverage marker by `coverage-mark`.
+> **▶ Run first:** `progress-update` — it reports drift in the `## Projects` table and the level matrix, which Steps 1, 3 and 4 read as fact. It has been an **auditor** since 2026-08-05: it names what is stale, it does not repair it — a wrong project status is fixed by `step-complete`, a missing coverage marker by `coverage-mark`. **So this prerequisite is met by a clean drift report, not by the run having happened** (`_session-rules.md` → "PROGRESS.md updates"): repair everything `strategy/tracking/_internal/_last-drift-report.md` names, with the owner it names, before starting — Steps 1, 3 and 4 cannot tell a stale cell from a current one.
 
 > **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this orchestrator's own `_last-run-report-roadmap-review.md` (this folder is shared with `progress-update`, which owns the unsuffixed `_last-run-report.md`); never restate the shared `Status:` meanings here.
 

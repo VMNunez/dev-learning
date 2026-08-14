@@ -617,8 +617,11 @@ everything commits on the branch you're on — is simpler to remember than a spl
   project's `PLANNING.md` §23 (after G5 `readme-audit`, before G7 `portfolio-audit`) and gate **G3** of
   `practice/sql/PLANNING.md` §9 (after Step 13 closes), plus the `▶ Run first` of `cv-prompt`,
   `linkedin-prompt`, `cover-letter-prompt`, `project-brief`, `plan-audit MODE = new` and `roadmap-review`.
-  Both gates close on an **empty drift report**, not on the run having happened: whatever the report
-  names is repaired by the owner it names, and only then does the gate sign off.
+  **All eight of those points close on an empty drift report**, not on the run having happened — the
+  two gates and each `▶ Run first` alike: whatever the report names is repaired by the owner it names,
+  and only then does the gate sign off or the prerequisite count as met. A prompt that proceeds on a
+  report naming drift is reading a section its own auditor has already declared stale, and no gate
+  downstream of it can tell.
 
 ## Angular CLI conventions
 

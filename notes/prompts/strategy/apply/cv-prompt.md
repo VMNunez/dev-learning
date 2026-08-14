@@ -15,7 +15,7 @@ Three modes:
 - **`review`** — audits an existing CV and rewrites any weak sections (read from `job-search` or pasted)
 - **`tailor`** — adapts your base CV to one specific job offer, keyword-matched to what that offer asks
 
-> **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `portfolio-audit` for polished `cv-bullets`.
+> **▶ Run first:** `progress-update`, and its drift repaired, not merely run — it audits `PROGRESS.md`, it does not repair it. Optional: `portfolio-audit` for polished `cv-bullets`.
 > Mind ROADMAP.md's **CV gate**: update the CV only once project 07 is live on GitHub with a README
 > that includes at least one architecture decision — not before.
 
