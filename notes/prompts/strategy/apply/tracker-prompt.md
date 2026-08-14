@@ -91,22 +91,44 @@ judge which skills the offers keep asking for. You do **not** need to write any 
 ## MODE = log — register a new application
 
 1. Read `job-search/tracker.csv`. If it does not exist, create it with the header row above.
-2. Build the new row from the config block. Fill `fecha` with today's date and `estado` with `aplicado`.
+2. **Resolve the identity before writing anything.** An application is identified by the pair
+   **`empresa` + `puesto`** — the same pair the folder name `<empresa>-<puesto>` and `update` mode's row
+   match already use. Compare it against every existing row and every folder under `applications/`,
+   case-insensitively and ignoring surrounding whitespace. If neither carries the pair, continue to
+   step 3. If either does, **write nothing yet and ask one question**, because only the user can tell
+   the two cases apart:
+   - **the same application logged twice** — write nothing at all. Show the existing row and folder and
+     say that stages, feedback and outcomes are recorded with `MODE = update`, never a second `log`.
+   - **a genuinely new application to the same company and role** — a re-application months later, or a
+     second offer with the same title. Append the row as usual, and give this one's folder a dated
+     suffix, `<empresa>-<puesto>-<YYYY-MM-DD>`, so the existing folder and its history are untouched.
+
+   Check this before asking: a row without its folder, or a folder without its row, is a half-written
+   earlier run, not a second application — report it, complete the missing side, and never append a
+   second row.
+3. Build the new row from the config block. Fill `fecha` with today's date and `estado` with `aplicado`.
    For `sector`, infer it from the company/offer if obvious (e.g. NTT Data → `consultora`); if unsure,
    ask one short question rather than guessing.
-3. **Append** the row — never reorder or touch existing rows.
-4. Create `job-search/applications/<empresa>-<puesto>/` (lowercase, hyphens for spaces) and,
-   inside it, `job_posting.md` with the offer text if you have the URL or pasted text (fetch the URL;
-   if it fails, ask the user to paste it — **never reconstruct a posting from memory**). Start an
-   `outcome.md` with status `aplicado` and the date.
-5. Confirm: show the appended row and the folder created.
+4. **Append** the row — never reorder or touch existing rows.
+5. Create the folder name resolved in step 2 — `<empresa>-<puesto>`, or its dated variant when step 2
+   admitted a re-application (lowercase, hyphens for spaces) — if it does
+   not already exist, and, inside it, `job_posting.md` with the offer text if you have the URL or pasted
+   text (fetch the URL; if it fails, ask the user to paste it — **never reconstruct a posting from
+   memory**); an existing `job_posting.md` is left as it is. Start an `outcome.md` with status
+   `aplicado` and the date — or, if one is already there (the half-write repair of step 2), append the
+   dated `aplicado` entry to it instead of starting a new file.
+6. Confirm: show the appended row and the folder created.
 
 ---
 
 ## MODE = update — record what happened
 
-1. Read `tracker.csv`. Match the row on `empresa` (and `puesto` if the company appears twice). No match →
-   the application was made outside the tracker; collect the basics and add a row first (as in `log`).
+1. Read `tracker.csv`. Match the row on `empresa` (and `puesto` if the company appears twice). If
+   `empresa` **and** `puesto` both repeat — the re-application that `log` step 2 admits — the live one is
+   the row still open (`aplicado` / `entrevista`); `fecha` breaks a tie only between rows in the same
+   state. If more than one is open, or none is, ask which date before touching any. No match → the
+   application was made outside the
+   tracker; collect the basics and add a row first (as in `log`, dedup check included).
 2. Ask the user what happened, then classify the new `estado`:
    - `entrevista` — got a screen or interview (note which stage)
    - `oferta` — received an offer
@@ -117,8 +139,9 @@ judge which skills the offers keep asking for. You do **not** need to write any 
    - What they'd do differently, and any signal about what the company valued.
 4. **Update the tracker row:** change `estado`, append a short dated note to `nota_feedback`. Never
    restructure the CSV or touch other rows.
-5. **Update `applications/<empresa>-<puesto>/outcome.md`:** append a dated entry — never overwrite
-   history. Format:
+5. **Update `outcome.md` in the folder belonging to the row matched in step 1** —
+   `applications/<empresa>-<puesto>/`, or its dated variant when step 1 resolved a re-application:
+   append a dated entry — never overwrite history. Format:
 
    ```markdown
    # Outcome: <Empresa> — <Puesto>
@@ -171,8 +194,12 @@ judge which skills the offers keep asking for. You do **not** need to write any 
    rewrite `outcome.md` history — append.
 3. **Never fabricate.** A dead offer URL gets a user-pasted copy or an explicit "no disponible" stub, not
    a reconstruction. Feedback is recorded as the user reports it.
-4. **Idempotent.** Re-running on the same application appends new notes and stages; it never duplicates
-   folders or rows.
+4. **Idempotent, by a checked identity.** An application is identified by `empresa` + `puesto`, and both
+   writing modes resolve that pair against the tracker **before** they write: `log` stops on a match and
+   asks (log step 2), `update` matches the existing row and appends to its history. Re-running on the
+   same application therefore adds notes and stages and never duplicates a row or a folder. A second
+   application to the same company and role is not a rerun: it is admitted deliberately, by answer, and
+   gets its own dated folder.
 5. **Everything stays outside the repo.** The tracker and archive live in `job-search/`; only
    this prompt is committed.
 
