@@ -182,15 +182,21 @@ Wait for B. **Acceptance gate — act on B's ratio, don't just record it:** if B
 questions-vs-decisions ratio below 1 (decisions found in the code area that still have no question), the
 section is not done — re-dispatch subagent B **once** for the same section, telling it which decisions
 its own report listed as uncovered, so it adds the missing questions. One retry maximum; if the ratio is
-still below 1 after the retry, note the uncovered decisions in the final report instead of looping.
-Only then start the next section.
+still below 1 after the retry, **this content acceptance gate has failed**: note the uncovered decisions
+in the final report instead of looping. Ending the section there scopes the **section** and never the
+run's close-out — `_agent-runtime-standard.md` → "Runnable close-out contract" settles that: only a run
+satisfying its content acceptance gates closes out as `completed`. Only then start the next section.
 
 **Two not-complete shapes, disposed of differently.** A ratio still below 1 is *finished* content that
 covers less than everything: keep every byte and declare the uncovered decisions. A **half-written**
 section — A or B returned `BLOCKED` — takes the restore-or-declare branch above, because nobody finished
 those bytes; a **B** block always takes the leave-and-declare side of it, since restoring would revert
 past A's finished pass to undo a partial edit. A declared `BLOCKED` is not a below-1 ratio and does not
-consume the one retry.
+consume the one retry. **Both are reported as not-complete, and both record this project's outcome in
+`_run-tracker.md` as `blocked`, never `completed`** — only a `completed` result satisfies a prerequisite,
+and a failed content acceptance gate bars the word whichever shape produced it. This is the mode-neutral
+half: `{DRY_RUN}` governs what gets **committed**, not whether the run's own gates passed, so a dry run
+holding a not-complete section still records `blocked` and not `dry-run`.
 
 **After all sections — orchestrator (light global scan).** Do a quick cross-section duplicate scan
 over the finished bank (the same decision or code path landing in two sections → keep it in the one
@@ -256,18 +262,19 @@ If ✅/⚠️ (cv-bullets was written):
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
 If ❌ (no cv-bullets): `git add notes/interview-prep/projects/«name».md`, then the same commit message.
 
-**A project with a section that returned `BLOCKED` still commits — but labelled.** Name every such
-section in the commit message body (`blocked — partial` restored / `blocked — partial` left in the
-tree), and record that project's outcome in `_run-tracker.md` as **`blocked`**, never `completed` —
-only a `completed` result satisfies a prerequisite. This says the **bank** contains bytes nobody
-finished; it does not by itself move the Phase 2 verdict, which the standard's verdict logic owns and
-computes from PLANNING.md and the backlog.
+**A project with a not-complete section still commits — but labelled.** Name every such section in the
+commit message body with its shape (`blocked — partial` restored / `blocked — partial` left in the tree
+/ `uncovered decisions`). Its outcome is not decided here — Phase 1's two-shapes rule already fixed it
+as `blocked`, on the dry branch too. The label is not ceremony: this bank has no machine-readable
+freshness marker of its own — no fingerprint, and `/simulator` reads the folder ungated — so that label
+and the tracker cell are the only marks either shape leaves on disk.
 
-**A section whose questions-vs-decisions ratio is still below 1 after its retry is not that**, and this
-rule deliberately does not reach it: it is finished content that covers less than everything, the
-acceptance gate above already declares noting it an acceptable end state, and what terminal effect that
-failed check should have on the run is an open question this prompt does not get to settle in passing.
-Note the uncovered decisions in the report, as that gate says, and leave the outcome alone.
+**Neither shape moves the Phase 2 verdict.** That verdict is the go/no-go on the **project**, and
+`_portfolio-standard.md`'s verdict logic owns it: PLANNING.md, then the backlog, then its two sanity
+scans — none of which reads the question bank, which is saved regardless of the outcome. A thin bank
+says this run under-covered the code, not that the project is less ready to show a recruiter; wiring it
+into the verdict would make recruiter readiness depend on how well this prompt's own subagents
+performed.
 
 **If `{DRY_RUN}` = true:** commit none of the audit outputs (the final step's self-report still commits
 itself — it is machinery, not an audit output). Leave the rest in the working tree and print the

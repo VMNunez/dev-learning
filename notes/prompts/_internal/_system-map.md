@@ -398,7 +398,11 @@ The things a run leaves behind that are easy to miss.
   bank has **no machine-readable marker at all** (no digest; `/simulator` reads it and gates on
   nothing), so there the tracker cell and the commit label are the only marks that exist. Neither
   prompt stales anything over a section that merely ended *under-covered* — that is finished content,
-  and staling a level's bank over it would make its CORE route unbuildable. A **dead** role is the
+  and staling a level's bank over it would make its CORE route unbuildable. **The freshness marker is
+  the only thing the two shapes are treated differently by; the tracker cell and the commit label are
+  reached by both, in both prompts** — an under-covered section is a failed content acceptance gate, and
+  `_agent-runtime-standard.md`'s close-out contract bars such a run from `completed` whether or not any
+  subagent returned `BLOCKED`. A **dead** role is the
   opposite case and commits nothing: `_agent-runtime-standard.md`'s dispatch contract owns both
   branches, and each prompt owns only what its baseline, span and freshness marker are.
 - **A skill edited in one adapter is edited in both, in the same commit.** They drifted silently once
