@@ -33,8 +33,10 @@ one command does everything.
 > **This flow always commits its own work** (Victor retired the `DRY_RUN` switch 2026-07-16 — the
 > pipeline is trusted to land its result). The safety valve is no longer a dry run but the gates
 > below: the specialist acceptance check and, in review mode, the history-preservation gate — if
-> either fails after its one re-dispatch, the orchestrator **aborts without committing** and reports,
-> leaving the working tree for Victor to inspect. It never commits a run that failed its own checks.
+> either fails after its one re-dispatch, the orchestrator **does not commit** and reports, leaving the
+> working tree for Victor to inspect. The two end the run differently on the way there: the specialist
+> gate finishes dispatching the remaining concerns, the history gate stops where it stands. It never
+> commits a run that failed its own checks.
 
 ---
 
@@ -157,7 +159,13 @@ report — do not run the architecture advisor or reviewer on nothing.
 longer loads `notes/coverage/junior.md` into context — the brief carries the gap bullets verbatim — so
 what is checked here is that it worked from the brief rather than from its own reconstruction of one. If the
 line is missing, re-dispatch once quoting what was missing; if it fails again, note the gap in the
-self-report and continue.
+self-report and continue — and here `continue` reaches the commit too, unlike the identically worded
+branch of the specialist acceptance check below. The difference is what comes after: `steps-tests`
+audits §3 and §4 against the brief itself, so a plan built from a reconstruction still meets a reader of
+the real brief, while the specialist check is the last gate before the commit and has none. (It is the
+only one of the seven that reads the brief; the other six could not catch this.) It **is** a content
+acceptance gate for all that, so a run that failed it commits and still closes out `blocked` naming it —
+the shape `interview-prep-audit` and `portfolio-audit` already use — never `completed`.
 
 ### Phase 1b — Architecture advisor (one architecture subagent)
 
@@ -300,15 +308,29 @@ the standard, so `n` is the specialist's own declaration — deliberately: it ma
 here, and auditable against the reviewer's scope table afterwards, where a bare "one row per check its
 slice owns" was checkable nowhere. `whole-plan` is the one scope whose `n` you know independently:
 **twelve, always**. If anything is missing or the report is unusable, re-dispatch that specialist once,
-quoting what was missing; if it fails again, note the gap in the self-report and continue — never
-silently accept a partial trace or a possibly truncated read.
+quoting what was missing; if it fails again, **this gate has failed and the run does not commit**:
+record the gap in the self-report, **continue dispatching the remaining specialists**, and let Finishing
+refuse the commit. **`continue` scopes the phase, never the commit** — stopping mid-phase would leave
+the plan audited by some concerns and not others with nothing recording which, and there is no third
+option here the way there is in `readme-audit`, which drops one target's README from its commit command
+and finishes the others: all seven specialists edit the **one** `PLANNING.md`, so excluding an
+unverified slice from the commit *is* not committing. The close-out then records the run `blocked`
+naming this gate, per `_agent-runtime-standard.md` → "Runnable close-out contract", whose rule that only
+a run satisfying its content acceptance gates closes out as `completed` is what settles the word.
+Never silently accept a partial trace or a possibly truncated read.
 
 ## Finishing
 
 The specialist reviewers left every fix in the working tree; **the orchestrator does the single commit**
-(they never commit). One atomic commit per plan. **Gate first:** if the specialist acceptance check or
-(review mode) the history-preservation gate ended the run in a failed state, do NOT commit — leave the
-working tree as-is and report what failed and why.
+(they never commit). One atomic commit per plan. **Gate first:** if any specialist's acceptance check
+still failed after its one re-dispatch, or (review mode) the history-preservation gate still failed
+after its own, do NOT commit — leave the working tree as-is, report what failed and why, and close out
+`blocked` naming that gate. Those two are the only gates that reach this line: the Phase 0 and author
+acceptance checks stop or continue where they are stated and never arrive here. **In `PROJECT = all`
+this is per project, not per run**: the failed project is left uncommitted and named in its `### [project]`
+section, the remaining projects still run — the loop's rule is one finished project before the next, and
+a project that cannot be committed is finished for this run — and the run's single close-out records
+that project `blocked` while the others record what they earned.
 
 Otherwise commit now — with the safety check first: run `git status` before the add and again before
 the commit, confirm only the intended files are staged (`git restore --staged` anything else — a

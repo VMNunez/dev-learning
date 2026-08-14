@@ -211,8 +211,12 @@ graded work is nobody's.
   has failed this check, not passed it.
 
 **Acceptance check.** A report is acceptable only with the read-to-EOF line **and** one row per check
-its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, record the
-gap in the self-report and continue — never silently accept a partial trace.
+its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, **this gate
+has failed and the run does not commit**: record the gap in the self-report, continue dispatching the
+remaining specialists, and let Phase 4 refuse the commit — the same disposition the `BLOCKED` report
+below gets, reached by the other door. **`continue` scopes the phase, never the commit**, and the
+close-out records the run `blocked` naming this gate (`_agent-runtime-standard.md` → "Runnable
+close-out contract"). Never silently accept a partial trace.
 
 **A specialist that *returns* blocked is not a formatting failure, and this check has to be told to
 catch it.** It counts rows: a specialist that applied half its fixes and stopped can still open with the
