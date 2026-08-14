@@ -147,7 +147,8 @@
       "Bash(git --no-pager diff --stat)",
       "Bash(git --no-pager log --oneline -2)",
       "PowerShell(& \"notes/prompts/_internal/validate-prompt-system.ps1\")",
-      "Bash(awk 'NR>=784 && NR<=785' notes/prompts/_internal/_recommendation-ledger.md)"
+      "Bash(awk 'NR>=784 && NR<=785' notes/prompts/_internal/_recommendation-ledger.md)",
+      "Bash(awk 'NR==723' notes/prompts/_internal/_recommendation-ledger.md)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Victor\\Documents\\main\\dev\\learning\\.claude\\skills\\step-complete",
