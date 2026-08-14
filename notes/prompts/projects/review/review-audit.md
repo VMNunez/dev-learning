@@ -121,7 +121,8 @@ its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context 
 Derive the project type from the path. **Full-stack:** apply the standard's **per-tier unreviewed-code
 gate** against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — backend:**` /
 `**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. A missing
-backlog, an absent header, or a tier line reading `never` → continue. **What decides is whether the tier
+backlog, an absent header, a tier line reading `never`, or one whose date carries the standard's
+`(incomplete — …)` qualifier → continue. **What decides is whether the tier
 gained code, never how old the date is. Two signals, either one enough:** a **✅ step** completed after that date, and **backlog tasks
 closed after it** (the `## Closed` ledger's dated lines for that tier). The fix campaign this pipeline's
 own output generates moves no step, so the ✅ marks alone cannot see it. If either fired, continue
@@ -296,8 +297,9 @@ the files that slice owns (the flow prompt's Step 1 table / the security prompt'
 file rows**): every owned file/endpoint must appear in the trace, and every file row must carry its
 line count and closing quote. A report whose trace misses part of its slice — or that
 came back with no trace at all — does **not** count as reviewed: re-dispatch that one slice once; if it
-fails again, list it as **"not reviewed"** in the chat summary and move on. Never treat a silent or
-partial report as clean.
+fails again, list it as **"not reviewed"** in the chat summary **and carry it into that tier's
+`Last Reviewed` qualifier when you stamp it below** — the summary dies with the session and the line is
+what the next run's gate reads — then move on. Never treat a silent or partial report as clean.
 
 Then merge the verified tables into one prioritized task list per the standard's
 task/priority/effort rules:
@@ -385,6 +387,12 @@ section if missing, with a placeholder line when it is empty). Preserve tasks al
 **Stamp today's date only on the tiers this run actually reviewed** — a `backend` run sets
 `**Last Reviewed — backend:**` to today and leaves the `frontend` line exactly as it was (a date, or
 `never`). That is what keeps a partial run from ever making an unreviewed tier look reviewed.
+**A tier holding a slice left "not reviewed" gets today's date plus the standard's
+`(incomplete — «slice(s)» not reviewed)` qualifier**, naming every such slice — a plain date claims
+every slice of the tier was read, and the gate above would then stop the one run that would read them.
+**A tier where *every* slice was left "not reviewed" is not a tier this run reviewed — leave its line
+exactly as it was**: overwriting it would destroy the date a real run earned and put a date on a tier
+reading `never`.
 
 **On a partial {REVIEW_SCOPE} run, only touch the reviewed tier's tasks.** A `backend` run rewrites the
 `[backend]`-tagged tasks and leaves every `[frontend]` task untouched (and vice versa) — never delete or
@@ -475,7 +483,8 @@ it commits directly, always **separate** from the backlog commit. Also print the
   or security below deep-reasoning to save tokens — those are the passes that catch what blocks portfolio-ready.
 - **No trace, no review.** A slice counts as reviewed only when its trace covers every file/endpoint
   the slice owns (verified in Step 5 against the Step 0 map). Failed or partial reports get one
-  re-dispatch, then an explicit "not reviewed" in the summary — never a silent pass.
+  re-dispatch, then an explicit "not reviewed" in the summary **and in its tier's `Last Reviewed`
+  qualifier** — never a silent pass, and never a plain date over a slice nobody read.
 - **Bounded reports only.** Every subagent returns its findings table + trace and nothing else — no
   code excerpts, no narrative. If one overflows, keep its table + trace and discard the rest; never let
   a verbose reviewer crowd the merge.

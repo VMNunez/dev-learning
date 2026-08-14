@@ -65,11 +65,22 @@ it is tracked **per tier**. The backlog header carries one line per tier:
 `never` means that tier has never been reviewed. **A missing `PROJECT-BACKLOG.md` means the project has
 never been reviewed at all** — that is how "has this been reviewed?" is answered.
 
+A date may carry an **`(incomplete — «slice(s)» not reviewed)`** qualifier. A plain date asserts that
+**every** slice of that tier was read — the tier-granular reading of "no trace, no review" — so a run
+whose slice still failed its one re-dispatch in `review-audit.md` Step 5 writes the qualifier naming
+it instead. A run that lost **every** slice of a tier reviewed nothing there, so it stamps nothing and
+leaves that line exactly as it was. The next run of that tier writes the plain date — scope is
+tier-granular, so clearing one slice re-reads all of them — and nothing else clears it. Without the
+qualifier the only record is the run's chat summary, which nothing persists, and the tier reads as
+fully reviewed to this gate.
+
 **What gates is unreviewed code, never elapsed time.** Victor reviews a project when he decides to; the
 only run worth stopping is one over code a reviewer has already read. The date is reported, never
 obeyed. **Apply the gate only to the tiers this run will review** (per `REVIEW_SCOPE`; `full` gates on
 both):
-- No header, no file, or the tier says `never` → **continue**.
+- No header, no file, the tier says `never`, or its date carries an `(incomplete — …)` qualifier →
+  **continue**. A slice no reviewer ever read *is* unreviewed code, so the qualifier settles the tier
+  before the two signals below are consulted at all.
 - The tier gained code after its date → **continue, however recent that date is.** Two signals, either
   one enough: a **✅ step** completed after it (PLANNING.md's learning plan, completion dates in
   `PROGRESS.md`), and a dated **`## Closed` line** for that tier — the fix campaign this review's own
@@ -489,7 +500,8 @@ and the session history — three sources this pass reads partially or not at al
 other, and a task tagged `⬆` here is still triaged there.
 
 **PROJECT-BACKLOG.md** contains: a **per-tier "Last Reviewed" line** (see the gate above — `backend` and
-`frontend`, each a date or `never`; on Angular-only projects the backend line is `n/a — Angular-only`)
+`frontend`, each a date, a date plus an `(incomplete — …)` qualifier, or `never`; on Angular-only projects
+the backend line is `n/a — Angular-only`)
 · an overall quality rating (Strong / Good / Needs work, one
 sentence) · the task list as checkboxes. Task line:
 `- [ ] **[Priority]** — [Task description] *(Effort: [Small/Medium/Large])*`

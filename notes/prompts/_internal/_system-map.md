@@ -407,6 +407,14 @@ The things a run leaves behind that are easy to miss.
   subagent returned `BLOCKED`. A **dead** role is the
   opposite case and commits nothing: `_agent-runtime-standard.md`'s dispatch contract owns both
   branches, and each prompt owns only what its baseline, span and freshness marker are.
+  **`/review-audit` is a third case, and its mark rides inside the artefact.** Its slice reviewers only
+  read, so no target is ever left half-written; what a run can lose is a **slice of the review**, and the
+  committed `PROJECT-BACKLOG.md` says so on that tier's own `Last Reviewed` line —
+  `2026-08-14 (incomplete — «slice» not reviewed)`. That line is what the prompt's **own** next-run gate
+  reads, and a qualified one counts as unreviewed code, so the lost slice is re-read without FORCE. No
+  commit label is owed (the file is committed whole and its tasks are real), and the tracker cell is not
+  the record: it is an execution record the gate never reads. A tier that lost **every** slice is not
+  stamped at all.
 - **A skill edited in one adapter is edited in both, in the same commit.** They drifted silently once
   (2026-07-30 → 2026-08-01) and Codex ran a ritual two revisions old. `diff` the pair before committing.
 - **Machinery paths are contracts, not an invitation to traverse live state.** `/system-check` verifies
