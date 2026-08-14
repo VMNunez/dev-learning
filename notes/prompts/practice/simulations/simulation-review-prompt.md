@@ -7,7 +7,9 @@ This is the internal canonical cold reviewer for one planned timed simulation. I
 state-writing entry point: `simulation-grade` resolves the route and dispatches this prompt without
 teaching context. A direct `/simulation-review` request is routed to that skill by the platform launcher.
 
-> **▶ Run first:** `simulation-plan-prompt` for this LEVEL, then complete/close the timed attempt.
+> **▶ Run first:** `simulation-plan-prompt` for this LEVEL. **In `review` and `correction` mode only,**
+> also complete the timed attempt and close it with `simulation-block-close`; `hint` runs *inside* an
+> attempt that is still in flight and requires neither.
 
 ## Configuration
 
@@ -40,11 +42,22 @@ and instruct the caller to use `simulation-grade`. This is the only door to a st
 
 Require route STEP to own SIMULATION_FILE and LEVEL to agree across route/spec/tracker. A legacy spec
 without level may migrate to junior only. In first review require exact time and self-assessment. In
-correction mode require an immutable prior verdict plus open MISTAKES rows. Hint writes nothing.
+correction mode require an immutable prior verdict plus open MISTAKES rows. Hint requires the partial
+solution and nothing else, and writes no simulation state.
 
 First review additionally requires route `State: attempted` and matching spec/TRACKER
 `Attempted — awaiting review` or `Assisted — awaiting review` status written by
 `simulation-block-close`. A `ready` step has not closed its timer handoff and cannot be graded.
+
+Hint is admitted on the opposite state, and that is not an exception to the line above but the moment
+the mode exists for: `simulation-block-open` puts the hint consequence in Moment 3's own attempt
+conditions, so the step is still `ready`, no `awaiting review` status has been written to the spec or
+TRACKER, and `TIME_USED` and `SELF_ASSESSMENT` do not exist yet. None of the three is required and none
+is a reason to stop.
+Refuse hint only on a step already `attempted`, `correction-required`, `reinforcement-required` or
+`closed ✅`: the attempt is
+over, so there is no unfinished requirement to point at, and a hint given then cannot reach the
+`Assisted` label that `simulation-block-close` writes from the same attempt.
 
 Never review a different step because the named file looks similar. Never edit Victor's solution.
 
@@ -192,7 +205,8 @@ simulation route named above.
 
 ## Hint
 
-Hint mode writes nothing. Mark each requirement done/started/missing from the partial solution, select
+Hint mode writes no simulation state; the final self-report step still runs. Mark each requirement
+done/started/missing from the partial solution, select
 the first unfinished one, explain its concept and exact target file/class, and ask Victor to try it.
 Never give code. Record in chat that using the hint makes a later review Assisted.
 

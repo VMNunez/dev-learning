@@ -2,7 +2,9 @@
 name: simulation-grade
 description: >
   Grade a finished timed simulation or its corrections whenever Victor says it is ready for review
-  ("corrige la simulación", "he terminado el test", "corrige las correcciones"). Resolve the planned
+  ("corrige la simulación", "he terminado el test", "corrige las correcciones") — and give the one
+  allowed hint whenever he is stuck inside an attempt still running ("dame una pista", "estoy
+  atascado"), which needs only the partial solution and labels that attempt Assisted. Resolve the planned
   step, refuse incomplete review inputs, and run simulation-review-prompt.md in one cold subagent so
   teaching context cannot contaminate the score. Hand Borderline/Fail to the correction loop; preserve
   the original timed verdict forever.
@@ -45,7 +47,7 @@ the prompt line count and `read to EOF`.
 - Correction clean: close the MISTAKES rows; Pass and Borderline may close their learning step, while a
   Fail still needs the reinforcement Pass. Never change the original tracker/spec verdict or time.
 - Correction incomplete: keep the step open and name only the remaining gaps.
-- Hint: the cold subagent writes nothing, explains the first unfinished concept, and labels the later
-  attempt Assisted.
+- Hint: the cold subagent writes no simulation state, explains the first unfinished concept, and labels
+  the later attempt Assisted.
 
 Report which branch ran. The review prompt owns all tracking writes and commits; do not reproduce them.
