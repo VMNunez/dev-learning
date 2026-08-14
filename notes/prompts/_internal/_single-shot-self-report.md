@@ -165,7 +165,11 @@ what came out.
 
 ## Step 5 — Run-start check (this prompt's step 0, not its last)
 
-Every prompt using this file opens by reading its own `_last-run-report-<prompt-name>.md`. If it does
+Every prompt using this file opens by reading its own `_last-run-report-<prompt-name>.md`. **It invokes
+this step before any content work — guards and configuration resolution may precede it, Step 2 may not —
+and a final-step "execute this file in full" therefore means Steps 1–4**: Step 2 overwrites the report
+this step reads, so a Step 5 reached at the end reads the run's own fresh report and the earlier `open`
+it exists to surface is destroyed unread. If the report does
 not exist, say "first run of this prompt" in one line and continue. Execute the run-start decision table
 owned by `_pipeline-self-report.md` → "Shared self-report status vocabulary", including its bounded
 legacy-`open` compatibility branch. **Do not apply a surfaced finding at the start** — editing a prompt

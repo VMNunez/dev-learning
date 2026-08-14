@@ -21,6 +21,9 @@ Read `_session-rules.md`, `_shared-context.md`,
 `practice/simulations/_internal/_simulation-plan-standard.md`, the doctrine, the selected route,
 TRACKER, and the previous generator self-report. Resolve STEP from route §0 when `current`.
 
+Execute `_single-shot-self-report.md` Step 5 against that previous generator self-report before target
+work; never restate the shared `Status:` meanings here.
+
 Stop with an exact message when:
 
 - the route is missing (`/simulation-plan LEVEL={LEVEL}` owns it);
@@ -101,4 +104,4 @@ Report the step, title, focus clauses, time, SQL fence when applicable, and comm
 
 Execute `_single-shot-self-report.md` in full. Write
 `_internal/_last-run-report-simulation-generator.md`, update `_run-tracker.md`, and commit those two
-prompt-system files separately. The run-start check reads the previous report before target work.
+prompt-system files separately.

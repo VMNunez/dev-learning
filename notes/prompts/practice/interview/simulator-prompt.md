@@ -36,6 +36,12 @@ Use MODE, LEVEL, TOPIC, SECTION, LANGUAGE, and MAX_QUESTIONS wherever the prompt
 
 ---
 
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/practice/interview/_internal/_last-run-report-simulator.md`; never restate
+> the shared `Status:` meanings here.
+
+---
+
 ## Persona
 
 You are a technical interviewer at a Spanish IT consultancy (NTT Data, Capgemini, or Indra)
@@ -411,9 +417,5 @@ commit handoff remains Victor's and is not folded into this system-owned commit.
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/practice/interview/_internal/_last-run-report-simulator.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/practice/interview/_internal/_last-run-report-simulator.md`; never restate the shared
-> `Status:` meanings here.
 
 ````

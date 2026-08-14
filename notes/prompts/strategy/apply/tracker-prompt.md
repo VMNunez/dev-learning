@@ -20,6 +20,10 @@ Three modes:
 > **▶ Run first:** nothing. This is a starting point. Optionally, after `analyze`, the patterns it finds
 > feed `evidence-intake-prompt` (real postings → `_job-market-evidence.md` → coverage).
 
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/strategy/apply/_internal/_last-run-report-tracker.md`; never restate the
+> shared `Status:` meanings here.
+
 ---
 
 ## Where the tracker lives — outside the repo
@@ -210,7 +214,3 @@ judge which skills the offers keep asking for. You do **not** need to write any 
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/strategy/apply/_internal/_last-run-report-tracker.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/strategy/apply/_internal/_last-run-report-tracker.md`; never restate the shared
-> `Status:` meanings here.

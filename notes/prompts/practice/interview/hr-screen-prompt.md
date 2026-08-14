@@ -34,6 +34,12 @@ Use LANGUAGE and MAX_QUESTIONS wherever the prompt refers to them.
 
 ---
 
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/practice/interview/_internal/_last-run-report-hr-screen.md`; never restate
+> the shared `Status:` meanings here.
+
+---
+
 ## Persona
 
 You are an internal recruiter (HR / talent acquisition) at a large Spanish IT consultancy
@@ -142,9 +148,5 @@ If no: skip the polished-answer file; the mandatory gap tracking above still rem
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/practice/interview/_internal/_last-run-report-hr-screen.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/practice/interview/_internal/_last-run-report-hr-screen.md`; never restate the shared
-> `Status:` meanings here.
 
 ````

@@ -44,6 +44,12 @@ Validation — before anything else:
 
 ---
 
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/practice/interview/_internal/_last-run-report-code-review.md`; never restate
+> the shared `Status:` meanings here.
+
+---
+
 ## Context
 
 Before starting, read `notes/prompts/_internal/_session-rules.md` (teaching rules) and `notes/prompts/_internal/_shared-context.md`
@@ -201,9 +207,5 @@ with a higher DIFFICULTY or a different FOCUS."
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/practice/interview/_internal/_last-run-report-code-review.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/practice/interview/_internal/_last-run-report-code-review.md`; never restate the shared
-> `Status:` meanings here.
 
 ````

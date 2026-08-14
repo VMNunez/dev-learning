@@ -17,6 +17,10 @@ Two modes:
 > **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `cv-prompt` `tailor` first,
 > so the letter/message and the CV tell the same story for that offer.
 
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/strategy/apply/_internal/_last-run-report-cover-letter.md`; never restate the
+> shared `Status:` meanings here.
+
 ---
 
 **How to use:**
@@ -118,8 +122,4 @@ the recommended one.
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/strategy/apply/_internal/_last-run-report-cover-letter.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/strategy/apply/_internal/_last-run-report-cover-letter.md`; never restate the shared
-> `Status:` meanings here.
 

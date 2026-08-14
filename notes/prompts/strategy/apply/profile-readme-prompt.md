@@ -12,6 +12,10 @@ No configuration needed — paste the whole prompt into a new chat.
 > **▶ Run first:** `portfolio-audit` if a project just reached ✅ Ready (its Phase 3 already updates
 > this README) — otherwise nothing.
 
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/strategy/apply/_internal/_last-run-report-profile-readme.md`; never restate
+> the shared `Status:` meanings here.
+
 Run this whenever you want the **GitHub profile README** (`dev/portfolio/VMNunez`) reviewed, refreshed,
 or optimized for the job target — without re-explaining the context each time. the coding agent is the one
 responsible for keeping that README current and optimized; this prompt is the repeatable entry point
@@ -94,8 +98,4 @@ Spanish consultancies):
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/strategy/apply/_internal/_last-run-report-profile-readme.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/strategy/apply/_internal/_last-run-report-profile-readme.md`; never restate the shared
-> `Status:` meanings here.
 

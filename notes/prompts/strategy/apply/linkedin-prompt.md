@@ -15,6 +15,12 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 ---
 
 ````
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md`; never restate the
+> shared `Status:` meanings here.
+
+---
+
 ## Before starting
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md`. It defines the **sources to read**
@@ -238,9 +244,5 @@ No commit message needed — this content goes directly into LinkedIn, not into 
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md`, its own commit, then the refinement step.
-
-> **Run-start check (step 0):** execute that file's Step 5 against
-> `notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md`; never restate the shared
-> `Status:` meanings here.
 
 ````
