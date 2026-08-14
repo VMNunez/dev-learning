@@ -145,7 +145,8 @@
       "PowerShell($s = \"step-complete\",\"backlog-task-open\",\"backlog-task-close\",\"coverage-bullet-add\",\"coverage-mark\",\"readme-concept-add\"; $t=0; foreach \\($n in $s\\) { $p = \"c:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\.claude\\\\skills\\\\$n\\\\SKILL.md\"; $c = \\(Get-Content $p | Measure-Object -Line\\).Lines; $t += $c; \"{0,-22} {1}\" -f $n,$c }; \"TOTAL $t\")",
       "PowerShell($s = \"step-complete\",\"backlog-task-open\",\"backlog-task-close\",\"coverage-bullet-add\",\"coverage-mark\",\"readme-concept-add\"; foreach \\($base in \".claude\\\\skills\",\".agents\\\\skills\"\\) { $t=0; foreach \\($n in $s\\) { $p = Join-Path \"c:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\$base\" \"$n\\\\SKILL.md\"; if \\(Test-Path $p\\) { $t += \\(Get-Content $p\\).Count } else { \"MISSING $p\" } }; \"$base TOTAL $t\" }; Get-ChildItem \"c:\\\\Users\\\\Victor\\\\Documents\\\\main\\\\dev\\\\learning\\\\.agents\" -ErrorAction SilentlyContinue | Select-Object -First 5 Name)",
       "Bash(git --no-pager diff --stat)",
-      "Bash(git --no-pager log --oneline -2)"
+      "Bash(git --no-pager log --oneline -2)",
+      "PowerShell(& \"notes/prompts/_internal/validate-prompt-system.ps1\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Victor\\Documents\\main\\dev\\learning\\.claude\\skills\\step-complete",
