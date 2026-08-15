@@ -148,7 +148,8 @@
       "Bash(git --no-pager log --oneline -2)",
       "PowerShell(& \"notes/prompts/_internal/validate-prompt-system.ps1\")",
       "Bash(awk 'NR>=784 && NR<=785' notes/prompts/_internal/_recommendation-ledger.md)",
-      "Bash(awk 'NR==723' notes/prompts/_internal/_recommendation-ledger.md)"
+      "Bash(awk 'NR==723' notes/prompts/_internal/_recommendation-ledger.md)",
+      "Bash(rg -Uni -o \"[^\\\\n]{0,110}\\(the roadmap|the career plan|the plan file|career strategy\\)[^\\\\n]{0,110}\" notes/prompts/ .claude/ .agents/)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Victor\\Documents\\main\\dev\\learning\\.claude\\skills\\step-complete",
