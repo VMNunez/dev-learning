@@ -481,9 +481,18 @@ so its box is not yet tickable — "condition met, action pending" is a state *b
 form of it. The box is the floor, never the ceiling: a plan's own §23 gate cell may state a stricter
 sign-off — naming the branch its fixes must be merged into, for instance — and where it does, both
 conditions hold. A trigger and a sign-off are also different events: G3's trigger is the backend branch
-merging, its sign-off is the review having run **and** every High it found being fixed on the project
-branch. So a gate whose trigger has already fired while its box is still untickable is **not** signed
-off, and it is still the gate the project is on.
+merging, its sign-off is the review having **covered every slice of that tier** — the stamp its box
+quotes — **and** every High it found being fixed on the project branch. So a gate whose trigger has
+already fired while its box is still untickable is **not** signed off, and it is still the gate the
+project is on.
+
+**A review gate's box therefore reads the stamp, not the fact that the prompt ran**, the same way G6
+closes on an empty drift report rather than on `progress-update` having happened. `_review-standard.md`
+owns the three shapes that stamp can take: every slice read → that run's plain date · a slice lost to a
+failed re-dispatch → that date plus `(incomplete — «slice» not reviewed)` · **every** slice lost →
+nothing stamped, so the line still holds whatever it held before. The box asks for *that run's date and
+no qualifier* because both of the other two shapes leave code no reviewer opened, and the third one is
+invisible to a test that only looks for the qualifier.
 
 ### Closure checklist — the project's definition of done
 
@@ -493,8 +502,8 @@ verbatim into the plan (as unchecked boxes) and tick each one as it happens:
 ```
 - [ ] Every §15 step's done condition passes, each with its step-complete ritual (G1)
 - [ ] PLANNING.md still matches what was built — re-run plan-audit MODE=review if §15/§22 moved (G2)
-- [ ] review-audit REVIEW_SCOPE=backend has run, and every High task it found is fixed (G3)
-- [ ] review-audit REVIEW_SCOPE=frontend has run, and every High task it found is fixed (G4)
+- [ ] review-audit REVIEW_SCOPE=backend has run — PROJECT-BACKLOG.md's `**Last Reviewed — backend:**` line carries that run's date with no `(incomplete — …)` qualifier — and every High task it found is fixed (G3)
+- [ ] review-audit REVIEW_SCOPE=frontend has run — PROJECT-BACKLOG.md's `**Last Reviewed — frontend:**` line carries that run's date with no `(incomplete — …)` qualifier — and every High task it found is fixed (G4)
 - [ ] readme-audit has run — global + backend + frontend READMEs at standard (G5)
 - [ ] progress-update MODE=active has run **and its drift report came back empty** — anything it named is repaired by the owner it named (G6)
 - [ ] portfolio-audit returns ✅ Ready — no open High/Medium in PROJECT-BACKLOG.md (G7)
@@ -504,7 +513,9 @@ verbatim into the plan (as unchecked boxes) and tick each one as it happens:
 
 - **Pass:** G1–G8 all present, in order, each with a concrete trigger naming a real §22 branch or §15
   step; G3 and G4 are tier-scoped (never `full`); the prerequisite chain is stated; the closure
-  checklist is present with all nine boxes.
+  checklist is present with all nine boxes, **each carrying this file's wording for that box** — the
+  checklist is copied verbatim, so a box whose text has drifted from the version above is a stale copy
+  of a condition that has since been tightened, and a count of nine cannot see it.
 
 ---
 

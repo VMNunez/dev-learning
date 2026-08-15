@@ -68,8 +68,33 @@ steps marked complete?
 
 ### Check 2 — Code quality (from PROJECT-BACKLOG.md)
 Only if all steps are complete. Read `{PROJECT_PATH}/PROJECT-BACKLOG.md` (full-stack keeps its own
-backlog inside its folder). If it does **not** exist: stop and report "no PROJECT-BACKLOG.md — run
-`review-audit` first". Otherwise apply:
+backlog inside its folder), **and read its per-tier `**Last Reviewed — «tier»:**` lines before a single
+task is counted**. Stop the gate on any of the four states `_review-standard.md`'s unreviewed-code gate
+lists — **no file · no header · a tier line reading `never` · a date carrying an
+`(incomplete — «slice» not reviewed)` qualifier** — quoted from that gate, never re-derived here, because
+two readings of one line is the drift worth a pointer. Each means code no reviewer opened, so the task
+list is short by whatever that code would have produced and a count over it is not a quality verdict.
+Report what is
+owed: "no PROJECT-BACKLOG.md — run `review-audit` first" · "PROJECT-BACKLOG.md has no
+`**Last Reviewed — «tier»:**` header — run `review-audit` first" · "«tier» tier not fully reviewed — run
+`review-audit REVIEW_SCOPE = «tier»` first", quoting the tier's line in that last case, the only one of
+the three that has one. `n/a — Angular-only` is not one of the four — it is a tier the project does not
+have.
+
+**A stop is not a verdict.** No ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, the question bank still
+committed (questions are saved regardless of the outcome), and the project's `_run-tracker.md` cell
+records `blocked`. In `PROJECT_PATH = all` the summary row carries the stop in its Verdict cell and the
+batch continues.
+
+**These four are what a file can show; a fifth shape it cannot show belongs to §23's G3/G4 boxes.** A
+run that loses **every** slice of a tier stamps nothing (`_review-standard.md`, the three stamping
+shapes), so the old line stands — a plain date over code nobody re-read, indistinguishable here from a
+complete review. That is why the boxes ask for *that run's date*, and why this check never treats a
+plain date as its own business. **On Angular-only projects (01–06) there is no §23 at all**, so the four
+states are the whole test there and the fifth has no catcher: they are closed, single-tier and not
+expected to be re-reviewed.
+
+Otherwise apply:
 - Any open **High** `[ ]` task → **❌ Not ready.** List every blocking task. Do not proceed to CV /
   GitHub.
 - Only open **Medium** `[ ]` tasks → **⚠️ Almost ready.** List them; the project can be shown but

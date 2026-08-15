@@ -228,7 +228,13 @@ close made false:
   the condition is already the next §15 step's and this close leaves it alone.
 - **Next gate** — when the close satisfies a gate's sign-off condition. Closing the last open **High**
   is the case that matters: §23 signs G3 off only when every High is fixed and merged, so that close is
-  what turns the gate from blocked to signable. Say it in §0, and say it in the report. The cell holds
+  what turns the gate from blocked to signable — **unless the gate's box is untickable for a reason the
+  backlog states in a second place**, the commonest being the tier's `**Last Reviewed — «tier»:**` line
+  — backend for G3, frontend for G4: `never`, or a date carrying `(incomplete — …)`, means a slice nobody
+  read, and no High clearing signs *that* tier off. §23's box owns the full condition; this is the half
+  the backlog shows you.
+  Write `blocked — «tier» tier not fully reviewed` then, not `signable`. Say it in §0, and say it in the
+  report. The cell holds
   two things and only one of them is yours:
   - **which gate it names** is derived — the first gate in §23's **chain** **not yet signed off**; a
     gate whose trigger fired but whose sign-off is still pending is still
@@ -236,8 +242,10 @@ close made false:
     ritual's preference. (The rule is `_planning-standard.md` invariant 10, whose quality-gate rules
     define *signed off* as the gate's closure-checklist box being tickable of the project branch as it
     stands, plus any stricter sign-off the plan's own §23 gate cell states.);
-  - **whether that gate is blocked or signable** is a fact about the backlog, which only this ritual can
-    see. Write it as a qualifier on the derived gate (`G3 — signable, last High merged`), so it survives
+  - **whether that gate is blocked or signable** is a fact about the backlog, which this ritual is the
+    one positioned to *author* — `step-complete` reads the same two backlog facts to re-derive the gate,
+    but the event that moves the qualifier is a close.
+    Write it as a qualifier on the derived gate (`G3 — signable, last High merged`), so it survives
     a later re-derivation instead of being overwritten by one.
 
   Neither ritual silently reverts the other; when the invariant and the qualifier cannot both hold, the

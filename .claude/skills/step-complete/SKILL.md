@@ -210,10 +210,16 @@ Rewrite these cells, and only these:
     A gate whose trigger has already fired but whose sign-off is still pending is *still* that gate —
     07's `G3 sign-off — condition met, action pending` is the live example, and skipping ahead to G4
     because G3's trigger fired is the wrong-order error the invariant exists to catch. Derive it from
-    four things you can read: the gate's **closure-checklist box** at the end of §23, any stricter
-    sign-off its own §23 gate cell states, `PROJECT-BACKLOG.md`'s open High/Medium state, and §22's
+    five things you can read: the gate's **closure-checklist box** at the end of §23, any stricter
+    sign-off its own §23 gate cell states, `PROJECT-BACKLOG.md`'s open High/Medium state, **that same
+    backlog's per-tier `**Last Reviewed — «tier»:**` lines** — `never`, or a date carrying
+    `(incomplete — …)`, is a review slice nobody read, and G3/G4's boxes ask for that run's date, so no
+    amount of fixed Highs signs such a tier off — and §22's
     merge status for the branch the gate names — a fix on an unmerged branch has not signed anything
-    off. All four are live state, so re-derive this cell every run rather than copying what was in it.
+    off. All five are live state, so re-derive this cell every run rather than copying what was in it.
+    `backlog-task-close` reads the same tier lines for its qualifier; a re-derivation that never read
+    them is how a `blocked — «tier» tier not fully reviewed` qualifier gets overwritten by a gate this
+    ritual only *believed* was signed.
     (The rule is `_planning-standard.md` invariant 10, and its quality-gate rules are where *signed off*
     is defined.)
   - **Whether that gate is blocked, signable or pending an action** is the same question seen from the

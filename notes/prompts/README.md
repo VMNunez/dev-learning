@@ -250,7 +250,7 @@ separately, because a gate sequences the chain and a prerequisite constrains the
 | `/plan-audit` → `plan-audit` | `MODE=new\|review`, `PROJECT=blank\|path\|all` | O, author/advisor/reviewers · agent | new mode consumes/dispatches brief; review `all` only; no `DRY_RUN` |
 | `/review-audit` → `review-audit` | `PROJECT_PATH=path\|all`, `REVIEW_SCOPE=full\|backend\|frontend` | O, cold per-slice roles · agent | G3/G4; writes/commits backlog only, never project code |
 | `/readme-audit` → `readme-audit` | `PROJECT_PATH=path\|all` | O, author+reviewer per README · Victor | run-first nothing; as project gate **G5** it runs after every High from G3/G4 is fixed; pipeline does not commit project README work |
-| `/portfolio-audit` → `portfolio-audit` | `PROJECT_PATH=path\|all`, `DRY_RUN` | O, author+reviewer per bank section · agent; a ✅/⚠️ non-dry content commit pauses for Victor's one CV-bullet choice; external profile commit is Victor's | after `review-audit` (G3/G4), `readme-audit` (G5) **and** an empty `progress-update` (G6) — §23's whole chain, not a subset; final go/no-go, never replaces review |
+| `/portfolio-audit` → `portfolio-audit` | `PROJECT_PATH=path\|all`, `DRY_RUN` | O, author+reviewer per bank section · agent; a ✅/⚠️ non-dry content commit pauses for Victor's one CV-bullet choice; external profile commit is Victor's | after a **complete** `review-audit` per tier (G3/G4 — its verdict stops on a `Last Reviewed` line reading `never` or carrying `(incomplete — …)`), `readme-audit` (G5) **and** an empty `progress-update` (G6) — §23's whole chain, not a subset; final go/no-go, never replaces review |
 | `/sql-plan` → `sql-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | coverage first; plans only, never writes/grades `.sql` or schedules other tracks |
 | `/sql-plan-audit` → `sql-plan-audit` | `SCOPE=full\|extend`, `LEVEL` | O, four cold specialists · agent | existing route required; exercises-only; never edits Victor's `.sql` files |
 | `/sql-exercises` → `sql-exercises-prompt` | `MODE`, `TOPIC`, optional `LEVEL`, `COUNT`, `FILE` | S · Victor owns the `.sql` answers and their commit; agent owns the review-mode MISTAKES/`PROGRESS.md`/route writes and the doctrine §0 rewrite on a close | after `/sql-plan {LEVEL}`; focus/review derived; legacy review grades but does not invoke step close |
@@ -472,7 +472,10 @@ Each generated file, with who writes it and who depends on it:
   the whole project is checked against.*
 - **`PROJECT-BACKLOG.md`** — written by `review-audit` (the tasks), by the two backlog skills
   (`⏸ Deferred` / `## Closed`), and by `plan-audit`'s `whole-plan` specialist where a task contradicts a
-  plan decision → read by `portfolio-audit` (open High/Medium tasks block the "ready" verdict).
+  plan decision → read by `portfolio-audit` (open High/Medium tasks block the "ready" verdict, and its
+  per-tier `Last Reviewed` lines stop the gate outright when one reads `never` or carries
+  `(incomplete — …)`), by `review-audit`'s own next-run gate, by both §0 rituals deriving `Next gate`,
+  and by whoever ticks §23's G3/G4 boxes, which quote those same lines.
 - **`notes/cv/cv-bullets.md`** — written by `portfolio-audit` with one chosen, polished bullet per
   committed project → read by `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, and
   `profile-readme-prompt` as application/profile evidence.

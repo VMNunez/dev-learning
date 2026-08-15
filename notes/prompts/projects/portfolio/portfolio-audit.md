@@ -24,9 +24,12 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 §23; where this prompt and §23 disagree, **§23 wins**.
 
 > **▶ Run first:** `review-audit` (G3/G4), `readme-audit` (G5) **and** `progress-update` (G6) — §23's
-> full prerequisite chain, not a subset of it. This gate assumes the code has been reviewed (the verdict
-> reads `PROJECT-BACKLOG.md`, which `review-audit` writes), the READMEs are correct, and PROGRESS.md is
-> accurate — and G6 closes on a **clean drift report**, not on the run having happened.
+> full prerequisite chain, not a subset of it. This gate assumes the code has been reviewed **in full**:
+> the verdict reads `PROJECT-BACKLOG.md`, whose task list is only as complete as the review that wrote
+> it, so a tier whose `**Last Reviewed — «tier»:**` line reads `never` or carries an
+> `(incomplete — …)` qualifier leaves G3/G4 unsigned under §23 and this gate computing a verdict over
+> findings nobody made. Neither review condition is about the run having happened, and neither is G6's:
+> that one closes on a **clean drift report**. The READMEs must be correct and PROGRESS.md accurate.
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 
@@ -208,7 +211,11 @@ needs the whole-file view, so it belongs here, not in a per-section subagent. Th
 Compute the verdict yourself per the standard's **verdict logic**: Check 1 (feature completeness from
 `{PROJECT_PATH}/PLANNING.md`) gates Check 2 (code quality from `{PROJECT_PATH}/PROJECT-BACKLOG.md`).
 Produce ✅ Ready / ⚠️ Almost / ❌ Not ready, listing incomplete steps or open High/Medium tasks as
-checkboxes. If the backlog file is missing, stop and report "run `review-audit` first".
+checkboxes. If the backlog file is missing, carries no `**Last Reviewed — «tier»:**` header, or a
+tier's line reads `never` or carries an `(incomplete — …)` qualifier — stop and report which
+`review-audit` run is owed; the standard's Check 2 owns those four states, the exact wording, and what
+a stop does to Phase 3, the tracker cell and the batch summary row — a stop is not a verdict, so do not
+print one.
 
 **Two quick sanity scans before you finalize the verdict** (report each as a one-line note, do not
 auto-fix):
@@ -221,7 +228,9 @@ auto-fix):
 
 ### Phase 3 — CV bullet + GitHub description (orchestrator)
 
-**Skip Phase 3 entirely if the verdict is ❌ Not ready.** Otherwise, per the standard: draft two Spanish
+**Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 2 stopped the gate**, where
+there is no verdict at all: a stop writes no CV bullet, so nothing may reach `notes/cv/cv-bullets.md` on
+that path. Otherwise, per the standard: draft two Spanish
 CV bullet options (read `_application-standard.md` first) and save them to `notes/cv/cv-bullets.md`; draft
 one English GitHub description (output only — Victor sets it in the repo settings manually).
 
@@ -236,7 +245,15 @@ inside the learning flow: after editing, print the commit + push commands for th
 
 ## Finishing
 
-Print, in this order:
+**If Check 2 stopped the gate** (no backlog · no `Last Reviewed` header · a tier reading `never` or
+carrying `(incomplete — …)`), the list below does not apply: print item 1, then the stop and the exact
+`review-audit` run owed, and nothing else — no verdict, no CV bullet, no GitHub description, no profile
+README. With `{DRY_RUN}` = false, commit the question bank on the ❌ branch's `git add` below, because
+questions are saved regardless of the outcome; with `{DRY_RUN}` = true commit none of it and print that
+sequence instead, exactly as on any other verdict. Either way, record this project `blocked` in
+`_run-tracker.md`. Then the self-report.
+
+Otherwise print, in this order:
 1. "Saved X questions to notes/interview-prep/projects/«name».md" (do not reprint the questions).
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
 3. CV bullet (two options) — **omit if ❌**.
