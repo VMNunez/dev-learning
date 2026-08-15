@@ -132,8 +132,9 @@ and `es/` — these are **project-specific**, about the actual implementation de
 - Target a **decision, a pattern, or a gotcha** — never "what is X". It must be answerable only by
   someone who actually wrote or understands this specific code.
 - Come from the real files: PLANNING.md's new/review concepts, business rules, architecture decisions
-  and tradeoffs; and the actual source. Use ROADMAP.md to target the companies/context (NTT Data,
-  Capgemini, and similar — the profile in `_shared-context.md` is the source for targets).
+  and tradeoffs; and the actual source. Target the companies and the interview context from the profile
+  in `_shared-context.md` (NTT Data, Capgemini, and similar) — it is the source for those facts, and
+  `ROADMAP.md` states no target this bar needs that it does not.
 
 **Model answer:** 2–4 sentences, references the **actual implementation** (not a textbook
 definition), and uses "I chose" / "I decided" — not "it is used".

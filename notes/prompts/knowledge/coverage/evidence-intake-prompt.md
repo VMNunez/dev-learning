@@ -32,7 +32,7 @@ FOCUS = [optional, search mode only — leave BLANK for the normal run. Narrow t
 ## paste  — you paste one or more full job offers at the very end of this chat; the prompt adds them.
 ##          Full pasted offers outrank web-search extracts — marked as "full posting".
 ## search — NO topic needed. It defaults to YOUR job target (junior Angular + Spring Boot at Spanish
-##          consultancies, read from ROADMAP + _shared-context) and web-searches current matching
+##          consultancies, read from _shared-context) and web-searches current matching
 ##          postings. FOCUS only narrows it; leave FOCUS blank for the standard run.
 ```
 
@@ -49,8 +49,13 @@ Read before touching anything:
    source` Raw-posting blocks, the Synthesis frequencies `~N/M`, the footer count) and what is already on file.
 2. `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — the "Two sources" section: the evidence is
    the **complement** to the deep analysis, a floor to raise, never a ceiling. Keep that framing.
-3. `ROADMAP.md` + `notes/prompts/_internal/_shared-context.md` — the **target profile**: role, companies, stack,
-   seniority. Only postings that fit this profile belong in the file (see the filter in Step 2).
+3. `notes/prompts/_internal/_shared-context.md` — the **target profile**: role, companies, stack,
+   seniority. Only postings that fit this profile belong in the file (see the filter in Step 2). It is
+   the source for those four facts and the only file read for them here — **not `ROADMAP.md`**, which
+   carries a strategy built on them: this filter decides which postings enter
+   `_job-market-evidence.md`, whose junior postings *raise the junior floor*, and
+   `_coverage-standard.md` is explicit that a downstream planning artifact may never raise a coverage
+   requirement. Reading the plan to decide the floor is that fence crossed through the side door.
 
 Today's date is in the session context — use its month/year for the footer and for dating searched postings.
 

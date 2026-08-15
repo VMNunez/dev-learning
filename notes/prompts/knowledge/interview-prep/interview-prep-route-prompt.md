@@ -25,7 +25,8 @@ One run handles exactly one level. There is no `all` mode.
 
 Read:
 
-- `notes/prompts/_internal/_shared-context.md` and `ROADMAP.md` for role, stack and company weighting;
+- `notes/prompts/_internal/_shared-context.md` for role, stack and company weighting — it is the source
+  for those facts — and `ROADMAP.md` for the level progression planned on top of them;
 - `notes/prompts/_internal/_job-market-evidence.md` for current demand;
 - `_interview-prep-standard.md` for IDs, priority and lifecycle;
 - every selected-level bank in this order: angular, spring, spring-boot, java, architecture, security,
@@ -84,8 +85,9 @@ digest.
 ## Cold route review
 
 Dispatch one cold `reviewer`, reasoning tier `deep`, execution `foreground`. Give it the proposed route,
-the English question lines, `_shared-context.md`, `ROADMAP.md`, and `_job-market-evidence.md`. It must
-return:
+the English question lines, `_shared-context.md` (role, stack and company weighting — the source for the
+target-stack verdict below), `ROADMAP.md` (the level progression only), and `_job-market-evidence.md`.
+It must return:
 
 - `N questions reviewed` and the selected count;
 - duplicate-ID/concept verdict;

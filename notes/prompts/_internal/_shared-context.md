@@ -4,6 +4,18 @@ This file is **not a prompt**. It is the single place that holds the context eve
 to repeat: who I am, where I stand, my projects, and the market I am aiming at. Prompts read the
 sections they need instead of copying them — so a fact changes here once, not in sixteen files.
 
+**It is the source for those facts, and the direction is one-way.** The profile, the target companies,
+the Spanish market and its hiring process are settled here. `ROADMAP.md` and `_session-rules.md` carry
+the strategy and the condensed profile built on top of them; neither outranks this file **on one of
+those four**, and such a disagreement is theirs to fix, never this file's. The fence is exactly that
+enumeration and no wider — the project list below defers to `PROGRESS.md` in its own section, and
+`ROADMAP.md` owns the ranked "what most increases your probability of being hired", which has no
+counterpart here. So a prompt that needs a **target fact**
+— role, companies, stack, seniority, market, hiring stages — reads it here, and reads `ROADMAP.md` for
+the **plan** built on it: phases, gates, the applications timeline, the study-block tables.
+`_coverage-standard.md` states the same fence for coverage scope; `_roadmap-standard.md` carries the
+obligation on the roadmap's side.
+
 Keep this in sync with `_session-rules.md` (which holds a condensed profile) whenever something changes.
 
 ---

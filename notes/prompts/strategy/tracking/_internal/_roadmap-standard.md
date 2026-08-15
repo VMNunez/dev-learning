@@ -28,8 +28,13 @@ gap analysis → update living sections → apply → independent review) on top
   practice is done. It is **not an inventory of concepts** — the per-technology concept lists were deleted
   on 2026-08-03 as an evidence-free duplicate of the coverage files. Never ask it which concepts are
   covered; ask the markers.
+- `notes/prompts/_internal/_shared-context.md` — SOURCE OF TRUTH for the **facts about Victor and the
+  market**: the profile, the target companies, the Spanish hiring process, and the AI factor. That
+  file's own header owns the fence and `_coverage-standard.md` states its coverage half; what belongs
+  here is the consequence — ROADMAP builds strategy on those facts and never becomes a second statement
+  of them.
 - `ROADMAP.md` — the forward-looking strategy: the path from where he is to where he needs to be,
-  through projects and study blocks. It **references** the other two — it does not repeat them.
+  through projects and study blocks. It **references** the other three — it does not repeat them.
 
 ROADMAP.md answers: "given what I know now and what I still need to learn, what is the plan?" It is
 not a concept list and it is not a progress tracker.
@@ -41,7 +46,20 @@ not a concept list and it is not a progress tracker.
 Two types of content.
 
 **Stable strategic sections** — define context, objectives, market, and hiring strategy. Written
-once. Only change if something is factually wrong:
+once. Only change if something is factually wrong — **and a passage that restates
+`_shared-context.md` counts as factually wrong the moment the two disagree**, which is not a
+hypothetical: the internship stack and the length of the HR call already read differently in the two
+files. Three of the bullets below have a section of the same subject there and are where this bites
+first — *Who you are and where you stand*, *The market you are targeting*, *The AI factor* — together
+with *The hiring process at Spanish consultancies*, which is listed separately here but in `ROADMAP.md`
+is a block **inside** the market section, so it is edited there. They keep their headings and carry the
+**strategic reading** — what the fact means for the plan — while the fact itself is referenced, exactly
+as PROGRESS and coverage are referenced under "No duplication" below. That rule is file-wide, so these
+four are the likely sites and never a boundary on it. **`What most increases your probability of being
+hired` is the exception, and it is exempt by its *ordering*, not by its contents**: the ranking is
+ROADMAP's own, exists nowhere else, and `_session-rules.md` routes "what makes a strong junior in 2026"
+here — never cut it to a pointer. Individual facts inside those items (the internship, the testing
+stacks) do come from `_shared-context.md` and are checked like any other.
 - Who you are and where you stand
 - The market you are targeting
 - The AI factor — how it changes the market
@@ -134,8 +152,13 @@ factually wrong — all four resolve against `## Projects`, `Practice completed`
 
 ## No duplication
 
-No content in ROADMAP.md duplicates `PROGRESS.md` or `notes/coverage/junior.md` word-for-word — reference
-them instead. ROADMAP is a forward-looking strategy document, not a concept list and not a progress
+No content in ROADMAP.md duplicates `PROGRESS.md`, `notes/coverage/junior.md`, or
+`notes/prompts/_internal/_shared-context.md` word-for-word — reference them instead. **The third one is
+the one this rule was missing**: the profile, the target-company list, the hiring stages and the AI
+factor are that file's, and a second copy here is what the prompts downstream read instead of the
+source. Against `_shared-context.md` the check is about **facts** — a restated fact is cut to the
+strategic consequence plus a pointer, and where the two already disagree the source wins and this file
+is the one that changes. ROADMAP is a forward-looking strategy document, not a concept list and not a progress
 tracker. If a passage restates a concept list already owned by coverage-junior.md, or a status table owned
 by PROGRESS.md (the level matrix, the projects table, the practice counts), cut it and point to the source
 file. PROGRESS.md no longer owns any concept list, so against that file this check is about **tables**, not

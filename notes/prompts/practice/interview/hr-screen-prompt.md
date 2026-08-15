@@ -12,7 +12,8 @@ are easy to get wrong.
 
 It runs as a live mock HR call: the recruiter asks one question at a time, I answer, I get feedback.
 
-> **▶ Run first:** nothing — self-contained; it reads your profile from `_shared-context` and `ROADMAP`.
+> **▶ Run first:** nothing — self-contained; it reads your profile from `_shared-context` and the
+> applications strategy and timeline from `ROADMAP`.
 
 ---
 

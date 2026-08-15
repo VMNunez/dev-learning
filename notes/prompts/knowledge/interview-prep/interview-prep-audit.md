@@ -217,9 +217,10 @@ subagents of a section, because they edit the same two files.
 **Stage M — interview-question market analysis (full mode only).** Launch one `role-appropriate`
 subagent, `reasoning tier: deep`, `execution: foreground` (market judgment shapes every question downstream):
 
-> You are a specialist in technical interviews for **«level» candidates** at Spanish IT consultancies. Read `ROADMAP.md`
-> and `notes/prompts/_internal/_shared-context.md` for the candidate's exact target role, companies, stack, and
-> timeline, and `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` for what a good
+> You are a specialist in technical interviews for **«level» candidates** at Spanish IT consultancies. Read
+> `notes/prompts/_internal/_shared-context.md` for the candidate's exact target role, companies and stack,
+> `ROADMAP.md` for the timeline built on them,
+> and `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` for what a good
 > interview question is. The topic is «topic».
 >
 > Produce the **real questions actually asked** of a «level» candidate for this stack on «topic» at the target
@@ -244,7 +245,7 @@ it belongs to), so you can hand each section only its own slice later.
 subagent, `reasoning tier: deep`, `execution: foreground` (adversarial creativity — a cheap model finds
 the obvious gaps, not the ones that matter):
 
-> You are a senior technical interviewer at one of the target consultancies (read `ROADMAP.md` and
+> You are a senior technical interviewer at one of the target consultancies (read
 > `notes/prompts/_internal/_shared-context.md` for the exact role/companies, and
 > `notes/prompts/_internal/_job-market-evidence.md` for what they hire for). You have ~30 minutes with a
 > **«level» candidate** and the topic is «topic». Read

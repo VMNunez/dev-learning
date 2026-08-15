@@ -135,9 +135,21 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > exclude it and report how many you excluded. The exception dies the day the backfill lands, and an
 > analysis that keeps applying it afterwards under-counts Angular permanently.
 >
-> Filter what is left to what actually comes up in junior Angular + Spring Boot interviews at Spanish
-> consultancies. Skip: CQRS, event sourcing, JVM tuning, Kubernetes internals, Angular zone.js
-> internals, algorithms beyond basic data structures.
+> **Rank what is left; never drop it.** `notes/coverage/junior.md` is *already* calibrated to exactly
+> this target — "junior Angular + Spring Boot at a Spanish consultancy" is the criterion
+> `_coverage-standard.md` admitted every bullet under — so a second interview-relevance filter here can
+> only subtract from a floor that has already been ruled on, and it would do it silently, in the one
+> report whose purpose (Step 7) is to surface what the plan does **not** close. So order the unmarked
+> bullets by what those interviews ask first, and let the report contract below do the cutting: the
+> ranking decides which 8 are quoted, never which bullets exist.
+>
+> **If a bullet looks like it does not belong at junior at all** — CQRS, event sourcing, JVM tuning,
+> Kubernetes internals, Angular zone.js internals, algorithms beyond basic data structures, or anything
+> else the standard's junior definition excludes — that is a **miscalibrated coverage bullet**, not a gap
+> to discard. Leave it in its topic's `marked/total`, keep it out of your 8 quotes, and list it under a
+> `Coverage miscalibration candidates` line naming the topic and the bullet. Its repair is
+> `/coverage {topic} junior`, never this run and never an edit of either coverage file by you — the same
+> boundary the parity-proof branch states further down: report it, and leave both coverage files alone.
 >
 > Group by topic in the acyclic order derived from
 > `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md`; never maintain a second hard-coded list.
@@ -178,6 +190,9 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > 3. The SQL topic list.
 > 4. The read-to-EOF line, the validator's `PASS: coverage mirror parity` line verbatim, and the
 >    Angular-exception count.
+> 5. `Coverage miscalibration candidates` — the bullets above that look like they sit above junior, or
+>    `none`. **At most 8 in total** across all topics — not 8 per topic, which is item 2's bound — and
+>    never a substitute for item 2.
 >
 > No excerpts of covered material, no reasoning trace, no full enumeration.
 
@@ -282,10 +297,22 @@ contains"). Only touch them if something is factually wrong — for example, a p
 when it is already complete, or a technology listed as not yet learned when the level matrix or 2a's
 marker counts clearly show otherwise. If a fact is wrong, fix the specific sentence. Nothing else.
 
+**One kind of wrong fact is not visible inside ROADMAP**: a passage restating
+`notes/prompts/_internal/_shared-context.md` — the profile, the target companies, the hiring stages, the
+AI factor — that no longer matches it. You already read that file in the header step. The standard names
+where this bites first (`Who you are and where you stand`, `The market you are targeting` including its
+hiring-process block, `The AI factor`); check them against the source and cut a drifted restatement down
+to the strategic consequence plus a pointer. The rule is file-wide, so a restatement outside those three
+is the same defect. `What most increases your probability of being hired` is exempt by its **ranking**,
+which is ROADMAP's own — the facts inside its items are not exempt. The source wins; never edit
+`_shared-context.md` to match ROADMAP.
+
 After applying the edits, do a quick self-check against `_roadmap-standard.md`:
 - No calendar date in a project milestone, gate condition, or "CV rule" — only in the applications
   strategy section and the daily schedule header.
-- No content duplicates PROGRESS.md or coverage-junior.md word-for-word — reference them instead.
+- No content duplicates PROGRESS.md, coverage-junior.md, or `_shared-context.md` — reference them
+  instead. Against the first two the test is word-for-word; against `_shared-context.md` it is the
+  **fact**, which drifts long before the wording matches.
 - The active project has a concrete, verifiable gate condition.
 - Each future project in the sequence names which specific coverage-junior.md gaps it closes.
 - The file reads as a forward-looking strategy document, not a concept list.
@@ -329,13 +356,21 @@ NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its ins
 **Reviewer 2 — cross-file consistency** (launch only after Reviewer 1 has finished). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
-> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, `notes/coverage/junior.md`
+> ROADMAP contract), then read the freshly edited `ROADMAP.md`, `PROGRESS.md`, `notes/coverage/junior.md`,
+> `notes/prompts/_internal/_shared-context.md` (invariant 1 needs it)
 > and `practice/sql/junior/PLANNING-junior.md` §2 (invariant 4 needs it; nothing else does).
 > Verify each invariant below **from scratch** — do not trust that the edits are correct. For each
 > violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
-> 1. **No duplication.** No passage duplicates PROGRESS.md or coverage-junior.md word-for-word — it must
->    reference them instead. Cut any restated concept list and point to the source file.
+> 1. **No duplication.** No passage duplicates PROGRESS.md, coverage-junior.md or `_shared-context.md`
+>    word-for-word — it must reference them instead. Cut any restated concept list and point to the
+>    source file. Against `_shared-context.md` the check is about **facts, not wording** — neither live
+>    drift is word-for-word: read `Who you are and where you stand`, `The market you are targeting` (its
+>    hiring-process block included) and `The AI factor` against that file's Profile, "Where I stand",
+>    "Spanish job market" and "AI factor" sections, and cut any restated fact — a drifted one above all —
+>    to the strategic consequence plus a pointer. In `What most increases your probability of being
+>    hired`, **its ranking** is not a duplication — that order is ROADMAP's own and exists nowhere else —
+>    but a fact restated inside one of its items is. The source wins; never edit `_shared-context.md`.
 > 2. **Future projects (🔜) name their gaps.** Every future project in the sequence names which
 >    specific coverage-junior.md gaps it closes. If one does not, add the gap mapping — compute it from
 >    the **evidence markers** in coverage-junior.md: a bullet with no `✅ NN-slug` project marker is a
@@ -390,6 +425,11 @@ reported by 2a. Split them into two groups; the split is the point, not the leng
   precisely why 2a reports all 13 topics and not just the nine a project could touch.
 
 Never restate coverage-junior.md — reference it for detail.
+
+**Coverage miscalibration candidates** — 2a's item 5, verbatim, or one line saying it returned `none`.
+These are not gaps and nothing in ROADMAP closes them: they are bullets that may not belong at junior
+at all, and the line exists so a bullet this review declined to rank is visible instead of dropped.
+Name `/coverage {topic} junior` as the repair and change neither coverage file here.
 
 **New project candidates added** — list only candidates added in Step 3 that were not in
 ROADMAP before this review. For each: project name, what it covers technically, which gap

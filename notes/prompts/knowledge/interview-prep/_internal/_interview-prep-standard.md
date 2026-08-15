@@ -45,8 +45,9 @@ on top of this standard.
 ## What an interview-prep file is
 
 `notes/interview-prep/{LEVEL}/en/{topic}.md` (and its `es/` twin) is a **Q&A bank for one topic at
-one professional level**, built to prepare Victor for the target role and progression defined in
-`ROADMAP.md` and `notes/prompts/_internal/_shared-context.md`. Read both before judging any question:
+one professional level**, built to prepare Victor for the target role and companies defined in
+`notes/prompts/_internal/_shared-context.md` and the level progression planned in `ROADMAP.md` — that
+split of the two files is `_shared-context.md`'s own fence. Read both before judging any question:
 every question and answer is measured against what a real interviewer would expect from a candidate
 at the selected level.
 
