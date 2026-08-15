@@ -499,9 +499,14 @@ Each generated file, with who writes it and who depends on it:
   created it) → read by every
   SQL prompt and skill and by `simulation-plan` / the route-driven `simulation-generator`, which take
   their closed-step fence and technique mapping from §8/§8c. One doctrine, three routes.
-- **`practice/sql/MISTAKES.md`** — written by `sql-exercises` in `review` mode (one row per failed
-  concept, with its `coverage-junior.md` section and how many times it has come back) → read by the revision
-  points R1–R5 in `PLANNING.md` §8b, which take their focus from its open rows, highest count first.
+- **`practice/sql/MISTAKES.md`** — two writers, split by section: graded gaps in `## Open` / `## Closed`
+  from the grading run (`sql-grade`'s subagent, and the legacy `/sql-exercises MODE = review` door that
+  reaches the same branch) — one row per failed concept, with its `notes/sql/coverage/{LEVEL}.md`
+  section and how many times it has come back — plus friction-without-failure in `## Fricción` from
+  `sql-block-close`
+  → read by the revision points the level's route §1 declares, on the doctrine `PLANNING.md` §8b
+  mechanism: their focus is the open rows, highest count first, and the friction rows when a span has
+  none open.
 - **`practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `simulation-plan`, then advanced by
   `simulation-generator`, `simulation-review`, `simulation-block-close`, and their skills → read by
   every simulation prompt/skill. *Coverage says what is in scope; this route says what is ready and next.*
@@ -547,7 +552,7 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
 Practice (its own loop, fed by coverage):
 
   notes/sql/coverage/{LEVEL}.md ─► sql-plan ─► PLANNING-{LEVEL}.md ─┬─► sql-exercises ─► NN-*.sql
-                                                  ▲          ▲       │     └─► MISTAKES.md ─┐
+                                                  ▲          ▲       │     └─► MISTAKES.md ─┐  ◄─ sql-block-close
                                     sql-plan-audit┘          └── the R1–R5 revision points ◄─┘
                                     (+ PLANNING.md,                │
                                        the doctrine)               └─► simulation-generator (sql)

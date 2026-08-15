@@ -5,9 +5,9 @@ description: >
   dejo por hoy", "hasta aquí el SQL", "se acabó la hora", "done for today"). It records the one thing
   the whole track otherwise drops: **friction without failure** — the concept that cost him twenty
   minutes and that he then got right, which scores ✅ and vanishes, even though it is exactly what will
-  stall him in an interview. MISTAKES.md only ever sees what a grader marked ⚠️/❌. This skill writes
-  the `## Fricción` rows, states where tomorrow's block starts so the opener confirms rather than
-  rediscovers, and hands over the commit for his .sql. It asks nothing and blocks on nothing: friction
+  stall him in an interview. The graded tables of MISTAKES.md only ever see what a grader marked
+  ⚠️/❌. This skill writes the `## Fricción` rows, states where tomorrow's block starts so the opener
+  confirms rather than rediscovers, and hands over the commit for his .sql. It asks nothing and blocks on nothing: friction
   is taken from what he already said, never extracted with questions. Do NOT use it to grade (that is
   sql-grade), to close a step (sql-step-close), to generate exercises (/sql-exercises), or to open the
   block (sql-block-open).

@@ -494,9 +494,15 @@ If the file does not exist, create it with the two tables and the header explain
 **This prompt still never writes to `notes/interview-prep/` or to `notes/sql/`.** Those belong to
 `interview-prep-audit` and `/notes-audit`, which Victor runs on his own schedule (`PLANNING.md` §Z);
 a grading run that also authors study
-material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — it
-is this run's own output, the record of what it graded wrong. **This prompt is its only writer**; the
-revision points declared in `{PLAN}` §1 read it to derive their focus, on the doctrine §8b mechanism.
+material bypasses both standards and their cold reviewers. `MISTAKES.md` is not study material — its
+graded tables are this run's own output, the record of what it graded wrong.
+
+**The file has two owners, split by section.** This prompt writes `## Open` and `## Closed` — the
+graded gaps — and no other section of it: `## Fricción` is `sql-block-close`'s, so never write, edit or
+close a row there, and never move one across the boundary in either direction. The fence that settles a
+disagreement is `notes/prompts/practice/sql/_internal/_sql-plan-standard.md` Section E. The revision
+points declared in `{PLAN}` §1 take their focus from the `## Open` rows, and from `## Fricción` when
+their span has none open, on the doctrine §8b mechanism.
 
 If every attempted exercise was ✅, skip the appending half but still run the closing half.
 

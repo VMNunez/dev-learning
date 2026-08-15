@@ -272,7 +272,7 @@ checks. Aligned 2026-07-22.
 ## Section E — Ownership fence
 
 The plan may **name** an artefact and **point** at its owner. It may never describe its content,
-format or quality bar.
+format or quality bar — except exactly what a row's third column below licenses, and nothing wider.
 
 | Artefact | Owner | This plan may say |
 |----------|-------|-------------------|
@@ -284,7 +284,7 @@ format or quality bar.
 | The **live values** inside doctrine §0: current step, done condition, next revision point, current level, last updated | `_sql-exercises-review.md` step 4d (writes them the moment a step closes; `sql-grade` commits the file) · `sql-step-close` step 2 (verifies and repairs what 4d left wrong) · `sql-plan-audit.md` (reconciles them against the route under invariants 5 and 6) | — which rows exist and what each must hold; never their values, which it may correct but does not author. `sql-block-open` reads §0 and reports a stale one, repairing nothing. |
 | The concept list | `notes/sql/coverage/{LEVEL}.md` | which sections and bullets a step claims |
 | How much of the route is done | `PROGRESS.md` → `## Practice completed` | that generating and grading update it (the concept inventory lives in `notes/sql/coverage/{LEVEL}.md`, not there — its concept list was deleted 2026-08-03) |
-| The mistake log | `practice/sql/MISTAKES.md` (written by the review run) | that revision points read it |
+| The mistake log | `practice/sql/MISTAKES.md` — **two owners, split by section**: `_sql-exercises-review.md` step 5 writes `## Open` and `## Closed`, the graded gaps (`sql-grade` commits the file) · `sql-block-close` writes `## Fricción` and only that, the friction no grading run can see | that revision points read it, which ritual owns which section, and which section a mechanism the doctrine owns reads — naming a section is pointing at its owner; what a row must contain, the row format, the column definitions and the quality bar stay outside (naming a column as the sort key of a mechanism the doctrine owns is not a definition) |
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
 | Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: readiness only** — which techniques the closed steps unlock, and therefore what may be asked for today. Never the config, never the format. |
 
