@@ -36,6 +36,9 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 
 - `COVERAGE = notes/{topic}/coverage/{LEVEL}.md`
 - `SIBLINGS = the other two files in notes/{topic}/coverage/`
+- `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
+- `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY, taken as their registry
+  rows only — this prompt never opens an adjacent topic's coverage files`
 - `PREREQUISITES = none for junior; junior for middle; junior and middle for senior`
 - `GLOBAL_MIRRORS = notes/coverage/{level}.md for LEVEL and every PREREQUISITES level`
 - `FINDINGS = notes/{topic}/coverage/verify-{LEVEL}.md`
@@ -52,9 +55,16 @@ Count lines before every whole-file read and read to EOF:
 2. `notes/prompts/_internal/_session-rules.md`
 3. `notes/prompts/_internal/_shared-context.md`
 4. `notes/prompts/_internal/_job-market-evidence.md`
-5. `COVERAGE` and both `SIBLINGS`
-6. `NOTES_PLANS` when present, to identify locked bullets
-7. the previous coverage-verify self-report
+5. `_internal/_topic-ownership.md` — this run demands an ownership verdict twice (the reviewer mandate's
+   `items owned by another topic`, and Step 2's rejection test), and the rows are the only authority for
+   either: `TOPIC_BOUNDARY`'s own `Owns` and `Excludes / delegates`, read against the `Owns` cells of
+   `ADJACENT_TOPICS`. `Excludes / delegates` names only the **nearest** tempting overlap, so it is where
+   the answer usually is and never where the test stops. `_coverage-standard.md` names this file as the
+   boundary registry but states the boundaries themselves only "in particular", so the standard alone
+   leaves every pair it does not list undecided.
+6. `COVERAGE` and both `SIBLINGS`
+7. `NOTES_PLANS` when present, to identify locked bullets
+8. the previous coverage-verify self-report
 
 `ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts. They
 must not supply proposed gaps or raise the selected-level floor.
@@ -84,8 +94,14 @@ must not supply proposed gaps or raise the selected-level floor.
 ## Step 1 — Cold completeness review
 
 Dispatch one cold read-only reviewer. It receives the target role and level, the standard, the selected
-coverage file, both siblings, `_shared-context.md`, and relevant market evidence. Do not pass it size, freshness, or
-under/over-coverage priors — an orchestrator-supplied hint contaminates the adversarial pass. Its
+coverage file, both siblings, `_shared-context.md`, relevant market evidence, and the `TOPIC_BOUNDARY` +
+`ADJACENT_TOPICS` rows. Do not pass it size, freshness, or
+under/over-coverage priors — an orchestrator-supplied hint contaminates the adversarial pass. A boundary
+row is not such a hint: it states which concept families this topic owns, never how complete its coverage
+is. Those rows are a **boundary reference for the ownership exclusion below and nothing more** — they do
+not widen the read set to an adjacent topic's coverage files. The registry declares the adjacent
+*topics* the mandatory comparison set for full recalibration and cold ownership review, neither of which
+this prompt runs; handing over their rows is that comparison at row granularity. Its
 mandate:
 
 > Judge whether the selected file, mastered together with its earlier levels, covers the realistic
@@ -106,8 +122,8 @@ mandate:
 >   independent market audit of the earlier levels: report only gaps exposed by the selected level's
 >   mechanisms, decisions, or responsibilities.
 >
-> Do not report items already present in any level, items owned by another topic, or unjustified
-> specialisation. For each real gap return: its target level, the proposed one-sentence item, the
+> Do not report items already present in any level, items an adjacent topic owns under the
+> `TOPIC_BOUNDARY` and `ADJACENT_TOPICS` rows, or unjustified specialisation. For each real gap return: its target level, the proposed one-sentence item, the
 > section it would join, and one line on why not knowing it would materially weaken performance at the
 > selected level or break its prerequisite chain.
 > Do not inspect or infer requirements from `ROADMAP.md`, notes, exercises, projects, or plans. Those
@@ -127,8 +143,10 @@ Re-dispatch once if the proof is missing.
 ## Step 2 — Verify each finding
 
 The orchestrator verifies every reported gap against the standard and **does not edit coverage**. Grep
-all three topic files. Reject a finding when the concept is already present, belongs to another topic,
-restates an existing bullet, targets a level above `LEVEL`, or is unjustified specialisation. Correct
+all three topic files. Reject a finding when the concept is already present, belongs to another topic
+under the `TOPIC_BOUNDARY` and `ADJACENT_TOPICS` rows, restates an existing bullet, targets a level above `LEVEL`, or is unjustified
+specialisation. The grep settles **presence**; it cannot settle **ownership**, because the files it
+reaches are this topic's — that verdict comes from the registry row and is never asserted without it. Correct
 the target level when the concept is real but misclassified; never discard a real gap merely because
 it belongs to an earlier prerequisite. What survives is the verified gap list, grouped by target
 level. Run one adversarial pass of your own; add only what the reviewer missed and the standard
@@ -214,7 +232,8 @@ launch it manually.
 
 ## Final summary
 
-Report branch, mode, topic, level, progression-gate state, every reviewed coverage file's line count
+Report branch, mode, topic, level, progression-gate state, the ownership boundary applied, every reviewed
+coverage file's line count
 with EOF confirmation, the selected SHA, reviewer completion and lenses applied,
 verified-gap count by target level, the verdict, the findings path (or `dry-run`), and unresolved risks
 or `none`, including every locked placement conflict. Do not finish while a plan item remains incomplete.
