@@ -27,7 +27,8 @@ type from the path prefix.
 ---
 
 You write **one** README: the `{TARGET}` one for `{PROJECT_PATH}`. **Do NOT commit** — leave your edits
-in the working tree; the reviewer runs next and the orchestrator owns the commit.
+in the working tree; the reviewer runs next and the orchestrator **hands Victor** the commit. Nothing in
+this pipeline commits a README: `_readme-standard.md` → "Summary + commit rule" owns why.
 
 Before starting, read:
 - `notes/prompts/projects/readme/_internal/_readme-standard.md` — the bar. Focus on the **universal rules** and
