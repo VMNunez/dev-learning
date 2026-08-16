@@ -553,9 +553,15 @@ Cross-checks between sections. A finished plan satisfies all of them; the review
    so G1 — which holds no chain position — is never this cell's answer. When every chain gate is signed
    off, the cell names the closure checklist's last box, the project branch's PR into `main`, and reads
    `—` once that lands. **Published limit:** a plan review settles the chain *order* from §0/§22/§23
-   alone and cannot settle the sign-off *truth-value* — G3/G4/G5/G7 turn on `PROJECT-BACKLOG.md` and G6
-   on a drift report, neither of which any review scope reads. It checks the order, reports the
-   truth-value as unverifiable, and leaves it to the two §0 rituals, which do read the backlog.
+   alone and cannot settle the sign-off *truth-value*. Not because the backlog is out of its reach —
+   `_plan-review-prompt.md`'s `whole-plan` scope does read `{PROJECT}/PROJECT-BACKLOG.md`, and a
+   standalone `SCOPE = all` run holds it while running this very invariant — but because the backlog is
+   not *all* a sign-off turns on. Because *signed off* is defined of the project branch as it stands —
+   the paragraph this invariant already quotes — G3/G4/G7 turn on the backlog *and* on whether each fix
+   is merged into that branch, which is Git state no scope's reading map supplies; G6 turns on
+   `progress-update`'s drift report, which no scope reads at all. So a plan review checks the order,
+   reports the truth-value as unverifiable, and leaves it to the two §0 rituals, which read the backlog
+   *and* the branch.
 11. **Visual QA checklist vs learning plan (§14 ↔ §15)** — §14's visual QA checklist exists, and the
    last frontend step in §15 names it in its done condition. A checklist nobody is required to run is
    decoration.
