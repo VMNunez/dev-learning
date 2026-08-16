@@ -60,8 +60,8 @@ At the end of a full interview you close with an invitation to ask questions.
 
 Before starting, read the shared session rules for teaching context. (My profile and projects are in
 `notes/prompts/_internal/_shared-context.md` — see "Who I am" below.)
-Read `practice/interview/MISTAKES.md` too. Open `simulator` rows are the first technical concepts to
-revisit within the selected level; SESSION-LOG ordering applies after them.
+Read `practice/interview/MISTAKES.md` too; Step 3's order rules plan the session from `MISTAKES.md`'s
+Open `simulator` rows and from SESSION-LOG.
 
 ---
 
@@ -153,9 +153,26 @@ Order rules — apply in sequence:
 3. Within each remaining tier: questions with a previous Débil First Rating (from Step 1) come first.
 4. Within the same tier and group: randomise to avoid repeating the same order across sessions.
 
+**Precedence between order rules 1–4 and full mode's topic cap.** The two are in different vocabularies
+and neither overrides the other: rules 1–4 give a question its **rank**, and `Session size`'s "no more
+than 3 consecutive from the same topic" governs **adjacency** — so the cap never drops a question and
+never changes a rank. A question the cap cannot ask yet keeps its rank and is asked at the next
+position its topic admits; the question asked in its place is the highest-ranked one whose topic the
+cap allows. That holds at every question asked, so it still holds after the adaptive-difficulty
+checkpoint in this step substitutes or removes planned questions. The cap counts only questions
+carrying a bank topic: a woven project question carries none, so it neither counts toward a run of
+consecutive questions nor continues one. **The one boundary, stated here so it is not improvised:**
+where no question the cap allows is left, or where deferring would push a question past the session's
+last position, the **cap yields** — the session is never shortened to
+satisfy it — and the run says so in one line naming the topic and how many consecutive questions it
+asked, because an unasked retry question leaves its Open `simulator` row unclosed while a fourth
+consecutive question costs realism only. Topic mode is not capped — the cap is stated only in
+`Session size`'s full-mode bullet — so nothing in a topic-mode run is reordered for adjacency.
+
 Session size:
 - Full mode: 10–12 questions (or MAX_QUESTIONS if set). No more than 3 consecutive from the
-  same topic. Target mix: 55% conceptual, 35% decision-based, 10% pressure.
+  same topic — when this cap and the order rules collide, **Precedence between order rules 1–4 and full
+  mode's topic cap**, in Step 3, governs. Target mix: 55% conceptual, 35% decision-based, 10% pressure.
   If project files exist: weave 2–3 project questions into the flow naturally.
 - Topic mode: all questions in the selected scope (or MAX_QUESTIONS if set).
 
