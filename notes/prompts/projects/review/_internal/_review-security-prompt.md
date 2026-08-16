@@ -4,8 +4,12 @@
 pipeline: an adversarial, systematic pass that goes deeper than the code reviewer's fixed checklist.
 `review-audit.md` dispatches it **once per security slice** — one backend resource's flow, or the
 cross-cutting `security-infra` — never the whole backend at once. It returns a **findings table** for
-the orchestrator to merge into the backlog as **High** tasks. It does **not** edit any file and does
-**not** commit.
+the orchestrator to merge into the backlog. **Severity is graded, never automatic:** a *confirmed*
+finding becomes a **High** task, while one resting only on a plan that is silent becomes the **Medium
+"decide and document"** task — the test is `_review-standard.md`'s **What "confirmed" means**, which
+sits inside the one section of it this reviewer already reads. Every row is graded by that test, and
+the orchestrator — the only reader holding the whole plan and every slice's table — arbitrates the
+final grade in both directions. It does **not** edit any file and does **not** commit.
 
 Skip it for Angular projects 01–06 — they have no backend, so there is no server-side attack surface to
 audit. (They still get a frontend review and a backlog; they just never get this pass.)
@@ -76,6 +80,11 @@ space; if an area is genuinely clean, say so.
 Return, for **this slice only**, a findings table, most severe first:
 
 `| Severity (High/Medium/Low) | File | Finding | Fix | Why an interviewer cares | Related notes/security/coverage/junior.md item |`
+
+Grade the `Severity` cell by the standard's **What "confirmed" means** test — it is inside the one
+section you read above — never as an unconditional High. A concern the plan is simply silent on is
+filed at the severity that test gives it, and it names the PLANNING section that should record the
+answer; the orchestrator may still override the grade either way.
 
 Then a one-line **trace**: for a resource, every endpoint you checked (✅ safe / ⚠️ finding); for
 `security-infra`, every area above — as proof you covered the whole slice. If an area is clean, say
