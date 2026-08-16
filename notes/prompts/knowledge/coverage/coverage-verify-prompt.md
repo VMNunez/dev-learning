@@ -3,7 +3,9 @@
 Verify that one topic's already-generated coverage at one level is complete for the job target, before
 `notes-plan` turns it into a study map. Middle verification also protects junior prerequisite
 integrity; senior verification protects both junior and middle. This prompt is **read-only over
-coverage**: it never edits a coverage file. It emits a verdict and a durable findings file;
+coverage**: it never edits a coverage file. It emits a verdict, a durable findings file, and — when a
+proposed gap turns out to belong to another topic — one routed proposal in
+`_internal/_cross-topic-inbox.md`, which is a handoff file and not coverage.
 `coverage-prompt` consumes the findings on its next update run.
 
 > **▶ Run first:** `coverage-prompt` for this exact topic and level — this gate fingerprints that
@@ -122,10 +124,17 @@ mandate:
 >   independent market audit of the earlier levels: report only gaps exposed by the selected level's
 >   mechanisms, decisions, or responsibilities.
 >
-> Do not report items already present in any level, items an adjacent topic owns under the
+> Do not report **as gaps** items already present in any level, items an adjacent topic owns under the
 > `TOPIC_BOUNDARY` and `ADJACENT_TOPICS` rows, or unjustified specialisation. For each real gap return: its target level, the proposed one-sentence item, the
 > section it would join, and one line on why not knowing it would materially weaken performance at the
 > selected level or break its prerequisite chain.
+>
+> An item the target role genuinely needs at this level but an **adjacent topic owns** is not silently
+> dropped either. Return it in a separate `ownership referrals` list — the owning topic from the
+> `ADJACENT_TOPICS` rows, the proposed one-sentence item, and its proposed level. A referral is not a
+> gap: it never enters the gap list, it never carries a target level in this topic, and the acceptance
+> proof's confirmation that every gap has one same-topic target level does not reach it. Items already
+> present in any level and unjustified specialisation are still simply dropped.
 > Do not inspect or infer requirements from `ROADMAP.md`, notes, exercises, projects, or plans. Those
 > artifacts consume coverage; they do not define it.
 
@@ -137,7 +146,8 @@ the lock.
 
 Acceptance proof: the reviewer states the line count and EOF confirmation for `COVERAGE` and every
 `PREREQUISITES` file, names which lenses applied to this topic shape, and confirms every gap has one
-same-topic target level no higher than `LEVEL`.
+same-topic target level no higher than `LEVEL` — a count of `ownership referrals`, listed apart, is
+part of the proof and never part of that confirmation.
 Re-dispatch once if the proof is missing.
 
 ## Step 2 — Verify each finding
@@ -151,6 +161,25 @@ the target level when the concept is real but misclassified; never discard a rea
 it belongs to an earlier prerequisite. What survives is the verified gap list, grouped by target
 level. Run one adversarial pass of your own; add only what the reviewer missed and the standard
 supports, including prerequisite-integrity gaps exposed by the selected level.
+
+**A concept this run judges another topic's is routed, not discarded.** The `## Topic isolation` section
+of `_coverage-standard.md` requires any run that discovers another topic's concept to route a proposal to
+`_internal/_cross-topic-inbox.md`; that file's own contract defines the entry and the writer set, and
+neither is restated here. Write it under the owning topic's heading — never into a coverage file, and
+never into that topic's coverage, which this run does not open. Two channels feed it, and both are
+verified here before anything is written: the reviewer's `ownership referrals` list, and any finding
+**this step rejects on ownership**. Confirm each against the `TOPIC_BOUNDARY` and `ADJACENT_TOPICS`
+rows exactly as the rejection test does — a referral is the reviewer's claim, not a verdict — and drop
+the ones the registry does not support.
+
+Three boundaries hold the routing. It fires only when ownership is the **sole** reason the concept is
+not this topic's gap: one also rejected as already present in any level of this topic, as a restatement
+of an existing bullet, as targeting a level above `LEVEL`, or as unjustified specialisation is dropped
+exactly as before, because routing a bad item to another topic is worse than dropping it. It never
+enters `FINDINGS` and never changes `Verdict`, for the reason a locked placement conflict does not — the
+concept is absent from this topic's coverage by design, so it is not a gap in what this run verifies.
+And it is a write only: this run never reads, judges or clears a pending entry under its own heading,
+which belongs to the owning `coverage-prompt` run.
 
 Record locked placement conflicts separately from actionable gaps. They do not change `Verdict` and
 must never be converted into a duplicate proposal at another level.
@@ -190,16 +219,22 @@ findings metadata, not part of the proposed coverage bullet; `coverage-prompt` r
 judging the item.
 When no conflict exists, `## Locked placement conflicts` is exactly `*(none)*`.
 
-Dry run prints the verdict and gap list without writing `FINDINGS`.
+Dry run prints the verdict, the gap list, and every proposal it would route, and writes neither
+`FINDINGS` nor the inbox.
 
 ## Step 4 — Update mode
 
-1. Run `git status --short`; stage only `FINDINGS`.
-2. Commit: `docs(coverage): verify {topic} {level} coverage — {complete | N gaps}`.
-3. Verify with `git show --stat`.
+1. Commit `FINDINGS`: `docs(coverage): verify {topic} {level} coverage — {complete | N gaps}`.
+2. Commit inbox routing separately, and only when another topic receives proposals:
+   `docs(coverage): route {n} proposal(s) from {topic} {level} verify`. Never one commit for both — the
+   two files are read by different runs.
+3. Before every add and commit, inspect `git status --short` and stage only the declared paths: this
+   run declares `FINDINGS`, `_internal/_cross-topic-inbox.md`, and its self-report and tracker cell,
+   and nothing else. Preserve unrelated changes.
+4. Verify each commit with `git show --stat`.
 
-Dry run makes no findings commit but still writes and commits its self-report and a `dry-run` tracker
-outcome as execution evidence.
+Dry run makes no findings or inbox commit but still writes and commits its self-report and a `dry-run`
+tracker outcome as execution evidence.
 
 ## Step 5 — Self-report
 
@@ -235,5 +270,7 @@ launch it manually.
 Report branch, mode, topic, level, progression-gate state, the ownership boundary applied, every reviewed
 coverage file's line count
 with EOF confirmation, the selected SHA, reviewer completion and lenses applied,
-verified-gap count by target level, the verdict, the findings path (or `dry-run`), and unresolved risks
+verified-gap count by target level, the verdict, the findings path (or `dry-run`), every proposal routed
+to the inbox with its receiving topic and every ownership referral the registry did not support (or
+`none routed`), and unresolved risks
 or `none`, including every locked placement conflict. Do not finish while a plan item remains incomplete.

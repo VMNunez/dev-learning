@@ -177,7 +177,7 @@ Exact command contracts live in the [README public interface index](../README.md
 
     all topics at one level → /coverage-audit → /roadmap-review
 
-_cross-topic-inbox.md is the durable edge between topic owners: coverage producers file foreign-topic proposals there, and the owning /coverage run consumes its heading. An inline coverage-bullet-add creates a durable /notes-plan remap debt rather than editing a fingerprinted plan by hand.
+_cross-topic-inbox.md is the durable edge between topic owners: every coverage run files foreign-topic proposals there — the two producers and the read-only /coverage-verify gate alike — and the owning /coverage run consumes its heading. An inline coverage-bullet-add creates a durable /notes-plan remap debt rather than editing a fingerprinted plan by hand.
 
 ---
 
@@ -255,7 +255,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/cv/cv-bullets.md` | `/portfolio-audit` — drafts two, but a ✅/⚠️ non-dry run pauses for Victor's choice and commits exactly one per project | `/cv`, `/linkedin`, `/cover-letter`, `/profile-readme` |
 | `dev/portfolio/VMNunez/README.md` (**separate repo**, never committed from here) | `/profile-readme` (`sync` / `optimize`) · `/portfolio-audit` on a ✅ Ready verdict — two writers, two triggers | recruiters; the profile repo's own adapter carries the gap list |
 | `practice/sql/PLANNING.md` (doctrine) | `/sql-plan-audit` · the grader's §0 rewrite · `sql-step-close` (§0 verify) · `/sql-plan` did the one-time split that created it | every SQL prompt and skill · `/simulation-plan` and `/simulation-generator` (§8/§8c closed-step fence) |
-| `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` | any coverage run · `coverage-bullet-add` (a concept another topic owns) | `/coverage` (its own heading, Step 1) · `/coverage-audit` (all headings) |
+| `notes/prompts/knowledge/coverage/_internal/_cross-topic-inbox.md` | `/coverage` (ROUTE) · `/coverage-verify` (a gap rejected on ownership alone; separate commit) · `/coverage-audit` · `coverage-bullet-add` (a concept another topic owns) · by hand on a boundary change, per `_topic-ownership.md` | `/coverage` (its own heading) · `/coverage-audit` (all headings) — never `/coverage-verify`, which writes here and never consumes |
 | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (route) | `/sql-plan` (creates) · `/sql-plan-audit` (extends) · `sql-grade`'s subagent (counts/status) | `/sql-exercises`, `sql-block-open` |
 | `practice/sql/MISTAKES.md` | `sql-grade`'s subagent (`## Open`, and the `## Closed` rows a run redeems) — and the same grading branch reached directly through `/sql-exercises MODE = review`, the legacy door that still grades but closes no step · `sql-block-close` (`## Fricción`) | the revision points the level's route §1 declares |
 | `practice/sql/{LEVEL}/NN-*.sql` | **Victor** owns the answers · `/sql-exercises` `practice`/`reinforce` branch writes the setup block and the exercise blocks · the grader only appends `✅ Corregido <fecha>` to a header line | `sql-grade` · `sql-block-open` and `sql-block-close` (the scored/graded greps) · `/sql-plan` and `/sql-plan-audit` (written/answered/scored counts) |

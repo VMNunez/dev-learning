@@ -16,13 +16,25 @@ pipeline would have caught it: `coverage-audit`'s analysts read the level mirror
 
 ## Contract
 
-- **A run WRITES here** whenever it routes a gap to another topic — one bullet per concept, under that
-  topic's heading, in the standard item format, tagged with the proposed level and source run.
-- **A run READS here** at Step 1: the pending entries under its own `## {TOPIC}` heading are treated as
-  proposed items, judged against the standard exactly like any other proposed gap (they are not
-  pre-approved — the owning run may still discard one as out of scope, and says so in its summary).
-- **A run CLEARS what it consumed**: delete the entries it acted on, whether it added or discarded them,
-  and say which in the summary. An entry left behind means it was not yet looked at.
+Writing and consuming are two different populations, and each bullet below names its own:
+
+- **Five writers, and the list is exhaustive.** Any coverage run that routes a gap to another topic —
+  `coverage-prompt`, `coverage-audit`, the read-only `coverage-verify` gate — plus the inline
+  `coverage-bullet-add` skill, plus a **by-hand** entry on a boundary change, which
+  `_topic-ownership.md` mandates: until the changed topic and every adjacent topic have rerun, the
+  affected topic/levels are recorded here as pending. That last one is not a coverage run, and it is a
+  writer anyway. One bullet per concept, under that topic's heading, in the standard item format,
+  tagged with the proposed level and source run. Writing here is not editing coverage: this file is a
+  handoff, so a run forbidden to touch a coverage file may still file a proposal.
+- **The owning topic's `coverage-prompt` run READS here**, and `coverage-audit` sweeps every heading:
+  the pending entries under the run's own `## {TOPIC}` heading are treated as proposed items, judged
+  against the standard exactly like any other proposed gap (they are not pre-approved — the owning run
+  may still discard one as out of scope, and says so in its summary). Each of those two prompts owns
+  which of its own steps performs the read; that is stated there and never restated here.
+  `coverage-verify` is a writer only — it never consumes an entry.
+- **A run that reads CLEARS what it consumed**: delete the entries it acted on, whether it added or
+  discarded them, and say which in the summary. An entry left behind means it was not yet looked at.
+  A run that only wrote here clears nothing.
 - An empty heading (or no heading for a topic) means nothing is pending — that is the normal state.
 
 Entries are proposals, not commitments. This file is never a second source of truth for scope: the job
