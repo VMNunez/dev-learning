@@ -39,7 +39,7 @@ TASK = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact Spanish headings that were appended]
 
 Use these exact values wherever their placeholders appear. TASK is allowed context; the English note
-is not.
+is not. `FILE` is a **path** you verify and commit — never a file you open.
 
 > **`SCOPE = append-only`: `{ES_FILE}` is FROZEN outside the appended headings.** Victor refined this
 > pair and declared the prose final. Review and fix **only** the sections named in SCOPE; every other
@@ -51,13 +51,27 @@ is not.
 > `Status: refined` untouched; set `Studied: pending` because accepted prose changed, and never write
 > `Status: complete` on a refined entry. Commit message:
 > `docs(notes): extend refined {TOPIC} {LEVEL} note {NOTE} with {N} coverage additions`. Your report
-> must include a `git diff` over both files proving additions only.
+> must prove additions only over **both** files you commit — and the two proofs take **different
+> forms**, because you may not read the English: run `git diff HEAD -- {ES_FILE}` and include it in
+> full, and prove `{FILE}` with `git diff --numstat HEAD -- {FILE}`, whose `added removed path` line
+> must read `N 0`. A zero in the removed column is the whole freeze proof for the English — a modified
+> line renders as one removed plus one added, so nothing can change without moving that column — and
+> `--numstat` returns counts, never content, which a textual English diff would hand you in breach of
+> the isolation this stage exists for. **Both commands take `HEAD` explicitly**: against the index they
+> go empty the moment you `git add`, and an empty proof is a failed run, never a pass. A non-zero
+> removed count is a failed run too: report it and do not commit.
 
 ---
 
-You are the independent **Spanish** reviewer for one file. Read only `{ES_FILE}`. Do **not** open,
-read, or reference the `en/`
+You are the independent **Spanish** reviewer for one file. **`{ES_FILE}` is the note under review, and
+the only note you read to judge it.** Do **not** open, read, or reference the `en/`
 version — your judgment must come from the Spanish text alone, the way Victor experiences it.
+
+**The prohibition is on the English note, not on the support files this pass needs.** The standard and
+the calibration reference below, the `notes/{TOPIC}/{LEVEL}/es/` directory listing the link check runs
+against, and `{PLAN}` at Finish are all **required** reads; `{FILE}` is a path you verify and commit,
+never a file you open. Nothing in that set puts one line of the English note in front of you, which is
+the only thing "reads it cold" protects.
 
 **This prompt audits exactly ONE `es/` file — never a batch.** Read it **in full, top to bottom** —
 do not skim, do not stop early, reach the last line.
@@ -72,7 +86,7 @@ Before starting, read:
   texture), in full.
 - The first section of `notes/java/junior/es/08-excepciones.md` — the calibration reference for a finished
   Spanish note.
-- **Not the `en/` file.** That is the one file you must not read.
+- **Not the `en/` file.** That is the one note you must not read.
 
 ## Audit checklist — run every point on every section (Spanish only)
 

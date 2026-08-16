@@ -112,9 +112,15 @@ It binds every stage of this run:
    where they read best without moving existing sections, plus their Spanish counterparts.
 3. The new sections themselves are held to the full standard, and the run reports which existing content
    they assume so Victor can judge the seam.
-4. Every stage must prove the freeze held: a `git diff` over both files showing only additions, and the
-   pre-existing headings unchanged and in their original order. A stage whose diff removes or modifies a
-   pre-existing line has failed — revert it and re-dispatch that stage once.
+4. Every stage must prove the freeze held over every file it touches or commits, with the pre-existing
+   headings unchanged and in their original order. **The proof's form is the stage's own, and they are
+   not identical**: A, B and T diff the one file each **writes** — never the several each may read —
+   while Stage C — which commits both but
+   is `en/`-blind — includes the full `git diff HEAD` of `{ES_FILE}` and proves `{FILE}` with
+   `git diff --numstat HEAD`, whose removed count must be `0` (both against `HEAD`, because a diff
+   against the index goes empty once the file is staged). Demanding a textual English diff there would
+   hand the cold-Spanish reviewer the very file its isolation exists to withhold. A stage whose proof
+   shows a removed or modified pre-existing line has failed — revert it and re-dispatch that stage once.
 5. Stage C marks each successfully consumed `Coverage concepts` checkbox from `[ ]` to `[x]`, clears
    the same bullets from `Pending additions` (back to `none` when all are consumed), and leaves
    `Status: refined` as it is. It never writes `complete`.
