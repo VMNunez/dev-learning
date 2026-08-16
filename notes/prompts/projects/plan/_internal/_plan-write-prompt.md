@@ -2,13 +2,14 @@
 
 **Internal component.** This is the **author** in the project-plan pipeline. You normally don't launch
 it — `plan-audit.md` dispatches it as a cold subagent in `new` mode, then hands its output to
-`_plan-review-prompt.md` (the reviewer) for a second pass and the commit. It is documented here
-so the audit prompt can point a subagent at it; you can also run it standalone to draft one PLANNING.md.
+`_plan-review-prompt.md` (the reviewer) for a second pass, before the orchestrator commits. It is
+documented here so the audit prompt can point a subagent at it; you can also run it standalone to draft
+one PLANNING.md.
 
 **What it does.** Designs every part of the project the **brief** already chose and writes a complete
 `PLANNING.md` to the contract in `_planning-standard.md` — plus the two small ROADMAP.md / PROGRESS.md
-edits that register the choice. It does **not** commit: the reviewer audits the plan first and owns the
-atomic commit.
+edits that register the choice. It does **not** commit: the specialist reviewers audit the plan first
+and **the orchestrator** owns the single atomic commit — no reviewer in this flow commits either.
 
 **What it no longer does.** It does not choose the project and does not run the gap analysis. Both
 belong to `notes/prompts/projects/plan/project-brief-prompt.md`, whose one-page brief is committed,
@@ -239,5 +240,6 @@ why. The gaps closed and the gaps left over are the brief's own sections and are
 
 **Files touched:** the three paths.
 
-**Suggested commit message** (the reviewer will use or refine it):
+**Suggested commit message** (the orchestrator uses or refines it; on a standalone run nothing commits
+and it is printed for Victor):
 `docs: add PLANNING.md for project 0X [project-name] — closes [main gap], introduces [key new concept]`
