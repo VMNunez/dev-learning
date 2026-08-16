@@ -181,8 +181,8 @@ studied. Questions without `[x]` remain unrefined. Never infer `[refined]` from 
 - **`FILE = all`** → the list is, in order: angular, spring, spring-boot, java, architecture, security,
   typescript, sql, javascript, css, git, general. Force `SECTION = all` for every topic.
 
-Process topics **one at a time, sequentially** — never overlap them, because each topic's reviewer
-commits and parallel commits race the git index.
+Process topics **one at a time, sequentially** — never overlap them, because the orchestrator commits
+once per topic and parallel commits race the git index.
 
 If the selected-level EN/ES pair does not exist, create an empty bilingual skeleton for that topic.
 Derive its initial `##` work list from the selected coverage sections plus the M/G classifications;
