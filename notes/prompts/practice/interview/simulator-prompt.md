@@ -23,8 +23,11 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 MODE          = [full | topic]
 LEVEL         = [junior | middle | senior]
-TOPIC         = [angular | css | sql | java | spring-boot | typescript | architecture | general | security | git]
+TOPIC         = [angular | css | javascript | sql | java | spring | spring-boot | typescript | architecture | general | security | git]
                 → only for topic mode; leave blank for full mode
+                → these are the twelve selected-level banks — `interview-prep-audit`'s `FILE` list
+                  minus `all`; a bank not authored yet at this level stops at the Step 2 fingerprint
+                  check, which names the audit run that creates it
 SECTION       = [all | ## Routing | ## Forms | ## JOINs | ...]
                 → only for topic mode; "all" covers the full file, or use the exact section heading
 LANGUAGE      = [es | en]
@@ -88,6 +91,8 @@ closing questions defined in the MODE rules are exempt from this restriction.
 
 Source files for full mode — read all of these:
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/angular.md
+- notes/interview-prep/{LEVEL}/{LANGUAGE}/spring.md — read it if it exists; if the file does not
+  exist at the selected level, skip without error
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/spring-boot.md
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/java.md
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/typescript.md
@@ -98,9 +103,9 @@ Source files for full mode — read all of these:
 - notes/interview-prep/projects/ — read all files in this folder if they exist;
   if the folder is empty or does not exist, skip without error.
 
-(CSS, Git, and JavaScript are deliberately left out of full mode — a Spanish consultancy screen for
-this stack leads with TypeScript, not vanilla JS, and CSS/Git are rarely its core. Use topic mode to
-drill any of them on their own.)
+(CSS, Git, and JavaScript — the only three of the twelve banks left out — are deliberately excluded
+from full mode: a Spanish consultancy screen for this stack leads with TypeScript, not vanilla JS,
+and CSS/Git are rarely its core. Use topic mode to drill any of them on their own.)
 
 Source files for topic mode:
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/{TOPIC}.md

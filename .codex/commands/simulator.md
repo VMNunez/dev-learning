@@ -1,6 +1,6 @@
 ---
 description: Run a live mock technical interview from your Q&A bank, scored, tracking weak areas across sessions
-argument-hint: MODE=full|topic LEVEL=junior|middle|senior LANGUAGE=es|en [TOPIC=angular|css|sql|java|spring-boot|typescript|architecture|general|security|git] [SECTION=all|exact heading] [MAX_QUESTIONS=N]
+argument-hint: MODE=full|topic LEVEL=junior|middle|senior LANGUAGE=es|en [TOPIC=angular|css|javascript|sql|java|spring|spring-boot|typescript|architecture|general|security|git] [SECTION=all|exact heading] [MAX_QUESTIONS=N]
 ---
 
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching roles; use its Codex mapping and do not invent model identifiers.
