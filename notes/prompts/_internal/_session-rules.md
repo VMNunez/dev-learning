@@ -609,8 +609,11 @@ everything commits on the branch you're on — is simpler to remember than a spl
 - For SQL: update the SQL section immediately after a topic review gives a clear result
 - Commit PROGRESS.md from the root of the repo, not from inside the project folder
 - **`progress-update` is an auditor, not this file's writer** (demoted 2026-08-05). It writes exactly one
-  section — `Professional level by topic`, the table that needs all 13 topics at once and that no ritual
-  can compute — and *measures* every other section against its primary sources, reporting drift and
+  section — `Professional level by topic`, whose `Current tracked level`, `Knowledge consolidation` and
+  `Next gate` cells need all 13 topics at once and no ritual can compute. Its fourth cell,
+  `Practical evidence`, is written by the closing rituals above, and the audit may only **add** to it —
+  never rewrite or drop an entry it did not write (`progress-update-prompt` D7). It *measures* every other section against its
+  primary sources, reporting drift and
   naming the ritual that owns the repair. It complements the per-step tracking above and never replaces
   it: what it catches is a ritual that skipped a cell, not a cell nobody wrote.
 - **Say when it is due — do not wait to be asked.** Its scheduled points are gate **G6** of every

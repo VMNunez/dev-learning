@@ -2,12 +2,15 @@
 
 > **This prompt writes one section (demoted 2026-08-05, REC-039).** `PROGRESS.md` is maintained
 > incrementally by the closing rituals (`step-complete`, `backlog-task-close`, `coverage-mark`,
-> `coverage-bullet-add`, `study-block-close`, `sql-grade`, `simulation-review`), each writing its own cell in the session
+> `coverage-bullet-add`, `study-block-close`, `sql-grade`, `simulation-review`), each writing the cell it owns in the session
 > that produced it. So this prompt **audits**: it measures every section against its real sources and
 > **reports the drift**, naming the writer that owns the repair. It edits exactly one section itself —
-> `Professional level by topic`, the one that needs all 13 topics at once and that no ritual can
-> compute. Anything else would put two writers on one cell, where the second one wins by accident and
-> nothing announces it. The ownership table below is the contract.
+> `Professional level by topic`, whose `Current tracked level`, `Knowledge consolidation` and
+> `Next gate` cells need all 13 topics at once and no ritual can compute. Its fourth cell,
+> `Practical evidence`, is the one cell of the matrix this prompt **shares**: the closing rituals
+> write it in the session that earned it, and D7 makes this prompt *preserve, then add*. Editing any
+> other section would put a second writer on a cell with no such rule, where the second one wins by
+> accident and nothing announces it. The ownership table below is the contract.
 
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
@@ -77,7 +80,7 @@ contract each project subagent follows and the shape of what it returns.
 
 | Section | Written by | This prompt |
 |---|---|---|
-| `Professional level by topic` | **this prompt** (the whole table) · `step-complete` and `backlog-task-close` (the `Practical evidence` cell only, in session) | **writes** — see D7 |
+| `Professional level by topic` | **this prompt** — `Current tracked level`, `Knowledge consolidation`, `Next gate` · `step-complete` and `backlog-task-close` — `Practical evidence`, in session | **writes** — and on `Practical evidence` it may only **add**; rewriting or dropping an entry it did not write is forbidden there, whatever the rest of the row says. D7 holds that rule |
 | `Coverage demonstrated` | `coverage-mark` + `coverage-bullet-add` (the cells they touch, plus `Total`) · `coverage-prompt` (one topic+level) · `coverage-audit` (a whole level) | measures and reports (D8) |
 | `Study progress` | `study-block-close` (both rows, recounted at the end of the 13:30 block) | measures and reports (D9) |
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
@@ -291,9 +294,6 @@ row is your step, not the subagent's. Two outcomes, and the row decides which:
   finished step's heading, as the owner. This is what stops G6 closing on a project whose row claims
   steps its plan never recorded.
 
-Until 2026-08-13 the subagent filled that gap from the `Status` cell itself and the comparison passed
-by construction, so the one case D5 exists to catch was the one it could not report (`REC-136`).
-
 There are no `### Project NN` blocks or technology sub-headings left (removed 2026-08-03). Do not
 re-create one, and do not look for one.
 
@@ -406,8 +406,10 @@ the denominator gate is not met; never sum only the current subset and present i
 
 **The edit.** Apply D7 as **targeted in-place edits** (one edit per change, never a rewrite) to
 `Professional level by topic` and nothing else. Then run `git diff PROGRESS.md`: **every hunk must fall
-inside that table.** A hunk anywhere else means an edit escaped its section — revert it and report the
-section as drift instead. This diff check is the mechanical guard behind the whole ownership contract.
+inside that table** — and every hunk touching `Practical evidence` must only **add**, since one
+rewriting or dropping an entry a ritual wrote passes the section test and still breaks D7. Either way:
+revert it and report the section as drift instead. This diff check is the mechanical guard behind the
+whole ownership contract.
 
 Then print two things.
 

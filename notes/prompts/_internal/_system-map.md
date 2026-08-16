@@ -288,12 +288,13 @@ files: the system that describes and checks the system, which has writers like e
 ## 8 — `PROGRESS.md`, section by section
 
 This is the file you asked about, and the one where "who writes it" is least obvious. The rule since
-2026-08-05: **`/progress-update` is an auditor, not this file's writer.** It writes one table and
+2026-08-05: **`/progress-update` is an auditor, not this file's writer.** It writes three of the four
+cells of one table — the first row below states that partition, and the fourth cell is shared — and
 *measures* the rest, reporting drift and naming the ritual that owns the repair.
 
 | Section | Its writer | Notes |
 |---|---|---|
-| `## Professional level by topic` | **`/progress-update`** — the only writer of the table | needs all 13 topics at once, which no ritual can compute. `step-complete` / `backlog-task-close` may update a single **evidence cell** when a step or fix earns it |
+| `## Professional level by topic` | **`/progress-update`** — `Current tracked level`, `Knowledge consolidation`, `Next gate` · **`step-complete` / `backlog-task-close`** — `Practical evidence`, in session, when a step or fix earns it | those three cells need all 13 topics at once, which no ritual can compute. `Practical evidence` is the matrix's one deliberately **shared** cell: the audit may only add to it, never rewrite or drop what a ritual wrote (`progress-update-prompt` D7) |
 | `## Coverage demonstrated` | **`/coverage`, `/coverage-audit`, `coverage-mark`, and `coverage-bullet-add`** | each **recounts** the affected cells and the `Total` row from the coverage files when it changes scope or markers. `step-complete` deliberately does **not** touch this table: a memory-derived copy would overwrite the recounted one |
 | `## Study progress` | **`study-block-close`** | notes dates and bilingual `[refined] [studied]` IDs are primary state; the current route supplies the CORE denominator. This section rolls up Notes + CORE + full bank per level; `/progress-update` measures it as D9 and reports drift |
 | `## Projects` | **`step-complete`** (the `Status` cell) | the row itself is created by `/plan-audit MODE = new`; backlog closes update `Professional level by topic` evidence when earned, not this status cell |
