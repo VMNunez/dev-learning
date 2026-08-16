@@ -111,7 +111,12 @@ Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered proj
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
 each project's report under a `### [project]` heading, and after the last print this pipeline's own
 summary table (`Project | Quality | High | Medium | Low` — a deliberate override of `_batch-mode.md`'s
-generic `Target | Result | Files changed`). **Once a project's backlog is written, drop
+generic `Target | Result | Files changed`).
+**Step 6 is the exception to "once per project."** It is the run-level close-out, not part of the
+per-target procedure, so it runs **once, after the last project** — one report, one `_run-tracker.md`
+update setting the cell of every project this run actually finished, one commit. Only Steps 0–5 repeat. `_batch-mode.md` →
+"The run-level close-out is not part of step 2's 'entire procedure'" owns the rule.
+**Once a project's backlog is written, drop
 its slice tables from your working state** — carry forward only its summary row; the detail lives in
 its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context in stale findings. Otherwise, follow the procedure once.
 

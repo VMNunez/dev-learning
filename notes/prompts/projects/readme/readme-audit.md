@@ -76,12 +76,10 @@ Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered proj
 run the **single-project procedure below once per project**, finishing one before the next. Put each
 project's report under a `### [project]` heading, and after the last print the `_batch-mode.md` summary
 table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s generic
-`Target | Result | Files changed` one. Take `_batch-mode.md`'s "Commits" section in two halves: its
-**granularity holds** — one commit per target, and the target of this prompt is the **project**, never
-the individual README, so two projects are never squashed together — while the orchestrator **hands each
-set over instead of running it**, and a project's set is one `git add` per changed README plus one
-`git commit` rather than that section's single `add` + `commit` pair. Print every project's set together
-at the end, in project order. Once a project is finished, carry forward only its
+`Target | Result | Files changed` one. `_batch-mode.md`'s "Commits" section binds here with its target
+read as the **project**, never the individual README, so two projects are never squashed together — and
+with one override: a project's set is one `git add` per changed README plus one `git commit`, not that
+section's single `add` + `commit` pair. Once a project is finished, carry forward only its
 summary table row — drop its per-target detail from your working context before starting the next project.
 Otherwise, follow the procedure once.
 

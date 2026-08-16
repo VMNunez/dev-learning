@@ -43,6 +43,13 @@ them against disk does not depend on remembering.
 Write `_last-run-report-<prompt-name>.md` in **this prompt's family `_internal/` folder**, overwriting
 the previous one.
 
+**One report per run — an `all` batch is one run.** A prompt whose target field accepts `all`
+(`_batch-mode.md` lists them, and owns the timing) writes this report **once, after the last target it
+finishes** — including a batch stopped early by that file's length rule — names every target it
+finished in the configuration line and in bullet 2, and records the same set in the tracker. Per
+target it would overwrite the evidence of every target but the last, commit the same close-out two or
+three times, and leave Step 5 below reading the report this same run had just written.
+
 Update `notes/prompts/_internal/_run-tracker.md` in the same close-out. Every invocation gets a
 tracker record once its configuration is resolved, including `completed`, `blocked`, and `dry-run`
 outcomes. Update this prompt's row in `## Single-shot prompt executions` with the date, resolved

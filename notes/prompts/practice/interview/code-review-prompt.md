@@ -29,8 +29,10 @@ mistake, and turns your gaps into interview questions.
 ## Configuration — edit only this block
 
 TYPE        = [angular | spring-boot | sql | all]
-              → TYPE = all runs one snippet per type in turn — see notes/prompts/_internal/_batch-mode.md
-                (order: angular, spring-boot, sql; finish reviewing one before the next starts)
+              → TYPE = all runs Steps 1–5 once per type, in this order: angular, spring-boot, sql.
+                Finish one type's review, its questions and its commits before the next starts.
+                What binds per type, and what runs once for the whole run (the step-0 check and the
+                final self-report): notes/prompts/_internal/_batch-mode.md
 DIFFICULTY  = [intro | standard | challenge]   → default: standard
 ISSUE_COUNT = [number of issues to plant]       → default: 4
 FOCUS       = [optional — a concept to centre the snippet on, e.g. "JWT filter", "reactive forms",
@@ -38,7 +40,7 @@ FOCUS       = [optional — a concept to centre the snippet on, e.g. "JWT filter
 LEVEL       = [junior | middle | senior]
 
 Validation — before anything else:
-- If TYPE is blank: print "Error: TYPE is required (angular | spring-boot | sql)." and stop.
+- If TYPE is blank: print "Error: TYPE is required (angular | spring-boot | sql | all)." and stop.
 - If LEVEL is blank: print "Error: LEVEL is required (junior | middle | senior)." and stop.
 - If DIFFICULTY is blank: use standard. If ISSUE_COUNT is blank or below 2: use 4.
 
