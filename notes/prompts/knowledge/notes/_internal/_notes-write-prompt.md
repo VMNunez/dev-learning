@@ -4,7 +4,12 @@
 normally don't launch it — `notes-audit.md` dispatches it as a cold subagent, one per file, then hands
 the result down the chain: English reviewer (B) → translator (T) → Spanish reviewer (C). It is
 documented here so the audit prompt can point a subagent at it; you can also run it standalone to
-draft/correct a single `en/` file.
+draft/correct a single `en/` file — but a standalone run is an **unfinished stage, never a landable
+change**: it still won't commit, and the `en/` it leaves in the tree is out of sync with its `es/`
+counterpart until the translator (T) re-syncs it. Pair it with the English reviewer (B), the
+translator (T) and the Spanish reviewer (C), which commits the pair; that chain is what discharges
+the "Never modify an `en/` file
+without mirroring the change to its `es/` counterpart" rule in `_note-quality-standard.md`.
 
 **What it does.** Takes a single `en/` note file and does the heavy, high-standard authoring on it:
 resolves its TODOs, audits its quality, and completes it to the full writing standard. **It works only

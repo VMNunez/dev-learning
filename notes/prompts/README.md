@@ -161,11 +161,13 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
   conversation, or just use its slash command. **31 files, listed below.**
-- **Internal — a runnable prompt reads and executes these as its own step**; they never appear in your
-  "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
+- **Internal — a runnable prompt reads and executes these as its own step**; none of them is part of
+  your normal "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
   — and **subagent steps** (`_notes-write-prompt.md`, `_plan-review-prompt.md`) — the author/reviewer
-  slices an orchestrator (the `-audit.md` file in the same folder) fans out to automatically.
+  slices an orchestrator (the `-audit.md` file in the same folder) fans out to automatically. Several
+  subagent steps also document a **standalone** run you can paste yourself; what such a run may commit
+  and what it still owes before its artefact lands is stated in that file's own intro, never here.
 
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
