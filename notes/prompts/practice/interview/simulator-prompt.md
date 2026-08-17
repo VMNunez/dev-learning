@@ -250,8 +250,8 @@ The closing is not included in the results table or SESSION-LOG.
 
 Focus on one topic or section.
 Default: all questions in the selected scope (or MAX_QUESTIONS if set).
-Starting question: the first ⭐⭐⭐ question, prioritising any with a previous Débil
-First Rating from SESSION-LOG.md.
+Starting question: this mode has no opener of its own — it opens on the first question of Step 3's
+planned sequence, whatever its order rules rank there.
 No opener evaluation and no closing question — this is a practice session, not a simulation.
 
 ---
