@@ -226,9 +226,13 @@ For every bullet that fails: rewrite it in place and show the before/after.
 
 Go through the **required keyword list from the standard** (`Angular`, `Spring Boot`, `Java`,
 `PostgreSQL`, `REST API`, `JWT`, `Docker`, `TypeScript`, `SQL`, `JUnit`, `Jasmine`, `Git`, `Maven`).
-For each keyword: ✅ present naturally in the CV / ❌ missing.
+For each keyword: ✅ present and defensible / ⚠️ present but not defensible / ❌ missing. A ⚠️ keyword is
+struck from the CV and printed on Step 6's **ATS keywords not defensible** line, next to the missing
+keywords that fail the same test.
 
-For each missing required keyword: propose a natural place to add it without forcing it.
+For each missing required keyword, apply the standard's **precedence rule** before proposing anything:
+if Victor can defend it in an interview, propose a natural place to add it without forcing it; if he
+cannot, it stays out of the CV and is reported as a **gap** — no placement, no softened wording.
 
 **In `tailor` mode:** also audit against the **specific offer's keywords** extracted in mode handling.
 For this CV those take priority over the generic list — a keyword the offer names but the standard's
@@ -261,7 +265,9 @@ Never commit a CV to the repo; export the final version to PDF yourself for send
 Then print:
 
 **ATS keywords present:** list of keywords found in the CV
-**ATS keywords missing:** list of required keywords not found (with suggested placement)
+**ATS keywords missing:** required keywords not found but defensible (with suggested placement)
+**ATS keywords not defensible:** required keywords left out under the standard's precedence rule — the
+gap to close in a project, not in the CV
 **Estimated length:** fits on one page / slightly over (X lines to cut)
 **Saved to:** the exact path written above
 **(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know

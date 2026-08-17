@@ -77,13 +77,19 @@ naturally inside bullets so the Applicant Tracking System does not filter the CV
 calls them **skills** (added in the Skills section so recruiters find the profile by them). Same pool,
 two uses.
 
-**Required (must be present):**
+**Required (must be present — subject to the Precedence rule):**
 `Angular`, `Spring Boot`, `Java`, `PostgreSQL`, `REST API`, `JWT`, `Docker`,
 `TypeScript`, `SQL`, `JUnit`, `Jasmine`, `Git`, `Maven`
 
 **Preferred / next tier (add when they genuinely apply):**
 `Hibernate`, `JPA`, `Spring Data`, `Spring Security`, `Angular Material`,
 `RxJS`, `Reactive Forms`, `Bootstrap` (only if used), `Agile`, `Scrum`
+
+**Precedence — the Defensibility rule wins over this list, always.** "Required" is a property of
+the **target role**, not a mandate on the document: a required keyword Victor cannot defend is **left
+out and reported as a gap** — never softened into "nociones de" or "en progreso", which a technical
+lead reads as the same claim. Reported, not silently dropped: the gap is closed in the next project,
+not in the CV.
 
 ---
 

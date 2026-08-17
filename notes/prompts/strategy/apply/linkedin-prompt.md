@@ -139,8 +139,10 @@ PostgreSQL, TypeScript, SQL, Docker, REST APIs, Git, Maven
 JUnit, Jasmine, Angular Material, RxJS, HTML, CSS, Spring Security, Hibernate
 
 Apply the standard's **defensibility rule**: **do NOT add skills you cannot defend in an interview.**
-If you have not used Scrum/Agile in a structured way, do not add it. If you have not worked with
-Kubernetes or Microservices, do not add them.
+It binds the three lists above too, not only the extras below — under the standard's precedence rule a
+required-pool skill Victor cannot defend is left out of the Skills section and named as a gap, not
+padded in. If you have not used Scrum/Agile in a structured way, do not add it. If you have not worked
+with Kubernetes or Microservices, do not add them.
 
 ---
 
@@ -207,6 +209,10 @@ Print each section in this order, ready to copy directly into LinkedIn:
 **SKILLS TO ADD (in order):**
 [list]
 
+**SKILLS LEFT OUT — not defensible:**
+[required-pool skills omitted under the standard's precedence rule, and what each one leaves to close
+in a project — `Ninguna` if there are none; never drop the heading]
+
 ---
 **OPEN TO WORK SETTINGS:**
 [step-by-step instructions]
@@ -233,7 +239,8 @@ No commit message needed — this content goes directly into LinkedIn, not into 
 - About section opens with a specific sentence — no "apasionado" or "entusiasta"
 - Every experience bullet starts with a past-tense action verb and includes a concrete result
 - At least 2 projects listed with working GitHub links
-- All required skills added in the correct priority order
+- Every required skill Victor can defend added in the correct priority order, and any he cannot named
+  as a gap
 - "Open to work" configured with the right job titles and Spain as location
 - At least one post drafted and ready to publish when applications start
 
