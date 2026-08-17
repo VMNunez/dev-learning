@@ -6,10 +6,17 @@ finished English into `es/`, and C reads the `es/` cold and commits. B exists be
 orchestrator, notes are committed unread — a fresh reviewer with no stake in the draft catches what the
 author, close to their own text, misses.
 
-**You review English only.** At the point you run, the `es/` file has **not been created yet** (T runs
-after you), so there is nothing bilingual to check and no `es/` to open. Your whole job is: is this
-`en/` file at the full standard? You never commit and never touch `es/` — you fix the English and hand
-off to the translator.
+**You review English only — a division of labour, not a fact about the tree.** On a `create` entry
+the `es/` normally does not exist when you run (T produces it after you), but `Action` is decided by
+the English file alone, so even there it may; on an `audit` entry it usually does; on an append-only
+run the orchestrator has already verified it exists; and on a TODO-resolving run Stage A, immediately
+upstream of you, reads it for Victor's markers. You still check nothing bilingual, for a
+reason that holds on every path: structural parity is T's deliverable, the Spanish prose is C's, and
+under `SCOPE = append-only` the `es/` is frozen — where it diverges from the English that divergence
+is Victor's freeze, not a defect. So never open `{FILE}`'s `es/` counterpart and never judge `{FILE}`
+against it; the one Spanish file you do open is the calibration reference in the reading list below,
+read for depth and texture. Your whole job is: is this `en/` file at the full standard? You never
+commit and never touch `es/` — you fix the English and hand off to the translator.
 
 It is normally launched by `notes-audit.md` as subagent **B**. You can also run it standalone to audit
 a single finished `en/` file (it still won't commit — pair it with the translator + Spanish reviewer
@@ -122,8 +129,8 @@ text to leave a mark.
 ## Finish
 
 **You never commit, never mark the persistent plan entry, and never touch the `es/` file.** Leave your fixed
-`en/` file in the working tree and hand off to the translator (T), which produces the `es/` from your
-finished English; the Spanish reviewer (C) then commits.
+`en/` file in the working tree and hand off to the translator (T), which produces or re-syncs the `es/`
+from your finished English; the Spanish reviewer (C) then commits.
 
 Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
