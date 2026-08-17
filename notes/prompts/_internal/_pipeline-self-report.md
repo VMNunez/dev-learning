@@ -165,7 +165,8 @@ like `readme-audit`): `git status` → stage **only** the report file and `_run-
 `docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle them into the
 pipeline's content commit. Also print the five bullets in chat.
 
-**Verify the commit before declaring the run finished — `git show --stat HEAD`, not memory.** The
+**Verify the commit before declaring the run finished — `git show --stat HEAD`, not memory.** This
+rules on the commit this section just instructed, never on `HEAD` after the refinement step below. The
 commit must list **two** files: the report and `_run-tracker.md`. If it lists only the report, the
 tracker half was skipped — update it and commit before ending the run. This check exists because it
 failed in the wild: the Security coverage run (2026-07-18) wrote its report, skipped the tracker,
@@ -276,7 +277,12 @@ kind of run that can always rule on the map's rows about that prompt: check them
 {rows}` / `map: corrected — {row}` — beside the `maps unaffected` line.
 Commit it on its own (`docs: <prompt> — refine from
 the run that just finished`), read the hash from `git log` (never from memory), set the report's
-`Status: applied in <hash>`, and commit the report + tracker together. Alongside the five bullets, print
+`Status: applied in <hash>`, and commit the report **again** — a second commit carrying that line and
+the reviewer verdict, since "How to commit it" already landed the run record and the hash cannot exist
+until the edit does; `_run-tracker.md` goes with it only if this step changed it. When no edit is
+approved, that earlier commit is the run record; re-commit the report alone only for the
+`cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled — and if it wrote
+none of them, nothing is committed here. Alongside the five bullets, print
 one line naming what changed and one naming what came *out* — that is the human's view of the edit.
 
 ## Run-start check — surface anything the last run left open

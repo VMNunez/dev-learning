@@ -165,10 +165,13 @@ the refinement), and print `map: verified — {rows}` / `map: corrected — {row
 Commit
 it alone (`docs: <prompt> — refine from the run that
 just finished`), read the hash from `git log` (never memory), set the report's `Status: applied in
-<hash>`, and commit the report plus tracker together. When no prompt edit is approved, commit the
-report plus tracker as the run record. Immediately before staging and immediately before committing,
-run `git status`; stage only those declared paths. Print one line naming what went in and one naming
-what came out.
+<hash>`, and commit the report **again** — a second commit carrying that line and the reviewer verdict,
+since the hash cannot exist until the edit does; `_run-tracker.md` goes with it only if this step
+changed it. When no edit is approved, **Step 3's commit is the run record**; re-commit the report alone
+only for the `cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled —
+and if it wrote none of them, nothing is committed here. Immediately before staging and immediately
+before committing, run `git status`; stage only those declared paths. Print one line naming what went
+in and one naming what came out.
 
 ## Step 5 — Run-start check (this prompt's step 0, not its last)
 
