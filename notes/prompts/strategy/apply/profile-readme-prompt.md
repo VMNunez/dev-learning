@@ -7,7 +7,7 @@
 > write if it fails.
 
 Use in a **separate conversation**, ideally inside the supported agent runtime so it can read across both repos.
-No configuration needed — paste the whole prompt into a new chat.
+Fill in the configuration block before pasting.
 
 > **▶ Run first:** `portfolio-audit` if a project just reached ✅ Ready (its Phase 3 already updates
 > this README) — otherwise nothing.
