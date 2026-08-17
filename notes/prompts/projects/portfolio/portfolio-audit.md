@@ -23,8 +23,9 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 (`roadmap-review` / G8 follows). The gate order and every trigger are owned by `_planning-standard.md`
 §23; where this prompt and §23 disagree, **§23 wins**.
 
-> **▶ Run first:** `review-audit` (G3/G4), `readme-audit` (G5) **and** `progress-update` (G6) — §23's
-> full prerequisite chain, not a subset of it. This gate assumes the code has been reviewed **in full**:
+> **▶ Run first — for a project whose plan steps are all ✅:** `review-audit` (G3/G4), `readme-audit`
+> (G5) **and** `progress-update` (G6) — §23's full prerequisite chain, not a subset of it. This gate
+> assumes the code has been reviewed **in full**:
 > the verdict reads `PROJECT-BACKLOG.md`, whose task list is only as complete as the review that wrote
 > it, so a tier whose `**Last Reviewed — «tier»:**` line reads `never` or carries an
 > `(incomplete — …)` qualifier leaves G3/G4 unsigned under §23 and this gate computing a verdict over
@@ -32,6 +33,17 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > that one closes on a **clean drift report**. The READMEs must be correct and PROGRESS.md accurate.
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
+>
+> **A project with an incomplete step owes none of the three.** Check 1 stops it at ❌ Not ready
+> without reading `PROJECT-BACKLOG.md` at all; the CV bullet G6 underwrites is never drafted, because
+> Phase 3 is skipped on ❌; and the one scan that still opens a README only downgrades a ✅, which a ❌
+> cannot be. Running the chain first buys such a run nothing, which is why recipe B
+> (`PROJECT_PATH = all`) admits every project and calls that verdict expected rather than an error.
+> Nor does it fork §23: a ❌ can never tick G7's box, so the exempt run signs off no gate.
+> **The exemption is that path and no wider**, and the steps are read where Check 1 reads them —
+> PLANNING.md's Section 0 or its steps list, not a `§15` heading every plan has. All ✅ owes the whole
+> chain unqualified, and a project whose steps cannot be read there is not exempt — run the chain. In
+> `PROJECT_PATH = all` this binds per project, never per run.
 
 > **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
