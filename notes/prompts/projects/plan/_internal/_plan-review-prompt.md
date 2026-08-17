@@ -86,14 +86,31 @@ from the project number — do not ask.
 
 **A plan is authored whole (its sections cross-reference), but it is reviewed by specialists** — each
 subagent owns one concrete concern so it cannot skim a tail: it either verified every check in its
-slice or it did not. Read the whole plan for context, but **only audit and fix the sections, invariants,
-and checks your `{SCOPE}` owns**, listed here.
+slice or it did not. Read the plan in the tiers the `Reading map` above sets — the context a check needs
+is the cross-referenced sections that map names, never the whole file — and **audit and fix only the
+sections, invariants, and checks your `{SCOPE}` owns**, listed here.
 
-**Read the plan verifiably first.** The Read tool loads 2000 lines by default and truncates longer
-files silently — and the tail sections (§22/§23) are exactly where some scopes live, so a truncated
-read breaks the "cannot skim" guarantee with no error and a plausible-looking trace. Check the plan's
-line count (`wc -l`); if it is near or over 2000, read in passes with `offset` to the real end. State
-the total line count and that you reached EOF as the first line of your report.
+**Read the plan to your slice's real end first.** The Read tool loads 2000 lines by default and
+truncates longer files silently — and the tail sections (§22/§23) are exactly where some scopes live,
+so a truncated read breaks the "cannot skim" guarantee with no error and a plausible-looking trace.
+Check the plan's line count (`wc -l`) before any read and use `offset` passes to reach the **last**
+line your slice needs. A full plan already runs to ~1800 lines, so §22/§23 sit closest to the cut and
+are the first thing lost when one comes.
+
+**The `N lines, read to EOF` proof is owed for a file you had to read whole** — the repository's rule
+in `_session-rules.md`, which is what it says. **None of the six concerns reads the plan whole**, so
+`whole-plan` and `SCOPE = all` open their report with that line and the six do not; it is a claim they
+could not honestly make. What proves a tiered read reached its sections is the trace they already owe —
+`checks owned: n` and exactly `n` rows, one per section, invariant and design check — since a read that
+stopped short of a section cannot produce its row, and writing a row it did not verify is the single
+thing the trace exists to make impossible.
+
+**`branches-coverage` owes one extra line**, because it is the one concern whose slice ends where the
+file does: §23 is the plan's last section, so a truncated read hands it a §23 that looks *missing*, and
+its own row then orders it to add one the plan already has. State
+`{PROJECT}/PLANNING.md: {n} lines · §23 read through line {n}` — the two numbers agreeing is what says
+the cut fell after your slice, not inside it. On an Angular plan (01–06) there is no §23: name the last
+section you own and the line you read it through.
 
 **Completed work is history, not format — every scope obeys this.** Steps already marked done (✅ on
 a step heading, a §0 "Steps 1–N done" line, closed branches in the branch table) are facts about work
@@ -176,9 +193,11 @@ rewrite good text to leave a mark.
 **If `{SCOPE}` ≠ all (dispatched by the orchestrator):** do **not** commit — the orchestrator commits
 once, after every concern's specialist has run. Leave your fixes in the working tree. Your report is
 **compact and bounded** — it lands in the orchestrator's context, and seven verbose reports saturate it:
-- Line 1 — verdict: `PASS` (no changes) or `FIXED: n fixes`, then **`checks owned: n`** — count the
-  sections, invariants and design checks your `{SCOPE}` row assigns you and state the number *before*
-  writing the trace. The orchestrator never reads this prompt or the standard, so this declaration is
+- `whole-plan` **only** — one line first: `{PROJECT}/PLANNING.md: {n} lines, read to EOF`. Its slice is
+  the whole file, so the repository's whole-file rule reaches it and reaches no concern scope.
+- Line 1 for the six concerns — verdict: `PASS` (no changes) or `FIXED: n fixes`, then
+  **`checks owned: n`** — count the sections, invariants and design checks your `{SCOPE}` row assigns
+  you and state the number *before* writing the trace. The orchestrator never reads this prompt or the standard, so this declaration is
   the only thing that turns its acceptance check into a count rather than a glance at a non-empty table.
 - The **check-by-check trace of your slice** as a table, **one line per check, ≤15 words per line**:
   `| check | ✅ / fix made |` — **exactly `checks owned` rows**. Every section/invariant/design check
@@ -193,5 +212,6 @@ working tree and print the commit sequence for Victor:
 it** · `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`
 (`{DRY_RUN}` only affects whether you print the sequence as "ready to run" or as a preview).
 
-Then report the verdict + the audit summary (X critical · Y quality · Z consistency · W
+Then report `{PROJECT}/PLANNING.md: {n} lines, read to EOF` — this scope runs every row over the whole
+plan — followed by the verdict + the audit summary (X critical · Y quality · Z consistency · W
 design-correctness issues found and fixed) + the files touched.

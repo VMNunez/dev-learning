@@ -301,12 +301,17 @@ code): the orchestrator corrects it in the plan itself — **every occurrence, n
 specialist named** — before committing, rather than ship a line it knows is wrong, and names the
 correction in the self-report.
 
-**Specialist acceptance check:** a specialist's report is acceptable only if it opens with the plan's
-line count + read-to-EOF confirmation (the reviewer prompt's truncation guard), **declares
-`checks owned: n`**, **and** returns a trace of exactly `n` rows. You never read the reviewer prompt or
-the standard, so `n` is the specialist's own declaration — deliberately: it makes the count checkable
-here, and auditable against the reviewer's scope table afterwards, where a bare "one row per check its
-slice owns" was checkable nowhere. `whole-plan` is the one scope whose `n` you know independently:
+**Specialist acceptance check:** a specialist's report is acceptable only if it **declares
+`checks owned: n`** **and** returns a trace of exactly `n` rows — plus two read declarations the
+reviewer prompt's truncation guard owes you, and only these two. **`whole-plan`**: the plan's
+`{n} lines, read to EOF`. **`branches-coverage`**: `{n} lines · §23 read through line {n}` — the
+plan's last section and the line it was read through, which on an Angular plan (01–06) is the last
+section that scope owns; on a full-stack plan the two numbers must agree, and a second number falling
+short is a truncated read, not a finding about the plan. **Demand nothing from the other five** (the
+reviewer prompt's `Reading map` says why). You never read the reviewer prompt or the standard, so `n`
+is the specialist's own declaration — deliberately: it makes the count checkable here, and auditable
+against the reviewer's scope table afterwards, where a bare "one row per check its slice owns" was
+checkable nowhere. `whole-plan` is the one scope whose `n` you know independently:
 **twelve, always**. If anything is missing or the report is unusable, re-dispatch that specialist once,
 quoting what was missing; if it fails again, **this gate has failed and the run does not commit**:
 record the gap in the self-report, **continue dispatching the remaining specialists**, and let Finishing
