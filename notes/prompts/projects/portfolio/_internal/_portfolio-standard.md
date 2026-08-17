@@ -24,9 +24,14 @@ in a job application right now — not "ready eventually", ready today?** It pro
    from the learning flow — the orchestrator prints the commit + push commands for that repo
    (procedure: `portfolio-audit.md`, Phase 3).
 
-This is the closing project gate, **G7** — it runs after G5 (`readme-audit`) and a clean G6
-(`progress-update`), and it is the last gate that reads the project itself (`roadmap-review` / G8
-follows). The gate order and every trigger are owned by `_planning-standard.md` §23.
+This is the closing project gate, **G7**, and the last one that reads the project itself. Its place is
+`_planning-standard.md` §23's prerequisite chain, quoted from the file that owns the gate order and
+every trigger: `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. That is, `review-audit` and its High
+fixes, then `readme-audit`, then a clean `progress-update`, then this gate, then `roadmap-review`.
+**That places
+the gate; it is not the prerequisite a given run owes** — `portfolio-audit.md`'s `▶ Run first` states
+that, with the scope that qualifies it. And G3/G4 is not decoration in this file: Check 2 below stops
+the gate outright on a tier no reviewer finished.
 
 ---
 
