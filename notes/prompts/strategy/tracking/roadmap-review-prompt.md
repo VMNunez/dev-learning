@@ -64,8 +64,11 @@ Step 0 also includes the run-start check stated above this fenced block.
 First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — the stable ROADMAP contract this
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
-Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). the shared session rules
-(daily schedule, study order) is already loaded into your context by the supported agent runtime — do not re-read it.
+Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). You are the
+orchestrator, and the platform adapter binds you to read the shared session rules (daily schedule, study
+order) before you change any file — so by the time you reach this step you hold them; do not re-read them. **That holds for you and for no subagent below**: a
+cold role is handed only its target, its sources and its standard, so where one of them needs a rule from
+that file, its own instruction names the section it reads (Reviewer 1, invariant 2).
 
 `ROADMAP.md` is the forward-looking strategy — the path from where I am to where I need to be. It
 references `notes/coverage/junior.md` (what I must learn, and — through its evidence markers — what I have
@@ -203,6 +206,10 @@ Launch **both** `role-appropriate` subagents in a single message so they run in 
 > stack pieces); (2) the step list with each step's completion status; (3) the current step's done
 > condition, verbatim — the doer uses it to confirm the ROADMAP gate is concrete and verifiable.
 > Do not return full step descriptions or code.
+>
+> This is a whole-file assignment on a file that runs past 1800 lines, so it takes the repository rule:
+> run `wc -l` on it first, use `offset` passes to the real end, and include "N lines, read to EOF" in
+> your report — a step list cut short by the silent 2000-line truncation would report the tail as absent.
 
 The 2a gap list drives Steps 3 and 4; the 2b summary replaces reading PLANNING.md yourself.
 
@@ -330,13 +337,15 @@ They have none of your context — each re-derives its judgements from the files
 exactly why they catch what a long single context skips. Each loads only the files its own checks
 need. Wait for both before writing the report.
 
-**Reviewer 1 — mechanical invariants** (reads only `_roadmap-standard.md` and `ROADMAP.md` — it must
-NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its instruction:
+**Reviewer 1 — mechanical invariants** (reads `_roadmap-standard.md`, `ROADMAP.md`, and — for
+invariant 2 alone — the `## Daily study blocks (from June 2)` section of `_session-rules.md`, the authority
+the standard itself defers to; it must NOT open PROGRESS.md or coverage-junior.md, whose facts none of
+its checks need). Its instruction:
 
 > You are an independent reviewer. Read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` (the
-> ROADMAP contract), then the freshly edited `ROADMAP.md`. Read nothing else. Verify each invariant
-> below **from scratch** — do not trust that the edits are correct. For each violation, **fix it
-> directly in ROADMAP.md**, then report what you changed and why.
+> ROADMAP contract), then the freshly edited `ROADMAP.md`, then the one section invariant 2 names
+> below — and nothing else. Verify each invariant below **from scratch** — do not trust that the edits
+> are correct. For each violation, **fix it directly in ROADMAP.md**, then report what you changed and why.
 >
 > 1. **Stray-date scan.** Do a literal scan of ROADMAP.md for every month name (January–December) and
 >    year pattern (2025, 2026, …). For each match: if it is inside the applications strategy section
@@ -344,8 +353,13 @@ NOT open PROGRESS.md or coverage-junior.md; its checks don't need them). Its ins
 >    condition (per the standard's ❌→✅ examples) and log it.
 > 2. **Notes study order.** The 13:30 study order equals the canonical string in the standard exactly:
 >    `angular → spring-boot → java → architecture → security → typescript → sql → javascript → css → git`
->    (the shared session rules is normally already in your context; if not, read its "Daily study blocks" section.
->    If its order differs from the standard, the shared session rules wins).
+>    You are cold and hold none of the orchestrator's context, so do not assume the shared session rules
+>    are loaded: read `## Daily study blocks (from June 2)` in `notes/prompts/_internal/_session-rules.md`
+>    — **that section only.** The file is 800+ lines and a plain Read would load all of it, so `grep -n`
+>    the heading and read from that line with `offset`/`limit`. Compare its order with the string above.
+>    **If the two differ, the session rules win**: fix `ROADMAP.md` to the session-rules order and report
+>    the standard's string as forked. Edit neither `_session-rules.md` nor the standard — the standard is
+>    hand-maintained machinery, so this run reports that fork and never repairs it itself.
 > 3. **LeetCode gate topics.** The study-order gate condition lists exactly the high-priority topics
 >    per the standard (angular, spring-boot, java, architecture, security if added in that range) and
 >    does NOT list typescript, sql, javascript, css, or git.
