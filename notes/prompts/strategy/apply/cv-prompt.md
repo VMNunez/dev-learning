@@ -54,7 +54,8 @@ BASE_CV    = [tailor mode only: path to the master CV to start from | auto — t
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared
 job-application standard. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
 `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
-`notes/cv/cv-bullets.md`, and your existing CV in `job-search`), the **universal bullet format**, the **ATS keyword pool** (required +
+`notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for
+defensibility), the **universal bullet format**, the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
 CV-specific flow on top.
@@ -159,7 +160,9 @@ junior en consultora donde aplicar y seguir desarrollando estas competencias."
 ---
 
 **HABILIDADES TÉCNICAS**
-*(example structure — regenerate the real cells from PROGRESS.md at run time; never copy this table as-is)*
+*(example structure — regenerate the real cells at run time from the standard's keyword pool under its
+Precedence and Defensibility rules; never copy this table as-is, and never source them from `PROGRESS.md`,
+which holds no technology inventory)*
 
 | Frontend       | Backend             | Base de datos  | Herramientas   |
 |----------------|---------------------|----------------|----------------|
@@ -226,7 +229,9 @@ For every bullet that fails: rewrite it in place and show the before/after.
 
 Go through the **required keyword list from the standard** (`Angular`, `Spring Boot`, `Java`,
 `PostgreSQL`, `REST API`, `JWT`, `Docker`, `TypeScript`, `SQL`, `JUnit`, `Jasmine`, `Git`, `Maven`).
-For each keyword: ✅ present and defensible / ⚠️ present but not defensible / ❌ missing. A ⚠️ keyword is
+For each keyword: ✅ present and defensible / ⚠️ present but not defensible / ❌ missing — the standard's
+**Defensibility rule** names the evidence that decides it (source 7's project markers first, the project
+itself when a marker is absent). A ⚠️ keyword is
 struck from the CV and printed on Step 6's **ATS keywords not defensible** line, next to the missing
 keywords that fail the same test.
 

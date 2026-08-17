@@ -46,8 +46,8 @@ CONTACTO = [recruiter name if you have one — used to open the message | blank]
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared application standard.
 From it, a cover letter uses the **sources to read** (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`,
-`PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, and your existing CV in
-`job-search`), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
+`PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, your existing CV in
+`job-search`, and `notes/coverage/junior.md` for defensibility), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
 **defensibility rule** (the bullet format and project-selection heuristic are CV/LinkedIn machinery —
 a ≤250-word letter has neither). This prompt does not repeat those rules — it adds only the
 cover-letter flow on top.

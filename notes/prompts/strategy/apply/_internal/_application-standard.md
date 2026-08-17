@@ -32,7 +32,12 @@ Before generating anything, read these files:
 1. `notes/prompts/_internal/_session-rules.md` — stack and study context (profile, internship, and market are in
    `notes/prompts/_internal/_shared-context.md`).
 2. `notes/prompts/_internal/_shared-context.md` — profile, internship details, and target companies.
-3. `PROGRESS.md` — all completed projects and every concept learned.
+3. `PROGRESS.md` — **status only, never a concept inventory**: which projects are done and which is
+   active, the demonstrated level per topic with its next gate, and the share of coverage already applied
+   in code. The per-technology concept lists were deleted on 2026-08-03 as an evidence-free duplicate of
+   the coverage files, so never ask this file which concepts Victor knows — source 7 is what answers
+   that. Its `## Projects` `Key concepts` cell is a handful of headline topics the row's author set, not
+   an inventory, and not maintained after the row is created (`progress-update-prompt.md` D1).
 4. `ROADMAP.md` — the applications strategy with its timeline and gates, and **what most increases the
    probability of being hired**, whose ranking is that file's own and exists nowhere else
    (`_session-rules.md` routes "what makes a strong junior in 2026" here). The career target and the
@@ -50,6 +55,17 @@ Before generating anything, read these files:
    Victor maintains the source material in this folder by hand, including `internship-daw.md`,
    `archive/`, and `assets/`. Prompts may read those inputs but never create, rewrite, or infer them;
    `/cv` and `/tracker` write only the output paths their own prompts declare.
+
+7. `notes/coverage/junior.md` — the global coverage mirror, and where the **Defensibility rule** below
+   reads its evidence: a bullet carrying a ` ✅ NN-slug — {evidence}` marker names the project that
+   demonstrates it. The marker rules are
+   `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, "Evidence markers" — not restated
+   here. Read it as a **spot lookup per keyword**: do the bullets of the topic section that owns this
+   technology carry project markers — the bullets are concept-shaped (that standard's *Item and file
+   format*), so a bullet proving `JUnit` need not contain the word. That standard permits the lookup on
+   the mirror with no precondition. It is never a
+   cross-topic enumeration and never a count here, so no run in this family needs the validator's parity
+   line or writes a figure out of this file.
 
 ---
 
@@ -106,6 +122,14 @@ not in the CV.
 Never claim a skill or keyword you cannot defend in an interview. Do not add `Scrum`/`Agile`,
 `Kubernetes`, or `Microservices` unless they were genuinely used in a structured way. If you have not
 used something in a real, structured way, leave it out.
+
+**Where the evidence comes from: source 7's project markers.** A keyword whose coverage bullets carry a
+`✅ NN-slug` marker is defensible, and its evidence clause, where the marker carries one, is the answer to
+give in the interview. An **absent** marker
+proves nothing on its own — `PROGRESS.md`'s own `Coverage demonstrated` note names which tiers are still
+unbackfilled — so an unmarked keyword is judged instead from the projects the document features (their
+`README.md`s, per the project-selection heuristic below), and only a keyword neither of those two
+supports is left out and reported as a gap under the Precedence rule above.
 
 ---
 

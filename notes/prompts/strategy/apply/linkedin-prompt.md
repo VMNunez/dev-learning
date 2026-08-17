@@ -10,7 +10,7 @@ Use in a **separate conversation**. No configuration needed — paste the whole 
 Run this when you are ready to update your LinkedIn profile before applying.
 The output is ready-to-paste text for every section — no rewriting needed, just copy each one.
 
-> **▶ Run first:** `progress-update` — the profile draws on `PROGRESS.md`; keep it current so projects and concepts are accurate.
+> **▶ Run first:** `progress-update` — the profile draws on `PROGRESS.md`; keep it current so project status and the level per topic are accurate. The **skills** half is not in that file: it comes from the standard's source 7 (the coverage markers).
 
 ---
 
@@ -25,12 +25,15 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md`. It defines the **sources to read**
 (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
-`notes/cv/cv-bullets.md`, and your existing CV in `job-search`), the **universal bullet format**, the **skills pool** (required + preferred),
+`notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for defensibility), the **universal bullet format**, the **skills pool** (required + preferred),
 the **Spanish / no-buzzword voice**, the **defensibility rule**, and the **project-selection
 heuristic**. This prompt does not repeat those rules — it adds only the LinkedIn-specific flow on top.
 
 Note: for LinkedIn also read `ROADMAP.md` specifically for the **LinkedIn checklist** (GitHub and
-LinkedIn section) and career target, and read `PROGRESS.md` for what each project demonstrates.
+LinkedIn section) and career target, and read `PROGRESS.md`'s `## Projects` for which projects are done
+and their headline topics. What a project demonstrates in detail comes from its `README.md` and
+`cv-bullets.md` (the standard's project-selection heuristic); what a **skill** is backed by comes from
+the standard's source 7.
 
 ---
 
