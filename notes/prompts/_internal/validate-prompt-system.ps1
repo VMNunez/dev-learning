@@ -294,8 +294,11 @@ $externalPathPatterns = @('^personal/')
 # it must still recognise. Scoped to the citing file on purpose: the same path in
 # a live instruction is still a defect.
 $historicalReferences = @{
+    # The ledger's entry was dropped 2026-08-18: both of its dead paths left the file in 91740735,
+    # the 2026-08-07 collapse of 46 resolved rows, and the exemption outlived them by eleven days.
+    # An exemption is a claim about another file's text, so it rots when that file is rewritten and
+    # nothing points back at it - re-verify this table whenever a cited file is compacted.
     'knowledge\coverage\_internal\_coverage-prompt-rationale.md' = @('notes/coverage.md')
-    '_internal\_recommendation-ledger.md'                        = @('notes/coverage.md', 'practice/sql/01-basics.sql')
     'strategy\tracking\progress-update-prompt.md'                = @('practice/sql/01-basics.sql', 'practice/sql/02-joins/exercises.sql')
     'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
     'strategy\tracking\_internal\_last-run-report.md'            = @('practice/sql/02-joins.sql')
