@@ -610,12 +610,16 @@ if ($closedSplit.Count -ne 2) {
             $closedIds.Add($id)
         }
         $previousId = $id
+        # Both tests are anchored to the FIELD, not to the shape anywhere on the line: a closure line
+        # legitimately quotes a template or a hash inside the sentence saying what the item was - this
+        # invariant's own closure row quotes the template it was written to catch.
         $tail = [regex]::Match($line, $closedTailPattern)
         if (-not $tail.Success) {
-            Add-ValidationError "REC-$rowId ends with no implementation commit; the schema's last field is a hash, or an em dash for a closure that implemented nothing."
-        }
-        if ($line -cmatch '\{commit\}') {
-            Add-ValidationError "REC-$rowId carries the literal '{commit}' template instead of the hash it stands for."
+            if ($line -cmatch '\{commit\}`?[ 	]*$') {
+                Add-ValidationError "REC-$rowId ends with the literal '{commit}' template instead of the hash it stands for."
+            } else {
+                Add-ValidationError "REC-$rowId ends with no implementation commit; the schema's last field is a hash, or an em dash for a closure that implemented nothing."
+            }
         }
         if ($id -ge 58 -and $line -cnotmatch 'maps(?: unaffected|:)') {
             Add-ValidationError "REC-$rowId carries no two-map declaration; the line itself is what tells a later reader a checked map from a forgotten one."
