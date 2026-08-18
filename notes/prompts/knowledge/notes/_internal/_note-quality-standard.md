@@ -35,9 +35,8 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   `# [Topic Name]` title followed by a general `Docs:` link to the main reference page
   for the whole topic; each section has three fields:
   `Purpose:` (one sentence — who calls it, when, and why), `File:` (real path to the project
-  file where this code was applied — check PROGRESS.md to find which project covers this
-  concept, then confirm in that project's PLANNING.md; if no project covers it yet, use a
-  representative generic path or omit entirely), and `Docs:` (link to the exact sub-section
+  file where this code was applied — **Which project applied a concept** below owns how to find it,
+  and what to write when no project has), and `Docs:` (link to the exact sub-section
   to study with a note on what to read, e.g. `https://... → read: "Declaring Transactions"`);
   per-call explanations as bold items (`**.methodName()**`); use `##` to introduce each
   concept section.
@@ -66,6 +65,37 @@ things come from, not just define terms:
 
 Only add a link if you are certain of the correct URL and sub-section — if not, write
 `Docs: TODO — add link` instead of guessing. A wrong URL is worse than no link.
+
+---
+
+## Which project applied a concept
+
+The structured-mode `File:` field and any prose reference to Victor's own code ask the same question —
+*which project applied this concept, if any* — so the route is stated here once and pointed at from
+both.
+
+- **The concept's coverage bullet is the source.** A bullet carries a trailing `✅ NN-slug` evidence
+  marker naming the project's folder under `projects/` verbatim, plus a clause saying what in that
+  project demonstrates it; `_coverage-standard.md` → "Evidence markers" owns that format. Look the
+  bullet up in `notes/{topic}/coverage/{LEVEL}.md`, and when the concept belongs to another topic, in
+  the mirror `notes/coverage/{LEVEL}.md` — a single per-concept lookup there is the spot check that
+  standard permits, never a count.
+- **Read the marker precisely.** A bare `✅ NN-slug` written before 2026-08-01 carries no evidence
+  clause and still names the project. A `✅ sql:{file-slug}` drill marker names no project and covers
+  nothing on its own. An **unmarked** bullet means no project has demonstrated the concept yet, never
+  that it was not studied — with one dated exception: while `PROGRESS.md`'s `Coverage demonstrated`
+  paragraph still records a tier as not backfilled with markers (the Angular tier of project 07 today),
+  an unmarked bullet that tier already touches is a *missing marker*, not an absent project. That
+  paragraph is status about the markers, not a concept list.
+- **Never `PROGRESS.md` for the concept itself.** Its per-technology concept lists were deleted on
+  2026-08-03 and a concept now lives in the coverage files only, so it cannot answer *which project
+  applied this*. `project-brief` and `roadmap-review` key their own gap analyses on the same markers,
+  for the same reason.
+- **Then go to the project.** Confirm in that project's `PLANNING.md` and locate the real file or
+  fragment in its source. One topic's markers do not point at code: `git` markers attribute the daily
+  workflow to the project that established it, so there is nothing in that project to cite.
+- **No marker → no project covers it yet.** Use a representative generic path, or omit the `File:`
+  line entirely; in prose, drop the project reference rather than inventing one.
 
 ---
 
@@ -371,10 +401,9 @@ a new file to calibrate.
   wrong or that only make sense after you've hit them in practice. These are the notes a senior would
   whisper to a junior during a code review.
 - **Reference real projects.** If a concept was practiced in one of Victor's projects, reference it
-  with a real code fragment — not a fabricated example. To find it: check PROGRESS.md to identify
-  which project covers this concept, then read that project's PLANNING.md to confirm, then search the
-  project source code for the relevant fragment. (e.g. "This is the same pattern as MatDialog.open()
-  in project 05 — same idea, different layer.")
+  with a real code fragment — not a fabricated example. **Which project applied a concept** owns how to
+  find which project that is; then search that project's source for the fragment. (e.g. "This is the
+  same pattern as MatDialog.open() in project 05 — same idea, different layer.")
 - **Do not write documentation.** If the note could be copy-pasted onto the official docs site
   unchanged, it is wrong. Notes capture what Victor learned and why it clicked — not a neutral
   description of what the framework does.
@@ -414,10 +443,9 @@ a new file to calibrate.
   of the current file is never broken.
 - **Code concept sections (methods, classes, annotations)** *(structured mode — notes/java/junior/en/ and
   notes/spring-boot/junior/en/ only)*: each section starts with three metadata lines: `Purpose:` — one
-  sentence: who calls it, when, and why; `File:` — real path to the file where this code was applied;
-  check PROGRESS.md to find which project covers this concept, then confirm in that project's
-  PLANNING.md, then locate the actual file; if no project covers it yet, use a representative generic
-  path or omit entirely; `Docs:` — link to the exact sub-section to study with a note on what to read.
+  sentence: who calls it, when, and why; `File:` — real path to the file where this code was applied,
+  found through **Which project applied a concept**, which also says what to write when no project has;
+  `Docs:` — link to the exact sub-section to study with a note on what to read.
   Then explain each important call or line with a bold item — what it does and why it matters, in
   plain language. Never include an Imports section — IntelliJ handles imports automatically.
 
