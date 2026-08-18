@@ -324,6 +324,19 @@ down, and the three items before it each cost more than they were budgeted for.
    inside a row about SQL specialists — and misread every time, which is the second reason to promote a
    rule rather than cite it across rows.
 
+   **A closure has a budget, and it is one line plus at most one promotion.** Written 2026-08-18, when
+   this file was cut from 324k characters to a third of that. The engine that produced those 324k was
+   not the open rows — they were 3% of it — but a closure that cost about 5k every time: a `## Closed`
+   "line" of a thousand characters restating the whole resolution, two or three fresh preamble rules,
+   and a retrospective paragraph under the order section. All three failed a rule this file already
+   carried. So: the closure line is the schema above and nothing more, and the reasoning is in
+   `git log -p` on this file, where the row's own commit already put it. A rule the row established is
+   **merged into the rule it is an instance of**, cited as `Also REC-NNN` with the one clause it adds —
+   a new standalone rule only where no existing one covers it, which is rarer than it looks. And the
+   pricing lesson goes in the row-shape table below as a row, never as a paragraph. If the closure will
+   not fit that budget, what is over-running is the promotion, and the test is whether the extra text
+   states a rule a future row must obey or retells the case that produced it.
+
 **Row shapes, and what each actually costs.** Every row below was priced wrong on arrival, and the
 pattern is the same one step 1 states: the row is a report of where a defect was *found*. This table is
 what thirty-odd closures generalised to — the shape of the row, the thing that turns out to be
