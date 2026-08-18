@@ -281,7 +281,6 @@ not backfilled yet, where an unmarked bullet is a *missing marker* rather than a
 house phrasing is quoted precisely because it is already right, so the paragraphs around it are the
 ones nobody re-reads: take the qualifier that lives beside the rule, or state in writing why it
 cannot bite on the new site.
-Round N is handed round N−1's return, whose *considered and not opened* list binds it — a cold
 
 **A decline is not a disposal until nobody overrides it, and applied-wrongly is still the bar
 working — provided the re-measurement is written down.** From `REC-155`, whose resolution declined its
