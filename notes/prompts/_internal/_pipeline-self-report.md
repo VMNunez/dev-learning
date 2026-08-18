@@ -111,9 +111,12 @@ which every run produces and the table deliberately does not repeat. Does each e
 write it?
 
 **Tracker outcome.** Every invocation updates `_run-tracker.md` once configuration and target
-resolution have succeeded, including `completed`, `blocked`, and `dry-run` outcomes. Use the
-orchestrator's existing target cell/row where one exists; otherwise use `## Global prompt
-executions`. Record the date, resolved target/mode, outcome, and a concise result. A blocked run names
+resolution have succeeded, including `completed`, `blocked`, and `dry-run` outcomes. Write into **this
+orchestrator's own cell or row**, in whichever of the tracker's tables holds it — that file is what
+says which, and this contract names no heading on purpose: the one it carried until 2026-08-18 matched
+no heading the tracker has ever had. Never invent a heading and never fall back to the nearest table,
+which reports `completed` while the real row stays `pending`. Record the date, resolved target/mode,
+outcome, and a concise result. A blocked run names
 the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, also
 upsert one row in `## Notes file executions`, keyed by `TOPIC + LEVEL + NOTE`, with both resolved
 language paths, plan status, last outcome, and date. Recalculate the matching Notes J/M/S summary
@@ -149,8 +152,8 @@ already something to add.
 ## Update the run tracker
 
 After writing the report, update `notes/prompts/_internal/_run-tracker.md` — the permanent ledger of which
-targets each prompt has covered. Find your orchestrator's column (or row, for global prompts) and set
-the cell for this run's target to today's date, with a short parenthetical if the run was partial
+targets each prompt has covered. Find your orchestrator's own cell or row and set it for this run's
+target to today's date, with a short parenthetical if the run was partial
 (e.g. "backend only", "scoped to `notes/spring-boot/`"). Overwrite the cell's previous date — the
 tracker records the *last* run per target, not a history. If the run covered several targets (a
 `TOPIC = all` batch), update every cell it actually finished — never a cell for a target that was

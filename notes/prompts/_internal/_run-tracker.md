@@ -165,8 +165,11 @@ consumer reads freshness from the file itself.
 
 ## Single-shot prompt executions
 
-One latest-run row per single-shot prompt. Target/mode contains the configuration that identifies the
-work; prompts with no target use `global`.
+One latest-run row per prompt: every single-shot prompt, plus `interview-prep-route`, the one
+orchestrator the tables above hold no execution cell for. Target/mode contains the configuration that
+identifies the work; prompts with no target use `global`. A row here records the **run**; where a prompt
+also has a progress cell above (`sql-exercises`, `simulation-review`), the two are written together and
+neither replaces the other.
 
 | Prompt | Last run | Target / mode | Outcome | Result |
 |---|---|---|---|---|

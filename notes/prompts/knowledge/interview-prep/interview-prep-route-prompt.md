@@ -129,7 +129,8 @@ docs(interview): plan {level} CORE question route
 ```
 
 Then execute `notes/prompts/_internal/_pipeline-self-report.md` in full: write
-`_internal/_last-run-report-interview-prep-route.md`, record the target/outcome under `## Global prompt
-executions`, and commit the report plus `_run-tracker.md` separately. Report level, bank count, inventory
+`_internal/_last-run-report-interview-prep-route.md`, record the target/outcome in this prompt's own row
+under `## Single-shot prompt executions` — the tracker keeps it there, not under a pipeline heading —
+and commit the report plus `_run-tracker.md` separately. Report level, bank count, inventory
 fingerprint, candidate count, CORE count, topic distribution, reviewer verdict, route commit and
 self-report commit.
