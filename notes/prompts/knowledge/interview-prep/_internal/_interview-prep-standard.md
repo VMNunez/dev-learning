@@ -258,12 +258,19 @@ is also the one thing that corrupts what this section exists to protect: both wr
 next unused ID" from independent reads of the same file, and the bank ends with **duplicate IDs** —
 which the route prompt's guard then refuses and `study-block-close` reports as ineligible.
 
-**No gate is built for it, because none would work.** The coverage fingerprint cannot see it: the
+**No gate is built for it, because none would work — and the instruments ruled out here are the
+*inserting* prompt's, read at the moment it inserts.** The coverage fingerprint cannot see it: the
 digest is over the *coverage* file, so an audit that rewrote every question in the bank leaves it
 matching. The working tree cannot either — the audit's longest stages are read-only, so the target
-pair is clean through them, and clean for every topic a `FILE = all` run has not reached yet. This
-one is a rule for Victor, not a check for a prompt, and it is written here because here is where a
-future reader will come looking for it.
+pair is clean through them, and clean while a `FILE = all` run is still working through the other
+topics. The audit's own `git status --porcelain` is a **different reading and not this gate**: it
+fires per topic **before that topic's first author dispatch**, so it can see an insertion left
+uncommitted before that moment — but only as *dirty*, indistinguishable from any other uncommitted
+change, which is why `interview-prep-audit.md` scopes it to baseline availability and refuses to read
+it as a detector of who else wrote to the pair. What that reading reaches is the sequential hazard
+below, which already has its own rule. **Not running a practice prompt against an open audit** is a
+rule for Victor, not a check for a prompt, and it is written here because here is where a future
+reader will come looking for it.
 
 **The reachable hazard is sequential, and it is the one to guard.** The audit's pre-commit `git
 status` check whitelists exactly the `en/` + `es/` pair an insertion touches, so an insertion still
