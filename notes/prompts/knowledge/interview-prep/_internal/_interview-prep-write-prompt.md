@@ -112,12 +112,23 @@ mention any real gap in the summary instead of adding questions. In **full** mod
 The standard requires a real, cited code snippet on any question an interviewer would pose with code
 (Pressure snippets, "how do you write/configure X?", tight confusable-pair contrasts). When a question
 in scope warrants code, **read the real source and take the smallest fragment from it** — never invent
-code and present it as Victor's. Where to look, by topic:
+code and present it as Victor's. Where to look — one line per `FILE` topic, and a topic the list gains
+needs one too: without a source line an author falls to the escape clause below, which is scoped to a
+**construct** and never to a whole topic.
 
-- **spring-boot / java / security / architecture** → `projects/07-timetrack/backend/timetrack/src/main/java/`
-  (and `.../src/test/java/` for testing questions — JUnit/Mockito).
+- **spring-boot / spring / java / security / architecture** → `projects/07-timetrack/backend/timetrack/src/main/java/`.
+  Core-framework questions read the same tree as Boot ones: container, injection, stereotypes and
+  transactions are all in that source, and `notes/spring/coverage/junior.md` marks its demonstrated
+  bullets `✅ 07-timetrack`. `.../src/test/java/` holds only the generated `contextLoads()` stub and no
+  Mockito, so a testing question has nothing to cite there and takes the escape clause below.
 - **angular / typescript / css** → the Angular projects, richest first: `projects/06-hr-portal/`,
   `projects/05-task-manager/`, `projects/03-expense-tracker/`. (The 07 frontend is not built yet.)
+- **javascript** → any of the Angular projects `01`–`06`, not only the three named above. The stack is
+  TypeScript, so the only hand-written `.js` in the tree is `projects/02-weather-app/set-env.js` — but the
+  language constructs are Victor's real code all the same, which `notes/javascript/coverage/junior.md`
+  records across projects 01–06. Take the fragment from the `.ts` file and cite that real path; it must
+  be **valid JavaScript as written**, so choose a fragment carrying no type annotations rather than
+  stripping them out, which would make the citation false. A construct that only survives with its types is a `typescript` question.
 - **sql** → `practice/sql/` (the exercise files — real queries Victor wrote).
 - **git / general** → usually prose; add code only if a concrete command or config genuinely helps.
 
