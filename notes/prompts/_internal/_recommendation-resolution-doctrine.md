@@ -263,9 +263,9 @@ changes the *cost* and not the result, so it is a tightening and never a blocker
 says — apply it in the form approved and close the row; `REC-126` held that token on a round that
 was re-reviewed anyway, which is where two of its four came from. **Two rounds, and a third does
 not repair: it re-scopes.** A second repair that again draws blocking findings is saying the fix is
-too big, not that it is badly written — `REC-123`'s *price the ruling, reach for the mechanism only
-when the ruling still leaves a case open*, in the ledger's `## Suggested order`, arriving from the other
-side. **A repair states no new fact.** Every blocking finding in `REC-126`'s rounds 3 and 4
+too big, not that it is badly written — *price the ruling, reach for the mechanism only once the
+ruling is written and still leaves a case open*, the `REC-123` / `REC-126` row of `## Row shapes` below,
+arriving from the other side. **A repair states no new fact.** Every blocking finding in `REC-126`'s rounds 3 and 4
 pointed at text the round before it had written, the sharpest having traded a true conditional
 ("if it is near or over 2000") for a false assertion ("§23 sits past line 2000 on a real plan",
 against a 1820-line plan): condition the claim or cite the instrument, never assert the number.
