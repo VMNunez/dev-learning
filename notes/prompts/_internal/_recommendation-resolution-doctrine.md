@@ -283,6 +283,13 @@ ones nobody re-reads: take the qualifier that lives beside the rule, or state in
 cannot bite on the new site.
 Round N is handed round N−1's return, whose *considered and not opened* list binds it — a cold
 
+**A decline is not a disposal until nobody overrides it, and applied-wrongly is still the bar
+working — provided the re-measurement is written down.** From `REC-155`, whose resolution declined its
+reviewer's out-of-scope site on bar condition 3; Victor overrode the decline, and re-measuring showed
+the decline had been wrong. The bar is not damaged by being applied to the wrong answer once. What
+would damage it is a decline recorded as a verdict rather than as a call someone can reopen, so state
+the condition it failed on and leave the re-measurement legible.
+
 **Re-scoping, in the concrete: revert the out-of-scope edit and open it, because a half-repaired file
 is worse than an untouched one.** From `REC-147`, the first row to reach the cap. Its round-1 sweep
 site was a *second* standard the row never named, and repairing one of that file's three copies of the
@@ -984,6 +991,55 @@ authorship right — `_session-rules.md` lets the agent commit any project's `PL
 git, not who may author the value (`REC-073`). And **"the other cells are verbatim copies" is a claim to
 verify cell by cell before leaning on it**: five of seven were, and one of the divergent two held a live
 forked rule that nothing had noticed.
+
+### Row dispositions — `absence` and `contradiction`
+
+Two of the intake routes hand over a row that is deliberately only half-decided, and each names the
+branch its own prompt was forbidden to settle. Both blocks below moved here from the ledger's `## Open`
+preamble on 2026-08-18: they say how a row of that shape is *resolved*, which is this file's half, not
+what is queued.
+
+**The `/system-check` rows carry a third disposition — `contradiction` — and it inverts what step 1
+proves.** An `absence` row has to establish that something is missing; a `contradiction` row arrives with
+**both clauses already quoted from disk**, so step 1 is not "does this exist" but **"which clause is
+operative, and does anything already own that answer"**. Three outcomes, and the row must name all three
+in advance so the analysis can honestly reach any of them: a **real defect** (the clauses cannot both
+hold and one is wrong), an **ambiguity** (both hold under a distinction neither states, and the fix is to
+write the distinction, not to delete a clause), or a **false positive** (a rule already resolves them and
+the reader missed it — close the row and, if the resolving rule was hard to find, that is itself the
+finding). **When a clause is quoted from a `SKILL.md`, check its YAML `description` against its own
+body before ruling** — they are two documents, the description is the copy loaded into every session's
+skill listing and read *instead of* the file, and `REC-102`'s only real defect was a description
+claiming an ownership its own §2 disclaimed. **When a clause turns on a configuration key, open the
+*receiving* component's own `## Configuration` block before ruling.** A key the dispatcher fails to pass
+is one defect; a key the receiver never **declares** is a stronger one, and it forecloses the ambiguity
+branch outright — both clauses cannot hold "under a distinction neither states" when one side is
+structurally incapable of stating it. `REC-114`'s reviewer had no `MODE` key at all, so its behaviour
+was identical in both modes and no wording anywhere could have reconciled them. The corollary decides
+where the fix goes: **a mode binds through the receiver's config block, never through the dispatch's
+prose**, so such a fix also closes that component's *standalone* path and not only the orchestrated one.
+`notes-audit`'s `append-only`, declared in each downstream component's own config, is the same shape
+already closed this way — a family that has solved the shape is the strongest corroboration a fix of it
+can have, and worth looking for before inventing one. Verify the quote against disk first: a row of this shape
+is only as good as line numbers that have not moved. **An edit to this file moves them**, so an insertion re-points every citation below it
+in the same commit — `REC-106`'s seventeen inserted lines silently falsified four citations in the row
+it was paired with — and a
+citation written by **name** (`step 4`, `the two-map paragraph`) does not rot in the first place. **Never resolve one by reconciling the two clauses into a third thing neither said** —
+find the file that already owns the decision. The first portfolio cluster demonstrates the evidence rule,
+but **not** a compliant resolution procedure: `portfolio-audit.md` ceded gate order to
+`_planning-standard.md` §23, so that owner settled the gate-order clause, but the source edit landed in
+`0ea21949` and its map correction followed in `91d2c595` instead of the same commit. A later review also
+found that the CV-option handoff remained contradictory; that residual defect is `REC-105`. The reusable
+precedent is therefore only `REC-093`'s lesson: **quote the owning file, never paraphrase it**. It is not a
+licence to bypass the four-step resolution or the same-commit map rule.
+
+**The `/system-gaps` rows carry a disposition the other rows do not, and it changes how they are
+resolved.** A row marked `absence` rests on nothing in either map saying the thing, so it names **both
+branches** — the machinery lacks it, or the maps failed to record it — and the **one file** whose read
+settles which. Step 1 of the procedure above is therefore not optional for them and not merely advisable:
+read the settling file first, because a row whose absence branch turns out to be the map's is a `/system-check`
+or `map-sync` repair and never an edit to the machinery. `/system-gaps` is forbidden to open that file
+itself, which is exactly why the row can only be half-decided when it arrives.
 
 ### Ownership, writers and the two maps
 

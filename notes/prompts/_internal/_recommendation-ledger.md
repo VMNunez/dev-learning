@@ -19,8 +19,8 @@ file is it?** A defect in a project's `PLANNING.md`, a practice doctrine, a cove
 owed to that file's declared writer, and a machinery session may not hand-edit it — so it is ours only
 where the *owner's* text is also wrong, which is `REC-083`'s split. **Does it need a lived day?** Anything
 measured from how much a ritual has actually been used is evidence that accrues (`accruing` above), never
-work that is queued. A finding that fails these tests is still written down — in the `## Closed` line of
-the row that found it, or in the tracker cell that owns it — it is simply not carried here, because a
+work that is queued. A finding that fails these tests is still written down — in the closed line of the
+row that found it, in `_recommendation-ledger-closed.md`, or in the tracker cell that owns it — it is simply not carried here, because a
 ledger holding operational worklists is one nobody can drain.
 
 **But `_run-tracker.md` holds a debt only in its own defined `⚠ stale` form**, which the owed prompt is
@@ -28,7 +28,7 @@ built to clear on its next run. Free prose appended to a cell is not a sink: `_p
 tells every close-out to **overwrite** the cell, so the next run of that prompt deletes the note without
 having read it — and the audit prompts read their `_last-run-report`, not this file. `REC-102` wrote
 such a note and reverted it on its cold reviewer's finding. When the owner's own standard already
-carries the check, the `## Closed` line is the sink and the standard is what carries it forward.
+carries the check, the closed line is the sink and the standard is what carries it forward.
 
 ## How an item is resolved
 
@@ -148,75 +148,24 @@ the next item collapsed.
 
 ## Open
 
-**Unfrozen 2026-08-10, the same day it was frozen, and the table is scoped instead.** The freeze said no
-row is resolved one at a time until a whole-system review has run, and its unfreeze condition was
-`REC-070` (b) — which has now been **deleted** under the scope test above, so the gate could never open.
-A gate that cannot open does not slow a table down, it stops it, and this is the second condition on this
-table to fail that way in one day.
+**What may become a row is the scope test above, applied twice.** Once when a run proposes one, and
+again when a resolution's own cold reviewer returns with a finding of its own — at the moment it
+returns, because a reviewer is paid to find things and filing each of them as `open` is how this queue
+came to refill at the speed it drained: `REC-081`, `REC-086` and `REC-087` were each raised by the
+reviewer of a *different* row. The bar, and where a finding that fails it is written down instead, are
+in `_recommendation-resolution-doctrine.md` → "An incidental finding is evidence, not automatically a
+row".
 
-What the freeze was defending against is real and survives as a rule rather than a stop: every resolution
-dispatches a cold reviewer, a cold reviewer is paid to find things, and what it finds becomes a row —
-`REC-081`, `REC-086` and `REC-087` were each raised by the reviewer of a *different* row, which is how the
-queue came to refill at the speed it drained. So **the scope test is applied to the reviewer's findings
-too, at the moment it returns**, together with the incidental-finding bar the doctrine states: a finding outside the
-machinery is written into the closing line of the row whose review found it, and never opened.
+**Two of the intake routes hand over a row that is only half-decided** — an `absence` row from
+`/system-gaps`, a `contradiction` row from `/system-check` — and how each is resolved is case law, not
+queue: `_recommendation-resolution-doctrine.md` → "Row dispositions". Step 1 is not optional for either:
+the settling file is read first, because a row whose absence branch turns out to be the map's is a
+`map-sync` repair and never an edit to the machinery.
 
-**Workable intake reopened 2026-08-13; `REC-054` remains separate and accruing.** The first `/system-gaps` run's five rows
-(`REC-088`–`REC-092`) closed on 2026-08-11; the second run's five (`REC-094`–`REC-098`) closed by
-2026-08-12, and `REC-099` the same day. `REC-100`–`REC-102` and `REC-104` came from the `/system-check` run that **blocked**;
-`REC-104` closed 2026-08-13 and its required skill sweep raised `REC-108`, which closed the same day;
-`REC-100` closed 2026-08-13, the last of that cluster;
-`REC-102` closed 2026-08-13 as a false positive, its residue handed back to `REC-085`'s G1b route;
-`REC-105` records the portfolio defect found while reviewing the attempted adjudication of that run.
-`REC-107` came from neither: a session review of **this file's own cold-review gate**
-(2026-08-12), which is the one piece of machinery no run's self-report can report on, because every
-close-out that would report it is downstream of a gate written for a different path. Its pair
-`REC-106` — what that gate is handed — closed the same day.
-Say the workable number and name the accruing one separately; they are not summed. **An
-empty table is not a finished system**: it means the next row comes from a run, not from this file, and
-`/system-gaps` and `/system-check` are what produce one.
-
-**The `/system-check` rows carry a third disposition — `contradiction` — and it inverts what step 1
-proves.** An `absence` row has to establish that something is missing; a `contradiction` row arrives with
-**both clauses already quoted from disk**, so step 1 is not "does this exist" but **"which clause is
-operative, and does anything already own that answer"**. Three outcomes, and the row must name all three
-in advance so the analysis can honestly reach any of them: a **real defect** (the clauses cannot both
-hold and one is wrong), an **ambiguity** (both hold under a distinction neither states, and the fix is to
-write the distinction, not to delete a clause), or a **false positive** (a rule already resolves them and
-the reader missed it — close the row and, if the resolving rule was hard to find, that is itself the
-finding). **When a clause is quoted from a `SKILL.md`, check its YAML `description` against its own
-body before ruling** — they are two documents, the description is the copy loaded into every session's
-skill listing and read *instead of* the file, and `REC-102`'s only real defect was a description
-claiming an ownership its own §2 disclaimed. **When a clause turns on a configuration key, open the
-*receiving* component's own `## Configuration` block before ruling.** A key the dispatcher fails to pass
-is one defect; a key the receiver never **declares** is a stronger one, and it forecloses the ambiguity
-branch outright — both clauses cannot hold "under a distinction neither states" when one side is
-structurally incapable of stating it. `REC-114`'s reviewer had no `MODE` key at all, so its behaviour
-was identical in both modes and no wording anywhere could have reconciled them. The corollary decides
-where the fix goes: **a mode binds through the receiver's config block, never through the dispatch's
-prose**, so such a fix also closes that component's *standalone* path and not only the orchestrated one.
-`notes-audit`'s `append-only`, declared in each downstream component's own config, is the same shape
-already closed this way — a family that has solved the shape is the strongest corroboration a fix of it
-can have, and worth looking for before inventing one. Verify the quote against disk first: a row of this shape
-is only as good as line numbers that have not moved. **An edit to this file moves them**, so an insertion re-points every citation below it
-in the same commit — `REC-106`'s seventeen inserted lines silently falsified four citations in the row
-it was paired with — and a
-citation written by **name** (`step 4`, `the two-map paragraph`) does not rot in the first place. **Never resolve one by reconciling the two clauses into a third thing neither said** —
-find the file that already owns the decision. The first portfolio cluster demonstrates the evidence rule,
-but **not** a compliant resolution procedure: `portfolio-audit.md` ceded gate order to
-`_planning-standard.md` §23, so that owner settled the gate-order clause, but the source edit landed in
-`0ea21949` and its map correction followed in `91d2c595` instead of the same commit. A later review also
-found that the CV-option handoff remained contradictory; that residual defect is `REC-105`. The reusable
-precedent is therefore only `REC-093`'s lesson: **quote the owning file, never paraphrase it**. It is not a
-licence to bypass the four-step resolution or the same-commit map rule.
-
-**The `/system-gaps` rows carry a disposition the other rows do not, and it changes how they are
-resolved.** A row marked `absence` rests on nothing in either map saying the thing, so it names **both
-branches** — the machinery lacks it, or the maps failed to record it — and the **one file** whose read
-settles which. Step 1 of the procedure above is therefore not optional for them and not merely advisable:
-read the settling file first, because a row whose absence branch turns out to be the map's is a `/system-check`
-or `map-sync` repair and never an edit to the machinery. `/system-gaps` is forbidden to open that file
-itself, which is exactly why the row can only be half-decided when it arrives.
+**Say the workable number and name the accruing one separately; they are not summed.** `REC-054` is the
+only accruing row and is not part of the queue. **An empty table is not a finished system**: it means
+the next row comes from a run, not from this file, and `/system-gaps` and `/system-check` are what
+produce one.
 
 | ID | Source | Recommendation | State | Resolution |
 |---|---|---|---|---|
@@ -232,45 +181,31 @@ file, since one commit removes the row here and adds the line there.
 
 ## Suggested order for the open items
 
-Added 2026-08-06 as a wave plan for twenty-odd rows; **rewritten 2026-08-10, reopened for the five
-rows raised by `/system-gaps` on 2026-08-11, and reopened again on 2026-08-12 for the contradiction
-cluster exposed by the blocked `/system-check` run and its attempted portfolio adjudication.**
-Waves 1-6 are all closed and Wave 7 was dissolved, so the sequencing history they carried has gone where the
-rest of this file's history lives — `git log -p`. Three rules produced the old order and still produce this
-one: **a correction that stops a wrong run comes before a build**, **an item blocked on evidence is run, not
-edited**, and **a chain is walked from its denominator up**. Wave 2's lesson outranks all three and was never
-once wrong across eleven items: **budget the sweep, never the edit** — every row so far lived in more places
-than it named, and in three of four cases it was the *cold reviewer*, not the sweep, that found the last site.
+**Current order: the workable table is empty.** Four rules ordered the waves that drained it and order
+the next row that arrives: **a correction that stops a wrong run comes before a build**, **an item
+blocked on evidence is run, not edited**, **a chain is walked from its denominator up**, and above the
+other three — never once wrong across eleven items — **budget the sweep, never the edit**: every row so
+far lived in more places than it named, and in three of four cases it was the *cold reviewer*, not the
+sweep, that found the last site.
 
-**Current order: the workable table is empty again.** Safety, persistent-state risks, broken or
-undefined terminal paths, the authority/writer-boundary rows and the bounded schema, read-scope and
-precedence block that was the last one standing are all drained. Which rows drained, replaced or split
-themselves is in `git log -p`; what carries is the one call that inverted: `REC-155`'s resolution
-declined its reviewer's out-of-scope site on bar condition 3, Victor overrode the decline, and the
-re-measurement showed the decline was wrong — **applied wrongly is still the bar working, provided the
-re-measurement is written down**, and a decline is not a disposal until nobody overrides it.
+Within an intake, exposure of secrets, unrecoverable partial writes, contradictory persistent formats,
+circular truth and duplicate application rows precede wording and scope corrections. That head class is
+empty too, and which rows drained, split or replaced themselves is in `git log -p`.
 
-**An empty table is not a finished system**: the next row comes from a run, and `/system-gaps` and
-`/system-check` are what produce one. Within the intake, exposure of secrets, unrecoverable partial
-writes, contradictory persistent formats, circular truth and duplicate application rows precede wording
-and scope corrections — that head class is now empty.
+**The ordering that looks right and is not:** batching rows because they share a file. Rows share an
+*analysis*, or a *kind of gap*, and neither is a priority — batching by file is how a row that fails the
+bar ships on the back of one that does not. If the analysis splits once it starts, split the session
+too: `REC-067` alone cost a locator sweep, a 20-defect injection suite and a cold review, and shipped
+without `REC-084` rather than dragging it through a session it had outgrown.
 
 **`REC-054` is not in this order and never will be** — it is `accruing`, not queued.
-
-**The ordering that looks right and is not:** batching rows because they share a file. The four
-`system-check-prompt.md` rows shared an *analysis* and never a priority, and batching by file is how a row
-that fails the bar ships on the back of one that does not. `REC-067` + `REC-084` were batched on the
-first ground and not the second — the shared file is a convenience, the shared *kind of gap* is the
-reason. If the analysis splits once it starts, split the session too, which is what happened: `REC-067`
-alone cost a locator sweep, a 20-defect injection suite and a cold review, and shipped without
-`REC-084` rather than dragging it through a session it had outgrown.
 
 New self-reports append or update a row in `## Open`. A historical report remains immutable evidence;
 its wording does not determine current status. The ledger does.
 
-A resolved item leaves this file entirely — it becomes one line in `_recommendation-ledger-closed.md`,
-and any rule it established moves to `_recommendation-resolution-doctrine.md` first (step 4). **Nothing is lost by that:** the full reasoning of
-every closed item is in `git log -p` on this file, which is where it belongs, because a resolution
-written for the day it shipped stops being read long before it stops being true. What a future reader
-needs from a closed item is the decision, not the argument — and if the argument matters again, the row
-was not the right home for it.
+A resolved item leaves this file entirely — one line in `_recommendation-ledger-closed.md`, after any
+rule it established moves to `_recommendation-resolution-doctrine.md` (step 4). **Nothing is lost by
+that:** the reasoning is in `git log -p` on the two files the closing commit touches, because a
+resolution written for the day it shipped stops being read long before it stops being true. What a
+future reader needs from a closed item is the decision, not the argument — and if the argument matters
+again, the row was not the right home for it.
