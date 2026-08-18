@@ -347,8 +347,11 @@ resolution needs is the test.
 
 ## Rules promoted from closed rows
 
-Six sections, by the kind of defect rather than by arrival order. A rule is filed where a future row
-would look for it, and several are cited from more than one section's subject.
+Seven sections, by the kind of defect rather than by arrival order. A rule is filed where a future row
+would look for it, and several are cited from more than one section's subject. **A rule promoted here
+is merged into the one it is an instance of** — the ledger's step 4 budget — so a section holding two
+paragraphs that a future row would read as one question is itself the defect this file legislates
+against, and collapsing them is maintenance, not a rewrite.
 
 ### Duplication, restatement and forks
 
@@ -521,39 +524,40 @@ routing one through the other would close a dependency cycle, or when their life
 `REC-042` turned on all three. Re-apply that argument, with its negative case, rather than
 re-litigating it whenever two prompts appear to duplicate an analysis.
 
-**Two statements of one rule cannot be compared until their terms are defined in one place.** From
-`REC-074`. The simulation level-close gate was written twice — "no correction is open" in the standard,
-"no MISTAKES row is open" in the prompt that executes it — and they were not a stricter and a looser
-version of one test: one names a **step state**, the other counts **rows**, and the mapping between them
-was written nowhere. Nothing could adjudicate them, which is why the row that found them proposed a
-mechanism and got it wrong. Before aligning two statements of a rule, check whether they are in the same
-vocabulary at all; if they are not, the fix is to define the mapping in the file that owns the rule, and
-only then align the wording — aligning wording over an undefined mapping just picks a winner. Two smells
-that a gate has drifted into a second vocabulary: it **counts rows in a file that holds more than one
-kind of row** (here `## Friction`, which the same standard calls not a correction backlog, was silently
-inside the test), and it **scopes what the owning definition does not** (here `for the level`, which made
-the level-agnostic original the stricter of the two across levels — the reverse of what the row claimed).
-
-**Two colliding rules are not always two statements of one rule — test whether each governs a
-different *dimension* before ruling one operative.** From `REC-123`, where the simulator ordered every
-open-mistake question first while full mode capped consecutive questions from one topic, with no
-precedence stated. The row's own real-defect branch ("add precedence or interleaving") invites picking
-a winner, and neither clause deserved to lose: one assigns **rank**, the other constrains
-**adjacency**, and a single sequence satisfies both because they quantify over different things.
-`REC-074` tells you when a gate has drifted into a second vocabulary; this is what to do when **both
-vocabularies are legitimate** — name the dimension each rule governs, in the file that states them,
-and the collision dissolves into an order both admit. The tell that you are here rather than in
-`REC-074`: each clause stays true under every session the other permits, and only their sequencing was
-ever undefined. Such a rule still owes the boundary where the dimensions genuinely run out
-(`REC-146`) — here, a remainder that is all one topic, **and** a deferral pushed past the session's
-last position, which the fourth reviewer found and which is the harder half, because a rule phrased as
-"it gets asked later" is silently false wherever there is no later.
-**The test has a converse, and the two vocabularies are what hide it: two clauses over *position 1*
-are one rule stated twice, however differently they word it.** From `REC-152`, the same file one
+**Two colliding clauses are not automatically two statements of one rule, and the test has three
+branches — settle which branch you are in before ruling either one operative.** From `REC-074`,
+`REC-123` and `REC-152`; each branch's tell is a contrast with the other two, so a row reading one of
+them alone gets that contrast from nowhere. **Branch one: they
+are in different vocabularies, nothing maps them, and they cannot be compared at all.** `REC-074`'s
+simulation level-close gate was written twice — "no correction is open" in the standard, "no MISTAKES
+row is open" in the prompt that executes it — and they were not a stricter and a looser version of one
+test: one names a **step state**, the other counts **rows**, and the mapping between them was written
+nowhere. Nothing could adjudicate them, which is why the row that found them proposed a mechanism and
+got it wrong. So before aligning two statements of a rule, check whether they are in the same
+vocabulary at all; if they are not, the fix is to define the mapping in the file that owns the rule,
+and only then align the wording — aligning wording over an undefined mapping just picks a winner. Two
+smells that a gate has drifted into a second vocabulary: it **counts rows in a file that holds more
+than one kind of row** (here `## Friction`, which the same standard calls not a correction backlog, was
+silently inside the test), and it **scopes what the owning definition does not** (here `for the level`,
+which made the level-agnostic original the stricter of the two across levels — the reverse of what the
+row claimed). **Branch two: each governs a different *dimension*, both vocabularies are legitimate,
+and neither clause loses.** From `REC-123`, where the simulator ordered every open-mistake question
+first while full mode capped consecutive questions from one topic, with no precedence stated. The row's
+own real-defect branch ("add precedence or interleaving") invites picking a winner, and neither clause
+deserved to lose: one assigns **rank**, the other constrains **adjacency**, and a single sequence
+satisfies both because they quantify over different things — so name the dimension each rule governs,
+in the file that states them, and the collision dissolves into an order both admit. The tell that you
+are here rather than in branch one: each clause stays true under every session the other permits, and
+only their sequencing was ever undefined. Such a rule still owes the boundary where the dimensions
+genuinely run out (`REC-146`) — here, a remainder that is all one topic, **and** a deferral pushed past
+the session's last position, which the fourth reviewer found and which is the harder half, because a
+rule phrased as "it gets asked later" is silently false wherever there is no later. **Branch three is
+branch two's converse, and the two vocabularies are what hide it: two clauses over *position 1* are one
+rule stated twice, however differently they word it.** From `REC-152`, the same file one
 section down. `simulator-prompt.md`'s `### topic` named its starting question by ⭐ tier and previous
 Débil while Step 3's rule 1 ranked an open-mistake retry first regardless of tier — two vocabularies
 again, but **position 1 is a rank**, so both governed the one dimension and only one could hold. The
-separating tell is the paragraph above's own: there each clause stayed true under every session the
+separating tell is branch two's own, inverted: there each clause stayed true under every session the
 other permitted; here the ⭐⭐⭐ reading was **false** on every session where a retry mapped. What lets
 such a fork survive is that it is *exactly right on the common path* — the mode line reproduced rules
 2–3 verbatim and omitted only rule 1, so it read as correct until an open row existed. Two things
@@ -765,9 +769,8 @@ shape is again the first place to look. And **the sites that already stated the 
 both launchers carried "hint mode requires the partial solution only", while the one document the cold
 subagent actually reads did not. When a rule lives in several files, ask which of them the *executing*
 agent opens; a launcher a human reads is not a substitute for the dispatched prompt, and on a skill-doored
-path the YAML `description` is a third such document.
-
-**Also `REC-156`, `REC-124`'s second instance in the same file, which names the *test* for which
+path the YAML `description` is a third such document. **Also `REC-156`, `REC-124`'s second instance in
+the same file, which names the *test* for which
 document carries the rule.** The obligation that `simulation-review` writes the tracker's
 `Route progress` cell was stated twice, both times in `_run-tracker.md` and neither time in a document
 the run opens. What settled the site is an **asymmetry between the two self-report contracts**, and it
@@ -822,19 +825,52 @@ said out loud while the branch that **closes** it left no trace at all — a cle
 branch**: if the answer is "the run that changes least", the gate is unfalsifiable exactly when it
 passes, and the box gets ticked from memory days later.
 
-**A check over a hand-written convention starts by counting the convention's forms, and publishes
-its own reach as a number.** From `REC-067`, and it is `REC-076`'s corollary made concrete. The config
-block that invariant 6 had to parse is written two ways — the heading inside the fence and the heading
-above it — both legitimate, and a third shape, the `## How to use` recipe block, wears the identical
-`KEY = value` syntax without being a contract. A locator written from the first file opened reported 15
-of 31 prompts as broken. So: **measure the population's shapes before writing the pattern**, and where
-two forms are both canonical, accept both and say so rather than normalising 24 files to make one
-regex simpler. Then, because a comparison that quietly compares nothing passes exactly as loudly as one
-that compares everything, **the PASS line carries the counts and they are incremented where the
-comparison happens** — the first draft printed the runnable-prompt count in place of the pairs actually
-compared, true only by an argument the reader of that line cannot see. Half of invariant 6's keys are
-metavariables it cannot settle; that half is a published number and a named limit in `README.md`, not
-silence.
+**A check over a hand-written convention settles three things before it exists — the convention's
+*forms*, the *column* the value sits in, and the *value* itself — then publishes its own reach as a
+number, and reads the text as written rather than flattening it to match.** From `REC-067`, `REC-084`
+and `REC-090`, in that order of discovery and read
+together because a check settles all three or none: the first is `REC-076`'s corollary made concrete,
+and the third is `REC-074` one level out — the terms of the **selector** must be settled before the
+check exists. **Forms first.** The config block invariant 6 had to parse is written
+two ways — the heading inside the fence and the heading above it — both legitimate, and a third shape,
+the `## How to use` recipe block, wears the identical `KEY = value` syntax without being a contract; a
+locator written from the first file opened reported 15 of 31 prompts as broken. So **measure the
+population's shapes before writing the pattern**, and where two forms are both canonical accept both
+and say so, rather than normalising 24 files to make one regex simpler. **Then the column, because a
+row is not a name either.** Also `REC-084`, whose defect was written by the fix to a cold reviewer's
+own finding and caught only by the second reviewer pass: section 1 duly has two forms — an English
+exercise table and a Spanish revision table — so any locator keyed on a header reads one and calls the
+other's five files typos, and reading table **rows** is blind to the header and fixes that. But only a
+row's first cell holds the authorised file; every other cell is prose that legitimately names *other*
+files, and five of the twenty rows already do. Widening from the first cell to the whole row, to fix a
+row that could name two files, re-opened the exact hole the check exists to close, and re-opened it
+*silently*, because the five extra names it swept up were all authorised elsewhere and the published
+count did not move. Narrow to the column that holds the value; a harvest that reads a neighbouring
+cell is reading a sentence, not a contract. **Also `REC-157`, one level in: inside a single line, the
+*field position* is the column.** Its first draft demanded a cold-review verdict of any closure line
+matching a hash anywhere, and two rejected rows cite hashes inside the reason that declines them — so
+it would have failed rows that gated no edit, while its template test would have failed its own
+closure line for quoting the template it was written to catch. Anchor every test to the field the
+schema puts the value in, never to the value's shape. **Then the value, because a shape that is
+measured but not required is an exemption nobody published.** From `REC-090`. `Status: applied in
+<hash>` meant "the prompt was edited" in both self-report contracts and "the run's output was
+committed" in one report on disk, and nothing had ever compared them, so the first thing the new
+invariant would have done is fail a report for a defect it had not detected: right that something was
+wrong, wrong about what. Enumerating four `Status:` shapes and five verdict shapes still left the
+*value* free, so `Status: applied (commit abc)` fell out of the population with no error and no
+counter — an escape available to exactly the context the check exists to constrain. **And the reach is
+a number, not silence**, because a comparison that quietly compares nothing passes exactly as loudly
+as one that compares everything: **the PASS line carries the counts and they are incremented where the
+comparison happens** — invariant 6's first draft printed the runnable-prompt count in place of the
+pairs actually compared, true only by an argument the reader of that line cannot see. Half of its keys
+are metavariables it cannot settle; that half is a published number and a named limit in `README.md`.
+**`REC-090`'s second lesson, on the reading side of the same check: normalising a text to heal a wrap
+must be bounded to the wrap.** Healing five hand-wrapped forms by flattening every newline in the file
+made a paragraph ending "…went to the cold reviewer:" and a next one opening "approve" into a passing
+gate, and it made any report quoting its own contract pass too. One optional newline per seam of the
+token covers the identical five forms and cannot cross a blank line. Both defects were introduced by
+the fix, neither was found by a six-case injection pass, and both were found by the cold reviewer —
+the fourth row running whose worst defects were written by its own repair.
 
 **An exemption granted by shape is a hole the size of its population's typo surface, and every
 exemption owes either a second source or a published limit.** From `REC-084`. A check that cannot
@@ -853,24 +889,6 @@ And **where a check's own allowlist sits in the chain is part of its meaning**: 
 reference before the historical-path exemption ran made that exemption unreachable, so a file
 recounting the renumbering that retired a path could no longer name it.
 
-**A hand-written convention has columns as well as forms, and prose cells name other people's
-files.** Also `REC-084`, and the defect was introduced by the fix to a cold reviewer's own finding —
-the second reviewer pass caught it. `REC-067` established measuring a convention's *forms* before
-writing the pattern, and section 1 duly has two: an English exercise table and a Spanish revision
-table, so any locator keyed on a header reads one and calls the other's five files typos. Reading
-table **rows** is blind to the header and fixes that. But a row is not a name either: only its first
-cell holds the authorised file, and every other cell is prose that legitimately names *other* files —
-five of the twenty rows already do. Widening from the first cell to the whole row, to fix a row that
-could name two files, re-opened the exact hole the check exists to close, and it re-opened it
-*silently*, because the five extra names it swept up were all authorised elsewhere and the published
-count did not move. Narrow to the column that holds the value; a harvest that reads a neighbouring
-cell is reading a sentence, not a contract. **Also `REC-157`, one level in: inside a
-single line, the *field position* is the column.** Its first draft demanded a cold-review verdict of
-any closure line matching a hash anywhere, and two rejected rows cite hashes inside the reason that
-declines them — so it would have failed rows that gated no edit, while its template test would have
-failed its own closure line for quoting the template it was written to catch. Anchor every test to
-the field the schema puts the value in, never to the value's shape.
-
 **A non-ASCII literal in a BOM-less `.ps1` is not the character you typed.** Also `REC-084`, where it
 bit three times in one session — in the check, in the author's probe, and in the cold reviewer's.
 `validate-prompt-system.ps1` has no UTF-8 BOM, so Windows PowerShell 5.1 reads it as ANSI: a literal
@@ -881,25 +899,6 @@ simulation route's `Level status: closed ✅` test, which would have failed the 
 close for lacking metadata it plainly carried. Build such characters from their code point
 (`[char]0x00A7`) so the source stays ASCII, and remember the trap applies to any script that
 round-trips one of these files — `Get-Content -Raw` under 5.1 will mangle `§` on the way through.
-
-**A check whose population is selected by a hand-written field must enforce that field's value, not
-merely count its forms.** From `REC-090`. `REC-074` said two statements of a rule cannot be compared
-until their terms are defined in one place; this is that rule one level out — the terms of the
-**selector** must be settled before the check exists. `Status: applied in <hash>` meant "the prompt was
-edited" in both self-report contracts and "the run's output was committed" in one report on disk, and
-nothing had ever compared them, so the first thing the new invariant would have done is fail a report
-for a defect it had not detected: right that something was wrong, wrong about what. Counting the
-convention's forms (`REC-067`) is necessary and **not sufficient** — this check enumerated four `Status:`
-shapes and five verdict shapes and still left the *value* free, so `Status: applied (commit abc)` fell
-out of the population with no error and no counter, an escape available to exactly the context the check
-exists to constrain. A shape that is measured but not required is an exemption nobody published.
-**The same row's second lesson: normalising a text to heal a wrap must be bounded to the wrap.** Healing
-five hand-wrapped forms by flattening every newline in the file made a paragraph ending "…went to the
-cold reviewer:" and a next one opening "approve" into a passing gate, and it made any report quoting its
-own contract pass too. One optional newline per seam of the token covers the identical five forms and
-cannot cross a blank line. Both defects were introduced by the fix, neither was found by a six-case
-injection pass, and both were found by the cold reviewer — the fourth row running whose worst defects
-were written by its own repair.
 
 **A promised invariant is a claim about an algorithm, and the only way to adjudicate one is to execute
 the text.** From `REC-140`, where `tracker-prompt.md` promised "Idempotent … never duplicates folders or
@@ -942,14 +941,15 @@ the opposite. **Open work** parked in a closed line is wrong because nothing re-
 fails the bar is not work, and nothing *should* re-measure it. What distinguishes the two is the bar, so
 apply it at the moment the reviewer returns, never later. `REC-077`, `REC-078` and `REC-081` are what
 skipping it looks like: three rows carried for weeks, each self-documenting that nothing wrong had ever
-shipped, all three closed as `rejected` on 2026-08-10 without a line of code changing.
-
-**A skill failure is evidence, not automatically a recommendation.** From `REC-058`. The source
-contract is `_session-rules.md` → "When a skill cannot finish — durable friction": only an observable
-failed declared step writes `FRIC-NNNN`, and the next runnable prompt close-out must still apply its
+shipped, all three closed as `rejected` on 2026-08-10 without a line of code changing. **Also
+`REC-058`, the same rule on the other intake, and it adds what that channel can and cannot see.** A
+skill failure is evidence, not automatically a recommendation: the source contract is
+`_session-rules.md` → "When a skill cannot finish — durable friction", only an observable failed
+declared step writes `FRIC-NNNN`, and the next runnable prompt close-out must still apply the same
 four-condition bar and locate the real owner before creating or updating a `REC-NNN`. Successful and
 expected paths write no friction. The loop deliberately cannot detect a skill that completes silently
-with the wrong result, so its evidence is narrower than a prompt self-report.
+with the wrong result, so its evidence is narrower than a prompt self-report — which is the general
+point: **every intake admits less than its name suggests, and none of them admits a row.**
 
 **Practice feedback is evidence, not coverage authorship.** From `REC-052` / `REC-059`. Each practice
 track keeps a durable weakness sink that its own next run actually consumes: SQL and timed simulations
@@ -958,8 +958,10 @@ by surface. A weakness may focus reinforcement or produce an unrefined Q&A quest
 prompt, but it never authors or marks a coverage bullet. Coverage remains the market-defined ceiling;
 practice records performance against it.
 
-**A derived extract of the object under review is worse evidence than the object, and no size makes it
-better.** From `REC-079`. `/system-check` dispatched an analyst to extract every claim from the two maps
+**An audit's verdict is only as good as where its value came from: the test is not whether the auditor
+read the audited file, but whether the value the comparison rests on traces back to it.** Two ways it
+does. **A derived extract of the object under review is worse evidence than the object, and no size
+makes it better.** From `REC-079`. `/system-check` dispatched an analyst to extract every claim from the two maps
 so the orchestrator could rule on the extract; two consecutive runs demoted the return, the second at 434
 lines against 1101 in the maps themselves — 39% of the object, so bulk was never the reason. Two grounds,
 and both generalise past this prompt. **An extract can omit invisibly:** a claim it drops is a claim the
@@ -967,20 +969,21 @@ audit then reports full coverage over, so the audit's completeness comes to rest
 completeness nothing checks. And **the object was already in the room:** the sub-step sat three lines
 above a rule saying the maps are "the objects under review, not the source from which the expected answer
 is reconstructed", and contradicted it. Before dispatching a reader over an artefact you are auditing,
-ask whether the orchestrator can simply read it — and delete the dispatch when it can.
-
-**A fact lifted from the audited file is not evidence about it, and passing it through a subagent does
-not launder it.** From `REC-136`. `/progress-update` quoted the `Status` cell of a project's own row
-into its step-status subagent's launch instruction as a "hint", and let that hint override the `✅`
-markers; the status came back and D5 compared it against the very cell it came from. The distance — a
-cold dispatch, a different file read in between, a report contract with three declared items — is what
-made it read as measurement. **The test is not whether the auditor read the audited file; it is whether
-the value the comparison rests on traces back to it.** Two corollaries. A subagent's fence must name
-the **launch instruction**, not only the filesystem: *"Do not read or write `PROGRESS.md`. You cannot
-see it"* was already written one screen above the block that handed it a piece of `PROGRESS.md`. And
-**the honest return for an unmeasurable input is a named non-value, not a substitute** — here
-`not derivable`, which is `REC-076`'s `unverifiable` arriving in a second prompt; it must then be
-branched on where it is *consumed*, or the gate downstream inherits a pass nothing earned.
+ask whether the orchestrator can simply read it — and delete the dispatch when it can. **Also
+`REC-136`, which states the test the extract case is one instance of: a fact lifted from the audited
+file is not evidence about it, and passing it through a subagent does not launder it.**
+`/progress-update` quoted the `Status` cell of a project's own row into its step-status subagent's
+launch instruction as a "hint", and let that hint override the `✅` markers; the status came back and
+D5 compared it against the very cell it came from. The distance — a cold dispatch, a different file
+read in between, a report contract with three declared items — is what made it read as measurement. So
+an extract fails the headline test by **omission** and a quoted cell fails it by **circularity**, and
+the second is the one that survives review, because distance reads as independence. Two
+corollaries. A subagent's fence must name the **launch instruction**, not only the filesystem: *"Do
+not read or write `PROGRESS.md`. You cannot see it"* was already written one screen above the block
+that handed it a piece of `PROGRESS.md`. And **the honest return for an unmeasurable input is a named
+non-value, not a substitute** — here `not derivable`, which is `REC-076`'s `unverifiable` arriving in
+a second prompt; it must then be branched on where it is *consumed*, or the gate downstream inherits a
+pass nothing earned.
 
 **Fixing an owner does not license editing its copies.** From `REC-083`. The G4 justification was
 word-identical in `_planning-standard.md` and in one project's `PLANNING.md`, and the row asked for the
