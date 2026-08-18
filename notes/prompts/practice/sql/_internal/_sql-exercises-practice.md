@@ -56,29 +56,43 @@ the file, not the schedule.
   Wait for an affirmative before continuing.
 
   **Then check the schema, which is a separate and more dangerous mismatch.** Read the setup block of
-  the existing file and compare its `CREATE TABLE` statements against the canonical schema above.
+  the existing file — whatever heading it carries; `01-basics.sql` writes `-- CREATE TABLES`, not
+  `-- SETUP` — and compare its `CREATE TABLE` statements against the canonical schema above.
   Compare table names *and* column names — a file can be in the current exercise format and still
   carry an obsolete schema.
 
-  If they differ, **stop and ask before generating a single exercise**. This step exists because the
-  rule above forbids regenerating the setup block, so without this check the new exercises reference
-  columns that do not exist in Victor's database and not one of them runs in pgAdmin.
+  If they differ, **generate against the file's own schema — this is a statement, not a question.**
+  This step exists because the rule above forbids regenerating the setup block, so without it the new
+  exercises reference columns that do not exist in Victor's database and not one of them runs in
+  pgAdmin. Generating against the file's own schema is what keeps them running, and an off-route batch
+  is licensed to append here in spite of the mismatch — `MODE = reinforce` takes `{FILE}` from Victor
+  and by contract "appends to that same file", on a step that may already be `closed ✅`. What is never
+  done is the other half — **grafting a second SETUP block into the file**, which is what Step 4's
+  *one file, one schema* forbids, and which would break every exercise already written against the
+  first block: the same harm this check exists to prevent, pointed backwards. There is nothing here for
+  Victor to choose.
 
   Print the concrete diff — missing tables, and columns whose name differs (e.g. `nationality` vs
-  `country`, `year` vs `published_year`) — then:
+  `country`, `year` vs `published_year`) — and the concepts that schema cannot express, then continue
+  in the same turn:
 
-  "El bloque SETUP de este archivo no coincide con el esquema canónico: [diff]. Si genero contra el
-  canónico, los ejercicios nuevos no correrán en tu pgAdmin. Dos opciones:
-   (A) Genero contra el esquema que ya tiene el archivo — los ejercicios corren, pero se pierden los
-       conceptos que ese esquema no soporta (indícolos: [list, e.g. fan-out sobre `quantity`]).
-   (B) Añado un bloque SETUP nuevo con el esquema canónico al final del archivo, antes de los
-       ejercicios nuevos. Corre ese bloque en pgAdmin y a partir de ahí todo usa el canónico; los
-       ejercicios antiguos dejarán de correr, aunque siguen siendo puntuables.
-   ¿A o B?"
+  "El bloque SETUP de este archivo no coincide con el esquema canónico: [diff]. Genero contra el
+  esquema que ya tiene el archivo, así que los ejercicios corren en tu pgAdmin, pero se pierden los
+  conceptos que ese esquema no soporta: [list, e.g. fan-out sobre `quantity`]."
 
-  Wait for the answer. On (A), use the file's own schema as the canonical one for this run and say so
-  in the self-report bullet 1. On (B), emit the new setup block with a banner
-  `-- ===== SETUP v2 — esquema canónico (los ejercicios anteriores usan el esquema v1) =====`.
+  Use the file's own schema as the canonical one for this run and say so in the self-report bullet 1.
+
+  **If that leaves the batch with nothing to drill** — every concept in `{FOCUS}` depends on a column
+  the file's schema lacks — stop instead of generating a thinner batch, and say which concepts were
+  lost. **What happens next depends on how the run reached this file, and the two paths do not share an
+  answer.** A run whose `{FILE}` the shell resolved from `{PLAN}` §1 is a first-pass route run and Step 4
+  applies: start the next numbered file and update `{PLAN}` §1 and §3. A run **given `{FILE}` by hand**
+  (`MODE = reinforce`, or `practice` with an explicit `FILE` key) has no next numbered file of its own,
+  since by contract it appends to the file Victor named and advances no route figure — there the stop
+  is the whole answer, and adding a fresh numbered file to the route is `/sql-plan`'s decision (its
+  rule 7), never this run's. The third source of `{FILE}` — a revision point's `Archivo` cell — never
+  reaches this branch at all: Step 2 ships every `R{n}-repaso.sql` with the canonical block, so its
+  schema matches by construction.
 - If the file does not exist: set N = 0 and generate the complete file including the setup block.
 
 ---
@@ -305,17 +319,27 @@ hyphens **is** the block — do not report it as missing.
 **Flat files, numbered in study order.** Several topics share a file — that is deliberate, and the
 second topic appends to the first rather than creating a new file.
 
-`{FILE}` was already resolved by the shell (`sql-exercises-prompt.md`, under Resolution) from `{PLAN}`
-§1 before this branch opened. Use the resolved value; do not re-derive it.
+`{FILE}` was already resolved by the shell (`sql-exercises-prompt.md`, under Resolution) before this
+branch opened — from `{PLAN}` §1, or from the `FILE` key Victor set, which is Step 1's two paths. Use
+the resolved value; do not re-derive it.
 
-**One file, one schema (2026-07-22).** `practice/sql/junior/01-basics.sql` is closed: it carries the
-pre-canonical schema, so nothing is ever appended to it again. A file whose SETUP block does not match
-the canonical schema is never extended — start the next numbered file instead, and update `{PLAN}` §1
-and §3.
+**One file, one schema (2026-07-22).** No file ever gains a **second** SETUP block. A file whose SETUP
+block does not match the canonical schema keeps the schema it has for life, and Step 1 generates
+against that schema rather than grafting a canonical block in beside it.
 
-If the folder does not exist, create it. **Never invent a path** — the `{FILE}` the shell resolved
-from `{PLAN}` §1 is the only path this run may write to; if the shell could not resolve one, it has
-already stopped.
+**What that closes is the route's forward file choice, not the file.**
+`practice/sql/junior/01-basics.sql` carries the pre-canonical schema, and `{PLAN}` §1 records it
+**closed** — it still holds its step, it simply never receives a *new* first-pass batch (at junior the
+shell's path table omits it too, so no `{TOPIC}` projects onto it). A run whose `{FILE}` the shell
+resolved from `{PLAN}` §1, landing on a mismatched file, **is never extended**: start the next numbered
+file, and update `{PLAN}` §1 and §3. That does not close the file to an **off-route** batch whose
+`{FILE}` Victor named by hand — `MODE = reinforce` is built to append to exactly the file he names and
+is deliberately available on a step already `closed ✅`. Those batches are counted against no step, so
+they extend none.
+
+If the folder does not exist, create it. **Never invent a path** — the `{FILE}` the shell resolved,
+by either route above, is the only path this run may write to; if the shell could not resolve one, it
+has already stopped.
 
 For a **new file**: write the complete file (setup block + exercises).
 For **append**: read the existing file, then append the new exercises after the last line. Do not modify any existing content.

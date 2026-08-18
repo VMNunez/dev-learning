@@ -63,9 +63,13 @@ This is normal when reviewing a new append batch.
 
 Run each query mentally against the schema defined in the setup block.
 
-**If the file has two setup blocks** (a `SETUP v2` banner marks a mid-file schema change — see
-practice Step 1), evaluate each exercise against the block that precedes it, not against the last one
-read. An exercise written for the v1 schema is **not** wrong for using a v1 column name.
+**Evaluate against the schema the file itself defines, not against the canonical one** — they are not
+the same on every file, and the heading is not always `SETUP`: `01-basics.sql` defines its tables under
+`-- CREATE TABLES` and carries the pre-canonical v1 schema (`order_books`, `authors.nationality`,
+`books.year`), so an answer using a v1 column name is **not** wrong for it. One file has one schema:
+the practice branch has no step that emits a second setup block — Step 1 generates against whatever
+schema the file already defines — so a file carrying a mid-file schema change is not something this
+branch can produce.
 
 For the self-contained design topics (schema-design, normalization, data-types, ddl), there is no
 shared setup block — evaluate each answer's table design and type choices against the

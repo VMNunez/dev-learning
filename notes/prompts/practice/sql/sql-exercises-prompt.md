@@ -125,8 +125,12 @@ of those routes is kept here, so §1 is read directly and nothing cross-checks i
 | R4 | practice/sql/junior/R4-repaso.sql | *(revision point — steps 8–10)* |
 | R5 | practice/sql/junior/R5-repaso.sql | *(revision point — steps 11–12)* |
 
-`practice/sql/junior/01-basics.sql` is deliberately absent: it carries the pre-canonical schema and is
-closed, so nothing is ever appended to it again (one file, one schema).
+`practice/sql/junior/01-basics.sql` is deliberately absent from **this table**: it carries the
+pre-canonical schema, so no `{TOPIC}` projects onto it and no first-pass batch is ever written there
+(one file, one schema). §1 still records it, closed, under its step. A batch whose `{FILE}` Victor
+named by hand — `MODE = reinforce`, or `practice` with an explicit `FILE` key — can still append to
+it, and the practice branch's Step 1 generates such a batch against the file's own schema, never
+against the canonical one.
 
 `{REVIEW} = yes` means: a batch over concepts already drilled — no Intro tier, exercises labelled
 `[Repaso]`, repetition allowed, and **not** counted against the step's first-pass target.
