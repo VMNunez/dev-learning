@@ -145,8 +145,8 @@ Markdown entry points from internal Markdown:
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
 
 **Every folder keeps its internal pieces in an `_internal/` subfolder** (2026-07-22) — the thirteen families
-and this root, which holds the shared session/runtime contracts, preflight, recommendation ledger,
-skill-friction sink, self-report contracts, market context, batch rules and run tracker. Open any
+and this root, which holds the shared session/runtime contracts, preflight, the recommendation ledger and
+its resolution doctrine, the skill-friction sink, self-report contracts, market context, batch rules and run tracker. Open any
 folder under `notes/prompts/` and you see its runnable prompts and one `_internal/`, never a mix you
 have to read prefixes to sort. Standards, subagent steps and `_last-run-report*.md` files all live
 there; a new one goes in `_internal/` too, **including a report a pipeline has not written yet** — the
@@ -295,6 +295,9 @@ declared output of every prompt.
 `_simulation-plan-standard.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_skill-friction.md` (observable
 failed skill steps, consumed by the next prompt close-out),
+`_recommendation-resolution-doctrine.md` (the recommendation ledger's case-law half: the rule every
+closed `REC-NNN` promoted, plus the row-shape pricing table — read only by a session resolving a ledger
+row, at its steps 1 and 3),
 `system/_internal/_system-check-reconcile-prompt.md` (the mandate every one of `system-check`'s Step 4
 reconcilers is dispatched with: the two directions, the four claim dispositions and the return contract),
 `system/_internal/_system-check-report.md` (the latest explicit machinery audit: inventory and boundary

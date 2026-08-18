@@ -684,8 +684,9 @@ prohibition binds hardest on the two self-report contracts, because they are whe
 gate itself is written: a run authorized to edit them is a run authorized to delete its own gate.
 
 This is authorship, not Git. The non-negotiable **"No git side effects on code"** lets the agent commit
-anything under `notes/prompts/`; that the two are different rights is the ledger preamble's rule, and it
-owns it.
+anything under `notes/prompts/`; that the two are different rights is the recommendation ledger's rule,
+written in its case-law file `_internal/_recommendation-resolution-doctrine.md` (`REC-083`), and that
+pair owns it.
 
 ### The two maps follow every change to the machinery
 

@@ -91,8 +91,8 @@ The orchestrator enumerates, from disk rather than from either map:
   the coverage ownership contract (`_topic-ownership.md`);
 - the root contracts `_session-rules.md`, `_agent-runtime-standard.md`, `_batch-mode.md`,
   `_external-path-preflight.md`, `_pipeline-self-report.md`, `_single-shot-self-report.md`, and
-  `_recommendation-ledger.md`, plus `_shared-context.md` (the shared canonical runtime input) and the
-  PowerShell validator;
+  `_recommendation-ledger.md` and `_recommendation-resolution-doctrine.md`, plus `_shared-context.md`
+  (the shared canonical runtime input) and the PowerShell validator;
 - `notes/prompts/README.md` and `notes/prompts/_internal/_system-map.md` themselves, as the two objects
   under review. These two are the only inventory items with **no analyst manifest owner**: they are ruled
   on directly in Step 4 rather than manifested (`REC-079`). They stay in the inventory and in the path +
@@ -106,7 +106,8 @@ and `_system-gaps-report.md`), runtime/evidence state (`_run-tracker.md`, `_skil
 `_ritual-friction.md`, `_job-market-evidence.md`, `_cross-topic-inbox.md`), and every live artifact
 outside the machinery set above. `_recommendation-ledger.md` remains in scope for
 its improvement-loop contract and for deduplicating new machinery findings, but its open rows are not
-an operational-debt queue. Do not follow a path merely because an audited file names it: record the
+an operational-debt queue; `_recommendation-resolution-doctrine.md` is in scope as the case law those
+four steps cite, never as a queue. Do not follow a path merely because an audited file names it: record the
 declared pattern or contract in the manifest and stop at the machinery boundary.
 
 Save the counts in the working report. The inventory is the denominator: every audited file must later
