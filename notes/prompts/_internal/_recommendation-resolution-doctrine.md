@@ -864,7 +864,12 @@ five of the twenty rows already do. Widening from the first cell to the whole ro
 could name two files, re-opened the exact hole the check exists to close, and it re-opened it
 *silently*, because the five extra names it swept up were all authorised elsewhere and the published
 count did not move. Narrow to the column that holds the value; a harvest that reads a neighbouring
-cell is reading a sentence, not a contract.
+cell is reading a sentence, not a contract. **Also `REC-157`, one level in: inside a
+single line, the *field position* is the column.** Its first draft demanded a cold-review verdict of
+any closure line matching a hash anywhere, and two rejected rows cite hashes inside the reason that
+declines them — so it would have failed rows that gated no edit, while its template test would have
+failed its own closure line for quoting the template it was written to catch. Anchor every test to
+the field the schema puts the value in, never to the value's shape.
 
 **A non-ASCII literal in a BOM-less `.ps1` is not the character you typed.** Also `REC-084`, where it
 bit three times in one session — in the check, in the author's probe, and in the cold reviewer's.
