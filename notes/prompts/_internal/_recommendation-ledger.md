@@ -105,7 +105,11 @@ promotes lands there and never here, which is what stops this file growing again
    open under step 3. The one-line closure carries the ID, what the item was,
    `cold reviewer: approve | approve-with-tightening`, the two-map declaration, and the implementation
    commit. This reviewer field starts with `REC-107`;
-   historical lines are not retrofitted. Before collapsing, promote any rule the row established that
+   historical lines are not retrofitted. **`validate-prompt-system.ps1` invariant 9 reads that
+   schema** — the shape, the ID order, the commit field, the two-map declaration from `REC-058` and
+   the verdict on any line naming a real commit — so a closure that drops a field fails the run
+   instead of being found by the next reader. What it cannot see is whether the reviewer ran;
+   `README.md` states that limit with the rest of its contract. Before collapsing, promote any rule the row established that
    governs **future** work into `_recommendation-resolution-doctrine.md`, the file this preamble's steps
    cite. A rule that other items obey must not stay buried in a
    row about something else; that is how the `REC-025` precedent came to be cited seven times from

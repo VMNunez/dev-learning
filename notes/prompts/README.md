@@ -52,7 +52,7 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
-checks eight invariants nothing else can see: that both catalogues advertise the **same** arguments for a
+checks nine invariants nothing else can see: that both catalogues advertise the **same** arguments for a
 command and that every key a launcher advertises is one the canonical prompt's own `## Configuration`
 block accepts, in both directions — a key the prompt accepts and neither launcher mentions fails too,
 while an optional derived key explained in a launcher's `Rules` instead of its `argument-hint` passes.
@@ -128,9 +128,26 @@ fingerprint one **reports and never repairs**: clearing a stale flag without run
 lie the flag exists to prevent, so a disagreement prints as `REPORT:` and only a plan claiming `current`
 against a moved fingerprint fails the run.
 
-`/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map/report
-invariants still block — the last of those being the cold-review verdict check, whose oracle is a
-machinery file — while the live coverage-mirror, the plan/route fingerprint checks and the
+And that **every line in `_internal/_recommendation-ledger-closed.md` carries the closure schema its own
+header states** — one physical line per resolved `REC-NNN`, ordered by ID, ending in an implementation
+commit hash or an em dash where the closure implemented nothing, never a `{commit}` template; a two-map
+declaration from `REC-058` on, which is where the field becomes continuous on disk; and, from `REC-107`
+on **and only where the line names a real commit**, a `cold reviewer:` field reaching `approve` or
+`approve-with-tightening` — a rejection gates no edit and owes no reviewer. No ID may be open in
+`_recommendation-ledger.md` and closed here at once. Until this check nothing read that schema, though
+three files state it, which is how the 2026-08-18 collapse left six rejected rows carrying the literal
+`{commit}`. Two published limits and one deliberate non-gate: it proves the fields are **present**, never
+that a reviewer ran or that the hash names the edit — invariant 8's limit over the self-reports, reached
+again here; a row that applied an edit and wrote the em dash escapes the verdict requirement, and nothing
+on the line can settle that; and step 4's **one line plus at most one promotion** budget is *reported* as
+a character count beside the longest row, never enforced — 700 sits above today's 90th percentile (662)
+and below the thousand-character closures that budget was written against, so the number moves before
+the file is visibly growing again. Like invariant 8 it is **not** skipped under `-MachineryOnly`: the
+object under test and the oracle are the same machinery file.
+
+`/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map/report/ledger
+invariants still block — the last two of those being the cold-review verdict check and the closed-ledger
+schema check, whose oracles are machinery files — while the live coverage-mirror, the plan/route fingerprint checks and the
 declared-exercise-name cross-check are explicitly skipped — the last of those because its oracle is a
 live route even though the file it would fail is machinery. Ordinary manual runs omit the switch and retain the full operational checks above.
 

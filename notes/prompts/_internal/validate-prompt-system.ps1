@@ -521,6 +521,137 @@ foreach ($report in $selfReports) {
     }
 }
 
+# --- Invariant 9: a closed ledger line carries its closure schema ------------
+# `_recommendation-ledger.md` step 4 and `_recommendation-ledger-closed.md`'s own header state one
+# closure schema - the ID, what the item was, the cold-review verdict, the two-map declaration and
+# the implementation commit, on ONE line - and until this invariant nothing read it. That is the
+# shape `REC-143` names: a convention enumerated in three files with no checker whose scope reaches
+# it, where the enumeration is the symptom. It is also what let the 2026-08-18 collapse leave six
+# rejected rows carrying the literal template `{commit}` where their em dash belonged.
+#
+# NOT skipped under -MachineryOnly: the object under test and the oracle are the same machinery
+# file, which is invariant 8's test, not invariant 7's.
+#
+# THE FORMS WERE COUNTED BEFORE THE PATTERN WAS WRITTEN (`REC-067`). Over the 156 rows on disk:
+#   the two-map field is written `maps unaffected` and `maps: <...>`, both legitimate;
+#   the commit field is one backticked hash, a comma-joined pair of them, or a backticked em dash
+#     for a row that implemented nothing (a rejection, or a decision with no code change);
+#   the verdict field is `approve`, `approve-with-tightening`, and the historical
+#     `reject, then approve...` shapes, so the test is that an approving token is REACHED, not that
+#     the field opens on one;
+#   one row is a `residue` continuation of the ID above it (`REC-086`), which is why the ordering
+#     test admits an equal ID on that shape alone and on no other.
+#
+# THE THRESHOLDS. The header publishes `REC-107` for the verdict field and dates the two-map field to
+# "the first item collapsed after 2026-08-07" without naming an ID. The unnamed one is read off disk -
+# `REC-057` is the last row carrying no two-map declaration, so `REC-058` is exactly tight. The named
+# one is taken as published and NOT re-derived: on disk the verdict field runs continuously from
+# `REC-104`, and enforcing that would fail three rows the header exempts by name. Below a threshold
+# the field is optional and above it required - the older lines are explicitly not retrofitted, and
+# inventing a retrofit here would fail the run for history rather than for a defect.
+#
+# WHAT IT CANNOT SETTLE, published rather than left to be assumed (`REC-076`, `REC-084`):
+#   it proves the fields are PRESENT, never that a cold reviewer ran or that the hash names the
+#     edit - the same limit invariant 8 publishes over the self-reports;
+#   the verdict is owed by a row that names a real commit, because a rejection gates no edit. A row
+#     that applied something and wrote the em dash escapes, and nothing on the line can settle that;
+#   the one-line budget is a PROXY. Step 4 prices a closure at one line plus at most one promotion,
+#     and the engine it was written against was a "line" of about a thousand characters restating
+#     the whole resolution. The character count is reported with the longest row and never fails a
+#     run: 700 sits above today's 90th percentile (662 characters) and below that named pathology,
+#     so the number moves before a reader has to notice the file growing again.
+#
+# Made to fail before it was trusted (`REC-057`). Eight defects injected at once - a wrapped second
+# line under `## Closed`, a row with no commit field, `{commit}` restored on one row, a post-107
+# applied row with its verdict deleted, a post-58 row with its two-map declaration deleted, two rows
+# swapped out of ID order, a duplicate ID that is not a residue row, and an ID present in both
+# `## Open` and this file - then two more in a second pass, because the first left two branches
+# unexercised: a verdict field that opens and closes on `reject`, and a residue line detached from
+# the ID it continues. All ten were reported and none masked another; the `{commit}` row correctly
+# drew two findings, since a template is also not a hash.
+$ledgerOpenPath = Join-Path $promptRoot '_internal\_recommendation-ledger.md'
+$ledgerClosedPath = Join-Path $promptRoot '_internal\_recommendation-ledger-closed.md'
+$closedBudget = 700
+$closedRowsScanned = 0
+$closedLongest = 0
+$closedOverBudget = 0
+# $emDash is built from its code point by invariant 8 above: this file carries no UTF-8 BOM, so a
+# literal one arrives as two characters under PowerShell 5.1 and matches nothing, in silence.
+$closedRowPattern = '^- `REC-(?<id>[0-9]{3})`(?<residue> residue)? ' + $emDash + ' '
+$closedTailPattern = '(?:`[0-9a-f]{7,40}`(?:, `[0-9a-f]{7,40}`)*|`' + $emDash + '`)$'
+$closedText = [System.IO.File]::ReadAllText($ledgerClosedPath) -replace "`r`n", "`n"
+$closedSplit = [regex]::Split($closedText, '(?m)^## Closed[ \t]*$')
+if ($closedSplit.Count -ne 2) {
+    Add-ValidationError "Closed recommendation ledger holds $($closedSplit.Count - 1) '## Closed' headings; the archive is one section by contract."
+} else {
+    $closedIds = [System.Collections.Generic.List[int]]::new()
+    $previousId = 0
+    foreach ($line in @($closedSplit[1] -split "`n" | Where-Object { $_.Trim() -ne '' })) {
+        $row = [regex]::Match($line, $closedRowPattern)
+        if (-not $row.Success) {
+            # A wrapped continuation, a heading or a paragraph. The archive is one line per closure,
+            # so prose here is the growth the 2026-08-18 split removed, arriving back.
+            $excerpt = $line.Substring(0, [Math]::Min(60, $line.Length))
+            Add-ValidationError "Closed ledger carries a line that is not a one-line REC-NNN closure row: '$excerpt'."
+            continue
+        }
+        $rowId = $row.Groups['id'].Value
+        $closedRowsScanned++
+        if ($line.Length -gt $closedLongest) { $closedLongest = $line.Length }
+        if ($line.Length -gt $closedBudget) { $closedOverBudget++ }
+        $id = [int]$rowId
+        if ($row.Groups['residue'].Success) {
+            if ($id -ne $previousId) {
+                Add-ValidationError "REC-$rowId residue does not sit under its own row; a residue line continues the ID above it."
+            }
+        } elseif ($id -le $previousId) {
+            Add-ValidationError "Closed ledger is out of ID order or repeats an ID at REC-$rowId; the archive is ordered by ID, one line per closure."
+        } else {
+            $closedIds.Add($id)
+        }
+        $previousId = $id
+        $tail = [regex]::Match($line, $closedTailPattern)
+        if (-not $tail.Success) {
+            Add-ValidationError "REC-$rowId ends with no implementation commit; the schema's last field is a hash, or an em dash for a closure that implemented nothing."
+        }
+        if ($line -cmatch '\{commit\}') {
+            Add-ValidationError "REC-$rowId carries the literal '{commit}' template instead of the hash it stands for."
+        }
+        if ($id -ge 58 -and $line -cnotmatch 'maps(?: unaffected|:)') {
+            Add-ValidationError "REC-$rowId carries no two-map declaration; the line itself is what tells a later reader a checked map from a forgotten one."
+        }
+        # Keyed on the CLOSURE'S OWN COMMIT FIELD - the tail - and not on any hash anywhere on the
+        # line: a rejection gates no edit and owes no reviewer, and a rejection reason legitimately
+        # cites hashes. REC-078 names two and REC-087 one, inside the reasons that decline them.
+        # REC-130 is the live post-107 instance: a false positive, closed with an em dash.
+        $implemented = $tail.Success -and $tail.Value -cne ('`' + $emDash + '`')
+        if ($id -ge 107 -and $implemented) {
+            $verdictAt = $line.IndexOf('cold reviewer:')
+            if ($verdictAt -lt 0) {
+                Add-ValidationError "REC-$rowId applied an edit and carries no 'cold reviewer:' field; on disk that is indistinguishable from a row that skipped the gate."
+            } elseif ($line.Substring($verdictAt) -cnotmatch '(?<![A-Za-z0-9-])approve(?:-with-tightening)?(?![A-Za-z0-9-])') {
+                # Bounded on BOTH sides (`REC-065`) so `disapprove` cannot satisfy it, and searched
+                # only from the field onwards, so the word appearing in the row's prose cannot. The
+                # historical `reject, then approve-with-tightening` shape still passes, as it must.
+                Add-ValidationError "REC-$rowId carries a 'cold reviewer:' field that never reaches an approving verdict; only approve or approve-with-tightening may reach step 4."
+            }
+        }
+    }
+    # An ID cannot be queued and resolved at once. A collapse that adds the line and forgets to
+    # remove the row leaves one item in two states, and the ledger is the current-status source.
+    $openText = [System.IO.File]::ReadAllText($ledgerOpenPath) -replace "`r`n", "`n"
+    $openSection = [regex]::Split($openText, '(?m)^## Open[ \t]*$')
+    if ($openSection.Count -ge 2) {
+        $openBody = [regex]::Split($openSection[1], '(?m)^## ')[0]
+        foreach ($openRow in [regex]::Matches($openBody, '(?m)^\|[ \t]*REC-(?<id>[0-9]{3})[ \t]*\|')) {
+            $openId = $openRow.Groups['id'].Value
+            if ($closedIds -contains [int]$openId) {
+                Add-ValidationError "REC-$openId is open in the ledger and closed in the archive at once; a collapse removes the row it adds the line for."
+            }
+        }
+    }
+}
+
 # --- Invariant 1: the two skill adapters are one artifact -------------------
 # Editing one without the other let Codex run a ritual two revisions old for
 # three days in Jul 2026 with nothing announcing it.
@@ -1153,6 +1284,10 @@ if ($selfReportReports.Count -gt 0) {
     Write-Output "REPORT: $($selfReportReports.Count) self-report(s) name an applied hash outside the Status field:"
     $selfReportReports | ForEach-Object { Write-Output "  - $_" }
 }
+# Outside -MachineryOnly for invariant 8's reason: the ledger archive is machinery and so is the
+# ledger that indexes it. Three numbers, and the last two are the budget proxy, never a gate - a
+# closure that restates its whole resolution moves them before the file is visibly growing again.
+Write-Output "PASS: closed ledger lines carry their closure schema ($closedRowsScanned rows, longest $closedLongest chars, $closedOverBudget over the $closedBudget-char one-line budget)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 if ($MachineryOnly) {
     Write-Output 'SKIP: live coverage, notes-plan, SQL-route (including declared exercise names), and simulation-route state (machinery-only mode)'

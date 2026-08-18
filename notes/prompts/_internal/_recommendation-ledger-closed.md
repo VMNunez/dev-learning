@@ -5,7 +5,11 @@ the ledger states: the ID, what the item was, `cold reviewer: approve | approve-
 two-map declaration, and the implementation commit. Nothing else. Beyond those fields a **rejected**
 item keeps its reason, because that reason is the only thing stopping the next analysis re-raising it,
 and a **residue** clause names work the item left open. The reviewer field starts at `REC-107` and the
-two-map field at the first item collapsed after 2026-08-07; earlier lines are not retrofitted.
+two-map field at the first item collapsed after 2026-08-07; earlier lines are not retrofitted. On disk that
+second field becomes continuous at `REC-058`, and that is the number `validate-prompt-system.ps1`
+invariant 9 enforces — it reads every line here against this schema and fails the run on a missing
+field, a broken ID order, a `{commit}` template, or an ID that is open in the ledger and closed here
+at once. The one-line budget it only **reports**, as a character count beside the longest row.
 
 **Where the reasoning is.** In `git log -p` on this file and on the ledger — the closing commit removes
 the row from `## Open` there and adds the line here, so either side reaches it. Restating an argument
