@@ -163,9 +163,6 @@ with the mandatory double check:
 3. `git status` — confirm nothing else is staged (`git restore --staged` anything that is).
 4. `git commit -m "docs: add <N> postings to job-market-evidence — <main stacks/companies>"`
 
-Then update this prompt's row in `notes/prompts/_internal/_run-tracker.md` (the "Global prompts" table)
-with today's date and commit that file on its own (`docs: run tracker — evidence-intake run`).
-
 ## Final step — write the self-report
 
 Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
