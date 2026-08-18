@@ -194,6 +194,11 @@ graded work is nobody's.
 - Every prompt the plan tells Victor to run must **exist at that path** and its pasted config must use
   **that prompt's real keys** — open `sql-exercises-prompt.md` and compare key by key. A moved prompt
   or an invented key is a dead instruction that fails silently.
+- **Every place the plan *enumerates* that key set is the same check**, not only the Moment blocks
+  Victor pastes from: an invariant, a rule or a parenthetical listing the keys is compared against the
+  prompt's `## Configuration` block key by key, and a list that has fallen behind the prompt is
+  rewritten to cite it rather than re-copied. This is the site that rots without failing a run — the
+  plan keeps working while its own invariant tells the next auditor that a real key is invented.
 - **And the reverse direction, which is the half that actually broke:** every value the prompt says it
   *derives from the plan* must be present in the plan **in the literal shape the prompt greps for**.
   Read the prompt's Resolution table and check each source string against every route §2 step — today that

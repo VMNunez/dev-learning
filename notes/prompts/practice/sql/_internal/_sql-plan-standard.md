@@ -178,13 +178,17 @@ that bullet; nothing else sets it. `**Pending additions:**` carries bullets cove
 step closed: a closed step is never reopened by new scope, so the additions sit there until a
 reinforcement run drills them.
 
-**`FOCUS` is a field of the step, never a pasted key.** The pasted config has exactly four keys —
-`MODE`, `TOPIC`, `COUNT`, `FILE` — and `sql-exercises-prompt.md` derives `{FOCUS}` and `{REVIEW}` by
-reading the step. So the step must carry a literal **`**Focus:**` line** and a literal `COUNT = n`
+**`FOCUS` is a field of the step, never a pasted key.** The pasted config is whatever
+`sql-exercises-prompt.md`'s own `## Configuration` block lists and nothing else — read the key set
+there, never from a copy — and `{FOCUS}` and `{REVIEW}` are not in it: the prompt derives `{FOCUS}`
+from the step, and `{REVIEW}` from `MODE`, the `TOPIC`, or a Moment 2b block inside it. So the step
+must carry a literal **`**Focus:**` line** and a literal `COUNT = n`
 inside its **`**Moment 2 config:**`** line: those two strings are what the prompt greps for, and a step
 that states the same information in prose resolves to nothing and stops the run. (Corrected
-2026-07-22: this block used to show a five-key config with `FOCUS =` in it, which the prompt has never
-accepted.) `none — the whole topic` is a value; a blank `**Focus:**` line is a finding.
+2026-07-22: this block used to show `FOCUS =` as a pasted key, which the prompt has never accepted. The
+enumeration written in its place went stale in eleven days — `LEVEL` was added on 2026-08-02 and no
+sweep reached here — which is why the key set is now cited from the prompt instead of copied.)
+`none — the whole topic` is a value; a blank `**Focus:**` line is a finding.
 
 **A step split into two runs states each run's exercise range** (`run 1 → #01–#11`, `run 2 →
 #12–#22`) whenever both runs share a `TOPIC`. Without the range there is nothing on disk that tells the
@@ -230,7 +234,11 @@ checks. Aligned 2026-07-22.
    open rows as its focus source, and no revision batch is counted in a §1 target or a §3 status.
 9. Every prompt named exists at the path given, and every config the plan says to paste uses that
    prompt's real keys. A plan pointing at a moved prompt or an invented key rots silently: the run
-   happens and produces something else. **This runs in both directions:** every value the prompt says
+   happens and produces something else. **A pasted config is not the only site:** anywhere the plan
+   *enumerates* a prompt's key set — an invariant, a rule, a parenthetical — is checked the same way and
+   against the same source, the prompt's own `## Configuration` block. A stale enumeration is the worse
+   of this invariant's two failure modes, because it does not fail a run: it teaches the next auditor
+   that a real key is an invented one. **This runs in both directions:** every value the prompt says
    it *derives* from the plan must be present in the plan, in the shape the prompt names — a step with
    no `COUNT` line is the same dead instruction as an invented key.
 10. **Extendable without rewriting** (B10) — a new coverage section becomes a new step at its dependency
