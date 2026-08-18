@@ -84,7 +84,8 @@ the recommendation is later resolved.
 Then reconcile every prompt-change recommendation from this run with
 `notes/prompts/_internal/_recommendation-ledger.md`. A new or still-unresolved item is a row in its
 `## Open` table, state `open` or `accepted`. **An item this run resolved does not stay a row** — follow
-that file's own four-step procedure, which ends by collapsing it into a single `## Closed` line after
+that file's own four-step procedure, which ends by collapsing it into a single line in
+`_recommendation-ledger-closed.md` after
 promoting any rule it established into `_recommendation-resolution-doctrine.md`, which holds that
 file's case law. Historical reports remain unchanged; the ledger is
 the current status source.

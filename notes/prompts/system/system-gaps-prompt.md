@@ -43,8 +43,9 @@ own inference as an observation, which is exactly the failure the derived-file r
 - **Nothing outside the declared read set is opened.** Not a prompt, not a `SKILL.md`, not a standard,
   not a launcher, not the validator, and no live artifact of any kind. The complete read set is:
   1. the two maps, **whole** — the evidence;
-  2. `_recommendation-ledger.md` — the write target, and the deduplication source; read for its `## Open`
-     rows and its `## Closed` one-liners, **never** as a source of gaps;
+  2. `_recommendation-ledger.md` — the write target, read for its `## Open` rows, and
+     `_recommendation-ledger-closed.md` beside it — the resolved half, and the other deduplication
+     source; both read **never** as a source of gaps;
   3. this prompt's previous `system/_internal/_system-gaps-report.md`, if it exists — continuity of the
      candidates a previous run deferred;
   4. this prompt's own `system/_internal/_last-run-report-system-gaps.md` `Status:` line — the suffixed
@@ -188,7 +189,7 @@ it.
 Then deduplicate the merged set against, in this order:
 
 1. `_recommendation-ledger.md` `## Open` — same problem, so update that row rather than opening a second.
-2. `_recommendation-ledger.md` `## Closed` — including **rejected** rows, whose reason is kept in the
+2. `_recommendation-ledger-closed.md` — including **rejected** rows, whose reason is kept in the
    line for exactly this purpose: to stop the next analysis re-raising the same zombie. A candidate
    matching a rejected row is discharged with that reason quoted.
 3. the previous `_system-gaps-report.md` — a candidate deferred over the cap last run keeps its place in

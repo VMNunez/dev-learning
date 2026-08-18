@@ -1,12 +1,14 @@
 # Recommendation-resolution doctrine — the case law of `_recommendation-ledger.md`
 
 **What this file is.** Every rule a closed `REC-NNN` promoted, and the pricing table its row shapes are
-kept in. It is the second half of one document: `_recommendation-ledger.md` owns the **procedure** — the
-four steps, the states, the scope test, `## Open`, `## Closed` and the order — and this file owns the
-**case law** those steps accumulated, one rule per defect that has already been paid for once.
+kept in. It is one third of one document: `_recommendation-ledger.md` owns the **procedure** — the
+four steps, the states, the scope test, `## Open` and the order — `_recommendation-ledger-closed.md`
+owns the resolved lines, and this file owns the **case law** those steps accumulated, one rule per
+defect that has already been paid for once.
 
 **Why it is a separate file.** The ledger is read to answer *what is open and what happens next*; this is
-read to answer *how has this shape of defect gone wrong before*. They were one file until 2026-08-18, and
+read to answer *how has this shape of defect gone wrong before*, and the third to look one ID up. They
+were one file until 2026-08-18, and
 the second reading had grown to four fifths of it, so the queue nobody could find was buried inside the
 case law nobody needed that day. Splitting them changes neither rule: the ledger's steps cite this file by
 section, and a rule promoted by a closure lands here.
@@ -16,7 +18,7 @@ steps whose failures this file records. Nothing else reads it: no prompt, no ski
 standard (it constrains no prompt), and it is not a queue (it contains no work).
 
 **Who writes it.** Whoever resolves a ledger row, in the same commit as the closure, under the ledger's
-step 4 budget: **one line in `## Closed` plus at most one promotion**, and a promotion is *merged into the
+step 4 budget: **one line in `_recommendation-ledger-closed.md` plus at most one promotion**, and a promotion is *merged into the
 rule it is an instance of*, cited as `Also REC-NNN` with the one clause it adds. A new standalone rule only
 where no existing one covers it. A pricing lesson is a **row** in `## Row shapes` below, never a paragraph.
 That budget is what keeps this file from becoming the thing it was split out of.

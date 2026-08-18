@@ -298,6 +298,8 @@ failed skill steps, consumed by the next prompt close-out),
 `_recommendation-resolution-doctrine.md` (the recommendation ledger's case-law half: the rule every
 closed `REC-NNN` promoted, plus the row-shape pricing table — read only by a session resolving a ledger
 row, at its steps 1 and 3),
+`_recommendation-ledger-closed.md` (the ledger's resolved half: one line per closed `REC-NNN`, ordered
+by ID — read to deduplicate a candidate against work already ruled on, including rejected rows),
 `system/_internal/_system-check-reconcile-prompt.md` (the mandate every one of `system-check`'s Step 4
 reconcilers is dispatched with: the two directions, the four claim dispositions and the return contract),
 `system/_internal/_system-check-report.md` (the latest explicit machinery audit: inventory and boundary

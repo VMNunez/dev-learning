@@ -186,7 +186,10 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         $_.Name -notin @(
             '_session-rules.md',
             '_agent-runtime-standard.md',
-            '_recommendation-ledger.md'
+            '_recommendation-ledger.md',
+            # Split out of the ledger 2026-08-18 and it inherits the same reason: closed lines
+            # quote the tool and runtime names the rows were about.
+            '_recommendation-ledger-closed.md'
         )
     }
 foreach ($file in $canonicalFiles) {
