@@ -215,4 +215,14 @@ Never give code. Record in chat that using the hint makes a later review Assiste
 Execute `_single-shot-self-report.md` in full. Write `_internal/_last-run-report-simulation-review.md`,
 update `_run-tracker.md`, and commit those two prompt-system files separately.
 
+**Two `_run-tracker.md` cells, not one** — and neither of them is `practice/simulations/TRACKER.md`,
+the bare `TRACKER` this prompt names everywhere above. The shared close-out updates this prompt's row in
+`## Single-shot prompt executions`, and that row records the *run*. It cannot say how far along the route Victor is, so also
+update the `Route progress` cell for `{LEVEL}` in `## Timed-simulation track`: `X/Y steps closed`, with
+Y the row count of the route's §2 table and X its rows at `closed ✅`, both read from
+`practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` and never from counting specs on disk. Recalculate it
+on every run whose `LEVEL` resolved — `review`, `correction`, a `blocked` one, and `hint`, which writes
+no simulation state and so leaves the fraction where it was. An unchanged fraction is still a current
+one, and an empty cell reads as **pending** against a route this run has just graded.
+
 [paste or attach the solution/correction below]

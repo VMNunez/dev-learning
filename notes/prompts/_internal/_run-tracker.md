@@ -116,7 +116,8 @@ fails, since no daily-session skill touches this route.
 ## Timed-simulation track
 
 `simulation-plan` writes one evidence-gated route per level. The route's own §2/§3 remains the source
-for step state; this table records the latest planning run only.
+for step state: the `Simulation plan` cell records the latest planning run only, and `Route progress`
+is a derived summary of that route's §2, never a second copy of step state.
 
 | Level | Simulation plan | Route progress |
 |---|---|---|
@@ -124,11 +125,15 @@ for step state; this table records the latest planning run only.
 | middle | | |
 | senior | | |
 
-`Route progress` is `X/Y steps closed` from `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`; a level
-with no route stays blank. `simulation-review` updates it after a first review or correction. A changed
-coverage manifest makes the plan cell stale; changed PROGRESS evidence is surfaced by
-`simulation-block-open` and adjudicated by the next `/simulation-plan` run rather than auto-staling the
-route on every project update.
+`Route progress` is `X/Y steps closed` from `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` §2; a
+level with no route stays blank. `simulation-review` recalculates it on every run whose `LEVEL`
+resolved — `hint` and `blocked` runs included — and its own `## Final step` is where that obligation is
+stated, because that is the file the run opens. **It is not `PROGRESS.md`'s `Route progress`**, which
+counts first-pass **SQL exercises** graded against a route target; this one counts **simulation steps
+closed**, which is what the `Exercises` cell above holds for SQL. The two names are not derived from
+each other and never share a table. A changed coverage manifest makes the plan cell stale; changed
+PROGRESS evidence is surfaced by `simulation-block-open` and adjudicated by the next
+`/simulation-plan` run rather than auto-staling the route on every project update.
 
 ## Per-project prompts
 
