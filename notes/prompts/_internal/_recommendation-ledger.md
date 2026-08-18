@@ -324,6 +324,46 @@ down, and the three items before it each cost more than they were budgeted for.
    inside a row about SQL specialists — and misread every time, which is the second reason to promote a
    rule rather than cite it across rows.
 
+**Row shapes, and what each actually costs.** Every row below was priced wrong on arrival, and the
+pattern is the same one step 1 states: the row is a report of where a defect was *found*. This table is
+what thirty-odd closures generalised to — the shape of the row, the thing that turns out to be
+expensive, and the one test that settles it. Its own history is in `git log -p`; what a future
+resolution needs is the test.
+
+| Row shape | What it actually costs | The test |
+| --- | --- | --- |
+| Any row, sized by its diff | the *rulings* inside the edit, not the edit — nine and three in two "smallest" rows (`REC-055`, `REC-086`) | never size a row by its diff |
+| A `contradiction` naming two producers of one artefact | establishing which file is the fork (`REC-118`) | count the producers first: if only one writes, the other clause is **prose about the writer** and is corrected against it, never reconciled with it |
+| A `contradiction` whose clauses were once consistent | the restoration, and whatever you write in the duplicate's place (`REC-142`) | find the commit that separated them before reasoning about which wins — expect its subject to be something else entirely |
+| A `contradiction` whose clauses were **born together** | nothing history can settle — the dating instrument says "never forked" (`REC-139`) | stop asking when they diverged and ask **who else says the wrong one**; the sibling that says it truthfully is the whole adjudication |
+| A `contradiction` of owner + restatement | a sweep of every copy, where the fresh over-claims get written (`REC-135`) | the owner is usually already right; and when a row partitions a shared artefact, ask what *checks* the partition |
+| A `contradiction` whose clauses govern different dimensions | *writing* the ruling, not adjudicating it — a mechanism has to answer every case the file admits (`REC-123`, `REC-126`) | price the ruling; reach for a mechanism only once the ruling is written and still leaves a case open |
+| A row naming a **circular input** | the branch the fix must invent for when the value is simply absent (`REC-136`) | budget the branch you will invent, not the clause you will delete |
+| An **idempotency** row | the second write path the row never mentioned (`REC-140`) | read the nouns of the promise and take one site per noun — then check the new name is *consumed*, not only written |
+| A row whose step-1 conclusion is "this is the only site" | that conclusion is two claims and only one is load-bearing (`REC-114`) | look for the family that already solved it **before** designing the fix — it hands you the design and the corroboration |
+| A row naming a few members of a family | classifying the whole family; a compliant file can be invisible to every grep for the defect's wording (`REC-121`) | enumerate from what *defines* the population, never from the words the defect happens to use |
+| An **authority** row | that the named consumers are a fraction, and the defect is at the owners (`REC-111`) | count the family before designing anything, and judge compliance **per statement**, not per file |
+| An **ownership** row | the *register* the claim is written in — omission and the possessive return from no grep (`REC-119`) | count the statements, not the files, and read the sentence beside the one you are correcting |
+| A row asking for one **terminal outcome** | re-reading every branch that outcome now reaches (`REC-125`) | scope the verb, and price the standard you import to scope it |
+| A row saying a failed check has **no terminal effect** | picking the wrong terminal thing (`REC-131`) | ask **which** terminal thing it is owed first — a row is as routinely wrong about that as about where the defect lives |
+| A row whose offered dispositions all fail | designing a *form* rather than choosing a branch (`REC-146`) | price the design **and** the consumers of whatever you invent |
+| A gate gaining a new terminal state | every earlier step still branching on the old outcome set (`REC-148`) | walk backwards from the print and ask which step enumerates the old set |
+| A row saying a **prerequisite has no teeth** | the consumers whose `▶ Run first` describes the producer's *result* instead of naming it (`REC-137`, `REC-128`) | resolve the rule first, then read every consumer for what it promises the prerequisite buys; a consumer merely naming its producer cannot be wrong |
+| A row saying a **published limit is stale** | the reason that has to replace it (`REC-127`) | ask whether the limit is true for a reason its own file already owns, before touching the limit |
+| A row alleging a **missing partition** | reading the two files it names (`REC-130`) | date it with `git log -S` and find its **definer** — neither arguing file is likely to quote it |
+| A row alleging a **stale restatement** | the checker whose scope never reached the copy (`REC-143`) | ask what would have caught it; if the answer is nothing, the enumeration is the symptom and the checker's scope is the defect |
+| A row **quoting a named rule** | that the name may cover two claims (`REC-145`) | split the name from the sentences filed under it before adjudicating either |
+| A row asking for a **destination** | the producer upstream of it, and whatever the fix must make precise on the way (`REC-149`) | a destination is never priced by the destination |
+| A row citing an **earlier row's promoted rule** | one extra thing to falsify, not one less (`REC-152`) | a promoted test offered as a disposition is refuted against disk first, exactly as a reviewer's `sweep: incomplete` site is |
+| A row whose fix is already on disk from a dead session | adopting it — an edited uncommitted tree reads like an applied fix (`REC-135`) | re-measure from scratch; that is what finds the sites the dead session missed |
+| A row whose fix replaces a **false premise** with an ownership rule | the scene-setting around the ownership half (`REC-150`) | condition every remaining claim about the tree or delete it |
+| A row whose fix **quotes a sibling that is already right** | the paragraph *around* the sentence taken (`REC-154`) | read what the sibling prints underneath it — exceptions travel with house phrasing |
+| A row whose fix is a **deletion** | the check a deletion owes and an addition does not (`REC-153`, `REC-142`) | name the clause chain that still carries the boundary the duplicate was covering |
+| A row whose fix only makes an existing path more **visible** | the map rows describing the file's *kind* (`REC-113`) | `maps unaffected` is easiest to get wrong where nothing the fix wrote is new |
+| A row that adds **no check** | the reviewer, because the injection budget does not apply (`REC-091`) | on a row that adds no check, the reviewer *is* the check |
+| A row that keeps **failing review** | rounds, and a fix that grows every pass (`REC-092`) | it is not under-built — check whether it is being answered at the wrong altitude, and count the rounds |
+| Any row, at the sweep | the *column* of the artefact that holds the value, not only the file (`REC-084`) | run `validate-prompt-system.ps1` before the dispatch, not before the commit: a reviewer inherits step 1's population and cannot find a site the measurement was blind to (`REC-120`) |
+
 **Collapsing rows by script: split on `(?<!\\)\|` and assert exactly 7 fields per row.** A plain
 `split('|')` silently deleted a just-written row on the first attempt, because cells legitimately carry
 escaped pipes (`REC-060` quotes a shell pipeline). The row was recovered only because the collapsed
@@ -1411,395 +1451,18 @@ edited**, and **a chain is walked from its denominator up**. Wave 2's lesson out
 once wrong across eleven items: **budget the sweep, never the edit** — every row so far lived in more places
 than it named, and in three of four cases it was the *cold reviewer*, not the sweep, that found the last site.
 
-**Items 1 and 2 closed on 2026-08-10 — `REC-055` (e), the map's per-day view, and `REC-086`, the forked
-mid-flight-death rule. Both confirmed the same thing about the two "smallest" rows on a table:** the edit
-was one section and one paragraph respectively, and the *rulings* inside them were nine and three. Every
-one of `REC-086`'s three was **introduced by the fix**, in the paragraph the row called the smallest on
-the table — which is the argument against ever sizing a row by its diff.
-
-**Item 1 closed on 2026-08-11 — `REC-084`, the last validator invariant on this table — and it is the
-third row running whose worst defects were introduced by its own fix.** Both of the must-fixes its cold
-reviewer ranked highest were written by the repair, not present in the finding, and one of them was the
-repair of an earlier finding *from the same reviewer*: widening the locator to fix a row that could name
-two files re-opened the hole the check existed to close, silently, because the extra names were all
-authorised elsewhere and the published count did not move. Two things generalise to what is left. The
-injection budget held for the third time after `REC-057` and `REC-067` — four bugs found only by making
-it fail, none by reading — and the **second source** it needed on disk cost less than the two narrowings
-that made that source trustworthy, which is the sweep-not-the-edit rule arriving one level down: not
-where the defect lives, but which *column* of the artefact actually holds the value.
-
-**`REC-099` closed on 2026-08-12, out of order, and it dissolved its own batch.** It was taken first as
-the cheapest row on the table — three lines in one file — and the ownership contradiction it named was
-indeed cheap. The row cost what it cost because the *shape* of its defect lived one question away from
-the one it asked, in a file list rather than in the commit step, and because four of the seven defects
-its cold reviewer returned were written by the repair. **Two things carry to `REC-100`, its former batch
-partner.** The batch premise held exactly as far as the opening promise: in `plan-audit` the promise was
-the stale half and the Finishing section was right, so `readme-audit`'s l.23 is the clause to suspect
-first — but that is where the parallel stops, and the deeper question there is the same one asked one
-level out, *which files each hand-over command covers*, not which sentence wins. `readme-audit`'s author
-correctly leaves the commit unexecuted but still calls the orchestrator its owner; `REC-132` isolates
-whether that remaining word means execution, handoff, or stale residue after `REC-100`'s family sweep.
-
-**`REC-118` led this order and closed 2026-08-13, and what it cost was not the edit** — one clause in
-one prompt — **but establishing which of four files was the fork.** The row arrived asserting two
-writers of one marker; there is only one, and the sweep that proved it (the review branch, the plan
-audit, the route, and the exercise file on disk) is also what made the fix a two-line correction and
-raised the residue and the adjacent row below. Where a `contradiction` row names two producers of one
-artefact, count the producers first: if only one writes, the other clause is prose about the writer,
-and prose is corrected against the writer, never reconciled with it.
-
-**`REC-136` led this order and closed 2026-08-14, and what it cost was not finding the circularity** —
-the row arrived with both clauses quoted — **but the two branches the fix itself opened.** A `contradiction`
-row whose defect is a *value flowing the wrong way* is cheap to locate and expensive to repair, because
-the repair has to define what the auditor does when the value is simply absent, and that definition is
-new machinery no reviewer has seen. Both rounds' blocking findings were there and not in the deletion.
-Where a row names a circular input, budget the branch you will have to invent, not the clause you will
-delete.
-
-**`REC-140` led this order and closed 2026-08-14, and what it cost was not the guard** — one identity
-pair, already in use twice in the file it was missing from — **but the second write path the row never
-mentioned, and the reader the guard's own new folder name did not have.** An idempotency row names the
-artefact whose duplicate somebody imagined; the promise it quotes is almost always broader, and the
-promise's other nouns each have their own creating step in the same mode. Read the nouns of the promise
-first and take one site per noun — then check that whatever new name the fix introduces is consumed
-somewhere, not only written.
-
-**`REC-114` led this order and closed 2026-08-14, and its sweep held while the reason it gave for
-holding was false.** Step 1 had concluded "no other prompt narrows write depth inside a shared
-author→reviewer chain"; the reviewer found one immediately (`notes-audit`'s `append-only`) and it was
-**not** a site, because that family declares the key in each downstream component's own config — it had
-already solved the shape. A "this is the only site" conclusion is therefore two claims, and only one of
-them is load-bearing: look for the family that solved it *before* designing the fix, because it hands
-you the design and it is the corroboration a novel-looking fix otherwise has to do without.
-
-**`REC-121` led this order and closed 2026-08-14, and what it cost was neither the edit nor the sweep** —
-ten files, a moved blockquote each — **but classifying a family the row had described three members of.**
-Nine of the twelve were defective, three had already solved it, and the sweep's entire risk sat in
-telling those apart: one of the three compliant files was invisible to every grep for the defect's
-wording, so a sweep that trusted the grep would have "fixed" a correct file. Where a row names a few
-members of a family, price the classification of the whole family, and enumerate it from something that
-*defines* the population rather than from the words the defect happens to use.
-
-**`REC-125` led this order and closed 2026-08-14, and what it cost was neither the analysis nor the
-sweep** — the contradiction was two sentences apart and the join that defines the population is
-greppable — **but the three sites the fix's own new sentence went on to govern.** Scoping a verb is
-cheap; importing the standard that scopes it is not, because the imported rule then binds every sibling
-gate, every mode of the loop the clause sits in, and the older sentence that said the opposite word.
-Where a row asks for one terminal outcome, price the re-reading of every branch that outcome now
-reaches, not the clause you will rewrite.
-
-**`REC-131` led this order and closed 2026-08-14, and the row was half right in a way the four-step
-procedure is built to catch.** Its finding named a terminal effect the machinery genuinely lacked and
-pointed it at the **verdict**, where it would have made a project's recruiter-readiness depend on how
-well the prompt's own subagents performed; the effect it was actually owed — the close-out outcome — was
-already ruled by a shared contract two files away, and the prompt had *parked* it. Where a row says a
-failed check has no terminal effect, the question to answer first is **which** terminal thing it should
-reach, because a row is as routinely wrong about that as it is about where the defect lives.
-
-**`REC-137` led this order and closed 2026-08-14, and the row was pointing at a symptom.** It asked for
-a stop in `roadmap-review`; the missing stop was one word in `_session-rules.md`, six prompts wide, and
-the site the row named was merely the only one whose prose stopped short of it. What the row cost was
-neither the owner sentence nor that site — both are one clause — but the sweep, and the sweep's value
-was entirely in the two members the row's own framing hid: consumers whose `▶ Run first` described the
-producer's *result* rather than naming the producer, written before the producer was demoted. Where a
-row says a prerequisite has no teeth, resolve the **rule** first and then read every consumer for what
-it promises that prerequisite buys — the ones that merely name the producer are the safe ones.
-
-**`REC-146` led this order and closed 2026-08-14, and what it cost was neither the analysis nor the
-sweep** — the two files the row named settled it, and the twelve twice-failed-acceptance branches were
-already classified by two earlier rows — **but the fact that the fix had to invent a *form* rather than
-choose a branch.** Both terminal effects the row offered were unavailable: one was already inherited by
-silence, the other refuted by the owner's own sentence, so what was left was a new value in a field
-three prompts read. Two of the cold reviewer's three blocking findings were written by that new form —
-its boundary case and a false claim about who reads it. Where a row's stated dispositions all fail,
-you are not choosing between them any more; price the design, and price the *consumers* of whatever
-you invent, because a value is only as safe as the readers you have actually enumerated.
-
-**`REC-148` led this order and closed 2026-08-14; the analysis was cheap and the *branch* was not.** The
-claim to correct was two sentences, their owner was named in the row, and `REC-146` had already put the
-artefact the fix needed on disk. The cost sat in what a corrected gate has to do when it now fails:
-`portfolio-audit` had no stop that was not a verdict, so the fix invented one — and **both** of the cold
-reviewer's blocking findings were inside that new branch rather than in the corrected claim (Phase 3
-skipped on `❌` alone, so a stop would have written the CV bullets `## Finishing` then told it not to
-print; and the branch's commit ignored `DRY_RUN` on the very run recipe A makes dry). This is `REC-146`'s
-lesson one layer down: there the invented thing was a **value** and the risk was its readers; here it is
-a **path**, and the risk is every step upstream of it that still enumerates the outcomes that existed
-before. When a gate gains a new terminal state, walk backwards from the print and ask which earlier step
-is branching on the old set.
-
-**`REC-111` led this order and closed 2026-08-15, and what it cost was neither the analysis nor the
-edit** — the contradiction resolved against two quoted sentences and every site was one clause —
-**but the fact that the row's two consumers were two of seven, and that the defect was at the owners.**
-An authority row arrives naming the consumers that read the wrong file, because that is what a reader
-notices; the reason they read it is that no file ever told the *derived* one what it may not restate,
-so fixing the named consumers would have left the fork intact and the rest of the family drifting. Two
-things carry. Count the family before designing anything — three of ten members already complied and
-became the model instead of an invention (`REC-114`'s corroboration rule, a third time). And a
-consumer judged compliant is compliant **per statement**, not per file: both sweep sites the first
-measurement missed were second statements inside files that had already been read.
-
-**`REC-119` led this order and closed 2026-08-15, and what it cost was the *register* the claim was
-written in, not the claim.** The row named one sentence and it was the right sentence; three more sites
-said the same thing by omission and two more said it as a **possessive**, which no grep for the
-corrected wording returns and which the analysis therefore missed twice — both came back from the cold
-reviewer, one of them inside a file the fix had already edited. An ownership row is cheap to settle
-(the fence was one table row) and expensive to sweep, because ownership is stated in whichever
-grammar each file happened to use. Count the *statements*, not the files, and read the sentence beside
-the one you are correcting before declaring the sweep complete.
-
-**`REC-127` led this order and closed 2026-08-16, and what it cost was neither the analysis nor the
-sweep** — the two clauses sat in two files, the claim is stated exactly once, and `git log` dated its rot
-to a single day — **but the reason that had to replace it.** A row of this shape hands you the other
-file's scope table as the correction, and taking it reproduces the defect: the first draft swapped one
-cross-file capability claim for three of the same class, and the cold reviewer cut all three. What
-settled it was the owning file's own definition of *signed off*, which nothing outside it can falsify,
-plus the boundary the row never asked about — the mode that runs every scope in one context. Where a row
-says a published limit is stale, ask first whether the limit is **true for a reason its own file already
-owns**, before touching the limit itself.
-
-**`REC-110` closed 2026-08-16, and it is the cheapest row in this block to date** — one required-source
-line, two token bindings and a scoping clause — because the analysis was a family comparison rather than
-a ruling: two of three coverage prompts already listed the registry the third only pointed at from its
-config block. Two things carry beyond the promoted rule. **A partial restatement inside a standard reads
-like the authority right up until the pair it omits comes up** — `_coverage-standard.md` names the
-boundaries "in particular", so the eight it lists are exactly the eight nobody ever gets wrong, and every
-pair it omits was undecided. And **a row that names a withheld *input* is not the same row as an
-undeclared *write*** — the reviewer found the second on the same file and it was kept separable as
-`REC-149`, with disk evidence that it has already happened once; it closed the next day.
-
-**`REC-149` closed 2026-08-16, and the analysis was the cheap half twice over** — the disposition fell
-to the same family comparison that settled `REC-110`, and the sweep to two launchers — **while both
-rounds' blocking findings sat in what the fix itself wrote**: a routing step with no channel feeding
-it, and a newly-closed enumeration that falsified the two map cells citing it. A row that asks for a
-*destination* is not priced by the destination. Price the producer upstream of it, and price whatever
-the fix has to make precise on the way.
-
-**`REC-135` led this order and closed 2026-08-16, and it arrived with its fix already on disk.** A prior
-session had written three of the sites and died before the mandatory reviewer, leaving an edited,
-uncommitted tree that reads on `git status` exactly like an applied fix — the state step 3 warns about,
-with nothing in the row recording it. Re-measuring from scratch rather than adopting it is what found
-the other three sites, one of them the *enforcement* half: the file's only mechanical guard could not
-see the partition the prose was being fixed to state. Two things carry. **Where a `contradiction` row's
-two clauses are an owner and a restatement, the owner is usually already right** — the fix is then a
-sweep of every copy, not a ruling, and the copies are where the fresh over-claims get written (both of
-the reviewer's findings, and the promoted rule). And **when a row partitions a shared artefact, ask what
-*checks* the partition**: prose that says "add only" beside a guard that admits any hunk in the section
-is `REC-148` one file down.
-
-**`REC-113` led this order and closed 2026-08-16, and half of it was never a defect.** The settling
-read was one section of one standard — the rule's own paragraph scoped it fourteen lines below the
-bolded heading the row quoted — and the sibling that had already solved the surviving half was one
-grep away, so neither the analysis nor the sweep is what the row cost. **The cost was the two map
-rows the fix's own subject falsified**: elaborating a standalone path inside the very file
-`README.md`'s classification bullet uses as its exemplar of "never appear in your 'paste into a new
-chat' workflow" turns a loose generalisation into a false one, and `_system-map.md` §7's writer row
-named two writers under a header promising *only this, never by hand*. Where a fix makes an existing
-path more **visible** rather than changing behaviour, check the map rows that describe the file's
-*kind*, not only the ones that describe what it does — `maps unaffected` is the easy declaration to
-get wrong there, because nothing the fix wrote is new.
-
-**`REC-120` led this order and closed 2026-08-16, and the row named one of two missing values in the
-enum it was about.** The analysis was a family comparison rather than a ruling — the population is
-stated four ways across the interview-prep family — and the fix took the form the family had already
-solved, so neither is what the row cost. **The cost was the sweep, and it was the cheapest possible
-instrument that closed it**: after a cold reviewer returned `sweep: complete`, `validate-prompt-system.ps1`
-failed on a fourth site in a launcher directory step 1 had concluded did not exist. A reviewer inherits
-step 1's population, so it cannot find a site the measurement was structurally blind to; the check that
-*enforces* the agreement can. Run it before the dispatch, not before the commit.
-
-**`REC-123` led this order and closed 2026-08-17, and what it cost was neither the analysis nor the
-sweep** — the two clauses sat eight lines apart in one file and the family had already solved the
-shape — **but four cold rounds in which every blocking finding was written by the repair, and the
-discovery that three of them were the price of a *mechanism* the row never needed.** A `contradiction`
-row whose clauses govern different dimensions is cheap to adjudicate and expensive to *write*: the
-first draft answered it with an interleaving procedure, and a procedure has to say what it does about
-every question the file admits, every mid-session mutation of the plan and every boundary — none of
-which the ruling itself needed once it was stated over asking rather than over planning. Where a row
-offers "add precedence or interleaving", the two are not alternatives at the same altitude; price the
-ruling, and reach for the mechanism only when the ruling has been written and still leaves a case
-open.
-
-**`REC-126` led this order and closed 2026-08-17, and it is `REC-123`'s lesson a second time in one
-day** — four cold rounds, every blocking finding written by the repair — **which is what turned that
-observation into the four round controls now in step 3.** Two of its rounds bought nothing: round 4
-returned `approve-with-tightening`, a closing token, and was re-reviewed as though it were a rejection,
-while the findings that kept the loop alive were a heading and an altitude note — cost, not result,
-and so tightenings under the very bar the reviewer was applying to the fix. The one finding that
-justified its round was structural and could only have come from a cold read: asking what the deletion
-*cost*, not whether it was justified, which is how `branches-coverage` surfaced as the single scope
-whose slice ends at EOF.
-
-**`REC-128` led this order and closed 2026-08-17, and it is the cheapest row of its cluster** — two
-clauses in one file, both quoted by the row, and the form already written by a sibling — **because the
-adjudication was a *quantifier* rather than a ruling.** The prerequisite and the recipe that admits
-unfinished projects had never disagreed about anything except how widely the first one was worded, and
-its own justification named the narrower scope. What that leaves as the cost is the sweep, and it was
-cheap for a reason worth keeping: a `▶ Run first` is restated all over the family, but almost every
-restatement is a *consumer* naming its producer, and those cannot be wrong about a launch precondition
-they never state. The one exception is the catalogue's own Run-first column, which is a second
-statement of the requirement and rots with it.
-
-**`REC-142` led this order and closed 2026-08-17, and the analysis cost less than the row priced
-because the defect was a *deleted word* rather than a disagreement.** `git log -S` on the two clauses
-dated the rot to one commit about a third subject, and the family settled the direction — the sibling
-contract and twelve consumers all restate Step 3's order, so nothing had to be adjudicated. What it
-cost was the repair: the reviewer's one blocking finding was inside the sentence the fix wrote, on the
-path the deleted duplicate had been the only cover for. Where a `contradiction` row's two clauses were
-once consistent, find the commit that separated them before reasoning about which one wins — and when
-that commit's subject is something else entirely, expect the fix to be a restoration and the risk to
-sit in whatever you write in the duplicate's place.
-
-**`REC-152` led this order and closed 2026-08-17, and it is the cheapest row of this block to date —
-one sentence, one file, one cold round.** Both clauses were quoted by the row, the file's own siblings
-supplied the form, and the adjudication reduced to one question the row had already framed: is
-`REC-123`'s dimension test satisfied here? It is not, and answering *that* is the whole analysis —
-position 1 is a rank, so the second statement was a fork and not a second dimension. What is worth
-keeping is why the row looked expensive: it arrived carrying the previous row's ruling as its first
-branch, and a promoted test offered as a candidate disposition has to be **refuted against disk**
-before the row can move, exactly as a reviewer's `sweep: incomplete` site does (`REC-115`). A row that
-cites an earlier row's rule is not cheaper for it; it is the same work with one extra thing to falsify.
-
-**`REC-150` led this order and closed 2026-08-17, and what it cost was neither the analysis nor the
-sweep** — the three paths that falsify the clause each fell to one quoted sentence, and the sweep found
-exactly one more site, inside the file already being edited — **but two rounds in which every finding
-was a *new* fact about the tree written by the repair itself.** That is the row's shape twice over: the
-defect was a justification stated as a fact, and the repair kept reaching for another one. Where a fix
-replaces a false premise with an ownership rule, the ownership half is safe and the scene-setting
-around it is not; condition every remaining tree-claim or delete it, because the paragraph's own thesis
-is that none of them decide anything.
-
-**`REC-130` led this order and closed 2026-08-17 as the block's first outright false positive, and it
-is the cheapest kind of row there is to settle once you stop reading the two files it names.** Both
-clauses were quoted by the row and both hold — one is about a *state*, the other about the *verdict*
-that reads it — and the argument the analysis first built (the owner states the partition three lines
-up; the runnable cedes the computation) was correct and still the long way round. Two commands
-would have closed it: `git log -S`, which put the partition and the sentence it allegedly contradicts
-in the **same commit**, and one read of the **definer** — the priority bullet in the backlog's format
-owner, which says "(Low does not affect the portfolio verdict.)" in the definition itself and which
-neither arguing file quotes. Where a row alleges a missing partition, date it and find its definer
-before reasoning about wording; the promoted rule is in step 1.
-
-**`REC-144` led this order and closed 2026-08-18, and it is the block's second outright non-defect of
-its stated kind** — both branches the row offered died in step 1, and what shipped was the third. The
-analysis was one question and one grep: an impossibility claim names an **instrument** and almost never
-names the **observer**, so before asking whether the instrument changed, ask whose vantage the paragraph
-argues from. Here the answer was the *inserting* prompt, its sibling reason was that prompt's own gate,
-and the two prompts the section addresses do not read the working tree at all — after which nothing the
-row alleged survived. What did survive is smaller and only visible once the vantage is fixed: one
-sub-clause phrased from the other party's timeline, which is what produced the misreading. Two things
-carry, both promoted to step 1. A claim true under its own subject and misleading under a neighbouring
-one is an **ambiguity whose fix names the vantage**, never one that weakens the claim. And **half a
-distinction is not a distinction** — the audit had already disclaimed detector semantics for its own
-check and *deferred the question to the standard*, so the standard saying nothing back is precisely the
-defect the reviewer's own file could not have shown it.
-
-**`REC-139` led this order and closed 2026-08-17 — one sentence, one site, one cold round, and the
-cheapest row of this block to date.** Both clauses were quoted by the row, `git log -S` returned a
-single commit for both, and the sweep was a five-member family whose three compliant prompts supplied
-the replacement wording verbatim. What is worth keeping is that the **dating instrument said nothing**:
-a defect as old as the file it lives in cannot be separated by its history, so `REC-130`'s test
-returned "never forked" while the sentence had been wrong since the day it was pasted in. Where a
-row's two clauses were born together, stop asking when they diverged and ask **who else says the wrong
-one** — the sibling that says it truthfully is the whole adjudication.
-
-**`REC-143` led this order and closed 2026-08-18, and the disposition cost one command.** The row read
-as a four-against-five disagreement across six sites; `git log -S` on the *fifth key* rather than on
-either clause put every four-key list eleven days before the feature that added `LEVEL`, after which
-there was nothing to adjudicate and the whole row was a sweep. What it cost was the second half, which
-the row did not name: a stale list is repaired only once the **checker** that reads it covers lists, and
-`sql-plan-audit`'s key check was scoped to the configs the plan tells Victor to *paste* — so the copy
-inside the plan's own invariant sat outside every instrument in the track. Where a row alleges a stale
-restatement, ask what would have caught it; if the answer is nothing, the enumeration is the symptom and
-the checker's scope is the defect.
-
-**`REC-145` led this order and closed 2026-08-18, and it is the first row of this block whose three
-offered dispositions were each right about *half* of it.** The analysis was cheap — `git log -S` put the
-branch and the rule that voided it 37 minutes apart, and the reachability question fell to one
-resolution table — but the row was written as one contradiction and was two, because the rule it quoted
-carried a **schema** claim and an **append** claim under a single name. Only the schema half was a
-defect; the append half was the route's forward file choice wearing the schema rule's name, and true of
-nothing off the route. **What it cost was the repair**, twice: round 1 was rejected on a blocking
-finding the fix had written — it cited the very paragraph it was contradicting as its warrant, quoting
-the heading while the sentences underneath forbade what it now mandated — and round 2's sharpest
-tightenings were both fresh facts the second draft asserted about the tree, an instrument that has no
-such column and a licence whose own section is about a different property. Where a row quotes a named
-rule, split the name from the sentences filed under it before adjudicating either, and expect the
-repair, not the row, to be where the next defect is written.
-
-**`REC-153` led this order and closed 2026-08-18, and it is the cheapest row of this block: two defects,
-one file, one deletion, no new check.** The family measurement did the whole of the work and did it in one
-grep — nine of twelve single-shot siblings carry no tracker instruction at all and the two that do put it
-inside their final step with the joint commit — which refuted the row's third offered disposition, that
-the shared contract was the site, before a word of the fix was written. What the row still had to pay for
-was the check a *deletion* owes and an addition does not: `REC-142` had already established that a
-duplicate clause is usually the only statement of a boundary, so removing one means naming the chain that
-still carries it. Its reviewer then found the same wrong-heading defect one register up, in the pipeline
-contract this prompt does not even use, which is `REC-155`.
-
-**`REC-154` led this order and closed 2026-08-18, and the analysis was cheap for a reason the row had
-already half-stated.** Its ruling was *where* to state a corrected route, not whether — and the family
-measurement answered it: every reader of the standard reads it **in full**, so a by-name pointer inside
-the one file is reachable by all of them, and the three copies had no reader a single statement would
-strand. What the row cost was the repair's borrowed sentences. The fix took `roadmap-review`'s
-marker-reading rules as its house phrasing and dropped the dated exception printed underneath them, and
-it wrote a verification clause that turned out to be a third copy of the write prompt's own rule — both
-tightenings, both in text the row never mentioned. Where a fix quotes a sibling that is already right,
-read the paragraph *around* the sentence you are taking.
-
 **Current order: the workable table is empty again.** Safety, persistent-state risks, broken or
-undefined terminal paths and the authority/writer-boundary rows are all drained, and so are the
-bounded schema, read-scope and precedence block that was the last one standing and `REC-156` after
-it — an obligation stated only in the file that consumes it, which `REC-155`'s reviewer found and
-that row's resolution declined on bar condition 3 before Victor overrode the call and the
-re-measurement showed the decline was wrong. It is the one row here opened **by hand** rather than by
-a run's close-out, and the incidental-finding bar is what it tested: a reviewer's out-of-scope find is
-evidence, and the bar is applied at the moment it returns — applied *wrongly* is still the bar
-working, provided the re-measurement is written down, and here it inverted the call. **An empty table
-is not a finished system**: the next row comes from a run, and `/system-gaps` and `/system-check` are
-what produce one. `REC-156` closed without raising one, `REC-151` before it, `REC-145`
-before it and
-`REC-143` before that, `REC-120` having closed after this block produced it and raised `REC-151` in its place, `REC-123` having closed and raised `REC-152`, `REC-142` having closed and raised `REC-153`, `REC-153` in turn having closed and raised `REC-155`, `REC-147` having closed and raised `REC-154` the same way, and `REC-154` in turn having closed without raising one, while `REC-122`, `REC-126`, `REC-128`, `REC-129`, `REC-130`, `REC-138`, `REC-139`, `REC-141`, `REC-150` and `REC-152` closed without raising one — `REC-152` was the first of this block's own rows to drain rather than replace itself, `REC-150` the second, `REC-130` the third, `REC-138` the fourth, `REC-139` the fifth, `REC-141` the sixth, `REC-151` the seventh, `REC-154` the eighth and `REC-156` the ninth, which drained the block's table entirely. `REC-155` is the one row that **closed as a drain and became a replacement hours later**: its own review raised the site, its resolution declined it below the bar, and Victor opened it as `REC-156` the same day — so the honest count is that the block replaced itself once more than its closing line claimed, and a decline is not a disposal until nobody overrides it. `REC-147` is the one row here that **split** rather than drained or replaced itself: its own scope closed and the site its reviewer added became `REC-154`, so the count is unchanged and the sweep is not. `REC-109` led this order
-until it closed, because it restores the audit that produced the other 33 rows; those 33 are now also what
-that audit will re-derive, so draining them is what lets the next `/system-check` reach a global verdict
-rather than a wall of `source-contradiction` rows. Within the intake, exposure of secrets, unrecoverable
-partial writes, contradictory persistent formats, circular truth and duplicate application rows precede
-wording and scope corrections — that head class is now empty, `REC-140` having been its last row. `REC-054` is not part of this order because it remains accruing and gates
-nothing.
+undefined terminal paths, the authority/writer-boundary rows and the bounded schema, read-scope and
+precedence block that was the last one standing are all drained. Which rows drained, replaced or split
+themselves is in `git log -p`; what carries is the one call that inverted: `REC-155`'s resolution
+declined its reviewer's out-of-scope site on bar condition 3, Victor overrode the decline, and the
+re-measurement showed the decline was wrong — **applied wrongly is still the bar working, provided the
+re-measurement is written down**, and a decline is not a disposal until nobody overrides it.
 
-The previous workable table became empty when `REC-107` closed
-2026-08-13 after completing `REC-106`'s cold-review contract; every later recommendation can now persist
-that its mandatory reviewer ran. `REC-101` then closed after centralising the status vocabulary and
-run-start decision used by every later prompt close-out. `REC-104` closed after its full 17-skill
-commit/trigger sweep, and `REC-108` then removed the output-affecting adapter-authority defect that
-sweep separated. `REC-105` closed after restoring Victor's pre-commit bullet choice and adding the
-whole-file integrity gate its cold reviewer required. **`REC-102` then closed the same day without a
-partition being written**: reading the performer rather than the launcher summary — the row's own
-instruction — found the partition already complete in the standard's ownership fence, so the expected
-`REC-091` reuse never applied and the row resolved as a false positive with one real defect attached.
-**`REC-100` closed last, and it ran alone for a reason worth keeping**: `REC-099` had already spent the
-shared family sweep, so what was left was the sweep nobody had budgeted — through the *readers* of one
-compressed sentence, into two skills and the ritual that calls them. `REC-103` is absent from
-the order because it failed the defect and deduplication bars and is now closed as rejected.
-
-The second `/system-gaps` run's five rows are closed, each settling read
-deciding the branch and each correction target being one of the two its disposition promised.
-**`REC-089` priced the rank
-honestly:** its settling read was one prompt and the fix landed in four files — the prompt, both maps
-and the validator, which refused it twice before passing. Budget the sweep, not the edit. **`REC-090`
-priced it a second way:** one script read, one invariant written, and the two defects that mattered were
-written by the repair and caught only by the cold reviewer. **`REC-091` priced it a third way** — the
-first row in weeks that added **no check**, a pure precedence ruling, so the injection budget that had
-paid off four runs running did not apply, and what stood in for it was three cold reviews, two of them
-rejections, every finding a defect the repair had written. On a row that adds no check, the reviewer
-*is* the check.
-
-**`REC-092` priced that last lesson to its limit and is the one to remember when the next row of this
-shape arrives: six cold reviews, six rejections, every finding in all six written by the repair.** Four
-of those rounds died on a single one of its three questions, and each round's answer was *bigger* than
-the last — a declaration, then a rule for an unnamed caller, then a runtime heuristic with a detector.
-The one that held was the smallest and built nothing. **A row that keeps failing review is not
-under-built; check whether it is being answered at the wrong altitude** — and count the rounds, because
-a fix that grows every pass is the signal, not the reviewer being harsh.
+**An empty table is not a finished system**: the next row comes from a run, and `/system-gaps` and
+`/system-check` are what produce one. Within the intake, exposure of secrets, unrecoverable partial
+writes, contradictory persistent formats, circular truth and duplicate application rows precede wording
+and scope corrections — that head class is now empty.
 
 **`REC-054` is not in this order and never will be** — it is `accruing`, not queued.
 
