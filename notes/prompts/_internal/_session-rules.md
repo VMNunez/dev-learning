@@ -755,12 +755,16 @@ map's own per-skill field list, and `README.md`'s hub cells are the **second** m
 claim — `REC-073`, *"the map is right" is a claim about two files*, on the read trigger and not only on
 the change one. **But an absence in the hub table is not a finding**: those cells end in `…` or point at
 §7 for the complete list, so a skill missing from one is delegating, not lying — a skill **named** there
-with a false scope is the finding, and §7 stays the exhaustive list. **Two further cells carry a fence
+with a false scope is the finding, and §7 stays the exhaustive list. **Three further sites carry a fence
 of their own, written in the map beside each** — `README.md`'s `Run-first / handoff / explicit boundary`
-cell, under the `Public interface index` intro, and `_system-map.md` §9's `Handoffs, gates + explicit
-exclusions` cell, under that section's heading. Read it there before ruling on an absence in either.
+cell, under the `Public interface index` intro; `_system-map.md` §9's `Handoffs, gates + explicit
+exclusions` cell, under that section's heading; and `README.md`'s `Reads` column across all five
+family-catalogue tables, under the `## The prompts — what each one reads and generates` heading, which
+licenses the absence of `_session-rules.md` and `_shared-context.md` from any cell that reads them as
+background — and names the two cases that are still owed. Read it there before ruling on an absence in
+any of the three.
 
-The three licences are different on purpose and must not be merged into one list: §9 is skills-only, and
+The four licences are different on purpose and must not be merged into one list: §9 is skills-only, and
 the chain steps, debts and symptom rows belong to prompts. Never the rest of the map either — a chain's
 *order*, §8's `PROGRESS.md` ownership and §1's two-engine properties are claims about several files at
 once, and a single file cannot falsify them. **§13's `Declared steps · contract size` cells are excluded
