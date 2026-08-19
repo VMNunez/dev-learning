@@ -315,6 +315,12 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 All seventeen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
+**But an absence in the `Handoffs, gates + explicit exclusions` cell is not a finding**: it carries the
+handoffs, gates and exclusions most likely to be confused, never the skill's whole list of them, so one
+missing from it is delegating, not lying — one **named** there with a false scope is the finding, and
+the `SKILL.md` stays the exhaustive list. This fence reaches that cell alone and makes no claim about
+§9's other columns.
+
 | Skill | Trigger + received input | Primary reads | Writes / returns | Commit owner + isolation | Handoffs, gates + explicit exclusions |
 |---|---|---|---|---|---|
 | `step-complete` | a learning-plan step is finished; done-condition evidence + active project | active `PLANNING.md` step/§0/§22/§23, tests/run evidence, project docs, `PROJECT-BACKLOG.md` open High/Medium state **and its per-tier `Last Reviewed` lines** (both feed the `Next gate` derivation), `PROGRESS.md`, relevant coverage | done-condition trace · `PLANNING.md` ✅ + §0 next pointer (`Current step`/`Current branch`/`Done condition`/`Phase`/`Last updated`, and the `Next gate` re-derived under invariant 10, carrying an earlier close's blocked/signable qualifier) · `PROGRESS.md` status/evidence | agent commits tracking/docs; Victor's code and code commit remain untouched | calls `coverage-bullet-add`, `coverage-mark`, `readme-concept-add`; on whole-project completion, reminds Victor to update `_session-rules.md` `Current study progress` + the `PROGRESS.md` project table; not for backlog tasks or merely compiling code |

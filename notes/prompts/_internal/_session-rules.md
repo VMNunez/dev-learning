@@ -755,7 +755,10 @@ map's own per-skill field list, and `README.md`'s hub cells are the **second** m
 claim — `REC-073`, *"the map is right" is a claim about two files*, on the read trigger and not only on
 the change one. **But an absence in the hub table is not a finding**: those cells end in `…` or point at
 §7 for the complete list, so a skill missing from one is delegating, not lying — a skill **named** there
-with a false scope is the finding, and §7 stays the exhaustive list.
+with a false scope is the finding, and §7 stays the exhaustive list. **Two further cells carry a fence
+of their own, written in the map beside each** — `README.md`'s `Run-first / handoff / explicit boundary`
+cell, under the `Public interface index` intro, and `_system-map.md` §9's `Handoffs, gates + explicit
+exclusions` cell, under that section's heading. Read it there before ruling on an absence in either.
 
 The three licences are different on purpose and must not be merged into one list: §9 is skills-only, and
 the chain steps, debts and symptom rows belong to prompts. Never the rest of the map either — a chain's

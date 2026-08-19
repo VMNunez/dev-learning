@@ -255,6 +255,13 @@ isolation/dispatch class, commit owner, and the boundary or gate most likely to 
 run-first cell restates each prompt's own `▶ Run first` header; where a project gate exists it is named
 separately, because a gate sequences the chain and a prerequisite constrains the run.
 
+**But an absence in the `handoff` and `explicit boundary` parts of that column is not a finding**: they
+carry the handoff, boundary or gate most likely to be confused, never the prompt's whole list of them,
+so one missing from them is delegating, not lying — one **named** there with a false scope is the
+finding, and the prompt itself stays the exhaustive list. Its run-first part is outside that licence,
+and so is every other column of this index: this fence reaches two parts of one column and makes no
+claim about the rest.
+
 | Command → canonical prompt | Config / received input | Runtime · commit owner | Run-first / handoff / explicit boundary |
 |---|---|---|---|
 | `/coverage` → `coverage-prompt` | `TOPIC`, `LEVEL`, optional `NOTES_PATH`, `MODE=update\|dry-run` | O · agent | registered topic only; preserves refined locks; hands gaps across topics through the inbox |

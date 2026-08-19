@@ -111,6 +111,11 @@ list, so they declare themselves partial: a skill missing from one is
 delegating, not lying. A skill **named** there with a false scope is the finding, and §7 stays the
 exhaustive list.
 
+**Two further cells carry a fence of their own, written in the map beside each.** `README.md`'s
+`Run-first / handoff / explicit boundary` cell, under the `Public interface index` intro, and
+`_system-map.md` §9's `Handoffs, gates + explicit exclusions` cell, under that section's heading. Read
+it there before ruling on an absence in either.
+
 **Never the rest of the map.** A chain's *order*, §8's `PROGRESS.md` ownership section by section, and
 §1's two-engine properties are claims about several files at once, and one file cannot falsify them.
 **§13's `Declared steps · contract size` cells are excluded for a different reason** — they are a single
