@@ -33,7 +33,8 @@ affected source machinery is read next and remains authoritative. This is not an
 exact per-prompt contract: command, run-first prerequisite, configuration/received inputs, reads,
 writes/returns, dispatched roles/isolation, commit owner, local handoffs/gates, and exclusions. This map
 owns relationships that exist only across components: chain order, file-level writer/consumer edges,
-section ownership, debts/symptoms/improvement flow, and the complete per-skill contract in §9. The chain
+section ownership, debts/symptoms/improvement flow, and the per-skill contract in §9, whole rather than
+split with the README. The chain
 sections below use prompt names and endpoint files only as adjacency labels; their per-prompt details
 link back to the README and never override its row. `/system-check` audits both halves together and
 rejects a genuine duplicate rule fork.

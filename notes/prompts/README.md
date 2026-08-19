@@ -252,8 +252,10 @@ pipeline commits its system-authored repo outputs under the session contract, **
 project/SQL/solution work remains his commit, and **external/output** means no commit in this repo.
 The family row remains the owner of exact reads and writes; this index owns public invocation,
 isolation/dispatch class, commit owner, and the boundary or gate most likely to be confused. The
-run-first cell restates each prompt's own `▶ Run first` header; where a project gate exists it is named
-separately, because a gate sequences the chain and a prerequisite constrains the run.
+run-first cell restates each prompt's own `▶ Run first` header — in some rows by naming the artefact
+that prerequisite produces rather than the prompt itself, which is the same claim in the consumer's
+vocabulary; where a project gate exists it is named separately, because a gate sequences the chain and
+a prerequisite constrains the run.
 
 **But an absence in the `handoff` and `explicit boundary` parts of that column is not a finding**: they
 carry the handoff, boundary or gate most likely to be confused, never the prompt's whole list of them,
