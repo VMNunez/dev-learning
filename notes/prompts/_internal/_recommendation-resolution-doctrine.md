@@ -1108,6 +1108,19 @@ header, and **never by asserting the neighbouring columns are complete**: that c
 enumeration (`REC-149`), and the table directly beneath it falsified three of the four in one review
 round.
 
+**`REC-162` carried that fence to a whole column, and two clauses had to be added before it worked.**
+**First, name the landing.** A licence that keeps a fact out of a cell is not self-executing: the
+reconciler's own vocabulary pushes back on it. Its only escape hatch reads `source-only **by ownership
+split**` — *another owner holds this fact* — and its third disposition ends "a manifest fact with no home
+in either map is corrected exactly like a false claim". A licence that disclaims being an owner therefore
+lands back on `missing claim` unless it states, in the map, which disposition it is the rule for. Write
+that sentence. **Second, bound the licence by *why* the file is read.** An unbounded "this absence is
+never a finding" also licenses deleting the cells that carry a real claim — a named section held by one
+concern, or a file the run **audits** rather than reads for background (`system-check` carries
+`_session-rules.md` inside the inventory it rules on). Name the owed cases beside the licence, or the
+fence quietly removes the findings it was written to preserve. Both clauses came from the cold reviewer,
+neither from the sweep.
+
 **A map's freshness is verified from git, never by re-auditing.** From `REC-070` (a), promoted when that
 row was deleted as out of scope. `/system-check` is the most token-expensive thing in the system and must
 stay rare, so nothing may trigger it merely to ask whether a map is current. The cheap chain is:
