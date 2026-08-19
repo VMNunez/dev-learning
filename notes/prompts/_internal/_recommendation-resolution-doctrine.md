@@ -1098,6 +1098,15 @@ the licence's owner is `_session-rules.md`, and a fourth copy in `_system-map.md
 found still a scope behind by the cold reviewer, not by the sweep. **And a dated measurement is *old*,
 not false**: §13's counts carry one measurement date, so re-measuring a single row puts two dates in one
 table — such cells are excluded from a per-file licence and re-measured all at once or not at all.
+**Also `REC-161`, the same denominator from the reverse direction: a field the `Purpose` list names is
+owned by that map, not thereby owned *whole*.** Where the map's own intro qualifies the cell ("the
+boundary or gate **most likely to be confused**"), the evidence direction has no rule to quote and must
+convert the silence into a `missing claim`, so the fence goes **in the map, beside the cell** — the
+reconciler is handed the manifests and the two maps and nothing else, which is what decides the site
+between the map, the read licence and the mandate. Re-fence noun for noun against the column's own
+header, and **never by asserting the neighbouring columns are complete**: that complement is a closed
+enumeration (`REC-149`), and the table directly beneath it falsified three of the four in one review
+round.
 
 **A map's freshness is verified from git, never by re-auditing.** From `REC-070` (a), promoted when that
 row was deleted as out of scope. `/system-check` is the most token-expensive thing in the system and must
