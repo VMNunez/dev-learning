@@ -56,7 +56,8 @@ run or applied that machinery.
    a blocked run. Admission closes only after the writable-output check in Step 0 and the frozen-input
    cleanliness check in Step 1; a refusal at either gate is not a run and writes nothing.
 4. New or updated rows in `notes/prompts/_internal/_recommendation-ledger.md` only for genuine machinery
-   improvements the audit discovered; map corrections themselves are not recommendations.
+   improvements the audit discovered, and — **on a blocked run too** — one row per proved
+   `source-contradiction` under 4d; map corrections themselves are not recommendations.
 5. The universal pipeline report and `_run-tracker.md` update from `_pipeline-self-report.md`.
 
 ## Step 0 — preflight and provenance
@@ -71,7 +72,11 @@ run or applied that machinery.
    this run has already taken the machinery-only exception in `Boundaries`.
 2. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's previous
    `_last-run-report.md` if it exists. Never restate the shared `Status:` meanings or apply a surfaced
-   finding before this run.
+   finding before this run. Then, when the previous `_system-check-report.md` exists and reads
+   `Status: blocked`, read its `source-contradiction` list: every row it names `unregistered` is
+   **inherited evidence**, re-proved against this run's sources and discharged with 4d's own rows. This
+   report is overwritten by every admitted run and nothing else points at it, so a blocked run's proved
+   findings survive only through this read. It is never evidence for a map claim.
 3. Run `notes/prompts/_internal/validate-prompt-system.ps1 -MachineryOnly` as the mechanical baseline.
    Record every `PASS`, `SKIP`, and failure. The switch preserves machinery invariants while preventing
    live coverage/plan/route state from blocking this audit. A structural failure does not replace the
@@ -103,6 +108,7 @@ The orchestrator enumerates, from disk rather than from either map:
 - every launcher in both adapter catalogues, paired by filename.
 
 Exclude generated reports (`_last-run-report*.md`, `_last-drift-report.md`, this prompt's output report
+— whose previous edition Step 0 reads as a continuity source, never as an inventory member —
 and `_system-gaps-report.md`), runtime/evidence state (`_run-tracker.md`, `_skill-friction.md`,
 `_ritual-friction.md`, `_job-market-evidence.md`, `_cross-topic-inbox.md`), and every live artifact
 outside the machinery set above. `_recommendation-ledger.md` remains in scope for
@@ -295,16 +301,23 @@ and counts for all three dispositions, per manifest field class.
 
 - **`unverifiable > 0` fails the gate.** Preserve the evidence and list every unresolved claim in the
   blocked report, but do not proceed to architecture findings, final review, map corrections or
-  recommendations. A global absence verdict has no qualified form: this audit either settles every
-  in-scope claim or closes `blocked — incomplete audit`.
+  recommendations — **except the contradiction discharge below, which a blocked branch suspends only on
+  the two branches Step 7 names**. A global absence verdict has no qualified form: this audit either
+  settles every in-scope claim or closes `blocked — incomplete audit`.
 - **`source-contradiction > 0` does not fail it.** The question this audit asks is whether the maps
   document the machinery truthfully, and a source stating two mutually exclusive clauses cannot be
   documented truthfully by any wording; blocking on it makes the global verdict hostage to defects the run
   is expressly forbidden to repair, which is exactly how the runs of 2026-08-12 and 2026-08-13 ended.
   Each such row instead **(a)** is barred from every `verified — no change` section, **(b)** is named in
-  the report with both clauses and its owning path, and **(c)** is reconciled in Step 5 to exactly one
-  `REC-NNN`. A `source-contradiction` row that reaches Step 7 without a ledger ID fails the gate exactly
-  like an `unverifiable`.
+  the report with both clauses and its owning path, and **(c)** is reconciled to exactly one `REC-NNN` —
+  in Step 5 on a run that reaches it, and in Step 7's blocked branch on every run that does not. A
+  `source-contradiction` row that reaches Step 7 without a ledger ID fails the gate exactly like an
+  `unverifiable` — **except where `unregistered` is the required value and not a missing one, which is two
+  cases: the two branches Step 7 names as withholding the discharge, and any row Step 0 inherited that
+  this run did not re-prove, which is carried forward rather than ruled on**. **A row that met its 4b bar
+  is proved evidence, and a block after that is not a reason to discard it** (`REC-158`); a run blocked
+  before 4b merged has no such row **of its own**, and this rule neither creates one nor reaches it — **it
+  still carries the inherited list forward under Step 7's blocked branch**.
 
 Enforce the documentation split while merging: `README.md` owns per-prompt facts and run order;
 `_system-map.md` owns per-skill facts and cross-system wiring. Duplicate rule text in the non-owning
@@ -324,9 +337,13 @@ Using the manifests and corrected map as evidence, identify only cross-system fi
 audit cannot see: overlapping writers, missing consumers, broken feedback loops, orphan outputs,
 unowned state, circular prerequisites, rituals whose load threatens execution, and duplicated decisions.
 
-**Every `source-contradiction` row from 4d is reconciled here too**, and this is the step that discharges
-it: the two conflicting clauses and their owning path are the finding, and the row is not settled until it
-carries exactly one ledger ID. It is a defect in the source, so the audit records it and repairs nothing.
+**Every `source-contradiction` row from 4d is reconciled here too**, and this is where a run that reaches
+this step discharges it: the two conflicting clauses and their owning path are the finding, and the row is
+not settled until it carries exactly one ledger ID. It is a defect in the source, so the audit records it
+and repairs nothing. A run blocked before this step discharges the same rows under Step 7's blocked
+branch — the discharge belongs to 4d's evidence, not to this step's architecture pass. A row inherited at
+Step 0 is discharged here only where this run re-proved it; one this run's exhaustive Direction 1 sweep
+did not re-derive is resolved, and the completed report says so beside the count.
 
 Reconcile each genuine improvement with `_recommendation-ledger.md`: update an existing item when it is
 the same problem; create a new `REC-NNN` only when it is distinct. Preserve the ledger's resolution and
@@ -357,8 +374,8 @@ The reviewer reads both maps to EOF and checks:
   **both** reconciliation directions ran, and no
   `verified — no change` section covers a cell not dispositioned `correct`;
 - every `source-contradiction` row quotes both conflicting clauses with their manifest fact IDs, names one
-  owning inventory path, and carries exactly one ledger ID — the state is a route to Step 5, never a way
-  past a claim the manifests could have settled;
+  owning inventory path, and carries exactly one ledger ID — the state is a route to its discharge, never
+  a way past a claim the manifests could have settled;
 - every proposed correction follows from that evidence;
 - every occurrence of a changed claim was updated;
 - no authoritative machinery file was edited;
@@ -368,7 +385,10 @@ The reviewer reads both maps to EOF and checks:
 - the final global verdict is no broader than the completed audit.
 
 Return `approve`, `approve-with-tightening`, or `reject`, with specific corrections. Apply only an
-approved form. A rejection takes the blocked Step 7 branch with no map or ledger edits.
+approved form. A rejection takes the blocked Step 7 branch with no map or ledger edits — one of the two
+branches that withhold 4d's contradiction discharge, which Step 7 names and owns, because a cold gate has
+just contested the evidence those rows rest on. The blocked report still names them, `unregistered`, so
+the next run inherits them.
 
 ## Step 7 — report, validate, and commit the audit
 
@@ -377,11 +397,15 @@ Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
 1. date, starting commit, branch, and `Status: complete | blocked`;
 2. inventory and dispatch coverage counts;
 3. validator baseline and final result;
-4. README catalogue coverage and corrections — **on a run that reached Step 4**: the 4a partition table,
+4. README catalogue coverage and corrections — **on a run that reached Step 4** (the inherited
+   `source-contradiction` list required by the blocked branch below is written on **every** blocked report,
+   whether or not Step 4 was reached): the 4a partition table,
    its claim-ledger counts by disposition, the physical-line category reconciliation with zero unclassified
    lines, `verified — no change` sections covering **only** cells dispositioned `correct`, every
    `unverifiable` claim named with the evidence that would settle it, every `source-contradiction` claim
-   named with both clauses, its owning path and its ledger ID, and the evidence → claim sweep's complete
+   named with both clauses, its owning path and its ledger ID — or `unregistered`, on the two branches
+   Step 7 names as withholding the discharge and for any row inherited at Step 0 and not re-proved — and
+   the evidence → claim sweep's complete
    manifest-fact denominator, dispositions and findings;
 5. system-map wiring/skill coverage and corrections, on those same terms;
 6. boundary proof: the excluded live-artifact classes and confirmation that none entered the denominator;
@@ -408,8 +432,19 @@ Commit those files atomically as:
 If the audit found no map or recommendation changes, the report is still written and committed: it is
 the durable evidence that the full sweep happened.
 
-**Blocked branch:** discard any unapproved draft correction, write the report with
-`Status: blocked`, the completed evidence, the failed gate and `blocked — incomplete audit`. Item 8 uses
+**Blocked branch:** discard any unapproved draft correction, then execute 4d's contradiction discharge for
+every `source-contradiction` row that met its 4b bar — one `REC-NNN` each, deduplicated against both
+ledger files, on the ledger's own terms and implementing nothing. **This branch owns the exceptions to the
+discharge, and there are exactly two**: a reviewer `reject` and the validator reversal below both withhold
+it, because in each a later gate has contested the evidence or the write. `unregistered` has one further
+legitimate source, which is not an exception but a carry-forward: a row inherited at Step 0 that this run
+did not re-prove. Then write the report with
+`Status: blocked`, the completed evidence, the failed gate and `blocked — incomplete audit`. **Name every
+proved `source-contradiction` row with both clauses, its owning path and either its ledger ID or the word
+`unregistered`**, and **repeat, verbatim and still `unregistered`, every row inherited at Step 0 that this
+run did not re-prove** — that list is what the next run's Step 0 inherits, this report is overwritten by
+every admitted run, so a row it does not carry is gone; a blocked run holding no such row says so in one
+line. Item 8 uses
 the exact final-review state vocabulary above: a pre-dispatch snapshot failure is `not run — blocked
 before final-review dispatch`; an exhausted dispatch ladder is `not completed — reviewer unavailable`;
 and a returned rejection is `reject`.
@@ -420,7 +455,9 @@ Verify those paths byte-for-byte match their frozen pre-application content, inc
 pre-existing dirt, and verify no run-owned map/ledger hunk remains. Then write and commit the blocked
 report alone.
 
-Commit that report alone as `docs: record blocked prompt system audit`. Then continue to Step 8 so the
+Commit that report as `docs: record blocked prompt system audit` — alone, or with the discharged ledger
+rows when this branch wrote any, staged after the same `git status` checks as the completed branch and
+proven by `git diff` to contain nothing else. Then continue to Step 8 so the
 separate pipeline report and tracker commit also records the blocked outcome.
 
 ## Step 8 — pipeline close-out
@@ -436,7 +473,10 @@ tracker commit the shared contract requires.
 
 For the close-out's declared-output check, the audit report is unconditional. The two maps and ledger are
 conditional outputs: an unchanged file is satisfied only by its explicit `verified — no change` section
-in the committed audit report and must not be misreported as a skipped step.
+in the committed audit report and must not be misreported as a skipped step. On a blocked run, which has
+no such section, the two maps are satisfied by Step 3's rule that a blocked run may not edit either one,
+recorded in the report as the failed gate; the ledger's satisfying statement is the report's
+`source-contradiction` list — including one that reads `none`.
 
 ## Acceptance gate
 
