@@ -71,12 +71,14 @@ per-skill facts and cross-system wiring. (`system-check-prompt.md`'s `Purpose` o
 the fields it resolves to.)
 
 - `notes/prompts/README.md` — every current-machinery claim in the span: counts and group lists; the nine
-  per-prompt facts under the three-owner split its own intro (l.12–16) states — the **"Public interface
-  index"** row's public command, run-first prerequisite, configuration/modes and received inputs,
+  per-prompt facts under the three-owner split its own two intros state — the file intro (l.12–16) naming
+  the three owners and the nine fields, the `Public interface index` intro (l.253–256) assigning them —
+  the **index** row's public command, run-first prerequisite, configuration/modes and received inputs,
   dispatched roles and isolation, commit owner, handoffs/gates and explicit exclusions, the **catalogue
   row**'s reads and writes/returns, and the run-order sections' restatement of the prerequisite (this
-  names where a fact is *owed*, never where a claim may be ruled: a gate or commit fact written into a
-  catalogue row's prose is still classified and dispositioned where it physically sits inside `SPAN`);
+  names where a fact is *owed*, never where a claim may be ruled — step 2 still governs that: a gate or
+  commit fact written into a catalogue row's prose is classified and dispositioned where it physically
+  sits inside `SPAN`);
   internal-component rows; launcher naming and parity; orchestrator/single-shot classification; the
   hub/writer tables; producer/consumer edges and diagrams; batch/global status; runtime tiers; and every
   typical run order.
