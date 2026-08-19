@@ -72,7 +72,9 @@ the fields it resolves to.)
 
 - `notes/prompts/README.md` — every current-machinery claim in the span: counts and group lists; the nine
   per-prompt facts under the three-owner split its own two intros state — the file intro (l.12–16) naming
-  the three owners and the nine fields, the `Public interface index` intro (l.253–256) assigning them —
+  the three owners and the nine fields, the `Public interface index` intro assigning them, from its
+  "The family row remains the owner of exact reads and writes" sentence — quoted rather than numbered,
+  because a line anchor into a file this audit may itself edit rots —
   the **index** row's public command, run-first prerequisite, configuration/modes and received inputs,
   dispatched roles and isolation, commit owner, handoffs/gates and explicit exclusions, the **catalogue
   row**'s reads and writes/returns, and the run-order sections' restatement of the prerequisite (this

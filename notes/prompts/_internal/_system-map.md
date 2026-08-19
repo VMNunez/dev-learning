@@ -319,8 +319,24 @@ identical file to the other in the same commit.**
 **But an absence in the `Handoffs, gates + explicit exclusions` cell is not a finding**: it carries the
 handoffs, gates and exclusions most likely to be confused, never the skill's whole list of them, so one
 missing from it is delegating, not lying — one **named** there with a false scope is the finding, and
-the `SKILL.md` stays the exhaustive list. This fence reaches that cell alone and makes no claim about
-§9's other columns.
+the `SKILL.md` stays the exhaustive list. This fence reaches that cell alone.
+
+**And an absence of `_session-rules.md` from a `Primary reads` cell is never a finding either.** All
+seventeen `SKILL.md` files name it — most only for the durable-friction close-out this section states
+below the table, the rest to cite where a rule they already obey comes from (`map-sync`'s "The two maps
+follow every change to the machinery", `step-complete`'s active-branch rule, `study-content-writer`'s
+`notes/ folder` → `Detail standard`) — and in neither shape is it an input the row's own product depends
+on: the shared session contract reaches every skill through the platform adapter, not through this
+column. A background or provenance mention of it, found in a manifest and absent from the cell, is
+disposed **`source-only by ownership split`** against this paragraph; it is not a fact with no home in
+either map, so it never becomes `missing claim`. **Two cases are owed, and there the absence *is* a
+finding**: a skill that takes a **named section** of it as the authority for one concern, and one that
+**works on** the file rather than reading it for context — `step-complete`'s whole-project reminder to
+update `Current study progress`, which its `Handoffs` cell carries. The licence reaches
+`_session-rules.md` and this column alone — it asserts nothing about any other file a skill is told to
+read, and neither fence makes a claim about §9's remaining three columns. `map-sync` is the closest
+case and still a citation: it founds the ritual on two named sections, but the ritual *is* that rule's
+walk, so they are its warrant rather than an input it reads to produce anything.
 
 | Skill | Trigger + received input | Primary reads | Writes / returns | Commit owner + isolation | Handoffs, gates + explicit exclusions |
 |---|---|---|---|---|---|
