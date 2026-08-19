@@ -787,6 +787,24 @@ into a table, re-read that table's intro sentence** — a summary written when t
 meaningful column stays false as columns are added, because nothing is wrong with the column that was
 there first.
 
+**A terminal gate disposes of the run, not of the evidence steps before it already proved — and an
+exception set written as closed is re-counted against every clause the same fix adds.** From `REC-158`.
+`system-check-prompt.md`'s 4d forbade a blocked run to proceed to "recommendations", which swept up the
+`source-contradiction` discharge sitting downstream in Step 5, while Step 7 still required the report to
+print the `REC-NNN` that discharge assigns and failed the gate on a row lacking one — unsatisfiable by
+construction, and the proved findings died when the next run overwrote the report. The rule generalises
+past this prompt: when a row says a blocked, rejected or refused branch loses work, ask what that branch
+is a verdict **about**. A gate rules on the run's *conclusion*; a step that met its own evidentiary bar
+earlier is a fact the verdict does not reach, so the repair names the bar (here 4b) and carries every row
+that met it, rather than moving the discharge. Two things the repair costs. **The branches that genuinely
+must withhold it are the ones where a *later* gate contested the evidence or the write** — a cold
+reviewer's `reject`, a validator reversal — and they are enumerated, because every path not named then
+defaults to discharging, which is the safe direction. And **the enumeration is what breaks**: this fix
+wrote "exactly two" in three places and then added, elsewhere in the same diff, a carry-forward that was a
+third legitimate producer of the same withheld value — a closed count stated in one clause and falsified
+by another the same author wrote. `REC-064`'s fork rule with a number attached: where a fix states a set
+is complete, re-derive the set from the finished text, never from the intent.
+
 ### Checks, populations and the validator
 
 **A check is not finished when it passes; it is finished when it has been made to fail.** From
