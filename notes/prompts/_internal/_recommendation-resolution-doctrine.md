@@ -1106,7 +1106,11 @@ reconciler is handed the manifests and the two maps and nothing else, which is w
 between the map, the read licence and the mandate. Re-fence noun for noun against the column's own
 header, and **never by asserting the neighbouring columns are complete**: that complement is a closed
 enumeration (`REC-149`), and the table directly beneath it falsified three of the four in one review
-round.
+round. **Also `REC-163`, one register down: a fence may not assert a universal about the cells it
+introduces either.** Write the convention as a *search instruction* — "read all three places before
+ruling a role absent", "expect a count where the prompt states one" — never as an invariant, "never a
+count", "a stage with no file behind it is named in this cell". One cell falsifies an invariant, and
+both of that row's rejections were falsified by cells the same commit had just written.
 
 **`REC-162` carried that fence to a whole column, and two clauses had to be added before it worked.**
 **First, name the landing.** A licence that keeps a fact out of a cell is not self-executing: the
