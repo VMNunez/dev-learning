@@ -741,14 +741,29 @@ can reach is worse than no licence, because it reads as covered.
 
 | Read whole | May rule on |
 |---|---|
-| `{name}-prompt.md` | §7 `Written by` / `Read by` for the files it touches, its step in §3–§6, its §10 debt, its §11 symptom row — **and in `README.md`**, its catalogue row's *reads* / *generates* cells and its prerequisite as "How the prompts feed each other" states it. **Not §9**, which is skills only |
-| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to), plus its cells in §7. **Not a chain step, a §10 debt or a §11 row** — a skill read cannot falsify those |
-| a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** — never the writer *list*, which names five writers for some files and is therefore a claim about all of them |
+| `{name}-prompt.md` | §7 `Written by` / `Read by` for the files it touches, its step in §3–§6, its §10 debt, its §11 symptom row — **and in `README.md`**, its catalogue row's *reads* / *generates* cells, its prerequisite as "How the prompts feed each other" states it, **and its whole row in the "Public interface index"** (the command it is reached by · `Config / received input` · `Runtime · commit owner` · `Run-first / handoff / explicit boundary`). **Not §9**, which is skills only |
+| a `SKILL.md` | its §9 row **column by column** (trigger + received input · primary reads · writes / returns · commit owner + isolation · handoffs, gates + explicit exclusions), its cells in §7, **and in `README.md`** every "five hub files" `Written by` cell that names it, scope parenthetical included · §13's per-skill prose, which is its declared step count and nothing else. **Not a chain step, a §10 debt or a §11 row** — a skill read cannot falsify those |
+| a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** — never the writer *list*, which names five writers for some files and is therefore a claim about all of them. That same fence, and nothing wider, extends to the file's own `README.md` catalogue row |
+
+**The row list is one denominator, and it is `/system-check`'s Purpose field list** — the standing
+statement of what each map owns per file, so it is what this licence has to match. For a prompt,
+`README.md` owns nine facts; the interface index carries seven of them and the catalogue row two,
+the run-order sections restating the prerequisite the index already names, which is why a read that
+checked only the catalogue row had verified two of the nine facts that map claims about the file in
+front of it. For a skill it runs the other way: §9's five fact columns carry the
+map's own per-skill field list, and `README.md`'s hub cells are the **second** map's copy of the writer
+claim — `REC-073`, *"the map is right" is a claim about two files*, on the read trigger and not only on
+the change one. **But an absence in the hub table is not a finding**: those cells end in `…` or point at
+§7 for the complete list, so a skill missing from one is delegating, not lying — a skill **named** there
+with a false scope is the finding, and §7 stays the exhaustive list.
 
 The three licences are different on purpose and must not be merged into one list: §9 is skills-only, and
 the chain steps, debts and symptom rows belong to prompts. Never the rest of the map either — a chain's
 *order*, §8's `PROGRESS.md` ownership and §1's two-engine properties are claims about several files at
-once, and a single file cannot falsify them.
+once, and a single file cannot falsify them. **§13's `Declared steps · contract size` cells are excluded
+on a different ground**: they carry one measurement date, so a divergence makes them *old* rather than
+false, and re-measuring a single row would put two dates in one table — worse than a uniformly old one.
+Re-measuring is all rows at once, and it is a sweep's job.
 
 **A read of any depth rules on a contradiction; only a whole read rules on an absence.** If the section
 in front of you says the prompt writes a file the map does not list, the map is wrong and you fix it — a

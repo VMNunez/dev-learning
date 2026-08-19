@@ -10,7 +10,7 @@ description: >
   regenerates them, so the failure mode this exists for is a map that is confidently wrong — read
   *instead of* the file it describes. Partial compliance is the specific defect: §7 gets updated and the
   §9 row, the chain step and the §11 symptom row keep the old story. It rules only on the rows about the
-  file in front of it — never a chain's order, §8's ownership or §1's properties, **except where the file
+  file in front of it — never a chain's order, §8's ownership, §1's properties or §13's dated counts, **except where the file
   read positively contradicts one** — and it never edits a prompt to match a map. **A read of any
   depth fires it on a positive contradiction; only a whole read fires it on an absence.** Do NOT trigger
   on edits to project code, notes prose or `PLANNING.md`, or inside a prompt pipeline run — those carry
@@ -90,13 +90,38 @@ time this fires it is already paid for. What is left is one comparison.
 
 | Read whole | May rule on |
 |---|---|
-| `{name}-prompt.md` | §7 `Written by` / `Read by` for every file it touches · its step in §3–§6 · its §10 debt · its §11 symptom row · **and in `README.md`**, its catalogue row's *reads* / *generates* cells and its prerequisite as "How the prompts feed each other" states it. **Not §9** — that section is skills only |
-| a `SKILL.md` | its §9 row end to end (fires when · what it writes · hands off to) · its cells in §7. **Not a chain step, not a §10 debt, not a §11 row** |
-| a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** (the way `notes-plan-{LEVEL}.md` is declared `/notes-plan`'s alone) — never the writer *list*, which names five writers for some files and is therefore a claim about all of them |
+| `{name}-prompt.md` | §7 `Written by` / `Read by` for every file it touches · its step in §3–§6 · its §10 debt · its §11 symptom row · **and in `README.md`**, its catalogue row's *reads* / *generates* cells, its prerequisite as "How the prompts feed each other" states it, **and its whole row in the "Public interface index"** — the command it is reached by, `Config / received input`, `Runtime · commit owner`, and `Run-first / handoff / explicit boundary`. **Not §9** — that section is skills only |
+| a `SKILL.md` | its §9 row **column by column** — trigger + received input · primary reads · writes / returns · commit owner + isolation · handoffs, gates + explicit exclusions · its cells in §7 · **and in `README.md`**, every "five hub files" `Written by` cell that names it, its scope parenthetical included (`step-complete` (✅ + §0 — every cell, `Next gate` re-derived)) · §13's per-skill prose, which is its declared step count and nothing else. **Not a chain step, not a §10 debt, not a §11 row** |
+| a standard or other `_internal/` file | the §7 row for the file it governs, **only where the standard states that ownership itself** (the way `notes-plan-{LEVEL}.md` is declared `/notes-plan`'s alone) — never the writer *list*, which names five writers for some files and is therefore a claim about all of them. That same fence, and nothing wider, extends to the file's own `README.md` catalogue row |
+
+**The row list is one denominator, and it is `/system-check`'s Purpose.** That field list is the standing
+statement of what each map owns per file, so it is what this licence has to match. For a prompt,
+`README.md` owns nine facts — public command · run-first prerequisite · configuration/modes and received
+inputs · files and contracts read · files written or values returned · dispatched roles/isolation ·
+commit owner · handoffs/gates · explicit exclusions. **The interface index carries seven of them and the
+catalogue row two**, the run-order sections restating the prerequisite the index already names, which is
+why a read that checked only the catalogue row had verified two of the nine facts that map claims about
+the file in front of it. For a skill the same test runs the other
+way: §9's five fact columns carry the map's own per-skill field list, and `README.md`'s hub cells are the
+**second** map's copy of the writer claim — `REC-073`, *"the map is right" is a claim about two files*,
+implemented on the read trigger and not only on the change one.
+
+**An absence in the hub table is not a finding.** Those `Written by` cells end in `…` or point at §7 for the complete
+list, so they declare themselves partial: a skill missing from one is
+delegating, not lying. A skill **named** there with a false scope is the finding, and §7 stays the
+exhaustive list.
 
 **Never the rest of the map.** A chain's *order*, §8's `PROGRESS.md` ownership section by section, and
 §1's two-engine properties are claims about several files at once, and one file cannot falsify them.
-Finding those wrong is a sweep's job, not this one's — leave them and say so.
+**§13's `Declared steps · contract size` cells are excluded for a different reason** — they are a single
+dated measurement (2026-08-11), so a divergence makes them *old*, not false, and re-measuring one row
+would put two dates in one table, which is worse than a uniformly old one. That holds even for the
+`machinery` row, whose one skill would otherwise be falsifiable from a single read. Re-measuring is all
+rows at once and is a sweep's job. What §13 *does* license is its per-skill prose — the "9 + 7 + 6 + 4
+declared steps" bullet names one skill's count each — counted §13's way, numbered steps **including**
+lettered sub-steps.
+
+Finding any of the excluded ones wrong is a sweep's job, not this one's — leave them and say so.
 
 **Check the cell against what the file actually does, not against what its own summary claims.** A
 prompt's header and its steps disagree often enough that the header is not evidence.
