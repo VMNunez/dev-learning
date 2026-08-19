@@ -111,10 +111,13 @@ list, so they declare themselves partial: a skill missing from one is
 delegating, not lying. A skill **named** there with a false scope is the finding, and §7 stays the
 exhaustive list.
 
-**Two further cells carry a fence of their own, written in the map beside each.** `README.md`'s
-`Run-first / handoff / explicit boundary` cell, under the `Public interface index` intro, and
-`_system-map.md` §9's `Handoffs, gates + explicit exclusions` cell, under that section's heading. Read
-it there before ruling on an absence in either.
+**Three further sites carry a fence of their own, written in the map beside each.** `README.md`'s
+`Run-first / handoff / explicit boundary` cell, under the `Public interface index` intro;
+`_system-map.md` §9's `Handoffs, gates + explicit exclusions` cell, under that section's heading; and
+`README.md`'s `Reads` column across all five family-catalogue tables, under the `## The prompts — what
+each one reads and generates` heading, which licenses the absence of `_session-rules.md` and
+`_shared-context.md` from any cell that reads them as background — and names the two cases still owed.
+Read it there before ruling on an absence in any of the three.
 
 **Never the rest of the map.** A chain's *order*, §8's `PROGRESS.md` ownership section by section, and
 §1's two-engine properties are claims about several files at once, and one file cannot falsify them.
