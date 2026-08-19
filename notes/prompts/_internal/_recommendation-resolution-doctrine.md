@@ -1087,6 +1087,18 @@ prediction, not evidence, and it is re-tested at apply time.** That row closed w
 the gate's closing condition"; `README.md`'s chain stated it in two places, one of which the fix then
 falsified — so a map edit was owed by an item whose own row said none was.
 
+**Also `REC-159`, on the read trigger, and it is where the sizing rule lives: a licence to rule on a map
+is measured against the *standing statement* of what that map owns — `/system-check`'s `## Purpose`
+field list — never against the rows the licence happens to name.** Counted that way, `map-sync`'s read
+path licensed two of `README.md`'s nine per-prompt facts, three of `_system-map.md` §9's five per-skill
+columns, and no `README.md` cell at all for a `SKILL.md`; the gap had been invisible for as long as
+nobody had counted the licence against a denominator. Two corollaries it paid for. **A rule's owner is
+rarely the file the row names, and its restatements are sites** — the row named `map-sync`'s `SKILL.md`,
+the licence's owner is `_session-rules.md`, and a fourth copy in `_system-map.md`'s own preamble was
+found still a scope behind by the cold reviewer, not by the sweep. **And a dated measurement is *old*,
+not false**: §13's counts carry one measurement date, so re-measuring a single row puts two dates in one
+table — such cells are excluded from a per-file licence and re-measured all at once or not at all.
+
 **A map's freshness is verified from git, never by re-auditing.** From `REC-070` (a), promoted when that
 row was deleted as out of scope. `/system-check` is the most token-expensive thing in the system and must
 stay rare, so nothing may trigger it merely to ask whether a map is current. The cheap chain is:
