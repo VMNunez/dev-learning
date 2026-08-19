@@ -248,9 +248,10 @@ This is the compact half the family catalogue rows below deliberately do not rep
 user-supplied/received input; **O** means pipeline orchestrator, hands-off except where its family
 row declares a human ownership gate (currently `portfolio-audit`'s one-bullet choice). **Its cold roles
 are named in one of three places, and every `O` row has one**: this cell, its family row, or the
-internal-component rows that row points to where a stage is a file of its own — a stage dispatched
-inline with no file behind it (`interview-prep-audit`'s market-analysis and gap-hunt subagents) is named
-in this cell, which carries the role classes and never a count. **S** means single-shot or live
+internal-component rows that row points to. Which of the three carries them is **not** fixed by whether
+a stage has a file behind it — `/coverage`, `/coverage-verify` and `/coverage-audit` all dispatch inline
+and the first two are named in their family rows — so read all three before ruling a role absent, and
+expect a count where the prompt states one. **S** means single-shot or live
 interactive prompt. For commit ownership, **agent** means the
 pipeline commits its system-authored repo outputs under the session contract, **Victor** means his
 project/SQL/solution work remains his commit, and **external/output** means no commit in this repo.
@@ -264,9 +265,14 @@ a prerequisite constrains the run.
 **But an absence in the `handoff` and `explicit boundary` parts of that column is not a finding**: they
 carry the handoff, boundary or gate most likely to be confused, never the prompt's whole list of them,
 so one missing from them is delegating, not lying — one **named** there with a false scope is the
-finding, and the prompt itself stays the exhaustive list. Its run-first part is outside that licence,
-and so is every other column of this index: this fence reaches two parts of one column and makes no
-claim about the rest.
+finding, and the prompt itself stays the exhaustive list. **The run-first part is licensed only this
+far**: it carries every branch that constrains whether the run may proceed — the conditional branches
+and the null one included — while an item the prompt's own `▶ Run first` header marks *optional* or
+*advisory* may be absent from it, because an advisory item is not a prerequisite. That is the rule to
+quote against the `coverage-verify` line in `/notes-plan` and `/sql-plan`, and the `Optional:` items in
+`/cv` and `/interview-prep-audit`; a cell naming one anyway (`/cover-letter`'s `/cv tailor`) carries
+more than it owes and does not contradict this. Every other column of this index is outside both
+licences: this fence reaches three parts of one column and makes no claim about the rest.
 
 | Command → canonical prompt | Config / received input | Runtime · commit owner | Run-first / handoff / explicit boundary |
 |---|---|---|---|
@@ -286,7 +292,7 @@ claim about the rest.
 | `/sql-plan` → `sql-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | coverage first; plans only, never writes/grades `.sql` or schedules other tracks |
 | `/sql-plan-audit` → `sql-plan-audit` | `SCOPE=full\|extend`, `LEVEL` | O, four cold specialists · agent | existing route required; exercises-only; never edits Victor's `.sql` files |
 | `/sql-exercises` → `sql-exercises-prompt` | `MODE`, `TOPIC`, optional `LEVEL`, `COUNT`, `FILE` | S · Victor owns the `.sql` answers and their commit; agent owns the review-mode MISTAKES/`PROGRESS.md`/route writes and the doctrine §0 rewrite on a close | after `/sql-plan {LEVEL}`, except `MODE = reinforce`, which takes its file from `FILE` and needs no step; focus/review derived; legacy review grades but does not invoke step close |
-| `/simulation-plan` → `simulation-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | clean progress snapshot first; plans routes only, never specs/grades/solutions |
+| `/simulation-plan` → `simulation-plan-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, cold route reviewer · agent | clean progress snapshot first, and coverage must already exist for every track admitted at this level; plans routes only, never specs/grades/solutions |
 | `/simulation-generator` → `simulation-generator-prompt` | `LEVEL`, `STEP=current\|<n>` | S · agent for generated artifacts | route required; no free-form focus/difficulty/time/track |
 | `/simulation-review` → `simulation-review-prompt` | `LEVEL`, `STEP`, `SIMULATION_FILE`, `MODE`, conditional `TIME_USED`/`SELF_ASSESSMENT`, submitted solution | S launcher → cold `simulation-grade` path · agent for tracking, Victor for solution | after `/simulation-plan` for this LEVEL, plus a closed attempt in `review`/`correction` mode — `hint` runs inside the attempt and needs only the partial solution; never grades locally; timed verdict/time are immutable |
 | `/code-review-practice` → `code-review-prompt` | `TYPE`, `LEVEL`, optional `DIFFICULTY`, `ISSUE_COUNT`, `FOCUS`; Victor's critique | S, live critique · agent for logs/Q&A | run-first nothing; self-contained; waits for Victor before revealing planted issues; not the host diff-review command |
@@ -298,7 +304,7 @@ claim about the rest.
 | `/linkedin` → `linkedin-prompt` | no config; nothing pasted in — the prompt states "No configuration needed" | S · output only | progress evidence first; returns paste-ready sections/posts, writes no repo file |
 | `/cover-letter` → `cover-letter-prompt` | `MODE`, `EMPRESA`, `PUESTO`, optional `CONTACTO`; pasted offer | S · output only | after a **clean** `/progress-update` (its drift repaired, not merely run; optionally `/cv tailor`); offer required; tailored text only, no repo file |
 | `/profile-readme` → `profile-readme-prompt` | `MODE=sync\|optimize` | S · external repo, Victor commits | after `/portfolio-audit` when a project just reached ✅ Ready, otherwise run-first nothing; sync never silently expands to optimize; never commits the portfolio repo from here |
-| `/tracker` → `tracker-prompt` | `MODE=log\|update\|analyze`; `log` adds `EMPRESA`, `PUESTO`, `CANAL`, `FUENTE`, `CONTACTO`, `CV_USADO` plus the `sector` it asks for when it cannot infer one, `update` adds `EMPRESA` + `PUESTO` plus the new `estado` and the verbatim feedback it asks for, `analyze` none | S · external/output | run-first nothing; external tracker only; analyze hands recurring gaps to evidence-intake |
+| `/tracker` → `tracker-prompt` | `MODE=log\|update\|analyze`; `log` adds `EMPRESA`, `PUESTO`, `CANAL`, `FUENTE`, `CONTACTO`, `CV_USADO` plus the `sector` it asks for when it cannot infer one, `update` adds `EMPRESA` + `PUESTO` plus the new `estado` and the verbatim feedback it asks for, `analyze` none; `log` also asks for the posting text pasted when fetching `FUENTE` fails | S · external/output | run-first nothing; external tracker only; analyze hands recurring gaps to evidence-intake |
 | `/system-check` → `system-check-prompt` | no config; explicit invocation | O, family/root/skill/launcher analysts + one bounded reconciler per map span and per manifest concern + cold final reviewer · agent; every reconciler reads the map itself, never a paraphrase | run-first nothing, explicit invocation only; machinery only; takes `_session-rules.md`'s machinery-only exception, so it never opens active-project `PLANNING.md` / backlog / `PROGRESS.md` even for orientation; never source repair, automatic gate, or partial verdict |
 | `/system-gaps` → `system-gaps-prompt` | `MODE=update\|dry-run`; explicit invocation | O, one cold independent analyst + cold reviewer · agent; the orchestrator reads both maps itself | run-first nothing, explicit invocation only; the two maps are the only evidence — no prompt, skill, standard or live artifact is opened; corrects nothing, caps the ledger at five rows a run, and never states one branch of an absence as fact |
 
