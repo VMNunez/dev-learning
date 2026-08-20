@@ -4,11 +4,9 @@ Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.bae
 
 ---
 
-Every application you built before project 07 stopped at the browser. Angular drew the screen and kept the data in whatever the browser itself could offer — memory, and at best a corner of local storage that only that one computer could ever see. A real product needs a second half: a program running on a server that owns the database, decides whether the person asking is allowed to ask, and keeps answering while many browsers are connected at once. Java is the language that second half is written in, and in the Spanish consultancies you are aiming at it is chosen for that job far more often than anything else. That is what you are learning it for.
+JavaScript can start running a file and only discover a bad operation once execution reaches that line. Java adds a check that runs before execution: a compiler reviews the entire source first, before a single line of it runs. That upfront check explains both how a `.java` file becomes a running program and why some mistakes stop you before launch while others only appear after launch.
 
-You already know that JavaScript can begin running a file and only discover a bad operation when execution reaches that line. Java puts a separate checkpoint before execution: a compiler checks the source first. That checkpoint explains both how a `.java` file becomes a running program and why some mistakes stop you before launch while others appear only after launch.
-
-This note is the map for everything that follows. It starts with what kind of language Java is and which of its habits keep reappearing, compares those habits against the JavaScript ones you already carry, then shows the smallest program that runs at all and names the chapter that owns each piece of it. After that it lays out the full route from `01` to `16`. Only then does it follow one `.java` file through the two stages that turn it into a running process, and use that boundary to separate the three different ways your code can be wrong.
+This note is the map for everything that follows. It starts with what kind of language Java is and which of its traits keep reappearing, compares those traits against the ones you already know from JavaScript, then shows a concrete example: the smallest program that runs at all in Java, naming the chapter that owns each piece of it. After that it lays out the full reading route, from chapter `01` to `16`. Only then does it follow one `.java` file through the two stages that turn it into a running program, and use that boundary to explain the three different ways your code can fail.
 
 ---
 
@@ -35,13 +33,9 @@ Here is where that language sits in the stack you are building towards. Angular 
   └──────────────┘               └────────────────────┘        └────────────┘
 ```
 
-Read the arrows as two separate conversations. The browser never talks to the database: it sends an HTTP request to the Java server and gets JSON back. The Java server is the only thing holding the database connection, which is exactly why it is also the only place that can enforce a rule like "an employee may only see their own time entries" — the same rule written in Angular is a suggestion, because anyone can open the network tab and call the endpoint directly.
+The browser never talks to the database directly: it sends an HTTP request to the Java server and gets JSON back. The Java server is the only thing holding the database connection, which is exactly why it is also the only place that can truly enforce a **business rule** — a condition that decides what each user is allowed to do, like "an employee may only see their own time entries." Putting that same check in Angular is not wrong as a first barrier, to improve the experience and avoid unnecessary requests, but it is not real security: anyone can open the browser's *Network* tab and call the endpoint directly, bypassing the Angular code entirely. The only rule that truly counts is the one living in the backend.
 
-That split is already on disk in your own repository. `projects/07-timetrack/frontend` is the Angular half, and `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/` is the Java half, with its `controller`, `service` and `repository` folders. Project 07 is the first project where the second half exists at all — projects 01 to 06 were Angular only, which is why none of them could show the same data to two different people, or on two different computers.
-
-> **Java is the language; Spring Boot is a library written in that language.** These two get merged into one thing early on, and untangling them now saves a lot of confusion later. Java gives you classes, types, methods and exceptions. Spring Boot is a large pile of pre-written Java that your build downloads as `.jar` files, and it handles the parts nobody wants to write by hand: opening a port, parsing an HTTP request, mapping a database row onto an object. When you write `@RestController`, you are not using secret Java syntax — you are using a plain Java **annotation**: a marker the language lets you attach to a class or a method, which some *other* tool then reads and acts on. Here the tool reading it is Spring's own code. Annotations as a language feature are step 15 of the route below, in [13-annotations.md](13-annotations.md). Everything in these notes is the language underneath, which is why it stays true no matter which framework you end up working in.
-
-> **Why not Node, which you already know?** Node would serve HTTP perfectly well, and your internship proves you can build with it. The choice is a market bet rather than a technical verdict: the large Spanish consultancies you are targeting staff Java teams, and far fewer junior candidates offer Angular plus Java than offer React plus Node. There is a technical half to the bet too, and it is the static typing above — the systems those companies maintain are large, long-lived, and passed between developers who never met the person who wrote them, and a language that refuses to compile a wrong call is worth a great deal in that setting.
+> **Java is the language; Spring Boot is a framework written in that language.** These two get mixed up as one thing early on, and untangling them now saves a lot of confusion later. Java gives you classes, types, methods and exceptions. Spring Boot is a large pile of pre-written Java that your build downloads as `.jar` files, and it handles the parts nobody wants to write by hand: opening a port, parsing an HTTP request, mapping a database row onto an object. When you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are step 15 of the route below, in [13-annotations.md](13-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
 
 ---
 
@@ -53,25 +47,34 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 Java has a personality, and it is remarkably consistent. Five traits explain almost every "why does it make me do that?" moment you are going to have, and each one is picked up in full by a later file.
 
-**1. Static typing — the type is part of the declaration, and it never changes.** When you write `int quantity = 2;`, the name `quantity` is bound to the type `int` for the rest of its life. The mechanism matters more than the rule: because the type is written down in the source, the compiler can reason about a line *without ever running it*. It does not need to know that `quantity` will be `2` at nine in the morning and `40` at lunchtime — it only needs the declared type to decide that multiplying it by a piece of text is not a legal operation. That is why Java can reject code that would otherwise only fail on the one Tuesday a year the bad path executes. This trait is the whole subject of [01-variables-types.md](01-variables-types.md), and it returns with force in [10-generics.md](10-generics.md), where the type of the values *inside* a collection is itself declared and checked.
+**1. Static typing — the type is part of the declaration, and it never changes.** When you write `int quantity = 2;`, the name `quantity` is bound to the type `int` for the rest of its life. This is not just a rule to memorise, it is a concrete mechanism: because the type is written down in the source itself, the compiler can reason about a line *without ever running it*. It does not need to know that `quantity` will be `2` at one moment and `40` at another — it only needs the declared type to decide whether an operation is legal. That is why Java can reject code before it ever launches, instead of letting that same error only surface at runtime, on the day the program finally executes the operation that was not allowed. This trait is explained in [01-variables-types.md](01-variables-types.md), and it returns with force in [10-generics.md](10-generics.md), where the type of the values *inside* a collection is itself declared and checked.
 
-**2. All executable code lives inside a class.** In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, is a member of some class. The reason is mechanical — the compiler emits one `.class` file per class, so a class is the smallest thing that can be compiled and loaded at all. You can see this in your own project: `target/classes/com/victor/timetrack/TimetrackApplication.class` is the compiled form of `TimetrackApplication.java`. One source file in, one class file out. What a class actually is, what it holds, and how you design one is [04-oop-classes.md](04-oop-classes.md).
+**2. All executable code lives inside a class.** In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit that can be compiled and loaded on its own. What a class actually is, what it holds, and how you design one is [04-oop-classes.md](04-oop-classes.md).
 
-**3. Compile first, run second — always two moments.** Even when IntelliJ hides both behind one green button, they stay separate, and knowing which of the two is speaking to you is half of debugging. The section below traces that pipeline; [14-maven.md](14-maven.md) is what automates it once a real project has dozens of source files and external libraries to fetch first.
+**3. Compile first, run second — always two moments.** Even when IntelliJ hides both behind one green button, they stay two separate moments with two different kinds of error, and knowing which of the two is speaking to you — the compiler, or the program already running — tells you immediately where to look for the problem. The section below traces that process step by step; [14-maven.md](14-maven.md) is the tool that automates both steps once a real project has dozens of source files and external libraries to fetch before it can even compile.
 
-**4. The JVM is the target, not your machine.** The compiler does not produce instructions for your particular processor. It produces bytecode for an abstract machine — the JVM — and a JVM exists for Windows, macOS, Linux, and whatever your employer runs in production. This is the origin of Java's old slogan, *write once, run anywhere*, and it is not marketing: the artifact you build on your Windows laptop is the same one a Linux server runs in production, unchanged and not recompiled, because both machines run a JVM rather than running your code directly. The JVM is also what manages memory for you while the program runs, which is the subject of [15-memory-model.md](15-memory-model.md). For a precise breakdown of the JVM against the JRE and the JDK you installed, see [Baeldung — Difference Between JVM, JRE, and JDK](https://www.baeldung.com/jvm-vs-jre-vs-jdk).
+**4. The compiler targets the JVM, not your processor.** It does not produce instructions for your particular processor, but bytecode for an abstract machine — the JVM — and a distinct JVM exists for Windows, macOS, Linux, and whatever your employer runs in production. This is the origin of Java's old slogan, *write once, run anywhere*, and it is not marketing: the `.class` file you generate on your Windows laptop — the compiled bytecode, also called the "artifact" — is exactly the one a Linux server runs in production, unchanged and without recompiling it, because both machines run that same bytecode inside their own JVM, instead of running your source code directly. The JVM is also what manages memory for you while the program runs — you don't have to — which is the subject of [15-memory-model.md](15-memory-model.md). For a precise breakdown of the JVM against the JRE and the JDK you installed — roughly, the JDK brings the tools to develop and compile, the JRE brings only what's needed to run, and the JVM is the virtual machine inside both — see [Baeldung — Difference Between JVM, JRE, and JDK](https://www.baeldung.com/jvm-vs-jre-vs-jdk).
 
-**5. Deliberate verbosity.** Java says out loud what JavaScript infers. A data shape that TypeScript declares as an interface with four fields becomes, in classic Java, four private fields, a constructor that names each of them twice, and four getters. This is a design decision, not an oversight: Java optimises for the person *reading* code they did not write, years later, over the person typing it today. Once you know that, the verbosity stops feeling like friction and starts being predictable. The language has also been walking it back where it can — records in [04-oop-classes.md](04-oop-classes.md) collapse a whole data class into a single line, and lambdas in [09-streams-lambdas.md](09-streams-lambdas.md) do the same for behaviour.
+**5. More explicit code, by design.** Java spells out explicitly a lot of things that JavaScript or TypeScript leave for the language itself to infer. For example, a data shape you declare in TypeScript as a four-field interface:
+
+```typescript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+}
+```
+
+becomes, in classic Java, a class with four private fields, a constructor that receives and assigns each of them, and four *getter* methods — one per field, so it can be read from outside the class —: quite a bit more code to represent exactly the same information. This is a design decision, not an oversight: Java optimises for the person *reading* code they did not write, years later, over the person writing it today — the more explicit the code, the less guessing it requires. The language has also been trimming that extra code where it can: *records*, in [04-oop-classes.md](04-oop-classes.md), collapse that same kind of data class — a class whose only job is to hold a handful of related values, with no logic of its own — into a single line, and *lambdas*, in [09-streams-lambdas.md](09-streams-lambdas.md), do the same when what you want to pass is not a piece of data but an action, like the very function that decides how to compare two elements when sorting them.
 
 | Trait | What it forces on you | Where it is examined in full |
 |---|---|---|
 | Static typing | Declare a type and keep it; the compiler checks every use before launch | `01-variables-types.md`, `10-generics.md` |
 | Code lives in a class | No standalone functions; a class is the unit of compilation | `04-oop-classes.md` |
-| Compile, then run | Two commands, two moments, two kinds of error message | this file, then `14-maven.md` |
-| The JVM is the target | Bytecode is portable; memory is the JVM's job, not yours | `15-memory-model.md` |
-| Deliberate verbosity | More typing, optimised for the reader rather than the writer | `04-oop-classes.md`, `09-streams-lambdas.md` |
-
-The third column is the one to use in practice: when a later file feels arbitrary, look up which trait it belongs to here, and the chapter usually stops being a list of rules and becomes one idea being applied.
+| Compile, then run | Two separate steps — compile first, then run —, two moments, two kinds of error message | this file, then `14-maven.md` |
+| The JVM is the target | Bytecode is portable; the JVM manages memory for you, not you | `15-memory-model.md` |
+| More explicit code | More typing, optimised for the reader rather than the writer | `04-oop-classes.md`, `09-streams-lambdas.md` |
 
 ---
 
@@ -83,14 +86,14 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 Your React and TypeScript background is an advantage here — you are not learning to program, you are mapping known ideas onto a new language. The risk is that some of that mapping is wrong in ways that look right, and those are the ones that waste an afternoon.
 
-**These transfer almost unchanged.** The syntax of `if`, `while` and `for` is the same. `try { } catch (e) { }` looks identical (what Java does *inside* it is another story — see the callout below). A loop over a collection reads like `for...of`. Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable behaves close enough to `const` that the analogy is worth using, with one caveat that [01-variables-types.md](01-variables-types.md) spells out under "the half-truth that it is `const`".
+**This is used the same way in both languages.** The syntax of `if`, `while` and `for` is the same. `try { } catch (e) { }` looks identical — although what Java does inside it when throwing and catching an exception is different, and the callout below explains it. A loop over a collection reads the same as JavaScript's `for...of`: `for (String name : names)`. Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable behaves close enough to `const` that the analogy is worth using, though it is not exactly the same: `const` in JavaScript locks the variable but not what it contains, and `final` in Java does exactly the same thing — that is a half-truth, not a real difference, and [01-variables-types.md](01-variables-types.md) spells out the exact nuance.
 
-**These look the same and are not.** The four below are the ones that actually bite.
+**These look the same and are not.**
 
-*`var` is not `var`.* Java borrowed the keyword and gave it nearly the opposite meaning. In JavaScript, `var` declares a variable with no type at all. In Java, `var` means "work the type out from what I am assigning, then hold me to it forever":
+*`var` is not `var`.* Java reused the keyword, but gave it nearly the opposite meaning. In JavaScript, `var` declares a variable with no type at all. In Java, `var` means "work the type out from what I am assigning, then hold me to it forever", for example:
 
 ```java
-// ✅ fine — javac infers int from the initialiser
+// ✅ fine — javac (the Java compiler) infers int from the initialiser
 var total = 30;
 
 // ❌ WRONG — total is an int, permanently
@@ -101,14 +104,21 @@ total = "thirty";
 error: incompatible types: String cannot be converted to int
 ```
 
-So `var` is not a hole in the type system, it is a shorthand *inside* it — the type is still fixed the moment you write the line, you just did not have to spell it out. [01-variables-types.md](01-variables-types.md) has the full section, including the two ways of leaving the right-hand side uninformative that `javac` refuses outright.
+So `var` does not commit any typing error: the type is still fixed the moment you write the line, you just did not have to spell it out — it is a shorthand *inside* the type system, not a hole in it. It is worth using when the type is already obvious from the right-hand side of the assignment, as in the example above; avoid it when it hides the real type and makes the code harder to read. [01-variables-types.md](01-variables-types.md) has the full section.
 
-*An object's shape is fixed at compile time.* In JavaScript you can attach a property to an object whenever you like and the object simply grows. In Java the set of fields is decided by the class, and a field the class never declared does not exist:
+*An object's shape is fixed at compile time.* In JavaScript you can attach a property to an object whenever you like and the object simply grows. In Java the set of fields is decided by the class: only the fields the class declared exist, and one it never declared does not. For example, with a `User` class that only declares `name` and `email`:
+
+```java
+public class User {
+    private String name;
+    private String email;
+}
+```
 
 ```java
 User user = new User();
 
-// ❌ WRONG — the User class has no field called age
+// ❌ WRONG — the User class declares no field called age
 user.age = 30;
 ```
 
@@ -120,25 +130,23 @@ error: cannot find symbol
   location: variable user of type User
 ```
 
-That message is worth recognising early, because `cannot find symbol` is the error you will meet most often in your first weeks. It always means the same thing: the compiler looked for a name — a variable, a method, a class — and nothing by that name exists in scope.
+That message is worth recognising early, because `cannot find symbol` is the error you will meet most often in your first weeks. It always means the same thing: the compiler looked for a name — a variable, a method, a class — and nothing by that name exists anywhere the compiler can see from that line.
 
-*`==` is asking a different question.* In JavaScript the interesting distinction is `==` versus `===`, and it is about type coercion. Java has no `===`, and its `==` has nothing to do with coercion: on objects it asks "are these two variables pointing at the same object in memory?", which is almost never the question you meant to ask about two `String` values. Getting this wrong is the single most common beginner bug in Java, and it is settled in two places. The case you will hit first, comparing two pieces of text, is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows why `.equals()` is the method you actually wanted, and why plain string literals make `==` *look* correct just often enough to fool you. The general rule — what equality means for objects of the classes you write yourself — waits for [04-oop-classes.md](04-oop-classes.md).
+*`==` is asking a different question.* In JavaScript the interesting distinction is `==` versus `===`: `===` compares whether the type and the value match on both sides, while `==` first tries to convert one side so the types match and only then compares — that is type coercion. Java has no `===`, and Java's `==` does no coercion at all: when used on objects — for example, two `String` variables — it asks "are these two variables pointing at the same object in memory?", which is almost never the question you meant to ask when comparing two pieces of text. Getting this wrong is the single most common beginner bug in Java, and it is settled in two places. The case you will hit first, comparing the content of two pieces of text, is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows why `.equals()` — which compares the actual text content, character by character, instead of the memory address — is the method you actually wanted, and why writing two plain string literals side by side, like `"hello" == "hello"`, makes `==` look like it works correctly just often enough to fool you (Java reuses the same object in memory for identical text literals, so that particular case really does point at the same place, even though the general rule still is not that). The general rule — how you yourself define when two objects of a class you wrote should count as equal — waits for [04-oop-classes.md](04-oop-classes.md).
 
-*TypeScript's types and Java's types do not live the same length of time.* TypeScript checks your types and then **deletes them**: the JavaScript that actually runs in the browser contains no types at all, and nothing re-checks anything while it runs. Java's declared types survive compilation — they are recorded in the `.class` file, and the JVM itself refuses an invalid conversion at runtime. The one Java feature that behaves like TypeScript here is generics, whose type arguments *are* discarded after checking; [10-generics.md](10-generics.md) explains that erasure and what it stops you from doing.
+*TypeScript's types vanish before runtime; Java's do not.* TypeScript checks your types and then **deletes them**: the JavaScript that actually runs in the browser contains no types at all, and nothing re-checks anything while it runs. Java's declared types survive compilation — they are recorded in the `.class` file, and the JVM itself refuses an invalid conversion at runtime. There is exactly one exception to this in Java: generics. A generic's type arguments, like the `String` inside `List<String>`, *are* discarded after being checked at compile time — that phenomenon is called *type erasure*, and [10-generics.md](10-generics.md) explains exactly what it stops you from doing as a result.
 
-| Habit from JS/TS | What Java does | Verdict |
-|---|---|---|
-| `for...of` over a collection | `for (String name : names)` | Transfers |
-| `const` | `final` | Transfers, with a caveat in `01` |
-| `try / catch` syntax | Identical shape | Transfers |
-| `var` | Infers one fixed type and enforces it forever | **Trap** — near-opposite meaning |
-| Adding a property at runtime | Fields are declared by the class only | **Trap** — `cannot find symbol` |
-| `==` vs `===` | `==` on objects compares identity, not content | **Trap** — use `equals` |
-| TS types erased at build | Types survive into the bytecode | **Trap** — except generics |
+| Habit from JS/TS | What JavaScript/TypeScript does | What Java does | Does it behave the same? |
+|---|---|---|---|
+| `for...of` over an array | Iterates its elements one by one | `for (String name : names)` iterates a collection the same way | Yes |
+| `const` | Locks the variable, not what it contains | `final` does the same | Yes, with a caveat in `01` |
+| `try / catch` syntax | `try { } catch (e) { }` | Identical shape | Yes, in the syntax |
+| `var` | Declares a variable with no type at all | Infers one fixed type and enforces it forever | No — near-opposite meaning |
+| Adding a property at runtime | The object grows with any new property | Fields are declared by the class only; none can be added later | No — throws `cannot find symbol` |
+| `==` vs `===` | Compares with or without type coercion | `==` on objects compares whether they point at the same object in memory, not whether the content is equal | No — use `.equals()` |
+| TS types erased at build | Types vanish at compile time; nothing checks them at runtime | Types survive into the bytecode | No — except for generics |
 
-Use the Verdict column as permission. On a "Transfers" row, trust your instinct and keep moving. On a "Trap" row, stop and read the linked chapter before writing code that depends on your guess.
-
-> **One comparison to refuse outright: exceptions.** It is tempting to read Java's `try/catch` as the JavaScript one because the syntax matches. The mechanism is not the same. Java has a whole type hierarchy of exceptions, and for one branch of it the *compiler* refuses to build your program until you either handle the failure or declare that your method passes it on — a compile-time obligation with no JavaScript equivalent whatsoever. Mapping your JS error habits onto it produces code that will not compile and a message that makes no sense until you know the model. Start that topic clean in [08-exceptions.md](08-exceptions.md).
+> **One comparison to refuse outright: exceptions.** It is tempting to read Java's `try/catch` as the JavaScript one because the syntax looks the same. The mechanism underneath is not. Java organises exceptions into a type hierarchy, and for one specific branch of it the *compiler* itself forces you to do something about the failure before it lets you build the program: either you catch it right there with a `catch`, or you explicitly declare in the method's signature that the failure can rise unhandled to whoever called you — and that obligation is checked at compile time, with no JavaScript equivalent whatsoever. Applying your JS error-handling habits here produces code that simply does not compile, with a message that makes no sense until you know this model. That topic is explained from scratch in [08-exceptions.md](08-exceptions.md).
 
 ---
 
