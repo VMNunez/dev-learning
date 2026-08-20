@@ -7,6 +7,24 @@
 Read `notes/prompts/_internal/_agent-runtime-standard.md` before dispatching any role. This prompt is a
 hands-off orchestrator and uses its role, isolation, whole-file, and close-out contracts exactly.
 
+## Configuration
+
+```
+MODE = [full | carry-forward]
+```
+
+Default `carry-forward`. `full` derives every manifest and every reconciliation concern inside this run. `carry-forward` anchors on
+the most recent `Status: complete` run and reuses its accepted evidence for each concern whose own inputs
+are byte-identical, deriving every other concern cold. There is no further configuration — no target, no
+scope switch, no batch mode — because a defect in a global map is a property of the whole system.
+
+`carry-forward` exists because the machinery under audit changes daily while a full derivation costs more
+sessions than the interval between machinery commits: a run permitted to reuse evidence only *inside* one
+session can never overtake its own subject, and the audit is then unfinishable by construction rather than
+by difficulty. Reuse across runs is not the weaker proof it looks like — the evidence is the audited bytes,
+identified by SHA-256, and re-deriving an identical input reproduces an identical manifest. What it may
+never reuse is a **ruling**, whose inputs include the maps.
+
 ## Purpose
 
 Establish whether the two derived maps completely and truthfully document the prompt-and-skill
@@ -38,6 +56,9 @@ run or applied that machinery.
   refactor the machinery that produced it.
 - **Explicit invocation only.** Do not schedule, infer, or chain this run from another prompt or skill.
 - **Global only.** There is no target or batch mode. A partial inventory cannot produce a global verdict.
+  `MODE = carry-forward` is not an exception to this: its inventory, its snapshot and both reconciliation
+  denominators are the whole machinery, and the only thing it reuses is a completed run's accepted proof
+  over bytes that did not change.
 - **Machinery only.** A path pattern, schema, ownership rule, or gate declared by a prompt/skill is in
   scope as machinery. The live artifact governed by it is not. Never traverse project `PLANNING.md` or
   `PROJECT-BACKLOG.md` files, SQL doctrine/routes, coverage or notes-plan state, practice trackers,
@@ -94,18 +115,48 @@ On explicit `/system-check`, inspect this directory before starting a new invent
 3. A session/platform change is not input drift. Codex, Claude, or another conforming runtime continues
    the same run from the same files and gates.
 4. Real audited-input drift blocks reuse by default. For an explicitly Victor-authorized continuity
-   migration whose only purpose is changing this persistence/resume mechanism, write `migration.md`
+   migration whose only purpose is changing this prompt family's own persistence, resume or audit method,
+   write `migration.md`
    with the old and new snapshots plus the exact changed paths. Reuse every accepted manifest concern
    whose assigned source hashes are unchanged; cold re-dispatch only a concern owning a changed audited
    source. The two maps have no manifest owner: if either changed before Direction 1 had any accepted
    concern, recompute the Step 4a partition and discard only incomplete map-concern scratch. If an
    accepted Step 4 concern covered changed map lines, that concern and every dependent Direction 2
    return are invalid and must be re-dispatched. Replace the stored baseline only after these bounded
-   invalidations are recorded. This is continuity of the same evidence, never a global restart or a
-   licence for arbitrary source drift.
+   invalidations are recorded. A migration that changed the **method** additionally invalidates every
+   accepted ruling produced under the superseded method — **except one whose superseded method gave it a
+   superset of what the new method requires**, because more evidence than a rule now demands cannot
+   falsify a disposition reached on it. This is continuity of the same evidence, never a global restart or
+   a licence for arbitrary source drift.
 5. The durable directory is excluded from inventory, snapshot, report findings, Git staging, and every
    live-state denominator. Its evidence supports orchestration only; the committed audit report remains
    the sole final verdict.
+
+## Cross-run carry-forward
+
+On `MODE = carry-forward`, once Step 1 has built this run's inventory and snapshot, resolve the **anchor**:
+the most recent `.system-check/runs/` directory whose `state.md` reads `Status: complete`. A `blocked` or
+`in-progress` run is never an anchor, because its evidence never passed the cold final review. When no
+complete run exists the mode degrades to `full`, and the report states that it did.
+
+Carry an accepted concern forward only when **every input that concern was given** is byte-identical to
+this run's:
+
+1. a Step 2 manifest concern — the path set it owns, and every one of those paths by SHA-256;
+2. a Direction 1 concern — its map's span text, plus every manifest it declared reading;
+3. a Direction 2 concern — its manifest, plus **both maps in full**, because that direction rules on what
+   the maps omit and an edit anywhere in either can change the answer.
+
+Everything else is re-derived cold. Copy each carried artifact verbatim into this run's directory, marked
+`carried from <anchor run id>` with the hashes that justify it, and record the carried/derived split per
+step in the report. A carried artifact then has exactly the standing of a derived one: the acceptance gate,
+the absence rule and the cold final review apply to the merged whole and are never relaxed because part of
+it was carried. The final reviewer independently recomputes every hash a carry rests on and rejects the run
+if one does not hold.
+
+The global verdict is unaffected. `maps verified` still requires `unverifiable: 0` over the complete
+denominator; what changes is only which session paid for each disposition, and the report prints both
+counts.
 
 ## Step 0 — preflight and provenance
 
@@ -352,6 +403,18 @@ invented; every `documented → <claim ID>` resolves to a real row in the merged
 `source-only by ownership split` quotes the rule that keeps the fact out. Report the reverse denominator
 and counts for all three dispositions, per manifest field class.
 
+**A `source-only` disposition may be ruled per class.** This sweep's cost is its disposition count, and
+most of that denominator is facts neither map was ever meant to carry — one ruling repeated thousands of
+times. A concern may therefore return a **class ruling**: one row per `<path class> × <manifest field>`
+pair, quoting the ownership rule that keeps the entire pair out of both maps, after which every fact in the
+pair inherits `source-only by ownership split → <class ruling ID>`. The counts still sum to the complete
+denominator and no fact loses its disposition; what disappears is the restatement. Three limits make it
+safe, and the merge enforces all three: a class ruling carries **only** `source-only` — never `documented`
+and never `missing claim`, which are per-fact findings and stay per-fact; it may not be issued for any
+field the `Purpose` section names as owned by either map for that path class; and the quoted rule must
+appear verbatim in the source cited, or the concern is re-dispatched cold. The final reviewer reproduces
+every class ruling from that same quote.
+
 Apply the same accepted-artifact-then-state order to every Direction 2 concern under `direction-2/`.
 
 ### 4d — the completeness gate
@@ -433,6 +496,11 @@ The reviewer reads both maps to EOF and checks:
 - every `source-contradiction` row quotes both conflicting clauses with their manifest fact IDs, names one
   owning inventory path, and carries exactly one ledger ID — the state is a route to its discharge, never
   a way past a claim the manifests could have settled;
+- every class ruling quotes a rule that appears verbatim in the source it cites, covers no field either
+  map owns for that path class, and carries only `source-only` dispositions;
+- on a carry-forward run, every carried artifact's justifying hashes recompute against this run's snapshot,
+  no Direction 2 concern was carried across an edited map, and no ruling was carried across a method change
+  that narrowed what its concern was given;
 - every proposed correction follows from that evidence;
 - every occurrence of a changed claim was updated;
 - no authoritative machinery file was edited;
@@ -452,7 +520,8 @@ the next run inherits them.
 Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
 
 1. date, starting commit, branch, and `Status: complete | blocked`;
-2. inventory and dispatch coverage counts;
+2. inventory and dispatch coverage counts, and — on a carry-forward run — the anchor run ID plus the
+   carried/derived split per step, or the statement that the mode degraded to `full` for want of an anchor;
 3. validator baseline and final result;
 4. README catalogue coverage and corrections — **on a run that reached Step 4** (the inherited
    `source-contradiction` list required by the blocked branch below is written on **every** blocked report,
@@ -463,7 +532,8 @@ Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
    named with both clauses, its owning path and its ledger ID — or `unregistered`, on the two branches
    Step 7 names as withholding the discharge and for any row inherited at Step 0 and not re-proved — and
    the evidence → claim sweep's complete
-   manifest-fact denominator, dispositions and findings;
+   manifest-fact denominator, dispositions and findings, with every class ruling listed by its covered
+   pair, its quoted rule and its inherited fact count;
 5. system-map wiring/skill coverage and corrections, on those same terms;
 6. boundary proof: the excluded live-artifact classes and confirmation that none entered the denominator;
 7. architecture findings linked to their recommendation IDs;
@@ -551,6 +621,7 @@ A run is `completed` only when all of these are true:
   sum exactly, with zero unclassified/conflicting or claim-bearing-without-claim lines; every manifest
   fact has one reverse disposition; `unverifiable = 0`; every `source-contradiction` row carries both
   clauses and one ledger ID; and **both** reconciliation directions ran;
+- every carried artifact was justified by recomputed hashes and holds the same standing as a derived one;
 - every supported correction survived the cold final review;
 - no live project, learning, practice, application, or debt state entered the audit denominator;
 - no active-project `PLANNING.md`, `PROJECT-BACKLOG.md` or `PROGRESS.md` was opened even for orientation;

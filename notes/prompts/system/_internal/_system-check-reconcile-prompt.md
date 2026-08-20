@@ -63,7 +63,12 @@ own scratch return path), and this boundary repeated in the payload. Then:
    **Every claim-bearing line reaches at least one claim, and every claim reaches at least one
    claim-bearing line inside `SPAN`.**
 4. Read from `MANIFEST_DIR` the concern files your claims need — start from the inventory path the claim is
-   about and open further concerns when a claim spans several. Declare each one read.
+   about and open further concerns when a claim spans several. Declare each one read. **Two rules bound
+   this.** A claim asserting **exclusivity or completeness** — `only`, `no other`, `nothing else`, `never`,
+   or any closed enumeration — cannot be settled from a subset at all, because its falsifier lives in a
+   manifest the claim does not name: open the whole directory for it and say so. And an unopened manifest
+   is **never** grounds for `unverifiable`; widen your reads until the corpus is exhausted, and only then
+   take that disposition's own bounded attempt below.
 5. Give every claim row exactly one disposition from the vocabulary below.
 
 **What counts as a claim, by map.** `README.md` owns per-prompt facts and run order; `_system-map.md` owns
@@ -131,9 +136,19 @@ two of five items agrees with every manifest fact about those two.
    the map is the source and the ledger is only what another concern ruled on it.
 4. Give every fact ID exactly one disposition:
    - `documented → <claim ID>`;
-   - `source-only by ownership split → <the rule that keeps it out, quoted>`;
+   - `source-only by ownership split → <the rule that keeps it out, quoted>`, either per fact or inherited
+     from a class ruling under step 5;
    - `missing claim` — with the map that owes it, the section it belongs in, and the wording it would
      take. A manifest fact with no home in either map is corrected exactly like a false claim.
+5. Where a whole `<path class> × <field>` pair is outside both maps by rule rather than one fact at a time,
+   return it once as a **class ruling** — a stable `<manifest>::CLASS::NN` ID, the pair it covers, the
+   ownership rule quoted verbatim from the source that states it, and the count of facts inheriting it —
+   instead of restating that rule against every member. Every covered fact still carries its own
+   `source-only by ownership split → <class ruling ID>` line and still counts once in the denominator.
+   A class ruling may carry **no other disposition**: a fact you would call `documented` or `missing claim`
+   is ruled individually, whatever class it sits in. Never issue one for a field the `What counts as a
+   claim, by map` split above assigns to either map for that path class — that pair is exactly what this
+   direction exists to check.
 
 ## Return contract — both directions
 
@@ -146,7 +161,8 @@ two of five items agrees with every manifest fact about those two.
     conflicting classifications · claim-bearing lines with no claim`, the **three classification counts**
     summing to the span length, plus the disposition counts;
   - `evidence` — `facts · documented · source-only · missing claim`, summing to the manifest's accepted
-    denominator, reported per manifest field class.
+    denominator, reported per manifest field class, plus `class rulings` and the facts each one covered —
+    a number that changes no sum, only how much of it you had to write out.
 - End with the one line the orchestrator gates on: `concern complete — <span or manifest> · <counts>`, or
   `concern incomplete — <what is missing>`. An incomplete return is re-dispatched cold, exactly like a
   failed Step 3 concern, and is never merged in part.
