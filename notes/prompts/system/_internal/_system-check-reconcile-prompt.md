@@ -143,7 +143,10 @@ two of five items agrees with every manifest fact about those two.
 5. Where a whole `<path class> × <field>` pair is outside both maps by rule rather than one fact at a time,
    return it once as a **class ruling** — a stable `<manifest>::CLASS::NN` ID, the pair it covers, the
    ownership rule quoted verbatim from the source that states it, and the count of facts inheriting it —
-   instead of restating that rule against every member. Every covered fact still carries its own
+   instead of restating that rule against every member. State the class's **membership** — every
+   inventory path it covers — and confirm you examined each covered fact for `documented` or
+   `missing claim` before inheriting it. A class you cannot enumerate is not a class.
+   Every covered fact still carries its own
    `source-only by ownership split → <class ruling ID>` line and still counts once in the denominator.
    A class ruling may carry **no other disposition**: a fact you would call `documented` or `missing claim`
    is ruled individually, whatever class it sits in. Never issue one for a field the `What counts as a
