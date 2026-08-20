@@ -50,8 +50,20 @@ Use TOPIC, LEVEL, FILE, and SCOPE wherever the prompt refers to their placeholde
 You translate exactly ONE file: the canonical `en/` source `{FILE}` → its `es/` counterpart (same
 number prefix). Read `{FILE}` **in full, top to bottom**, and produce an `es/` that is its faithful,
 natural-Spanish mirror. If the `es/` already exists, **re-sync it** to the current English: bring over
-every section, code block, table, and callout so the two match exactly, and clear any leftover `TODO:`
-marker Victor wrote in the `es/` (the English author already resolved the doubt in `{FILE}`).
+every section, code block, table, and callout so the two match exactly.
+
+> **STOP if the `es/` still carries `TODO:` markers Victor wrote.** Do not clear them and do not
+> re-translate over them. Since 2026-08-20 a TODO is resolved **in the language of the file carrying
+> it** (`_note-quality-standard.md` → "Resolving a TODO runs in the direction of the file carrying
+> it"), so an `es/` TODO is answered in Spanish, in his wording, and the `en/` is then brought into
+> line with *that* — the opposite of this stage's direction. Re-syncing `es/` from `en/` here would
+> overwrite the Spanish phrasing he explicitly asked for. Report the unresolved markers and stop; the
+> orchestrator routes them to a Spanish-side resolution pass first.
+
+> **Sections whose Spanish was authored directly are FROZEN.** When the orchestrator tells you a
+> section's Spanish came from an `es/`-side TODO resolution (and the English was derived from it),
+> treat that section exactly as `SCOPE = append-only` treats the whole file: leave every pre-existing
+> byte alone and mark it `frozen` in your trace. Structural parity is still owed everywhere else.
 
 > **Verifiable read (the shared session rules non-negotiable):** run `wc -l` on `{FILE}` (and the existing `es/`, if
 > any) before reading — the Read tool truncates at 2000 lines **silently**; a truncated read here means

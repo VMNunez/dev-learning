@@ -125,13 +125,22 @@ Each topic has `{LEVEL}/en/` and `{LEVEL}/es/`. Coverage and persistent plans li
   stays as-is.
 - **New section added to an existing `en/` file** → add the translated section to the `es/`
   counterpart too.
-- **TODO resolved in an `en/` file** → apply the equivalent fix in the `es/` counterpart too.
+- **TODO resolved in either file** → apply the equivalent fix in the counterpart too, in the direction
+  the TODO rule below sets.
 
 **`en/` is the canonical source; `es/` is its first-class translation.** Author and correct content in
 `en/` first, then translate into `es/`. Victor *studies* from `es/`, so it must read as native Spanish
 and gets equal care — but the source of truth when writing is the English. Intentional trims are made
-in `en/` (never restore to `es/` what is absent from `en/`); a TODO Victor writes in `es/` is read as
-input, resolved in `en/`, then re-synced into `es/`.
+in `en/` (never restore to `es/` what is absent from `en/`).
+
+**Resolving a TODO is the one operation that runs in the direction of the file carrying it** (rule
+given 2026-08-20; it overrides the canonical-source default here, and only here). A TODO Victor writes
+in `es/` is resolved **in `es/`**, in Spanish, applying his instruction as written — and only then is
+the updated `es/` file translated back into `en/`. A TODO in `en/` is resolved in `en/`, then
+translated into `es/`. Never route an `es/` TODO through English first: his TODOs are usually
+corrections to the Spanish prose itself ("no uses esa palabra", "esa frase está mal expresada"), so
+rewriting in English and re-translating throws away the exact wording he asked for — which is the
+failure that produced this rule.
 
 ---
 

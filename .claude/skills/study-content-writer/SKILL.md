@@ -58,9 +58,14 @@ sub-concept); a sentence explaining how to read every table; exact error message
 - New file in `en/` → create the full `es/` translation under a **Spanish** filename carrying the same
   number prefix (`en/03-methods.md` → `es/03-metodos.md`) — never a copy of the English name. The
   prefix is the only shared part; technical proper names with no Spanish equivalent (`maven`, `enums`,
-  `streams`, `lambdas`) keep theirs. TODO resolved or section added → do it in `en/`, then re-sync `es/`.
-- **A TODO Victor wrote in `es/`** is read as *input*: resolve the doubt in `en/`, then bring the
-  answer into `es/` and clear the marker. The answer round-trips through English — that is expected.
+  `streams`, `lambdas`) keep theirs. A new section added → write it in `en/`, then re-sync `es/`.
+- **Resolving a TODO runs in the direction of the file that carries it** — the one operation that
+  overrides the canonical-source rule above (given 2026-08-20). A TODO Victor wrote in `es/` is
+  resolved **in `es/`**, in Spanish, applying his instruction as written; only then is the updated
+  `es/` file translated back into `en/`. A TODO in `en/` is resolved in `en/`, then translated into
+  `es/`. Never route an `es/` TODO through English first — his TODOs are usually corrections to the
+  Spanish prose itself ("no uses esa palabra", "esa frase está mal expresada"), and rewriting in
+  English and re-translating discards the exact wording he asked for.
 - **Intentional trims are made in `en/`.** If Victor cut something from `es/` (e.g. JS filler — never
   add those, see the no-JS-filler rule), do not restore it; remove it from `en/` too so it stays gone.
   Never re-add to `es/` content that is absent from `en/`.

@@ -103,9 +103,13 @@ Before starting, read:
 - `{FILE}` (the planned `en/` file) — and nothing else.
 
 You do **not** create, read for editing, or touch the `es/` counterpart to *write* it — that is the
-translator's job (stage T). The one exception is **reading** the `es/` file to find Victor's TODO
-markers (see Step 1): Victor adds his doubts in the `es/` file, so you read them there as *input*, but
-you write your answer in `{FILE}` (English). You never edit the `es/` file.
+translator's job (stage T). There is exactly one bounded exception, and it is Step 1: **a TODO Victor
+wrote in the `es/` file is resolved in the `es/` file, in Spanish.** Since 2026-08-20 a TODO is
+resolved in the language of the file carrying it (`_note-quality-standard.md` → "Resolving a TODO runs
+in the direction of the file carrying it"), because his TODOs are usually corrections to the Spanish
+prose itself and routing them through English destroys the wording he asked for. So for those sections
+— and *only* those sections — you write Spanish into the `es/`, then bring `{FILE}` into line with it.
+Every other byte of the `es/` remains stage T's.
 
 Do not edit any `coverage/*.md` file, or any sibling note's body — if you notice a
 gap that belongs elsewhere, mention it in the summary instead of acting on it.
@@ -142,7 +146,10 @@ Victor adds his doubts as markers in the **`es/`** file (that is where he studie
 `<!-- TODO: -->`, or `// TODO`. Two forms:
 
 - **Instruction TODOs** — a direct correction or task (`TODO: add example`, `TODO: rewrite this
-  paragraph`). Apply the fix literally, in English, in `{FILE}`.
+  paragraph`). Apply the fix literally, in the language of the file carrying the marker. Most of these
+  are wording corrections he wrote *about the Spanish* ("no uses esa palabra", "esa frase está mal
+  expresada") — obey them in the Spanish, in his terms; a re-translation from English cannot satisfy
+  them.
 - **Question TODOs** — Victor writes a doubt he wants clarified (`TODO: why does Spring create a new
   context here?`). These are NOT Q&A requests. Resolve the doubt by weaving the answer into the
   surrounding prose of the paragraph it appears in — the question itself must never appear in the
@@ -161,10 +168,18 @@ Victor adds his doubts as markers in the **`es/`** file (that is where he studie
   question TODOs use a descriptive noun phrase ("Constructors in subclasses"), never a question format
   ("Can a subclass add its own constructor?").
 
-For each TODO: identify what Victor wants, apply the fix in English at the matching location in
-`{FILE}`, and remove any TODO marker that lives in `{FILE}`. **Leave the marker in the `es/` file
-untouched** — the translator (T) re-syncs the `es/` from your finished English and clears it there.
-Note in the summary which TODOs you resolved so T knows which `es/` sections changed.
+For each TODO: identify what Victor wants, then resolve it **in the file that carries the marker**, and
+clear that marker once resolved.
+
+- **Marker in the `es/`** (the normal case — that is where he studies): write the resolution in natural
+  Spanish at the matching location in the `es/`, honouring his instruction word for word, and delete
+  the marker there. Then bring `{FILE}` into line by rendering *that Spanish* into English at the same
+  location. The Spanish is the authored version for these sections; the English is derived from it.
+- **Marker in `{FILE}`**: resolve it in English there, delete the marker, and note the section so
+  stage T renders it into the `es/` in the usual direction.
+
+Name in your summary, per TODO, which language you authored and which sections of the `es/` you wrote
+directly — stage T freezes exactly those and re-syncs everything else.
 
 ## Step 2 — Quality audit of this file (rule 2)
 
@@ -258,13 +273,15 @@ After a first-pass run, note in the summary that the file is now validated so Vi
 ## Output — report (you do NOT commit)
 
 You never commit and never mark the persistent plan entry — stage C owns that.
-Leave your English work in the working tree and report:
+Leave your work in the working tree — the English, plus any `es/` sections you authored directly under
+the Step 1 exception — and report:
 
 - The **"N lines, read to EOF"** line for every file you processed end-to-end.
 - The file's coverage status (✅ Complete / 🔧 Fixed / ➕ Added, from the standard).
 - A short summary of what changed in `{FILE}`, and **which sections you touched** — the translator
   needs this to know what to (re)translate in the `es/`.
-- Which TODOs you resolved (so T clears the matching `es/` markers).
+- Which TODOs you resolved, and for each: the language you authored it in, and whether the `es/`
+  section is now frozen for stage T (it is, whenever you wrote the Spanish directly).
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the work completed.
 

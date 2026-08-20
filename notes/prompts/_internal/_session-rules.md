@@ -477,13 +477,17 @@ notes/java/
   - **Intentional trims are made in `en/`.** If Victor wants to cut something (e.g. JS filler
     comparisons — see the no-JS-filler rule), remove it from `en/`, the canonical source, so the
     translation never re-adds it. Never restore to `es/` content that is absent from `en/`.
-  - **TODOs Victor writes in `es/`** (his study file) are read as *input*: resolve the doubt in `en/`,
-    then re-sync `es/` from the updated English and clear the `es/` marker. The answer round-trips
-    through English — that is expected under the canonical model.
-- **Never modify an `en/` file without re-syncing its `es/` counterpart.** The rule covers three cases:
+  - **Resolving a TODO runs in the direction of the file that carries it** (rule given 2026-08-20;
+    it overrides the canonical-source default for this one operation). A TODO Victor writes in `es/`
+    is resolved **in `es/`**, in Spanish, applying his instruction as written — and only then is the
+    updated `es/` file translated back into `en/`. A TODO in `en/` is resolved in `en/`, then
+    translated into `es/`. Never route an `es/` TODO through English: his TODOs are usually
+    corrections to the Spanish prose itself ("no uses esa palabra", "esa frase está mal expresada"),
+    and rewriting in English and re-translating discards the exact wording he asked for.
+- **Never modify one language's file without re-syncing its counterpart.** The rule covers three cases:
   - New file created in `en/` → create the full Spanish translation in `es/` with the same numeric prefix and a Spanish-translated name (never a copy of the English filename — see `_note-quality-standard.md`, "File naming convention")
   - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file
-  - TODO resolved in an `en/` file → re-sync the same content into `es/` if the counterpart exists
+  - TODO resolved in either language → translate the same content into the counterpart, in the direction the rule above sets
 - Spanish versions use the same structure and code blocks — only the prose is translated into Spanish. Code comments may also be translated. **The Spanish prose must read as natural Spanish, not as a word-for-word translation of the English.** The content and message must be identical across both languages, but each version should read as if it were written natively in that language — same idea, same emphasis, different words where needed. Literal translations that sound awkward or robotic in Spanish are not acceptable. Structural labels like `Purpose:`, `File:`, and `Docs:` must be translated to `Propósito:`, `Archivo:`, and `Docs:` (Docs stays as-is — it is a common abbreviation in Spanish developer contexts).
 - Within each level, `en/` and `es/` must contain matching numbered files after a plan entry completes.
 - Coverage and persistent plans live in `coverage/`; they are not translated.

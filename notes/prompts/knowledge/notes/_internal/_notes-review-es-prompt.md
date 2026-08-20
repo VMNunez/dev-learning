@@ -17,6 +17,12 @@ naturalness, and fixes calque. It must **not** add or remove sections, code bloc
 callouts — the translator (T) already guaranteed `en/`↔`es/` structural parity, and this pass must preserve it. If a
 section is missing content (not just badly worded), that is a structural gap C reports, not fixes.
 
+> **A wording Victor asked for outranks your judgement.** When the dispatch names sections whose
+> Spanish he specified himself through a `TODO` (a banned word, a phrase he wanted re-expressed),
+> those choices are settled: do not "polish" a term back in that he explicitly rejected. Improve the
+> prose around them. If one of his choices genuinely reads wrong in Spanish, report it — never revert
+> it silently.
+
 ---
 
 **How to use:**
