@@ -26,7 +26,8 @@ Existing sections that carry no assigned coverage bullet are **preserved** unles
 
 ## 00 — Java execution foundations
 
-Status: pending
+Status: complete
+Studied: pending
 Action: audit
 English: notes/java/junior/en/00-intro-java.md
 Spanish: notes/java/junior/es/00-intro-java.md
@@ -51,8 +52,8 @@ Must answer:
 
 Coverage concepts:
 
-- [ ] Source, bytecode, and JVM execution — recognise that `javac` checks and compiles source into bytecode that a JVM executes, without requiring JVM-internals knowledge
-- [ ] Compile-time vs runtime failure — distinguish type and syntax errors rejected by the compiler from exceptions and logic errors that appear while the program runs
+- [x] Source, bytecode, and JVM execution — recognise that `javac` checks and compiles source into bytecode that a JVM executes, without requiring JVM-internals knowledge
+- [x] Compile-time vs runtime failure — distinguish type and syntax errors rejected by the compiler from exceptions and logic errors that appear while the program runs
 
 Audit note: this entry is **not** a light pass. `00-intro-java.md` currently contains only the bytecode section and the compile-vs-runtime section, which satisfy the two coverage bullets and nothing else. Four of the five requirements the note-quality standard places on a topic introduction — the topic's defining characteristics, the JavaScript/TypeScript anchoring, the fit with Victor's target stack, and the one-paragraph route map from 01 to 16 — have no corresponding content in the file and must be **written**, not reviewed. The route map is the most important of the four and the most conspicuously absent.
 
