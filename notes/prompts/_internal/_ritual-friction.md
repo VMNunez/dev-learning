@@ -60,3 +60,4 @@ machinery.
 
 | ID | Date | Ritual | Block | Cost | Status |
 |---|---|---|---|---|---|
+| RITF-0001 | 2026-08-20 | `/system-check` | machinery | The run produced 16 accepted manifests covering 171 files and 5,877 atomic facts (about 1.1 MB of scratch evidence), then had reached only the first 3 of 20 claim-reconciliation concerns; 16 reverse concerns and the cold final review still remained, so Victor stopped it rather than spend roughly a weekly token budget on one audit. | open |
