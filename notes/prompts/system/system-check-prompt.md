@@ -30,7 +30,9 @@ run or applied that machinery.
   standard, launcher, or live artifact to make a map look right.
 - **Derived files may be corrected.** This prompt may edit only `notes/prompts/README.md`,
   `notes/prompts/_internal/_system-map.md`, its audit report, the recommendation ledger for findings,
-  and the universal run report/tracker files required by the close-out contract.
+  and the universal run report/tracker files required by the close-out contract. It may additionally
+  write uncommitted execution evidence under the Git-ignored `.system-check/` runtime directory; that
+  state is never a machinery repair, inventory member, report substitute, or commit candidate.
 - **Recommendations are not repairs.** A duplicated responsibility, missing gate, expensive ritual,
   broken feedback loop, or unclear ownership is recorded for later adjudication; this run does not
   refactor the machinery that produced it.
@@ -59,6 +61,51 @@ run or applied that machinery.
    improvements the audit discovered, and — **on a blocked run too** — one row per proved
    `source-contradiction` under 4d; map corrections themselves are not recommendations.
 5. The universal pipeline report and `_run-tracker.md` update from `_pipeline-self-report.md`.
+6. A resumable evidence checkpoint under `.system-check/runs/{run-id}/`, updated after every accepted
+   bounded concern and retained whether the run completes, blocks, or the hosting session ends.
+
+## Durable checkpoint and resume contract
+
+The audit's analysis is independent of the session or agent product hosting it. Runtime scratch may be
+used while a role is active, but it is never the only copy of accepted evidence. The orchestrator owns
+one repository-local, Git-ignored directory per admitted run:
+
+`.system-check/runs/{YYYYMMDD-HHMMSS}-{starting-commit-short}/`
+
+It contains `state.md`, `inventory.txt`, `snapshot.tsv`, `accepted-manifests/`, `direction-1/`,
+`direction-2/`, and `review/`. Each bounded role may write to its own temporary scratch path, but the
+orchestrator copies a return into the appropriate durable directory **verbatim only after its gate
+accepts it**. It then atomically replaces `state.md` — write a sibling temporary file and rename it —
+with: schema version, status (`in-progress | blocked | complete`), branch, starting commit, inventory
+count and snapshot digest, last closed gate, every accepted concern, every incomplete/rejected concern,
+and the exact next concern or gate. Persist the accepted artifact first and the state pointer second, so
+an interruption can at worst leave an unindexed artifact that the resume gate revalidates; it can never
+claim acceptance for a missing file. Never overwrite or delete an earlier run directory.
+
+On explicit `/system-check`, inspect this directory before starting a new inventory:
+
+1. If exactly one run reads `Status: in-progress`, offer no restart path implicitly: validate and resume
+   it. More than one in-progress run is an admission refusal that lists them and asks Victor which one
+   owns continuity. A blocked or complete run is historical evidence and is not resumed unless Victor
+   explicitly names it.
+2. Recompute the inventory path set and every SHA-256 before reusing evidence. If they equal the stored
+   `inventory.txt` and `snapshot.tsv`, continue at `state.md`'s exact next concern. Do not re-read or
+   re-dispatch an accepted manifest or accepted reconciliation concern.
+3. A session/platform change is not input drift. Codex, Claude, or another conforming runtime continues
+   the same run from the same files and gates.
+4. Real audited-input drift blocks reuse by default. For an explicitly Victor-authorized continuity
+   migration whose only purpose is changing this persistence/resume mechanism, write `migration.md`
+   with the old and new snapshots plus the exact changed paths. Reuse every accepted manifest concern
+   whose assigned source hashes are unchanged; cold re-dispatch only a concern owning a changed audited
+   source. The two maps have no manifest owner: if either changed before Direction 1 had any accepted
+   concern, recompute the Step 4a partition and discard only incomplete map-concern scratch. If an
+   accepted Step 4 concern covered changed map lines, that concern and every dependent Direction 2
+   return are invalid and must be re-dispatched. Replace the stored baseline only after these bounded
+   invalidations are recorded. This is continuity of the same evidence, never a global restart or a
+   licence for arbitrary source drift.
+5. The durable directory is excluded from inventory, snapshot, report findings, Git staging, and every
+   live-state denominator. Its evidence supports orchestration only; the committed audit report remains
+   the sole final verdict.
 
 ## Step 0 — preflight and provenance
 
@@ -116,6 +163,9 @@ its improvement-loop contract and, with `_recommendation-ledger-closed.md`, for 
 machinery findings, but its open rows are not an operational-debt queue; `_recommendation-resolution-doctrine.md` is in scope as the case law those
 four steps cite, never as a queue. Do not follow a path merely because an audited file names it: record the
 declared pattern or contract in the manifest and stop at the machinery boundary.
+
+Also exclude `.system-check/` itself. It is resumable execution evidence governed by the section above,
+not canonical machinery and not live project state.
 
 Save the counts in the working report. The inventory is the denominator: every audited file must later
 have exactly one manifest owner, and every launcher/skill mirror must have exactly one pair. A second
@@ -208,12 +258,13 @@ Before comparing a single map row:
 6. Require `audited files = inventory files − 2` (the two maps have no analyst owner — see Step 1),
    `duplicate manifest ownership = 0`, `unassigned files = 0` over that same set, and launcher/skill
    mirror parity proven.
-7. On acceptance, persist every accepted manifest **verbatim** to an orchestrator-owned runtime scratch
-   directory, one file per concern, named by it. That directory is the accepted denominator's durable
-   copy and is what Step 4's concerns read, so no single context ever has to hold every manifest fact at
-   once; a scratch write outside the repository crosses no commit boundary
-   (`_agent-runtime-standard.md`). A manifest is never edited or added to after acceptance — a defect in
-   one is a re-dispatch under item 4.
+7. On acceptance, persist every accepted manifest **verbatim** to this run's
+   `.system-check/.../accepted-manifests/` directory, one file per concern, named by it, and atomically
+   advance `state.md`. That directory is the accepted denominator's durable copy and is what Step 4's
+   concerns read, so no single context ever has to hold every manifest fact at once and a later Codex or
+   Claude session does not repeat the census. A Git-ignored runtime-evidence write crosses no commit
+   boundary (`_agent-runtime-standard.md`). A manifest is never edited or added to after acceptance — a
+   defect in one is a re-dispatch under item 4.
 
 If the gate cannot close, take the blocked branch in Step 7 and then execute the pipeline close-out. **A
 run that took the blocked branch** additionally may not edit either map.
@@ -285,6 +336,10 @@ Merge only complete returns, then assert over the union:
 - every `source-contradiction` row meets its bar — both clauses quoted, with their manifest fact IDs and
   the one owning inventory path. A row that does not is incomplete and its concern is re-dispatched cold.
 
+After each concern passes its individual return contract, persist it verbatim under `direction-1/` and
+atomically advance `state.md` before dispatching more work. A wave interruption therefore re-dispatches
+only concerns absent from the accepted list.
+
 ### 4c — Direction 2, evidence → claim
 
 Recompute the snapshot again, then dispatch one cold `analyst`, tier `standard`, per **Step 2 manifest
@@ -296,6 +351,8 @@ assert: the union of dispositioned IDs equals that denominator exactly — no fa
 invented; every `documented → <claim ID>` resolves to a real row in the merged ledger; every
 `source-only by ownership split` quotes the rule that keeps the fact out. Report the reverse denominator
 and counts for all three dispositions, per manifest field class.
+
+Apply the same accepted-artifact-then-state order to every Direction 2 concern under `direction-2/`.
 
 ### 4d — the completeness gate
 
@@ -351,11 +408,11 @@ cold-review rules. Do not implement the recommendation.
 
 ## Step 6 — cold final review
 
-Before dispatch, the orchestrator writes the **draft** system-check report to an orchestrator-owned,
-immutable runtime scratch path with
+Before dispatch, the orchestrator writes the **draft** system-check report to this run's durable,
+immutable `review/` path with
 Step 7 items 1–7 complete, item 8 set to `pending cold review`, and item 9 set to
 `pending cold review — no global verdict yet`. This is the draft's producer; it is never the committed
-report. The reviewer receives a **different** scratch path for its findings and verdict, under
+report. The reviewer receives a **different** `review/` path for its findings and verdict, under
 `_agent-runtime-standard.md`. Recompute the Step 1 path + hash manifest; if it moved, take the blocked
 branch with `not run — blocked before final-review dispatch`. Otherwise dispatch one cold `reviewer`,
 tier `deep`, with the accepted-manifest directory, both current maps, the 4a partition, the merged
@@ -418,6 +475,10 @@ Overwrite `notes/prompts/system/_internal/_system-check-report.md` with:
    `source-contradiction` count is printed beside the verdict and does **not** force the blocked branch
    while every one of its rows carries a ledger ID: the verdict rules on the maps, and those rows rule on
    the sources, which this run may not repair.
+
+After writing either the completed or blocked report, persist the same terminal state and exact next
+action in `state.md` before any commit. `blocked` remains resumable only when Victor explicitly names
+that run on a later invocation; `complete` is immutable historical evidence.
 
 **Completed branch:** apply the reviewer-approved map patch and justified recommendation rows, then run
 the validator again with `-MachineryOnly`. Inspect `git diff` and prove that only the declared maps,
