@@ -150,7 +150,14 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    Spanish copy or translate prose in this planner. Either form never crosses a level boundary,
    preserves every existing slug and all prose byte-for-byte apart from link corrections, updates
    every repository-relative link that targets the renumbered file, and is reported as
-   `renumber NN -> MM` (add `English-only` when applicable). A file listed under `## Unassigned existing
+   `renumber NN -> MM` (add `English-only` when applicable). **Filename order matching study order is a
+   standing requirement, not an optional tidy-up** (Victor, 2026-08-21): a route whose numbers no longer
+   match is a defect this planner must repair, and the size of the link surface is never a reason to
+   decline. That link surface is explicitly repository-wide, not topic-local — the inbound links of a
+   legacy Java note reach the Spanish notes, the Spring Boot notes, `_note-quality-standard.md`, prompt
+   internals, both skill mirrors and `_run-tracker.md` — and correcting **every one of them** is part of
+   the renumber, including inside prompt-system machinery, which this clause authorises. Only the link
+   target changes in those files; nothing else in them may be touched. A file listed under `## Unassigned existing
    notes` does not reserve its numeric prefix: when a required renumber target collides with one,
    renumber the unassigned file to the next free prefix above the route's last entry, leave it listed as
    unassigned with no plan entry and no Spanish path assigned, and report it as
