@@ -56,7 +56,9 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   The reason is what a `00` is *for*: it orients Victor before he knows any of the vocabulary, so it
   has to read as continuous guidance — what this topic is, what he will meet, and in what order — and
   a per-section `Purpose:` field written for a reader who already knows the concept works against
-  that. `notes/java/junior/es/00-intro-java.md` is the reference for the shape a finished `00` has.
+  that. `notes/java/junior/es/00-intro-java.md` is the calibration reference for how a finished `00`
+  *reads* — its voice, depth and orientation quality. It is **not** a structure to copy: which
+  sections a `00` has is decided per topic, as the topic-introduction invariant below states.
 
 > **Spring Boot notes lean on Java concepts.** When writing a `notes/spring-boot/junior/en/` note, the code
 > almost always uses pure-Java language features (generics, exceptions, interfaces). Read the
@@ -262,17 +264,30 @@ or `audit` and regardless of its exact filename. An entry is the topic introduct
 6. **a map of the introduction itself**, near the top, walking its own sections in the order they
    appear and saying why they come in that order — distinct from requirement 5, which maps the
    *other files*. This is the paragraph that tells Victor what he is about to meet before he meets
-   it, and it is the reason a `00` exists at all rather than starting the topic at `01`.
+   it, and it is the reason a `00` exists at all rather than starting the topic at `01`;
+7. **the basics he has to know before opening `01`** — the handful of things the first real chapter
+   silently assumes and would be unreadable without. Name them concretely for this topic and settle
+   them here, rather than leaving him to discover mid-`01` that something was never explained.
 
 The introduction previews later concepts without teaching them prematurely. Introductory orientation
 is pedagogical scaffolding and does not need a synthetic coverage bullet of its own.
 
+**These seven are outcomes, not a section list, and a `00` is never a template.** Requirements 1-7 say
+what the introduction has to leave Victor with; which sections deliver them, how many there are and
+what they are called is decided per topic, by what that topic actually needs. Explicitly do **not**
+copy the shape of another topic's `00`. Requirement 3 is the clearest case: `00-intro-java.md` spends
+a long section contrasting Java against JavaScript because Java is a new language replacing the one
+Victor already knows, and there the comparison carries real teaching weight — for a topic where it
+would not, requirement 3 is satisfied by a sentence, or dropped entirely. Its own wording ("where that
+comparison genuinely clarifies") already permits that, and the no-JS-filler rule requires it. The bar
+is a genuinely good introduction to *this* topic, not structural symmetry across topics.
+
 A `00` is written in **conversational mode in every topic**, with no `Purpose:` / `File:` metadata
-fields — see the topic-introduction bullet under **Format modes**, which owns that rule. Sequence the
-sections so the mechanism everything else rests on comes first: in `00-intro-java.md`, the
-compile-then-run pipeline sits directly after "what Java is", because the failure taxonomy, the
-language's traits and the JS contrasts all reference it. Do not leave the foundational mechanism to
-the tail of the file.
+fields — see the topic-introduction bullet under **Format modes**, which owns that rule. Whatever
+sections a topic ends up with, order them so the mechanism the rest of the file leans on comes early
+rather than at the tail: in `00-intro-java.md` that is the compile-then-run pipeline, placed directly
+after "what Java is" because the failure taxonomy, the language's traits and the JS contrasts all
+reference it. The principle transfers; that particular running order does not.
 
 ### Zero-assumption rule — the most important rule in this section
 
