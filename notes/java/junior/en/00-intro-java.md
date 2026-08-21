@@ -584,25 +584,25 @@ The numbers below (`01`, `02`, `03`…) are **reading positions**, not file name
 
 **Readings 13 to 16 — the special types, and the build.** `13` teaches you **enums**: when a value can only be one of a closed set — `PENDING`, `APPROVED`, `REJECTED` — an enum tells the compiler so, and the compiler can then warn you if you left a case unhandled. `14` applies that same idea of a value that does not change to **dates and times**, where the set of possible values is infinite and therefore no compiler check can save you. `15` generalises `@Override` into **annotations** in general: markers you put in the code that some tool reads afterwards, which is what stops the Spring annotations you see daily from looking like secret Java syntax. And `16` closes with **Maven**, the tool that downloads the libraries, compiles, runs the tests and packages everything the previous fifteen files produced.
 
-> **The number in a file name is its place in this route.** `01-variables-types.md` is reading 01, `11-exceptions.md` is reading 11, and so on, so opening the folder in alphabetical order already gives you the right order. Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet. Read the table as three columns — the position in the route, the file you open, and the one reason that file cannot be read any earlier.
+> **The number in a file name is its place in this route.** `01-variables-types.md` is reading 01, `11-exceptions.md` is reading 11, and so on, so opening the folder in alphabetical order already gives you the right order. Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet. The table below therefore has no order column — the file name already carries it. The second column gives the one reason that file cannot be read any earlier.
 
-| Reading order | File in `en/` | Why it sits here |
-|---|---|---|
-| 01 | `01-variables-types.md` | Every later line manipulates a typed value |
-| 02 | `02-strings.md` | Text is the value type you touch on every request |
-| 03 | `03-control-flow.md` | Choosing and repeating needs values to choose between |
-| 04 | `04-methods.md` | Packages that behaviour behind a callable contract |
-| 05 | `05-memory-model.md` | Opens the method boundary: copies, references, the call stack |
-| 06 | `06-oop-classes.md` | Builds objects out of methods and references, and defines equality |
-| 07 | `07-interfaces-abstract.md` | Separates the behaviour needed from the class providing it |
-| 08 | `08-inheritance-polymorphism.md` | Decides at runtime which implementation runs |
-| 09 | `09-generics.md` | Teaches the angle-bracket syntax before collections use it everywhere |
-| 10 | `10-collections.md` | Groups of objects, and the hashing that makes lookup fast |
-| 11 | `11-exceptions.md` | The failures the earlier chapters made possible |
-| 12 | `12-streams-lambdas.md` | Behaviour as a value, and the pipelines built from it |
-| 13 | `13-enums.md` | A closed set of values the compiler can check exhaustively |
-| 14 | `14-dates.md` | The same immutability applied where no compiler check exists |
-| 15 | `15-annotations.md` | Metadata a tool reads — the shape of every Spring annotation |
-| 16 | `16-maven.md` | The build that compiles, tests and packages all of the above |
+| File in `en/` | Why it sits here |
+|---|---|
+| `01-variables-types.md` | Every later line manipulates a typed value |
+| `02-strings.md` | Text is the value type you touch on every request |
+| `03-control-flow.md` | Choosing and repeating needs values to choose between |
+| `04-methods.md` | Packages that behaviour behind a callable contract |
+| `05-memory-model.md` | Opens the method boundary: copies, references, the call stack |
+| `06-oop-classes.md` | Builds objects out of methods and references, and defines equality |
+| `07-interfaces-abstract.md` | Separates the behaviour needed from the class providing it |
+| `08-inheritance-polymorphism.md` | Decides at runtime which implementation runs |
+| `09-generics.md` | Teaches the angle-bracket syntax before collections use it everywhere |
+| `10-collections.md` | Groups of objects, and the hashing that makes lookup fast |
+| `11-exceptions.md` | The failures the earlier chapters made possible |
+| `12-streams-lambdas.md` | Behaviour as a value, and the pipelines built from it |
+| `13-enums.md` | A closed set of values the compiler can check exhaustively |
+| `14-dates.md` | The same immutability applied where no compiler check exists |
+| `15-annotations.md` | Metadata a tool reads — the shape of every Spring annotation |
+| `16-maven.md` | The build that compiles, tests and packages all of the above |
 
 With this you can place any problem inside Java's basic life cycle: the source is checked and compiled into bytecode, and then a JVM executes that bytecode. The route's first stop, [01-variables-types.md](01-variables-types.md), examines the declared types that underpin those compiler checks: which values Java lets each variable hold, and why incompatible types are rejected before execution.
