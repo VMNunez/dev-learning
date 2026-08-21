@@ -47,6 +47,16 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   lines; prose explanations with code blocks — explanation comes before the code, not in dedicated
   metadata fields; use `##` for top-level topic sections and `###` for sub-concepts within them —
   when adding a section to an existing file, match the heading level already in use.
+- **The topic introduction is always conversational mode, in every topic and every level, and this
+  overrides the folder rule above** (Victor, 2026-08-21). An entry is the topic introduction when it
+  has the `00` prefix or its narrative role says so — the same test the topic-introduction invariant
+  uses further down. A `00` therefore carries **no `Purpose:` / `Propósito:` and no `File:` /
+  `Archivo:` line anywhere in it**, not even in a folder listed as structured mode above. Its only
+  metadata is the general `Docs:` link under the title and one `Docs:` line per `##` section.
+  The reason is what a `00` is *for*: it orients Victor before he knows any of the vocabulary, so it
+  has to read as continuous guidance — what this topic is, what he will meet, and in what order — and
+  a per-section `Purpose:` field written for a reader who already knows the concept works against
+  that. `notes/java/junior/es/00-intro-java.md` is the reference for the shape a finished `00` has.
 
 > **Spring Boot notes lean on Java concepts.** When writing a `notes/spring-boot/junior/en/` note, the code
 > almost always uses pure-Java language features (generics, exceptions, interfaces). Read the
@@ -248,10 +258,21 @@ or `audit` and regardless of its exact filename. An entry is the topic introduct
 3. how it relates to or differs from Victor's existing JavaScript/TypeScript/React knowledge where
    that comparison genuinely clarifies;
 4. how it fits Victor's target stack and work;
-5. a one-paragraph map of the complete `01 → N` learning route and why that order is used.
+5. a one-paragraph map of the complete `01 → N` learning route and why that order is used;
+6. **a map of the introduction itself**, near the top, walking its own sections in the order they
+   appear and saying why they come in that order — distinct from requirement 5, which maps the
+   *other files*. This is the paragraph that tells Victor what he is about to meet before he meets
+   it, and it is the reason a `00` exists at all rather than starting the topic at `01`.
 
 The introduction previews later concepts without teaching them prematurely. Introductory orientation
 is pedagogical scaffolding and does not need a synthetic coverage bullet of its own.
+
+A `00` is written in **conversational mode in every topic**, with no `Purpose:` / `File:` metadata
+fields — see the topic-introduction bullet under **Format modes**, which owns that rule. Sequence the
+sections so the mechanism everything else rests on comes first: in `00-intro-java.md`, the
+compile-then-run pipeline sits directly after "what Java is", because the failure taxonomy, the
+language's traits and the JS contrasts all reference it. Do not leave the foundational mechanism to
+the tail of the file.
 
 ### Zero-assumption rule — the most important rule in this section
 
@@ -437,10 +458,18 @@ odometer rolling over, a customer invoiced wrong for months); vivid and *decorat
 padding around the explanation he was looking for.
 
 > **`Purpose:` / `Propósito:` was rejected in `00-intro-java.md` on 2026-08-20/21 and removed from
-> both languages.** Every section he had read lost it; the three he had not were removed on the next
-> pass for consistency. Treat the structured-mode `Purpose:` field as **open** — if the same rejection
-> repeats in another Java or Spring Boot file, the format mode above is what needs changing, not the
-> file.
+> both languages — and on 2026-08-21 that became the rule for every `00`, not an open question.**
+> Every section he had read lost it; the three he had not were removed on the next pass for
+> consistency. Victor then confirmed the preference generalises: he wants *all* topic introductions
+> written that way, as orientation prose that guides him through what he is about to meet. The
+> topic-introduction bullet under **Format modes** now carries that rule, so this is settled for `00`
+> files and must not be reopened per-file.
+>
+> What stays **open** is `Purpose:` in the *non-introduction* files of a structured-mode folder. Note
+> that no `notes/java/junior/` file has ever used it — all sixteen are conversational prose, including
+> `08-excepciones.md`, which this standard cites as its own calibration reference — so the structured-mode
+> claim over that folder describes Spring Boot accurately and Java not at all. Do not "fix" the Java
+> files to match; the mismatch is recorded and Victor resolves it as he reviews each topic.
 
 ### The rest of the writing rules
 
@@ -500,8 +529,9 @@ padding around the explanation he was looking for.
   add one sentence of reminder — short enough that the reader can continue without opening the other
   file if they roughly remember the concept. The link is for deep review; the sentence is so the flow
   of the current file is never broken.
-- **Code concept sections (methods, classes, annotations)** *(structured mode — notes/java/junior/en/ and
-  notes/spring-boot/junior/en/ only)*: each section starts with three metadata lines: `Purpose:` — one
+- **Code concept sections (methods, classes, annotations)** *(structured mode only — and never in a
+  `00` topic introduction, whatever folder it sits in, per the topic-introduction bullet under
+  **Format modes**)*: each section starts with three metadata lines: `Purpose:` — one
   sentence: who calls it, when, and why; `File:` — real path to the file where this code was applied,
   found through **Which project applied a concept**, which also says what to write when no project has;
   `Docs:` — link to the exact sub-section to study with a note on what to read.
