@@ -392,6 +392,56 @@ mechanism was traced with a diagram, a worked example, and a callout for the mis
 full finished text is the first section of `notes/java/junior/es/08-excepciones.md` — read it before writing
 a new file to calibrate.
 
+### Sentence-level register — the second family of TODOs (derived from the 00-intro-java pass, 2026-08-21)
+
+The anticipate-the-TODO pass above covers TODOs that ask for **more content** ("¿por qué funciona
+así?"). A second family asks for **the same content written differently** — "MAL EXPRESADO", "NO SE
+ENTIENDE", "EXPRÉSALO MEJOR". Twenty of those in a single file produced the seven rules below. They
+apply to both languages, but they were written against Spanish prose and the Spanish file is where
+they are judged.
+
+- **A bold lead-in is a plain statement of the fact, never a metaphor or a riddle.** The bold sentence
+  that opens a paragraph is the one Victor reads to decide what the paragraph is about, so it has to
+  survive being read alone. `**main es la puerta, y la JVM solo conoce una puerta.**` and
+  `**Todavía no desmontes esa firma — y es deliberado.**` were both rejected outright; the accepted
+  forms are `**main es el punto de entrada: por ahí empieza a ejecutarse el programa.**` and
+  `**De momento te vale con lo que acabas de leer sobre public, static y String[].**`. The analogy is
+  welcome — in the body, after the fact has been stated.
+- **The zero-assumption rule covers supporting clauses, not just the section's own concept.** Every
+  term he TODO'd here — *proceso batch*, `.jar`, *mapear una fila a un objeto*, *colección*, *espacio
+  de nombres*, `javac`, *transpilar* — appeared as scaffolding inside an explanation of something
+  else, which is exactly why the draft did not notice it was undefined. Sweep every noun in the
+  paragraph, not only the heading: define it inline in the same sentence, or cut it.
+- **Never name a command, tool or file type before saying what it is.** `compilado con javac Hello.java
+  y arrancado con java Hello` earned "NUNCA HAS DICHO LO QUE ES JAVAC". A tool gets one clause saying
+  what program it is and what it does, at first mention.
+- **Forward references are a whole plain sentence, never a trailing clause ending in a link.**
+  "La regla general — … — espera a [04-poo-clases.md]" was rejected. Write: what the reader will
+  learn, then where. "Cómo se hace está en [04-poo-clases.md](04-poo-clases.md)."
+- **One idea per sentence; at most one em-dash aside.** The rejected sentences are uniformly the ones
+  with a subordinate clause inside an em-dash aside inside another subordinate clause. If a sentence
+  needs re-reading to find its verb, split it.
+- **An abstract consequence must be spent immediately.** "explica exactamente qué te impide hacer como
+  consecuencia" earned "¿QUÉ ME IMPIDE HACER?". When the text says a rule *has consequences*, *stops
+  you doing things*, or *changes how you write code*, list them right there, in code, and then link
+  onward. This is the "never mention an action in the abstract without its code" rule applied to
+  consequences rather than actions.
+- **Scope a project claim to what is actually true.** "la mayoría de las clases del proyecto 07 no
+  tienen main" earned "DE CUALQUIER PROYECTO EN REALIDAD". Cite a project when the project is the
+  evidence; write the general statement when the fact is general.
+
+And one thing to stop doing, which is not a rule about clarity: **cut the literary flourish**. "el
+único martes al año en que se ejecuta el camino malo", "te va a costar una tarde entera", "a las nueve
+de la mañana y a la hora de comer" were all deleted in review. Vivid and *concrete* is the bar (an
+odometer rolling over, a customer invoiced wrong for months); vivid and *decorative* reads to him as
+padding around the explanation he was looking for.
+
+> **`Purpose:` / `Propósito:` was rejected in `00-intro-java.md` on 2026-08-20/21 and removed from
+> both languages.** Every section he had read lost it; the three he had not were removed on the next
+> pass for consistency. Treat the structured-mode `Purpose:` field as **open** — if the same rejection
+> repeats in another Java or Spring Boot file, the format mode above is what needs changing, not the
+> file.
+
 ### The rest of the writing rules
 
 - **Personal, conversational voice.** Write for Victor. "You use this when..." not "This is used
