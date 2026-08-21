@@ -12,13 +12,11 @@ This note is the map for everything that follows. It starts with what kind of la
 
 ## What Java is, and the job it does in your stack
 
-Purpose: You use this orientation whenever you need to say what Java actually is and why the server half of your projects is written in it, because every later chapter assumes you already know which part of the work the language is doing.
-
 Docs: [Baeldung — Spring Boot Tutorial: Bootstrap a Simple Application](https://www.baeldung.com/spring-boot-start) → read: the opening overview and the first bootstrapped application, to see that a Spring Boot service is ordinary Java source, compiled and started like any other Java program
 
 Java is a **general-purpose, statically typed, class-based language that compiles to bytecode and runs on a JVM**. That is a dense sentence, so take it one word at a time — each of those words is a decision the language made, and each one shapes how the rest of these notes read.
 
-- **General-purpose** — Java is not tied to one kind of program. It is used for web back ends, Android apps, desktop tools, and batch jobs that move millions of database rows overnight. You are learning it for the first of those.
+- **General-purpose** — Java is not tied to one kind of program. It is used for web back ends, Android apps, desktop tools, and batch jobs — programs with no screen and nobody sitting in front of them, which start themselves at a scheduled hour and process a whole batch of data in one go — that move millions of rows from one system to another overnight.
 - **Statically typed** — every variable is declared with a type (`int`, `String`, `User`), that type is fixed from that moment on, and a tool checks every use of it *before* the program is allowed to start.
 - **Class-based** — there is no such thing as a loose function floating in a Java file. Every line of executable code is a member of a class, and a class is the unit the compiler produces output for.
 - **Compiles to bytecode and runs on a JVM** — the two-stage pipeline the section below walks through in full. For now: one tool checks and translates your source, and a second program executes the translation.
@@ -35,13 +33,17 @@ Here is where that language sits in the stack you are building towards. Angular 
 
 The browser never talks to the database directly: it sends an HTTP request to the Java server and gets JSON back. The Java server is the only thing holding the database connection, which is exactly why it is also the only place that can truly enforce a **business rule** — a condition that decides what each user is allowed to do, like "an employee may only see their own time entries." Putting that same check in Angular is not wrong as a first barrier, to improve the experience and avoid unnecessary requests, but it is not real security: anyone can open the browser's *Network* tab and call the endpoint directly, bypassing the Angular code entirely. The only rule that truly counts is the one living in the backend.
 
-> **Java is the language; Spring Boot is a framework written in that language.** These two get mixed up as one thing early on, and untangling them now saves a lot of confusion later. Java gives you classes, types, methods and exceptions. Spring Boot is a large pile of pre-written Java that your build downloads as `.jar` files, and it handles the parts nobody wants to write by hand: opening a port, parsing an HTTP request, mapping a database row onto an object. When you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are step 15 of the route below, in [13-annotations.md](13-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
+> **Java is the language; Spring Boot is a framework written in that language.** These two get mixed up as one thing early on, and untangling them now saves a lot of confusion later. Java gives you classes, types, methods and exceptions. Spring Boot is a large pile of Java other people already wrote, which you download and use — the same way you pull npm packages in Node.
+>
+> Those downloads arrive as `.jar` files. There is nothing magic about a `.jar`: it is a compressed archive — literally a `.zip` with a different extension — holding already-compiled classes, the `.class` files the last section of this note talks about. You never open one, and you never download one by hand: you write in a configuration file which libraries you need, your build tool downloads them into a folder on your machine, and from then on the compiler and the JVM look for classes inside those `.jar` files exactly as they look for yours. That build tool is Maven, and how you declare that list of libraries is the subject of [14-maven.md](14-maven.md).
+>
+> What all that code buys you is the parts nobody wants to write by hand: opening a port so the server sits there listening for requests, turning the text of an HTTP request into Java objects, and **mapping a database row onto an object**. That last one means taking a row from a table — say `(3, 'Ana', 'ana@mail.com')` from the `users` table — and building a Java `User` object out of it whose `id`, `name` and `email` fields already hold `3`, `"Ana"` and `"ana@mail.com"`. Without that mapping you would read column by column and assign them by hand on every query; with it you work with ordinary objects and forget there are rows and columns underneath.
+>
+> When you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are explained in [13-annotations.md](13-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
 
 ---
 
 ## Five traits that come back in every later chapter
-
-Purpose: You use these five traits as the through-line of the whole topic, because each later chapter is essentially one of them examined closely — recognising them here is what stops a chapter arriving out of nowhere.
 
 Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed Languages](https://www.baeldung.com/cs/statically-vs-dynamically-typed-languages) → read: the section on statically typed languages, for why the type check happens before execution instead of during it
 
@@ -80,15 +82,11 @@ becomes, in classic Java, a class with four private fields, a constructor that r
 
 ## Coming from JavaScript — where the comparison helps, and where it lies
 
-Purpose: You use this when a Java construct looks like something you already know from JavaScript or TypeScript, because roughly half of those resemblances are real and the other half will cost you an afternoon.
-
 Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed Languages](https://www.baeldung.com/cs/statically-vs-dynamically-typed-languages) → read: the section on dynamically typed languages, which is the JavaScript side of every contrast below
 
-Your React and TypeScript background is an advantage here — you are not learning to program, you are mapping known ideas onto a new language. The risk is that some of that mapping is wrong in ways that look right, and those are the ones that waste an afternoon.
+**This is used the same way in both languages.** The syntax of `if`, `while` and `for` is the same. `try { } catch (e) { }` looks identical — although what Java does inside it when throwing and catching an exception is different, and the callout below explains it. Walking a **collection** reads the same as JavaScript's `for...of`: `for (String name : names)`. "Collection" is the name Java gives to any object holding several elements: a list, a set, and an array too. An array is the simplest of them, a fixed-length row whose size is decided when you create it and never changes; the others can grow and shrink, and they are all in [07-collections.md](07-collections.md). Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
 
-**This is used the same way in both languages.** The syntax of `if`, `while` and `for` is the same. `try { } catch (e) { }` looks identical — although what Java does inside it when throwing and catching an exception is different, and the callout below explains it. A loop over a collection reads the same as JavaScript's `for...of`: `for (String name : names)`. Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable behaves close enough to `const` that the analogy is worth using, though it is not exactly the same: `const` in JavaScript locks the variable but not what it contains, and `final` in Java does exactly the same thing — that is a half-truth, not a real difference, and [01-variables-types.md](01-variables-types.md) spells out the exact nuance.
-
-**These look the same and are not.**
+**These look like they work the same in both languages, and they do not.**
 
 *`var` is not `var`.* Java reused the keyword, but gave it nearly the opposite meaning. In JavaScript, `var` declares a variable with no type at all. In Java, `var` means "work the type out from what I am assigning, then hold me to it forever", for example:
 
@@ -132,9 +130,11 @@ error: cannot find symbol
 
 That message is worth recognising early, because `cannot find symbol` is the error you will meet most often in your first weeks. It always means the same thing: the compiler looked for a name — a variable, a method, a class — and nothing by that name exists anywhere the compiler can see from that line.
 
-*`==` is asking a different question.* In JavaScript the interesting distinction is `==` versus `===`: `===` compares whether the type and the value match on both sides, while `==` first tries to convert one side so the types match and only then compares — that is type coercion. Java has no `===`, and Java's `==` does no coercion at all: when used on objects — for example, two `String` variables — it asks "are these two variables pointing at the same object in memory?", which is almost never the question you meant to ask when comparing two pieces of text. Getting this wrong is the single most common beginner bug in Java, and it is settled in two places. The case you will hit first, comparing the content of two pieces of text, is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows why `.equals()` — which compares the actual text content, character by character, instead of the memory address — is the method you actually wanted, and why writing two plain string literals side by side, like `"hello" == "hello"`, makes `==` look like it works correctly just often enough to fool you (Java reuses the same object in memory for identical text literals, so that particular case really does point at the same place, even though the general rule still is not that). The general rule — how you yourself define when two objects of a class you wrote should count as equal — waits for [04-oop-classes.md](04-oop-classes.md).
+*`==` is asking a different question.* In JavaScript the interesting distinction is `==` versus `===`: `===` compares whether the type and the value match on both sides, while `==` first tries to convert one side so the types match and only then compares — that is type coercion. Java has no `===`, and Java's `==` does no coercion at all: when used on objects — for example, two `String` variables — it asks "are these two variables pointing at the same object in memory?", which is almost never the question you meant to ask when comparing two pieces of text. Getting this wrong is the single most common beginner bug in Java, and it is settled in two places. The case you will hit first, comparing the content of two pieces of text, is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows why `.equals()` — which compares the actual text content, character by character, instead of the memory address — is the method you actually wanted, and why writing two plain string literals side by side, like `"hello" == "hello"`, makes `==` look like it works correctly just often enough to fool you (Java reuses the same object in memory for identical text literals, so that particular case really does point at the same place, even though the general rule still is not that). And comparing two objects of a class you wrote yourself — one `User` against another `User` — is the second place: there, calling `.equals()` is not enough on its own, because Java cannot guess what makes two users "the same". The same `id`? The same email? You make that decision and write it into the class yourself. How that is done is in [04-oop-classes.md](04-oop-classes.md).
 
-*TypeScript's types vanish before runtime; Java's do not.* TypeScript checks your types and then **deletes them**: the JavaScript that actually runs in the browser contains no types at all, and nothing re-checks anything while it runs. Java's declared types survive compilation — they are recorded in the `.class` file, and the JVM itself refuses an invalid conversion at runtime. There is exactly one exception to this in Java: generics. A generic's type arguments, like the `String` inside `List<String>`, *are* discarded after being checked at compile time — that phenomenon is called *type erasure*, and [10-generics.md](10-generics.md) explains exactly what it stops you from doing as a result.
+*TypeScript's types vanish before runtime; Java's do not.* TypeScript never runs at all: before it reaches the browser it is **transpiled**, that is, translated into ordinary JavaScript, and in that translation the types fall away because JavaScript would not know what to do with them. The file running in the browser contains not a single type, so once execution starts there is nobody left checking anything. Java is the opposite: the types you declare survive compilation, they are written into the `.class` file, and the JVM itself refuses an invalid conversion at runtime.
+
+There is exactly one exception, and it is generics. A generic's type argument — the `String` inside `List<String>` — is checked during compilation and then discarded, so at runtime a `List<String>` and a `List<Integer>` are the very same type: a plain `List`. That discarding is called *type erasure*, and what it stops you doing is asking about that type once the program is running. In practice it is three things that will not compile: you cannot ask `if (list instanceof List<String>)`, because at runtime that information no longer exists; you cannot create an array of a generic type with `new T[10]`, because nobody knows what `T` was any more; and you cannot have two methods that differ only in one taking `List<String>` and the other `List<Integer>`, because after erasure they are the same method written twice. [10-generics.md](10-generics.md) covers the whole thing.
 
 | Habit from JS/TS | What JavaScript/TypeScript does | What Java does | Does it behave the same? |
 |---|---|---|---|
@@ -146,13 +146,22 @@ That message is worth recognising early, because `cannot find symbol` is the err
 | `==` vs `===` | Compares with or without type coercion | `==` on objects compares whether they point at the same object in memory, not whether the content is equal | No — use `.equals()` |
 | TS types erased at build | Types vanish at compile time; nothing checks them at runtime | Types survive into the bytecode | No — except for generics |
 
-> **One comparison to refuse outright: exceptions.** It is tempting to read Java's `try/catch` as the JavaScript one because the syntax looks the same. The mechanism underneath is not. Java organises exceptions into a type hierarchy, and for one specific branch of it the *compiler* itself forces you to do something about the failure before it lets you build the program: either you catch it right there with a `catch`, or you explicitly declare in the method's signature that the failure can rise unhandled to whoever called you — and that obligation is checked at compile time, with no JavaScript equivalent whatsoever. Applying your JS error-handling habits here produces code that simply does not compile, with a message that makes no sense until you know this model. That topic is explained from scratch in [08-exceptions.md](08-exceptions.md).
+> **One comparison to refuse outright: exceptions.** It is tempting to read Java's `try/catch` as the JavaScript one because the syntax looks the same. Underneath they have nothing in common. In Java an exception is an object of a class, and Java splits those classes into two groups. With the first — the so-called **checked** exceptions — the compiler turns strict: if your method calls something that can throw one of them, it will not let you compile until you say what you intend to do about that failure. And there are only two possible answers, both written in the code:
+>
+> - you catch it right there with a `try/catch` and deal with the problem yourself;
+> - or you write `throws IOException` in your method's signature, which means "not my problem". The failure then passes to the method that called you, and that method faces the same obligation: catch it, or declare it again. It keeps rising method by method until one of them catches it, or until it reaches the top and the program stops.
+>
+> What matters is not which option you pick but that picking is mandatory: it is a condition for the program to compile at all, and JavaScript has nothing like it. Applying your JS habits here produces code that simply does not compile, with a message that means nothing until you know this model:
+>
+> ```text
+> error: unreported exception IOException; must be caught or declared to be thrown
+> ```
+>
+> The full model — the two groups, how the failure travels, how to read the trace — is explained from scratch in [08-exceptions.md](08-exceptions.md).
 
 ---
 
 ## The smallest Java program that runs
-
-Purpose: You use this skeleton as the frame every example in every later file sits inside, because Java has a fixed minimum before a single line of your own logic can execute.
 
 Docs: [Baeldung — Java main() Method Explained](https://www.baeldung.com/java-main-method) → read: the opening explanation of the common signature, where `public` and `static` are unpacked keyword by keyword
 
@@ -166,13 +175,27 @@ public class Hello {
 }
 ```
 
-Saved as `Hello.java`, compiled with `javac Hello.java` and started with `java Hello`, that prints:
+To see it run, save it in a file called `Hello.java` and go through the two stages the last section of this note walks through. Each stage has its own terminal command, and each command is a separate program that ships inside the JDK you installed:
+
+```text
+javac Hello.java     ← javac is the compiler: it reads Hello.java, checks it, and produces Hello.class
+java Hello           ← java is the launcher: it starts a JVM, loads Hello.class, and runs it
+```
+
+Notice a detail that trips people up at first: to compile you write the **file** name with its extension (`Hello.java`), and to run you write the **class** name with no extension (`Hello`), because from that point on you are no longer working with your text file but with the compiled class. In IntelliJ you never type either command — the green Run button fires them for you — but this is exactly what happens underneath. The console output is:
 
 ```text
 Hello from Java
 ```
 
-**The file name is not a convention, it is a rule.** A `public` class must live in a file with exactly its own name plus `.java`. Put the class `PriceCalculator` in a file called `Wrong.java` and nothing compiles:
+**The file name is not a convention, it is a rule.** If you declare `public class PriceCalculator`, the file has to be called `PriceCalculator.java`: the same exact name, capitals included, plus the `.java` extension. Saving that same class in a file called `Wrong.java` does not compile:
+
+```java
+// file: Wrong.java
+// ❌ WRONG — this file should be called PriceCalculator.java
+public class PriceCalculator {
+}
+```
 
 ```text
 error: class PriceCalculator is public, should be declared in a file named PriceCalculator.java
@@ -180,36 +203,66 @@ error: class PriceCalculator is public, should be declared in a file named Price
 
 The reason is that the compiler and the JVM both find a class *by its name*: when something asks for `PriceCalculator`, the tooling goes looking for `PriceCalculator.class`, produced from `PriceCalculator.java`. Making the two names line up turns "find this class" into a predictable file lookup instead of a search through every file on disk.
 
-**`main` is the door, and the JVM only knows one door.** When you run `java Hello`, the JVM loads that class and looks for a method with exactly this shape. Every token in it is doing a job:
+**`main` is the entry point: that is where execution starts.** A program has to start on some specific line, and in Java that line is always inside a method called `main`. When you run `java Hello`, the JVM loads the `Hello` class, looks inside it for a method with exactly this shape, and calls it; that is where your program starts, and when that method ends, the program ends.
+
+There can be many classes with a `main` in the same project — each one would be a separately launchable program — but in any given run only the `main` of the class you launched is used. Every token in that signature is doing a job:
 
 ```text
 public static void main(String[] args)
   │      │     │    │      │
-  │      │     │    │      └─ the command-line arguments, handed over as an array of text
+  │      │     │    │      └─ the data handed to the program when it is started, as an array of text
   │      │     │    └─ the fixed name the JVM looks for — nothing else will do
   │      │     └─ gives nothing back; there is no caller in your code to return to
   │      └─ callable without creating an object of the class first
   └─ visible from anywhere, including from outside this class's own package
 ```
 
-One word in that last line needs unpacking before you can read it at all: a **package** is the namespace a class is declared in, written as a dotted name that mirrors its folder path on disk. Your TimeTrack classes sit in `com.victor.timetrack` and its sub-packages, which is exactly the `com/victor/timetrack/` folder chain you saw above. It is the boundary that "visible from anywhere" is measured against.
+> **Why always `String[] args`?** Because a program can be started with data typed right after the class name: `java Hello Ana 30`. Those two values reach your `main` inside `args`, which would hold `["Ana", "30"]`. It is an **array** — a fixed-length row of values — because how many values the user will type is not known until launch time. And it is of type `String` because everything typed into a terminal is text: that `30` arrives as the text `"30"`, not as the number `30`, and if you need it as a number you have to convert it yourself. `args` has to be in the signature even if you never use it — which is the case 99% of the time — because this is the exact shape the JVM and the build tools recognise as an entry point.
 
-If that method is missing, the class still compiles perfectly — nothing is wrong with it *as a class* — and the failure comes later, from the JVM, at the moment you try to start it:
+One word from that last line is still to be unpacked: **package**. A package is the folder a class belongs to, written with dots instead of slashes. Your TimeTrack classes live on disk inside `src/main/java/com/victor/timetrack/`, which is why the first line of code in each of them is:
+
+```java
+package com.victor.timetrack;
+```
+
+It is the same `com/victor/timetrack` path with dots where the slashes were. Classes in sub-folders belong to sub-packages: `.../timetrack/service/TimeEntryService.java` is in the package `com.victor.timetrack.service`. The folder path and the package name must always match, and the reason is the one from before: it is how the compiler and the JVM know which folder to look in for a class's file given its name.
+
+What all of this is for: the package is the class's surname. Its full name is not `TimeEntryService` but `com.victor.timetrack.service.TimeEntryService`, and that lets two classes with the same short name coexist without colliding — the `List` you will use daily is really `java.util.List`, and if tomorrow you write your own `List` class inside your package, both can live side by side. That is what a **namespace** is: a scope within which each name identifies exactly one thing.
+
+And this is what `public` was measuring in the `main` signature. Packages are also the visibility boundary: a class or method without `public` can only be used from classes in the same package, while with `public` it can be used from any package. `main` is `public` because the caller is the JVM, which sits outside your code and therefore outside every package of yours. The full visibility rules are in [04-oop-classes.md](04-oop-classes.md).
+
+If the class you are trying to launch has no `main` method, the class still compiles perfectly — nothing is wrong with it *as a class* — and the failure comes later, from the JVM, at the very moment you try to start it:
 
 ```text
 Error: Main method not found in class NoMain, please define the main method as:
    public static void main(String[] args)
 ```
 
-> **Why does that fail then, and not at compile time?** Because a class without a `main` method is a completely normal, useful class — most of the classes in project 07 have no `main` at all and are compiled and used constantly. "Has an entry point" is not a property the compiler could sensibly demand of every class; it is a demand the JVM makes of the *one* class you name on the command line, at the moment you name it.
+> **Why does it fail at launch and not at compile time?** Because a class without a `main` is a completely normal, useful class: in any project, the vast majority of classes have no `main` and are compiled and used constantly. Having an entry point is not something you can demand of every class; it is only needed in the class the program starts from. And the compiler cannot know which class that will be, because you decide it later, when you run `java Hello`. The JVM does know, because you have just given it the name — which is why the check lands there and not earlier.
 
-**Do not unpack that signature yet — and that is deliberate.** You have just met `public`, `static` and `String[]`, and each is a real concept with a chapter of its own. `public` and `static` are visibility and class-level membership, which belong with classes in [04-oop-classes.md](04-oop-classes.md). `String[]` is an array, a fixed-length row of values, which belongs with the other ways of holding many values in [07-collections.md](07-collections.md). Read them here as a fixed formula you can recognise. Every example from `01` onwards prints something, so this is the frame those examples live in — and it stops being a formula in the two chapters that own it.
+**For now, what you have just read about `public`, `static` and `String[]` is enough.** Each of those three words is a whole concept in its own right, and each has its own chapter later on: the full rules for `public` and `static` — who can see a member of a class, and whether that member belongs to the class as a whole or to each object separately — are in [04-oop-classes.md](04-oop-classes.md); `String[]` is explained alongside the other ways of holding many values, in [07-collections.md](07-collections.md). Here it is enough to recognise the template and be able to copy it, because every example in the following chapters prints something to the console and, to try them out yourself, you will have to put them inside a `main` like this one.
 
-**`System.out.println` is how you see anything at all.** `System.out` is the standard output stream, which for you is the console in IntelliJ, and `println` writes its argument there and then moves to a new line. Its sibling `print` writes without the line break. For your whole junior route this is the debugging tool of choice; a real application uses a logging library instead, so that output can be switched off, timestamped, and routed to a file in production.
+**`System.out.println` is how you print something to the screen.** `System.out` is the program's standard output, which for you is the console in IntelliJ, and `println` writes whatever you pass it there and then moves to the next line. Its sibling `print` writes exactly the same thing without that line break, so two `print` calls in a row leave the text stuck together on one line:
 
-> **Preview — Spring Boot:** the snippet below is from your own project and uses Spring Boot classes you have not studied yet. It is here only to show that the same `main` signature sits underneath a framework application — `@SpringBootApplication` and `SpringApplication.run` are explained properly in the Spring Boot notes.
+```java
+System.out.print("Hello ");
+System.out.print("Ana");
+System.out.println("!");
+System.out.println("Second line");
+```
 
-`Hello` is not a toy version of something real programs do differently. It is exactly what a Spring Boot application does. `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/TimetrackApplication.java` is barely a dozen lines long, and the important one is the signature you just read:
+```text
+Hello Ana!
+Second line
+```
+
+For your whole junior route this will be your main tool for seeing what is going on inside the program: you print the value of a variable halfway through a method and check whether it is the one you expected.
+
+> **A real application does not print with `System.out.println`, it uses a logger.** The problem with `System.out.println` is that there is no way to switch it off: it is written into the code, so it prints always, in production too. A logging library — Spring Boot ships with one configured out of the box — writes the same thing but adds the date and time, the class that wrote it, and a level of importance (`INFO`, `WARN`, `ERROR`). That lets you say "in production I only want to see the `ERROR` ones" by changing one line of configuration, without touching the code, and send that output to a file instead of the screen — which is exactly what you need when the program has been running for weeks on a server nobody is watching.
+
+> **Preview:** the snippet below is from your own project and uses Spring Boot classes you have not studied yet. It is here only so you can see that the `main` signature you have just read is also the one that starts a framework application. `@SpringBootApplication` and `SpringApplication.run` are explained in their own time in the Spring Boot notes.
+
+`Hello` is not a toy version of something real programs do another way: a Spring Boot application starts in exactly the same manner. The file `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/TimetrackApplication.java` is barely a dozen lines long, and the one that matters is the signature you just saw:
 
 ```java
 @SpringBootApplication
@@ -222,19 +275,25 @@ public class TimetrackApplication {
 }
 ```
 
-The whole TimeTrack back end — every controller, every security rule, the database connection — starts from that one call. Spring Boot does not replace Java's entry point; it starts on top of it.
+The whole TimeTrack backend — every controller, every security rule, the database connection — is set in motion by that one call to `SpringApplication.run`. Spring Boot does not replace Java's entry point: it sits on top of it.
 
-> **You may see Java code with no class around it.** Since Java 25, the version your machine and project 07 both run, a file containing only `void main() { ... }` can be launched directly with `java file.java`, with no class and no `static`. It works, and it exists to make a first lesson shorter. It is not what any real project uses — every file in project 07, and every example in these notes, uses the full form — so treat the short one as a curiosity to recognise, not as the shape to learn.
+> **You may come across Java code with no class around it.** Since Java 25, which is the version you have installed and the one project 07 uses, a file containing only `void main() { ... }` can be launched directly with `java file.java`, without writing the class and without `static`. It works, and it was added so a first Java lesson does not have to open with three words that cannot be explained yet. No real project uses it — neither project 07 nor the examples in these notes — so recognise it if you meet it, but learn the full form.
 
 ---
 
 ## The route from here to Maven, and why it runs in that order
 
-Purpose: You use this map to know why the next sixteen chapters arrive in the order they do and, more practically, which file on disk each step actually is — because the numbers in the file names are not the reading order.
-
 Docs: [Baeldung — Get Started with Java](https://www.baeldung.com/get-started-with-java-series) → read: the ordered list of articles in the series, as a second opinion on how the same ground is usually sequenced
 
-The route starts with the smallest thing a program can hold and ends with the tool that builds the whole thing, and every step is placed immediately before the step that needs it. `01` gives you values — numbers, booleans, the rules that decide when an `int` becomes a `long`, and why a decimal is never exactly the number you typed — because every later line manipulates a value of some type. `02` takes the one value type big enough to deserve its own chapter, text, and shows why a `String` you appear to modify is really a new object every time. With single values understood, `03` stops evaluating expressions one at a time and starts choosing and repeating them, and `04` packages that behaviour into named methods with a contract each call has to satisfy. `05` then opens that method boundary and shows the machinery: what is copied into a parameter, where the object itself actually lives, and how the JVM tracks a chain of calls — the mechanism that objects, exceptions and collections all reason about later. Only then does `06` build real objects with valid state and answer the question objects immediately raise: when are two of them equal? `07` separates the behaviour a caller needs from the class that happens to provide it, and `08` explains how Java decides at runtime which implementation actually runs. `09` teaches you to read `Map<String, List<Order>>` *before* `10` fills the screen with exactly that, so no collection example ever contains syntax you cannot parse. `11` develops the full model of failure — how it travels, where to handle it, how to read the trace — now that lookups, conversions and iteration have given you several ways to fail. `12` gives Java the ability to pass behaviour as a value, which is what makes stream pipelines readable at all. `13` closes a value set into an enum the compiler can check exhaustively; `14` applies the same immutable-value thinking to dates and times, where the set of possible values is unbounded and no compiler check can save you; `15` generalises `@Override` into annotations as metadata that some specific tool reads, which is what makes the Spring annotations you see daily stop looking like hidden Java syntax. `16` closes with Maven, the build that resolves, compiles, tests and packages everything the fifteen chapters before it produced.
+The route starts with the smallest thing a program can hold and ends with the tool that builds the whole project. Every step sits immediately before the step that needs it, and it comes in four stretches.
+
+**Steps 01 to 04 — values and basic sentences.** `01` gives you values: numbers, booleans, when an `int` becomes a `long`, and why a decimal is almost never exactly the number you typed. It goes first because every line you write afterwards manipulates some value. `02` takes the value type you will touch most, text, and explains why a `String` you appear to modify is really a new one every time. With single values understood, `03` starts choosing between them and repeating them with `if`, `for` and `while`, and `04` packages that behaviour into named methods, with their parameters and their return value.
+
+**Steps 05 to 08 — the machinery and objects.** `05` opens up that method boundary and shows the machinery: what exactly is copied when you pass an argument, where the object lives in memory, and how the JVM keeps track of which method called which. It goes here because it is the mechanism objects, exceptions and collections all rest on later: with it understood, those three topics are reasoned about instead of memorised. Only then does `06` build real objects, whose state is valid from birth, and answer the question objects raise the moment they appear: when do two of them count as equal. `07` separates the behaviour a caller needs from the concrete class that provides it, and `08` explains how Java decides, at runtime, which of the implementations runs.
+
+**Steps 09 to 12 — holding many things, and failing.** `09` teaches you to read `Map<String, List<Order>>` *before* `10` fills the screen with that same syntax, so no collection example ever contains symbols you cannot yet parse. `11` then develops the full model of failure — how an exception travels, where it is handled, how to read the trace — and it arrives at this point because the lookups, conversions and loops of the previous chapters have given you several different ways to fail. `12` gives Java the ability to pass behaviour around as if it were data, which is what makes stream pipelines readable.
+
+**Steps 13 to 16 — the close.** `13` closes a fixed set of values into an enum the compiler can check exhaustively. `14` applies that same value-that-never-changes idea to dates and times, where the possible values are unbounded and no compiler check can save you. `15` generalises `@Override` into annotations at large: metadata that some specific tool reads, which is what makes the Spring annotations you see daily stop looking like secret Java syntax. And `16` closes with Maven, the tool that downloads the libraries, compiles, runs the tests and packages everything the fifteen chapters before it produced.
 
 > **The numbers in the file names are not the reading order.** Only `00` and `01` line up. The files were written before this route was planned, and renumbering them would break several hundred links across the repository, so the names were deliberately left alone. Read the order from the table below and ignore the number on the file — the table is the authority, not the folder listing.
 
@@ -262,8 +321,6 @@ Two notes on reading this table. The middle column is the file to open in `notes
 ---
 
 ## From source code to bytecode to JVM execution
-
-Purpose: You use this pipeline whenever you build or run Java code, because it identifies which tool checks the source, what that tool produces, and what actually executes the result.
 
 Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → read: "Java Compiler" (section 4) for compilation and "Java Virtual Machine" (section 5) for execution
 
@@ -311,8 +368,6 @@ The two stages are separate even when IntelliJ hides them behind one green Run b
 ---
 
 ## Compile-time failures vs runtime failures
-
-Purpose: You use this distinction when reading an error or debugging a wrong result, because the moment of failure tells you whether the compiler rejected the source or the problem appeared during execution.
 
 Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → read: "Java Compiler" (section 4) and "Java Virtual Machine" (section 5) to see the boundary between compiler rejection and execution
 
@@ -381,7 +436,7 @@ The problem appears only when a JVM executes the division with `divisor` equal t
 Exception in thread "main" java.lang.ArithmeticException: / by zero
 ```
 
-Execution reached the division, so this is a **runtime failure**. If the exception is not handled, the current operation stops and Java prints information about the failure.
+Execution reached the division, so this is a **runtime failure**. If nobody catches that exception, the program stops right there and prints that line along with the list of methods that were running at the time, which is what lets you locate where it happened.
 
 > **Why can the compiler not reject this first?** The operation `int / int` is allowed. In a real program, `divisor` might come from user input, a calculation, or a database while the program runs, so its actual value is not generally fixed by the source line. The compiler checks whether the operation is legal for the declared types; execution reveals whether the values make that legal operation fail.
 
@@ -431,11 +486,11 @@ source
 
 The three are not equally expensive, and the gap between them is wide enough to change how you write code.
 
-A **compile-time failure** costs you seconds. `javac` reads every line of the source whether or not that line would ever have executed, so it finds the mistake without needing the right input, the right user, or the right day of the month to arrive first. It reports the file, the line, and a caret under the exact character — and it does all of that before the program has run once, so nobody except you ever sees it.
+A **compile-time failure** costs you seconds. `javac` reads every line of the source whether or not those lines would ever have executed, so it finds the mistake without the exact conditions that trigger it having to occur first. It also tells you the file, the line and the exact character, with a caret underneath. And it does all of that before the program has run even once, so nobody except you ever sees it.
 
-An **exception** costs more, because nothing finds it until the failing line actually executes. The division above is invisible until a request arrives whose `divisor` really is `0`; on every other request that same code is fine. Its saving grace is that when it finally happens it is loud: execution stops, and Java prints the exception type, its message, and the list of methods that were active at that moment — the **stack trace** — which names the exact line.
+An **exception** costs more, because nobody finds it until the failing line really executes. The division above is invisible until a request arrives where `divisor` really is `0`; with any other value that same code is fine. The good part is that when it finally happens it does not go unnoticed: execution stops and Java prints the exception type, its message and the list of methods that were running at that moment — the **stack trace** — which points you at the exact line.
 
-A **logic error** is the expensive one, and for a precise reason: neither checkpoint is even looking for it. The compiler checks that the source obeys Java's rules. The JVM checks that each operation is possible on the values it actually received. Nothing anywhere in that pipeline holds a copy of what you *meant*. `quantity + unitPrice` is a perfectly legal addition of two `int` values, so the program compiles, runs, finishes successfully, and prints `17` with complete confidence. The only thing that can catch it is a comparison against an expected result — you reading the output, a colleague reviewing the code, or a test that asserts `30`. Left uncaught it does not crash; it invoices a customer the wrong amount, quietly, for months.
+A **logic error** is the expensive one, and for a precise reason: neither check is even looking for it. The compiler checks that the code obeys Java's rules. The JVM checks that each operation is possible on the values that reached it. At no point in that process is there a copy of what you *wanted* the program to do. `quantity + unitPrice` is a perfectly legal addition of two `int` values, so the program compiles, runs, finishes cleanly and prints `17` quite happily. The only thing that catches it is comparing the result against the expected one: you reading the output, a colleague reviewing the code, or a test asserting that this was supposed to be `30`. If nobody catches it, nothing crashes; it simply invoices the customer the wrong amount, quietly, for months.
 
 | Failure | What finds it | How soon | What it costs when missed |
 |---|---|---|---|
@@ -443,8 +498,8 @@ A **logic error** is the expensive one, and for a precise reason: neither checkp
 | Exception | The JVM, when that line executes | Only on the path that actually fails | A visible crash with a stack trace |
 | Logic error | A person or a test comparing expected against actual | Possibly never | Wrong data, produced silently |
 
-The third column is the one that matters: "how soon" is really "how cheap", because a failure is cheapest to fix at the moment it is created and most expensive once it has been running in production for a month. Read the table top to bottom as a cost ladder, not as a list of three equivalent things.
+Read this table top to bottom as a cost ladder, not as a list of three equivalent things: the further down, the later the failure is found and the more it costs. The "how soon" column is really the price column, because a failure is cheap to fix at the moment you write it and expensive once it has been running in production for a month.
 
-> **This ladder is the argument behind two habits that look like extra work.** Java's verbosity — declaring a type on every variable, being told off for a missing semicolon — is what buys you the top row: it converts as many mistakes as possible into compiler errors, which are the cheap kind. Tests are what buy you the bottom row, because a logic error has no other detector; that is exactly why project 07 is the first of your projects to plan real ones. Its Step 8 writes a JUnit test per service method, asserting the business rules themselves — that approving an entry which was never submitted throws, that the summary's approved hours equal the per-project sum. Projects 01 to 06 shipped only the empty `should be created` specs the Angular CLI generates for you, which assert nothing about what the code was supposed to compute.
+> **This ladder explains two habits that look like extra work.** Everything Java makes you write out — declaring a type on every variable, refusing to compile over a missing semicolon — is what buys you the top row: it converts as many failures as possible into compiler errors, which are the cheap kind. And tests are what buy you the bottom row, because a logic error has no other detector. That is exactly why project 07 is the first of your projects to plan real ones. Its Step 8 writes a JUnit test per service method, asserting the business rules themselves — that approving an entry which was never submitted throws, that the summary's approved hours equal the per-project sum. Projects 01 to 06 shipped only the empty `should be created` specs the Angular CLI generates for you, which assert nothing about what the code was supposed to compute.
 
 You can now locate a problem on Java's basic lifecycle: source is checked and compiled into bytecode, then a JVM executes that bytecode. Next, [01-variables-types.md](01-variables-types.md) examines the declared types behind those compiler checks — what values Java lets each variable hold and why mismatched types are rejected before execution.
