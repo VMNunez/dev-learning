@@ -312,6 +312,13 @@ Rules:
 - `Status: complete` requires every assigned concept to be `[x]`. `Status: refined` may contain `[ ]`
   only when those exact bullets also appear in `Pending additions`.
 - Paths are repository-relative and remain inside the selected topic and level.
+- **The entry number is the file number.** Entry `NN` carries `English:` and `Spanish:` paths whose
+  basenames both begin `NN-`, in every entry of every plan, including an entry whose `Action` is
+  `create` and whose file does not exist yet — that prefix is reserved for it. A plan may never publish a
+  correspondence table, a remap note, or a sentence telling the reader that the numbering is not the
+  reading order: those are the artefacts of the defect, not a way to live with it. When the inventory
+  finds numbers that diverge, the renumber of Planning algorithm step 6 runs in the same session and
+  the plan is written against the new names.
 - `Depends on` contains `none` or earlier entry numbers only.
 - `Prerequisites` contains `none` or earlier entry numbers only and agrees with `Depends on`;
   `Depends on` remains the mechanical execution gate while `Prerequisites` states the learning
