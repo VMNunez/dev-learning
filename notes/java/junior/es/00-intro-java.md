@@ -6,7 +6,7 @@ Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.bae
 
 JavaScript puede empezar a ejecutar un archivo y no descubrir que existe una operación incorrecta hasta llegar a esa línea. Java añade una comprobación previa a la ejecución: un compilador revisa primero todo el código fuente, antes de que se ejecute ni una sola línea. Esa comprobación previa explica por qué algunos errores te detienen antes de arrancar y otros solo aparecen después.
 
-Esta nota es el mapa de todo lo que vas a estudiar después, y va en este orden. Primero, qué tipo de lenguaje es Java y qué papel juega en el stack que estás construyendo. Después sigue un archivo `.java` a través de las dos etapas que lo convierten en un programa en ejecución, porque de ahí sale todo lo demás. Esa frontera entre las dos etapas es justo lo que explica las tres formas distintas en que tu código puede fallar, así que ese es el tercer paso. Con eso ya claro, la nota repasa los cinco rasgos de Java que reaparecen en cada capítulo y los compara con lo que ya sabes de JavaScript. Luego muestra el programa más pequeño que se puede ejecutar en Java, señalando qué capítulo de estas notas explica cada una de sus piezas. Y termina trazando la ruta completa de lectura, del capítulo `01` al `16`.
+Esta nota es el mapa de todo lo que vas a estudiar después, y sus siete secciones están ordenadas para que cada una prepare la siguiente. La primera responde qué tipo de lenguaje es Java y qué papel juega en el stack que estás construyendo. La segunda sigue un archivo `.java` a través de las dos etapas que se llevan a cabo hasta que se convierte en un programa en ejecución, porque de ahí sale todo lo demás. Esa frontera entre las dos etapas es justo lo que explica las tres formas distintas en que tu código puede fallar, y ese es el tema de la tercera sección. Con eso ya claro, la cuarta repasa los cinco rasgos de Java que reaparecen en cada capítulo, y la quinta los enfrenta a lo que ya sabes de JavaScript: qué hábitos puedes traerte tal cual y cuáles te van a costar un error. La sexta muestra el programa más pequeño que se puede ejecutar en Java, señalando qué capítulo de estas notas explica cada una de sus piezas. Y la séptima traza la ruta completa de lectura, del capítulo `01` al `16`.
 
 ---
 
@@ -148,11 +148,11 @@ código fuente
 
 **Cómo saber, delante de la pantalla, si lo que estás viendo es un fallo de compilación o uno de runtime.** No hace falta razonarlo: el propio mensaje te lo dice, y en IntelliJ además aparece en dos sitios distintos. Estas son las tres señales:
 
-| Señal                      | Fallo en tiempo de compilación                                                | Fallo en runtime                                                                    |
-| -------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Cómo empieza el mensaje    | `error:` seguido del archivo, la línea y un `^` señalando el carácter          | `Exception in thread "main"` seguido del nombre completo de una clase de excepción    |
-| ¿Se llegó a ver la salida? | No. El programa no ha arrancado, así que no ha impreso ni una línea            | Sí. Todo lo que el programa imprimió antes de fallar está ahí, encima del error       |
-| Dónde aparece en IntelliJ  | Subrayado rojo en el editor antes de pulsar Run, y en la pestaña _Build_       | En la pestaña _Run_, la misma consola donde estabas viendo la salida del programa     |
+| Señal                      | Fallo en tiempo de compilación                                           | Fallo en runtime                                                                   |
+| -------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Cómo empieza el mensaje    | `error:` seguido del archivo, la línea y un `^` señalando el carácter    | `Exception in thread "main"` seguido del nombre completo de una clase de excepción |
+| ¿Se llegó a ver la salida? | No. El programa no ha arrancado, así que no ha impreso ni una línea      | Sí. Todo lo que el programa imprimió antes de fallar está ahí, encima del error    |
+| Dónde aparece en IntelliJ  | Subrayado rojo en el editor antes de pulsar Run, y en la pestaña _Build_ | En la pestaña _Run_, la misma consola donde estabas viendo la salida del programa  |
 
 La fila del medio es la que resuelve casi todos los casos dudosos: si por la consola ha salido alguna línea de tu programa, es que el programa arrancó, y si arrancó es que `javac` ya había dicho que sí. Todo lo que falle a partir de ese punto es runtime.
 
@@ -300,13 +300,13 @@ Compara los dos bloques: cuatro campos privados, un constructor que los recibe y
 
 Esto es una decisión de diseño, no un descuido. Java está optimizado para la persona que _lee_ un código que no escribió, años después, por encima de la persona que lo está escribiendo hoy: cuanto más explícito es el código, menos hace falta adivinar. El lenguaje también ha ido recortando ese código extra donde ha podido. Los _records_, en [04-poo-clases.md](04-poo-clases.md), reducen esa misma clase de datos — una clase cuyo único trabajo es guardar varios valores relacionados, sin lógica propia — a una sola línea. Y las _lambdas_, en [09-streams-lambdas.md](09-streams-lambdas.md), hacen lo mismo cuando lo que quieres pasar no es un dato sino una acción, como la propia función que decide cómo comparar dos elementos al ordenarlos.
 
-| Característica              | Qué te obliga a hacer                                                                                | Dónde se examina a fondo                    |
-| --------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| Tipado estático             | Declarar un tipo y mantenerlo; el compilador comprueba cada uso antes de arrancar                     | `01-variables-tipos.md`, `10-genericos.md`  |
-| El código vive en una clase | No hay funciones sueltas; una clase es la unidad de compilación                                       | `04-poo-clases.md`                          |
-| Compilar y luego ejecutar   | Dos pasos separados — primero compilar, después ejecutar —, dos momentos, dos tipos de mensaje de error | este archivo, y después `14-maven.md`       |
+| Característica              | Qué te obliga a hacer                                                                                           | Dónde se examina a fondo                    |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| Tipado estático             | Declarar un tipo y mantenerlo; el compilador comprueba cada uso antes de arrancar                               | `01-variables-tipos.md`, `10-genericos.md`  |
+| El código vive en una clase | No hay funciones sueltas; una clase es la unidad de compilación                                                 | `04-poo-clases.md`                          |
+| Compilar y luego ejecutar   | Dos pasos separados — primero compilar, después ejecutar —, dos momentos, dos tipos de mensaje de error         | este archivo, y después `14-maven.md`       |
 | El objetivo es la JVM       | El compilador produce bytecode para la JVM, no para tu procesador; y es la JVM quien gestiona la memoria por ti | `15-modelo-de-memoria.md`                   |
-| Más código explícito        | Más tecleo, optimizado para quien lee en lugar de para quien escribe                                  | `04-poo-clases.md`, `09-streams-lambdas.md` |
+| Más código explícito        | Más tecleo, optimizado para quien lee en lugar de para quien escribe                                            | `04-poo-clases.md`, `09-streams-lambdas.md` |
 
 ---
 
@@ -419,15 +419,15 @@ void procesar(List<Integer> edades) { }
 
 ### Tabla resumen
 
-| Hábito de JS/TS                             | Qué hace JavaScript/TypeScript                                   | Qué hace Java                                                                                 | ¿Se comporta igual?                       |
-| ------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `for...of` sobre un array                   | Itera sus elementos uno a uno                                    | `for (String name : names)` itera igual sobre una colección                                   | Sí                                        |
-| `const`                                     | Bloquea la variable, no lo que contiene                          | `final` hace lo mismo                                                                         | Sí; el matiz se explica en `01`           |
-| Sintaxis de `try / catch`                   | `try { } catch (e) { }`                                          | Se escribe igual, pero el modelo de excepciones de debajo es distinto                         | Solo en la sintaxis                       |
-| `var`                                       | Declara una variable sin ningún tipo                             | Infiere un único tipo fijo y lo impone para siempre                                           | No — significado casi opuesto             |
-| Añadir una propiedad en tiempo de ejecución | El objeto crece con cualquier propiedad nueva                    | Los campos los declara solo la clase; no se pueden añadir después                             | No — lanza `cannot find symbol`           |
-| `==` frente a `===`                         | Compara con coerción de tipos o sin ella                         | `==` sobre objetos compara si apuntan al mismo objeto en memoria, no si el contenido es igual | No — usa `.equals()`                      |
-| Tipos borrados al compilar                  | Los tipos desaparecen al compilar; nada los comprueba en runtime | Los tipos sobreviven hasta el bytecode                                                        | No — excepto en los genéricos             |
+| Hábito de JS/TS                             | Qué hace JavaScript/TypeScript                                   | Qué hace Java                                                                                 | ¿Se comporta igual?             |
+| ------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------- |
+| `for...of` sobre un array                   | Itera sus elementos uno a uno                                    | `for (String name : names)` itera igual sobre una colección                                   | Sí                              |
+| `const`                                     | Bloquea la variable, no lo que contiene                          | `final` hace lo mismo                                                                         | Sí; el matiz se explica en `01` |
+| Sintaxis de `try / catch`                   | `try { } catch (e) { }`                                          | Se escribe igual, pero el modelo de excepciones de debajo es distinto                         | Solo en la sintaxis             |
+| `var`                                       | Declara una variable sin ningún tipo                             | Infiere un único tipo fijo y lo impone para siempre                                           | No — significado casi opuesto   |
+| Añadir una propiedad en tiempo de ejecución | El objeto crece con cualquier propiedad nueva                    | Los campos los declara solo la clase; no se pueden añadir después                             | No — lanza `cannot find symbol` |
+| `==` frente a `===`                         | Compara con coerción de tipos o sin ella                         | `==` sobre objetos compara si apuntan al mismo objeto en memoria, no si el contenido es igual | No — usa `.equals()`            |
+| Tipos borrados al compilar                  | Los tipos desaparecen al compilar; nada los comprueba en runtime | Los tipos sobreviven hasta el bytecode                                                        | No — excepto en los genéricos   |
 
 Lee la última columna como el veredicto de cada fila: «Sí» significa que puedes traer tu hábito de JavaScript tal cual, y cualquier otra cosa significa que ese hábito te va a costar un error, ya sea del compilador o un resultado equivocado.
 
