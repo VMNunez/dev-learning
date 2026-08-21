@@ -7,7 +7,7 @@
 
 > Docs: https://www.baeldung.com/java-oop → read: "1. Overview" and "4. Abstraction" — the four pillars named in one place; you will meet each one across this file and the two that follow
 
-At the end of [03-methods.md](03-methods.md) you turned the `Calculator` into something with a field and a constructor — a small object that holds state *and* the methods that work on it. That is not a detail of one example; it is the whole idea this file is about.
+At the end of [04-methods.md](04-methods.md) you turned the `Calculator` into something with a field and a constructor — a small object that holds state *and* the methods that work on it. That is not a detail of one example; it is the whole idea this file is about.
 
 **Object-oriented programming** (OOP) is a way of organising code by grouping data and the behaviour that acts on it into single units called **objects**. Instead of loose functions floating next to loose variables, you define **classes** that bundle both together.
 
@@ -90,7 +90,7 @@ That third step is the one that matters most. When you write `Employee emp = new
                        └────────────────────────┘
 ```
 
-> **Where does that memory go afterwards?** Nothing in your code frees it. Java tracks whether any arrow still points at the object and reclaims it automatically once none does — the garbage collector. The full picture of stack, heap and collection is the last file of these notes, [15-memory-model.md](15-memory-model.md); for now all you need is "`new` puts the object on the heap and gives you an arrow to it".
+> **Where does that memory go afterwards?** Nothing in your code frees it. Java tracks whether any arrow still points at the object and reclaims it automatically once none does — the garbage collector. The full picture of stack, heap and collection is the last file of these notes, [05-memory-model.md](05-memory-model.md); for now all you need is "`new` puts the object on the heap and gives you an arrow to it".
 
 ---
 
@@ -335,7 +335,7 @@ This move is called a **defensive copy**: you never let a reference to your muta
 
 > **Read-only objects take the idea further.** Drop the setters entirely and mark every field `final`, and the object cannot change after construction at all — no validation to write, no leak to guard, and it is safe to share anywhere. That is exactly what §"Records" at the end of this file gives you as a one-liner.
 
-> **The `getX()` / `setX()` / `isX()` shape is not just style.** It is the **JavaBeans** convention, and Jackson, JPA and Lombok locate a property by looking for those exact method names at runtime — rename `getName()` to `fetchName()` and the field silently disappears from your JSON. It is explained in full in [03-methods.md](03-methods.md) §"Naming conventions"; the one-line version is: name accessors this way or three separate tools stop seeing your data.
+> **The `getX()` / `setX()` / `isX()` shape is not just style.** It is the **JavaBeans** convention, and Jackson, JPA and Lombok locate a property by looking for those exact method names at runtime — rename `getName()` to `fetchName()` and the field silently disappears from your JSON. It is explained in full in [04-methods.md](04-methods.md) §"Naming conventions"; the one-line version is: name accessors this way or three separate tools stop seeing your data.
 
 ---
 
@@ -398,7 +398,7 @@ error: non-static variable name cannot be referenced from a static context
                                           ^
 ```
 
-The fix is to make the value arrive as an argument (`shout(String name)`) or to drop `static` so the method is called on an object. You met the same error from the other side in [03-methods.md](03-methods.md) §"Static methods" — it is also the reason `main` must be `static`: the JVM has to call it before a single object exists.
+The fix is to make the value arrive as an argument (`shout(String name)`) or to drop `static` so the method is called on an object. You met the same error from the other side in [04-methods.md](04-methods.md) §"Static methods" — it is also the reason `main` must be `static`: the JVM has to call it before a single object exists.
 
 ### When the static field is initialised
 
@@ -426,7 +426,7 @@ public class Employee {
 
 > Docs: https://www.baeldung.com/java-constructors → read: "6. A Chained Constructor" — the delegating pair, and how the compiler tells overloads apart
 
-You have already written a pair of overloaded constructors: the two-`Employee`-constructor example in §`this` — a one-parameter form delegating to a two-parameter one — *is* constructor overloading. The name for it comes from method overloading in [03-methods.md](03-methods.md): several members sharing a name, told apart by their **signature**, meaning the type and order of their parameters. Constructors all share the class's name by force, so the parameter list is the only thing that can distinguish them, and you can declare as many as you like.
+You have already written a pair of overloaded constructors: the two-`Employee`-constructor example in §`this` — a one-parameter form delegating to a two-parameter one — *is* constructor overloading. The name for it comes from method overloading in [04-methods.md](04-methods.md): several members sharing a name, told apart by their **signature**, meaning the type and order of their parameters. Constructors all share the class's name by force, so the parameter list is the only thing that can distinguish them, and you can declare as many as you like.
 
 What that section did not cover is how Java decides *which* one a given `new` runs. That is the piece worth adding here, because it is where overloading stops being obvious.
 
@@ -462,7 +462,7 @@ error: reference to Employee is ambiguous
 
 When you do `System.out.println(emp)`, Java needs to convert the object to text. It looks for a method named exactly `toString()` in your class — if it does not find one, it falls back to the one from `Object`, which prints something unreadable like `Employee@1b6d3586` (class name + memory address, useless for debugging).
 
-> **Where does that fallback come from, if your class has no parent?** Every class in Java implicitly extends a class called `Object`, whether you write it or not — `public class Employee { }` is compiled as if it said `extends Object`. `Object` already defines `toString()`, `equals()` and `hashCode()`, so those three methods exist on *every* object that has ever been created, including yours, before you write a line. That is the mechanism behind this whole section and the next: you are never adding these methods, you are always replacing an inherited one. Inheritance itself — what `extends` means, how a subclass replaces a parent's method — is the subject of [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md), which comes back to `Object` in its own section. For now you only need the fact: your class already inherits these three, and they behave badly by default.
+> **Where does that fallback come from, if your class has no parent?** Every class in Java implicitly extends a class called `Object`, whether you write it or not — `public class Employee { }` is compiled as if it said `extends Object`. `Object` already defines `toString()`, `equals()` and `hashCode()`, so those three methods exist on *every* object that has ever been created, including yours, before you write a line. That is the mechanism behind this whole section and the next: you are never adding these methods, you are always replacing an inherited one. Inheritance itself — what `extends` means, how a subclass replaces a parent's method — is the subject of [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md), which comes back to `Object` in its own section. For now you only need the fact: your class already inherits these three, and they behave badly by default.
 
 The name `toString()` is not your choice — it is the name Java expects by convention. It always returns `String` and takes no parameters.
 
@@ -474,7 +474,7 @@ error: method does not override or implement a method from a supertype
     ^
 ```
 
-That error is the entire value of the annotation: without it, the misspelled method compiles perfectly and does nothing, and you spend an afternoon wondering why your logs still show memory addresses. You will learn annotations properly in [13-annotations.md](13-annotations.md) — for now, just know that `@Override` goes above any method you are intentionally replacing.
+That error is the entire value of the annotation: without it, the misspelled method compiles perfectly and does nothing, and you spend an afternoon wondering why your logs still show memory addresses. You will learn annotations properly in [15-annotations.md](15-annotations.md) — for now, just know that `@Override` goes above any method you are intentionally replacing.
 
 ```java
 @Override
@@ -828,10 +828,10 @@ Runnable task = new Runnable() {          // no class name — the body IS the c
 task.run();
 ```
 
-An **interface** is a contract a class promises to fulfil — the subject of the next file, [05-interfaces-abstract.md](05-interfaces-abstract.md); for now read `Runnable` as "something with a `run()` method". What the compiler does here is generate a nameless class implementing it, create one instance, and hand it back. An anonymous class is a form of inner class, so it carries the same hidden reference to whatever object created it — and therefore the same leak risk when it is stored somewhere long-lived.
+An **interface** is a contract a class promises to fulfil — the subject of the next file, [07-interfaces-abstract.md](07-interfaces-abstract.md); for now read `Runnable` as "something with a `run()` method". What the compiler does here is generate a nameless class implementing it, create one instance, and hand it back. An anonymous class is a form of inner class, so it carries the same hidden reference to whatever object created it — and therefore the same leak risk when it is stored somewhere long-lived.
 
-> **You will hardly ever write this form again.** When the interface has exactly one method, Java 8's lambda expresses the same object in one line: `Runnable task = () -> System.out.println("Sending the weekly report");`. That is covered in [09-streams-lambdas.md](09-streams-lambdas.md), which opens on this exact comparison. Anonymous classes still matter for two reasons: you will read them constantly in older codebases, and they remain the only option when the interface has more than one method to implement.
+> **You will hardly ever write this form again.** When the interface has exactly one method, Java 8's lambda expresses the same object in one line: `Runnable task = () -> System.out.println("Sending the weekly report");`. That is covered in [12-streams-lambdas.md](12-streams-lambdas.md), which opens on this exact comparison. Anonymous classes still matter for two reasons: you will read them constantly in older codebases, and they remain the only option when the interface has more than one method to implement.
 
 ---
 
-You can now model a single thing as a class: its data (fields), how it is built (constructors), what it can do (methods), how it protects itself (encapsulation), how it says whether it equals another (the `equals`/`hashCode` contract), and where a helper class can live inside it (nested classes). But every class so far has stood alone — and the last section left an IOU: the `Runnable` an anonymous class implemented was an *interface*, a word used but never explained. Real systems have *families* of related things — an `Employee` and a `Manager` that share most behaviour, or a dozen unrelated classes that must all promise they can `print()`. Making classes share behaviour, or agree on a common contract, is the next step. That is what [05-interfaces-abstract.md](05-interfaces-abstract.md) is about: interfaces (a contract a class signs) and abstract classes (a half-built parent others complete).
+You can now model a single thing as a class: its data (fields), how it is built (constructors), what it can do (methods), how it protects itself (encapsulation), how it says whether it equals another (the `equals`/`hashCode` contract), and where a helper class can live inside it (nested classes). But every class so far has stood alone — and the last section left an IOU: the `Runnable` an anonymous class implemented was an *interface*, a word used but never explained. Real systems have *families* of related things — an `Employee` and a `Manager` that share most behaviour, or a dozen unrelated classes that must all promise they can `print()`. Making classes share behaviour, or agree on a common contract, is the next step. That is what [07-interfaces-abstract.md](07-interfaces-abstract.md) is about: interfaces (a contract a class signs) and abstract classes (a half-built parent others complete).

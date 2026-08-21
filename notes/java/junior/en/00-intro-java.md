@@ -37,11 +37,11 @@ That split has one direct consequence. Because the Java server is the only thing
 
 > **Java is the language; Spring Boot is a framework written in that language.** These two get mixed up as one thing early on, and untangling them now saves a lot of confusion later. Java gives you classes, types, methods and exceptions. Spring Boot is a large pile of Java other people already wrote, which you download and use — the same way you pull npm packages in Node.
 >
-> Those downloads arrive as `.jar` files. There is nothing magic about a `.jar`: it is a compressed archive — literally a `.zip` with a different extension — holding already-compiled classes, the `.class` files the next section talks about. You never open one, and you never download one by hand: you write in a configuration file which libraries you need, your build tool downloads them into a folder on your machine, and from then on the compiler and the JVM look for classes inside those `.jar` files exactly as they look for yours. That build tool is Maven, and how you declare that list of libraries is the subject of [14-maven.md](14-maven.md).
+> Those downloads arrive as `.jar` files. There is nothing magic about a `.jar`: it is a compressed archive — literally a `.zip` with a different extension — holding already-compiled classes, the `.class` files the next section talks about. You never open one, and you never download one by hand: you write in a configuration file which libraries you need, your build tool downloads them into a folder on your machine, and from then on the compiler and the JVM look for classes inside those `.jar` files exactly as they look for yours. That build tool is Maven, and how you declare that list of libraries is the subject of [16-maven.md](16-maven.md).
 >
 > What all that code buys you is the parts nobody wants to write by hand: opening a port so the server sits there listening for requests, turning the text of an HTTP request into Java objects, and **mapping a database row onto an object**. That last one means taking a row from a table — say `(3, 'Ana', 'ana@mail.com')` from the `users` table — and building a Java `User` object out of it whose `id`, `name` and `email` fields already hold `3`, `"Ana"` and `"ana@mail.com"`. Without that mapping you would read column by column and assign them by hand on every query; with it you work with ordinary objects and forget there are rows and columns underneath.
 >
-> When you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are explained in [13-annotations.md](13-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
+> When you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are explained in [15-annotations.md](15-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
 
 ---
 
@@ -179,7 +179,7 @@ Program execution reached the division, so this is a **runtime failure**. If nob
 
 > **Why can't the compiler reject this earlier?** The `int / int` operation is allowed. In a real program, `divisor` could come from user input, from a calculation, or from a database while the program is running, so its actual value is usually not fixed by the source line. The compiler checks whether the operation is valid for the declared types; execution reveals whether the values make that valid operation fail.
 
-The mechanics of throwing, catching and propagating exceptions belong to [08-exceptions.md](08-exceptions.md). For now, hold on to this: an exception can only appear after execution has begun.
+The mechanics of throwing, catching and propagating exceptions belong to [11-exceptions.md](11-exceptions.md). For now, hold on to this: an exception can only appear after execution has begun.
 
 ### Logic errors — execution finishes, but the answer is wrong
 
@@ -249,13 +249,13 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 Java has a personality, and it is remarkably consistent. Five traits explain almost every "why does it make me do that?" moment you are going to have, and each one is picked up in full by a later file.
 
-**1. Static typing — the type is part of the declaration, and it never changes.** When you write `int quantity = 2;`, the name `quantity` is bound to the type `int` for the rest of its life. This is not just a rule to memorise, it is a concrete mechanism: because the type is written down in the source itself, the compiler can reason about a line *without ever running it*. It does not need to know that `quantity` will be `2` at one moment and `40` at another — it only needs the declared type to decide whether an operation is legal. That is why Java can reject code before it ever launches, instead of letting that same error only surface at runtime, on the day the program finally executes the operation that was not allowed. This trait is explained in [01-variables-types.md](01-variables-types.md), and it returns with force in [10-generics.md](10-generics.md), where the type of the values *inside* a collection is itself declared and checked.
+**1. Static typing — the type is part of the declaration, and it never changes.** When you write `int quantity = 2;`, the name `quantity` is bound to the type `int` for the rest of its life. This is not just a rule to memorise, it is a concrete mechanism: because the type is written down in the source itself, the compiler can reason about a line *without ever running it*. It does not need to know that `quantity` will be `2` at one moment and `40` at another — it only needs the declared type to decide whether an operation is legal. That is why Java can reject code before it ever launches, instead of letting that same error only surface at runtime, on the day the program finally executes the operation that was not allowed. This trait is explained in [01-variables-types.md](01-variables-types.md), and it returns with force in [09-generics.md](09-generics.md), where the type of the values *inside* a collection is itself declared and checked.
 
-**2. All executable code lives inside a class.** In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit that can be compiled and loaded on its own. What a class actually is, what it holds, and how you design one is [04-oop-classes.md](04-oop-classes.md).
+**2. All executable code lives inside a class.** In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit that can be compiled and loaded on its own. What a class actually is, what it holds, and how you design one is [06-oop-classes.md](06-oop-classes.md).
 
-**3. Compile first, run second — always two moments.** It is the process you just walked through in the two sections above. Even when IntelliJ hides both stages behind one green button, they stay two separate moments with two different kinds of error, and knowing which of the two is speaking to you — the compiler, or the program already running — tells you immediately where to look for the problem. [14-maven.md](14-maven.md) is the tool that automates both steps once a real project has dozens of source files and external libraries to fetch before it can even compile.
+**3. Compile first, run second — always two moments.** It is the process you just walked through in the two sections above. Even when IntelliJ hides both stages behind one green button, they stay two separate moments with two different kinds of error, and knowing which of the two is speaking to you — the compiler, or the program already running — tells you immediately where to look for the problem. [16-maven.md](16-maven.md) is the tool that automates both steps once a real project has dozens of source files and external libraries to fetch before it can even compile.
 
-**4. The compiler generates code for the JVM, not for your processor.** What `javac` produces is not instructions for your particular processor, but bytecode for an abstract machine: the JVM. A distinct JVM exists for Windows, for macOS, for Linux, and for whatever your employer runs in production, and every one of them executes that same bytecode. This is the origin of Java's old slogan, *write once, run anywhere*, and it is not marketing: the `.class` file you generate on your Windows laptop — the compiled bytecode, also called the "artifact" — is exactly the same file a Linux server runs in production, unchanged and without recompiling it. The JVM is also what manages memory for you while the program runs, instead of you having to reserve and release it by hand, and that is the subject of [15-memory-model.md](15-memory-model.md).
+**4. The compiler generates code for the JVM, not for your processor.** What `javac` produces is not instructions for your particular processor, but bytecode for an abstract machine: the JVM. A distinct JVM exists for Windows, for macOS, for Linux, and for whatever your employer runs in production, and every one of them executes that same bytecode. This is the origin of Java's old slogan, *write once, run anywhere*, and it is not marketing: the `.class` file you generate on your Windows laptop — the compiled bytecode, also called the "artifact" — is exactly the same file a Linux server runs in production, unchanged and without recompiling it. The JVM is also what manages memory for you while the program runs, instead of you having to reserve and release it by hand, and that is the subject of [05-memory-model.md](05-memory-model.md).
 
 > **JDK, JRE and JVM: what each one is.** The three names show up together constantly and are easy to confuse, so it is worth pinning them down now. The **JDK** (Java Development Kit) is what you installed, and it is the full package: it brings the tools to **develop**, among them `javac` (the compiler), `jar` (the packager that creates `.jar` files), `javadoc` (the documentation generator that reads your comments) and `jdb` (the debugger). The **JRE** (Java Runtime Environment) is the subset that only serves to **run** already-compiled programs: the `java` launcher plus the standard library, meaning all the classes Java gives you ready-made, like `String`, `List` or `LocalDate`. And the **JVM** is the virtual machine inside both: the engine that loads bytecode and executes it. In short, JDK ⊃ JRE ⊃ JVM.
 >
@@ -298,15 +298,15 @@ public class User {
 
 Compare the two blocks: four private fields, a constructor that receives and assigns each of them one by one, and four *getter* methods — one per field, so that field can be read from outside the class — against TypeScript's seven lines. That is quite a bit more code to represent exactly the same information.
 
-This is a design decision, not an oversight. Java optimises for the person *reading* code they did not write, years later, over the person writing it today: the more explicit the code, the less guessing it requires. The language has also been trimming that extra code where it can. *Records*, in [04-oop-classes.md](04-oop-classes.md), collapse that same kind of data class — a class whose only job is to hold a handful of related values, with no logic of its own — into a single line. And *lambdas*, in [09-streams-lambdas.md](09-streams-lambdas.md), do the same when what you want to pass is not a piece of data but an action, like the very function that decides how to compare two elements when sorting them.
+This is a design decision, not an oversight. Java optimises for the person *reading* code they did not write, years later, over the person writing it today: the more explicit the code, the less guessing it requires. The language has also been trimming that extra code where it can. *Records*, in [06-oop-classes.md](06-oop-classes.md), collapse that same kind of data class — a class whose only job is to hold a handful of related values, with no logic of its own — into a single line. And *lambdas*, in [12-streams-lambdas.md](12-streams-lambdas.md), do the same when what you want to pass is not a piece of data but an action, like the very function that decides how to compare two elements when sorting them.
 
 | Trait | What it forces on you | Where it is examined in full |
 |---|---|---|
-| Static typing | Declare a type and keep it; the compiler checks every use before launch | `01-variables-types.md`, `10-generics.md` |
-| Code lives in a class | No standalone functions; a class is the unit of compilation | `04-oop-classes.md` |
-| Compile, then run | Two separate steps — compile first, then run —, two moments, two kinds of error message | this file, then `14-maven.md` |
-| The JVM is the target | The compiler produces bytecode for the JVM, not for your processor; and the JVM manages memory for you | `15-memory-model.md` |
-| More explicit code | More typing, optimised for the reader rather than the writer | `04-oop-classes.md`, `09-streams-lambdas.md` |
+| Static typing | Declare a type and keep it; the compiler checks every use before launch | `01-variables-types.md`, `09-generics.md` |
+| Code lives in a class | No standalone functions; a class is the unit of compilation | `06-oop-classes.md` |
+| Compile, then run | Two separate steps — compile first, then run —, two moments, two kinds of error message | this file, then `16-maven.md` |
+| The JVM is the target | The compiler produces bytecode for the JVM, not for your processor; and the JVM manages memory for you | `05-memory-model.md` |
+| More explicit code | More typing, optimised for the reader rather than the writer | `06-oop-classes.md`, `12-streams-lambdas.md` |
 
 ---
 
@@ -316,7 +316,7 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 ### What works the same in both languages
 
-The syntax of `if`, `while` and `for` is the same. Walking a **collection** reads the same as JavaScript's `for...of`: `for (String name : names)`. "Collection" is the name Java gives to any object holding several elements: a list, a set, and an array too. An array is the simplest of them, a fixed-length row whose size is decided when you create it and never changes; the others can grow and shrink, and they are all in [07-collections.md](07-collections.md). Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
+The syntax of `if`, `while` and `for` is the same. Walking a **collection** reads the same as JavaScript's `for...of`: `for (String name : names)`. "Collection" is the name Java gives to any object holding several elements: a list, a set, and an array too. An array is the simplest of them, a fixed-length row whose size is decided when you create it and never changes; the others can grow and shrink, and they are all in [10-collections.md](10-collections.md). Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
 
 `try { } catch (e) { }` is also written the same way in both languages — but **they only resemble each other in how they are written**. The exception model underneath has nothing in common, and it differs enough to deserve the callout below before you go on.
 
@@ -333,7 +333,7 @@ The syntax of `if`, `while` and `for` is the same. Walking a **collection** read
 > error: unreported exception IOException; must be caught or declared to be thrown
 > ```
 >
-> The full model — the two kinds, how the failure travels, how to read the trace — is explained from zero in [08-exceptions.md](08-exceptions.md).
+> The full model — the two kinds, how the failure travels, how to read the trace — is explained from zero in [11-exceptions.md](11-exceptions.md).
 
 ### What looks like it works the same, and does not
 
@@ -393,7 +393,7 @@ This comparison will come up in two places, and each one is solved differently.
 
 The first is comparing the content of two pieces of text, which is the one you will hit soonest. It is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows that the method you actually wanted for comparing two `String`s is `.equals()`, which compares the real content, character by character, instead of the memory address. That file also explains why writing two bare text literals, like `"hola" == "hola"`, makes `==` appear to work correctly just often enough to fool you: Java reuses the same object in memory for identical text literals, so that particular case really does point at the same place, even though the general rule still is not that.
 
-The second place you meet this comparison is when comparing two objects of a class you wrote yourself — a `User` against another `User`. There, calling `.equals()` is not enough on its own, because Java cannot guess what it means for two users to be "the same". Same `id`? Same email? That decision is yours, and you write it out for Java inside the class. How that is done is in [04-oop-classes.md](04-oop-classes.md).
+The second place you meet this comparison is when comparing two objects of a class you wrote yourself — a `User` against another `User`. There, calling `.equals()` is not enough on its own, because Java cannot guess what it means for two users to be "the same". Same `id`? Same email? That decision is yours, and you write it out for Java inside the class. How that is done is in [06-oop-classes.md](06-oop-classes.md).
 
 #### TypeScript's types disappear before execution; Java's do not
 
@@ -415,7 +415,7 @@ void process(List<String> names) { }
 void process(List<Integer> ages) { }
 ```
 
-[10-generics.md](10-generics.md) develops all of it.
+[09-generics.md](09-generics.md) develops all of it.
 
 ### Summary table
 
@@ -505,7 +505,7 @@ What all that is for: the package is the class's surname. Your service's full na
 
 **And packages are also the visibility boundary, which is what `public` was measuring in `main`'s signature.** The rule, short version: a class or method marked `public` can be used from any package; without `public`, it can only be used from classes in that same package. So `public` opens the door outwards, and its absence leaves it shut inside the package.
 
-Applied to `main`, that explains why it carries `public`: whoever calls `main` is not another of your classes, it is the JVM, which is code sitting outside your project and therefore outside all of your packages. Without `public`, the JVM could not call it. The full visibility rules — there are four levels, not two — are in [04-oop-classes.md](04-oop-classes.md).
+Applied to `main`, that explains why it carries `public`: whoever calls `main` is not another of your classes, it is the JVM, which is code sitting outside your project and therefore outside all of your packages. Without `public`, the JVM could not call it. The full visibility rules — there are four levels, not two — are in [06-oop-classes.md](06-oop-classes.md).
 
 If the class you try to launch has no `main` method, the class compiles perfectly well — as a class there is nothing wrong with it — and the failure arrives later, from the JVM, at the exact moment you try to start it:
 
@@ -516,7 +516,7 @@ Error: Main method not found in class NoMain, please define the main method as:
 
 > **Why does this fail at launch and not at compile time?** Because a class with no `main` is a perfectly normal and useful class: in any project, the vast majority of classes have no `main` and are compiled and used constantly. Having an entry point is not something that can be demanded of every class; it is only needed in the class the program starts from. And the compiler cannot know which class that will be, because you decide it later, when you run `java Hello`. The JVM does know, because you just gave it the name. That is why the message above does not say "this class is badly written" but something far more literal: "I loaded the class you asked for, I looked inside for a `main` method, and I did not find one".
 
-**For now, what you have just read about `public`, `static` and `String[]` is enough.** Each of those three words is an entire concept in its own right, and each has its own chapter later on: the full rules for `public` and `static` — who can see a class member, and whether that member belongs to the class as a whole or to each object separately — are in [04-oop-classes.md](04-oop-classes.md); `String[]` is explained alongside the other ways of holding several values, in [07-collections.md](07-collections.md). Here it is enough to recognise the template and be able to copy it, because every example in the following chapters prints something to the console and, to try them yourself, you are going to have to put them inside a `main` like this one.
+**For now, what you have just read about `public`, `static` and `String[]` is enough.** Each of those three words is an entire concept in its own right, and each has its own chapter later on: the full rules for `public` and `static` — who can see a class member, and whether that member belongs to the class as a whole or to each object separately — are in [06-oop-classes.md](06-oop-classes.md); `String[]` is explained alongside the other ways of holding several values, in [10-collections.md](10-collections.md). Here it is enough to recognise the template and be able to copy it, because every example in the following chapters prints something to the console and, to try them yourself, you are going to have to put them inside a `main` like this one.
 
 **`System.out.println` is how you print something to the screen.** `System.out` is the program's standard output, which in your case is IntelliJ's console, and `println` writes whatever you pass it there and then moves to the next line. Its sibling `print` writes exactly the same thing without that line break, so two `print`s in a row leave the text stuck together on one line:
 
@@ -584,25 +584,25 @@ The numbers below (`01`, `02`, `03`…) are **reading positions**, not file name
 
 **Readings 13 to 16 — the special types, and the build.** `13` teaches you **enums**: when a value can only be one of a closed set — `PENDING`, `APPROVED`, `REJECTED` — an enum tells the compiler so, and the compiler can then warn you if you left a case unhandled. `14` applies that same idea of a value that does not change to **dates and times**, where the set of possible values is infinite and therefore no compiler check can save you. `15` generalises `@Override` into **annotations** in general: markers you put in the code that some tool reads afterwards, which is what stops the Spring annotations you see daily from looking like secret Java syntax. And `16` closes with **Maven**, the tool that downloads the libraries, compiles, runs the tests and packages everything the previous fifteen files produced.
 
-> **For now, the numbers in the file names do not match the reading order.** Only `00` and `01` line up. The files were written before this route was planned, and they have not been renumbered yet. In the meantime, read the order from the table below and ignore the file's number: the table is the authority, not the folder listing. The rename is pending and recorded in the notes plan, so this warning will disappear once the two orders agree.
+> **The number in a file name is its place in this route.** `01-variables-types.md` is reading 01, `11-exceptions.md` is reading 11, and so on, so opening the folder in alphabetical order already gives you the right order. Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet. Read the table as three columns — the position in the route, the file you open, and the one reason that file cannot be read any earlier.
 
 | Reading order | File in `en/` | Why it sits here |
 |---|---|---|
 | 01 | `01-variables-types.md` | Every later line manipulates a typed value |
-| 02 | `16-strings.md` | Text is the value type you touch on every request |
-| 03 | `02-control-flow.md` | Choosing and repeating needs values to choose between |
-| 04 | `03-methods.md` | Packages that behaviour behind a callable contract |
-| 05 | `15-memory-model.md` | Opens the method boundary: copies, references, the call stack |
-| 06 | `04-oop-classes.md` | Builds objects out of methods and references, and defines equality |
-| 07 | `05-interfaces-abstract.md` | Separates the behaviour needed from the class providing it |
-| 08 | `06-inheritance-polymorphism.md` | Decides at runtime which implementation runs |
-| 09 | `10-generics.md` | Teaches the angle-bracket syntax before collections use it everywhere |
-| 10 | `07-collections.md` | Groups of objects, and the hashing that makes lookup fast |
-| 11 | `08-exceptions.md` | The failures the earlier chapters made possible |
-| 12 | `09-streams-lambdas.md` | Behaviour as a value, and the pipelines built from it |
-| 13 | `11-enums.md` | A closed set of values the compiler can check exhaustively |
-| 14 | `12-dates.md` | The same immutability applied where no compiler check exists |
-| 15 | `13-annotations.md` | Metadata a tool reads — the shape of every Spring annotation |
-| 16 | `14-maven.md` | The build that compiles, tests and packages all of the above |
+| 02 | `02-strings.md` | Text is the value type you touch on every request |
+| 03 | `03-control-flow.md` | Choosing and repeating needs values to choose between |
+| 04 | `04-methods.md` | Packages that behaviour behind a callable contract |
+| 05 | `05-memory-model.md` | Opens the method boundary: copies, references, the call stack |
+| 06 | `06-oop-classes.md` | Builds objects out of methods and references, and defines equality |
+| 07 | `07-interfaces-abstract.md` | Separates the behaviour needed from the class providing it |
+| 08 | `08-inheritance-polymorphism.md` | Decides at runtime which implementation runs |
+| 09 | `09-generics.md` | Teaches the angle-bracket syntax before collections use it everywhere |
+| 10 | `10-collections.md` | Groups of objects, and the hashing that makes lookup fast |
+| 11 | `11-exceptions.md` | The failures the earlier chapters made possible |
+| 12 | `12-streams-lambdas.md` | Behaviour as a value, and the pipelines built from it |
+| 13 | `13-enums.md` | A closed set of values the compiler can check exhaustively |
+| 14 | `14-dates.md` | The same immutability applied where no compiler check exists |
+| 15 | `15-annotations.md` | Metadata a tool reads — the shape of every Spring annotation |
+| 16 | `16-maven.md` | The build that compiles, tests and packages all of the above |
 
 With this you can place any problem inside Java's basic life cycle: the source is checked and compiled into bytecode, and then a JVM executes that bytecode. The route's first stop, [01-variables-types.md](01-variables-types.md), examines the declared types that underpin those compiler checks: which values Java lets each variable hold, and why incompatible types are rejected before execution.

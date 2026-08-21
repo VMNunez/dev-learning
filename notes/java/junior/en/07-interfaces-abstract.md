@@ -4,7 +4,7 @@
 > 📖 [Oracle Docs — Interfaces and inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/index.html)
 > 📖 [Spring Security — DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) — how `UserDetailsService` fits into the full login flow
 
-In [04-oop-classes.md](04-oop-classes.md) you learned to model a single thing as a class: its data, its constructor, its methods, and how it protects itself. But every class there stood alone. The moment you have a *family* of related classes, or a group of unrelated classes that must all promise they can do the same thing, a lone class is not enough — you need a way for classes to **share a contract** or **share implementation**. That is exactly what this file is about: interfaces (a contract a class signs) and abstract classes (a half-built parent others complete).
+In [06-oop-classes.md](06-oop-classes.md) you learned to model a single thing as a class: its data, its constructor, its methods, and how it protects itself. But every class there stood alone. The moment you have a *family* of related classes, or a group of unrelated classes that must all promise they can do the same thing, a lone class is not enough — you need a way for classes to **share a contract** or **share implementation**. That is exactly what this file is about: interfaces (a contract a class signs) and abstract classes (a half-built parent others complete).
 
 ## Interface
 
@@ -197,7 +197,7 @@ public interface Printable {
 
 > Docs: [Baeldung — Abstract Classes in Java](https://www.baeldung.com/java-abstract-class) → read: "2. Key Concepts for Abstract Classes" and "3. When to Use Abstract Classes" — the rules the compiler enforces, and the situations that justify one.
 
-> **Forward reference — inheritance mechanics.** This section uses `extends`, `super(...)`, and the parent/subclass relationship (the Animal/Dog hierarchy) to show what an abstract class is *for*. The full mechanics of inheritance — how `extends` wires a subclass to its parent, how `super(...)` and `@Override` work under the hood, the `Object` class every class inherits from — are the topic of [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md). Here, just read `super(name)` as "run the parent constructor first" and `extends Animal` as "Dog is a kind of Animal"; you get the deep version next file.
+> **Forward reference — inheritance mechanics.** This section uses `extends`, `super(...)`, and the parent/subclass relationship (the Animal/Dog hierarchy) to show what an abstract class is *for*. The full mechanics of inheritance — how `extends` wires a subclass to its parent, how `super(...)` and `@Override` work under the hood, the `Object` class every class inherits from — are the topic of [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md). Here, just read `super(name)` as "run the parent constructor first" and `extends Animal` as "Dog is a kind of Animal"; you get the deep version next file.
 
 Use an abstract class when several classes share the same *implementation* — not just the same contract. An interface says "you must have this method"; an abstract class says "here is part of the implementation, fill in the rest." You cannot create an instance of an abstract class directly — it only exists to be extended.
 
@@ -324,7 +324,7 @@ Concretely: `Comparable` is an interface because "can be compared" is a capabili
 
 > Docs: [Baeldung — A Guide to Java Constructors](https://www.baeldung.com/java-constructors) → read: "6. A Chained Constructor" — how one constructor delegates to another before running its own body.
 
-This expands the `super(name)` callout from the *Abstract class* section above, staying with the same `Animal`/`Dog` pair. It lives here rather than being repeated inline so the earlier section stays focused on *what* an abstract class is. The full inheritance mechanics — why the delegation to the parent comes first, what the parent constructor actually runs — belong to [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md); the point below is only that a subclass constructor can add its *own* fields on top of the parent's.
+This expands the `super(name)` callout from the *Abstract class* section above, staying with the same `Animal`/`Dog` pair. It lives here rather than being repeated inline so the earlier section stays focused on *what* an abstract class is. The full inheritance mechanics — why the delegation to the parent comes first, what the parent constructor actually runs — belong to [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md); the point below is only that a subclass constructor can add its *own* fields on top of the parent's.
 
 When a subclass defines its own constructor, it can add its own fields on top of the parent's. The rule that governs the order is that `super(...)` runs before anything touches the object, so the parent is fully initialised before the child adds anything of its own:
 
@@ -404,7 +404,7 @@ dog.breathe();  // "Rex is breathing"  — method inherited from Animal
 
 Before Java 8, passing behaviour to a method meant creating a whole class just to hold one line of logic. Functional interfaces make that possible without the boilerplate: any interface with exactly **one** abstract method can be implemented by a lambda instead of a class. The single method is what Java targets when you write the lambda — it knows which method to call because there is only one.
 
-> Lambdas are not covered in detail yet — they are explained in [09-streams-lambdas.md](09-streams-lambdas.md). For now, think of them as compact anonymous functions: a way to write the implementation of a single method without creating a whole class.
+> Lambdas are not covered in detail yet — they are explained in [12-streams-lambdas.md](12-streams-lambdas.md). For now, think of them as compact anonymous functions: a way to write the implementation of a single method without creating a whole class.
 
 > The `@FunctionalInterface` annotation is optional, but use it: the compiler will give you an error if you accidentally add a second abstract method and break the contract. Without it, adding that second method compiles happily and the breakage only surfaces far away, at every place where someone was passing a lambda. With it, the error lands on the interface itself:
 >
@@ -462,7 +462,7 @@ The most common built-in functional interfaces already come with Java — you do
 
 Read the table by matching your task to the `Method` column: if your lambda takes a value and answers true/false you want `Predicate`; if it takes a value and returns a different one you want `Function`; if it takes a value and returns nothing you want `Consumer`; if it takes nothing and produces a value you want `Supplier`. The shape of the single method is what tells you which one to reach for.
 
-The `T` and `R` are generics — they mean "any type". `Predicate<Employee>` is a predicate that takes an `Employee`; `Function<Employee, String>` is a function that takes an `Employee` and returns a `String`. Generics are explained in detail in [10-generics.md](10-generics.md).
+The `T` and `R` are generics — they mean "any type". `Predicate<Employee>` is a predicate that takes an `Employee`; `Function<Employee, String>` is a function that takes an `Employee` and returns a `String`. Generics are explained in detail in [09-generics.md](09-generics.md).
 
 Concrete examples without streams, to see how each one works on its own:
 
@@ -485,7 +485,7 @@ Supplier<String> greeting = () -> "Hello";
 greeting.get();  // "Hello"
 ```
 
-You will use these every time you work with streams and lambdas. What you have here is the *interface* half of the story — the rule that one abstract method is what a lambda can target, and the four shapes that rule produces. The *lambda* half — how the arrow syntax really works, method references, and how these four interfaces are what every stream operation secretly asks for — is [09-streams-lambdas.md](09-streams-lambdas.md), which picks the same four up again from the calling side.
+You will use these every time you work with streams and lambdas. What you have here is the *interface* half of the story — the rule that one abstract method is what a lambda can target, and the four shapes that rule produces. The *lambda* half — how the arrow syntax really works, method references, and how these four interfaces are what every stream operation secretly asks for — is [12-streams-lambdas.md](12-streams-lambdas.md), which picks the same four up again from the calling side.
 
 ---
 
@@ -529,7 +529,7 @@ public interface UserDetailsService {
 }
 ```
 
-`throws UsernameNotFoundException` means the method can throw that exception if no user is found. Exceptions are explained in detail in [08-exceptions.md](08-exceptions.md) — for now read it as "this method can fail with this type of error."
+`throws UsernameNotFoundException` means the method can throw that exception if no user is found. Exceptions are explained in detail in [11-exceptions.md](11-exceptions.md) — for now read it as "this method can fail with this type of error."
 
 Spring Security knows how to call `loadUserByUsername` when a login request arrives, but it cannot provide the implementation because it does not know your database. Your job is to write that implementation:
 
@@ -560,7 +560,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 The name `UserDetailsServiceImpl` is a convention — the `Impl` suffix means "implementation." Spring does not look for it by name; it finds it because the class is annotated with `@Service` and implements `UserDetailsService`.
 
-`findByEmail(username)` returns an `Optional<User>` — a container that may hold the user or be empty. `.orElseThrow()` opens it: if there is a user it returns it; if it is empty it throws the exception you pass. `Optional` is explained in [10-generics.md](10-generics.md).
+`findByEmail(username)` returns an `Optional<User>` — a container that may hold the user or be empty. `.orElseThrow()` opens it: if there is a user it returns it; if it is empty it throws the exception you pass. `Optional` is explained in [09-generics.md](09-generics.md).
 
 The last block is where the contract is actually honoured. Your `User` is a TimeTrack entity — a database row — and the interface promised to return a `UserDetails`, which is a different contract entirely (Spring Security's own view of "a principal that can log in"): a username, a password hash, a set of roles, and a few enabled/disabled flags. So you translate one into the other, and the fully-qualified `org.springframework.security.core.userdetails.User` is Spring's ready-made class that implements `UserDetails` for you. It is spelled out in full here for a plain reason: the file already imports *your* `User` entity, and two different classes cannot share the short name in one file.
 
@@ -602,4 +602,4 @@ That is the payoff of this whole file in one picture. Spring Security was compil
 
 ---
 
-You now have both tools for making classes relate: an **interface** is a contract unrelated classes sign, and an **abstract class** is a half-built parent that shares real implementation. But this file only *borrowed* the inheritance machinery — `extends`, `super(...)`, `@Override` — to make abstract classes work, without explaining how any of it functions. That is the next step: [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md) opens up the mechanism you kept using here — how a subclass really inherits fields and methods from its parent, how `super` and `@Override` behave, and how one method call can run different code depending on the object's real type (polymorphism).
+You now have both tools for making classes relate: an **interface** is a contract unrelated classes sign, and an **abstract class** is a half-built parent that shares real implementation. But this file only *borrowed* the inheritance machinery — `extends`, `super(...)`, `@Override` — to make abstract classes work, without explaining how any of it functions. That is the next step: [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md) opens up the mechanism you kept using here — how a subclass really inherits fields and methods from its parent, how `super` and `@Override` behave, and how one method call can run different code depending on the object's real type (polymorphism).

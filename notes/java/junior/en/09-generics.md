@@ -4,7 +4,7 @@
 > 📖 [Baeldung — Guide to Optional](https://www.baeldung.com/java-optional)
 > 📖 [Oracle Docs — Generics](https://docs.oracle.com/javase/tutorial/java/generics/index.html)
 
-In `09-streams-lambdas.md` you learned to transform data fluently — `map`, `filter`, `collect` reshaping a collection in a single chain. But every one of those operations already knew what type it was working with: a `Stream<Employee>`, a `List<String>`. Nothing so far has let you write a class or a method that works with *any* type safely — one `Box` that holds a `String` today and an `Integer` tomorrow, with the compiler still checking every use. That is exactly what generics add, and it is why the streams API you just met is built on them from top to bottom.
+In `12-streams-lambdas.md` you learned to transform data fluently — `map`, `filter`, `collect` reshaping a collection in a single chain. But every one of those operations already knew what type it was working with: a `Stream<Employee>`, a `List<String>`. Nothing so far has let you write a class or a method that works with *any* type safely — one `Box` that holds a `String` today and an `Integer` tomorrow, with the compiler still checking every use. That is exactly what generics add, and it is why the streams API you just met is built on them from top to bottom.
 
 ## Generics
 
@@ -211,7 +211,7 @@ public ProjectResponse getById(Long id) {
 }
 ```
 
-`this::toResponse` is a *method reference* (covered in full in `09-streams-lambdas.md` — read it as "call the `toResponse` method of `this` on each value"). It points at a small helper in the same service that copies a `Project` into a `ProjectResponse` field by field:
+`this::toResponse` is a *method reference* (covered in full in `12-streams-lambdas.md` — read it as "call the `toResponse` method of `this` on each value"). It points at a small helper in the same service that copies a `Project` into a `ProjectResponse` field by field:
 
 ```java
 private ProjectResponse toResponse(Project project) {
@@ -225,7 +225,7 @@ private ProjectResponse toResponse(Project project) {
 }
 ```
 
-Extracting the mapping into `toResponse` is why `getById` stays a clean three-line chain — and why the same `.map(this::toResponse)` is reused by every other method in the service. `ResourceNotFoundException` is a custom `RuntimeException` subclass (see `08-exceptions.md`) that Spring maps to an HTTP 404.
+Extracting the mapping into `toResponse` is why `getById` stays a clean three-line chain — and why the same `.map(this::toResponse)` is reused by every other method in the service. `ResourceNotFoundException` is a custom `RuntimeException` subclass (see `11-exceptions.md`) that Spring maps to an HTTP 404.
 
 Step by step:
 1. `findById(id)` → `Optional<Project>` — present if found, empty if not
@@ -283,4 +283,4 @@ Understanding what `<T>` means makes Spring Boot's API much easier to read.
 
 ---
 
-Generics let a type stay *open* — one `Box` works with any type you plug in. The next file, `11-enums.md`, is about the opposite need: a type that is deliberately *closed*, restricting its own values to a small fixed set you define up front (a status that can only be `ACTIVE`, `PENDING`, or `CLOSED`, never anything else). Where generics widen what a type accepts, enums narrow it — and that is exactly the guarantee you want for a field with a handful of valid states.
+Generics let a type stay *open* — one `Box` works with any type you plug in. The next file, `13-enums.md`, is about the opposite need: a type that is deliberately *closed*, restricting its own values to a small fixed set you define up front (a status that can only be `ACTIVE`, `PENDING`, or `CLOSED`, never anything else). Where generics widen what a type accepts, enums narrow it — and that is exactly the guarantee you want for a field with a handful of valid states.

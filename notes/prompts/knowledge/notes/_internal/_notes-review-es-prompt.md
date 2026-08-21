@@ -90,7 +90,7 @@ do not skim, do not stop early, reach the last line.
 Before starting, read:
 - `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` — the bar (bilingual rules, voice, signature
   texture), in full.
-- The first section of `notes/java/junior/es/08-excepciones.md` — the calibration reference for a finished
+- The first section of `notes/java/junior/es/11-excepciones.md` — the calibration reference for a finished
   Spanish note.
 - **Not the `en/` file.** That is the one note you must not read.
 
@@ -114,8 +114,8 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
 - **Callouts and tables** — `> blockquote` callouts read naturally in Spanish; every table still has
   its "cómo leer esto" sentence in Spanish.
 - **Internal links resolve inside the selected level's `es/`** — every markdown link to a sibling note
-  must point at a file that exists in `notes/{TOPIC}/{LEVEL}/es/` by its Spanish name (e.g. `10-genericos.md`, not
-  `10-generics.md`). List `notes/{TOPIC}/{LEVEL}/es/` and check each internal link against it; fix any link
+  must point at a file that exists in `notes/{TOPIC}/{LEVEL}/es/` by its Spanish name (e.g. `09-genericos.md`, not
+  `09-generics.md`). List `notes/{TOPIC}/{LEVEL}/es/` and check each internal link against it; fix any link
   that carries an English filename or names a file that is not there. This is the last defence before
   the commit — a broken `es/` link that ships here is one no later stage will catch.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if

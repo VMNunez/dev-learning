@@ -7,7 +7,7 @@ In [01-variables-types.md](01-variables-types.md) you learned how to declare and
 
 Control flow statements decide which code runs and how many times. Java uses the same structures as JavaScript — the syntax is nearly identical, so most of this will feel familiar.
 
-**One example runs through this whole file: a weekly timesheet.** You have an `Employee`, a `day` of the week, and the `hours` that employee logged on that day. Every section below works on that same little world — deciding whether a day counts as overtime, naming the shift for a day, walking the week, walking the list of employees, and surviving a `name` that turns out to be `null`. Keeping one domain means you never have to re-orient at a new code block; you only have to notice what the *new* structure adds. `Employee` is also the model the rest of these notes reuse ([07-collections.md](07-collections.md), [09-streams-lambdas.md](09-streams-lambdas.md)), so it is worth getting familiar with here.
+**One example runs through this whole file: a weekly timesheet.** You have an `Employee`, a `day` of the week, and the `hours` that employee logged on that day. Every section below works on that same little world — deciding whether a day counts as overtime, naming the shift for a day, walking the week, walking the list of employees, and surviving a `name` that turns out to be `null`. Keeping one domain means you never have to re-orient at a new code block; you only have to notice what the *new* structure adds. `Employee` is also the model the rest of these notes reuse ([10-collections.md](10-collections.md), [12-streams-lambdas.md](12-streams-lambdas.md)), so it is worth getting familiar with here.
 
 ```java
 // The world for this whole file
@@ -79,7 +79,7 @@ How to read this table: the "Allowed?" column is about the value in `switch (...
 
 > **Why is `boolean` banned when it looks like the easiest case of all?** Because a `boolean` has exactly two values, so a `switch` over it can never be anything an `if/else` does not already say more clearly. The language leaves it out on purpose rather than by oversight. The rule of thumb that follows: reach for `switch` at three or more possible values, `if/else` below that.
 
-> **`enum` is the selector `switch` was made for.** With an `enum` the compiler knows the complete set of possible values, so it can check you handled every one of them — something it can never do for a `String`, where the set is infinite. When you later meet [11-enums.md](11-enums.md), this is the payoff to remember.
+> **`enum` is the selector `switch` was made for.** With an `enum` the compiler knows the complete set of possible values, so it can check you handled every one of them — something it can never do for a `String`, where the set is infinite. When you later meet [13-enums.md](13-enums.md), this is the payoff to remember.
 
 ### Classic switch (statement)
 
@@ -276,13 +276,13 @@ for (Employee e : employees)     →   Iterator<Employee> it = employees.iterato
 
 You can confirm this yourself: compile a class with both loops and run `javap -c` on it — the array version shows `arraylength` and `iinc` (an index counter), the list version shows `invokeinterface ... Iterator.hasNext` and `Iterator.next`. Three consequences follow directly from those two rewrites:
 
-**1. You cannot get the index.** In the list rewrite there is no counter anywhere — the iterator just hands over "the next one" with no idea what number it is. So if you need the position, the enhanced `for` cannot give it to you and you go back to the classic `for` (or `IntStream.range`, in [09-streams-lambdas.md](09-streams-lambdas.md)).
+**1. You cannot get the index.** In the list rewrite there is no counter anywhere — the iterator just hands over "the next one" with no idea what number it is. So if you need the position, the enhanced `for` cannot give it to you and you go back to the classic `for` (or `IntStream.range`, in [12-streams-lambdas.md](12-streams-lambdas.md)).
 
 **2. You cannot `remove()` from the collection inside it.** The iterator remembers how many structural changes the list had when it started; calling `employees.remove(e)` changes the list behind its back, the two numbers stop agreeing, and the next `it.next()` throws `ConcurrentModificationException`. It is not a rule invented to annoy you — it is the iterator refusing to keep walking a list whose positions may have shifted underneath it.
 
-Concretely: calling `employees.remove(e)` inside a `for (Employee e : employees)` compiles fine and then dies on the following iteration with `Exception in thread "main" java.util.ConcurrentModificationException` — a bare message with no "because" clause, so the stack trace pointing at `ArrayList$Itr.checkForComodification` is your only clue. The one-line fix is `employees.removeIf(e -> !e.isActive())`, which runs the same deletion through a correctly-managed iterator. (`e -> !e.isActive()` is a lambda — read it for now as "for each employee `e`, this condition"; full treatment in [09-streams-lambdas.md](09-streams-lambdas.md).)
+Concretely: calling `employees.remove(e)` inside a `for (Employee e : employees)` compiles fine and then dies on the following iteration with `Exception in thread "main" java.util.ConcurrentModificationException` — a bare message with no "because" clause, so the stack trace pointing at `ArrayList$Itr.checkForComodification` is your only clue. The one-line fix is `employees.removeIf(e -> !e.isActive())`, which runs the same deletion through a correctly-managed iterator. (`e -> !e.isActive()` is a lambda — read it for now as "for each employee `e`, this condition"; full treatment in [12-streams-lambdas.md](12-streams-lambdas.md).)
 
-> **Deferred on purpose — this is a collections topic, not a loop topic.** The reason it appears at all here is that it is a *consequence of the iterator rewrite* you just read, and you would otherwise have no idea why an innocent-looking loop explodes. But the version counter (`modCount`), the worked wrong-vs-right pair, and the two other legal ways to remove while iterating all belong to [07-collections.md](07-collections.md), where they are covered in full — open that file when you actually hit this. Deliberately not repeated here, so there is one canonical explanation rather than two that can drift apart.
+> **Deferred on purpose — this is a collections topic, not a loop topic.** The reason it appears at all here is that it is a *consequence of the iterator rewrite* you just read, and you would otherwise have no idea why an innocent-looking loop explodes. But the version counter (`modCount`), the worked wrong-vs-right pair, and the two other legal ways to remove while iterating all belong to [10-collections.md](10-collections.md), where they are covered in full — open that file when you actually hit this. Deliberately not repeated here, so there is one canonical explanation rather than two that can drift apart.
 
 **3. Assigning to the loop variable changes nothing.** Look at the array rewrite: `String day = week[i]` **copies** the slot into a fresh local variable on every pass. Reassigning that local just points the copy somewhere else; the array slot is untouched.
 
@@ -300,7 +300,7 @@ for (int i = 0; i < week.length; i++) {
 
 > **This is the value-versus-reference idea from [01-variables-types.md](01-variables-types.md), in loop form.** What gets copied is the *reference*, not the object. So reassigning `day` is invisible to the array — but calling a mutating method on the object it points at (`emp.setHours(0)`) **is** visible, because both the copy and the array slot point at the same `Employee`. Reassign = no effect; mutate = effect.
 
-Use the enhanced for whenever you just need the items and do not need the index. In Spring Boot, this is what you will write most of the time — though streams (covered in [09-streams-lambdas.md](09-streams-lambdas.md)) are even more concise for transforming collections.
+Use the enhanced for whenever you just need the items and do not need the index. In Spring Boot, this is what you will write most of the time — though streams (covered in [12-streams-lambdas.md](12-streams-lambdas.md)) are even more concise for transforming collections.
 
 ---
 
@@ -451,16 +451,16 @@ Everything after `because` is the part that saves you time. Older Java printed o
 **`Optional` — the modern alternative.** Instead of a variable that *might* be null and a check you *might* forget, `Optional<T>` is a small wrapper object that always exists and holds either a value or nothing. The point is that the type itself tells you the value may be absent, so the compiler puts the "what if it's missing?" question in front of you instead of leaving it to your memory.
 
 ```java
-// Optional in full is covered in 10-generics.md
+// Optional in full is covered in 09-generics.md
 Optional.ofNullable(name)                            // wrap: empty if name is null
         .ifPresent(n -> System.out.println(n.toUpperCase()));  // run only if there IS a value
 ```
 
 - **`ofNullable(x)`** — builds the wrapper from a value that may or may not be null: an *empty* Optional if `x` is null, a full one otherwise.
 - **`ifPresent(...)`** — runs the given code only when the wrapper holds something, and does nothing at all when it is empty. There is no `else` branch to forget.
-- The `n -> ...` is a lambda: "given the value, call it `n` and do this with it" — full treatment in [09-streams-lambdas.md](09-streams-lambdas.md).
+- The `n -> ...` is a lambda: "given the value, call it `n` and do this with it" — full treatment in [12-streams-lambdas.md](12-streams-lambdas.md).
 
-> **Why not just use `Optional` everywhere?** It is designed for **return values**, to signal "this lookup may find nothing" — not for fields or parameters, where it only adds a wrapper object and noise. Inside a method, a plain `if (x != null)` guard is still the normal, idiomatic Java. Optional's full API (`orElseThrow`, `map`, `orElse`) is in [10-generics.md](10-generics.md).
+> **Why not just use `Optional` everywhere?** It is designed for **return values**, to signal "this lookup may find nothing" — not for fields or parameters, where it only adds a wrapper object and noise. Inside a method, a plain `if (x != null)` guard is still the normal, idiomatic Java. Optional's full API (`orElseThrow`, `map`, `orElse`) is in [09-generics.md](09-generics.md).
 
 In Spring Boot, many methods return `Optional<T>` instead of a raw object that might be null. `repository.findById(id)` is the standard example — it returns `Optional<Employee>`, so you are forced to handle the "not found" case. But plain null guards do not disappear: in your own TimeTrack backend, `JwtFilter` opens with exactly this pattern before it trusts the token —
 
@@ -480,4 +480,4 @@ if (email != null && SecurityContextHolder.getContext().getAuthentication() == n
 
 ---
 
-So far every loop and condition has lived inside one block of code. But real programs are not one long block — they are split into reusable, named pieces you can call by name, each taking inputs and handing back a result. Those pieces are **methods**, and the `if`, `for`, and `switch` you just learned are the building blocks that go inside them. Notice how often this file already needed one: `isApproved(emp, day)`, `loadPage(page)`, and the "extract the nested loops and `return`" tip all assume you can name a piece of logic and call it. That is where [03-methods.md](03-methods.md) picks up.
+So far every loop and condition has lived inside one block of code. But real programs are not one long block — they are split into reusable, named pieces you can call by name, each taking inputs and handing back a result. Those pieces are **methods**, and the `if`, `for`, and `switch` you just learned are the building blocks that go inside them. Notice how often this file already needed one: `isApproved(emp, day)`, `loadPage(page)`, and the "extract the nested loops and `return`" tip all assume you can name a piece of logic and call it. That is where [04-methods.md](04-methods.md) picks up.

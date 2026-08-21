@@ -241,4 +241,4 @@ In Java, always use enums for fixed sets of values. `public static final String 
 
 ---
 
-Enums close off a type so it can hold only a handful of values you decide up front. The next file, `12-dates.md`, deals with the opposite kind of value — dates and times, which come from an effectively infinite range and have their own arithmetic (durations, time zones, "three days from now"). Java's older date classes were mutable and error-prone; the modern `java.time` API fixes that, and it is what every project reaches for the moment it needs a timestamp on an entity.
+Enums close off a type so it can hold only a handful of values you decide up front. The next file, `14-dates.md`, deals with the opposite kind of value — dates and times, which come from an effectively infinite range and have their own arithmetic (durations, time zones, "three days from now"). Java's older date classes were mutable and error-prone; the modern `java.time` API fixes that, and it is what every project reaches for the moment it needs a timestamp on an entity.

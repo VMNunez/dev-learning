@@ -4,21 +4,7 @@ Plan status: current
 Coverage: notes/java/coverage/junior.md
 Coverage SHA-256: b821625786a7ef5628df043fdd431f7c27d2f8de1926300eba1f81f16ade4f76
 Generated: 2026-08-02
-Study order: the entry number is the reading order, 00 → 16. It is **not** the number in the filename. Only entries 00–01 coincide; from entry 02 onward the filenames are legacy and must be read from the `English:` / `Spanish:` line of each entry, never guessed from the number. Three causes: the text half of the old variables chapter becomes its own entry 02 backed by a new file numbered `16`; `15-memory-model.md` is promoted to entry 05; and generics/collections are swapped relative to the filenames, so entry 09 reads `10-generics.md` and entry 10 reads `07-collections.md`. Full correspondence:
-
-| Entry | English file | Entry | English file |
-| --- | --- | --- | --- |
-| 00 | `00-intro-java.md` | 09 | `10-generics.md` |
-| 01 | `01-variables-types.md` | 10 | `07-collections.md` |
-| 02 | `16-strings.md` *(new)* | 11 | `08-exceptions.md` |
-| 03 | `02-control-flow.md` | 12 | `09-streams-lambdas.md` |
-| 04 | `03-methods.md` | 13 | `11-enums.md` |
-| 05 | `15-memory-model.md` | 14 | `12-dates.md` |
-| 06 | `04-oop-classes.md` | 15 | `13-annotations.md` |
-| 07 | `05-interfaces-abstract.md` | 16 | `14-maven.md` |
-| 08 | `06-inheritance-polymorphism.md` | | |
-
-**Renumbering the legacy files to match the study order is OWED and still PENDING.** The earlier decision to skip it — on the grounds that ~450 repository-relative links across the Spanish notes, the Spring Boot junior notes, the notes-quality standard, two prompt-system internals, both skill mirrors and `_run-tracker.md` made it too costly for a cosmetic gain — was **reversed by Victor on 2026-08-21**: filename order must match study order, always, and the link surface is not a reason to decline. `notes-plan-prompt.md` → Planning algorithm step 6 now says so explicitly and authorises the link corrections inside prompt-system machinery. The rename itself is a dedicated session's work and has not run yet, so until it does, the reading-order table above remains the authority over the folder listing.
+Study order: the entry number is the reading order, 00 → 16, and it is identical to the number in the filename — the `NN` of `## NN` is always the `NN-` prefix of that entry’s `English:` and `Spanish:` files. The legacy files that broke this correspondence were renumbered on 2026-08-21, together with every repository-relative link that targeted them; `notes-plan-prompt.md` → Planning algorithm step 6 makes the match a standing requirement, so a future entry inserted into this route renumbers what follows it instead of leaving a gap or a remap table. Entry 02 is the one prefix the route still owes a file: `02-strings.md` / `02-cadenas-de-texto.md` carry `Action: create`, and the number is reserved for them.
 
 `Prerequisites` and `Depends on` list the nearest entries a chapter assumes; the full assumed set is their **transitive closure**. Entry 12 relies on entry 07's anonymous inner classes through the chain 09 → 08 → 07, and that is legal without restating 07.
 
@@ -119,8 +105,8 @@ Handoff: Numbers behave the way their representation forces them to; entry 02 as
 
 Status: pending
 Action: create
-English: notes/java/junior/en/16-strings.md
-Spanish: notes/java/junior/es/16-cadenas-de-texto.md
+English: notes/java/junior/en/02-strings.md
+Spanish: notes/java/junior/es/02-cadenas-de-texto.md
 Depends on: 01
 Pending additions: none
 
@@ -160,8 +146,8 @@ Handoff: With values and text both understood one at a time, entry 03 stops eval
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/02-control-flow.md
-Spanish: notes/java/junior/es/02-flujo-de-control.md
+English: notes/java/junior/en/03-control-flow.md
+Spanish: notes/java/junior/es/03-flujo-de-control.md
 Depends on: 01, 02
 Pending additions: none
 
@@ -198,8 +184,8 @@ Handoff: After Victor can control statement execution, entry 04 packages that be
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/03-methods.md
-Spanish: notes/java/junior/es/03-metodos.md
+English: notes/java/junior/en/04-methods.md
+Spanish: notes/java/junior/es/04-metodos.md
 Depends on: 03
 Pending additions: none
 
@@ -227,7 +213,7 @@ Coverage concepts:
 - [ ] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
 - [ ] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
 
-Audit note: `03-methods.md` currently carries three sections that teach bullets this plan assigns elsewhere — `### How arguments are actually passed — Java is always pass-by-value` belongs to entry 05, and `## Access modifiers` and `## Static methods` belong to entry 06. All three are consolidated into their owning chapters; this file keeps at most a marked forward reference.
+Audit note: `04-methods.md` currently carries three sections that teach bullets this plan assigns elsewhere — `### How arguments are actually passed — Java is always pass-by-value` belongs to entry 05, and `## Access modifiers` and `## Static methods` belong to entry 06. All three are consolidated into their owning chapters; this file keeps at most a marked forward reference.
 
 Rationale: Signatures, overload selection, variable argument lists, package naming, and boundary validation are one unit — everything the compiler and the caller must agree on before a method runs.
 
@@ -237,8 +223,8 @@ Handoff: The call contract is now clear, but not what physically crosses it; ent
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/15-memory-model.md
-Spanish: notes/java/junior/es/15-modelo-de-memoria.md
+English: notes/java/junior/en/05-memory-model.md
+Spanish: notes/java/junior/es/05-modelo-de-memoria.md
 Depends on: 04
 Pending additions: none
 
@@ -264,7 +250,7 @@ Coverage concepts:
 - [ ] Call stack and method returns — each call creates a frame holding its local state, and returning or throwing removes frames toward the caller
 - [ ] Object aliasing — two references can point to the same mutable object, so a change through one reference is visible through the other
 
-Audit note: the pass-by-value bullet is currently taught twice — here at `15-memory-model.md`'s opening section and again at `03-methods.md`. This file is the owner; the audit of entry 04 removes the duplicate there.
+Audit note: the pass-by-value bullet is currently taught twice — here at `05-memory-model.md`'s opening section and again at `04-methods.md`. This file is the owner; the audit of entry 04 removes the duplicate there.
 
 Rationale: Argument copying, the call stack, and aliasing are three consequences of one fact — a variable holds either a value or a reference to something stored elsewhere. The stack/heap picture and a single garbage-collection callout are declared scaffolding: they are the mechanism this chapter's own questions depend on, and the standard requires mechanism over behaviour.
 
@@ -274,8 +260,8 @@ Handoff: References are now understood in isolation; entry 06 uses them to build
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/04-oop-classes.md
-Spanish: notes/java/junior/es/04-poo-clases.md
+English: notes/java/junior/en/06-oop-classes.md
+Spanish: notes/java/junior/es/06-poo-clases.md
 Depends on: 05
 Pending additions: none
 
@@ -317,10 +303,10 @@ Coverage concepts:
 - [ ] `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract
 
 Audit note: four separate conflicts, all requiring prose to move rather than merely be cross-referenced.
-(a) `04-oop-classes.md` carries a compact-constructor passage that teaches middle's record-invariant and defensive-copy bullet; reduce it to the canonical-construction shape junior owns.
+(a) `06-oop-classes.md` carries a compact-constructor passage that teaches middle's record-invariant and defensive-copy bullet; reduce it to the canonical-construction shape junior owns.
 (b) `## equals() and hashCode()`, `## The equals() contract` and `## equals() and hashCode() on a JPA entity` develop the `hashCode` half of the contract, which this plan assigns to entry 10 where hash-based collections give it a purpose. Reduce this file to value equality and move the rest; the deferral stated in the rationale is not real until the prose moves.
 (c) `### Anonymous class` belongs to entry 07.
-(d) The access-modifier and static-member bullets are currently also taught in `03-methods.md`; they consolidate here.
+(d) The access-modifier and static-member bullets are currently also taught in `04-methods.md`; they consolidate here.
 
 Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised.
 
@@ -330,8 +316,8 @@ Handoff: Concrete classes can now hold valid state and compare correctly; entry 
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/05-interfaces-abstract.md
-Spanish: notes/java/junior/es/05-interfaces-abstractas.md
+English: notes/java/junior/en/07-interfaces-abstract.md
+Spanish: notes/java/junior/es/07-interfaces-abstractas.md
 Depends on: 06
 Pending additions: none
 
@@ -368,8 +354,8 @@ Handoff: With contracts separated from implementations, entry 08 explains how Ja
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/06-inheritance-polymorphism.md
-Spanish: notes/java/junior/es/06-herencia-polimorfismo.md
+English: notes/java/junior/en/08-inheritance-polymorphism.md
+Spanish: notes/java/junior/es/08-herencia-polimorfismo.md
 Depends on: 07
 Pending additions: none
 
@@ -405,8 +391,8 @@ Handoff: Polymorphic APIs are almost always parameterised; entry 09 teaches how 
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/10-generics.md
-Spanish: notes/java/junior/es/10-genericos.md
+English: notes/java/junior/en/09-generics.md
+Spanish: notes/java/junior/es/09-genericos.md
 Depends on: 08
 Pending additions: none
 
@@ -437,7 +423,7 @@ Coverage concepts:
 - [ ] Nested generic APIs — read types such as `Optional<User>`, `Page<User>`, and `ResponseEntity<List<User>>` by working from the outer container inward
 - [ ] `Optional<T>` as a return contract — make an absent result explicit when absence is normal, rather than using it for every nullable field or parameter
 
-Audit note: `10-generics.md` diverges from this contract in three directions.
+Audit note: `09-generics.md` diverges from this contract in three directions.
 (a) It develops **type erasure** as a named mechanism with runtime consequences — middle's bullet — where junior needs only "the type argument is checked at compile time and is not there at runtime".
 (b) It never mentions `?`, `? extends T` or `? super T` at all, so the wildcard-recognition bullet this entry owns is currently unwritten.
 (c) `### Using an Optional`, `### Optional.map() vs Stream.map()` and `### Chaining map() + orElseThrow()` teach `Optional` *usage*, which this entry's own must-answer question defers to entry 12; and `## Bounded type parameters` plus the generic-class and generic-method authoring sections exceed bullets that specify recognition and explicitly exclude advanced generic API design.
@@ -450,8 +436,8 @@ Handoff: Parameterised types can now be read fluently, so entry 10 can teach the
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/07-collections.md
-Spanish: notes/java/junior/es/07-colecciones.md
+English: notes/java/junior/en/10-collections.md
+Spanish: notes/java/junior/es/10-colecciones.md
 Depends on: 06, 09
 Pending additions: none
 
@@ -500,7 +486,7 @@ Coverage concepts:
 - [ ] `Comparable<T>` vs `Comparator<T>` — define one natural order inside a type or multiple external orderings without changing that type
 - [ ] Equality vs ordering consistency — understand that sorted sets and maps treat `compareTo` or `compare` returning zero as the same key even when `equals` disagrees
 
-Audit note: two bullets this entry owns are currently unwritten in `07-collections.md` — the three-way `Arrays.asList` / `List.of` / `List.copyOf` comparison (the file teaches `List.of` versus `ArrayList` only, and never mentions the other two), and the `equals` / `hashCode` contract and mutable-hash-key material, which currently lives in `04-oop-classes.md` and moves here under entry 06's audit note.
+Audit note: two bullets this entry owns are currently unwritten in `10-collections.md` — the three-way `Arrays.asList` / `List.of` / `List.copyOf` comparison (the file teaches `List.of` versus `ArrayList` only, and never mentions the other two), and the `equals` / `hashCode` contract and mutable-hash-key material, which currently lives in `06-oop-classes.md` and moves here under entry 06's audit note.
 
 Rationale: Storage semantics, implementation choice, mutation rules, lookup cost, hashing, and ordering are one subject because each of them is a property of how a collection finds and distinguishes the elements it holds — which is exactly why `hashCode` and ordering consistency belong here and not in entry 06. The three-way factory comparison sits beside the factory bullet because it is the same question — what does this list let you do to it afterwards — asked of the constructor Victor will actually meet in legacy code.
 
@@ -510,8 +496,8 @@ Handoff: Lookups, conversions, and iteration have now produced several ways to f
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/08-exceptions.md
-Spanish: notes/java/junior/es/08-excepciones.md
+English: notes/java/junior/en/11-exceptions.md
+Spanish: notes/java/junior/es/11-excepciones.md
 Depends on: 05, 10
 Pending additions: none
 
@@ -555,8 +541,8 @@ Handoff: Failure paths are now explicit, so entry 12 can introduce behaviour-as-
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/09-streams-lambdas.md
-Spanish: notes/java/junior/es/09-streams-lambdas.md
+English: notes/java/junior/en/12-streams-lambdas.md
+Spanish: notes/java/junior/es/12-streams-lambdas.md
 Depends on: 09, 10, 11
 Pending additions: none
 
@@ -612,7 +598,7 @@ Coverage concepts:
 - [ ] `Collectors.joining` — gather a stream of text into one delimited String, with an optional prefix and suffix, instead of accumulating with a manual separator flag
 - [ ] `Comparator.comparing()` — build a field-based ordering and compose tie-breakers when the primary key is equal
 
-Coverage split note: coverage has split this entry's former `findFirst, anyMatch, and allMatch` bullet and its former `Collectors.joining and Collectors.toMap` bullet into four, and added `Optional.filter`. Each now carries its own must-answer question, because the existing note teaches `anyMatch`, `findFirst` and `joining` but reduces `allMatch` to one table row, shows `Collectors.toMap` only in its trap-prone two-argument form, and never mentions `Optional.filter`. The `Optional` usage sections currently sitting in `10-generics.md` also consolidate here.
+Coverage split note: coverage has split this entry's former `findFirst, anyMatch, and allMatch` bullet and its former `Collectors.joining and Collectors.toMap` bullet into four, and added `Optional.filter`. Each now carries its own must-answer question, because the existing note teaches `anyMatch`, `findFirst` and `joining` but reduces `allMatch` to one table row, shows `Collectors.toMap` only in its trap-prone two-argument form, and never mentions `Optional.filter`. The `Optional` usage sections currently sitting in `09-generics.md` also consolidate here.
 
 Rationale: Every bullet here needs the same one thing — a small piece of behaviour written inline and handed to an API. That is why the stream operations, the field-based comparator, and the `Optional` methods all resolve in this chapter and nowhere earlier.
 
@@ -622,8 +608,8 @@ Handoff: Functional pipelines complete Java's data-processing route; entry 13 tu
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/11-enums.md
-Spanish: notes/java/junior/es/11-enums.md
+English: notes/java/junior/en/13-enums.md
+Spanish: notes/java/junior/es/13-enums.md
 Depends on: 03, 06
 Pending additions: none
 
@@ -655,8 +641,8 @@ Handoff: An enum is the case where the value set is closed and the compiler can 
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/12-dates.md
-Spanish: notes/java/junior/es/12-fechas.md
+English: notes/java/junior/en/14-dates.md
+Spanish: notes/java/junior/es/14-fechas.md
 Depends on: 01, 04, 06, 09, 11
 Pending additions: none
 
@@ -684,7 +670,7 @@ Coverage concepts:
 - [ ] Date-time immutability and formatting — use `java.time` and `DateTimeFormatter` instead of mutable legacy date APIs and ambiguous hand-built strings
 - [ ] Javadoc and API signatures — navigate official API documentation and infer required arguments, return types, exceptions, and generic contracts
 
-Audit note: two bullets this entry owns are unwritten in `12-dates.md`. `YearMonth` is not mentioned anywhere in the file, and there is no section at all on reading an unfamiliar API from its Javadoc signature — the second of these is the skill the chapter's own narrative role is built on.
+Audit note: two bullets this entry owns are unwritten in `14-dates.md`. `YearMonth` is not mentioned anywhere in the file, and there is no section at all on reading an unfamiliar API from its Javadoc signature — the second of these is the skill the chapter's own narrative role is built on.
 
 Rationale: The `java.time` value types, amount types, formatting, and the signature-reading skill form one unit about selecting a library type from its documented contract rather than by guesswork. `YearMonth` belongs beside `LocalDate` for the same reason `Period` belongs beside `Duration` — the choice is driven by which fact the business actually records. The prerequisite list is long because this chapter is late for a reason: its types are immutable objects built through static factories (entry 06), and the Javadoc skill it teaches means reading generic parameters (entry 09) and declared exceptions (entry 11) out of a signature.
 
@@ -694,8 +680,8 @@ Handoff: Javadoc explains ordinary API contracts; entry 15 covers the metadata c
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/13-annotations.md
-Spanish: notes/java/junior/es/13-anotaciones.md
+English: notes/java/junior/en/15-annotations.md
+Spanish: notes/java/junior/es/15-anotaciones.md
 Depends on: 04, 07
 Pending additions: none
 
@@ -727,8 +713,8 @@ Handoff: Annotations, libraries, and frameworks all arrive from outside the sour
 
 Status: pending
 Action: audit
-English: notes/java/junior/en/14-maven.md
-Spanish: notes/java/junior/es/14-maven.md
+English: notes/java/junior/en/16-maven.md
+Spanish: notes/java/junior/es/16-maven.md
 Depends on: 00, 04
 Pending additions: none
 
@@ -758,7 +744,7 @@ Coverage concepts:
 - [ ] Dependency scopes — distinguish compile, runtime, test, and provided classpaths so libraries are available only where intended
 - [ ] Maven Wrapper — use the repository's pinned Maven launcher so local and CI builds use a consistent Maven version
 
-Audit note: the junior coverage section header assigns starter, parent, and plugin behaviour to Spring Boot coverage, not Java. `14-maven.md` currently explains both as Maven topics — a starter callout inside the POM-structure section and a whole section on `spring-boot-starter-parent` version management. Reduce both to the generic mechanism (POM inheritance, dependency aggregation) with the Spring-specific behaviour deferred. The Maven Wrapper bullet is also barely covered and needs real content.
+Audit note: the junior coverage section header assigns starter, parent, and plugin behaviour to Spring Boot coverage, not Java. `16-maven.md` currently explains both as Maven topics — a starter callout inside the POM-structure section and a whole section on `spring-boot-starter-parent` version management. Reduce both to the generic mechanism (POM inheritance, dependency aggregation) with the Spring-specific behaviour deferred. The Maven Wrapper bullet is also barely covered and needs real content.
 
 Rationale: Coordinates, POM structure, resolution, lifecycle, scopes, and the wrapper describe one complete beginner workflow for building a Java project. The testing references are cross-topic previews only; JUnit itself is owned by `notes/general/`.
 

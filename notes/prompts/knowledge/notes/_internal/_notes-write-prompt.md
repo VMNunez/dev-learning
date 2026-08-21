@@ -43,7 +43,7 @@ budget stays on writing that file well.
 
 TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
-FILE  = [exact en/ file path, e.g. notes/java/junior/en/08-exceptions.md]
+FILE  = [exact en/ file path, e.g. notes/java/junior/en/11-exceptions.md]
 
 TASK = [what to do this run — copy the persistent plan entry, or describe it, e.g.
         "resolve TODOs + fix WHY-before-code in §3" | "create the file from scratch"
@@ -93,7 +93,7 @@ Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — THE writing standard. This is your bar. Apply
   it in full to everything you write this run: zero-assumption, second-order completeness, signature
   elements, the anticipate-the-TODO pass, format mode, Docs link priority. Before writing a new file,
-  read the first section of notes/java/junior/es/08-excepciones.md to calibrate the *depth* (read it for the
+  read the first section of notes/java/junior/es/11-excepciones.md to calibrate the *depth* (read it for the
   texture, not to copy Spanish — you write English).
 
 ---

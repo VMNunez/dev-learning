@@ -7,7 +7,7 @@
 
 > Docs: https://www.baeldung.com/java-oop → leer: "1. Overview" y "4. Abstraction" — los cuatro pilares nombrados en un solo sitio; te encontrarás con cada uno a lo largo de este archivo y de los dos siguientes
 
-Al final de [03-metodos.md](03-metodos.md) convertiste la `Calculator` en algo con un campo y un constructor — un pequeño objeto que guarda estado *y* los métodos que trabajan sobre él. Eso no es un detalle de un ejemplo suelto; es la idea entera de la que trata este archivo.
+Al final de [04-metodos.md](04-metodos.md) convertiste la `Calculator` en algo con un campo y un constructor — un pequeño objeto que guarda estado *y* los métodos que trabajan sobre él. Eso no es un detalle de un ejemplo suelto; es la idea entera de la que trata este archivo.
 
 La **programación orientada a objetos** (OOP) es una forma de organizar el código agrupando los datos y el comportamiento que actúa sobre ellos en unidades únicas llamadas **objetos**. En lugar de funciones sueltas flotando junto a variables sueltas, defines **clases** que juntan ambas cosas.
 
@@ -90,7 +90,7 @@ Ese tercer paso es el que más importa. Cuando escribes `Employee emp = new Empl
                        └────────────────────────┘
 ```
 
-> **¿Y a dónde va esa memoria después?** Nada en tu código la libera. Java rastrea si alguna flecha sigue apuntando al objeto y lo recupera automáticamente en cuanto ninguna lo hace — el recolector de basura (garbage collector). El cuadro completo de stack, heap y recolección es el último archivo de estas notas, [15-modelo-de-memoria.md](15-modelo-de-memoria.md); por ahora te basta con "`new` pone el objeto en el heap y te da una flecha hacia él".
+> **¿Y a dónde va esa memoria después?** Nada en tu código la libera. Java rastrea si alguna flecha sigue apuntando al objeto y lo recupera automáticamente en cuanto ninguna lo hace — el recolector de basura (garbage collector). El cuadro completo de stack, heap y recolección es el último archivo de estas notas, [05-modelo-de-memoria.md](05-modelo-de-memoria.md); por ahora te basta con "`new` pone el objeto en el heap y te da una flecha hacia él".
 
 ---
 
@@ -335,7 +335,7 @@ A esta jugada se le llama **copia defensiva**: nunca dejas que una referencia a 
 
 > **Los objetos de solo lectura llevan la idea más lejos.** Elimina los setters por completo y marca cada campo como `final`, y el objeto no puede cambiar después de la construcción en absoluto — sin validación que escribir, sin fuga que vigilar, y es seguro compartirlo en cualquier sitio. Eso es exactamente lo que §"Records" al final de este archivo te da como una sola línea.
 
-> **La forma `getX()` / `setX()` / `isX()` no es solo estilo.** Es la convención **JavaBeans**, y Jackson, JPA y Lombok localizan una propiedad buscando esos nombres exactos de método en tiempo de ejecución — renombra `getName()` a `fetchName()` y el campo desaparece en silencio de tu JSON. Se explica en detalle en [03-metodos.md](03-metodos.md) §"Naming conventions"; la versión de una línea es: nombra los accesores así o tres herramientas distintas dejan de ver tus datos.
+> **La forma `getX()` / `setX()` / `isX()` no es solo estilo.** Es la convención **JavaBeans**, y Jackson, JPA y Lombok localizan una propiedad buscando esos nombres exactos de método en tiempo de ejecución — renombra `getName()` a `fetchName()` y el campo desaparece en silencio de tu JSON. Se explica en detalle en [04-metodos.md](04-metodos.md) §"Naming conventions"; la versión de una línea es: nombra los accesores así o tres herramientas distintas dejan de ver tus datos.
 
 ---
 
@@ -398,7 +398,7 @@ error: non-static variable name cannot be referenced from a static context
                                           ^
 ```
 
-La solución es hacer que el valor llegue como argumento (`shout(String name)`) o quitar `static` para que el método se llame sobre un objeto. Ya te encontraste con el mismo error desde el otro lado en [03-metodos.md](03-metodos.md) §"Static methods" — también es la razón por la que `main` debe ser `static`: la JVM tiene que llamarlo antes de que exista un solo objeto.
+La solución es hacer que el valor llegue como argumento (`shout(String name)`) o quitar `static` para que el método se llame sobre un objeto. Ya te encontraste con el mismo error desde el otro lado en [04-metodos.md](04-metodos.md) §"Static methods" — también es la razón por la que `main` debe ser `static`: la JVM tiene que llamarlo antes de que exista un solo objeto.
 
 ### Cuándo se inicializa el campo estático
 
@@ -426,7 +426,7 @@ public class Employee {
 
 > Docs: https://www.baeldung.com/java-constructors → leer: "6. A Chained Constructor" — el par que delega, y cómo el compilador distingue las sobrecargas
 
-Ya has escrito un par de constructores sobrecargados: el ejemplo de los dos constructores de `Employee` en §`this` — una forma de un parámetro que delega en una de dos — *es* sobrecarga de constructores. El nombre viene de la sobrecarga de métodos en [03-metodos.md](03-metodos.md): varios miembros que comparten nombre, distinguidos por su **firma**, es decir, el tipo y el orden de sus parámetros. Los constructores comparten a la fuerza el nombre de la clase, así que la lista de parámetros es lo único que puede distinguirlos, y puedes declarar tantos como quieras.
+Ya has escrito un par de constructores sobrecargados: el ejemplo de los dos constructores de `Employee` en §`this` — una forma de un parámetro que delega en una de dos — *es* sobrecarga de constructores. El nombre viene de la sobrecarga de métodos en [04-metodos.md](04-metodos.md): varios miembros que comparten nombre, distinguidos por su **firma**, es decir, el tipo y el orden de sus parámetros. Los constructores comparten a la fuerza el nombre de la clase, así que la lista de parámetros es lo único que puede distinguirlos, y puedes declarar tantos como quieras.
 
 Lo que esa sección no cubrió es cómo decide Java *cuál* de ellos ejecuta un `new` concreto. Esa es la pieza que vale la pena añadir aquí, porque es donde la sobrecarga deja de ser obvia.
 
@@ -462,7 +462,7 @@ error: reference to Employee is ambiguous
 
 Cuando haces `System.out.println(emp)`, Java necesita convertir el objeto a texto. Busca un método llamado exactamente `toString()` en tu clase — si no lo encuentra, recurre al de `Object`, que imprime algo ilegible como `Employee@1b6d3586` (nombre de la clase + dirección de memoria, inútil para depurar).
 
-> **¿De dónde sale ese recurso de respaldo, si tu clase no tiene padre?** Toda clase en Java extiende implícitamente una clase llamada `Object`, la escribas o no — `public class Employee { }` se compila como si dijera `extends Object`. `Object` ya define `toString()`, `equals()` y `hashCode()`, así que esos tres métodos existen en *todo* objeto que se haya creado alguna vez, incluido el tuyo, antes de que escribas una sola línea. Ese es el mecanismo detrás de esta sección entera y la siguiente: nunca estás añadiendo estos métodos, siempre estás reemplazando uno heredado. La herencia en sí — qué significa `extends`, cómo una subclase reemplaza el método de un padre — es el tema de [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md), que vuelve a `Object` en su propia sección. Por ahora solo necesitas el dato: tu clase ya hereda estos tres, y se comportan mal por defecto.
+> **¿De dónde sale ese recurso de respaldo, si tu clase no tiene padre?** Toda clase en Java extiende implícitamente una clase llamada `Object`, la escribas o no — `public class Employee { }` se compila como si dijera `extends Object`. `Object` ya define `toString()`, `equals()` y `hashCode()`, así que esos tres métodos existen en *todo* objeto que se haya creado alguna vez, incluido el tuyo, antes de que escribas una sola línea. Ese es el mecanismo detrás de esta sección entera y la siguiente: nunca estás añadiendo estos métodos, siempre estás reemplazando uno heredado. La herencia en sí — qué significa `extends`, cómo una subclase reemplaza el método de un padre — es el tema de [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md), que vuelve a `Object` en su propia sección. Por ahora solo necesitas el dato: tu clase ya hereda estos tres, y se comportan mal por defecto.
 
 El nombre `toString()` no lo eliges tú — es el nombre que Java espera por convenio. Siempre devuelve `String` y no recibe parámetros.
 
@@ -474,7 +474,7 @@ error: method does not override or implement a method from a supertype
     ^
 ```
 
-Ese error es todo el valor de la anotación: sin ella, el método mal escrito compila perfectamente y no hace nada, y te pasas una tarde preguntándote por qué tus logs siguen mostrando direcciones de memoria. Aprenderás las anotaciones en detalle en [13-anotaciones.md](13-anotaciones.md) — por ahora, basta con saber que `@Override` va encima de cualquier método que estés reemplazando intencionalmente.
+Ese error es todo el valor de la anotación: sin ella, el método mal escrito compila perfectamente y no hace nada, y te pasas una tarde preguntándote por qué tus logs siguen mostrando direcciones de memoria. Aprenderás las anotaciones en detalle en [15-anotaciones.md](15-anotaciones.md) — por ahora, basta con saber que `@Override` va encima de cualquier método que estés reemplazando intencionalmente.
 
 ```java
 @Override
@@ -828,10 +828,10 @@ Runnable task = new Runnable() {          // sin nombre de clase — el cuerpo E
 task.run();
 ```
 
-Una **interfaz** es un contrato que una clase promete cumplir — el tema del siguiente archivo, [05-interfaces-abstractas.md](05-interfaces-abstractas.md); por ahora lee `Runnable` como "algo con un método `run()`". Lo que hace el compilador aquí es generar una clase sin nombre que la implementa, crear una instancia de ella, y devolvértela. Una clase anónima es una forma de clase interna, así que lleva la misma referencia oculta a lo que sea que la creó — y por lo tanto el mismo riesgo de fuga cuando se guarda en algún sitio de vida larga.
+Una **interfaz** es un contrato que una clase promete cumplir — el tema del siguiente archivo, [07-interfaces-abstractas.md](07-interfaces-abstractas.md); por ahora lee `Runnable` como "algo con un método `run()`". Lo que hace el compilador aquí es generar una clase sin nombre que la implementa, crear una instancia de ella, y devolvértela. Una clase anónima es una forma de clase interna, así que lleva la misma referencia oculta a lo que sea que la creó — y por lo tanto el mismo riesgo de fuga cuando se guarda en algún sitio de vida larga.
 
-> **Casi nunca volverás a escribir esta forma.** Cuando la interfaz tiene exactamente un método, la lambda de Java 8 expresa el mismo objeto en una línea: `Runnable task = () -> System.out.println("Sending the weekly report");`. Eso se cubre en [09-streams-lambdas.md](09-streams-lambdas.md), que abre precisamente con esta comparación. Las clases anónimas todavía importan por dos razones: te las encontrarás constantemente en código antiguo, y siguen siendo la única opción cuando la interfaz tiene más de un método que implementar.
+> **Casi nunca volverás a escribir esta forma.** Cuando la interfaz tiene exactamente un método, la lambda de Java 8 expresa el mismo objeto en una línea: `Runnable task = () -> System.out.println("Sending the weekly report");`. Eso se cubre en [12-streams-lambdas.md](12-streams-lambdas.md), que abre precisamente con esta comparación. Las clases anónimas todavía importan por dos razones: te las encontrarás constantemente en código antiguo, y siguen siendo la única opción cuando la interfaz tiene más de un método que implementar.
 
 ---
 
-Ya puedes modelar una sola cosa como una clase: sus datos (campos), cómo se construye (constructores), qué puede hacer (métodos), cómo se protege a sí misma (encapsulación), cómo dice si es igual a otra (el contrato `equals`/`hashCode`), y dónde puede vivir una clase auxiliar dentro de ella (clases anidadas). Pero cada clase hasta ahora ha estado sola — y la última sección dejó una deuda pendiente: el `Runnable` que implementaba una clase anónima era una *interfaz*, una palabra usada pero nunca explicada. Los sistemas reales tienen *familias* de cosas relacionadas — un `Employee` y un `Manager` que comparten casi todo el comportamiento, o una docena de clases sin relación que deben prometer todas que saben hacer `print()`. Hacer que las clases compartan comportamiento, o que acuerden un contrato común, es el siguiente paso. De eso trata [05-interfaces-abstractas.md](05-interfaces-abstractas.md): las interfaces (un contrato que una clase firma) y las clases abstractas (un padre a medio construir que otros completan).
+Ya puedes modelar una sola cosa como una clase: sus datos (campos), cómo se construye (constructores), qué puede hacer (métodos), cómo se protege a sí misma (encapsulación), cómo dice si es igual a otra (el contrato `equals`/`hashCode`), y dónde puede vivir una clase auxiliar dentro de ella (clases anidadas). Pero cada clase hasta ahora ha estado sola — y la última sección dejó una deuda pendiente: el `Runnable` que implementaba una clase anónima era una *interfaz*, una palabra usada pero nunca explicada. Los sistemas reales tienen *familias* de cosas relacionadas — un `Employee` y un `Manager` que comparten casi todo el comportamiento, o una docena de clases sin relación que deben prometer todas que saben hacer `print()`. Hacer que las clases compartan comportamiento, o que acuerden un contrato común, es el siguiente paso. De eso trata [07-interfaces-abstractas.md](07-interfaces-abstractas.md): las interfaces (un contrato que una clase firma) y las clases abstractas (un padre a medio construir que otros completan).

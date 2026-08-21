@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Java Collections](https://www.baeldung.com/java-collections)
 > 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 
-Ya sabes crear objetos, compartir comportamiento entre ellos mediante herencia, y tratarlos de forma uniforme gracias al polimorfismo ([06-herencia-polimorfismo.md](06-herencia-polimorfismo.md)). Pero hasta ahora cada objeto ha vivido por su cuenta — un único `Employee`, un único `Animal`. Las aplicaciones reales trabajan con *muchos* a la vez: todos los empleados de un departamento, todas las filas que devuelve una consulta, todos los roles que tiene un usuario. Necesitas estructuras que guarden grupos de objetos, y eso es justo lo que te dan las colecciones — y se apoyan directamente en el polimorfismo, porque una `List<Animal>` puede almacenar perros y gatos codo con codo precisamente porque a una variable de un tipo se le permite contener muchos tipos de objeto.
+Ya sabes crear objetos, compartir comportamiento entre ellos mediante herencia, y tratarlos de forma uniforme gracias al polimorfismo ([08-herencia-polimorfismo.md](08-herencia-polimorfismo.md)). Pero hasta ahora cada objeto ha vivido por su cuenta — un único `Employee`, un único `Animal`. Las aplicaciones reales trabajan con *muchos* a la vez: todos los empleados de un departamento, todas las filas que devuelve una consulta, todos los roles que tiene un usuario. Necesitas estructuras que guarden grupos de objetos, y eso es justo lo que te dan las colecciones — y se apoyan directamente en el polimorfismo, porque una `List<Animal>` puede almacenar perros y gatos codo con codo precisamente porque a una variable de un tipo se le permite contener muchos tipos de objeto.
 
 Antes de que existieran las colecciones, tenías que gestionar tus propios arrays — tamaño fijo, sin búsqueda integrada, sin forma de añadir ni eliminar elementos. El Collections Framework es un conjunto de interfaces y clases que viene incluido en el JDK de Java (en el paquete `java.util`) — no tienes que descargar nada, ya está ahí. Te da estructuras de datos listas para usar para lo que haces constantemente en cualquier aplicación: listas ordenadas de elementos, búsquedas por clave y conjuntos de valores únicos. Las tres que usarás en casi todos los servicios Spring Boot son `List`, `Map` y `Set`.
 
@@ -121,7 +121,7 @@ Un `Map` es la estructura que usas cuando necesitas buscar algo por un identific
 
 Esto es útil, por ejemplo, cuando quieres **cachear** un resultado — es decir, guardar algo que ya calculaste o recuperaste para no repetir ese trabajo. Si tienes una lista de 1000 empleados y necesitas buscar el mismo empleado varias veces por ID, guardas los resultados en un `Map<Integer, Employee>` y los recuperas en tiempo constante, en lugar de recorrer la lista cada vez.
 
-`Map<String, Integer>` se lee así: el primer tipo entre los `<>` (esos ángulos son la sintaxis de **genéricos** de Java — no es un operador con nombre propio; sirven para decirle a la clase con qué tipos va a trabajar, y se explican a fondo en [10-genericos.md](10-genericos.md)) es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
+`Map<String, Integer>` se lee así: el primer tipo entre los `<>` (esos ángulos son la sintaxis de **genéricos** de Java — no es un operador con nombre propio; sirven para decirle a la clase con qué tipos va a trabajar, y se explican a fondo en [09-genericos.md](09-genericos.md)) es el tipo de la clave (`String` — el nombre del empleado) y el segundo es el tipo del valor (`Integer` — la puntuación). Siempre declaras el tipo de la clave primero y el del valor segundo.
 
 Creas un `Map` con `new HashMap<>()` — la interfaz es `Map<K, V>` y la implementación concreta es `HashMap`, el mismo patrón que `List` y `ArrayList`.
 
@@ -386,7 +386,7 @@ El problema con `Comparable` es que solo puedes definir un orden por clase. Si q
 - **`.reversed()`** *(encadenamiento)* — encadena al comparator anterior para invertir el orden (de mayor a menor en lugar de menor a mayor).
 - **`.thenComparing(función)`** *(encadenamiento)* — desempate: cuando dos elementos son iguales según el primer criterio, aplica un segundo criterio. Para campos `int` existe `.thenComparingInt(función)`, igual que `comparingInt` — es la variante optimizada para primitivos.
 
-La sintaxis `Employee::getName` se llama **referencia a método** — una forma corta de escribir `e -> e.getName()`. Se explica en `09-streams-lambdas.md`. Por ahora léela como "el método `getName` de `Employee`".
+La sintaxis `Employee::getName` se llama **referencia a método** — una forma corta de escribir `e -> e.getName()`. Se explica en `12-streams-lambdas.md`. Por ahora léela como "el método `getName` de `Employee`".
 
 En Spring Boot, este código iría dentro de un método de servicio — la lista llegaría de `repository.findAll()` y tú la ordenarías antes de devolverla:
 
@@ -451,13 +451,13 @@ for (Employee e : employees) {
 
 Hay tres formas de eliminar mientras recorres sin provocar la excepción. Van de la más recomendable a la más manual.
 
-**Opción 1 — `removeIf()` (la más limpia).** Es un método de la propia `List` que recibe una condición y borra todos los elementos que la cumplen, en una sola línea. Por dentro usa un iterador correctamente, así que no hay riesgo de excepción — y no tienes que escribir el bucle tú. La `e -> !e.isActive()` es una expresión lambda: "para cada empleado `e`, bórralo si no está activo" (las lambdas se explican en [09-streams-lambdas.md](09-streams-lambdas.md)).
+**Opción 1 — `removeIf()` (la más limpia).** Es un método de la propia `List` que recibe una condición y borra todos los elementos que la cumplen, en una sola línea. Por dentro usa un iterador correctamente, así que no hay riesgo de excepción — y no tienes que escribir el bucle tú. La `e -> !e.isActive()` es una expresión lambda: "para cada empleado `e`, bórralo si no está activo" (las lambdas se explican en [12-streams-lambdas.md](12-streams-lambdas.md)).
 
 ```java
 employees.removeIf(e -> !e.isActive());
 ```
 
-**Opción 2 — recopilar primero y borrar después.** El truco es no tocar la lista mientras la recorres: primero construyes una lista aparte (`toRemove`) con los que quieres quitar, y solo cuando has terminado de recorrer llamas a `removeAll()` para borrarlos de golpe. `stream()` abre un flujo sobre la lista, `filter()` se queda con los que cumplen la condición y `collect()` los junta en una nueva lista (todo esto es de streams — [09-streams-lambdas.md](09-streams-lambdas.md)). Como el borrado ocurre fuera del recorrido, no hay conflicto.
+**Opción 2 — recopilar primero y borrar después.** El truco es no tocar la lista mientras la recorres: primero construyes una lista aparte (`toRemove`) con los que quieres quitar, y solo cuando has terminado de recorrer llamas a `removeAll()` para borrarlos de golpe. `stream()` abre un flujo sobre la lista, `filter()` se queda con los que cumplen la condición y `collect()` los junta en una nueva lista (todo esto es de streams — [12-streams-lambdas.md](12-streams-lambdas.md)). Como el borrado ocurre fuera del recorrido, no hay conflicto.
 
 ```java
 List<Employee> toRemove = employees.stream()
@@ -516,4 +516,4 @@ public List<EmployeeDTO> getAllEmployees() {
 
 ---
 
-Pero fíjate bien en ese servicio: ¿qué pasa cuando la lista vuelve vacía, o cuando llamas a `get(0)` sobre una `List` que no tiene filas, o a `get("Victor")` sobre un `Map` y la clave no está? Cada uno de esos es un momento en el que el flujo *normal* de mover datos por colecciones se rompe — el código pide algo que la estructura no puede dar. La respuesta de Java a "el flujo normal se acaba de romper" es la excepción: un objeto que interrumpe el método y viaja de vuelta hacia quien lo llamó en lugar de devolver un valor. De eso trata [08-excepciones.md](08-excepciones.md) — cómo se señalan los errores, cómo viajan hacia arriba por la pila de llamadas, y dónde deberías capturarlos.
+Pero fíjate bien en ese servicio: ¿qué pasa cuando la lista vuelve vacía, o cuando llamas a `get(0)` sobre una `List` que no tiene filas, o a `get("Victor")` sobre un `Map` y la clave no está? Cada uno de esos es un momento en el que el flujo *normal* de mover datos por colecciones se rompe — el código pide algo que la estructura no puede dar. La respuesta de Java a "el flujo normal se acaba de romper" es la excepción: un objeto que interrumpe el método y viaja de vuelta hacia quien lo llamó en lugar de devolver un valor. De eso trata [11-excepciones.md](11-excepciones.md) — cómo se señalan los errores, cómo viajan hacia arriba por la pila de llamadas, y dónde deberías capturarlos.

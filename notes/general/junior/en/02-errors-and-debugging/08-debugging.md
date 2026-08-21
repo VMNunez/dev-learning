@@ -69,7 +69,7 @@ doFilterInternal:51, JwtFilter             ← your own filter, further back
   57 hidden frames                         ← servlet container internals
 ```
 
-> Reading this table: each row is one method that is currently "still open" — it called something and is waiting for that call to finish before it can finish itself. This is the same call-stack idea from `notes/java/junior/en/08-exceptions.md`, just made visible as a live list instead of a diagram: the row at the top is the method executing *right now*, and every row below it is a caller waiting further down. "Hidden frames" are rows IntelliJ collapses by default because they belong to framework code (Spring, Tomcat) you didn't write — click to expand if you ever need to see exactly how a request travels through Spring's internals.
+> Reading this table: each row is one method that is currently "still open" — it called something and is waiting for that call to finish before it can finish itself. This is the same call-stack idea from `notes/java/junior/en/11-exceptions.md`, just made visible as a live list instead of a diagram: the row at the top is the method executing *right now*, and every row below it is a caller waiting further down. "Hidden frames" are rows IntelliJ collapses by default because they belong to framework code (Spring, Tomcat) you didn't write — click to expand if you ever need to see exactly how a request travels through Spring's internals.
 
 ---
 

@@ -333,7 +333,7 @@ DELETE /api/projects/42     → @PathVariable
 
 ### void vs Void
 
-`delete` returns `ResponseEntity<Void>` because the `<>` needs a *class* and there is no value to send back. The full explanation of the keyword `void` vs the class `Void` lives in the Java notes — see [java/03-methods.md](../../../java/junior/en/03-methods.md#void-vs-void).
+`delete` returns `ResponseEntity<Void>` because the `<>` needs a *class* and there is no value to send back. The full explanation of the keyword `void` vs the class `Void` lives in the Java notes — see [java/04-methods.md](../../../java/junior/en/04-methods.md#void-vs-void).
 
 ---
 
@@ -517,7 +517,7 @@ Docs: https://www.baeldung.com/spring-component-repository-service → read: the
 
 > This is the *worked, explained* version of the vertical slice. [layer-reference.md](../.../../../layer-reference.md) has the same flow as a quick-reference set of tables (using a `Transaction` example) — open that when you just need to recall the structure; read this when you want the reasoning behind each line.
 
-**Why `.map(this::toResponse)`?** `this::toResponse` is a *method reference* — shorthand for the lambda `project -> this.toResponse(project)` (see [java/09-streams-lambdas.md](../../../java/junior/en/09-streams-lambdas.md)). `stream().map(...)` calls it once per entity, turning each `Project` into a `ProjectResponse`, and `toList()` collects the results. The `this::` form works because the helper is a method on this same class.
+**Why `.map(this::toResponse)`?** `this::toResponse` is a *method reference* — shorthand for the lambda `project -> this.toResponse(project)` (see [java/12-streams-lambdas.md](../../../java/junior/en/12-streams-lambdas.md)). `stream().map(...)` calls it once per entity, turning each `Project` into a `ProjectResponse`, and `toList()` collects the results. The `this::` form works because the helper is a method on this same class.
 
 ```java
 @Service

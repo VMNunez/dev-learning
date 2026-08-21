@@ -7,7 +7,7 @@ En [01-variables-tipos.md](01-variables-tipos.md) aprendiste a declarar y guarda
 
 Las sentencias de control de flujo deciden qué código se ejecuta y cuántas veces. Java usa las mismas estructuras que JavaScript — la sintaxis es casi idéntica, así que la mayoría te resultará familiar.
 
-**Un mismo ejemplo recorre todo este archivo: un parte de horas semanal.** Tienes un `Employee`, un `day` de la semana, y las `hours` que ese empleado registró ese día. Cada sección de abajo trabaja sobre ese mismo pequeño mundo — decidir si un día cuenta como horas extra, dar nombre al turno de un día, recorrer la semana, recorrer la lista de empleados, y sobrevivir a un `name` que resulta ser `null`. Mantener un solo dominio significa que nunca tienes que reorientarte con un bloque de código nuevo — solo tienes que fijarte en lo que la *nueva* estructura añade. `Employee` es además el modelo que el resto de estas notas reutiliza ([07-colecciones.md](07-colecciones.md), [09-streams-lambdas.md](09-streams-lambdas.md)), así que merece la pena familiarizarse con él aquí.
+**Un mismo ejemplo recorre todo este archivo: un parte de horas semanal.** Tienes un `Employee`, un `day` de la semana, y las `hours` que ese empleado registró ese día. Cada sección de abajo trabaja sobre ese mismo pequeño mundo — decidir si un día cuenta como horas extra, dar nombre al turno de un día, recorrer la semana, recorrer la lista de empleados, y sobrevivir a un `name` que resulta ser `null`. Mantener un solo dominio significa que nunca tienes que reorientarte con un bloque de código nuevo — solo tienes que fijarte en lo que la *nueva* estructura añade. `Employee` es además el modelo que el resto de estas notas reutiliza ([10-colecciones.md](10-colecciones.md), [12-streams-lambdas.md](12-streams-lambdas.md)), así que merece la pena familiarizarse con él aquí.
 
 ```java
 // El mundo de todo este archivo
@@ -79,7 +79,7 @@ Cómo leer esta tabla: la columna "¿Permitido?" habla del valor dentro de `swit
 
 > **¿Por qué está prohibido `boolean` si parece el caso más fácil de todos?** Porque un `boolean` tiene exactamente dos valores, así que un `switch` sobre él nunca podría hacer nada que un `if/else` no diga ya con más claridad. El lenguaje lo excluye a propósito, no por descuido. La regla general que se sigue de esto: recurre a `switch` a partir de tres o más valores posibles, y a `if/else` por debajo de eso.
 
-> **`enum` es el selector para el que se hizo `switch`.** Con un `enum` el compilador conoce el conjunto completo de valores posibles, así que puede comprobar que los manejaste todos — algo que nunca puede hacer con un `String`, cuyo conjunto es infinito. Cuando más adelante llegues a [11-enums.md](11-enums.md), este es el premio que hay que recordar.
+> **`enum` es el selector para el que se hizo `switch`.** Con un `enum` el compilador conoce el conjunto completo de valores posibles, así que puede comprobar que los manejaste todos — algo que nunca puede hacer con un `String`, cuyo conjunto es infinito. Cuando más adelante llegues a [13-enums.md](13-enums.md), este es el premio que hay que recordar.
 
 ### switch clásico (sentencia)
 
@@ -276,13 +276,13 @@ for (Employee e : employees)     →   Iterator<Employee> it = employees.iterato
 
 Puedes comprobarlo tú mismo: compila una clase con ambos bucles y ejecuta `javap -c` sobre ella — la versión con array muestra `arraylength` e `iinc` (un contador de índice), la versión con lista muestra `invokeinterface ... Iterator.hasNext` e `Iterator.next`. De esas dos reescrituras se siguen directamente tres consecuencias:
 
-**1. No puedes conseguir el índice.** En la reescritura con lista no hay ningún contador por ninguna parte — el iterador simplemente entrega "el siguiente" sin idea de qué número es. Así que si necesitas la posición, el `for` mejorado no puede dártela y vuelves al `for` clásico (o a `IntStream.range`, en [09-streams-lambdas.md](09-streams-lambdas.md)).
+**1. No puedes conseguir el índice.** En la reescritura con lista no hay ningún contador por ninguna parte — el iterador simplemente entrega "el siguiente" sin idea de qué número es. Así que si necesitas la posición, el `for` mejorado no puede dártela y vuelves al `for` clásico (o a `IntStream.range`, en [12-streams-lambdas.md](12-streams-lambdas.md)).
 
 **2. No puedes hacer `remove()` de la colección dentro de él.** El iterador recuerda cuántos cambios estructurales tenía la lista cuando empezó; llamar a `employees.remove(e)` cambia la lista por detrás, los dos números dejan de coincidir, y la siguiente `it.next()` lanza `ConcurrentModificationException`. No es una regla inventada para fastidiarte — es el iterador negándose a seguir recorriendo una lista cuyas posiciones pueden haberse movido bajo sus pies.
 
-En concreto: llamar a `employees.remove(e)` dentro de un `for (Employee e : employees)` compila sin problema y luego muere en la siguiente iteración con `Exception in thread "main" java.util.ConcurrentModificationException` — un mensaje escueto sin ninguna cláusula "because", así que la traza de pila apuntando a `ArrayList$Itr.checkForComodification` es tu única pista. El arreglo de una línea es `employees.removeIf(e -> !e.isActive())`, que ejecuta la misma eliminación a través de un iterador correctamente gestionado. (`e -> !e.isActive()` es una lambda — léela por ahora como "para cada empleado `e`, esta condición"; tratamiento completo en [09-streams-lambdas.md](09-streams-lambdas.md).)
+En concreto: llamar a `employees.remove(e)` dentro de un `for (Employee e : employees)` compila sin problema y luego muere en la siguiente iteración con `Exception in thread "main" java.util.ConcurrentModificationException` — un mensaje escueto sin ninguna cláusula "because", así que la traza de pila apuntando a `ArrayList$Itr.checkForComodification` es tu única pista. El arreglo de una línea es `employees.removeIf(e -> !e.isActive())`, que ejecuta la misma eliminación a través de un iterador correctamente gestionado. (`e -> !e.isActive()` es una lambda — léela por ahora como "para cada empleado `e`, esta condición"; tratamiento completo en [12-streams-lambdas.md](12-streams-lambdas.md).)
 
-> **Aplazado a propósito — esto es un tema de colecciones, no de bucles.** La razón por la que aparece aquí siquiera es que es una *consecuencia de la reescritura con iterador* que acabas de leer, y si no, no tendrías ni idea de por qué un bucle de aspecto inocente explota. Pero el contador de versión (`modCount`), el par trabajado de mal-vs-bien, y las otras dos formas legales de eliminar mientras iteras pertenecen todas a [07-colecciones.md](07-colecciones.md), donde se cubren por completo — abre ese archivo cuando de verdad te topes con esto. Deliberadamente no se repite aquí, para que exista una única explicación canónica en lugar de dos que puedan desalinearse.
+> **Aplazado a propósito — esto es un tema de colecciones, no de bucles.** La razón por la que aparece aquí siquiera es que es una *consecuencia de la reescritura con iterador* que acabas de leer, y si no, no tendrías ni idea de por qué un bucle de aspecto inocente explota. Pero el contador de versión (`modCount`), el par trabajado de mal-vs-bien, y las otras dos formas legales de eliminar mientras iteras pertenecen todas a [10-colecciones.md](10-colecciones.md), donde se cubren por completo — abre ese archivo cuando de verdad te topes con esto. Deliberadamente no se repite aquí, para que exista una única explicación canónica en lugar de dos que puedan desalinearse.
 
 **3. Asignar a la variable del bucle no cambia nada.** Mira la reescritura con array: `String day = week[i]` **copia** el hueco en una variable local nueva en cada pasada. Reasignar esa local solo hace que la copia apunte a otro sitio; el hueco del array queda intacto.
 
@@ -300,7 +300,7 @@ for (int i = 0; i < week.length; i++) {
 
 > **Esta es la idea de valor frente a referencia de [01-variables-tipos.md](01-variables-tipos.md), en versión bucle.** Lo que se copia es la *referencia*, no el objeto. Así que reasignar `day` es invisible para el array — pero llamar a un método que muta el objeto al que apunta (`emp.setHours(0)`) **sí** es visible, porque tanto la copia como el hueco del array apuntan al mismo `Employee`. Reasignar = sin efecto; mutar = con efecto.
 
-Usa el for mejorado siempre que solo necesites los elementos y no el índice. En Spring Boot, esto es lo que escribirás la mayor parte del tiempo — aunque los streams (cubiertos en [09-streams-lambdas.md](09-streams-lambdas.md)) son incluso más concisos para transformar colecciones.
+Usa el for mejorado siempre que solo necesites los elementos y no el índice. En Spring Boot, esto es lo que escribirás la mayor parte del tiempo — aunque los streams (cubiertos en [12-streams-lambdas.md](12-streams-lambdas.md)) son incluso más concisos para transformar colecciones.
 
 ---
 
@@ -451,16 +451,16 @@ Todo lo que va después de `because` es la parte que te ahorra tiempo. El Java a
 **`Optional` — la alternativa moderna.** En vez de una variable que *podría* ser null y una comprobación que *podrías* olvidar, `Optional<T>` es un pequeño objeto envoltorio que siempre existe y contiene o bien un valor o bien nada. La idea es que el propio tipo te dice que el valor puede estar ausente, así que el compilador te pone la pregunta "¿y si falta?" delante en vez de dejarla a tu memoria.
 
 ```java
-// Optional en detalle se cubre en 10-genericos.md
+// Optional en detalle se cubre en 09-genericos.md
 Optional.ofNullable(name)                            // envuelve: vacío si name es null
         .ifPresent(n -> System.out.println(n.toUpperCase()));  // se ejecuta solo si HAY un valor
 ```
 
 - **`ofNullable(x)`** — construye el envoltorio a partir de un valor que puede ser null o no: un Optional *vacío* si `x` es null, uno lleno en caso contrario.
 - **`ifPresent(...)`** — ejecuta el código dado solo cuando el envoltorio contiene algo, y no hace nada en absoluto cuando está vacío. No hay ninguna rama `else` que se te pueda olvidar.
-- El `n -> ...` es una lambda: "dado el valor, llámalo `n` y haz esto con él" — tratamiento completo en [09-streams-lambdas.md](09-streams-lambdas.md).
+- El `n -> ...` es una lambda: "dado el valor, llámalo `n` y haz esto con él" — tratamiento completo en [12-streams-lambdas.md](12-streams-lambdas.md).
 
-> **¿Por qué no usar `Optional` en todas partes?** Está pensado para **valores de retorno**, para señalar "esta búsqueda puede no encontrar nada" — no para campos ni parámetros, donde solo añade un objeto envoltorio y ruido. Dentro de un método, una simple comprobación `if (x != null)` sigue siendo el Java normal e idiomático. La API completa de Optional (`orElseThrow`, `map`, `orElse`) está en [10-genericos.md](10-genericos.md).
+> **¿Por qué no usar `Optional` en todas partes?** Está pensado para **valores de retorno**, para señalar "esta búsqueda puede no encontrar nada" — no para campos ni parámetros, donde solo añade un objeto envoltorio y ruido. Dentro de un método, una simple comprobación `if (x != null)` sigue siendo el Java normal e idiomático. La API completa de Optional (`orElseThrow`, `map`, `orElse`) está en [09-genericos.md](09-genericos.md).
 
 En Spring Boot, muchos métodos devuelven `Optional<T>` en vez de un objeto crudo que podría ser null. `repository.findById(id)` es el ejemplo estándar — devuelve `Optional<Employee>`, así que te ves obligado a manejar el caso de "no encontrado". Pero las comprobaciones de null normales no desaparecen: en tu propio backend de TimeTrack, `JwtFilter` empieza con exactamente este patrón antes de confiar en el token —
 
@@ -480,4 +480,4 @@ if (email != null && SecurityContextHolder.getContext().getAuthentication() == n
 
 ---
 
-Hasta ahora todos los bucles y condiciones han vivido dentro de un mismo bloque de código. Pero los programas reales no son un único bloque largo — se dividen en piezas reutilizables y con nombre que puedes invocar por su nombre, cada una tomando entradas y devolviendo un resultado. Esas piezas son los **métodos**, y el `if`, el `for` y el `switch` que acabas de aprender son los ladrillos que van dentro de ellos. Fíjate en cuántas veces este archivo ya ha necesitado uno: `isApproved(emp, day)`, `loadPage(page)`, y el consejo de "extrae los bucles anidados y haz `return`" — todos asumen que puedes nombrar una pieza de lógica y llamarla. Ahí es donde arranca [03-metodos.md](03-metodos.md).
+Hasta ahora todos los bucles y condiciones han vivido dentro de un mismo bloque de código. Pero los programas reales no son un único bloque largo — se dividen en piezas reutilizables y con nombre que puedes invocar por su nombre, cada una tomando entradas y devolviendo un resultado. Esas piezas son los **métodos**, y el `if`, el `for` y el `switch` que acabas de aprender son los ladrillos que van dentro de ellos. Fíjate en cuántas veces este archivo ya ha necesitado uno: `isApproved(emp, day)`, `loadPage(page)`, y el consejo de "extrae los bucles anidados y haz `return`" — todos asumen que puedes nombrar una pieza de lógica y llamarla. Ahí es donde arranca [04-metodos.md](04-metodos.md).

@@ -4,7 +4,7 @@
 > 📖 [Baeldung — Guide to Optional](https://www.baeldung.com/java-optional)
 > 📖 [Oracle Docs — Generics](https://docs.oracle.com/javase/tutorial/java/generics/index.html)
 
-En `09-streams-lambdas.md` aprendiste a transformar datos de forma fluida — `map`, `filter`, `collect` remodelando una colección en una sola cadena. Pero cada una de esas operaciones ya sabía con qué tipo estaba trabajando: un `Stream<Employee>`, una `List<String>`. Hasta ahora nada te ha dejado escribir una clase o un método que trabaje con *cualquier* tipo de forma segura — una `Box` que hoy guarda un `String` y mañana un `Integer`, con el compilador comprobando cada uso. Eso es exactamente lo que añaden los generics, y es la razón por la que la API de streams que acabas de conocer está construida sobre ellos de arriba abajo.
+En `12-streams-lambdas.md` aprendiste a transformar datos de forma fluida — `map`, `filter`, `collect` remodelando una colección en una sola cadena. Pero cada una de esas operaciones ya sabía con qué tipo estaba trabajando: un `Stream<Employee>`, una `List<String>`. Hasta ahora nada te ha dejado escribir una clase o un método que trabaje con *cualquier* tipo de forma segura — una `Box` que hoy guarda un `String` y mañana un `Integer`, con el compilador comprobando cada uso. Eso es exactamente lo que añaden los generics, y es la razón por la que la API de streams que acabas de conocer está construida sobre ellos de arriba abajo.
 
 ## Generics
 
@@ -211,7 +211,7 @@ public ProjectResponse getById(Long id) {
 }
 ```
 
-`this::toResponse` es una *referencia a método* (cubierta en detalle en `09-streams-lambdas.md` — léela como "llama al método `toResponse` de `this` sobre cada valor"). Apunta a un pequeño helper en el mismo servicio que copia un `Project` en un `ProjectResponse` campo a campo:
+`this::toResponse` es una *referencia a método* (cubierta en detalle en `12-streams-lambdas.md` — léela como "llama al método `toResponse` de `this` sobre cada valor"). Apunta a un pequeño helper en el mismo servicio que copia un `Project` en un `ProjectResponse` campo a campo:
 
 ```java
 private ProjectResponse toResponse(Project project) {
@@ -225,7 +225,7 @@ private ProjectResponse toResponse(Project project) {
 }
 ```
 
-Extraer el mapeo a `toResponse` es la razón por la que `getById` sigue siendo una cadena limpia de tres líneas — y por la que el mismo `.map(this::toResponse)` se reutiliza en todos los demás métodos del servicio. `ResourceNotFoundException` es una subclase personalizada de `RuntimeException` (ver `08-excepciones.md`) que Spring mapea a un HTTP 404.
+Extraer el mapeo a `toResponse` es la razón por la que `getById` sigue siendo una cadena limpia de tres líneas — y por la que el mismo `.map(this::toResponse)` se reutiliza en todos los demás métodos del servicio. `ResourceNotFoundException` es una subclase personalizada de `RuntimeException` (ver `11-excepciones.md`) que Spring mapea a un HTTP 404.
 
 Paso a paso:
 1. `findById(id)` → `Optional<Project>` — presente si se encuentra, vacío si no
@@ -283,4 +283,4 @@ Entender qué significa `<T>` hace que la API de Spring Boot sea mucho más fác
 
 ---
 
-Los generics dejan un tipo *abierto* — una `Box` funciona con cualquier tipo que le enchufes. El siguiente archivo, `11-enums.md`, trata de la necesidad opuesta: un tipo deliberadamente *cerrado*, que restringe sus propios valores a un pequeño conjunto fijo que defines por adelantado (un estado que solo puede ser `ACTIVE`, `PENDING` o `CLOSED`, nunca nada más). Donde los generics ensanchan lo que un tipo acepta, los enums lo estrechan — y esa es exactamente la garantía que quieres para un campo con un puñado de estados válidos.
+Los generics dejan un tipo *abierto* — una `Box` funciona con cualquier tipo que le enchufes. El siguiente archivo, `13-enums.md`, trata de la necesidad opuesta: un tipo deliberadamente *cerrado*, que restringe sus propios valores a un pequeño conjunto fijo que defines por adelantado (un estado que solo puede ser `ACTIVE`, `PENDING` o `CLOSED`, nunca nada más). Donde los generics ensanchan lo que un tipo acepta, los enums lo estrechan — y esa es exactamente la garantía que quieres para un campo con un puñado de estados válidos.

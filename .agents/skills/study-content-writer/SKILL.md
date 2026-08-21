@@ -45,7 +45,7 @@ These two rules come from `notes/prompts/_internal/_session-rules.md` → `notes
    "does this mean that?" questions and make the prose already answer them. Never mention an action
    in the abstract without the concrete code snippet.
 
-The gold-standard reference for texture is the first section of `notes/java/junior/es/08-excepciones.md`:
+The gold-standard reference for texture is the first section of `notes/java/junior/es/11-excepciones.md`:
 open with the pain not the definition; one worked example carried through; ASCII diagrams for
 anything structural; real-world analogies; abundant `> blockquote` callouts (~one per non-obvious
 sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN examples.
@@ -56,7 +56,7 @@ sub-concept); a sentence explaining how to read every table; exact error message
   content in `en/` first, then translate into `es/`. Once a plan entry completes, both hold a matching
   file per **number prefix**, with the same structure and code blocks.
 - New file in `en/` → create the full `es/` translation under a **Spanish** filename carrying the same
-  number prefix (`en/03-methods.md` → `es/03-metodos.md`) — never a copy of the English name. The
+  number prefix (`en/04-methods.md` → `es/04-metodos.md`) — never a copy of the English name. The
   prefix is the only shared part; technical proper names with no Spanish equivalent (`maven`, `enums`,
   `streams`, `lambdas`) keep theirs. A new section added → write it in `en/`, then re-sync `es/`.
 - **Resolving a TODO runs in the direction of the file that carries it** — the one operation that

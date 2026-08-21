@@ -333,7 +333,7 @@ DELETE /api/projects/42     → @PathVariable
 
 ### void vs Void
 
-`delete` devuelve `ResponseEntity<Void>` porque `<>` necesita una *clase* y no hay valor que devolver. La explicación completa de la palabra clave `void` vs la clase `Void` está en las notas de Java — ver [java/03-metodos.md](../../../java/junior/es/03-metodos.md#void-vs-void).
+`delete` devuelve `ResponseEntity<Void>` porque `<>` necesita una *clase* y no hay valor que devolver. La explicación completa de la palabra clave `void` vs la clase `Void` está en las notas de Java — ver [java/04-metodos.md](../../../java/junior/es/04-metodos.md#void-vs-void).
 
 ---
 
@@ -517,7 +517,7 @@ Docs: https://www.baeldung.com/spring-component-repository-service → leer: la 
 
 > Esta es la versión *trabajada y explicada* del vertical slice. [layer-reference.md](../.../../../layer-reference.md) tiene el mismo flujo como un conjunto de tablas de referencia rápida (usando un ejemplo de `Transaction`) — ábrelo cuando solo necesites recordar la estructura; lee esto cuando quieras el razonamiento detrás de cada línea.
 
-**¿Por qué `.map(this::toResponse)`?** `this::toResponse` es una *referencia a método* — abreviatura del lambda `project -> this.toResponse(project)` (ver [java/09-streams-lambdas.md](../../../java/junior/es/09-streams-lambdas.md)). `stream().map(...)` lo llama una vez por entidad, convirtiendo cada `Project` en un `ProjectResponse`, y `toList()` recoge los resultados. La forma `this::` funciona porque el helper es un método en esta misma clase.
+**¿Por qué `.map(this::toResponse)`?** `this::toResponse` es una *referencia a método* — abreviatura del lambda `project -> this.toResponse(project)` (ver [java/12-streams-lambdas.md](../../../java/junior/es/12-streams-lambdas.md)). `stream().map(...)` lo llama una vez por entidad, convirtiendo cada `Project` en un `ProjectResponse`, y `toList()` recoge los resultados. La forma `this::` funciona porque el helper es un método en esta misma clase.
 
 ```java
 @Service

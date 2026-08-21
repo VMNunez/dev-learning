@@ -253,4 +253,4 @@ Period.between(start, end)             // difference in days/months/years
 
 ---
 
-You noticed that the Spring Boot examples above lean on small labels like `@Entity`, `@Column`, and `@PrePersist` to make plain Java classes behave in special ways. That mechanism — attaching metadata to code that a framework reads and acts on — is **annotations**, and it is the engine behind every Spring class you are about to write. That is the next file: `notes/java/junior/en/13-annotations.md`.
+You noticed that the Spring Boot examples above lean on small labels like `@Entity`, `@Column`, and `@PrePersist` to make plain Java classes behave in special ways. That mechanism — attaching metadata to code that a framework reads and acts on — is **annotations**, and it is the engine behind every Spring class you are about to write. That is the next file: `notes/java/junior/en/15-annotations.md`.

@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Java Collections](https://www.baeldung.com/java-collections)
 > 📖 [Oracle Docs — Collections framework](https://docs.oracle.com/javase/tutorial/collections/interfaces/index.html)
 
-You can now create objects, share behaviour between them through inheritance, and handle them uniformly through polymorphism ([06-inheritance-polymorphism.md](06-inheritance-polymorphism.md)). But every object so far has lived on its own — a single `Employee`, a single `Animal`. Real applications work with *many* of them at once: every employee in a department, every row a query returns, every role a user holds. You need structures to hold groups of objects, and that is exactly what collections give you — and they lean directly on polymorphism, because a `List<Animal>` can store dogs and cats side by side precisely because one variable type is allowed to hold many object types.
+You can now create objects, share behaviour between them through inheritance, and handle them uniformly through polymorphism ([08-inheritance-polymorphism.md](08-inheritance-polymorphism.md)). But every object so far has lived on its own — a single `Employee`, a single `Animal`. Real applications work with *many* of them at once: every employee in a department, every row a query returns, every role a user holds. You need structures to hold groups of objects, and that is exactly what collections give you — and they lean directly on polymorphism, because a `List<Animal>` can store dogs and cats side by side precisely because one variable type is allowed to hold many object types.
 
 Before collections existed, you had to manage your own arrays — fixed size, no built-in search, no add/remove. The Collections Framework is a set of interfaces and classes that ships with every JDK installation (in the `java.util` package) — nothing to download, it is already there. It gives you ready-made data structures for the things you do constantly in any application: ordered lists of items, key-value lookups, and sets of unique values. The three you will reach for in almost every Spring Boot service are `List`, `Map`, and `Set`.
 
@@ -121,7 +121,7 @@ A `Map` is the structure you reach for when you need to look something up by a u
 
 This is useful, for example, when you want to **cache** a result — that is, store something you already computed or fetched so you do not have to repeat that work. If you have a list of 1000 employees and need to look up the same employee by ID multiple times, you store the results in a `Map<Integer, Employee>` and retrieve them in constant time, instead of scanning the list each time.
 
-`Map<String, Integer>` reads like this: the first type inside `<>` (those angle brackets are Java's **generics** syntax — not an operator with its own name; they tell the class which types it will work with, and they are covered in full in [10-generics.md](10-generics.md)) is the key type (`String` — the employee name) and the second is the value type (`Integer` — the score). You always declare the key type first and the value type second.
+`Map<String, Integer>` reads like this: the first type inside `<>` (those angle brackets are Java's **generics** syntax — not an operator with its own name; they tell the class which types it will work with, and they are covered in full in [09-generics.md](09-generics.md)) is the key type (`String` — the employee name) and the second is the value type (`Integer` — the score). You always declare the key type first and the value type second.
 
 You create a `Map` with `new HashMap<>()` — the interface is `Map<K, V>` and the concrete implementation is `HashMap`, the same pattern as `List` and `ArrayList`.
 
@@ -386,7 +386,7 @@ The problem with `Comparable` is that you can only define one sort order per cla
 - **`.reversed()`** *(chaining)* — chains onto the previous comparator to flip the order (largest to smallest instead of smallest to largest).
 - **`.thenComparing(function)`** *(chaining)* — tie-breaker: when two elements are equal under the first criterion, applies a second one. For `int` fields, `.thenComparingInt(function)` also exists — the optimised variant for primitives, same as `comparingInt`.
 
-The `Employee::getName` syntax is called a **method reference** — a shorter way to write `e -> e.getName()`. It is covered in `09-streams-lambdas.md`. For now read it as "the `getName` method of `Employee`."
+The `Employee::getName` syntax is called a **method reference** — a shorter way to write `e -> e.getName()`. It is covered in `12-streams-lambdas.md`. For now read it as "the `getName` method of `Employee`."
 
 In Spring Boot, this code would live inside a service method — the list would come from `repository.findAll()` and you would sort it before returning it:
 
@@ -451,13 +451,13 @@ for (Employee e : employees) {
 
 There are three ways to remove while iterating without triggering the exception. They go from the most recommended to the most manual.
 
-**Option 1 — `removeIf()` (cleanest).** It is a method on `List` itself that takes a condition and deletes every element that matches it, in a single line. Internally it uses an iterator correctly, so there is no risk of the exception — and you don't have to write the loop. The `e -> !e.isActive()` is a lambda expression: "for each employee `e`, delete it if it is not active" (lambdas are covered in [09-streams-lambdas.md](09-streams-lambdas.md)).
+**Option 1 — `removeIf()` (cleanest).** It is a method on `List` itself that takes a condition and deletes every element that matches it, in a single line. Internally it uses an iterator correctly, so there is no risk of the exception — and you don't have to write the loop. The `e -> !e.isActive()` is a lambda expression: "for each employee `e`, delete it if it is not active" (lambdas are covered in [12-streams-lambdas.md](12-streams-lambdas.md)).
 
 ```java
 employees.removeIf(e -> !e.isActive());
 ```
 
-**Option 2 — collect first, then remove.** The trick is not to touch the list while you iterate it: first you build a separate list (`toRemove`) with the ones you want to drop, and only once you've finished iterating do you call `removeAll()` to delete them all at once. `stream()` opens a flow over the list, `filter()` keeps the ones that match the condition, and `collect()` gathers them into a new list (all of this is streams — [09-streams-lambdas.md](09-streams-lambdas.md)). Because the deletion happens outside the traversal, there is no conflict.
+**Option 2 — collect first, then remove.** The trick is not to touch the list while you iterate it: first you build a separate list (`toRemove`) with the ones you want to drop, and only once you've finished iterating do you call `removeAll()` to delete them all at once. `stream()` opens a flow over the list, `filter()` keeps the ones that match the condition, and `collect()` gathers them into a new list (all of this is streams — [12-streams-lambdas.md](12-streams-lambdas.md)). Because the deletion happens outside the traversal, there is no conflict.
 
 ```java
 List<Employee> toRemove = employees.stream()
@@ -516,4 +516,4 @@ public List<EmployeeDTO> getAllEmployees() {
 
 ---
 
-But look closely at that service: what happens when the list comes back empty, or when you call `get(0)` on a `List` that has no rows, or `get("Victor")` on a `Map` and the key isn't there? Every one of those is a moment where the *normal* flow of moving data through collections breaks down — the code asks for something the structure cannot give. Java's answer to "the normal flow just broke" is the exception: an object that interrupts the method and travels back toward the caller instead of returning a value. That is what [08-exceptions.md](08-exceptions.md) is about — how errors are signalled, how they travel up the call stack, and where you should catch them.
+But look closely at that service: what happens when the list comes back empty, or when you call `get(0)` on a `List` that has no rows, or `get("Victor")` on a `Map` and the key isn't there? Every one of those is a moment where the *normal* flow of moving data through collections breaks down — the code asks for something the structure cannot give. Java's answer to "the normal flow just broke" is the exception: an object that interrupts the method and travels back toward the caller instead of returning a value. That is what [11-exceptions.md](11-exceptions.md) is about — how errors are signalled, how they travel up the call stack, and where you should catch them.

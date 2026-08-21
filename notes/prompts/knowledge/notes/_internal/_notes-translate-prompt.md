@@ -21,7 +21,7 @@ in your report; the English is not yours to touch.
 **How to use:**
 
 1. Fill in `TOPIC` and `FILE` — `FILE` is the **`en/`** path; you create/update its `es/` counterpart
-   (same number prefix, Spanish filename, e.g. `en/08-exceptions.md` → `es/08-excepciones.md`).
+   (same number prefix, Spanish filename, e.g. `en/11-exceptions.md` → `es/11-excepciones.md`).
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -31,7 +31,7 @@ in your report; the English is not yours to touch.
 
 TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
-FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/08-exceptions.md]
+FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/11-exceptions.md]
 
 SCOPE = [full | append-only — with append-only, list the exact English headings that were appended]
 
@@ -74,7 +74,7 @@ every section, code block, table, and callout so the two match exactly.
 Before starting, read:
 - `{FILE}` — the canonical English source (your input, do not change it).
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
-- The first section of `notes/java/junior/es/08-excepciones.md` — the reference for what finished, native
+- The first section of `notes/java/junior/es/11-excepciones.md` — the reference for what finished, native
   Spanish notes read like.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bilingual rules and the Spanish-prose
   expectations (structural labels, calque list).
@@ -89,8 +89,8 @@ native Spanish**, not a word-for-word calque of the English.
   block is present unchanged (comments may be translated to natural Spanish); every table and callout
   is carried over. Do not add or drop sections — this is a mirror.
 - **Internal cross-file links point at the Spanish filename in `es/`.** When `{FILE}` links to a
-  sibling note (e.g. `[10-generics.md](10-generics.md)`), the `es/` must link to that sibling's **`es/`
-  counterpart by its Spanish name** — `[10-genericos.md](10-genericos.md)`, not the English filename.
+  sibling note (e.g. `[09-generics.md](09-generics.md)`), the `es/` must link to that sibling's **`es/`
+  counterpart by its Spanish name** — `[09-genericos.md](09-genericos.md)`, not the English filename.
   The `es/` folder is self-contained: every internal link resolves to a file that exists in `es/`.
   Never carry an English filename into an `es/` link (it becomes a broken link the moment the reader
   clicks it). If you are unsure of a sibling's exact Spanish filename, list the selected

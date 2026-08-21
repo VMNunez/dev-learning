@@ -32,7 +32,7 @@ String name = "Victor";
                                        the value lives HERE
 ```
 
-Everything surprising later on this page comes out of that picture. `==` on two `String`s compares the two addresses in the left-hand boxes, not the text in the right-hand box — which is why `equals()` exists (the *String comparison* section below). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because the address slot can hold "points to nothing". And where those boxes physically live — the stack for the variable, the heap for the object — is the subject of [15-memory-model.md](15-memory-model.md), which picks this diagram back up in detail.
+Everything surprising later on this page comes out of that picture. `==` on two `String`s compares the two addresses in the left-hand boxes, not the text in the right-hand box — which is why `equals()` exists (the *String comparison* section below). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because the address slot can hold "points to nothing". And where those boxes physically live — the stack for the variable, the heap for the object — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
 
 Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
 
@@ -194,7 +194,7 @@ The compiler runs an analysis called **definite assignment**: it walks every pos
 > }
 > ```
 >
-> The reason for the split is where each one lives. A field belongs to an object on the heap, and the JVM zeroes that whole block of memory as it allocates it, so a default is free. A local variable lives on the method's stack frame, which is reused memory from whatever call ran there before — so an unassigned local would hold leftover garbage, and rather than zero every frame the language simply forbids reading one. This is a direct consequence of the stack/heap split covered in [15-memory-model.md](15-memory-model.md).
+> The reason for the split is where each one lives. A field belongs to an object on the heap, and the JVM zeroes that whole block of memory as it allocates it, so a default is free. A local variable lives on the method's stack frame, which is reused memory from whatever call ran there before — so an unassigned local would hold leftover garbage, and rather than zero every frame the language simply forbids reading one. This is a direct consequence of the stack/heap split covered in [05-memory-model.md](05-memory-model.md).
 >
 > This is also the mechanism behind something you already met: a JPA entity's `Long id` is `null` before the row is saved, and that is not Hibernate setting it to `null` — it is the field's default, which nothing has overwritten yet.
 
@@ -388,7 +388,7 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" is the word from the diagram at the top of this file — a type whose variable holds an address. A generic type argument must always be one, because a collection stores addresses in its slots; there is nowhere in it to put a raw 32-bit value. So you use `List<Integer>` instead. Collections are covered in detail in [07-collections.md](07-collections.md) — for now, just know they are Java's main data structures and they all require object types.
+"Reference" is the word from the diagram at the top of this file — a type whose variable holds an address. A generic type argument must always be one, because a collection stores addresses in its slots; there is nowhere in it to put a raw 32-bit value. So you use `List<Integer>` instead. Collections are covered in detail in [10-collections.md](10-collections.md) — for now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
@@ -495,7 +495,7 @@ The lesson is not "remember the range". It is that **`==` on wrappers is a bug t
 
 ### Useful wrapper methods
 
-**Static methods** belong to the class itself, not to any specific object — that is why you call them on the class name (`Integer.parseInt("42")`) without creating an object with `new`. Static methods are covered in detail in [03-methods.md](03-methods.md).
+**Static methods** belong to the class itself, not to any specific object — that is why you call them on the class name (`Integer.parseInt("42")`) without creating an object with `new`. Static methods are covered in detail in [04-methods.md](04-methods.md).
 
 These static methods are genuinely useful in everyday code:
 
@@ -517,7 +517,7 @@ Integer.MIN_VALUE;          // -2147483648
 > // java.lang.NumberFormatException: For input string: "abc"
 > ```
 >
-> `NumberFormatException` is **unchecked**, so the compiler does not force you to handle it — nothing in your IDE will remind you this line can blow up. Note what counts as "not a number": `"42 "` with a trailing space fails too (unlike `Double.parseDouble`, `parseInt` does no trimming), as does `""` and `null`. Any time the string comes from outside your program — a form field, a URL path variable, a CSV row — this call needs either a `try/catch` or validation in front of it. Exception handling is covered in [08-exceptions.md](08-exceptions.md); for now, just register that this specific method is a common source of 500 errors.
+> `NumberFormatException` is **unchecked**, so the compiler does not force you to handle it — nothing in your IDE will remind you this line can blow up. Note what counts as "not a number": `"42 "` with a trailing space fails too (unlike `Double.parseDouble`, `parseInt` does no trimming), as does `""` and `null`. Any time the string comes from outside your program — a form field, a URL path variable, a CSV row — this call needs either a `try/catch` or validation in front of it. Exception handling is covered in [11-exceptions.md](11-exceptions.md); for now, just register that this specific method is a common source of 500 errors.
 
 ---
 
@@ -642,7 +642,7 @@ a == b        // false — two separate objects, different addresses
 a.equals(b)   // true — same characters, which is what you meant
 ```
 
-> **Careful — string literals are a trap here.** If you write `String a = "hello"; String b = "hello";` (plain literals, no `new`), then `a == b` actually returns `true` — because Java keeps a single shared copy of each literal in a cache called the **string pool**, so both variables end up pointing to the very same object. That makes `==` *look* like it works. It breaks the moment one of the strings comes from somewhere else — user input, a database row, `new String(...)`, or a value built by concatenation at runtime — and then `==` silently returns `false`. The pool is exactly why you must never trust `==` for content: it works just often enough to fool you. The pool itself is covered in [15-memory-model.md](15-memory-model.md).
+> **Careful — string literals are a trap here.** If you write `String a = "hello"; String b = "hello";` (plain literals, no `new`), then `a == b` actually returns `true` — because Java keeps a single shared copy of each literal in a cache called the **string pool**, so both variables end up pointing to the very same object. That makes `==` *look* like it works. It breaks the moment one of the strings comes from somewhere else — user input, a database row, `new String(...)`, or a value built by concatenation at runtime — and then `==` silently returns `false`. The pool is exactly why you must never trust `==` for content: it works just often enough to fool you. The pool itself is covered in [05-memory-model.md](05-memory-model.md).
 
 > **Why does `==` even exist for Strings?** For objects (including `String`), `==` checks if two variables point to the **same object in memory** — not just the same value. This matters in some cases (e.g. checking if two list entries are literally the same object), but for Strings you almost never want that.
 
@@ -650,7 +650,7 @@ a.equals(b)   // true — same characters, which is what you meant
 
 > 📖 Docs: [Baeldung — StringBuilder and StringBuffer in Java](https://www.baeldung.com/java-string-builder-string-buffer) → read: "Similarities" and "Differences" (with its "Performance" sub-section) — the synchronisation difference and when it costs you.
 
-The problem: `String` is **immutable** — once created, it cannot be changed. Every time you do `str += something`, Java does not modify the original string. It creates a brand new `String` object with the combined content. In a loop with 1000 iterations, you create 1000 objects — slow and wasteful. ("Wasteful" is two separate costs, allocating each object and then cleaning it up; [15-memory-model.md](15-memory-model.md) picks this exact loop back up once garbage collection is on the table. For now: one object per iteration, all but the last thrown away.)
+The problem: `String` is **immutable** — once created, it cannot be changed. Every time you do `str += something`, Java does not modify the original string. It creates a brand new `String` object with the combined content. In a loop with 1000 iterations, you create 1000 objects — slow and wasteful. ("Wasteful" is two separate costs, allocating each object and then cleaning it up; [05-memory-model.md](05-memory-model.md) picks this exact loop back up once garbage collection is on the table. For now: one object per iteration, all but the last thrown away.)
 
 `StringBuilder` uses a **buffer** to solve this — a space in memory where it accumulates the pieces of the string while you are building it, like a whiteboard where you keep writing until you have the final result. You modify it in place without creating new objects, and when you are done you call `.toString()` to get the finished string.
 
@@ -739,6 +739,6 @@ Useful when the type is long and obvious from the right side: `var employees = e
 
 ---
 
-You now have the raw materials: the eight primitives, their wrapper objects, `String` with its `strip()`/text-block conveniences, casting between types, and `var`. Two threads run through everything on this page and both continue into the next file. The first is **value versus reference** — the diagram at the top explains `==` on Strings, `final` on a `List`, the `Integer` cache, and null unboxing, and it is the idea [15-memory-model.md](15-memory-model.md) eventually finishes. The second is that **Java fails at two different moments**: some mistakes the compiler refuses outright (`integer number too large`, `possible lossy conversion`, `cannot infer type`), and some it lets through to blow up or go quietly wrong at runtime (overflow, truncated division, `NumberFormatException`). Learning which is which *is* learning Java.
+You now have the raw materials: the eight primitives, their wrapper objects, `String` with its `strip()`/text-block conveniences, casting between types, and `var`. Two threads run through everything on this page and both continue into the next file. The first is **value versus reference** — the diagram at the top explains `==` on Strings, `final` on a `List`, the `Integer` cache, and null unboxing, and it is the idea [05-memory-model.md](05-memory-model.md) eventually finishes. The second is that **Java fails at two different moments**: some mistakes the compiler refuses outright (`integer number too large`, `possible lossy conversion`, `cannot infer type`), and some it lets through to blow up or go quietly wrong at runtime (overflow, truncated division, `NumberFormatException`). Learning which is which *is* learning Java.
 
-But a variable that just sits there holding a value does nothing on its own — a program has to *decide* and *repeat*: run this block only if the age is over 18, loop over every entry in the list. That is control flow, and it is what [02-control-flow.md](02-control-flow.md) covers next — `if`/`else`, `switch`, and the loops that put these types to work. Watch for the same silent-versus-loud split there: switching on a `null` String and running an index one step past the end of an array are both runtime failures, and both are consequences of what you just read here.
+But a variable that just sits there holding a value does nothing on its own — a program has to *decide* and *repeat*: run this block only if the age is over 18, loop over every entry in the list. That is control flow, and it is what [03-control-flow.md](03-control-flow.md) covers next — `if`/`else`, `switch`, and the loops that put these types to work. Watch for the same silent-versus-loud split there: switching on a `null` String and running an index one step past the end of an array are both runtime failures, and both are consequences of what you just read here.

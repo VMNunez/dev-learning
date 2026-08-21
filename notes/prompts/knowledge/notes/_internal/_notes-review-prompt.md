@@ -36,7 +36,7 @@ to land the file).
 ## Configuration — edit only this block
 
 TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md`]
-FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/08-exceptions.md]
+FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/11-exceptions.md]
 TASK  = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact headings the author appended]
 
@@ -73,7 +73,7 @@ a review without it is not accepted.
 
 Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bar you audit against, in full.
-- The first section of notes/java/junior/es/08-excepciones.md — the calibration reference for "finished"
+- The first section of notes/java/junior/es/11-excepciones.md — the calibration reference for "finished"
   (read it for depth/texture; you audit English).
 - The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.

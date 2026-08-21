@@ -117,8 +117,8 @@ Each topic has `{LEVEL}/en/` and `{LEVEL}/es/`. Coverage and persistent plans li
 `notes/{topic}/coverage/`; `layer-reference.md` remains in the topic root when present.
 
 **File naming convention — mandatory:**
-- Files in `en/` use English names: `03-methods.md`, `07-collections.md`, `08-exceptions.md`.
-- Files in `es/` use Spanish names: `03-metodos.md`, `07-colecciones.md`, `08-excepciones.md`.
+- Files in `en/` use English names: `04-methods.md`, `10-collections.md`, `11-exceptions.md`.
+- Files in `es/` use Spanish names: `04-metodos.md`, `10-colecciones.md`, `11-excepciones.md`.
 - The number prefix is always the same across both languages — it is the only shared part of the name.
 - Technical proper names with no Spanish equivalent keep the same name in both folders: `maven`,
   `enums`, `streams`, `lambdas`.
@@ -339,8 +339,8 @@ any new section, and check them when auditing an existing one:
 ### Signature elements — the texture of a finished note (Victor's actual bar)
 
 The rules above make a note *correct*. These make it match the standard Victor has actually
-validated — the level of the early Java notes (`01-variables-tipos.md`, `06-herencia-polimorfismo.md`,
-`07-colecciones.md`) and above all **the first section of `08-excepciones.md`, which is the single
+validated — the level of the early Java notes (`01-variables-tipos.md`, `08-herencia-polimorfismo.md`,
+`10-colecciones.md`) and above all **the first section of `11-excepciones.md`, which is the single
 best reference for what a finished note looks like**. Not every element fits every section, but a
 finished note visibly uses most of them:
 
@@ -425,7 +425,7 @@ Study the *shape* of the move from draft to finished, not just the topic.
 
 The lesson: the draft was not *wrong*, it was *behaviour-only*. Every TODO disappeared once the
 mechanism was traced with a diagram, a worked example, and a callout for the misleading word. The
-full finished text is the first section of `notes/java/junior/es/08-excepciones.md` — read it before writing
+full finished text is the first section of `notes/java/junior/es/11-excepciones.md` — read it before writing
 a new file to calibrate.
 
 ### Sentence-level register — the second family of TODOs (derived from the 00-intro-java pass, 2026-08-21)
@@ -452,8 +452,8 @@ they are judged.
   y arrancado con java Hello` earned "NUNCA HAS DICHO LO QUE ES JAVAC". A tool gets one clause saying
   what program it is and what it does, at first mention.
 - **Forward references are a whole plain sentence, never a trailing clause ending in a link.**
-  "La regla general — … — espera a [04-poo-clases.md]" was rejected. Write: what the reader will
-  learn, then where. "Cómo se hace está en [04-poo-clases.md](04-poo-clases.md)."
+  "La regla general — … — espera a [06-poo-clases.md]" was rejected. Write: what the reader will
+  learn, then where. "Cómo se hace está en [06-poo-clases.md](06-poo-clases.md)."
 - **One idea per sentence; at most one em-dash aside.** The rejected sentences are uniformly the ones
   with a subordinate clause inside an em-dash aside inside another subordinate clause. If a sentence
   needs re-reading to find its verb, split it.
@@ -482,7 +482,7 @@ padding around the explanation he was looking for.
 >
 > What stays **open** is `Purpose:` in the *non-introduction* files of a structured-mode folder. Note
 > that no `notes/java/junior/` file has ever used it — all sixteen are conversational prose, including
-> `08-excepciones.md`, which this standard cites as its own calibration reference — so the structured-mode
+> `11-excepciones.md`, which this standard cites as its own calibration reference — so the structured-mode
 > claim over that folder describes Spring Boot accurately and Java not at all. Do not "fix" the Java
 > files to match; the mismatch is recorded and Victor resolves it as he reviews each topic.
 
@@ -521,7 +521,7 @@ padding around the explanation he was looking for.
   > and references a real project.
 - **Calibrate depth to Victor's bar, not to the concept's difficulty.** The floor is never "how hard
   is this concept" — it is "how much does it take to *truly understand* it", the standard set by the
-  validated files (esp. `08-excepciones.md` section 1). A genuinely trivial one-liner can stay short,
+  validated files (esp. `11-excepciones.md` section 1). A genuinely trivial one-liner can stay short,
   but the default assumption is that a concept deserves the full treatment: mechanism, a worked
   example, a callout for the non-obvious part. Do not write a thin two-paragraph section just because
   the concept isn't "complex" — if the surrounding sections in the same file have diagrams, tables,
@@ -529,7 +529,7 @@ padding around the explanation he was looking for.
   mode here, not padding.
 - **Mark forward references within the same topic.** If an example in file N uses a concept that is
   not explained until file M (M > N), add a one-line note inline: "The `X::Y` syntax is a method
-  reference — covered in full in `09-streams-lambdas.md`. For now, read it as 'the `Y` method of
+  reference — covered in full in `12-streams-lambdas.md`. For now, read it as 'the `Y` method of
   `X`.'" Never leave syntax the reader hasn't seen yet unexplained and unmarked.
 - **Add a preview callout for every cross-topic reference.** When a section uses classes, annotations,
   or patterns from a different topic folder — for example, Java language notes mentioning `@Entity`,

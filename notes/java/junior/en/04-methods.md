@@ -7,9 +7,9 @@
 
 > Docs: https://www.baeldung.com/java-method-signature-return-type → read the whole page: it is short and settles exactly which parts of a declaration make up the signature
 
-In [02-control-flow.md](02-control-flow.md) every loop and `if` you wrote lived inside a `main` method — that `main` was itself a method, and so were the `System.out.println` calls it invoked. This note steps back and looks at that building block directly: what a method is made of, and how you write your own.
+In [03-control-flow.md](03-control-flow.md) every loop and `if` you wrote lived inside a `main` method — that `main` was itself a method, and so were the `System.out.println` calls it invoked. This note steps back and looks at that building block directly: what a method is made of, and how you write your own.
 
-> **Where do methods live?** Always inside a class — they cannot exist outside a class in Java. We cover them here before classes because you have already seen them in the control flow examples. The full structure of a class (fields, constructors, encapsulation) is covered in [04-oop-classes.md](04-oop-classes.md).
+> **Where do methods live?** Always inside a class — they cannot exist outside a class in Java. We cover them here before classes because you have already seen them in the control flow examples. The full structure of a class (fields, constructors, encapsulation) is covered in [06-oop-classes.md](06-oop-classes.md).
 
 A method is a named block of code that performs one specific task. You define it once and call it from anywhere in the program.
 
@@ -30,7 +30,7 @@ accessModifier returnType methodName(parameters) {
 
 Two words for the same slot, and Java people use them precisely, so learn the pair now. A **parameter** is the variable written in the declaration — `int a` above; it exists only inside the method. An **argument** is the actual value you hand over at the call site — the `3` in `add(3, 4)`. Parameters are the empty boxes; arguments are what you drop into them. Both words appear later in this file, and the compiler uses them in its error messages too.
 
-> **The signature — the part of a method Java uses to identify it.** A method's **signature** is its name plus the type and order of its parameters: `add(int, int)`. That's it — the return type is *not* part of the signature, and neither is the access modifier. This sounds like trivia now, but it is the exact rule that decides which method Java calls when several share a name (§"Method overloading" below) and which method a subclass replaces (`06-inheritance-polymorphism.md`). Every time this file says "the signature", it means that name-plus-parameter-types fingerprint.
+> **The signature — the part of a method Java uses to identify it.** A method's **signature** is its name plus the type and order of its parameters: `add(int, int)`. That's it — the return type is *not* part of the signature, and neither is the access modifier. This sounds like trivia now, but it is the exact rule that decides which method Java calls when several share a name (§"Method overloading" below) and which method a subclass replaces (`08-inheritance-polymorphism.md`). Every time this file says "the signature", it means that name-plus-parameter-types fingerprint.
 
 The `return` statement does two things at once, and the second one is easy to miss. It hands the value back to whoever called the method — *and it exits the method immediately*, right there. Nothing after it runs; control jumps straight back to the line that made the call, which continues with the returned value in hand.
 
@@ -114,7 +114,7 @@ public class ProjectService {
 > `ProjectResponse`, `@Service` and `ResourceNotFoundException` are Spring Boot / project classes, not Java keywords — you meet them properly in the Spring Boot notes. Read the snippet only for the `public` vs `private` split, which is pure Java.
 
 ```java
-// protected — useful in inheritance (covered in 06-inheritance-polymorphism.md):
+// protected — useful in inheritance (covered in 08-inheritance-polymorphism.md):
 // subclasses can access it, the outside world cannot
 public class Animal {
     protected String sound;
@@ -167,7 +167,7 @@ public List<Employee> findAll() { ... }          // returns a collection
 
 Read that list as three groups, not six lines. The first three return **primitives** — a raw value gets copied back to the caller. The next two return **objects** (`Employee`, `List<Employee>`) — and what travels back is not the object but a *reference* to it, the same value-vs-reference split you met in [01-variables-types.md](01-variables-types.md): the caller ends up holding an arrow that points at the very same object the method was working on, never a copy of it. `void` returns nothing at all, which is a category of its own.
 
-> **Returning an object hands out a live arrow, and that has a consequence.** If `getName()` returns the `String` field, the caller cannot hurt you — `String` is immutable, so there is nothing to change. But if a method returns the internal `List` field, the caller can now call `.add()` on your object's own list from the outside, behind your back. The fix (a *defensive copy* — returning `new ArrayList<>(this.items)` instead) belongs with encapsulation and is covered in [04-oop-classes.md](04-oop-classes.md); flag it now so the "returns a collection" line above doesn't read as harmless.
+> **Returning an object hands out a live arrow, and that has a consequence.** If `getName()` returns the `String` field, the caller cannot hurt you — `String` is immutable, so there is nothing to change. But if a method returns the internal `List` field, the caller can now call `.add()` on your object's own list from the outside, behind your back. The fix (a *defensive copy* — returning `new ArrayList<>(this.items)` instead) belongs with encapsulation and is covered in [06-oop-classes.md](06-oop-classes.md); flag it now so the "returns a collection" line above doesn't read as harmless.
 
 Because `return` exits the method on the spot, the natural shape for a method with a special case is to deal with it first and leave, instead of wrapping the real work in an `else`. This is the **early return** (or *guard clause*) pattern, and it is what you will read in almost every service method in a real codebase:
 
@@ -350,7 +350,7 @@ add(1, 2);   // ❌ neither is preferable — each needs one widening
 
 > **How to unstick an ambiguous call.** Do not delete an overload — make the call site say which one you mean by giving the arguments their exact declared types: `add(1, 2L)` picks `add(int, long)` with no conversion needed on the second argument, so pass 1 finds a single winner. The general lesson is that overload resolution reads *declared types*, never values, which is also why `add(1, 2)` and `add(x, y)` can resolve differently when `x` and `y` are declared `long`.
 
-> **Overloading vs overriding — don't confuse them.** They sound alike and both involve "two methods with the same name", but they are opposite ideas. **Overloading** (this section) is *one* class defining several versions of a method that differ in their parameters — the choice is made at compile time by the arguments you pass. **Overriding** is a *subclass* replacing a method it inherited from its parent, keeping the *exact same* parameters, to change the behaviour — the choice is made at run time by the object's real type. Rule of thumb: same name + different parameters + same class = overloading; same name + same parameters + subclass = overriding. Overriding is covered in [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md).
+> **Overloading vs overriding — don't confuse them.** They sound alike and both involve "two methods with the same name", but they are opposite ideas. **Overloading** (this section) is *one* class defining several versions of a method that differ in their parameters — the choice is made at compile time by the arguments you pass. **Overriding** is a *subclass* replacing a method it inherited from its parent, keeping the *exact same* parameters, to change the behaviour — the choice is made at run time by the object's real type. Rule of thumb: same name + different parameters + same class = overloading; same name + same parameters + subclass = overriding. Overriding is covered in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
 
 ---
 
@@ -404,11 +404,11 @@ Before looking at how a method is called, let's put everything so far into one c
 
 ```java
 public class Calculator {
-    // fields of the class — state each object carries; covered in 04-oop-classes.md
+    // fields of the class — state each object carries; covered in 06-oop-classes.md
     private String name;
     private List<String> history = new ArrayList<>();
 
-    // constructor — runs when you do new Calculator("MyCalc"); covered in detail in 04-oop-classes.md
+    // constructor — runs when you do new Calculator("MyCalc"); covered in detail in 06-oop-classes.md
     public Calculator(String name) {
         this.name = name;
     }
@@ -434,7 +434,7 @@ public class Calculator {
 
 Each method is now the right kind for what it does, and that is the point of the example: `add()` touches `this.name` and `this.history`, so it *must* be an instance method; `square()` touches nothing but its argument, so `static` is correct. Deciding this is not style — it is the mechanism from the previous section applied.
 
-> `List<String>` and `ArrayList` are Java's growable list — covered in full in [07-collections.md](07-collections.md). For now read it as "an array that can grow", and `history.add(...)` as "append one item to the end".
+> `List<String>` and `ArrayList` are Java's growable list — covered in full in [10-collections.md](10-collections.md). For now read it as "an array that can grow", and `history.add(...)` as "append one item to the end".
 
 Calling them:
 
@@ -525,7 +525,7 @@ method's  `p`      ──────►  [ Project: name="Renamed"   ]   ← th
 
 > **A `String` parameter can never surprise you.** `String` is immutable — there is no `setName()`-equivalent on it — so the "mutate" case does not exist and only reassignment is possible, which is invisible to the caller. That is why passing a `String` feels like passing a primitive even though it is an object. Arrays, by contrast, *are* objects with mutable slots: `arr[0] = 99` inside a method is a mutation, and the caller sees it.
 
-> **Where this goes next.** Two questions are deliberately left open here because they are memory questions, not method questions: *why* copy the arrow rather than the whole object, and *where* the copied arrow and the shared object physically sit. [15-memory-model.md](15-memory-model.md) picks up this exact topic and answers both by drawing the split between the stack and the heap — short version for now: a reference is one small fixed-size value no matter how big the object is, so copying it is free. Everything above stays true there; it just gains an address. That file is also where the interview framing lives, so if you are revising for one, read it there rather than re-deriving it here.
+> **Where this goes next.** Two questions are deliberately left open here because they are memory questions, not method questions: *why* copy the arrow rather than the whole object, and *where* the copied arrow and the shared object physically sit. [05-memory-model.md](05-memory-model.md) picks up this exact topic and answers both by drawing the split between the stack and the heap — short version for now: a reference is one small fixed-size value no matter how big the object is, so copying it is free. Everything above stays true there; it just gains an address. That file is also where the interview framing lives, so if you are revising for one, read it there rather than re-deriving it here.
 
 ---
 
@@ -543,4 +543,4 @@ method's  `p`      ──────►  [ Project: name="Renamed"   ]   ← th
 >
 > **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
 
-Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors and encapsulation, is the whole subject of the next note. Continue in [04-oop-classes.md](04-oop-classes.md), where the `Calculator` you just saw becomes a proper class with state.
+Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors and encapsulation, is the whole subject of the next note. Continue in [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you just saw becomes a proper class with state.

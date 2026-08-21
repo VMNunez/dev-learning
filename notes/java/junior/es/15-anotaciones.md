@@ -307,4 +307,4 @@ Lee cada fila así: un *trabajo* a la izquierda, y las anotaciones a las que ech
 
 ---
 
-Cada una de estas anotaciones de Spring y JPA llega a tu proyecto como una librería — `spring-boot-starter-web` trae las de REST, `spring-boot-starter-data-jpa` trae `@Entity` y compañía. Algo tiene que descargar esas librerías y ponerlas en el classpath para que las anotaciones siquiera existan y puedan leerse. Ese es el trabajo de la herramienta de build, y es el siguiente fichero: `notes/java/junior/es/14-maven.md`.
+Cada una de estas anotaciones de Spring y JPA llega a tu proyecto como una librería — `spring-boot-starter-web` trae las de REST, `spring-boot-starter-data-jpa` trae `@Entity` y compañía. Algo tiene que descargar esas librerías y ponerlas en el classpath para que las anotaciones siquiera existan y puedan leerse. Ese es el trabajo de la herramienta de build, y es el siguiente fichero: `notes/java/junior/es/16-maven.md`.

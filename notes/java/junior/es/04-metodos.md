@@ -7,9 +7,9 @@
 
 > Docs: https://www.baeldung.com/java-method-signature-return-type → leer la página completa: es corta y deja claro exactamente qué partes de una declaración forman la signature
 
-En [02-flujo-de-control.md](02-flujo-de-control.md) cada bucle y cada `if` que escribiste vivía dentro de un método `main` — ese `main` era en sí mismo un método, igual que las llamadas a `System.out.println` que invocaba. Esta nota da un paso atrás y examina esa pieza fundamental directamente: de qué está hecho un método y cómo escribes los tuyos.
+En [03-flujo-de-control.md](03-flujo-de-control.md) cada bucle y cada `if` que escribiste vivía dentro de un método `main` — ese `main` era en sí mismo un método, igual que las llamadas a `System.out.println` que invocaba. Esta nota da un paso atrás y examina esa pieza fundamental directamente: de qué está hecho un método y cómo escribes los tuyos.
 
-> **¿Dónde viven los métodos?** Siempre dentro de una clase — no pueden existir fuera de una clase en Java. Los explicamos aquí antes de ver las clases completas porque ya los has encontrado en los ejemplos de control de flujo. La estructura completa de una clase (campos, constructores, encapsulación) se cubre en [04-poo-clases.md](04-poo-clases.md).
+> **¿Dónde viven los métodos?** Siempre dentro de una clase — no pueden existir fuera de una clase en Java. Los explicamos aquí antes de ver las clases completas porque ya los has encontrado en los ejemplos de control de flujo. La estructura completa de una clase (campos, constructores, encapsulación) se cubre en [06-poo-clases.md](06-poo-clases.md).
 
 Un método es un bloque de código con nombre que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte del programa.
 
@@ -30,7 +30,7 @@ accessModifier returnType methodName(parameters) {
 
 Dos palabras para el mismo hueco, y en el mundo Java se usan con precisión, así que aprende el par desde ya. Un **parámetro** (*parameter*) es la variable escrita en la declaración — el `int a` de arriba; solo existe dentro del método. Un **argumento** (*argument*) es el valor real que entregas en el punto de la llamada — el `3` de `add(3, 4)`. Los parámetros son las cajas vacías; los argumentos son lo que metes dentro. Ambas palabras vuelven a aparecer más adelante en este archivo, y el compilador también las usa en sus mensajes de error.
 
-> **La signature — la parte de un método que Java usa para identificarlo.** La **signature** de un método es su nombre más el tipo y el orden de sus parámetros: `add(int, int)`. Eso es todo — el tipo de retorno *no* forma parte de la signature, y tampoco el modificador de acceso. Ahora suena a trivia, pero es exactamente la regla que decide qué método llama Java cuando varios comparten nombre (§"Sobrecarga de métodos" más abajo) y qué método reemplaza una subclase (`06-herencia-polimorfismo.md`). Cada vez que este archivo diga "la signature", se refiere a esa huella de nombre-más-tipos-de-parámetros.
+> **La signature — la parte de un método que Java usa para identificarlo.** La **signature** de un método es su nombre más el tipo y el orden de sus parámetros: `add(int, int)`. Eso es todo — el tipo de retorno *no* forma parte de la signature, y tampoco el modificador de acceso. Ahora suena a trivia, pero es exactamente la regla que decide qué método llama Java cuando varios comparten nombre (§"Sobrecarga de métodos" más abajo) y qué método reemplaza una subclase (`08-herencia-polimorfismo.md`). Cada vez que este archivo diga "la signature", se refiere a esa huella de nombre-más-tipos-de-parámetros.
 
 La sentencia `return` hace dos cosas a la vez, y la segunda es fácil de pasar por alto. Devuelve el valor a quien llamó al método — *y sale del método de inmediato, ahí mismo*. Nada de lo que venga después se ejecuta; el control salta directamente de vuelta a la línea que hizo la llamada, que continúa con el valor devuelto en la mano.
 
@@ -114,7 +114,7 @@ public class ProjectService {
 > `ProjectResponse`, `@Service` y `ResourceNotFoundException` son clases de Spring Boot / del proyecto, no palabras clave de Java — las conocerás bien en las notas de Spring Boot. Lee el fragmento solo por la división entre `public` y `private`, que es Java puro.
 
 ```java
-// protected — útil en herencia (cubierta en 06-herencia-polimorfismo.md):
+// protected — útil en herencia (cubierta en 08-herencia-polimorfismo.md):
 // las subclases pueden acceder, el mundo exterior no
 public class Animal {
     protected String sound;
@@ -167,7 +167,7 @@ public List<Employee> findAll() { ... }          // devuelve una colección
 
 Lee esa lista como tres grupos, no como seis líneas. Las tres primeras devuelven **primitivos** — se copia un valor en bruto de vuelta a quien llamó. Las dos siguientes devuelven **objetos** (`Employee`, `List<Employee>`) — y lo que viaja de vuelta no es el objeto sino una *referencia* a él, la misma distinción valor-vs-referencia que viste en [01-variables-tipos.md](01-variables-tipos.md): quien llama termina con una flecha que apunta exactamente al mismo objeto con el que trabajaba el método, nunca con una copia de él. `void` no devuelve nada en absoluto, lo cual es una categoría aparte.
 
-> **Devolver un objeto entrega una flecha viva, y eso tiene una consecuencia.** Si `getName()` devuelve el campo `String`, quien llama no puede hacerte daño — `String` es inmutable, así que no hay nada que cambiar. Pero si un método devuelve el campo `List` interno, quien llama ahora puede llamar a `.add()` sobre la propia lista de tu objeto desde fuera, a tus espaldas. La solución (una *copia defensiva* — devolver `new ArrayList<>(this.items)` en lugar del campo directo) va de la mano de la encapsulación y se cubre en [04-poo-clases.md](04-poo-clases.md); lo señalo ahora para que la línea "devuelve una colección" de arriba no se lea como inofensiva.
+> **Devolver un objeto entrega una flecha viva, y eso tiene una consecuencia.** Si `getName()` devuelve el campo `String`, quien llama no puede hacerte daño — `String` es inmutable, así que no hay nada que cambiar. Pero si un método devuelve el campo `List` interno, quien llama ahora puede llamar a `.add()` sobre la propia lista de tu objeto desde fuera, a tus espaldas. La solución (una *copia defensiva* — devolver `new ArrayList<>(this.items)` en lugar del campo directo) va de la mano de la encapsulación y se cubre en [06-poo-clases.md](06-poo-clases.md); lo señalo ahora para que la línea "devuelve una colección" de arriba no se lea como inofensiva.
 
 Como `return` sale del método en el acto, la forma natural para un método con un caso especial es resolverlo primero y salir, en lugar de envolver el trabajo real en un `else`. Este es el patrón de **retorno anticipado** (*early return*, o *guard clause*), y es lo que leerás en casi todos los métodos de servicio de un código real:
 
@@ -350,7 +350,7 @@ add(1, 2);   // ❌ ninguna es preferible — cada una necesita una ampliación
 
 > **Cómo desatascar una llamada ambigua.** No borres ninguna sobrecarga — haz que el punto de la llamada indique cuál quieres dando a los argumentos su tipo declarado exacto: `add(1, 2L)` elige `add(int, long)` sin necesitar conversión en el segundo argumento, así que la pasada 1 encuentra un único ganador. La lección general es que la resolución de sobrecargas lee *tipos declarados*, nunca valores, que es también por qué `add(1, 2)` y `add(x, y)` pueden resolverse distinto cuando `x` e `y` están declaradas como `long`.
 
-> **Overloading vs overriding — no los confundas.** Suenan parecido y ambas hablan de "dos métodos con el mismo nombre", pero son ideas opuestas. **Overloading** (esta sección) es *una* clase que define varias versiones de un método que se diferencian en sus parámetros — la elección se hace en tiempo de compilación según los argumentos que pasas. **Overriding** es una *subclase* que reemplaza un método que heredó de su padre, manteniendo *exactamente los mismos* parámetros, para cambiar el comportamiento — la elección se hace en tiempo de ejecución según el tipo real del objeto. Regla práctica: mismo nombre + parámetros distintos + misma clase = overloading; mismo nombre + mismos parámetros + subclase = overriding. Overriding se cubre en [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md).
+> **Overloading vs overriding — no los confundas.** Suenan parecido y ambas hablan de "dos métodos con el mismo nombre", pero son ideas opuestas. **Overloading** (esta sección) es *una* clase que define varias versiones de un método que se diferencian en sus parámetros — la elección se hace en tiempo de compilación según los argumentos que pasas. **Overriding** es una *subclase* que reemplaza un método que heredó de su padre, manteniendo *exactamente los mismos* parámetros, para cambiar el comportamiento — la elección se hace en tiempo de ejecución según el tipo real del objeto. Regla práctica: mismo nombre + parámetros distintos + misma clase = overloading; mismo nombre + mismos parámetros + subclase = overriding. Overriding se cubre en [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md).
 
 ---
 
@@ -434,7 +434,7 @@ public class Calculator {
 
 Cada método es ahora del tipo correcto para lo que hace, y ese es el sentido del ejemplo: `add()` toca `this.name` y `this.history`, así que *tiene* que ser un método de instancia; `square()` no toca nada más que su argumento, así que `static` es lo correcto. Decidir esto no es cuestión de estilo — es el mecanismo de la sección anterior aplicado.
 
-> `List<String>` y `ArrayList` son la lista redimensionable de Java — se cubren a fondo en [07-colecciones.md](07-colecciones.md). Por ahora léelo como "un array que puede crecer", y `history.add(...)` como "añadir un elemento al final".
+> `List<String>` y `ArrayList` son la lista redimensionable de Java — se cubren a fondo en [10-colecciones.md](10-colecciones.md). Por ahora léelo como "un array que puede crecer", y `history.add(...)` como "añadir un elemento al final".
 
 Llamándolos:
 
@@ -525,7 +525,7 @@ Los dos métodos parecen "cambiar el project". Dibuja lo que cada uno hace con l
 
 > **Un parámetro `String` nunca te puede sorprender.** `String` es inmutable — no existe un equivalente a `setName()` sobre él — así que el caso de "mutar" no existe y solo es posible la reasignación, que es invisible para quien llama. Por eso pasar un `String` se siente como pasar un primitivo aunque sea un objeto. Los arrays, en cambio, *sí* son objetos con casillas mutables: `arr[0] = 99` dentro de un método es una mutación, y quien llamó lo ve.
 
-> **Hacia dónde va esto después.** Dos preguntas se quedan deliberadamente abiertas aquí porque son preguntas de memoria, no de métodos: *por qué* se copia la flecha en lugar del objeto entero, y *dónde* se sitúan físicamente la flecha copiada y el objeto compartido. [15-modelo-de-memoria.md](15-modelo-de-memoria.md) retoma exactamente este tema y responde ambas trazando la división entre el stack y el heap — versión corta por ahora: una referencia es un único valor pequeño de tamaño fijo sin importar lo grande que sea el objeto, así que copiarla sale gratis. Todo lo de arriba sigue siendo cierto allí; solo gana una dirección de memoria. Ese archivo es también donde vive el enfoque de entrevista, así que si estás repasando para una, léelo ahí en lugar de volver a deducirlo aquí.
+> **Hacia dónde va esto después.** Dos preguntas se quedan deliberadamente abiertas aquí porque son preguntas de memoria, no de métodos: *por qué* se copia la flecha en lugar del objeto entero, y *dónde* se sitúan físicamente la flecha copiada y el objeto compartido. [05-modelo-de-memoria.md](05-modelo-de-memoria.md) retoma exactamente este tema y responde ambas trazando la división entre el stack y el heap — versión corta por ahora: una referencia es un único valor pequeño de tamaño fijo sin importar lo grande que sea el objeto, así que copiarla sale gratis. Todo lo de arriba sigue siendo cierto allí; solo gana una dirección de memoria. Ese archivo es también donde vive el enfoque de entrevista, así que si estás repasando para una, léelo ahí en lugar de volver a deducirlo aquí.
 
 ---
 
@@ -543,4 +543,4 @@ Los dos métodos parecen "cambiar el project". Dibuja lo que cada uno hace con l
 >
 > **Archivo:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
 
-Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los *campos* de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores y la encapsulación, es justo el tema de la siguiente nota. Continúa en [04-poo-clases.md](04-poo-clases.md), donde el `Calculator` que acabas de ver se convierte en una clase completa con estado.
+Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los *campos* de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores y la encapsulación, es justo el tema de la siguiente nota. Continúa en [06-poo-clases.md](06-poo-clases.md), donde el `Calculator` que acabas de ver se convierte en una clase completa con estado.

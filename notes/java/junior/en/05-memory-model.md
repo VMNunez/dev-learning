@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Stack Memory and Heap Space in Java](https://www.baeldung.com/java-stack-heap)
 > 📖 [Baeldung — Java Memory Management](https://www.baeldung.com/java-memory-management)
 
-Every file so far has quietly leaned on how Java stores things in memory without ever naming it. When you learned that a variable of a parent type can hold any subclass object (file [06-inheritance-polymorphism.md](06-inheritance-polymorphism.md), dynamic dispatch), or that a `List<User>` holds a bunch of `User` objects (file [07-collections.md](07-collections.md)), or that `result += name` in a loop is slow because each `+` makes a *new* `String` (file [01-variables-types.md](01-variables-types.md)) — all three of those facts are really statements about *where objects live* and *how references point at them*. This is the file where those pieces finally fit together.
+Every file so far has quietly leaned on how Java stores things in memory without ever naming it. When you learned that a variable of a parent type can hold any subclass object (file [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md), dynamic dispatch), or that a `List<User>` holds a bunch of `User` objects (file [10-collections.md](10-collections.md)), or that `result += name` in a loop is slow because each `+` makes a *new* `String` (file [01-variables-types.md](01-variables-types.md)) — all three of those facts are really statements about *where objects live* and *how references point at them*. This is the file where those pieces finally fit together.
 
 The reason this comes last is that you needed to have seen objects, references, and the call stack in action before the memory picture means anything. Now you have. This file answers three questions that interviewers ask precisely because they separate someone who has written Java from someone who has only read it: *"does the caller see the change if I modify an object inside a method?"*, *"where does a `NullPointerException` actually come from?"*, and *"how is memory freed in Java if there's no `free()`?"*. All three have the same root: the split between the **stack** and the **heap**.
 
@@ -120,12 +120,12 @@ method's `u`    ──────►  [ User: name="Bob" ]        ← thrown aw
 
 > Docs: https://www.baeldung.com/java-stack-heap → read: "Stack Memory in Java" and "Heap Space in Java"
 
-The section above kept saying "the object lives somewhere" and "the variable holds an arrow." Now we name the two places. The JVM (the program that runs your compiled Java — introduced in the exception hierarchy section of file [08-exceptions.md](08-exceptions.md)) splits the memory it manages into two regions with completely different jobs:
+The section above kept saying "the object lives somewhere" and "the variable holds an arrow." Now we name the two places. The JVM (the program that runs your compiled Java — introduced in the exception hierarchy section of file [11-exceptions.md](11-exceptions.md)) splits the memory it manages into two regions with completely different jobs:
 
 - **The stack** — a per-method scratchpad. It holds each method's **local variables**: primitives store their actual value here, and object variables store the **reference** (the arrow) here.
 - **The heap** — one big shared pool. Every object you create with `new` lives here. The heap has no notion of "which method" — objects on it are shared by whoever holds an arrow to them.
 
-You already met the stack in file [08-exceptions.md](08-exceptions.md): it's the same **call stack** where each method call is stacked on top of the previous one and removed (LIFO) when the method returns. The exact stack from that file — `main()` at the bottom, `methodA()`, `methodB()` on top — is the structure we're talking about. Each of those stacked frames carries that method's local variables. When the method returns and its frame is popped off, all of *that frame's* locals vanish with it. (If you want the full call-stack mechanism again, it's the first section of `08-exceptions.md` — no need to reread it to follow this.)
+You already met the stack in file [11-exceptions.md](11-exceptions.md): it's the same **call stack** where each method call is stacked on top of the previous one and removed (LIFO) when the method returns. The exact stack from that file — `main()` at the bottom, `methodA()`, `methodB()` on top — is the structure we're talking about. Each of those stacked frames carries that method's local variables. When the method returns and its frame is popped off, all of *that frame's* locals vanish with it. (If you want the full call-stack mechanism again, it's the first section of `11-exceptions.md` — no need to reread it to follow this.)
 
 Here's the crucial part: **the object on the heap does not vanish when a method returns.** Only the frame — and the arrow it held — goes away. This is the whole reason objects can outlive the method that created them and be passed around. Take the `User` example and draw both regions at once:
 
@@ -154,7 +154,7 @@ This one diagram explains everything from the previous section: pass-by-value co
 
 ### Where a NullPointerException really comes from
 
-This is the concrete pay-off, and it's a guaranteed interview question (it's also listed in `08-exceptions.md` as the most common runtime failure — here's the memory-level *why* behind it). A reference variable on the stack does not have to point at anything. When it points at nothing, its value is `null` — an arrow aimed at empty space.
+This is the concrete pay-off, and it's a guaranteed interview question (it's also listed in `11-exceptions.md` as the most common runtime failure — here's the memory-level *why* behind it). A reference variable on the stack does not have to point at anything. When it points at nothing, its value is `null` — an arrow aimed at empty space.
 
 ```
         STACK                              HEAP
@@ -177,7 +177,7 @@ Exception in thread "main" java.lang.NullPointerException:
     Cannot read field "name" because "user" is null
 ```
 
-> **So a `NullPointerException` is not "a broken object" — it's "no object at all".** The variable exists (it's a valid stack slot), but there's nothing on the heap at the other end of the arrow to run the method on. That's why the fixes you saw in `08-exceptions.md` all come down to *guaranteeing there's an object before you follow the arrow*: `Optional` makes the "might be null" explicit in the type, `Objects.requireNonNull` fails loudly at the boundary, and a plain `if (user != null)` checks the arrow before dereferencing it. Same mechanism, three ways to avoid it.
+> **So a `NullPointerException` is not "a broken object" — it's "no object at all".** The variable exists (it's a valid stack slot), but there's nothing on the heap at the other end of the arrow to run the method on. That's why the fixes you saw in `11-exceptions.md` all come down to *guaranteeing there's an object before you follow the arrow*: `Optional` makes the "might be null" explicit in the type, `Objects.requireNonNull` fails loudly at the boundary, and a plain `if (user != null)` checks the arrow before dereferencing it. Same mechanism, three ways to avoid it.
 
 > **`==` vs `.equals()`, revisited from memory.** Now you can see *why* `==` compares "memory addresses" (the phrase from file [01-variables-types.md](01-variables-types.md)). `==` on two object variables compares the two arrows — are they aimed at the *same* heap object? `.equals()` follows both arrows and compares the objects' *contents*. That's the whole reason `==` on two different-but-equal `String` objects is `false`: two arrows, two heap objects, same text.
 
@@ -249,6 +249,6 @@ String result = sb.toString();   // one final String at the end
 
 ## How this closes out the Java notes
 
-That's the whole language surface you need to read, write, and reason about Spring Boot code — and this file is the floor the rest of it stood on. The memory model ties the topic together: objects and references (files 04–06) are stack arrows into heap objects; collections (file 07) are heap objects holding more arrows; immutability and `StringBuilder` (file 01) are a garbage story; and the two failures the JVM throws when a region runs out — `StackOverflowError` when the call stack has no room left to push another frame (runaway recursion), and `OutOfMemoryError` when the heap is full of reachable objects the GC can't reclaim — now read as exactly what they say. Those two live in the exception hierarchy in file [08-exceptions.md](08-exceptions.md); go back to that section now and it should land harder, because you finally know what a "stack" and a "heap" physically are.
+That's the whole language surface you need to read, write, and reason about Spring Boot code — and this file is the floor the rest of it stood on. The memory model ties the topic together: objects and references (files 04–06) are stack arrows into heap objects; collections (file 07) are heap objects holding more arrows; immutability and `StringBuilder` (file 01) are a garbage story; and the two failures the JVM throws when a region runs out — `StackOverflowError` when the call stack has no room left to push another frame (runaway recursion), and `OutOfMemoryError` when the heap is full of reachable objects the GC can't reclaim — now read as exactly what they say. Those two live in the exception hierarchy in file [11-exceptions.md](11-exceptions.md); go back to that section now and it should land harder, because you finally know what a "stack" and a "heap" physically are.
 
 From here the path leaves pure Java and moves into Spring Boot, where every one of these concepts reappears wearing a framework hat: beans are heap objects Spring creates and holds arrows to for you, dependency injection is Spring handing your constructor the right arrow, and `NullPointerException` is still the failure you'll debug most. The Java foundation is complete.

@@ -4,7 +4,7 @@
 > 📖 [Oracle Docs — Interfaces and inheritance](https://docs.oracle.com/javase/tutorial/java/IandI/index.html)
 > 📖 [Spring Security — DaoAuthenticationProvider](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html) — cómo encaja `UserDetailsService` en el flujo de login completo
 
-En [04-poo-clases.md](04-poo-clases.md) aprendiste a modelar una sola cosa como una clase: sus datos, su constructor, sus métodos y cómo se protege a sí misma. Pero cada clase de allí estaba sola. En cuanto tienes una *familia* de clases relacionadas, o un grupo de clases sin relación entre sí que deben prometer todas que saben hacer lo mismo, una clase aislada no basta — necesitas una forma de que las clases **compartan un contrato** o **compartan implementación**. De eso trata exactamente este archivo: las interfaces (un contrato que una clase firma) y las clases abstractas (un padre a medio construir que otros completan).
+En [06-poo-clases.md](06-poo-clases.md) aprendiste a modelar una sola cosa como una clase: sus datos, su constructor, sus métodos y cómo se protege a sí misma. Pero cada clase de allí estaba sola. En cuanto tienes una *familia* de clases relacionadas, o un grupo de clases sin relación entre sí que deben prometer todas que saben hacer lo mismo, una clase aislada no basta — necesitas una forma de que las clases **compartan un contrato** o **compartan implementación**. De eso trata exactamente este archivo: las interfaces (un contrato que una clase firma) y las clases abstractas (un padre a medio construir que otros completan).
 
 ## Interface
 
@@ -197,7 +197,7 @@ public interface Printable {
 
 > Docs: [Baeldung — Abstract Classes in Java](https://www.baeldung.com/java-abstract-class) → leer: "2. Key Concepts for Abstract Classes" y "3. When to Use Abstract Classes" — las reglas que impone el compilador, y las situaciones que justifican usar una.
 
-> **Referencia adelantada — mecánica de la herencia.** Esta sección usa `extends`, `super(...)` y la relación padre/subclase (la jerarquía Animal/Dog) para mostrar para qué *sirve* una clase abstracta. La mecánica completa de la herencia — cómo `extends` conecta una subclase con su padre, cómo funcionan `super(...)` y `@Override` por debajo, la clase `Object` de la que hereda toda clase — es el tema de [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md). Aquí, léelo simplemente como `super(name)` = "ejecuta primero el constructor del padre" y `extends Animal` = "Dog es un tipo de Animal"; la versión profunda llega en el siguiente archivo.
+> **Referencia adelantada — mecánica de la herencia.** Esta sección usa `extends`, `super(...)` y la relación padre/subclase (la jerarquía Animal/Dog) para mostrar para qué *sirve* una clase abstracta. La mecánica completa de la herencia — cómo `extends` conecta una subclase con su padre, cómo funcionan `super(...)` y `@Override` por debajo, la clase `Object` de la que hereda toda clase — es el tema de [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md). Aquí, léelo simplemente como `super(name)` = "ejecuta primero el constructor del padre" y `extends Animal` = "Dog es un tipo de Animal"; la versión profunda llega en el siguiente archivo.
 
 Usa una clase abstracta cuando varias clases comparten la misma *implementación* — no solo el mismo contrato. Una interfaz dice "debes tener este método"; una clase abstracta dice "aquí tienes parte de la implementación, rellena el resto". No puedes crear una instancia de una clase abstracta directamente — solo existe para ser extendida.
 
@@ -324,7 +324,7 @@ En concreto: `Comparable` es una interfaz porque "poder compararse" es una capac
 
 > Docs: [Baeldung — A Guide to Java Constructors](https://www.baeldung.com/java-constructors) → leer: "6. A Chained Constructor" — cómo un constructor delega en otro antes de ejecutar su propio cuerpo.
 
-Esto amplía el callout de `super(name)` de la sección *Clase abstracta* de arriba, siguiendo con la misma pareja `Animal`/`Dog`. Vive aquí en lugar de repetirse en línea para que la sección anterior se mantenga centrada en *qué* es una clase abstracta. La mecánica completa de la herencia — por qué la delegación al padre va primero, qué ejecuta realmente el constructor del padre — pertenece a [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md); el punto de abajo es solo que un constructor de subclase puede añadir sus *propios* campos sobre los del padre.
+Esto amplía el callout de `super(name)` de la sección *Clase abstracta* de arriba, siguiendo con la misma pareja `Animal`/`Dog`. Vive aquí en lugar de repetirse en línea para que la sección anterior se mantenga centrada en *qué* es una clase abstracta. La mecánica completa de la herencia — por qué la delegación al padre va primero, qué ejecuta realmente el constructor del padre — pertenece a [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md); el punto de abajo es solo que un constructor de subclase puede añadir sus *propios* campos sobre los del padre.
 
 Cuando una subclase define su propio constructor, puede añadir sus propios campos además de los del padre. La regla que gobierna el orden es que `super(...)` se ejecuta antes de que nada toque el objeto, para que el padre quede totalmente inicializado antes de que el hijo añada lo suyo:
 
@@ -404,7 +404,7 @@ dog.breathe();  // "Rex is breathing"  — método heredado de Animal
 
 Antes de Java 8, pasar comportamiento a un método implicaba crear una clase entera solo para contener una línea de lógica. Las interfaces funcionales hacen posible eso sin tanto código de más: cualquier interfaz con exactamente **un** método abstracto puede implementarse con una lambda en lugar de con una clase. Ese método único es el destino al que apunta Java cuando escribes la lambda — sabe a qué método llamar porque solo hay uno.
 
-> Las lambdas aún no se han visto en detalle — se explican en [09-streams-lambdas.md](09-streams-lambdas.md). Por ahora, piensa en ellas como funciones anónimas compactas: una forma de escribir la implementación de un único método sin crear una clase entera.
+> Las lambdas aún no se han visto en detalle — se explican en [12-streams-lambdas.md](12-streams-lambdas.md). Por ahora, piensa en ellas como funciones anónimas compactas: una forma de escribir la implementación de un único método sin crear una clase entera.
 
 > La anotación `@FunctionalInterface` es opcional, pero úsala: el compilador te dará un error si añades accidentalmente un segundo método abstracto y rompes el contrato. Sin ella, añadir ese segundo método compila sin problemas y la rotura solo aparece mucho más lejos, en cada sitio donde alguien pasaba una lambda. Con ella, el error aparece en la propia interfaz:
 >
@@ -462,7 +462,7 @@ Las interfaces funcionales integradas más comunes ya vienen en Java — no las 
 
 Lee la tabla emparejando tu tarea con la columna `Método`: si tu lambda recibe un valor y responde true/false quieres `Predicate`; si recibe un valor y devuelve otro distinto quieres `Function`; si recibe un valor y no devuelve nada quieres `Consumer`; si no recibe nada y produce un valor quieres `Supplier`. La forma de ese único método es lo que te dice a cuál acudir.
 
-La `T` y la `R` son genéricos — significan "cualquier tipo". `Predicate<Employee>` es un predicado que recibe un `Employee`; `Function<Employee, String>` es una función que recibe un `Employee` y devuelve un `String`. Los genéricos se explican en detalle en [10-genericos.md](10-genericos.md).
+La `T` y la `R` son genéricos — significan "cualquier tipo". `Predicate<Employee>` es un predicado que recibe un `Employee`; `Function<Employee, String>` es una función que recibe un `Employee` y devuelve un `String`. Los genéricos se explican en detalle en [09-genericos.md](09-genericos.md).
 
 Ejemplos concretos sin streams, para ver cómo funciona cada una por sí sola:
 
@@ -485,7 +485,7 @@ Supplier<String> greeting = () -> "Hello";
 greeting.get();  // "Hello"
 ```
 
-Las usarás cada vez que trabajes con streams y lambdas. Lo que tienes aquí es la mitad de *interfaz* de la historia — la regla de que un solo método abstracto es lo que puede apuntar una lambda, y las cuatro formas que esa regla produce. La mitad de *lambda* — cómo funciona realmente la sintaxis de la flecha, las referencias a métodos, y cómo estas cuatro interfaces son lo que en secreto pide cada operación de un stream — está en [09-streams-lambdas.md](09-streams-lambdas.md), que retoma las mismas cuatro desde el lado de quien las llama.
+Las usarás cada vez que trabajes con streams y lambdas. Lo que tienes aquí es la mitad de *interfaz* de la historia — la regla de que un solo método abstracto es lo que puede apuntar una lambda, y las cuatro formas que esa regla produce. La mitad de *lambda* — cómo funciona realmente la sintaxis de la flecha, las referencias a métodos, y cómo estas cuatro interfaces son lo que en secreto pide cada operación de un stream — está en [12-streams-lambdas.md](12-streams-lambdas.md), que retoma las mismas cuatro desde el lado de quien las llama.
 
 ---
 
@@ -529,7 +529,7 @@ public interface UserDetailsService {
 }
 ```
 
-`throws UsernameNotFoundException` significa que el método puede lanzar esa excepción si no encuentra al usuario. Las excepciones se explican en detalle en [08-excepciones.md](08-excepciones.md) — por ahora, léelo como "este método puede fallar con este tipo de error".
+`throws UsernameNotFoundException` significa que el método puede lanzar esa excepción si no encuentra al usuario. Las excepciones se explican en detalle en [11-excepciones.md](11-excepciones.md) — por ahora, léelo como "este método puede fallar con este tipo de error".
 
 Spring Security sabe llamar a `loadUserByUsername` cuando llega una petición de login, pero no puede proporcionar la implementación porque no conoce tu base de datos. Tu trabajo es escribir esa implementación:
 
@@ -560,7 +560,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 El nombre `UserDetailsServiceImpl` es una convención — el sufijo `Impl` significa "implementation". Spring no la busca por ese nombre; la encuentra porque la clase está anotada con `@Service` e implementa `UserDetailsService`.
 
-`findByEmail(username)` devuelve un `Optional<User>` — un contenedor que puede tener el usuario o estar vacío. `.orElseThrow()` lo abre: si hay usuario lo devuelve; si está vacío lanza la excepción que le pases. Los `Optional` se explican en [10-genericos.md](10-genericos.md).
+`findByEmail(username)` devuelve un `Optional<User>` — un contenedor que puede tener el usuario o estar vacío. `.orElseThrow()` lo abre: si hay usuario lo devuelve; si está vacío lanza la excepción que le pases. Los `Optional` se explican en [09-genericos.md](09-genericos.md).
 
 El último bloque es donde el contrato se cumple de verdad. Tu `User` es una entidad de TimeTrack — una fila de base de datos — y la interfaz prometía devolver un `UserDetails`, que es un contrato completamente distinto (la propia visión de Spring Security de "un principal que puede iniciar sesión"): un username, un hash de contraseña, un conjunto de roles y unos cuantos flags de activo/desactivado. Así que traduces uno al otro, y la clase completamente cualificada `org.springframework.security.core.userdetails.User` es la clase ya lista de Spring que implementa `UserDetails` por ti. Se escribe en su forma completa aquí por una razón simple: el archivo ya importa *tu* entidad `User`, y dos clases distintas no pueden compartir el nombre corto en un mismo archivo.
 
@@ -602,4 +602,4 @@ Esa es la recompensa de todo este archivo en una sola imagen. Spring Security se
 
 ---
 
-Ahora tienes las dos herramientas para hacer que las clases se relacionen: una **interfaz** es un contrato que firman clases sin relación entre sí, y una **clase abstracta** es un padre a medio construir que comparte implementación real. Pero este archivo solo *tomó prestada* la maquinaria de la herencia — `extends`, `super(...)`, `@Override` — para hacer funcionar las clases abstractas, sin explicar cómo funciona nada de eso. Ese es el siguiente paso: [06-herencia-polimorfismo.md](06-herencia-polimorfismo.md) abre el mecanismo que aquí has seguido usando — cómo una subclase hereda realmente campos y métodos de su padre, cómo se comportan `super` y `@Override`, y cómo una misma llamada a un método puede ejecutar código distinto según el tipo real del objeto (polimorfismo).
+Ahora tienes las dos herramientas para hacer que las clases se relacionen: una **interfaz** es un contrato que firman clases sin relación entre sí, y una **clase abstracta** es un padre a medio construir que comparte implementación real. Pero este archivo solo *tomó prestada* la maquinaria de la herencia — `extends`, `super(...)`, `@Override` — para hacer funcionar las clases abstractas, sin explicar cómo funciona nada de eso. Ese es el siguiente paso: [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md) abre el mecanismo que aquí has seguido usando — cómo una subclase hereda realmente campos y métodos de su padre, cómo se comportan `super` y `@Override`, y cómo una misma llamada a un método puede ejecutar código distinto según el tipo real del objeto (polimorfismo).
