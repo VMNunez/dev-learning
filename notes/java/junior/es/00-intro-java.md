@@ -1,6 +1,6 @@
 ## Índice de esta nota
 
-- [Fundamentos de la ejecución en Java](#fundamentos-de-la-ejecución-en-java) — el título y la orientación con la que abre la nota
+- [Fundamentos de la ejecución en Java](#fundamentos-de-la-ejecución-en-java)
 - [1. Qué es Java y qué papel juega en tu stack](#qué-es-java-y-qué-papel-juega-en-tu-stack)
   - [Java es un lenguaje orientado a objetos](#java-es-un-lenguaje-orientado-a-objetos)
   - [Dónde vive Java en tu stack](#dónde-vive-java-en-tu-stack)

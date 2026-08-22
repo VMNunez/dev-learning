@@ -1,6 +1,6 @@
 ## Index of this note
 
-- [Java Execution Foundations](#java-execution-foundations) — the title and the orientation the note opens with
+- [Java Execution Foundations](#java-execution-foundations)
 - [1. What Java is, and the job it does in your stack](#what-java-is-and-the-job-it-does-in-your-stack)
   - [Java is an object-oriented language](#java-is-an-object-oriented-language)
   - [Where Java sits in your stack](#where-java-sits-in-your-stack)
