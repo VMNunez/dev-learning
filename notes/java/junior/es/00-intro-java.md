@@ -6,9 +6,26 @@ Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.bae
 
 JavaScript puede empezar a ejecutar un archivo y no descubrir que existe una operación incorrecta hasta llegar a esa línea. Java añade una comprobación previa a la ejecución: un compilador revisa primero todo el código fuente, antes de que se ejecute ni una sola línea. Esa comprobación previa explica por qué algunos errores te detienen antes de arrancar y otros solo aparecen después.
 
-Esta nota es el mapa de todo lo que vas a estudiar después, y sus siete secciones están ordenadas para que cada una prepare la siguiente. La primera responde qué tipo de lenguaje es Java y qué papel juega en el stack que estás construyendo. La segunda sigue un archivo `.java` a través de las dos etapas que se llevan a cabo hasta que se convierte en un programa en ejecución, porque de ahí sale todo lo demás. Esa frontera entre las dos etapas es justo lo que explica las tres formas distintas en que tu código puede fallar, y ese es el tema de la tercera sección. Con eso ya claro, la cuarta repasa los cinco rasgos de Java que reaparecen en cada capítulo, y la quinta los enfrenta a lo que ya sabes de JavaScript: qué hábitos puedes traerte tal cual y cuáles te van a costar un error. La sexta muestra el programa más pequeño que se puede ejecutar en Java, señalando qué capítulo de estas notas explica cada una de sus piezas. Y la séptima traza la ruta completa de lectura, del capítulo `01` al `16`.
+Esta nota es el mapa de todo lo que vas a estudiar después, y sus siete secciones están ordenadas para que cada una prepare la siguiente. La primera responde qué tipo de lenguaje es Java, explica el modelo en el que se apoya todo el lenguaje — la programación orientada a objetos — y sitúa qué papel juega Java en el stack que estás construyendo. La segunda sigue un archivo `.java` a través de las dos etapas que se llevan a cabo hasta que se convierte en un programa en ejecución, porque de ahí sale todo lo demás. Esa frontera entre las dos etapas es justo lo que explica las tres formas distintas en que tu código puede fallar, y ese es el tema de la tercera sección. Con eso ya claro, la cuarta repasa los cinco rasgos de Java que reaparecen en cada capítulo, y la quinta los enfrenta a lo que ya sabes de JavaScript: qué hábitos puedes traerte tal cual y cuáles te van a costar un error. La sexta muestra el programa más pequeño que se puede ejecutar en Java, señalando qué capítulo de estas notas explica cada una de sus piezas. Y la séptima traza la ruta completa de lectura, del capítulo `01` al `16`.
 
----
+**Índice de esta nota** — cada entrada es un enlace: al pulsarla saltas directamente a esa sección.
+
+- [1. Qué es Java y qué papel juega en tu stack](#qué-es-java-y-qué-papel-juega-en-tu-stack)
+  - [Java es un lenguaje orientado a objetos](#java-es-un-lenguaje-orientado-a-objetos)
+  - [Dónde vive Java en tu stack](#dónde-vive-java-en-tu-stack)
+- [2. Del código fuente al bytecode y a la ejecución en la JVM](#del-código-fuente-al-bytecode-y-a-la-ejecución-en-la-jvm)
+- [3. Fallos en tiempo de compilación frente a fallos en runtime](#fallos-en-tiempo-de-compilación-frente-a-fallos-en-runtime)
+  - [Errores de sintaxis y de tipos — rechazados en tiempo de compilación](#errores-de-sintaxis-y-de-tipos--rechazados-en-tiempo-de-compilación)
+  - [Excepciones — código fuente válido que falla en runtime](#excepciones--código-fuente-válido-que-falla-en-runtime)
+  - [Errores de lógica — la ejecución termina, pero la respuesta es incorrecta](#errores-de-lógica--la-ejecución-termina-pero-la-respuesta-es-incorrecta)
+  - [Cuál de los tres es más barato de encontrar](#cuál-de-los-tres-es-más-barato-de-encontrar)
+- [4. Cinco rasgos que reaparecen en cada capítulo](#cinco-rasgos-que-reaparecen-en-cada-capítulo)
+- [5. Viniendo de JavaScript — dónde ayuda la comparación y dónde miente](#viniendo-de-javascript--dónde-ayuda-la-comparación-y-dónde-miente)
+  - [Lo que funciona igual en los dos lenguajes](#lo-que-funciona-igual-en-los-dos-lenguajes)
+  - [Lo que parece funcionar igual, y no es así](#lo-que-parece-funcionar-igual-y-no-es-así)
+  - [Tabla resumen](#tabla-resumen)
+- [6. El programa Java más pequeño que se ejecuta](#el-programa-java-más-pequeño-que-se-ejecuta)
+- [7. La ruta de aquí a Maven, y por qué sigue ese orden](#la-ruta-de-aquí-a-maven-y-por-qué-sigue-ese-orden)
 
 ## Qué es Java y qué papel juega en tu stack
 
@@ -20,6 +37,43 @@ Java es un **lenguaje de propósito general, con tipado estático, basado en cla
 - **Con tipado estático** — cada variable se declara con un tipo (`int`, `String`, `User`, etc), ese tipo queda fijado desde ese momento, y el compilador comprueba cada uso de esa variable durante la compilación, antes de que el programa pueda arrancar, precisamente para detectar errores de tipo antes de que lleguen a ejecutarse.
 - **Basado en clases** — en Java no existen funciones sueltas en un archivo. Cada línea de código ejecutable pertenece a una clase, y la clase es la unidad elemental que el compilador necesita para compilar y producir una salida.
 - **Compila a bytecode y se ejecuta sobre una JVM** — el proceso completo se explica en la sección siguiente. Por ahora quédate con esto: una herramienta comprueba y traduce tu código fuente, y un segundo programa distinto ejecuta esa traducción.
+
+### Java es un lenguaje orientado a objetos
+
+De los cuatro rasgos de arriba, el que más te va a cambiar la forma de escribir código es «basado en clases», porque detrás de esa palabra hay un modelo entero: la **programación orientada a objetos** (POO). Su idea es una sola. En lugar de tener por un lado los datos y por otro las funciones que los manipulan, la POO junta las dos cosas en la misma unidad.
+
+Esa unidad es el **objeto**: un valor que guarda datos dentro — su **estado** — y que además sabe hacer cosas con ellos — su **comportamiento**, escrito en forma de métodos. Y la **clase** es la plantilla desde la que se fabrican los objetos: declara qué campos va a tener cada objeto y qué métodos va a poder ejecutar. Con una única clase `Invoice` puedes crear mil facturas distintas, cada una con sus propios datos y todas con los mismos métodos.
+
+```java
+public class Invoice {
+
+    private int quantity;      // estado: los datos que guarda cada factura
+    private int unitPrice;
+
+    public int total() {       // comportamiento: lo que la factura sabe hacer con sus datos
+        return quantity * unitPrice;
+    }
+}
+```
+
+Fíjate en lo que no hace falta escribir: `total()` no recibe ningún parámetro. No lo necesita, porque `quantity` y `unitPrice` ya están dentro del objeto que está ejecutando el método. En JavaScript sueles escribir `calcularTotal(quantity, unitPrice)`, con la función por un lado y los datos por otro, y es quien llama el que tiene que juntarlos; en Java escribes `invoice.total()`, y los datos viajan ya dentro del objeto.
+
+De ese modelo salen cuatro ideas que aparecen por su nombre en cualquier entrevista junior:
+
+| Idea              | Qué significa                                                                                                    | Dónde se estudia              |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **Encapsulación** | Los campos se declaran `private` y solo se leen o se cambian a través de los métodos de la propia clase          | `06-poo-clases.md`            |
+| **Abstracción**   | Describir qué métodos hay que tener sin decir cómo se implementan — eso es una interfaz                          | `07-interfaces-abstractas.md` |
+| **Herencia**      | Una clase parte de otra y se queda con sus campos y sus métodos, en lugar de repetirlos                           | `08-herencia-polimorfismo.md` |
+| **Polimorfismo**  | Varias clases responden al mismo método cada una a su manera, y Java decide en ejecución cuál de ellas se llama  | `08-herencia-polimorfismo.md` |
+
+La tercera columna es la que hay que leer con calma: ninguna de las cuatro ideas se aprende aquí. Aquí solo necesitas reconocer los nombres, porque los vas a oír antes de llegar a estudiarlos; cada uno se explica entero en el archivo que indica esa columna.
+
+> **Por qué juntar los datos y el comportamiento cambia algo de verdad.** Al declarar los campos `private`, el único código del mundo que puede modificar el `quantity` de una factura son los métodos de la clase `Invoice`. Eso deja a la clase como el único sitio por el que se puede colar un dato incorrecto, así que ahí, y solo ahí, escribes las comprobaciones — «la cantidad no puede ser negativa» — y quedan garantizadas para todas las facturas del programa. Si los datos estuvieran sueltos en un objeto que cualquiera puede tocar, esa comprobación habría que repetirla en cada sitio que lo modifica, y bastaría con olvidarla una vez.
+>
+> Un matiz que conviene fijar ya: no todo en Java es un objeto. Los tipos **primitivos** — `int`, `double`, `boolean` y unos pocos más — son valores puros, sin métodos ni estado dentro, y son la excepción a la regla. Todo lo demás que manejes es un objeto de alguna clase. La lista completa está en [01-variables-tipos.md](01-variables-tipos.md).
+
+### Dónde vive Java en tu stack
 
 Así encaja este lenguaje en el stack que estás construyendo: Angular es dueño del navegador, Java es dueño del servidor, y la base de datos está detrás de Java y solo se alcanza a través de él.
 
@@ -37,11 +91,11 @@ Ese reparto tiene una consecuencia directa. Como el servidor Java es lo único q
 
 > **Java es el lenguaje; Spring Boot es un framework escrito en ese lenguaje.** Al principio es fácil mezclar los dos conceptos, y separarlos ahora te ahorra mucha confusión más adelante. Java te da clases, tipos, métodos y excepciones. Spring Boot es un montón de Java que ya han escrito otras personas y que tú te descargas para usarlo, igual que en Node te descargas paquetes de npm.
 >
-> Esas descargas llegan en forma de archivos `.jar`. Un `.jar` no tiene nada de mágico: es un archivo comprimido que dentro lleva clases ya compiladas, esos archivos `.class` de los que habla la sección siguiente. Tú no lo abres nunca ni lo descargas a mano: escribes en un archivo de configuración qué librerías necesitas, tu herramienta de build las descarga a una carpeta de tu ordenador, y a partir de ahí el compilador y la JVM buscan clases dentro de esos `.jar` igual que buscan las tuyas. Esa herramienta de build es Maven, y cómo se le declara la lista de librerías es el tema de [14-maven.md](14-maven.md).
+> Esas descargas llegan en forma de archivos `.jar`. Un `.jar` no tiene nada de mágico: es un archivo comprimido que dentro lleva clases ya compiladas, esos archivos `.class` de los que habla la sección siguiente. Tú no lo abres nunca ni lo descargas a mano: escribes en un archivo de configuración qué librerías necesitas, tu herramienta de build las descarga a una carpeta de tu ordenador, y a partir de ahí el compilador y la JVM buscan clases dentro de esos `.jar` igual que buscan las tuyas. Esa herramienta de build es Maven, y cómo se le declara la lista de librerías es el tema de [16-maven.md](16-maven.md).
 >
 > Lo que Spring Boot te resuelve con todo ese código son las partes que nadie quiere escribir a mano: abrir un puerto para que el servidor se quede escuchando peticiones, traducir el texto de una petición HTTP a objetos Java, y **mapear una fila de la base de datos a un objeto**. Esto último significa coger una fila de una tabla, por ejemplo la fila `(3, 'Ana', 'ana@mail.com')` de la tabla `users`, y construir con ella un objeto `User` de Java cuyos campos `id`, `name` y `email` ya valgan `3`, `"Ana"` y `"ana@mail.com"`. Sin ese mapeo tendrías que leer columna por columna y asignarlas tú a mano en cada consulta; con él trabajas con objetos normales y te olvidas de que debajo hay filas y columnas.
 >
-> Por ejemplo, cuando escribes `@RestController`, no estás usando una sintaxis nueva de Java — estás usando una **anotación**, una característica normal y corriente del lenguaje: una marca que Java te permite poner sobre una clase o un método, y que después alguna otra herramienta lee y usa para decidir qué hacer. En este caso, esa herramienta es el propio código de Spring Boot, que busca `@RestController` y, al encontrarla, registra esa clase como un controlador que atiende peticiones HTTP. Las anotaciones como característica propia del lenguaje se explican en [13-anotaciones.md](13-anotaciones.md). Todo lo que hay en estas notas es Java puro, independiente de cualquier framework — como las propias anotaciones —, y por eso sigue siendo válido sin importar con qué framework acabes trabajando.
+> Por ejemplo, cuando escribes `@RestController`, no estás usando una sintaxis nueva de Java — estás usando una **anotación**, una característica normal y corriente del lenguaje: una marca que Java te permite poner sobre una clase o un método, y que después alguna otra herramienta lee y usa para decidir qué hacer. En este caso, esa herramienta es el propio código de Spring Boot, que busca `@RestController` y, al encontrarla, registra esa clase como un controlador que atiende peticiones HTTP. Las anotaciones como característica propia del lenguaje se explican en [15-anotaciones.md](15-anotaciones.md). Todo lo que hay en estas notas es Java puro, independiente de cualquier framework — como las propias anotaciones —, y por eso sigue siendo válido sin importar con qué framework acabes trabajando.
 
 ---
 
@@ -90,7 +144,7 @@ Cuando el código fuente respeta las reglas de Java, `javac` puede producir byte
 
 Las dos etapas están separadas aunque IntelliJ las oculte detrás de un único botón verde de Run. El compilador tiene que aceptar el código fuente antes de que la JVM pueda ejecutar la nueva versión, siempre.
 
-> **Hay un único caso en el que no aparece ningún archivo `.class` en el disco.** Es el atajo de un solo archivo que verás más abajo, en la sección «El programa Java más pequeño que se ejecuta». Al lanzar `java Hello.java`, el compilador sigue haciendo exactamente su trabajo, pero deja el bytecode en memoria en lugar de escribirlo, así que en la carpeta solo queda el `.java` con el que empezaste. El atajo esconde el compilador; no se lo salta. Cualquier build real sí escribe los archivos: en el caso de Maven, dentro de la carpeta `target/classes/`.
+> **Hay un único caso en el que no aparece ningún archivo `.class` en el disco.** Es el atajo para ejecutar un único archivo suelto sin compilarlo tú antes, que verás más abajo en la sección «El programa Java más pequeño que se ejecuta». Al lanzar `java Hello.java`, el compilador sigue haciendo exactamente su trabajo, pero deja el bytecode en memoria en lugar de escribirlo, así que en la carpeta solo queda el `.java` con el que empezaste. El atajo esconde el compilador; no se lo salta. Cualquier build real sí escribe los archivos: en el caso de Maven, dentro de la carpeta `target/classes/`.
 
 > **Una JVM no comprueba tu código fuente original.** Al llegar a la etapa de ejecución, el compilador ya ha traducido el código fuente aceptado a bytecode. Por eso, un mensaje de `javac` y un fallo durante la ejecución en la JVM pertenecen a momentos distintos.
 
@@ -104,7 +158,7 @@ Las dos etapas que acabas de ver dibujan una frontera, y cada tipo de error apar
 
 > **¿`javac` rechazó el código fuente, o llegó una JVM a empezar a ejecutar su bytecode?**
 
-Utiliza el mismo cálculo de precio para comparar los tres resultados.
+Utilizaremos el mismo cálculo de precio para comparar los tres resultados.
 
 ### Errores de sintaxis y de tipos — rechazados en tiempo de compilación
 
@@ -158,7 +212,7 @@ La fila del medio es la que resuelve casi todos los casos dudosos: si por la con
 
 > **El tiempo de compilación es un punto de control, no un programa en ejecución.** Mientras `javac` comprueba el código fuente, no se está ejecutando ninguna instrucción de tu aplicación. Por tanto, el código de gestión de errores en runtime no puede capturar un fallo de compilación: todavía no hay ninguna ejecución en la que capturarlo.
 
-### Excepciones — código fuente válido que falla durante la ejecución
+### Excepciones — código fuente válido que falla en runtime
 
 Parte del código fuente es válido aunque determinados valores en runtime hagan imposible una operación. Dividir un entero entre otro es una operación válida en Java, por lo que este código supera la compilación:
 
@@ -179,7 +233,7 @@ La ejecución del programa llegó hasta la división, así que se trata de un **
 
 > **¿Por qué no puede el compilador rechazar esto antes?** La operación `int / int` está permitida. En un programa real, `divisor` podría proceder de la entrada del usuario, de un cálculo o de una base de datos mientras el programa está en ejecución, por lo que su valor real no suele estar fijado por la línea de código fuente. El compilador comprueba si la operación es válida para los tipos declarados; la ejecución revela si los valores hacen que esa operación válida falle.
 
-La mecánica de lanzar, capturar y propagar excepciones pertenece a [08-excepciones.md](08-excepciones.md). Por ahora, quédate con que una excepción solo puede aparecer después de que haya comenzado la ejecución.
+La mecánica de lanzar, capturar y propagar excepciones pertenece a [11-excepciones.md](11-excepciones.md). Por ahora, quédate con que una excepción solo puede aparecer después de que haya comenzado la ejecución.
 
 ### Errores de lógica — la ejecución termina, pero la respuesta es incorrecta
 
@@ -239,7 +293,7 @@ Un **error de lógica** es el caro, y por una razón muy concreta: ninguna de la
 
 Lee esta tabla de arriba abajo como una escalera de coste, no como una lista de tres cosas equivalentes: cuanto más abajo, más tarde se descubre el fallo y más caro sale. La columna «cuándo» es en realidad la columna del precio, porque un fallo cuesta poco de arreglar en el momento en que lo escribes y mucho cuando lleva un mes corriendo en producción.
 
-> **Esta escalera explica dos hábitos que parecen trabajo extra.** Todo lo que Java te obliga a escribir de más — declarar un tipo en cada variable, no dejarte compilar por un punto y coma que falta — es lo que te compra la fila de arriba: convierte en errores del compilador, que son los baratos, tantos fallos como puede. Y los tests son lo que te compra la fila de abajo, porque un error de lógica no tiene ningún otro detector. Por eso precisamente el proyecto 07 es el primero de tus proyectos que planifica tests de verdad. Su Step 8 escribe un test de JUnit por cada método de servicio, comprobando las propias reglas de negocio — que aprobar una entrada que nunca se envió lanza una excepción, que las horas aprobadas del resumen coinciden con la suma por proyecto. Los proyectos 01 a 06 solo entregaron los specs vacíos `should be created` que genera el CLI de Angular, que no comprueban nada sobre lo que se suponía que debía calcular el código.
+> **Esta escalera explica dos hábitos que parecen trabajo extra.** Todo lo que Java te obliga a escribir de más — declarar un tipo en cada variable, no dejarte compilar por un punto y coma que falta — sirve para llevar a la fila de arriba tantos fallos como sea posible: los convierte en errores del compilador, que son los baratos. Y los tests son lo único que cubre la fila de abajo, porque un error de lógica no tiene ningún otro detector. Por eso precisamente el proyecto 07 es el primero de tus proyectos que planifica tests de verdad. Su Step 8 escribe un test de JUnit por cada método de servicio, comprobando las propias reglas de negocio — que aprobar una entrada que nunca se envió lanza una excepción, que las horas aprobadas del resumen coinciden con la suma por proyecto. Los proyectos 01 a 06 solo entregaron los specs vacíos `should be created` que genera el CLI de Angular, que no comprueban nada sobre lo que se suponía que debía calcular el código.
 
 ---
 
@@ -249,13 +303,13 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 Java tiene una personalidad, y es sorprendentemente consistente. Cinco rasgos explican casi todos los momentos de «¿por qué me obliga a hacer esto?» que vas a tener. Cada uno de ellos se detalla a fondo en un archivo posterior.
 
-**1. Tipado estático — el tipo forma parte de la declaración, y nunca cambia.** Cuando escribes `int quantity = 2;`, el nombre `quantity` queda ligado al tipo `int` para el resto de su vida. Esto no es solo una regla que hay que memorizar, es un mecanismo concreto: como el tipo queda escrito en el propio código fuente, el compilador puede razonar sobre una línea _sin llegar a ejecutarla nunca_. No necesita saber que `quantity` valdrá `2` en un momento y `40` en otro — solo necesita el tipo declarado para decidir si una operación es legal. Por eso Java puede rechazar código antes de arrancar, en lugar de dejar que ese mismo error solo aparezca en tiempo de ejecución, el día en que el programa por fin llega a ejecutar la operación no permitida. Esta característica se explica en [01-variables-tipos.md](01-variables-tipos.md), y vuelve con fuerza en [10-genericos.md](10-genericos.md), donde el tipo de los valores _dentro_ de una colección también se declara y se comprueba.
+**1. Tipado estático — el tipo forma parte de la declaración, y nunca cambia.** Cuando escribes `int quantity = 2;`, el nombre `quantity` queda ligado al tipo `int` para el resto de su vida. Esto no es solo una regla que hay que memorizar, es un mecanismo concreto: como el tipo queda escrito en el propio código fuente, el compilador puede razonar sobre una línea _sin llegar a ejecutarla nunca_. No necesita saber que `quantity` valdrá `2` en un momento y `40` en otro — solo necesita el tipo declarado para decidir si una operación es legal. Por eso Java puede rechazar código antes de arrancar, en lugar de dejar que ese mismo error solo aparezca en tiempo de ejecución, el día en que el programa por fin llega a ejecutar la operación no permitida. Esta característica se explica en [01-variables-tipos.md](01-variables-tipos.md), y vuelve con fuerza en [09-genericos.md](09-genericos.md), donde el tipo de los valores _dentro_ de una colección también se declara y se comprueba.
 
-**2. Todo el código ejecutable vive dentro de una clase.** En JavaScript puedes poner una función sola en un archivo y exportarla. Java no tiene equivalente: `main`, y cualquier otro método, tiene que pertenecer a alguna clase. La razón tiene que ver con cómo el compilador guarda el resultado: genera un archivo `.class` independiente por cada clase, así que una clase es la unidad más pequeña que se puede compilar y cargar por separado. Qué es realmente una clase, qué contiene y cómo se diseña está en [04-poo-clases.md](04-poo-clases.md).
+**2. Todo el código ejecutable vive dentro de una clase.** Es la consecuencia directa del modelo orientado a objetos que has visto en la primera sección. En JavaScript puedes poner una función sola en un archivo y exportarla. Java no tiene equivalente: `main`, y cualquier otro método, tiene que pertenecer a alguna clase. La razón tiene que ver con cómo el compilador guarda el resultado: genera un archivo `.class` independiente por cada clase, así que una clase es la unidad más pequeña que se puede compilar y cargar por separado. Qué es realmente una clase, qué contiene y cómo se diseña está en [06-poo-clases.md](06-poo-clases.md).
 
-**3. Primero compilar, luego ejecutar — siempre dos momentos.** Es el proceso que acabas de recorrer en las dos secciones anteriores. Aunque IntelliJ oculte ambas etapas detrás de un único botón verde, siguen siendo dos momentos separados con dos tipos de error distintos, y saber cuál de los dos te está hablando — el compilador, o el programa ya en marcha — te dice de inmediato dónde buscar el problema. [14-maven.md](14-maven.md) es la herramienta que automatiza ambos pasos una vez que un proyecto real tiene docenas de archivos fuente y librerías externas que descargar antes de poder compilar.
+**3. Primero compilar, luego ejecutar — siempre dos momentos.** Es el proceso que acabas de recorrer en las dos secciones anteriores. Aunque IntelliJ oculte ambas etapas detrás de un único botón verde, siguen siendo dos momentos separados con dos tipos de error distintos, y saber cuál de los dos te está hablando — el compilador, o el programa ya en marcha — te dice de inmediato dónde buscar el problema. [16-maven.md](16-maven.md) es la herramienta que automatiza ambos pasos una vez que un proyecto real tiene docenas de archivos fuente y librerías externas que descargar antes de poder compilar.
 
-**4. El compilador genera código para la JVM, no para tu procesador.** Lo que `javac` produce no son instrucciones para tu procesador concreto, sino bytecode para una máquina abstracta: la JVM. Existe una JVM distinta para Windows, para macOS, para Linux y para lo que sea que tu empresa use en producción, y todas ellas ejecutan ese mismo bytecode. Este es el origen del viejo eslogan de Java, _write once, run anywhere_ («escríbelo una vez, ejecútalo en cualquier sitio»), y no es solo marketing: el archivo `.class` que generas en tu portátil con Windows — el bytecode compilado, también llamado el «artefacto» — es exactamente el mismo archivo que ejecuta un servidor Linux en producción, sin cambios y sin volver a compilarlo. La JVM también es quien gestiona la memoria por ti mientras el programa corre, en lugar de tener que reservarla y liberarla tú a mano, y ese es el tema de [15-modelo-de-memoria.md](15-modelo-de-memoria.md).
+**4. El compilador genera código para la JVM, no para tu procesador.** Lo que `javac` produce no son instrucciones para tu procesador concreto, sino bytecode para una máquina abstracta: la JVM. Existe una JVM distinta para Windows, para macOS, para Linux y para lo que sea que tu empresa use en producción, y todas ellas ejecutan ese mismo bytecode. Este es el origen del viejo eslogan de Java, _write once, run anywhere_ («escríbelo una vez, ejecútalo en cualquier sitio»), y no es solo marketing: el archivo `.class` que generas en tu portátil con Windows — el bytecode compilado, también llamado el «artefacto» — es exactamente el mismo archivo que ejecuta un servidor Linux en producción, sin cambios y sin volver a compilarlo. La JVM también es quien gestiona la memoria por ti mientras el programa corre, en lugar de tener que reservarla y liberarla tú a mano, y ese es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md).
 
 > **JDK, JRE y JVM: qué es cada uno.** Los tres nombres aparecen juntos constantemente y se confunden con facilidad, así que conviene fijarlos ahora. El **JDK** (_Java Development Kit_, «kit de desarrollo de Java») es lo que instalaste, y es el paquete completo: trae las herramientas para **desarrollar**, entre ellas `javac` (el compilador), `jar` (el empaquetador que crea los archivos `.jar`), `javadoc` (el generador de documentación a partir de tus comentarios) y `jdb` (el depurador). El **JRE** (_Java Runtime Environment_, «entorno de ejecución de Java») es el subconjunto que solo sirve para **ejecutar** programas ya compilados: el lanzador `java` y la librería estándar, es decir, todas las clases que Java te regala hechas, como `String`, `List` o `LocalDate`. Y la **JVM** es la máquina virtual que va dentro de los dos: el motor que carga el bytecode y lo ejecuta. Es decir, JDK ⊃ JRE ⊃ JVM.
 >
@@ -298,15 +352,15 @@ public class User {
 
 Compara los dos bloques: cuatro campos privados, un constructor que los recibe y los asigna uno por uno, y cuatro métodos _getter_ — uno por campo, para poder leer ese campo desde fuera de la clase — frente a las siete líneas de TypeScript. Es bastante más código para representar exactamente la misma información.
 
-Esto es una decisión de diseño, no un descuido. Java está optimizado para la persona que _lee_ un código que no escribió, años después, por encima de la persona que lo está escribiendo hoy: cuanto más explícito es el código, menos hace falta adivinar. El lenguaje también ha ido recortando ese código extra donde ha podido. Los _records_, en [04-poo-clases.md](04-poo-clases.md), reducen esa misma clase de datos — una clase cuyo único trabajo es guardar varios valores relacionados, sin lógica propia — a una sola línea. Y las _lambdas_, en [09-streams-lambdas.md](09-streams-lambdas.md), hacen lo mismo cuando lo que quieres pasar no es un dato sino una acción, como la propia función que decide cómo comparar dos elementos al ordenarlos.
+Esto es una decisión de diseño, no un descuido. Java está optimizado para la persona que _lee_ un código que no escribió, años después, por encima de la persona que lo está escribiendo hoy: cuanto más explícito es el código, menos hace falta adivinar. El lenguaje también ha ido recortando ese código extra donde ha podido. Los _records_, en [06-poo-clases.md](06-poo-clases.md), reducen esa misma clase de datos — una clase cuyo único trabajo es guardar varios valores relacionados, sin lógica propia — a una sola línea. Y las _lambdas_, en [12-streams-lambdas.md](12-streams-lambdas.md), hacen lo mismo cuando lo que quieres pasar no es un dato sino una acción, como la propia función que decide cómo comparar dos elementos al ordenarlos.
 
 | Característica              | Qué te obliga a hacer                                                                                           | Dónde se examina a fondo                    |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| Tipado estático             | Declarar un tipo y mantenerlo; el compilador comprueba cada uso antes de arrancar                               | `01-variables-tipos.md`, `10-genericos.md`  |
-| El código vive en una clase | No hay funciones sueltas; una clase es la unidad de compilación                                                 | `04-poo-clases.md`                          |
-| Compilar y luego ejecutar   | Dos pasos separados — primero compilar, después ejecutar —, dos momentos, dos tipos de mensaje de error         | este archivo, y después `14-maven.md`       |
-| El objetivo es la JVM       | El compilador produce bytecode para la JVM, no para tu procesador; y es la JVM quien gestiona la memoria por ti | `15-modelo-de-memoria.md`                   |
-| Más código explícito        | Más tecleo, optimizado para quien lee en lugar de para quien escribe                                            | `04-poo-clases.md`, `09-streams-lambdas.md` |
+| Tipado estático             | Declarar un tipo y mantenerlo; el compilador comprueba cada uso antes de arrancar                               | `01-variables-tipos.md`, `09-genericos.md`  |
+| El código vive en una clase | No hay funciones sueltas; una clase es la unidad de compilación                                                 | `06-poo-clases.md`                          |
+| Compilar y luego ejecutar   | Dos pasos separados — primero compilar, después ejecutar —, dos momentos, dos tipos de mensaje de error         | este archivo, y después `16-maven.md`       |
+| El objetivo es la JVM       | El compilador produce bytecode para la JVM, no para tu procesador; y es la JVM quien gestiona la memoria por ti | `05-modelo-de-memoria.md`                   |
+| Más código explícito        | Más tecleo, optimizado para quien lee en lugar de para quien escribe                                            | `06-poo-clases.md`, `12-streams-lambdas.md` |
 
 ---
 
@@ -316,16 +370,63 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 ### Lo que funciona igual en los dos lenguajes
 
-La sintaxis de `if`, `while` y `for` es la misma. Recorrer una **colección** se lee igual que un `for...of` de JavaScript: `for (String name : names)`. «Colección» es el nombre que Java le da a cualquier objeto que guarda varios elementos dentro: una lista, un conjunto, y también un array. Un array es la más simple de todas, una fila de longitud fija que se decide al crearla y ya no cambia; las demás pueden crecer y encoger como se ve en [07-colecciones.md](07-colecciones.md). Sumar un número a un trozo de texto con `+` concatena en los dos lenguajes, así que `"total: " + 30` produce `"total: 30"` tal como esperas. Y `final` sobre una variable hace lo mismo que `const`: las dos bloquean la variable, no el contenido de lo que hay dentro. Si declaras `final List<String> names = new ArrayList<>();`, no puedes reasignar `names` a otra lista distinta, pero sí puedes añadirle y quitarle elementos a la lista que ya tiene. [01-variables-tipos.md](01-variables-tipos.md) lo desarrolla.
+La sintaxis de `if`, `while` y `for` es la misma. También lo es la forma de recorrer una **colección**, que es el nombre que Java le da a cualquier objeto que guarda varios elementos dentro. Hay tres formas básicas: una **lista**, que guarda los elementos en orden y admite repetidos; un **conjunto** (_set_), que no garantiza ningún orden y no admite repetidos — si añades dos veces el mismo elemento, dentro se queda uno solo —; y un **array**, la más simple de las tres, una fila de longitud fija que se decide en el momento de crearla y que ya no cambia. Las otras dos sí pueden crecer y encoger, y todas ellas se estudian en [10-colecciones.md](10-colecciones.md).
+
+Para recorrer una colección entera, de principio a fin, JavaScript tiene el bucle `for...of`: en cada vuelta mete el siguiente elemento en la variable que has declarado y ejecuta el cuerpo del bucle con ella.
+
+```javascript
+const names = ["Ana", "Luis"];
+for (const name of names) {
+  console.log(name);
+}
+```
+
+Java hace exactamente lo mismo y solo cambia la puntuación: donde JavaScript escribe `of`, Java escribe dos puntos, y la variable se declara con su tipo delante.
+
+```java
+List<String> names = List.of("Ana", "Luis");
+for (String name : names) {
+    System.out.println(name);
+}
+```
+
+Los dos bucles imprimen `Ana` y después `Luis`. En ninguno de los dos llevas tú la cuenta con un índice ni preguntas cuántos elementos hay: el bucle recorre la colección entera y se para solo cuando se acaba. En Java a ese bucle se le llama _for-each_, «para cada uno». (`List.of(...)` crea una lista con los elementos que le pases; las listas son el tema de [10-colecciones.md](10-colecciones.md).)
+
+Sumar un número a un trozo de texto con `+` concatena en los dos lenguajes, así que `"total: " + 30` produce `"total: 30"` tal como esperas. Y `final` sobre una variable hace lo mismo que `const`: las dos bloquean la variable, no el contenido de lo que hay dentro. Si declaras `final List<String> names = new ArrayList<>();`, no puedes reasignar `names` a otra lista distinta, pero sí puedes añadirle y quitarle elementos a la lista que ya tiene. [01-variables-tipos.md](01-variables-tipos.md) lo desarrolla.
 
 `try { } catch (e) { }` también se escribe igual en los dos lenguajes — pero **solo se parecen en la forma de escribirlos**. El modelo de excepciones que hay debajo no tiene nada que ver, y es lo bastante distinto como para merecer el aviso siguiente antes de seguir.
 
-> **Aquí es donde la comparación con JavaScript se rompe del todo: las excepciones.** Es tentador leer el `try/catch` de Java como el de JavaScript porque la sintaxis se ve igual. Por debajo no se parecen en nada. En Java, una excepción es un objeto de una clase, y Java reparte esas clases en dos tipos de excepción: las **comprobadas** (_checked_) y las **no comprobadas** (_unchecked_).
+> **El `try/catch` se escribe igual en Java y en JavaScript, pero el modelo de excepciones que hay debajo es distinto.** Es tentador leer el `try/catch` de Java como el de JavaScript porque la sintaxis se ve idéntica. Por debajo no se parecen en nada.
+>
+> Una **excepción** es la forma que tiene Java de avisar de que algo ha ido mal mientras el programa se ejecuta. Cuando una operación no puede terminar — un archivo que no existe, una división entre cero —, el código **lanza** (`throw`) un objeto que describe ese fallo; el método en el que ocurrió se interrumpe justo ahí, y ese objeto va pasando hacia atrás, de método en método, hasta que alguno lo **captura** (`catch`) y decide qué hacer con él. Si no lo captura nadie, el programa se detiene.
+>
+> Hasta aquí, JavaScript hace algo parecido. La diferencia está en que Java reparte las excepciones en dos familias, y con una de ellas el compilador se mete de por medio: las **comprobadas** (_checked_) y las **no comprobadas** (_unchecked_).
 >
 > Con las comprobadas, el compilador se pone estricto: si tu método llama a algo que puede lanzar una de ellas, no te deja compilar hasta que digas qué piensas hacer con ese fallo. Y solo tienes dos respuestas posibles, las dos escritas en el código:
 >
-> - la capturas ahí mismo con un `try/catch` y te encargas tú del problema;
-> - o escribes `throws IOException` en la firma de tu método, que significa «yo no me encargo». Entonces el fallo pasa al método que llamó al tuyo, y ese método se encuentra con la misma obligación: o lo captura, o lo vuelve a declarar. Así va subiendo de método en método hasta que alguno lo captura, o hasta que llega arriba del todo y el programa se detiene.
+> - la capturas ahí mismo con un `try/catch` y te encargas tú del problema:
+>
+>   ```java
+>   public String readConfig() {
+>       try {
+>           return Files.readString(Path.of("config.txt"));
+>       } catch (IOException e) {
+>           return "";   // no hay archivo: sigo adelante con la configuración por defecto
+>       }
+>   }
+>   ```
+>
+> - o escribes `throws IOException` en la firma de tu método, que significa «yo no me encargo»:
+>
+>   ```java
+>   public String readConfig() throws IOException {
+>       return Files.readString(Path.of("config.txt"));   // si falla, el problema es de quien me llamó
+>   }
+>   ```
+>
+>   Entonces el fallo pasa al método que llamó al tuyo, y ese método se encuentra con la misma obligación: o lo captura, o lo vuelve a declarar. Así va subiendo de método en método hasta que alguno lo captura, o hasta que llega arriba del todo y el programa se detiene.
+>
+> Las **no comprobadas** son justo las que el compilador no vigila — la `ArithmeticException` de la división entre cero es una de ellas —: no tienes que declarar nada ni capturar nada, y si nadie las captura, el programa se detiene al llegar a ese punto.
 >
 > Lo importante no es qué opción elijas, sino que elegir es obligatorio: es una condición para que el programa llegue a compilar, y no hay nada parecido en JavaScript. Por eso, aplicar aquí tus hábitos de JS produce código que directamente no compila, con un mensaje que no significa nada hasta que conoces este modelo:
 >
@@ -333,7 +434,7 @@ La sintaxis de `if`, `while` y `for` es la misma. Recorrer una **colección** se
 > error: unreported exception IOException; must be caught or declared to be thrown
 > ```
 >
-> El modelo completo — los dos tipos, cómo viaja el fallo, cómo se lee la traza — se explica desde cero en [08-excepciones.md](08-excepciones.md).
+> Las excepciones al completo — los dos tipos, cómo se lanza una, por dónde viaja hasta que alguien la captura y cómo se lee la traza que imprime cuando no la captura nadie — se explican desde cero en [11-excepciones.md](11-excepciones.md).
 
 ### Lo que parece funcionar igual, y no es así
 
@@ -389,11 +490,11 @@ En JavaScript tienes dos operadores de igualdad. `===` es el de **igualdad estri
 
 En Java no existe `===`, y el `==` de Java no hace ninguna coerción. Cuando se usa sobre objetos — por ejemplo, sobre dos variables de tipo `String` — pregunta «¿estas dos variables apuntan al mismo objeto en memoria?». Y esa casi nunca es la pregunta que querías hacer al comparar dos textos, porque dos textos con el mismo contenido pueden ser perfectamente dos objetos distintos guardados en dos sitios distintos de la memoria. Equivocarse aquí es el bug de principiante más común en Java.
 
-Esta comparación te va a aparecer en dos sitios, y cada uno se resuelve de una forma.
+Este tipo de comparaciones aparecen en dos sitios, y en cada sitio se resuelve de una forma.
 
-El primero es comparar el contenido de dos trozos de texto, que es con el que te vas a topar antes. Se responde en el archivo siguiente: [01-variables-tipos.md](01-variables-tipos.md) muestra que el método que de verdad querías usar para comparar dos `String` es `.equals()`, que compara el contenido real, carácter a carácter, en vez de la dirección de memoria. Ese archivo explica también por qué escribir dos literales de texto sueltos, como `"hola" == "hola"`, hace que `==` parezca funcionar correctamente justo las veces suficientes como para engañarte: Java reutiliza el mismo objeto en memoria para literales de texto idénticos, así que ese caso concreto sí apunta al mismo sitio, aunque la regla general siga sin ser esa.
+El primero es comparar el contenido de dos variables de tipo `String`, es decir, de dos textos, que es con el que te vas a encontrar antes. Se responde en el archivo siguiente: [01-variables-tipos.md](01-variables-tipos.md) muestra que el método que de verdad querías usar para comparar dos `String` es `.equals()`, que compara el contenido real, carácter a carácter, en vez de la dirección de memoria. Ese archivo explica también por qué escribir dos literales de texto sueltos, como `"hola" == "hola"`, hace que `==` parezca funcionar correctamente justo las veces suficientes como para engañarte: Java reutiliza el mismo objeto en memoria para literales de texto idénticos, así que ese caso concreto sí apunta al mismo sitio, aunque la regla general siga sin ser esa.
 
-El segundo sitio donde te encuentras esta comparación es al comparar dos objetos de una clase escrita por ti — un `User` con otro `User` —. Ahí no basta con llamar a `.equals()` y ya está, porque Java no puede adivinar qué significa que dos usuarios sean «el mismo». ¿Que tengan el mismo `id`? ¿El mismo email? Esa decisión la tomas tú y se la escribes a Java dentro de la clase. Cómo se hace está en [04-poo-clases.md](04-poo-clases.md).
+El segundo sitio donde te encuentras esta comparación es al comparar dos objetos de una clase escrita por ti — por ejemplo un `User` con otro `User` —. Ahí no basta con llamar a `.equals()` y ya está, porque Java no puede adivinar qué significa que dos usuarios sean «el mismo». ¿Que tengan el mismo `id`? ¿El mismo email? Esa decisión la tomas tú y se la escribes a Java dentro de la clase. Cómo se hace está en [06-poo-clases.md](06-poo-clases.md).
 
 #### Los tipos de TypeScript desaparecen antes de ejecutarse; los de Java no
 
@@ -415,19 +516,19 @@ void procesar(List<String> nombres) { }
 void procesar(List<Integer> edades) { }
 ```
 
-[10-genericos.md](10-genericos.md) lo desarrolla entero.
+[09-genericos.md](09-genericos.md) lo desarrolla entero.
 
 ### Tabla resumen
 
-| Hábito de JS/TS                             | Qué hace JavaScript/TypeScript                                   | Qué hace Java                                                                                 | ¿Se comporta igual?             |
-| ------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------- |
-| `for...of` sobre un array                   | Itera sus elementos uno a uno                                    | `for (String name : names)` itera igual sobre una colección                                   | Sí                              |
-| `const`                                     | Bloquea la variable, no lo que contiene                          | `final` hace lo mismo                                                                         | Sí; el matiz se explica en `01` |
-| Sintaxis de `try / catch`                   | `try { } catch (e) { }`                                          | Se escribe igual, pero el modelo de excepciones de debajo es distinto                         | Solo en la sintaxis             |
-| `var`                                       | Declara una variable sin ningún tipo                             | Infiere un único tipo fijo y lo impone para siempre                                           | No — significado casi opuesto   |
-| Añadir una propiedad en tiempo de ejecución | El objeto crece con cualquier propiedad nueva                    | Los campos los declara solo la clase; no se pueden añadir después                             | No — lanza `cannot find symbol` |
-| `==` frente a `===`                         | Compara con coerción de tipos o sin ella                         | `==` sobre objetos compara si apuntan al mismo objeto en memoria, no si el contenido es igual | No — usa `.equals()`            |
-| Tipos borrados al compilar                  | Los tipos desaparecen al compilar; nada los comprueba en runtime | Los tipos sobreviven hasta el bytecode                                                        | No — excepto en los genéricos   |
+| Hábito de JS/TS                             | Qué hace JavaScript/TypeScript                                                                                            | Qué hace Java                                                                                 | ¿Se comporta igual?             |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------- |
+| `for...of` sobre un array                   | `for (const name of names)` itera sus elementos uno a uno                                                                 | `for (String name : names)` itera igual sobre una colección                                   | Sí                              |
+| `const`                                     | Bloquea la variable, no lo que contiene                                                                                   | `final` hace lo mismo                                                                         | Sí; el matiz se explica en `01` |
+| Sintaxis de `try / catch`                   | `try { } catch (e) { }`                                                                                                   | Se escribe igual, pero el modelo de excepciones de debajo es distinto                         | Solo en la sintaxis             |
+| `var`                                       | Declara una variable sin ningún tipo                                                                                      | Infiere un único tipo fijo y lo impone para siempre                                           | No — significado casi opuesto   |
+| Añadir una propiedad en tiempo de ejecución | El objeto crece con cualquier propiedad nueva                                                                             | Los campos los declara solo la clase; no se pueden añadir después                             | No — lanza `cannot find symbol` |
+| `==` frente a `===`                         | Compara con coerción de tipos o sin ella                                                                                  | `==` sobre objetos compara si apuntan al mismo objeto en memoria, no si el contenido es igual | No — usa `.equals()`            |
+| Tipos borrados al compilar                  | Los tipos desaparecen al compilar; nada los comprueba en runtime                                                          | Los tipos sobreviven hasta el bytecode                                                        | No — excepto en los genéricos   |
 
 Lee la última columna como el veredicto de cada fila: «Sí» significa que puedes traer tu hábito de JavaScript tal cual, y cualquier otra cosa significa que ese hábito te va a costar un error, ya sea del compilador o un resultado equivocado.
 
@@ -501,11 +602,11 @@ package com.victor.timetrack;
 
 Es la misma ruta `com/victor/timetrack`, con puntos en el sitio de las barras. Las clases que están en subcarpetas pertenecen a subpaquetes: `.../timetrack/service/TimeEntryService.java` está en el paquete `com.victor.timetrack.service`. La ruta de carpetas y el nombre del paquete tienen que coincidir siempre, y la razón es la misma de antes: así el compilador y la JVM saben en qué carpeta buscar el archivo de una clase a partir de su nombre.
 
-Para qué sirve todo esto: el paquete es el apellido de la clase. El nombre completo de tu servicio no es `TimeEntryService`, sino `com.victor.timetrack.service.TimeEntryService`. Eso permite que existan dos clases con el mismo nombre corto sin chocar entre sí. Podrías tener perfectamente una segunda clase `TimeEntryService` en un paquete distinto — por ejemplo `com.victor.timetrack.admin.TimeEntryService` — y las dos convivirían sin problema, porque su nombre completo es distinto. Es lo mismo que te permitiría escribir tu propia clase `List` sin chocar con la `List` que usarás a diario, que en realidad se llama `java.util.List`. A eso se le llama **espacio de nombres** (_namespace_): un ámbito dentro del cual cada nombre identifica una sola cosa.
+Para qué sirve todo esto: el paquete es el apellido de la clase. El nombre completo de tu servicio no es `TimeEntryService`, sino `com.victor.timetrack.service.TimeEntryService`. Eso permite que existan dos clases con el mismo nombre sin chocar entre sí. Podrías tener perfectamente una segunda clase `TimeEntryService` en un paquete distinto — por ejemplo `com.victor.timetrack.admin.TimeEntryService` — y las dos convivirían sin problema, porque su nombre completo es distinto. Es lo mismo que te permitiría escribir tu propia clase `List` sin chocar con la `List` que usarás a diario, que en realidad se llama `java.util.List`. A eso se le llama **espacio de nombres** (_namespace_): un ámbito dentro del cual cada nombre identifica una sola cosa.
 
-**Y los paquetes son también la frontera de la visibilidad, que es lo que estaba midiendo `public` en la firma de `main`.** La regla, en corto: una clase o un método marcado `public` se puede usar desde cualquier paquete; sin `public`, solo se puede usar desde clases que estén en ese mismo paquete. Es decir, `public` abre la puerta hacia fuera y su ausencia la deja cerrada dentro del paquete.
+**Y los paquetes son también la frontera de la visibilidad, que es lo que estaba midiendo `public` en la firma de `main`.** La regla: una clase o un método marcado `public` se puede usar desde cualquier paquete; sin `public`, solo se puede usar desde clases que estén en ese mismo paquete. Es decir, `public` abre la puerta hacia fuera y su ausencia la deja cerrada dentro del paquete.
 
-Aplicado a `main`, eso explica por qué lleva `public`: quien llama a `main` no es otra clase tuya, es la JVM, que es código que está fuera de tu proyecto y por tanto fuera de todos tus paquetes. Sin `public`, la JVM no podría llamarlo. Las reglas completas de visibilidad — hay cuatro niveles, no dos — están en [04-poo-clases.md](04-poo-clases.md).
+Aplicado a `main`, eso explica por qué lleva `public`: quien llama a `main` no es otra clase tuya, es la JVM, que es código que está fuera de tu proyecto y por tanto fuera de todos tus paquetes. Sin `public`, la JVM no podría llamarlo. Las reglas completas de visibilidad — hay cuatro niveles, no dos — están en [06-poo-clases.md](06-poo-clases.md).
 
 Si a la clase que intentas lanzar le falta el método `main`, la clase compila perfectamente — como clase no le pasa nada —, y el fallo llega después, desde la JVM, justo en el momento en que intentas arrancarla:
 
@@ -516,7 +617,7 @@ Error: Main method not found in class NoMain, please define the main method as:
 
 > **¿Por qué falla al arrancar y no al compilar?** Porque una clase sin `main` es una clase completamente normal y útil: en cualquier proyecto, la inmensa mayoría de las clases no tienen `main` y se compilan y se usan constantemente. Tener un punto de entrada no es algo que se le pueda exigir a toda clase; solo hace falta en la clase por la que arranca el programa. Y el compilador no puede saber cuál va a ser esa clase, porque eso lo decides tú más tarde, al ejecutar `java Hello`. La JVM sí lo sabe, porque acabas de darle el nombre. Por eso el mensaje de arriba no dice «esta clase está mal escrita», sino algo mucho más literal: «he cargado la clase que me has pedido, he buscado dentro un método `main` y no lo he encontrado».
 
-**De momento te vale con lo que acabas de leer sobre `public`, `static` y `String[]`.** Cada una de esas tres palabras es un concepto entero por sí misma, y cada una tiene su propio capítulo más adelante: las reglas completas de `public` y de `static` — quién puede ver un miembro de una clase, y si ese miembro pertenece a la clase entera o a cada objeto por separado — están en [04-poo-clases.md](04-poo-clases.md); `String[]` se explica junto a las demás formas de guardar varios valores, en [07-colecciones.md](07-colecciones.md). Aquí basta con que reconozcas la plantilla y sepas copiarla, porque todos los ejemplos de los capítulos siguientes imprimen algo por consola y, para probarlos tú, vas a tener que meterlos dentro de un `main` como este.
+**De momento te vale con lo que acabas de leer sobre `public`, `static` y `String[]`.** Cada una de esas tres palabras es un concepto entero por sí misma, y cada una tiene su propio capítulo más adelante: las reglas completas de `public` y de `static` — quién puede ver un miembro de una clase, y si ese miembro pertenece a la clase entera o a cada objeto por separado — están en [06-poo-clases.md](06-poo-clases.md); `String[]` se explica junto a las demás formas de guardar varios valores, en [10-colecciones.md](10-colecciones.md). Aquí basta con que reconozcas la plantilla y sepas copiarla, porque todos los ejemplos de los capítulos siguientes imprimen algo por consola y, para probarlos tú, vas a tener que meterlos dentro de un `main` como este.
 
 **`System.out.println` es la forma de imprimir algo por pantalla.** `System.out` es la salida estándar del programa, que en tu caso es la consola de IntelliJ, y `println` escribe ahí lo que le pases y después salta a la línea siguiente. Su hermano `print` escribe exactamente lo mismo pero sin ese salto, así que dos `print` seguidos dejan el texto pegado en la misma línea:
 
@@ -574,35 +675,35 @@ Docs: [Baeldung — Get Started with Java](https://www.baeldung.com/get-started-
 
 La ruta de aprendizaje empieza por la pieza más pequeña que puede haber dentro de un programa escrito en Java — un valor — y termina con la herramienta que construye el proyecto entero. Cada archivo está colocado justo delante del archivo que lo necesita, y el recorrido va en cuatro tramos.
 
-Los números que aparecen abajo (`01`, `02`, `03`…) son **posiciones de lectura**, no nombres de archivo. La tabla del final de la sección traduce cada posición a su archivo real.
+Cada archivo se nombra abajo con su nombre completo, y el número con el que empieza es su posición en la ruta.
 
-**Lecturas 01 a 04 — los datos y las instrucciones que los manipulan.** El `01` te enseña los tipos de valor básicos de Java: los números enteros y decimales, los booleanos, cuándo un `int` se convierte en un `long`, y por qué un número decimal casi nunca vale exactamente lo que escribiste. Va primero porque todas las líneas que escribas después manipulan algún valor, y en Java todo valor tiene un tipo concreto y declarado. El `02` coge el tipo de valor que más vas a tocar, el texto, y explica por qué un `String` que parece que modificas es en realidad uno nuevo cada vez. El `03` introduce los condicionales y los bucles: `if` para elegir qué líneas se ejecutan según una condición, y `for` y `while` para repetir un bloque de código. Y el `04` te enseña los **métodos**, que son el equivalente en Java a las funciones de JavaScript: un bloque de código con nombre, que recibe parámetros y devuelve un valor. La única diferencia de fondo es que un método siempre vive dentro de una clase.
+**Lecturas 01 a 04 — los datos y las instrucciones que los manipulan.** [01-variables-tipos.md](01-variables-tipos.md) te enseña los tipos de valor básicos de Java: los números enteros y decimales, los booleanos, cuándo un `int` se convierte en un `long`, y por qué un número decimal casi nunca vale exactamente lo que escribiste. Va primero porque todas las líneas que escribas después manipulan algún valor, y en Java todo valor tiene un tipo concreto y declarado. `02-cadenas-de-texto.md` coge el tipo de valor que más vas a tocar, el texto, y explica por qué un `String` que parece que modificas es en realidad uno nuevo cada vez. [03-flujo-de-control.md](03-flujo-de-control.md) introduce los condicionales y los bucles: `if` para elegir qué líneas se ejecutan según una condición, y `for` y `while` para repetir un bloque de código. Y [04-metodos.md](04-metodos.md) te enseña los **métodos**, que son el equivalente en Java a las funciones de JavaScript: un bloque de código con nombre, que recibe parámetros y devuelve un valor. La única diferencia de fondo es que un método siempre vive dentro de una clase.
 
-**Lecturas 05 a 08 — la memoria y los objetos.** El `05` te enseña qué ocurre por debajo cuando llamas a un método: qué se copia exactamente al pasarle un argumento, en qué zona de memoria vive cada objeto, y cómo lleva la JVM la cuenta de qué método llamó a cuál. Va aquí porque es el mecanismo sobre el que se apoyan después los objetos, las excepciones y las colecciones: entendiéndolo, esos tres temas se razonan en vez de memorizarse. Solo entonces el `06` construye objetos de verdad, con un estado que nace siendo válido, y responde a la pregunta que los objetos plantean nada más aparecer: cuándo se consideran iguales dos de ellos. El `07` te enseña las **interfaces**: una lista de métodos que una clase se compromete a tener, sin decir cómo los implementa; así, el código que llama a esos métodos no depende de ninguna clase concreta y puedes cambiar la implementación sin tocar a quien la usa. Y el `08` explica cómo decide Java, ya en ejecución, cuál de esas implementaciones se ejecuta.
+**Lecturas 05 a 08 — la memoria y los objetos.** [05-modelo-de-memoria.md](05-modelo-de-memoria.md) te enseña qué ocurre por debajo cuando llamas a un método: qué se copia exactamente al pasarle un argumento, en qué zona de memoria vive cada objeto, y cómo lleva la JVM la cuenta de qué método llamó a cuál. Va aquí porque es el mecanismo sobre el que se apoyan después los objetos, las excepciones y las colecciones: entendiéndolo, esos tres temas se razonan en vez de memorizarse. Solo entonces [06-poo-clases.md](06-poo-clases.md) construye objetos de verdad, y lo hace apoyándose en el **constructor**: el método que se ejecuta en el momento de crear el objeto y que puede rechazar los datos que no valgan, de forma que nunca llegue a existir una factura sin importe ni un usuario sin email. Ese archivo responde además a la pregunta que los objetos plantean nada más aparecer: cuándo se consideran iguales dos de ellos. [07-interfaces-abstractas.md](07-interfaces-abstractas.md) te enseña las **interfaces**: una lista de métodos que una clase se compromete a tener, sin decir cómo los implementa; así, el código que llama a esos métodos no depende de ninguna clase concreta y puedes cambiar la implementación sin tocar a quien la usa. Y [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md) explica cómo decide Java, ya en ejecución, cuál de esas implementaciones se ejecuta.
 
-**Lecturas 09 a 12 — guardar muchos objetos, y gestionar los fallos.** El `09` te enseña los **genéricos**, que son los corchetes angulares de `List<String>`: la forma de decirle al compilador qué tipo de elementos guarda una colección. Va antes que las colecciones a propósito, para que cuando llegues al `10` no te encuentres con una sintaxis que aún no sabes leer. El `10` ya son las **colecciones** propiamente dichas: las listas, los conjuntos y los mapas, cómo se elige uno u otro, y por qué buscar dentro de ellos es rápido. El `11` desarrolla el modelo completo del fallo — cómo se lanza una excepción, por dónde viaja, dónde se captura y cómo se lee la traza —, y llega en este punto porque las búsquedas, las conversiones y los bucles de los archivos anteriores ya te han dado varias formas distintas de fallar. Y el `12` cierra el tramo con las **lambdas** y los **streams**: la forma de pasarle a un método un comportamiento igual que le pasas un dato, que es lo que hace legible recorrer y filtrar una colección entera en tres líneas.
+**Lecturas 09 a 12 — guardar muchos objetos, y gestionar los fallos.** [09-genericos.md](09-genericos.md) te enseña los **genéricos**: lo que se escribe entre los signos `<` y `>` de `List<String>`, que es la forma de decirle al compilador qué tipo de elementos guarda una colección. Va antes que las colecciones a propósito, para que cuando llegues a [10-colecciones.md](10-colecciones.md) no te encuentres con una sintaxis que aún no sabes leer. [10-colecciones.md](10-colecciones.md) ya son las **colecciones** propiamente dichas: las listas, los conjuntos y los mapas, cómo se elige uno u otro, y por qué buscar dentro de ellos es rápido. [11-excepciones.md](11-excepciones.md) desarrolla entera la **gestión de errores**: cómo se lanza una excepción, por dónde viaja, dónde se captura y cómo se lee la traza que aparece cuando no la captura nadie. Llega justo en este punto porque los archivos anteriores ya te han enseñado un buen puñado de operaciones que pueden fallar — buscar un elemento que no está, convertir un texto a número, recorrer una colección saliéndote del último índice —, así que ya tienes fallos concretos sobre los que practicar. Y [12-streams-lambdas.md](12-streams-lambdas.md) cierra con las **lambdas** y los **streams**: hasta ese momento a un método solo le pasabas datos, y una lambda te permite pasarle además una acción — por ejemplo, la condición por la que quieres filtrar —, que es lo que hace legible recorrer y filtrar una colección entera en tres líneas.
 
-**Lecturas 13 a 16 — los tipos especiales y el build.** El `13` te enseña los **enums**: cuando un valor solo puede ser uno de un conjunto cerrado — `PENDIENTE`, `APROBADO`, `RECHAZADO` —, un enum se lo dice al compilador, y el compilador puede entonces avisarte si te has dejado un caso sin tratar. El `14` aplica esa misma idea de valor que no cambia a las **fechas y las horas**, donde el conjunto de valores posibles es infinito y por tanto ninguna comprobación del compilador puede salvarte. El `15` generaliza `@Override` a las **anotaciones** en general: marcas que tú pones en el código y que alguna herramienta lee después, que es lo que hace que las anotaciones de Spring que ves a diario dejen de parecer sintaxis secreta de Java. Y el `16` cierra con **Maven**, la herramienta que descarga las librerías, compila, ejecuta los tests y empaqueta todo lo que produjeron los quince archivos anteriores.
+**Lecturas 13 a 16 — los tipos especiales y el build.** [13-enums.md](13-enums.md) te enseña los **enums**: cuando un valor solo puede ser uno de un conjunto cerrado — `PENDIENTE`, `APROBADO`, `RECHAZADO` —, un enum escribe esa lista completa en el código, y a partir de ahí el compilador sabe que no existe ningún otro valor posible y puede avisarte si te has dejado uno de los casos sin tratar. [14-fechas.md](14-fechas.md) coge las **fechas y las horas**, que son valores que tampoco cambian una vez creados: cuando le sumas un día a una fecha no modificas la que tenías, obtienes otra distinta. La diferencia con un enum es que aquí los valores posibles son infinitos, así que el compilador no puede comprobar la lista y no hay ninguna red de seguridad que te avise de que la fecha que has calculado no era la que querías. [15-anotaciones.md](15-anotaciones.md) parte de `@Override`, la única anotación que habrás usado hasta entonces, y explica las **anotaciones** en general: marcas que tú pones en el código y que alguna herramienta lee después. Con eso, las anotaciones de Spring que ves a diario dejan de parecer sintaxis secreta del lenguaje: son marcas normales de Java, y la herramienta que las lee es el propio código de Spring. Y [16-maven.md](16-maven.md) cierra con **Maven**, la herramienta que descarga las librerías, compila, ejecuta los tests y empaqueta todo lo que produjeron los quince archivos anteriores.
 
-> **De momento, los números de los nombres de archivo no coinciden con el orden de lectura.** Solo `00` y `01` cuadran. Los archivos se escribieron antes de planificar esta ruta, y todavía no se han renumerado. Mientras tanto, lee el orden en la tabla de abajo e ignora el número del archivo: la tabla es la autoridad, no el listado de la carpeta. El renombrado está pendiente y anotado en el plan de notas, así que esta advertencia desaparecerá cuando los dos órdenes coincidan.
+> **El número del nombre de un archivo es su posición en esta ruta.** `01-variables-tipos.md` es la lectura 01, `11-excepciones.md` es la lectura 11, y así con todos, de modo que abrir la carpeta ordenada alfabéticamente ya te da el orden correcto. Hoy solo falta el `02`: ese número está reservado para el capítulo del texto y el archivo todavía no está escrito. Por eso la tabla de abajo no tiene columna de orden — ya lo lleva el nombre del archivo. La segunda columna da la única razón por la que ese archivo no se puede leer antes.
 
-| Orden de lectura | Archivo en `es/`              | Por qué va aquí                                                                                 |
-| ---------------- | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| 01               | `01-variables-tipos.md`       | Toda línea posterior manipula un valor tipado                                                   |
-| 02               | `16-cadenas-de-texto.md`      | El texto es el tipo de valor que tocas en cada petición                                         |
-| 03               | `02-flujo-de-control.md`      | Elegir y repetir necesita valores entre los que elegir                                          |
-| 04               | `03-metodos.md`               | Empaqueta ese comportamiento detrás de un contrato invocable                                    |
-| 05               | `15-modelo-de-memoria.md`     | Abre la frontera del método: copias, referencias, la pila de llamadas                           |
-| 06               | `04-poo-clases.md`            | Construye objetos a partir de métodos y referencias, y define la igualdad                       |
-| 07               | `05-interfaces-abstractas.md` | Separa el comportamiento necesario de la clase que lo proporciona                               |
-| 08               | `06-herencia-polimorfismo.md` | Decide en tiempo de ejecución qué implementación se ejecuta                                     |
-| 09               | `10-genericos.md`             | Enseña la sintaxis de corchetes angulares antes de que las colecciones la usen por todas partes |
-| 10               | `07-colecciones.md`           | Grupos de objetos, y el hashing que hace rápida la búsqueda                                     |
-| 11               | `08-excepciones.md`           | Los fallos que hicieron posibles los capítulos anteriores                                       |
-| 12               | `09-streams-lambdas.md`       | Comportamiento como valor, y los pipelines construidos con él                                   |
-| 13               | `11-enums.md`                 | Un conjunto cerrado de valores que el compilador puede comprobar de forma exhaustiva            |
-| 14               | `12-fechas.md`                | La misma inmutabilidad aplicada donde no existe ninguna comprobación del compilador             |
-| 15               | `13-anotaciones.md`           | Metadatos que lee una herramienta — la forma de cada anotación de Spring                        |
-| 16               | `14-maven.md`                 | El build que compila, testea y empaqueta todo lo anterior                                       |
+| Archivo en `es/`              | Por qué va aquí                                                                                 |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `01-variables-tipos.md`       | Toda línea posterior manipula un valor tipado                                                   |
+| `02-cadenas-de-texto.md`      | El texto es el tipo de valor que tocas en cada petición                                         |
+| `03-flujo-de-control.md`      | Elegir y repetir necesita valores entre los que elegir                                          |
+| `04-metodos.md`               | Empaqueta ese comportamiento detrás de un contrato invocable                                    |
+| `05-modelo-de-memoria.md`     | Abre la frontera del método: copias, referencias, la pila de llamadas                           |
+| `06-poo-clases.md`            | Construye objetos a partir de métodos y referencias, y define la igualdad                       |
+| `07-interfaces-abstractas.md` | Separa el comportamiento necesario de la clase que lo proporciona                               |
+| `08-herencia-polimorfismo.md` | Decide en tiempo de ejecución qué implementación se ejecuta                                     |
+| `09-genericos.md`             | Enseña la sintaxis de corchetes angulares antes de que las colecciones la usen por todas partes |
+| `10-colecciones.md`           | Grupos de objetos, y el hashing que hace rápida la búsqueda                                     |
+| `11-excepciones.md`           | Los fallos que hicieron posibles los capítulos anteriores                                       |
+| `12-streams-lambdas.md`       | Comportamiento como valor, y los pipelines construidos con él                                   |
+| `13-enums.md`                 | Un conjunto cerrado de valores que el compilador puede comprobar de forma exhaustiva            |
+| `14-fechas.md`                | La misma inmutabilidad aplicada donde no existe ninguna comprobación del compilador             |
+| `15-anotaciones.md`           | Metadatos que lee una herramienta — la forma de cada anotación de Spring                        |
+| `16-maven.md`                 | El build que compila, testea y empaqueta todo lo anterior                                       |
 
 Con esto ya puedes situar cualquier problema dentro del ciclo de vida básico de Java: el código fuente se comprueba y se compila a bytecode, y después una JVM ejecuta ese bytecode. La primera parada de la ruta, [01-variables-tipos.md](01-variables-tipos.md), examina los tipos declarados que sustentan esas comprobaciones del compilador: qué valores permite Java que contenga cada variable, y por qué los tipos incompatibles se rechazan antes de la ejecución.

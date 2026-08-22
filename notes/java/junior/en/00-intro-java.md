@@ -6,7 +6,26 @@ Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.bae
 
 JavaScript can start running a file and only discover a bad operation once execution reaches that line. Java adds a check that runs before execution: a compiler reviews the entire source first, before a single line of it runs. That upfront check explains why some mistakes stop you before launch while others only appear after launch.
 
-This note is the map for everything that follows, and its seven sections are ordered so that each one sets up the next. The first answers what kind of language Java is and the job it does in the stack you are building. The second follows one `.java` file through the two stages that turn it into a running program, because everything else follows from that. That boundary between the two stages is exactly what explains the three different ways your code can fail, and that is what the third section covers. With that settled, the fourth goes over the five Java traits that keep reappearing in every chapter, and the fifth holds them up against what you already know from JavaScript: which habits you can bring over as they are, and which ones will cost you an error. The sixth shows the smallest program that runs at all in Java, naming the chapter of these notes that owns each piece of it. And the seventh lays out the full reading route, from chapter `01` to `16`.
+This note is the map for everything that follows, and its seven sections are ordered so that each one sets up the next. The first answers what kind of language Java is, explains the model the whole language rests on — object-oriented programming — and places the job Java does in the stack you are building. The second follows one `.java` file through the two stages that turn it into a running program, because everything else follows from that. That boundary between the two stages is exactly what explains the three different ways your code can fail, and that is what the third section covers. With that settled, the fourth goes over the five Java traits that keep reappearing in every chapter, and the fifth holds them up against what you already know from JavaScript: which habits you can bring over as they are, and which ones will cost you an error. The sixth shows the smallest program that runs at all in Java, naming the chapter of these notes that owns each piece of it. And the seventh lays out the full reading route, from chapter `01` to `16`.
+
+**Index of this note** — every entry is a link: click it and you jump straight to that section.
+
+- [1. What Java is, and the job it does in your stack](#what-java-is-and-the-job-it-does-in-your-stack)
+  - [Java is an object-oriented language](#java-is-an-object-oriented-language)
+  - [Where Java sits in your stack](#where-java-sits-in-your-stack)
+- [2. From source code to bytecode to execution on the JVM](#from-source-code-to-bytecode-to-execution-on-the-jvm)
+- [3. Compile-time failures versus runtime failures](#compile-time-failures-versus-runtime-failures)
+  - [Syntax and type errors — rejected at compile time](#syntax-and-type-errors--rejected-at-compile-time)
+  - [Exceptions — valid source that fails at runtime](#exceptions--valid-source-that-fails-at-runtime)
+  - [Logic errors — execution finishes, but the answer is wrong](#logic-errors--execution-finishes-but-the-answer-is-wrong)
+  - [Which of the three is cheapest to find](#which-of-the-three-is-cheapest-to-find)
+- [4. Five traits that come back in every later chapter](#five-traits-that-come-back-in-every-later-chapter)
+- [5. Coming from JavaScript — where the comparison helps, and where it lies](#coming-from-javascript--where-the-comparison-helps-and-where-it-lies)
+  - [What works the same in both languages](#what-works-the-same-in-both-languages)
+  - [What looks like it works the same, and does not](#what-looks-like-it-works-the-same-and-does-not)
+  - [Summary table](#summary-table)
+- [6. The smallest Java program that runs](#the-smallest-java-program-that-runs)
+- [7. The route from here to Maven, and why it runs in that order](#the-route-from-here-to-maven-and-why-it-runs-in-that-order)
 
 ---
 
@@ -20,6 +39,43 @@ Java is a **general-purpose, statically typed, class-based language that compile
 - **Statically typed** — every variable is declared with a type (`int`, `String`, `User`), that type is fixed from that moment on, and a tool checks every use of it *before* the program is allowed to start.
 - **Class-based** — there is no such thing as a loose function floating in a Java file. Every line of executable code is a member of a class, and a class is the unit the compiler produces output for.
 - **Compiles to bytecode and runs on a JVM** — the two-stage pipeline the next section walks through in full. For now: one tool checks and translates your source, and a second program executes the translation.
+
+### Java is an object-oriented language
+
+Of the four traits above, the one that will change how you write code the most is "class-based", because there is a whole model behind that word: **object-oriented programming** (OOP). Its idea is a single one. Instead of keeping the data on one side and the functions that manipulate it on the other, OOP puts both in the same unit.
+
+That unit is the **object**: a value that holds data inside it — its **state** — and that also knows how to do things with that data — its **behaviour**, written as methods. And the **class** is the template the objects are made from: it declares which fields every object will have and which methods it will be able to run. One single `Invoice` class lets you create a thousand different invoices, each with its own data and all of them with the same methods.
+
+```java
+public class Invoice {
+
+    private int quantity;      // state: the data each invoice holds
+    private int unitPrice;
+
+    public int total() {       // behaviour: what the invoice knows how to do with its data
+        return quantity * unitPrice;
+    }
+}
+```
+
+Notice what you do not have to write: `total()` takes no parameter. It does not need one, because `quantity` and `unitPrice` are already inside the object running the method. In JavaScript you usually write `calculateTotal(quantity, unitPrice)`, with the function on one side and the data on the other, and it is the caller that has to bring them together; in Java you write `invoice.total()`, and the data travels inside the object already.
+
+Four ideas come out of that model, and you will meet all four by name in any junior interview:
+
+| Idea | What it means | Where it is studied |
+|---|---|---|
+| **Encapsulation** | Fields are declared `private` and are only read or changed through the class's own methods | `06-oop-classes.md` |
+| **Abstraction** | Describing which methods must exist without saying how they are implemented — that is an interface | `07-interfaces-abstract.md` |
+| **Inheritance** | One class starts from another and keeps its fields and methods instead of repeating them | `08-inheritance-polymorphism.md` |
+| **Polymorphism** | Several classes answer the same method each in their own way, and Java decides at runtime which one runs | `08-inheritance-polymorphism.md` |
+
+The third column is the one to read carefully: none of the four ideas is learned here. Here you only need to recognise the names, because you will hear them before you get to study them; each one is explained in full in the file that column points at.
+
+> **Why putting the data and the behaviour together actually changes something.** Once the fields are declared `private`, the only code in the world that can modify an invoice's `quantity` is the methods of the `Invoice` class. That leaves the class as the single place bad data can get in through, so that — and only that — is where you write the checks ("the quantity cannot be negative"), and they are then guaranteed for every invoice in the program. If the data were loose in an object anyone could touch, that check would have to be repeated at every site that modifies it, and forgetting it once would be enough.
+>
+> One nuance worth settling now: not everything in Java is an object. The **primitive** types — `int`, `double`, `boolean` and a few more — are plain values, with no methods and no state inside them, and they are the exception to the rule. Everything else you handle is an object of some class. The full list is in [01-variables-types.md](01-variables-types.md).
+
+### Where Java sits in your stack
 
 Here is where that language sits in the stack you are building towards. Angular owns the browser, Java owns the server, and the database sits behind Java and is only ever reached through it.
 
@@ -90,7 +146,7 @@ When the source respects Java's rules, `javac` can produce bytecode for those in
 
 The two stages stay separate even though IntelliJ hides them behind a single green Run button. The compiler has to accept the source before the JVM can run the new version, always.
 
-> **There is exactly one case where no `.class` file appears on disk.** It is the single-file shortcut you will meet further down, in "The smallest Java program that runs". When you launch `java Hello.java`, the compiler still does its job exactly as usual, but it leaves the bytecode in memory instead of writing it, so the only thing left in the folder is the `.java` you started with. The shortcut hides the compiler; it does not skip it. Any real build does write the files — with Maven, into the `target/classes/` folder.
+> **There is exactly one case where no `.class` file appears on disk.** It is the shortcut for running a single loose file without compiling it yourself first, which you will meet further down in "The smallest Java program that runs". When you launch `java Hello.java`, the compiler still does its job exactly as usual, but it leaves the bytecode in memory instead of writing it, so the only thing left in the folder is the `.java` you started with. The shortcut hides the compiler; it does not skip it. Any real build does write the files — with Maven, into the `target/classes/` folder.
 
 > **A JVM does not check your original source code.** By the time the execution stage arrives, the compiler has already translated the accepted source into bytecode. That is why a `javac` message and a failure during execution on the JVM belong to different moments.
 
@@ -158,7 +214,7 @@ The middle row settles almost every doubtful case: if any line of your program m
 
 > **Compile time is a checkpoint, not a running program.** While `javac` checks the source, none of your application's instructions are executing. Runtime error-handling code therefore cannot catch a compile-time failure: there is no execution yet in which to catch it.
 
-### Exceptions — valid source that fails during execution
+### Exceptions — valid source that fails at runtime
 
 Some source is valid even though particular runtime values make an operation impossible. Dividing one integer by another is a valid operation in Java, so this code passes compilation:
 
@@ -239,7 +295,7 @@ A **logic error** is the expensive one, for a very concrete reason: neither of t
 
 Read this table top to bottom as a ladder of cost, not as a list of three equivalent things: the further down, the later the failure is discovered and the more it costs. The "when" column is really the price column, because a failure is cheap to fix the moment you write it and expensive once it has been running in production for a month.
 
-> **This ladder explains two habits that look like extra work.** Everything Java forces you to write out — declaring a type on every variable, refusing to compile over a missing semicolon — is what buys you the top row: it turns as many failures as it can into compiler errors, which are the cheap ones. And tests are what buy you the bottom row, because a logic error has no other detector. That is exactly why project 07 is the first of your projects to plan real tests. Its Step 8 writes one JUnit test per service method, asserting the business rules themselves — that approving an entry which was never submitted throws an exception, that the summary's approved hours match the per-project sum. Projects 01 to 06 only ever shipped the empty `should be created` specs the Angular CLI generates, which assert nothing about what the code was supposed to compute.
+> **This ladder explains two habits that look like extra work.** Everything Java forces you to write out — declaring a type on every variable, refusing to compile over a missing semicolon — serves to move as many failures as possible into the top row: it turns them into compiler errors, which are the cheap ones. And tests are the only thing that covers the bottom row, because a logic error has no other detector. That is exactly why project 07 is the first of your projects to plan real tests. Its Step 8 writes one JUnit test per service method, asserting the business rules themselves — that approving an entry which was never submitted throws an exception, that the summary's approved hours match the per-project sum. Projects 01 to 06 only ever shipped the empty `should be created` specs the Angular CLI generates, which assert nothing about what the code was supposed to compute.
 
 ---
 
@@ -251,7 +307,7 @@ Java has a personality, and it is remarkably consistent. Five traits explain alm
 
 **1. Static typing — the type is part of the declaration, and it never changes.** When you write `int quantity = 2;`, the name `quantity` is bound to the type `int` for the rest of its life. This is not just a rule to memorise, it is a concrete mechanism: because the type is written down in the source itself, the compiler can reason about a line *without ever running it*. It does not need to know that `quantity` will be `2` at one moment and `40` at another — it only needs the declared type to decide whether an operation is legal. That is why Java can reject code before it ever launches, instead of letting that same error only surface at runtime, on the day the program finally executes the operation that was not allowed. This trait is explained in [01-variables-types.md](01-variables-types.md), and it returns with force in [09-generics.md](09-generics.md), where the type of the values *inside* a collection is itself declared and checked.
 
-**2. All executable code lives inside a class.** In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit that can be compiled and loaded on its own. What a class actually is, what it holds, and how you design one is [06-oop-classes.md](06-oop-classes.md).
+**2. All executable code lives inside a class.** It is the direct consequence of the object-oriented model you read about in the first section. In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit that can be compiled and loaded on its own. What a class actually is, what it holds, and how you design one is [06-oop-classes.md](06-oop-classes.md).
 
 **3. Compile first, run second — always two moments.** It is the process you just walked through in the two sections above. Even when IntelliJ hides both stages behind one green button, they stay two separate moments with two different kinds of error, and knowing which of the two is speaking to you — the compiler, or the program already running — tells you immediately where to look for the problem. [16-maven.md](16-maven.md) is the tool that automates both steps once a real project has dozens of source files and external libraries to fetch before it can even compile.
 
@@ -316,16 +372,63 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 ### What works the same in both languages
 
-The syntax of `if`, `while` and `for` is the same. Walking a **collection** reads the same as JavaScript's `for...of`: `for (String name : names)`. "Collection" is the name Java gives to any object holding several elements: a list, a set, and an array too. An array is the simplest of them, a fixed-length row whose size is decided when you create it and never changes; the others can grow and shrink, and they are all in [10-collections.md](10-collections.md). Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
+The syntax of `if`, `while` and `for` is the same. So is the way you walk a **collection**, which is the name Java gives to any object holding several elements inside it. There are three basic shapes: a **list**, which keeps its elements in order and allows duplicates; a **set**, which guarantees no order and allows no duplicates — add the same element twice and only one stays inside; and an **array**, the simplest of the three, a fixed-length row whose size is decided the moment you create it and never changes afterwards. The other two can grow and shrink, and all of them are studied in [10-collections.md](10-collections.md).
+
+To walk a whole collection from start to finish, JavaScript has the `for...of` loop: on each pass it puts the next element into the variable you declared and runs the loop body with it.
+
+```javascript
+const names = ["Ana", "Luis"];
+for (const name of names) {
+  console.log(name);
+}
+```
+
+Java does exactly the same thing and only the punctuation changes: where JavaScript writes `of`, Java writes a colon, and the variable is declared with its type in front.
+
+```java
+List<String> names = List.of("Ana", "Luis");
+for (String name : names) {
+    System.out.println(name);
+}
+```
+
+Both loops print `Ana` and then `Luis`. In neither of them do you keep an index yourself or ask how many elements there are: the loop walks the whole collection and stops on its own when it runs out. In Java that loop is called the _for-each_ loop. (`List.of(...)` creates a list holding the elements you pass it; lists are the subject of [10-collections.md](10-collections.md).)
+
+Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
 
 `try { } catch (e) { }` is also written the same way in both languages — but **they only resemble each other in how they are written**. The exception model underneath has nothing in common, and it differs enough to deserve the callout below before you go on.
 
-> **This is where the comparison with JavaScript breaks down completely: exceptions.** It is tempting to read Java's `try/catch` as JavaScript's because the syntax looks the same. Underneath they are nothing alike. In Java an exception is an object of a class, and Java splits those classes into two kinds of exception: **checked** ones and **unchecked** ones.
+> **`try/catch` is written the same way in Java and in JavaScript, but the exception model underneath is different.** It is tempting to read Java's `try/catch` as JavaScript's because the syntax looks identical. Underneath they are nothing alike.
+>
+> An **exception** is how Java reports that something went wrong while the program was running. When an operation cannot finish — a file that does not exist, a division by zero — the code **throws** an object describing that failure; the method it happened in stops right there, and that object travels back, method by method, until one of them **catches** it and decides what to do with it. If nobody catches it, the program stops.
+>
+> So far, JavaScript does something similar. The difference is that Java splits exceptions into two families, and with one of them the compiler gets involved: **checked** ones and **unchecked** ones.
 >
 > With checked exceptions the compiler turns strict: if your method calls something that can throw one, it will not let you compile until you say what you intend to do about that failure. And you only have two possible answers, both written in the code:
 >
-> - you catch it right there with a `try/catch` and deal with the problem yourself;
-> - or you write `throws IOException` in your method's signature, which means "not my job". The failure then passes to the method that called yours, and that method meets the same obligation: either it catches it, or it declares it again. So it keeps climbing from method to method until one catches it, or until it reaches the very top and the program stops.
+> - you catch it right there with a `try/catch` and deal with the problem yourself:
+>
+>   ```java
+>   public String readConfig() {
+>       try {
+>           return Files.readString(Path.of("config.txt"));
+>       } catch (IOException e) {
+>           return "";   // no file: carry on with the default configuration
+>       }
+>   }
+>   ```
+>
+> - or you write `throws IOException` in your method's signature, which means "not my job":
+>
+>   ```java
+>   public String readConfig() throws IOException {
+>       return Files.readString(Path.of("config.txt"));   // if it fails, it is my caller's problem
+>   }
+>   ```
+>
+>   The failure then passes to the method that called yours, and that method meets the same obligation: either it catches it, or it declares it again. So it keeps climbing from method to method until one catches it, or until it reaches the very top and the program stops.
+>
+> **Unchecked** exceptions are precisely the ones the compiler does not police — the `ArithmeticException` from dividing by zero is one of them: you declare nothing and catch nothing, and if nobody catches one, the program stops when it reaches that point.
 >
 > What matters is not which option you pick, but that picking is mandatory: it is a condition for the program to compile at all, and there is nothing like it in JavaScript. Applying your JS habits here therefore produces code that plainly does not compile, with a message that means nothing until you know this model:
 >
@@ -333,7 +436,7 @@ The syntax of `if`, `while` and `for` is the same. Walking a **collection** read
 > error: unreported exception IOException; must be caught or declared to be thrown
 > ```
 >
-> The full model — the two kinds, how the failure travels, how to read the trace — is explained from zero in [11-exceptions.md](11-exceptions.md).
+> Exceptions in full — the two kinds, how one is thrown, where it travels until somebody catches it, and how to read the trace it prints when nobody does — are explained from zero in [11-exceptions.md](11-exceptions.md).
 
 ### What looks like it works the same, and does not
 
@@ -391,7 +494,7 @@ In Java there is no `===`, and Java's `==` performs no coercion at all. When use
 
 This comparison will come up in two places, and each one is solved differently.
 
-The first is comparing the content of two pieces of text, which is the one you will hit soonest. It is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows that the method you actually wanted for comparing two `String`s is `.equals()`, which compares the real content, character by character, instead of the memory address. That file also explains why writing two bare text literals, like `"hola" == "hola"`, makes `==` appear to work correctly just often enough to fool you: Java reuses the same object in memory for identical text literals, so that particular case really does point at the same place, even though the general rule still is not that.
+The first is comparing the content of two `String` variables — that is, of two pieces of text — which is the one you will hit soonest. It is answered in the very next file: [01-variables-types.md](01-variables-types.md) shows that the method you actually wanted for comparing two `String`s is `.equals()`, which compares the real content, character by character, instead of the memory address. That file also explains why writing two bare text literals, like `"hola" == "hola"`, makes `==` appear to work correctly just often enough to fool you: Java reuses the same object in memory for identical text literals, so that particular case really does point at the same place, even though the general rule still is not that.
 
 The second place you meet this comparison is when comparing two objects of a class you wrote yourself — a `User` against another `User`. There, calling `.equals()` is not enough on its own, because Java cannot guess what it means for two users to be "the same". Same `id`? Same email? That decision is yours, and you write it out for Java inside the class. How that is done is in [06-oop-classes.md](06-oop-classes.md).
 
@@ -421,7 +524,7 @@ void process(List<Integer> ages) { }
 
 | JS/TS habit | What JavaScript/TypeScript does | What Java does | Same behaviour? |
 |---|---|---|---|
-| `for...of` over an array | Iterates its elements one by one | `for (String name : names)` iterates a collection the same way | Yes |
+| `for...of` over an array | `for (const name of names)` iterates its elements one by one | `for (String name : names)` iterates a collection the same way | Yes |
 | `const` | Locks the variable, not what it holds | `final` does the same | Yes; `01` explains the nuance |
 | `try / catch` syntax | `try { } catch (e) { }` | Written identically, but the exception model underneath differs | In syntax only |
 | `var` | Declares a variable with no type at all | Infers one fixed type and enforces it forever | No — nearly the opposite meaning |
@@ -574,15 +677,15 @@ Docs: [Baeldung — Get Started with Java](https://www.baeldung.com/get-started-
 
 The learning route starts with the smallest piece there can be inside a program written in Java — a value — and ends with the tool that builds the whole project. Each file sits right in front of the file that needs it, and the journey runs in four stretches.
 
-The numbers below (`01`, `02`, `03`…) are **reading positions**, not file names. The table at the end of this section translates each position into its real file.
+Every file below is named in full, and the number it starts with is its place in the route.
 
-**Readings 01 to 04 — the data, and the instructions that manipulate it.** `01` teaches you Java's basic value types: whole and decimal numbers, booleans, when an `int` turns into a `long`, and why a decimal number is almost never exactly what you wrote. It goes first because every line you write afterwards manipulates some value, and in Java every value has a concrete, declared type. `02` takes the kind of value you will touch the most, text, and explains why a `String` you appear to be modifying is really a new one every time. `03` introduces conditionals and loops: `if` to choose which lines run based on a condition, and `for` and `while` to repeat a block of code. And `04` teaches you **methods**, which are Java's equivalent of JavaScript's functions: a named block of code that takes parameters and returns a value. The only fundamental difference is that a method always lives inside a class.
+**Readings 01 to 04 — the data, and the instructions that manipulate it.** [01-variables-types.md](01-variables-types.md) teaches you Java's basic value types: whole and decimal numbers, booleans, when an `int` turns into a `long`, and why a decimal number is almost never exactly what you wrote. It goes first because every line you write afterwards manipulates some value, and in Java every value has a concrete, declared type. `02-strings.md` takes the kind of value you will touch the most, text, and explains why a `String` you appear to be modifying is really a new one every time. [03-control-flow.md](03-control-flow.md) introduces conditionals and loops: `if` to choose which lines run based on a condition, and `for` and `while` to repeat a block of code. And [04-methods.md](04-methods.md) teaches you **methods**, which are Java's equivalent of JavaScript's functions: a named block of code that takes parameters and returns a value. The only fundamental difference is that a method always lives inside a class.
 
-**Readings 05 to 08 — memory and objects.** `05` teaches you what happens underneath when you call a method: what exactly gets copied when you pass it an argument, which area of memory each object lives in, and how the JVM keeps track of which method called which. It goes here because it is the mechanism that objects, exceptions and collections all lean on afterwards: understand it, and those three topics can be reasoned about instead of memorised. Only then does `06` build real objects, with state that is valid from birth, and answer the question objects raise the moment they appear: when two of them count as equal. `07` teaches you **interfaces**: a list of methods a class commits to having, without saying how it implements them, so that the code calling those methods depends on no concrete class and you can swap the implementation without touching the caller. And `08` explains how Java decides, at runtime, which of those implementations actually runs.
+**Readings 05 to 08 — memory and objects.** [05-memory-model.md](05-memory-model.md) teaches you what happens underneath when you call a method: what exactly gets copied when you pass it an argument, which area of memory each object lives in, and how the JVM keeps track of which method called which. It goes here because it is the mechanism that objects, exceptions and collections all lean on afterwards: understand it, and those three topics can be reasoned about instead of memorised. Only then does [06-oop-classes.md](06-oop-classes.md) build real objects, and it does so through the **constructor**: the method that runs at the moment the object is created and that can reject data which does not qualify, so that an invoice with no amount or a user with no email never comes into existence at all. That file also answers the question objects raise the moment they appear: when two of them count as equal. [07-interfaces-abstract.md](07-interfaces-abstract.md) teaches you **interfaces**: a list of methods a class commits to having, without saying how it implements them, so that the code calling those methods depends on no concrete class and you can swap the implementation without touching the caller. And [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md) explains how Java decides, at runtime, which of those implementations actually runs.
 
-**Readings 09 to 12 — holding many objects, and handling failure.** `09` teaches you **generics**, which are the angle brackets in `List<String>`: the way to tell the compiler what kind of elements a collection holds. It deliberately comes before collections, so that when you reach `10` you are not facing syntax you cannot yet read. `10` is **collections** proper: lists, sets and maps, how you choose between them, and why searching inside them is fast. `11` develops the full model of failure — how an exception is thrown, where it travels, where it is caught, and how to read the trace — and it arrives at this point because the lookups, conversions and loops of the earlier files have already given you several distinct ways to fail. And `12` closes the stretch with **lambdas** and **streams**: the way to hand a method a behaviour just as you hand it a piece of data, which is what makes walking and filtering an entire collection readable in three lines.
+**Readings 09 to 12 — holding many objects, and handling failure.** [09-generics.md](09-generics.md) teaches you **generics**: what is written between the `<` and `>` signs of `List<String>`, which is the way to tell the compiler what kind of elements a collection holds. It deliberately comes before collections, so that when you reach [10-collections.md](10-collections.md) you are not facing syntax you cannot yet read. [10-collections.md](10-collections.md) is **collections** proper: lists, sets and maps, how you choose between them, and why searching inside them is fast. [11-exceptions.md](11-exceptions.md) develops **error handling** in full: how an exception is thrown, where it travels, where it is caught, and how to read the trace that appears when nobody catches it. It arrives at exactly this point because the earlier files have already taught you a good handful of operations that can fail — looking up an element that is not there, converting text into a number, walking a collection past its last index — so you already have concrete failures to practise on. And [12-streams-lambdas.md](12-streams-lambdas.md) closes the stretch with **lambdas** and **streams**: until then you only ever handed a method data, and a lambda lets you hand it an action as well — the condition you want to filter by, for instance — which is what makes walking and filtering an entire collection readable in three lines.
 
-**Readings 13 to 16 — the special types, and the build.** `13` teaches you **enums**: when a value can only be one of a closed set — `PENDING`, `APPROVED`, `REJECTED` — an enum tells the compiler so, and the compiler can then warn you if you left a case unhandled. `14` applies that same idea of a value that does not change to **dates and times**, where the set of possible values is infinite and therefore no compiler check can save you. `15` generalises `@Override` into **annotations** in general: markers you put in the code that some tool reads afterwards, which is what stops the Spring annotations you see daily from looking like secret Java syntax. And `16` closes with **Maven**, the tool that downloads the libraries, compiles, runs the tests and packages everything the previous fifteen files produced.
+**Readings 13 to 16 — the special types, and the build.** [13-enums.md](13-enums.md) teaches you **enums**: when a value can only be one of a closed set — `PENDING`, `APPROVED`, `REJECTED` — an enum writes that complete list into the code, and from then on the compiler knows no other value is possible and can warn you if you left one of the cases unhandled. [14-dates.md](14-dates.md) takes **dates and times**, which are also values that never change once created: add a day to a date and you do not modify the one you had, you get a different one back. The difference from an enum is that here the possible values are infinite, so the compiler cannot check the list and there is no safety net to tell you the date you calculated was not the one you meant. [15-annotations.md](15-annotations.md) starts from `@Override`, the only annotation you will have used by then, and explains **annotations** in general: markers you put in the code that some tool reads afterwards. With that, the Spring annotations you see daily stop looking like secret language syntax: they are ordinary Java markers, and the tool that reads them is Spring's own code. And [16-maven.md](16-maven.md) closes with **Maven**, the tool that downloads the libraries, compiles, runs the tests and packages everything the previous fifteen files produced.
 
 > **The number in a file name is its place in this route.** `01-variables-types.md` is reading 01, `11-exceptions.md` is reading 11, and so on, so opening the folder in alphabetical order already gives you the right order. Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet. The table below therefore has no order column — the file name already carries it. The second column gives the one reason that file cannot be read any earlier.
 
