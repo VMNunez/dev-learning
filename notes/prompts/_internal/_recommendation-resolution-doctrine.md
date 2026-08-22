@@ -381,7 +381,14 @@ line-oriented grep for that phrase could ever return it; a cold reviewer reading
 and the next pass found the same block calling a file "not in **this table**" — a deictic whose
 referent had been deleted, matching no search for the claim's words at all. **Search multiline
 (`rg -U`), and sweep for the claim's *referent* as well as its wording**: a measurement run line by
-line over prose that wraps measures the margin, not the claim.
+line over prose that wraps measures the margin, not the claim. **`REC-165` is the rule's converse, and it
+rots the same way: a rule stated *only* in the ritual that executes it is unavailable to every path that
+ritual is excluded from.** The two-map change test's row walk lived in `map-sync` §1 alone, and that
+skill never fires inside a prompt pipeline run — so a self-report's at-end refinement, which edits the
+machinery and cannot fire it, ran the test with the which-map table and no walk at all. Where an
+executor holds the only statement of a rule, read its **own exclusions** as the list of readers it
+silently fails, and move the rule to the owner those paths already point at — the executor keeps the
+mandate's heading and points for its content.
 
 **A possessive is an ownership claim, and it survives the sweep that deletes the explicit one.** From
 `REC-119`, where the false universal — "**this prompt is its only writer**" — had a twin one sentence
