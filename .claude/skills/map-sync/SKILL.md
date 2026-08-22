@@ -67,16 +67,10 @@ skip and a genuine no-op are indistinguishable afterwards, and only one of the t
 | a new prompt or a new skill · a ritual moving between the two · anything that changes both a prompt's outputs and who consumes them | **both** |
 
 **Then walk every row that mentions the thing you changed — not the first one you think of.** This is
-the whole reason the ritual exists: a skill lives in `_system-map.md` §9 *and* §7 *and* possibly a chain
-step in §3–§6, a §10 debt and a §11 symptom row. Updating §7 and leaving §9 telling the old story is the
-common failure, and it is worse than not updating at all, because the map now contradicts itself and a
-reader has no way to tell which half is current.
-
-Grep the name across both maps and account for every hit:
-
-```
-rg -n "skill-or-prompt-name" notes/prompts/README.md notes/prompts/_internal/_system-map.md
-```
+the whole reason the ritual exists, and the rule — the rows a single skill or prompt lives in, the `rg`
+that finds them, and why a half-walked map is worse than an unedited one — is stated once in
+`_session-rules.md` → "The two maps follow every change to the machinery". Run that rule from there and
+account for every hit.
 
 **A new skill or prompt also changes the counts.** `_system-map.md` §9 opens with a literal number of
 skills, `README.md` states the runnable-prompt count and the launcher parity in several places, and both

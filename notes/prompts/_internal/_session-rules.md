@@ -694,9 +694,9 @@ pair owns it.
 
 ### The two maps follow every change to the machinery
 
-(The platform's `map-sync` skill fires on both triggers below — the change and the whole read — and
-walks every row that mentions the thing that moved, because the observed failure is *partial* compliance.
-These two sections remain the source of truth.)
+(The platform's `map-sync` skill is the walk of both triggers below — the change and the whole read —
+but it does not fire inside a prompt pipeline run, and these two sections remain the source of truth
+either way.)
 
 `notes/prompts/README.md` (the catalogue) and `_internal/_system-map.md` (the wiring) describe the system
 from the outside, and **nothing regenerates them**. A change that lands in a prompt or a skill and not in
@@ -721,6 +721,22 @@ or which prompts and skills exist?*
 | a prompt added, renamed or retired; its reads/generates; batch mode; run order; launcher parity | `README.md` |
 | a skill's trigger, what it writes, or what it hands off to · a file gaining or losing a writer · a chain's order · a gate · a new debt or flag | `_system-map.md` |
 | a new prompt or a new skill · a ritual moving between the two · anything that changes both a prompt's outputs and who consumes them | **both** |
+
+**Then walk every row that mentions what changed — in both maps, and not the first row you think of.**
+The table above answers *which map*, never *which rows*, and the observed failure is partial compliance:
+a skill lives in `_system-map.md` §9 *and* §7, and possibly a chain step in §3–§6, a §10 debt and a §11
+symptom row, so a run that corrects §7 and leaves §9 telling the old story has made the map contradict
+itself — worse than not updating at all, because a reader cannot tell which half is current. Grep the
+name across both maps and account for every hit:
+
+```
+rg -n "skill-or-prompt-name" notes/prompts/README.md notes/prompts/_internal/_system-map.md
+```
+
+**This binds the run, not only the ritual.** `map-sync` is the platform's walk of it and is excluded
+inside a prompt pipeline run, so a self-report's at-end refinement — one of the three paths the
+machinery is edited on, and the one no skill reaches — executes this paragraph itself, with no skill to
+fire.
 
 **The map is derived, so it is never where a decision gets made.** Fix the prompt or the skill first,
 then describe it. When the two disagree afterwards, the machinery wins and the map is the bug — the map
