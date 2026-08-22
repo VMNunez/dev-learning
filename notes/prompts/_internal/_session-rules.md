@@ -535,7 +535,19 @@ proves he actively studied: it dates eligible complete/refined note entries, mir
 exact refined bilingual question IDs with a final PASS, then recounts `PROGRESS.md` `## Study progress`
 as Notes studied + Interview CORE studied + Interview bank studied. It asks nothing, never infers study
 from a file merely existing, and leaves a pending/stale target unchanged. A material note edit resets
-its `Studied` field to `pending`; reopening an interview question resets both question state markers.
+its `Studied` field to `pending` — under the three-case rule below, which decides what counts as
+material; reopening an interview question resets both question state markers.
+
+**Study state is not all-or-nothing** (2026-08-22). `Studied` records an active-recall pass over the
+prose that existed when it was written, so what invalidates it is prose changing under Victor — not prose
+being *added* beside it. A hand-back to `Status: pending` and any authoring or audit run over a `pending`
+or `complete` entry reset the field, because the accepted content moved. A section **appended** to an
+entry that already holds a date does not: the entry keeps its date and gains one `Pending study` line
+naming that section and the day it landed, so the note stays studied and owes only the new part. Gaining
+a `Pending addition` records nothing at all — the bullet is owed, the prose does not exist yet, and there
+is nothing to study until an append-only run lands it. `study-block-close` is the only writer that clears
+those lines, one at a time, as Victor studies the sections they name. A note with an open gap still counts
+as studied in `PROGRESS.md`; the gap surfaces in the close's report, which is the only place it appears.
 
 `Study progress` is separate from `Coverage demonstrated`: the former measures consolidation, the
 latter measures concepts applied in code. SQL exercises and timed simulations remain separate under

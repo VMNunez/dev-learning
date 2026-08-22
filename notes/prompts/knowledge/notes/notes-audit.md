@@ -89,9 +89,13 @@ Before dispatching any role:
     Otherwise require the unchecked concept set to equal `Pending additions` exactly and run the whole
     pipeline in **append-only mode** for exactly those bullets. Never set, clear, or downgrade `refined`.
 15. Read `Studied` independently from `Status`; a missing legacy field means `pending`. A dated marker
-    is valid only on a `complete` or `refined` entry. Any run that authors, audits, or appends prose
-    passes `Studied: pending` to Stage C, because the accepted content has changed and needs a new
-    active study pass. A guard 13/14 no-op preserves an existing date.
+    is valid only on a `complete` or `refined` entry. A run that authors or audits a `pending` or
+    `complete` entry passes `Studied: pending` to Stage C, because the accepted content changed under
+    Victor and the whole note needs a new active study pass. **An append-only run is the exception**
+    (changed 2026-08-22): it adds sections and alters nothing he studied, so an existing date is
+    preserved and the appended headings go to Stage C as `Pending study` entries instead — the note
+    stays studied and owes only the new sections. On an entry whose `Studied` is already `pending` there
+    is no gap to record and `Pending study` stays `none`. A guard 13/14 no-op preserves both fields.
 
 Guards 9 and 10 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
@@ -123,7 +127,8 @@ It binds every stage of this run:
    shows a removed or modified pre-existing line has failed — revert it and re-dispatch that stage once.
 5. Stage C marks each successfully consumed `Coverage concepts` checkbox from `[ ]` to `[x]`, clears
    the same bullets from `Pending additions` (back to `none` when all are consumed), and leaves
-   `Status: refined` as it is. It never writes `complete`.
+   `Status: refined` as it is. It never writes `complete`. It also leaves `Studied` exactly as it found
+   it and, on a dated entry, records each appended section under `Pending study` — see guard 15.
 
 Stage flags for this mode: Stage A gets `REWRITE_MODE = append-only`, stages B and T get
 `SCOPE = append-only` naming the appended sections, and Stage C reviews and commits only those sections.
@@ -184,8 +189,11 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
   entry's `Status: pending` to `Status: complete` when no `[ ]` remains — or, in append-only mode, to
   mark only the consumed additions `[x]` and clear those same bullets from `Pending additions` while
   `Status: refined` stays;
-- permission to set this entry's `Studied: pending` when the run changed prose, inserting the field
-  for a legacy entry when absent; a no-op preserves its current value;
+- permission to set this entry's `Studied: pending` when an authoring or audit run changed prose,
+  inserting the field for a legacy entry when absent; a no-op preserves its current value. **In
+  append-only mode it never writes that field**: it preserves the existing value and, when that value is
+  a date, appends one `Pending study` line per appended section — the exact English heading and today's
+  ISO date, added to whatever the field already holds and never rewriting an earlier entry;
 - the exact assigned concepts with checkbox metadata stripped, the unchecked concepts this run must
   incorporate, and the complete pedagogical contract;
 - `SCOPE = append-only` and the appended headings when the entry is `refined`.
@@ -222,7 +230,9 @@ dependency gate, pedagogical-contract gate, intro-contract gate when applicable,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
 verdict, concept checkbox transitions, status transition, studied-state transition, and commit. In append-only mode, also report the consumed bullets, the
 appended headings in both languages, the additions-only diff proof for each file, any quality issue
-observed in existing prose and deliberately left untouched, and the remaining `Pending additions`.
+observed in existing prose and deliberately left untouched, any TODO marker seen in the frozen prose
+with the inline route named, the `Pending study` entries written or the reason none were, and the
+remaining `Pending additions`.
 
 After the content attempt, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in
 full. Write `_internal/_last-run-report.md`; upsert the exact `TOPIC + LEVEL + NOTE` row in

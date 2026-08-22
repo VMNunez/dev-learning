@@ -4,8 +4,9 @@ description: >
   Close the daily 13:30 notes/interview-prep block whenever Victor ends it ("cierro el bloque de
   estudio", "hasta aquí las notas", "terminé estas preguntas", "done with interview prep"). Record
   only what the session proves he actively studied: date the completed/refined notes-plan entries,
-  mirror `[studied]` onto exact refined interview questions that earned a final PASS, and recount
-  CORE plus full-bank progress in PROGRESS.md.
+  clear the `Pending study` sections that session actually discharged, mirror `[studied]` onto exact
+  refined interview questions that earned a final PASS, and recount CORE plus full-bank progress in
+  PROGRESS.md.
   Authored is not studied, so never infer marks from files merely existing. Ask nothing and block on
   nothing: an ineligible target is reported and left unchanged.
 ---
@@ -36,10 +37,18 @@ For each note actually studied:
 
 1. Locate its exact entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
 2. Require `Status: complete` or `Status: refined`, both declared language files to exist, and no
-   unchecked `Coverage concepts` or unconsumed `Pending additions`.
+   unchecked `Coverage concepts` or unconsumed `Pending additions`. An open **`Pending study`** is not a
+   blocker and never joins that list: it is the opposite case — the prose exists and is studiable, which
+   is the whole reason the field was written.
 3. Set that entry's `Studied:` field to today's ISO date, inserting it after `Status:` when the
    legacy field is absent. Re-studying replaces the prior date.
-4. A pending, stale, broken, or incomplete pair is reported and left unchanged. This ritual never
+4. Clear the `Pending study` entries this session actually covered. A section listed there landed after
+   the last study pass, so studying it is what discharges it: delete that exact line, and write `none`
+   once the list empties. Studying the whole note again clears every entry; studying one of three clears
+   that one and leaves the other two, and in that case the new date means "studied to here, minus what
+   is still listed" — which is why the field is cleared line by line and never wholesale. Never delete an
+   entry Victor did not study, and never add one here.
+5. A pending, stale, broken, or incomplete pair is reported and left unchanged. This ritual never
    authors prose, checks coverage concepts, or changes `Status`.
 
 ## 3 — Mark interview questions studied
@@ -62,7 +71,10 @@ For every exact question whose final verdict in this block was `PASS`:
 Recount from primary sources after the marks:
 
 - **Notes studied, per level:** numerator = plan entries with `Studied: YYYY-MM-DD`; denominator =
-  all numbered entries across the registered topics' `notes-plan-{LEVEL}.md` files. Print `—` when
+  all numbered entries across the registered topics' `notes-plan-{LEVEL}.md` files. An entry holding an
+  open `Pending study` still counts in the numerator — it is a studied note owing one section, not an
+  unstudied note, and that is the distinction the field exists to preserve. Surface those entries in
+  the report instead, never as a fractional count here. Print `—` when
   any required plan is missing, `Plan status` is not `current`, or its coverage fingerprint is
   stale; never print a plausible percentage over an incomplete route.
 - **Interview CORE studied, per level:** denominator = unique IDs in the current
@@ -93,5 +105,8 @@ Commit message:
 
 ## 6 — Report
 
-Report notes marked, question IDs marked, ineligible targets, the three per-level counts, and the commit.
+Report notes marked, `Pending study` entries cleared, question IDs marked, ineligible targets, the three
+per-level counts, and the commit. List every entry still holding an open `Pending study` across the levels
+you touched, with the sections it owes — a studied note carrying an unstudied section is invisible in the
+counts by design, so this line is the only place it surfaces.
 The ritual asks zero questions and leaves every unresolved target open.

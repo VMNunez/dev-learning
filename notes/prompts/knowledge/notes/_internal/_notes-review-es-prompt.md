@@ -54,7 +54,10 @@ is not. `FILE` is a **path** you verify and commit — never a file you open.
 > frozen sections — a structural gap there is Victor's call, not a blocker. In the plan you change only
 > the consumed concepts from `[ ]` to `[x]` plus the same bullets in `Pending additions` (to `none`
 > when all are consumed), and you leave
-> `Status: refined` untouched; set `Studied: pending` because accepted prose changed, and never write
+> `Status: refined` untouched. **Leave `Studied` untouched too**: an append adds prose beside what Victor
+> studied and changes none of it, so the entry keeps its date and instead gains one `Pending study` line
+> per appended heading — the exact heading and today's ISO date, added to whatever that field already
+> holds. When `Studied` is `pending` there is no gap to record and the field stays `none`. Never write
 > `Status: complete` on a refined entry. Commit message:
 > `docs(notes): extend refined {TOPIC} {LEVEL} note {NOTE} with {N} coverage additions`. Your report
 > must prove additions only over **both** files you commit — and the two proofs take **different
@@ -155,8 +158,10 @@ You are the last stage in the chain, so you own the single atomic commit for thi
    `{ES_FILE}`. Mark every concept this successful run incorporated from `[ ]` to `[x]`. Change only
    that entry's `Status: pending` to `Status: complete` when no assigned `[ ]` concept remains — in
    `append-only` mode, mark only the consumed additions `[x]`, remove the same bullets from
-   `Pending additions`, and leave `Status: refined` as it is. Set this entry's `Studied: pending`,
-   inserting the field after `Status` when the legacy plan lacks it; this run changed accepted prose.
+   `Pending additions`, and leave `Status: refined` as it is. Outside `append-only`, set this entry's
+   `Studied: pending`, inserting the field after `Status` when the legacy plan lacks it; this run changed
+   accepted prose. In `append-only` mode, preserve `Studied` exactly and write the appended headings
+   under `Pending study` instead, per the SCOPE block above.
 2. Commit `{FILE}`, `{ES_FILE}`, and `{PLAN}` atomically. Before `git add` and before `git commit`, run
    `git status --short`, confirm the exact intended paths, and stage no wildcard. Use:
    `docs(notes): complete {TOPIC} {LEVEL} note {NOTE}`.

@@ -186,9 +186,15 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    or Spanish file is missing is reported as a broken freeze and left untouched for Victor to resolve.
    `Studied` is a separate state: write `Studied: pending` on a new entry and treat a missing legacy
    field as pending. Preserve a date only while the accepted bilingual pair and its pedagogical
-   contract remain materially unchanged. Reset it to `pending` when an entry is reopened, gains
-   `Pending additions`, loses either language, or its prose contract changes. A byte-preserving
+   contract remain materially unchanged. Reset it to `pending` when an entry is reopened, loses
+   either language, or its prose contract changes. **Gaining a `Pending addition` is not one of those**
+   (changed 2026-08-22): an owed bullet means prose does not exist yet, so it cannot unstudy prose that
+   does — the date survives, and the gap is recorded only when the append-only run actually lands the
+   section, as a `Pending study` entry. A byte-preserving
    same-level renumber or relocation preserves the date. This prompt never writes a date.
+   `Pending study` is study state, so this prompt never authors one either: preserve every existing
+   entry verbatim across reconciliation, and drop one only when the heading it names no longer exists in
+   the note. Migrating a legacy entry writes `Pending study: none`.
    Every pre-existing `[x]` bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
    scope text with every trailing marker stripped, of either kind: if coverage moved, reworded, deleted, split,
    merged, routed, or reordered one, stop and report a broken coverage lock. Never reconcile the
@@ -248,6 +254,7 @@ Generated: YYYY-MM-DD
 
 Status: pending
 Studied: pending
+Pending study: none
 Action: audit
 English: notes/java/junior/en/01-variables-types.md
 Spanish: notes/java/junior/es/01-variables-tipos.md
@@ -296,6 +303,15 @@ Rules:
 - `Studied` is exactly `pending` or an ISO date (`YYYY-MM-DD`). A legacy entry with no field is read
   as pending and gains the field on its next reconciliation. A date is valid only on `complete` or
   `refined`; authoring never sets it.
+- `Pending study` is `none` or a list of sections of this note that landed **after** the date in
+  `Studied` and therefore still owe an active study pass — one line per section, the heading quoted
+  verbatim and the ISO date it was added:
+  `- "## 5 — Version conflicts under load" (added 2026-08-22)`. It exists so a single appended section
+  does not unstudy a whole note Victor already studied: the entry keeps its date and owes only what is
+  listed. It is meaningful **only while `Studied` holds a date** — on a `pending` `Studied` it is always
+  `none`, because nothing in the note is studied yet and the whole file is already owed. Written by
+  `notes-audit` Stage C in append-only mode and by `study-content-writer`; cleared by `study-block-close`
+  alone, which is also the only writer of the date.
 - `Action` is exactly `create` or `audit`.
 - `Pending additions` is `none` or a list of coverage bullets quoted verbatim from `COVERAGE`. It is
   meaningful only on a `refined` entry; on `pending` and `complete` entries it is always `none`, because
