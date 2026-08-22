@@ -357,9 +357,16 @@ Rules:
 own bar with TODOs and considers the prose final. The two are not the same guarantee, and only the
 second one is protected from the pipeline.
 
-Victor sets `Status: refined` by hand in `PLAN`; no prompt ever assigns it. Before accepting the manual
-freeze, every current concept should be `[x]` and `Pending additions` should be `none`. From that moment the pair's
-existing prose is immutable to the whole notes pipeline in both languages.
+Victor sets `Status: refined` in `PLAN` — by hand, or by declaring in the session that he has refined
+the pair, which is the same authority typed instead of edited (2026-08-22). No prompt ever assigns it on
+its own initiative. His declaration names the language he refined, and that file is final from that
+moment: the run that acts on it changes **nothing** in it and brings only the counterpart into line —
+same content, same message, same structure, native prose in its own language — commits both files, and
+only then writes `Status: refined`. The direction is whatever he declares; a note refined in `es/` syncs
+`es/` → `en/`, and the canonical-`en/` default does not override it. Before accepting the freeze, every
+current concept should be `[x]` and `Pending additions` should be `none`; if either fails, sync the
+counterpart, report it, and leave `Status` where it is. From the freeze the pair's existing prose is
+immutable to the whole notes pipeline in both languages.
 
 **What the freeze protects against is the pipeline's own initiative** — a prompt rewording, restructuring
 or "improving" prose Victor already approved. It was never meant to stop *Victor* from correcting his own

@@ -497,6 +497,18 @@ notes/java/
     which is the only thing that later tells his correction from the agent's idea. Only the in-session `study-content-writer` runs this route; `notes-audit` reports the
     markers it sees and routes them here. Full doctrine → "The `refined` freeze" in
     `notes/prompts/knowledge/notes/notes-plan-prompt.md`.
+  - **Victor declares the pair refined from the language he refined it in, and the counterpart is
+    brought into line before the freeze lands** (2026-08-22). He works the TODOs in one file — `es/` as
+    readily as `en/` — and then says which language that was. That declaration makes that file final:
+    the sync run reads it and **changes nothing in it**, not a word, not a line break, not a heading;
+    it repairs only the *counterpart* until the translation is faithful — same content, same message,
+    same structure and code blocks, reading as native prose in its own language — and reports what it
+    changed. Then both files are committed and the entry takes `Status: refined`. The
+    canonical-`en/` default does not reverse his declaration: a note refined in Spanish syncs `es/` →
+    `en/`. This is the one route on which an agent writes `Status: refined`, and the authority is still
+    his — the spoken declaration *is* the manual freeze. The pre-freeze checks stay: if a current
+    concept is still `[ ]` or `Pending additions` is not `none`, sync the counterpart, say so, and leave
+    the status alone rather than freezing over an incomplete entry.
 - **Never modify one language's file without re-syncing its counterpart.** The rule covers three cases:
   - New file created in `en/` → create the full Spanish translation in `es/` with the same numeric prefix and a Spanish-translated name (never a copy of the English filename — see `_note-quality-standard.md`, "File naming convention")
   - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file

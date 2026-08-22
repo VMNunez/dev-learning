@@ -116,6 +116,19 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
     rewriting a section or restructuring the note → report it and wait for Victor to set the status
     back to `pending`. The hand-back gate survives for everything the TODO route does not cover,
     and this skill never silently bypasses it.
+- **Victor declaring a pair refined is its own operation, and it runs before the freeze**
+  (2026-08-22). When he says he has refined a note and names the language — "esta nota está refinada en
+  español", "the English one is refined" — that file is finished and **you change nothing in it**: not a
+  word, not a line break, not a heading, not the order of a list. Read it whole, then bring the
+  *counterpart* into line until the translation is faithful — same content, same message, same structure
+  and code blocks, native prose in its own language — respecting intentional trims instead of
+  "resyncing" them back in. Then: report every counterpart change and confirm the declared file is
+  untouched (`git diff --stat` proves it), hand Victor the commit for **both** files, and set that
+  entry's `Status: refined` in `notes-plan-{LEVEL}.md`. This is the one place a writer assigns that
+  status, and the authority is his declaration, not your judgement of the prose. If `Studied` carries a
+  date, set it to `pending` — his refinement changed the accepted text after that pass. If a current
+  concept is still `[ ]` or `Pending additions` is not `none`, do the sync, report the blocker, and
+  leave `Status` where it is.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.
