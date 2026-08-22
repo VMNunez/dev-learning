@@ -12,7 +12,7 @@ Existing sections that carry no assigned coverage bullet are **preserved** unles
 
 ## 00 — Java execution foundations
 
-Status: complete
+Status: refined
 Studied: pending
 Action: audit
 English: notes/java/junior/en/00-intro-java.md

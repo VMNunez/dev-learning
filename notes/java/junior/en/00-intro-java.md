@@ -28,17 +28,15 @@ JavaScript can start running a file and only discover a bad operation once execu
 
 This note is the map for everything that follows, and its seven sections are ordered so that each one sets up the next. The first answers what kind of language Java is, explains the model the whole language rests on — object-oriented programming — and places the job Java does in the stack you are building. The second follows one `.java` file through the two stages that turn it into a running program, because everything else follows from that. That boundary between the two stages is exactly what explains the three different ways your code can fail, and that is what the third section covers. With that settled, the fourth goes over the five Java traits that keep reappearing in every chapter, and the fifth holds them up against what you already know from JavaScript: which habits you can bring over as they are, and which ones will cost you an error. The sixth shows the smallest program that runs at all in Java, naming the chapter of these notes that owns each piece of it. And the seventh lays out the full reading route, from chapter `01` to `16`.
 
----
-
 ## What Java is, and the job it does in your stack
 
 Docs: [Baeldung — Spring Boot Tutorial: Bootstrap a Simple Application](https://www.baeldung.com/spring-boot-start) → read: the opening overview and the first bootstrapped application, to see that a Spring Boot service is ordinary Java source, compiled and started like any other Java program
 
-Java is a **general-purpose, statically typed, class-based language that compiles to bytecode and runs on a JVM**. That is a dense sentence, so take it one word at a time — each of those words is a decision the language made, and each one shapes how the rest of these notes read.
+Java is a **general-purpose, statically typed, class-based language that compiles to bytecode and runs on a JVM**. That is a dense sentence, so take it one part at a time:
 
 - **General-purpose** — Java is not tied to one kind of program. It is used for web back ends, Android apps, desktop tools, and batch jobs — programs with no screen and nobody sitting in front of them, which start themselves at a scheduled hour and process a whole batch of data in one go — that move millions of rows from one system to another overnight.
-- **Statically typed** — every variable is declared with a type (`int`, `String`, `User`), that type is fixed from that moment on, and a tool checks every use of it *before* the program is allowed to start.
-- **Class-based** — there is no such thing as a loose function floating in a Java file. Every line of executable code is a member of a class, and a class is the unit the compiler produces output for.
+- **Statically typed** — every variable is declared with a type (`int`, `String`, `User`, etc), that type is fixed from that moment on, and the compiler checks every use of that variable during compilation, before the program is allowed to start, precisely so that type errors are caught before they ever get to run.
+- **Class-based** — there is no such thing as a loose function floating in a Java file. Every line of executable code is a member of a class, and the class is the elementary unit the compiler needs in order to compile and produce output.
 - **Compiles to bytecode and runs on a JVM** — the two-stage pipeline the next section walks through in full. For now: one tool checks and translates your source, and a second program executes the translation.
 
 ### Java is an object-oriented language
@@ -90,15 +88,15 @@ Here is where that language sits in the stack you are building towards. Angular 
 
 The browser has no connection to the database, and it cannot have one. All it does is send an HTTP request to the Java server and wait for the answer. The Java server receives that request, queries the database itself, and hands the browser back the result already turned into JSON.
 
-That split has one direct consequence. Because the Java server is the only thing holding the database connection, it is also the only place that can truly enforce a **business rule** — a condition that decides what each user is allowed to do, like "an employee may only see their own time entries." Putting that same check in Angular is not wrong as a first barrier, to improve the experience and avoid unnecessary requests, but it is not real security: anyone can open the browser's *Network* tab and call the endpoint directly, bypassing the Angular code entirely. The only rule that truly counts is the one living in the backend.
+That split has one direct consequence. Because the Java server is the only thing holding the database connection, it is also the only place that can truly enforce a **business rule** — a condition that decides what each user is allowed to do. Putting that same check in Angular is not wrong as a first barrier, to improve the experience and avoid unnecessary requests, but it is not real security: anyone can open the browser's *Network* tab and call the endpoint directly, bypassing the Angular code entirely. The only rule that truly counts is the one living in the backend.
 
 > **Java is the language; Spring Boot is a framework written in that language.** These two get mixed up as one thing early on, and untangling them now saves a lot of confusion later. Java gives you classes, types, methods and exceptions. Spring Boot is a large pile of Java other people already wrote, which you download and use — the same way you pull npm packages in Node.
 >
-> Those downloads arrive as `.jar` files. There is nothing magic about a `.jar`: it is a compressed archive — literally a `.zip` with a different extension — holding already-compiled classes, the `.class` files the next section talks about. You never open one, and you never download one by hand: you write in a configuration file which libraries you need, your build tool downloads them into a folder on your machine, and from then on the compiler and the JVM look for classes inside those `.jar` files exactly as they look for yours. That build tool is Maven, and how you declare that list of libraries is the subject of [16-maven.md](16-maven.md).
+> Those downloads arrive as `.jar` files. There is nothing magic about a `.jar`: it is a compressed archive holding already-compiled classes, the `.class` files the next section talks about. You never open one, and you never download one by hand: you write in a configuration file which libraries you need, your build tool downloads them into a folder on your machine, and from then on the compiler and the JVM look for classes inside those `.jar` files exactly as they look for yours. That build tool is Maven, and how you declare that list of libraries is the subject of [16-maven.md](16-maven.md).
 >
 > What all that code buys you is the parts nobody wants to write by hand: opening a port so the server sits there listening for requests, turning the text of an HTTP request into Java objects, and **mapping a database row onto an object**. That last one means taking a row from a table — say `(3, 'Ana', 'ana@mail.com')` from the `users` table — and building a Java `User` object out of it whose `id`, `name` and `email` fields already hold `3`, `"Ana"` and `"ana@mail.com"`. Without that mapping you would read column by column and assign them by hand on every query; with it you work with ordinary objects and forget there are rows and columns underneath.
 >
-> When you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are explained in [15-annotations.md](15-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
+> For example, when you write `@RestController`, you are not using a new piece of Java syntax — you are using an **annotation**, an ordinary language feature: a marker Java lets you attach to a class or a method, which some other tool then reads and acts on to decide what to do. Here, that tool is Spring Boot's own code, which looks for `@RestController` and, on finding it, registers that class as a controller that handles HTTP requests. Annotations as a language feature in their own right are explained in [15-annotations.md](15-annotations.md). Everything in these notes is plain Java, independent of any framework — annotations themselves included — which is why it stays true no matter which framework you end up working in.
 
 ---
 
@@ -378,7 +376,7 @@ The syntax of `if`, `while` and `for` is the same. So is the way you walk a **co
 To walk a whole collection from start to finish, JavaScript has the `for...of` loop: on each pass it puts the next element into the variable you declared and runs the loop body with it.
 
 ```javascript
-const names = ["Ana", "Luis"];
+const names = ['Ana', 'Luis'];
 for (const name of names) {
   console.log(name);
 }
@@ -607,7 +605,7 @@ It is the same `com/victor/timetrack` path, with dots where the slashes were. Cl
 
 What all that is for: the package is the class's surname. Your service's full name is not `TimeEntryService` but `com.victor.timetrack.service.TimeEntryService`. That is what lets two classes with the same short name exist without colliding. You could perfectly well have a second `TimeEntryService` class in a different package — say `com.victor.timetrack.admin.TimeEntryService` — and the two would coexist without trouble, because their full names differ. It is the same thing that would let you write your own `List` class without clashing with the `List` you will use daily, which is really called `java.util.List`. That is what a **namespace** is: a scope within which each name identifies exactly one thing.
 
-**And packages are also the visibility boundary, which is what `public` was measuring in `main`'s signature.** The rule, short version: a class or method marked `public` can be used from any package; without `public`, it can only be used from classes in that same package. So `public` opens the door outwards, and its absence leaves it shut inside the package.
+**And packages are also the visibility boundary, which is what `public` was measuring in `main`'s signature.** The rule: a class or method marked `public` can be used from any package; without `public`, it can only be used from classes in that same package. So `public` opens the door outwards, and its absence leaves it shut inside the package.
 
 Applied to `main`, that explains why it carries `public`: whoever calls `main` is not another of your classes, it is the JVM, which is code sitting outside your project and therefore outside all of your packages. Without `public`, the JVM could not call it. The full visibility rules — there are four levels, not two — are in [06-oop-classes.md](06-oop-classes.md).
 
