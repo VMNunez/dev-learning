@@ -1,10 +1,4 @@
-# Java Execution Foundations
-
-Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → read: "Java Compiler" (section 4) and "Java Virtual Machine" (section 5) for the two stages from source code to execution
-
 ## Index of this note
-
-Every entry is a link: click it and you jump straight to that section.
 
 - [1. What Java is, and the job it does in your stack](#what-java-is-and-the-job-it-does-in-your-stack)
   - [Java is an object-oriented language](#java-is-an-object-oriented-language)
@@ -22,6 +16,10 @@ Every entry is a link: click it and you jump straight to that section.
   - [Summary table](#summary-table)
 - [6. The smallest Java program that runs](#the-smallest-java-program-that-runs)
 - [7. The route from here to Maven, and why it runs in that order](#the-route-from-here-to-maven-and-why-it-runs-in-that-order)
+
+# Java Execution Foundations
+
+Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → read: "Java Compiler" (section 4) and "Java Virtual Machine" (section 5) for the two stages from source code to execution
 
 ---
 
@@ -398,22 +396,22 @@ Both loops print `Ana` and then `Luis`. In neither of them do you keep an index 
 
 Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
 
-`try { } catch (e) { }` is also written the same way in both languages — but **they only resemble each other in how they are written**. The exception model underneath has nothing in common, and it differs enough to deserve the callout below before you go on.
+`try { } catch (e) { }` is also written the same way in both languages, and that is exactly why it deserves the callout below before you go on.
 
-> **`try/catch` is written the same way in Java and in JavaScript, but the exception model underneath is different.** It is tempting to read Java's `try/catch` as JavaScript's because the syntax looks identical. Underneath they are nothing alike.
+> **`try/catch` is written the same way in Java and in JavaScript, but the exception model underneath is different.** The syntax looks identical, so it is tempting to read one as the other. Underneath they are nothing alike.
 >
 > An **exception** is how Java reports that something went wrong while the program was running. When an operation cannot finish — a file that does not exist, a division by zero — the code **throws** an object describing that failure; the method it happened in stops right there, and that object travels back, method by method, until one of them **catches** it and decides what to do with it. If nobody catches it, the program stops.
 >
 > So far, JavaScript does something similar. The difference is that Java splits exceptions into two families, and with one of them the compiler gets involved: **checked** ones and **unchecked** ones.
 >
-> With checked exceptions the compiler turns strict: if your method calls something that can throw one, it will not let you compile until you say what you intend to do about that failure. And you only have two possible answers, both written in the code:
+> With checked exceptions the compiler turns strict: if your method calls something that can throw one — reading a file, for instance, which is what `Files.readString` does in the code below — it will not let you compile until you say what you intend to do about that failure. And you only have two possible answers, both written in the code:
 >
 > - you catch it right there with a `try/catch` and deal with the problem yourself:
 >
 >   ```java
 >   public String readConfig() {
 >       try {
->           return Files.readString(Path.of("config.txt"));
+>           return Files.readString(Path.of("config.txt"));   // reads a whole file as text
 >       } catch (IOException e) {
 >           return "";   // no file: carry on with the default configuration
 >       }

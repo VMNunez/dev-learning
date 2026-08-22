@@ -1,10 +1,4 @@
-# Fundamentos de la ejecución en Java
-
-Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → lee: «Java Compiler» (sección 4) y «Java Virtual Machine» (sección 5) para ver las dos etapas que llevan del código fuente a la ejecución
-
 ## Índice de esta nota
-
-Cada entrada es un enlace: al pulsarla saltas directamente a esa sección.
 
 - [1. Qué es Java y qué papel juega en tu stack](#qué-es-java-y-qué-papel-juega-en-tu-stack)
   - [Java es un lenguaje orientado a objetos](#java-es-un-lenguaje-orientado-a-objetos)
@@ -22,6 +16,10 @@ Cada entrada es un enlace: al pulsarla saltas directamente a esa sección.
   - [Tabla resumen](#tabla-resumen)
 - [6. El programa Java más pequeño que se ejecuta](#el-programa-java-más-pequeño-que-se-ejecuta)
 - [7. La ruta de aquí a Maven, y por qué sigue ese orden](#la-ruta-de-aquí-a-maven-y-por-qué-sigue-ese-orden)
+
+# Fundamentos de la ejecución en Java
+
+Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → lee: «Java Compiler» (sección 4) y «Java Virtual Machine» (sección 5) para ver las dos etapas que llevan del código fuente a la ejecución
 
 ---
 
@@ -396,22 +394,22 @@ Los dos bucles imprimen `Ana` y después `Luis`. En ninguno de los dos llevas t�
 
 Sumar un número a un trozo de texto con `+` concatena en los dos lenguajes, así que `"total: " + 30` produce `"total: 30"` tal como esperas. Y `final` sobre una variable hace lo mismo que `const`: las dos bloquean la variable, no el contenido de lo que hay dentro. Si declaras `final List<String> names = new ArrayList<>();`, no puedes reasignar `names` a otra lista distinta, pero sí puedes añadirle y quitarle elementos a la lista que ya tiene. [01-variables-tipos.md](01-variables-tipos.md) lo desarrolla.
 
-`try { } catch (e) { }` también se escribe igual en los dos lenguajes — pero **solo se parecen en la forma de escribirlos**. El modelo de excepciones que hay debajo no tiene nada que ver, y es lo bastante distinto como para merecer el aviso siguiente antes de seguir.
+`try { } catch (e) { }` también se escribe igual en los dos lenguajes, y justo por eso merece el aviso siguiente antes de seguir.
 
-> **El `try/catch` se escribe igual en Java y en JavaScript, pero el modelo de excepciones que hay debajo es distinto.** Es tentador leer el `try/catch` de Java como el de JavaScript porque la sintaxis se ve idéntica. Por debajo no se parecen en nada.
+> **El `try/catch` se escribe igual en Java y en JavaScript, pero el modelo de excepciones que hay debajo es distinto.** La sintaxis se ve idéntica, así que es tentador leer uno como el otro. Por debajo no se parecen en nada.
 >
 > Una **excepción** es la forma que tiene Java de avisar de que algo ha ido mal mientras el programa se ejecuta. Cuando una operación no puede terminar — un archivo que no existe, una división entre cero —, el código **lanza** (`throw`) un objeto que describe ese fallo; el método en el que ocurrió se interrumpe justo ahí, y ese objeto va pasando hacia atrás, de método en método, hasta que alguno lo **captura** (`catch`) y decide qué hacer con él. Si no lo captura nadie, el programa se detiene.
 >
 > Hasta aquí, JavaScript hace algo parecido. La diferencia está en que Java reparte las excepciones en dos familias, y con una de ellas el compilador se mete de por medio: las **comprobadas** (_checked_) y las **no comprobadas** (_unchecked_).
 >
-> Con las comprobadas, el compilador se pone estricto: si tu método llama a algo que puede lanzar una de ellas, no te deja compilar hasta que digas qué piensas hacer con ese fallo. Y solo tienes dos respuestas posibles, las dos escritas en el código:
+> Con las comprobadas, el compilador se pone estricto: si tu método llama a algo que puede lanzar una de ellas — leer un archivo, por ejemplo, que es lo que hace `Files.readString` en el código de abajo —, no te deja compilar hasta que digas qué piensas hacer con ese fallo. Y solo tienes dos respuestas posibles, las dos escritas en el código:
 >
 > - la capturas ahí mismo con un `try/catch` y te encargas tú del problema:
 >
 >   ```java
 >   public String readConfig() {
 >       try {
->           return Files.readString(Path.of("config.txt"));
+>           return Files.readString(Path.of("config.txt"));   // lee un archivo entero como texto
 >       } catch (IOException e) {
 >           return "";   // no hay archivo: sigo adelante con la configuración por defecto
 >       }
