@@ -2,13 +2,9 @@
 
 Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → lee: «Java Compiler» (sección 4) y «Java Virtual Machine» (sección 5) para ver las dos etapas que llevan del código fuente a la ejecución
 
----
+## Índice de esta nota
 
-JavaScript puede empezar a ejecutar un archivo y no descubrir que existe una operación incorrecta hasta llegar a esa línea. Java añade una comprobación previa a la ejecución: un compilador revisa primero todo el código fuente, antes de que se ejecute ni una sola línea. Esa comprobación previa explica por qué algunos errores te detienen antes de arrancar y otros solo aparecen después.
-
-Esta nota es el mapa de todo lo que vas a estudiar después, y sus siete secciones están ordenadas para que cada una prepare la siguiente. La primera responde qué tipo de lenguaje es Java, explica el modelo en el que se apoya todo el lenguaje — la programación orientada a objetos — y sitúa qué papel juega Java en el stack que estás construyendo. La segunda sigue un archivo `.java` a través de las dos etapas que se llevan a cabo hasta que se convierte en un programa en ejecución, porque de ahí sale todo lo demás. Esa frontera entre las dos etapas es justo lo que explica las tres formas distintas en que tu código puede fallar, y ese es el tema de la tercera sección. Con eso ya claro, la cuarta repasa los cinco rasgos de Java que reaparecen en cada capítulo, y la quinta los enfrenta a lo que ya sabes de JavaScript: qué hábitos puedes traerte tal cual y cuáles te van a costar un error. La sexta muestra el programa más pequeño que se puede ejecutar en Java, señalando qué capítulo de estas notas explica cada una de sus piezas. Y la séptima traza la ruta completa de lectura, del capítulo `01` al `16`.
-
-**Índice de esta nota** — cada entrada es un enlace: al pulsarla saltas directamente a esa sección.
+Cada entrada es un enlace: al pulsarla saltas directamente a esa sección.
 
 - [1. Qué es Java y qué papel juega en tu stack](#qué-es-java-y-qué-papel-juega-en-tu-stack)
   - [Java es un lenguaje orientado a objetos](#java-es-un-lenguaje-orientado-a-objetos)
@@ -26,6 +22,12 @@ Esta nota es el mapa de todo lo que vas a estudiar después, y sus siete seccion
   - [Tabla resumen](#tabla-resumen)
 - [6. El programa Java más pequeño que se ejecuta](#el-programa-java-más-pequeño-que-se-ejecuta)
 - [7. La ruta de aquí a Maven, y por qué sigue ese orden](#la-ruta-de-aquí-a-maven-y-por-qué-sigue-ese-orden)
+
+---
+
+JavaScript puede empezar a ejecutar un archivo y no descubrir que existe una operación incorrecta hasta llegar a esa línea. Java añade una comprobación previa a la ejecución: un compilador revisa primero todo el código fuente, antes de que se ejecute ni una sola línea. Esa comprobación previa explica por qué algunos errores te detienen antes de arrancar y otros solo aparecen después.
+
+Esta nota es el mapa de todo lo que vas a estudiar después, y sus siete secciones están ordenadas para que cada una prepare la siguiente. La primera responde qué tipo de lenguaje es Java, explica el modelo en el que se apoya todo el lenguaje — la programación orientada a objetos — y sitúa qué papel juega Java en el stack que estás construyendo. La segunda sigue un archivo `.java` a través de las dos etapas que se llevan a cabo hasta que se convierte en un programa en ejecución, porque de ahí sale todo lo demás. Esa frontera entre las dos etapas es justo lo que explica las tres formas distintas en que tu código puede fallar, y ese es el tema de la tercera sección. Con eso ya claro, la cuarta repasa los cinco rasgos de Java que reaparecen en cada capítulo, y la quinta los enfrenta a lo que ya sabes de JavaScript: qué hábitos puedes traerte tal cual y cuáles te van a costar un error. La sexta muestra el programa más pequeño que se puede ejecutar en Java, señalando qué capítulo de estas notas explica cada una de sus piezas. Y la séptima traza la ruta completa de lectura, del capítulo `01` al `16`.
 
 ## Qué es Java y qué papel juega en tu stack
 
@@ -60,12 +62,12 @@ Fíjate en lo que no hace falta escribir: `total()` no recibe ningún parámetro
 
 De ese modelo salen cuatro ideas que aparecen por su nombre en cualquier entrevista junior:
 
-| Idea              | Qué significa                                                                                                    | Dónde se estudia              |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| **Encapsulación** | Los campos se declaran `private` y solo se leen o se cambian a través de los métodos de la propia clase          | `06-poo-clases.md`            |
-| **Abstracción**   | Describir qué métodos hay que tener sin decir cómo se implementan — eso es una interfaz                          | `07-interfaces-abstractas.md` |
-| **Herencia**      | Una clase parte de otra y se queda con sus campos y sus métodos, en lugar de repetirlos                           | `08-herencia-polimorfismo.md` |
-| **Polimorfismo**  | Varias clases responden al mismo método cada una a su manera, y Java decide en ejecución cuál de ellas se llama  | `08-herencia-polimorfismo.md` |
+| Idea              | Qué significa                                                                                                   | Dónde se estudia              |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **Encapsulación** | Los campos se declaran `private` y solo se leen o se cambian a través de los métodos de la propia clase         | `06-poo-clases.md`            |
+| **Abstracción**   | Describir qué métodos hay que tener sin decir cómo se implementan — eso es una interfaz                         | `07-interfaces-abstractas.md` |
+| **Herencia**      | Una clase parte de otra y se queda con sus campos y sus métodos, en lugar de repetirlos                         | `08-herencia-polimorfismo.md` |
+| **Polimorfismo**  | Varias clases responden al mismo método cada una a su manera, y Java decide en ejecución cuál de ellas se llama | `08-herencia-polimorfismo.md` |
 
 La tercera columna es la que hay que leer con calma: ninguna de las cuatro ideas se aprende aquí. Aquí solo necesitas reconocer los nombres, porque los vas a oír antes de llegar a estudiarlos; cada uno se explica entero en el archivo que indica esa columna.
 
@@ -375,7 +377,7 @@ La sintaxis de `if`, `while` y `for` es la misma. También lo es la forma de rec
 Para recorrer una colección entera, de principio a fin, JavaScript tiene el bucle `for...of`: en cada vuelta mete el siguiente elemento en la variable que has declarado y ejecuta el cuerpo del bucle con ella.
 
 ```javascript
-const names = ["Ana", "Luis"];
+const names = ['Ana', 'Luis'];
 for (const name of names) {
   console.log(name);
 }
@@ -520,15 +522,15 @@ void procesar(List<Integer> edades) { }
 
 ### Tabla resumen
 
-| Hábito de JS/TS                             | Qué hace JavaScript/TypeScript                                                                                            | Qué hace Java                                                                                 | ¿Se comporta igual?             |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------- |
-| `for...of` sobre un array                   | `for (const name of names)` itera sus elementos uno a uno                                                                 | `for (String name : names)` itera igual sobre una colección                                   | Sí                              |
-| `const`                                     | Bloquea la variable, no lo que contiene                                                                                   | `final` hace lo mismo                                                                         | Sí; el matiz se explica en `01` |
-| Sintaxis de `try / catch`                   | `try { } catch (e) { }`                                                                                                   | Se escribe igual, pero el modelo de excepciones de debajo es distinto                         | Solo en la sintaxis             |
-| `var`                                       | Declara una variable sin ningún tipo                                                                                      | Infiere un único tipo fijo y lo impone para siempre                                           | No — significado casi opuesto   |
-| Añadir una propiedad en tiempo de ejecución | El objeto crece con cualquier propiedad nueva                                                                             | Los campos los declara solo la clase; no se pueden añadir después                             | No — lanza `cannot find symbol` |
-| `==` frente a `===`                         | Compara con coerción de tipos o sin ella                                                                                  | `==` sobre objetos compara si apuntan al mismo objeto en memoria, no si el contenido es igual | No — usa `.equals()`            |
-| Tipos borrados al compilar                  | Los tipos desaparecen al compilar; nada los comprueba en runtime                                                          | Los tipos sobreviven hasta el bytecode                                                        | No — excepto en los genéricos   |
+| Hábito de JS/TS                             | Qué hace JavaScript/TypeScript                                   | Qué hace Java                                                                                 | ¿Se comporta igual?             |
+| ------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------- |
+| `for...of` sobre un array                   | `for (const name of names)` itera sus elementos uno a uno        | `for (String name : names)` itera igual sobre una colección                                   | Sí                              |
+| `const`                                     | Bloquea la variable, no lo que contiene                          | `final` hace lo mismo                                                                         | Sí; el matiz se explica en `01` |
+| Sintaxis de `try / catch`                   | `try { } catch (e) { }`                                          | Se escribe igual, pero el modelo de excepciones de debajo es distinto                         | Solo en la sintaxis             |
+| `var`                                       | Declara una variable sin ningún tipo                             | Infiere un único tipo fijo y lo impone para siempre                                           | No — significado casi opuesto   |
+| Añadir una propiedad en tiempo de ejecución | El objeto crece con cualquier propiedad nueva                    | Los campos los declara solo la clase; no se pueden añadir después                             | No — lanza `cannot find symbol` |
+| `==` frente a `===`                         | Compara con coerción de tipos o sin ella                         | `==` sobre objetos compara si apuntan al mismo objeto en memoria, no si el contenido es igual | No — usa `.equals()`            |
+| Tipos borrados al compilar                  | Los tipos desaparecen al compilar; nada los comprueba en runtime | Los tipos sobreviven hasta el bytecode                                                        | No — excepto en los genéricos   |
 
 Lee la última columna como el veredicto de cada fila: «Sí» significa que puedes traer tu hábito de JavaScript tal cual, y cualquier otra cosa significa que ese hábito te va a costar un error, ya sea del compilador o un resultado equivocado.
 

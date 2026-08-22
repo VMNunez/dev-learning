@@ -2,13 +2,9 @@
 
 Docs: [Baeldung — Is Java a Compiled or Interpreted Language?](https://www.baeldung.com/java-compiled-interpreted) → read: "Java Compiler" (section 4) and "Java Virtual Machine" (section 5) for the two stages from source code to execution
 
----
+## Index of this note
 
-JavaScript can start running a file and only discover a bad operation once execution reaches that line. Java adds a check that runs before execution: a compiler reviews the entire source first, before a single line of it runs. That upfront check explains why some mistakes stop you before launch while others only appear after launch.
-
-This note is the map for everything that follows, and its seven sections are ordered so that each one sets up the next. The first answers what kind of language Java is, explains the model the whole language rests on — object-oriented programming — and places the job Java does in the stack you are building. The second follows one `.java` file through the two stages that turn it into a running program, because everything else follows from that. That boundary between the two stages is exactly what explains the three different ways your code can fail, and that is what the third section covers. With that settled, the fourth goes over the five Java traits that keep reappearing in every chapter, and the fifth holds them up against what you already know from JavaScript: which habits you can bring over as they are, and which ones will cost you an error. The sixth shows the smallest program that runs at all in Java, naming the chapter of these notes that owns each piece of it. And the seventh lays out the full reading route, from chapter `01` to `16`.
-
-**Index of this note** — every entry is a link: click it and you jump straight to that section.
+Every entry is a link: click it and you jump straight to that section.
 
 - [1. What Java is, and the job it does in your stack](#what-java-is-and-the-job-it-does-in-your-stack)
   - [Java is an object-oriented language](#java-is-an-object-oriented-language)
@@ -26,6 +22,12 @@ This note is the map for everything that follows, and its seven sections are ord
   - [Summary table](#summary-table)
 - [6. The smallest Java program that runs](#the-smallest-java-program-that-runs)
 - [7. The route from here to Maven, and why it runs in that order](#the-route-from-here-to-maven-and-why-it-runs-in-that-order)
+
+---
+
+JavaScript can start running a file and only discover a bad operation once execution reaches that line. Java adds a check that runs before execution: a compiler reviews the entire source first, before a single line of it runs. That upfront check explains why some mistakes stop you before launch while others only appear after launch.
+
+This note is the map for everything that follows, and its seven sections are ordered so that each one sets up the next. The first answers what kind of language Java is, explains the model the whole language rests on — object-oriented programming — and places the job Java does in the stack you are building. The second follows one `.java` file through the two stages that turn it into a running program, because everything else follows from that. That boundary between the two stages is exactly what explains the three different ways your code can fail, and that is what the third section covers. With that settled, the fourth goes over the five Java traits that keep reappearing in every chapter, and the fifth holds them up against what you already know from JavaScript: which habits you can bring over as they are, and which ones will cost you an error. The sixth shows the smallest program that runs at all in Java, naming the chapter of these notes that owns each piece of it. And the seventh lays out the full reading route, from chapter `01` to `16`.
 
 ---
 
