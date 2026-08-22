@@ -674,8 +674,15 @@ Practice (its own loop, fed by coverage):
      later adds a bullet to that entry, `notes-plan` records it as `[ ]` and under the entry's `Pending additions:`
      instead of reopening the entry, and `notes-audit` runs in append-only mode: it appends the new
      sections in both languages, proves with a diff that it changed nothing else, marks the consumed
-     concepts `[x]`, clears the queue, and leaves the status `refined`. Set it back to `pending`
-     yourself to unfreeze it.
+     concepts `[x]`, clears the queue, and leaves the status `refined`. That append also leaves your
+     `Studied` date alone and lists the new sections under `Pending study`, so the note stays studied and
+     owes only what was added. Set it back to `pending` yourself to unfreeze it.
+   - **Correcting a frozen note — you do not have to unfreeze it.** The freeze stops the pipeline from
+     rewriting prose you approved; it was never meant to stop *you*. Write a `TODO` in the note (usually
+     in the `es/`, where you study) and the daily session resolves it in place, in the language you wrote
+     it in, keeping both `Status: refined` and your `Studied` date — a corrected sentence must not cost
+     an active-recall pass. Only the passage the marker sits in may change. A restructure, or anything
+     the agent proposes on its own, still waits for you to set the entry back to `pending`.
 6. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated, unrefined level
    Q&A from current coverage + market evidence; the plan must be current, but junior entries may still
    be pending

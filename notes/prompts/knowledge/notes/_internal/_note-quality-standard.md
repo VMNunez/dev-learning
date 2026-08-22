@@ -242,10 +242,16 @@ after authoring and review succeed.
 
 `Status` and `Studied` are deliberately independent. `complete` / `refined` proves that the files
 exist and meet their contract; it does not prove Victor has studied them. `Studied: YYYY-MM-DD` may
-be written only for a `complete` or `refined` entry by the 13:30 closing ritual. A material contract
-change, a newly owed coverage concept, or any inline prose refinement resets it to `pending`; a pure
-path renumber that preserves the accepted bytes does not. A missing `Studied` field in a legacy plan
-means `pending` until the plan is reconciled or the entry is studied.
+be written only for a `complete` or `refined` entry by the 13:30 closing ritual. What resets it to
+`pending` is prose changing **under** Victor: a material contract change, or an inline refinement of a
+`complete` pair. Three things that look like changes do not, and the distinction was drawn 2026-08-22:
+a pure path renumber that preserves the accepted bytes; a newly owed coverage concept, which is a bullet
+promised and not yet written, so there is no new prose to study until the append-only run lands it; and a
+TODO Victor himself wrote on a `refined` pair, resolved in place under that freeze's second permitted
+mutation — a corrected sentence he asked for does not invalidate his own study pass. When prose is
+**appended** to an entry that already holds a date, the date stands and the new sections alone are listed
+under `Pending study`, which `study-block-close` clears as he studies them. A missing `Studied` field in a
+legacy plan means `pending` until the plan is reconciled or the entry is studied.
 
 These fields are acceptance criteria for authoring and review, not decorative metadata. Covering all
 assigned coverage bullets is necessary but insufficient when the file still cannot achieve its

@@ -355,11 +355,35 @@ second one is protected from the pipeline.
 
 Victor sets `Status: refined` by hand in `PLAN`; no prompt ever assigns it. Before accepting the manual
 freeze, every current concept should be `[x]` and `Pending additions` should be `none`. From that moment the pair's
-existing prose is immutable to the whole notes pipeline in both languages. The only mutation any prompt
-may still perform on a `refined` entry is **appending** material for a coverage bullet listed under
-`Pending additions:` — new sections added to `en/`, their Spanish counterparts appended to `es/`, every
-pre-existing byte in both files untouched. `notes-audit` runs that append in its append-only mode and
-clears the consumed bullets; nothing else about the files may change.
+existing prose is immutable to the whole notes pipeline in both languages.
+
+**What the freeze protects against is the pipeline's own initiative** — a prompt rewording, restructuring
+or "improving" prose Victor already approved. It was never meant to stop *Victor* from correcting his own
+note. So a `refined` entry admits exactly **two** mutations, and nothing else:
+
+1. **Appending** material for a coverage bullet listed under `Pending additions:` — new sections added to
+   `en/`, their Spanish counterparts appended to `es/`, every pre-existing byte in both files untouched.
+   `notes-audit` runs that append in its append-only mode and clears the consumed bullets.
+2. **Resolving a TODO Victor wrote in the pair** (added 2026-08-22). A TODO is Victor correcting his own
+   note through the agent, under the same authority that set `refined` in the first place, so the entry
+   does not have to be unfrozen to accept it — the round trip through `pending` and back cost him the
+   study state of the note for a corrected sentence. This is how the system already works one folder
+   over: `_interview-prep-standard.md` reopens a frozen question *"by adding a TODO to that question"*.
+   Notes differ in what survives, and deliberately: the interview question drops both `[refined]` and
+   `[studied]`, while the note keeps `Status: refined` **and** its `Studied` date, because a question is
+   one atomic block that a correction replaces whole, and a note is many sections of which a TODO touches
+   one.
+
+   **The bound is locality, not size.** Only the prose the marker sits in — its paragraph, or the section
+   it names — may change; every other byte of both files stays as immutable as before. The direction rule
+   applies unchanged: a marker in `es/` is resolved in `es/`, in Spanish, and `en/` is then brought into
+   line. If resolving it means restructuring the note rather than correcting a passage, that is past this
+   licence: report it and leave the entry alone. **Only `study-content-writer`, in the daily session, runs
+   this route** — the four cold stages of `notes-audit` stay out of it and keep reporting the markers they
+   see, because a corrected sentence is the wrong thing to spend a pipeline on.
+
+A quality miss the *agent* notices in frozen prose is still reported and never fixed, on either route.
+That, and not the file being untouchable, is what the freeze has always been for.
 
 The same freeze protects the incorporated coverage scope: every `[x]` `Coverage concepts` bullet stays
 in the same coverage topic, level, section, and relative locked-bullet order with identical scope text.

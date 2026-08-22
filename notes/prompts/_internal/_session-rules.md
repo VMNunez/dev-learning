@@ -484,6 +484,16 @@ notes/java/
     translated into `es/`. Never route an `es/` TODO through English: his TODOs are usually
     corrections to the Spanish prose itself ("no uses esa palabra", "esa frase está mal expresada"),
     and rewriting in English and re-translating discards the exact wording he asked for.
+  - **A TODO is admissible on a `refined` pair, and it costs that pair nothing** (2026-08-22). The
+    freeze exists to stop the *pipeline* rewording prose Victor approved, never to stop him correcting
+    his own note, so a marker he wrote is resolved in place — `Status: refined` untouched, `Studied`
+    untouched, the round trip through `pending` and back not needed. The bound is **locality, not size**:
+    only the passage the marker sits in or the section it names may change, and everything else in both
+    files stays as frozen as before. A change the agent proposes on its own, or a TODO whose fix means
+    restructuring the note, is still reported and still waits for Victor to hand the entry back to
+    `pending`. Only the in-session `study-content-writer` runs this route; `notes-audit` reports the
+    markers it sees and routes them here. Full doctrine → "The `refined` freeze" in
+    `notes/prompts/knowledge/notes/notes-plan-prompt.md`.
 - **Never modify one language's file without re-syncing its counterpart.** The rule covers three cases:
   - New file created in `en/` → create the full Spanish translation in `es/` with the same numeric prefix and a Spanish-translated name (never a copy of the English filename — see `_note-quality-standard.md`, "File naming convention")
   - New section added to an existing `en/` file → if the `es/` counterpart exists, translate the section there too; if not, note it but don't create the whole file

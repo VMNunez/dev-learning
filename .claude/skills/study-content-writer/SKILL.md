@@ -84,8 +84,23 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
 - An existing `complete` pair may be refined inline or have a TODO resolved. Keep the
   bilingual contract, then set that entry's `Studied:` field to `pending` (insert it when legacy),
   because the accepted prose changed after its last study pass.
-- A `refined` pair remains frozen. Report the requested change and wait for Victor to set its status
-  back to `pending`; this skill never silently bypasses that hand-back gate.
+- A `refined` pair is frozen against *your* initiative, not against Victor's. **You are the only writer
+  in the system that may resolve a TODO on one** (2026-08-22 — the doctrine is "The `refined` freeze" in
+  `notes/prompts/knowledge/notes/notes-plan-prompt.md`; `/notes-audit` deliberately declines this and
+  reports the markers instead). Two routes, and the difference between them is who asked:
+  - **A TODO Victor wrote in the pair, or a correction he states directly in chat** → resolve it, under
+    Step 3's direction rule: an `es/` marker is resolved in `es/`, in Spanish, in his words, and `en/`
+    is then brought into line. **The bound is locality, not size** — only the passage the marker sits in
+    or the section it names may change; every other byte of both files stays frozen. Leave
+    `Status: refined` exactly as it is, and leave `Studied` exactly as it is: a date stays that date, a
+    `pending` stays pending. That preservation is the whole point — a two-word fix must not cost an
+    active-recall pass. If the fix **adds a new section** to an entry whose `Studied` is a date, add one
+    `Pending study` line for that heading with today's date, so the note stays studied and owes only the
+    new part.
+  - **Anything else** — a change you propose, a quality miss you noticed, or a TODO whose fix means
+    restructuring the note rather than correcting a passage → report it and wait for Victor to set the
+    status back to `pending`. The hand-back gate survives for everything the TODO route does not cover,
+    and this skill never silently bypasses it.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.

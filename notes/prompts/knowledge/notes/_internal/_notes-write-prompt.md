@@ -58,7 +58,7 @@ REWRITE_MODE = [standard | first-pass | append-only]
        → append-only: the file is FROZEN. Victor has refined it and declared the prose final. Every
          existing byte is immutable — no rewording, restructuring, reordering, renumbering, link or
          heading fix inside existing text, and no TODO resolution (a TODO inside frozen prose is
-         reported, not resolved). You may only APPEND new sections for the coverage bullets named in
+         reported and routed to the inline `study-content-writer` skill, not resolved here). You may only APPEND new sections for the coverage bullets named in
          TASK, placed where they read best without moving any existing section. Report every quality
          miss you see in the existing prose instead of fixing it. Your report must include a `git diff`
          over the file proving additions only, with the pre-existing headings unchanged and in their
@@ -138,8 +138,10 @@ wrong material. Reviewer B is the backstop — it is not the reason you may writ
 
 ## Step 1 — Resolve TODOs (if TASK includes them)
 
-**Skip this step entirely in `append-only` mode** — a TODO sitting in frozen prose is Victor's own
-working note, not a work order. List the ones you saw in your report and change nothing.
+**Skip this step entirely in `append-only` mode** — not because the TODO is idle, but because it is
+routed elsewhere: a TODO on a refined pair is resolved **inline, in the daily session**, by the
+`study-content-writer` skill, in the language of the file carrying it. List the ones you saw in your
+report, name that route, and change nothing.
 
 Victor adds his doubts as markers in the **`es/`** file (that is where he studies), so **read the
 `es/` counterpart to find them**, then also scan `{FILE}` itself. Markers appear as `TODO:`,

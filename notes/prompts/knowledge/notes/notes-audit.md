@@ -112,6 +112,12 @@ It binds every stage of this run:
 1. Every pre-existing byte of the English and the Spanish file is immutable — no rewording, no
    restructuring, no reordering, no renumbering, no "improving", no TODO resolution, no link or heading
    fix inside existing text. A quality miss found in existing prose is reported, never fixed.
+   **The TODO ban is a routing rule, not a dead end** (2026-08-22): a TODO Victor wrote on a refined pair
+   is admissible work — see "The `refined` freeze" in `notes-plan-prompt.md` — but it belongs to the daily
+   session, where `study-content-writer` resolves it in the language of the file carrying it. This
+   pipeline stays out because a four-stage cold run is the wrong instrument for a corrected sentence, and
+   because the Spanish-side resolution it would require is exactly what stage T is built to overwrite.
+   Report the markers you saw and name that route.
 2. The only permitted change is **new sections appended** for the bullets in `Pending additions`, placed
    where they read best without moving existing sections, plus their Spanish counterparts.
 3. The new sections themselves are held to the full standard, and the run reports which existing content
