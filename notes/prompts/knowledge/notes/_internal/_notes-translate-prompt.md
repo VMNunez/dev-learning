@@ -59,6 +59,15 @@ every section, code block, table, and callout so the two match exactly.
 > line with *that* — the opposite of this stage's direction. Re-syncing `es/` from `en/` here would
 > overwrite the Spanish phrasing he explicitly asked for. Report the unresolved markers and stop; the
 > orchestrator routes them to a Spanish-side resolution pass first.
+>
+> **`SCOPE = append-only` is the one exception, and it is not optional** (2026-08-22). A refined pair is
+> *expected* to carry TODO markers into this stage: since that route was opened, `notes-audit` reports
+> them and deliberately leaves them in the file for the in-session `study-content-writer` to resolve, so
+> stopping here would deadlock every append over a refined note that happens to have one — the addition
+> would never land and the marker would never clear, each waiting on the other. In that mode you are not
+> re-syncing anything, so the overwrite this STOP protects against cannot happen: you append the Spanish
+> counterparts of the named headings, leave every marker exactly where it sits, and list them in your
+> trace as untouched.
 
 > **Sections whose Spanish was authored directly are FROZEN.** When the orchestrator tells you a
 > section's Spanish came from an `es/`-side TODO resolution (and the English was derived from it),

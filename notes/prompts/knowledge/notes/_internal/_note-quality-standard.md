@@ -228,6 +228,9 @@ Every persistent-plan entry must therefore carry:
 - `Status:` whether the bilingual note has been authored and accepted by the notes pipeline;
 - `Studied:` `pending` or the date (`YYYY-MM-DD`) Victor completed an active study pass of the
   current accepted pair;
+- `Pending additions:` `none`, or the coverage bullets a `refined` entry owes but has not yet received;
+- `Pending study:` `none`, or the sections that landed after the date in `Studied` and therefore still
+  owe a pass — the field that keeps one appended section from unstudying a whole note;
 - `Narrative role:` why this chapter exists at this exact point in the journey;
 - `Learning outcome:` what Victor can understand, explain, or apply after studying it;
 - `Prerequisites:` earlier plan entries whose concepts the chapter may assume;

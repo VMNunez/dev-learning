@@ -90,8 +90,9 @@ Before dispatching any role:
     pipeline in **append-only mode** for exactly those bullets. Never set, clear, or downgrade `refined`.
 15. Read `Studied` independently from `Status`; a missing legacy field means `pending`. A dated marker
     is valid only on a `complete` or `refined` entry. A run that authors or audits a `pending` or
-    `complete` entry passes `Studied: pending` to Stage C, because the accepted content changed under
-    Victor and the whole note needs a new active study pass. **An append-only run is the exception**
+    `complete` entry passes `Studied: pending` to Stage C — and `Pending study: none` with it, because a
+    note owed whole has no per-section gaps — since the accepted content changed under Victor and the
+    whole note needs a new active study pass. **An append-only run is the exception**
     (changed 2026-08-22): it adds sections and alters nothing he studied, so an existing date is
     preserved and the appended headings go to Stage C as `Pending study` entries instead — the note
     stays studied and owes only the new sections. On an entry whose `Studied` is already `pending` there
@@ -182,7 +183,10 @@ section trace, pedagogical-contract trace, and EOF proof.
 
 Dispatch `_notes-translate-prompt.md` for the final English file and the resolved Spanish path, adding
 `SCOPE = append-only` with the appended English headings when the entry is `refined` — it then appends
-only their Spanish counterparts and re-syncs nothing else. It must preserve exact structural parity, produce natural Spanish, and return a section trace plus EOF
+only their Spanish counterparts and re-syncs nothing else. In that mode its ordinary STOP on an
+unresolved `es/` TODO marker does not apply: a refined pair is expected to carry markers this pipeline
+deliberately leaves for the in-session route, and stopping on them would deadlock the append against a
+resolution this run is forbidden to perform. It must preserve exact structural parity, produce natural Spanish, and return a section trace plus EOF
 proof.
 
 ## Stage C — Spanish reviewer and commit
@@ -198,11 +202,20 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 - permission to set this entry's `Studied: pending` when an authoring or audit run changed prose,
   inserting the field for a legacy entry when absent; a no-op preserves its current value. **In
   append-only mode it never writes that field**: it preserves the existing value and, when that value is
-  a date, appends one `Pending study` line per appended section — the exact English heading and today's
-  ISO date, added to whatever the field already holds and never rewriting an earlier entry;
+  a date, appends one `Pending study` line per appended section — the **English** heading, which this
+  prompt passes it as text in the dispatch below so an `en/`-blind stage never has to open the file to
+  get it, and today's ISO date. Each line is added to whatever the field already holds, never rewriting
+  an earlier entry, and the field is **inserted after `Studied`** when the entry does not carry it yet,
+  exactly as `Studied` itself is inserted on a legacy entry — no plan in the repository has the field
+  until its first append or its next reconciliation, so creating it is the normal path, not the edge
+  case;
 - the exact assigned concepts with checkbox metadata stripped, the unchecked concepts this run must
   incorporate, and the complete pedagogical contract;
-- `SCOPE = append-only` and the appended headings when the entry is `refined`.
+- `SCOPE = append-only` when the entry is `refined`, carrying the appended **Spanish** headings as its
+  review scope **and** their **English** counterparts as the text for the `Pending study` lines — two
+  lists, labelled by language. Stage C is `en/`-blind by design, so the English headings reach it only
+  as data in this dispatch and never by opening the file; handing it one unlabelled list is what would
+  put a Spanish heading in a field `study-block-close` later has to match by exact line.
 
 It reads Spanish independently, fixes quality, verifies that Spanish alone achieves the pedagogical
 contract, verifies both files exist, changes only the selected status, then commits the English file,

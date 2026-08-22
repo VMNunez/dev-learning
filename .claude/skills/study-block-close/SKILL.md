@@ -40,14 +40,17 @@ For each note actually studied:
    unchecked `Coverage concepts` or unconsumed `Pending additions`. An open **`Pending study`** is not a
    blocker and never joins that list: it is the opposite case — the prose exists and is studiable, which
    is the whole reason the field was written.
-3. Set that entry's `Studied:` field to today's ISO date, inserting it after `Status:` when the
-   legacy field is absent. Re-studying replaces the prior date.
-4. Clear the `Pending study` entries this session actually covered. A section listed there landed after
-   the last study pass, so studying it is what discharges it: delete that exact line, and write `none`
-   once the list empties. Studying the whole note again clears every entry; studying one of three clears
-   that one and leaves the other two, and in that case the new date means "studied to here, minus what
-   is still listed" — which is why the field is cleared line by line and never wholesale. Never delete an
-   entry Victor did not study, and never add one here.
+3. Clear the `Pending study` entries this session actually covered. A section listed there landed after
+   the date in `Studied`, so studying it is what discharges it: delete that exact line — matching the
+   English heading it quotes — and write `none` once the list empties. Studying the whole note again
+   clears every entry. Never delete an entry Victor did not study, and never add one here.
+4. Set that entry's `Studied:` field to today's ISO date, inserting it after `Status:` when the
+   legacy field is absent. Re-studying replaces the prior date. **Move the date only when step 3 left
+   `Pending study: none`** — either because it was already `none` or because this session emptied it.
+   With lines still open, leave the old date exactly as it is: the field is defined as the sections that
+   landed *after* that date, so advancing it past sections still listed would describe them as older
+   than a pass that never covered them, and the next reader could not tell which half of the note the
+   date speaks for. A partial discharge is recorded by the lines that disappeared, not by the date.
 5. A pending, stale, broken, or incomplete pair is reported and left unchanged. This ritual never
    authors prose, checks coverage concepts, or changes `Status`.
 
@@ -108,5 +111,5 @@ Commit message:
 Report notes marked, `Pending study` entries cleared, question IDs marked, ineligible targets, the three
 per-level counts, and the commit. List every entry still holding an open `Pending study` across the levels
 you touched, with the sections it owes — a studied note carrying an unstudied section is invisible in the
-counts by design, so this line is the only place it surfaces.
+counts by design, so this line and the append run that wrote the gap are the only places it surfaces.
 The ritual asks zero questions and leaves every unresolved target open.

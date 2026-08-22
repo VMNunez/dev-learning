@@ -193,8 +193,12 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
    section, as a `Pending study` entry. A byte-preserving
    same-level renumber or relocation preserves the date. This prompt never writes a date.
    `Pending study` is study state, so this prompt never authors one either: preserve every existing
-   entry verbatim across reconciliation, and drop one only when the heading it names no longer exists in
-   the note. Migrating a legacy entry writes `Pending study: none`.
+   entry verbatim across reconciliation, and drop one only in the two cases that make it meaningless —
+   the English heading it names no longer exists in the note, or `Studied` was just reset to `pending`,
+   which owes the whole file again and leaves a per-section list describing nothing. **Every path that
+   resets `Studied` writes `Pending study: none` in the same edit**; a reset that leaves the list behind
+   strands lines `study-block-close` may not clear, since it only ever clears what Victor studied.
+   Migrating a legacy entry writes `Pending study: none`.
    Every pre-existing `[x]` bullet under that entry's `Coverage concepts` is also a coverage lock. Compare
    scope text with every trailing marker stripped, of either kind: if coverage moved, reworded, deleted, split,
    merged, routed, or reordered one, stop and report a broken coverage lock. Never reconcile the
@@ -364,7 +368,11 @@ note. So a `refined` entry admits exactly **two** mutations, and nothing else:
 1. **Appending** material for a coverage bullet listed under `Pending additions:` — new sections added to
    `en/`, their Spanish counterparts appended to `es/`, every pre-existing byte in both files untouched.
    `notes-audit` runs that append in its append-only mode and clears the consumed bullets.
-2. **Resolving a TODO Victor wrote in the pair** (added 2026-08-22). A TODO is Victor correcting his own
+2. **Resolving a correction Victor asked for** — a TODO he wrote in the pair, or one he states directly
+   in the session, which is the same instruction without the marker and is admitted on the condition that
+   the resolving run **quotes it**, since a chat request leaves no artefact in the file and the quote is
+   the only thing that later distinguishes his correction from the agent's proposal (added 2026-08-22).
+   A TODO is Victor correcting his own
    note through the agent, under the same authority that set `refined` in the first place, so the entry
    does not have to be unfrozen to accept it — the round trip through `pending` and back cost him the
    study state of the note for a corrected sentence. This is how the system already works one folder
@@ -374,13 +382,18 @@ note. So a `refined` entry admits exactly **two** mutations, and nothing else:
    one atomic block that a correction replaces whole, and a note is many sections of which a TODO touches
    one.
 
-   **The bound is locality, not size.** Only the prose the marker sits in — its paragraph, or the section
-   it names — may change; every other byte of both files stays as immutable as before. The direction rule
-   applies unchanged: a marker in `es/` is resolved in `es/`, in Spanish, and `en/` is then brought into
-   line. If resolving it means restructuring the note rather than correcting a passage, that is past this
-   licence: report it and leave the entry alone. **Only `study-content-writer`, in the daily session, runs
-   this route** — the four cold stages of `notes-audit` stay out of it and keep reporting the markers they
-   see, because a corrected sentence is the wrong thing to spend a pipeline on.
+   **The bound is the marked passage** — the paragraph, list, table, callout or code block the marker
+   sits in, plus its heading when the TODO asks for that. Every other byte of both files stays as
+   immutable as before. The direction rule applies unchanged: a marker in `es/` is resolved in `es/`, in
+   Spanish, and `en/` is then brought into line. Three things are past this licence and are reported
+   rather than done: **rewriting a whole section**, even when the TODO names one — that is the thing the
+   freeze exists to prevent, and it would carry a study date across prose Victor never studied;
+   **restructuring the note**; and **appending a new section**, which reaches a frozen pair through
+   mutation 1 only, with its bullet, its cold stages and its diff proof. **Only `study-content-writer`,
+   in the daily session, runs this route** — the four cold stages of `notes-audit` stay out of it and
+   keep reporting the markers they see, because a corrected sentence is the wrong thing to spend a
+   pipeline on. That route has no cold reviewer and no diff gate, so it owes a report instead: the
+   instruction quoted, the passage named in both languages, and the statement that nothing else moved.
 
 A quality miss the *agent* notices in frozen prose is still reported and never fixed, on either route.
 That, and not the file being untouchable, is what the freeze has always been for.
@@ -425,7 +438,7 @@ a `dry-run` tracker outcome without replacing the persisted denominator.
 Report topic, level, coverage fingerprint, the `VERIFY` verdict as read (never prescribe repeated
 verification until zero gaps), entry count,
 concept count, create/audit counts,
-checked/unchecked concept counts, preserved-complete count, studied/pending entry counts, every `refined` entry with the count of `Pending additions` it now carries
+checked/unchecked concept counts, preserved-complete count, studied/pending entry counts, every `refined` entry with the count of `Pending additions` it now carries, and every entry carrying an open `Pending study` with the sections it still owes — plus any gap line this reconciliation dropped and the reason, since dropping one is the only way study state is ever lost here
 (and any broken freeze), every legacy classification decision, relocations, renumberings, split
 blockers,
 unassigned existing notes, mirror parity, pedagogical-review completion, intro-contract verdict,

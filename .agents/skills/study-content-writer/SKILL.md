@@ -90,16 +90,31 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   reports the markers instead). Two routes, and the difference between them is who asked:
   - **A TODO Victor wrote in the pair, or a correction he states directly in chat** → resolve it, under
     Step 3's direction rule: an `es/` marker is resolved in `es/`, in Spanish, in his words, and `en/`
-    is then brought into line. **The bound is locality, not size** — only the passage the marker sits in
-    or the section it names may change; every other byte of both files stays frozen. Leave
-    `Status: refined` exactly as it is, and leave `Studied` exactly as it is: a date stays that date, a
-    `pending` stays pending. That preservation is the whole point — a two-word fix must not cost an
-    active-recall pass. If the fix **adds a new section** to an entry whose `Studied` is a date, add one
-    `Pending study` line for that heading with today's date, so the note stays studied and owes only the
-    new part.
+    is then brought into line. Leave `Status: refined` exactly as it is, and leave `Studied` exactly as
+    it is: a date stays that date, a `pending` stays pending. That preservation is the whole point — a
+    two-word fix must not cost an active-recall pass.
+
+    **The bound is the marked passage — the paragraph, list, table, callout or code block the marker
+    sits in.** A heading may be reworded when the TODO asks for that; the section under it may not be
+    rewritten. A TODO that names a whole section (`TODO: esta sección no se entiende`) is a request this
+    route cannot serve: report it and hand it back, because rewriting a section wholesale is the thing
+    the freeze exists to prevent, and it would carry a study date across prose Victor never studied. The
+    test is not how many words moved — it is whether what came out is *his correction applied to a
+    passage* or *your rewrite of a section*.
+
+    **You never append a section on this route.** New sections reach a frozen note through one door
+    only: a coverage bullet under `Pending additions`, an `/notes-audit` append-only run, and its diff
+    proof. A TODO asking for content that has no home in an existing passage is reported and routed
+    there — writing it here would create content outside the plan's denominator, which is the REC-053
+    defect the last bullet of this step already forbids.
+
+    **Report what you touched**: quote the instruction you acted on (the TODO text, or Victor's words
+    when he stated it in chat), name the exact heading and passage you changed in each language, and
+    state that nothing else in either file moved. This route has no cold reviewer and no diff gate, so
+    that report is its only evidence — write it even when the fix was one word.
   - **Anything else** — a change you propose, a quality miss you noticed, or a TODO whose fix means
-    restructuring the note rather than correcting a passage → report it and wait for Victor to set the
-    status back to `pending`. The hand-back gate survives for everything the TODO route does not cover,
+    rewriting a section or restructuring the note → report it and wait for Victor to set the status
+    back to `pending`. The hand-back gate survives for everything the TODO route does not cover,
     and this skill never silently bypasses it.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic

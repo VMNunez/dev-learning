@@ -800,6 +800,52 @@ foreach ($topic in $topicCoverageRoots) {
             # fingerprint, and clearing it here would be the forbidden repair.
             $fingerprintReports.Add("$planName is flagged stale while its Coverage SHA-256 matches its coverage file.")
         }
+
+        # `Pending study` grammar and its one cross-field invariant. Five writers touch study state and
+        # none of them can see each other's runs, so a malformed or stranded entry would otherwise sit
+        # in a plan indefinitely: nothing else in the system reads this field except the ritual that
+        # clears it, and that ritual clears by exact line match. Every string below stays ASCII for the
+        # same reason `$dash` above is built from a code point: this file has no BOM, so PowerShell 5.1
+        # reads it as ANSI and a literal em dash decodes to a smart quote that closes the string early.
+        $entryPattern = '(?m)^##\s+(?<num>\d{2})\b.*?(?=^##\s|\z)'
+        foreach ($entry in [regex]::Matches($planText, $entryPattern, 'Singleline')) {
+            $body = $entry.Value
+            $entryName = "$planName entry $($entry.Groups['num'].Value)"
+            $studiedMatch = [regex]::Match($body, '(?m)^Studied:\s*(?<v>pending|\d{4}-\d{2}-\d{2})\s*$')
+            $gapMatch = [regex]::Match($body, '(?m)^Pending study:(?<v>[^\r\n]*)')
+            if (-not $gapMatch.Success) { continue }   # legacy entry; the next reconciliation adds it
+
+            $inline = $gapMatch.Groups['v'].Value.Trim()
+            $listBlock = [regex]::Match($body, '(?m)^Pending study:[^\r\n]*\r?\n(?<rest>(?:[ \t]*-[^\r\n]*\r?\n?)*)')
+            $listed = @()
+            if ($listBlock.Success) {
+                $listed = @($listBlock.Groups['rest'].Value -split '\r?\n' | Where-Object { $_.Trim() -ne '' })
+            }
+
+            if ($inline -eq 'none') {
+                if ($listed.Count -gt 0) {
+                    Add-ValidationError "Pending study says 'none' but is followed by $($listed.Count) listed section line(s): $entryName."
+                }
+            } elseif ($inline -ne '') {
+                Add-ValidationError "Pending study must be 'none' or an empty header above a list, got '$inline': $entryName."
+            } elseif ($listed.Count -eq 0) {
+                Add-ValidationError "Pending study is neither 'none' nor followed by a listed section: $entryName."
+            }
+
+            # Shape: - "## 5 ... " (added 2026-08-22). The quoted English heading is what
+            # study-block-close deletes by exact match, so a drifted shape is an entry nothing can clear.
+            foreach ($line in $listed) {
+                if ($line -notmatch '^\s*-\s+"##\s+\S.*"\s+\(added\s+\d{4}-\d{2}-\d{2}\)\s*$') {
+                    Add-ValidationError ("Pending study line does not match the required shape: {0} :: {1}" -f $entryName, $line.Trim())
+                }
+            }
+
+            # The field describes sections that landed after the date, so a pending study state has
+            # nothing to describe. Every reset path is required to write `none` in the same edit.
+            if ($studiedMatch.Success -and $studiedMatch.Groups['v'].Value -eq 'pending' -and $listed.Count -gt 0) {
+                Add-ValidationError "Pending study lists $($listed.Count) section line(s) while Studied is 'pending', so they are stranded: $entryName."
+            }
+        }
     }
 }
 

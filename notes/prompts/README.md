@@ -681,7 +681,7 @@ Practice (its own loop, fed by coverage):
      rewriting prose you approved; it was never meant to stop *you*. Write a `TODO` in the note (usually
      in the `es/`, where you study) and the daily session resolves it in place, in the language you wrote
      it in, keeping both `Status: refined` and your `Studied` date — a corrected sentence must not cost
-     an active-recall pass. Only the passage the marker sits in may change. A restructure, or anything
+     an active-recall pass. Only the passage the marker sits in may change — a whole section rewritten is past that line, and waits for the hand-back like anything else. A restructure, or anything
      the agent proposes on its own, still waits for you to set the entry back to `pending`.
 6. `interview-prep-audit` with the same `LEVEL` and topic `FILE` — build the isolated, unrefined level
    Q&A from current coverage + market evidence; the plan must be current, but junior entries may still

@@ -487,11 +487,14 @@ notes/java/
   - **A TODO is admissible on a `refined` pair, and it costs that pair nothing** (2026-08-22). The
     freeze exists to stop the *pipeline* rewording prose Victor approved, never to stop him correcting
     his own note, so a marker he wrote is resolved in place — `Status: refined` untouched, `Studied`
-    untouched, the round trip through `pending` and back not needed. The bound is **locality, not size**:
-    only the passage the marker sits in or the section it names may change, and everything else in both
-    files stays as frozen as before. A change the agent proposes on its own, or a TODO whose fix means
-    restructuring the note, is still reported and still waits for Victor to hand the entry back to
-    `pending`. Only the in-session `study-content-writer` runs this route; `notes-audit` reports the
+    untouched, the round trip through `pending` and back not needed. **The bound is the marked passage**
+    — the paragraph, list, table, callout or code block the marker sits in, plus its heading when the
+    TODO asks for that; everything else in both files stays as frozen as before. Three things are past
+    it and are reported instead: rewriting a whole section even when the TODO names one, restructuring
+    the note, and appending a new section, which reaches a frozen pair only through a coverage bullet
+    and an `/notes-audit` append. So does anything the agent proposes on its own — and because a
+    correction Victor states in chat leaves no marker behind, the run that acts on one **quotes it**,
+    which is the only thing that later tells his correction from the agent's idea. Only the in-session `study-content-writer` runs this route; `notes-audit` reports the
     markers it sees and routes them here. Full doctrine → "The `refined` freeze" in
     `notes/prompts/knowledge/notes/notes-plan-prompt.md`.
 - **Never modify one language's file without re-syncing its counterpart.** The rule covers three cases:
@@ -545,19 +548,26 @@ proves he actively studied: it dates eligible complete/refined note entries, mir
 exact refined bilingual question IDs with a final PASS, then recounts `PROGRESS.md` `## Study progress`
 as Notes studied + Interview CORE studied + Interview bank studied. It asks nothing, never infers study
 from a file merely existing, and leaves a pending/stale target unchanged. A material note edit resets
-its `Studied` field to `pending` — under the three-case rule below, which decides what counts as
-material; reopening an interview question resets both question state markers.
+its `Studied` field to `pending` — under the rule below, which decides what counts as material and is
+narrower than it sounds; reopening an interview question resets both question state markers.
 
 **Study state is not all-or-nothing** (2026-08-22). `Studied` records an active-recall pass over the
 prose that existed when it was written, so what invalidates it is prose changing under Victor — not prose
 being *added* beside it. A hand-back to `Status: pending` and any authoring or audit run over a `pending`
-or `complete` entry reset the field, because the accepted content moved. A section **appended** to an
-entry that already holds a date does not: the entry keeps its date and gains one `Pending study` line
-naming that section and the day it landed, so the note stays studied and owes only the new part. Gaining
-a `Pending addition` records nothing at all — the bullet is owed, the prose does not exist yet, and there
-is nothing to study until an append-only run lands it. `study-block-close` is the only writer that clears
-those lines, one at a time, as Victor studies the sections they name. A note with an open gap still counts
-as studied in `PROGRESS.md`; the gap surfaces in the close's report, which is the only place it appears.
+or `complete` entry reset the field, because the accepted content moved — and every reset writes
+`Pending study: none` in the same edit, since a note owed whole has no per-section gaps to track. Three
+things that look like changes do not reset it: a section **appended** to an entry that already holds a
+date, which keeps its date and gains one `Pending study` line naming that section and the day it landed;
+a **TODO Victor wrote** on a refined pair, resolved in place under that freeze's second mutation; and
+gaining a `Pending addition`, which records nothing at all — the bullet is owed, the prose does not exist
+yet, and there is nothing to study until an append-only run lands it.
+
+`study-block-close` clears those lines as Victor studies the sections they name, one at a time, and moves
+the `Studied` date only once the list is empty — a partial discharge is recorded by the lines that
+disappeared, because the field is defined as what landed *after* that date. `/notes-plan` may also drop a
+line, but only when the heading it quotes no longer exists or the reset above emptied the field. A note
+with an open gap still counts as studied in `PROGRESS.md` by design; the gap surfaces in the closing
+ritual's report and in the append run's, and nowhere else.
 
 `Study progress` is separate from `Coverage demonstrated`: the former measures consolidation, the
 latter measures concepts applied in code. SQL exercises and timed simulations remain separate under
