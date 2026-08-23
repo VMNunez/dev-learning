@@ -202,6 +202,9 @@ review without taking on specialist or production-platform ownership.
 
 - Secrets vs ordinary configuration — keep passwords, signing keys, and API credentials out of source
   code, committed configuration, frontend bundles, container images, and test fixtures ✅ 07-timetrack
+- Exposed-secret response — a credential that reached shared history or any published artifact is
+  compromised for every copy already taken, so the response is rotating the value and everything
+  derived from it, while deleting or rewriting the source only limits further exposure
 - Frontend secrecy impossibility — any value shipped in an Angular bundle is visible to the user, so
   embedded API keys are not secrets
 - Secret injection — environment variables or a secret store separate credentials from source code,
