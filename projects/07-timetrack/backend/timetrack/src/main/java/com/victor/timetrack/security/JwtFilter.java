@@ -55,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-        } catch (JwtException | UsernameNotFoundException | DisabledException e) {
+        } catch (JwtException | UsernameNotFoundException | DisabledException| IllegalArgumentException  e) {
             logger.warn("Authentication rejected: " + e.getMessage());
         }
 
