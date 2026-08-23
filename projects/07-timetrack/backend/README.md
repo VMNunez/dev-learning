@@ -251,6 +251,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `PUT /api/users/{id}` refuses a promotion to MANAGER with `409` while the user still holds `DRAFT` or `REJECTED` entries. `submit` and `reopen` are `hasRole('EMPLOYEE')` and resolve ownership from the JWT, so those rows would become unreachable by every actor in the system — invisible to reports and to the approvals queue, but still listed to their owner. The state machine's transitions are gated on the actor's role, which makes the role mutable input to it, so the point where the role changes is where that assumption is guarded. Narrow by construction: the check runs only when the role actually changes to MANAGER, leaving reactivation through the same endpoint untouched.
 
+### The token catch covers the library's whole failure surface ✓
+
+`JwtFilter` catches `IllegalArgumentException` beside `JwtException`, because jjwt signals an absent, empty, or blank compact token with the former — a type unrelated to its own exception family. `Authorization: Bearer ` with nothing after the space reaches `substring(7)` as `""`, and before the fix that escaped the filter above `ExceptionTranslationFilter`, so an anonymous caller received the container's `/error` body with `500` instead of the uniform `401` `ErrorResponse` that `JwtAuthenticationEntryPoint` writes. A filter that reads a credential fails closed on every parse failure, whatever type the library uses to report it.
+
 ---
 
 ## Tradeoffs
