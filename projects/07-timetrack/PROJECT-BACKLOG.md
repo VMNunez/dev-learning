@@ -22,7 +22,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
-- [ ] **[High]** `[backend]` — Document the runtime configuration the app actually needs. `backend/README.md:319` names only `DB_PASSWORD`, but `JWT_SECRET` and `ADMIN_PASSWORD` are placeholders with no default, and nothing sets `spring.profiles.active`. A clean clone following "How to run alone" fails at startup with `Could not resolve placeholder 'app.jwt.secret'`; export the secret and it boots *without* the `dev` profile, so the `@Profile("dev")` `DataInitializer` never seeds an admin and — with no register endpoint — every login is 401. List all four vars plus `SPRING_PROFILES_ACTIVE=dev` in the run instructions (they currently live only in the gitignored `.idea/workspace.xml`) *(Effort: Small)*
+*No open High tasks.*
 
 #### Medium
 
@@ -95,6 +95,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
+- 2026-08-23 · **[High]** `[backend]` — run contract documented: the three defaultless placeholders and the mandatory `dev` profile → coverage general/junior (new bullet + ✅ 07-timetrack), backend README Key patterns + How to run alone, global README How to run, PLANNING §18/§0
 - 2026-08-23 · **[High]** `[backend]` — `JwtFilter` catch widened to `IllegalArgumentException`; a blank bearer token answers 401, not 500 → coverage spring-boot/junior, backend README Key patterns, PLANNING §0
 - 2026-08-23 · **[High]** `[backend]` — datasource password and seed BCrypt hash published in `origin/main` rotated; history rewrite rejected — DECISION, no code change → PLANNING §9, backend README Tradeoffs, coverage security/junior
 - 2026-07-28 · **[High]** `[backend]` — `AuthResponse` now carries `token, name, role` → already covered (DTO pattern), PLANNING §10
