@@ -13,10 +13,10 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and it is gated: the 2026-08-06 `review-audit` re-opened the backend tier with **1 High, 10 Mediums and 18 Lows still open**, so the claim this cell carried until 2026-08-23 — that every backend task at every priority was closed — was true only of the previous review round |
-| **Current branch** | `fix/backend-backlog`, **live again** — the 2026-08-06 review reopened the backlog it had finished, so its PR into `projects/07-timetrack` waits until the remaining Highs are fixed (§22 "Backlog-fix branches"). `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **10 Mediums and 18 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
-| **Next gate** | G3 sign-off — **blocked**: §23 signs it off only when every backend **High** is fixed and merged, and 1 remains open (the undocumented runtime configuration). The secrets-in-pushed-history and `JwtFilter` blank-token Highs both closed 2026-08-23. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
+| **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
 | **Phase** | Backend (Phase 4) — its backlog reopened on 2026-08-06 and the frontend phase has not started; Step 7a opens Phase 5 once G3 signs off |
 | **Last updated** | 2026-08-23 |
 
@@ -1661,7 +1661,11 @@ Entities, fields, relationships. One sentence per key decision (why ENUM for sta
 - RuntimeException over checked exceptions — Spring Boot convention, caught globally with @ControllerAdvice
 
 **7. How to run alone**
-IntelliJ + local PostgreSQL, without Docker.
+IntelliJ + local PostgreSQL, without Docker. It states the complete runtime contract, not just the
+steps: every property placeholder declared without a default (`DB_PASSWORD`, `JWT_SECRET`,
+`ADMIN_PASSWORD`), and the profile a working instance needs. A profile-gated bean is part of that
+contract — without `SPRING_PROFILES_ACTIVE=dev` the context starts cleanly and no manager is seeded,
+so the failure is silent where a missing placeholder is loud.
 
 ---
 
