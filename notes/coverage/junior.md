@@ -2043,6 +2043,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Configuration vs code — keep environment-dependent values outside program logic so the same artifact can run in different contexts ✅ 07-timetrack
 - Configuration sources — recognise environment variables, configuration files, and command-line inputs and determine which value wins when sources overlap ✅ 07-timetrack
 - Required configuration and fail-fast startup — reject a missing mandatory value early with a clear diagnostic rather than failing later in unrelated code ✅ 07-timetrack
+- Optional-component activation as required configuration — a component enabled only by a named profile, flag, or mode leaves startup succeeding while the capability it provides is simply absent, so the runtime contract states which activations a working instance needs and not only which values must be present ✅ 07-timetrack — `DataInitializer` is `@Profile("dev")`, so a boot without that profile starts clean, seeds no manager, and leaves every login 401
 - Default configuration — provide a default only when it is safe and semantically valid for every context where it may be used
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
 - Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app
