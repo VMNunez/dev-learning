@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend phase. **Nothing gates it any more:** the account-password Medium it depended on closed 2026-07-29, so `PATCH /api/users/me/password` exists for the shell's change-password dialog to call. The backend backlog is not merely "Highs done" — **every backend task at every priority is closed**, and both frontend tiers are empty because no frontend code exists yet |
-| **Current branch** | `fix/backend-backlog`, **finished and awaiting its PR into `projects/07-timetrack`** (§22 "Backlog-fix branches"). `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge — opening it first would build Step 7a on a branch without the password endpoint |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and it is gated: the 2026-08-06 `review-audit` re-opened the backend tier with **2 Highs, 10 Mediums and 18 Lows still open**, so the claim this cell carried until 2026-08-23 — that every backend task at every priority was closed — was true only of the previous review round |
+| **Current branch** | `fix/backend-backlog`, **live again** — the 2026-08-06 review reopened the backlog it had finished, so its PR into `projects/07-timetrack` waits until the remaining Highs are fixed (§22 "Backlog-fix branches"). `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
-| **Next gate** | G3 sign-off — **condition met, action pending**: PR `fix/backend-backlog` into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d. Note that G7's stricter bar — no open High **or** Medium — is already satisfied, ahead of schedule |
-| **Phase** | Frontend (Phase 5), starting at Step 7a — the backend phase and its backlog are closed |
-| **Last updated** | 2026-08-04 |
+| **Next gate** | G3 sign-off — **blocked**: §23 signs it off only when every backend **High** is fixed and merged, and 2 remain open (`JwtFilter` blank-token 500, and the undocumented runtime configuration). The secrets-in-pushed-history High closed 2026-08-23. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
+| **Phase** | Backend (Phase 4) — its backlog reopened on 2026-08-06 and the frontend phase has not started; Step 7a opens Phase 5 once G3 signs off |
+| **Last updated** | 2026-08-23 |
 
 ---
 
@@ -397,6 +397,14 @@ it at runtime through the existing `PasswordEncoder` bean. The runner is idempot
 > offline-crackable, and shipped to every future environment including Docker (Step 11). Generating the hash
 > in Java at runtime from an env var fixes all three at once. This is the version worth defending in an
 > interview; the `data.sql` approach is the one to describe as *what it replaced and why*.
+
+> **The published values were rotated on 2026-08-23, and the history was deliberately left alone.**
+> Removing a secret from the working tree does not un-publish it: the datasource password of `f17c01e`
+> and the seed hash of `21f5221` stayed reachable on `origin/main` long after both were replaced by
+> `${DB_PASSWORD}` and the runtime seeding above. Both credentials were rotated, which is what ends the
+> exposure; a `filter-repo` rewrite was rejected because it changes every commit hash from May onward —
+> breaking the references the `## Closed` ledger, this plan and the notes all cite — while revoking
+> nothing already cloned. Both published values are treated as burned.
 
 ---
 
