@@ -175,13 +175,25 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 
 *Full Docker setup coming in the final step.*
 
-**Requirements:** Java 25, PostgreSQL running locally, database named `timetrack`
+**Requirements:** Java 25, PostgreSQL running locally, and an empty database named `timetrack`
 
-Set `DB_PASSWORD` as an environment variable (IntelliJ: Run → Edit Configurations → Environment variables).
+Set these environment variables before starting the app (IntelliJ: Run → Edit Configurations →
+Environment variables):
+
+| Variable | What it is |
+|---|---|
+| `DB_PASSWORD` | Password of the local PostgreSQL user |
+| `JWT_SECRET` | Signing key for access tokens — any string of at least 32 bytes |
+| `ADMIN_PASSWORD` | Password of the first manager account, seeded at startup |
+| `SPRING_PROFILES_ACTIVE=dev` | Activates the `dev` profile. **Required locally** — there is no public register endpoint, so without it no account is seeded and every login returns 401 |
 
 Open `projects/07-timetrack/backend/timetrack/` in IntelliJ and run `TimetrackApplication.java`.
 
-API available at `http://localhost:8080`
+API available at `http://localhost:8080`, and you can log in as `manager@timetrack.com` with the password
+you set in `ADMIN_PASSWORD`.
+
+See [backend/README.md](backend/README.md#how-to-run-alone) for what each variable is read from and why
+the profile is mandatory.
 
 ---
 

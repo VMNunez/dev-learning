@@ -319,11 +319,57 @@ src/main/java/com/victor/timetrack/
 
 ## How to run alone
 
-**Requirements:** Java 25, PostgreSQL running locally, database named `timetrack`
+**Requirements:** Java 25, PostgreSQL running locally, and an empty database named `timetrack`
+(`spring.jpa.hibernate.ddl-auto=update` creates the schema on first boot).
 
-Set `DB_PASSWORD` as an environment variable:
-- IntelliJ: Run → Edit Configurations → Environment variables → add `DB_PASSWORD`
+### Environment variables
 
-Open `projects/07-timetrack/backend/timetrack/` in IntelliJ and run `TimetrackApplication.java`.
+Three properties in `src/main/resources/` are declared as `${...}` placeholders with **no default**, so
+the application context fails to start if they are missing — a secret with a fallback value is a secret
+published in git, which is the whole point of leaving them unresolvable.
+
+| Variable | Read from | Required | What it is |
+|---|---|---|---|
+| `DB_PASSWORD` | `application.properties` → `spring.datasource.password` | Always | Password of the local PostgreSQL user (`postgres` by default) |
+| `JWT_SECRET` | `application.properties` → `app.jwt.secret` | Always | HMAC signing key for access tokens. Any string of at least 32 bytes; treat it as a credential |
+| `ADMIN_PASSWORD` | `application-dev.properties` → `app.admin.password` | With the `dev` profile only | Plain-text password of the seeded first manager, hashed with BCrypt at startup and never stored in git |
+
+Miss `JWT_SECRET` and startup ends in `Could not resolve placeholder 'app.jwt.secret'`.
+
+### The `dev` profile is not optional in local development
+
+`SPRING_PROFILES_ACTIVE=dev`
+
+The API has no public register endpoint, so the first manager account has to already exist before anyone
+can log in. It is created by `config/DataInitializer`, a `CommandLineRunner` annotated `@Profile("dev")`:
+without that profile the bean is never instantiated, the `users` table stays empty, and **every login
+returns 401** with nothing in the logs to explain it. The profile also loads
+`application-dev.properties`, which is where `app.admin.*` and `spring.jpa.show-sql` live — which is why
+`ADMIN_PASSWORD` is only read when it is active.
+
+The runner is idempotent: a `findByEmail(...)` guard makes every boot after the first a no-op.
+
+Seeded account — log in with these at `POST /api/auth/login`:
+
+| Field | Value |
+|---|---|
+| Email | `manager@timetrack.com` |
+| Password | whatever you set in `ADMIN_PASSWORD` |
+| Role | `MANAGER` |
+
+### Run it
+
+In IntelliJ: Run → Edit Configurations → *Environment variables*, add the three variables above, and set
+*Active profiles* to `dev` (or add `SPRING_PROFILES_ACTIVE=dev` as a fourth variable).
+
+Open `projects/07-timetrack/backend/timetrack/` and run `TimetrackApplication.java`.
+
+From a terminal, without IntelliJ:
+
+```bash
+cd projects/07-timetrack/backend/timetrack
+export DB_PASSWORD=... JWT_SECRET=... ADMIN_PASSWORD=...
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 API available at `http://localhost:8080`
