@@ -255,6 +255,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `JwtFilter` catches `IllegalArgumentException` beside `JwtException`, because jjwt signals an absent, empty, or blank compact token with the former — a type unrelated to its own exception family. `Authorization: Bearer ` with nothing after the space reaches `substring(7)` as `""`, and before the fix that escaped the filter above `ExceptionTranslationFilter`, so an anonymous caller received the container's `/error` body with `500` instead of the uniform `401` `ErrorResponse` that `JwtAuthenticationEntryPoint` writes. A filter that reads a credential fails closed on every parse failure, whatever type the library uses to report it.
 
+### A profile-gated bean is part of the run contract ✓
+
+`DataInitializer` is `@Profile("dev")`, so without `SPRING_PROFILES_ACTIVE=dev` the context starts cleanly and the application is still unusable: no manager is seeded, and with no register endpoint every login is `401`. A missing `${JWT_SECRET}` at least fails loudly at startup — a missing profile fails silently, which is why the activation is documented in *How to run alone* beside the mandatory variables rather than left as a developer's local setting.
+
 ---
 
 ## Tradeoffs
