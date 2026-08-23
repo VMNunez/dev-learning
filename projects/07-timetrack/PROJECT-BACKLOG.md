@@ -22,7 +22,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
-- [ ] **[High]** `[backend]` — Widen `JwtFilter`'s catch (`JwtFilter.java:58`) to include `IllegalArgumentException`. jjwt 0.12.6 throws it — not a `JwtException` — for a blank compact token, so `Authorization: Bearer ` (header ends at the space) makes `substring(7)` yield `""`, the exception escapes `doFilterInternal` past `ExceptionTranslationFilter`, and an anonymous caller gets a 500 with Boot's `/error` body. §10 states every error returns the same `ErrorResponse`; this is the one path that does not *(Effort: Small)*
 - [ ] **[High]** `[backend]` — Document the runtime configuration the app actually needs. `backend/README.md:319` names only `DB_PASSWORD`, but `JWT_SECRET` and `ADMIN_PASSWORD` are placeholders with no default, and nothing sets `spring.profiles.active`. A clean clone following "How to run alone" fails at startup with `Could not resolve placeholder 'app.jwt.secret'`; export the secret and it boots *without* the `dev` profile, so the `@Profile("dev")` `DataInitializer` never seeds an admin and — with no register endpoint — every login is 401. List all four vars plus `SPRING_PROFILES_ACTIVE=dev` in the run instructions (they currently live only in the gitignored `.idea/workspace.xml`) *(Effort: Small)*
 
 #### Medium
@@ -96,6 +95,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
+- 2026-08-23 · **[High]** `[backend]` — `JwtFilter` catch widened to `IllegalArgumentException`; a blank bearer token answers 401, not 500 → coverage spring-boot/junior, backend README Key patterns, PLANNING §0
 - 2026-08-23 · **[High]** `[backend]` — datasource password and seed BCrypt hash published in `origin/main` rotated; history rewrite rejected — DECISION, no code change → PLANNING §9, backend README Tradeoffs, coverage security/junior
 - 2026-07-28 · **[High]** `[backend]` — `AuthResponse` now carries `token, name, role` → already covered (DTO pattern), PLANNING §10
 - 2026-07-23 · **[High]** `[backend]` — user-management endpoints built (`POST`/`PUT`/`DELETE /api/users`) → already in README, PROGRESS
