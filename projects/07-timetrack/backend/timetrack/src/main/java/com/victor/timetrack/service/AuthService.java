@@ -52,11 +52,12 @@ public class AuthService {
         loginAttemptService.reset(emailKey);
         loginAttemptService.reset(ip);
 
-        String token = jwtUtil.generateToken(authentication.getName());
-
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + authentication.getName()));
 
+        String token = jwtUtil.generateToken(user.getId());
+
         return new AuthResponse(token, user.getName(), user.getRole());
+
     }
 }

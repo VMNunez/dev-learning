@@ -25,6 +25,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepository.findByEmail(EmailNormalizer.normalize(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+        return toUserDetails(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + id));
+
+        return toUserDetails(user);
+    }
+
+    private UserDetails toUserDetails(User user) {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
@@ -33,3 +45,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .build();
     }
 }
+

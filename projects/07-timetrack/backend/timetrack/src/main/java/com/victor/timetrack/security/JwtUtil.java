@@ -20,25 +20,25 @@ public class JwtUtil {
     @Value("${app.jwt.expiration}")
     private long expiration;
 
-    public String generateToken(String username) {
+    public String generateToken(Long userId) {
         return Jwts.builder()
-                .subject(username)
+                .subject(String.valueOf(userId))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
-
     }
 
-    public String extractUsername(String token) {
-        return parseClaims(token).getSubject();
+    public Long extractUserId(String token) {
+        return Long.valueOf(parseClaims(token).getSubject());
     }
 
-    public boolean isValid(String token, String email) {
+    public boolean isValid(String token, Long userId) {
         try {
             Claims claims = parseClaims(token);
 
-            return claims.getSubject().equals(email) && claims.getExpiration().after(new Date());
+            return claims.getSubject().equals(String.valueOf(userId))
+                    && claims.getExpiration().after(new Date());
         } catch (JwtException e) {
             return false;
         }
