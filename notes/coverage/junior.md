@@ -608,7 +608,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code ✅ 07-timetrack
 - `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
 - `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
-- String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
+- String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException` ✅ 07-timetrack — `JwtUtil` renders the id with `String.valueOf` and reads it back with `Long.valueOf`, whose `NumberFormatException` rejects a legacy token
 - `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
 - Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
 - Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
@@ -951,6 +951,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   bearer tokens, including storage, scaling, revocation, and CSRF consequences ✅ 07-timetrack
 - Authentication vs session management — verifying credentials creates authenticated state, while
   propagation, expiry, renewal, rotation, and invalidation govern its later lifecycle
+- Immutable subject identity — bind a session or token to an identifier the account can never lose,
+  since a mutable natural key such as an email hands the still-valid credential to whichever account
+  holds that value next ✅ 07-timetrack — the JWT subject carries the user id, so `JwtFilter` loads the principal by id, never by the editable email
 - Session fixation and hijacking — accept only server-generated unpredictable session identifiers,
   rotate them after authentication or privilege changes, and invalidate server-side state on logout
 - Bearer-token possession — anyone who obtains a bearer token can use it, so URLs, logs, screenshots,

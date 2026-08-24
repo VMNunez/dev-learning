@@ -59,6 +59,9 @@ review without taking on specialist or production-platform ownership.
   bearer tokens, including storage, scaling, revocation, and CSRF consequences ✅ 07-timetrack
 - Authentication vs session management — verifying credentials creates authenticated state, while
   propagation, expiry, renewal, rotation, and invalidation govern its later lifecycle
+- Immutable subject identity — bind a session or token to an identifier the account can never lose,
+  since a mutable natural key such as an email hands the still-valid credential to whichever account
+  holds that value next ✅ 07-timetrack — the JWT subject carries the user id, so `JwtFilter` loads the principal by id, never by the editable email
 - Session fixation and hijacking — accept only server-generated unpredictable session identifiers,
   rotate them after authentication or privilege changes, and invalidate server-side state on logout
 - Bearer-token possession — anyone who obtains a bearer token can use it, so URLs, logs, screenshots,
