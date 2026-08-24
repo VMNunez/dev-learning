@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
 import com.victor.timetrack.dto.request.RejectRequest;
 import com.victor.timetrack.dto.request.UpdateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
+import com.victor.timetrack.exception.BusinessRuleViolationException;
 import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.service.TimeEntryService;
 import jakarta.validation.Valid;
@@ -18,6 +19,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.YearMonth;
+import java.util.Set;
+import java.util.TreeSet;
 
 @RestController
 @RequestMapping("/api/entries")
@@ -28,6 +31,8 @@ public class TimeEntryController {
         this.timeEntryService = timeEntryService;
     }
 
+    private static final Set<String> SORTABLE_PROPERTIES = Set.of("date", "hours", "status", "id");
+
     @GetMapping
     public ResponseEntity<Page<TimeEntryResponse>> findByFilter(
             @RequestParam(required = false) Long userId,
@@ -37,6 +42,7 @@ public class TimeEntryController {
             @PageableDefault(size = 20, sort = {"date", "id"},
                     direction = Sort.Direction.DESC) Pageable pageable
     ) {
+        validateSort(pageable.getSort());
         return ResponseEntity.ok(timeEntryService.findByFilter(userId, projectId, status, month, pageable));
     }
 
@@ -87,5 +93,15 @@ public class TimeEntryController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         timeEntryService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void validateSort(Sort sort) {
+        for (Sort.Order order : sort) {
+            if (!SORTABLE_PROPERTIES.contains(order.getProperty())) {
+                throw new BusinessRuleViolationException(
+                        "Invalid sort property '" + order.getProperty()
+                                + "'. Allowed: " + String.join(", ", new TreeSet<>(SORTABLE_PROPERTIES)));
+            }
+        }
     }
 }
