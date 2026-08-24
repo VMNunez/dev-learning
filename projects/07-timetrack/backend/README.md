@@ -177,7 +177,7 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 ### Explicit JWT validation ✓
 
-`JwtUtil.isValid` parses the token once and checks the subject **and** `getExpiration().after(new Date())` explicitly, instead of relying on `extractUsername` throwing as a side effect of parsing. Makes the expiration check a deliberate decision in the code, not an accident of call order.
+`JwtUtil.isValid` parses the token once and checks the subject **and** `getExpiration().after(new Date())` explicitly, instead of relying on `extractUserId` throwing as a side effect of parsing. Makes the expiration check a deliberate decision in the code, not an accident of call order.
 
 ### Reconciled report aggregates ✓
 
@@ -217,7 +217,7 @@ The report rule above generalised: `ProjectService` and `UserService` hand a `So
 
 ### JWT subject taken from the verified `Authentication`, not the request body ✓
 
-`AuthService.login` uses `authentication.getName()` — the value `AuthenticationManager.authenticate(...)` returns after checking the credentials — to generate the token and look up the user, never `request.getEmail()` directly. Both resolve to the same value today (`findByEmail` is an exact match), but taking the subject from unvalidated input rather than the verified identity is the habit that becomes exploitable the moment lookup logic changes.
+`AuthService.login` uses `authentication.getName()` — the value `AuthenticationManager.authenticate(...)` returns after checking the credentials — to look up the user whose id becomes the token's subject, never `request.getEmail()` directly. Both resolve to the same account today (`findByEmail` is an exact match), but reaching the identity through unvalidated input rather than the verified one is the habit that becomes exploitable the moment lookup logic changes.
 
 ### `ForbiddenOperationException` — a status-honest name, distinct from `AccessDeniedException` ✓
 
@@ -286,6 +286,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 ### Failed logins are bounded by account and by network, and the bound expires on its own ✓
 
 `LoginAttemptService` keeps a per-key failure counter and `AuthService` consults it *before* `authenticationManager.authenticate`, so a refused attempt never reaches BCrypt — five failures answer `429` through the same `@RestControllerAdvice` as every other error, for one minute measured from the last failure. Two keys are counted independently, the submitted email and `getRemoteAddr()`, because a per-account bound alone lets one common password be sprayed across every account without a single counter moving, and a per-IP bound alone puts a whole NAT'd office on one budget. The window lifting itself is the design, not a shortcut: a permanent lockout is the easier rule and the wrong one, since it hands an attacker a way to lock out any account they can name. The counter's value is an immutable `record` replaced through `compute` and a two-argument `remove`, because a servlet container touches this one bean from every request thread at once and a read-modify-write spread over three statements drops failures under exactly the load that matters.
+
+### The token names the account by an identifier the account cannot lose ✓
+
+`JwtUtil` writes `user.id` into the `sub` claim and `JwtFilter` resolves the principal through `UserDetailsServiceImpl.loadUserById`; `loadUserByUsername` stays for `DaoAuthenticationProvider`, which keys the login on the submitted email. The subject used to be that email, which `PUT /api/users/{id}` deliberately keeps editable (§10) — so a still-valid 60-minute token whose subject was later reassigned to another account resolved to *that* account and inherited its authorities: a vertical escalation with no forged signature and no stolen credential. A surrogate key is the only identifier a mutation cannot hand to somebody else. Tokens issued in the old format expire on their own, because `Long.valueOf` rejects an email-shaped subject with `NumberFormatException` and the filter's catch already covered that as an `IllegalArgumentException`.
 
 ---
 
