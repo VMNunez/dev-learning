@@ -3,15 +3,12 @@ package com.victor.timetrack.service;
 import com.victor.timetrack.dto.response.UserHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
 import com.victor.timetrack.dto.response.ReportSummaryResponse;
-import com.victor.timetrack.model.EntryStatus;
-import com.victor.timetrack.model.TimeEntry;
+import com.victor.timetrack.repository.ReportSummaryProjection;
 import com.victor.timetrack.repository.TimeEntryRepository;
-import com.victor.timetrack.repository.TimeEntrySpecifications;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -29,53 +26,41 @@ public class ReportService {
 
     @Transactional(readOnly = true)
     public List<ProjectHoursReportResponse> getHoursByProject(YearMonth month) {
-        LocalDate start = month.atDay(1);
-        LocalDate end = month.atEndOfMonth();
-        return timeEntryRepository.getHoursByProject(start, end);
+        MonthRange range = MonthRange.of(month);
+
+        return timeEntryRepository.getHoursByProject(range.start(), range.end());
     }
 
     @Transactional(readOnly = true)
     public List<UserHoursReportResponse> getHoursByUser(YearMonth month) {
-        LocalDate start = month.atDay(1);
-        LocalDate end = month.atEndOfMonth();
-        return timeEntryRepository.getHoursByUser(start, end);
+        MonthRange range = MonthRange.of(month);
+
+        return timeEntryRepository.getHoursByUser(range.start(), range.end());
     }
 
     @Transactional(readOnly = true)
     public ReportSummaryResponse getSummary(YearMonth month) {
-        LocalDate start = month.atDay(1);
-        LocalDate end = month.atEndOfMonth();
+        MonthRange range = MonthRange.of(month);
 
         Long userId = null;
         if (!authenticatedUserProvider.isManager()) {
             userId = authenticatedUserProvider.currentUser().getId();
         }
 
-        Specification<TimeEntry> spec = Specification
-                .where(TimeEntrySpecifications.dateBetween(start, end))
-                .and(TimeEntrySpecifications.hasUserId(userId));
-
-        List<TimeEntry> entries = timeEntryRepository.findAll(spec);
-
-        BigDecimal approvedHours = entries.stream()
-                .filter(e -> e.getStatus() == EntryStatus.APPROVED)
-                .map(TimeEntry::getHours)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal pendingHours = entries.stream()
-                .filter(e -> e.getStatus() == EntryStatus.SUBMITTED)
-                .map(TimeEntry::getHours)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        int totalEntries = (int) entries.stream()
-                .filter(e -> e.getStatus() == EntryStatus.APPROVED)
-                .count();
+        ReportSummaryProjection summary =
+                timeEntryRepository.getSummary(range.start(), range.end(), userId);
 
         ReportSummaryResponse response = new ReportSummaryResponse();
-        response.setTotalEntries(totalEntries);
-        response.setApprovedHours(approvedHours);
-        response.setPendingHours(pendingHours);
-
+        response.setTotalEntries(summary.getTotalEntries());
+        response.setApprovedHours(summary.getApprovedHours().setScale(2, RoundingMode.HALF_UP));
+        response.setPendingHours(summary.getPendingHours().setScale(2, RoundingMode.HALF_UP));
+        
         return response;
+    }
+
+    private record MonthRange(LocalDate start, LocalDate end) {
+        static MonthRange of(YearMonth month) {
+            return new MonthRange(month.atDay(1), month.atEndOfMonth());
+        }
     }
 }

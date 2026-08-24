@@ -33,4 +33,16 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long>, Jpa
             ORDER BY SUM(te.hours) DESC, te.user.name ASC
             """)
     List<UserHoursReportResponse> getHoursByUser(@Param("start") LocalDate start, @Param("end") LocalDate end);
+
+    @Query("""
+            SELECT COALESCE(SUM(CASE WHEN te.status = com.victor.timetrack.model.EntryStatus.APPROVED THEN te.hours END), 0) AS approvedHours,
+                   COALESCE(SUM(CASE WHEN te.status = com.victor.timetrack.model.EntryStatus.SUBMITTED THEN te.hours END), 0) AS pendingHours,
+                   COUNT(CASE WHEN te.status = com.victor.timetrack.model.EntryStatus.APPROVED THEN 1 END) AS totalEntries
+            FROM TimeEntry te
+            WHERE te.date BETWEEN :start AND :end
+              AND (:userId IS NULL OR te.user.id = :userId)
+            """)
+    ReportSummaryProjection getSummary(@Param("start") LocalDate start,
+                                       @Param("end") LocalDate end,
+                                       @Param("userId") Long userId);
 }
