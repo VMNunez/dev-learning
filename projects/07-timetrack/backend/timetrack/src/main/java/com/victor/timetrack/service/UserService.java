@@ -96,6 +96,15 @@ public class UserService {
         boolean promotedToManager = request.getRole() == Role.MANAGER
                 && user.getRole() != Role.MANAGER;
 
+        boolean demoted = request.getRole() != Role.MANAGER
+                && user.getRole() == Role.MANAGER;
+
+        boolean deactivated = Boolean.FALSE.equals(request.getActive()) && user.isActive();
+
+        if (demoted || deactivated) {
+            refuseSelfLockout(user, demoted ? "demote" : "deactivate");
+        }
+
         if (promotedToManager
                 && timeEntryRepository.existsByUserIdAndStatusIn(user.getId(), NON_TERMINAL_STATUSES)) {
             throw new InvalidStateTransitionException(
@@ -121,9 +130,14 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
 
+        if (user.isActive()) {
+            refuseSelfLockout(user, "deactivate");
+        }
+
         user.setActive(false);
         userRepository.save(user);
     }
+
 
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
@@ -157,4 +171,13 @@ public class UserService {
 
         return response;
     }
+
+    private void refuseSelfLockout(User target, String action) {
+        if (target.getId().equals(authenticatedUserProvider.currentUser().getId())) {
+            throw new InvalidStateTransitionException(
+                    "You cannot " + action + " your own account. Ask another manager to do it");
+        }
+    }
+
+
 }
