@@ -24,13 +24,13 @@ Spring Boot REST API for the TimeTrack project.
 |---|---|---|---|
 | GET | `/api/users` | All | List all users |
 
-### Auth *(Step 3 — coming soon)*
+### Auth
 
 | Method | URL | Role | Description |
 |---|---|---|---|
 | POST | `/api/auth/login` | Public | Returns JWT |
 
-### Time entries *(Step 5 — coming soon)*
+### Time entries
 
 | Method | URL | Role | Description |
 |---|---|---|---|
@@ -42,7 +42,7 @@ Spring Boot REST API for the TimeTrack project.
 | PATCH | `/api/entries/{id}/approve` | Manager | SUBMITTED → APPROVED |
 | PATCH | `/api/entries/{id}/reject` | Manager | SUBMITTED → REJECTED |
 
-### Reports *(Step 6 — coming soon)*
+### Reports
 
 | Method | URL | Role | Description |
 |---|---|---|---|
@@ -76,7 +76,7 @@ Spring Boot REST API for the TimeTrack project.
 | active | BOOLEAN | Default true — inactive projects cannot receive new entries |
 | createdAt | TIMESTAMP | Set automatically by Hibernate |
 
-### TimeEntry *(Step 5 — coming soon)*
+### TimeEntry
 
 | Field | Type | Notes |
 |---|---|---|
@@ -95,7 +95,7 @@ Spring Boot REST API for the TimeTrack project.
 
 ---
 
-## Auth flow *(Step 3 — coming soon)*
+## Auth flow
 
 1. Client sends `POST /api/auth/login` with email and password
 2. Service loads the user from DB, verifies password with BCrypt
@@ -106,7 +106,7 @@ Spring Boot REST API for the TimeTrack project.
 
 ---
 
-## Security considerations *(Step 3 — coming soon)*
+## Security considerations
 
 - Passwords hashed with BCrypt — never stored in plain text
 - JWT secret loaded from environment variable — never committed to git
@@ -155,7 +155,7 @@ The list endpoint is part of the pattern, not separate from it: `GET /api/users`
 
 The allowed origin is loaded from `app.cors.allowed-origins` via `@Value`, not hardcoded in `SecurityConfig` — an environment-specific value stays outside compiled code. `allowCredentials(false)` because auth travels in the `Authorization` header, not cookies, so credentialed CORS is unnecessary and only forces the stricter same-exact-origin matching for no benefit.
 
-### GlobalExceptionHandler *(Step 3 — coming soon)*
+### GlobalExceptionHandler
 
 `@ControllerAdvice` catches exceptions across all controllers and returns consistent JSON error responses instead of Spring's default HTML error page.
 
