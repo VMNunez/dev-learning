@@ -240,7 +240,9 @@ public class TimeEntryService {
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());
+        response.setUserId(timeEntry.getUser().getId());
         response.setUserName(timeEntry.getUser().getName());
+        response.setProjectId(timeEntry.getProject().getId());
         response.setProjectName(timeEntry.getProject().getName());
         response.setDate(timeEntry.getDate());
         response.setHours(timeEntry.getHours());

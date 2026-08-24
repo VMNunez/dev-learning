@@ -9,7 +9,9 @@ import java.time.LocalDate;
 @Data
 public class TimeEntryResponse {
     private Long id;
+    private Long userId;
     private String userName;
+    private Long projectId;
     private String projectName;
     private LocalDate date;
     private BigDecimal hours;
