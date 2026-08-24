@@ -52,7 +52,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `@Override` — ask the compiler to verify that a method really implements or overrides an inherited declaration ✅ 07-timetrack
 - Overriding vs overloading — overriding replaces inherited instance behaviour at runtime; overloading selects among different parameter lists at compile time
 - `instanceof` and pattern variables — test a runtime type before using subtype behaviour without an unsafe cast
-- Records — use a concise data carrier with final components and generated accessors, canonical construction, `equals`, `hashCode`, and `toString`
+- Records — use a concise data carrier with final components and generated accessors, canonical construction, `equals`, `hashCode`, and `toString` ✅ 07-timetrack — the private `Attempts(int count, Instant lastFailure)` carrier whose generated `equals` makes the compare-and-remove work
 - Shallow vs deep immutability — final fields or record components prevent reassignment but do not make referenced mutable objects immutable
 
 ## Equality and hashing
@@ -84,7 +84,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Array access and bounds — index elements with `[i]` and read length via the `.length` field (a field, not a method, unlike `String.length()` or `List.size()`), knowing that an out-of-range index throws `ArrayIndexOutOfBoundsException`
 - `List` — preserve encounter order and allow duplicates when position or sequence matters ✅ 07-timetrack
 - `Set` — represent unique elements when duplicates have no meaning
-- `Map` — associate unique keys with values and distinguish missing keys from keys explicitly mapped to `null`
+- `Map` — associate unique keys with values and distinguish missing keys from keys explicitly mapped to `null` ✅ 07-timetrack — an absent key in the login-attempt map means "no failures yet", read straight off the `null` from `get`
 - `ArrayList`, `HashSet`, and `HashMap` — recognise the normal general-purpose implementations for list, set, and map semantics
 - Map accumulator idioms — use `getOrDefault` and `computeIfAbsent` for the common count-or-group pattern instead of manual get-check-put null handling
 - Collection interfaces vs implementations — declare the weakest useful contract such as `List` while choosing a concrete implementation such as `ArrayList` at construction ✅ 07-timetrack
