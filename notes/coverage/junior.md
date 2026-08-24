@@ -767,6 +767,10 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   validation with business invariants ✅ 07-timetrack
 - Response DTO — shape a stable outward representation and minimise field disclosure independently of
   the internal persistence or domain model ✅ 07-timetrack
+- Relationship identifiers in a response — showing a related entity by display label alone forces the
+  client to re-derive its key before the next write, and that lookup is only correct while the label
+  happens to be unique; carry the identifier beside the label and read minimal disclosure as a rule
+  about sensitive fields, not about keys the caller must send back ✅ 07-timetrack — `TimeEntryService.toResponse` sets `projectId` and `userId` beside `projectName`/`userName`, so an entry from `GET /api/entries` is sent straight back to `PUT /api/entries/{id}` without a name lookup against the projects list
 - Framework types are not response contracts — a library's implementation class serialised by reflection
   makes the payload shape an internal detail of a dependency; wrap it in a DTO you own so an upgrade
   cannot silently change the API ✅ 07-timetrack
