@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project,Long> {
     List<Project> findByActiveTrue(Sort sort);
-    boolean existsByName(String name);
+    boolean existsByNameIgnoreCase(String name);
 }

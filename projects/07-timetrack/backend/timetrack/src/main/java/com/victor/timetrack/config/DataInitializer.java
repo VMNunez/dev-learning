@@ -3,6 +3,7 @@ package com.victor.timetrack.config;
 import com.victor.timetrack.model.Role;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
+import com.victor.timetrack.util.EmailNormalizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -31,12 +32,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.findByEmail(adminEmail).isPresent()) {
+        String email = EmailNormalizer.normalize(adminEmail);
+        if (userRepository.existsByEmail(email)) {
             return;
         }
         User admin = new User();
         admin.setName(adminName);
-        admin.setEmail(adminEmail);
+        admin.setEmail(email);
         admin.setPassword(passwordEncoder.encode(adminPassword));
         admin.setRole(Role.MANAGER);
         admin.setActive(true);

@@ -2,6 +2,7 @@ package com.victor.timetrack.service;
 
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
+import com.victor.timetrack.util.EmailNormalizer;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @NullMarked
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
+        User user = userRepository.findByEmail(EmailNormalizer.normalize(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
         return org.springframework.security.core.userdetails.User

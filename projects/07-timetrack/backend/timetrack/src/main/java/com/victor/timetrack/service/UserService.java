@@ -14,6 +14,7 @@ import com.victor.timetrack.model.Role;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.UserRepository;
+import com.victor.timetrack.util.EmailNormalizer;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -55,17 +55,17 @@ public class UserService {
 
     @Transactional
     public CreateUserResponse create(CreateUserRequest request) {
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        String email = EmailNormalizer.normalize(request.getEmail());
 
-        if (user.isPresent()) {
+        if (userRepository.existsByEmail(email)) {
             throw new DuplicateResourceException("email", "Email already in use");
         }
 
         String generatedPassword = generatePassword();
 
         User newUser = new User();
-        newUser.setName(request.getName());
-        newUser.setEmail(request.getEmail());
+        newUser.setName(request.getName().trim());
+        newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(generatedPassword));
         newUser.setRole(request.getRole());
 
@@ -87,12 +87,10 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
 
-        if (!user.getEmail().equals(request.getEmail())) {
-            Optional<User> userExist = userRepository.findByEmail(request.getEmail());
+        String email = EmailNormalizer.normalize(request.getEmail());
 
-            if (userExist.isPresent()) {
-                throw new DuplicateResourceException("email", "Email already in use");
-            }
+        if (!user.getEmail().equals(email) && userRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException("email", "Email already in use");
         }
 
         boolean promotedToManager = request.getRole() == Role.MANAGER
@@ -105,8 +103,8 @@ public class UserService {
                             + "The user must submit, delete or resubmit them first");
         }
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
+        user.setName(request.getName().trim());
+        user.setEmail(email);
         user.setRole(request.getRole());
         if (request.getActive() != null) {
             user.setActive(request.getActive());

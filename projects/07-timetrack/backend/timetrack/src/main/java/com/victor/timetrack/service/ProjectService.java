@@ -51,12 +51,13 @@ public class ProjectService {
 
     @Transactional
     public ProjectResponse create(CreateProjectRequest request) {
-        if (projectRepository.existsByName(request.getName())) {
+        String name = request.getName().trim();
+        if (projectRepository.existsByNameIgnoreCase(name)) {
             throw new DuplicateResourceException("name", "A project with this name already exists");
         }
 
         Project project = new Project();
-        project.setName(request.getName());
+        project.setName(name);
         project.setDescription(request.getDescription());
 
         Project saved = projectRepository.save(project);
@@ -69,15 +70,18 @@ public class ProjectService {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
 
+        String name = request.getName().trim();
+
         if (request.getActive() != null) {
             project.setActive(request.getActive());
         }
 
-        if (!project.getName().equals(request.getName()) && projectRepository.existsByName(request.getName())) {
+        if (!project.getName().equalsIgnoreCase(name)
+                && projectRepository.existsByNameIgnoreCase(name)) {
             throw new DuplicateResourceException("name", "A project with this name already exists");
         }
 
-        project.setName(request.getName());
+        project.setName(name);
         project.setDescription(request.getDescription());
 
         Project saved = projectRepository.save(project);
