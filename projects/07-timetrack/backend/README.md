@@ -263,6 +263,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `EmailNormalizer.normalize` trims and lower-cases an email at the service boundary, and the same value feeds both the duplicate check and the setter, in `UserService.create`/`update`, `UserDetailsServiceImpl` and `DataInitializer`. Project names take the parallel rule: `ProjectService` trims and asks `existsByNameIgnoreCase`, and `update` uses `equalsIgnoreCase` to decide whether the name changed at all, so re-capitalising a project is not a duplicate of itself. Comparing one form while persisting another is what lets `Ana@corp.com` and `ana@corp.com` become two logins for one person, and §8's by-project report split one project's hours across two rows.
 
+### An admin operation refuses the caller as its own target ✓
+
+`UserService.update` and `delete` refuse a demotion or a deactivation whose target id is the caller's own, with `409`. Both endpoints are `hasRole('MANAGER')`, so the only route back from either — `PUT /api/users/{id}` — needs the privilege the call is removing, and `JwtFilter` runs the loaded `UserDetails` through an `AccountStatusUserDetailsChecker`, so a deactivated manager loses their still-valid token on the very next request. The §17 Team wireframe renders `✏ 🗑` on every row including the caller's, which makes it one misclick. The system-wide invariant — at least one active MANAGER always remains — needs no code of its own: it follows from the caller always being an active MANAGER and never being their own target.
+
 ---
 
 ## Tradeoffs
