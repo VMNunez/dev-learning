@@ -35,6 +35,9 @@ review without taking on specialist or production-platform ownership.
   replace permission checks on every protected backend operation ✅ 07-timetrack
 - Role-based access control — map roles or authorities consistently and prevent clients from assigning
   privileged roles to themselves ✅ 06-hr-portal
+- Administrative self-lockout — an operation that removes a privilege must refuse when the caller is its
+  own target, since the route back usually requires the very privilege being removed ✅ 07-timetrack — `UserService.update`
+  and `delete` refuse a demotion or deactivation whose target id is the caller's own
 - Layered authorisation rules — request-level and method-level checks can reinforce each other but must
   not leave gaps or contradictory policy ✅ 07-timetrack
 - Object-level authorisation (BOLA/IDOR) — verify access to the specific requested record instead of
