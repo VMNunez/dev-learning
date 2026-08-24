@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **4 Mediums and 17 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **3 Mediums and 17 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -439,6 +439,17 @@ radius. When a token expires mid-session the API returns 401 — the Angular int
 it, clears the stored session, and redirects to `/login`. Expiry is handled once in the interceptor,
 never per page. The access/refresh trade-off is documented in `backend/README.md`.
 
+**Login throttling:** five consecutive failed logins on the same email — or from the same client IP —
+answer `429` for one minute. `LoginAttemptService` holds the counters in memory and `AuthService` reads
+them *before* the password is verified, so a refused attempt costs no BCrypt work. Both keys are bounded,
+because a per-account limit alone never sees one common password sprayed across many accounts, and a
+per-IP limit alone puts a whole NAT'd office on a single budget. The window is measured from the **last**
+failure and expires on its own; there is deliberately **no permanent lockout**, since a lockout an
+attacker can trigger by naming an account is a denial-of-service tool against the account it claims to
+protect. A successful login clears both counters. The counters are per-process — they reset on restart
+and do not span instances — which is accepted for a single-instance deployment and recorded as a
+tradeoff in `backend/README.md`.
+
 ### Success responses — status and `Location`
 
 Every controller states its status through a `ResponseEntity` factory (`ok`, `created`, `noContent`),
@@ -485,7 +496,7 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `POST /api/auth/login` | public | Authenticate and issue a JWT | `LoginRequest` — `email`, `password` | `200` + `AuthResponse` — `token`, `name`, `role` · `401` on bad credentials or inactive user |
+| `POST /api/auth/login` | public | Authenticate and issue a JWT | `LoginRequest` — `email`, `password` | `200` + `AuthResponse` — `token`, `name`, `role` · `401` on bad credentials or inactive user · `429` while the email or the caller's IP is inside the failed-login cooldown |
 
 ### Users (`UserController` — MANAGER only, except `PATCH /me/password`)
 
@@ -689,7 +700,7 @@ src/main/java/com/victor/timetrack/
 │   ├── TimeEntryController.java     (/api/entries + the workflow PATCH endpoints)
 │   └── ReportController.java        (/api/reports — MANAGER only, except GET /summary: any authenticated user, scoped)
 ├── service/
-│   ├── AuthService.java             (authenticates credentials and issues the JWT)
+│   ├── AuthService.java             (checks the login throttle, authenticates credentials and issues the JWT)
 │   ├── UserService.java             (user CRUD + soft delete + SecureRandom password generation and self-service change)
 │   ├── UserDetailsServiceImpl.java  (Spring Security — loads a user by email for authentication)
 │   ├── ProjectService.java          (project CRUD + soft delete)
@@ -734,12 +745,14 @@ src/main/java/com/victor/timetrack/
 │   ├── InvalidStateTransitionException.java (illegal workflow transition → 409)
 │   ├── InvalidCurrentPasswordException.java (wrong currentPassword on self-service change → 400, fieldErrors.currentPassword)
 │   ├── DuplicateResourceException.java    (duplicate email or project name → 409, caller-facing message)
-│   └── ForbiddenOperationException.java   (segregation of duties on approve/reject → 403)
+│   ├── ForbiddenOperationException.java   (segregation of duties on approve/reject → 403)
+│   └── TooManyAttemptsException.java      (email or IP inside the failed-login cooldown → 429)
 └── security/
     ├── JwtUtil.java                  (generates and validates the token, reads its claims)
     ├── JwtFilter.java                (OncePerRequestFilter — puts the user in the SecurityContext)
     ├── JwtAuthenticationEntryPoint.java (unauthenticated request → 401 JSON instead of an empty 403)
-    └── SecurityConfig.java           (filter chain, public routes, CORS, BCryptPasswordEncoder)
+    ├── SecurityConfig.java           (filter chain, public routes, CORS, BCryptPasswordEncoder)
+    └── LoginAttemptService.java       (in-memory failed-login counter, keyed by email and by client IP)
 ```
 
 ---
@@ -1008,7 +1021,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 
 | Page | Loading | Error | Empty |
 |---|---|---|---|
-| Login | Spinner inside the "Log in" button, form disabled | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry | n/a — no data load |
+| Login | Spinner inside the "Log in" button, form disabled | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up | n/a — no data load |
 | Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
 | Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
 | Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
@@ -1584,7 +1597,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `UserService.update` | Applies name, email, role and the optional `active` flag | promoting a user who holds a `DRAFT` **or** a `REJECTED` entry → throws `InvalidStateTransitionException` (409), each status asserted on its own so neither passes on the other's evidence; a user holding only `SUBMITTED`/`APPROVED` entries promotes normally (§8 routes `SUBMITTED` to another manager); `MANAGER → EMPLOYEE` never blocks **for another user**, while a demotion or a deactivation whose target id is the caller's own throws `InvalidStateTransitionException` (409), each of the two transitions asserted separately; renaming your own account still succeeds, so the guard is shown to read the transition and not the target; and reactivating a deactivated user who holds a `DRAFT` succeeds, since the role did not change |
 | `UserService.delete` | Sets `active = false` on the target | the caller deleting their own id → throws `InvalidStateTransitionException` (409); deleting an already-inactive user succeeds, so the soft delete stays idempotent |
 | `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidCurrentPasswordException` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); the new hash differs from the old one and `matches()` the new password |
-| `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password |
+| `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password; a sixth consecutive failure on the same email or IP → `TooManyAttemptsException` (429) without reaching the `AuthenticationManager`, and a successful login resets both counters |
 | `ReportService.getHoursByProject` / `.getHoursByUser` | Groups hours per project / per user for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
 | `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field; an EMPLOYEE caller gets only their own entries in all three figures, a MANAGER the whole company |
 
