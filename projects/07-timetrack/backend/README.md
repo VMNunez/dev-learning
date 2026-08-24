@@ -253,7 +253,7 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 ### A role can scope a response instead of refusing it ✓
 
-`GET /api/reports/summary` serves both roles, so the role is not the gate: `@PreAuthorize("isAuthenticated()")` states that the check lives further in, and `ReportService` adds `hasUserId(...)` to the `Specification` — `null` for a manager, the caller's own id for an employee, since a `null` argument makes that specification the neutral element of the `AND`. One query, one code path, and the three aggregates scope themselves because they all read the filtered list. The identity comes from `AuthenticatedUserProvider`, never from a request parameter. `by-project` and `by-user` keep `hasRole('MANAGER')`, so the contrast between the two kinds of authorisation is visible in one screen of the controller.
+`GET /api/reports/summary` serves both roles, so the role is not the gate: `@PreAuthorize("isAuthenticated()")` states that the check lives further in, and the summary query carries a `(:userId IS NULL OR te.user.id = :userId)` predicate — `null` for a manager, the caller's own id for an employee, so the null argument neutralises the filter instead of branching the query. One query, one code path, and the three aggregates scope themselves because they are computed over that one predicate. The identity comes from `AuthenticatedUserProvider`, never from a request parameter. `by-project` and `by-user` keep `hasRole('MANAGER')`, so the contrast between the two kinds of authorisation is visible in one screen of the controller.
 
 ### A role change is a workflow transition too ✓
 

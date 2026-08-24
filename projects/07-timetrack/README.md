@@ -109,7 +109,7 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - Inactive users can't log in — `.disabled(!user.isActive())` on the `UserDetails` builder + a `DisabledException` handler returning the same generic 401 as bad credentials (no user enumeration)
 - Reports count trusted hours only — the aggregates filter on `status = APPROVED` so DRAFT/SUBMITTED/REJECTED never inflate the totals
 - Broken object-level authorization (BOLA) — a filter on the list endpoint must also be applied on the detail endpoint (`getById`), returning 404 not 403 so the resource's existence isn't confirmed
-- Java Streams `filter`/`map`/`reduce` over `BigDecimal` — computing the report summary totals without a mutable accumulator
+- Aggregating in the database rather than in memory — a read that answers with three scalars sums them in the query instead of loading the month's rows as entities
 - User-management endpoints (manager only) — `POST`/`PUT`/`DELETE /api/users`, BCrypt-hashing the password on create, soft delete, duplicate email mapped to 409
 - Spring Profiles — `application-{profile}.properties` merges onto the base config, loaded only when that profile is active
 - `@Profile("dev")` on a bean — the bean isn't instantiated at all outside the active profile, not just skipped

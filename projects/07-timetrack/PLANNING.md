@@ -65,7 +65,7 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 | State machine workflow (DRAFT→SUBMITTED→APPROVED/REJECTED) | Architecture | Most valuable pattern in a junior portfolio |
 | PATCH for state transitions | Spring Boot | Signals that only `status` changes, not the whole resource |
 | Query filters with `@RequestParam` | Spring Boot | `?month=`, `?status=`, `?projectId=` on GET /api/entries |
-| `Specification<T>` + `JpaSpecificationExecutor` (Criteria API) | Spring Boot | Dynamic optional filters on GET /api/entries — the JPQL `IS NULL OR` pattern hit a real PostgreSQL bug (`42P18`, can't infer parameter type), Specifications build predicates only for filters actually present |
+| `Specification<T>` + `JpaSpecificationExecutor` (Criteria API) | Spring Boot | Dynamic optional filters on GET /api/entries — the JPQL `IS NULL OR` pattern hit a real PostgreSQL bug (`42P18`, can't infer parameter type) when a parameter appears *only* in the null test, so Specifications build predicates only for filters actually present; the reports summary uses `IS NULL OR` safely because the same parameter is also compared to `te.user.id`, which gives the driver its type |
 | Bean Validation (`@Valid` + `@NotNull` / `@NotBlank`) on request DTOs | Spring Boot | Field-level 400s at the controller boundary, before any service logic runs |
 | JPQL aggregation queries | Spring Boot | Reports — hours grouped by project and by employee |
 | Interface projections for query results | Spring Boot | Report rows mapped straight from `SELECT ... AS alias` — no class, no manual mapping |
