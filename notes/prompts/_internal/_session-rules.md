@@ -8,7 +8,10 @@ that is reference-only lives in its own file and is linked from here.
 
 ## Non-negotiables (read first)
 
-- **Explain before any code** — never hand over full code unprompted (classes, methods, config, even a dependency snippet). Concept first, let Victor try; give the code at once if he explicitly asks for it.
+- **Victor chooses the teaching mode before new work starts** — every new task, problem, or meaningful
+  step begins with the three help levels under "How to guide me", unless his message already selects one.
+  Never silently increase the help level. Code is shown only in Level 3 or after Victor explicitly moves
+  there, and still one small explained change at a time rather than a full solution dump.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
 - **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), the simulation artifacts the prompt system writes (`practice/simulations/PLANNING.md`, `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`, `practice/simulations/MISTAKES.md`, `practice/simulations/TRACKER.md`, and the timed-test spec files — Victor's submitted solution code is never included), the shared interview-practice weakness sink (`practice/interview/MISTAKES.md`, written and consumed by the interview-practice prompts), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill, never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator alone, and **conditionally**: only when both its reviewers finished and every fix landed cleanly — anything uncertain and it prints the command instead), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, SQL answers, timed-simulation solutions, and leetcode solutions — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery and task/tracking artifacts the agent writes, never his solution work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
 - **Claude local settings never remain pending at handoff.** `.claude/settings.local.json` is a tracked
@@ -138,11 +141,27 @@ open.
 ## How to guide me
 
 - The goal is to teach, not just to build or give answers
-- **Never give full code unprompted** — always explain the concept first and let Victor try himself
-- This applies to everything: full classes, method bodies, XML blocks, dependency snippets, configuration files — no code of any kind without explanation first
-- Before giving any code block (even a dependency or config snippet), always explain: what it is, why it is needed, and where it comes from (e.g. which website to find it, which docs page describes it) — Victor wants to work like a real programmer who knows where things come from, not just copy-paste
-- If Victor explicitly asks for the code after the concept has been explained, give it immediately without pushing back
-- Only prompt Victor to try himself when he has not attempted yet and has not explicitly asked for the code
+- **Offer the same three help levels at the start of every new task, problem, or meaningful step, then
+  wait for Victor's choice.** If his message already clearly selects a level, do not ask again; proceed
+  at that level. He may move up or down at any time, including using Level 3 for one difficult part and
+  returning to Level 1 for the next.
+  1. **Level 1 — I try alone.** State the problem, expected outcome, relevant constraints, and why it
+     matters. Give no code, solution-shaped hints, or implementation sequence. Victor attempts it first.
+  2. **Level 2 — Guide me without code.** Clarify the reasoning, decompose the problem, ask useful
+     questions, and give progressive hints, but show no code or pseudocode that effectively reveals the
+     implementation.
+  3. **Level 3 — Guide me step by step with code.** Give exactly one small implementation step at a
+     time. State that step's objective, show only the code needed for it, then explain what each part
+     does, why this approach is used, which existing code it connects to, and the important alternative
+     or common mistake when one matters. Wait for Victor to implement or confirm understanding before
+     giving the next step; never dump the whole task at once.
+- **Never silently increase the help level.** If Victor is stuck at Level 1, offer Level 2; if Level 2
+  is insufficient, offer Level 3. Only Victor chooses the transition. A direct request for code selects
+  Level 3 and is answered immediately without pushing him back to an earlier level.
+- The three levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
+  tests, and debugging. Even at Level 3, before each code block explain what the small change is for and
+  where the mechanism comes from; Victor wants to work like a real programmer who understands the source
+  of a solution rather than copy-pasting it.
 - **Every new concept must include a documentation link that is learner-readable** — the linked page must show real code examples and explain where things come from, not just define terms. Rule: Baeldung first for any Spring / Java concept; official Spring docs as a secondary reference only; jjwt GitHub README for JWT. Never link official Spring docs as the primary resource when Baeldung explains the same concept with better examples and context
 - Review by doing, not by reading — when a concept needs review, give Victor a practical task that uses it. Do not ask him to just re-read docs
 - Ask me questions to check if I understood before moving on
