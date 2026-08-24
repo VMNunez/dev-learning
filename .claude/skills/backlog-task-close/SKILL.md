@@ -45,8 +45,14 @@ touches documentation and coverage.
 ## 0 — Identify the task and the concept
 
 Quote the exact task line from `PROJECT-BACKLOG.md` back to Victor before doing anything, and state in
-one sentence **the concept it taught**. Everything downstream keys off that concept, so getting it
+one sentence **each concept it taught**. Everything downstream keys off those concepts, so getting them
 wrong poisons all five updates.
+
+**A task teaches as many concepts as it teaches — list them all.** One fix routinely crosses topics: an
+aggregate rewritten in the database teaches a persistence concept (`spring-boot`) *and* the SQL that
+expresses it (`sql`), and each of those is a separate bullet in a separate file. Steps 1, 1a and 2 all
+take a **list**, and the report table carries one row per concept. Naming only the headline concept is
+the common failure: the others are demonstrated in the same commit and silently leave no trace.
 
 Four kinds of task exist, and they close differently:
 
@@ -84,8 +90,8 @@ because the fix happened in a Spring project (`Optional<T>` is Java; `@Transacti
 
 ## 1 — Coverage: is the concept already there?
 
-**Invoke the `coverage-bullet-add` skill**, passing the concept from step 0 and the level Victor is
-currently working at. It owns this decision end to end: routing the concept to its owning `notes/` topic
+**Invoke the `coverage-bullet-add` skill**, passing **every concept from step 0** — not only the headline
+one — and the level Victor is currently working at. It owns this decision end to end: routing the concept to its owning `notes/` topic
 by altitude, searching the level file, authoring the bullet under the right section if it is missing,
 mirroring it into `notes/coverage/{LEVEL}.md` with a diff check, and reporting the `/notes-plan` remap the
 new bullet owes. Do not reproduce its logic here, and do not re-derive the topic routing yourself.
@@ -148,7 +154,7 @@ If nothing was written — the common already-covered path — this sub-step is 
 
 ## 2 — Project README: land the concept
 
-**Invoke the `readme-concept-add` skill** with the concept from step 0. It owns this decision end to end:
+**Invoke the `readme-concept-add` skill** with **every concept from step 0**. It owns this decision end to end:
 deriving which READMEs exist from the project number, routing the concept by **audience** to the global /
 backend / frontend file, checking whether it is already represented, and writing it in that section's own
 format under the README standard. Do not reproduce its logic here and do not pick the file yourself.
@@ -163,6 +169,33 @@ A backlog task's concept is almost always tier-level, so the common answer is a 
 the tier README — not "What I learned", which the standard gives only to the global file. If the concept is
 already represented, the skill reports **nothing written**; that is a good outcome, and a README with one
 bullet per bug fix is a worse README. Fold its report rows into this ritual's final table.
+
+---
+
+### 2b — Retire what the fix made false
+
+Every step so far **adds**. This one **removes**, and it is the only step that does: a fix that replaces a
+mechanism leaves the old one described as current in files nobody reopened. The failure mode is a README
+that teaches a technique the code no longer contains — worse than an absent entry, because it reads as
+true and an interviewer can open the class and see it is not.
+
+Run it on every code task, right after the README entry, while the diff is still in front of you:
+
+1. **List what the fix deleted or replaced** — the class, annotation, query style, library call, endpoint
+   or field that is no longer there. Read the diff, do not recall it.
+2. **Grep each one** across the project's `README.md`, its tier READMEs and `PLANNING.md`, plus the
+   coverage bullet's own evidence clause when the marker names the deleted mechanism. One `grep -rn` per
+   symbol; the cost is seconds and the alternative is a claim that rots silently.
+3. **Correct every hit in the same commit as the rest of the close.** A claim the fix made false is
+   rewritten to what the code does now, or deleted when the concept left the project entirely. Deleting an
+   entry is a legitimate outcome: a "What I learned" bullet naming a technique that no longer appears is
+   not learning the project can still show.
+4. **A contradicted rule is a finding, not a typo.** When the fix uses a pattern PLANNING documents as
+   broken — or breaks one it documents as required — restate the rule with the condition that makes both
+   true, and say so in the report. Silently deleting the old rule loses the reason it was written.
+
+Report what you retired, or say **"nothing stale"** explicitly. Silence here is indistinguishable from
+not having looked, which is exactly how these accumulate.
 
 ---
 
@@ -395,6 +428,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
+| Retired | `README.md:112` stream-`reduce` bullet rewritten; `backend/README.md:256` `Specification` scope corrected (or: nothing stale) |
 | PLANNING.md | added to §6 engineering rules |
 | PLANNING §0 | `Last updated` → today; no other cell moved (or: last open High cleared — `Next gate` now says G3 signable) |
 | PROGRESS.md | n/a — evidence cell unchanged (coverage table owned by the coverage skills) |
