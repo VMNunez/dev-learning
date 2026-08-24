@@ -1,5 +1,6 @@
 package com.victor.timetrack.repository;
 
+import com.victor.timetrack.dto.response.ReportSummaryProjection;
 import com.victor.timetrack.dto.response.UserHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
 import com.victor.timetrack.model.EntryStatus;

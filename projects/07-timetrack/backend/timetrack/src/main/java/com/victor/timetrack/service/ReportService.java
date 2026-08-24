@@ -3,7 +3,7 @@ package com.victor.timetrack.service;
 import com.victor.timetrack.dto.response.UserHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
 import com.victor.timetrack.dto.response.ReportSummaryResponse;
-import com.victor.timetrack.repository.ReportSummaryProjection;
+import com.victor.timetrack.dto.response.ReportSummaryProjection;
 import com.victor.timetrack.repository.TimeEntryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

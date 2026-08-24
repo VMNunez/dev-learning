@@ -1,4 +1,4 @@
-package com.victor.timetrack.repository;
+package com.victor.timetrack.dto.response;
 
 import java.math.BigDecimal;
 
