@@ -998,7 +998,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Security-sensitive randomness — generate reset tokens, initial secrets, and other guess-sensitive values
   from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream ✅ 07-timetrack
 - Brute-force defence — throttle repeated authentication attempts using account and network signals
-  without relying on permanent lockout that attackers can abuse for denial of service
+  without relying on permanent lockout that attackers can abuse for denial of service ✅ 07-timetrack — `LoginAttemptService` bounds failed logins per email and per client IP with a self-expiring cooldown
 - Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
   and never email the existing password or trust only an account identifier
 - Multi-factor authentication awareness — recognise that a second independent factor reduces the

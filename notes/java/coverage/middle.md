@@ -23,7 +23,7 @@ Concepts expected once core Java semantics are fluent and the developer must des
 
 ## Concurrency foundations
 
-- Thread safety and shared mutable state — identify races and prefer immutability or confinement before adding locks
+- Thread safety and shared mutable state — identify races and prefer immutability or confinement before adding locks ✅ 07-timetrack — the attempt counter is an immutable `record` replaced wholesale, never mutated in place
 - Executors and task submission — manage bounded worker pools rather than creating unmanaged threads
 - `CompletableFuture` composition — combine asynchronous stages with explicit error handling and executor awareness
-- Synchronisation primitives — choose `synchronized`, locks, and concurrent collections according to the protected invariant
+- Synchronisation primitives — choose `synchronized`, locks, and concurrent collections according to the protected invariant ✅ 07-timetrack — `ConcurrentHashMap.compute` and two-arg `remove` give the counter atomic compound updates instead of a lock
