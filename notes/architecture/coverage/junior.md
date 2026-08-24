@@ -29,6 +29,10 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
+- Identifier canonicalisation — user-supplied identifiers arrive in arbitrary case and surrounding
+  whitespace, so the boundary must reduce them to one canonical form and then use that same value both
+  for the uniqueness comparison and for what is persisted; comparing one form while storing another lets
+  a single logical identity become two rows, and no later lookup can tell which one is the real account ✅ 07-timetrack — `EmailNormalizer.normalize` runs before `existsByEmail` and before the setter in `UserService.create`/`update`, `UserDetailsServiceImpl` and `DataInitializer`, while `ProjectService` trims the name and asks `existsByNameIgnoreCase`
 
 ## Layered architecture
 
