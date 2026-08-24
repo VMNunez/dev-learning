@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **6 Mediums and 19 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **5 Mediums and 19 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -451,6 +451,13 @@ assembling that URL from its own copy of the route scheme. Note that `entries` a
 `GET /{id}` yet: the URI is still the resource's real address — `PUT` and `DELETE` act on it — so the
 header stays correct, and the missing read endpoint is a gap in the API, not a reason to omit it.
 
+**A response carries the identifier of every relation it names, not only its label.** `TimeEntryResponse`
+returns `projectId` and `userId` beside `projectName` and `userName`, because the response is the only
+representation a client holds — `entries` has no `GET /{id}` — and `PUT /api/entries/{id}` takes a
+`projectId`. A response carrying the label alone would make §14's pre-filled edit dialog re-derive the key
+by matching the name against the projects list, which is only correct while that name stays unique.
+Minimising field disclosure governs sensitive fields, not the keys the caller must send back.
+
 ### Error contract — what every non-2xx response looks like
 
 All errors return the same `ErrorResponse` body from `GlobalExceptionHandler`:
@@ -713,7 +720,7 @@ src/main/java/com/victor/timetrack/
 │       ├── UserResponse.java                    (id, name, email, role, active — never the hash)
 │       ├── CreateUserResponse.java              (UserResponse fields + the generated plaintext, returned once)
 │       ├── ProjectResponse.java                 (id, name, description, active)
-│       ├── TimeEntryResponse.java               (flattened user/project names + status, no entities)
+│       ├── TimeEntryResponse.java               (flattened user/project ids + names + status, no entities)
 │       ├── ReportSummaryResponse.java         (approvedHours, pendingHours, totalEntries)
 │       ├── ProjectHoursReportResponse.java    (interface projection — hours grouped by project)
 │       ├── UserHoursReportResponse.java       (interface projection — hours grouped by user)
