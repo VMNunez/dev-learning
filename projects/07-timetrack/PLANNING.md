@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **3 Mediums and 17 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **2 Mediums and 18 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -518,6 +518,18 @@ than the handler hardcoding it.
 >   built behaviour is correct and guarded (duplicate check → 409, and only checked when the value actually
 >   changed), so the code stands and §13/§17 now agree with it. Email **is** the login identity, so this is
 >   a deliberately MANAGER-only operation, not an incidental field.
+
+> **Contract ruling — the token's subject is the `user.id`, not the email** *(decided 2026-08-24)*.
+> The decision above stands unchanged: `email` stays editable and stays the **login** identity — the value
+> submitted to `POST /api/auth/login` and the key `UserDetailsService` resolves for the
+> `AuthenticationManager`. What it is not is the identity the **issued token** carries. `JwtUtil` writes
+> `user.id` into the `sub` claim and `JwtFilter` resolves the principal by id, because a subject this very
+> endpoint can release and reassign hands a still-valid 60-minute token to whichever account holds that
+> email next — a vertical escalation when the new holder is a MANAGER, with no forged signature and no
+> stolen credential. Two consequences worth stating: editing an email no longer silently ends its owner's
+> session, and tokens issued in the previous format are refused rather than migrated, since an
+> email-shaped subject fails to parse as a `Long` and `JwtFilter` already answers `401` for that failure
+> class.
 
 > **Contract ruling — `GET /api/users` returns every account, unpaginated** *(decided 2026-08-01)*.
 > Two halves, both deliberate:
