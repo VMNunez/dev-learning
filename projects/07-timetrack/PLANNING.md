@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **5 Mediums and 19 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **4 Mediums and 17 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -560,7 +560,7 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Query params | Response |
 |---|---|---|---|---|
-| `GET /api/reports/summary` | Any authenticated user | Month totals: approved hours, pending hours, approved entry count — **scoped to the caller**: an EMPLOYEE gets their own, a MANAGER the whole company | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours`, `totalEntries` · `400` month missing or malformed |
+| `GET /api/reports/summary` | Any authenticated user | Month totals: approved hours, pending hours, approved entry count — **scoped to the caller**: an EMPLOYEE gets their own, a MANAGER the whole company | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours` (always scale 2, `0.00` on an empty month), `totalEntries` · `400` month missing or malformed |
 | `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours`, `active` |
 | `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours`, `active` |
 
@@ -571,11 +571,12 @@ than the handler hardcoding it.
 >
 > **Role as scope, not as a gate (decided 2026-08-01).** `summary` is the one report both roles call, so
 > its `@PreAuthorize` only asserts `isAuthenticated()` and the ownership rule is applied in the service —
-> the same rule `GET /api/entries` uses (employee → own, manager → all), expressed by adding the caller's
-> id to the `Specification` rather than by branching the query. An annotation cannot express it, because
-> the role decides *which rows the answer is built from*, not whether the call is allowed. The scope
-> applies to the whole entry set, never field by field: all three numbers derive from one filtered list,
-> so a mixed-scope response — own hours beside company-wide pending hours — is not representable.
+> the same rule `GET /api/entries` uses (employee → own, manager → all), expressed as a `:userId IS NULL
+> OR te.user.id = :userId` predicate inside the one aggregate query rather than by branching the query.
+> An annotation cannot express it, because the role decides *which rows the answer is built from*, not
+> whether the call is allowed. The scope applies to the whole entry set, never field by field: the three
+> numbers are aggregated over one predicate, so a mixed-scope response — own hours beside company-wide
+> pending hours — is not representable.
 > `by-project` and `by-user` stay MANAGER-only; they aggregate across people by definition.
 >
 > **All three count `APPROVED` entries only** — the §8 reporting rule. `pendingHours` is the single
@@ -722,6 +723,7 @@ src/main/java/com/victor/timetrack/
 │       ├── ProjectResponse.java                 (id, name, description, active)
 │       ├── TimeEntryResponse.java               (flattened user/project ids + names + status, no entities)
 │       ├── ReportSummaryResponse.java         (approvedHours, pendingHours, totalEntries)
+│       ├── ReportSummaryProjection.java      (interface projection — the month's three scalars)
 │       ├── ProjectHoursReportResponse.java    (interface projection — hours grouped by project)
 │       ├── UserHoursReportResponse.java       (interface projection — hours grouped by user)
 │       └── ErrorResponse.java                 (uniform JSON error body from GlobalExceptionHandler)
