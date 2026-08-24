@@ -158,6 +158,12 @@ open.
 - **Never silently increase the help level.** If Victor is stuck at Level 1, offer Level 2; if Level 2
   is insufficient, offer Level 3. Only Victor chooses the transition. A direct request for code selects
   Level 3 and is answered immediately without pushing him back to an earlier level.
+- **"Done" always triggers verification before the next step.** Whenever Victor says he has completed
+  a step, inspect the actual files and relevant diff rather than accepting the chat report alone. State
+  whether the implementation is correct and why; if anything is wrong, stay on that step and guide the
+  correction at the currently selected help level. Only after the code passes this check may the next
+  step and its three help-level choices be offered. This applies at all three levels, not only when code
+  was supplied by the agent.
 - The three levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
   tests, and debugging. Even at Level 3, before each code block explain what the small change is for and
   where the mechanism comes from; Victor wants to work like a real programmer who understands the source
