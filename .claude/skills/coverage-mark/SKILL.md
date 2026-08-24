@@ -10,7 +10,9 @@ description: >
   it — so the level file doubles
   as a progress instrument: how much of the junior floor Victor can prove with something he built. The
   failure mode this exists for is a concept applied in a project that leaves no trace on the coverage
-  checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06".
+  checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06". It therefore
+  also sweeps the caller's diff for the language and standard-library bullets the task itself was not
+  about — a `record`, a `Map`, a concurrent collection — which nothing else in the system ever marks.
   Do NOT use it to add new bullets (that is `coverage-bullet-add`, or `/coverage`), to
   mark something merely studied in notes, or inside the `coverage` / `coverage-audit` pipelines — those
   passes preserve markers, they never author them.
@@ -84,6 +86,35 @@ have moved verbatim with it. Never remove and recreate the marker; report any mi
 Cross-level check: if the bullet lives at a level **above** the one Victor is working at, mark it there
 anyway and say so — demonstrating a middle-level concept in a junior project is real evidence, and one of
 the few honest signals about his trajectory.
+
+## 2b — Sweep the code, not only the lesson
+
+The concepts the caller passed are the ones the **task taught**. They are not the only ones the code
+demonstrates, and the gap between the two is lost systematically rather than occasionally: a fix about
+brute-force defence is also the first place in the project that builds a `record`, that reads a `Map`
+key that may be absent, or that picks a concurrent collection on purpose. Those bullets sit unmarked in
+the level file while the code proving them is already committed, and nothing else in the system will
+ever look at that diff again.
+
+The failure mode is a checklist that slowly records **what the session talked about** instead of what
+the project contains. It is invisible per close and compounding across dozens.
+
+So before reporting, read the diff the caller's work produced and ask of every language construct and
+standard-library type it uses: **is there a bullet for this, and is it still unmarked?**
+
+- **Scope it to the diff.** The files the change touched, and the constructs those files actually use.
+  This is not a project-wide backfill — that stays a deliberate run Victor asks for.
+- **Check the level Victor is on first**, then any other level the caller already routed a concept to.
+  A language feature is usually a rung below the concept the task was about.
+- **Use is the bar, not mention.** A type named in a comment, an import left behind, or a construct the
+  diff deletes demonstrates nothing.
+- **Already marked stays marked** — first project wins, and this sweep never rewrites a clause.
+- **Report the swept marks as their own rows**, labelled so the caller can see which ones it did not
+  pass in. That visibility is the point: a ritual that silently found extra bullets teaches the caller
+  nothing about what it was failing to notice.
+
+If the sweep finds nothing, say **"nothing further in the diff"** rather than staying silent — an
+unstated sweep is indistinguishable from a skipped one.
 
 ## 3 — Write the evidence clause
 
@@ -160,6 +191,10 @@ One row per concept, inside the calling ritual's report table when there is one:
 | proxy-based annotation behaviour | `spring` / junior | already marked ✅ 06-hr-portal — left as is, clause not backfilled |
 | BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
+| *(swept)* `Records` | `java` / junior | marked ✅ 07-timetrack — the private `Attempts(int, Instant)` carrier — found by the step-2b sweep, not passed in |
+
+Rows the step-2b sweep found carry a `*(swept)*` marker so the caller can see what it did not pass in;
+when the sweep found nothing, say so in a row of its own.
 
 Include the marked/total count for the level file you touched, and state the PROGRESS.md cell as it
 now reads (`spring-boot / junior: 24/139 (17%)`). That number is the point of the whole mechanism, so

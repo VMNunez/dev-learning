@@ -9,9 +9,11 @@ description: >
   technical interviewer) to the global / backend / frontend README, and writes it in that section's own
   format. The failure mode this exists for is a concept landing in the wrong README or in a section that
   file's contract does not have — "What I learned" invented inside a backend README, recruiter-facing
-  prose buried in a tier file — which `readme-audit` then has to undo. Do NOT use it to restructure a
-  README, fix unrelated sections, add screenshots or placeholders, or inside the `readme-audit` /
-  `portfolio-audit` pipelines — those own the whole file and must not be second-guessed bullet by bullet.
+  prose buried in a tier file — which `readme-audit` then has to undo. It also clears the
+  `*(Step N — coming soon)*` markers whose step PLANNING §15 already shows as `✅`, so a finished section
+  stops advertising itself as unbuilt between one `readme-audit` gate and the next. Do NOT use it to
+  restructure a README, fix a stale section's content, add screenshots, clear a marker whose step is not
+  yet `✅`, or work inside the `readme-audit` / `portfolio-audit` pipelines — those own the whole file and must not be second-guessed bullet by bullet.
 ---
 
 # README concept entry
@@ -31,8 +33,9 @@ auto-loads inside the `readme-audit` pipeline, so an inline edit without it sile
 contract. It owns the README layout, the section list and order of each target, and the format of every
 section; this skill applies that standard, it does not restate or override it.
 
-This skill writes **one entry into an existing section**. It never adds a section, reorders sections,
-rewrites neighbouring bullets, or touches screenshots, placeholders and `*(planned)*` markers — those are
+This skill writes **one entry into an existing section**, and clears the promise markers the project has
+since outgrown (step 3b). It never adds a section, reorders sections, rewrites neighbouring bullets, or
+touches screenshots and the placeholders of work that genuinely has not started — those are
 `readme-audit`'s, and an inline edit that "tidies while it is there" is how a ritual quietly becomes a
 half-audit.
 
@@ -80,6 +83,33 @@ README entry is a recall line; the depth belongs in `notes/`, and linking beats 
 real but the honest entry would be long, that is the signal it belongs in `notes/` with a one-line pointer
 here — not a longer bullet.
 
+## 3b — Clear the markers the project has outgrown
+
+A README carries `*(Step N — coming soon)*` and `*(planned)*` markers written when a section was still a
+promise. **Nothing removes them when the step lands.** `readme-audit` would, but it is a gate that runs
+rarely, so between one G5 and the next the file tells every reader that finished work is still coming.
+That is worse than a missing entry: it *understates the project*, on the file a recruiter opens first,
+and it is the one kind of staleness a reader cannot detect — an absent bullet looks like nothing, a
+"coming soon" on shipped code looks like a fact.
+
+So on every run that writes to a README, reconcile that file's markers against **PLANNING §15**:
+
+1. `grep -n "coming soon\|(planned)" {target README}`.
+2. For each hit, find the step it names in §15. **`✅` means the marker is false** — delete the marker and
+   nothing else, leaving the heading text and the section's content exactly as they are.
+3. A step that is not `✅` keeps its marker, and so does every screenshot placeholder and every
+   `*(planned)*` on work that has not started. Those stay `readme-audit`'s.
+
+This step deletes a marker; it never rewrites a section. If a section's **content** is also stale — an
+endpoint table missing a status the code now returns — that is a finding to **report**, not to fix here:
+fixing it is the whole-file judgment `readme-audit` owns, and this is the boundary that keeps an inline
+entry from becoming a half-audit.
+
+Run it even when step 2 wrote nothing: an already-represented concept still leaves the file open in
+front of you, and the reconciliation costs one grep.
+
+Report what you cleared, or say **"no stale markers"** — silence reads as a skipped step.
+
 ## 4 — Commit the README
 
 **You commit it yourself**, authorized 2026-08-01 — this skill writes the entry, so the authorship
@@ -105,7 +135,8 @@ One row per concept, folded into the calling ritual's report table when there is
 | soft delete over hard delete | `backend` / Tradeoffs | added — keeps leave history auditable |
 | role-based access control | `global` / What I learned | added — crosses tiers, implemented line in `backend` |
 | `provideHttpClient` migration | `frontend` / Key patterns | not written — frontend not started, no README yet |
+| *(markers)* | `backend` | cleared 7 `*(Step N — coming soon)*` on §15-`✅` steps; screenshot placeholders left for `readme-audit` |
 
-Always include: the target you chose **and the audience argument for it** (one clause), and whether any
-README was actually modified — because "nothing written" is the expected result often enough that a silent
+Always include: the target you chose **and the audience argument for it** (one clause), the step-3b
+marker reconciliation, and whether any README was actually modified — because "nothing written" is the expected result often enough that a silent
 report reads as a skipped step.
