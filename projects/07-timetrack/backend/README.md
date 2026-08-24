@@ -271,6 +271,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `UserService.update` and `delete` refuse a demotion or a deactivation whose target id is the caller's own, with `409`. Both endpoints are `hasRole('MANAGER')`, so the only route back from either — `PUT /api/users/{id}` — needs the privilege the call is removing, and `JwtFilter` runs the loaded `UserDetails` through an `AccountStatusUserDetailsChecker`, so a deactivated manager loses their still-valid token on the very next request. The §17 Team wireframe renders `✏ 🗑` on every row including the caller's, which makes it one misclick. The system-wide invariant — at least one active MANAGER always remains — needs no code of its own: it follows from the caller always being an active MANAGER and never being their own target.
 
+### The client chooses the sort key from an allow-list, never from the entity ✓
+
+`TimeEntryController.validateSort` checks every `Sort.Order` in the bound `Pageable` against `SORTABLE_PROPERTIES` — `date`, `hours`, `status`, `id` — and rejects anything else with `400` through `BusinessRuleViolationException`. `?sort=` is bound straight into a persistence query, so it is untrusted input with the reach of a column name: an unknown property made Spring Data throw `PropertyReferenceException`, which reached the `RuntimeException` handler as a `500` plus a stack trace for a client typo, and a nested path resolves too — `?sort=user.password,asc` ordered the page by the BCrypt hash, a value the response never returns but whose ordering can be observed. A block-list would have to name every sensitive column the entity graph can reach; the allow-list makes every field added later unsortable until it is chosen.
+
 ---
 
 ## Tradeoffs
