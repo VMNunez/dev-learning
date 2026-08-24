@@ -259,6 +259,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `DataInitializer` is `@Profile("dev")`, so without `SPRING_PROFILES_ACTIVE=dev` the context starts cleanly and the application is still unusable: no manager is seeded, and with no register endpoint every login is `401`. A missing `${JWT_SECRET}` at least fails loudly at startup — a missing profile fails silently, which is why the activation is documented in *How to run alone* beside the mandatory variables rather than left as a developer's local setting.
 
+### Identifiers are canonicalised before they are compared or stored ✓
+
+`EmailNormalizer.normalize` trims and lower-cases an email at the service boundary, and the same value feeds both the duplicate check and the setter, in `UserService.create`/`update`, `UserDetailsServiceImpl` and `DataInitializer`. Project names take the parallel rule: `ProjectService` trims and asks `existsByNameIgnoreCase`, and `update` uses `equalsIgnoreCase` to decide whether the name changed at all, so re-capitalising a project is not a duplicate of itself. Comparing one form while persisting another is what lets `Ana@corp.com` and `ana@corp.com` become two logins for one person, and §8's by-project report split one project's hours across two rows.
+
 ---
 
 ## Tradeoffs
