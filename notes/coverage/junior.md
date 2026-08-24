@@ -1083,6 +1083,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Resource-existence disclosure — distinguishing "forbidden" from "not found" lets a caller enumerate
   which identifiers exist, so an object the caller may not reach is reported as missing unless that
   caller is entitled to know it exists ✅ 07-timetrack
+- Concealment consistency across entry points — a decision to hide a resource's existence from a caller
+  holds only if every endpoint accepting that identifier answers the same way, since the most talkative
+  path defines the real exposure regardless of what the endpoint designed to conceal it returns ✅ 07-timetrack — `resolveProject` answers 404 for an inactive project on POST/PUT /api/entries with the same message an unknown id gets, matching GET /api/projects/{id}
 - Security logging hygiene — record useful authentication and authorisation events while excluding
   passwords, tokens, session IDs, authorisation headers, and unnecessary personal data ✅ 07-timetrack
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or
