@@ -275,6 +275,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `TimeEntryController.validateSort` checks every `Sort.Order` in the bound `Pageable` against `SORTABLE_PROPERTIES` — `date`, `hours`, `status`, `id` — and rejects anything else with `400` through `BusinessRuleViolationException`. `?sort=` is bound straight into a persistence query, so it is untrusted input with the reach of a column name: an unknown property made Spring Data throw `PropertyReferenceException`, which reached the `RuntimeException` handler as a `500` plus a stack trace for a client typo, and a nested path resolves too — `?sort=user.password,asc` ordered the page by the BCrypt hash, a value the response never returns but whose ordering can be observed. A block-list would have to name every sensitive column the entity graph can reach; the allow-list makes every field added later unsortable until it is chosen.
 
+### A response carries the identifier of every relation, not only its label ✓
+
+`TimeEntryResponse` returns `projectId` and `userId` beside `projectName` and `userName`. The response is the only representation a client ever holds — there is no `GET /api/entries/{id}` — and `PUT /api/entries/{id}` takes a `projectId`, so a response carrying the name alone forces the edit dialog to re-derive the key by matching the label against the projects list, a lookup that is only correct while `Project.name` stays unique and that silently edits the wrong row when it stops being. Minimal disclosure is a rule about sensitive fields, not about keys the caller has to send back.
+
 ---
 
 ## Tradeoffs
