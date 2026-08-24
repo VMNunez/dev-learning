@@ -283,6 +283,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `TimeEntryResponse` returns `projectId` and `userId` beside `projectName` and `userName`. The response is the only representation a client ever holds — there is no `GET /api/entries/{id}` — and `PUT /api/entries/{id}` takes a `projectId`, so a response carrying the name alone forces the edit dialog to re-derive the key by matching the label against the projects list, a lookup that is only correct while `Project.name` stays unique and that silently edits the wrong row when it stops being. Minimal disclosure is a rule about sensitive fields, not about keys the caller has to send back.
 
+### Failed logins are bounded by account and by network, and the bound expires on its own ✓
+
+`LoginAttemptService` keeps a per-key failure counter and `AuthService` consults it *before* `authenticationManager.authenticate`, so a refused attempt never reaches BCrypt — five failures answer `429` through the same `@RestControllerAdvice` as every other error, for one minute measured from the last failure. Two keys are counted independently, the submitted email and `getRemoteAddr()`, because a per-account bound alone lets one common password be sprayed across every account without a single counter moving, and a per-IP bound alone puts a whole NAT'd office on one budget. The window lifting itself is the design, not a shortcut: a permanent lockout is the easier rule and the wrong one, since it hands an attacker a way to lock out any account they can name. The counter's value is an immutable `record` replaced through `compute` and a two-argument `remove`, because a servlet container touches this one bean from every request thread at once and a read-modify-write spread over three statements drops failures under exactly the load that matters.
+
 ---
 
 ## Tradeoffs
@@ -296,6 +300,7 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 - Return-all over `Pageable` on `GET /api/users` — headcount is tens of rows, and all three consumers of the endpoint (team table, dashboard count, the approvals employee filter) need the whole list to be correct: a paginated response would quietly reduce the filter to whoever landed on page one and turn the count into a page size. Pagination is the right call on collections that grow without a bound, which this one does not
 - Credential rotation over history rewriting — two secrets reached pushed history early in the project (a datasource password, and a seed account's BCrypt hash). Rotating both values, and treating the published ones as burned, is what removes the risk; rewriting history with `filter-repo` would change every later commit hash and break the references this project's backlog ledger and PLANNING cite, while revoking nothing that was already cloned
 - No password reset flow — resetting a forgotten password needs an email channel to deliver a reset link/token, which is out of scope; today a manager deactivates and recreates the account instead
+- In-memory login throttling over a shared store — the failure counters live in one `ConcurrentHashMap` inside the running process, which needs no Redis, no table and no new dependency, and is sufficient for the single-instance deployment this project targets. What it gives up is real: the counters reset on restart, and two instances behind a load balancer would each grant an attacker the full budget. A limit that spans instances belongs in a shared store or at the gateway, which is also where it stops competing with the application for the CPU an attacker is trying to burn
 
 ---
 
