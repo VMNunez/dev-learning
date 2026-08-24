@@ -187,6 +187,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `GET /api/reports/by-employee` was renamed to `/by-user`: the query groups `TimeEntry.user` with no role filter, so a manager who was promoted from EMPLOYEE still shows up with their historical hours — correctly, since those hours are still billable. `by-employee` implied a role guarantee the code never enforced; `by-user` names what the query actually returns. `EmployeeHoursReportResponse`/`getEmployeeName()` were renamed to `UserHoursReportResponse`/`getUserName()` for the same reason.
 
+### Scalar reports are aggregated in the database ✓
+
+`GET /api/reports/summary` answers with one JPQL aggregate — `SUM(CASE WHEN te.status = APPROVED THEN te.hours END)` beside the SUBMITTED sum and `COUNT(CASE WHEN ... THEN 1 END)` — read into the `ReportSummaryProjection` interface. It previously loaded every `TimeEntry` of the month as managed entities, for a manager the whole company's, and folded them in three streams to return three numbers. `COALESCE(..., 0)` covers the empty month, where `SUM` returns null and `COUNT` returns zero, and the caller's scope is a `:userId IS NULL OR te.user.id = :userId` predicate rather than a `Specification`.
+
 ### Report aggregates carry the `active` flag ✓
 
 `ProjectHoursReportResponse`/`UserHoursReportResponse` expose `isActive()`, sourced from `te.project.active`/`te.user.active` added to the `by-project`/`by-user` JPQL `SELECT` and `GROUP BY`. A soft-deleted project or user still keeps its historical hours in the aggregate — the work was real — but the flag lets the client distinguish "still active" from "archived" instead of guessing from a row that silently stopped appearing.
