@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **7 Mediums and 18 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **6 Mediums and 18 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -547,7 +547,7 @@ than the handler hardcoding it.
 | `userId` | Long — **MANAGER only** | Entries of one employee (ignored for an EMPLOYEE caller, who is always scoped to their own) |
 | `page` | int, default `0` | Zero-based page index |
 | `size` | int, default `20`, capped at `100` | Rows per page; a larger request is silently clamped to the cap |
-| `sort` | `field,dir` — repeatable | Overrides the default `date` desc, `id` desc |
+| `sort` | `field,dir` — repeatable | Overrides the default `date` desc, `id` desc. Only `date`, `hours`, `status` and `id` are accepted; any other property is `400` |
 
 ### Reports (`ReportController` — MANAGER only, except `GET /summary`)
 
@@ -619,6 +619,15 @@ than the handler hardcoding it.
 > unique key after a non-unique column, a row is served on two pages or on none. The page cap
 > (`size` ≤ 100) is part of the same contract — an endpoint that honours any requested size is not
 > bounded at all.
+>
+> **The sort key is an allow-list, because `?sort=` reaches the query as a column name.** Only `date`,
+> `hours`, `status` and `id` may be named; anything else is refused with `400` before the request leaves
+> the controller. Two failures follow from binding it unchecked: an unknown property is a framework
+> `PropertyReferenceException`, which the error contract has no handler for and which therefore surfaces
+> as `500` for what is a client typo; and a nested path resolves through the entity graph, so
+> `?sort=user.password,asc` orders the page by a column §10 never returns — an order derived from a
+> secret is an observation of it. A client-chosen sort also replaces the default entirely, so the `id`
+> tie-breaker is only guaranteed while the caller does not override it.
 >
 > One thing the order does **not** control: how text itself compares. `ORDER BY name` resolves through
 > the database's collation, so a locale-aware collation sorts `"nuevo"` before `"Project"` where `C`
