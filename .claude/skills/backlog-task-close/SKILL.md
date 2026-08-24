@@ -110,14 +110,16 @@ If the selected topic has no completed Coverage tracker run, treat its files as 
 routes the concept to the inbox and reports the first `/coverage` run as owed. Never bypass that gate by
 adding a lone bullet to a new topic during a backlog close.
 
-### 1a — Mark the concept as demonstrated
+### 1a — Mark the concepts as demonstrated
 
-**Applies either way** — whether step 1 found the bullet already covered or had to write it. This is the
+**Applies either way** — whether step 1 found each bullet already covered or had to write it. This is the
 sub-step that keeps the coverage file honest about what Victor can *prove*, and it runs on the common
 "already covered" path too, which is precisely where a close would otherwise leave no trace.
 
-**Invoke the `coverage-mark` skill**, passing the concept, **the topic `coverage-bullet-add` reported** (not
-a technology label), the level, and the project's folder name. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and the
+**Invoke the `coverage-mark` skill**, passing **every concept from step 0**, **the topic `coverage-bullet-add`
+reported for each** (not a technology label), the level, and the project's folder name. The marking list is
+usually *longer* than the authoring list: a bullet that was already covered still gets its marker here, so a
+fix touching four existing bullets marks four while authoring none. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and the
 mirror, and reports the level's marked/total count. Do not reproduce its logic here.
 
 Two cases it will report back as skipped, both correct:
