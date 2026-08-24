@@ -45,11 +45,9 @@ public class TimeEntryService {
     @Transactional
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
         User user = authenticatedUserProvider.currentUser();
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
+        Project project = resolveProject(request.getProjectId(), false);
 
-        validateEntryData(request.getDate(), request.getHours(), project);
+        validateEntryData(request.getDate(), request.getHours());
 
         TimeEntry timeEntry = new TimeEntry();
         timeEntry.setUser(user);
@@ -160,15 +158,15 @@ public class TimeEntryService {
     public TimeEntryResponse update(Long id, UpdateTimeEntryRequest request) {
         User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = findOwnedEntry(id, user);
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
+
+        boolean callerKnowsItExists = timeEntry.getProject().getId().equals(request.getProjectId());
+        Project project = resolveProject(request.getProjectId(), callerKnowsItExists);
 
         if (timeEntry.getStatus() != EntryStatus.DRAFT) {
             throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
 
-        validateEntryData(request.getDate(), request.getHours(), project);
+        validateEntryData(request.getDate(), request.getHours());
 
         timeEntry.setProject(project);
         timeEntry.setDate(request.getDate());
@@ -213,19 +211,31 @@ public class TimeEntryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
     }
 
-    private void validateEntryData(LocalDate date, BigDecimal hours, Project project) {
+    private void validateEntryData(LocalDate date, BigDecimal hours) {
         if (date.isAfter(LocalDate.now())) {
             throw new BusinessRuleViolationException("Date cannot be in the future");
-        }
-
-        if (!project.isActive()) {
-            throw new BusinessRuleViolationException("Project is not active");
         }
 
         if (hours.compareTo(MIN_HOURS) < 0 || hours.compareTo(MAX_HOURS) > 0) {
             throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
         }
     }
+
+    private Project resolveProject(Long projectId, boolean callerKnowsItExists) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + projectId));
+
+        if (!project.isActive() && !callerKnowsItExists) {
+            throw new ResourceNotFoundException("Project not found with id " + projectId);
+        }
+
+        if (!project.isActive()) {
+            throw new BusinessRuleViolationException("Project is not active");
+        }
+
+        return project;
+    }
+
 
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
