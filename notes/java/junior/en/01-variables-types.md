@@ -32,7 +32,7 @@ String name = "Victor";
                                        the value lives HERE
 ```
 
-Everything surprising later on this page comes out of that picture. `==` on two `String`s compares the two addresses in the left-hand boxes, not the text in the right-hand box — which is why `equals()` exists (the *String comparison* section below). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because the address slot can hold "points to nothing". And where those boxes physically live — the stack for the variable, the heap for the object — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
+Everything surprising later on this page comes out of that picture. `==` on two `String`s compares the two addresses in the left-hand boxes, not the text in the right-hand box — which is why text is compared with `equals()` instead ([02-strings.md](02-strings.md) shows the calls, and [06-oop-classes.md](06-oop-classes.md) explains what `equals()` is really asking). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because the address slot can hold "points to nothing". And where those boxes physically live — the stack for the variable, the heap for the object — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
 
 Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
 
@@ -54,12 +54,27 @@ A **Unicode character** is any symbol from any writing system in the world: Lati
 > **Exact scope: a `char` does not hold "any Unicode character".** It holds one **UTF-16 code unit**, which covers code points up to U+FFFF. Everything above that — emoji, many historical scripts, most mathematical alphanumerics — is stored as **two** `char`s (a *surrogate pair*), so it does not fit in a single `char` at all. Try it and the compiler stops you before the program ever runs:
 >
 > ```java
-> char c = '😀';   // MAL — error: character literal contains more than one UTF-16 code unit
+> char c = '😀';   // MAL — error: unclosed character literal
 > ```
+>
+> The message reads oddly until you know the mechanism: the compiler consumes the first of the two code units, expects the closing `'` immediately after it, finds the second code unit instead, and reports the literal as unclosed. It is not a badly worded "too many characters" error — from the compiler's point of view a `char` literal holds exactly one code unit and the emoji simply is not one.
 >
 > The same split leaks into `String`, which is just a sequence of `char`s: `"😀".length()` returns **2**, not 1, because it counts code units and the emoji occupies two of them. If you ever need the human count, `"😀".codePointCount(0, 2)` returns 1. This is the mechanism behind every "my substring cut an emoji in half" bug. In web development you rarely touch `char` directly — full text goes in `String` — but the length surprise reaches you through `String`.
 
 In practice you use `int`, `long`, `double`, and `boolean` for almost everything. `float` and `byte` are rarely needed.
+
+### Reference variables and `null` — enough to read the rest of this page
+
+The right-hand box in that diagram raises a question the left-hand one cannot: what is in `name` *before* you point it at anything? A primitive box always holds a number — an `int` field you never touched holds `0`, and there is no way to make it hold "nothing", because the box is 32 bits of number and every arrangement of those bits already means some number. A reference box holds an address, and an address slot has one extra state available to it: **`null`**, the address that points at no object.
+
+```java
+String name = null;      // BIEN — the box exists and holds "points to nothing"
+int number = null;       // MAL — error: incompatible types: <null> cannot be converted to int
+```
+
+That is the whole of the primitive-versus-reference split you need for this page: a primitive variable *is* its value, while a reference variable *identifies* an object and may identify none. Three consequences of it show up further down — an `Integer` can be `null` where an `int` cannot, a generic type such as `List<Integer>` only accepts reference types, and unboxing a `null` wrapper fails at runtime.
+
+> **Why almost everything else about references lives in another file.** `null` is the doorway to three separate mechanisms, and each one belongs to the chapter that has the vocabulary for it. What a reference physically holds, where the object it points at actually lives, and why the failure surfaces on the exact line that follows the address is [05-memory-model.md](05-memory-model.md) — it needs the stack-versus-heap split first. Where you *check* for `null` — the guard clause at the entrance of a method, so a bad value never travels deeper into your code — is [04-methods.md](04-methods.md), which needs parameters and return values first. And what an object is at all, plus how two of them are compared, is [06-oop-classes.md](06-oop-classes.md). Being able to read `null` in the examples below is everything this file asks of you.
 
 ### Types by category
 
@@ -97,6 +112,21 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 
 **Character** — for single characters:
 - `char` — one character, enclosed in single quotes: `'A'`. Used rarely in web development.
+
+### `int` or `long` — how to choose, and when the literal needs the `L`
+
+The table gives you the ranges; the decision rule is simpler than the numbers. **Default to `int`, and reach for `long` only when the value can plausibly pass about 2.1 billion.** In backend work that is a short and predictable list: database identifiers (a table rarely holds two billion rows, but ids come from a sequence that never reuses a number, so they outrun the row count), timestamps in milliseconds since 1970 (`System.currentTimeMillis()` returns a `long`, and milliseconds passed the `int` range about 25 days into 1970), byte counts of anything file-sized, and running totals that accumulate for years. Ages, list sizes, page numbers, HTTP status codes and loop counters stay `int` forever.
+
+> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one:
+>
+> ```java
+> long smallId = 5;               // BIEN — no suffix needed
+> long bigId   = 1234567890123L;  // the L is required here
+> ```
+>
+> The first line is fine because `5` is a perfectly legal `int` literal and `int` → `long` is a widening conversion, which Java performs silently (the *Widening* section below). The second needs the suffix because the literal itself does not fit in 32 bits, and the compiler judges the literal before it ever looks at the variable — the callout above traces that exact error. So the rule is: **suffix the literal only when the literal alone is too big for an `int`**. Writing `5L` is not wrong, just noise.
+
+There is a third place the `L` decides the outcome, and it has nothing to do with the declared type of the variable: arithmetic. `1000 * 60 * 60 * 24 * 30` overflows even when you store the result in a `long`, because the multiplication is carried out in `int` before the assignment is considered. That is the *Overflow* section further down — and it is the case where a missing `L` produces a wrong number instead of a compile error.
 
 ### Building a `BigDecimal` — never `new BigDecimal(0.1)`
 
@@ -139,7 +169,7 @@ Read the two extra lines as the compiler showing its work: it names what it foun
 
 The next instinct is usually `.equals()`, but there is a trap: `.equals()` on `BigDecimal` also compares the **scale** (how many decimal places the number is internally represented with), not just the mathematical value. That is why `new BigDecimal("24.0").equals(new BigDecimal("24"))` returns `false` — to Java, "24.0" and "24" are objects with different scales (one decimal digit versus none), even though they are mathematically the same number.
 
-`BigDecimal` implements the `Comparable<BigDecimal>` interface, which provides the `compareTo(BigDecimal other)` method. This method does compare the actual mathematical value, ignoring scale, and returns an `int`:
+`BigDecimal` implements the `Comparable<BigDecimal>` interface, which provides the `compareTo(BigDecimal other)` method. An **interface** here is just a contract a class signs saying "I provide these methods" — what interfaces are and how you write your own is [07-interfaces-abstract.md](07-interfaces-abstract.md), and the `<BigDecimal>` in angle brackets is a *generic type argument*, read for now as "comparable specifically against other `BigDecimal`s" and covered in full in [09-generics.md](09-generics.md). Neither is something you need today; you only need to know where `compareTo` comes from. This method does compare the actual mathematical value, ignoring scale, and returns an `int`:
 
 - negative if `this` is less than `other`
 - `0` if they are mathematically equal
@@ -155,9 +185,64 @@ if (hours.compareTo(new BigDecimal("0.5")) < 0 || hours.compareTo(new BigDecimal
 }
 ```
 
+(`throw new RuntimeException(...)` is how a method aborts with an error instead of returning a value — read it here as "stop and report"; how throwing and catching actually work is [11-exceptions.md](11-exceptions.md).)
+
 Read it as: "if `hours` compared to 0.5 is negative (meaning `hours` is less than 0.5) OR `hours` compared to 24 is positive (`hours` is greater than 24), throw the exception".
 
 > **`compareTo() == 0` for equality, never `equals()`.** If you ever need to check value equality between two `BigDecimal`s (e.g. "is the total billed exactly 100?"), use `total.compareTo(new BigDecimal("100")) == 0`, not `total.equals(new BigDecimal("100"))` — because if `total` arrived as `"100.00"` (with two decimal places, common when it comes from a `DECIMAL(10,2)` database column), `.equals()` would return `false` even though the value is identical.
+
+### `BigDecimal` arithmetic — every operation returns a new object, and division demands a scale
+
+> 📖 Docs: [Java SE 25 API — `java.math.BigDecimal`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html) → read: the class description ("immutable, arbitrary-precision signed decimal numbers") and the entries for `divide` and `setScale`.
+
+`BigDecimal` is **immutable**: no method on it ever changes the object you called it on. Every arithmetic method builds and returns a *new* `BigDecimal` and leaves the original exactly as it was. That is the most common `BigDecimal` mistake by a distance, and it fails silently — the code compiles, runs, and reports the old number:
+
+```java
+BigDecimal total = new BigDecimal("10.00");
+total.add(new BigDecimal("5.00"));          // MAL — the result is computed and thrown away
+System.out.println(total);                  // 10.00
+
+total = total.add(new BigDecimal("5.00"));  // BIEN — reassign to keep the result
+System.out.println(total);                  // 15.00
+```
+
+There is no compiler error, because the first call is a legal expression whose value you chose to ignore — exactly like writing `list.size();` on a line of its own. The mechanism is worth stating plainly: `add` has no way to change `total`, because the object `total` points at exposes nothing that alters its digits; all `add` can do is compute the sum, wrap it in a new object, and hand you the address of that new object. If nobody stores that address, it is garbage a moment later.
+
+The four operations are named methods, for the reason the `compareTo` section gave: Java has no operator overloading, so a class can never teach `+` to work on it.
+
+```java
+BigDecimal net  = new BigDecimal("100.00");
+BigDecimal rate = new BigDecimal("0.21");
+
+BigDecimal vat   = net.multiply(rate);   // 21.0000   ← four decimal places, not two
+BigDecimal gross = net.add(vat);         // 121.0000
+BigDecimal diff  = gross.subtract(net);  // 21.0000
+```
+
+**Scale is the number of digits kept after the decimal point, and it is part of the object rather than a display setting.** `multiply` adds the two scales together — two decimals times two decimals gives four — which is why `21.0000` comes out where you were expecting `21.00`. You correct it when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops:
+
+```java
+BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
+```
+
+`RoundingMode.HALF_UP` is the rounding rule taught at school — a half rounds away from zero, so `0.125` becomes `0.13` — and it is normally what invoicing wants. `HALF_EVEN` (banker's rounding) is the other one you will meet in financial code: it sends a half to the nearest *even* digit, so a long series of roundings does not drift upward.
+
+> **Division is the one operation that refuses to run until you say how to round.** `divide` with a single argument computes the *exact* quotient, and when the exact quotient never ends there is no correct value it could return — so it throws rather than silently inventing one:
+>
+> ```java
+> new BigDecimal("10").divide(new BigDecimal("3"));
+> // java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result.
+> ```
+>
+> No other numeric type has this problem, because no other numeric type is exact. `10.0 / 3` in `double` returns `3.3333333333333335` without complaint — an answer that is already slightly wrong, which is precisely the behaviour `BigDecimal` exists to refuse. The fix is to state the scale and the rounding you accept, in the same call:
+>
+> ```java
+> new BigDecimal("10").divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP);   // 3.33
+> ```
+>
+> Treat one-argument `divide` as a defect in application code: it works for `10 / 4` and throws for `10 / 3`, so it is a bug waiting for the right input — the same shape of trap as a comparison that only works for small numbers.
+
+> **A `BigDecimal` used as a map key is the one place `equals` is the method that actually runs.** The section above told you to compare money with `compareTo`, but a `HashMap` never asks which comparison you would prefer: it calls `equals` and `hashCode` on the key itself, and both of those include the scale. So `map.put(new BigDecimal("1.0"), x)` followed by `map.get(new BigDecimal("1.00"))` gives you `null` — two keys, mathematically identical, filed apart. The API documentation warns about the same mismatch from the other side for `SortedMap` and `SortedSet`: those order by `compareTo`, so they treat the two as *one* key while `equals` insists they are two, and the javadoc calls that natural ordering "inconsistent with equals". The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps arrive in [10-collections.md](10-collections.md); why `equals` and `hashCode` govern them is [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
@@ -211,6 +296,26 @@ System.out.println(message);   // MAL — cannot find symbol: variable message
 
 The variable is not "empty" out here — the name does not exist at all, which is why the error is `cannot find symbol` rather than a null complaint. The practical consequence is that if you need a value after a block, you declare it *before* the block and assign inside it. This is the same block-scoping as `let` and `const` in JavaScript; Java simply has no equivalent of the old function-scoped `var`.
 
+That one rule — *a name lives inside the braces it was declared in* — is the whole of scope, and it produces the four kinds of variable you will meet, each with a different lifetime:
+
+```
+class TimeEntry {                       ┐
+    private BigDecimal hours;           │  FIELD — visible in every method of the
+                                        │  class, lives as long as the object does
+    void validate(int maxHours) {       ┤
+                                        │  PARAMETER — a local variable the caller
+        int extra = 0;                  │  fills in; visible in this method only,
+                                        │  gone when the method returns
+        if (maxHours > 8) {             ┤
+            String warning = "long";    │  LOCAL — visible from its declaration to
+        }                               │  the end of the method
+    }                                   │
+}                                       │  BLOCK-LOCAL — `warning` dies at the `}`
+                                        ┘  of the if, three lines before `extra` does
+```
+
+Read it as one nesting: the field's braces are the class, so it outlives every call; the parameter's and the locals' braces are the method, so they are created fresh on each call and discarded when it returns; and a variable declared inside an inner `{ }` is discarded at that inner brace. A **parameter** is not a special category — it is a local variable whose initial assignment is performed by the caller, which is why it is always definitely assigned and never needs the rule in the previous section. Fields, and where the object holding them lives, are [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters as a mechanism — how the caller's value gets in — are [04-methods.md](04-methods.md). Here you only need to be able to say where each name is visible.
+
 ### Naming conventions
 
 These are not enforced by the compiler, but every Java codebase and every reviewer expects them, and Spring itself depends on the third one:
@@ -220,34 +325,84 @@ These are not enforced by the compiler, but every Java codebase and every review
 - **`PascalCase` for class names** — `TimeEntry`, `UserRepository`. Notice this is how you tell `Integer` (a class) from `int` (a primitive) at a glance.
 - Names are written in full, not abbreviated. `numberOfEmployees`, not `numEmp`. Java code is verbose by culture and a consultancy code review will pick at short names.
 
-### `final` — and the half-truth that it "is `const`"
+### `final` — the one line you need here
 
-`final` on a variable means it may be assigned exactly once; any later assignment is a compile error:
+`final` on a variable means it may be assigned exactly once; a later assignment is a compile error (`cannot assign a value to final variable MAX_HOURS`). That is enough to read the `static final` constants named above and the `private final` fields that appear in every Spring service class. What `final` does *not* do — freeze the object a reference points at — is a statement about objects rather than about values, so it is answered in [06-oop-classes.md](06-oop-classes.md), alongside immutability, records, and the difference between freezing a name and freezing what it names.
+
+---
+
+## Operators — the four groups, and the two that can skip their right operand
+
+> 📖 Docs: [Oracle Java Tutorials — Operators](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html) → read: "Assignment, Arithmetic, and Unary Operators" and "Equality, Relational, and Conditional Operators". The precedence table on the parent page is worth one look and no memorising.
+
+Everything so far has been about what a variable *holds*. Operators are how you combine what two variables hold into a new value, and Java's everyday set is small enough to lay out in one place. Four groups cover essentially all backend code:
+
+- **Arithmetic** — `+` `-` `*` `/` `%` — take numbers, produce a number. `%` is the remainder: `7 % 2` is `1`.
+- **Comparison** (relational `<` `>` `<=` `>=` and equality `==` `!=`) — take two values, produce a `boolean`.
+- **Logical** — `&&` (and), `||` (or), `!` (not) — take booleans, produce a `boolean`.
+- **Assignment** — `=` plus the compound forms `+=` `-=` `*=` `/=` `%=` — store a value in a variable, and the expression itself produces the value that was stored.
+
+What each group *produces* is what decides where it may appear, and that is the part JavaScript habits get wrong. An `if (...)` needs a `boolean`, so only comparison and logical expressions may sit directly inside one; an arithmetic expression has to be compared against something first. Java has no truthy values at all — no non-empty string and no non-zero number counts as "true" — so `if (name)` and `if (count)` do not compile, and the compiler says so in exactly those terms:
 
 ```java
-final int MAX_HOURS = 24;
-MAX_HOURS = 30;    // MAL — error: cannot assign a value to final variable MAX_HOURS
+if (name) { ... }    // MAL — error: incompatible types: String cannot be converted to boolean
 ```
 
-Comparing it to JavaScript's `const` is a genuinely direct anchor — the two behave the same way, including the part people get wrong in both languages. `final` freezes the **variable**, which for an object means it freezes the *reference*: the address in the box. It says nothing at all about the object that address points to.
+Two more you will read constantly: `++` and `--` add or subtract one in place (`count++`), and the three-part conditional operator `condition ? a : b` picks between two values. That last one belongs to [03-control-flow.md](03-control-flow.md), where choosing is the subject.
 
-Go back to the diagram at the top of the file and the rule becomes obvious. `final` puts a lock on the left-hand box. The object in the right-hand box is untouched, and anything holding that address can still change it:
+> **`+=` hides a cast, and that is the language definition, not a quirk.** A compound assignment is not simply `a = a + b`: the specification defines `a += b` as `a = (T) (a + b)`, where `T` is the type of the left-hand side. It therefore performs, invisibly, the narrowing conversion that plain `=` would refuse to do without an explicit cast:
+>
+> ```java
+> int i = 5;
+> i = i + 3.5;    // MAL — error: incompatible types: possible lossy conversion from double to int
+> i += 3.5;       // ✅ compiles — and i is 8, because 8.5 was truncated back to int
+> ```
+>
+> Nothing here needs fixing in your own arithmetic. The point is to recognise `+=` as the one place a narrowing conversion happens with no visible cast, so a compound assignment that compiles is never proof that the two types actually match.
+
+### `=` where you meant `==`
+
+Typing one equals sign instead of two is the classic C-family slip, and Java catches it — because of the type rule above, not because it guessed your intention. `if (count = 5)` assigns `5` to `count` and then hands the *assigned value*, an `int`, to the `if`, which needs a `boolean`:
 
 ```java
-// MAL — thinking final made the list read-only
-final List<String> names = new ArrayList<>();
-names.add("Victor");        // ✅ compiles and runs — the list is now mutated
-names.add("Ana");           // ✅ still fine — you never reassigned the variable
-names = new ArrayList<>();  // ❌ error: cannot assign a value to final variable names
-
-// BIEN — if you want the contents frozen, freeze the contents
-final List<String> names = List.of("Victor", "Ana");
-names.add("Luis");          // ❌ throws UnsupportedOperationException at runtime
+if (count = 5) { ... }   // MAL — error: incompatible types: int cannot be converted to boolean
 ```
 
-Read the two errors side by side, because they are the whole lesson: reassigning the variable fails at **compile time** (`cannot assign a value to final variable names`), while mutating an immutable list fails at **runtime** (`UnsupportedOperationException`). `final` is a compiler-enforced promise about the name; immutability is a promise the object makes about itself. You need both to get "this really cannot change", and they are enforced by two different mechanisms at two different moments.
+That is a compile error every time — for every type except one. If the variable is a `boolean`, the assignment produces a `boolean`, the `if` is perfectly satisfied, and the code compiles and runs while doing something you never meant:
 
-> **Why `final` shows up everywhere in Spring Boot code.** Service and controller classes declare their collaborators as `private final UserRepository userRepository;`. The `final` documents that once Spring injects the repository through the constructor, nothing may swap it out later — a bean's dependencies are fixed for the life of the application. It also lets the compiler catch a constructor that forgets to assign one of them. Constructor injection and this pattern are covered in the Spring Boot notes; here, just recognise `final` as the marker for "assigned once, never again".
+```java
+boolean active = false;
+if (active = true) {     // ✅ compiles — assigns true, then always enters the branch
+    ...
+}
+```
+
+Nothing warns you at compile time; IntelliJ flags it as an inspection, and that squiggle is the only thing between you and a branch that runs unconditionally. It is also the reason a boolean condition is written `if (active)` and never `if (active == true)` — the short form has no `=` to lose.
+
+### Short-circuit evaluation — why `&&` and `||` may never look at their right operand
+
+`&&` and `||` do not evaluate both sides and then combine the two answers. They evaluate the **left** side, and then ask whether the right side could still change the outcome:
+
+- `A && B` — if `A` is `false`, the result is `false` whatever `B` turns out to be, so `B` is never evaluated.
+- `A || B` — if `A` is `true`, the result is `true` whatever `B` turns out to be, so `B` is never evaluated.
+
+That is **short-circuiting**, and it is not an optimisation you may or may not get: it is a guarantee written into the language, and real code is built on it. The pattern you will write a hundred times is a null check standing guard in front of the call that would fail:
+
+```java
+if (user != null && user.getName().isBlank()) { ... }
+```
+
+When `user` is `null`, the left side is `false`, the right side is never evaluated, `user.getName()` is never called, and there is no `NullPointerException`. Swap the two operands and the guard is worthless, because the call happens before the check that was supposed to protect it:
+
+```java
+if (user.getName().isBlank() && user != null) { ... }   // MAL — NPE whenever user is null
+```
+
+The order of the operands is doing real work here. That is unusual — `a + b` and `b + a` are the same expression — and it is the most important practical consequence of short-circuiting.
+
+> **"Never evaluated" means never started, not undone.** The compiled code tests the left operand and jumps straight past the bytecode for the right one, so any method call, any increment and any exception that lived in there simply does not happen. This is why putting work with side effects inside the right operand is a reliable source of "why did this line never run?" bugs: `if (isValid() && log(request))` will not log a single invalid request.
+
+> **Java also has `&` and `|`, which do not short-circuit.** On two booleans they produce the same answer as `&&` and `||`, but they always evaluate both sides — so the guarded null check above would throw. There is one honest reason to want that: when the right operand has a side effect that must happen regardless, such as `if (checkA() & checkB())` where both checks have to record their result. It is rare enough that a reviewer will read a lone `&` between booleans as a typo for `&&`, so write `&&` and `||` unless you can explain why not. (Between two integers the same two symbols mean something else entirely — bitwise AND and OR, working bit by bit — which you will not need in backend web code.)
 
 ---
 
@@ -374,6 +529,102 @@ One `L` on the first literal is enough. Java evaluates the chain left to right, 
 
 ---
 
+## Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one
+
+> 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the paragraphs on infinity and on NaN — this is the source for "`x != x` is `true` if and only if `x` is NaN".
+
+The money callout near the top of this file stated the fact in passing: a `double` cannot represent `0.1` exactly. Integer arithmetic has just shown you one kind of representation failure — a fixed number of bits that runs out — and this is the other kind, and the more insidious one, because nothing overflows and no digit is visibly missing. Here it is doing damage in the shortest program that can:
+
+```java
+System.out.println(0.1 + 0.2);          // 0.30000000000000004
+System.out.println(0.1 + 0.2 == 0.3);   // false
+```
+
+The mechanism is a base problem, not a Java problem. A `double` stores a number as a sum of powers of two — 1/2, 1/4, 1/8, 1/16 and so on. Ask it for `0.5` and the answer is exact, because 0.5 *is* 1/2. Ask it for `0.1` and no finite set of those fractions adds up to it, so the hardware keeps the closest 64-bit approximation it can build and carries on. It is the same limitation decimal notation has with one third: writing `0.3333` with as many threes as you have paper for never lands exactly on 1/3. Every language that uses IEEE 754 floating point behaves identically — `0.1 + 0.2` prints those same digits in JavaScript — so this is one place your existing instincts transfer without adjustment.
+
+Two things follow, and it is the second that bites.
+
+- **The error is tiny.** It sits around the seventeenth significant digit. For a temperature, a percentage, a ratio or a physics calculation it is irrelevant.
+- **The error is not stable.** Two calculations that are mathematically identical can land on two *different* approximations, because they rounded at different intermediate steps. `0.1 + 0.2` and `0.3` are simply two different `double` values. So `==` between two computed `double`s is asking whether two approximations happened to end on the same bit pattern — a question about rounding history, not about the numbers you meant.
+
+That is the whole case against `==` on floating point: it does not answer the question you were asking. It is also the second half of the case against `double` for money — the drift is meaningless on a temperature and unacceptable on an invoice, where the same total has to come out identical every single time it is computed. `BigDecimal` (the sections at the top of this file) is the fix when exactness is required; the two sections below are what to do when you are stuck with a `double` anyway.
+
+### `NaN` — the value that is not equal to itself
+
+Some floating-point operations have no numeric answer at all: `0.0 / 0.0`, the square root of a negative number, `Infinity - Infinity`. Instead of throwing, they produce **`NaN`** — "not a number", a legal `double` value meaning "this computation has no meaningful result". It then spreads, because any arithmetic involving `NaN` produces `NaN`: one bad step at the start of a pipeline poisons every number downstream, and you find a `NaN` printed at the end of a report with nothing pointing at where it entered.
+
+`NaN` has one property that surprises everybody, and it is deliberate:
+
+```java
+double nan = 0.0 / 0.0;
+
+nan == nan            // false  ← the same variable, compared against itself
+Double.isNaN(nan)     // true   ← the correct test
+```
+
+`NaN` means "no meaningful value", and two meaningless results are not the *same* meaningless result, so IEEE 754 defines `==`, `<`, `>`, `<=` and `>=` as `false` whenever either side is `NaN` — `nan == nan` included. `!=` is the single exception, and it is not an inconsistency: `!=` is defined as "the operands are not equal", and since `NaN` is equal to nothing at all, that is `true`. The specification states the rule from that side, which is the version worth keeping: `x != x` is `true` if and only if `x` is `NaN`. The consequence for your code is that you can never detect a `NaN` by comparing, and must call `Double.isNaN(value)` (or `Float.isNaN`).
+
+> **The wrapper deliberately disagrees with the operator.** `Double.equals` and `Double.compare` treat `NaN` as equal to itself, on purpose, so that sorting and collections keep behaving sanely when a `NaN` finds its way into a `List<Double>`. So `Double.valueOf(nan).equals(nan)` is `true` while `nan == nan` is `false` — the same two values, two different answers, depending on whether you asked the object or the primitive. Do not read that as "the wrapper fixed it": it only means a collection will not misbehave. Your own arithmetic still produces `NaN` silently and still cannot detect it with `==`, so test with `Double.isNaN` at the point where the value is produced, not far downstream where it has already spread.
+
+### Comparing two `double`s — a tolerance, or the right type
+
+When the values genuinely have to be `double`, compare them with a **tolerance**: decide how close counts as equal, and test the size of the difference instead of demanding identity.
+
+```java
+// MAL — asks whether two approximations landed on the same bits
+if (measured == expected) { ... }
+
+// BIEN — asks whether they agree to within the precision you actually care about
+double epsilon = 1e-9;
+if (Math.abs(measured - expected) < epsilon) { ... }
+```
+
+`Math.abs` gives the distance between the two values without caring which is larger, so one test covers both directions. `1e-9` is Java's scientific notation for 0.000000001 — far larger than the representation error and far smaller than any difference that would matter. Pick the tolerance from the domain, not from habit: nine decimal places for a computed ratio, two for anything a person reads on a screen.
+
+> **The real fix is usually the type, not the tolerance.** A tolerance is what you reach for when you *inherited* a `double` — a reading from a sensor, a field from a third-party API, a legacy database column. When the decision is yours, ask what the number is. Money, or any quantity that has to reconcile exactly: `BigDecimal`. A value with a small fixed scale that you control, such as hours to two decimal places: `BigDecimal` again, which is exactly why `TimeEntry.hours` is one. A measurement that is an approximation in the real world before it ever reaches Java: `double`, compared with a tolerance. In none of the three cases is `==` between two computed `double`s the right test.
+
+---
+
+## Division by zero — the same expression either crashes or quietly returns `Infinity`
+
+> 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the sentence "1.0/0.0 has the value positive infinity" and the surrounding paragraph on infinity and NaN.
+
+One line about this went past in the integer-division section; it earns a place of its own, because it is the sharpest example on the page of the idea the whole chapter keeps circling — *the types of the operands decide what the operator really does*. Dividing by zero is not one behaviour in Java. It is two, and which one you get depends on nothing you can see at the call site:
+
+```java
+int a = 7, b = 0;
+a / b;          // throws java.lang.ArithmeticException: / by zero
+
+double x = 7.0, y = 0.0;
+x / y;          // Infinity — no exception, execution continues
+0.0 / 0.0;      // NaN      — no exception, execution continues
+```
+
+The split comes from what each type has room to say. An `int` is 32 bits, and every one of those 4.3 billion bit patterns is already spoken for by an ordinary whole number — there is no pattern left over to mean "infinity", so the only honest thing the JVM can do is refuse, and it throws. A `double` reserves patterns for exactly this case: `Infinity`, `-Infinity` and `NaN` are legal `double` values with a defined representation, so the operation has something true to return and returns it. (`%` follows `/` in both directions: `7 % 0` throws the same `ArithmeticException`, and `7.0 % 0.0` is `NaN`.)
+
+Which of the two is more dangerous is not the one people assume:
+
+```
+   int     7 / 0    →  ArithmeticException  →  loud, stops here, names the line
+   double  7.0 / 0  →  Infinity             →  quiet, keeps going, poisons everything downstream
+```
+
+The exception is the *helpful* case. It ends the request, produces a stack trace pointing at the exact line, and you fix it in ten minutes. The `Infinity` flows onward into the next multiplication, the next average, the JSON response and the report a client reads — and by the time somebody notices `Infinity` where an average hourly rate should be, the line that divided by zero is nowhere in the evidence.
+
+> **The guard is the same in both cases, and it is not a `try/catch`.** Check the divisor before you divide:
+>
+> ```java
+> // MAL — leans on the exception, and does nothing at all in the double case
+> double average = (double) totalHours / entryCount;
+>
+> // BIEN — the empty case is a real business case, so answer it explicitly
+> double average = entryCount == 0 ? 0.0 : (double) totalHours / entryCount;
+> ```
+>
+> A divisor of zero almost always means "the collection was empty", which is a normal state of the world rather than an error: a user with no time entries this month, a project with no tasks. Deciding what the answer *is* in that case — zero, `null`, "no data" — is a business decision, and making it at the division costs less than catching an exception later or explaining an `Infinity` to a client. (`?:` is the conditional operator named in the operators section; [03-control-flow.md](03-control-flow.md) covers it properly.)
+
+---
+
 ## Wrapper classes — objects for primitives
 
 > 📖 Docs: [Baeldung — Wrapper Classes in Java](https://www.baeldung.com/java-wrapper-classes) → read: "Autoboxing and Unboxing" — the conversion the compiler inserts for you, and the `valueOf()` / `intValue()` calls behind it.
@@ -388,7 +639,7 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" is the word from the diagram at the top of this file — a type whose variable holds an address. A generic type argument must always be one, because a collection stores addresses in its slots; there is nowhere in it to put a raw 32-bit value. So you use `List<Integer>` instead. Collections are covered in detail in [10-collections.md](10-collections.md) — for now, just know they are Java's main data structures and they all require object types.
+"Reference" is the word from the diagram at the top of this file — a type whose variable holds an address. A generic type argument must always be one, because a collection stores addresses in its slots; there is nowhere in it to put a raw 32-bit value. So you use `List<Integer>` instead. The rule itself — that a type written between angle brackets must always be a reference type, and why the language was built that way — is *generics*, explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
@@ -467,31 +718,21 @@ Read the right-hand column as "the code you would have had to type by hand befor
 >
 > The fix is to receive it as the wrapper — `Integer score = scores.get("missing");` — and check for `null` before using it, or to ask for a fallback with `scores.getOrDefault("missing", 0)`. The general rule: any assignment from a wrapper to a primitive is a hidden `NullPointerException` waiting for a `null`, and that includes fields, method arguments and `return` statements, not just local variables.
 
-### The `Integer` cache — why `==` accidentally works for small numbers
+### Wrapper `==` — the one comparison this chapter refuses to explain
 
-You already know from the String section that `==` on objects compares addresses, so comparing two `Integer`s with `==` should be wrong. Run it and you get a result that makes no sense:
+Autoboxing makes `Integer` and `int` look interchangeable, and there is exactly one place where that illusion turns dangerous: comparison. `==` between two `Integer` variables does not compare the two numbers. It compares the two *addresses* from the diagram at the top of this file — it asks "are these two variables pointing at the same object?" — and that is a different question, one that gives the right answer just often enough to survive your testing:
 
 ```java
 Integer a = 127, b = 127;
-a == b            // true  ← ???
+a == b            // true
 
 Integer c = 128, d = 128;
-c == d            // false ← the same code, one number higher
+c == d            // false   ← the same code, one number higher
 ```
 
-Nothing about 127 and 128 is different as *values*. The difference is in the `Integer.valueOf()` call the compiler inserted for you a moment ago. That method does not build a new object every time: it keeps a pre-built array of `Integer` objects for the range **−128 to 127**, and for any value inside that range it hands back the *same cached object* instead of allocating. Two variables holding 127 therefore genuinely point at one object, and `==` on the two addresses is `true`. At 128 the cache is exhausted, `valueOf` allocates a fresh object each time, the two addresses differ, and `==` reverts to being wrong.
+Nothing about 127 and 128 differs as a *value*. The rule you need today is short: **never compare wrappers with `==`.** Use `a.equals(b)`, or unbox both sides to primitives first (`a.intValue() == b.intValue()`), where `==` compares values and is correct by definition. Between two primitives — `int == int` — `==` is always right and always what you meant.
 
-```
-Integer a = 127 ─┐                 Integer c = 128 ──→ [ Integer 128 ]  (new object)
-                 ├──→ [ cached Integer 127 ]
-Integer b = 127 ─┘                 Integer d = 128 ──→ [ Integer 128 ]  (another new object)
-
-     one object, so a == b is true        two objects, so c == d is false
-```
-
-> **Why does this cache exist at all?** Small integers are overwhelmingly the most common — loop counters, list sizes, status codes, ages. Boxing them millions of times would allocate millions of identical objects for the garbage collector to clean up, so the JVM pre-builds the common ones once at startup and reuses them. It is a memory optimisation that was never meant to be visible; `==` returning `true` is a side effect of it leaking through. The cache is safe precisely because `Integer` is immutable — sharing one object between unrelated pieces of code cannot cause a problem when nobody can change it.
-
-The lesson is not "remember the range". It is that **`==` on wrappers is a bug that passes its own tests**: you write it, you try it with small numbers, it works, it ships, and it fails the first time a real ID exceeds 127. Always use `.equals()` for wrapper comparison, or unbox both sides to primitives first (`a.intValue() == b.intValue()`), where `==` compares values and is correct by definition. The same cache exists for `Long`, `Short` and `Byte` over the same −128 to 127 range (and for `Character` over 0 to 127, since a `char` has no negatives) — which is exactly why a `Long id` compared with `==` is such a reliable production bug: it behaves during development, where the test data has ids 1, 2 and 3, and breaks on real data.
+> **Why the explanation waits for [06-oop-classes.md](06-oop-classes.md), and why `String` comparison waits with it.** The result above has a specific cause, and comparing two `String`s with `==` has another one, but they are not two facts to memorise separately — they are the *same* question wearing two costumes: when do two references identify one object, and what does it mean for two objects to be equal rather than identical. Answering that needs the object model itself — what `equals` is, that every class inherits a default version of it which compares addresses, and how a class overrides it to compare content. None of that exists yet. Entry 06 builds classes first, then defines identity versus value equality, and settles wrapper `==`, `String ==` and `Objects.equals` in one place where they explain each other. Learning the caching ranges here, before you know what an object is, would leave you holding a rule with nothing underneath it — exactly the kind of knowledge that collapses at the first interview follow-up question.
 
 ### Useful wrapper methods
 
@@ -501,14 +742,14 @@ These static methods are genuinely useful in everyday code:
 
 ```java
 Integer.parseInt("42");     // String → int (primitive)
-Integer.valueOf("42");      // String → Integer (object, possibly from the cache above)
+Integer.valueOf("42");      // String → Integer (object, so it can be null or go in a collection)
 Integer.MAX_VALUE;          // 2147483647 — the largest possible int value
 Integer.MIN_VALUE;          // -2147483648
 ```
 
-(To go the other way, `String.valueOf(42)` turns an `int` into a `"42"` — note that one is a method on `String`, not on `Integer`, so it belongs to the String section rather than here.)
+(To go the other way, `String.valueOf(42)` turns an `int` into a `"42"` — note that one is a method on `String`, not on `Integer`, so it is covered with the rest of text handling in [02-strings.md](02-strings.md).)
 
-**`parseInt` vs `valueOf` — the confusable pair.** They take the same argument and look interchangeable, and the difference is only in the return type: `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` object. `valueOf` is in fact implemented by calling `parseInt` and then boxing the result — which means it also goes through the cache, so `Integer.valueOf("42") == Integer.valueOf("42")` is `true` while `Integer.valueOf("1000") == Integer.valueOf("1000")` is `false`. Pick by what you need next: `parseInt` when the value goes straight into arithmetic or an `int` variable, `valueOf` when it goes into a collection or a field that may be `null`. Reaching for the wrong one is harmless — autoboxing converts it — but naming the difference is a standard junior interview question.
+**`parseInt` vs `valueOf` — the confusable pair.** They take the same argument and look interchangeable, and the difference is only in the return type: `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` object. `valueOf` is in fact implemented by calling `parseInt` and then boxing the result — which is why comparing two of its results with `==` walks straight into the trap the previous section refused to explain — compare them with `.equals()` there too. Pick by what you need next: `parseInt` when the value goes straight into arithmetic or an `int` variable, `valueOf` when it goes into a collection or a field that may be `null`. Reaching for the wrong one is harmless — autoboxing converts it — but naming the difference is a standard junior interview question.
 
 > **Both throw when the text is not a number, and the message names the culprit.** This is the failure path you hit the first time a user types something unexpected into a form:
 >
@@ -521,186 +762,9 @@ Integer.MIN_VALUE;          // -2147483648
 
 ---
 
-## String
+## Text values — `String` has a chapter of its own
 
-> 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basics" and "String Basic Manipulations" for the method catalogue, then [Guide to Java String Pool](https://www.baeldung.com/java-string-pool) → "String Interning" for why `==` sometimes appears to work.
-
-`String` is not a primitive — it is a class. But Java treats it like a primitive in many ways (you can assign with `=`, no `new` needed).
-
-```java
-String name = "Victor";
-String greeting = "Hello, " + name;                   // concatenation with +
-String greeting2 = "Hello, %s".formatted(name);       // template substitution — Java 15+
-```
-
-The `.formatted()` method replaces placeholders in the string. `%s` means "a string goes here", `%d` means "an integer goes here". It is the same idea as template literals in JavaScript — `` `Hello, ${name}` `` — but with positional placeholders. The order matters: the values are matched to the placeholders left to right, in the order they appear in the string.
-
-```java
-"User %s has %d points".formatted("Victor", 100);  // "User Victor has 100 points"
-"User %s has %d points".formatted(100, "Victor");  // MAL — arguments swapped
-```
-
-Swapping them does not fail at compile time — `formatted` takes `Object...`, so any argument in any order is a legal call as far as the compiler is concerned. It blows up when the line actually runs:
-
-```
-java.util.IllegalFormatConversionException: d != java.lang.String
-```
-
-Read that message as "`%d` was handed a `java.lang.String`". Note *which* placeholder complained: `%s` swallowed the `100` without a murmur, because `%s` just calls `toString()` on whatever it gets and every object has one. Only `%d` is fussy, because it has to produce digits. So a swapped pair fails at the *numeric* placeholder, never at the `%s` — worth knowing, because the error points at the second half of the string while the mistake is in the first.
-
-For decimals, use `%f`. You can control how many decimal places to show with `.Nf` (N = number of digits): `"Price is %.2f euros".formatted(19.99)` → `"Price is 19.99 euros"`.
-
-### Common methods
-
-```java
-name.length()                     // 6 — how many characters
-name.toUpperCase()                // "VICTOR" — all uppercase
-name.toLowerCase()                // "victor" — all lowercase
-name.contains("ict")              // true — does the string contain this sequence?
-name.startsWith("Vi")             // true — does it start with this?
-name.replace("Victor", "World")   // "World" — replace all occurrences of a substring
-name.trim()                       // removes leading/trailing spaces — but prefer strip(), see the next section
-name.isEmpty()                    // false — true only if the string is exactly ""
-name.isBlank()                    // false — true if empty OR contains only spaces
-name.substring(0, 3)              // "Vic" — characters from index 0 to 2 (end index is excluded)
-name.split(",")                   // splits by comma — returns String[]
-name.equals("Victor")             // true — always use this for content comparison (see below)
-name.equalsIgnoreCase("victor")   // true — same but ignores uppercase/lowercase
-```
-
-Two entries in that list are there because you will meet them in every tutorial, not because you should reach for them: `trim()` is superseded by `strip()`, and `isEmpty()` is usually the wrong check when `isBlank()` is available. The next section is exactly about that pair — read it before you use either.
-
-### `strip()` vs `trim()` — use `strip()`
-
-> 📖 Docs: [Baeldung — Java Strip Methods](https://www.baeldung.com/java-string-strip-methods) → read: "Comparing the Strip Methods vs the trim() Method" — and its sub-section "The strip() Method vs the trim() Method".
-
-The method list above has `trim()` on it, and it is the one every tutorial written before 2018 teaches. Java 11 added `strip()`, which does the same job correctly, and `strip()` is what you should reach for from now on.
-
-The two differ in *what they consider whitespace*, and the definitions are from different eras. `trim()` predates Unicode support in Java: it removes every character whose code point is less than or equal to `U+0020` (the ordinary space). That is a crude numeric rule — it happens to catch spaces, tabs and newlines, and it catches a few control characters that are not whitespace at all. `strip()` instead asks `Character.isWhitespace()`, which consults the actual Unicode tables:
-
-```java
-String em = "\u2003Victor\u2003";   // U+2003 EM SPACE — real Unicode whitespace
-
-em.length()          // 8
-em.trim().length()   // 8  ← MAL: trim left it alone, because U+2003 > U+0020
-em.strip().length()  // 6  ← BIEN: strip knows U+2003 is whitespace
-```
-
-For plain ASCII input the two are identical — `"   Victor   "` comes back as `"Victor"` from both. The difference only shows up with text that came from somewhere real: a Word document, a PDF, a copy-paste out of a web page, a form filled in on a phone keyboard. Those routinely carry em spaces, ideographic spaces (`U+3000`, standard in Chinese and Japanese text) and non-breaking spaces, and `trim()` leaves every one of them in place — so a name that arrived as `"Victor\u2003"` fails an equality check against `"Victor"` and you get a "user not found" for a name that looks perfectly correct on screen. That is the whole argument for `strip()`: it costs nothing to type and it removes a class of bug you cannot see.
-
-> **The one case where `strip()` also leaves the character behind.** Unicode's non-breaking space `U+00A0` — the character an HTML `&nbsp;` produces, and the most common invisible troublemaker in web input — is *not* whitespace by `Character.isWhitespace()`, because it is deliberately defined as non-breaking. Neither `trim()` nor `strip()` removes it. If you are cleaning input that came through a browser, you need `input.replace('\u00A0', ' ').strip()`. Nobody discovers this by reading docs; they discover it by staring at two strings that print identically and compare `false`.
-
-The same upgrade applies to the emptiness checks in the list above: `isEmpty()` is `true` only for `""`, while `isBlank()` (also Java 11) is `true` for `""` *and* for any string made only of whitespace — using the same `Character.isWhitespace()` rule as `strip()`. In validation code, `isBlank()` is nearly always the check you actually meant, because `"   "` is not a real name either.
-
-### Text blocks — multi-line strings without the escaping (Java 15+)
-
-> 📖 Docs: [Baeldung — Java Text Blocks](https://www.baeldung.com/java-text-blocks) → read: "Usage" for the syntax and "Indentation" for the incidental-whitespace rule.
-
-Embedding a chunk of JSON or SQL in Java source used to be genuinely painful, because every quote in the content had to be escaped and every line break spelled out:
-
-```java
-// MAL — this is what you wrote before Java 15
-String json = "{\n  \"name\": \"Victor\",\n  \"role\": \"EMPLOYEE\"\n}";
-```
-
-You cannot read that, you cannot paste it into Postman to check it, and a single missing backslash is a compile error. A **text block** is a string literal delimited by three double quotes, and inside it quotes and newlines are just themselves:
-
-```java
-// BIEN — a text block
-String json = """
-        {
-          "name": "Victor",
-          "role": "EMPLOYEE"
-        }""";
-```
-
-Two syntax rules the compiler enforces. The opening `"""` must be followed by a **line break** — content cannot start on the same line, and trying it gives you a message that names the rule directly:
-
-```java
-String s = """hello""";   // MAL — error: illegal text block open delimiter sequence, missing line terminator
-```
-
-The closing `"""` is freer: it may sit at the end of the last content line (as in the JSON above) or on a line of its own. That choice is not cosmetic, though — see the callout below.
-
-> **Where did the indentation go?** The block above is indented eight spaces to line up with the surrounding code, yet the resulting string starts at column zero. The compiler strips what the spec calls **incidental whitespace**: it looks at every non-blank line *plus the line holding the closing `"""`*, finds the smallest indentation among them, and removes exactly that much from every line. So the indentation you added to keep the source readable costs nothing, and the indentation you added *on purpose* — the two spaces before `"name"` — survives, because it is deeper than the minimum.
->
-> The consequence to remember: **moving the closing `"""` changes the string.** Put it on its own line at column zero and the minimum indentation becomes zero, so all eight spaces suddenly reappear inside your JSON. That is the one text-block surprise worth knowing before it happens.
-
-The type is still `String` — a text block is a different way to *write* a literal, not a new type, so every method in the list above works on it, and `.formatted()` works on it too. Where you will actually reach for one: a JSON fixture in a test, a multi-line SQL query in a repository, or an HTML email template.
-
-### String comparison — always use `equals()`
-
-In Java, `==` compares **memory addresses** (references), not content. Two `String` variables can hold the exact same characters and still live at two different addresses — and `==` compares the addresses, so it returns `false` even though the text is identical.
-
-`.equals()` always compares the actual characters — that is what you almost always want:
-
-```java
-String a = new String("hello");
-String b = new String("hello");
-
-a == b        // false — two separate objects, different addresses
-a.equals(b)   // true — same characters, which is what you meant
-```
-
-> **Careful — string literals are a trap here.** If you write `String a = "hello"; String b = "hello";` (plain literals, no `new`), then `a == b` actually returns `true` — because Java keeps a single shared copy of each literal in a cache called the **string pool**, so both variables end up pointing to the very same object. That makes `==` *look* like it works. It breaks the moment one of the strings comes from somewhere else — user input, a database row, `new String(...)`, or a value built by concatenation at runtime — and then `==` silently returns `false`. The pool is exactly why you must never trust `==` for content: it works just often enough to fool you. The pool itself is covered in [05-memory-model.md](05-memory-model.md).
-
-> **Why does `==` even exist for Strings?** For objects (including `String`), `==` checks if two variables point to the **same object in memory** — not just the same value. This matters in some cases (e.g. checking if two list entries are literally the same object), but for Strings you almost never want that.
-
-### `String`, `StringBuilder`, `StringBuffer`
-
-> 📖 Docs: [Baeldung — StringBuilder and StringBuffer in Java](https://www.baeldung.com/java-string-builder-string-buffer) → read: "Similarities" and "Differences" (with its "Performance" sub-section) — the synchronisation difference and when it costs you.
-
-The problem: `String` is **immutable** — once created, it cannot be changed. Every time you do `str += something`, Java does not modify the original string. It creates a brand new `String` object with the combined content. In a loop with 1000 iterations, you create 1000 objects — slow and wasteful. ("Wasteful" is two separate costs, allocating each object and then cleaning it up; [05-memory-model.md](05-memory-model.md) picks this exact loop back up once garbage collection is on the table. For now: one object per iteration, all but the last thrown away.)
-
-`StringBuilder` uses a **buffer** to solve this — a space in memory where it accumulates the pieces of the string while you are building it, like a whiteboard where you keep writing until you have the final result. You modify it in place without creating new objects, and when you are done you call `.toString()` to get the finished string.
-
-The concept of **thread-safety** shows up here because `StringBuilder` is not thread-safe — and in Spring Boot this matters because each HTTP request arrives on a separate thread. If you declared a `StringBuilder` as a shared field on a Spring bean (which is a singleton), multiple threads could write to it at the same time and corrupt the result.
-
-> **Preview — Spring Boot:** the snippet below is annotated `@Service`, which you have not studied yet. It marks a class Spring should create **once** at startup and hand to everyone who needs it — a *singleton*, one shared instance for the whole application. That single word is the whole reason the example is dangerous: one object, every request thread writing into it. You will implement `@Service` in the Spring Boot notes; here it only sets the scene.
-
-```java
-// MAL — shared across all threads (never do this with StringBuilder)
-@Service
-public class ReportService {
-    private StringBuilder sharedBuilder = new StringBuilder();  // ← all threads share this
-}
-
-// BIEN — local to the method, only exists during that one request
-public String buildReport(List<String> lines) {
-    StringBuilder sb = new StringBuilder();  // ← only this thread sees it
-    for (String line : lines) sb.append(line).append("\n");
-    return sb.toString();
-}
-```
-
-> **What does thread-safe mean?** A **thread** is a task that runs in parallel with others inside the same program. In a REST API, Spring Boot assigns a separate thread to each incoming HTTP request — that is how it serves several at once without waiting for the first to finish. **Thread-safe** means several threads can use the same object at the same time without one corrupting the other's work. `String` and `StringBuffer` are thread-safe; `StringBuilder` is not. In practice the risk simply does not exist if you create the `StringBuilder` as a local variable inside a method — that object is yours and no other thread ever touches it.
-
-Read the table by picking your two constraints — do you need the object to be modifiable, and does more than one thread touch it — and the last column names the type that fits. Almost always you land on `String` (immutable, safe) for everyday values and `StringBuilder` (mutable, single-thread) for loops.
-
-|                 | Immutable? | Thread-safe? | When to use                             |
-| --------------- | ---------- | ------------ | --------------------------------------- |
-| `String`        | Yes        | Yes          | Most cases — reading, passing, comparing |
-| `StringBuilder` | No         | No           | Building strings in a loop (fast)       |
-| `StringBuffer`  | No         | Yes          | Multi-threaded string building (rare)   |
-
-```java
-// Inefficient — creates a new String object on every iteration
-String result = "";
-for (int i = 0; i < 1000; i++) {
-    result += i;
-}
-
-// Efficient — mutates the same object
-StringBuilder sb = new StringBuilder();
-for (int i = 0; i < 1000; i++) {
-    sb.append(i);   // modifies the StringBuilder instead of creating a new one
-}
-String result = sb.toString();
-```
-
-> **Why `.append()` and not `+=`?** Because `StringBuilder` is mutable — `.append()` modifies the existing object without creating anything new. `+=` on a `String` creates a brand-new object every time (that is exactly why it is slow). `StringBuilder` does not overload the `+=` operator, so it exposes its own `.append()` method to make it explicit that you are mutating the object in place.
-
-In Spring Boot you will mostly work with `String`. Use `StringBuilder` when you are building a long string by joining many pieces — for example, generating a comma-separated list or assembling a SQL fragment in a service method.
+Text does not follow from anything on this page. A `String` is an object, and an unchangeable one, so every question about it — the method catalogue, `strip()` versus `trim()`, text blocks, building text in a loop with `StringBuilder`, and why `==` is the wrong way to compare two of them — turns on facts about objects rather than on numeric representation. All of it is in [02-strings.md](02-strings.md), the next file in this topic. The only thing you need while reading this page is what the diagram at the top already showed you: a `String` variable holds an address, not the characters.
 
 ---
 
@@ -739,6 +803,10 @@ Useful when the type is long and obvious from the right side: `var employees = e
 
 ---
 
-You now have the raw materials: the eight primitives, their wrapper objects, `String` with its `strip()`/text-block conveniences, casting between types, and `var`. Two threads run through everything on this page and both continue into the next file. The first is **value versus reference** — the diagram at the top explains `==` on Strings, `final` on a `List`, the `Integer` cache, and null unboxing, and it is the idea [05-memory-model.md](05-memory-model.md) eventually finishes. The second is that **Java fails at two different moments**: some mistakes the compiler refuses outright (`integer number too large`, `possible lossy conversion`, `cannot infer type`), and some it lets through to blow up or go quietly wrong at runtime (overflow, truncated division, `NumberFormatException`). Learning which is which *is* learning Java.
+You now have Java's value model end to end: the eight primitives and the wrapper objects beside them, the conversions the compiler performs for you and the ones it makes you write out, `BigDecimal` for values that have to be exact, the operators that combine all of them, and `var`, which changes how you *write* a type and never what the type *is*.
 
-But a variable that just sits there holding a value does nothing on its own — a program has to *decide* and *repeat*: run this block only if the age is over 18, loop over every entry in the list. That is control flow, and it is what [03-control-flow.md](03-control-flow.md) covers next — `if`/`else`, `switch`, and the loops that put these types to work. Watch for the same silent-versus-loud split there: switching on a `null` String and running an index one step past the end of an array are both runtime failures, and both are consequences of what you just read here.
+One idea runs through the whole page. **A value's representation decides what the operators really do to it.** Thirty-two bits with no spare patterns is why an `int` overflows into a negative number and why `7 / 0` has no choice but to throw. Sums of powers of two is why `0.1 + 0.2` misses `0.3`, why `NaN` is not equal to itself, and why `7.0 / 0` can afford to hand back `Infinity` instead of failing. A stored scale is why `1.10` and `1.1` are one number under `compareTo` and two under `equals`. And the type on the left of the `=` never rescues an expression that was already computed in the wrong representation — integer division assigned to a `double`, an overflowing multiplication assigned to a `long`, and `new BigDecimal(0.1)` are three faces of that one sentence.
+
+A second thread is about Java rather than about numbers: **it fails at two different moments.** Some mistakes the compiler refuses outright — `integer number too large`, `possible lossy conversion`, `int cannot be converted to boolean`, `cannot infer type`. Others it waves through to fail at runtime, either loudly (`ArithmeticException: / by zero`, a `NullPointerException` from unboxing a `null`) or silently (overflow, truncated division, an `Infinity` sitting in a report). Learning which is which is most of what makes reading Java code fast.
+
+What you still cannot do is anything with text — and every line of a web application handles text: a request body, a username, a JSON field, a log message. [02-strings.md](02-strings.md) takes the question this chapter has been asking — how is this value represented, and what does that force? — and puts it to `String`. The answer has a different shape: text in Java is an object, and an unchangeable one, so every operation that looks like it edits a `String` quietly builds a new one instead.

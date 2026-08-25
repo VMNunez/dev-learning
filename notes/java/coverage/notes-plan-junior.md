@@ -54,7 +54,8 @@ Handoff: Once Victor knows what kind of language Java is and how it runs, entry 
 
 ## 01 — Values, types, conversion, and arithmetic
 
-Status: pending
+Status: complete
+Studied: pending
 Action: audit
 English: notes/java/junior/en/01-variables-types.md
 Spanish: notes/java/junior/es/01-variables-tipos.md
@@ -87,18 +88,18 @@ Must answer:
 
 Coverage concepts:
 
-- [ ] Variables, declared types, initialization, and scope — know where a local, parameter, field, or block variable exists and that local variables must be definitely assigned before use
-- [ ] Primitive vs reference types — primitives hold a value, while reference variables identify objects and may be `null`
-- [ ] `int` vs `long` — choose `long` when the range can exceed `int`; use an `L` suffix only when the integer literal itself does not fit in `int`
-- [ ] Primitive vs wrapper types — wrappers support generics and `null`, while unboxing a null wrapper throws `NullPointerException`
-- [ ] Numeric conversions and casts — widening conversions are normally safe, while narrowing can lose range or precision and therefore requires an explicit cast
-- [ ] Integer arithmetic — recognise integer division, overflow, and the need to promote an operand when fractional or wider arithmetic is required
-- [ ] Operators and short-circuit evaluation — use arithmetic, comparison, logical, and assignment operators and explain why `&&` and `||` may skip the right operand
-- [ ] `var` — local type inference does not make Java dynamically typed; the compiler infers one fixed type from the initializer
-- [ ] Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
-- [ ] Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
-- [ ] `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division
-- [ ] `BigDecimal.equals()` vs `compareTo()` — recognise that `equals` includes scale while `compareTo` compares numerical value, and choose deliberately for money comparisons and collection keys
+- [x] Variables, declared types, initialization, and scope — know where a local, parameter, field, or block variable exists and that local variables must be definitely assigned before use
+- [x] Primitive vs reference types — primitives hold a value, while reference variables identify objects and may be `null`
+- [x] `int` vs `long` — choose `long` when the range can exceed `int`; use an `L` suffix only when the integer literal itself does not fit in `int`
+- [x] Primitive vs wrapper types — wrappers support generics and `null`, while unboxing a null wrapper throws `NullPointerException`
+- [x] Numeric conversions and casts — widening conversions are normally safe, while narrowing can lose range or precision and therefore requires an explicit cast
+- [x] Integer arithmetic — recognise integer division, overflow, and the need to promote an operand when fractional or wider arithmetic is required
+- [x] Operators and short-circuit evaluation — use arithmetic, comparison, logical, and assignment operators and explain why `&&` and `||` may skip the right operand
+- [x] `var` — local type inference does not make Java dynamically typed; the compiler infers one fixed type from the initializer
+- [x] Floating-point representation and comparison — `double` and `float` cannot represent most decimals exactly, so `==` between them is unreliable and `NaN` is never equal to itself, which is why floating-point equality needs a tolerance or `BigDecimal`
+- [x] Integer vs floating-point division by zero — integer division by zero throws `ArithmeticException`, while floating-point division by zero produces `Infinity` or `NaN` instead of failing
+- [x] `BigDecimal` for money and decimal arithmetic — avoid binary floating-point error, remember operations return new values, and choose explicit scale and rounding for division
+- [x] `BigDecimal.equals()` vs `compareTo()` — recognise that `equals` includes scale while `compareTo` compares numerical value, and choose deliberately for money comparisons and collection keys
 
 Audit note: `01-variables-types.md` currently also carries the entire `String` treatment, which entry 02 now owns and which the audit moves into the new file — the two chapters are authored together. It further carries `### The Integer cache — why == accidentally works for small numbers`, `### String comparison — always use equals()`, and `### final — and the half-truth that it "is const"`; all three teach bullets assigned to entry 06 and must leave this file rather than merely being cross-referenced from it. Entry 01's last must-answer question asks why `String ==` is deferred, and the current file answers that question in place — the deferral is not real until the prose is moved.
 
