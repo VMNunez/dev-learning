@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **16 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **15 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -164,6 +164,10 @@ Browser                               Server
   perimeter, not the endpoint's contract: a matcher widened in `SecurityConfig` must not be able to open a
   method whose own file never changed, and an unannotated handler must never be ambiguous between
   "needs no rule" and "the rule was forgotten".
+- A rule that makes a route public names the HTTP method and the exact path, never a path prefix. A
+  prefix matcher authorises endpoints that do not exist yet, so a handler later added to the same
+  controller is born public with nothing in its diff to prompt a security review; the only public
+  surface is `POST /api/auth/login`, and anything else falls through to `anyRequest().authenticated()`.
 - A response that serialises a database-generated value flushes before it is built. With a sequence-backed
   `@GeneratedValue`, `save()` only stages the `INSERT`, so `@CreationTimestamp` and any column default are
   still null on the entity until the flush; a create response mapped before it serialises `null` for a
