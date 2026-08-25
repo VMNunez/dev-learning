@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **2 Mediums and 18 Lows open**. What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **1 Medium and 19 Lows open** (the 2026-08-25 close of the datasource-role Medium also raised one new Low). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
 | **Phase** | Backend (Phase 4) — its backlog reopened on 2026-08-06 and the frontend phase has not started; Step 7a opens Phase 5 once G3 signs off |
-| **Last updated** | 2026-08-24 |
+| **Last updated** | 2026-08-25 |
 
 ---
 
@@ -422,6 +422,23 @@ it at runtime through the existing `PasswordEncoder` bean. The runner is idempot
 > exposure; a `filter-repo` rewrite was rejected because it changes every commit hash from May onward —
 > breaking the references the `## Closed` ledger, this plan and the notes all cite — while revoking
 > nothing already cloned. Both published values are treated as burned.
+
+**The datasource role.** The application connects as `timetrack_app`, a role with `LOGIN` and nothing
+else — no `SUPERUSER`, no `CREATEDB`, no `CREATEROLE` — owning the `timetrack` database and no other
+object on the server. `postgres` stays an administration identity, used from pgAdmin and never by a
+running process. The bound this sets is precise, and the imprecise version of it is worth refusing: it
+does **not** protect this database's own tables, where the application holds full DML by definition. It
+removes what a superuser adds on top — every other role's password hash in `pg_shadow`, shell execution
+through `COPY … PROGRAM`, and DDL against objects this project does not own.
+
+The role owns the database rather than holding `SELECT`/`INSERT`/`UPDATE`/`DELETE` alone because
+`ddl-auto=update` alters its own tables at startup. That is the coupling to record: the schema strategy
+decides the floor on the privilege. Behind Flyway migrations — the deployment-shaped alternative — the
+runtime role could drop DDL entirely and the migration step would carry it instead.
+
+Its coordinates are placeholders **with** a local default (`DB_URL`, `DB_USERNAME`), unlike the three
+secrets, which have none. A hostname is not a secret, so the reason to externalise it is different: the
+same build has to run against another host, which is what Step 11's compose service needs.
 
 ---
 
