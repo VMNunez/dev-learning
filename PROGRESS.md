@@ -85,6 +85,30 @@ workflow to the first project that established it rather than to code inside tha
 
 ---
 
+## Authoring progress
+
+Share of the accepted study route that has been **written**. This is independent from study: a note
+counts here the moment its prose is finished, whether or not Victor has since sat down with it, and a
+question counts once he has accepted its answer as correct. `authoring-progress-recount` recounts these
+cells from the notes plans' `Status:` fields and the exact bilingual `[refined]` question markers.
+
+| Track | Junior | Middle | Senior |
+|---|---|---|---|
+| Notes authored | 1/208* (0%) | — | — |
+| Interview CORE refined | — | — | — |
+| Interview bank refined | — | — | — |
+
+`*` provisional denominator — at least one of the level's notes plans is not `Plan status: current`, or
+its `Plan` cell in `notes/prompts/_internal/_run-tracker.md` is flagged stale, so the denominator will
+grow as those plans absorb their missing coverage bullets. Unlike `Study progress` below, a stale plan
+marks this count rather than blanking it: the numerator is a fact about files that already exist, and a
+denominator that can only grow makes the fraction an honest floor.
+
+`—` means the level has no denominator at all: no notes plan exists for it, or the question bank has no
+stable IDs yet. It never means `0%`; an honest zero over a real denominator is printed as `0/N (0%)`.
+
+---
+
 ## Study progress
 
 Share of the accepted study route Victor has actively studied. This is independent from authoring:

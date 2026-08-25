@@ -231,7 +231,7 @@ git commit -m "type: description"
 
 ### When a skill cannot finish — durable friction
 
-All seventeen in-session skills point here rather than restating this contract. A skill run writes
+All eighteen in-session skills point here rather than restating this contract. A skill run writes
 friction only when the invoked ritual **cannot complete one of its declared steps** because a required
 input is missing or contradictory outside a declared normal gate, a dispatch / tool / runtime fails, or
 an ambiguous, contradictory or breached rule leaves the result incorrect or incomplete.
@@ -775,7 +775,7 @@ and do not license widening the task into `/system-check` or a whole-system audi
 
 **A skill is named bare; only a launcher takes a slash.** A `/name` written in any repo file is either a
 launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's own built-ins
-(`/code-review`, `/model`). The seventeen in-session skills have neither, so they are written
+(`/code-review`, `/model`). The eighteen in-session skills have neither, so they are written
 `coverage-mark`, `step-complete` — never `/coverage-mark`. Writing a skill with a slash hands the reader a
 command that does not exist, which is the same defect the launcher-naming rule in
 `notes/prompts/README.md` exists to prevent.

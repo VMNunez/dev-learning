@@ -370,7 +370,7 @@ consume one of these sources of truth.
 | `notes/coverage/junior.md` | **junior scope** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `project-brief` (the only whole read), current notes/interview-prep audits, `roadmap-review`, `sql-exercises`, and the apply family for defensibility spot lookups (`cv`, `linkedin`, `cover-letter`, and `portfolio-audit`'s CV bullet, through `_application-standard.md` source 7); `plan-audit` only digests it to test a brief's freshness |
 | `notes/coverage/middle.md` | **middle scope after junior consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | level-aware notes/interview-prep audits |
 | `notes/coverage/senior.md` | **senior scope after middle consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | level-aware notes/interview-prep audits |
-| `PROGRESS.md` | **status, never a concept list** — the per-technology lists were deleted 2026-08-03 and a concept lives in the coverage files; the section-by-section inventory is [`_system-map.md` §8](_internal/_system-map.md#8--progressmd-section-by-section) | the closing rituals per section, in session (`step-complete`, `coverage-mark`, `study-block-close`, `sql-grade`, `simulation-review`…) + `progress-update-prompt`, which writes only `Professional level by topic` and audits the rest | `plan-audit`, `roadmap-review`, `project-brief`, `review-audit`, `cv`, `linkedin`, `cover-letter`, `profile-readme`, `sql-exercises`, simulation/interview planning |
+| `PROGRESS.md` | **status, never a concept list** — the per-technology lists were deleted 2026-08-03 and a concept lives in the coverage files; the section-by-section inventory is [`_system-map.md` §8](_internal/_system-map.md#8--progressmd-section-by-section) | the closing rituals per section, in session (`step-complete`, `coverage-mark`, `study-block-close`, `authoring-progress-recount`, `sql-grade`, `simulation-review`…) + `progress-update-prompt`, which writes only `Professional level by topic` and audits the rest | `plan-audit`, `roadmap-review`, `project-brief`, `review-audit`, `cv`, `linkedin`, `cover-letter`, `profile-readme`, `sql-exercises`, simulation/interview planning |
 | `{project}/PLANNING.md` | **what a project builds** | `plan-audit` · in session: `step-complete` (✅ + §0 — every cell, `Next gate` re-derived) and `backlog-task-close` (rules section + §0 — `Last updated` always, the gate qualifier, and the route cells only when it owns them) — the whole six-cell partition is in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
 
 ---
@@ -529,7 +529,7 @@ Each generated file, with who writes it and who depends on it:
   and both their subagents, plus `interview-prep-audit`'s market-analysis stage. *Real postings that
   anchor coverage and the interview Q&A to the market.*
 - **`PROGRESS.md`** — written **per section by the closing rituals** in the daily session, each owning its
-  own cell (`study-block-close` owns `Study progress`); `progress-update` writes only `Professional level by topic` and *audits* the rest, reporting
+  own cell (`study-block-close` owns `Study progress`, `authoring-progress-recount` owns `Authoring progress`); `progress-update` writes only `Professional level by topic` and *audits* the rest, reporting
   drift with the owner to re-run (demoted 2026-08-05, REC-039) → read by `plan-audit`, `roadmap-review`,
   `project-brief`, `review-audit`, `cv`, `linkedin`, `sql-exercises`. *Stale PROGRESS = the wrong next
   project in `project-brief` and a wrong gap analysis in `roadmap-review`.*
@@ -554,9 +554,9 @@ Each generated file, with who writes it and who depends on it:
   whole bank), `simulation-review` and `code-review-practice` (born-unrefined insertions only, under
   the standard's "Adding questions from outside the audit"), `study-content-writer` (unrefined, reopened
   or refining content), and `study-block-close` (`[studied]` only) → read by `interview-prep-route`,
-  `interview-prep-block-open`, `simulator` and `progress-update`.
+  `interview-prep-block-open`, `simulator`, `authoring-progress-recount` and `progress-update`.
 - **`interview-prep/routes/{LEVEL}.md`** — written only by `interview-prep-route` → read by
-  `interview-prep-block-open`, `study-block-close`, and `progress-update`.
+  `interview-prep-block-open`, `study-block-close`, `authoring-progress-recount`, and `progress-update`.
 - **`interview-prep/projects/*.md`** — written by `portfolio-audit` → read by `simulator`.
 - **`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `sql-plan-prompt`, audited and extended by
   `sql-plan-audit`, and advanced by `sql-grade`'s subagent (§1 counts, §3 statuses, §2 `[x]` bullets)

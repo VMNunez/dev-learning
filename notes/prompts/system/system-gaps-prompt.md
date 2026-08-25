@@ -27,7 +27,7 @@ runs, a debt nothing clears — using only the two derived maps as evidence:
 
 **Why only those two.** Both maps were written by reading the whole machinery, so the facts a gap
 analysis needs — who writes what, what fires when, what runs after what — are already extracted and,
-uniquely, already *joined across components*. Re-reading thirty prompts and seventeen skills to rebuild
+uniquely, already *joined across components*. Re-reading thirty prompts and eighteen skills to rebuild
 that join is what `/system-check` costs, and it answers a different question. This run is cheap on
 purpose, and cheap is what makes it runnable often enough to catch a hole while it is still small.
 

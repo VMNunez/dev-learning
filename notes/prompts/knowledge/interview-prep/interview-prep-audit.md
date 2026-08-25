@@ -497,6 +497,18 @@ to run `interview-prep-route` after every required bank for the level is current
   and narrows what **both** per-section subagents may rewrite — it never drops the reviewer, and it is
   passed to it.
 
+### Recount authoring progress
+
+After the last topic of the run has committed, **invoke the `authoring-progress-recount` skill**,
+passing the level this run audited. It owns the `## Authoring progress` rows of `PROGRESS.md` end to
+end: it recounts refined CORE and full-bank questions from the bilingual `[refined]` markers, decides
+the `—` gate when a bank still lacks stable IDs or a current fingerprint, and commits `PROGRESS.md`
+itself. Do not reproduce its counting here and do not edit those rows yourself. Two things to pass it
+explicitly, because they are this run's context and not the skill's: the level, and the list of topics
+this run left `blocked — partial`, whose banks its gate will refuse. Invoke it **once** for the whole
+run, not per topic, so a `FILE = all` batch writes the rows a single time. Fold its report row into the
+final report, and do not re-stage `PROGRESS.md` here.
+
 ### Final step — pipeline self-report
 
 After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
