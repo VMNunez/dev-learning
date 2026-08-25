@@ -156,6 +156,7 @@ Concepts needed to build, test, explain, and debug a conventional Spring Boot RE
 - Datasource and persistence properties — connect the application to a real database through its URL, credentials, and driver settings, and recognise what each `ddl-auto` value does to an existing schema ✅ 07-timetrack
 - Profiles — activate environment-specific beans and configuration deliberately without treating a profile as a secrets store ✅ 07-timetrack
 - `@Value` vs `@ConfigurationProperties` — inject an isolated value directly or bind and validate a cohesive typed configuration group when several related settings belong together ✅ 07-timetrack
+- Typed property binding — a property value is converted to the type of the target it is injected into, so a comma-separated value binds to a `List<String>` while a `String` target keeps the separators inside one value ✅ 07-timetrack — `SecurityConfig` declares `allowedOrigins` as `List<String>`, so `app.cors.allowed-origins` holding two comma-separated origins binds as two entries of `CorsConfiguration.setAllowedOrigins`
 - SQL initialization — understand when Boot runs `schema.sql` and `data.sql` and how initialization differs for embedded and external databases ✅ 07-timetrack
 
 ## Boot runtime model and packaging

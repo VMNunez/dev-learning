@@ -134,7 +134,8 @@ review without taking on specialist or production-platform ownership.
 - Credentialed CORS — credentialed cross-origin requests require an explicit allowed origin and cannot
   combine credentials with an `Access-Control-Allow-Origin: *` wildcard
 - Minimal CORS policy — allow only the origins, methods, headers, and credential mode the deployed
-  client actually needs
+  client actually needs ✅ 07-timetrack — `SecurityConfig`'s `CorsConfiguration` lists the deployed origin,
+  the six methods used, `Authorization` and `Content-Type` only, and `allowCredentials(false)`
 
 ## XSS and output safety
 
