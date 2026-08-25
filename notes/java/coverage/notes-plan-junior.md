@@ -13,11 +13,16 @@ Existing sections that carry no assigned coverage bullet are **preserved** unles
 ## 00 — Java execution foundations
 
 Status: refined
+
 Studied: pending
+
 Action: audit
+
 English: notes/java/junior/en/00-intro-java.md
 Spanish: notes/java/junior/es/00-intro-java.md
+
 Depends on: none
+
 Pending additions: none
 
 Narrative role: Introduce Java as the execution language behind Victor's Spring Boot work and provide the map for the complete junior journey.
@@ -123,7 +128,7 @@ Must answer:
 - What is the practical difference between a String that is empty and one that contains only spaces or a tab, and which of the two does a submitted form field usually produce?
 - Why does an invalid format specifier survive compilation and fail only when the line executes?
 - How is a multi-line JSON or SQL fragment written without escaping every quote and newline?
-- What turns the text `"42"` into the number `42`, what does it mean that the resulting `NumberFormatException` is *unchecked*, and why is the full checked/unchecked model deferred to entry 11?
+- What turns the text `"42"` into the number `42`, what does it mean that the resulting `NumberFormatException` is _unchecked_, and why is the full checked/unchecked model deferred to entry 11?
 - What turns a number, a boolean, or an arbitrary object back into text, and why is `String.valueOf(x)` safer than `x.toString()` when `x` might be null?
 - Why is comparing two Strings with `==` deferred to entry 06 rather than answered in the chapter that teaches every other String operation?
 
@@ -426,7 +431,7 @@ Coverage concepts:
 Audit note: `09-generics.md` diverges from this contract in three directions.
 (a) It develops **type erasure** as a named mechanism with runtime consequences — middle's bullet — where junior needs only "the type argument is checked at compile time and is not there at runtime".
 (b) It never mentions `?`, `? extends T` or `? super T` at all, so the wildcard-recognition bullet this entry owns is currently unwritten.
-(c) `### Using an Optional`, `### Optional.map() vs Stream.map()` and `### Chaining map() + orElseThrow()` teach `Optional` *usage*, which this entry's own must-answer question defers to entry 12; and `## Bounded type parameters` plus the generic-class and generic-method authoring sections exceed bullets that specify recognition and explicitly exclude advanced generic API design.
+(c) `### Using an Optional`, `### Optional.map() vs Stream.map()` and `### Chaining map() + orElseThrow()` teach `Optional` _usage_, which this entry's own must-answer question defers to entry 12; and `## Bounded type parameters` plus the generic-class and generic-method authoring sections exceed bullets that specify recognition and explicitly exclude advanced generic API design.
 
 Rationale: All of these answer one question — what does this container promise about the values inside it, and how does the compiler enforce that promise? `Optional` appears here as a type to read; operating on it requires lambdas and is therefore entry 12's work.
 
