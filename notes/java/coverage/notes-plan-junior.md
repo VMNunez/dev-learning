@@ -109,7 +109,8 @@ Handoff: Numbers behave the way their representation forces them to; entry 02 as
 
 ## 02 — Strings and text
 
-Status: pending
+Status: complete
+Studied: pending
 Action: create
 English: notes/java/junior/en/02-strings.md
 Spanish: notes/java/junior/es/02-cadenas-de-texto.md
@@ -135,12 +136,12 @@ Must answer:
 
 Coverage concepts:
 
-- [ ] String immutability — String operations return new values rather than modifying the original object
-- [ ] Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code
-- [ ] `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
-- [ ] `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
-- [ ] String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
-- [ ] `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
+- [x] String immutability — String operations return new values rather than modifying the original object
+- [x] Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code
+- [x] `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
+- [x] `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
+- [x] String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
+- [x] `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
 
 Audit note: this is the only `create` entry in the plan, and its prose is not new writing from nothing — the String sections currently inside `01-variables-types.md` and its Spanish counterpart are the source material and move here. The English file is authored first and the Spanish translated from it, as normal; the numeric prefix `16` is the next unused one in the level and does not indicate reading position.
 
