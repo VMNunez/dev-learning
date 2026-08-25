@@ -60,7 +60,7 @@ public class ProjectService {
         project.setName(name);
         project.setDescription(request.getDescription());
 
-        Project saved = projectRepository.save(project);
+        Project saved = projectRepository.saveAndFlush(project);
 
         return toResponse(saved);
     }
