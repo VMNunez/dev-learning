@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **17 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **16 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -677,7 +677,7 @@ than the handler hardcoding it.
 > |---|---|
 > | `GET /api/projects` | `name` asc — unique by the §8 duplicate-name rule, so no tie-breaker is needed. Both role branches share it, so the employee's filtered list is a sub-sequence of the manager's |
 > | `GET /api/users` | `active` desc, `name` asc, `id` asc — inactive accounts sort last so the §17 Team table reads without filtering; `name` is not unique, so `id` closes the order |
-> | `GET /api/entries` | `date` desc, `id` desc (see the paging rule below) |
+> | `GET /api/entries` | `date` desc, `id` desc by default; when the caller supplies `?sort=`, `id` desc is appended to it unless already named (see the paging rule below) |
 > | `GET /api/reports/by-project` · `by-user` | hours desc, name asc (see the reports rule above) |
 >
 > **For a paged endpoint the total order is what makes paging correct**, not merely testable: without a
@@ -691,8 +691,10 @@ than the handler hardcoding it.
 > `PropertyReferenceException`, which the error contract has no handler for and which therefore surfaces
 > as `500` for what is a client typo; and a nested path resolves through the entity graph, so
 > `?sort=user.password,asc` orders the page by a column §10 never returns — an order derived from a
-> secret is an observation of it. A client-chosen sort also replaces the default entirely, so the `id`
-> tie-breaker is only guaranteed while the caller does not override it.
+> secret is an observation of it. A client-chosen sort replaces the default entirely, so the tie-breaker is
+> **re-applied rather than assumed**: the controller appends `id` as the last `Sort.Order` to whatever
+> `Sort` arrives, unless the caller already named it. `@PageableDefault` is a default, not a floor — the
+> totality of the order is the API's guarantee, not the caller's choice.
 >
 > One thing the order does **not** control: how text itself compares. `ORDER BY name` resolves through
 > the database's collation, so a locale-aware collation sorts `"nuevo"` before `"Project"` where `C`
