@@ -177,9 +177,9 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `User`, `Project` and `TimeEntry` use `@Getter`/`@Setter` instead of Lombok's `@Data`. `@Data` generates `equals`/`hashCode` over every field, including the database-generated `id` — but an entity's `id` is `null` until it is persisted, so an entity placed in a `HashSet`/`HashMap` before saving becomes unreachable in that collection once Hibernate assigns its `id` (the object's hash code changes after insertion). `@EqualsAndHashCode(onlyExplicitlyIncluded = true)` + `@EqualsAndHashCode.Include` on `id` makes identity depend only on the database key. `TimeEntry` also adds `@ToString(exclude = {"user", "project"})`: both are `@ManyToOne(fetch = FetchType.LAZY)`, and a generated `toString()` that includes them would trigger a lazy load — safe only inside an open transaction, and throwing `LazyInitializationException` otherwise (e.g. from a log call after the request completes).
 
-### Password excluded from `LoginRequest.toString()` ✓
+### Credentials excluded from generated `toString()` ✓
 
-`LoginRequest` keeps `@Data` but adds `@ToString.Exclude` on `password`: `@Data`'s generated `toString()` otherwise includes every field, so the plaintext password would land in any future request-logging or framework body-dump call. No logger stringifies the request today, but the fix is one annotation and closes the gap before it becomes exploitable.
+`LoginRequest` keeps `@Data` but adds `@ToString.Exclude` on `password`: `@Data`'s generated `toString()` otherwise includes every field, so the plaintext password would land in any future request-logging or framework body-dump call. No logger stringifies the request today, but the fix is one annotation and closes the gap before it becomes exploitable. `AuthResponse.token` carries the same annotation for the same reason on the way out: the field holds a live 60-minute bearer credential, and a `toString()` that includes it would put a usable session in the logs. Neither annotation touches the JSON — Jackson serialises from the getters, so the token still reaches the client.
 
 ### Explicit JWT validation ✓
 
