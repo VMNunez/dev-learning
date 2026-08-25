@@ -114,8 +114,6 @@ not his. Full rule in `_session-rules.md`.
                      └──► /interview-prep-audit ─► unrefined Q&A ─► /interview-prep-route
                                                                │              │
                                                       Victor refines     interview-prep-block-open
-                                                              │                       │
-                                              authoring-progress-recount ─► PROGRESS
                                                                               │
                                                                       study-block-close ─► PROGRESS
                      │
@@ -288,7 +286,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | full mode by hand; `/system-check` uses `-MachineryOnly` before and after its semantic audit so live coverage/plan/route state cannot block — see §12. The only automated check in the system |
 | every `_*-standard.md` (family and root) · `_batch-mode.md` · `_single-shot-self-report.md` · `_pipeline-self-report.md` | **by hand only.** The fence, its population and its reason are owned by `_session-rules.md` → "Who writes a standard or a shared contract" | every prompt and skill of the family the standard governs, as its rulebook. `/system-check` audits them and never repairs them; `/system-gaps` never opens one |
 | `notes/prompts/_internal/_shared-context.md` | **by hand.** No prompt writes it; the market file beside it (`_job-market-evidence.md`) is the one that gets fed automatically | almost every prompt, and **it outranks every copy of the four facts its own header fences** — the profile, the target companies, the market and the hiring stages; that header states the fence and its limits (the project list defers to `PROGRESS.md`, the ranked hiring-probability list is `ROADMAP.md`'s). `_session-rules.md`'s "Who I am" bullets are its condensed copy, so the two drift apart unless they are edited together; `ROADMAP.md`'s stable strategic sections are the second copy, and `_roadmap-standard.md`'s no-duplication rule is what keeps them a strategy rather than a restatement |
-| `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` | **by hand, through its own admission contract, with explicit authorization.** A coverage run that meets an unregistered topic **stops** — it never infers a boundary and never registers one silently | `/coverage`, `/coverage-verify` (the rows both its cold reviewer and its own Step 2 rejection test rule ownership by), `/coverage-audit`, `/roadmap-review`, `coverage-bullet-add` (altitude routing), and every prompt whose `TOPIC` field reads "one registered topic" |
+| `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` | **by hand, through its own admission contract, with explicit authorization.** A coverage run that meets an unregistered topic **stops** — it never infers a boundary and never registers one silently | `/coverage`, `/coverage-verify` (the rows both its cold reviewer and its own Step 2 rejection test rule ownership by), `/coverage-audit`, `/roadmap-review`, `coverage-bullet-add` (altitude routing), `authoring-progress-recount` (the denominator's topic list), and every prompt whose `TOPIC` field reads "one registered topic" |
 | `job-search/**` (**outside the repo**, never committed from here) | **Victor, by hand** (`internship-daw.md`, `archive/`, `assets/`) · `/cv` (`master/`, `applications/`) · `/tracker` (`tracker.csv`, `applications/<empresa>-<puesto>/`) | the whole apply family — `/cv` through `_application-standard.md` and by name (`master/`, `archive/` when no CV is pasted) · `/linkedin` through the standard only · `/cover-letter` both through it and by name for `internship-daw.md` · `/tracker` by name (`tracker.csv`, and every `applications/*/outcome.md` in `analyze`) · `/profile-readme` for `internship-daw.md`. Existence proves nothing here: a close-out checks the **mtime is from this run** |
 
 ---
@@ -484,7 +482,7 @@ The things a run leaves behind that are easy to miss.
 | Symptom | Run |
 |---|---|
 | coverage gained bullets → a notes plan is `⚠ stale` | `/notes-plan {topic} {level}` |
-| Victor refined a note in one language and wants the pair frozen | say which language — the daily session's `study-content-writer` syncs the *counterpart* only, changes nothing in the file he named, hands over the commit for both, and then writes `Status: refined` |
+| Victor refined a note in one language and wants the pair frozen | say which language — the daily session's `study-content-writer` syncs the *counterpart* only, changes nothing in the file he named, hands over the commit for both, writes `Status: refined`, and invokes `authoring-progress-recount` |
 | a refined note needs a wording fix | write the `TODO` in it — the daily session's `study-content-writer` resolves it in place, keeping `Status: refined` and the `Studied` date. `/notes-audit` reports such markers and routes them here; a whole-section rewrite is not this route and needs the hand-back to `pending` |
 | a plan entry is studied but holds an open `Pending study` | it is a studied note owing one section, counted studied on purpose — study those sections and `study-block-close` clears the lines, moving the date once the list empties |
 | a level's topics are all defined but never converged | `/coverage-audit {level}`, then `/roadmap-review` |
@@ -677,12 +675,14 @@ its result.
 |---|---|---|---|---|---|
 | `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 37 steps · ~1,520 lines |
 | `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~810 lines |
-| `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` · `authoring-progress-recount` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 20 steps · ~386 lines |
+| `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` · `authoring-progress-recount` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 20 steps · ~476 lines |
 | `machinery` | `map-sync` | — | — | none | 5 steps · ~143 lines |
 
 Counts are `SKILL.md` numbered steps **including lettered sub-steps** — `1a`, `3b` carry their own
 declared work, and they are not written at a uniform heading level, so a count that excludes them is both
-lower and unreproducible — plus file length, measured 2026-08-11 in `.claude/skills/`; the `.agents/`
+lower and unreproducible — plus file length, measured 2026-08-11 in `.claude/skills/` — except the `13:30` row, remeasured
+2026-08-25 when `authoring-progress-recount` joined it, so that row is current and the other three are
+the older snapshot; the `.agents/`
 mirror carries the same content by contract (§10), so either adapter gives the same numbers. They are a proxy for contract weight, not for
 minutes — only a `RITF-NNNN` row measures those, and only from a day that was actually lived.
 

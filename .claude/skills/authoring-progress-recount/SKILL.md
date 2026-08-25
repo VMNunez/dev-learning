@@ -39,14 +39,19 @@ are cheap to recompute and a stale neighbour is indistinguishable from a correct
 
 ## 1 — Recount `Notes authored`
 
-Numerator: entries whose `Status:` is `complete`, plus entries whose `Status:` is `refined` **and**
-whose `Pending additions:` reads `none`. A `refined` entry still owing unconsumed additions is not
-finished prose and does not count — this is the exact definition `notes-plan-prompt.md` already uses
-for the `Notes J/M/S` cells of `notes/prompts/_internal/_run-tracker.md`, and the two counts must agree
-byte for byte in their arithmetic. Reading them apart is what let them drift before.
+Numerator: entries whose `Status:` is `complete`, plus entries whose `Status:` is `refined` **unless**
+they carry unconsumed `Pending additions`. A `refined` entry still owing an append is not finished prose
+and does not count; `Pending additions: none` and a plan old enough to have no such field at all both
+mean the entry owes nothing, and both count. This is the definition `notes-plan-prompt.md` already uses
+for the `Notes J/M/S` cells of `notes/prompts/_internal/_run-tracker.md`, and the two must not diverge —
+reading them apart is what let them drift before.
 
 Denominator: every numbered entry across the registered topics' `notes/{topic}/coverage/notes-plan-{LEVEL}.md`
-files.
+files. This is **not** the sum of the `Notes J/M/S` tracker cells and does not have to match it: a topic
+whose plan exists on disk but which the plan pipeline never ran has a blank tracker cell and a real set
+of entries, so it belongs in this denominator and is absent from that sum. Today CSS and Git are exactly
+that case, and the two totals differ by their 24 entries. Report the gap; never reconcile it by dropping
+a plan that exists.
 
 **A stale plan does not blank this cell — it marks it.** If any required plan is not `Plan status: current`,
 or its `Plan` cell in `notes/prompts/_internal/_run-tracker.md` carries a `⚠ stale` flag, append `*` to
@@ -56,6 +61,12 @@ numerator is a fact about files that already exist and a stale denominator can o
 fraction is an honest floor rather than a claim that will be contradicted. Print `—` only when the
 level has no plan at all.
 
+A registered topic whose plan is **missing** is the one case neither mark covers, because the denominator
+is then incomplete rather than merely provisional: count the plans that exist, carry the `*`, and name the
+missing topics in the report. That is a smaller denominator than the level really owes, so it is stated
+out loud rather than printed silently — and it is not `—`, which would throw away a count that is
+correct for every plan that exists.
+
 ## 2 — Recount the two interview rows
 
 - **Interview CORE refined:** denominator = unique IDs in the current `notes/interview-prep/routes/{LEVEL}.md`;
@@ -64,9 +75,10 @@ level has no plan at all.
   does not resolve exactly once, or any required bank fails fingerprint/parity.
 - **Interview bank refined:** denominator = all unique English master question IDs across every required
   current bank; numerator = IDs carrying `[refined]` in both languages. Print `—` until every required
-  topic bank exists, has current coverage fingerprints, valid IDs/lifecycle and exact bilingual parity
-  per `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`. Angular Material
-  shares Angular's bank; every other registered topic owns its own topic file.
+  topic bank exists, has current coverage fingerprints, valid IDs/lifecycle and exact bilingual parity.
+  Angular Material shares Angular's bank; every other registered topic owns its own topic file. Like the
+  other read-only counters of the bank, this ritual reads those states off the files themselves and does
+  not open the interview standard.
 
 These two rows keep the strict `—` gate rather than step 1's `*`, because a question bank has no
 denominator at all until its stable IDs exist: there is nothing to mark provisional. Both rows read `—`
@@ -74,8 +86,9 @@ until the first `interview-prep-audit` migration lands, and that is the correct 
 
 ## 3 — Write the rows
 
-Cell format when valid: `X/Y (P%)`, whole-number percentage — `1/208 (0%)` — with `*` appended where
-step 1 requires it. An honest zero over a real denominator is `0/N (0%)`, never `—`.
+Cell format when valid: `X/Y (P%)`, whole-number percentage. Where step 1 requires the `*`, it goes
+immediately after the denominator and before the percentage — `1/208* (0%)` — so the mark sits on the
+number it qualifies. An honest zero over a real denominator is `0/N (0%)`, never `—`.
 
 Rewrite only the three rows in `## Authoring progress`. Study dates and `[studied]` markers stay under
 `## Study progress`, coverage evidence under `## Coverage demonstrated`, and no cell of

@@ -83,7 +83,7 @@ contract each project subagent follows and the shape of what it returns.
 | `Professional level by topic` | **this prompt** — `Current tracked level`, `Knowledge consolidation`, `Next gate` · `step-complete` and `backlog-task-close` — `Practical evidence`, in session | **writes** — and on `Practical evidence` it may only **add**; rewriting or dropping an entry it did not write is forbidden there, whatever the rest of the row says. D7 holds that rule |
 | `Coverage demonstrated` | `coverage-mark` + `coverage-bullet-add` (the cells they touch, plus `Total`) · `coverage-prompt` (one topic+level) · `coverage-audit` (a whole level) | measures and reports (D8) |
 | `Authoring progress` | `authoring-progress-recount` (all three rows, recounted whenever a note or question reaches an authored state) | measures and reports (D10) |
-| `Study progress` | `study-block-close` (both rows, recounted at the end of the 13:30 block) | measures and reports (D9) |
+| `Study progress` | `study-block-close` (all three rows, recounted at the end of the 13:30 block) | measures and reports (D9) |
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
 | `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
 | `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |
@@ -318,8 +318,9 @@ Refresh the matrix without duplicating coverage concepts:
   (`Studied: YYYY-MM-DD` over the same entries), then report whether the selected-level Q&A fingerprint
   and CORE route are current, with refined/studied CORE and full-bank counts. A stale or incomplete
   denominator is named as such, never rendered as `0%`. Authored is `complete` plus `refined` entries
-  **whose `Pending additions` reads `none`** — the same arithmetic D10, `notes-plan-prompt.md` and the
-  `Notes J/M/S` tracker cells use. This prose cell is the per-topic reading; the per-level numbers live
+  **that owe no unconsumed `Pending additions`** — a field reading `none`, and a legacy entry with no
+  such field, both owe nothing — the same arithmetic D10, `notes-plan-prompt.md` and the `Notes J/M/S`
+  tracker cells use. This prose cell is the per-topic reading; the per-level numbers live
   in `Authoring progress` and are D10's to measure, so quote them rather than recomputing a second
   figure here.
 - `Practical evidence`: **preserve, then add.** `step-complete` and `backlog-task-close` write this
@@ -409,8 +410,10 @@ the denominator gate is not met; never sum only the current subset and present i
 
 **Owner: `authoring-progress-recount`.** Recompute the three rows with the same contract the skill uses:
 
-- Notes authored, per level: entries whose `Status:` is `complete`, plus `refined` entries whose
-  `Pending additions` reads `none`, over all numbered entries across the registered topics' plans. This
+- Notes authored, per level: entries whose `Status:` is `complete`, plus `refined` entries owing no
+  unconsumed `Pending additions` — an absent field owes nothing — over all numbered entries across the
+  registered topics' plans. That denominator is the plans on disk, so it may legitimately exceed the sum
+  of the `Notes J/M/S` tracker cells, which omit a topic the plan pipeline never ran. This
   count is **not** gated on `Plan status: current`. A level holding a stale or tracker-flagged plan
   keeps its number and carries `*`; only a level with no plan at all is `—`. A cell blanked where a
   plan exists is a drift row, and so is a `*` that no stale plan justifies any more.
@@ -418,9 +421,11 @@ the denominator gate is not met; never sum only the current subset and present i
   with `[refined]` alone as the numerator instead of `[refined] [studied]`. Both are `—` until the
   banks carry stable IDs, which is the correct reading and never a drift row on its own.
 
-Every authored count is necessarily greater than or equal to its `Study progress` twin; a level where
-studied exceeds authored is a drift row against both sections at once. Compare the result with
-`PROGRESS.md` and emit one drift row per mismatched cell, naming
+The two sections are **not** ordered: an entry that was studied and has since been assigned a new
+coverage bullet keeps its `Studied` date while dropping out of the authored numerator, so studied may
+legitimately exceed authored. Read a level where it does as the signal it is — refined prose owing an
+append — and check it against the `Pending additions` lists rather than reporting it as drift. Compare
+the result with `PROGRESS.md` and emit one drift row per mismatched cell, naming
 `authoring-progress-recount` as the repair.
 
 ---
@@ -443,7 +448,7 @@ Then print two things.
 
 One row per edited cell; `—` and one line saying so if the matrix was already accurate.
 
-**2 — Drift report** — every mismatch D3, D4, D5, D8 and D9 found:
+**2 — Drift report** — every mismatch D3, D4, D5, D8, D9 and D10 found:
 
 | Section | What PROGRESS.md says | What the sources say | Owner to re-run |
 |---|---|---|---|

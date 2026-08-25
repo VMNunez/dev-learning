@@ -253,6 +253,16 @@ observed in existing prose and deliberately left untouched, any TODO marker seen
 with the inline route named, the `Pending study` entries written or the reason none were, and the
 remaining `Pending additions`.
 
+After the content attempt and before the self-report, **invoke the `authoring-progress-recount` skill**,
+passing the level this run audited. It owns the `## Authoring progress` rows of `PROGRESS.md` end to
+end: it resolves the registered topics, recounts authored notes over every plan of the level, decides
+the `*` and `—` guards, and commits `PROGRESS.md` itself. Do not reproduce its counting here and do not
+edit those rows yourself — the tracker cell below and that table share one arithmetic, and a second copy
+derived from this run's memory is exactly how they drift. Two things to pass it explicitly, because they
+are this run's context and not the skill's: the level, and whether this run ended `blocked`, since a
+blocked run changed no `Status` and its recount is an expected no-op. Fold its report row into the
+report above, and do not re-stage `PROGRESS.md` here.
+
 After the content attempt, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in
 full. Write `_internal/_last-run-report.md`; upsert the exact `TOPIC + LEVEL + NOTE` row in
 `notes/prompts/_internal/_run-tracker.md` with both language paths, plan status, date, and an outcome
@@ -260,13 +270,3 @@ of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing,
 has no dry-run mode and never records one. Then recalculate the matching Notes J/M/S summary cell from the plan.
 Commit report and tracker together. A failed content run remains `blocked` and never changes the plan
 entry to complete.
-
-Then **invoke the `authoring-progress-recount` skill**, passing the level this run audited. It owns the
-`## Authoring progress` rows of `PROGRESS.md` end to end: it resolves the registered topics, recounts
-authored notes over every plan of the level, decides the `*` and `—` guards, and commits `PROGRESS.md`
-itself. Do not reproduce its counting here and do not edit those rows yourself — the tracker cell above
-and that table share one arithmetic, and a second copy derived from this run's memory is exactly how
-they drift. Two things to pass it explicitly, because they are this run's context and not the skill's:
-the level, and whether this run ended `blocked`, since a blocked run changed no `Status` and its
-recount is an expected no-op. Fold its report row into this prompt's final report, and do not re-stage
-`PROGRESS.md` here.

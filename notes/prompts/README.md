@@ -610,6 +610,8 @@ coverage-prompt / coverage-audit ─► notes/coverage/{junior|middle|senior}.md
         │                                                             │
         │                                      interview-prep-block-open ─► study-block-close
         │                                                             │
+        │            notes-audit / interview-prep-audit / study-content-writer
+        │                        └─► authoring-progress-recount ─► PROGRESS.md
         ▼                                                             ▼
 progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.md   simulator
                         ▲                              │                  ▲ (reads Q&A)
@@ -687,7 +689,8 @@ Practice (its own loop, fed by coverage):
    Q&A from current coverage + market evidence; the plan must be current, but junior entries may still
    be pending
 7. As Victor learns the supporting notes, refine questions in session; only his explicit
-   `[refined]` transition freezes a bilingual question block
+   `[refined]` transition freezes a bilingual question block, and `authoring-progress-recount` moves
+   `PROGRESS.md`'s `Authoring progress` rows the moment it does — as it does for a note declared refined
 8. After every required topic bank for the level is current, run `interview-prep-route` to build the
    globally weighted CORE order
 9. `interview-prep-block-open` asks one refined CORE question at a time; `study-block-close` writes

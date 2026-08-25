@@ -721,6 +721,12 @@ everything commits on the branch you're on — is simpler to remember than a spl
 - Update PROGRESS.md when a learning plan step is completed — not on every commit, not just at session end (see "After every learning plan step is completed")
 - For SQL: update the SQL section immediately after a topic review gives a clear result
 - Commit PROGRESS.md from the root of the repo, not from inside the project folder
+- **Authoring is recorded when the prose is finished, not when the block closes.** `## Authoring progress`
+  is `authoring-progress-recount`'s, and it is invoked by whatever finished the prose — `/notes-audit`,
+  `/interview-prep-audit`, or `study-content-writer` when Victor declares a pair refined or accepts a
+  question's answer. `## Study progress` stays `study-block-close`'s. The two sections answer different
+  questions and neither may write the other's rows: a note can be written months before it is studied,
+  and a file that exists proves nothing about recall.
 - **`progress-update` is an auditor, not this file's writer** (demoted 2026-08-05). It writes exactly one
   section — `Professional level by topic`, whose `Current tracked level`, `Knowledge consolidation` and
   `Next gate` cells need all 13 topics at once and no ritual can compute. Its fourth cell,

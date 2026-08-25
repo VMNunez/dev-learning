@@ -134,7 +134,8 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   why this skill's own trigger still excludes `PROGRESS.md`. Do not reproduce its counting here. One
   thing to pass it explicitly, because it is this route's context and not the skill's: that the entry
   became `refined` in this session, so a no-op recount is a finding rather than the expected result.
-  A blocked sync leaves `Status` untouched and therefore invokes nothing.
+  Fold its report row into your own report. A blocked sync leaves `Status` untouched and therefore
+  invokes nothing.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.
@@ -146,13 +147,19 @@ bilingual block is immutable. A TODO on that block or an explicit reopen first r
 `[studied]` from both languages, then permits the edit; the changed version must be refined and studied
 again. The 13:30 closing ritual, not this writer, owns `[studied]` after a final active-recall PASS.
 Once you have appended `[refined]` to a question in both languages, **invoke the
-`authoring-progress-recount` skill** with that bank's level, on the same terms as the freeze-sync route
-above: it owns the two interview rows, it commits `PROGRESS.md`, and you do not count or edit them here.
-Both rows read `—` until the first `interview-prep-audit` migration gives the banks stable IDs, so
-expect a reported no-op rather than a moved cell.
+`authoring-progress-recount` skill** with that bank's level. It owns the two interview rows end to end,
+it commits `PROGRESS.md`, and you neither count nor edit them here. Do not reproduce its counting. One
+thing to pass it explicitly, because it is this route's context and not the skill's: the exact question
+IDs that became `[refined]` in this session, so it can say whether its gate or your write is the reason
+a cell did not move. Both rows read `—` until the first `interview-prep-audit` migration gives the banks
+stable IDs, so expect a reported no-op rather than a moved cell. Fold its report row into your own
+report.
 
 ## What this skill does NOT do
 
+It does not write `PROGRESS.md`. Its two refining routes hand the `## Authoring progress` rows to
+`authoring-progress-recount`, which owns and commits them — which is why this skill's trigger still
+excludes that file even though refining a pair now moves it.
 It does not run the audit pipeline and does not restructure the whole topic. Committing is governed
 by `notes/prompts/_internal/_session-rules.md` → `No git side effects on code`, not by this skill — in
 a daily session the active agent MAY commit `notes/` files directly (atomic, no Co-Authored-By,
