@@ -9,6 +9,7 @@ import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.service.TimeEntryService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -44,7 +45,8 @@ public class TimeEntryController {
                     direction = Sort.Direction.DESC) Pageable pageable
     ) {
         validateSort(pageable.getSort());
-        return ResponseEntity.ok(timeEntryService.findByFilter(userId, projectId, status, month, pageable));
+        return ResponseEntity.ok(
+                timeEntryService.findByFilter(userId, projectId, status, month, withIdTiebreaker(pageable)));
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -105,4 +107,14 @@ public class TimeEntryController {
             }
         }
     }
+
+    private Pageable withIdTiebreaker(Pageable pageable) {
+        Sort sort = pageable.getSort();
+        if (sort.getOrderFor("id") != null) {
+            return pageable;
+        }
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                sort.and(Sort.by(Sort.Order.desc("id"))));
+    }
+
 }
