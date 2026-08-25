@@ -184,6 +184,12 @@ open.
     the effect someone can see, shown in a literal block — two lines of output, two JSON bodies, two
     screens — so the contrast is visible rather than asserted; (c) **what the task asks for**, in one
     sentence. No jargon, one idea per sentence, numbered one-line steps.
+    **The simple layer carries the artifacts, not a description of them.** It shows the affected code
+    block itself, the endpoint as `METHOD /path`, the request body and the response body, and a
+    literal `today → / correct →` contrast — all narrated in street language. Quoting the real
+    artifacts is what makes it concrete; describing them in prose is what makes it abstract. Stated
+    2026-08-25 on the `@Size(min = 8)` task of project 07: *"me ayuda mucho que me pongas los trozos
+    de código afectado, endpoints, etc, pero sin lenguaje técnico"*.
     The three parts are not optional and not a fallback for when he asks again: they open the very
     first explanation of the problem, in every task. Re-confirmed 2026-08-25 on the `?sort=`
     tie-breaker task of project 07 — the first pass skipped (a) and (b), he answered "no entiendo el
@@ -196,7 +202,14 @@ open.
     with one decimal instead of two. Every sentence should be a picture, not a term. Stated 2026-08-25
     on the CORS origin-binding task of project 07, where "the preflight fails silently" leaked into an
     otherwise clear trace.
-  - **The technical layer** names the real mechanism, the idiomatic fix and the edge cases.
+  - **The technical layer goes deeper than the fix.** Naming the annotation to delete is not the
+    technical layer — that is the patch. It explains how the mechanism works from the inside (the real
+    execution order, which component runs when, and why the defect is invisible from where Victor
+    would look for it), states the general principle as a quotable line that outlives this task, and
+    reasons through the edge cases and the security or design nuance rather than listing them. The
+    test: after reading it he understands a class of problem, not one line of a diff. Stated
+    2026-08-25 on the `@Size(min = 8)` task of project 07 — *"la técnica debe ser un poco más profunda
+    y que me ayude a profundizar en ese problema"*.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
 - **Every code block is preceded by the file it touches — every block, every step, every level.** Not
   only the first message of a task: each intermediate step of a Level 2 or Level 3 walkthrough opens by
