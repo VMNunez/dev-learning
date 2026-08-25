@@ -1724,7 +1724,10 @@ Entities, fields, relationships. One sentence per key decision (why ENUM for sta
 **7. How to run alone**
 IntelliJ + local PostgreSQL, without Docker. It states the complete runtime contract, not just the
 steps: every property placeholder declared without a default (`DB_PASSWORD`, `JWT_SECRET`,
-`ADMIN_PASSWORD`), and the profile a working instance needs. A profile-gated bean is part of that
+`ADMIN_PASSWORD`), the two declared **with** one (`DB_URL`, `DB_USERNAME`, externalised for Step 11's
+`docker` profile rather than for secrecy), and the profile a working instance needs. It also states the
+database role: the app connects as a non-superuser owning only the `timetrack` schema, so the least
+privilege of §9 is part of the run contract and not an install detail. A profile-gated bean is part of that
 contract — without `SPRING_PROFILES_ACTIVE=dev` the context starts cleanly and no manager is seeded,
 so the failure is silent where a missing placeholder is loud.
 

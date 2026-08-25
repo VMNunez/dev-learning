@@ -367,11 +367,25 @@ published in git, which is the whole point of leaving them unresolvable.
 
 | Variable | Read from | Required | What it is |
 |---|---|---|---|
-| `DB_PASSWORD` | `application.properties` → `spring.datasource.password` | Always | Password of the local PostgreSQL user (`postgres` by default) |
+| `DB_PASSWORD` | `application.properties` → `spring.datasource.password` | Always | Password of the `timetrack_app` PostgreSQL role |
 | `JWT_SECRET` | `application.properties` → `app.jwt.secret` | Always | HMAC signing key for access tokens. Any string of at least 32 bytes; treat it as a credential |
 | `ADMIN_PASSWORD` | `application-dev.properties` → `app.admin.password` | With the `dev` profile only | Plain-text password of the seeded first manager, hashed with BCrypt at startup and never stored in git |
 
 Miss `JWT_SECRET` and startup ends in `Could not resolve placeholder 'app.jwt.secret'`.
+
+Two further datasource properties are placeholders **with** a local default, so they are optional. They
+are externalised for a different reason than the three above: not secrecy — a hostname is not a secret —
+but so the `docker` profile (Step 11) can point the app at the compose service name without editing a
+committed file.
+
+| Variable | Read from | Default | What it is |
+|---|---|---|---|
+| `DB_URL` | `application.properties` → `spring.datasource.url` | `jdbc:postgresql://localhost:5432/timetrack` | JDBC URL of the database |
+| `DB_USERNAME` | `application.properties` → `spring.datasource.username` | `timetrack_app` | Role the app connects as — a non-superuser owning only the `timetrack` schema, so neither an injection nor a bug in the app can reach another database on the same server |
+
+The role is deliberately not `postgres`. It owns the `timetrack` schema, which is what lets
+`ddl-auto=update` alter its own tables at startup; with Flyway migrations it could be narrowed further,
+to `SELECT`/`INSERT`/`UPDATE`/`DELETE` and no DDL at all.
 
 ### The `dev` profile is not optional in local development
 

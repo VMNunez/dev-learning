@@ -175,14 +175,15 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 
 *Full Docker setup coming in the final step.*
 
-**Requirements:** Java 25, PostgreSQL running locally, and an empty database named `timetrack`
+**Requirements:** Java 25, PostgreSQL running locally, and an empty database named `timetrack` owned
+by a non-superuser role `timetrack_app` (the app never connects as `postgres`)
 
 Set these environment variables before starting the app (IntelliJ: Run → Edit Configurations →
 Environment variables):
 
 | Variable | What it is |
 |---|---|
-| `DB_PASSWORD` | Password of the local PostgreSQL user |
+| `DB_PASSWORD` | Password of the `timetrack_app` PostgreSQL role |
 | `JWT_SECRET` | Signing key for access tokens — any string of at least 32 bytes |
 | `ADMIN_PASSWORD` | Password of the first manager account, seeded at startup |
 | `SPRING_PROFILES_ACTIVE=dev` | Activates the `dev` profile. **Required locally** — there is no public register endpoint, so without it no account is seeded and every login returns 401 |
