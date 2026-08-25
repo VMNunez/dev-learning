@@ -176,6 +176,12 @@ open.
     sentence. No jargon, one idea per sentence, numbered one-line steps.
   - **The technical layer** names the real mechanism, the idiomatic fix and the edge cases.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
+- **Every code block is preceded by the file it touches — every block, every step, every level.** Not
+  only the first message of a task: each intermediate step of a Level 2 or Level 3 walkthrough opens by
+  naming the file (and the place inside it — "a new private method next to `validateSort`") and only
+  then shows the block. A bare code block with no file above it is the defect: Victor has to guess where
+  it goes, which is the one thing the step was supposed to tell him. Stated 2026-08-25, on the
+  `?sort=` tie-breaker task of project 07, where step 1 arrived as a loose helper.
 - The three levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
   tests, and debugging. Even at Level 3, before each code block explain what the small change is for and
   where the mechanism comes from; Victor wants to work like a real programmer who understands the source
