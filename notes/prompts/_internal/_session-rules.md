@@ -164,6 +164,9 @@ open.
   correction at the currently selected help level. Only after the code passes this check may the next
   step and its three help-level choices be offered. This applies at all three levels, not only when code
   was supplied by the agent.
+- **The git commands come last, once every verification step has passed.** While tests remain, no
+  `git add` / `git commit` is offered: given early, Victor saves them and can commit code that is not
+  yet verified. Stated 2026-08-25 on the CORS task of project 07, where they arrived after test 1 of 4.
 - **A manual verification step is guided end to end, leaving nothing to ask back.** Name the actor to
   log in as (role and credentials) and why that one; then, whenever the test needs anything beyond
   pasting a body — adding a header by hand, reading one specific tab, changing a property and
