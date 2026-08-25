@@ -33,6 +33,7 @@ public class TimeEntryController {
 
     private static final Set<String> SORTABLE_PROPERTIES = Set.of("date", "hours", "status", "id");
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<Page<TimeEntryResponse>> findByFilter(
             @RequestParam(required = false) Long userId,

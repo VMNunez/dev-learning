@@ -22,11 +22,13 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<ProjectResponse>>  getAll(){
         return ResponseEntity.ok(projectService.getAll());
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ResponseEntity<ProjectResponse> getById(@PathVariable Long id){
         return ResponseEntity.ok(projectService.getById(id));

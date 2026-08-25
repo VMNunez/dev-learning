@@ -47,6 +47,7 @@ public class UserController {
         return ResponseEntity.ok(userService.update(id,request));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/me/password")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request){
         userService.changePassword(request);
