@@ -29,6 +29,10 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
+- The serialised shape of a value belongs to the response contract — two endpoints returning the same
+  quantity in different decimal scales, date formats or units present one figure as two, and a client
+  cannot tell a formatting difference from a disagreement about the data; fix the shape in one place
+  every endpoint reads from, because a rule restated per endpoint drifts the first time one is edited ✅ 07-timetrack — the scale rule lives only in the three report queries; `ReportService.getSummary` no longer re-applies `setScale(2)`, so `summary`, `by-project` and `by-user` cannot disagree on shape
 - Identifier canonicalisation — user-supplied identifiers arrive in arbitrary case and surrounding
   whitespace, so the boundary must reduce them to one canonical form and then use that same value both
   for the uniqueness comparison and for what is persisted; comparing one form while storing another lets

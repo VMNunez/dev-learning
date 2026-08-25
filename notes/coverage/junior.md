@@ -731,6 +731,10 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
+- The serialised shape of a value belongs to the response contract — two endpoints returning the same
+  quantity in different decimal scales, date formats or units present one figure as two, and a client
+  cannot tell a formatting difference from a disagreement about the data; fix the shape in one place
+  every endpoint reads from, because a rule restated per endpoint drifts the first time one is edited ✅ 07-timetrack — the scale rule lives only in the three report queries; `ReportService.getSummary` no longer re-applies `setScale(2)`, so `summary`, `by-project` and `by-user` cannot disagree on shape
 - Identifier canonicalisation — user-supplied identifiers arrive in arbitrary case and surrounding
   whitespace, so the boundary must reduce them to one canonical form and then use that same value both
   for the uniqueness comparison and for what is persisted; comparing one form while storing another lets
@@ -1790,7 +1794,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Integer identity columns vs `SERIAL` — `GENERATED ... AS IDENTITY` is the SQL-standard PostgreSQL choice for generated integer keys; `SERIAL` is legacy shorthand that creates a separate sequence and default, while `BIGINT`/`BIGSERIAL` widen the range
 - `NUMERIC(p,s)` vs `FLOAT` — choose exact fixed-precision decimals for money and approximated floating-point values for measurements that tolerate representation error ✅ 07-timetrack
 - Integer division and explicit casts — integer divided by integer truncates the fractional part in PostgreSQL; cast an operand to `NUMERIC` when the result must retain decimals
-- `ROUND(value, n)` — rounds to a given number of decimal places, but only for `NUMERIC`; PostgreSQL has no two-argument `ROUND` for `double precision`, so a computed average usually needs an explicit cast before a report can round it
+- `ROUND(value, n)` — rounds to a given number of decimal places, but only for `NUMERIC`; PostgreSQL has no two-argument `ROUND` for `double precision`, so a computed average usually needs an explicit cast before a report can round it ✅ 07-timetrack — the three report queries in `TimeEntryRepository` round their aggregate with `round(SUM(te.hours), 2)`, which is what fixes the scale every report endpoint serves
+- Scale of an expression's result — `NUMERIC` scale propagates outwards through an expression, and a literal fallback carries its own, so `COALESCE(SUM(x), 0)` answers with the summed column's scale when rows exist and with scale 0 when none do; a rounding rule must therefore wrap the whole expression rather than one of its operands ✅ 07-timetrack — the summary query writes `round(COALESCE(SUM(...), 0), 2)`, so a month with no entries answers `0.00` instead of the scale-0 `0` the fallback alone would give
 - `DATE` vs `TIMESTAMP` / `TIMESTAMPTZ` — use `DATE` for a calendar value with no time of day, `TIMESTAMP` for a local wall-clock value, and `TIMESTAMPTZ` for an instant shared across time zones ✅ 07-timetrack
 - `TIMESTAMP` vs `TIMESTAMPTZ` — `TIMESTAMP` stores the date and time exactly as entered, ignoring time zones; `TIMESTAMPTZ` converts to UTC on write and back to the session time zone on read; always use `TIMESTAMPTZ` for `created_at` in a web application
 - `BOOLEAN` — stores true, false, or null; use SQL literals `TRUE` and `FALSE` because PostgreSQL does
