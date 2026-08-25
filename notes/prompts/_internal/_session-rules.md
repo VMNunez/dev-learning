@@ -203,7 +203,11 @@ open.
   naming the file (and the place inside it — "a new private method next to `validateSort`") and only
   then shows the block. A bare code block with no file above it is the defect: Victor has to guess where
   it goes, which is the one thing the step was supposed to tell him. Stated 2026-08-25, on the
-  `?sort=` tie-breaker task of project 07, where step 1 arrived as a loose helper.
+  `?sort=` tie-breaker task of project 07, where step 1 arrived as a loose helper. Re-stated
+  2026-08-25 on the `@ToString.Exclude` task of the same project: having named the file earlier, in
+  the explanation, does not exempt the message that delivers the code — it names it again, directly
+  above the block. There is no exemption for "same file as two messages ago" or for a two-line
+  change.
 - The three levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
   tests, and debugging. Even at Level 3, before each code block explain what the small change is for and
   where the mechanism comes from; Victor wants to work like a real programmer who understands the source
