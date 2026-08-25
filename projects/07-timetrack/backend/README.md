@@ -293,6 +293,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 `JwtUtil` writes `user.id` into the `sub` claim and `JwtFilter` resolves the principal through `UserDetailsServiceImpl.loadUserById`; `loadUserByUsername` stays for `DaoAuthenticationProvider`, which keys the login on the submitted email. The subject used to be that email, which `PUT /api/users/{id}` deliberately keeps editable (§10) — so a still-valid 60-minute token whose subject was later reassigned to another account resolved to *that* account and inherited its authorities: a vertical escalation with no forged signature and no stolen credential. A surrogate key is the only identifier a mutation cannot hand to somebody else. Tokens issued in the old format expire on their own, because `Long.valueOf` rejects an email-shaped subject with `NumberFormatException` and the filter's catch already covered that as an `IllegalArgumentException`.
 
+### Every endpoint declares its own authorization rule ✓
+
+The five any-authenticated endpoints — `GET /api/projects`, `GET /api/projects/{id}`, `GET /api/entries`, `PATCH /api/users/me/password` and `GET /api/reports/summary` — carry `@PreAuthorize("isAuthenticated()")` rather than resting on `SecurityConfig`'s `anyRequest().authenticated()`. The two enforcement points are independent: the chain is a perimeter defined by URL, the annotation is the method's own contract. A matcher later widened for a demo opens the perimeter without the controller changing a line, so the rule that survives that edit is the one written beside the method — and the one a reviewer sees in the diff. It also removes the ambiguity a partial convention creates, where an unannotated method cannot be told apart from a forgotten one.
+
 ---
 
 ## Tradeoffs
