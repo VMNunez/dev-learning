@@ -155,7 +155,7 @@ The list endpoint is part of the pattern, not separate from it: `GET /api/users`
 
 ### Externalized CORS configuration ✓
 
-The allowed origin is loaded from `app.cors.allowed-origins` via `@Value`, not hardcoded in `SecurityConfig` — an environment-specific value stays outside compiled code. `allowCredentials(false)` because auth travels in the `Authorization` header, not cookies, so credentialed CORS is unnecessary and only forces the stricter same-exact-origin matching for no benefit.
+The allowed origins are loaded from `app.cors.allowed-origins` via `@Value` into a `List<String>`, not hardcoded in `SecurityConfig` — an environment-specific value stays outside compiled code, and the typed target is what lets one comma-separated property carry several origins. The policy is minimal by design: only the methods the API exposes and the two headers the client sends (`Authorization`, `Content-Type`), never a wildcard. `allowCredentials(false)` because auth travels in the `Authorization` header, not cookies, so credentialed CORS is unnecessary and only forces the stricter same-exact-origin matching for no benefit.
 
 ### GlobalExceptionHandler
 
