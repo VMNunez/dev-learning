@@ -174,6 +174,10 @@ open.
     the effect someone can see, shown in a literal block — two lines of output, two JSON bodies, two
     screens — so the contrast is visible rather than asserted; (c) **what the task asks for**, in one
     sentence. No jargon, one idea per sentence, numbered one-line steps.
+    The three parts are not optional and not a fallback for when he asks again: they open the very
+    first explanation of the problem, in every task. Re-confirmed 2026-08-25 on the `?sort=`
+    tie-breaker task of project 07 — the first pass skipped (a) and (b), he answered "no entiendo el
+    problema", and on seeing them said this is what helps him and must always be there.
   - **The technical layer** names the real mechanism, the idiomatic fix and the edge cases.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
 - **Every code block is preceded by the file it touches — every block, every step, every level.** Not
