@@ -106,6 +106,9 @@ review without taking on specialist or production-platform ownership.
   but still acceptable for legitimate logins
 - Password verification — delegate hash parsing, salt handling, and verification to a maintained
   password encoder instead of comparing raw passwords or hashes manually ✅ 07-timetrack
+- Password input length bounds — an adaptive password hash can process only a bounded prefix of its
+  input, so a password field needs an explicit maximum and an encoder that refuses over-length input
+  instead of silently ignoring the excess, and that bound is counted in bytes rather than characters ✅ 07-timetrack — both `ChangePasswordRequest` fields and `LoginRequest.password` cap at `@Size(max = 72)`, BCrypt's input bound, so an over-length value is refused at the request boundary
 - Security-sensitive randomness — generate reset tokens, initial secrets, and other guess-sensitive values
   from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream ✅ 07-timetrack
 - Brute-force defence — throttle repeated authentication attempts using account and network signals

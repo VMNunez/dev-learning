@@ -398,6 +398,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `@NotNull` vs `@NotEmpty` vs `@NotBlank` — choose whether null, emptiness, or whitespace-only text violates the input contract rather than applying one constraint to every field type ✅ 07-timetrack
 - Constraint selection — choose semantic constraints for sign, size, format, range, or pattern so the annotation matches the business rule rather than merely rejecting some bad examples ✅ 07-timetrack
 - Bean constraints vs database constraints — a validation annotation rejects bad input before business logic with a client error, while a column constraint fails at flush time as a server error, so the same rule expressed only in the schema produces the wrong response ✅ 07-timetrack
+- Policy constraints vs verification fields — a field the request submits for comparison against a stored value carries only the constraints that make the comparison possible, because a policy rule such as a minimum length runs before the comparison and rejects a legitimate value created under an earlier policy ✅ 07-timetrack — `ChangePasswordRequest.currentPassword` keeps only `@NotBlank` and a maximum, so the 8-character floor applies to `newPassword` alone and an account whose stored password predates the policy can still reach `passwordEncoder.matches`
 - Controller method validation — apply constraints to controller parameters and handle their failures separately from request-body binding errors
 - Body vs method validation failures — invalid `@RequestBody` binding and invalid method parameters use different exception families; handle both deliberately instead of assuming every violation is a `ConstraintViolationException`
 
@@ -603,7 +604,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `Objects.equals(a, b)` — perform null-safe object equality by handling nulls before delegating to `equals`
 - The `equals` / `hashCode` contract — equal objects must have equal hash codes, and both methods must change together for correct `HashSet` and `HashMap` behaviour ✅ 07-timetrack
 - Mutable hash keys — changing fields used by `equals` or `hashCode` after insertion can make an entry effectively unreachable in a hash-based collection ✅ 07-timetrack
-- `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract
+- `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract ✅ 07-timetrack — every credential field (`LoginRequest.password`, both `ChangePasswordRequest` fields, `AuthResponse.token`) carries `@ToString.Exclude`, so Lombok's generated string cannot publish it
 
 ### Strings and decimal values
 
@@ -1005,6 +1006,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   but still acceptable for legitimate logins
 - Password verification — delegate hash parsing, salt handling, and verification to a maintained
   password encoder instead of comparing raw passwords or hashes manually ✅ 07-timetrack
+- Password input length bounds — an adaptive password hash can process only a bounded prefix of its
+  input, so a password field needs an explicit maximum and an encoder that refuses over-length input
+  instead of silently ignoring the excess, and that bound is counted in bytes rather than characters ✅ 07-timetrack — both `ChangePasswordRequest` fields and `LoginRequest.password` cap at `@Size(max = 72)`, BCrypt's input bound, so an over-length value is refused at the request boundary
 - Security-sensitive randomness — generate reset tokens, initial secrets, and other guess-sensitive values
   from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream ✅ 07-timetrack
 - Brute-force defence — throttle repeated authentication attempts using account and network signals
