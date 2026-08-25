@@ -164,6 +164,13 @@ open.
   correction at the currently selected help level. Only after the code passes this check may the next
   step and its three help-level choices be offered. This applies at all three levels, not only when code
   was supplied by the agent.
+- **A manual verification step is guided end to end, leaving nothing to ask back.** Name the actor to
+  log in as (role and credentials) and why that one; then, whenever the test needs anything beyond
+  pasting a body — adding a header by hand, reading one specific tab, changing a property and
+  restarting — walk it step by step naming the place in the tool (which tab, which column, where the
+  response is read), preceded by one jargon-free sentence saying what is being proved. Stated
+  2026-08-25 on the CORS task of project 07, where "add the Origin header and check the response
+  headers" cost a round trip.
 - **Every technical explanation carries two layers, in this order, at every help level.** The simple
   layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
   the other: without the first Victor cannot see the problem, without the second he cannot write the
