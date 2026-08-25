@@ -297,6 +297,10 @@ A duplicate email or project name is refused by `DuplicateResourceException`, th
 
 The five any-authenticated endpoints — `GET /api/projects`, `GET /api/projects/{id}`, `GET /api/entries`, `PATCH /api/users/me/password` and `GET /api/reports/summary` — carry `@PreAuthorize("isAuthenticated()")` rather than resting on `SecurityConfig`'s `anyRequest().authenticated()`. The two enforcement points are independent: the chain is a perimeter defined by URL, the annotation is the method's own contract. A matcher later widened for a demo opens the perimeter without the controller changing a line, so the rule that survives that edit is the one written beside the method — and the one a reviewer sees in the diff. It also removes the ambiguity a partial convention creates, where an unannotated method cannot be told apart from a forgotten one.
 
+### A response that carries a generated value has to wait for the flush ✓
+
+`ProjectService.create` calls `saveAndFlush`, because `createdAt` does not exist until the `INSERT` runs. With a sequence-backed `@GeneratedValue`, `save()` only stages the row — the statement, and the `@CreationTimestamp` it generates, land at the commit flush, which is after `toResponse(saved)` has already read the field. The `201` therefore serialised `"createdAt": null` for a row that had one, as the following `GET` showed. `update` needs no equivalent: it reads a value the loaded entity already carries.
+
 ---
 
 ## Tradeoffs
