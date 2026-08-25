@@ -94,7 +94,7 @@ cells from the notes plans' `Status:` fields and the exact bilingual `[refined]`
 
 | Track | Junior | Middle | Senior |
 |---|---|---|---|
-| Notes authored | 1/208* (0%) | — | — |
+| Notes authored | 2/208* (1%) | — | — |
 | Interview CORE refined | — | — | — |
 | Interview bank refined | — | — | — |
 
