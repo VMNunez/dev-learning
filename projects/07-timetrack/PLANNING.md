@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **18 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **17 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -611,13 +611,20 @@ than the handler hardcoding it.
 | Method · Path | Role | Description | Query params | Response |
 |---|---|---|---|---|
 | `GET /api/reports/summary` | Any authenticated user | Month totals: approved hours, pending hours, approved entry count — **scoped to the caller**: an EMPLOYEE gets their own, a MANAGER the whole company | `month` — String `YYYY-MM`, required | `200` + `ReportSummaryResponse` — `approvedHours`, `pendingHours` (always scale 2, `0.00` on an empty month), `totalEntries` · `400` month missing or malformed |
-| `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours`, `active` |
-| `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours`, `active` |
+| `GET /api/reports/by-project` | MANAGER | Hours grouped by project | `month` — required | `200` + `List<ProjectHoursReportResponse>` — `projectId`, `projectName`, `totalHours` (always scale 2), `active` |
+| `GET /api/reports/by-user` | MANAGER | Hours grouped by user | `month` — required | `200` + `List<UserHoursReportResponse>` — `userId`, `userName`, `totalHours` (always scale 2), `active` |
 
 > **`by-project` and `by-user` are ordered by hours descending, ties broken by name ascending.** The row
 > order is part of the contract, not an accident: a `GROUP BY` guarantees none, so the query states it
 > rather than leaving the sort to Angular. The name key makes the ordering total, so equal-hour rows
 > cannot swap between two identical calls — which is what makes the endpoint testable.
+>
+> **Every hours figure the reports serve carries scale 2, and the rule has one owner: the query.** All
+> three aggregates are rounded where they are computed — `round(SUM(te.hours), 2)`, and
+> `round(COALESCE(SUM(...), 0), 2)` in `summary`, because a fallback literal carries its own scale and an
+> empty month would otherwise answer `0`. A shape restated per endpoint drifts: the same figure served as
+> `40.00` by one endpoint and `40.0` by another reads as two numbers, and no client can tell a formatting
+> difference from a disagreement about the data.
 >
 > **Role as scope, not as a gate (decided 2026-08-01).** `summary` is the one report both roles call, so
 > its `@PreAuthorize` only asserts `isAuthenticated()` and the ownership rule is applied in the service —
