@@ -164,6 +164,18 @@ open.
   correction at the currently selected help level. Only after the code passes this check may the next
   step and its three help-level choices be offered. This applies at all three levels, not only when code
   was supplied by the agent.
+- **Every technical explanation carries two layers, in this order, at every help level.** The simple
+  layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
+  the other: without the first Victor cannot see the problem, without the second he cannot write the
+  fix. Name the files the change touches before either layer.
+  - **The simple layer is only complete with all three of its parts** — a trace that skips them reads
+    as abstract and fails: (a) **what happens today**, quoting the real code, contrasting the place
+    that already does the right thing with the place that does not; (b) **why that is a problem**, as
+    the effect someone can see, shown in a literal block — two lines of output, two JSON bodies, two
+    screens — so the contrast is visible rather than asserted; (c) **what the task asks for**, in one
+    sentence. No jargon, one idea per sentence, numbered one-line steps.
+  - **The technical layer** names the real mechanism, the idiomatic fix and the edge cases.
+  - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
 - The three levels apply to everything: classes, methods, XML, dependencies, configuration, CSS, SQL,
   tests, and debugging. Even at Level 3, before each code block explain what the small change is for and
   where the mechanism comes from; Victor wants to work like a real programmer who understands the source
