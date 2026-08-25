@@ -257,12 +257,17 @@ Generated: YYYY-MM-DD
 ## 01 — Variables and types
 
 Status: pending
+
 Studied: pending
 Pending study: none
+
 Action: audit
+
 English: notes/java/junior/en/01-variables-types.md
 Spanish: notes/java/junior/es/01-variables-tipos.md
+
 Depends on: none
+
 Pending additions: none
 
 Narrative role: concise explanation of why this chapter exists at this point in the journey.
@@ -332,6 +337,14 @@ Rules:
 - `Status: complete` requires every assigned concept to be `[x]`. `Status: refined` may contain `[ ]`
   only when those exact bullets also appear in `Pending additions`.
 - Paths are repository-relative and remain inside the selected topic and level.
+- **The header block is written spaced, in six field groups**, exactly as the template shows: `Status`,
+  then `Studied` with `Pending study`, then `Action`, then `English` with `Spanish`, then `Depends on`,
+  then `Pending additions` — one blank line between groups, none inside a group. The grouping is the
+  reading aid that makes a long plan scannable, so it is a format requirement, not a preference: never
+  collapse an entry's header into a compact block, and never remove a blank line that already separates
+  two groups. A run that rewrites an entry for any other reason writes that entry's header spaced;
+  entries the run does not touch are left alone, so an older compact plan converges one audited entry at
+  a time rather than in one sweeping reformat.
 - **The entry number is the file number.** Entry `NN` carries `English:` and `Spanish:` paths whose
   basenames both begin `NN-`, in every entry of every plan, including an entry whose `Action` is
   `create` and whose file does not exist yet — that prefix is reserved for it. A plan may never publish a
