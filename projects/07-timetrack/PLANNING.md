@@ -1819,7 +1819,7 @@ Write when the frontend is complete (after Step 7d).
 
 Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
 
-- Stateless JWT auth to keep the API independent of server state
+- Stateless JWT auth to keep the API independent of server state — and, because the credential travels in a header the browser never attaches on its own, to make CSRF protection unnecessary
 - DTO boundary between persistence and HTTP layer to control what the API exposes
 - PATCH for state transitions (submit, approve, reject) to signal that only status changes
 - SecurityContextHolder for current user to prevent privilege escalation from client-supplied userId
