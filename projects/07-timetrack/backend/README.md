@@ -301,6 +301,10 @@ The five any-authenticated endpoints — `GET /api/projects`, `GET /api/projects
 
 `ProjectService.create` calls `saveAndFlush`, because `createdAt` does not exist until the `INSERT` runs. With a sequence-backed `@GeneratedValue`, `save()` only stages the row — the statement, and the `@CreationTimestamp` it generates, land at the commit flush, which is after `toResponse(saved)` has already read the field. The `201` therefore serialised `"createdAt": null` for a row that had one, as the following `GET` showed. `update` needs no equivalent: it reads a value the loaded entity already carries.
 
+### The decimal scale of a number is part of the response contract ✓
+
+The three report queries round their aggregate in the query — `round(SUM(te.hours), 2)`, and `round(COALESCE(SUM(...), 0), 2)` in the summary, where the fallback carries its own scale and a month with no entries would otherwise answer `0` instead of the `0.00` §10 promises. `ReportService` no longer re-applies `setScale(2)`: the rule had two owners, so `summary` was normalised in Java while `by-project` and `by-user` served whatever the driver returned, and a card reading `40.00` beside a table reading `40.0` shows one figure as two with nothing in the code saying they must agree. Only PostgreSQL's own scale propagation kept them equal, which is a property of the engine rather than a contract of the API.
+
 ---
 
 ## Tradeoffs
