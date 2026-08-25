@@ -35,7 +35,7 @@ exercises, simulations, and unaided explanation demonstrate it.
 | Angular Material | Junior — building | Notes 0/16; shares Angular junior Q&A | Projects 05–06 | Complete junior notes and the Material sections of Angular Q&A |
 | Spring | Junior — building | Notes 0/12; junior Q&A pending full audit | Core mechanisms already used inside project 07; evidence migration pending | Complete junior notes/Q&A and explain the core mechanisms unaided |
 | Spring Boot | Junior — building | Notes plan stale (0/16 complete); junior Q&A pending full audit | Project 07 backend | Refresh the junior notes plan |
-| Java | Junior — building | Notes plan stale (0/17 complete); junior Q&A pending full audit | Applied in project 07 | Refresh the junior notes plan |
+| Java | Junior — building | Notes plan current, fingerprint matches (1/17 authored, 0 studied); junior Q&A pending full audit | Applied in project 07 | Author the remaining 16 junior notes |
 | Architecture | Junior — building | Notes plan stale (0/18 complete); junior Q&A pending full audit | Layered and coordinator patterns across projects | Refresh the junior notes plan |
 | Security | Junior — building | Notes plan stale (0/13 complete); junior Q&A pending full audit | Guards/interceptors in project 06; JWT/RBAC, query-input allow-listing, login throttling and a token identity bound to the immutable user id in project 07 | Refresh the junior notes plan |
 | TypeScript | Junior — building | Notes plan stale (0/15 complete); junior Q&A pending full audit | Projects 01–07 | Refresh the junior notes plan |
