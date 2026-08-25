@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Drop the `@Size(min = 8)` from `ChangePasswordRequest.currentPassword` (keep `@NotBlank`, and `max = 72` if wanted). The 8–72 range is §8's rule for the **new** password; applied to the current one it validates history rather than input, so any account whose stored password is shorter — the `dev` seed admin, whose `ADMIN_PASSWORD` has no length floor — is rejected by `@Valid` before `matches()` runs and can never change it *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Reject a `newPassword` equal to the current one in `UserService.changePassword` (compare with `passwordEncoder.matches` after the current-password check, 400 with `fieldErrors.newPassword`). Today a user reacting to a suspected compromise can "rotate" to the same value and get a 204 confirming a change that did not happen *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Append `te.user.id ASC` to `getHoursByUser`'s `ORDER BY`. `User.name` is not unique (§10 says so itself for `GET /api/users`, where `id` closes the order), so two users sharing a display name and the same monthly total can swap rows between two identical calls. `by-project` needs no change — §8's duplicate-name rule makes `Project.name` unique. §10's reports paragraph claims the name key makes the ordering total; correct that line with the fix *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Move the DRAFT-status guard in `TimeEntryService.update` to immediately after `findOwnedEntry`, before the project lookup. A PUT on a non-DRAFT entry with a non-existent `projectId` currently answers 404 "Project not found" where §10 says 409, and every refused call pays for a pointless query first *(Effort: Small)*
@@ -147,6 +146,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - 2026-07-08 · **[Medium]** `[backend]` — `GET /api/projects` filtered by role (active-only for employees) → already in README, PROGRESS
 
 #### Low
+
+- 2026-08-25 · **[Low]** `[backend]` — password policy constrains `newPassword` only, not the verified `currentPassword` → PLANNING §6, backend README Key patterns, coverage spring-boot/junior + security/junior + java/junior
 
 - 2026-08-25 · **[Low]** `[backend]` — CSRF disablement justified: the bearer credential is never browser-attached — DECISION, no code change → backend README Security considerations, PLANNING §19
 - 2026-08-25 · **[Low]** `[backend]` — CORS origins bound as `List<String>`; allowed headers narrowed to `Authorization`/`Content-Type` → coverage spring-boot/junior (new bullet + ✅) and security/junior (✅), backend README, PLANNING §6
