@@ -26,7 +26,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **[Medium]** `[backend]` — Declare the authorization rule on every endpoint instead of letting some rely on the chain default. `ReportController.getSummary` states `@PreAuthorize("isAuthenticated()")`, but the four other any-authenticated endpoints — `GET /api/projects`, `GET /api/projects/{id}`, `GET /api/entries`, `PATCH /api/users/me/password` — carry no annotation and are protected solely by `SecurityConfig`'s `anyRequest().authenticated()`. Nothing is exposed today; the point is that their protection lives in a file a future matcher edit can widen without touching the controller *(Effort: Small)*
+*No open Medium tasks.*
 
 #### Low
 
@@ -110,6 +110,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
+- 2026-08-25 · **[Medium]** `[backend]` — every endpoint declares its own `@PreAuthorize`, including the four any-authenticated ones → coverage: `security/junior` layered-authorisation and `spring-boot/junior` URL-vs-method bullets already marked ✅ 07-timetrack, nothing authored; PLANNING §6 backend layer rule + §0 count; backend README Key patterns; PROGRESS n/a. Verified in Postman: `GET /api/projects` `200` with an EMPLOYEE token, `401` `ErrorResponse` from `JwtAuthenticationEntryPoint` without one
 - 2026-08-25 · **[Medium]** `[backend]` — datasource url and username externalised with local defaults; the app connects as the non-superuser role `timetrack_app` → coverage: `sql/junior` `GRANT`/`REVOKE` bullet marked ✅ 07-timetrack (`security/junior` least privilege and `spring-boot/junior` externalized configuration were already marked, no bullet authored); PLANNING §9 datasource-role subsection + §18 run contract + §0; backend README How to run alone (both `CREATE` statements) + env-var tables + Security considerations, global README requirements; PROGRESS SQL evidence cell. Verified in Postman: login `200`, `POST /api/projects` `201`, soft delete `204` and the `GET` showing `active: false`. Cold review corrected the prose: it is the `timetrack` **database**, not a `timetrack` schema
 - 2026-08-24 · **[Medium]** `[backend]` — the JWT subject is the immutable `user.id`, not the editable email → coverage: new `security/junior` bullet "Immutable subject identity" (authored + marked ✅ 07-timetrack), `java/junior` string-number conversion marked (swept from the diff); PLANNING §10 token-subject ruling + §0 count; backend README Key patterns, plus the two entries the rename made false; PROGRESS. Verified in Postman: with the email reassigned to the manager, the employee's old token answers `403` on `GET /api/users` and still `200` on `GET /api/entries`. `/notes-plan security junior` owed
 - 2026-08-24 · **[Medium]** `[backend]` — failed logins bounded per email and per client IP, `429` with a self-expiring cooldown → coverage: `security/junior` "Brute-force defence" marked ✅ 07-timetrack, `java/middle` thread-safety + synchronisation-primitives bullets marked (cross-level); PLANNING §10 login-throttling ruling + login row, §12 tree, §17 login error state, §21 test row, §0 count; backend README Key patterns + Tradeoffs; PROGRESS. Verified in Postman across 5 checks — threshold, reset on success, self-expiry, and the IP counter isolated with six unused emails
