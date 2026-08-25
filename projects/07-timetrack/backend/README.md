@@ -110,6 +110,10 @@ Spring Boot REST API for the TimeTrack project.
 
 - Passwords hashed with BCrypt — never stored in plain text
 - JWT secret loaded from environment variable — never committed to git
+- CSRF protection disabled deliberately — the credential is a JWT in the `Authorization` header,
+  which no browser attaches on its own, so a cross-site form submission arrives unauthenticated.
+  It would have to come back if the token ever moved to an `HttpOnly` cookie, since cookies *are*
+  attached automatically
 - The app connects to PostgreSQL as a non-superuser role owning only its own database, so a SQL
   injection or a bug is bounded by that database instead of reaching the whole server
 - Role-based endpoint protection with `@PreAuthorize`
