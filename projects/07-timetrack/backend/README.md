@@ -305,6 +305,10 @@ The five any-authenticated endpoints — `GET /api/projects`, `GET /api/projects
 
 The three report queries round their aggregate in the query — `round(SUM(te.hours), 2)`, and `round(COALESCE(SUM(...), 0), 2)` in the summary, where the fallback carries its own scale and a month with no entries would otherwise answer `0` instead of the `0.00` §10 promises. `ReportService` no longer re-applies `setScale(2)`: the rule had two owners, so `summary` was normalised in Java while `by-project` and `by-user` served whatever the driver returned, and a card reading `40.00` beside a table reading `40.0` shows one figure as two with nothing in the code saying they must agree. Only PostgreSQL's own scale propagation kept them equal, which is a property of the engine rather than a contract of the API.
 
+### The public rule names a method and a path, not a prefix ✓
+
+`SecurityConfig`'s only `permitAll` is `requestMatchers(HttpMethod.POST, "/api/auth/login")`. It was `"/api/auth/**"`, which authorises endpoints that do not exist yet: a `POST /api/auth/register` or a `POST /api/auth/reset-password` added later to `AuthController` would have been born public, with nothing in that diff to prompt a security review. The exception a login endpoint needs is one verb on one path, so that is what the rule states — anything else added to the controller falls through to `anyRequest().authenticated()`, which is the failure direction that costs nothing. A side effect worth having: `GET /api/auth/login` now answers `401` through the entry point instead of leaking a `405` from outside the perimeter.
+
 ---
 
 ## Tradeoffs
