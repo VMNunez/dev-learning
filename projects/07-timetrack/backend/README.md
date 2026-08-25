@@ -315,6 +315,12 @@ The three report queries round their aggregate in the query — `round(SUM(te.ho
 
 ---
 
+### A password policy constrains the new password, never the one being verified ✓
+
+`ChangePasswordRequest.currentPassword` carries `@NotBlank` and `@Size(max = 72)`; the 8-character floor from §8 sits on `newPassword` alone. `@Valid` runs in the argument resolver, before the controller method exists, so a policy floor on the current password rejects the request before `passwordEncoder.matches` is ever reached — and it is a rule about what the system will now accept applied to a value created under whatever policy existed then. Any account whose stored password is shorter than the current floor could never change it, the `dev` seed admin among them, since `ADMIN_PASSWORD` has no length requirement. The surviving `max = 72` is not policy but BCrypt's own input bound, counted in bytes: the algorithm processes only that prefix, so a longer value cannot be correct and never needs hashing. Both fields also carry `@ToString.Exclude`, for the reason the credentials entry above gives.
+
+---
+
 ## Tradeoffs
 
 - JWT over session-based auth — stateless API requires no server memory per user; any instance can validate the token
