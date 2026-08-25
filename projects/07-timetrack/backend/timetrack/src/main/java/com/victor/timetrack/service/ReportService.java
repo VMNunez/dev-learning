@@ -8,7 +8,6 @@ import com.victor.timetrack.repository.TimeEntryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -52,8 +51,8 @@ public class ReportService {
 
         ReportSummaryResponse response = new ReportSummaryResponse();
         response.setTotalEntries(summary.getTotalEntries());
-        response.setApprovedHours(summary.getApprovedHours().setScale(2, RoundingMode.HALF_UP));
-        response.setPendingHours(summary.getPendingHours().setScale(2, RoundingMode.HALF_UP));
+        response.setApprovedHours(summary.getApprovedHours());
+        response.setPendingHours(summary.getPendingHours());
         
         return response;
     }
