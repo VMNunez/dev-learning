@@ -110,6 +110,8 @@ Spring Boot REST API for the TimeTrack project.
 
 - Passwords hashed with BCrypt — never stored in plain text
 - JWT secret loaded from environment variable — never committed to git
+- The app connects to PostgreSQL as a non-superuser role owning only its own database, so a SQL
+  injection or a bug is bounded by that database instead of reaching the whole server
 - Role-based endpoint protection with `@PreAuthorize`
 - Input validation at controller boundary with `@Valid` + `@ControllerAdvice`
 
@@ -356,8 +358,16 @@ src/main/java/com/victor/timetrack/
 
 ## How to run alone
 
-**Requirements:** Java 25, PostgreSQL running locally, and an empty database named `timetrack`
-(`spring.jpa.hibernate.ddl-auto=update` creates the schema on first boot).
+**Requirements:** Java 25 and PostgreSQL running locally. Create the database and the role the app
+connects as — the app never connects as `postgres`, PostgreSQL's superuser:
+
+```sql
+CREATE ROLE timetrack_app WITH LOGIN PASSWORD 'the value of DB_PASSWORD';
+CREATE DATABASE timetrack OWNER timetrack_app;
+```
+
+`spring.jpa.hibernate.ddl-auto=update` creates the tables on first boot, which is why the role owns the
+database rather than holding read/write privileges alone.
 
 ### Environment variables
 
@@ -375,17 +385,21 @@ Miss `JWT_SECRET` and startup ends in `Could not resolve placeholder 'app.jwt.se
 
 Two further datasource properties are placeholders **with** a local default, so they are optional. They
 are externalised for a different reason than the three above: not secrecy — a hostname is not a secret —
-but so the `docker` profile (Step 11) can point the app at the compose service name without editing a
-committed file.
+but so the same build runs against another host. Step 11's `docker` profile sets the compose service
+name in `application-docker.properties`; these placeholders are what let a one-off run override it from
+the environment without a profile at all.
 
 | Variable | Read from | Default | What it is |
 |---|---|---|---|
 | `DB_URL` | `application.properties` → `spring.datasource.url` | `jdbc:postgresql://localhost:5432/timetrack` | JDBC URL of the database |
-| `DB_USERNAME` | `application.properties` → `spring.datasource.username` | `timetrack_app` | Role the app connects as — a non-superuser owning only the `timetrack` schema, so neither an injection nor a bug in the app can reach another database on the same server |
+| `DB_USERNAME` | `application.properties` → `spring.datasource.username` | `timetrack_app` | Role the app connects as — a non-superuser owning the `timetrack` database and nothing else on the server |
 
-The role is deliberately not `postgres`. It owns the `timetrack` schema, which is what lets
-`ddl-auto=update` alter its own tables at startup; with Flyway migrations it could be narrowed further,
-to `SELECT`/`INSERT`/`UPDATE`/`DELETE` and no DDL at all.
+The role is deliberately not `postgres`. What that buys is bounded and worth stating precisely: it does
+not stop an injection reaching this database's own tables — the app has full DML there by definition —
+but it removes everything a superuser adds on top, `pg_shadow` and every other role's password hash,
+`COPY … PROGRAM` shell execution, and DDL against objects this application does not own. It owns the
+`timetrack` database because `ddl-auto=update` alters its own tables at startup; behind Flyway
+migrations it could be narrowed further, to `SELECT`/`INSERT`/`UPDATE`/`DELETE` and no DDL at all.
 
 ### The `dev` profile is not optional in local development
 

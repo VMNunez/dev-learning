@@ -1702,6 +1702,7 @@ Entities, fields, relationships. One sentence per key decision (why ENUM for sta
 - New accounts get a `SecureRandom`-generated password returned once at creation; no shared or committed default credential exists
 - Password change is self-service only (`/api/users/me/password`) — not even a MANAGER can set another user's password
 - JWT secret loaded from environment variable — never committed to git; the first manager account is seeded at runtime behind a `dev` profile, not from a hash in `data.sql`
+- Datasource role is a non-superuser owning only the `timetrack` database — an injection or a bug is bounded by that database instead of reaching `pg_shadow`, `COPY … PROGRAM` or another application's data on the same server
 - Role-based endpoint protection with `@PreAuthorize`
 - Input validation at controller boundary with `@Valid` + `@ControllerAdvice`
 
@@ -1724,10 +1725,11 @@ Entities, fields, relationships. One sentence per key decision (why ENUM for sta
 **7. How to run alone**
 IntelliJ + local PostgreSQL, without Docker. It states the complete runtime contract, not just the
 steps: every property placeholder declared without a default (`DB_PASSWORD`, `JWT_SECRET`,
-`ADMIN_PASSWORD`), the two declared **with** one (`DB_URL`, `DB_USERNAME`, externalised for Step 11's
-`docker` profile rather than for secrecy), and the profile a working instance needs. It also states the
-database role: the app connects as a non-superuser owning only the `timetrack` schema, so the least
-privilege of §9 is part of the run contract and not an install detail. A profile-gated bean is part of that
+`ADMIN_PASSWORD`), the two declared **with** one (`DB_URL`, `DB_USERNAME`, externalised so the same build
+runs against another host, not for secrecy), and the profile a working instance needs. It also states how
+to create the database and its role — the app connects as a non-superuser owning the `timetrack` database
+and nothing else on the server — so least privilege is part of the run contract, not an install detail a
+reader is left to infer. A profile-gated bean is part of that
 contract — without `SPRING_PROFILES_ACTIVE=dev` the context starts cleanly and no manager is seeded,
 so the failure is silent where a missing placeholder is loud.
 
