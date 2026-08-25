@@ -118,12 +118,12 @@ same pair. Read the fence itself before ruling on an absence in any of the four 
 **Never the rest of the map.** A chain's *order*, §8's `PROGRESS.md` ownership section by section, and
 §1's two-engine properties are claims about several files at once, and one file cannot falsify them.
 **§13's `Declared steps · contract size` cells are excluded for a different reason** — they are a single
-dated measurement (2026-08-11), so a divergence makes them *old*, not false, and re-measuring one row
-would put two dates in one table, which is worse than a uniformly old one. That holds even for the
-`machinery` row, whose one skill would otherwise be falsifiable from a single read. Re-measuring is all
-rows at once and is a sweep's job. What §13 *does* license is its per-skill prose — the "9 + 7 + 6 + 4
-declared steps" bullet names one skill's count each — counted §13's way, numbered steps **including**
-lettered sub-steps.
+dated measurement, taken in one pass on the date §13 itself states, so a divergence makes them *old*,
+not false, and re-measuring one row would put two dates in one table, which is worse than a uniformly
+old one. That holds even for the `machinery` row, whose one skill would otherwise be falsifiable from
+a single read. Re-measuring is all rows at once and is a sweep's job. What §13 *does* license is its
+per-skill prose — the "10 + 7 + 7 + 5 declared steps" bullet names one skill's count each — counted
+§13's way, numbered steps **including** lettered sub-steps.
 
 Finding any of the excluded ones wrong is a sweep's job, not this one's — leave them and say so.
 

@@ -673,27 +673,27 @@ its result.
 
 | Block | Skills that can fire | Opener | Closer | Cold dispatch inside the block | Declared steps · contract size |
 |---|---|---|---|---|---|
-| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 37 steps · ~1,520 lines |
-| `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~810 lines |
+| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 42 steps · ~1,626 lines |
+| `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~818 lines |
 | `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` · `authoring-progress-recount` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 20 steps · ~476 lines |
-| `machinery` | `map-sync` | — | — | none | 5 steps · ~143 lines |
+| `machinery` | `map-sync` | — | — | none | 5 steps · ~172 lines |
 
 Counts are `SKILL.md` numbered steps **including lettered sub-steps** — `1a`, `3b` carry their own
 declared work, and they are not written at a uniform heading level, so a count that excludes them is both
-lower and unreproducible — plus file length, measured 2026-08-11 in `.claude/skills/` — except the `13:30` row, remeasured
-2026-08-25 when `authoring-progress-recount` joined it, so that row is current and the other three are
-the older snapshot; the `.agents/`
-mirror carries the same content by contract (§10), so either adapter gives the same numbers. They are a proxy for contract weight, not for
+lower and unreproducible — plus file length, all four rows measured in one pass on 2026-08-25 in
+`.claude/skills/`. The `.agents/` mirror carries the same content by contract (§10), so either
+adapter gives the same numbers. They are a proxy for contract weight, not for
 minutes — only a `RITF-NNNN` row measures those, and only from a day that was actually lived.
 
 **The four asymmetries the table exists to show.** All four are observations, and each is a candidate a
 `RITF-NNNN` row would later be ruled against:
 
-- **The heaviest block has the least structure.** 08:00 carries 1,493 lines of ritual contract — more
-  than the other three combined — with no opener and no closer. Its recording is event-driven instead:
+- **The heaviest block has the least structure.** 08:00 carries more ritual contract than the other
+  three blocks combined — the figure is the table's, and is deliberately not restated here — with no
+  opener and no closer. Its recording is event-driven instead:
   finishing a step fires `step-complete`, closing a backlog task fires `backlog-task-close`, and each of
   those calls the three focused writer skills, unconditionally rather than as a ceiling. **Closing one
-  backlog task therefore walks four skills and 9 + 7 + 6 + 4 declared steps** — the longest single path
+  backlog task therefore walks four skills and 10 + 7 + 7 + 5 declared steps** — the longest single path
   in the system.
 - **Every block's trace is conditional, and only one block has no ritual that could leave one.** 12:30
   and 13:30 each *have* a block-level closer, but what it writes still depends on the block producing
