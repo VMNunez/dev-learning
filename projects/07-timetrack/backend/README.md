@@ -207,7 +207,7 @@ Every controller returns its status through a factory — `ok`, `created`, `noCo
 
 ### Report row order is part of the contract ✓
 
-`by-project` and `by-user` end with `ORDER BY SUM(te.hours) DESC, te.project.name ASC` (and `te.user.name ASC`). A `GROUP BY` guarantees no row order, so without it the sort fell to Angular and the endpoint was non-deterministic to test. The trailing name key resolves ties, making the ordering total — two rows with equal hours cannot swap between calls.
+`by-project` and `by-user` end with `ORDER BY SUM(te.hours) DESC, te.project.name ASC` (and `te.user.name ASC, te.user.id ASC`). A `GROUP BY` guarantees no row order, so without it the sort fell to Angular and the endpoint was non-deterministic to test. What makes the ordering total differs by report, because a tie-breaker is only unnecessary where the column is already unique: `projects.name` carries a unique constraint, so hours plus name leaves no two rows tied; `users.name` does not, so `by-user` closes the order with the id — otherwise two users sharing a display name and a monthly total can swap between two identical calls.
 
 ### Every collection endpoint declares its order ✓
 
