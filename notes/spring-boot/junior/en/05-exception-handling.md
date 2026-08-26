@@ -267,7 +267,7 @@ public class ErrorResponse {
 }
 ```
 
-- **`timestamp: Instant`** — the exact moment the error happened, in UTC. Explained in full (and why `Instant` and not `LocalDateTime`) in [14-dates.md](../../../java/junior/en/14-dates.md#instant--an-exact-point-in-time-with-no-timezone-ambiguity) — quick summary: a technical timestamp needs to be the same instant for anyone reading it, regardless of the server's timezone.
+- **`timestamp: Instant`** — the exact moment the error happened, in UTC. Explained in full (and why `Instant` and not `LocalDateTime`) in [15-dates.md](../../../java/junior/en/15-dates.md#instant--an-exact-point-in-time-with-no-timezone-ambiguity) — quick summary: a technical timestamp needs to be the same instant for anyone reading it, regardless of the server's timezone.
 - **`status: int`**, not `HttpStatus` — because this object gets serialized to JSON, and JSON has no concept of a Spring enum. It's filled with `status.value()`, the method that converts the `HttpStatus` enum to its number (`404`, `400`...).
 - **`error: String`** — the short name of the HTTP code (`"Not Found"`, `"Bad Request"`), obtained with `status.getReasonPhrase()`. This is derivable from `status`, but having it explicit in the JSON saves whoever reads it from memorizing what each number means.
 - **`message: String`** — the only field that truly changes exception to exception; the text the frontend normally shows in a toast.

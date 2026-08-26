@@ -283,4 +283,4 @@ Understanding what `<T>` means makes Spring Boot's API much easier to read.
 
 ---
 
-Generics let a type stay *open* — one `Box` works with any type you plug in. The next file, `13-enums.md`, is about the opposite need: a type that is deliberately *closed*, restricting its own values to a small fixed set you define up front (a status that can only be `ACTIVE`, `PENDING`, or `CLOSED`, never anything else). Where generics widen what a type accepts, enums narrow it — and that is exactly the guarantee you want for a field with a handful of valid states.
+Generics let a type stay *open* — one `Box` works with any type you plug in. The next file, `14-enums.md`, is about the opposite need: a type that is deliberately *closed*, restricting its own values to a small fixed set you define up front (a status that can only be `ACTIVE`, `PENDING`, or `CLOSED`, never anything else). Where generics widen what a type accepts, enums narrow it — and that is exactly the guarantee you want for a field with a handful of valid states.

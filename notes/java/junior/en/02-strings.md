@@ -35,7 +35,7 @@ name = name.toUpperCase();      // BIEN — reassign the variable to the new Str
 System.out.println(name);       // prints: ANA
 ```
 
-You have met this exact shape once already. [01-variables-types.md](01-variables-types.md) showed `total.add(...)` computing a sum and throwing it away, because `BigDecimal` is immutable too and `add` can only hand you a new object. It is the same rule, and it will appear a third time in [14-dates.md](14-dates.md), where `date.plusDays(1)` returns a different date instead of moving the one you had. **Immutable class, method that looks like an edit, result you have to catch** — once you recognise the pattern you get it right in every class that follows it.
+You have met this exact shape once already. [01-variables-types.md](01-variables-types.md) showed `total.add(...)` computing a sum and throwing it away, because `BigDecimal` is immutable too and `add` can only hand you a new object. It is the same rule, and it will appear a third time in [15-dates.md](15-dates.md), where `date.plusDays(1)` returns a different date instead of moving the one you had. **Immutable class, method that looks like an edit, result you have to catch** — once you recognise the pattern you get it right in every class that follows it.
 
 > **This is the rule for the entire class, not a quirk of `toUpperCase()`.** Every `String` method that appears to change something — `toUpperCase`, `toLowerCase`, `trim`, `strip`, `replace`, `substring`, `concat`, `repeat` — returns a **new** `String` and leaves the original exactly as it was. If a call's result is not assigned to something, stored somewhere, or passed on, the call did nothing you can observe. Any time a String operation "isn't working", check this first: you almost certainly forgot the `=`.
 

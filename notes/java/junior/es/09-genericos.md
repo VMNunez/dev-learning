@@ -283,4 +283,4 @@ Entender qué significa `<T>` hace que la API de Spring Boot sea mucho más fác
 
 ---
 
-Los generics dejan un tipo *abierto* — una `Box` funciona con cualquier tipo que le enchufes. El siguiente archivo, `13-enums.md`, trata de la necesidad opuesta: un tipo deliberadamente *cerrado*, que restringe sus propios valores a un pequeño conjunto fijo que defines por adelantado (un estado que solo puede ser `ACTIVE`, `PENDING` o `CLOSED`, nunca nada más). Donde los generics ensanchan lo que un tipo acepta, los enums lo estrechan — y esa es exactamente la garantía que quieres para un campo con un puñado de estados válidos.
+Los generics dejan un tipo *abierto* — una `Box` funciona con cualquier tipo que le enchufes. El siguiente archivo, `14-enums.md`, trata de la necesidad opuesta: un tipo deliberadamente *cerrado*, que restringe sus propios valores a un pequeño conjunto fijo que defines por adelantado (un estado que solo puede ser `ACTIVE`, `PENDING` o `CLOSED`, nunca nada más). Donde los generics ensanchan lo que un tipo acepta, los enums lo estrechan — y esa es exactamente la garantía que quieres para un campo con un puñado de estados válidos.

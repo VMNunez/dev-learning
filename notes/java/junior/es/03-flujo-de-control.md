@@ -79,7 +79,7 @@ Cómo leer esta tabla: la columna "¿Permitido?" habla del valor dentro de `swit
 
 > **¿Por qué está prohibido `boolean` si parece el caso más fácil de todos?** Porque un `boolean` tiene exactamente dos valores, así que un `switch` sobre él nunca podría hacer nada que un `if/else` no diga ya con más claridad. El lenguaje lo excluye a propósito, no por descuido. La regla general que se sigue de esto: recurre a `switch` a partir de tres o más valores posibles, y a `if/else` por debajo de eso.
 
-> **`enum` es el selector para el que se hizo `switch`.** Con un `enum` el compilador conoce el conjunto completo de valores posibles, así que puede comprobar que los manejaste todos — algo que nunca puede hacer con un `String`, cuyo conjunto es infinito. Cuando más adelante llegues a [13-enums.md](13-enums.md), este es el premio que hay que recordar.
+> **`enum` es el selector para el que se hizo `switch`.** Con un `enum` el compilador conoce el conjunto completo de valores posibles, así que puede comprobar que los manejaste todos — algo que nunca puede hacer con un `String`, cuyo conjunto es infinito. Cuando más adelante llegues a [14-enums.md](14-enums.md), este es el premio que hay que recordar.
 
 ### switch clásico (sentencia)
 

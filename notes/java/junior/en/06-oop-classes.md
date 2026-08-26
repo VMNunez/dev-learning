@@ -474,7 +474,7 @@ error: method does not override or implement a method from a supertype
     ^
 ```
 
-That error is the entire value of the annotation: without it, the misspelled method compiles perfectly and does nothing, and you spend an afternoon wondering why your logs still show memory addresses. You will learn annotations properly in [15-annotations.md](15-annotations.md) — for now, just know that `@Override` goes above any method you are intentionally replacing.
+That error is the entire value of the annotation: without it, the misspelled method compiles perfectly and does nothing, and you spend an afternoon wondering why your logs still show memory addresses. You will learn annotations properly in [16-annotations.md](16-annotations.md) — for now, just know that `@Override` goes above any method you are intentionally replacing.
 
 ```java
 @Override

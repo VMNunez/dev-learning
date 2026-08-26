@@ -267,7 +267,7 @@ public class ErrorResponse {
 }
 ```
 
-- **`timestamp: Instant`** — el momento exacto en que ocurrió el error, en UTC. Se explica en detalle (y por qué `Instant` y no `LocalDateTime`) en [14-fechas.md](../../../java/junior/es/14-fechas.md#instant--un-punto-exacto-en-el-tiempo-sin-ambigüedad-de-zona-horaria) — resumen rápido: un timestamp técnico necesita ser el mismo instante para cualquiera que lo lea, independientemente de la zona horaria del servidor.
+- **`timestamp: Instant`** — el momento exacto en que ocurrió el error, en UTC. Se explica en detalle (y por qué `Instant` y no `LocalDateTime`) en [15-fechas.md](../../../java/junior/es/15-fechas.md#instant--un-punto-exacto-en-el-tiempo-sin-ambigüedad-de-zona-horaria) — resumen rápido: un timestamp técnico necesita ser el mismo instante para cualquiera que lo lea, independientemente de la zona horaria del servidor.
 - **`status: int`**, no `HttpStatus` — porque este objeto se serializa a JSON, y JSON no tiene el concepto de enum de Spring. Se rellena con `status.value()`, el método que convierte el enum `HttpStatus` a su número (`404`, `400`...).
 - **`error: String`** — el nombre corto del código HTTP (`"Not Found"`, `"Bad Request"`), obtenido con `status.getReasonPhrase()`. Es información derivable de `status`, pero tenerla explícita en el JSON evita que quien lo lea tenga que memorizar qué significa cada número.
 - **`message: String`** — el único campo que cambia de verdad excepción a excepción; el texto que normalmente muestra el frontend en un toast.

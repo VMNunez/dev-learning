@@ -474,7 +474,7 @@ error: method does not override or implement a method from a supertype
     ^
 ```
 
-Ese error es todo el valor de la anotación: sin ella, el método mal escrito compila perfectamente y no hace nada, y te pasas una tarde preguntándote por qué tus logs siguen mostrando direcciones de memoria. Aprenderás las anotaciones en detalle en [15-anotaciones.md](15-anotaciones.md) — por ahora, basta con saber que `@Override` va encima de cualquier método que estés reemplazando intencionalmente.
+Ese error es todo el valor de la anotación: sin ella, el método mal escrito compila perfectamente y no hace nada, y te pasas una tarde preguntándote por qué tus logs siguen mostrando direcciones de memoria. Aprenderás las anotaciones en detalle en [16-anotaciones.md](16-anotaciones.md) — por ahora, basta con saber que `@Override` va encima de cualquier método que estés reemplazando intencionalmente.
 
 ```java
 @Override

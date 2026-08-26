@@ -241,4 +241,4 @@ En Java, usa siempre enums para conjuntos fijos de valores. `public static final
 
 ---
 
-Los enums cierran un tipo para que solo pueda contener un puñado de valores que decides de antemano. El siguiente archivo, `14-fechas.md`, trata el tipo de valor opuesto — fechas y horas, que provienen de un rango efectivamente infinito y tienen su propia aritmética (duraciones, zonas horarias, "dentro de tres días"). Las clases de fechas más antiguas de Java eran mutables y propensas a errores; la API moderna `java.time` lo soluciona, y es lo que todo proyecto usa en cuanto necesita un timestamp en una entidad.
+Los enums cierran un tipo para que solo pueda contener un puñado de valores que decides de antemano. El siguiente archivo, `15-fechas.md`, trata el tipo de valor opuesto — fechas y horas, que provienen de un rango efectivamente infinito y tienen su propia aritmética (duraciones, zonas horarias, "dentro de tres días"). Las clases de fechas más antiguas de Java eran mutables y propensas a errores; la API moderna `java.time` lo soluciona, y es lo que todo proyecto usa en cuanto necesita un timestamp en una entidad.

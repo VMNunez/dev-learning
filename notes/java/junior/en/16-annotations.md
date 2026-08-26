@@ -307,4 +307,4 @@ Read each row as: a *job* on the left, and the annotations you reach for to do t
 
 ---
 
-Every one of these Spring and JPA annotations arrives in your project as a library — `spring-boot-starter-web` brings the REST ones, `spring-boot-starter-data-jpa` brings `@Entity` and friends. Something has to download those libraries and put them on the classpath so the annotations even exist to be read. That is the job of the build tool, and it is the next file: `notes/java/junior/en/16-maven.md`.
+Every one of these Spring and JPA annotations arrives in your project as a library — `spring-boot-starter-web` brings the REST ones, `spring-boot-starter-data-jpa` brings `@Entity` and friends. Something has to download those libraries and put them on the classpath so the annotations even exist to be read. That is the job of the build tool, and it is the next file: `notes/java/junior/en/17-maven.md`.

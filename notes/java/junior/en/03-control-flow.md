@@ -79,7 +79,7 @@ How to read this table: the "Allowed?" column is about the value in `switch (...
 
 > **Why is `boolean` banned when it looks like the easiest case of all?** Because a `boolean` has exactly two values, so a `switch` over it can never be anything an `if/else` does not already say more clearly. The language leaves it out on purpose rather than by oversight. The rule of thumb that follows: reach for `switch` at three or more possible values, `if/else` below that.
 
-> **`enum` is the selector `switch` was made for.** With an `enum` the compiler knows the complete set of possible values, so it can check you handled every one of them — something it can never do for a `String`, where the set is infinite. When you later meet [13-enums.md](13-enums.md), this is the payoff to remember.
+> **`enum` is the selector `switch` was made for.** With an `enum` the compiler knows the complete set of possible values, so it can check you handled every one of them — something it can never do for a `String`, where the set is infinite. When you later meet [14-enums.md](14-enums.md), this is the payoff to remember.
 
 ### Classic switch (statement)
 
