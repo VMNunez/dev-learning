@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **10 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **9 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -640,8 +640,10 @@ than the handler hardcoding it.
 
 > **`by-project` and `by-user` are ordered by hours descending, ties broken by name ascending.** The row
 > order is part of the contract, not an accident: a `GROUP BY` guarantees none, so the query states it
-> rather than leaving the sort to Angular. The name key makes the ordering total, so equal-hour rows
-> cannot swap between two identical calls — which is what makes the endpoint testable.
+> rather than leaving the sort to Angular. What closes the order differs by endpoint: `Project.name` is
+> unique by the §8 duplicate-name rule, so hours + name is already total; `User.name` is not, so
+> `by-user` appends `id` ascending — otherwise two users sharing a display name and a monthly total
+> could swap between two identical calls, which is what makes the endpoint testable.
 >
 > **Every hours figure the reports serve carries scale 2, and the rule has one owner: the query.** All
 > three aggregates are rounded where they are computed — `round(SUM(te.hours), 2)`, and
@@ -702,7 +704,8 @@ than the handler hardcoding it.
 > | `GET /api/projects` | `name` asc — unique by the §8 duplicate-name rule, so no tie-breaker is needed. Both role branches share it, so the employee's filtered list is a sub-sequence of the manager's |
 > | `GET /api/users` | `active` desc, `name` asc, `id` asc — inactive accounts sort last so the §17 Team table reads without filtering; `name` is not unique, so `id` closes the order |
 > | `GET /api/entries` | `date` desc, `id` desc by default; when the caller supplies `?sort=`, `id` desc is appended to it unless already named (see the paging rule below) |
-> | `GET /api/reports/by-project` · `by-user` | hours desc, name asc (see the reports rule above) |
+> | `GET /api/reports/by-project` | hours desc, name asc — `name` unique by the §8 duplicate-name rule, so no tie-breaker is needed (see the reports rule above) |
+> | `GET /api/reports/by-user` | hours desc, name asc, `id` asc — `name` is not unique, so `id` closes the order, as on `GET /api/users` (see the reports rule above) |
 >
 > **For a paged endpoint the total order is what makes paging correct**, not merely testable: without a
 > unique key after a non-unique column, a row is served on two pages or on none. The page cap
