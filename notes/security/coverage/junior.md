@@ -113,6 +113,7 @@ review without taking on specialist or production-platform ownership.
   from a cryptographically secure unpredictable source rather than a predictable pseudo-random stream ✅ 07-timetrack
 - Brute-force defence — throttle repeated authentication attempts using account and network signals
   without relying on permanent lockout that attackers can abuse for denial of service ✅ 07-timetrack — `LoginAttemptService` bounds failed logins per email and per client IP with a self-expiring cooldown
+- Credential change must actually change the credential — a rotation request that re-stores the value already in use produces a different stored hash yet leaves the old secret valid, so the new value is compared against the stored one and refused when they match, and that comparison runs only after the current credential has been proven so it cannot answer "is this the password?" for an unauthenticated caller ✅ 07-timetrack — `UserService.changePassword` refuses a `newPassword` whose `passwordEncoder.matches` the stored hash with 400 `fieldErrors.newPassword`, and runs that check only after the current-password check has passed
 - Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
   and never email the existing password or trust only an account identifier
 - Multi-factor authentication awareness — recognise that a second independent factor reduces the
