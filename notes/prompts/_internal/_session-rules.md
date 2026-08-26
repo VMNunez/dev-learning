@@ -229,7 +229,9 @@ open.
     normally does this, the framework hook involved — is named here explicitly, never assumed known.
     Stated 2026-08-26 on the `newPassword` task of project 07, where the technical layer was correct
     and unusable: it stated the constraint without ever tracing what `fieldErrors` is, who fills it,
-    or when.
+    or when. Confirmed the same day, on the re-explanation of that task: with the four parts in place
+    Victor's verdict was *"asi deberia ser siempre las explicaciones"* — so that message is the
+    canonical example of the pair, and this shape is not a one-off repair but the standing form.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
 - **Every code block is preceded by the file it touches — every block, every step, every level.** Not
   only the first message of a task: each intermediate step of a Level 2 or Level 3 walkthrough opens by
