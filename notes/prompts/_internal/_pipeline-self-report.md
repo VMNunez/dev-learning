@@ -99,6 +99,8 @@ earns extra lines when it is reporting something that actually went wrong:
    word-crafted its items on the wrong model and shipped standard violations: the incident fit none of
    the five bullets, so that report invented a sixth. A broken rule is machinery evidence — it belongs
    here, not in an ad-hoc bullet.)
+   **A breach named here also gets a row in this prompt's breach log** — see "The breach log" below.
+   The prose in this bullet is deleted by the next run; the row is what survives to be counted.
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
 **Close-out check — against disk, before you write a word of the report.** Do not replace any part of it
@@ -139,17 +141,99 @@ and state the count actually dispatched against the count required. **A mandated
 run is a skipped step even when every declared file exists.** This is the largest blind spot in the
 check: skipping the reviewer half leaves disk indistinguishable from a clean run.
 
-**Then two more, both cheap.** *(1)* Did this run skip or shortcut any mandatory step the check above
-cannot see (a step-0 guard, a re-dispatch, a gate)? It belongs in bullet 4 **and** in the Verdict, and
-you must read the previous report: two in a row makes extraction mandatory (see the health budget below).
+**Then three more, all cheap.** *(1)* Did this run skip or shortcut any mandatory step the check above
+cannot see (a step-0 guard, a re-dispatch, a gate)? It belongs in bullet 4, in the Verdict **and in the
+breach log below**, and you must read that log rather than only the previous report — the report holds
+one run and the log holds every one of them, which is the difference between "twice in a row" and "the
+fourth time this year". Two consecutive reports naming a skip still make extraction mandatory (the
+health budget below); the log answers the separate question of whether one *named step* keeps failing.
 *(2)* `wc -l` your own prompt file; over ~500 lines, name the count and the largest section
-(`grep -n "^## "` and subtract) in the Verdict.
+(`grep -n "^## "` and subtract) in the Verdict. *(3)* Open the breach log's `fixed in <hash>` and
+`confirmed N/3` rows and rule on each one for **this** run — reached and clean, not reached, or breached
+again — under the breach-log section's three branches. This is the half of the loop nothing else
+triggers: a fix nobody confirms stays unproven forever, and a clean run is the only thing that can
+prove it.
 
 This is the only thing in the system that checks a prompt's health on a schedule — the budget below is a
 brake on *adding*, so it fires only when a run happens to propose an edit, and a prompt nobody edits can
 sit at double the budget indefinitely. It did: `sql-exercises-prompt.md` reached 1244 lines carrying a
 line that said "this file is over 1000 lines", addressed to a reader who only arrives when there is
 already something to add.
+
+## The breach log
+
+**This section is the single owner of the breach log**, for the twelve prompts running
+`_single-shot-self-report.md` as much as for the nineteen running this file; that contract points here
+and does not restate it.
+
+`_last-run-report*.md` is **overwritten** every run, so a breach confessed in bullet 4 survives exactly
+one invocation of its own prompt. Recoverable from `git log -p`, but never *counted* from there: the
+prose is free-form and spread over the whole history, and the close-out that would have to read it is
+the most saturated context in the system. So a breach also lands as one row, in one place, in the
+prompt's own words for the step it broke.
+
+**Where.** `_breach-log-<prompt-name>.md`, in that prompt's own family `_internal/` folder, beside its
+report. One per prompt, **created on the first breach and never before** — an empty log is machinery
+nobody reads. Append-only; rows are never deleted, and a closed one stays as the evidence that this step
+was once a problem.
+
+| Field | |
+|---|---|
+| `ID` | `BRCH-NNNN`, continuing that file's own numbering |
+| `Date` | the run's date |
+| `Target` | the run's resolved target — the same string its tracker row carries |
+| `Breached step` | **`<file>` → `<heading>`, copied verbatim and never composed** — the file that states the step, then that step's own heading or gate name exactly as it is written there: `` `_pipeline-self-report.md` → `Run-start check` ``, `` `notes-audit.md` → `trace gate: single re-dispatch` ``. This is the field the whole file exists for: two rows count as the same failure only when this string matches exactly, and free prose does not survive a saturated close-out — the three real breaches of one step already on disk spell it "the step-0 run-start check", "the run-start check (`_pipeline-self-report.md`, 'Run-start check')" and "the run-start check". Copy the heading; never describe what happened |
+| `Scope` | `own` when that step is written in this prompt · `shared` when it is written in a contract this prompt merely executes (`_pipeline-self-report.md`, `_single-shot-self-report.md`, `_agent-runtime-standard.md`, a `_*-standard.md`) |
+| `Evidence` | what was breached and what it cost, in one clause — bullet 4 carries the full account |
+| `Disposition` | the only mutable field; everything above is immutable once written |
+
+`Disposition` takes exactly one of: `open` · `fixed in <hash>` · `confirmed N/3` · `closed` ·
+`recurred — see BRCH-NNNN` · `routed to REC-NNN`.
+
+**Scope decides who may act, and it is not a preference.** `_session-rules.md` → "Who writes a standard
+or a shared contract" bars a run from editing the contracts it executes, and the refinement step below is
+scoped to the prompt file that just ran. So a `shared` row is **never** fixed here — **and never routed on
+sight either**. A breach that opens a ledger row on its first occurrence is the refill engine `REC-054` (b)
+and that ledger's own preamble exist to prevent, and `_skill-friction.md`'s rule governs here identically:
+a row is evidence, not automatically a recommendation. It stays `open` until **this prompt's own log holds
+two rows naming that same step** — the same count the paragraph below sets — and then goes to
+`_recommendation-ledger.md` as a `REC-NNN`, provided the finding still clears conditions 1, 3 and 4; its
+disposition becomes `routed to REC-NNN`. **The REC cites this log's `BRCH` IDs and names the log file**,
+because `BRCH` numbering is per file and this close-out may not open another prompt's: aggregating one
+step across prompts is the resolver's work at the ledger's step 1, never a run's. That is what makes
+per-prompt logs safe — the one class of breach that recurs across several prompts is exactly the class
+whose fix was never this prompt's to make, and the ledger is already where cross-prompt evidence
+accumulates and deduplicates.
+
+**Two rows naming the same step open the wording question — they do not settle it.** Below two, the bar's
+condition 2 stands unchanged: a clearly-stated rule the run broke is a discipline lapse. At two or more,
+that verdict is no longer available for that step, because *a clear rule a competent executor breaches
+repeatedly is a defect of wording or placement rather than of discipline* — the rule is stated where it
+is not read at the moment it must be obeyed. The finding still has to clear conditions 1, 3 and 4 and
+still needs its cold reviewer; what the threshold removes is the one condition that was silently
+discarding the repeat. **It is a floor for the ambiguous case, never a waiting period**: a breach whose
+defect is obvious on the first occurrence clears the bar on the first occurrence, exactly as today.
+
+**A fix is not believed until three runs exercise it.** An approved edit rewriting a breached step sets
+every open row for that step to `fixed in <hash>`. Thereafter, each close-out of this prompt asks one
+question per `fixed`/`confirmed` row: **did this run actually reach that step?**
+
+- Reached it and did not breach → advance `confirmed 1/3` → `2/3` → at three, `closed`.
+- Did **not** reach it — the run blocked at an earlier guard, took the other mode branch, was a dry run —
+  → the row is unchanged. A run that never executed the step is not evidence that the step was fixed,
+  and counting it would close the loop on luck.
+- Breached it again → the fix failed. Open a new row citing the old one, set the old to
+  `recurred — see BRCH-NNNN`, and **the new row starts at two, not one**: the step already had a
+  threshold-clearing history and an attempted repair. The next edit may not be another rewording of the
+  same line — say what is being tried instead (moving the rule to where it is read, or the extraction
+  the health budget below describes).
+
+**Committing.** A breach-log write is machinery under `notes/prompts/`: it rides with the report and
+`_run-tracker.md` in the "How to commit it" commit below, which then lists three files rather than two.
+A disposition the refinement step moves rides in **that step's second commit** — the one carrying the
+report's `Status: applied in <hash>` and the reviewer verdict — never in the prompt-edit commit itself,
+whose hash does not exist until it is made. `git status` before staging
+and before committing, as everywhere else.
 
 ## Update the run tracker
 
@@ -165,15 +249,18 @@ planned but not completed.
 
 Both files are prompt-system machinery under `notes/prompts/`, so **commit them directly** (the
 notes/prompts exception — this applies even in pipelines whose main output is never auto-committed,
-like `readme-audit`): `git status` → stage **only** the report file and `_run-tracker.md` →
+like `readme-audit`): `git status` → stage **only** the report file, `_run-tracker.md`, and this
+prompt's `_breach-log-<prompt-name>.md` when this run wrote a row or moved a disposition in it →
 `git status` again → commit
 `docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle them into the
 pipeline's content commit. Also print the five bullets in chat.
 
 **Verify the commit before declaring the run finished — `git show --stat HEAD`, not memory.** This
 rules on the commit this section just instructed, never on `HEAD` after the refinement step below. The
-commit must list **two** files: the report and `_run-tracker.md`. If it lists only the report, the
-tracker half was skipped — update it and commit before ending the run. This check exists because it
+commit must list **at least two** files: the report and `_run-tracker.md` — plus the breach log on a run
+that wrote one, and any file this contract's other steps legitimately staged with them. The test is that
+the two mandatory halves are both there, never that the count is exactly two. If it lists only the
+report, the tracker half was skipped — update it and commit before ending the run. This check exists because it
 failed in the wild: the Security coverage run (2026-07-18) wrote its report, skipped the tracker,
 and its own bullet 4 declared "no rule breached" — the same saturated context that skips a step
 cannot see the skip. Bullets 3 and 4 of the report may only claim a clean close-out if this stat
@@ -198,7 +285,13 @@ three parts below are the filter, the independent gate, and the brake on growth.
    speak. A rule the run *broke* while the prompt stated it clearly is a discipline lapse to watch, not
    a prompt defect; rewriting an already-clear rule buries the lesson (the 2026-07-19 coverage run
    merged two analysts against a rule that already said "one concern per analyst… even at higher token
-   cost" — no edit was needed).
+   cost" — no edit was needed). **Count before you rule.** That verdict is correct once and false
+   forever: open the breach log and count the rows naming this same step. At **two or more**, this
+   condition is met by the count alone — a clear rule breached repeatedly is mis-worded or mis-placed,
+   not disobeyed — and the finding proceeds to conditions 3 and 4 like any other. Under two it stands as
+   written. The threshold rescues the repeat; it never delays the breach whose defect is plain the first
+   time. `Scope: shared` rows are outside this test — that step is not this prompt's to edit — and the
+   breach-log section routes them to the ledger **at the same two-row count**, never on the first row.
 3. **It would have changed the *result*, not just the cost.** This is the condition that does the real
    work, and most findings must die here. Ask it concretely: *would the output file have been different,
    or wrong, or missing?* If the honest answer is "the run would have been slower, clunkier, or needed
@@ -284,7 +377,11 @@ Commit it on its own (`docs: <prompt> — refine from
 the run that just finished`), read the hash from `git log` (never from memory), set the report's
 `Status: applied in <hash>`, and commit the report **again** — a second commit carrying that line and
 the reviewer verdict, since "How to commit it" already landed the run record and the hash cannot exist
-until the edit does; `_run-tracker.md` goes with it only if this step changed it. When no edit is
+until the edit does; `_run-tracker.md` goes with it only if this step changed it. **An edit that rewrote
+a breached step also moves that step's open breach-log rows to `fixed in <hash>`**, in that same second
+commit and with the same hash — the fix now owes the three exercising runs the breach-log section
+requires, and a row left `open` after its own fix landed will re-trigger the threshold on evidence that
+was already acted on. When no edit is
 approved, that earlier commit is the run record; re-commit the report alone only for the
 `cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled — and if it wrote
 none of them, nothing is committed here. Alongside the five bullets, print

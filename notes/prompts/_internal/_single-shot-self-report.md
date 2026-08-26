@@ -99,6 +99,11 @@ extra lines only when reporting something that actually went wrong:
 2. **Rule friction and rule breaches** — two things, one bullet: any instruction here that was ambiguous,
    contradictory, or had to be worked around; **and any rule this run broke**, including every missing
    output found in Step 1. Name what was breached and what it cost, not just that it happened.
+   **A breach named here also gets a row in this prompt's `_breach-log-<prompt-name>.md`**, and this
+   close-out rules on that log's `fixed`/`confirmed` rows for this run — the whole contract, its fields,
+   its `own`/`shared` routing, its two-row threshold and its three-run confirmation loop, is owned once
+   by `_pipeline-self-report.md` → "The breach log" and is not restated here. This report is overwritten
+   every run; the row is what survives to be counted.
 3. **Verdict** — one line: "prompt limpio" or "cambio a considerar: `<what>`".
 
 **Before writing bullet 3, `wc -l` this prompt file.** Over ~500 lines, name the count and its largest
@@ -109,7 +114,8 @@ and a prompt under budget that skipped a step is still unhealthy.
 
 The report and `_run-tracker.md` update are prompt-system machinery under `notes/prompts/`, so **commit
 them directly**, together and on their own, never bundled into the run's content commit: `git status`
-→ stage only the report and `_run-tracker.md` → `git status` again → `docs: self-report for <prompt>
+→ stage only the report, `_run-tracker.md`, and this prompt's `_breach-log-<prompt-name>.md` when this
+run wrote a row or moved a disposition in it → `git status` again → `docs: self-report for <prompt>
 run on <target>`. Then print the three bullets in chat.
 
 ## Step 4 — Refine the prompt, but only when the run earned it
@@ -123,7 +129,9 @@ the evidence is freshest and the version you executed was the honest, unmodified
 1. **Real evidence, not theory** — it happened this run.
 2. **The prompt was wrong or ambiguous** — inexecutable, contradictory, or silent where it needed to
    speak. A rule the run *broke* while the text stated it clearly is a discipline lapse to watch, not a
-   defect to patch; rewriting an already-clear rule buries the lesson.
+   defect to patch; rewriting an already-clear rule buries the lesson. **Count before you rule** — the
+   breach log's two-row threshold, and the `shared`-scope exclusion from it, are stated once in
+   `_pipeline-self-report.md` → "The breach log" and apply here identically.
 3. **It would have changed the *result*, not just the cost.** This is the condition that does the real
    work, and most findings die here. Ask it concretely: *would the output file have been different, or
    wrong, or missing?* If the honest answer is "the run would have been slower / clunkier / needed one
@@ -169,7 +177,8 @@ it alone (`docs: <prompt> — refine from the run that
 just finished`), read the hash from `git log` (never memory), set the report's `Status: applied in
 <hash>`, and commit the report **again** — a second commit carrying that line and the reviewer verdict,
 since the hash cannot exist until the edit does; `_run-tracker.md` goes with it only if this step
-changed it. When no edit is approved, **Step 3's commit is the run record**; re-commit the report alone
+changed it. An edit that rewrote a breached step moves that step's open breach-log rows to
+`fixed in <hash>` in that same second commit, under the breach-log section named above. When no edit is approved, **Step 3's commit is the run record**; re-commit the report alone
 only for the `cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled —
 and if it wrote none of them, nothing is committed here. Immediately before staging and immediately
 before committing, run `git status`; stage only those declared paths. Print one line naming what went

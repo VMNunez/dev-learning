@@ -321,6 +321,15 @@ defect to one `REC-NNN`, dismiss a non-defect with the failed condition, or leav
 open. That conditional reconciliation is committed separately from report + tracker and is not a
 declared output of every prompt.
 
+**A third file is conditional in the same way**: a run that breaches a declared step, or that rules on an
+earlier fix, also writes `_breach-log-<prompt-name>.md` beside its report — appended, never overwritten,
+and staged with report + tracker rather than separately. Both close-outs then read it where the bar used
+to rule from the last report alone: two rows naming one step retire that step's "discipline lapse"
+verdict, and an approved fix owes three later runs that reach it cleanly before it is believed. The whole
+contract — fields, `own`/`shared` routing to the ledger, both thresholds — is owned once by
+`_pipeline-self-report.md` → "The breach log". It is **not** a declared output of every prompt, and a
+prompt that has never breached a step has no such file.
+
 ### The internal-only files (never launch these)
 
 `_coverage-standard.md`, `_note-quality-standard.md`, `_interview-prep-standard.md`,
@@ -331,6 +340,10 @@ declared output of every prompt.
 `_simulation-plan-standard.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_skill-friction.md` (observable
 failed skill steps, consumed by the next prompt close-out),
+`{family}/_internal/_breach-log-<prompt-name>.md` (one append-only log per prompt, created on its first
+breached step: the row survives the report that named it, so a close-out can count how often one *named*
+step has failed instead of seeing only the last run — read by that prompt's own close-out, never by
+another),
 `_recommendation-resolution-doctrine.md` (the recommendation ledger's case-law half: the rule every
 closed `REC-NNN` promoted, plus the row-shape pricing table — read only by a session resolving a ledger
 row, at its steps 1 and 3),

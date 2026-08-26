@@ -182,7 +182,11 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         $_.Name -ne '_last-drift-report.md' -and
         # The two friction sinks are the same class again: a row is transcribed from what
         # happened, so a `FRIC` line saying which tool died is evidence, not an instruction.
+        # The breach logs are that class a third time, and the sharpest case: a `Scope: shared`
+        # row over `_agent-runtime-standard.md` records a model or dispatch policy the run broke,
+        # so its Evidence clause names the model or the subagent type by construction.
         $_.Name -notin @('_skill-friction.md', '_ritual-friction.md') -and
+        $_.Name -notlike '_breach-log-*' -and
         $_.Name -notin @(
             '_session-rules.md',
             '_agent-runtime-standard.md',

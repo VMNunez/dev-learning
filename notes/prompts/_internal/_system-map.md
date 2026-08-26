@@ -282,6 +282,7 @@ files: the system that describes and checks the system, which has writers like e
 | `notes/prompts/_internal/_recommendation-resolution-doctrine.md` | **whoever resolves a ledger row**, in the same commit as the closure and under step 4's budget — one line in `## Closed` plus at most one promotion, merged into the rule it is an instance of. Split out of the ledger 2026-08-18, when the case law had grown to four fifths of that file · **also a maintenance pass on Victor's instruction**, which merges existing rules into the ones they are instances of under that same budget and adds none — the section intro licenses it, and it is the only writer that touches this file without a closure · never a prompt run, never a skill, never a build step | a session resolving a ledger row, at steps 1 and 3 — **and nothing else**: no prompt reads it, no gate depends on it, and it constrains no run, which is what keeps it out of the standards fence above |
 | `notes/prompts/_internal/_recommendation-ledger-closed.md` | **whoever resolves a ledger row**, in the same commit that removes the row from the ledger's `## Open` — one line, ordered by ID, in step 4's closure schema. Split out of the ledger 2026-08-18 alongside the case law, when 156 resolved lines were burying the queue · never a prompt run, never a skill, never a build step | `/system-gaps` Step 7, deduplicating a candidate against resolved work — a match against a **rejected** line discharges it with that line's reason — and any session checking whether a problem has been ruled on before. Not a source of gaps, and never split further: an archive cut by era stops being one deduplication source |
 | `{family}/_internal/_last-run-report*.md` | **its own prompt's close-out only** — one per runnable prompt, **overwritten** each run, never appended, and committed together with `_run-tracker.md` | that same prompt's step 0 run-start check (via the `Status:` line), and the ledger reconciliation |
+| `{family}/_internal/_breach-log-<prompt-name>.md` | **its own prompt's close-out only**, and only on a run that breached a step or ruled on a `fixed`/`confirmed` row — **append-only**, one per prompt, created on the first breach and never before, committed with the report and `_run-tracker.md`. Every field is immutable but `Disposition`, which the same prompt's refinement step also moves. The counterpart of the row above: the report is overwritten and holds one run, this holds every one of them | that same prompt's close-out — the bar's condition-2 count and the three-run confirmation sweep — and nothing else. **A `Scope: shared` row is not fixed by any prompt**: the step belongs to a contract no run may edit, so at the same two-row count it leaves as a `REC-NNN` citing this log's `BRCH` IDs and naming the log file — `BRCH` numbering is per file, and no close-out opens another prompt's log — and `_recommendation-ledger.md` is where that evidence is aggregated across prompts |
 | `notes/prompts/strategy/tracking/_internal/_last-drift-report.md` | `/progress-update` Step E only — **every run, the clean one included**, overwritten, committed alone and before the matrix commit. Not the same file as the close-out's `_last-run-report.md` beside it, which carries machinery evidence and is forbidden content | whoever ticks the two gate checklists that close on an empty drift report, **and every prompt whose `▶ Run first` names `progress-update`** — see §10. The clean run is precisely the one with no other trace: it commits no `PROGRESS.md` |
 | `notes/prompts/_internal/validate-prompt-system.ps1` | whoever changes the machinery, in the same commit as the invariant it checks | full mode by hand; `/system-check` uses `-MachineryOnly` before and after its semantic audit so live coverage/plan/route state cannot block — see §12. The only automated check in the system |
 | every `_*-standard.md` (family and root) · `_batch-mode.md` · `_single-shot-self-report.md` · `_pipeline-self-report.md` | **by hand only.** The fence, its population and its reason are owned by `_session-rules.md` → "Who writes a standard or a shared contract" | every prompt and skill of the family the standard governs, as its rulebook. `/system-check` audits them and never repairs them; `/system-gaps` never opens one |
@@ -386,6 +387,13 @@ The things a run leaves behind that are easy to miss.
 - **Open skill friction is evidence, not yet a recommendation.** A qualifying failed ritual step appends
   `FRIC-NNNN`; the next prompt close-out serially adjudicates it and changes only its disposition. A
   promotion or dismissal commits before, and separately from, that prompt's report + tracker.
+- **A `fixed in <hash>` breach row is a debt the fixing run leaves behind.** An approved edit that
+  rewrote a breached step is not believed on its own: the row stays open at `fixed` until **three later
+  runs actually reach that step** and none breaches it, one advance per run (`confirmed 1/3` → `closed`).
+  A run that never reached the step changes nothing — it is not evidence — so a rarely-executed branch
+  can hold a `fixed` row for months, and that is the honest state rather than a stall. A breach after the
+  fix retires the row `recurred` and opens a successor **starting at two**, which puts the next finding
+  over the bar's threshold immediately and bars a second rewording of the same line.
 - **The `/notes-plan` debt.** A bullet added in a daily session by `coverage-bullet-add` does **not**
   remap the notes plan — the plan and its `Coverage SHA-256` are never touched by hand. The skill
   reports `/notes-plan {topic} {level}` as owed and appends `⚠ stale YYYY-MM-DD (+N bullets)` to the
@@ -499,6 +507,8 @@ The things a run leaves behind that are easy to miss.
 | a step was finished and nothing was recorded | the `step-complete` ritual, walked by hand against §9 |
 | a row here contradicts the prompt or skill it describes | the `map-sync` ritual — **the machinery wins**; fix the row, never the file |
 | `_skill-friction.md` has an `open` row | run any runnable prompt; its close-out adjudicates the row before its own recommendations |
+| the same named step keeps being skipped, and every report that said so was overwritten by the next run | its prompt's `_breach-log-<prompt-name>.md` — two rows naming one step remove the bar's "discipline lapse" verdict for it, and its close-out rules on that count itself. Nothing to launch: the next run of that prompt performs it |
+| a breached step was rewritten and nobody knows whether the rewrite worked | the same log's `fixed in <hash>` row, advanced one step per later run that **reaches** that step cleanly and closed at three. A run that never reached it proves nothing and moves nothing |
 | a ritual completed as declared and was **not worth its cost** — it ate the block, nobody reads its output, the work got done by hand anyway | append one `RITF-NNNN` row to `_ritual-friction.md` and carry on. It opens **no** `REC` and dispatches **no** cold reviewer |
 | `_ritual-friction.md` has three `open` rows naming one ritual | that ritual is due a ruling under `_recommendation-ledger.md` → `REC-054` (c) — kept, thinned or deleted. The only ruling licensed to *remove* machinery |
 | a prompt or skill was added, renamed or retired · a path may have gone dead · a map may never have learned the machinery exists | `_internal/validate-prompt-system.ps1` (§12) — the only check that can see a **non**-firing `map-sync` |
@@ -536,6 +546,15 @@ step of a chain that starts with a run, and every link exists because the previo
    result, not just the cost** · not already covered somewhere the run failed to look. **Condition 3
    kills most findings.** Friction is recorded in the Verdict and stops there, and a rejected finding
    names its failed condition so the same zombie is not re-proposed next run.
+   **Condition 2 is counted, not judged, once a step has a history.** The report it would be judged from
+   is overwritten every run, so the close-out reads the prompt's own `_breach-log-<prompt-name>.md`
+   (§7, §10) instead: at **two rows naming the same step**, "the run broke a clear rule" stops being an
+   available verdict — a rule a competent executor breaches repeatedly is mis-worded or mis-placed — and
+   the finding proceeds on conditions 1, 3 and 4 alone. It is a floor for the ambiguous repeat, never a
+   waiting period for the breach whose defect is plain the first time.
+   `Scope: shared` rows are outside the test and leave as a `REC-NNN` **at that same two-row count**,
+   because `_session-rules.md` → "Who writes a standard or a shared contract" bars a run from editing
+   the contracts it executes.
 5. **A cold reviewer — mandatory, no exceptions.** The drafted edit goes to one cold subagent with five
    inputs, one being **the whole prompt file read to EOF**, which is what makes condition 4 and
    the contradiction check answerable at all. It returns `approve` / `approve-with-tightening` / `reject`, and only what it
@@ -561,6 +580,17 @@ step of a chain that starts with a run, and every link exists because the previo
    surfaces only a genuine `open`. Without it a finding rots — the `notes-write` gate sat open four days for exactly that reason.
    It **surfaces and never applies**: editing a prompt and then immediately running it entangles an
    unverified edit with the run.
+8. **And the fix is verified by later runs, which is where the loop actually closes.** Until this step
+   existed the chain ended at 6: an edit landed and nothing ever asked whether it worked. An approved
+   edit over a breached step leaves its rows `fixed in <hash>`, and each later close-out of that prompt
+   rules on them — reached and clean advances `confirmed N/3` and closes at three, not reached changes
+   nothing, breached again retires the row `recurred` and opens a successor already at the threshold,
+   which bars a second rewording of the same line and sends the next attempt at placement or extraction.
+
+**One asymmetry worth naming.** Steps 1–7 are driven by the run that *finds* something; step 8 is driven
+by runs that find nothing, which is the only reason it can prove anything. A prompt nobody runs again
+therefore keeps its `fixed` rows open indefinitely, and that is the truthful state rather than a stall —
+the same property as every other trigger here, where nothing is scheduled and nothing fires on a clock.
 
 **Skills contribute observable failure evidence through a smaller loop.** The source contract is
 `_session-rules.md` → "When a skill cannot finish — durable friction": a qualifying failed declared step
