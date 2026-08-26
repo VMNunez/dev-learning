@@ -233,6 +233,15 @@ open.
     Victor's verdict was *"asi deberia ser siempre las explicaciones"* — so that message is the
     canonical example of the pair, and this shape is not a one-off repair but the standing form.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
+  - **A task's priority never scales the depth of its explanation.** A `[Low]` finding with
+    `Effort: Small`, or a fix that is one moved line, still opens with both layers complete and all
+    seven of their parts: the size of the diff says nothing about the size of the concept behind it.
+    The brevity rule governs verdicts, reports and ordinary conversation — never these two layers.
+    And *"explícamelo mejor"* is the failure signal for this whole contract: by the time he has to ask
+    for depth, the first message was already wrong. Stated 2026-08-26 on the DRAFT-guard ordering task
+    of project 07, where a `[Low]` line got a short simple layer with no request body and a technical
+    layer with none of its four parts — *"necesito que hagas esto desde el inicio sin yo tener que
+    pedírtelo cada vez"*.
 - **Every code block is preceded by the file it touches — every block, every step, every level.** Not
   only the first message of a task: each intermediate step of a Level 2 or Level 3 walkthrough opens by
   naming the file (and the place inside it — "a new private method next to `validateSort`") and only
