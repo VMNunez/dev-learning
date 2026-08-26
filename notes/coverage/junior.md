@@ -746,6 +746,12 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   for the uniqueness comparison and for what is persisted; comparing one form while storing another lets
   a single logical identity become two rows, and no later lookup can tell which one is the real account ✅ 07-timetrack — `EmailNormalizer.normalize` runs before `existsByEmail` and before the setter in `UserService.create`/`update`, `UserDetailsServiceImpl` and `DataInitializer`, while `ProjectService` trims the name and asks `existsByNameIgnoreCase`
 
+- Guard precedence — a refusal check on the loaded resource's own state (it exists, it belongs to the
+  caller, it is in the status the transition requires) is evaluated before any check that depends on the
+  request body, because a resource guard returns the same verdict whatever the body contains while a
+  body check does not; ordered the other way, the status code a refusal produces depends on what the
+  client happened to send, so the refusal an endpoint documents is only sometimes the one it returns,
+  and a caller corrects the wrong thing and retries ✅ 07-timetrack — `TimeEntryService.update` evaluates the DRAFT guard immediately after `findOwnedEntry` and before `resolveProject`, so a non-DRAFT entry answers 409 whatever `projectId` the body carries, the order `submit`, `reopen` and `delete` already used
 ### Layered architecture
 
 - Frontend/backend separation — Angular runs in the browser and Spring Boot runs on a server; the client
