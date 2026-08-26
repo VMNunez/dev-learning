@@ -210,6 +210,26 @@ open.
     test: after reading it he understands a class of problem, not one line of a diff. Stated
     2026-08-25 on the `@Size(min = 8)` task of project 07 — *"la técnica debe ser un poco más profunda
     y que me ayude a profundizar en ese problema"*.
+  - **The technical layer has the same mandatory shape as the simple one — four parts, in this order,
+    never one block of prose.** The simple layer works precisely because its parts are enumerated and
+    checkable; the technical layer kept failing because it was described by intention only, so it
+    collapsed into a correct, unreadable paragraph. It carries:
+    1. **The mechanism from the inside, as a numbered execution trace** — the same shape as the simple
+       trace, but now with the real names: which component runs, in which order, holding what state,
+       and at which numbered line the defect enters. If it cannot be numbered it has not been
+       understood well enough to teach.
+    2. **Why the defect is invisible from where Victor would look** — the frame he would open the
+       debugger in, and what that frame shows instead of the truth.
+    3. **The general principle, as one quotable line** set off on its own, phrased so it survives
+       without this task's nouns.
+    4. **The design or security nuance, reasoned rather than listed** — the alternative fix and why it
+       loses, or the case that breaks the obvious version. One or two, argued; never a bullet list of
+       caveats.
+    Anything a senior would say in passing — the standard name of the pattern, the annotation that
+    normally does this, the framework hook involved — is named here explicitly, never assumed known.
+    Stated 2026-08-26 on the `newPassword` task of project 07, where the technical layer was correct
+    and unusable: it stated the constraint without ever tracing what `fieldErrors` is, who fills it,
+    or when.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
 - **Every code block is preceded by the file it touches — every block, every step, every level.** Not
   only the first message of a task: each intermediate step of a Level 2 or Level 3 walkthrough opens by
