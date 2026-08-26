@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Reject a `newPassword` equal to the current one in `UserService.changePassword` (compare with `passwordEncoder.matches` after the current-password check, 400 with `fieldErrors.newPassword`). Today a user reacting to a suspected compromise can "rotate" to the same value and get a 204 confirming a change that did not happen *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Append `te.user.id ASC` to `getHoursByUser`'s `ORDER BY`. `User.name` is not unique (§10 says so itself for `GET /api/users`, where `id` closes the order), so two users sharing a display name and the same monthly total can swap rows between two identical calls. `by-project` needs no change — §8's duplicate-name rule makes `Project.name` unique. §10's reports paragraph claims the name key makes the ordering total; correct that line with the fix *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Move the DRAFT-status guard in `TimeEntryService.update` to immediately after `findOwnedEntry`, before the project lookup. A PUT on a non-DRAFT entry with a non-existent `projectId` currently answers 404 "Project not found" where §10 says 409, and every refused call pays for a pointless query first *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Make `ProjectResponse.active` a primitive `boolean` (and drop the stray space before its `;`). The entity uses a primitive deliberately (§7 records the unboxing reason), so the DTO can serialise `"active": null` in a state the entity structurally cannot reach *(Effort: Small)*
@@ -147,6 +146,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-08-26 · **[Low]** `[backend]` — a `newPassword` equal to the current one is refused 400 with `fieldErrors.newPassword` → PLANNING §8/§10/§12/§0, backend README Key patterns, global README, coverage security/junior + spring-boot/junior
 - 2026-08-25 · **[Low]** `[backend]` — password policy constrains `newPassword` only, not the verified `currentPassword` → PLANNING §6, backend README Key patterns, coverage spring-boot/junior + security/junior + java/junior
 
 - 2026-08-25 · **[Low]** `[backend]` — CSRF disablement justified: the bearer credential is never browser-attached — DECISION, no code change → backend README Security considerations, PLANNING §19
