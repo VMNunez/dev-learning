@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Control structures in Java](https://www.baeldung.com/java-control-structures) → read: "If-Else Statement", "Switch Statement" and "Loops"
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
-In [01-variables-types.md](01-variables-types.md) you learned how to declare and store values. On its own, a program that only stores values does nothing interesting — it runs top to bottom, one line after another, and stops. Control flow is what lets a program *make decisions* about those values (run this block, skip that one) and *repeat* work (loop over a list). It is the difference between a fixed script and a program that reacts to its data.
+In [01-variables-types.md](01-variables-types.md) you learned how to declare and store typed values, and in [02-strings.md](02-strings.md) how to build, inspect and compare the text those values turn into. Both chapters left you with the same limitation, and it is the reason this one comes now: every line you wrote ran exactly once, top to bottom, in the order it was written. A program that only stores values and formats text does nothing interesting — it starts, evaluates, and stops. Control flow is what lets a program *make decisions* about those values (run this block, skip that one) and *repeat* work (loop over a list). It is the difference between a fixed script and a program that reacts to its data.
 
 Control flow statements decide which code runs and how many times. Java uses the same structures as JavaScript — the syntax is nearly identical, so most of this will feel familiar.
 
@@ -15,6 +15,8 @@ int hours;                        // hours logged on one day
 String day;                       // "MONDAY", "SATURDAY"...
 List<Employee> employees;         // the team
 ```
+
+> **Two of those three lines use things you have not been taught yet, and that is deliberate.** `Employee` is a **class** — a type you write yourself, bundling data (a name, hours) with the methods that read it; how you declare one is [06-oop-classes.md](06-oop-classes.md)'s subject. `List<Employee>` is a **list of `Employee` objects** — a growable, ordered sequence, and the `<Employee>` in angle brackets is what tells the compiler what it holds; the list itself is [10-collections.md](10-collections.md) and the angle-bracket notation is [09-generics.md](09-generics.md). For this chapter you need none of that: read `Employee` as "one employee, and you can ask it for its name and its hours with `emp.getName()` and `emp.getHours()`", and `List<Employee>` as "several of them, in order". Every structure on this page is about *which lines run*, not about what is inside the box they run over.
 
 ---
 
@@ -76,6 +78,8 @@ Use `switch` when you have many possible values for **one** variable. A chain of
 | any other object (`Employee`, `Object`…) | ✅ *only* with type patterns (Java 21+) | `case Employee e ->` — not constant labels |
 
 How to read this table: the "Allowed?" column is about the value in `switch (...)`, and the last two rows are the ones that surprise people. Switching on a primitive `long` — even `long x = 3L` — does **not** compile; on Java 25 the compiler answers with **two** errors at once, and the first one is confusing until you know why: `primitive patterns are a preview feature and are disabled by default` — because switching on `long`/`double`/`boolean` is a not-yet-released language feature rather than a plain type error, so the compiler assumes you were reaching for that feature. The second error is the plain-English one: `constant label of type int is not compatible with switch selector type long`. Read past the first, and the second tells you what actually happened. And an object selector is allowed only in the pattern form (`case String s ->`), never with constant labels: `Long id = 5L; switch (id) { case 5: ... }` fails with `incompatible types: int cannot be converted to Long`.
+
+> **That last row names a form you will not write yet.** `case Employee e ->` is a **type pattern**: instead of comparing the selector against a constant, the case asks "is this value an `Employee`?" and, if it is, hands it to you already typed as one. It is real Java and it is why the row says ✅, but it belongs to a later stage of the language — this chapter, and every switch in it, uses only constant labels (a number, a `String`, an `enum` constant). Read the row as: *with plain constant labels, an arbitrary object is not a legal selector.* The same test written as a plain `if`, `instanceof` with a pattern variable, arrives in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
 
 > **Why is `boolean` banned when it looks like the easiest case of all?** Because a `boolean` has exactly two values, so a `switch` over it can never be anything an `if/else` does not already say more clearly. The language leaves it out on purpose rather than by oversight. The rule of thumb that follows: reach for `switch` at three or more possible values, `if/else` below that.
 
@@ -140,7 +144,7 @@ Notice that the fix uses fall-through *on purpose* too: `case "MONDAY":` through
 
 The `default` block is not required, but include it: it is your safety net for a value nobody anticipated (a typo, a new day name added later), and without it an unmatched value simply does nothing at all — silently.
 
-> **Switching on a `null` String throws.** `switch (day)` when `day` is `null` does not fall to `default` — it crashes with a `NullPointerException` before any case is compared. On Java 25 the message is `Cannot invoke "String.hashCode()" because "<local2>" is null`. Two things in it look strange and both have an explanation. `hashCode()` appears because a `String` switch is compiled into a hash lookup — the compiler turns your cases into a jump table keyed by hash code, which is exactly what makes `switch` faster to scan than a chain of `equals()` calls. And `<localN>` appears instead of your variable name because the selector is first copied into a hidden temporary variable that has no name in your source — the number is just the JVM's slot index for that temporary, so expect it to change from `<local1>` to `<local2>` and up depending on how many variables the method already declared. So guard the value before you switch on it — see [Null checks](#null-checks) at the end of this file.
+> **Switching on a `null` String throws.** `switch (day)` when `day` is `null` does not fall to `default` — it crashes with a `NullPointerException` before any case is compared. On Java 25 the message is `Cannot invoke "String.hashCode()" because "<local2>" is null`. Two things in it look strange and both have an explanation. `hashCode()` appears because a `String` switch is compiled into a hash lookup — the compiler turns your cases into a jump table keyed by hash code, which is exactly what makes `switch` faster to scan than a chain of `equals()` calls. And `<localN>` appears instead of your variable name because the selector is first copied into a hidden temporary variable that has no name in your source — the number is just the JVM's slot index for that temporary, so expect it to change from `<local1>` to `<local2>` and up depending on how many variables the method already declared. So guard the value before you switch on it — see [Null guards](#null-guards) at the end of this file.
 
 ### Switch expression (Java 14+) — use this form
 
@@ -192,6 +196,12 @@ Use the switch expression form for all new code — it is cleaner, safer, and th
 > 📖 Docs: [Baeldung — Java For Loop](https://www.baeldung.com/java-for-loop) → read the basic three-part `for` first, then the enhanced (for-each) form at the end.
 > 📖 Docs: [Baeldung — A Guide to Java Loops](https://www.baeldung.com/java-loops) → read it for the three loop types side by side, when each one fits.
 
+Both `for` forms below walk an **array**, and an array is the one thing on this page you have not met yet. You need very little of it here, so take that little now rather than tripping over `week.length` mid-example.
+
+> **An array, in one paragraph.** An array is a fixed-size row of slots, all holding the same type, laid out one next to another in memory. You create it either by listing its contents — `String[] week = {"MONDAY", "TUESDAY", "WEDNESDAY"};` — or by asking for a size and filling it later — `String[] week = new String[3];`, whose three slots start out holding `null` (a `new int[3]` would start as three zeros instead, because an `int` cannot be `null`; that primitive-versus-reference split is [01-variables-types.md](01-variables-types.md)'s). You reach a slot by its **index** in square brackets, `week[0]`, and the counting starts at **zero**, so a row of three has indexes 0, 1 and 2 — never 3. You ask how many slots there are with `week.length`: a **field**, written with no parentheses, unlike `String.length()` and `List.size()`, which are methods. And "fixed-size" is literal — there is no `add()`, no `remove()`, and no way to grow a `String[3]` into a `String[4]`. That is the entire array vocabulary this chapter uses.
+
+> **Why you are given only that much.** The interesting question about arrays is not their syntax, it is *when a fixed row of slots is still the right structure and when a resizable `List` replaces it* — and that question cannot be answered before you have the collection APIs to compare against. [10-collections.md](10-collections.md) answers it in full, in its `List vs Array` table, and that is also where `List` itself — the `List<Employee>` in the code at the top of this file — is properly taught. Here an array is deliberate scaffolding: the simplest concrete thing a loop can walk, so the loop stays the subject.
+
 ### Classic for
 
 The most explicit form — you control the start, stop, and step yourself. Three parts, separated by semicolons: `(init; condition; step)`. Use it when you need the index number.
@@ -220,18 +230,18 @@ The order the three parts actually run in is the part people get wrong, so trace
 **The off-by-one error, and the exception it produces.** The three-part header is powerful precisely because you write the bounds yourself, which means you can also write them wrong. The classic slip is `<=` where you meant `<`:
 
 ```java
-int[] hours = {8, 8, 6};   // length 3, valid indexes 0, 1, 2
+int[] weekHours = {8, 8, 6};   // length 3, valid indexes 0, 1, 2
 
 // ❌ MAL
-for (int i = 0; i <= hours.length; i++) {   // i reaches 3
-    System.out.println(hours[i]);
+for (int i = 0; i <= weekHours.length; i++) {   // i reaches 3
+    System.out.println(weekHours[i]);
 }
 // prints 8, 8, 6 and then crashes:
 // Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3
 
 // ✅ BIEN
-for (int i = 0; i < hours.length; i++) {
-    System.out.println(hours[i]);
+for (int i = 0; i < weekHours.length; i++) {
+    System.out.println(weekHours[i]);
 }
 ```
 
@@ -346,17 +356,33 @@ do {
 
 `do-while` is genuinely rare — reach for it only when the "run at least once" guarantee is the point (pagination, menu prompts, retry-then-check). In Spring Boot you will mostly use for-each loops and streams; `while` appears in algorithms and when consuming something until it is exhausted, such as reading a file line by line.
 
+### Choosing between the four loop forms
+
+You have now seen all four, so here they are as one decision. The question that picks the form is never "which loop do I like" — it is **what the repetition promises**, and each form makes a different promise:
+
+| What the repetition is | Form | The contract it makes |
+|---|---|---|
+| **Counted** — a known number of passes, and you need the position number | classic `for` | you write init, condition and step yourself, so the count is explicit and yours to get wrong |
+| **Element traversal** — visit every item, position irrelevant | enhanced `for` | the loop hands you each element in turn; there is no index to write, so no off-by-one to make |
+| **Pre-checked** — repeat while something holds, possibly zero times | `while` | the condition is tested *before* the body, so zero executions is a legal, normal outcome |
+| **Post-checked** — repeat while something holds, but at least once | `do-while` | the body runs *before* the first test, so one execution is guaranteed |
+
+How to read the table: the **middle** column is the answer, the **left** column is what you must be able to say about your own problem before you can pick it, and the right column is the check — if the contract in that row is not what your code actually promises, you chose wrong. Two rows are worth pressing on. The `while` row and the classic-`for` row are both pre-checked in mechanics (a `for` also tests before every pass, including the first); what separates them is *who owns the counter* — the `for` header holds init, condition and step together because you know all three in advance, and `while` is the honest shape when you do not. And the enhanced-`for` row is the only one where the loop, not you, supplies the values, which is why it is the default for arrays and collections and why it cannot give you an index.
+
+> **Every loop is convertible into every other one — that is not the point.** You can write a counted loop as a `while`, and an enhanced `for` as a classic `for`; the compiler literally does the second one for you. Choosing the right form is not about capability, it is about what the next reader can assume without reading the body. Seeing `for (Employee emp : employees)` tells them "every employee, exactly once, in order" before they read a single line inside. Seeing `while (…)` tells them "this may run zero times and the exit condition is somewhere below" — which is true information, and misleading when the loop was really just counting.
+
 ---
 
-## break and continue
+## break, continue, and return
 
 > 📖 Docs: [Baeldung — The Java `continue` and `break` Keywords](https://www.baeldung.com/java-continue-and-break) → read it for the unlabeled forms first, then the labeled ones at the end.
 > 📖 Docs: [Baeldung — Labeled Breaks in Java: Useful Tool or Code Smell?](https://www.baeldung.com/java-labeled-break) → read it for the readability argument — when to extract a method instead.
 
-Both keywords change the flow inside a loop. They work in `for`, `while`, and `do-while` — all three loop types you have seen. In `switch`, `break` also appears to stop fall-through (as you saw above), but `continue` does not apply there.
+Three statements cut execution short, and they are constantly confused with each other because all three "stop" something — the useful question is always *stop what, exactly*. Two of them are loop instructions: `break` and `continue` work in `for`, `while`, and `do-while`, all three loop types you have seen, and `break` additionally appears in a classic `switch` statement to stop fall-through (as you saw above), where `continue` has no meaning at all. The third, `return`, is not a loop instruction — it belongs to the method — and that difference is what the second half of this section is about.
 
 - **`break`** exits the entire loop immediately — no more iterations happen after it.
 - **`continue`** skips the rest of the current iteration and jumps straight to the next one.
+- **`return`** exits the entire **method**. The loop ends as a side effect, and so does everything that was going to run after the loop.
 
 ```java
 for (Employee emp : employees) {
@@ -368,9 +394,50 @@ for (Employee emp : employees) {
 }
 ```
 
-Think of `break` as the emergency exit and `continue` as the skip button.
+Think of `break` as the emergency exit and `continue` as the skip button — and `return`, which comes next, as leaving the building altogether.
 
 > **`continue` in a `while` is where the infinite loop bites.** `continue` jumps to the *condition check*, skipping everything left in the body — including your `i++` if it sits below the `continue`. In a classic `for` this is harmless, because the step lives in the header and still runs. In a `while` it hangs the program. Put the increment above any `continue`, or use a `for`.
+
+### `return` — it leaves the method, not the loop
+
+`break` and `continue` are bounded by the loop that contains them: they can only be written inside one, and the largest thing either can end is that loop. `return` is a statement of a different kind. It belongs to the **method**, it is legal almost anywhere inside one — in a loop, in an `if`, on the very first line, in a method with no loop at all — and when it runs the method is finished. (The one place it is *not* legal is inside a switch expression's arm, and you already know why: an arm has to produce a value for the switch, not walk out of the method. That is what `yield` is for.)
+
+The way to keep the three apart is to ask, of each, exactly *what is left behind* and *where execution lands next*:
+
+| Statement | What it leaves | Where execution lands next | Where it is legal |
+|---|---|---|---|
+| `continue` | the rest of the current iteration | the loop's next condition check — in a classic `for`, after the step (`i++`) has run | inside a loop only |
+| `break` | the whole loop — the innermost one containing it | the first line after that loop, in the same method | inside a loop, or a classic `switch` statement |
+| `return` | the whole **method**, loop included | the line after the **call**, back inside the method that called this one | anywhere in a method, except inside a switch expression's arm |
+
+Read the third column as "where the cursor goes": for `continue` and `break` it goes somewhere else in the *same* method, a few lines away, and the method carries on. For `return` it goes into a *different* method — the one that called this one — and this method never runs again. That is the difference in kind, and it is worth saying in one line: **`break` and `continue` reposition you inside the current piece of work; `return` ends the current piece of work and hands control back to whoever asked for it.**
+
+All three, on the same timesheet, in one method:
+
+```java
+String firstOvertimeName(List<Employee> employees) {
+    for (Employee emp : employees) {
+        if (!emp.isActive()) {
+            continue;                  // 1 — this employee does not count; go to the next one
+        }
+        if (emp.getHours() > 40) {
+            return emp.getName();      // 3 — found it: leave the loop AND the method, with a value
+        }
+        if (emp.getHours() == 0) {
+            break;                     // 2 — the list is sorted; nothing after this can qualify
+        }
+    }
+    return "none";                     // reached if the loop ends normally, or after the break
+}
+```
+
+Trace the three exits. The `continue` sends control back to the `for` header, which produces the next `emp` — the loop is untouched and still running. The `break` sends control to the first line *after* the loop, which here is `return "none";` — the loop is over, the method is not. And `return emp.getName()` does neither of those: the method stops on that line, `return "none";` is never reached at all, and the value travels back out to whatever wrote `String who = firstOvertimeName(team);`.
+
+> **Why a method cannot survive its own `return`.** Every call gets a private workspace: its parameters, its local variables, and a note of the exact instruction to come back to in the caller. `break` and `continue` never touch that workspace — they only move the instruction pointer around inside it, which is why the method keeps going. `return` discards the workspace and jumps to the recorded return point. There is nothing left to continue *with*, so "return and then keep looping" is not something the language could offer even if it wanted to. What that workspace physically is, where it lives, and why it is called the call stack is [05-memory-model.md](05-memory-model.md)'s subject; for now, "the method's private workspace, thrown away on return" is enough.
+
+> **`return;` with nothing after it is still a `return`.** A method declared `void` — one that promises to hand nothing back — can still cut itself short with a bare `return;`, and that is one of the most common shapes in real code: test the case you cannot handle, `return;`, and let everything below assume the good case. The compiler enforces the promise in both directions: writing `return something;` in a `void` method fails with `error: incompatible types: unexpected return value`, and reaching the end of a method that promised a value without returning one fails with `error: missing return statement`. *What* a method promises — its return type, its parameters, its signature — is [04-methods.md](04-methods.md)'s subject, and it is the next chapter precisely because you have now met the statement that ends one.
+
+> **Anything written after `break`, `continue` or `return` in the same block does not compile.** Not a warning, and not dead code the JVM quietly skips: `error: unreachable statement`, and the build stops. Java refuses to keep lines that provably can never execute. Treat it as a useful accident rather than an annoyance — when it appears while you are moving code around, it is telling you the exit happens earlier than you thought it did.
 
 ### Labelled break and continue — escaping nested loops
 
@@ -419,64 +486,22 @@ for (Employee emp : employees) {
 
 ---
 
-## Null checks
+## Null guards
 
-> 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read it for the alternatives to a manual guard, above all `Optional` and `Objects.requireNonNull()`.
-> 📖 Docs: [Baeldung — Helpful NullPointerExceptions in Java](https://www.baeldung.com/java-14-nullpointerexception) → read it for how Java 14+ (JEP 358) builds the "because ... is null" part of the message.
+> 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read only the opening section for now: what a null guard is, and why it is written as an ordinary `if` rather than with any special syntax.
 
-**Runtime error:** an error that does not happen when Java compiles the code, but when the program is already running and reaches that line. The compiler does not catch it in advance. (For the full explanation of compile time vs runtime, see the `var` section in [01-variables-types.md](01-variables-types.md).)
-
-`NullPointerException` is the most common runtime error in Java. It happens when you call a method on a variable that is `null` — Java cannot find the object to run the method on. Only **objects** have methods: `String`, wrapper classes (`Integer`, `Long`…), and any class you define. **Primitives** (`int`, `long`, `double`…) are not objects and have no methods — they cannot be `null` and you cannot call `.something()` on them. That is why you will never see a `NullPointerException` on an `int` variable. The useful methods for wrappers and `String` are already in [01-variables-types.md](01-variables-types.md) — those are the classes you call methods on. The fix is simple: always check for `null` before calling methods on anything that might not exist.
+Two of the structures on this page break on a value that is `null` — an `if` condition that calls a method on it, and a `switch` whose selector is one — so it is worth naming the pattern that protects both before you leave the chapter. A **null guard** is nothing new: it is a plain `if`, using the conditions you already know, asking one question — does this reference point at an object at all?
 
 ```java
-// ❌ MAL — risk of NullPointerException
-String name = employee.getName();
-System.out.println(name.toUpperCase());
-
-// ✅ BIEN — guard first
+// ✅ the guard is an ordinary if — Java has no dedicated syntax for this
 if (name != null) {
     System.out.println(name.toUpperCase());
 }
 ```
 
-**Read the message — since Java 14 it names the culprit.** The exception the bad version throws is:
+Calling a method on a reference that holds `null` fails while the program is running, with a `NullPointerException`; and `switch (day)` on a `null` `day` throws before any case is even compared, as the callout in the switch section showed. Chaining the guard with `&&` is what makes `if (name != null && !name.isEmpty())` safe rather than a crash waiting to happen: `&&` evaluates its left side first and never looks at the right side when the left is false, so `name.isEmpty()` is simply never reached on a null `name`. That is the short-circuit rule from [01-variables-types.md](01-variables-types.md), doing real work.
 
-```
-Exception in thread "main" java.lang.NullPointerException:
-    Cannot invoke "String.toUpperCase()" because "name" is null
-```
-
-Everything after `because` is the part that saves you time. Older Java printed only `NullPointerException` plus a line number, which on a line like `a.getB().getC().getD()` left you guessing which of the three was null. Java 14 added *helpful* NPE messages: at the moment of the crash the JVM re-reads the bytecode of that instruction, works out which value it was about to dereference, and names it. On a chain it will say `because the return value of "Employee.getName()" is null`, pinpointing the exact link. Two details to expect: the variable name only appears if the class was compiled with debug information (IntelliJ does this by default, so you will see real names), and a hidden compiler-generated temporary shows up as `<localN>` — which is exactly what you saw in the `switch (null)` case earlier in this file, where it printed `<local2>`.
-
-**`Optional` — the modern alternative.** Instead of a variable that *might* be null and a check you *might* forget, `Optional<T>` is a small wrapper object that always exists and holds either a value or nothing. The point is that the type itself tells you the value may be absent, so the compiler puts the "what if it's missing?" question in front of you instead of leaving it to your memory.
-
-```java
-// Optional in full is covered in 09-generics.md
-Optional.ofNullable(name)                            // wrap: empty if name is null
-        .ifPresent(n -> System.out.println(n.toUpperCase()));  // run only if there IS a value
-```
-
-- **`ofNullable(x)`** — builds the wrapper from a value that may or may not be null: an *empty* Optional if `x` is null, a full one otherwise.
-- **`ifPresent(...)`** — runs the given code only when the wrapper holds something, and does nothing at all when it is empty. There is no `else` branch to forget.
-- The `n -> ...` is a lambda: "given the value, call it `n` and do this with it" — full treatment in [12-streams-lambdas.md](12-streams-lambdas.md).
-
-> **Why not just use `Optional` everywhere?** It is designed for **return values**, to signal "this lookup may find nothing" — not for fields or parameters, where it only adds a wrapper object and noise. Inside a method, a plain `if (x != null)` guard is still the normal, idiomatic Java. Optional's full API (`orElseThrow`, `map`, `orElse`) is in [09-generics.md](09-generics.md).
-
-In Spring Boot, many methods return `Optional<T>` instead of a raw object that might be null. `repository.findById(id)` is the standard example — it returns `Optional<Employee>`, so you are forced to handle the "not found" case. But plain null guards do not disappear: in your own TimeTrack backend, `JwtFilter` opens with exactly this pattern before it trusts the token —
-
-```java
-// projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/security/JwtFilter.java
-String email = jwtUtil.extractUsername(token);
-if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-    ...
-}
-```
-
-— and `TimeEntryService.findByFilter()` uses `if (month != null)` to decide whether an optional filter was supplied at all. Both are ordinary `if` statements: the guard is not a beginner's tool you grow out of, it is what production code looks like.
-
-> **Preview — Spring Boot:** `JwtFilter`, `SecurityContextHolder` and repositories belong to Spring Boot, not to the Java language. They appear here only to show where these Java structures land in a real project — you will study them properly in the Spring Boot notes.
-
-> **`&&` short-circuits, and that is what makes the guard work.** `email != null && ...` evaluates the left side first and, if it is false, never evaluates the right side at all. That is why `if (name != null && !name.isEmpty())` is safe: when `name` is null, `!name.isEmpty()` is never reached. Swap the order and it throws. `||` short-circuits the mirror way — it stops as soon as one side is true.
+**Everything else about `null` is [04-methods.md](04-methods.md)'s.** Where in a program a required value should be rejected so that the eventual failure names the real culprit instead of a line far away; what a guard clause looks like at a method boundary; how to read the "because ... is null" part of a modern `NullPointerException` message — all three are questions about the contract a method has with its caller, which is exactly what the next chapter introduces. They are deliberately answered there once, rather than here and there twice.
 
 ---
 

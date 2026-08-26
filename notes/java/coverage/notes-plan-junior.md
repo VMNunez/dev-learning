@@ -164,7 +164,7 @@ Handoff: With values and text both understood one at a time, entry 03 stops eval
 
 ## 03 — Control flow
 
-Status: pending
+Status: complete
 
 Studied: pending
 Pending study: none
@@ -196,12 +196,12 @@ Must answer:
 
 Coverage concepts:
 
-- [ ] `if` / `else` — select one branch from boolean conditions and order conditions so specific or exceptional cases are not hidden by broader ones
-- [ ] Conditional (ternary) operator — `condition ? a : b` chooses one of two values as an expression, unlike an `if` / `else` statement, which does not itself produce a value
-- [ ] `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract
-- [ ] `break`, `continue`, and `return` — distinguish leaving a loop, skipping to its next iteration, and leaving the current method
-- [ ] Classic `switch` fall-through — without `break`, a matching statement case continues into later cases and can create a hidden logic bug
-- [ ] Switch expressions — arrow cases can produce a value without fall-through, and an expression must cover every possible input
+- [x] `if` / `else` — select one branch from boolean conditions and order conditions so specific or exceptional cases are not hidden by broader ones
+- [x] Conditional (ternary) operator — `condition ? a : b` chooses one of two values as an expression, unlike an `if` / `else` statement, which does not itself produce a value
+- [x] `for`, enhanced `for`, `while`, and `do-while` — choose counted iteration, element traversal, pre-checked repetition, or post-checked repetition according to the loop contract
+- [x] `break`, `continue`, and `return` — distinguish leaving a loop, skipping to its next iteration, and leaving the current method
+- [x] Classic `switch` fall-through — without `break`, a matching statement case continues into later cases and can create a hidden logic bug
+- [x] Switch expressions — arrow cases can produce a value without fall-through, and an expression must cover every possible input
 
 Rationale: Conditionals, loops, control-transfer statements, and both switch forms belong together because they all answer one question — which statements execute, and in what order. Minimal array syntax is declared scaffolding here so the enhanced `for` has something to traverse; the array-versus-collection contrast itself belongs to entry 10.
 
