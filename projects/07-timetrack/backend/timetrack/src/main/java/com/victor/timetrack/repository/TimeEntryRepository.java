@@ -31,7 +31,7 @@ public interface TimeEntryRepository extends JpaRepository<TimeEntry, Long>, Jpa
             FROM TimeEntry te
             WHERE te.date BETWEEN :start AND :end AND te.status = com.victor.timetrack.model.EntryStatus.APPROVED
             GROUP BY te.user.id, te.user.name, te.user.active
-            ORDER BY SUM(te.hours) DESC, te.user.name ASC
+            ORDER BY SUM(te.hours) DESC, te.user.name ASC, te.user.id ASC
             """)
     List<UserHoursReportResponse> getHoursByUser(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
