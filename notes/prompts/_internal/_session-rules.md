@@ -173,7 +173,14 @@ open.
   restarting — walk it step by step naming the place in the tool (which tab, which column, where the
   response is read), preceded by one jargon-free sentence saying what is being proved. Stated
   2026-08-25 on the CORS task of project 07, where "add the Origin header and check the response
-  headers" cost a round trip.
+  headers" cost a round trip. **The actor line is never dropped as obvious**, not even when the
+  previous step already used a token and not even when the endpoint's role is stated in the
+  explanation: Postman holds whatever session was last logged in, so every single test opens by
+  naming who to log in as. Re-stated 2026-08-26 on the DRAFT-guard task of project 07, where test 1
+  arrived with the body and the expected status but no actor, Victor still held a MANAGER session,
+  and `@PreAuthorize("hasRole('EMPLOYEE')")` answered 403 before the code under test ever ran —
+  *"debes indicarme con quien hago login"*. A test whose actor is wrong proves nothing and costs a
+  round trip.
 - **Every technical explanation carries two layers, in this order, at every help level.** The simple
   layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
   the other: without the first Victor cannot see the problem, without the second he cannot write the
