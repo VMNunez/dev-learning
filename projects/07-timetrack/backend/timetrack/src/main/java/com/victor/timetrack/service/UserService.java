@@ -6,7 +6,7 @@ import com.victor.timetrack.dto.request.UpdateUserRequest;
 import com.victor.timetrack.dto.response.CreateUserResponse;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.exception.DuplicateResourceException;
-import com.victor.timetrack.exception.InvalidCurrentPasswordException;
+import com.victor.timetrack.exception.InvalidPasswordException;
 import com.victor.timetrack.exception.InvalidStateTransitionException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.EntryStatus;
@@ -138,20 +138,23 @@ public class UserService {
         userRepository.save(user);
     }
 
-
     @Transactional
     public void changePassword(ChangePasswordRequest request) {
         User user = authenticatedUserProvider.currentUser();
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new InvalidCurrentPasswordException("Current password is incorrect");
+            throw new InvalidPasswordException("currentPassword", "Current password is incorrect");
+        }
+
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new InvalidPasswordException("newPassword",
+                    "The new password must be different from the current one");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
 
         userRepository.save(user);
     }
-
 
     private String generatePassword() {
         StringBuilder sb = new StringBuilder(12);
