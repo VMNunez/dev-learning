@@ -21,7 +21,8 @@ in your report; the English is not yours to touch.
 **How to use:**
 
 1. Fill in `TOPIC` and `FILE` — `FILE` is the **`en/`** path; you create/update its `es/` counterpart
-   (same number prefix, Spanish filename, e.g. `en/11-exceptions.md` → `es/11-excepciones.md`).
+   (same number prefix, Spanish filename, e.g. `en/11-exceptions.md` → `es/11-excepciones.md`) — and
+   `LINK_TARGETS`, the plan's table of every sibling's English and Spanish filename.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -34,8 +35,10 @@ LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/11-exceptions.md]
 
 SCOPE = [full | append-only — with append-only, list the exact English headings that were appended]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path — the authority on every
+        sibling's Spanish filename, including entries whose file does not exist yet]
 
-Use TOPIC, LEVEL, FILE, and SCOPE wherever the prompt refers to their placeholders.
+Use TOPIC, LEVEL, FILE, SCOPE, and LINK_TARGETS wherever the prompt refers to their placeholders.
 
 > **`SCOPE = append-only`: the `es/` file is FROZEN.** Victor refined it and declared it final, and this
 > run exists only to add coverage that arrived later. Translate **only the appended English headings
@@ -100,11 +103,16 @@ native Spanish**, not a word-for-word calque of the English.
 - **Internal cross-file links point at the Spanish filename in `es/`.** When `{FILE}` links to a
   sibling note (e.g. `[09-generics.md](09-generics.md)`), the `es/` must link to that sibling's **`es/`
   counterpart by its Spanish name** — `[09-genericos.md](09-genericos.md)`, not the English filename.
-  The `es/` folder is self-contained: every internal link resolves to a file that exists in `es/`.
   Never carry an English filename into an `es/` link (it becomes a broken link the moment the reader
-  clicks it). If you are unsure of a sibling's exact Spanish filename, list the selected
-  `notes/{TOPIC}/{LEVEL}/es/` directory and
-  match by numeric prefix. Prose-only references with no markdown link stay prose-only.
+  clicks it). **`{LINK_TARGETS}` is where a sibling's Spanish filename comes from** — match by numeric
+  prefix and copy its `es/` path verbatim. Do not resolve the name from a directory listing: the plan
+  declares the filenames of entries nobody has written yet, and those are legitimate link targets that
+  no listing can show you (the English carries the standard's forward-reference marker on them, and the
+  Spanish carries its translation). A listing is a useful cross-check on what already exists, never the
+  authority; where the two disagree, the plan wins and the mismatch goes in your report. For a
+  **cross-topic** link `{LINK_TARGETS}` has no row at all: take that topic's Spanish filename from its own
+  `notes-plan-{LEVEL}.md`, fall back to its `es/` listing only where no plan exists, and say in your
+  report which of the two you used. Prose-only references with no markdown link stay prose-only.
 - **Prose is native Spanish.** Fix calque as you translate: `escanear`→`leer`, `retornar`→`devolver`,
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
   `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,
@@ -126,6 +134,8 @@ tree and report:
 - `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
 - The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read).
 - The section-by-section trace.
+- Every internal link you rewrote, with the `{LINK_TARGETS}` row it was matched against, and any link
+  whose Spanish target the plan declares but the `es/` folder does not contain yet.
 - The persistent plan owns paths and numbering — you never change either.
 - Any English sentence you believe is wrong (for a follow-up author run — you did **not** change it).
 

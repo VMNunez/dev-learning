@@ -43,6 +43,7 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `PLAN = notes/{topic}/coverage/notes-plan-{LEVEL}.md`
 - `EN_DIR = notes/{topic}/{LEVEL}/en/`
 - `ES_DIR = notes/{topic}/{LEVEL}/es/`
+- `READABLE_SIBLINGS` and `LINK_TARGETS`, both resolved from `PLAN` — see "Sibling admissibility" below.
 
 Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, `COVERAGE`, `PLAN`, and both
 sibling-level coverage files — guard 8 below cannot clear a bullet as level-exclusive without them.
@@ -98,10 +99,57 @@ Before dispatching any role:
     stays studied and owes only the new sections. On an entry whose `Studied` is already `pending` there
     is no gap to record and `Pending study` stays `none`. A guard 13/14 no-op preserves both fields.
 
+16. List `EN_DIR` and `ES_DIR` **by filename only** and compare them against the plan's `English:` and
+    `Spanish:` columns. A file no entry declares is an orphan: record it for the final report and pass it
+    to no stage. This is a filename check — no orphan's prose is opened, and the run neither renames nor
+    deletes one.
+
 Guards 9 and 10 do not reopen a `refined` entry: a missing or malformed pedagogical contract on a frozen
 pair is reported, not fixed, because fixing it would mean rewriting prose Victor has declared final.
 
 Never accept an arbitrary file path or create a note absent from the current plan.
+
+## Sibling admissibility — the plan decides what a stage may read
+
+`PLAN` is the only authority on this topic and level's note files. A folder listing is not: `EN_DIR`
+holds pre-system prose written before this machinery existed alongside notes the pipeline authored and
+checked against `COVERAGE`, and nothing in a filename tells them apart. Resolve two lists from `PLAN`
+before dispatch and pass both to every stage:
+
+- `READABLE_SIBLINGS` — the `English:` and `Spanish:` paths of every entry other than `{NOTE}` whose
+  `Status:` is `complete` or `refined`. **That is the only sibling prose any stage may read, cite,
+  reuse a convention or an example domain from, or verify a claim against.** Where two carry the same
+  convention, the `refined` one is the stronger precedent: Victor froze it himself.
+- `LINK_TARGETS` — every entry's number, title, `English:` path and `Spanish:` path, each tagged with
+  its `Status:`. The plan owns a filename from the moment it declares it, so **every row here is a
+  legal link target, including one whose file does not exist yet** — that is exactly what the
+  standard's forward-reference marker is for. Nothing outside this table may be linked **within this
+  topic and level**; a cross-topic link into another topic's notes tree is governed by the standard's
+  preview-callout rule and this table says nothing about it.
+
+`READABLE_SIBLINGS` is legitimately empty on an early route — the topic's first entry, or one whose
+siblings are all `pending`. Pass it as `none` and say so: there is no sibling precedent to honour, the
+standard and the entry's own contract are the whole of the stage's guidance, and an empty list is never a
+reason to fall back to the folder.
+
+A `pending` entry is therefore **link-target-only**: its filename may be linked, its prose may not be
+read, quoted, or used as evidence. The failure this closes is recent and real — the 2026-08-26 Java
+junior run approved a forward reference in a finished note by verifying it against `10-collections.md`
+l.67, a legacy file no run has ever checked against `COVERAGE`, so a claim inside a `complete` note now
+rests on prose a later `notes-audit` may rewrite or delete outright.
+
+Two things the rule deliberately does not reach:
+
+- **The one calibration reference — the first section of `notes/java/junior/es/11-excepciones.md`** —
+  stays readable at any plan status. `_note-quality-standard.md` cites it as Victor's own validated bar
+  for depth and texture, which is a different claim from plan-accepted content: read that one section for
+  texture, never for a convention, a filename, or a fact. The other files the standard names beside it
+  (`01-variables-tipos.md`, `08-herencia-polimorfismo.md`, `10-colecciones.md`) get no exemption — an
+  admissible one is already in `READABLE_SIBLINGS`, and a `pending` one is precisely the prose this rule
+  exists to keep out.
+- **A file in `EN_DIR` or `ES_DIR` that no plan entry declares** is neither readable nor linkable.
+  Report it; it is either an orphan the plan owes an entry or a leftover to delete, and both are
+  Victor's call, not this run's.
 
 ## Append-only mode
 
@@ -162,7 +210,9 @@ Dispatch `_notes-write-prompt.md` with:
 - `TASK` containing the entry title, `Action`, exact coverage bullets, dependencies, and rationale;
 - the complete pedagogical contract: narrative role, learning outcome, prerequisites, every
   must-answer question, and handoff;
-- `REWRITE_MODE = first-pass` for `create`, `append-only` for a `refined` entry, otherwise `standard`.
+- `REWRITE_MODE = first-pass` for `create`, `append-only` for a `refined` entry, otherwise `standard`;
+- `READABLE_SIBLINGS` and `LINK_TARGETS` as resolved above — the author reads sibling prose only from
+  the first list and links only rows of the second.
 
 It must author or audit only the selected English file, cover every assigned concept, avoid sibling
 level scope, and report a section trace plus `N lines, read to EOF`.
@@ -173,7 +223,9 @@ If it cannot finish, stop without translation and leave the entry pending.
 
 Dispatch `_notes-review-prompt.md` for the resolved English file. Give it the complete selected plan
 entry, including the exact assigned coverage bullets and pedagogical contract, as acceptance
-criteria, plus `SCOPE = append-only` with the appended section headings when the entry is `refined`.
+criteria, plus `READABLE_SIBLINGS` and `LINK_TARGETS`, plus `SCOPE = append-only` with the appended
+section headings when the entry is `refined` — it checks duplication, seams and references against the
+first list alone, and never clears a forward reference by opening a file outside it.
 It must fix the file, verify every bullet is substantively covered, verify that the
 learning outcome and must-answer questions are achieved without undeclared prerequisites, enforce
 the introduction invariant when applicable, reject unassigned higher-level expansion, and return a
@@ -181,7 +233,9 @@ section trace, pedagogical-contract trace, and EOF proof.
 
 ## Stage T — translator
 
-Dispatch `_notes-translate-prompt.md` for the final English file and the resolved Spanish path, adding
+Dispatch `_notes-translate-prompt.md` for the final English file and the resolved Spanish path, with
+`LINK_TARGETS`: the plan's `Spanish:` column is where a sibling's Spanish filename comes from, not an
+`ES_DIR` listing, which cannot name a file the route has not written yet. Add
 `SCOPE = append-only` with the appended English headings when the entry is `refined` — it then appends
 only their Spanish counterparts and re-syncs nothing else. In that mode its ordinary STOP on an
 unresolved `es/` TODO marker does not apply: a refined pair is expected to carry markers this pipeline
@@ -195,6 +249,7 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 
 - `PLAN`;
 - `NOTE`;
+- `LINK_TARGETS`, whose `Spanish:` column is the authority its internal-link check runs against;
 - permission to mark every successfully incorporated assigned concept `[x]` and then change only this
   entry's `Status: pending` to `Status: complete` when no `[ ]` remains — or, in append-only mode, to
   mark only the consumed additions `[x]` and clear those same bullets from `Pending additions` while
@@ -245,6 +300,8 @@ stops the run. Never mark a partially verified or merely bullet-complete file co
 ## Final report
 
 Report branch, topic, level, note, resolved paths, action, assigned-concept count, fingerprint match,
+the sibling-admissibility resolution — how many entries were admitted as `READABLE_SIBLINGS`, how many
+`LINK_TARGETS` rows are declared but unwritten, and every orphan file found in `EN_DIR`/`ES_DIR` —
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
 verdict, concept checkbox transitions, status transition, studied-state transition, and commit. In append-only mode, also report the consumed bullets, the

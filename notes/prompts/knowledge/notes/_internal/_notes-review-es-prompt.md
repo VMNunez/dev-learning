@@ -27,7 +27,8 @@ section is missing content (not just badly worded), that is a structural gap C r
 
 **How to use:**
 
-1. Fill in the selected level, exact English and Spanish paths, persistent plan, and note number.
+1. Fill in the selected level, exact English and Spanish paths, persistent plan, note number, and
+   `LINK_TARGETS` — the plan's table of sibling filenames the link check runs against.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -43,9 +44,13 @@ PLAN = [notes/{topic}/coverage/notes-plan-{LEVEL}.md]
 NOTE = [two-digit entry number]
 TASK = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact Spanish headings that were appended]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path — the authority the internal-link
+        check runs against, including entries whose file does not exist yet]
 
-Use these exact values wherever their placeholders appear. TASK is allowed context; the English note
-is not. `FILE` is a **path** you verify and commit — never a file you open.
+Use these exact values wherever their placeholders appear. TASK and `{LINK_TARGETS}` are allowed
+context; the English note is not. `FILE` is a **path** you verify and commit — never a file you open,
+and the English paths inside `{LINK_TARGETS}` are filenames, not prose — reading a filename is not
+reading the note.
 
 > **`SCOPE = append-only`: `{ES_FILE}` is FROZEN outside the appended headings.** Victor refined this
 > pair and declared the prose final. Review and fix **only** the sections named in SCOPE; every other
@@ -80,8 +85,9 @@ the only note you read to judge it.** Do **not** open, read, or reference the `e
 version — your judgment must come from the Spanish text alone, the way Victor experiences it.
 
 **The prohibition is on the English note, not on the support files this pass needs.** The standard and
-the calibration reference below, the `notes/{TOPIC}/{LEVEL}/es/` directory listing the link check runs
-against, and `{PLAN}` at Finish are all **required** reads; `{FILE}` is a path you verify and commit,
+the calibration reference below, `{LINK_TARGETS}` and the `notes/{TOPIC}/{LEVEL}/es/` directory listing
+the link check cross-checks, and `{PLAN}` at Finish are all **required** reads; `{FILE}` is a path you
+verify and commit,
 never a file you open. Nothing in that set puts one line of the English note in front of you, which is
 the only thing "reads it cold" protects.
 
@@ -105,8 +111,9 @@ Before starting, read:
 For each `##`/`###` section, judge the Spanish as a standalone study text:
 
 - **Reads as native Spanish** — no calque vocabulary (`escanear`→`leer`, `retornar`→`devolver`,
-  `librería`→`biblioteca` where it means library-of-code only if that is the house choice — keep it
-  consistent with siblings), no English word order, no sentence that only makes sense if you mentally
+  `librería`→`biblioteca` where it means library-of-code only if that is the house choice — which reaches
+  you in the dispatch, never from opening a sibling; where you cannot tell, leave the term and report
+  it), no English word order, no sentence that only makes sense if you mentally
   back-translate it to English. A passage that is technically correct but reads as translated-from-
   English is a **fail** — rewrite it as native Spanish.
 - **Narrative thread in Spanish** — each section opens on-thread (picks up from the previous) and hands
@@ -119,11 +126,18 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   English inside the Spanish prose — that is correct, not a calque.
 - **Callouts and tables** — `> blockquote` callouts read naturally in Spanish; every table still has
   its "cómo leer esto" sentence in Spanish.
-- **Internal links resolve inside the selected level's `es/`** — every markdown link to a sibling note
-  must point at a file that exists in `notes/{TOPIC}/{LEVEL}/es/` by its Spanish name (e.g. `09-genericos.md`, not
-  `09-generics.md`). List `notes/{TOPIC}/{LEVEL}/es/` and check each internal link against it; fix any link
-  that carries an English filename or names a file that is not there. This is the last defence before
-  the commit — a broken `es/` link that ships here is one no later stage will catch.
+- **Internal links match the plan's Spanish filenames** — every markdown link to a sibling note must be
+  the `es/` path `{LINK_TARGETS}` declares for that number (e.g. `09-genericos.md`, not `09-generics.md`).
+  Check each internal link against that table and fix any link carrying an English filename or a name
+  the plan does not declare. **A link whose target the plan declares but nobody has written yet is
+  correct, not broken**: the route reserves its filename precisely so a chapter can point forward at it,
+  and the prose around such a link says so. Cross-check the `notes/{TOPIC}/{LEVEL}/es/` listing to see
+  what exists today, but where the listing and the plan disagree the plan wins — report the mismatch,
+  never "fix" a legitimate forward link into something that exists. This check covers **same-topic**
+  sibling links only: a cross-topic link (`../../../{other-topic}/{LEVEL}/es/…`) has no `{LINK_TARGETS}`
+  row, so verify only that it carries a Spanish filename and points into an `es/` tree, and never remove
+  or rewrite it for being absent from this plan. This is the last defence before the commit — a link
+  carrying an English filename that ships here is one no later stage will catch.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
 - **Standalone learning outcome** — studying only the Spanish must let Victor achieve TASK's
@@ -175,6 +189,8 @@ Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (bullet list of the Spanish fixes).
 - The **"N lines, read to EOF"** line for the `es/` file.
 - Any **structural gaps** you could not fix (for a follow-up author run).
+- The internal links you checked against `{LINK_TARGETS}`, naming any whose Spanish file the plan
+  declares but the `es/` folder does not hold yet.
 - Files touched (`es/` only, unless you committed), and — if committed — the commit hash.
 
 ````

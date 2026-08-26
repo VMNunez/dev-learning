@@ -26,8 +26,8 @@ to land the file).
 
 **How to use:**
 
-1. Fill in `TOPIC`, `FILE` (the exact `en/` file just authored), and `TASK` (the complete selected
-   persistent-plan entry).
+1. Fill in `TOPIC`, `FILE` (the exact `en/` file just authored), `TASK` (the complete selected
+   persistent-plan entry), and the two plan-derived lists `READABLE_SIBLINGS` and `LINK_TARGETS`.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -39,8 +39,13 @@ TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md
 FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/11-exceptions.md]
 TASK  = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact headings the author appended]
+READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is complete or refined
+        — the ONLY sibling prose you may open]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status — the
+        complete set of filenames this file may link, including entries not written yet]
 
-Use TOPIC, FILE, TASK, and SCOPE wherever the prompt refers to their placeholders.
+Use TOPIC, FILE, TASK, SCOPE, READABLE_SIBLINGS, and LINK_TARGETS wherever the prompt refers to their
+placeholders.
 
 > **`SCOPE = append-only` overrides every "fix it directly" instruction below for existing prose.**
 > Victor has refined this file and declared it final; the run exists only to add coverage that arrived
@@ -75,8 +80,26 @@ Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bar you audit against, in full.
 - The first section of notes/java/junior/es/11-excepciones.md — the calibration reference for "finished"
   (read it for depth/texture; you audit English).
-- The sibling files already in `{FILE}`'s `en/` folder — to catch duplicated examples/concepts and
+- The siblings named in `{READABLE_SIBLINGS}`, and no others — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.
+
+> **Why that list and not the folder.** `{FILE}`'s `en/` folder also holds pre-system notes written
+> before this pipeline existed, which no run has ever checked against the topic's coverage file.
+> `{READABLE_SIBLINGS}` is the subset the plan marks `complete` or `refined` — the only sibling prose
+> the system has accepted, and therefore the only prose you may open, quote, or treat as evidence. Where
+> two of them disagree on a convention, the `refined` one wins: Victor froze it himself. The one
+> exception is the calibration reference above, readable for depth and texture only. When
+> `{READABLE_SIBLINGS}` is `none` — the topic's first entry, or a route whose siblings are all `pending`
+> — the duplication and seam checks against sibling prose simply do not run: judge the seams against the
+> plan contract you were given and report that they went unchecked.
+>
+> **`{LINK_TARGETS}` is the separate, wider list of filenames this file may link** — every entry the plan
+> declares, including one whose file does not exist yet. A link to such a target is **correct** when it
+> carries the standard's forward-reference marker; you never clear or confirm a forward reference by
+> opening a file outside `{READABLE_SIBLINGS}`, and a "verified" claim built on unaccepted prose is
+> exactly the defect this rule exists to stop. A **same-topic** link to a filename in neither list is a
+> defect: fix it against `{LINK_TARGETS}`. A cross-topic link into another topic's tree sits outside both
+> lists by design — judge it by the standard's preview-callout rule, never against this table.
 
 Treat TASK as an acceptance contract. Coverage bullets define required scope, but a file that names
 or demonstrates them without achieving TASK's `Learning outcome`, resolving every `Must answer`, and
@@ -102,11 +125,16 @@ For each section of the file, check:
   correct priority (Baeldung for Spring/Java, MDN for CSS/JS, angular.dev for Angular, jjwt for JWT);
   no guessed URLs (a guess must be `Docs: TODO — add link`).
 - **References** — forward references within the topic marked; cross-topic references opened with a
-  preview callout; links to sibling notes carry a one-sentence reminder.
+  preview callout; links to sibling notes carry a one-sentence reminder; every same-topic internal link
+  resolves to a `{LINK_TARGETS}` row, and no claim about a sibling's content rests on a file outside
+  `{READABLE_SIBLINGS}`.
 - **Narrative seams** — the file opens by picking up the thread from the previous file (not a cold
   definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
-  file stays consistent with it. Read the neighbouring files to check the seams.
-- **No duplication** — no example or concept repeats a sibling file in the same folder.
+  file stays consistent with it. Read the `{READABLE_SIBLINGS}` neighbours to check the seams; where the
+  adjacent entry is not admissible, the seam is judged against the plan contract you were given —
+  its narrative role and handoff — not against that file's prose.
+- **No duplication** — no example or concept repeats an admissible sibling. A legacy file you may not
+  read cannot be checked for duplication and is not a finding.
 - **Plan contract** — the learning outcome is achieved, every must-answer question is resolved in
   the prose, no undeclared or later prerequisite is assumed, and the closing handoff is real.
 - **Introduction invariant** — when the entry prefix is `00` or its narrative role is topic
@@ -136,6 +164,8 @@ Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
 - The **"N lines, read to EOF"** line for `{FILE}`.
 - The **section-by-section trace** (every heading → PASS or the fix).
+- The siblings you opened, each shown to be in `{READABLE_SIBLINGS}`, and every internal link you
+  checked against `{LINK_TARGETS}` whose target is declared but not yet written.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the fix.
 - The coverage status (✅/🔧/➕) and the files touched (`en/` only).

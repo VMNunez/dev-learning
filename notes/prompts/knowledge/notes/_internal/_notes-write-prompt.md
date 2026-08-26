@@ -32,8 +32,10 @@ budget stays on writing that file well.
 2. Fill in `FILE` — the exact `en/` file to work on (e.g. `notes/angular/junior/en/08-http.md`). For a
    brand-new file that does not exist yet, still name its intended path here.
 3. Fill in `TASK` — the selected persistent-plan entry, including its exact assigned concepts.
-4. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
-5. Paste the entire prompt below into a new chat.
+4. Fill in `READABLE_SIBLINGS` and `LINK_TARGETS` from the plan — which sibling notes may be read, and
+   which filenames may be linked. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md`.
+5. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
+6. Paste the entire prompt below into a new chat.
 
 ---
 
@@ -48,6 +50,11 @@ FILE  = [exact en/ file path, e.g. notes/java/junior/en/11-exceptions.md]
 TASK = [what to do this run — copy the persistent plan entry, or describe it, e.g.
         "resolve TODOs + fix WHY-before-code in §3" | "create the file from scratch"
         | "add a section on optimistic locking"]
+
+READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is complete or refined
+        — the ONLY sibling prose you may open; the orchestrator resolves this list from the plan]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status — the
+        complete set of filenames you may link, including entries not written yet]
 
 REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO or unless TASK
@@ -68,7 +75,8 @@ REWRITE_MODE = [standard | first-pass | append-only]
          content Victor has not validated yet. After the run, the file is validated — use standard
          from then on.
 
-Use TOPIC, LEVEL, FILE, TASK, and REWRITE_MODE wherever the prompt refers to their placeholders.
+Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, and REWRITE_MODE wherever the prompt
+refers to their placeholders.
 
 ---
 
@@ -82,10 +90,31 @@ English only.** You never create or edit the `es/`
 file — a later stage translates your finished English. Your single deliverable is a `{FILE}` that is at
 the full standard in English.
 
-> **Before writing a new file or a new section, read the sibling files already in `{FILE}`'s `en/`
-> folder** — enough to avoid duplicating an example or a concept another note already carries, to keep
-> terminology consistent, and to wire forward/back references correctly (a note that references a file
-> not written yet still gets the one-line forward-reference marker from the standard).
+> **Before writing a new file or a new section, read the siblings named in `{READABLE_SIBLINGS}`** —
+> enough to avoid duplicating an example or a concept another note already carries, to keep terminology
+> consistent, and to wire forward/back references correctly.
+>
+> **That list is the whole of the sibling prose you may open, and the folder is not.** `{FILE}`'s `en/`
+> folder also holds pre-system notes written before this pipeline existed, which no run has ever checked
+> against the topic's coverage file; a convention or a fact taken from one of those is a claim the system
+> never accepted, and a later audit of that sibling can invalidate it inside a note already marked
+> complete. So: never open, quote, cite, or verify anything against a **sibling** note outside
+> `{READABLE_SIBLINGS}` — `{FILE}`'s own `es/` counterpart is not a sibling, and Step 1 still reads it
+> for Victor's TODO markers. Where two admissible siblings disagree, follow the `refined` one — Victor
+> froze it himself. The named calibration reference in the reading list below is the one exception, and
+> it is for depth and texture only, never for a convention, a filename, or a fact.
+>
+> **`{READABLE_SIBLINGS}` is legitimately `none` on an early route** — this is the topic's first entry,
+> or every sibling is still `pending`. Then no sibling prose has been accepted yet: write from the
+> standard and `{TASK}` alone. An empty list is not permission to open the folder.
+>
+> **Linking is the other half and runs off a different list.** `{LINK_TARGETS}` holds every filename the
+> plan declares, whatever its status, and every one of them is a legal link — including an entry whose
+> file does not exist yet, which is exactly what the standard's one-line forward-reference marker is
+> for. Never link a same-topic filename absent from that list — a cross-topic link into another topic's
+> notes tree is unaffected, the standard's preview-callout rule governs it — and never resolve a forward
+> reference by reading the target: if it is not in `{READABLE_SIBLINGS}`, you link it and mark it, you do
+> not check it.
 
 Before starting, read:
 - the shared session rules — teaching and level-layout rules.
@@ -111,7 +140,7 @@ prose itself and routing them through English destroys the wording he asked for.
 — and *only* those sections — you write Spanish into the `es/`, then bring `{FILE}` into line with it.
 Every other byte of the `es/` remains stage T's.
 
-Do not edit any `coverage/*.md` file, or any sibling note's body — if you notice a
+Do not edit any `coverage/*.md` file, or any sibling note's body — admissible or not — if you notice a
 gap that belongs elsewhere, mention it in the summary instead of acting on it.
 
 ---
@@ -231,7 +260,8 @@ The English reviewer (B) audits this file next, but do not lean on that — hand
   and each is answered in the prose (mechanism, not just behaviour).
 - Signature texture is present where the section warrants it (worked example, a diagram for anything
   structural, callouts, tables explained) — and no section visibly drops below its neighbours.
-- No example or concept duplicates a sibling file you read; forward/cross-topic references are marked.
+- No example or concept duplicates an admissible sibling; every forward/cross-topic reference is marked,
+  and every same-topic internal link resolves to a `{LINK_TARGETS}` row.
 - TASK's `Learning outcome`, every `Must answer`, declared `Prerequisites`, and `Handoff` are
   substantively satisfied. Bullet coverage alone is not a pass.
 - If this is the topic introduction, every introduction invariant from the standard is present.
@@ -284,6 +314,8 @@ the Step 1 exception — and report:
   needs this to know what to (re)translate in the `es/`.
 - Which TODOs you resolved, and for each: the language you authored it in, and whether the `es/`
   section is now frozen for stage T (it is, whenever you wrote the Spanish directly).
+- The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
+  you wrote to a target that is declared but not yet written.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the work completed.
 
