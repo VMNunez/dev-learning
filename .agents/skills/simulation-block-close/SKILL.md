@@ -10,6 +10,9 @@ description: >
 # Close a timed-simulation block
 
 Read `_session-rules.md`; qualifying failed ritual steps use its durable-friction close-out. Ask
+End every run by printing `desvíos: ninguno` or `desvíos: SBRC-NNNN`; a run that finished but
+deviated from this text also applies that file's "When a skill's own text is what went wrong — the
+skill breach log" close-out.
 nothing. Missing facts remain missing and are reported as the next required input.
 
 ## 0 — Resolve the attempt

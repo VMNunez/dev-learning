@@ -270,8 +270,9 @@ files: the system that describes and checks the system, which has writers like e
 | `practice/interview/MISTAKES.md` | `/simulator` · `/hr-screen` · `/code-review-practice` (their own performance gaps) | the same three prompts, each consuming only its own surface rows |
 | `notes/prompts/_internal/_job-market-evidence.md` | `/evidence-intake` · `/cv tailor` | `/coverage`, `/coverage-audit`, `/interview-prep-audit`, `/interview-prep-route` |
 | `notes/prompts/_internal/_run-tracker.md` | every prompt's close-out · **`coverage-bullet-add`** (the one skill that writes here) | you and prompts that gate on it; `/system-check` reaches it only through the universal pipeline close-out, never as semantic-audit inventory |
-| `notes/prompts/_internal/_skill-friction.md` | any of the eighteen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (including `/system-check`'s universal close-out), never the machinery audit's inventory or verdict |
+| `notes/prompts/_internal/_skill-friction.md` | any of the nineteen skills, only when the shared session contract's observable failed-step trigger fires · either self-report close-out changes only `Disposition` during serialized reconciliation | both self-report close-outs (including `/system-check`'s universal close-out), never the machinery audit's inventory or verdict |
 | `notes/prompts/_internal/_ritual-friction.md` | **any session, the moment Victor says a ritual cost more than it gave** — `_session-rules.md` → "When a ritual works and is not worth it". Not a skill's own contract and not a prompt close-out: the ritual succeeded, so nothing in it fired. Only `Status` changes after insertion, written by the ruling | `_recommendation-ledger.md` → `REC-054` (c) **only**. Explicitly not a work queue: no close-out adjudicates it, no cold reviewer is dispatched over it, and it never becomes a `REC` |
+| `notes/prompts/_internal/_skill-breach-log.md` | **any of the nineteen skills, on a run that finished its work and still did not go as its own text says** — `_session-rules.md` → "When a skill's own text is what went wrong". Not a failure (that is `_skill-friction.md`) and not a cost (that is `_ritual-friction.md`); the third case, which had no sink before 2026-08-26. Only `Disposition` changes after insertion, written by the refinement that consumed the row | `skill-refine` **only**, and never as a work queue. When it fires is `_pipeline-self-report.md` → "The bar" condition 2: a silent or ambiguous text clears it on the first row, a clearly stated rule breached anyway needs two rows carrying the identical `Breached step` |
 | `notes/prompts/README.md` **and this file** | whoever changes the machinery, **in the same commit** (including an approved prompt self-refinement) · the `map-sync` ritual, which walks both triggers · `/system-check`, the only prompt whose primary work is auditing both maps · never a build step. **`/system-gaps` reads both and writes neither** — it is the one prompt that takes these two files as its whole evidence, which is exactly why it is forbidden to correct them | anyone orienting in the system — which is why a wrong row is worse than a missing one; `/system-check` (as the object it audits) and `/system-gaps` (as the only evidence it has) |
 | `notes/prompts/system/_internal/_system-check-report.md` | `/system-check` only, overwritten on each explicit run | Victor; the next `/system-check`; later whole-system refinement work |
 | `.system-check/runs/{run-id}/` | `/system-check` only, outside Git: accepted manifests and reconciliation/review evidence are written verbatim before its atomic `state.md` pointer advances; a continuity migration reuses only concerns whose owned source hashes remain unchanged, and `MODE = carry-forward` reuses a **completed** run's accepted artifacts on its own stricter test — every input that concern was given, including both maps in full for a Direction 2 concern | the same or a later Codex, Claude, or conforming runtime resuming that explicitly selected run, or anchoring a `carry-forward` run on the most recent completed one; orchestration only — never audit evidence, inventory, live state, report substitute, or commit candidate, except an anchor's accepted artifact carried under `MODE = carry-forward`, which is re-gated as this run's own |
@@ -318,7 +319,7 @@ and nowhere else; only its *effect* on level, percentage or project status is re
 
 ## 9 — The skills, one row each
 
-All eighteen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
+All nineteen are mirrored in `.claude/skills/` and `.agents/skills/`; **editing one means writing the
 identical file to the other in the same commit.**
 
 **But an absence in the `Handoffs, gates + explicit exclusions` cell is not a finding**: it carries the
@@ -327,7 +328,7 @@ missing from it is delegating, not lying — one **named** there with a false sc
 the `SKILL.md` stays the exhaustive list. This fence reaches that cell alone.
 
 **And an absence of `_session-rules.md` from a `Primary reads` cell is never a finding either.** All
-eighteen `SKILL.md` files name it — most only for the durable-friction close-out this section states
+nineteen `SKILL.md` files name it — most only for the durable-friction close-out this section states
 below the table, the rest to cite where a rule they already obey comes from (`map-sync`'s "The two maps
 follow every change to the machinery", `step-complete`'s active-branch rule, `study-content-writer`'s
 `notes/ folder` → `Detail standard`) — and in neither shape is it an input the row's own product depends
@@ -363,6 +364,7 @@ walk, so they are its warrant rather than an input it reads to produce anything.
 | `simulation-grade` | a planned attempt or correction is ready and complete, or an attempt still in flight needs the one allowed hint | route/doctrine, spec, submitted solution/correction, TRACKER, MISTAKES | no direct grade; one cold `/simulation-review` performs authorised tracking/correction writes | agent commits system-owned simulation artifacts; Victor's submitted solution stays untouched | refuses incomplete inputs; routes Borderline/Fail to corrections and preserves the original timed verdict |
 | `simulation-block-close` | timer/block ends; stated time, assessment and friction | doctrine/route/spec/TRACKER/MISTAKES plus facts already stated | attempted/Assisted handoff + stated friction | agent commits system-owned simulation tracking; never Victor's solution | hands to `simulation-grade`; never grades, infers assessment, or changes timed verdict |
 | `map-sync` | machinery changed · a read of any depth positively contradicts a map · or one prompt/skill/standard/other internal contract was read whole, which additionally licenses absence findings | changed/read file plus every licensed occurrence in `README.md` and this map | corrected derived-map rows, or an explicit verified/unaffected verdict | agent commits a read-path map fix separately or a change-path fix with the machinery | never fires for project code, notes prose, `PLANNING.md`, or inside a prompt pipeline; never sweeps, blocks, edits machinery to match a map, or rules outside the read licence |
+| `skill-refine` | a skill close-out reports `_skill-breach-log.md` has cleared the bar for a `Scope: own` row, or a third `open` `_ritual-friction.md` row naming one ritual; Victor may call either directly. Receives the crossing rows and the target skill | `_skill-breach-log.md`; `_pipeline-self-report.md` → "The bar" (the four conditions, never restated in the skill) and → "The breach log" (`Scope`); **the target `SKILL.md` end to end** in `.claude/skills/`; `_agent-runtime-standard.md` for the reviewer dispatch; §13 of this map for the block’s contract size; `_ritual-friction.md` on the ruling route | the approved edit **in both adapter mirrors** · `Disposition` → `fixed in <hash>` on the rows that fed it · §13’s recounted block cell · `Status` on every `_ritual-friction.md` row naming a ruled ritual · the one-line `cold reviewer: approve \| approve-with-tightening \| reject` verdict, which is the only trace the gate ran | agent commits both mirrors, the sink and whatever `map-sync` touched, in one commit prefixed `refactor(skills): auto-refine`; no project code | calls `map-sync`; **one refinement per session**; never edits a `shared`-scope step (that routes to `_recommendation-ledger.md`, and only at two rows), never deletes a ritual (`deleted` stops and reports), never refines itself on the run that logged the row, never runs inside `/system-check` |
 
 Every row inherits `_session-rules.md` → "When a skill cannot finish — durable friction". The table's
 write cells describe success and expected no-op / ineligibility paths; on an observable failed declared
@@ -489,6 +491,8 @@ The things a run leaves behind that are easy to miss.
 
 | Symptom | Run |
 |---|---|
+| a skill made you repeat yourself, or you had to tell it something its own text should have said | nothing — the skill logs an `SBRC` row itself and `skill-refine` fires when `_pipeline-self-report.md` → "The bar" is cleared. Say `refina ese skill` only to force it early |
+| a ritual keeps costing more than it gives | say so in passing — the line lands in `_ritual-friction.md`, and `skill-refine` executes the `REC-054` (c) ruling at the third row. A `deleted` verdict stops and comes back to you |
 | coverage gained bullets → a notes plan is `⚠ stale` | `/notes-plan {topic} {level}` |
 | Victor refined a note in one language and wants the pair frozen | say which language — the daily session's `study-content-writer` syncs the *counterpart* only, changes nothing in the file he named, hands over the commit for both, writes `Status: refined`, and invokes `authoring-progress-recount` |
 | a refined note needs a wording fix | write the `TODO` in it — the daily session's `study-content-writer` resolves it in place, keeping `Status: refined` and the `Studied` date. `/notes-audit` reports such markers and routes them here; a whole-section rewrite is not this route and needs the hand-back to `pending` |
@@ -703,14 +707,14 @@ its result.
 
 | Block | Skills that can fire | Opener | Closer | Cold dispatch inside the block | Declared steps · contract size |
 |---|---|---|---|---|---|
-| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 42 steps · ~1,626 lines |
-| `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~818 lines |
-| `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` · `authoring-progress-recount` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 20 steps · ~476 lines |
-| `machinery` | `map-sync` | — | — | none | 5 steps · ~172 lines |
+| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 42 steps · ~1,668 lines |
+| `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~855 lines |
+| `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` · `authoring-progress-recount` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 20 steps · ~500 lines |
+| `machinery` | `map-sync` · `skill-refine` | — | — | **yes** — `skill-refine` submits every drafted `SKILL.md` edit to one cold reviewer that reads the whole file, so no refinement is ever self-approved | 18 steps · ~368 lines |
 
 Counts are `SKILL.md` numbered steps **including lettered sub-steps** — `1a`, `3b` carry their own
 declared work, and they are not written at a uniform heading level, so a count that excludes them is both
-lower and unreproducible — plus file length, all four rows measured in one pass on 2026-08-25 in
+lower and unreproducible — plus file length, all four rows measured in one pass on 2026-08-26 in
 `.claude/skills/`. The `.agents/` mirror carries the same content by contract (§10), so either
 adapter gives the same numbers. They are a proxy for contract weight, not for
 minutes — only a `RITF-NNNN` row measures those, and only from a day that was actually lived.
@@ -737,7 +741,7 @@ minutes — only a `RITF-NNNN` row measures those, and only from a day that was 
   judged in-session, with full context. That is deliberate in both directions — one measures performance
   under interview conditions, the other measures whether the work is finished — but it means only one
   block pays a dispatch inside the hour.
-- **One skill in eighteen is allowed to ask a question.** `interview-prep-block-open`, because asking
+- **One skill in nineteen is allowed to ask a question.** `interview-prep-block-open`, because asking
   and grading one question *is* its product — the intentional exception to §9's rule that **mechanical
   and closing** rituals ask zero questions. That rule is narrower than "no skill ever waits": authoring
   skills legitimately do, and `study-content-writer` waits for Victor's explicit acceptance before
@@ -749,4 +753,5 @@ written in a daily session — its home is 13:30, but a note written during the 
 trigger, and it is counted above only once. `authoring-progress-recount` is counted in the same row for
 the same reason: `study-content-writer` invokes it there, but `/notes-audit` and `/interview-prep-audit`
 invoke it from their own runs, at whatever hour those happen. `map-sync` fires on any read or change of the machinery in
-any session at all, which is why it takes the fourth `Block` value rather than one of the three hours.
+any session at all, and `skill-refine` fires wherever the skill that crossed its threshold ran, which is why
+both take the fourth `Block` value rather than one of the three hours.

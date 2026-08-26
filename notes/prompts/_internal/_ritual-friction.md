@@ -28,7 +28,9 @@ speed it drained, and every refill came through one of these four doors:
 - **It never opens a `REC-NNN`.** Not after one row, not after ten. The only thing a row feeds is
   `REC-054` (c).
 - **It never dispatches a cold reviewer.** A cold reviewer is paid to find things; that is how
-  `REC-081`, `REC-086` and `REC-087` were born out of reviews of other rows.
+  `REC-081`, `REC-086` and `REC-087` were born out of reviews of other rows. This bars a reviewer sent to
+  judge **the complaint**. A `thinned` ruling under (c) dispatches one to judge **its own drafted edit**,
+  which is the act (c) has always been licensed to perform — see "Who consumes it".
 - **It never blocks and never asks a question.** Victor says it in passing, the line gets written, the
   session continues. A capture point that interrupts is a capture point that stops being used — the
   zero-questions rule the skills are built on, applied here.
@@ -57,6 +59,17 @@ loop.
 ritual make that ritual due for a ruling**; Victor may call one earlier with a single row, and a ruling
 is per **ritual**, never per row. The ruling is the one act in this system licensed to *remove*
 machinery.
+
+**Who counts the rows, since (c) bars itself from being scheduled.** The skill close-out defined in
+`_session-rules.md` → "When a skill's own text is what went wrong — the skill breach log" reads this file
+as it prints its `desvíos:` line, and on a third `open` row naming one ritual states so and hands the
+ruling to `skill-refine`. That is a **counter**, not a new consumer: it reads the rows to see a threshold
+already written here, and rules on nothing itself. The ruling stays bounded by its verdict — `kept`
+writes the disposition and edits nothing, `thinned` cuts through the same cold-review gate as any other
+skill edit, and `deleted` **stops and reports**, because removing a ritual outright is what this row
+reserves and it stays Victor's. It runs automatically only when the named ritual is a **skill**; a prompt
+or a daily-loop step is reported and routed to that prompt's own refinement path, which is the case of
+`RITF-0001`.
 
 | ID | Date | Ritual | Block | Cost | Status |
 |---|---|---|---|---|---|

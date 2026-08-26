@@ -11,6 +11,9 @@ description: >
 # Open the interview-prep active-recall block
 
 Read `_session-rules.md` and apply its shared durable-friction close-out on a failed declared step.
+End every run by printing `desvíos: ninguno` or `desvíos: SBRC-NNNN`; a run that finished but
+deviated from this text also applies that file's "When a skill's own text is what went wrong — the
+skill breach log" close-out.
 Write nothing.
 
 ## 1 — Resolve the route

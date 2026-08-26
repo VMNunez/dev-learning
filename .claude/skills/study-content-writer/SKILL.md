@@ -19,6 +19,13 @@ ineligibility paths. If this invoked ritual cannot complete a declared step, fol
 `notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
 restate or widen that trigger here.
 
+**Shared deviation close-out.** Every invocation ends by printing `desvíos: ninguno` or
+`desvíos: SBRC-NNNN` as its report's last line, on clean runs too. If this ritual finished its work and
+the text above is what made it improvise, ask a question this contract forbids, re-derive state the
+trigger declared resolved, or write outside its declared writer set, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill's own text is what went wrong — the skill
+breach log"; do not restate or widen that trigger here.
+
 
 When this skill fires, you are writing study content **outside** the audit pipeline. Your job is to
 hit the exact same quality bar the pipeline would, so daily-session notes are never second-class.

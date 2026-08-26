@@ -292,7 +292,7 @@ git commit -m "type: description"
 
 ### When a skill cannot finish — durable friction
 
-All eighteen in-session skills point here rather than restating this contract. A skill run writes
+All nineteen in-session skills point here rather than restating this contract. A skill run writes
 friction only when the invoked ritual **cannot complete one of its declared steps** because a required
 input is missing or contradictory outside a declared normal gate, a dispatch / tool / runtime fails, or
 an ambiguous, contradictory or breached rule leaves the result incorrect or incomplete.
@@ -340,6 +340,67 @@ what he observed; whether the ritual is justified is decided later, over several
 `_recommendation-ledger.md` → `REC-054` (c) — the one ruling in this system licensed to *remove*
 machinery. Skipping straight to a recommendation is how the ledger came to refill itself as fast as it
 drained, which is what this sink exists to avoid.
+
+### When a skill's own text is what went wrong — the skill breach log
+
+The two rules above cover a ritual that **broke** and a ritual that **was not worth it**. Neither covers
+the most common defect of all: the ritual finished, was worth it, and its own text is what made the run
+work around something. This section is the single owner of that contract; all nineteen skills point here
+rather than restating it, and `_skill-breach-log.md` is only its event sink.
+
+**Every skill invocation ends by stating what it found, whether or not it found anything.** The last line
+of the Report back is `desvíos: ninguno` or `desvíos: SBRC-NNNN`, and it is printed on a clean run too.
+This is not decoration and it is not optional: the run that improvised because the text was silent is
+exactly the run that does not notice it improvised, so a passive "write a row if you deviated" is obeyed
+only when it was not needed. A visible line makes the omission visible — the skill that skips it is
+missing from the screen, where Victor is looking. It is the numbered bullet 4 of
+`_pipeline-self-report.md`, ported to rituals that have no report.
+
+**What counts as a deviation.** The skill completed its declared work, and to get there it had to
+improvise where its `SKILL.md` was silent, ask a question its own contract forbids, re-derive state its
+trigger declared already resolved, or write outside its declared writer set. What does **not** count is
+everything the durable-friction rule above already excludes, plus a run that simply took longer than
+usual: mere cost is a `RITF` row and mere failure is a `FRIC` row. A run that fails a step *and* deviates
+on one it completed writes to both files, and the breach row's `Evidence` names the `FRIC-NNNN` rather
+than retelling it.
+
+On a deviation, after the work is delivered and reported:
+
+1. Append one row per deviated step to `notes/prompts/_internal/_skill-breach-log.md`, using the next
+   `SBRC-NNNN`. `Breached step` is `` `<file>` → `<heading>` `` copied verbatim — never composed, never
+   described — because two rows count as the same defect only when that string matches exactly.
+2. Set `Disposition` to `open` and `Scope` to `own` or `shared` as that file defines them.
+3. Commit the sink-only write atomically under the standing prompt-system authorization, with
+   `git status` immediately before staging and committing. If writing the sink or Git is itself the
+   failure, that is a `FRIC` row and the rule above governs; never recurse.
+
+**Then check whether it has earned a fix, and hand off.** The bar is `_pipeline-self-report.md` → "The
+bar", unchanged and not restated here: a text that was genuinely ambiguous or silent clears condition 2
+on the **first** row; a clearly stated rule breached anyway needs **two** rows carrying the identical
+`Breached step`. When the bar is cleared and `Scope` is `own`, hand off to `skill-refine`, which owns the
+draft, the cold review and the edit. When `Scope` is `shared`, the step is not that skill's to edit: the
+row stays `open` and goes to `_recommendation-ledger.md` at **two** rows, never on the first.
+
+**One refinement per session, hard cap.** A second crossing in the same session is left `open` for the
+next one. The refinement runs in the foreground, after the skill has delivered its result, and never
+before it — an edit executed in the same breath as the run that motivated it ships unseen, which is the
+unsafe variant `_pipeline-self-report.md` names.
+
+**The same close-out counts the ritual-friction threshold.** `_recommendation-ledger.md` → `REC-054` (c)
+states that three `open` rows naming one ritual make it due for a ruling, and then bars itself from being
+scheduled — so nothing counts those rows and the threshold has no watcher. The close-out that prints the
+`desvíos:` line reads `_ritual-friction.md`, and on a third `open` row naming one ritual prints one more
+line and hands that ruling to `skill-refine`. The ruling is bounded by its own verdict: `kept` writes
+`ruled YYYY-MM-DD — kept` to every row naming that ritual at once; `thinned` cuts the step that costs and
+does not give, through the same gate as any other skill edit; `deleted` **stops and reports**, because
+removing a ritual outright is what `REC-054` reserves, and it stays Victor's. It runs automatically only
+when the named ritual is a **skill** — a prompt or a daily-loop step is reported and routed to that
+prompt's own refinement path.
+
+This does not loosen `REC-054` (b) by one clause. Its four prohibitions govern **writing a row**: a
+capture point still never opens a `REC-NNN`, never blocks, never asks and is never argued with, and no
+reviewer is ever dispatched **to judge the complaint**. The reviewer a `thinned` ruling dispatches judges
+the **edit**, which is the act (c) was always licensed to perform.
 
 ### After every learning plan step is completed — update these files without being asked
 
@@ -842,7 +903,7 @@ and do not license widening the task into `/system-check` or a whole-system audi
 
 **A skill is named bare; only a launcher takes a slash.** A `/name` written in any repo file is either a
 launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's own built-ins
-(`/code-review`, `/model`). The eighteen in-session skills have neither, so they are written
+(`/code-review`, `/model`). The nineteen in-session skills have neither, so they are written
 `coverage-mark`, `step-complete` — never `/coverage-mark`. Writing a skill with a slash hands the reader a
 command that does not exist, which is the same defect the launcher-naming rule in
 `notes/prompts/README.md` exists to prevent.

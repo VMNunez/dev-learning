@@ -340,6 +340,10 @@ prompt that has never breached a step has no such file.
 `_simulation-plan-standard.md`,
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`, `_skill-friction.md` (observable
 failed skill steps, consumed by the next prompt close-out),
+`_skill-breach-log.md` (the skills’ own breach log: a run that finished its work and still did not go
+as its `SKILL.md` says — `SBRC-NNNN`, read by `skill-refine` alone, and by nothing as a work queue),
+`_ritual-friction.md` (friction without failure: a ritual that completed and cost more than it gave —
+`RITF-NNNN`, ruled on by `_recommendation-ledger.md` → `REC-054` (c), never adjudicated by a close-out),
 `{family}/_internal/_breach-log-<prompt-name>.md` (one append-only log per prompt, created on its first
 breached step: the row survives the report that named it, so a close-out can count how often one *named*
 step has failed instead of seeing only the last run — read by that prompt's own close-out, never by

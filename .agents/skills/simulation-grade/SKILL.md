@@ -13,6 +13,9 @@ description: >
 # Grade a timed simulation
 
 Read `_session-rules.md`; qualifying execution failures use its durable-friction close-out. Never edit
+End every run by printing `desvíos: ninguno` or `desvíos: SBRC-NNNN`; a run that finished but
+deviated from this text also applies that file's "When a skill's own text is what went wrong — the
+skill breach log" close-out.
 Victor's solution code.
 
 ## 0 — Resolve or stop
