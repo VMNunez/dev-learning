@@ -1,7 +1,13 @@
 package com.victor.timetrack.exception;
 
+import lombok.Getter;
+
+@Getter
 public class InvalidPasswordException extends RuntimeException {
-  public InvalidPasswordException(String message) {
-    super(message);
-  }
+    private final String field;
+
+    public InvalidPasswordException(String field, String message) {
+        super(message);
+        this.field = field;
+    }
 }

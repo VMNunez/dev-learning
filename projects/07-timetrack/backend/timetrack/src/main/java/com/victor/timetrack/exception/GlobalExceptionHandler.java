@@ -126,10 +126,10 @@ public class GlobalExceptionHandler {
                         "Invalid value for parameter '" + e.getParameter().getParameterName() + "'"));
     }
 
-    @ExceptionHandler(InvalidCurrentPasswordException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidCurrentPassword(InvalidCurrentPasswordException e) {
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPassword(InvalidPasswordException e) {
         ErrorResponse errorResponse = buildError(HttpStatus.BAD_REQUEST, e.getMessage());
-        errorResponse.setFieldErrors(Map.of("currentPassword", List.of(e.getMessage())));
+        errorResponse.setFieldErrors(Map.of(e.getField(), List.of(e.getMessage())));
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
