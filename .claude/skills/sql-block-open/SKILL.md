@@ -95,8 +95,11 @@ Resolve it mechanically, never by guessing a filename:
 2. Open `notes/sql/coverage/notes-plan-junior.md` — **the notes track's own plan**, at
    `notes/sql/coverage/notes-plan-{LEVEL}.md` — and find the entry whose `Coverage concepts:` list
    claims those same bullets. The two files quote the same coverage file verbatim, so the match is
-   textual, not interpretive. If several entries claim parts of the step, name the one that claims most
-   and say the step spans two chapters.
+   textual, not interpretive. If several entries claim parts of the step, resolve to the one that
+   claims most and read step 3 off that entry alone; the others are named in the same Teoría line,
+   as one parenthesis listing every claiming chapter — `(abarca 03/04/05)` — never a second line and
+   never a count. It goes next to the note, before any `/notes-audit` command: that command stays
+   the last thing on the line so it can still be pasted.
 3. Read that entry's `Status:` line and its `Spanish:` path.
 
 Then say exactly one of these, in one line:

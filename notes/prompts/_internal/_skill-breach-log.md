@@ -51,3 +51,4 @@ genuinely ambiguous or silent clears it on the **first** row; a clearly stated r
 
 | ID | Date | Skill | Target | Breached step | Scope | Evidence | Disposition |
 |---|---|---|---|---|---|---|---|
+| SBRC-0001 | 2026-08-26 | `sql-block-open` | junior, Step 0 — run of 2026-08-26 opening the SQL block | `sql-block-open/SKILL.md` → `2 — The theory behind this step, and whether it is worth reading yet` | own | Three notes-plan chapters (03, 04, 05) each claim part of Step 0. Item 2 says to name the one that claims most and "say the step spans two chapters", while the output table mandates "exactly one of these, in one line" and gives no slot for the span — so the run improvised the parenthetical "(el step abarca 03/04/05; 05 reclama la mayoria)", in a format no line of the contract states, against a hardcoded count that was wrong for the real case | fixed in aa9b8076 |
