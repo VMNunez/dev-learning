@@ -159,12 +159,12 @@ public class TimeEntryService {
         User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = findOwnedEntry(id, user);
 
-        boolean callerKnowsItExists = timeEntry.getProject().getId().equals(request.getProjectId());
-        Project project = resolveProject(request.getProjectId(), callerKnowsItExists);
-
         if (timeEntry.getStatus() != EntryStatus.DRAFT) {
             throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
+
+        boolean callerKnowsItExists = timeEntry.getProject().getId().equals(request.getProjectId());
+        Project project = resolveProject(request.getProjectId(), callerKnowsItExists);
 
         validateEntryData(request.getDate(), request.getHours());
 
@@ -176,7 +176,7 @@ public class TimeEntryService {
         TimeEntry saved = timeEntryRepository.save(timeEntry);
         return toResponse(saved);
     }
-
+    
     @Transactional
     public TimeEntryResponse reopen(Long id) {
         User user = authenticatedUserProvider.currentUser();
