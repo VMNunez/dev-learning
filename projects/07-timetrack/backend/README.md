@@ -325,6 +325,12 @@ The three report queries round their aggregate in the query — `round(SUM(te.ho
 
 ---
 
+### A refusal about the resource is decided before a refusal about the body ✓
+
+`TimeEntryService.update` evaluates its DRAFT guard immediately after `findOwnedEntry`, before `resolveProject` reads the requested `projectId` — the order `submit`, `reopen` and `delete` already used. Reversed, a `PUT` on a non-DRAFT entry carrying an unknown project answered `404 "Project not found"` where §10 documents `409`, so the status a refusal produced depended on what the client happened to send and the caller corrected the wrong thing before seeing the real one. A guard on the loaded entity returns the same verdict whatever the body contains; one on the body does not, so the first is what makes the documented refusal the one the endpoint actually returns — and the query the refused call used to pay for is no longer issued.
+
+---
+
 ## Tradeoffs
 
 - JWT over session-based auth — stateless API requires no server memory per user; any instance can validate the token
