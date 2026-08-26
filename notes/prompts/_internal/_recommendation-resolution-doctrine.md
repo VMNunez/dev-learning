@@ -1024,6 +1024,22 @@ git, not who may author the value (`REC-073`). And **"the other cells are verbat
 verify cell by cell before leaning on it**: five of seven were, and one of the divergent two held a live
 forked rule that nothing had noticed.
 
+**Evidence whose value is recurrence needs a store that can be *counted*, not merely one it can be
+*recovered* from — and a rule breached repeatedly stops being a discipline lapse.** From `REC-168`, whose
+step 1 falsified its own row: the breaches it called sinkless were all recoverable from `git log -p` on
+the overwritten reports, so the deficiency was never storage. It was that the record is free prose spread
+over 181 commits with no normalised "which step" field, adjudicated by the most saturated context in the
+system, which is a store nothing can count from. **The recoverable/countable distinction is the test to
+apply to any proposed third sink**: ask what question the consumer must answer at the moment it reads,
+and whether the existing store answers it in one glance or one archaeology. The second half generalises
+past this row: a bar that classifies a broken clear rule as the executor's fault is right on the first
+occurrence and wrong forever after, because it is exactly what stops a repeat ascending to a fix — so any
+such clause needs a **count** above which the verdict flips to *the rule is mis-worded or mis-placed*, a
+floor for the ambiguous repeat and never a waiting period for the breach whose defect is plain the first
+time. Its corollary is `REC-054` (b)'s, reached from the other side: the threshold is also what keeps the
+new sink out of the refill loop, since a row that opens a `REC` on sight is the operational worklist the
+ledger's preamble forbids — evidence is promoted by the count, never by arrival.
+
 ### Row dispositions — `absence` and `contradiction`
 
 Two of the intake routes hand over a row that is deliberately only half-decided, and each names the
