@@ -37,3 +37,7 @@ Status: open
   orchestrator overruling a subagent verdict rather than by the vocabulary offering the right one. The
   previous report declined to propose this on the grounds that one run is not evidence. Two runs are.
   Prompt is 466 lines, inside the ~500-line budget, so the draft is an addition with nothing owed out.
+
+  cold reviewer: **reject** — it ruled the finding fails condition 3 (no run was blocked; the harm is the hypothetical run with less headroom) and condition 4 (step 2's `keep` already *is* the graded verdict, and `Action: audit` already routes the trim), and it caught a real defect in the draft: `keep + trim` named a per-entry "audit note" that the Required plan format does not list as a field. The finding therefore stays open with the reviewer's own cheaper form on record — tighten step 7's "substantive sections" to "**whole** substantive sections" rather than add a sixth vocabulary value. Nothing was applied to the prompt.
+
+  maps: **corrected** in 0a92412f, its own commit — `_system-map.md` §7's `notes/{topic}/{level}/en|es/*.md` row and `README.md`'s catalogue `Generates` cell both omitted that this prompt renames note pairs and repairs their inbound links; this run renamed 8 files and repaired 80 links across 21 files, including prompt-system machinery.
