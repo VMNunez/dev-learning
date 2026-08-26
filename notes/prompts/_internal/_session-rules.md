@@ -241,7 +241,13 @@ open.
     for depth, the first message was already wrong. Stated 2026-08-26 on the DRAFT-guard ordering task
     of project 07, where a `[Low]` line got a short simple layer with no request body and a technical
     layer with none of its four parts — *"necesito que hagas esto desde el inicio sin yo tener que
-    pedírtelo cada vez"*.
+    pedírtelo cada vez"*. Re-explained that same day in full contract shape — `## Archivo(s)
+    afectado(s)`, the three simple parts with the real request body and a `hoy → / correcto →`
+    block, the four technical parts, the three guidance modes — his verdict was *"me encantan y las
+    entiendo perfectamente... quiero que persista esta forma de explicar, y que cuando abramos una
+    nueva tarea, la forma de explicarlo sea así"*. **That message is the canonical example of the
+    pair for a backlog task**, alongside the `newPassword` one for the technical layer alone. This
+    is the opening form of every task, not a repair applied after he asks.
 - **Every code block is preceded by the file it touches — every block, every step, every level.** Not
   only the first message of a task: each intermediate step of a Level 2 or Level 3 walkthrough opens by
   naming the file (and the place inside it — "a new private method next to `validateSort`") and only
