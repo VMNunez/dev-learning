@@ -135,6 +135,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - Targeted `try` / `catch` / `finally` — catch only failures that can be handled or contextualised and use `finally` for cleanup that must run ✅ 07-timetrack
 - Try-with-resources — close `AutoCloseable` resources on both success and failure without duplicating cleanup code
 - Custom exception types — name a meaningful failure with a dedicated unchecked type so a caller or a boundary handler can react to that failure specifically instead of parsing a message string ✅ 07-timetrack
+- Constructor invariants — validate an object's required state where it is built, with `Objects.requireNonNull` or an explicit throw, so an instance that would break its consumers cannot exist; a check placed at the point of use instead leaves the invalid object constructible and pushes the failure to whichever caller notices first ✅ 07-timetrack — `InvalidPasswordException` requires its `field` in the constructor, because the exception handler that reads it feeds `Map.of`, which rejects a null key and would turn a 400 into a 500
 - Preserved exception causes — pass the original throwable into the wrapping exception so the trace still shows where the failure actually started
 - Do not swallow exceptions — an empty or over-broad catch hides the failure and leaves callers unable to distinguish success from corruption ✅ 07-timetrack
 - Reading stack traces — identify the exception type, message, cause chain, and first relevant application frame before changing code
