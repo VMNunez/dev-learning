@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- 2026-08-26 · **[Low]** `[backend]` — the DRAFT guard on `PUT /api/entries/{id}` precedes the project lookup, so a non-`DRAFT` entry answers 409 whatever the body carries → coverage: new `architecture/junior` bullet "Guard precedence" (authored + marked ✅ 07-timetrack); PLANNING §10 refusal-precedence rule + `/api/entries/{id}` row + §16 test row + §0; backend README Key patterns. Verified in Postman across 4 tests. `/notes-plan architecture junior` owed
 - [ ] **[Low]** `[backend]` — Close the two plan/code drifts §10 still carries on endpoints that are otherwise correct: the `PUT /api/projects/{id}` row documents only 200/404 but the code also returns 409 on a duplicate name (the Users `PUT` row documents its equivalent), and the `PUT /api/entries/{id}` row still names `CreateTimeEntryRequest` as the body although `UpdateTimeEntryRequest` was split out deliberately on 2026-07-29. Code is right in both; the plan is stale *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Route the duplicate-name race through the same contract as the check: catch `DataIntegrityViolationException` in `ProjectService.create`/`update` and rethrow `DuplicateResourceException("name", …)`. Today the check-then-insert path emits 409 **with** `fieldErrors.name` while the constraint path emits 409 **without** it, so a form binding `fieldErrors` shows a generic banner exactly when two requests interleave *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Unify the "does it already exist" idiom on `existsByX`. `ProjectService` uses `existsByName`; `UserService` materialises a whole row twice with `findByEmail(...).isPresent()`, and `DataInitializer` does the same. Add `boolean existsByEmail(String)` to `UserRepository` and keep `findByEmail` for the paths that need the entity *(Effort: Small)*
@@ -146,6 +145,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 #### Low
 
 - 2026-08-27 · **[Low]** `[backend]` — `ProjectResponse.active` is a primitive `boolean`, so the API cannot serialise a state the schema forbids → coverage architecture/junior (new bullet + ✅ 07-timetrack; java/junior already marked), backend README Key patterns, PLANNING §6 + §0
+
+- 2026-08-26 · **[Low]** `[backend]` — the DRAFT guard on `PUT /api/entries/{id}` precedes the project lookup, so a non-`DRAFT` entry answers 409 whatever the body carries → coverage: new `architecture/junior` bullet "Guard precedence" (authored + marked ✅ 07-timetrack); PLANNING §10 refusal-precedence rule + `/api/entries/{id}` row + §16 test row + §0; backend README Key patterns. Verified in Postman across 4 tests. `/notes-plan architecture junior` owed
 
 - 2026-08-26 · **[Low]** `[backend]` — `by-user` report ordering closed with `te.user.id ASC`, since `users.name` is not unique → coverage sql/junior already covered + marked; backend README reports section corrected; PLANNING §10 reports rule + per-endpoint table + §0
 
