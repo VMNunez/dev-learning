@@ -30,6 +30,20 @@ accessModifier returnType methodName(parameters) {
 
 Two words for the same slot, and Java people use them precisely, so learn the pair now. A **parameter** is the variable written in the declaration — `int a` above; it exists only inside the method. An **argument** is the actual value you hand over at the call site — the `3` in `add(3, 4)`. Parameters are the empty boxes; arguments are what you drop into them. Both words appear later in this file, and the compiler uses them in its error messages too.
 
+Those three parts are not decoration: together they are the **contract** the caller has to satisfy, and the compiler checks it call by call before your program ever runs. The parameter list fixes how many arguments you must supply and of what type; the name plus that list is what Java looks the method up by; and the return type decides what the call site is allowed to do with the result. Break any of the three and the file does not compile:
+
+```java
+public int add(int a, int b) { return a + b; }
+
+add(3, 4);              // ✅ two ints, exactly as declared
+add(3);                 // ❌ error: method add in class Calculator cannot be applied to given types;
+                        //    required: int,int   found: int   reason: actual and formal argument lists differ in length
+add("3", "4");          // ❌ error: incompatible types: String cannot be converted to int
+String s = add(3, 4);   // ❌ error: incompatible types: int cannot be converted to String
+```
+
+Read the four lines as one rule seen from four sides: a call compiles when the arguments match the parameter list in number and type, and when whatever you do with the result matches the return type. Nothing about the *values* is checked — only the declared types, which is why every one of these errors arrives before the program runs.
+
 > **The signature — the part of a method Java uses to identify it.** A method's **signature** is its name plus the type and order of its parameters: `add(int, int)`. That's it — the return type is *not* part of the signature, and neither is the access modifier. This sounds like trivia now, but it is the exact rule that decides which method Java calls when several share a name (§"Method overloading" below) and which method a subclass replaces (`08-inheritance-polymorphism.md`). Every time this file says "the signature", it means that name-plus-parameter-types fingerprint.
 
 The `return` statement does two things at once, and the second one is easy to miss. It hands the value back to whoever called the method — *and it exits the method immediately*, right there. Nothing after it runs; control jumps straight back to the line that made the call, which continues with the returned value in hand.
@@ -68,85 +82,17 @@ public static double calculateTax(double price, double rate) {
 }
 ```
 
----
-
-## Access modifiers
-
-> Docs: https://www.baeldung.com/java-access-modifiers → read: "Private", "Protected" and "Comparison"
-
-An access modifier controls *from where* a method can be called (or a field accessed). It is how Java protects a class's internal code and decides which parts are visible from the outside.
-
-> **The same four modifiers apply to methods, fields and classes alike.** Nothing in this section is method-specific: `private String name;` hides a field exactly the way `private ProjectResponse toResponse(...)` hides a method, and a `public class` vs a package-private `class Foo` (no modifier) decides which classes may even name the type. The only restriction is that a top-level class cannot be `private` or `protected` — there is no enclosing scope for those to mean anything in. Methods are just where you meet the modifiers first.
-
-Read the table as "who is allowed to call this method": each row is one modifier and the scope of callers it permits, from the most open (`public`) to the most closed (`private`).
-
-| Modifier | Who can access it |
-|----------|------------------|
-| `public` | Everyone |
-| `private` | Only inside the same class (subclasses cannot access it either) |
-| `protected` | Same class + subclasses + same package |
-| (none) | Same package only |
-
-In Spring Boot you will mostly use `public` for REST endpoints and service methods, and `private` for internal helper methods. This is exactly the split in the TimeTrack service you wrote — the five methods the controller calls are `public`, and the one that converts a `Project` entity into the DTO sent back over HTTP is `private`, because nobody outside the service has any business calling it:
-
-**File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/ProjectService.java`
-
-```java
-@Service
-public class ProjectService {
-    // public — the controller calls these
-    public ProjectResponse getById(Long id) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
-        return toResponse(project);
-    }
-
-    // private — an internal helper; the outside world does not know it exists
-    private ProjectResponse toResponse(Project project) {
-        ProjectResponse response = new ProjectResponse();
-        response.setId(project.getId());
-        response.setName(project.getName());
-        return response;
-    }
-}
-```
-
-> `ProjectResponse`, `@Service` and `ResourceNotFoundException` are Spring Boot / project classes, not Java keywords — you meet them properly in the Spring Boot notes. Read the snippet only for the `public` vs `private` split, which is pure Java.
-
-```java
-// protected — useful in inheritance (covered in 08-inheritance-polymorphism.md):
-// subclasses can access it, the outside world cannot
-public class Animal {
-    protected String sound;
-}
-
-public class Dog extends Animal {
-    public void bark() {
-        System.out.println(this.sound);  // ✓ — Dog extends Animal and can see sound
-    }
-}
-```
-
-The two failure messages are worth memorising, because IntelliJ shows you the string and not the rule. Calling a `private` method from outside its class:
-
-```java
-ProjectService service = new ProjectService(projectRepository);
-service.toResponse(project);
-// error: toResponse(Project) has private access in ProjectService
-```
-
-Note *when* that happens: at **compile time**. `private` is not a runtime guard that throws — the code containing the illegal call never becomes a `.class` file at all.
-
-> **`protected` has a sharper scope than "subclasses can access it".** Split the row in the table in two, because the two halves behave differently. **Same package:** any class in the package reaches a `protected` member, subclass or not — there it behaves exactly like the no-modifier default. **Different package:** only a subclass reaches it, and only *through its own inheritance* — meaning through `this` (or through a reference whose declared type is the subclass itself). A subclass in another package still cannot read the member off some *other* `Animal` it was handed:
->
-> ```java
-> // package p2 — Dog extends p1.Animal
-> public void bark() { System.out.println(this.sound); }             // ✓ its own inherited copy
-> public void peek(Animal other) { System.out.println(other.sound); } // ❌
-> // error: sound has protected access in Animal
-> ```
->
-> The reason is what `protected` is *for*: it opens the member to a subclass so the subclass can do its own job with its own state — not so it can inspect unrelated instances of the parent. Inside the same package Java relaxes this, on the assumption that classes shipped together are written by the same people and trust each other.
+> **Three things visible in that declaration are deliberately not this chapter's.** The first is
+> `public`. It is an **access modifier** — the word that says *who is allowed to call* the method — and
+> the full set (`public`, `private`, `protected`, and writing nothing at all) is settled in
+> [06-oop-classes.md](06-oop-classes.md), because visibility only becomes a real decision once a class
+> has state worth hiding. The second is `static`, a word you will see on some declarations below: it
+> changes whether you call the method on an object or on the class name, and it belongs to that same
+> chapter for the same reason. The third is what physically travels when you hand `int a` a value — a
+> copy, a reference, and why "Java is always pass-by-value" is the answer interviewers are listening
+> for; that is [05-memory-model.md](05-memory-model.md)'s subject, and it needs the stack and the heap
+> to be worth explaining. Until then, read `public` as "callable from anywhere" and `static` as "called
+> on the class name, not on an object". That is everything this chapter asks of them.
 
 ---
 
@@ -166,6 +112,8 @@ public List<Employee> findAll() { ... }          // returns a collection
 ```
 
 Read that list as three groups, not six lines. The first three return **primitives** — a raw value gets copied back to the caller. The next two return **objects** (`Employee`, `List<Employee>`) — and what travels back is not the object but a *reference* to it, the same value-vs-reference split you met in [01-variables-types.md](01-variables-types.md): the caller ends up holding an arrow that points at the very same object the method was working on, never a copy of it. `void` returns nothing at all, which is a category of its own.
+
+> **What a `void` method actually gives back is control, and nothing else.** It is worth being precise, because "returns nothing" sounds like it returns some empty thing. There is no value at all — not `null`, not an empty object — so the call is a *statement*, never an expression you can read a value out of. `printName("Ana");` is a complete line; `String s = printName("Ana");` does not compile, and the compiler says `error: incompatible types: void cannot be converted to String`. What does come back is the one thing every call returns: the flow of execution, which resumes on the line after the call. That is also why a `void` method may still end early with a bare `return;` — the statement you met in [03-control-flow.md](03-control-flow.md) — since there is a jump to perform even when there is no value to carry: `return;` hands control back immediately, and writing `return something;` there fails with `error: incompatible types: unexpected return value`.
 
 > **Returning an object hands out a live arrow, and that has a consequence.** If `getName()` returns the `String` field, the caller cannot hurt you — `String` is immutable, so there is nothing to change. But if a method returns the internal `List` field, the caller can now call `.add()` on your object's own list from the outside, behind your back. The fix (a *defensive copy* — returning `new ArrayList<>(this.items)` instead) belongs with encapsulation and is covered in [06-oop-classes.md](06-oop-classes.md); flag it now so the "returns a collection" line above doesn't read as harmless.
 
@@ -230,74 +178,6 @@ public ResponseEntity<Void> delete(@PathVariable Long id){
     return ResponseEntity.noContent().build();  // 204, no body
 }
 ```
-
----
-
-## Static methods
-
-> Docs: https://www.baeldung.com/java-static → read: "The static Methods (Or Class Methods)" and "Understanding the 'Non-static variable' Error"
-
-To understand `static`, you first need the difference between a **class** and an **object** (also called an instance). The class is the mould — the definition of what the objects look like. The objects are the concrete copies stamped out from that mould.
-
-A normal (instance) method belongs to each individual object. Every `Employee` you create has its own `getName()`, because it returns the name of *that* specific employee — it needs the object to do its job.
-
-A `static` method belongs to the **class itself**, not to any individual object. You don't need to create an object to call it — you call it directly on the class name:
-
-```java
-public class MathUtils {
-    public static int square(int n) {
-        return n * n;
-    }
-}
-
-// No need to create a MathUtils to use it
-int result = MathUtils.square(5);   // 25
-```
-
-When does `static` make sense? When the method performs an operation that does not depend on any data held by a particular object — only on the arguments you pass it. `MathUtils.square(5)` doesn't need to know anything about any `Employee` or any other object's state.
-
-Here is the picture that makes the rest of this section obvious, and it uses the `Employee` you have been seeing since the previous sections. Give it one static method — `Employee.count()`, which returns how many employees have been created so far. That number belongs to the *class* as a whole, not to Ana or to Luis individually, which is precisely why it is `static`. The class is loaded into memory once; every object stamped from it is a separate box with its own field values. A `static` method lives up in the class box, next to nothing that belongs to any particular object:
-
-```
-   ┌──────────────────────────────────────────────────┐
-   │  class Employee                                  │
-   │     static count()   ← ONE copy, no object needed│
-   └──────────────────────────────────────────────────┘
-              │ stamps out            │ stamps out
-              ▼                       ▼
-   ┌──────────────────────┐  ┌──────────────────────┐
-   │ Employee object #1   │  │ Employee object #2   │
-   │   name = "Ana"       │  │   name = "Luis"      │
-   │   getName()  ← this  │  │   getName()  ← this  │
-   └──────────────────────┘  └──────────────────────┘
-```
-
-That layout is the whole mechanism, and it explains the error you are about to hit. An instance method is always called *on* an object (`ana.getName()`), so Java quietly hands it a hidden reference to that object, named `this` — which is how `getName()` knows whose name to return. A `static` method is called on the class (`Employee.count()`), and there is no object in that call at all, so **there is no `this` to hand over**. Any line inside it that reads an instance field would be asking "the name of *which* employee?" with no answer available. The compiler stops it:
-
-```java
-public class Employee {
-    private String name = "Ana";
-
-    public static void print() {
-        System.out.println(name);   // ❌
-    }
-}
-// error: non-static variable name cannot be referenced from a static context
-```
-
-The fix is one of two things, and choosing between them is the real decision: either the method genuinely needs an employee, in which case drop `static` and call it on an object — or it does not, in which case pass what it needs in as a parameter (`print(String name)`).
-
-> **The rule only runs one way.** A `static` method cannot reach instance members, but an *instance* method can freely call `static` ones — `getName()` may call `Employee.count()` without any trouble. The asymmetry follows from the diagram: going from an object up to the class box is always possible, since the object was stamped from it. Going the other way means picking one object out of thousands, and nothing in a static call says which.
-
-> **Why `main` is `static` — the question you have carried since [00-intro-java.md](00-intro-java.md).** `public static void main(String[] args)` is the method the JVM calls to start your program. Now ask what the JVM would have to do if `main` were an instance method: it would have to create an object of your class first, which means picking a constructor and inventing arguments for it — with your program not yet running to tell it which. `static` removes the problem entirely. The class is loaded, and `main` can be invoked directly on it **before a single object exists**. Everything else in your program is created from inside `main`, downstream of that first call. In the TimeTrack backend that entry point is `TimetrackApplication.main(...)`, and it does exactly this: `SpringApplication.run(...)` from a static context builds the entire object graph.
-
-You have already used static methods without noticing — `Integer.parseInt("42")` and `String.valueOf(42)` are static: you call them on the class `Integer` or `String`, not on a specific object. Remember that wrapper classes (`Integer`, `Long`, `Boolean`…) are real Java classes. That is exactly what distinguishes them from a primitive `int` — they are objects, they have methods, and they can be `null`. The name "wrapper" is literal: they wrap a primitive value inside an object.
-
-> **In Spring Boot:** your service and repository methods are instance methods — you call them on objects Spring injects (`projectService.getAll()`, `projectRepository.save(project)`). They need the object because they hold state Spring put there: the repository, the database connection, the configuration. `static` shows up in the genuinely stateless helper classes. In TimeTrack that is `TimeEntrySpecifications`, whose methods are all `public static Specification<TimeEntry> hasUserId(Long userId)` and friends — nothing is stored, the answer depends only on the argument, so there is nothing an object would add.
->
-> **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/repository/TimeEntrySpecifications.java`
->
-> The counter-example in the same project is the sharper lesson. `JwtUtil` *sounds* like a utility class, but `generateToken(String username)` is an **instance** method — because the class holds injected configuration (`@Value("${app.jwt.secret}") private String secret;`). The moment a helper needs a value from `application.properties`, it needs an object for Spring to inject that value into, and `static` is off the table. "Utility" in the name is not what decides it; holding state is.
 
 ---
 
@@ -394,11 +274,32 @@ sum();                       // 0 — numbers.length == 0
 
 > **Why an empty array instead of `null`?** Because the whole point of varargs is that the method body should not care how it was called. If a zero-argument call produced `null`, every varargs method would have to open with a defensive `if (numbers == null)` before it could loop, and forgetting it would mean a `NullPointerException` on the *easiest* call of all. Handing over an empty array makes the no-arguments case the same code path as every other case. (You *can* still force a `null` in by passing one explicitly — `sum((int[]) null)` — but that is you overriding the guarantee, not Java breaking it.)
 
+### The same mechanism in the standard library
+
+> 📖 Docs: [Oracle Docs — Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Arbitrary Number of Arguments" — three paragraphs, and the `printf` signature at the end is the one you already use every day.
+
+You have been calling varargs methods since your first `System.out.printf`, so it is worth opening the two you will meet most and seeing the `...` in their real declarations. Both are one mechanism, not two conventions that happen to look alike:
+
+```java
+public static String format(String format, Object... args)   // java.lang.String
+static <E> List<E> of(E... elements)                          // java.util.List
+```
+
+`String.format("Hi %s, you have %d messages", name, count)` compiles into exactly one call with two arguments: the format `String`, and an `Object[]` of length 2 that Java built at the call site. `List.of("a", "b", "c")` is the same move — the three strings are boxed into an array and handed over as one parameter — which is the whole reason both accept "any number" without declaring hundreds of versions.
+
+> **`List` and the `<E>` are not this chapter's, and you can read the line without them.** `List.of` appears here purely as a varargs declaration you will recognise. What a `List` actually is arrives in [10-collections.md](10-collections.md), and the `<E>` — a *type parameter*, the placeholder that lets one declaration work for `String`, `Integer` or anything else — is [09-generics.md](09-generics.md)'s. For now read `static <E> List<E> of(E... elements)` as "hand it any number of items of one type and get a list of them back".
+
+There is one detail in `List.of` that ties this section back to the last one, and it is the kind of thing that looks like a mistake until you know the resolution rules. Java declares `of` **twelve** times: eleven fixed-arity versions from `of()` up to `of(E e1, ..., E e10)`, *plus* the varargs `of(E... elements)`. Why bother, when the varargs one alone would accept every call?
+
+Because of pass 3. Overload resolution only reaches varargs after passes 1 and 2 have failed, so `List.of("a", "b")` matches the fixed two-parameter `of(E e1, E e2)` in pass 1 and stops there — no array is ever allocated. Only `List.of` with eleven or more elements falls through to the varargs version and pays for the array. The eleven extra declarations exist to make the common short calls free, and the resolution order from the previous section is what makes that optimisation invisible to you at the call site.
+
+> **This is why `sum(scores)` and `sum(1, 2, 3)` can both compile.** The array-passing shortcut earlier in this section is the same fact seen from the other end: pass 3 does not *convert* your arguments into an array so much as *accept* one, and if you already hold an `int[]` there is nothing left to build. One mechanism, two call shapes.
+
 ---
 
 ## Calling methods
 
-> Docs: https://www.baeldung.com/java-pass-by-value-or-pass-by-reference → read: "Parameter Passing in Java" — both "Passing Primitive Types" and "Passing Object References"
+> 📖 Docs: [Oracle Docs — Defining Methods](https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html) → read: "Naming a Method" and the two paragraphs above it on calling — then jump to [Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Parameter Names", which is the shadowing rule behind every `this.name = name;` you are about to see.
 
 Before looking at how a method is called, let's put everything so far into one complete example — first the class with its methods, then how we use them from the outside:
 
@@ -432,7 +333,7 @@ public class Calculator {
 }
 ```
 
-Each method is now the right kind for what it does, and that is the point of the example: `add()` touches `this.name` and `this.history`, so it *must* be an instance method; `square()` touches nothing but its argument, so `static` is correct. Deciding this is not style — it is the mechanism from the previous section applied.
+Each method is now the right kind for what it does, and that is the point of the example: `add()` touches `this.name` and `this.history`, so it *must* be called on a particular calculator; `square()` touches nothing but its argument, so it is declared `static` and needs no object at all. What `static` actually means, and why that split is a design decision rather than a matter of taste, is settled in [06-oop-classes.md](06-oop-classes.md) — here it is only marking which of the two call shapes below each method takes.
 
 > `List<String>` and `ArrayList` are Java's growable list — covered in full in [10-collections.md](10-collections.md). For now read it as "an array that can grow", and `history.add(...)` as "append one item to the end".
 
@@ -456,76 +357,231 @@ String result2 = "  hello  "
 
 That last one is **method chaining**, and it works for a specific reason rather than by syntax magic. Each of those `String` methods returns a *new* `String` — `String` is immutable, so `trim()` cannot edit `"  hello  "` in place and instead produces `"hello"` as a separate object (the mechanism is worked through in [01-variables-types.md](01-variables-types.md): every "modification" of a String allocates a new one). Because the expression `"  hello  ".trim()` therefore *is* a `String`, you can put `.toUpperCase()` straight after it, and so on down the chain. Chaining is nothing more than calling a method on the value the previous call returned; it reads as one operation but is four calls creating four objects. Any method that returns an object can be chained the same way — this is exactly how `ResponseEntity.noContent().build()` above worked.
 
-### How arguments are actually passed — Java is always pass-by-value
+---
 
-Here is the question every reader has by this point, and it is the one interviewers ask precisely because most candidates get it half-right: *if I change a parameter inside a method, does the caller see it?* The honest answer is "it depends on what you mean by change" — and once you see the mechanism, it stops being a coin flip.
+## Packages and imports
 
-The rule, in one line: **Java copies the argument into the parameter. Always. For a primitive it copies the value; for an object it copies the *reference* — the arrow pointing at the object — never the object itself.** There is no pass-by-reference in Java, for any type.
+> 📖 Docs: [Oracle Docs — Creating and Using Packages](https://docs.oracle.com/javase/tutorial/java/package/packages.html) → read: "Creating a Package" — what a package is and why the reversed-domain naming exists.
+> 📖 Docs: [Oracle Docs — Using Package Members](https://docs.oracle.com/javase/tutorial/java/package/usepkgs.html) → read: "Referring to a Package Member by Its Qualified Name", "Importing a Package Member" and "Name Ambiguities" — the three cases below, in the compiler's own wording.
 
-Start with a primitive, where nothing is surprising:
+A method has a name. So does the class holding it. Once a project grows past a handful of files those names start colliding: your `User` and the `User` some library ships are both called `User`, and Java has to be able to tell one from the other or it cannot compile a single call. That is the problem **packages** solve, and it is why every real Java file opens with a line you have been ignoring so far.
+
+A package is a **namespace** — a prefix that turns a short, reusable name into a globally unique one. You declare it on the first line of the file:
 
 ```java
-static void tryToChange(int hours) {
-    hours = 999;              // edits this method's own copy
+package com.victor.timetrack.service;
+
+public class ProjectService {
+    public ProjectResponse getById(Long id) { ... }
 }
-
-int worked = 8;
-tryToChange(worked);
-System.out.println(worked);   // 8 — not 999
 ```
 
-`hours` is a brand-new variable that briefly held a copy of `8`. Assigning to it overwrote the copy. The caller's `worked` was never in the room.
+That class's real, unambiguous name is now `com.victor.timetrack.service.ProjectService`. Java calls that the **fully qualified name**: the package, a dot, and the class's own name. The short `ProjectService` is its **simple name**. Both refer to the same class; the fully qualified one is what Java actually works with internally.
 
-Objects are where the confusion lives, so split what a method can do with one into the two cases — because they give **opposite** answers:
+> **The `com.victor` prefix is an internet domain written backwards, and that convention has one job.** Packages are only useful if two organisations never accidentally choose the same one, so the convention is to start from a domain you control and reverse it: `victor.com` becomes `com.victor`. Nothing enforces it — the compiler accepts `package banana;` without complaint — but every library you will ever add follows it, which is why you read `org.springframework.stereotype`, `com.fasterxml.jackson.databind` and `java.util`. The reversal puts the most general part first so the whole tree sorts sensibly.
 
-```java
-// The object we pass around: a Project with a mutable name
-Project project = new Project();
-project.setName("TimeTrack");
+### The package line and the folder structure are one fact written twice
+
+The package declaration is not free-form: the folders on disk must mirror it, one folder per dot. This is what the TimeTrack backend actually looks like, and you can read each package name straight off its path:
+
+```
+src/main/java/
+  └── com/
+      └── victor/
+          └── timetrack/
+              ├── controller/    → package com.victor.timetrack.controller;
+              ├── service/       → package com.victor.timetrack.service;
+              ├── model/         → package com.victor.timetrack.model;
+              ├── repository/    → package com.victor.timetrack.repository;
+              ├── exception/     → package com.victor.timetrack.exception;
+              ├── dto/
+              │   ├── request/   → package com.victor.timetrack.dto.request;
+              │   └── response/  → package com.victor.timetrack.dto.response;
+              └── config/, security/, util/   → same rule, one package each
 ```
 
+**File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/ProjectService.java`
+
+Read the path and the declaration together: everything after `src/main/java/` **is** the package name, with `/` swapped for `.`. Note also that `dto.request` is not a "sub-package" of `dto` in any technical sense — Java has no nesting relationship between packages, and `com.victor.timetrack.dto.request` gets no special access to `com.victor.timetrack.dto`. The dots only look like a hierarchy; to the compiler each package is a flat, independent name that happens to share a prefix with its neighbours.
+
+That path-equals-name rule is the mechanism behind an error you will hit the first time you drag a file between folders in IntelliJ and fix the `package` line by hand:
+
 ```java
-// ✅ MUTATING the object — the caller SEES it
-static void rename(Project p) {
-    p.setName("Renamed");     // follows the arrow, edits the one shared object
+// the file now sits in .../timetrack/service/ but its first line still says:
+package com.victor.timetrack.controller;
+```
+
+Two different tools complain, at two different moments, and knowing which is which saves you the hunt. IntelliJ flags the file itself straight away, with `Package name 'com.victor.timetrack.controller' does not correspond to the file path 'com.victor.timetrack.service'`. The compiler says nothing about that line — it happens on the *other* side, in every file that tried to use the class under the name its folder implies: `error: cannot find symbol` on the type, or `error: package com.victor.timetrack.service does not exist` on the import. The class did not disappear; it is simply not at the address everyone is looking it up by.
+
+> **Why does Java care where the file physically sits?** Because that is how it finds classes. When your code names `com.victor.timetrack.model.Project`, the compiler does not scan every file looking for a matching class — it converts the name into a path, `com/victor/timetrack/model/Project.class`, and looks exactly there. The lookup is a direct address translation, which is why it stays instant in a project with ten thousand classes, and why a file in the wrong folder is not "hard to find" but simply invisible. IntelliJ's **Refactor → Move** (`F6`) exists precisely to move the file and rewrite the line in one step; moving it in the file explorer and patching the line afterwards is how the mismatch happens in the first place.
+
+### Imports — a nickname, resolved at compile time
+
+Fully qualified names are correct and unreadable. You *can* write code with them, and it compiles:
+
+```java
+// ✅ legal, and nobody writes this
+com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
+```
+
+An **import** lets you use the simple name instead. It goes after the `package` line and before the class, and this is the real opening of the TimeTrack service you have already read twice in this file:
+
+```java
+package com.victor.timetrack.service;
+
+import com.victor.timetrack.dto.response.ProjectResponse;
+import com.victor.timetrack.model.Project;
+import com.victor.timetrack.repository.ProjectRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProjectService {
+    public List<ProjectResponse> getAll() { ... }   // ✅ simple names throughout
 }
-
-rename(project);
-System.out.println(project.getName());   // "Renamed"
 ```
+
+**File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/ProjectService.java`
+
+> **An import does not copy anything into your file, and it costs nothing at runtime.** This is the single most common misreading of the keyword, and it comes straight from JavaScript, where `import { x } from './y'` genuinely pulls a module in and the bundler tracks every one. Java's `import` is pure bookkeeping for the compiler: it says "in this file, when I write `Project`, I mean `com.victor.timetrack.model.Project`". By the time the file has become a `.class`, every name inside it has already been rewritten to its fully qualified form and the import line no longer exists. So an unused import is untidy, never slow; `import java.util.*;` does not "load a whole package"; and deleting an import can never change what your program does at runtime — only whether it compiles.
+
+Three cases need no import at all, and knowing which is why `String` has never asked you for one:
+
+| Case | Example | Why no import is needed |
+|---|---|---|
+| Classes in `java.lang` | `String`, `Integer`, `System`, `Object`, `Math` | Java imports `java.lang.*` into every file automatically |
+| Classes in the **same package** | `ProjectService` using `AuthenticatedUserProvider` | Same namespace, so the simple name is already unambiguous |
+| A fully qualified use | `java.sql.Date now = ...` | You spelled the whole name, so there is nothing to translate |
+
+Read the table as three different reasons a simple name can already be unambiguous — they are not ranked, and you do not choose between them. The first row is the one to memorise: `java.lang` holds the classes no program can avoid, so the language hands them over for free. That is the entire reason `System.out.println` works in a file with no imports, and why `Integer.parseInt` back in [01-variables-types.md](01-variables-types.md) never needed one either. The second row is why `ProjectService` imports `Project` and `ProjectRepository` but never imports `AuthenticatedUserProvider` — that class lives in `com.victor.timetrack.service` as well.
+
+### When two classes share a simple name
+
+Sooner or later you need both `java.util.Date` and `java.sql.Date` in one file. Importing both is not a judgement call the compiler makes for you — it refuses outright:
 
 ```java
-// ❌ REASSIGNING the parameter — the caller does NOT see it
-static void replace(Project p) {
-    p = new Project();        // re-aims only THIS method's copy of the arrow
-    p.setName("Renamed");
+import java.util.Date;
+import java.sql.Date;   // ❌
+// error: a type with the same simple name is already defined by the single-type-import of Date
+```
+
+Inside one file, one simple name means exactly one class, always. The fix is to import whichever you use most and spell the other one out in full at the two or three places it appears:
+
+```java
+import java.util.Date;
+
+Date utilDate = new Date();                          // ✅ the imported one
+java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no ambiguity
+```
+
+> **`import java.util.*;` is not a shortcut worth taking, and this rule is why.** A wildcard import brings in every class of a package under its simple name, so adding one is quietly volunteering for a clash with any other package imported the same way — and the clash can appear the day a *library upgrade* adds a class you never wrote, in code you never touched. IntelliJ writes explicit single-type imports by default and only collapses them past a threshold you can raise (`Settings → Editor → Code Style → Java → Imports`). Keep them explicit: the import block then doubles as an honest summary of what the file depends on, which is the first thing you read when you open an unfamiliar class.
+
+---
+
+## `null`, `NullPointerException`, and where to reject a missing argument
+
+> 📖 Docs: [Oracle Docs — `java.lang.NullPointerException`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/NullPointerException.html) → read: the "Implementation Note" at the bottom — it is two sentences, and it is the official statement that the modern message is computed for you rather than written by hand.
+> 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → read: the `requireNonNull(T obj, String message)` entry — "designed primarily for doing parameter validation in methods", which is exactly the use below.
+> 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read: the opening sections on where null values come from and on validating method arguments.
+
+[03-control-flow.md](03-control-flow.md) left you with the null guard — the plain `if (name != null)` that stops a crash — and deferred one question to this chapter, because it is not a question about `if` at all: **where** in a program should a missing value be rejected? That is a question about the contract between a method and its caller, which is what this whole chapter has been about, so it belongs here.
+
+`null` means "this reference points at no object". It is a legal value for any reference type — `String`, `Project`, `Integer`, an array — and never for a primitive; `int x = null;` does not compile, because an `int` variable holds a number directly and there is no "points at nothing" state for a number to be in. The failure happens the moment you **dereference** a `null` reference — that is, follow the arrow to reach something on the other end: calling a method on it, reading a field of it, indexing into it as an array. There is nothing at the other end, so the JVM stops the thread and throws a `NullPointerException`.
+
+```java
+String name = null;
+name.toUpperCase();   // ❌ NullPointerException at runtime — the file compiles fine
+```
+
+> **Why is this a runtime failure and not a compiler error?** Because the compiler tracks *types*, not *values*. It knows `name` is a `String`, and `String` has a `toUpperCase()`, so the call is type-correct and the file compiles. What it cannot know is which of the many paths through your program actually reaches that line, and with what value in the variable — `name` might be a database result, a request body field, a lookup that found nothing. Nullness is a property of the run, not of the type, so it is checked when the arrow is actually followed. And that is why nothing in the syntax warns you: the dangerous line looks exactly like the safe one.
+
+### The real problem: the crash names the wrong line
+
+The exception itself is never the hard part. The hard part is that a `null` travels silently, and the crash happens wherever it is first *used* — which can be several methods away from wherever it was first *accepted*. Here is that gap, made small enough to see all at once:
+
+```java
+public class Report {
+    static String slug(String title) {
+        return title.toLowerCase().replace(' ', '-');   // line 3 — the crash lands here
+    }
+    static String buildPage(String title) {
+        return "<h1>" + slug(title) + "</h1>";          // line 6 — passed it along
+    }
+    public static void main(String[] args) {
+        String titleFromRequest = null;                 // line 9 — the real culprit
+        System.out.println(buildPage(titleFromRequest)); // line 10
+    }
 }
-
-replace(project);
-System.out.println(project.getName());   // "TimeTrack" — unchanged
 ```
 
-Both methods look like they "change the project". Draw what each one does to the arrows and the difference becomes mechanical. On entry, the copy means two arrows point at one object:
+Run it and Java tells you this, verbatim:
 
 ```
-caller's `project` ──┐
-                     ├──►  [ Project: name="TimeTrack" ]
-method's  `p`      ──┘
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.toLowerCase()" because "title" is null
+	at Report.slug(Report.java:3)
+	at Report.buildPage(Report.java:6)
+	at Report.main(Report.java:10)
 ```
 
-`rename` follows the arrow and edits the object they share, so both names see the new value. `replace` builds a second object and re-aims **only** the method's own arrow at it — the caller's arrow never moved, and the new object is discarded the moment the method ends:
+Read the two halves separately, because they answer different questions. The **message** answers *what went wrong*: `Cannot invoke "String.toLowerCase()" because "title" is null` — the method you tried to call, and the exact expression that was `null`. The **stack trace** below it answers *where you were*: the list of methods that were in progress, most recent first, so `slug` was running, called from `buildPage`, called from `main`.
+
+Now notice the trap. The trace's top line is `Report.java:3`, and that line is not wrong in any way — `slug` is a fine method that was handed a bad value. The mistake was made at line 9, two frames further down, and nothing in the report points at it. On a real backend those three frames are more like fifteen, spread over a controller, two services and a mapper, and the file the trace opens is a file you had no reason to suspect.
+
+> **The message is computed for you, and it is younger than most tutorials.** Before Java 14 that first line read exactly `java.lang.NullPointerException` and nothing else — no method name, no variable — so a line with three chained calls gave you no way to know which link was null. Modern Java walks the bytecode of the failing instruction to reconstruct a description of the expression that was `null`, which is why you now get `because "title" is null` for free. One wrinkle worth knowing: the name it prints depends on what the compiler recorded. With the debug information IntelliJ and Maven include by default you get the real name, `"title"`. Compiled without it, the same failure prints `because "<parameter1>" is null` — same mechanism, less to go on.
+
+### The fix: reject the missing value at the boundary that requires it
+
+The lesson is not "add more null checks". Sprinkling `if (x != null)` down every method hides the bug instead of reporting it, and produces the second-worst outcome: a page that renders `<h1>null</h1>` and nobody notices for a month.
+
+The lesson is **where**. A method that cannot do its job without an argument should say so *on entry*, before doing anything else — this is the **guard clause** shape you already met under §"Return types", now applied to the method's contract rather than to its control flow. The right boundary is the outermost method that declares the value as required. In the example that is `buildPage`, the public entry point of this little feature: it is the one whose contract says "give me a title and I give you a page".
+
+```java
+import java.util.Objects;
+
+static String buildPage(String title) {
+    Objects.requireNonNull(title, "title must not be null");   // ✅ the boundary
+    return "<h1>" + slug(title) + "</h1>";
+}
+```
+
+Run it again with `null` and the report changes completely:
 
 ```
-caller's `project` ──────►  [ Project: name="TimeTrack" ]   ← caller still sees this
-
-method's  `p`      ──────►  [ Project: name="Renamed"   ]   ← thrown away on return
+Exception in thread "main" java.lang.NullPointerException: title must not be null
+	at java.base/java.util.Objects.requireNonNull(Objects.java:246)
+	at Report2.buildPage(Report2.java:8)
+	at Report2.main(Report2.java:13)
 ```
 
-> **The single test that answers every version of this question.** Ask: *did I follow the arrow, or re-aim it?* Calling a method on the parameter or touching its fields (`p.setName(...)`, `list.add(...)`) follows the arrow → the caller **sees** it. Assigning to the parameter itself (`p = ...`) re-aims the copy → the caller **does not**. Nothing else matters, and it holds for every object type.
+Two things improved, and both matter more than they look. The message is now a sentence *you* wrote, naming the parameter that was missing instead of describing a method call that happens to have failed. And the trace is three lines long, with `Report2.main(Report2.java:13)` — the actual culprit, the line that passed the `null` — sitting right there as the second frame. You are not debugging any more; you are reading.
 
-> **A `String` parameter can never surprise you.** `String` is immutable — there is no `setName()`-equivalent on it — so the "mutate" case does not exist and only reassignment is possible, which is invisible to the caller. That is why passing a `String` feels like passing a primitive even though it is an object. Arrays, by contrast, *are* objects with mutable slots: `arr[0] = 99` inside a method is a mutation, and the caller sees it.
+> **`Objects.requireNonNull(x, "…")` is declared scaffolding in this chapter, and here is exactly what it does.** It is an ordinary `static` method in `java.util.Objects` that takes your value and a message. If the value is not `null` it hands it straight back and execution carries on as though the line were not there; if it *is* `null` it raises the `NullPointerException` with your message as its text. That is the whole behaviour, and it is all you need to read and write the line. What "raise" means mechanically — the `throw` keyword, what an exception object is, how it unwinds the stack, and when to catch one — is [11-exceptions.md](11-exceptions.md)'s subject and is not assumed here. Use the one-line form for now; the chapter that owns the machinery will come back for it.
 
-> **Where this goes next.** Two questions are deliberately left open here because they are memory questions, not method questions: *why* copy the arrow rather than the whole object, and *where* the copied arrow and the shared object physically sit. [05-memory-model.md](05-memory-model.md) picks up this exact topic and answers both by drawing the split between the stack and the heap — short version for now: a reference is one small fixed-size value no matter how big the object is, so copying it is free. Everything above stays true there; it just gains an address. That file is also where the interview framing lives, so if you are revising for one, read it there rather than re-deriving it here.
+> **Why prefer it over `if (title == null) { ... }`?** Nothing is wrong with the `if` — the two are equivalent and Baeldung shows both. `requireNonNull` wins on three small counts that add up across a codebase: it is one line instead of three, so a constructor validating four parameters stays readable; the name states the *intent* ("this is required") where an `if` only states a mechanism; and it **returns the value**, which lets you validate and assign in one expression — `this.field = Objects.requireNonNull(field, "…");`. That assigning form is the one you will meet most often, because the sharpest boundary in real code is the one where an object is built. TimeTrack uses it exactly there:
+
+**File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/exception/InvalidPasswordException.java`
+
+```java
+public class InvalidPasswordException extends RuntimeException {
+    private final String field;
+
+    public InvalidPasswordException(String field, String message) {
+        super(message);
+        this.field = Objects.requireNonNull(field, "field must not be null");
+    }
+}
+```
+
+> **That snippet uses a constructor, and constructors are [06-oop-classes.md](06-oop-classes.md)'s.** Read it here only for *where the check sits*: on the way in, before the value is stored. Why the object-building boundary is the strongest one available — an object that could never be valid is refused before it exists, instead of failing later in whichever consumer happens to touch it first — is a rule about class invariants, and that is the chapter that states it. `extends RuntimeException` is [11-exceptions.md](11-exceptions.md)'s.
+
+### The three rules worth carrying out of this section
+
+Read these as one decision made in three places, not as a checklist:
+
+1. **Validate what you require, at the outermost method that requires it.** One check at the boundary beats five defensive checks downstream, because the downstream methods can then be written as if their arguments are always present — which is what makes `slug(String title)` above a two-line method instead of a four-line one.
+2. **Do not guard a value that is genuinely optional.** Absence is sometimes the correct answer — a middle name, a description nobody filled in — and rejecting it turns valid input into a crash. When absence is a normal outcome rather than a mistake, the tool is `Optional<T>` rather than a guard, and it is covered in [12-streams-lambdas.md](12-streams-lambdas.md).
+3. **Never return `null` from a method to mean "nothing found".** You are then handing the caller the same trap this section is about, and the crash will name their line, not yours. Return an empty collection, an `Optional`, or reject the call — anything that cannot be dereferenced by accident.
 
 ---
 
@@ -543,4 +599,6 @@ method's  `p`      ──────►  [ Project: name="Renamed"   ]   ← th
 >
 > **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
 
-Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors and encapsulation, is the whole subject of the next note. Continue in [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you just saw becomes a proper class with state.
+Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors, `static`, the access modifiers this chapter kept deferring, and encapsulation, is the whole subject of [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you saw above becomes a proper class with state.
+
+But one file comes first, and it answers a question this chapter deliberately left standing. You now know the full **contract** of a call: the signature the caller has to match, which overload wins when several could, what a `Type...` parameter really receives, the name the class is reached by, and where a required argument must be rejected. What you do not know is what physically *crosses* that boundary when the call happens. When you write `buildPage(title)`, is the `String` copied? Is `Project` copied? Where does the guarded value actually live while `slug` is running, and how does Java know which line to come back to when it returns — the same stack trace you just read three times in the `null` section? [05-memory-model.md](05-memory-model.md) opens the method boundary and draws it: the stack and the heap, what a reference is, what gets copied into a parameter and what does not, and why "Java is always pass-by-value" is the sentence that settles every version of that argument.

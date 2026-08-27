@@ -15,6 +15,7 @@ Existing sections that carry no assigned coverage bullet are **preserved** unles
 Status: refined
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -209,7 +210,7 @@ Handoff: After Victor can control statement execution, entry 04 packages that be
 
 ## 04 — Methods
 
-Status: pending
+Status: complete
 
 Studied: pending
 Pending study: none
@@ -242,11 +243,11 @@ Must answer:
 
 Coverage concepts:
 
-- [ ] Method signatures, parameters, and return values — read what a method accepts, what it returns, and which overload a call can match
-- [ ] Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
-- [ ] Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
-- [ ] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
-- [ ] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
+- [x] Method signatures, parameters, and return values — read what a method accepts, what it returns, and which overload a call can match
+- [x] Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
+- [x] Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
+- [x] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
+- [x] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
 
 Audit note: `04-methods.md` currently carries three sections that teach bullets this plan assigns elsewhere — `### How arguments are actually passed — Java is always pass-by-value` belongs to entry 05, and `## Access modifiers` and `## Static methods` belong to entry 06. All three are consolidated into their owning chapters; this file keeps at most a marked forward reference. `03-control-flow.md`'s `## Null checks` section also teaches this entry's `null` / `NullPointerException` bullet one chapter early; it consolidates here, and entry 03 keeps at most a marked forward reference.
 
@@ -331,7 +332,7 @@ Must answer:
 - What does each use of `final` prevent, when must a final field be assigned, and why does a final reference still not make its object immutable?
 - If a record's components are final, why can the object it holds still be modified from outside?
 - When is a record the right choice, what exactly does Java generate for its components, and why does defensively **copying** a mutable component in a compact constructor stay a middle-level concern even though **validating** a required component does not?
-- A record generates `hashCode` as well as `equals` — what is a hash code at the level this chapter needs, and why does what it is *for* have to wait until entry 10 introduces hash-based collections?
+- A record generates `hashCode` as well as `equals` — what is a hash code at the level this chapter needs, and why does what it is _for_ have to wait until entry 10 introduces hash-based collections?
 - Why is `==` wrong for comparing two `String` values that were built at runtime, when it appears to work for two literals?
 - Why does `Integer` `==` seem to work for small numbers and then fail for large ones?
 - What does `Objects.equals(a, b)` do that `a.equals(b)` cannot, and which of the two arguments was the dangerous one?
@@ -624,7 +625,6 @@ Coverage concepts:
 - [ ] Reading stack traces — identify the exception type, message, cause chain, and first relevant application frame before changing code
 
 Coverage split note: the single bullet this entry previously carried for custom exceptions and preserved causes has been split by coverage into two, and each now has its own must-answer question — naming a failure type and preserving a cause are separate decisions with separate failure modes. The existing note teaches both, but only the cause half is developed at any depth.
-
 
 Rationale: Exception categories, propagation, handling, cleanup, causes, and stack traces are one lifecycle, followed from the origin of a failure to its diagnosis.
 
