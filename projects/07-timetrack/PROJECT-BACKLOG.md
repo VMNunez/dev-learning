@@ -39,6 +39,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - [ ] **[Low]** `[backend]` — Move `DataInitializer`'s three `@Value` fields onto its existing constructor's parameters and make them `final`. The class already uses constructor injection for its two beans, so mixing the styles leaves it constructible in an invalid state — a direct `new` gets three nulls and `run()` would seed a user with a null email. Constructor injection is the convention in all five services *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Polish three small things the reviewers flagged with no behavioural impact: `TimeEntryService.delete` calls `deleteById(id)` on an entity it already loaded (use `delete(timeEntry)`); `TimeEntrySpecifications` is a static-utility class with a public implicit constructor (add a private one); and `TimeEntryController.findByFilter` is the only list endpoint not named `getAll`, though it is arguably a different operation — decide and be consistent *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Fill or delete the Spring Initializr scaffold metadata still in `pom.xml`: empty `<name/>`, `<description/>`, and empty `<licenses>`, `<developers>`, `<scm>` blocks. It is the first thing a reviewer opening the build file sees *(Effort: Small)*
+- [ ] **[Low]** `[backend]` — Fix the `### DTO boundary` snippet in `backend/README.md`, which shows `new ProjectResponse(...)` with an all-args constructor the `@Data`-only DTO does not declare; the real `toResponse` is setter-based *(Effort: Small)*
 
 ### Frontend
 
