@@ -214,7 +214,39 @@ The `Checked` row names the level file the concept was found in, even when the v
 written" — that is the cheapest possible proof the level question was actually asked rather than
 assumed, and it is the row that would otherwise quietly stop being true.
 
-Then, and only then, start the explanation.
+Then, and only then, start the explanation — and it goes out in the **same message as the verdict
+table**, complete, on the first pass.
+
+## 5 — The explanation contract, checked before the message is sent
+
+The verdict table above closes the triage; it is not the explanation. What follows it is governed by
+`notes/prompts/_internal/_session-rules.md` -> "How to guide me" -> the two-layer rule, which is
+authoritative and unabridged there. It is restated as a checklist here for one reason: this skill is
+the only file guaranteed to be loaded when a task is opened, and a rule that lives only in a
+1000-line file that was not read is a rule that does not fire. Three consecutive openings
+(2026-08-25 `@Size(min=8)`, 2026-08-26 DRAFT guard, 2026-08-27 `ProjectResponse.active`) went out at
+half depth and were only repaired when Victor asked again — *"por que no me lo pones asi desde el
+principio?"*. Asking a second time is this contract's failure signal, never its normal path.
+
+Before sending, verify all four are present:
+
+- [ ] **`## Archivo(s) afectado(s)`** — every file the change touches, linked, before any theory.
+- [ ] **Simple layer, its three parts** — (a) what happens today, quoting the real code and
+      contrasting the place that already does it right; (b) why that is a problem, as a visible
+      effect in a literal block: `METHOD /path`, the request and response bodies, a
+      `hoy -> / correcto ->` contrast; (c) what the task asks, in one sentence. **Any term from the
+      language or the framework is defined from zero the first time it appears, in street words,
+      metaphor first and real name second — or it is moved to the technical layer.** Writing
+      *unboxing*, *wrapper*, *binding* or *preflight* as if already known is the defect.
+- [ ] **Technical layer, its four parts** — 1. the mechanism as a numbered execution trace, naming
+      the step where the defect enters; 2. why it is invisible from the frame Victor would open,
+      including the second-order trap; 3. the general principle in one quotable line; 4. one or two
+      reasoned design/security nuances, argued, never a caveat list.
+- [ ] **The three guidance modes**, in prose, at the end.
+
+**Priority never scales depth.** `[Low]`, `Effort: Small` and a one-line fix earn the same full
+explanation as a `[High]`: the size of the diff says nothing about the size of the concept. The
+brevity rule governs verdicts, reports and conversation — never these two layers.
 
 ---
 

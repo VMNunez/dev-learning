@@ -707,7 +707,7 @@ its result.
 
 | Block | Skills that can fire | Opener | Closer | Cold dispatch inside the block | Declared steps · contract size |
 |---|---|---|---|---|---|
-| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 42 steps · ~1,668 lines |
+| `08:00` | `step-complete` · `backlog-task-open` · `backlog-task-close` · `coverage-bullet-add` · `coverage-mark` · `readme-concept-add` | **none** | **none** — closing is per *step* and per *task*, never per block | none | 43 steps · ~1,700 lines |
 | `12:30` | `sql-block-open` · `sql-grade` · `sql-step-close` · `sql-block-close` — and for the practice half `simulation-block-open` · `simulation-grade` · `simulation-block-close` | `sql-block-open` / `simulation-block-open`, both **read-only** | `sql-block-close` / `simulation-block-close`, plus the step-level `sql-step-close` | **yes, both tracks** — `sql-grade` and `simulation-grade` grade in one cold subagent so teaching context cannot contaminate the score | 29 steps · ~858 lines |
 | `13:30` | `study-content-writer` · `interview-prep-block-open` · `study-block-close` · `authoring-progress-recount` | `interview-prep-block-open`, for the **interview half only**; the notes half has none | `study-block-close`, for both halves | none | 20 steps · ~500 lines |
 | `machinery` | `map-sync` · `skill-refine` | — | — | **yes** — `skill-refine` submits every drafted `SKILL.md` edit to one cold reviewer that reads the whole file, so no refinement is ever self-approved | 18 steps · ~368 lines |
