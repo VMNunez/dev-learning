@@ -1,32 +1,31 @@
 # Notes-audit — last run self-report
 
-**Date:** 2026-08-26 · **Target:** Java / junior / note 03
+**Date:** 2026-08-27 · **Target:** Java / junior / note 04
 
 **Status:** open
 
-1. **Plan vs reality** — The four-stage split held and the run completed, but the traces are the only
-   evidence for that: this pipeline has no step that reads the finished pair whole outside the stages
-   that wrote it, so they support "the machinery ran" and nothing stronger. One real defect surfaced,
-   and not from a trace — Victor caught it mid-run. Stages read sibling note files unconditionally
-   (`es/04-metodos.md`, `es/02-cadenas-de-texto.md`, `10-collections.md`, `01-variables-types.md`), and
-   Stage B **approved a forward reference in the finished note by verifying it against
-   `10-collections.md` l.67**, a `pending` legacy file no run has ever checked against
-   `notes/java/coverage/junior.md`. Fifteen of this level's eighteen entries are in that state. Filed as
-   `REC-169`.
+1. **Plan vs reality** — The four-stage split held; all four traces matched the file on disk when the
+   orchestrator counted headings itself (18 in both languages, 66 code fences each, en 546→587→604,
+   es 546→605), so the gate is evidence and not a self-report this time. The `REC-169` fix shipped in
+   this prompt's "Sibling admissibility" section did real work on its first run: the three stages that
+   read prose each reported opening only the four admitted siblings, and Stage B cleared every forward
+   reference against `LINK_TARGETS` instead of against a `pending` file — the exact failure the previous
+   run recorded.
 2. **Report discipline** — Four stage returns, all within budget; nothing trimmed.
-3. **Failures & retries** — None. Required dispatches: 4; actual: 4; re-dispatches: 0. Every trace gate
-   passed on first comparison (16 headings in both languages, 42 code fences each, en 508 / es 506).
-4. **Rule friction and rule breaches** — No breach; no row added to a breach log (none exists for this
-   prompt). Two observations. (a) Guard 5 cleared on the digest `notes-plan` wrote today, which is the
-   gate working as designed — the previous run's stop was real and the replan discharged it. (b) The
-   defect in bullet 1 is **not** this prompt's text: `notes-audit.md` never tells a stage which siblings
-   to read. It is `_notes-write-prompt.md` → "Before writing a new file or a new section, read the
-   sibling files already in `{FILE}`'s `en/` folder" and `_notes-review-prompt.md`'s sibling bullet plus
-   "Read the neighbouring files to check the seams", both of which scope the read by *folder* where the
-   plan already scopes standing by `Status:`. Four component prompts share it, so it is a ledger row and
-   not an at-end refinement of the file that just ran.
-5. **Verdict** — one finding, `REC-169`, raised and left `open`: the fix spans four component prompts
-   plus this orchestrator's dispatch contract, which is outside the refinement step's scope (that step
-   edits the prompt file that ran). No cold reviewer was dispatched and no prompt was edited — recorded
-   here so the next run does not re-derive it. `notes-audit.md` is 272 lines, well under the ~500-line
-   budget; no length pressure.
+3. **Failures & retries** — None. Required dispatches: 4; actual: 4; re-dispatches: 0.
+4. **Rule friction and rule breaches** — No breach; no row added to a breach log. Two observations.
+   (a) `notes/java/coverage/notes-plan-junior.md` was **already dirty** on entry with three unrelated
+   cosmetic edits. Stage C's commit stages the plan wholesale, so they rode into the content commit;
+   the orchestrator declared them to Stage C rather than reverting bytes it had not authored. This
+   prompt has no run-start working-tree check and `_agent-runtime-standard.md`'s partial-write branch
+   governs a *role's* writes, not dirt predating the run — noted as an observation, not routed: one
+   occurrence, and reverting is the wrong default when the edits may be Victor's.
+   (b) A genuine gap, filed as `REC-173`: the plan's audit notes order sections consolidated *out* of
+   the audited file, but every stage writes exactly one file, so inbound links from sibling notes to a
+   removed section are nobody's. Two are live on disk (`01-variables-types.md` l.739,
+   `06-oop-classes.md` l.401, both naming a `## Static methods` section note 04 no longer has), and
+   one of them sits inside a `complete` note. Stage B found them by noticing, not by a check.
+5. **Verdict** — one finding, `REC-173`, raised and left `open`: its measurement spans thirteen plans
+   and its owner is probably `notes-plan-prompt.md` or this orchestrator's final report, which is
+   outside the at-end refinement step's scope. No cold reviewer dispatched, no prompt edited.
+   `notes-audit.md` is 272 lines; no length pressure.
