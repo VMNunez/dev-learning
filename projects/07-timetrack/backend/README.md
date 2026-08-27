@@ -331,6 +331,12 @@ The three report queries round their aggregate in the query — `round(SUM(te.ho
 
 ---
 
+### A nullable field means "omitted" in a request and nothing at all in a response ✓
+
+`UpdateProjectRequest.active` is a `Boolean` on purpose: `PUT /api/projects/{id}` is a partial update, so `null` is the caller saying "leave this one alone" and the service applies the flag only when it is present. `ProjectResponse.active` is a primitive `boolean` for the opposite reason — `Project.active` is primitive and `NOT NULL`, so a wrapper there would let the API serialise `"active": null`, a state the schema cannot produce, and any client unboxing it would get a `NullPointerException` instead of a value. The same wrapper is correct on one side of the boundary and wrong on the other, because absence carries meaning going in and none coming out.
+
+---
+
 ## Tradeoffs
 
 - JWT over session-based auth — stateless API requires no server memory per user; any instance can validate the token
