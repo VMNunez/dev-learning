@@ -402,6 +402,33 @@ capture point still never opens a `REC-NNN`, never blocks, never asks and is nev
 reviewer is ever dispatched **to judge the complaint**. The reviewer a `thinned` ruling dispatches judges
 the **edit**, which is the act (c) was always licensed to perform.
 
+### When Victor corrects the prose of a note — the note-TODO harvest
+
+The three rules above record what a **ritual** did. This one records what **Victor's prose bar** is, and
+it is the only measurement of that bar the system has. His TODO corrections are it — and until
+2026-08-27 they were destroyed at the moment they were resolved. Both rule families
+`knowledge/notes/_internal/_note-quality-standard.md` rests on were derived once, by hand, from a single
+pass, and neither's evidence survived. `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md`
+is its event sink; that file owns the contract and this section only states the trigger.
+
+**Whenever a TODO Victor wrote in a note pair is resolved, or a correction he states directly in chat is
+applied to one, append or increment one `NTH-NNNN` row** — one row per **pair and category**, never per
+TODO, carrying one or two of his own words **verbatim** and a `missing` / `unapplied` verdict. The
+primary writer is `study-content-writer`, at resolution, while the reason is still known; `notes-audit`
+is the secondary writer, for the markers it reports and may not resolve. Never write a row for prose the
+agent itself chose to improve — a complaint Victor did not make is not evidence about his bar.
+
+It obeys the same four prohibitions as ritual friction, for the same reason: **it never opens a
+`REC-NNN` on sight, never dispatches a cold reviewer, never blocks or asks, and is never argued with.**
+A category is promoted only by the count the sink defines — cross-pair recurrence, first harvest at four
+refined pairs — and a due category then opens its own `REC-NNN`, resolved under the ledger's four steps
+with the mandatory cold reviewer. The standard is hand-written only, so **no skill and no run may edit it
+from this sink**.
+
+The raw prose that provoked each complaint stays in git: the TODO pass is committed before it is
+resolved, so it is recoverable as `git diff <todo-pass-commit>..<refined-commit>`. Countable index in the
+sink, full context in git.
+
 ### After every learning plan step is completed — update these files without being asked
 
 (The platform's `step-complete` skill fires on this event and walks this exact checklist —

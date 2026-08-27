@@ -199,6 +199,14 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         # pattern loose enough to span both would also select any future `*breach*` file unread.
         $_.Name -notlike '_breach-log-*' -and
         $_.Name -ne '_skill-breach-log.md' -and
+        # `_note-todo-harvest.md` (REC-171) is that class a fourth time, and it inherits the reason
+        # exactly: its `Quote` column holds one or two of Victor's OWN words, copied verbatim and never
+        # paraphrased, so a TODO of his naming a tool or a model is transcribed evidence and not an
+        # instruction to any runtime. Unlike the three above, this one is NOT a machinery sink - it
+        # measures the prose bar of the notes - but the exemption turns on how the cell was produced,
+        # not on what it is about. Named separately for the same reason the two breach families are:
+        # a glob wide enough to span all four would select any future `*harvest*` file unread.
+        $_.Name -ne '_note-todo-harvest.md' -and
         $_.Name -notin @(
             '_session-rules.md',
             '_agent-runtime-standard.md',

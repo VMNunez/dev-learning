@@ -171,6 +171,15 @@ wrong material. Reviewer B is the backstop — it is not the reason you may writ
 routed elsewhere: a TODO on a refined pair is resolved **inline, in the daily session**, by the
 `study-content-writer` skill, in the language of the file carrying it. List the ones you saw in your
 report, name that route, and change nothing.
+**Listing is not enough for what the orchestrator owes them.** Each marker you saw is Victor's own
+measurement of his prose bar, and the harvest that keeps it (`_note-todo-harvest.md`, via `notes-audit`)
+needs **one or two of his own words verbatim, in the language he wrote them** — a paraphrase would not
+have produced a single one of the rules that file exists to grow. **Read the `es/` counterpart to find
+them**, exactly as the next paragraph orders for the other modes: `es/` is where Victor studies and where
+his markers are, so a run that skipped the step literally and looked only at `{FILE}` would report the
+English stragglers and miss the population. So per marker, report its heading, the
+language of the file carrying it, and **the marker text quoted exactly as written**, never summarised
+and never translated. You still change nothing and resolve nothing.
 
 Victor adds his doubts as markers in the **`es/`** file (that is where he studies), so **read the
 `es/` counterpart to find them**, then also scan `{FILE}` itself. Markers appear as `TODO:`,
@@ -314,6 +323,10 @@ the Step 1 exception — and report:
   needs this to know what to (re)translate in the `es/`.
 - Which TODOs you resolved, and for each: the language you authored it in, and whether the `es/`
   section is now frozen for stage T (it is, whenever you wrote the Spanish directly).
+- In `append-only` mode you resolve none, and that bullet is replaced by the one Step 1 mandates: every
+  marker **seen** in the frozen prose, with its heading, its language and **its text quoted verbatim**.
+  That quote is the whole payload the harvest cannot reconstruct from anywhere else, so a marker
+  reported without it is a partial report.
 - The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
   you wrote to a target that is declared but not yet written.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;

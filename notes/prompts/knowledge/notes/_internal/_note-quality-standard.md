@@ -384,6 +384,13 @@ finished note visibly uses most of them:
 
 ### Anticipate-the-TODO pass — the single highest-impact step (run before finalizing every section)
 
+**Where this family's evidence lives** (2026-08-27): `_note-todo-harvest.md` beside this file, on the
+`mecanismo` slug. The family below was derived once, by hand, from a single pass, and the TODOs that
+produced it are gone — the sink is what lets the next revision of these rules be edited from counted
+data rather than from memory. It is the named source for any change here, and it is also the fence: a
+rule enters or leaves this section through a `REC-NNN` resolved under the ledger's four steps with the
+mandatory cold reviewer, at most one added and one cut per harvest, and never by a skill or a run.
+
 This is the step that actually reduces how many TODOs Victor has to add. Half of his TODOs are the
 same kind of doubt: **mechanism questions** — he asks *why* something works the way it does, not what
 it does. The root cause is always the same: the draft describes *behaviour* ("the exception travels
@@ -444,6 +451,15 @@ así?"). A second family asks for **the same content written differently** — "
 ENTIENDE", "EXPRÉSALO MEJOR". Twenty of those in a single file produced the seven rules below. They
 apply to both languages, but they were written against Spanish prose and the Spanish file is where
 they are judged.
+
+**Where this family's evidence lives** (2026-08-27): `_note-todo-harvest.md` beside this file, on the
+seven register slugs it seeds from these rules. Those twenty TODOs no longer exist anywhere — one pass,
+one file, one derivation, and the sink is what stops that happening to the next twenty. Same fence as
+the family above: this section is edited from the harvest, through a `REC-NNN` under the ledger's four
+steps with the mandatory cold reviewer, at most one rule added and one cut per harvest, never by a skill
+or a run. **The `unapplied` column is what protects these seven specifically** — a rule already stated
+here and breached anyway is harvested as a *breach of it*, never as a new eighth rule saying the same
+thing.
 
 - **A bold lead-in is a plain statement of the fact, never a metaphor or a riddle.** The bold sentence
   that opens a paragraph is the one Victor reads to decide what the paragraph is about, so it has to

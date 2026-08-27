@@ -26,6 +26,13 @@ trigger declared resolved, or write outside its declared writer set, follow
 `notes/prompts/_internal/_session-rules.md` → "When a skill's own text is what went wrong — the skill
 breach log"; do not restate or widen that trigger here.
 
+**Shared harvest close-out.** Whenever this skill resolves a TODO Victor wrote in a note pair, or applies
+a correction he states directly in chat, it is the primary writer of the note-TODO harvest: follow
+`notes/prompts/_internal/_session-rules.md` → "When Victor corrects the prose of a note — the note-TODO
+harvest", whose sink is
+`notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md`. Do not restate or widen that trigger
+here. It never applies to prose **you** chose to improve.
+
 
 When this skill fires, you are writing study content **outside** the audit pipeline. Your job is to
 hit the exact same quality bar the pipeline would, so daily-session notes are never second-class.
@@ -90,7 +97,9 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   Name that handoff and do not create or complete the file inline.
 - An existing `complete` pair may be refined inline or have a TODO resolved. Keep the
   bilingual contract, then set that entry's `Studied:` field to `pending` (insert it when legacy),
-  because the accepted prose changed after its last study pass.
+  because the accepted prose changed after its last study pass. **A TODO resolved here is harvested
+  exactly as one on a `refined` pair is** — the sink measures Victor's prose bar, and that bar does not
+  depend on which status the entry carries.
 - A `refined` pair is frozen against *your* initiative, not against Victor's. **You are the only writer
   in the system that may resolve a TODO on one** (2026-08-22 — the doctrine is "The `refined` freeze" in
   `notes/prompts/knowledge/notes/notes-plan-prompt.md`; `/notes-audit` deliberately declines this and
@@ -119,6 +128,18 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
     when he stated it in chat), name the exact heading and passage you changed in each language, and
     state that nothing else in either file moved. This route has no cold reviewer and no diff gate, so
     that report is its only evidence — write it even when the fix was one word.
+
+    **Then harvest it, in the same breath, because the reason is only known now.** Per instruction
+    resolved, append or increment one `NTH-NNNN` row in
+    `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md` — one row per **pair and category**,
+    so several TODOs of the same kind in one pair are one row with a higher `Count`, and an existing
+    `open` row for that `Pair` + `Category` is **incremented, never duplicated**. Copy one or two of his
+    own words **verbatim**, in the language he wrote them, and reuse an existing `Category` slug by exact
+    match whenever the complaint is the same one. Judge `missing` vs `unapplied` against the standard you
+    loaded at Step 1 — did it lack the rule, or carry it and go unapplied? — and cite the rule's heading
+    when `unapplied`. An in-chat correction is rowed the same way, and it is the input **only this route
+    sees**: it leaves no marker for anyone else to find. Commit the sink write with the rest of the
+    route's files, and never let a harvest failure block the correction itself.
   - **Anything else** — a change you propose, a quality miss you noticed, or a TODO whose fix means
     rewriting a section or restructuring the note → report it and wait for Victor to set the status
     back to `pending`. The hand-back gate survives for everything the TODO route does not cover,
@@ -143,6 +164,24 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   became `refined` in this session, so a no-op recount is a finding rather than the expected result.
   Fold its report row into your own report. A blocked sync leaves `Status` untouched and therefore
   invokes nothing.
+
+  **This route is also the harvest's counter, and it prints its line on every run, clean ones
+  included.** At the end of this route — after the sync, whether or not `Status: refined` was written,
+  since a blocked sync writes nothing and still owes the line — read
+  `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md` and print, as its own visible line,
+  `cosecha: ninguna` or `cosecha: {categoría} madura` — one line naming each category that has now
+  recurred in **two different pairs** since the last harvest, which is that file's standing threshold.
+  Count categories, never rows: two `open` rows carrying the same slug on two different `Pair` values is
+  a mature category; five occurrences inside one pair is that note's quirk and matures nothing. Print
+  `cosecha: ninguna` when the sink is empty, and print it on a blocked sync too — the run that should
+  notice a threshold is exactly the run that does not, which is why this is a visible line and not a
+  passive check, the same reason `desvíos:` is one.
+
+  **Stating that a category is mature is the whole of this skill's authority over it.** A mature
+  category opens its own `REC-NNN` and is resolved under the ledger's four steps with the mandatory cold
+  reviewer. You never edit `_note-quality-standard.md` from this line, never open the `REC` yourself,
+  and never dispatch a reviewer over it. The first harvest also waits on `REC-170`'s four refined pairs,
+  so an early `madura` is reported and goes no further.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.
@@ -167,6 +206,9 @@ report.
 It does not write `PROGRESS.md`. Its two refining routes hand the `## Authoring progress` rows to
 `authoring-progress-recount`, which owns and commits them — which is why this skill's trigger still
 excludes that file even though refining a pair now moves it.
+It does not write `_note-quality-standard.md`. It is the harvest's primary writer and its counter, and
+neither role reaches the standard: a mature category is stated on the `cosecha:` line and resolved as its
+own `REC-NNN`, under the ledger's four steps, by hand.
 It does not run the audit pipeline and does not restructure the whole topic. Committing is governed
 by `notes/prompts/_internal/_session-rules.md` → `No git side effects on code`, not by this skill — in
 a daily session the active agent MAY commit `notes/` files directly (atomic, no Co-Authored-By,
