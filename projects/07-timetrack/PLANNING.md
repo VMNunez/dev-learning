@@ -18,7 +18,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
 | **Phase** | Backend (Phase 4) — its backlog reopened on 2026-08-06 and the frontend phase has not started; Step 7a opens Phase 5 once G3 signs off |
-| **Last updated** | 2026-08-26 |
+| **Last updated** | 2026-08-27 |
 
 ---
 
@@ -150,6 +150,10 @@ Browser                               Server
 - Every resource keeps a separate `Create*Request`/`Update*Request` DTO pair, even when their fields
   are identical today — the two operations are distinct intents, so an update-only field never forces
   a change to the creation contract.
+- A DTO field is nullable only where absence carries meaning. An `Update*Request` field is a wrapper type
+  because a partial update reads `null` as "leave this one alone" and the service applies it only when
+  present; the matching `*Response` field is a primitive whenever the entity's is, so the API cannot
+  serialise a state the schema forbids and no client unboxes a `null` into a 500.
 - A DTO field that holds a credential — a password, a bearer token — carries `@ToString.Exclude`. Lombok's
   `@Data` puts every field in the generated `toString()`, so any future log line or exception message that
   interpolates the object publishes the credential in plaintext; the annotation is the boundary, and it does
