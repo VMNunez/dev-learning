@@ -59,6 +59,7 @@ Handoff: Once Victor knows what kind of language Java is and how it runs, entry 
 Status: complete
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -120,6 +121,7 @@ Handoff: Numbers behave the way their representation forces them to; entry 02 as
 Status: complete
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -168,6 +170,7 @@ Handoff: With values and text both understood one at a time, entry 03 stops eval
 Status: complete
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -213,6 +216,7 @@ Handoff: After Victor can control statement execution, entry 04 packages that be
 Status: complete
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -260,6 +264,7 @@ Handoff: The call contract is now clear, but not what physically crosses it; ent
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -304,6 +309,7 @@ Handoff: References are now understood in isolation; entry 06 uses them to build
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -370,6 +376,7 @@ Handoff: Concrete classes can now hold valid state and compare correctly; entry 
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -418,6 +425,7 @@ Handoff: With contracts separated from implementations, entry 08 explains how Ja
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -462,6 +470,7 @@ Handoff: Polymorphic APIs are almost always parameterised; entry 09 teaches how 
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -514,6 +523,7 @@ Handoff: Parameterised types can now be read fluently, so entry 10 can teach the
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -581,6 +591,7 @@ Handoff: Lookups, conversions, and iteration have now produced several ways to f
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -635,6 +646,7 @@ Handoff: Failure paths are now explicit, so entry 12 can introduce behaviour-as-
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -686,6 +698,7 @@ Handoff: Behaviour can now be passed to an API; entry 13 hands it to a pipeline 
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: create
@@ -744,6 +757,7 @@ Handoff: Arbitrary values can now be filtered, transformed, ordered, and collect
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -784,6 +798,7 @@ Handoff: An enum is the case where the value set is closed and the compiler can 
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -830,6 +845,7 @@ Handoff: Javadoc explains ordinary API contracts; entry 16 covers the metadata c
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
@@ -871,6 +887,7 @@ Handoff: Annotations, libraries, and frameworks all arrive from outside the sour
 Status: pending
 
 Studied: pending
+
 Pending study: none
 
 Action: audit
