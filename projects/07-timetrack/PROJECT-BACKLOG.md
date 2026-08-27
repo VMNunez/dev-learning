@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Close the two plan/code drifts §10 still carries on endpoints that are otherwise correct: the `PUT /api/projects/{id}` row documents only 200/404 but the code also returns 409 on a duplicate name (the Users `PUT` row documents its equivalent), and the `PUT /api/entries/{id}` row still names `CreateTimeEntryRequest` as the body although `UpdateTimeEntryRequest` was split out deliberately on 2026-07-29. Code is right in both; the plan is stale *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Route the duplicate-name race through the same contract as the check: catch `DataIntegrityViolationException` in `ProjectService.create`/`update` and rethrow `DuplicateResourceException("name", …)`. Today the check-then-insert path emits 409 **with** `fieldErrors.name` while the constraint path emits 409 **without** it, so a form binding `fieldErrors` shows a generic banner exactly when two requests interleave *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Unify the "does it already exist" idiom on `existsByX`. `ProjectService` uses `existsByName`; `UserService` materialises a whole row twice with `findByEmail(...).isPresent()`, and `DataInitializer` does the same. Add `boolean existsByEmail(String)` to `UserRepository` and keep `findByEmail` for the paths that need the entity *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Match the §7 column contract in the mappings: `@Column(nullable = false, updatable = false)` on the `@CreationTimestamp` fields, `@Column(nullable = false)` on `updatedAt`, and `@ColumnDefault("'DRAFT'")` on `TimeEntry.status`. §7 declares all three; the `active` flags already carry `@ColumnDefault("true")`, and with `ddl-auto=update` the rest generate nullable and defaultless. Residual of the 2026-07-28 not-null close, which covered the `active` fields only *(Effort: Small)*
@@ -143,6 +142,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - 2026-07-08 · **[Medium]** `[backend]` — `GET /api/projects` filtered by role (active-only for employees) → already in README, PROGRESS
 
 #### Low
+
+- 2026-08-27 · **[Low]** `[backend]` — §10 documents the `409` duplicate name on `PUT /api/projects/{id}` and its self-rename exemption → coverage architecture/junior (new bullet "a documented response contract lists every status the endpoint can produce" + ✅ 07-timetrack), PLANNING §10 row + new §16 `ProjectService.update` test row; the `entries`-body half was already resolved by `e43f021c` (2026-08-24); backend README already represented by the `DuplicateResourceException` and resource-before-body entries; `/notes-plan architecture junior` owed
 
 - 2026-08-27 · **[Low]** `[backend]` — `ProjectResponse.active` is a primitive `boolean`, so the API cannot serialise a state the schema forbids → coverage architecture/junior (new bullet + ✅ 07-timetrack; java/junior already marked), backend README Key patterns, PLANNING §6 + §0
 
