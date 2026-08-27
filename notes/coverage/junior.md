@@ -796,6 +796,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
 - Create vs Update request DTOs — separate them when the operations have different validation,
   optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match ✅ 07-timetrack
+- Nullable field in a request versus in a response — in a partial-update request an absent value legitimately means "leave this one alone", so the field must be able to hold nothing; in a response the same shape advertises a state the model can never be in, so a value the domain always has is declared as one that cannot be absent ✅ 07-timetrack — `ProjectResponse.active` is primitive while `UpdateProjectRequest.active` stays nullable, so an omitted field and `false` never collapse
 - Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
   prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients ✅ 07-timetrack
 
