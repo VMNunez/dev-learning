@@ -182,11 +182,23 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         $_.Name -ne '_last-drift-report.md' -and
         # The two friction sinks are the same class again: a row is transcribed from what
         # happened, so a `FRIC` line saying which tool died is evidence, not an instruction.
-        # The breach logs are that class a third time, and the sharpest case: a `Scope: shared`
-        # row over `_agent-runtime-standard.md` records a model or dispatch policy the run broke,
-        # so its Evidence clause names the model or the subagent type by construction.
         $_.Name -notin @('_skill-friction.md', '_ritual-friction.md') -and
+        # The breach logs are that class a third time, and there are TWO families with two
+        # filename shapes - which is the REC-172 (i) defect: this exemption was one glob whose
+        # comment described the family the glob does not select.
+        #   `_breach-log-<prompt-name>.md` - the per-prompt logs of `_pipeline-self-report.md`
+        #     -> "The breach log", each read by its own close-out. NONE EXISTS YET: that contract
+        #     says one is "created on the first breach and never before", so this glob selects an
+        #     empty set today and is here for the population it will select.
+        #   `_skill-breach-log.md` - the single `SBRC-NNNN` log read by `skill-refine` alone, and
+        #     the sharpest case of all: a `Scope: shared` row over `_agent-runtime-standard.md`
+        #     records a model or dispatch policy the run broke, so its Evidence clause names the
+        #     model or the subagent type by construction. It is live, carries rows today, and did
+        #     not match the glob above - it passed only because no row had yet quoted such a name.
+        # Named separately rather than merged into one wider glob: the two contracts differ, and a
+        # pattern loose enough to span both would also select any future `*breach*` file unread.
         $_.Name -notlike '_breach-log-*' -and
+        $_.Name -ne '_skill-breach-log.md' -and
         $_.Name -notin @(
             '_session-rules.md',
             '_agent-runtime-standard.md',
@@ -277,7 +289,33 @@ foreach ($requiredTrackerContract in @('## Notes file executions', '## Single-sh
 # Checking only the first form left README.md - the one file whose whole job is
 # to inventory the others - structurally unverifiable, and it carried 30 paths
 # stranded by the 2026-07-22 _internal/ reorg while the validator stayed green.
-$referencePathPattern = '(?<![A-Za-z0-9_./-])(notes|practice|projects|personal|knowledge|strategy)/[A-Za-z0-9_./{}-]+\.(md|ps1|sql)'
+#
+# THE ROOT ALTERNATION IS AN EXEMPTION LIST, and it must be read as one (REC-172 (iv)): a root
+# missing from it is not "unchecked pending a decision", it is silently outside the invariant. It
+# names every form's roots at once - `notes`, `practice`, `projects` are the repository's own
+# top-level directories (`scripts/` and `tools/` are deliberately out: no machinery file cites
+# either, verified 2026-08-27, and they hold no contracts), `personal` is the external root the
+# exemption below governs, and `knowledge`, `strategy`, `system`, `_internal` are the relative
+# forms. `system` and `_internal` were both absent until 2026-08-27, which put every `system/...`
+# path in README.md and _system-map.md outside the scan - the audit prompts, the reconcile prompt
+# and all three system reports - and every `_internal/...` path with them: 43 distinct citations, the
+# most cited being `_internal/_system-map.md` at 17, from README.md, `_session-rules.md`, both
+# `map-sync/SKILL.md` mirrors and both `system-gaps` launchers.
+# Adding a subfolder under notes/prompts/ means adding it here in the same commit.
+$referencePathPattern = '(?<![A-Za-z0-9_./-])(notes|practice|projects|personal|knowledge|strategy|system|_internal)/[A-Za-z0-9_./{}-]+\.(md|ps1|sql)'
+# THE THIRD RESOLUTION FORM, and `_internal/` is the only root that takes it. That prefix is written
+# two ways and both are canonical, sometimes in the same file: notes/prompts-relative
+# (`_internal/_system-map.md`, from README.md) and FAMILY-relative - a prompt naming the `_internal/`
+# folder beside itself (`_internal/_topic-ownership.md`, from `knowledge/coverage/coverage-prompt.md`).
+# Measured 2026-08-27 over 43 distinct (reference, citing file) pairs: 10 resolve family-relative, 21
+# notes/prompts-relative, and 12 are `_last-run-report*` declared outputs the skip below exempts. The
+# 10 are the only reason this form exists - `_topic-ownership.md`, `_cross-topic-inbox.md` and
+# `_coverage-standard.md` (three citers each, all under `knowledge/coverage/_internal/`) and
+# `_system-check-reconcile-prompt.md` under `system/_internal/`. No target exists in two places, so
+# the two senses cannot collide today and the resolution order cannot mis-credit one. Scoped to this root on purpose - resolving every
+# reference against its citing file's own directory would let `notes/...` cited from a prompt folder
+# pass on a path that means nothing.
+$familyRelativeRootPattern = '^_internal/'
 
 # A path a prompt is told to create. Same class as the _last-run-report exemption:
 # it is a declared output, so its absence means "not run yet", never "wrong path".
@@ -290,11 +328,16 @@ $declaredOutputPatterns = @(
     '^practice/sql/(junior|middle|senior)/([0-9]{2}|R[1-9])-[a-z0-9-]+\.sql$'  # sql-exercises
     '^practice/simulations/[a-z-]+/[0-9]{2}-[a-z0-9-]+\.md$'                   # simulation-generator
     '^practice/simulations/PLANNING\.md$'                                      # simulation-plan first run
-    '^practice/simulations/(junior|middle|senior)/PLANNING-(junior|middle|senior)\.md$' # level route
-    '^notes/prompts/system/_internal/_system-gaps-report\.md$'                 # system-gaps first run
-    # Both path forms: the prompt writes the repo-root one, both maps the notes/prompts-relative one.
-    '^(notes/prompts/)?strategy/tracking/_internal/_last-drift-report\.md$'    # progress-update, every run
+    # Backreferenced, not two free groups: `junior/PLANNING-senior.md` is a cross-level path no
+    # prompt can ever write, and the unlinked form exempted all nine combinations to license three.
+    '^practice/simulations/(?<level>junior|middle|senior)/PLANNING-\k<level>\.md$' # level route
 )
+# RETIRED 2026-08-27 (REC-172): `notes/prompts/system/_internal/_system-gaps-report.md` and
+# `(notes/prompts/)?strategy/tracking/_internal/_last-drift-report.md` were "first run" and "every
+# run" exemptions for files that now exist on disk and are tracked by git, so both patterns had
+# stopped selecting anything. Kept as a note rather than deleted silently, because the ledger's own
+# rot mode is an allowlist entry that outlives its case with nothing pointing back at it: if either
+# report is ever un-tracked or its owner renamed, restore the entry rather than rediscovering it.
 # Deliberately outside the repository; _external-path-preflight.md governs these.
 $externalPathPatterns = @('^personal/')
 # A dead path is legitimate when a file recounts history or names a legacy shape
@@ -305,17 +348,55 @@ $historicalReferences = @{
     # the 2026-08-07 collapse of 46 resolved rows, and the exemption outlived them by eleven days.
     # An exemption is a claim about another file's text, so it rots when that file is rewritten and
     # nothing points back at it - re-verify this table whenever a cited file is compacted.
+    #
+    # THE KEY IS THE CITING FILE, AND ONE TOMBSTONE IS ROUTINELY RECOUNTED BY SEVERAL OF THEM
+    # (REC-172 (ii)). `/progress-update` writes two artifacts from one measurement pass - its
+    # report and its drift report, one directory apart - so the deleted `practice/sql/02-joins.sql`
+    # it resolves against route section 1's tombstone is named in both, and only the report was
+    # keyed here. The drift report failed the run on 2026-08-27 for recounting the same dead file
+    # for the same reason. When adding a key, ask which OTHER file the same run writes.
     'knowledge\coverage\_internal\_coverage-prompt-rationale.md' = @('notes/coverage.md')
     'strategy\tracking\progress-update-prompt.md'                = @('practice/sql/01-basics.sql', 'practice/sql/02-joins/exercises.sql')
     'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
     'strategy\tracking\_internal\_last-run-report.md'            = @('practice/sql/02-joins.sql')
+    'strategy\tracking\_internal\_last-drift-report.md'          = @('practice/sql/02-joins.sql')
 }
+# A path a LEDGER ROW PROPOSES: machinery the row is arguing should exist, which by construction
+# does not (REC-172 (iii)). `$declaredOutputPatterns` cannot cover it - no prompt is told to write
+# it, and it never will exist if the row is rejected - so before this class REC-171 had to split
+# its own sink's path across two backticked fragments to avoid failing the run, and REC-172 could
+# not write REC-172 (ii)'s dead path at all. A ledger that cannot name the file it proposes, or the
+# dead path it is reporting, is being shaped by its checker.
+#
+# Scoped by CITING FILE, like the historical table above and unlike a pattern, because the licence
+# belongs to the two files whose whole content is proposals and closed rulings - not to the shape of
+# any path. And it REPORTS rather than exempts: a dead path here is printed with its citing file on
+# its own `REPORT:` line and counted there, so a real typo in a live ledger row is still visible to
+# a reader. What a check cannot settle needs a name, or it silently becomes a pass.
+$proposedPathCiters = @(
+    '_internal\_recommendation-ledger.md',
+    '_internal\_recommendation-ledger-closed.md'
+)
 
+# THE SCANNED POPULATION IS ITSELF AN EXEMPTION LIST (REC-172 (vi)): a machinery file left out of
+# it is not checked, and nothing says so. Both launcher catalogues were outside until 2026-08-27
+# while carrying 35 path references between them - in the very files invariants 5 and 6 already
+# treat as machinery, which is the asymmetry that named the hole. `.ps1` files stay out and this is
+# the published limit, not an oversight. There are TWO tracked machinery scripts, not one: this
+# validator, whose "paths" are regex literals with `(`, `|` and `\` in them, so scanning it would
+# measure its own patterns rather than its claims; and `.claude/hooks/log-skill-run.ps1`, the
+# `PostToolUse` hook that writes the `_skill-runs.md` counter, which builds its one path with
+# `Join-Path` rather than writing it whole, so no pattern here would see it either. Both files'
+# prose citations are proofread by hand instead.
 $sqlExerciseReferences = [System.Collections.Generic.List[object]]::new()
+$proposedPathReports = [System.Collections.Generic.List[string]]::new()
 $referenceScan = @()
 $referenceScan += Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md'
 foreach ($skillRoot in @($claudeSkills, $agentSkills)) {
     $referenceScan += Get-ChildItem -LiteralPath $skillRoot -Recurse -File -Filter '*.md'
+}
+foreach ($launcherRoot in @($claudeRoot, $codexRoot)) {
+    $referenceScan += Get-ChildItem -LiteralPath $launcherRoot -Recurse -File -Filter '*.md'
 }
 $referenceScan += @('CLAUDE.md', 'AGENTS.md' | ForEach-Object { Get-Item -LiteralPath (Join-Path $RepositoryRoot $_) })
 
@@ -328,7 +409,18 @@ foreach ($file in $referenceScan) {
         # `-...` is the only elision form on disk (practice/sql/{middle,senior}/01-....sql). A bare
         # `...` anywhere in a path suppressed real dead references such as `.../en/...nope.md`.
         if ($reference -cmatch '[{}]|0X|NN-|-\.\.\.') { continue }
-        if ([System.IO.Path]::GetFileName($reference) -like '_last-run-report*') { continue }
+        # A self-report is a declared output, so its absence means "that prompt has not run yet",
+        # never "wrong path" - 15 of the 24 report paths cited on disk are legitimately absent for
+        # exactly that reason. But the exemption was keyed on the FILENAME alone, so it also
+        # swallowed a wrong DIRECTORY, which is not a declared output at all: shape is not name
+        # (REC-172 (v)). Every real citation this invariant can SEE resolves to `<family>/_internal/`,
+        # verified over all of them on 2026-08-27, so requiring that segment keeps every one exempt and
+        # lets a report path with the `_internal/` dropped be reported as the dead path it is. Four of
+        # the 24 report names are also cited as a BARE FILENAME with no directory at all; those never
+        # match `$referencePathPattern` in the first place and so never reach this line.
+        if ([System.IO.Path]::GetFileName($reference) -like '_last-run-report*') {
+            if ($reference -cmatch '(^|/)_internal/_last-run-report[A-Za-z0-9_.-]*\.md$') { continue }
+        }
         # The historical allowlist is consulted FIRST, ahead of both the shape exemptions and
         # invariant 7's collection below. It is the narrowest exemption in the chain - an exact
         # path, scoped to the one file allowed to cite it - so nothing downstream should be able
@@ -366,7 +458,30 @@ foreach ($file in $referenceScan) {
         $windowsPath = $reference.Replace('/', '\')
         if (Test-Path -LiteralPath (Join-Path $RepositoryRoot $windowsPath) -PathType Leaf) { continue }
         if (Test-Path -LiteralPath (Join-Path $promptRoot $windowsPath) -PathType Leaf) { continue }
-        Add-ValidationError "Dead path reference '$reference' resolves against neither the repository root nor notes/prompts/ (from $relativeSource)."
+        # The family-relative form, above. Tried last of the three so a path that resolves globally
+        # is never credited to the citing file's neighbourhood by accident.
+        if ($reference -cmatch $familyRelativeRootPattern -and
+            (Test-Path -LiteralPath (Join-Path $file.DirectoryName $windowsPath) -PathType Leaf)) { continue }
+        # LAST in the chain, unlike the historical allowlist which is first. That one is an exact
+        # path and may not be overruled; this one is a whole file's licence to name what does not
+        # exist, so every narrower test - placeholder, declared output, external, and existence
+        # itself - gets to settle the reference before the licence is reached. A proposed path that
+        # has since been BUILT must therefore resolve normally and never reach this line.
+        if ($proposedPathCiters | Where-Object { $relativeSource.EndsWith($_) }) {
+            # Deduped: a row naming its proposed path several times is one proposal, and N identical
+            # lines would inflate a count whose whole purpose is to be read off the line.
+            $proposedLine = "$reference (from $relativeSource)"
+            if ($proposedLine -cnotin $proposedPathReports) { $proposedPathReports.Add($proposedLine) }
+            continue
+        }
+        $rootsTried = if ($reference -cmatch $familyRelativeRootPattern) {
+            "the repository root, notes/prompts/, or the citing file's own directory"
+        } else {
+            # The family-relative form is attempted for the `_internal/` root only, so naming it in
+            # every message would tell a reader a resolution was tried that never was.
+            'the repository root or notes/prompts/'
+        }
+        Add-ValidationError "Dead path reference '$reference' resolves against none of $rootsTried (from $relativeSource)."
     }
 }
 
@@ -447,7 +562,8 @@ foreach ($sqlReference in $sqlExerciseReferences) {
 #   a middle-dot separator.
 #   Verdict detection allows ONE OPTIONAL WRAP at each seam inside the token, and nothing more. The
 #   token appears on its own line, inline in the Status line, indented and bolded inside a bullet,
-#   backticked mid-paragraph, and - in system/_last-run-report.md - SPLIT ACROSS A HARD LINE BREAK.
+#   backticked mid-paragraph, and - in system/_internal/_last-run-report.md - SPLIT ACROSS A HARD
+#   LINE BREAK.
 #   These files are hand-wrapped at ~100 columns, so a line-anchored or single-line pattern reads
 #   that last form as a missing gate. The first draft healed the wrap by flattening the WHOLE FILE,
 #   and the cold reviewer proved that is a false pass: with every newline collapsed, a paragraph
@@ -562,8 +678,10 @@ foreach ($report in $selfReports) {
 #   the one-line budget is a PROXY. Step 4 prices a closure at one line plus at most one promotion,
 #     and the engine it was written against was a "line" of about a thousand characters restating
 #     the whole resolution. The character count is reported with the longest row and never fails a
-#     run: 700 sits above today's 90th percentile (662 characters) and below that named pathology,
-#     so the number moves before a reader has to notice the file growing again.
+#     run. 700 was set when it sat above the 90th percentile (662 characters) and below that named
+#     pathology; over the 168 rows on disk on 2026-08-27 the 90th percentile is 709 and 18 rows are
+#     over, so the threshold no longer sits where that reasoning put it. It still moves before a
+#     reader notices the file growing, but it is now measuring a file that has already grown.
 #
 # Made to fail before it was trusted (`REC-057`). Eight defects injected at once - a wrapped second
 # line under `## Closed`, a row with no commit field, `{commit}` restored on one row, a post-107
@@ -1318,7 +1436,13 @@ Write-Output 'PASS: runnable prompt entry-point and self-report contracts'
 Write-Output 'PASS: representative contract dry runs'
 Write-Output 'PASS: external-path failure simulation'
 Write-Output 'PASS: thin session adapters share one rules source'
-Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, both path forms)"
+Write-Output "PASS: path references resolve ($($referenceScan.Count) files scanned, all three path forms)"
+if ($proposedPathReports.Count -gt 0) {
+    # Reported and counted, never a silent exemption: a ledger row may name machinery that does not
+    # exist yet, and a typo in one of those names looks exactly the same from here.
+    Write-Output "REPORT: $($proposedPathReports.Count) path(s) proposed by a ledger row do not exist - verify each is a proposal and not a typo:"
+    $proposedPathReports | ForEach-Object { Write-Output "  - $_" }
+}
 if (-not $MachineryOnly) {
     # The counts are incremented where the comparison happens, not derived afterwards: a comparison
     # that quietly compares nothing passes exactly as loudly as one that compares everything.

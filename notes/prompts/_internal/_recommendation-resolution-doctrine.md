@@ -913,6 +913,20 @@ the difference between a bounded check and one that quietly covers a third of wh
 And **where a check's own allowlist sits in the chain is part of its meaning**: collecting a
 reference before the historical-path exemption ran made that exemption unreachable, so a file
 recounting the renumbering that retired a path could no longer name it.
+**Also `REC-172`, which adds the clause that makes this rule a sweep rather than a repair: a check's
+exemptions are read *as a set* exactly once, and everything that narrows what the check can see is one
+of them — including the two nobody writes down.** Its three named defects were each found by a
+different accident, one per run, which is the evidence that the set had never been read as a set; the
+sweep then found three more, and both cold-review rounds found one each after that. Two of the six were
+not entries in any list: the **population the check scans** (both launcher catalogues were outside the
+only invariant that reads their paths, in files two other invariants already treat as machinery) and
+the **roots its pattern recognises** (`system` and `_internal`, 49 citations between them, silently
+outside the invariant rather than knowingly exempt). So enumerate from the definer — the file itself,
+read whole — and for **each** exemption name the case it was written for **from its own comment**, then
+verify the pattern selects that case and nothing wider *and nothing else that needs it*. The forward
+direction is the cheap half; a comment describing a class the glob does not select is the defect that
+survives for months, because the check never fails. And when a fix's own sweep keeps returning one more
+site of the same shape, that is the two-round cap working: the residue is a row, not a third repair.
 
 **A non-ASCII literal in a BOM-less `.ps1` is not the character you typed.** Also `REC-084`, where it
 bit three times in one session — in the check, in the author's probe, and in the cold reviewer's.

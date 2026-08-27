@@ -56,8 +56,8 @@ checks nine invariants nothing else can see: that both catalogues advertise the 
 command and that every key a launcher advertises is one the canonical prompt's own `## Configuration`
 block accepts, in both directions — a key the prompt accepts and neither launcher mentions fails too,
 while an optional derived key explained in a launcher's `Rules` instead of its `argument-hint` passes.
-Its **values** are checked only where both sides state a closed set of bare tokens, which is 44 of the
-85 keys; the rest are metavariables or free-form fields (`EMPRESA`, `<path>`) the two files legitimately
+Its **values** are checked only where both sides state a closed set of bare tokens, which is 45 of the
+86 keys; the rest are metavariables or free-form fields (`EMPRESA`, `<path>`) the two files legitimately
 word differently, plus a few — `sql-exercises`'s `TOPIC`, `cv`'s `PROJECTS` — where one side spells the
 list out and the other does not, so a dropped value there is **not** caught. The PASS line prints all
 three counts, so the reach of the check is read off the line rather than assumed. It also checks that
@@ -70,8 +70,37 @@ route, which fingerprints a **manifest** of every coverage file in its §1 rathe
 carries a `Progress snapshot` of `PROGRESS.md` and a `Level status`, so a moved snapshot reports rather
 than fails; that a `verify-{LEVEL}.md` claiming `complete` or `gaps` against a moved digest is reported
 under the schema's own word for that state, `superseded`; and that every path a
-prompt, skill or adapter names resolves — against the repository root **or** against `notes/prompts/`,
-both of which are legitimate forms here; that a **declared** output path is a real file name and not
+prompt, skill, **launcher** or adapter names resolves — against the repository root, against
+`notes/prompts/`, or, for the `_internal/` root only, against the citing file's **own** directory, all
+three being legitimate forms here. That third form is the *family-relative* one: a prompt writing an
+`_internal/…` path to mean the `_internal/` folder beside **itself**, the way the three coverage
+prompts reach `knowledge/coverage/_internal/_topic-ownership.md`. Both `_internal/` senses are
+canonical and both are in live use, which is why the check tries all three roots rather than picking
+one. Of the 43 distinct `_internal/…` citations, 21 resolve notes/prompts-relative, 10 family-relative
+and 12 are report paths exempt as declared outputs. The 10 are the whole reason the third form exists:
+`_topic-ownership.md`, `_cross-topic-inbox.md` and `_coverage-standard.md`, three citers each under
+`knowledge/coverage/_internal/`, plus `_system-check-reconcile-prompt.md` under `system/_internal/`.
+No target exists in two places, so the two senses cannot collide today. The scanned population is itself an
+exemption list and is published as one: everything under `notes/prompts/`, both skill trees, both
+launcher catalogues and the two thin adapters. Launchers joined it 2026-08-27 (`REC-172`), having
+carried 36 path references while sitting outside the only check that reads them — the 36th being
+`_internal/_system-map.md` in both `system-gaps` launchers, invisible until `_internal` became a root. `.ps1` files stay
+out, and there are **two**, not one: this validator, whose "paths" are regex literals rather than
+claims, and `.claude/hooks/log-skill-run.ps1`, which builds its single path with `Join-Path` rather
+than writing it whole — so neither would be measured by a pattern anyway, and both are proofread by
+hand. The path **roots** it recognises are a second such list — `notes`, `practice`, `projects`,
+`personal` and the relative `knowledge`, `strategy`, `system`, `_internal` — so a folder under
+`notes/prompts/` is unchecked until it is named there. `system` and `_internal` were both missing
+until the same date: that put every `system/…` path in this file and in `_system-map.md` outside the
+scan, and every `_internal/…` path with them — 43 distinct citations, the most cited being
+`_internal/_system-map.md` at 17, from this file, `_session-rules.md`, both `map-sync/SKILL.md`
+mirrors and both `system-gaps` launchers. A path a **ledger row proposes**
+— machinery an open row is arguing should exist — is neither a declared output nor a dead reference,
+so `_recommendation-ledger.md` and its closed half are licensed to name what is not there: such a
+path is printed under `REPORT:` with its citing file and counted, never silently exempted, because a
+typo in a proposed name looks identical from here. That class exists because without it a row could
+not write the path it was proposing, and one had to split its own across two fragments to pass the
+run. It also checks that a **declared** output path is a real file name and not
 merely a well-formed one — a file a prompt has not written yet cannot be required to exist, so it is
 exempted from that resolution by *shape*, and shape passed `03-jions.sql` exactly as readily as
 `03-joins.sql`, which matters because `sql-exercises-prompt.md` restates the route's file list twice
@@ -87,9 +116,15 @@ last count is the reach: a level with no route on disk would have nothing to com
 `REPORT:` rather than passing quietly — `middle` and `senior` have no route today, so the count reads `0`
 until something cites them. Three limits stay uncovered, and are named here rather than left to be
 assumed: the 15 simulation specs under `practice/simulations/{track}/`, which have no route file on disk
-to check against at all; the `_last-run-report*` family, exempted by filename alone — 24 distinct report
-names are cited against 12 that exist, and the mapping from a report's name to the prompt that writes it
-is defined nowhere, so a typo there is invisible; and **casing on a path that does exist**, since
+to check against at all; the `_last-run-report*` family, whose **basename** is still unverifiable — 24
+distinct report names are cited against 12 that exist, because a report is a declared output and its
+absence means "that prompt has not run yet", while the mapping from a report's name to the prompt that
+writes it is defined nowhere, so a typo in the name is invisible. Its **directory** no longer is: the
+exemption was keyed on the filename alone until 2026-08-27 (`REC-172`) and so waved through a wrong
+folder too, which is not a declared output at all — it now requires the `_internal/` segment that every
+citation this invariant can **see** carries. Four of the 24 names are also written as a bare filename
+with no directory at all, one of them (`_last-run-report-roadmap-review.md`) only that way; a bare
+filename never matches the path pattern in the first place, so it never reaches the exemption. The last uncovered limit is **casing on a path that does exist**, since
 `Test-Path` on Windows is case-insensitive, so `01-Basics.sql` resolves against `01-basics.sql` and only
 a case-sensitive filesystem would notice. This invariant is **skipped** under `-MachineryOnly`: what it
 blocks on is a machinery file, but its oracle is a live route, and the switch exists so live plan and
@@ -140,9 +175,11 @@ three files state it, which is how the 2026-08-18 collapse left six rejected row
 that a reviewer ran or that the hash names the edit — invariant 8's limit over the self-reports, reached
 again here; a row that applied an edit and wrote the em dash escapes the verdict requirement, and nothing
 on the line can settle that; and step 4's **one line plus at most one promotion** budget is *reported* as
-a character count beside the longest row, never enforced — 700 sits above today's 90th percentile (662)
-and below the thousand-character closures that budget was written against, so the number moves before
-the file is visibly growing again. Like invariant 8 it is **not** skipped under `-MachineryOnly`: the
+a character count beside the longest row, never enforced. 700 was set when it sat above the 90th
+percentile (662 characters) and below the thousand-character closures the budget was written against;
+over the 168 rows on disk today the 90th percentile is **709** and 18 rows are over, so the threshold
+no longer sits where that reasoning put it — the number still moves before the file is visibly growing
+again, but it is now measuring a file that has already grown. Like invariant 8 it is **not** skipped under `-MachineryOnly`: the
 object under test and the oracle are the same machinery file.
 
 `/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map/report/ledger
