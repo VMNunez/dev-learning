@@ -24,8 +24,14 @@ Status: open
 - **Failures & retries** — None. Required dispatches: 1 cold reviewer / 1 dispatched / 1 completed on the
   first attempt. No discretionary analysts: five existing English notes were read whole by the
   orchestrator, none exceeded 182 lines, and all five classified `keep`.
-- **Rule friction and rule breaches** — No breach; no row added to a breach log (none exists for this
-  prompt). One correction was **rejected on the format rule**: the reviewer asked every entry to declare
+- **Rule friction and rule breaches** — **One breach, `BRCH-0001`, first row of this prompt's new
+  breach log.** `_pipeline-self-report.md` → `What to write` requires the ledger reconciliation to be
+  committed *before and separately from* the report + tracker commit; the report and tracker were already
+  staged when the ledger row was added, and a pathspec-less `git commit` swept all three into `f419e0c0`.
+  Nothing on disk is wrong — the cost is that `REC-175` can no longer be read, reverted or cited apart
+  from the run that filed it, which is the whole reason the step separates them. The generalisable lesson
+  is narrower than the rule: this contract's `git status` instruction is written for *staging*, and a run
+  that has already staged one commit's files must also commit with an explicit pathspec. One correction was **rejected on the format rule**: the reviewer asked every entry to declare
   cross-topic prerequisites (HTTP → General, JPA/transactions → Spring Boot, components → Angular), but
   "Required plan format" states `Prerequisites` contains `none` or earlier entry numbers only, and
   `Depends on` is the mechanical gate. The substance was accepted in the only field that can carry it —
