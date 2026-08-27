@@ -41,7 +41,8 @@ Status: open
   or "Coverage fingerprint", both cheap to include. The draft is a clause adding this prompt's own
   "Required plan format" section and the fingerprint rule to the reviewer's inputs. Prompt is 466 lines,
   inside the ~500-line budget. Not applied in this run: the run-start check forbids editing the prompt
-  and running it in the same pass.
+  and running it in the same pass. Filed as `REC-175` in `_recommendation-ledger.md` (f419e0c0), with the
+  cheaper alternative the same evidence supports recorded in its Resolution column.
 
   Also carried forward, still unapplied and now three runs old: `## Legacy notes requiring split` has no
   graded form, with the 2026-08-26 cold reviewer's cheaper counter-proposal on record — tighten step 7's
