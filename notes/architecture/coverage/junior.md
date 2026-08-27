@@ -37,6 +37,12 @@ apply in a small codebase, and defend with concrete trade-offs.
   whitespace, so the boundary must reduce them to one canonical form and then use that same value both
   for the uniqueness comparison and for what is persisted; comparing one form while storing another lets
   a single logical identity become two rows, and no later lookup can tell which one is the real account ✅ 07-timetrack — `EmailNormalizer.normalize` runs before `existsByEmail` and before the setter in `UserService.create`/`update`, `UserDetailsServiceImpl` and `DataInitializer`, while `ProjectService` trims the name and asks `existsByNameIgnoreCase`
+- A documented response contract lists every status the endpoint can produce, and a constraint on a
+  field belongs to every operation that writes that field, not only to the one that introduces it — a
+  create documenting its uniqueness conflict while the update writing the same unique field documents
+  only success and absence leaves the client with no branch for a refusal the server really returns,
+  and the gap survives manual testing because such a guard normally exempts a resource compared
+  against itself, so the conflict only appears when two distinct resources collide ✅ 07-timetrack — `ProjectService.update` runs `create`'s `existsByNameIgnoreCase` guard, exempting only the project's own name
 
 - Guard precedence — a refusal check on the loaded resource's own state (it exists, it belongs to the
   caller, it is in the status the transition requires) is evaluated before any check that depends on the
