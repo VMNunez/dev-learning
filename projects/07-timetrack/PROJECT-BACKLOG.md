@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Move `DataInitializer`'s three `@Value` fields onto its existing constructor's parameters and make them `final`. The class already uses constructor injection for its two beans, so mixing the styles leaves it constructible in an invalid state — a direct `new` gets three nulls and `run()` would seed a user with a null email. Constructor injection is the convention in all five services *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Polish three small things the reviewers flagged with no behavioural impact: `TimeEntryService.delete` calls `deleteById(id)` on an entity it already loaded (use `delete(timeEntry)`); `TimeEntrySpecifications` is a static-utility class with a public implicit constructor (add a private one); and `TimeEntryController.findByFilter` is the only list endpoint not named `getAll`, though it is arguably a different operation — decide and be consistent *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Fill or delete the Spring Initializr scaffold metadata still in `pom.xml`: empty `<name/>`, `<description/>`, and empty `<licenses>`, `<developers>`, `<scm>` blocks. It is the first thing a reviewer opening the build file sees *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Fix the `### DTO boundary` snippet in `backend/README.md`, which shows `new ProjectResponse(...)` with an all-args constructor the `@Data`-only DTO does not declare; the real `toResponse` is setter-based *(Effort: Small)*
@@ -139,6 +138,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - 2026-07-08 · **[Medium]** `[backend]` — `GET /api/projects` filtered by role (active-only for employees) → already in README, PROGRESS
 
 #### Low
+
+- 2026-08-28 · **[Low]** `[backend]` — `DataInitializer`'s three `@Value` values now arrive as `final` constructor parameters → coverage spring/junior ("Property placeholders vs SpEL in `@Value`" marked ✅ 07-timetrack; "Constructor injection" already marked, "Field and setter injection" left unmarked — the diff deletes field injection rather than using it), backend README new `Constructor injection` Key pattern, PLANNING §6 rule + §0 Lows count. Verified by a `dev` boot against the seeded DB: the guard returns and `users` is unchanged
 
 - 2026-08-28 · **[Low]** `[backend]` — §7 column contract landed on the mappings and on the live schema → spring-boot + sql coverage/junior (new bullets; ✅ 07-timetrack on the spring-boot one only — the SQL migration was ad-hoc in pgAdmin and is not in the repo), PLANNING §6 rule + §7 immutability, backend README Key patterns, two stale `ddl-auto` claims retired
 - 2026-08-28 · **[Low]** `[backend]` — `existsByEmail` idiom already unified — DECISION, no code change → fixed in passing by `4588b831` (2026-08-24), which added `UserRepository.existsByEmail` and moved `UserService.create`/`update` and `DataInitializer` onto it; the 3 surviving `findByEmail` calls are the entity-needing paths the task said to keep. Coverage spring-boot/junior "Derived query methods" already marked ✅ 07-timetrack; backend README already represents it; PLANNING §6 rule added, §0 + §14 tree refreshed
