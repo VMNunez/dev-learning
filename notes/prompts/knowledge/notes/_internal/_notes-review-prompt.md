@@ -27,7 +27,8 @@ to land the file).
 **How to use:**
 
 1. Fill in `TOPIC`, `FILE` (the exact `en/` file just authored), `TASK` (the complete selected
-   persistent-plan entry), and the two plan-derived lists `READABLE_SIBLINGS` and `LINK_TARGETS`.
+   persistent-plan entry), and the two plan-derived lists `READABLE_SIBLINGS` and `LINK_TARGETS`, the
+   latter carrying each entry's title and any `Audit note`.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -41,8 +42,9 @@ TASK  = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact headings the author appended]
 READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is complete or refined
         — the ONLY sibling prose you may open]
-LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status — the
-        complete set of filenames this file may link, including entries not written yet]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
+        `Audit note` it carries — the complete set of filenames this file may link, including entries
+        not written yet, and the authority on what each one teaches]
 
 Use TOPIC, FILE, TASK, SCOPE, READABLE_SIBLINGS, and LINK_TARGETS wherever the prompt refers to their
 placeholders.
@@ -100,6 +102,15 @@ Before starting, read:
 > exactly the defect this rule exists to stop. A **same-topic** link to a filename in neither list is a
 > defect: fix it against `{LINK_TARGETS}`. A cross-topic link into another topic's tree sits outside both
 > lists by design — judge it by the standard's preview-callout rule, never against this table.
+>
+> **A row in that table settles the filename; it also settles the claim.** Each row carries the entry's
+> title and its `Audit note`, so a sentence sending the reader to an entry for a concept the plan
+> assigns to a *different* entry is a defect even though the link resolves — "covered in detail in
+> `04-methods.md`" when the plan moved static methods to entry 06. Fix it to the entry the plan
+> assigns today, and drop a **cross-file** anchor — `§"Heading"`, `§Heading` or ``§`member` `` — the
+> row does not account for; an anchor into `{FILE}` itself is unaffected. Where the row that owns the
+> concept is `{FILE}`'s own entry, the fix is to drop the link and refer to this file's own section in
+> prose. You still never open the target to decide this: the row is the evidence.
 
 Treat TASK as an acceptance contract. Coverage bullets define required scope, but a file that names
 or demonstrates them without achieving TASK's `Learning outcome`, resolving every `Must answer`, and
@@ -127,7 +138,9 @@ For each section of the file, check:
 - **References** — forward references within the topic marked; cross-topic references opened with a
   preview callout; links to sibling notes carry a one-sentence reminder; every same-topic internal link
   resolves to a `{LINK_TARGETS}` row, and no claim about a sibling's content rests on a file outside
-  `{READABLE_SIBLINGS}`.
+  `{READABLE_SIBLINGS}`. **Every claim about what a target teaches also matches that row's assigned
+  concepts** — the entry named is the one the plan assigns the concept to today, and any `§"Heading"`
+  anchor is one the row accounts for.
 - **Narrative seams** — the file opens by picking up the thread from the previous file (not a cold
   definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
   file stays consistent with it. Read the `{READABLE_SIBLINGS}` neighbours to check the seams; where the
@@ -165,7 +178,8 @@ Report your **verdict** for this file:
 - The **"N lines, read to EOF"** line for `{FILE}`.
 - The **section-by-section trace** (every heading → PASS or the fix).
 - The siblings you opened, each shown to be in `{READABLE_SIBLINGS}`, and every internal link you
-  checked against `{LINK_TARGETS}` whose target is declared but not yet written.
+  checked against `{LINK_TARGETS}` — for each, the row that justifies the sentence around it, and
+  whether that target is declared but not yet written.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;
   handoff; and, when applicable, every introduction invariant → PASS or the fix.
 - The coverage status (✅/🔧/➕) and the files touched (`en/` only).

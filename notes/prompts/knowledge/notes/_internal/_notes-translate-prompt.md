@@ -22,7 +22,8 @@ in your report; the English is not yours to touch.
 
 1. Fill in `TOPIC` and `FILE` — `FILE` is the **`en/`** path; you create/update its `es/` counterpart
    (same number prefix, Spanish filename, e.g. `en/11-exceptions.md` → `es/11-excepciones.md`) — and
-   `LINK_TARGETS`, the plan's table of every sibling's English and Spanish filename.
+   `LINK_TARGETS`, the plan's table of every sibling's English and Spanish filename, with the title
+   and any `Audit note` saying what that entry is assigned to teach.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -35,8 +36,9 @@ LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/11-exceptions.md]
 
 SCOPE = [full | append-only — with append-only, list the exact English headings that were appended]
-LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path — the authority on every
-        sibling's Spanish filename, including entries whose file does not exist yet]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
+        `Audit note` — the authority on every sibling's Spanish filename, including entries whose file
+        does not exist yet, and on what each one teaches]
 
 Use TOPIC, LEVEL, FILE, SCOPE, and LINK_TARGETS wherever the prompt refers to their placeholders.
 
@@ -113,6 +115,10 @@ native Spanish**, not a word-for-word calque of the English.
   **cross-topic** link `{LINK_TARGETS}` has no row at all: take that topic's Spanish filename from its own
   `notes-plan-{LEVEL}.md`, fall back to its `es/` listing only where no plan exists, and say in your
   report which of the two you used. Prose-only references with no markdown link stay prose-only.
+  **You translate the sentence around the link; you do not re-aim it.** If the English claims a target
+  teaches a concept `{LINK_TARGETS}` assigns to a different row — or anchors a section that row does
+  not account for — carry the sentence across as written and **report it**: the English is canonical
+  and the fix belongs in `en/`, so silently correcting it in `es/` would split the pair.
 - **Prose is native Spanish.** Fix calque as you translate: `escanear`→`leer`, `retornar`→`devolver`,
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
   `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,

@@ -33,7 +33,8 @@ budget stays on writing that file well.
    brand-new file that does not exist yet, still name its intended path here.
 3. Fill in `TASK` — the selected persistent-plan entry, including its exact assigned concepts.
 4. Fill in `READABLE_SIBLINGS` and `LINK_TARGETS` from the plan — which sibling notes may be read, and
-   which filenames may be linked. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md`.
+   which filenames may be linked, each with its title and any `Audit note` saying what that entry is
+   assigned to teach. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md`.
 5. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
 6. Paste the entire prompt below into a new chat.
 
@@ -53,8 +54,9 @@ TASK = [what to do this run — copy the persistent plan entry, or describe it, 
 
 READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is complete or refined
         — the ONLY sibling prose you may open; the orchestrator resolves this list from the plan]
-LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status — the
-        complete set of filenames you may link, including entries not written yet]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
+        `Audit note` it carries — the complete set of filenames you may link, including entries not
+        written yet, and the authority on what each one teaches]
 
 REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO or unless TASK
@@ -115,6 +117,17 @@ the full standard in English.
 > notes tree is unaffected, the standard's preview-callout rule governs it — and never resolve a forward
 > reference by reading the target: if it is not in `{READABLE_SIBLINGS}`, you link it and mark it, you do
 > not check it.
+>
+> **A legal filename is not yet a true sentence, and `{LINK_TARGETS}` is the authority on both.** Every
+> row carries that entry's title and its `Audit note`, so the entry you send the reader to for a
+> concept is the entry the plan assigns that concept to **today** — never the file that happens to
+> hold it on disk, and never the one you remember. "Static methods are covered in `04-methods.md`"
+> passes the filename test and is false the moment the plan assigns static methods to entry 06. An
+> anchor after a **cross-file** reference — `§"Heading"`, `§Heading` or ``§`member` `` — is legal only
+> where the row accounts for that section; otherwise name the file alone, and an anchor into `{FILE}`
+> itself is unaffected. Where the row that owns the concept is `{FILE}`'s own entry, the fix is to drop
+> the link and refer to this file's own section in prose. This is not a licence to open the target —
+> the row is what you check, not the note.
 
 Before starting, read:
 - the shared session rules — teaching and level-layout rules.
@@ -270,7 +283,9 @@ The English reviewer (B) audits this file next, but do not lean on that — hand
 - Signature texture is present where the section warrants it (worked example, a diagram for anything
   structural, callouts, tables explained) — and no section visibly drops below its neighbours.
 - No example or concept duplicates an admissible sibling; every forward/cross-topic reference is marked,
-  and every same-topic internal link resolves to a `{LINK_TARGETS}` row.
+  and every same-topic internal link resolves to a `{LINK_TARGETS}` row — **and the sentence around it
+  agrees with that row**: the concept you send the reader there for is one the row assigns to that
+  entry, and any `§"Heading"` anchor names a section that row accounts for.
 - TASK's `Learning outcome`, every `Must answer`, declared `Prerequisites`, and `Handoff` are
   substantively satisfied. Bullet coverage alone is not a pass.
 - If this is the topic introduction, every introduction invariant from the standard is present.

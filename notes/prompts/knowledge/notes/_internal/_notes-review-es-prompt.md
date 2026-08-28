@@ -44,13 +44,14 @@ PLAN = [notes/{topic}/coverage/notes-plan-{LEVEL}.md]
 NOTE = [two-digit entry number]
 TASK = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact Spanish headings that were appended]
-LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path — the authority the internal-link
-        check runs against, including entries whose file does not exist yet]
+LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
+        `Audit note` — the authority the internal-link check runs against, both for filenames and for
+        what each entry teaches, including entries whose file does not exist yet]
 
 Use these exact values wherever their placeholders appear. TASK and `{LINK_TARGETS}` are allowed
 context; the English note is not. `FILE` is a **path** you verify and commit — never a file you open,
-and the English paths inside `{LINK_TARGETS}` are filenames, not prose — reading a filename is not
-reading the note.
+and what `{LINK_TARGETS}` carries about the English side — a filename and the plan's own statement of
+what that entry teaches — is plan metadata, not the note's prose; reading it is not reading the note.
 
 > **`SCOPE = append-only`: `{ES_FILE}` is FROZEN outside the appended headings.** Victor refined this
 > pair and declared the prose final. Review and fix **only** the sections named in SCOPE; every other
@@ -86,7 +87,8 @@ version — your judgment must come from the Spanish text alone, the way Victor 
 
 **The prohibition is on the English note, not on the support files this pass needs.** The standard and
 the calibration reference below, `{LINK_TARGETS}` and the `notes/{TOPIC}/{LEVEL}/es/` directory listing
-the link check cross-checks, and `{PLAN}` at Finish are all **required** reads; `{FILE}` is a path you
+the link check cross-checks, and `{PLAN}` — read for the link check's claim half and again at Finish
+— are all **required** reads; `{FILE}` is a path you
 verify and commit,
 never a file you open. Nothing in that set puts one line of the English note in front of you, which is
 the only thing "reads it cold" protects.
@@ -138,6 +140,12 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   row, so verify only that it carries a Spanish filename and points into an `es/` tree, and never remove
   or rewrite it for being absent from this plan. This is the last defence before the commit — a link
   carrying an English filename that ships here is one no later stage will catch.
+  **The filename is one claim; the sentence around it is another.** `{PLAN}` says what each entry is
+  assigned to teach, so where the prose sends the reader to an entry for a concept the plan assigns
+  elsewhere — or carries a **cross-file** anchor (`§"Heading"`, `§Heading`, ``§`member` ``) that entry
+  does not own — **report it and do not rewrite it**. An anchor into this same file is unaffected.
+  That sentence exists in `en/` too, the English is canonical, and repairing only the Spanish half
+  splits the pair.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
 - **Standalone learning outcome** — studying only the Spanish must let Victor achieve TASK's
@@ -191,6 +199,8 @@ Then report your **verdict**:
 - Any **structural gaps** you could not fix (for a follow-up author run).
 - The internal links you checked against `{LINK_TARGETS}`, naming any whose Spanish file the plan
   declares but the `es/` folder does not hold yet.
+- Every sentence whose claim about a target contradicts `{PLAN}`'s assignment for that entry — the
+  link, the concept it claims, and the entry the plan actually assigns it to — reported, not fixed.
 - Files touched (`es/` only, unless you committed), and — if committed — the commit hash.
 
 ````

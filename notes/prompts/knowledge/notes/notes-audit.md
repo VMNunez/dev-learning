@@ -121,11 +121,15 @@ before dispatch and pass both to every stage:
   reuse a convention or an example domain from, or verify a claim against.** Where two carry the same
   convention, the `refined` one is the stronger precedent: Victor froze it himself.
 - `LINK_TARGETS` — every entry's number, title, `English:` path and `Spanish:` path, each tagged with
-  its `Status:`. The plan owns a filename from the moment it declares it, so **every row here is a
-  legal link target, including one whose file does not exist yet** — that is exactly what the
-  standard's forward-reference marker is for. Nothing outside this table may be linked **within this
-  topic and level**; a cross-topic link into another topic's notes tree is governed by the standard's
-  preview-callout rule and this table says nothing about it.
+  its `Status:` **and any `Audit note` the entry carries**. The plan owns
+  a filename from the moment it declares it, so **every row here is a legal link target, including one
+  whose file does not exist yet** — that is exactly what the standard's forward-reference marker is
+  for. Nothing outside this table may be linked **within this topic and level**; a cross-topic link
+  into another topic's notes tree is governed by the standard's preview-callout rule and this table
+  says nothing about it. **The concepts travel because a legal filename is not yet a true sentence:**
+  the row is also the authority on *what that entry teaches*, so a stage can send the reader to the
+  entry the plan assigns a concept to today without opening the target — the only thing that stops a
+  reference rotting the moment a run consolidates a section into its owning chapter.
 
 `READABLE_SIBLINGS` is legitimately empty on an early route — the topic's first entry, or one whose
 siblings are all `pending`. Pass it as `none` and say so: there is no sibling precedent to honour, the
@@ -286,7 +290,9 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 It reads Spanish independently, fixes quality, verifies that Spanish alone achieves the pedagogical
 contract, verifies both files exist, changes only the selected status, then commits the English file,
 Spanish file, and plan atomically. A structural pedagogical gap blocks completion and returns the
-entry to the English stages. It must run `git status`
+entry to the English stages, as does a claim mismatch stage T or stage C reports against
+`LINK_TARGETS` — the sentence is `en/`-canonical and false at write time, so it is repaired by one
+re-dispatch of Stage B, not carried into the commit. It must run `git status`
 immediately before staging and committing and stage exact paths only.
 
 Commit:
@@ -312,7 +318,8 @@ stops the run. Never mark a partially verified or merely bullet-complete file co
 
 Report branch, topic, level, note, resolved paths, action, assigned-concept count, fingerprint match,
 the sibling-admissibility resolution — how many entries were admitted as `READABLE_SIBLINGS`, how many
-`LINK_TARGETS` rows are declared but unwritten, and every orphan file found in `EN_DIR`/`ES_DIR` —
+`LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
+against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` —
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
 verdict, concept checkbox transitions, status transition, studied-state transition, and commit. In append-only mode, also report the consumed bullets, the

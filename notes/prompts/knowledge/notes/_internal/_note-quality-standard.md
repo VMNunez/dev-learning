@@ -159,7 +159,7 @@ failure that produced this rule.
 ## Read the whole file, verifiably — before editing, reviewing, or translating
 
 The Read tool loads **2000 lines by default and truncates longer files silently** — and note files
-cross that line (`spring-boot/en/06-security-jwt.md` is already past 2384). A truncated read makes a
+cross that line (`notes/spring-boot/junior/en/06-security-jwt.md` is already past 2384). A truncated read makes a
 review trace miss the tail headings, and — worst case — makes a translate pass regenerate the `es/`
 file **without its tail, destroying content**. So before working on any note file: check its line
 count (`wc -l`); if it is near or over 2000, read it in passes with `offset` until the real end. Your
@@ -356,11 +356,12 @@ finished note visibly uses most of them:
 - **One worked example carried through the whole section.** Pick a single concrete example and
   follow it from start to finish, rather than scattering unrelated fragments. `Animal/Dog/Cat` runs
   through all of the inheritance section; `main() → methodA() → methodB()` runs through the entire
-  call-stack explanation in `08`. The reader should trace one story, not re-orient at every code block.
+  call-stack explanation in `11-exceptions.md` §1. The reader should trace one story, not re-orient at
+  every code block.
 - **ASCII diagrams for anything with spatial or structural shape.** When the concept has a shape — a
-  stack, a tree, a memory layout, a request flow — draw it. The call-stack diagram in `08`
-  (`[top] methodB() / methodA() / main() [bottom]`) is the model. A diagram is often worth more than
-  a paragraph for structure.
+  stack, a tree, a memory layout, a request flow — draw it. The call-stack diagram in
+  `11-exceptions.md` §1 (`[top] methodB() / methodA() / main() [bottom]`) is the model. A diagram is
+  often worth more than a paragraph for structure.
 - **Real-world analogies for abstract mechanisms.** Anchor an abstract idea to a physical one: the
   call stack as "a stack of plates", integer overflow as "an odometer rolling over", `StringBuilder`
   as "a whiteboard you write on piece by piece". One good analogy per hard concept.
@@ -506,7 +507,7 @@ padding around the explanation he was looking for.
 > files and must not be reopened per-file.
 >
 > What stays **open** is `Purpose:` in the *non-introduction* files of a structured-mode folder. Note
-> that no `notes/java/junior/` file has ever used it — all sixteen are conversational prose, including
+> that no `notes/java/junior/` file has ever used it — all seventeen are conversational prose, including
 > `11-excepciones.md`, which this standard cites as its own calibration reference — so the structured-mode
 > claim over that folder describes Spring Boot accurately and Java not at all. Do not "fix" the Java
 > files to match; the mismatch is recorded and Victor resolves it as he reviews each topic.
@@ -555,7 +556,9 @@ padding around the explanation he was looking for.
 - **Mark forward references within the same topic.** If an example in file N uses a concept that is
   not explained until file M (M > N), add a one-line note inline: "The `X::Y` syntax is a method
   reference — covered in full in `12-streams-lambdas.md`. For now, read it as 'the `Y` method of
-  `X`.'" Never leave syntax the reader hasn't seen yet unexplained and unmarked.
+  `X`.'" Never leave syntax the reader hasn't seen yet unexplained and unmarked. Which file that is
+  comes from the plan, under **Which entry owns the concept** below — the marker is about the reader,
+  the filename is about the plan.
 - **Add a preview callout for every cross-topic reference.** When a section uses classes, annotations,
   or patterns from a different topic folder — for example, Java language notes mentioning `@Entity`,
   `JpaRepository`, `ResponseEntity`, or `@Service` — open that section with a blockquote callout:
@@ -565,10 +568,28 @@ padding around the explanation he was looking for.
   studying files in sequence must never encounter an unexplained class or annotation without a clear
   signal that it belongs to a different topic they haven't reached yet.
 - **Link to other note files when a concept depends on something already covered elsewhere.** Use a
-  markdown link to the relevant file (e.g. `see [08-generics.md](08-generics.md)`). After the link,
+  markdown link to the relevant file (e.g. `see [09-generics.md](09-generics.md)`). After the link,
   add one sentence of reminder — short enough that the reader can continue without opening the other
   file if they roughly remember the concept. The link is for deep review; the sentence is so the flow
-  of the current file is never broken.
+  of the current file is never broken — and resolve *which* file under **Which entry owns the
+  concept** below.
+- **Which entry owns the concept comes from `notes-plan-{LEVEL}.md` — delivered to a pipeline stage
+  as `LINK_TARGETS` — never from the filesystem and never from memory.** A cross-file reference makes
+  two claims, and only the first is about a path: the file it names, and *what that file teaches*.
+  "Static methods are covered in detail in `04-methods.md`" names a file that exists and is legal to
+  link, while the plan assigns static methods to entry 06 — the link is fine and the sentence is
+  false. So resolve the concept against the plan's own statement of what that entry teaches — its
+  title, and any `Audit note` recording that a section moved — and write the entry the plan assigns it
+  to today. An anchor that follows a **cross-file** reference — `§"Heading"`, `§Heading` or
+  ``§`member` `` — is legal only where the plan assigns that concept to the entry named; otherwise
+  name the file alone. An anchor into this same file is unaffected: it points at a section you can
+  see. **When the entry the plan assigns the concept to is this file itself, the reference is not
+  re-aimed but removed** — point at this file's own section in prose, with no link. For a
+  **cross-topic** reference the owning entry comes the same way, from that topic's own
+  `notes-plan-{LEVEL}.md`; where that topic has no plan, name the file without claiming what it
+  teaches. This binds every sentence a pipeline stage writes or audits in the file in front of it.
+  Nothing scans the tree for references that rotted in files no run is touching — those Victor repairs
+  as a TODO while studying.
 - **Code concept sections (methods, classes, annotations)** *(structured mode only — and never in a
   `00` topic introduction, whatever folder it sits in, per the topic-introduction bullet under
   **Format modes**)*: each section starts with three metadata lines: `Purpose:` — one
