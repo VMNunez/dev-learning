@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **6 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **5 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -204,6 +204,12 @@ Browser                               Server
   still null on the entity until the flush; a create response mapped before it serialises `null` for a
   column the row has. Use `saveAndFlush` (or map after the flush) whenever the response DTO carries such a
   field.
+- A column's contract is declared on the mapping *and* verified against the live schema. `ddl-auto=update`
+  adds tables and columns but never alters one that already exists, so a `@Column(nullable = false)` or
+  `@ColumnDefault` added after the column was created is intent the database never received; bringing an
+  existing schema up to the contract is a manual `ALTER TABLE`, and a not-null added to a populated column
+  needs its historical rows backfilled first. A write-once column also carries `updatable = false`, so no
+  later update to the entity can rewrite it.
 
 **Angular rules:**
 Same bar as the backend block: each line is violable — a reviewer can open a file and point at the break.
@@ -269,7 +275,7 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 | password | String | VARCHAR | not null | BCrypt hash, never plain text |
 | role | Role (enum) | VARCHAR | not null | `EMPLOYEE` or `MANAGER` — stored as string via `@Enumerated(STRING)` |
 | active | boolean | BOOLEAN | not null, default true | Soft delete — inactive users cannot log in. Primitive `boolean` initialised to `true`, not `Boolean`: a nullable wrapper unboxes to a `NullPointerException` (500) if a row is ever written outside JPA |
-| createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
+| createdAt | LocalDateTime | TIMESTAMP | not null, immutable | Set by `@CreationTimestamp`; `updatable = false` keeps it out of every generated `UPDATE` |
 
 ### Project
 | Field | Java type | SQL type | Constraints | Notes |
@@ -278,7 +284,7 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 | name | String | VARCHAR | not null, unique | Project name shown in selectors |
 | description | String | VARCHAR | nullable | Optional context |
 | active | boolean | BOOLEAN | not null, default true | Inactive projects cannot receive new entries. Primitive `boolean` for the same unboxing reason as `User.active` |
-| createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
+| createdAt | LocalDateTime | TIMESTAMP | not null, immutable | Set by `@CreationTimestamp`; `updatable = false` keeps it out of every generated `UPDATE` |
 
 ### TimeEntry
 | Field | Java type | SQL type | Constraints | Notes |
@@ -291,7 +297,7 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 | description | String | VARCHAR | not null | What was done |
 | status | EntryStatus (enum) | VARCHAR | not null, default DRAFT | `DRAFT`, `SUBMITTED`, `APPROVED`, `REJECTED` via `@Enumerated(STRING)` |
 | rejectionNote | String | VARCHAR | nullable | Set by the manager when rejecting |
-| createdAt | LocalDateTime | TIMESTAMP | not null | Set by `@CreationTimestamp` |
+| createdAt | LocalDateTime | TIMESTAMP | not null, immutable | Set by `@CreationTimestamp`; `updatable = false` keeps it out of every generated `UPDATE` |
 | updatedAt | LocalDateTime | TIMESTAMP | not null | Set by `@UpdateTimestamp` on every change |
 
 ### Relationships
