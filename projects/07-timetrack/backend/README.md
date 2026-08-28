@@ -137,7 +137,7 @@ JpaRepository            ← reads and writes data, no logic
 
 ### Constructor injection ✓
 
-Every bean receives its collaborators through a single constructor — there is no `@Autowired` field anywhere, so Spring wires them without an annotation and each class states its whole dependency list in one signature. `DataInitializer` takes its `app.admin.*` seed values the same way, as `@Value` constructor parameters rather than fields: values injected after construction leave the runner constructible in a state where `run()` would save a user with a null email, and parameters are what let those fields be `final`.
+Every bean receives its collaborators through a single constructor — there is no `@Autowired` field anywhere, so Spring wires them without an annotation and each class states its whole dependency list in one signature. Required configuration is injected the same way and there is no `@Value` field either — `DataInitializer` takes its `app.admin.*` seed values, `JwtUtil` its signing secret and expiry, and `SecurityConfig` its allowed origins, all as `@Value` constructor parameters rather than fields: values injected after construction leave the bean constructible in a state where one of its methods would read a null — the runner saving a user with a null email, `JwtUtil` signing with a null key — and parameters are what let those fields be `final`.
 
 ### DTO boundary ✓
 
