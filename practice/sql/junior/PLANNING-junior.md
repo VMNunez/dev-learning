@@ -823,27 +823,42 @@ for the four classic failures — join, predicate, mutation and pagination.
 Status is driven by the **scored** count (§1's third definition), never the written or merely answered
 one. A row moves to `closed ✅` only after a `review` run has graded it.
 
-| Step | Topic | Exercises file | Scored / target | Status |
-|------|-------|----------------|-----------------|--------|
-| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: sin crear)* | in progress ⏳ |
-| 1 | JOINs | `03-joins.sql` | 0 / 22 | not started |
-| 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 14 | not started |
-| 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started |
-| 4 | NULL and three-valued logic | `06-nulls.sql` | 0 / 12 | not started |
-| 5 | Subqueries, CTEs, views | `07-subqueries-ctes.sql` | 0 / 16 | not started |
-| 6 | Date and string functions | `08-dates-strings.sql` | 0 / 12 | not started |
-| 7 | Window functions | `09-window-functions.sql` | 0 / 12 | not started |
-| 8 | DML and transactions | `10-dml-transactions.sql` | 0 / 16 | not started |
-| 9 | Schema design | `11-schema-design.sql` | 0 / 15 | not started |
-| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 16 | not started |
-| 11 | Indexes and query plans | `13-indexes.sql` | 0 / 12 | not started |
-| 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | not started |
-| 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started |
+| Step | Topic | Exercises file | Scored / target | Status | Técnicas que desbloquea al cerrar |
+|------|-------|----------------|-----------------|--------|-----------------------------------|
+| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: sin crear)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
+| 1 | JOINs | `03-joins.sql` | 0 / 22 | not started | JOINs de todo tipo |
+| 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 14 | not started | `GROUP BY` / `HAVING` / agregados |
+| 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started | Diagnóstico de fan-out y multiplicación de filas |
+| 4 | NULL and three-valued logic | `06-nulls.sql` | 0 / 12 | not started | Manejo de `NULL`, `NOT IN` con nulos |
+| 5 | Subqueries, CTEs, views | `07-subqueries-ctes.sql` | 0 / 16 | not started | Subconsultas, CTEs, vistas |
+| 6 | Date and string functions | `08-dates-strings.sql` | 0 / 12 | not started | Funciones de fecha y texto, `DATE_TRUNC` |
+| 7 | Window functions | `09-window-functions.sql` | 0 / 12 | not started | Window functions |
+| 8 | DML and transactions | `10-dml-transactions.sql` | 0 / 16 | not started | DML y transacciones |
+| 9 | Schema design | `11-schema-design.sql` | 0 / 15 | not started | Diseño de esquema y normalización |
+| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 16 | not started | Tipos y DDL escrito a mano |
+| 11 | Indexes and query plans | `13-indexes.sql` | 0 / 12 | not started | Índices y planes de ejecución |
+| 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | not started | — |
+| 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started | — |
 
 **20 of 209 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
 20-exercise review batch that does not count. `PROGRESS.md` holds the
 authoritative status; this table is the at-a-glance copy. Both are updated by the doctrine §4 ritual, in
 the same commit. Review batches never change a row here.
+
+### Readiness de simulaciones — qué se puede pedir hoy
+
+La última columna es lo que el track de simulaciones lee de este nivel. La regla que la gobierna vive en
+la doctrina §8c y no se repite aquí; lo que vive aquí es el mapeo, porque **reordenar los steps mueve la
+fila y se lleva su técnica consigo** — un reorder no puede dejar la readiness mintiendo. Una celda `—`
+significa que ese step no desbloquea ninguna técnica sobre la que un test pueda medirse; los Steps 12 y
+13 son ese caso, uno es operar contra una base viva y el otro es la integración de todo lo anterior.
+
+**Estado hoy (2026-08-28): 0 steps `closed ✅` → ninguna simulación SQL todavía.** El primer test toca al
+cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
+
+> ⚠️ **Los cinco tests que ya están en el banco (`practice/simulations/sql/` 01–05) están bloqueados.**
+> Se escribieron antes de que existiera este plan y **los cinco piden window functions**, o sea el Step 7
+> de esta ruta. No los abras hasta que cierre: no es que salgan mal, es que no se pueden empezar.
 
 ---
 

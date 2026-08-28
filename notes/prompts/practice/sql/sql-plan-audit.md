@@ -146,7 +146,7 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 |---|---------|------|-------|------------|
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | route §2 | doctrine §2, §3, §7 · route §2 · `ROADMAP.md` (for B2) |
 | 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
-| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15** | route §1, §2, §3 · doctrine §0 · **never `PROGRESS.md`** | `PROGRESS.md` · **the Phase 1 snapshot** |
+| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15, 16** | route §1, §2, §3 · doctrine §0 · **never `PROGRESS.md`** | `PROGRESS.md` · **the Phase 1 snapshot** |
 | 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **Section E** | **the doctrine — any section** · route header (metadata only) | `sql-exercises-prompt.md`, `sql-plan-prompt.md` |
 
 **The `Edits` column is a fence, not a hint.** Two files are open and four specialists run against them;
@@ -209,11 +209,14 @@ graded work is nobody's.
 - Anything scheduling notes, Q&A or simulations **comes out**, collapsed into one §Z line. Anything the
   plan *describes* rather than *points at* (exercise format, note quality, Q&A shape) comes out too —
   Section E's table decides who owns what.
-- **§8c is the one exception and is not to be deleted.** Simulation *readiness* — which techniques the
-  closed steps of the route unlock — is a fact about SQL knowledge and belongs here; simulation *content*
-  (format, time limit, bank, tracker, config) does not. Check §8c states the first but not the second,
-  and that its "Estado hoy" line agrees with §8's closed steps. A specialist that removes §8c wholesale
-  has failed this check, not passed it.
+- **§8c is the one exception and is not to be deleted.** Simulation *readiness* — that a test may only
+  demand techniques of closed steps — is a fact about SQL knowledge and belongs here; simulation
+  *content* (format, time limit, bank, tracker, config) does not. Check §8c states the rule but not the
+  content, and that it holds **no technique-to-step table of its own**: that mapping is a column of the
+  level route's §3 step table, and the route's own readiness status line is what must name exactly the
+  `closed ✅` set of that same table — invariant 16, checked and repaired by specialist 3, who owns §3.
+  A specialist that removes §8c wholesale has failed this check, not passed it; so has one that
+  restores a step-numbered mapping into it.
 
 **Acceptance check.** A report is acceptable only with the read-to-EOF line **and** one row per check
 its slice owns. Otherwise re-dispatch once, quoting what was missing; if it fails again, **this gate

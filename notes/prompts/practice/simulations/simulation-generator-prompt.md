@@ -32,8 +32,10 @@ Stop with an exact message when:
 - the step lacks any required contract field;
 - the active branch is `main`.
 
-For SQL, independently re-check doctrine §8/§8c. If any planned requirement exceeds currently unlocked
-techniques, stop and report route drift; never weaken the spec silently.
+For SQL, independently re-check doctrine §8/§8c for the rule and `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
+§3 for which steps are `closed ✅` and what each unlocks (a missing SQL route for this level blocks the
+step). If any planned requirement exceeds currently
+unlocked techniques, stop and report route drift; never weaken the spec silently.
 
 ## 1 — Inventory and numbering
 

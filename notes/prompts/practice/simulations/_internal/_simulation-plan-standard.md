@@ -185,7 +185,7 @@ left a requirement unmet or scored 1 on a non-core dimension and still earned th
 3. Original verdict and time are immutable after first review.
 4. Tracker, spec header, route, MISTAKES, and PROGRESS agree after a review.
 5. A correction closes only recorded gaps and never increments completed simulations.
-6. SQL scope never exceeds doctrine §8c's unlocked techniques.
+6. SQL scope never exceeds the techniques unlocked by the `closed ✅` steps of `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §3, under the rule in SQL doctrine §8c.
 7. A route never claims readiness from coverage alone.
 8. Existing history is preserved across plan updates.
 9. `simulation-block-open` and `simulation-block-close` ask zero questions and never start grading.

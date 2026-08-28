@@ -38,6 +38,10 @@ Validate `LEVEL`; default only `MODE`. Resolve:
 - `ROUTE = practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`
 - `TRACKER = practice/simulations/TRACKER.md`
 - `MISTAKES = practice/simulations/MISTAKES.md`
+- `SQL_DOCTRINE = practice/sql/PLANNING.md` · `SQL_ROUTE = practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
+  — the readiness rule lives in the doctrine §8c, the technique-to-step mapping and today's `closed ✅`
+  set in `SQL_ROUTE` §3. **If `SQL_ROUTE` does not exist for this `LEVEL`, the SQL track is blocked**:
+  admit no SQL step, report `/sql-plan {LEVEL}` as owed, and continue with the other tracks.
 
 Check the active branch. If it is `main`, close out as blocked and do not write target artifacts.
 
@@ -60,8 +64,9 @@ Derive readiness independently per track:
   evidence at this level.
 - Spring Boot: Java/Spring/Spring Boot/Architecture/Security scope exists and PROGRESS names practical
   backend evidence at this level.
-- SQL: selected SQL scope exists and only techniques whose SQL steps are closed in doctrine §8c are
-  admissible. A realistic first SQL simulation still requires the doctrine's minimum closed-step gate.
+- SQL: selected SQL scope exists and only techniques whose SQL steps are `closed ✅` in `SQL_ROUTE` §3
+  are admissible — doctrine §8c holds the rule, the route holds the mapping and the status line. A
+  realistic first SQL simulation still requires that route's own first-test gate (junior: Step 2).
 
 Coverage is a ceiling, never readiness evidence by itself.
 

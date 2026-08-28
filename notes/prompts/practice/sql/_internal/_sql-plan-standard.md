@@ -25,9 +25,12 @@ never schedules them, never states their config, and never lists their files. A 
 on a note being written is out of scope: here a step closes on exercises.
 
 **One exception, and only one: readiness.** A downstream track that may only use *closed* steps has to
-ask this plan whether it is unblocked, because the route §3 is the sole record of that. So the plan may state
-**which techniques the closed steps have unlocked, and therefore what that track is allowed to ask
-for** — a fact about SQL knowledge, which is exactly what this plan owns. It still may not schedule the
+ask this plan whether it is unblocked, because the route §3 is the sole record of that. So the doctrine
+may state **the rule** — a test may demand techniques of `closed ✅` steps and no others — and the
+level's route §3 carries **the mapping and today's status**, as a column of its step table. A fact about
+SQL knowledge, which is exactly what this plan owns. **The doctrine never holds a second, step-numbered
+copy of that mapping**, for the same reason §1's revision spans do not: a route that cannot be
+reordered without editing a level-neutral file makes a step-ordering correction unapplicable. It still may not schedule the
 run, state its config, describe what a test looks like, or list its files. The line is *readiness vs
 content*: "joins and `GROUP BY` are available, window functions are not" is readiness; "a SQL test is
 6–9 queries with a 45-minute limit" is content and belongs to the other prompt.
@@ -59,7 +62,7 @@ Its two inputs, and it never invents beyond them:
 | 4 | What to update when a step closes | Every file that moves, marked *automated* (a prompt does it) or *manual*. |
 | 7 | Branch and commit rules | Which branch, who commits what, atomicity. |
 | 8b | Revision points | Where the track deliberately stops advancing and re-drills. Governed by B4. **The cadence and the failure-driven focus mechanism only.** Which points exist for a level, their spans and their triggers live in that level's route §1 and are never restated here — a second copy here is what makes a route reorder require a doctrine edit. |
-| 8c | Simulation readiness | The technique-to-step mapping, and which techniques the closed steps have unlocked. Readiness only — see the exception in "What this plan is NOT". |
+| 8c | Simulation readiness | The rule only: a test may demand techniques of `closed ✅` steps and no others, and a cross-track consumer reads the selected level's route. **Which technique each step unlocks, and which are unlocked today, live in that level's route §3 as a column of its step table and are never restated here** — a second copy here is what makes a route reorder require a doctrine edit. Readiness only — see the exception in "What this plan is NOT". |
 | 9 | Quality gates | Which quality prompt runs at which checkpoint, and the hard prerequisite chain. |
 | 10 | Consistency invariants | The mechanical cross-checks in Section D. |
 | 11 | Closure | What makes the whole track finished, level by level. |
@@ -76,7 +79,7 @@ at `PLANNING-{LEVEL}.md` so a cross-reference written before the split still lan
 | header | Plan metadata | `Plan status` · `Level` · `Coverage` path · `Coverage SHA-256` · `Doctrine` path · `Generated`. |
 | 1 | The exercise files | Every file, in order, with its target and the three counts (written / answered / scored). Revision files in their own table, with no target, and that table carries each point's **span and trigger**, not just its filename. The route is their single source: a route whose spans or triggers are defined in the doctrine cannot be reordered without editing a level-neutral file, which is how a step-ordering correction becomes unapplicable. |
 | 2 | The steps | One entry per step, to the shape in Section C. |
-| 3 | Progress table | One row per step: scored/target, status. Mirrors `PROGRESS.md`. |
+| 3 | Progress table | One row per step: scored/target, status, **and the technique that step unlocks on closing** — the readiness mapping lives here and nowhere else, so a reorder moves the technique with its step. Mirrors `PROGRESS.md`. Followed by the **readiness status line** naming the `closed ✅` set and the first-test gate, plus any blocked-bank warning. |
 | — | Out of scope at this level | Every coverage bullet deliberately not drilled here, with a reason. |
 
 **These numbers are the contract.** Three other files cross-reference the plan by section number —
@@ -275,6 +278,13 @@ checks. Aligned 2026-07-22.
     nobody can trust is worse than no percentage. Preserve graded figures across a replan (invariant 14
     applies to the projection too).
 
+16. **Readiness lives in the route, and it is complete.** Every non-`R{n}` row of the route §3 carries a
+    technique cell — `—` only where the step unlocks nothing a test could be gated on, and never blank —
+    and the readiness status line below the table names **exactly** the set of `closed ✅` steps in that
+    table, no more and no fewer. The doctrine §8c holds the rule and no mapping of its own. Without this
+    the mapping is unchecked wherever it sits: it was step-numbered in the doctrine until 2026-08-28, and
+    moving it to the route closed the reorder problem while leaving nothing to catch a stale copy.
+
 ---
 
 ## Section E — Ownership fence
@@ -294,7 +304,8 @@ format or quality bar — except exactly what a row's third column below license
 | How much of the route is done | `PROGRESS.md` → `## Practice completed` | that generating and grading update it (the concept inventory lives in `notes/sql/coverage/{LEVEL}.md`, not there — its concept list was deleted 2026-08-03) |
 | The mistake log | `practice/sql/MISTAKES.md` — **two owners, split by section**: `_sql-exercises-review.md` step 5 writes `## Open` and `## Closed`, the graded gaps (`sql-grade` commits the file) · `sql-block-close` writes `## Fricción` and only that, the friction no grading run can see | that revision points read it, which ritual owns which section, and which section a mechanism the doctrine owns reads — naming a section is pointing at its owner; what a row must contain, the row format, the column definitions and the quality bar stay outside (naming a column as the sort key of a mechanism the doctrine owns is not a definition) |
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
-| Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: readiness only** — which techniques the closed steps unlock, and therefore what may be asked for today. Never the config, never the format. |
+| Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: the readiness *rule* only** — that a test may demand techniques of `closed ✅` steps and no others, and that the consumer reads the selected level's route §3. Never the mapping (route §3's column), never the config, never the format. |
+| The route §3 readiness column and its status line | `sql-plan-prompt.md` (writes the column when it authors a step) · `sql-step-close` (rewrites the status line when a step closes) · `sql-plan-audit.md` (specialist 3 audits under invariant 16 and repairs a status line that disagrees with its own §3 table, the same licence it has for the derived `Total` rows) | — that they exist and what each must hold; never which steps are closed today, which only a scored close moves |
 
 **Structure and values split inside the doctrine exactly as they do inside the route** (the third row
 above): the planner writes the route's progress *fields* and only a scored exercise moves their values,

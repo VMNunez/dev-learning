@@ -327,7 +327,8 @@ grader that remembers teaching you the answer is not a grader.
    the coverage file; the *what* lives on the coverage bullets, the *how many* lives here. Do not
    re-create it.
 2. **The level's route file** `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` *(automated)* — the step's row in
-   §3 and its `**Coverage bullets:**` checkboxes in §2 — plus **this doctrine's §0**, refreshed when the
+   §3, **the readiness status line under that same table** (written by `sql-step-close`) and its
+   `**Coverage bullets:**` checkboxes in §2 — plus **this doctrine's §0**, refreshed when the
    step closes (step 4d of the grading prompt; `sql-step-close` verifies and repairs what it left). (The junior
    route was migrated out of this file on 2026-08-03; §5, §6 and §8 here are pointers now, and every one
    of those edits lands in `practice/sql/junior/PLANNING-junior.md`.)
@@ -460,44 +461,29 @@ the same twenty exercises done twice would read as forty exercises of progress.
 ## Section 8c — Simulation readiness: qué puedes pedir hoy
 
 **Esto no programa simulaciones ni dice cómo es un test — eso es del track de simulaciones (§Z).** Dice
-la única cosa que nadie más sabe: **qué técnicas tienes disponibles**, que es la tabla §3 de la ruta leída desde
-fuera. Un test que exige una técnica de un step sin cerrar no es difícil, es imposible, y descubrirlo a
-mitad del cronómetro no enseña nada.
+la única cosa que nadie más sabe: **bajo qué condición un test SQL es siquiera empezable**. Un test que
+exige una técnica de un step sin cerrar no es difícil, es imposible, y descubrirlo a mitad del
+cronómetro no enseña nada. Esto se apunta aquí porque es un hecho sobre tu conocimiento de SQL, no
+sobre los tests: por eso la §Z le concede a esta sección su única excepción.
 
-**La regla:** un test SQL solo puede exigir técnicas de steps **cerrados** (`closed ✅` en la §3 de la ruta). La técnica
-más dura del test es la del step cerrado más alto.
+**La regla:** un test SQL solo puede exigir técnicas de steps **cerrados** (`closed ✅` en la §3 de la
+ruta). La técnica más dura del test es la del step cerrado más alto, y el `FOCUS` natural es el tema de
+ese step — lo que acabas de cerrar es lo que menos veces has usado bajo presión.
 
-| Técnica | Disponible cuando cierra |
-|---------|--------------------------|
-| `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos | Step 0 |
-| JOINs de todo tipo | Step 1 |
-| `GROUP BY` / `HAVING` / agregados | Step 2 |
-| Diagnóstico de fan-out y multiplicación de filas | Step 3 |
-| Manejo de `NULL`, `NOT IN` con nulos | Step 4 |
-| Subconsultas, CTEs, vistas | Step 5 |
-| Funciones de fecha y texto, `DATE_TRUNC` | Step 6 |
-| Window functions | Step 7 |
-| DML y transacciones | Step 8 |
-| Diseño de esquema y normalización | Step 9 |
-| Tipos y DDL escrito a mano | Step 10 |
-| Índices y planes de ejecución | Step 11 |
+**Qué técnica desbloquea cada step, y cuáles están cerradas hoy, viven en la §3 de la ruta del nivel —
+nunca aquí.** Esa tabla es la fuente única: lleva una columna de técnicas por fila, de modo que
+reordenar los steps mueve la técnica con su step y ningún archivo neutro de nivel queda mintiendo. Esta
+sección posee solo la regla, y por tanto vale para los tres niveles sin tocarse.
 
-**Estado hoy (2026-08-04): 0 steps cerrados en la §3 de la ruta → ninguna simulación SQL todavía.** El primer test toca
-cuando cierre el **Step 2**: basics + joins + `GROUP BY` ya es un examen real. Antes de eso no hay
-superficie suficiente y el generador se planta él solo.
+**Un consumidor de otro track lee la §3 de la ruta del nivel seleccionado**, no esta sección: con tres
+rutas vivas, cada nivel responde por sí mismo por su readiness. Aquí solo comprueba la regla.
 
-> ⚠️ **Los cinco tests que ya están en el banco (`practice/simulations/sql/` 01–05) están bloqueados.**
-> Se escribieron antes de que existiera este plan y **los cinco piden window functions**, o sea Step 7.
-> No los abras hasta entonces: no es que salgan mal, es que no se pueden empezar. Esto se apunta aquí
-> porque es un hecho sobre tu conocimiento de SQL, no sobre los tests.
+La configuración concreta y el formato del test los pone `simulation-generator-prompt.md`; esta sección
+solo dice contra qué steps se puede tirar.
 
-**Cuando toque, lo que pides es un test cuya técnica más alta sea la del último step cerrado**, y el
-`FOCUS` natural es el tema de ese step — lo que acabas de cerrar es lo que menos veces has usado bajo
-presión. La configuración concreta y el formato del test los pone `simulation-generator-prompt.md`;
-esta sección solo te dice contra qué steps puedes tirar.
-
-Mantener esta sección al día es parte de G1b: cuando `sql-plan-audit` mueve un step a ✅, actualiza el
-"Estado hoy" de arriba.
+**Quién la mantiene:** la columna de técnicas la escribe `sql-plan-prompt` al autorar el step; la línea
+de estado la reescribe `sql-step-close` en el mismo commit en que el step pasa a `closed ✅`.
+`sql-plan-audit` no la escribe: la audita bajo el invariante 16.
 
 ---
 
@@ -644,7 +630,12 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     backlog having no meaningful aggregate. A replan updates the projection in the same run, and
     preserves every graded figure already there (invariant 14 applies to the projection too).
 
-> **These fifteen are numbered identically to Section D of
+16. **Readiness lives in the route, and it is complete.** Toda fila no-`R{n}` de la §3 de la ruta lleva su
+    celda de técnica — `—` solo donde el step no desbloquea nada que un test pueda exigir, nunca vacía —
+    y la línea de estado bajo la tabla nombra **exactamente** el conjunto de steps `closed ✅` de esa
+    misma tabla. La §8c de esta doctrina tiene la regla y ningún mapeo propio.
+
+> **These sixteen are numbered identically to Section D of
 > `notes/prompts/practice/sql/_internal/_sql-plan-standard.md`**, because `sql-plan-audit` splits the work
 > between four specialists *by invariant number*. Until 2026-07-22 the two lists used different
 > numbering, which handed two of them each other's checks. Renumber one side and you must renumber the
@@ -689,9 +680,10 @@ shipping.
   here on the side. No ritual reports a question as pending and no skill offers to run
   `/interview-prep-audit` off the back of a closed step.
 - **SQL simulations** (`practice/simulations/`) — run the simulation prompts. Same rule, **con una
-  excepción acotada: §8c**, que dice qué técnicas tienes desbloqueadas y por tanto qué puedes pedir.
-  Eso es un hecho sobre tu conocimiento de SQL y esta es la única tabla que lo tiene. El formato del
-  test, su banco y su tracker siguen siendo del otro track.
+  excepción acotada: §8c**, que fija la regla de readiness — un test solo exige técnicas de steps
+  cerrados — y manda leer el mapeo en la §3 de la ruta del nivel. Eso es un hecho sobre tu conocimiento
+  de SQL y esta es la única regla que lo dice. El formato del test, su banco y su tracker siguen siendo
+  del otro track.
 
 **Coverage sections deliberately excluded from the steps** are level-specific, so they are listed in
 the level's own route, under its *Out of scope at this level* section — one entry per bullet, each with

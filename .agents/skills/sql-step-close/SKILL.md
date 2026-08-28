@@ -5,7 +5,7 @@ description: >
   scores ≥ 80% — and directly only when Victor says a step is done ("cierra el step 1", "close the SQL
   step"). This is Moment 5 and Section 4 of practice/sql/PLANNING.md. Grading already moved the
   counters; what this owns is the part no grader can reach — the ✅ sql:{file-slug} drill markers on
-  every coverage bullet the step's scored exercises actually drilled, the §8c readiness line saying
+  every coverage bullet the step's scored exercises actually drilled, the route §3 readiness line saying
   which techniques the close just unlocked for a simulation, and the level-closed check that nothing
   else in the track performs — plus the two the grading run already wrote: the doctrine's §0 quick
   reference, verified against what 4d left and never re-authored here, and PROGRESS.md's Total rows,
@@ -158,8 +158,11 @@ None of these is a question, and none blocks the close.
 
 ## 5 — What this step just unlocked
 
-Read the technique table in **doctrine §8c** and say, in one line, which techniques are now available
-given the steps that read `closed ✅` — and therefore what a simulation may ask for today:
+Read the technique column of the **route §3** table in `{PLAN}` and say, in one line, which techniques
+are now available given the steps that read `closed ✅` — and therefore what a simulation may ask for
+today. **Doctrine §8c holds the rule, never the mapping**; the mapping is that column, so a reordered
+route stays true without a doctrine edit. Then rewrite the readiness status line under that same table
+so it names exactly the `closed ✅` set (standard invariant 16) — this skill is its writer:
 
 ```
 Desbloqueado: JOINs + GROUP BY + HAVING. Una simulación SQL puede pedirte hasta agregación sobre join;
@@ -168,7 +171,7 @@ todavía no window functions (Step 7).
 
 **This is the only line in the track that connects it to Stage 2**, and it exists because of a real
 asymmetry: a step closes on a score obtained in pgAdmin, with the notes reachable and no clock, while
-the interview is the opposite of all three. §8c is the fact nobody else holds — a test demanding a
+the interview is the opposite of all three. Readiness is the fact nobody else holds — a test demanding a
 technique from an unclosed step is not hard, it is impossible, and finding that out mid-timer teaches
 nothing.
 
@@ -209,5 +212,5 @@ him a second command for it.
 | PROGRESS.md | filas `Total` cuadran (29 = 20+9); `Corrected` total en blanco, correcto |
 | Punto de repaso | R1 disponible (span 0–1) — `TOPIC = R1` cuando te apetezca |
 | Gate | ninguno (o: Step 13 cerrado → **G3 toca ya** — `/progress-update MODE = active`, cierra con drift report vacío; luego G4 `/roadmap-review`) |
-| Desbloqueado (§8c) | SELECT/WHERE/ORDER BY + set ops. Una simulación puede pedirte hasta ahí |
+| Desbloqueado (ruta §3) | SELECT/WHERE/ORDER BY + set ops. Una simulación puede pedirte hasta ahí |
 | Nivel | junior sigue abierto — 13 steps por delante |
