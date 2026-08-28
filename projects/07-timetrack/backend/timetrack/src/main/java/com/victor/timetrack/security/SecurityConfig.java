@@ -27,14 +27,15 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final List<String> allowedOrigins;
 
-    public SecurityConfig(JwtFilter jwtFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    public SecurityConfig(JwtFilter jwtFilter,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
+                          @Value("${app.cors.allowed-origins}") List<String> allowedOrigins) {
         this.jwtFilter = jwtFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.allowedOrigins = allowedOrigins;
     }
-
-    @Value("${app.cors.allowed-origins}")
-    private List<String> allowedOrigins;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {

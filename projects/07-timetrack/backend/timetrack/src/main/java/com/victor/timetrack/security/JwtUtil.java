@@ -14,11 +14,14 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    @Value("${app.jwt.secret}")
-    private String secret;
+    private final String secret;
+    private final long expiration;
 
-    @Value("${app.jwt.expiration}")
-    private long expiration;
+    public JwtUtil(@Value("${app.jwt.secret}") String secret,
+                   @Value("${app.jwt.expiration}") long expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+    }
 
     public String generateToken(Long userId) {
         return Jwts.builder()
