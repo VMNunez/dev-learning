@@ -243,7 +243,7 @@ Renamed from `UnauthorizedException`, which mapped to 403 while its name suggest
 
 ### `DuplicateResourceException` — a business signal, not a DAO exception ✓
 
-A duplicate email or project name is refused by `DuplicateResourceException`, thrown by `UserService` and `ProjectService` before the `save`. It previously reused Spring's `DataIntegrityViolationException`, which belongs to the `DataAccessException` family `@Repository` translates persistence failures into — a claim that the database rejected the write, made at a point where the database had not been asked. The handler for it stays, because a concurrent create can still breach the unique index for real, and it keeps returning a fixed message: that message is written by Hibernate and names the constraint and the statement. Splitting the types is what lets the domain handler return `e.getMessage()`, so "Email already in use" and "A project with this name already exists" reach the client instead of one generic 409.
+A duplicate email or project name is refused by `DuplicateResourceException`, thrown by `UserService` and `ProjectService` before the `save`. It previously reused Spring's `DataIntegrityViolationException`, which belongs to the `DataAccessException` family `@Repository` translates persistence failures into — a claim that the database rejected the write, made at a point where the database had not been asked. The handler for it stays, because an index the services do not pre-check can still be breached for real, and it keeps returning a fixed message: that message is written by Hibernate and names the constraint and the statement. Splitting the types is what lets the domain handler return `e.getMessage()`, so "Email already in use" and "A project with this name already exists" reach the client instead of one generic 409.
 
 ### `fieldErrors` is a per-control channel, not a validation-only one ✓
 
@@ -307,7 +307,7 @@ The five any-authenticated endpoints — `GET /api/projects`, `GET /api/projects
 
 ### A response that carries a generated value has to wait for the flush ✓
 
-`ProjectService.create` calls `saveAndFlush`, because `createdAt` does not exist until the `INSERT` runs. With a sequence-backed `@GeneratedValue`, `save()` only stages the row — the statement, and the `@CreationTimestamp` it generates, land at the commit flush, which is after `toResponse(saved)` has already read the field. The `201` therefore serialised `"createdAt": null` for a row that had one, as the following `GET` showed. `update` needs no equivalent: it reads a value the loaded entity already carries.
+`ProjectService.create` calls `saveAndFlush`, because `createdAt` does not exist until the `INSERT` runs. With a sequence-backed `@GeneratedValue`, `save()` only stages the row — the statement, and the `@CreationTimestamp` it generates, land at the commit flush, which is after `toResponse(saved)` has already read the field. The `201` therefore serialised `"createdAt": null` for a row that had one, as the following `GET` showed. `update` now calls it too, for the unrelated reason below: a constraint violation has to surface inside the `try` that translates it.
 
 ### The decimal scale of a number is part of the response contract ✓
 
@@ -334,6 +334,10 @@ The three report queries round their aggregate in the query — `round(SUM(te.ho
 ### A nullable field means "omitted" in a request and nothing at all in a response ✓
 
 `UpdateProjectRequest.active` is a `Boolean` on purpose: `PUT /api/projects/{id}` is a partial update, so `null` is the caller saying "leave this one alone" and the service applies the flag only when it is present. `ProjectResponse.active` is a primitive `boolean` for the opposite reason — `Project.active` is primitive and `NOT NULL`, so a wrapper there would let the API serialise `"active": null`, a state the schema cannot produce, and any client unboxing it would get a `NullPointerException` instead of a value. The same wrapper is correct on one side of the boundary and wrong on the other, because absence carries meaning going in and none coming out.
+
+### A uniqueness rule is enforced by the constraint and only explained by the check ✓
+
+`ProjectService` and `UserService` keep their `existsBy` check *and* wrap `saveAndFlush` in a `catch (DataIntegrityViolationException)` that rethrows the same `DuplicateResourceException`. The two are not redundant: a `SELECT` and an `INSERT` are two statements, so two requests can both read "absent" before either writes, and only the unique index decides that atomically. The check is what makes the common refusal legible — it is case-insensitive on `name`, which the index is not, and it costs no failed write. What the catch buys is that the rare path answers with the same contract as the common one, `fieldErrors.name` included, instead of the generic 409 a reactive form cannot place under an input. `saveAndFlush` is load-bearing here rather than stylistic: `save` stages the statement and the violation would surface at the commit flush, outside the `try`.
 
 ---
 
