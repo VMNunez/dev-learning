@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Unify the "does it already exist" idiom on `existsByX`. `ProjectService` uses `existsByName`; `UserService` materialises a whole row twice with `findByEmail(...).isPresent()`, and `DataInitializer` does the same. Add `boolean existsByEmail(String)` to `UserRepository` and keep `findByEmail` for the paths that need the entity *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Match the §7 column contract in the mappings: `@Column(nullable = false, updatable = false)` on the `@CreationTimestamp` fields, `@Column(nullable = false)` on `updatedAt`, and `@ColumnDefault("'DRAFT'")` on `TimeEntry.status`. §7 declares all three; the `active` flags already carry `@ColumnDefault("true")`, and with `ddl-auto=update` the rest generate nullable and defaultless. Residual of the 2026-07-28 not-null close, which covered the `active` fields only *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Move `DataInitializer`'s three `@Value` fields onto its existing constructor's parameters and make them `final`. The class already uses constructor injection for its two beans, so mixing the styles leaves it constructible in an invalid state — a direct `new` gets three nulls and `run()` would seed a user with a null email. Constructor injection is the convention in all five services *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Polish three small things the reviewers flagged with no behavioural impact: `TimeEntryService.delete` calls `deleteById(id)` on an entity it already loaded (use `delete(timeEntry)`); `TimeEntrySpecifications` is a static-utility class with a public implicit constructor (add a private one); and `TimeEntryController.findByFilter` is the only list endpoint not named `getAll`, though it is arguably a different operation — decide and be consistent *(Effort: Small)*
@@ -141,6 +140,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - 2026-07-08 · **[Medium]** `[backend]` — `GET /api/projects` filtered by role (active-only for employees) → already in README, PROGRESS
 
 #### Low
+
+- 2026-08-28 · **[Low]** `[backend]` — `existsByEmail` idiom already unified — DECISION, no code change → fixed in passing by `4588b831` (2026-08-24), which added `UserRepository.existsByEmail` and moved `UserService.create`/`update` and `DataInitializer` onto it; the 3 surviving `findByEmail` calls are the entity-needing paths the task said to keep. Coverage spring-boot/junior "Derived query methods" already marked ✅ 07-timetrack; backend README already represents it; PLANNING §6 rule added, §0 + §14 tree refreshed
 
 - 2026-08-28 · **[Low]** `[backend]` — the duplicate name/email race translated into `DuplicateResourceException`, so both paths emit `fieldErrors` → coverage sql/junior ("Constraint vs application-side uniqueness check", marked ✅ 07-timetrack; architecture/junior and spring-boot/junior already covered and marked), backend README Key patterns + two stale claims retired, PLANNING §6 + §0. Real scope was 4 methods in 2 services, not the 2 the task named — `save` → `saveAndFlush` was required for the catch to fire. Verified in Postman across 7 tests
 
