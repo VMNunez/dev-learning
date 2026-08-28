@@ -140,7 +140,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- 2026-08-28 · **[Low]** `[backend]` — §7 column contract landed on the mappings and on the live schema → spring-boot + sql coverage/junior (new bullets, ✅ 07-timetrack), PLANNING §6 rule + §7 immutability, backend README Key patterns
+- 2026-08-28 · **[Low]** `[backend]` — §7 column contract landed on the mappings and on the live schema → spring-boot + sql coverage/junior (new bullets; ✅ 07-timetrack on the spring-boot one only — the SQL migration was ad-hoc in pgAdmin and is not in the repo), PLANNING §6 rule + §7 immutability, backend README Key patterns, two stale `ddl-auto` claims retired
 - 2026-08-28 · **[Low]** `[backend]` — `existsByEmail` idiom already unified — DECISION, no code change → fixed in passing by `4588b831` (2026-08-24), which added `UserRepository.existsByEmail` and moved `UserService.create`/`update` and `DataInitializer` onto it; the 3 surviving `findByEmail` calls are the entity-needing paths the task said to keep. Coverage spring-boot/junior "Derived query methods" already marked ✅ 07-timetrack; backend README already represents it; PLANNING §6 rule added, §0 + §14 tree refreshed
 
 - 2026-08-28 · **[Low]** `[backend]` — the duplicate name/email race translated into `DuplicateResourceException`, so both paths emit `fieldErrors` → coverage sql/junior ("Constraint vs application-side uniqueness check", marked ✅ 07-timetrack; architecture/junior and spring-boot/junior already covered and marked), backend README Key patterns + two stale claims retired, PLANNING §6 + §0. Real scope was 4 methods in 2 services, not the 2 the task named — `save` → `saveAndFlush` was required for the catch to fire. Verified in Postman across 7 tests

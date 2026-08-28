@@ -204,12 +204,12 @@ Browser                               Server
   still null on the entity until the flush; a create response mapped before it serialises `null` for a
   column the row has. Use `saveAndFlush` (or map after the flush) whenever the response DTO carries such a
   field.
-- A column's contract is declared on the mapping *and* verified against the live schema. `ddl-auto=update`
-  adds tables and columns but never alters one that already exists, so a `@Column(nullable = false)` or
-  `@ColumnDefault` added after the column was created is intent the database never received; bringing an
-  existing schema up to the contract is a manual `ALTER TABLE`, and a not-null added to a populated column
-  needs its historical rows backfilled first. A write-once column also carries `updatable = false`, so no
-  later update to the entity can rewrite it.
+- Every constraint §7 declares is on the mapping: a not-null column carries `@Column(nullable = false)`, a
+  column with a default carries `@ColumnDefault`, and a write-once column carries `updatable = false` so no
+  later update to the entity can rewrite it. The mapping is the declaration and not the guarantee —
+  `ddl-auto=update` adds tables and columns but never alters one that already exists, so any of these added
+  after its column was created reaches the schema only through a manual `ALTER TABLE`, and a not-null added
+  to a populated column needs its historical rows backfilled before the constraint will take.
 
 **Angular rules:**
 Same bar as the backend block: each line is violable — a reviewer can open a file and point at the break.
