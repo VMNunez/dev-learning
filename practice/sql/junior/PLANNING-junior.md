@@ -3,9 +3,9 @@
 Plan status: current
 Level: junior
 Coverage: notes/sql/coverage/junior.md
-Coverage SHA-256: 1649157b82e85b00f4927693faf1285ccac2488083b1ffda806601fdb55095b5
+Coverage SHA-256: 39aa0cfca364e978c00a6944700fac5d0c59e3db819e84b600993c04aaf2ebeb
 Doctrine: practice/sql/PLANNING.md
-Generated: 2026-08-03
+Generated: 2026-08-28
 
 **This file is the junior route.** The level-neutral half — the step loop, the done-condition formats,
 the closing ritual, the branch rules, the revision mechanism, the quality gates, the invariants, the
@@ -13,7 +13,7 @@ closure condition and the out-of-scope fence — lives in the doctrine, `practic
 identical whichever level is being drilled. What is here is junior's own: its exercise files, its steps,
 its progress table. The three sections below were §5, §6 and §8 of the doctrine until 2026-08-03; they
 were moved here whole, renumbered §1, §2 and §3, and then reconciled against the recalibrated
-149-bullet coverage file.
+149-bullet coverage file, and again on 2026-08-28 against its 151 bullets.
 
 ---
 
@@ -60,18 +60,25 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | `09-window-functions.sql` | 7 | 0 | 0 | 0 | 12 | to create |
 | `10-dml-transactions.sql` | 8 | 0 | 0 | 0 | 16 | to create |
 | `11-schema-design.sql` | 9 | 0 | 0 | 0 | 15 | to create |
-| `12-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 14 | to create |
+| `12-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 16 | to create |
 | `13-indexes.sql` | 11 | 0 | 0 | 0 | 12 | to create |
 | `14-live-database.sql` | 12 | 0 | 0 | 0 | 12 | to create |
 | `15-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
 
 > **One file, one schema (rule adopted 2026-07-22).** `01-basics.sql` keeps the old thin schema and is
 > closed at 40 exercises; everything from `02-` on carries the canonical bookstore schema in its own
-> SETUP block. Step 0's 30 first-pass exercises are therefore split 20 + 10 across two files. This is
+> SETUP block. **Three files legitimately do not** — `12-data-types-ddl.sql`, `14-live-database.sql`
+> and `15-report-queries.sql` work against the **TimeTrack** model, and their done conditions name its
+> tables (noted 2026-08-28, when the rule and the conditions were found to contradict each other on
+> paper). The reason is the same in all three and is the point of those steps: Step 10's deliverable is
+> a schema written from a blank editor precisely because `ddl-auto` has been generating TimeTrack's for
+> him, Step 12 reads an inherited database rather than a seeded one, and the capstone writes the report
+> queries TimeTrack needs. "One file, one schema" is a rule against *mixing* schemas inside one file,
+> not a rule that every file uses the bookstore. Step 0's 30 first-pass exercises are therefore split 20 + 10 across two files. This is
 > why the file numbers no longer match the step numbers — the mapping is this table, and the prompt's
 > path table was updated to match.
 
-**First-pass total when the track is done: 207 exercises across 15 files.** Review batches add on top
+**First-pass total when the track is done: 209 exercises across 15 files.** Review batches add on top
 and are deliberately not budgeted. Track-wide today: **40 written**, all of them in `01-basics.sql`, 40 answered, 20 first-pass scored —
 those 40/40/20 figures belong to that file alone and are not the route's totals. Every other file of
 the route is still to generate.
@@ -122,8 +129,8 @@ dentro del archivo de un step, donde inflarían su cuenta y ensuciarían su nota
 | `R1-repaso.sql` | R1 | 0–1 | cierra el Step 1 (`03-joins.sql` scored) | sin crear |
 | `R2-repaso.sql` | R2 **hard checkpoint** | 2–4 | cierra el Step 4 (`06-nulls.sql` scored) | sin crear |
 | `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 (`09-window-functions.sql` scored) | sin crear |
-| `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 (`12-data-types-ddl.sql` scored, run 2 de DDL) | sin crear |
-| `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 (`14-live-database.sql` scored) | sin crear |
+| `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 — su done condition `pgAdmin:` pasa sobre `12-data-types-ddl.sql` (run 2 de DDL) | sin crear |
+| `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 — su done condition `Terminal:` pasa sobre `14-live-database.sql` | sin crear |
 
 **Los dos hard checkpoints son R2 y R3** — los que la doctrina §8b declara no saltables. R2 cierra el
 núcleo de screening (Steps 1–4, lo que pregunta una ronda rápida) y R3 cierra el bloque que va justo
@@ -155,7 +162,7 @@ other, and front-loads what a screening asks first.
 for more than 12 exercises, and no step targets more than 22** — that ceiling is why schema design is
 split across Steps 9 and 10 instead of being one 36-exercise block. Any step targeting more than 12 is
 split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (7 + 7), 5 (8 + 8), 8 (8 + 8), 9 (8 + 7) and
-10 (7 + 7) — which also keeps each batch's difficulty split meaningful. In Steps 9 and 10 the split is
+10 (8 + 8) — which also keeps each batch's difficulty split meaningful. In Steps 9 and 10 the split is
 doubly motivated: each is over the per-run ceiling *and* covers two distinct coverage sections, so the
 two runs fall on the section boundary rather than at an arbitrary halfway point.
 
@@ -169,7 +176,16 @@ letting the step be re-cut. Its only prompt run was `COUNT = 10`. No future step
 scored exercise that drilled that bullet, so a step with 15 bullets and 12 exercises can never be fully
 checked — it would sit at 100% scored with three bullets it never touched. Steps 2, 9 and 10 were raised
 to 14, 15 and 14 on 2026-08-03 for exactly that reason, when the recalibrated coverage file gave them
-more scope than their inherited flat target of 12. The rest of the route already satisfied the rule.
+more scope than their inherited flat target of 12, and Step 10 again to 16 on 2026-08-28 when coverage
+grew by two bullets that both landed on it. The rest of the route already satisfied the rule.
+
+**The screening floor, if the clock runs out** (added 2026-08-28). 189 first-pass exercises remain
+against an applications window that opens in August 2026, so the route states which part of itself is
+not optional: **Steps 0–5, plus Step 8 (DML and transactions)** — the five topics `ROADMAP.md`'s
+Stage-1 → Stage-2 switch gate names verbatim (joins · aggregation · subqueries/CTEs · NULL handling ·
+DML basics). Everything after that is post-gate: `ROADMAP.md` says in as many words that window
+functions, indexes and PostgreSQL specifics are *not worth delaying simulations for*. This changes no
+step's position — it says which steps may not be traded away when the calendar bites.
 
 Step 1 is the only step at the 22 ceiling, deliberately: JOINs is the single most-tested SQL topic at
 junior level, and it absorbed the ten hand-written exercises the step used to start from. (A file's
@@ -284,14 +300,22 @@ second file.
 **Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows,
 LEFT JOIN + IS NULL as an anti-join.
 **Moment 2 config — run 2** *(append)* — **rango `#12–#22`**: `TOPIC = joins`, `COUNT = 11`
-**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, USING vs NATURAL JOIN, EXISTS as a semi-join,
-NOT EXISTS as an anti-join.
+**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, CROSS JOIN, USING vs NATURAL JOIN, JOIN cardinality
+and predicting row multiplication.
 
 **Concepts:** Run 1 builds the foundation — `INNER JOIN` (two tables, named columns, aliases, three tables, combined
 with `WHERE` / `ORDER BY` / `LIMIT`) and `LEFT JOIN` (keeping unmatched rows, and the `IS NULL`
 anti-join). Run 2 covers the rest: `RIGHT JOIN` and why it is rewritable as a `LEFT`,
-`FULL OUTER JOIN`, self join, `USING` vs `NATURAL JOIN` and why `NATURAL` is banned in real
-codebases, `EXISTS`/`NOT EXISTS` as semi-join and anti-join vocabulary.
+`FULL OUTER JOIN`, self join, `CROSS JOIN` and the missing join condition as its accidental version,
+`USING` vs `NATURAL JOIN` and why `NATURAL` is banned in real codebases, and predicting join
+cardinality before writing the query.
+
+> **`EXISTS` / `NOT EXISTS` are deliberately not drilled here** (removed 2026-08-28). They read as
+> join vocabulary, but they are correlated subqueries: their bullets belong to Step 5 (`IN` vs
+> `EXISTS`, `Correlated subquery`) and Step 4 (`NOT IN` with `NULL`, which prescribes `NOT EXISTS`).
+> The prompt greps this step's `**Focus:**` line, so leaving them there would have generated
+> subquery exercises four steps before the syntax is taught. The anti-join itself is still drilled in
+> run 1, through the `LEFT JOIN ... IS NULL` bullet that is genuinely this step's.
 
 > **Two runs, un solo `TOPIC`.** Es el único step así, y por eso cada run declara su **rango de
 > ejercicios**: es el único dato en disco con el que el prompt puede saber cuál de los dos le estás
@@ -414,8 +438,13 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 **Moment 2 config:** `TOPIC = nulls`, `COUNT = 12`
 **Focus:** none — the whole topic
 
-**Concepts:** `NULL = NULL`, `IS NULL` vs `= NULL`, `AND`/`OR` truth tables, `NOT IN` with a `NULL` in the subquery,
-`NOT EXISTS` vs `NOT IN`, `IS DISTINCT FROM`, `NULL` in `UNIQUE`, `COALESCE`, `NULLIF`.
+**Concepts:** `NULL = NULL`, `IS NULL` vs `= NULL`, `AND`/`OR` truth tables, a predicate and its own
+negation both dropping the same row, `NOT IN` with a `NULL` in the subquery, `NOT EXISTS` vs `NOT IN`,
+`COALESCE`, `NULLIF` and division by zero.
+
+> `IS DISTINCT FROM` and `NULL` in a `UNIQUE` constraint were dropped from this list on 2026-08-28.
+> The first has no coverage bullet at any step, so drilling it would invent scope; the second is Step
+> 9's bullet, and Step 9 already reaches back here through its `**Reinforces:**` line.
 
 **Coverage bullets:**
 
@@ -634,23 +663,24 @@ reading a schema's grain, and storing each fact once so an update cannot leave t
 
 ---
 
-### Step 10 — Data types and DDL (0 scored / 14 target)
+### Step 10 — Data types and DDL (0 scored / 16 target)
 
 **Why here:** it writes by hand the constraints Step 9 only reasoned about, so it needs that step
 first; putting DDL before modelling would produce syntax with nothing to say about why the column is
 `NOT NULL`.
-**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 14 (two runs of 7)
+**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 16 (two runs of 8)
 **Coverage:** `Data types`, `Schema operations`
 **Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`
-**Moment 2 config — run 1:** `TOPIC = data-types`, `COUNT = 7`
+**Moment 2 config — run 1:** `TOPIC = data-types`, `COUNT = 8`
 **Focus:** none — the whole `Data types` section
-**Moment 2 config — run 2:** `TOPIC = ddl`, `COUNT = 7` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
+**Moment 2 config — run 2:** `TOPIC = ddl`, `COUNT = 8` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
 **Focus:** none — the whole `Schema operations` section
 
 **Concepts:** `NUMERIC` vs `FLOAT`, `TIMESTAMP` vs `TIMESTAMPTZ`, `DATE` for a business day, `VARCHAR` vs `TEXT`,
 `CHAR(n)` padding, `SERIAL` vs `IDENTITY`, `BOOLEAN`, `JSONB` vs a real table, integer division and
-explicit casts, `ROUND` on `NUMERIC`. Then writing `CREATE TABLE` / `ALTER TABLE` / `DROP` and
-`DEFAULT` by hand.
+explicit casts, `ROUND` on `NUMERIC` and how a `NUMERIC` scale propagates out of an expression. Then
+writing `CREATE TABLE` / `ALTER TABLE` / `DROP` and `DEFAULT` by hand, and the two-statement order a
+constraint added to a table that already holds rows forces.
 
 Written, not queried: the deliverable is a schema you can produce from a blank editor, because
 `ddl-auto` has been doing it for you in TimeTrack.
@@ -663,12 +693,14 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 - [ ] `NUMERIC(p,s)` vs `FLOAT` — choose exact fixed-precision decimals for money and approximated floating-point values for measurements that tolerate representation error ✅ 07-timetrack
 - [ ] Integer division and explicit casts — integer divided by integer truncates the fractional part in PostgreSQL; cast an operand to `NUMERIC` when the result must retain decimals
 - [ ] `ROUND(value, n)` — rounds to a given number of decimal places, but only for `NUMERIC`; PostgreSQL has no two-argument `ROUND` for `double precision`, so a computed average usually needs an explicit cast before a report can round it
+- [ ] Scale of an expression's result — `NUMERIC` scale propagates outwards through an expression, and a literal fallback carries its own, so `COALESCE(SUM(x), 0)` answers with the summed column's scale when rows exist and with scale 0 when none do; a rounding rule must therefore wrap the whole expression rather than one of its operands
 - [ ] `DATE` vs `TIMESTAMP` / `TIMESTAMPTZ` — use `DATE` for a calendar value with no time of day, `TIMESTAMP` for a local wall-clock value, and `TIMESTAMPTZ` for an instant shared across time zones ✅ 07-timetrack
 - [ ] `TIMESTAMP` vs `TIMESTAMPTZ` — `TIMESTAMP` stores the date and time exactly as entered, ignoring time zones; `TIMESTAMPTZ` converts to UTC on write and back to the session time zone on read; always use `TIMESTAMPTZ` for `created_at` in a web application
 - [ ] `BOOLEAN` — stores true, false, or null; use SQL literals `TRUE` and `FALSE` because PostgreSQL does not generally treat an unquoted integer `1` as a boolean
 - [ ] `JSONB` recognition — stores validated JSON in a binary representation that supports PostgreSQL operators and indexes; keep relational columns for stable fields that need ordinary constraints and joins
 - [ ] `CREATE TABLE` — defines columns, data types, defaults, and constraints together; read the full definition before loading data because the database, not the application, enforces it
 - [ ] `ALTER TABLE` — evolves an existing table by adding, changing, or dropping columns and constraints; versioned migration tooling belongs to the application stack, while SQL owns the resulting schema change ✅ 07-timetrack
+- [ ] Adding a constraint to a populated table — a constraint is validated against the rows already stored, so `SET NOT NULL` on a column holding empty values fails until those rows are corrected, making the change two statements in a fixed order rather than one
 - [ ] `DROP` vs deleting rows — `DROP` removes the database object itself, whereas `DELETE` and `TRUNCATE` keep the table and remove data
 - [ ] `DEFAULT` — supplies a value only when an insert omits the column; it does not replace an explicitly inserted `NULL`, and it does not backfill old rows unless the schema change does so ✅ 07-timetrack
 
@@ -704,7 +736,7 @@ index, composite index column order, non-sargable predicates, leading-wildcard `
 
 **Pending additions:** none
 
-**Done:** `pgAdmin: EXPLAIN SELECT * FROM time_entries WHERE work_date = '2026-08-01' returns Seq Scan before CREATE INDEX and Index Scan after`
+**Done:** `pgAdmin: with 100000 rows in time_entries, EXPLAIN SELECT * FROM time_entries WHERE work_date = '2026-08-01' returns Seq Scan before CREATE INDEX and Index Scan after`
 
 ---
 
@@ -740,7 +772,7 @@ The one step where you deliberately leave pgAdmin: a server does not have a GUI,
 
 **Pending additions:** none
 
-**Done:** `Terminal: \dt inside psql produces the list of TimeTrack tables`
+**Done:** `Terminal: \dt inside psql produces users, projects and time_entries`
 
 > Revision point **R5** (doctrine §8b) fires here, over two files rather than three: the capstone that
 > follows is itself the integration pass over everything, so a third file in this span would drill the
@@ -803,12 +835,12 @@ one. A row moves to `closed ✅` only after a `review` run has graded it.
 | 7 | Window functions | `09-window-functions.sql` | 0 / 12 | not started |
 | 8 | DML and transactions | `10-dml-transactions.sql` | 0 / 16 | not started |
 | 9 | Schema design | `11-schema-design.sql` | 0 / 15 | not started |
-| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 14 | not started |
+| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 16 | not started |
 | 11 | Indexes and query plans | `13-indexes.sql` | 0 / 12 | not started |
 | 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | not started |
 | 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started |
 
-**20 of 207 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
+**20 of 209 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
 20-exercise review batch that does not count. `PROGRESS.md` holds the
 authoritative status; this table is the at-a-glance copy. Both are updated by the doctrine §4 ritual, in
 the same commit. Review batches never change a row here.
@@ -817,7 +849,7 @@ the same commit. Review batches never change a row here.
 
 ## Out of scope at this level
 
-**None — every one of the 149 bullets in `notes/sql/coverage/junior.md` is claimed by exactly one step.**
+**None — every one of the 151 bullets in `notes/sql/coverage/junior.md` is claimed by exactly one step.**
 The exclusions this plan used to carry disappeared with the 2026-08-03 coverage recalibration rather
 than being reversed: the old `Programmable database objects` section, deliberately skipped, was rewritten
 into two *recognition* bullets inside `Working with an existing database` (`Stored-procedure recognition`
