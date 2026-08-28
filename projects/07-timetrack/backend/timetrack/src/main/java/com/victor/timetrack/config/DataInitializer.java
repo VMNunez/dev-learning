@@ -15,19 +15,20 @@ import org.springframework.stereotype.Component;
 public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String adminEmail;
+    private final String adminPassword;
+    private final String adminName;
 
-    @Value("${app.admin.email}")
-    private String adminEmail;
-
-    @Value("${app.admin.password}")
-    private String adminPassword;
-
-    @Value("${app.admin.name}")
-    private String adminName;
-
-    public  DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public DataInitializer(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           @Value("${app.admin.email}") String adminEmail,
+                           @Value("${app.admin.password}") String adminPassword,
+                           @Value("${app.admin.name}") String adminName) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
+        this.adminName = adminName;
     }
 
     @Override
