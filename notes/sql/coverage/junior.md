@@ -112,6 +112,7 @@ Topics a junior must know to pass a technical screening at NTT Data, Capgemini, 
 
 - `CREATE TABLE` — defines columns, data types, defaults, and constraints together; read the full definition before loading data because the database, not the application, enforces it
 - `ALTER TABLE` — evolves an existing table by adding, changing, or dropping columns and constraints; versioned migration tooling belongs to the application stack, while SQL owns the resulting schema change ✅ 07-timetrack
+- Adding a constraint to a populated table — a constraint is validated against the rows already stored, so `SET NOT NULL` on a column holding empty values fails until those rows are corrected, making the change two statements in a fixed order rather than one ✅ 07-timetrack — the not-null contract on `users.created_at` reached the live schema only after the rows predating the column were backfilled
 - `DROP` vs deleting rows — `DROP` removes the database object itself, whereas `DELETE` and `TRUNCATE` keep the table and remove data
 - `DEFAULT` — supplies a value only when an insert omits the column; it does not replace an explicitly inserted `NULL`, and it does not backfill old rows unless the schema change does so ✅ 07-timetrack
 

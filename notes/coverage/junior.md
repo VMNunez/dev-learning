@@ -423,6 +423,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Entity table naming — use `@Table` when the mapped table differs from the default and avoid reserved-word conflicts through a deliberate physical name, quoting policy, or naming strategy ✅ 07-timetrack
 - Identifier mapping and generation — mark the primary key and choose between identity columns and sequences according to the target database, because a bootstrap failure over a missing or unsupported identifier is reported before the application serves a request ✅ 07-timetrack
 - JPA column nullability and uniqueness — express schema intent on the mapping so the generated or validated schema matches the domain rules ✅ 07-timetrack
+- Immutable column mapping — `@Column(updatable = false)` excludes a column from the UPDATE statement the provider generates, so a write-once field such as a creation timestamp cannot be rewritten by a later change to the entity ✅ 07-timetrack — `createdAt` on `User`, `Project` and `TimeEntry` carries `updatable = false`, so no entity update rewrites it
 - Lombok generated equality on entities — identifier-based `equals` and `hashCode` behave inconsistently while an entity is still unsaved, so generated implementations must be chosen deliberately rather than accepted by default ✅ 07-timetrack
 - Lombok generated `toString` on entities — including associations in a generated string can trigger lazy loading or recurse across a bidirectional relationship, so relationship fields must be excluded ✅ 07-timetrack
 - Boxed vs primitive boolean fields and Lombok getter naming — a `Boolean` field defaults to `getX()`, while a primitive `boolean` field defaults to `isX()` (JavaBean convention); switching a field's type to close a nullable-unboxing bug renames every call site's getter, and the compiler catches the mismatch ✅ 07-timetrack
@@ -1735,6 +1736,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `CREATE TABLE` — defines columns, data types, defaults, and constraints together; read the full definition before loading data because the database, not the application, enforces it
 - `ALTER TABLE` — evolves an existing table by adding, changing, or dropping columns and constraints; versioned migration tooling belongs to the application stack, while SQL owns the resulting schema change ✅ 07-timetrack
+- Adding a constraint to a populated table — a constraint is validated against the rows already stored, so `SET NOT NULL` on a column holding empty values fails until those rows are corrected, making the change two statements in a fixed order rather than one ✅ 07-timetrack — the not-null contract on `users.created_at` reached the live schema only after the rows predating the column were backfilled
 - `DROP` vs deleting rows — `DROP` removes the database object itself, whereas `DELETE` and `TRUNCATE` keep the table and remove data
 - `DEFAULT` — supplies a value only when an insert omits the column; it does not replace an explicitly inserted `NULL`, and it does not backfill old rows unless the schema change does so ✅ 07-timetrack
 
