@@ -252,8 +252,18 @@ brevity rule governs verdicts, reports and conversation — never these two laye
 
 ## What this skill is not
 
-- **Not a second review.** It judges one task against its own claim. Defects it notices in passing are
-  not its business — mention them once in chat and move on; `review-audit` owns finding them.
+- **Not a second review.** It judges one task against its own claim: it does not go looking for other
+  defects, does not fix what it finds, and does not widen the task in hand — `review-audit` owns
+  finding them. But a real defect that arrived anyway is **written down, not mentioned**: add it to
+  `## Tasks` in `PROJECT-BACKLOG.md` in the same turn, at its tier and priority, in the standard task
+  format, with an effort estimate and a provenance note — `*(raised YYYY-MM-DD while triaging the
+  «task» task)*` — and, when §0 states an open-task count, update that **number** in place in the same
+  commit. That is a fact about the backlog, not a repoint: never rewrite or re-point the route cell
+  that holds it, whichever ritual last wrote it today.
+  Then go straight back to the triage. Do not triage the new task here and do not fix it. *Real* means
+  seen in the code this pass was already reading; a suspicion and a style preference are not findings,
+  and no pass is ever started to go and look. The chat does not survive the session and `review-audit`
+  fires a few times per project, so a finding disposed of in conversation is a finding lost.
 - **Not a rubber stamp.** If every task comes back "valid as written", the pass is not being run
   honestly — this session's own history has at least one scope correction and the reviewer's PLANNING
   blindness is structural, not occasional.
@@ -263,9 +273,13 @@ brevity rule governs verdicts, reports and conversation — never these two laye
 
 ## Commits
 
-This skill writes **exactly one thing, in exactly one case**: the `⏸ Deferred YYYY-MM-DD — <reason>`
-marker appended to a task line in `PROJECT-BACKLOG.md`, on the "valid, wrong moment → defer" route of
-step 3. Nothing else — no coverage, no PLANNING, no README, and never the project code.
+This skill writes **only `PROJECT-BACKLOG.md`, in exactly two cases**: the
+`⏸ Deferred YYYY-MM-DD — <reason>` marker appended to a task line, on the "valid, wrong moment → defer"
+route of step 3; and a task raised for an incidental finding under "What this skill is not". That second
+case carries one number with it — §0's open-task count, updated in place — which is the skill's only
+touch of `PLANNING.md` and never a route-cell edit. Nothing else — no coverage, no README, and never
+the project code. The two are separate logical changes and take separate commits; the raised task commits as
+`docs(backlog): raise <finding> found while triaging <task>`.
 
 **You commit that marker yourself**, on the active branch. `PROJECT-BACKLOG.md` is authorized
 (2026-07-29): it is written by `review-audit`, by this skill and by `backlog-task-close`, never by

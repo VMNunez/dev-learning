@@ -431,7 +431,7 @@ consume one of these sources of truth.
 | `notes/coverage/middle.md` | **middle scope after junior consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | level-aware notes/interview-prep audits |
 | `notes/coverage/senior.md` | **senior scope after middle consolidation** | `coverage-prompt`, `coverage-audit-prompt` (bulk) · in session: `coverage-bullet-add`, `coverage-mark`, and `sql-step-close` (SQL drill markers) — complete list in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | level-aware notes/interview-prep audits |
 | `PROGRESS.md` | **status, never a concept list** — the per-technology lists were deleted 2026-08-03 and a concept lives in the coverage files; the section-by-section inventory is [`_system-map.md` §8](_internal/_system-map.md#8--progressmd-section-by-section) | the closing rituals per section, in session (`step-complete`, `coverage-mark`, `study-block-close`, `authoring-progress-recount`, `sql-grade`, `simulation-review`…) + `progress-update-prompt`, which writes only `Professional level by topic` and audits the rest | `plan-audit`, `roadmap-review`, `project-brief`, `review-audit`, `cv`, `linkedin`, `cover-letter`, `profile-readme`, `sql-exercises`, simulation/interview planning |
-| `{project}/PLANNING.md` | **what a project builds** | `plan-audit` · in session: `step-complete` (✅ + §0 — every cell, `Next gate` re-derived) and `backlog-task-close` (rules section + §0 — `Last updated` always, the gate qualifier, and the route cells only when it owns them) — the whole six-cell partition is in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
+| `{project}/PLANNING.md` | **what a project builds** | `plan-audit` · in session: `step-complete` (✅ + §0 — every cell, `Next gate` re-derived) and `backlog-task-close` (rules section + §0 — `Last updated` always, the gate qualifier, and the route cells only when it owns them), plus `backlog-task-open` for §0's open-task **number** alone when it raises an incidental finding — the whole six-cell partition is in [`_system-map.md` §7](_internal/_system-map.md#7--the-writer-registry) | `readme-audit`, `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review` |
 
 ---
 
@@ -602,7 +602,8 @@ Each generated file, with who writes it and who depends on it:
   `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review`. *It is the contract
   the whole project is checked against.*
 - **`PROJECT-BACKLOG.md`** — written by `review-audit` (the tasks), by the two backlog skills
-  (`⏸ Deferred` / `## Closed`), and by `plan-audit`'s `whole-plan` specialist where a task contradicts a
+  (`⏸ Deferred` / `## Closed`, and either of them raising a `## Tasks` entry for a real defect noticed while
+  triaging or closing — `REC-179`), and by `plan-audit`'s `whole-plan` specialist where a task contradicts a
   plan decision → read by `portfolio-audit` (open High/Medium tasks block the "ready" verdict, and its
   per-tier `Last Reviewed` lines stop the gate outright when one reads `never` or carries
   `(incomplete — …)`), by `review-audit`'s own next-run gate, by both §0 rituals deriving `Next gate`,

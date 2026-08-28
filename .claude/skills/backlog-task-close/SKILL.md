@@ -388,6 +388,34 @@ to the ledger, with the reason in place of the concept tail: `→ dropped: super
 
 ---
 
+## Incidental findings — write them, do not mention them
+
+This ritual is **not a second review**. It does not go looking for defects, does not fix what it finds,
+and does not widen or reopen the task it is closing — widening a task in flight is what `REC-173`
+guards against. But closing is exactly when the next finding surfaces: the fix just written makes the
+identical defect visible in a sibling class. A finding disposed of in the chat does not survive the
+session, and `review-audit` — the gate that would find it again — fires a few times per project.
+
+So a real defect noticed while closing is **added to `## Tasks` in `PROJECT-BACKLOG.md` in the same
+turn** — the file this ritual is already editing — at its tier and priority, in the standard task
+format, with an effort estimate and a provenance note:
+
+```
+*(raised 2026-08-28 while closing the `DataInitializer` task — same defect shape, different classes)*
+```
+
+When §0 states an open-task count, update that **number** in place in the same commit — a fact about
+the backlog, in the shape §3b already uses for the `Next gate` qualifier. It is **not** a repoint: leave
+the route cell that holds it exactly as `step-complete` or step 3b left it today. Do **not** triage the
+new task here — `backlog-task-open` owns that, when Victor picks it up — and do not fix it. *Real*
+means seen in the code this close was already reading; a suspicion and a style preference are not
+findings, and no pass is ever started to go and look.
+
+This is its own logical change, so it takes its own commit, separate from step 5's collapse:
+`docs(backlog): raise <finding> found while closing <task>`.
+
+---
+
 ## Commits
 
 Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per **logical
@@ -405,8 +433,10 @@ Everything below lands on the **active branch** (`main` only receives merges via
   edit (step 4) **before** invoking them, and let their commit carry it. Only when step 1 and 1a both wrote
   nothing does PROGRESS.md take a commit of its own here.
 - `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit`, by `backlog-task-open`
-  (the `⏸ Deferred` marker) and by this skill, never by Victor, so the authorship boundary puts it on
-  your side. Its own atomic commit, separate from the coverage one.
+  (the `⏸ Deferred` marker and a raised incidental finding) and by this skill, never by Victor, so the
+  authorship boundary puts it on your side. Its own atomic commit, separate from the coverage one — and
+  a task raised for an incidental finding is a **second**, separate commit, carrying the PLANNING §0
+  count with it.
 - `PLANNING.md` — authorized 2026-08-01. The ritual writes this entry itself, so the authorship boundary
   puts it on your side. Its own atomic commit, carrying both the rules-section entry (step 3) and the §0
   refresh (step 3b), which are one logical change.
@@ -438,6 +468,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
 | Retired | `README.md:112` stream-`reduce` bullet rewritten; `backend/README.md:256` `Specification` scope corrected (or: nothing stale) |
+| Incidental findings | none (or: raised as `[Low]` `[backend]` — `JwtUtil` / `SecurityConfig` field injection) |
 | PLANNING.md | added to §6 engineering rules |
 | PLANNING §0 | `Last updated` → today; no other cell moved (or: last open High cleared — `Next gate` now says G3 signable) |
 | PROGRESS.md | n/a — evidence cell unchanged (coverage table owned by the coverage skills) |
