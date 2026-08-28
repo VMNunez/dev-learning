@@ -301,6 +301,16 @@ A close that legitimately moves none of these still updates `Last updated`. Stat
 changed, and say "no other cell moved" rather than staying silent — silence here is indistinguishable
 from having skipped the step.
 
+**Open-task counts live outside §0 too, and they are yours in the same edit.** PLANNING states how many
+tasks are open in more than one place — §0's `Current step` cell, and §22's *Immediate action* prose,
+which reasons about the gate from that number. A close that clears a task and refreshes only the table
+leaves the prose asserting a count that is now wrong, and prose reads as more authoritative than a cell
+precisely because it argues. So `grep -n` PLANNING for every statement of the open-task count before
+committing step 3's edit, and correct each one in place, in that same commit — the number, the priority
+breakdown, and any clause whose conclusion the new number changes ("no open task at any priority" after a
+task is raised). Report them alongside the §0 cells. This is a fact about the backlog, never a repoint:
+route cells stay exactly as `step-complete` or step 3b left them today.
+
 ---
 
 ## 4 — PROGRESS.md: status only, never the concept
@@ -404,8 +414,9 @@ format, with an effort estimate and a provenance note:
 *(raised 2026-08-28 while closing the `DataInitializer` task — same defect shape, different classes)*
 ```
 
-When §0 states an open-task count, update that **number** in place in the same commit — a fact about
-the backlog, in the shape §3b already uses for the `Next gate` qualifier. It is **not** a repoint: leave
+Wherever PLANNING states an open-task count — §0's `Current step` cell **and** §22's *Immediate action*
+prose — update that **number**, and any claim the new number falsifies, in place in the same commit — a
+fact about the backlog, in the shape §3b already uses for the `Next gate` qualifier. It is **not** a repoint: leave
 the route cell that holds it exactly as `step-complete` or step 3b left it today. Do **not** triage the
 new task here — `backlog-task-open` owns that, when Victor picks it up — and do not fix it. *Real*
 means seen in the code this close was already reading; a suspicion and a style preference are not

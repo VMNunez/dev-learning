@@ -257,8 +257,9 @@ brevity rule governs verdicts, reports and conversation — never these two laye
   finding them. But a real defect that arrived anyway is **written down, not mentioned**: add it to
   `## Tasks` in `PROJECT-BACKLOG.md` in the same turn, at its tier and priority, in the standard task
   format, with an effort estimate and a provenance note — `*(raised YYYY-MM-DD while triaging the
-  «task» task)*` — and, when §0 states an open-task count, update that **number** in place in the same
-  commit. That is a fact about the backlog, not a repoint: never rewrite or re-point the route cell
+  «task» task)*` — and, wherever PLANNING states an open-task count — §0's `Current step` cell **and**
+  §22's *Immediate action* prose — update that **number**, and any claim the new number falsifies, in
+  place in the same commit. That is a fact about the backlog, not a repoint: never rewrite or re-point the route cell
   that holds it, whichever ritual last wrote it today.
   Then go straight back to the triage. Do not triage the new task here and do not fix it. *Real* means
   seen in the code this pass was already reading; a suspicion and a style preference are not findings,
@@ -276,8 +277,9 @@ brevity rule governs verdicts, reports and conversation — never these two laye
 This skill writes **only `PROJECT-BACKLOG.md`, in exactly two cases**: the
 `⏸ Deferred YYYY-MM-DD — <reason>` marker appended to a task line, on the "valid, wrong moment → defer"
 route of step 3; and a task raised for an incidental finding under "What this skill is not". That second
-case carries one number with it — §0's open-task count, updated in place — which is the skill's only
-touch of `PLANNING.md` and never a route-cell edit. Nothing else — no coverage, no README, and never
+case carries the open-task count with it — every place PLANNING states one, §0's cell and §22's
+*Immediate action* prose alike, updated in place — which is the skill's only touch of `PLANNING.md` and
+never a route-cell edit. Nothing else — no coverage, no README, and never
 the project code. The two are separate logical changes and take separate commits; the raised task commits as
 `docs(backlog): raise <finding> found while triaging <task>`.
 
