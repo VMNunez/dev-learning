@@ -223,7 +223,7 @@ explained against.
 **Exercises:** dos archivos, uno por esquema.
 - `practice/sql/junior/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
   #21–#40), **40/40 correctas** el 2026-07-22. Esquema v1 (el viejo). No se le añade nada más.
-- `practice/sql/junior/02-execution-order-set-ops.sql` — **sin crear**. Se generó el 2026-07-22 y se borró el
+- `practice/sql/junior/02-execution-order-set-ops.sql` — 10, **sin crear**. Se generó el 2026-07-22 y se borró el
   2026-08-04 sin responder: se regenera con `/sql-exercises` el día que se conteste, no antes.
 **Coverage:** `Querying basics`, `Ordering and pagination`, `Set operations`, `Filtering and NULL handling` (its four non-`NULL` bullets: alias visibility in `WHERE`, `LIKE`/`ILIKE`, `IN` vs `OR`, and `BETWEEN` ranges — every bullet about three-valued logic is Step 4)
 **Reinforces:** — (first step)

@@ -8,7 +8,10 @@
 **Database:** PostgreSQL (local, pgAdmin). **Schema:** the canonical bookstore schema defined in
 `notes/prompts/practice/sql/sql-exercises-prompt.md` (`authors`, `publishers`, `genres`, `books`,
 `customers`, `orders`, `order_items`, `reviews`) — that prompt is the single source of truth for it.
-The capstone switches to the TimeTrack model.
+Three files switch to the **TimeTrack** model instead — `12-data-types-ddl.sql`, `14-live-database.sql`
+and `15-report-queries.sql` — for the reason the route gives in its §1 (a schema written from a blank
+editor, an inherited database, and the report queries TimeTrack needs). Which files those are is the
+route's to say, not this file's.
 
 > ⚠️ **`01-basics.sql` carries an older, thinner schema** (`order_books` with no `quantity` or
 > `unit_price`, `authors.nationality`, `books.year`) and is **closed** because of it — resolved
@@ -22,7 +25,12 @@ report queries TimeTrack needs without looking anything up.
 
 ## Section 0 — Session quick reference
 
-**Read this first every SQL block. Update it at the start of every session.**
+**Read this first every SQL block.** Five of the seven rows below — *current level*, *current step*,
+*done condition*, *next revision point* and *last updated* — are written by the closing ritual
+(`_sql-exercises-review.md` step 4d, repaired by `sql-step-close`), never by hand at the start of a
+session; `sql-plan-audit` reconciles them against the route (invariants 5 and 6) and corrects them, and
+`sql-block-open` reports a stale §0 without repairing it. **`Current branch` and `Blocked on` have no
+writer anywhere in the machinery** — they are maintained by hand or not at all.
 
 | | |
 |---|---|
@@ -158,8 +166,9 @@ de repaso — el guard "target already met" del prompt te lo ofrece — pero por
 **Again, nothing else is pasted — and this is the part that changed.** A review batch used to require
 two hand-typed lines (*"deliberate repetition is the point"*, *"skip Intro"*), because the prompt's
 difficulty split was fixed at 25/50/25 with no notion of a review batch. It is not fixed any more: the
-prompt derives `{REVIEW} = yes`, drops the Intro tier, splits 60% Standard / 40% Challenge, labels the
-exercises `[Repaso]`, and excludes them from the step's target — all of it automatically.
+prompt derives `{REVIEW} = yes`, applies its own review-batch difficulty split (its rule, not this
+plan's), labels the exercises `[Repaso]`, and excludes them from the step's target — all of it
+automatically.
 
 `{REVIEW} = yes` is derived from **una de cuatro cosas**, nunca de una clave pegada a mano:
 - `MODE = reinforce` — siempre;
@@ -206,8 +215,8 @@ What it does, beyond printing a score:
   marked** on later runs. So the score always measures the new batch, never a growing pile of
   already-validated work, and the file itself records what is settled.
 - **Updates `PROGRESS.md`** — the level roll-up, the file's row, and the recomputed `Total` rows.
-- **Updates the level's route file** — the step's §3 row, its §2 coverage checkboxes, and the §0 header
-  when the step closes.
+- **Updates the level's route file** — the step's §3 row and its §2 coverage checkboxes — **and this
+  doctrine's §0** when the step closes (§0 is a section of *this* file, not of the route).
 - **Re-checks every answer it accepted** with a cold subagent before writing any marker, and prints
   "Segunda pasada: N ✅ confirmados, M revertidos". A marker is permanent, so it is not written on a
   single grader's word.
@@ -318,7 +327,8 @@ grader that remembers teaching you the answer is not a grader.
    the coverage file; the *what* lives on the coverage bullets, the *how many* lives here. Do not
    re-create it.
 2. **The level's route file** `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` *(automated)* — the step's row in
-   §3, its `**Coverage bullets:**` checkboxes in §2, and §0 refreshed when the step closes. (The junior
+   §3 and its `**Coverage bullets:**` checkboxes in §2 — plus **this doctrine's §0**, refreshed when the
+   step closes (step 4d of the grading prompt; `sql-step-close` verifies and repairs what it left). (The junior
    route was migrated out of this file on 2026-08-03; §5, §6 and §8 here are pointers now, and every one
    of those edits lands in `practice/sql/junior/PLANNING-junior.md`.)
 3. **`notes/sql/coverage/{LEVEL}.md`** *(automated, by `sql-step-close`)* — every bullet the step's graded
@@ -561,8 +571,9 @@ Cross-checks between sections. Verify these whenever this plan is edited:
     point between them is a violation, not a scheduling preference.
 9. **Prompt paths and keys, in both directions** — every prompt this plan names exists at the path
    given, and every config it says to paste uses only that prompt's real keys
-   (`sql-exercises-prompt.md`: `MODE`, `TOPIC`, `COUNT`, `FILE` — `FOCUS` and `REVIEW` are derived from
-   the route §2 step, never pasted). A plan pointing at a moved prompt or an invented key rots silently: the
+   (the key set is **read from `sql-exercises-prompt.md`'s own `## Configuration` block**, never from a
+   copy kept here — a copy is what went stale when `LEVEL` was added on 2026-08-02 and no sweep reached
+   this line; `FOCUS` and `REVIEW` are not keys at all, being derived from the route §2 step). A plan pointing at a moved prompt or an invented key rots silently: the
    run happens and produces something else. **And the reverse**: every value the prompt says it derives
    from this plan must be here **in the literal shape it looks for** — a `**Moment 2 config:**` line
    carrying `COUNT = n`, and a `**Focus:**` line, in every route §2 step; plus an exercise range on each run
@@ -653,7 +664,7 @@ shipping.
 - [x] coverage-prompt TOPIC=sql has run — notes/sql/coverage/{LEVEL}.md current (G2) — 2026-07-18
 - [ ] Steps 0–13 all closed, each with its §4 ritual (G1) run by `sql-step-close`: scored condition met
 - [ ] Every first-pass exercise the level's route §1 declares is answered and scored ≥ 80% (review
-      batches are extra and uncounted) — 207 at junior
+      batches are extra and uncounted) — 209 at junior (the route §1 total)
 - [ ] Every revision point the route §1 declares fired on cadence — no stale open rows in MISTAKES.md
 - [ ] Capstone timed condition met: 3 report queries from prose, under 10 minutes each
 - [ ] progress-update has run **and its SQL drift report came back empty** — the `Exercise route` tables
