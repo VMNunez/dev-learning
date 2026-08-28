@@ -1941,19 +1941,22 @@ coverage table.
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
 open for the whole project. It only merges into `main` when Step 11 is done.
 
-**Immediate action (updated 2026-08-04):** `feat/reports` has merged, so the backend feature branches are
+**Immediate action (updated 2026-08-28):** `feat/reports` has merged, so the backend feature branches are
 all closed. `fix/backend-backlog` is the live branch and **its own closing condition is fully met** — every
 High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and the account-password flow
 (`PATCH /api/users/me/password`) closed on 2026-07-29.
 
-**The branch went further than it had to, and that changes what is outstanding.** It closed not only the
-Highs G3 requires and the one Medium Step 7a depends on, but **every remaining Medium and Low as well**, in
-batches through 2026-08-01. So `PROJECT-BACKLOG.md` has no open task at any priority in either tier, and
-**G7's stricter bar — no open High *or* Medium — is satisfied months before the closing gate reads it.**
-The earlier plan for this branch anticipated leaving those tasks open for G7; that is no longer the state.
+**The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
+Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
+with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
+currently holds 3 open tasks — all Low, all backend, no High and no Medium in either tier**, so **G7's
+stricter bar — no open High *or* Medium — is satisfied months before the closing gate reads it.** The
+earlier plan for this branch anticipated leaving those tasks open for G7; that is no longer the state.
+This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
-Remaining sequence, with no backlog work left in it: PR `fix/backend-backlog` into `projects/07-timetrack`
-(which signs G3 off) → create `feat/angular-shell-auth` from `projects/07-timetrack` → Step 7a.
+Remaining sequence, with no High or Medium backlog work left in it: PR `fix/backend-backlog` into
+`projects/07-timetrack` (which signs G3 off) → create `feat/angular-shell-auth` from
+`projects/07-timetrack` → Step 7a.
 
 ---
 
