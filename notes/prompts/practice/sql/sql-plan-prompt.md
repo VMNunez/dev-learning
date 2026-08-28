@@ -212,7 +212,11 @@ objective as `CONTEXT` and `ROADMAP` state it, the exercise-file inventory from 
 proposed plan. Those two extra inputs are not background: §3 holds the done-condition formats, so
 without it the reviewer can only check that a `Done` line looks plausible rather than that it is one of
 the formats; and the objective is the only thing that can falsify a `Why here` claiming it pulls a step
-forward. It does not edit files. It must challenge:
+forward. The plan's freshness header is out of its scope, `Coverage SHA-256` above all: the byte
+normalisation lives in `_coverage-standard.md`, which this reviewer is not given, and `sql-plan-audit`,
+`sql-exercises` and `validate-prompt-system.ps1` each recalculate the value independently — so a digest
+finding here is a value the reviewer could not compute, judged against a definition it could not read.
+It does not edit files. It must challenge:
 
 - whether every step's `Why here` survives contact with the step before it, or is a label;
 - whether a step could have been done first — which would mean it teaches nothing about composition (B3);

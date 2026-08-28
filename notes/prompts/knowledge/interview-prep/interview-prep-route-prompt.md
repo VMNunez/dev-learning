@@ -86,8 +86,12 @@ digest.
 
 Dispatch one cold `reviewer`, reasoning tier `deep`, execution `foreground`. Give it the proposed route,
 the English question lines, `_shared-context.md` (role, stack and company weighting — the source for the
-target-stack verdict below), `ROADMAP.md` (the level progression only), and `_job-market-evidence.md`.
-It must return:
+target-stack verdict below), `ROADMAP.md` (the level progression only), `_job-market-evidence.md`, and
+the `Selection algorithm`'s **step 5**, which is the per-level budget guardrail its budget verdict below
+is measured against — a reviewer asked for that verdict without the numbers can only say the count looks
+plausible. The route's `Question inventory SHA-256` is out of its scope: the deterministic ID, count and
+fingerprint checks are rerun by this prompt after corrections are applied, and a reviewer holding the
+question lines but not the inventory rule reports a digest it could not compute. It must return:
 
 - `N questions reviewed` and the selected count;
 - duplicate-ID/concept verdict;

@@ -124,7 +124,8 @@ The plan stores it as:
 Coverage SHA-256: <64 lowercase hexadecimal characters>
 ```
 
-`notes-audit` independently recalculates this value. A mismatch means the plan is stale.
+`notes-audit` and `validate-prompt-system.ps1` each recalculate this value independently. A mismatch
+means the plan is stale.
 
 ## Planning algorithm
 
@@ -229,7 +230,21 @@ Coverage SHA-256: <64 lowercase hexadecimal characters>
 
 After drafting or reconciling the complete plan, dispatch **one cold reviewer**, `reasoning tier: deep`,
 `execution: foreground`. Give it only the selected coverage, `_note-quality-standard.md`, existing note
-headings, and the proposed plan. It does not edit files. It must challenge:
+headings, the proposed plan, and this prompt's **"Required plan format"** section. That last input is
+not background: it is the contract the reviewer's own prerequisite-order verdict is measured against.
+`Prerequisites` there accepts `none` or earlier entry numbers only, so a reviewer that cannot see the
+restriction proposes the cross-topic dependencies the field cannot carry — which cost a round trip on
+the 2026-08-27 run, the second consecutive run to lose one to a rule the reviewer could not see. It is
+handed as a **field contract, never as a conformance checklist**: field presence and field shape are the
+orchestrator's check and the validator's, not the reviewer's.
+
+The plan's freshness header is out of the reviewer's scope, `Coverage SHA-256` above all. Its byte
+normalisation lives in `_coverage-standard.md`, which this reviewer is not given, and both `notes-audit`
+and `validate-prompt-system.ps1` recalculate the value independently — so a digest finding here is a
+value the reviewer could not compute, judged against a definition it could not read. It reports nothing
+about that line.
+
+It does not edit files. It must challenge:
 
 - for junior, whether `00` fulfils the complete topic-introduction contract;
 - whether every learning outcome is achievable from the declared prerequisites;
