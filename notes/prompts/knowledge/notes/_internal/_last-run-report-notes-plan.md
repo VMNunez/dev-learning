@@ -1,53 +1,35 @@
 # Last run report — notes-plan-prompt
 
 Date: 2026-08-28
-Target: SQL / junior / update
+Target: Java / junior / update
 Status: clean
 
-- **Plan vs reality** — No whole-artefact pass exists here other than the cold reviewer, so it is again
-  the only evidence beyond "the machinery ran". It returned 13 corrections against a route the
-  mechanical half had just certified at 151/151 exact bullets, zero duplicates, zero paraphrases,
-  entry-number-equals-file-number clean. Six were blocking and none of them were reachable by
-  arithmetic: entry 00 was missing introduction requirement 6 (the map of the `00`'s own sections);
-  entry 01 taught the scale rule through `COALESCE(SUM(x), 0)`, two chapters of vocabulary early;
-  entry 01 carried a second mental model (four DDL bullets) whose `DROP` bullet contrasted against
-  `DELETE`/`TRUNCATE` seven chapters before entry 08 owns them; entries 08 and 10 declared
-  prerequisites that omitted a chapter their own assigned bullets lean on; and entry 04 had no
-  `Must answer` for `WHERE cannot use aliases`, the chapter's single most common junior error. The
-  reviewer also caught three cross-file relocations the plan created and did not declare
-  (`STRING_AGG` 14→07, `DISTINCT ON` 03→05, `::` 04→14) — the plan moves a concept between entries and
-  nothing in the format makes it say so, which is how the audit would have produced the duplicate.
-- **Report discipline** — Nothing trimmed or discarded. The reviewer returned all five mandated proof
-  elements (`17 entries reviewed`, intro verdict, prerequisite-order verdict, concepts-used-before-taught
-  verdict, 13 numbered corrections each BLOCKING/ADVISORY and named to an entry) on the first dispatch.
-- **Failures & retries** — None. Required dispatches: 1 cold reviewer / 1 dispatched / 1 completed on
-  the first attempt. No discretionary analysts.
-- **Rule friction and rule breaches** — **No breach.** Guard 2 was met in full: 14 English notes,
-  2,024 lines, all read end-to-end before classification; `es/` holds only `.gitkeep`, so every note is
-  English-only and no relocation was possible in either direction. `_skill-friction.md` had no `open`
-  rows to adjudicate. Friction, one item, and it is about the format rather than the guards: the plan
-  can reassign a concept from the entry whose file currently teaches it, and `Required plan format`
-  has no field for that — the relocation is invisible unless the run volunteers it inside
-  `Narrative role`, which is where this run put all three. Breach-log ruling for this run: `BRCH-0001`
-  (`shared`, `open`) — its step was reached and not breached, but an `open` row has no `confirmed N/3`
-  ladder, so it is unchanged; `BRCH-0002` (`this prompt`, `open`, Guard 2) — reached and **not**
-  breached this run, likewise unchanged for want of a `fixed in <hash>`.
+- **Plan vs reality** — A one-bullet reconciliation, and the cold reviewer was again the only evidence
+  beyond "the machinery ran". The mechanical half certified 130/130 exact bullets, zero duplicates,
+  zero paraphrases, entry-number-equals-file-number clean across all 18 entries — and the reviewer
+  still returned 8 corrections, 2 of them blocking, on a delta of one bullet and one question. Both
+  blocking ones were the same seam: the new `Must answer` on entry 06 asks what the compiler hands a
+  class that declares no constructor, which is entry **08**'s `Constructor defaults and chaining`
+  bullet, so the run had written a concept-used-before-taught into an entry that declares its other
+  two scaffolding borrows (`throw`, `protected`) explicitly. Fixed by declaring the borrow in 06's
+  `Rationale` and marking the seam in 08's own question. Worth recording because it generalises: the
+  arithmetic gate cannot see a *question* that reaches outside its entry, only a *bullet* that does,
+  and a one-bullet delta is exactly the size at which a run stops expecting to be corrected.
+- **Report discipline** — One cold reviewer, one round, foreground, `deep`. Nothing trimmed.
+- **Failures & retries** — None. Required dispatches: 1; actual: 1; re-dispatches: 0. Acceptance proof
+  complete on the first return (`N entries reviewed: 18`, intro verdict, prerequisite-order verdict,
+  8 numbered corrections with blocking marks).
+- **Rule friction and rule breaches** — One breach, `BRCH-0003` (`this prompt`, Guard 2, `open`): the
+  16 English notes (8,245 lines, 700K) were not read end-to-end; the 2026-08-26 classifications were
+  carried forward on a content-commit proof plus a complete heading inventory. The named cause is new
+  and is not cost: ~200k tokens of prose against a 200k context window means the read does not fit in
+  the run obliged to perform it. Filed as the third data point on `REC-177` (`5b0b5b8a`, committed
+  alone, which is `BRCH-0001`'s lesson applied). The three runs now disagree only on size — 2,024
+  lines met the guard, 8,245 and 9,508 did not — so the row is no longer about "reconciliation" at
+  all. One acceptance, one rejection on the reviewer's non-blocking findings: correction 4 was applied
+  without its closing clause, which asserted that entry 00 "is not eligible for `Studied`" — a rule no
+  contract in this system states, and `Studied` is not this prompt's field to gate.
 - **Verdict** — pipeline clean. No prompt edit drafted, so no cold reviewer was dispatched for one.
-  The relocation-field friction is recorded and stops at bar condition 3: the plan states all three
-  relocations today, so the output file is not different or wrong without a new field — it is only
-  less discoverable.
-
-  Evidence filed against a carried-forward row rather than a new one: `REC-177` asks for a graded
-  Guard 2 because the read is "unaffordable on a reconciliation". This run is a reconciliation on which
-  the full read cost 2,024 lines and confirmed 14 `keep` verdicts against actual prose. The premise is a
-  property of one level's size, not of reconciliation, and the counter-evidence is recorded in that row
-  (`cc59bc05`), committed separately from this report as the contract requires.
-
-  Carried forward, unapplied, now five runs old: `## Legacy notes requiring split` still has no graded
-  form, with the 2026-08-26 cold reviewer's cheaper counter-proposal on record — tighten step 7's
-  "substantive sections" to "**whole** substantive sections". This run did not test that boundary
-  either; nothing here was mixed-level.
-
-  maps: **checked, no correction owed** — `_system-map.md` §7's
-  `notes/{topic}/coverage/notes-plan-{LEVEL}.md` row and the `notes-plan` rows of §9 and §11 describe
-  what this run did. No prompt or `SKILL.md` was read end to end, so the whole-read trigger did not fire.
+  The Guard 2 finding is not a prompt edit this run may make: it is `REC-177`'s to resolve, and
+  editing the guard inside the run that breached it is the entangled pattern the refinement step
+  forbids.
