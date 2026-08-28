@@ -13,7 +13,13 @@
    confirmed fixed by the widened `Edits` cell, exercised for the first time. The orchestrator's own
    factual-error sweep, the one independent probe available, found nothing the traces had passed: it
    re-verified #4's key-set claim against `sql-exercises-prompt.md`'s `## Configuration` block and
-   #3/#4's 209 against the §1 column sum, and both held.
+   #3/#4's 209 against the §1 column sum, and both held. **What the sweep did catch is a false positive
+   in a trace, and it is the one machinery fact worth keeping:** #4 reported route Step 12's
+   `Terminal: \dt inside psql` as suspect against Victor's pgAdmin environment, without reading the
+   sentence two lines above the done condition that declares psql deliberate ("the one step where you
+   deliberately leave pgAdmin"). A specialist reporting *outside* its own fence reads the line, not the
+   step around it — cheap to check and cheap to dismiss, but a run that applied it would have broken a
+   step on purpose.
 
 2. **Report discipline** — all four traces arrived in the required shape; nothing trimmed or discarded.
    #4 correctly declared it read the route in named slices only (header-only fence) rather than whole,
