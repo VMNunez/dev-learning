@@ -104,7 +104,7 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   never touches the exercise files, so a gate that only re-greps disk checks nothing.
 - `grep -n "^## " notes/sql/coverage/{LEVEL}.md` → the current section list.
 - **The route's `Coverage SHA-256` against a freshly recalculated one** (invariant 12, canonical command
-  in `_coverage-standard.md`). A mismatch is **reported, never repaired here**: recomputing the digest
+  in `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` — never a plain `sha256sum`). A mismatch is **reported, never repaired here**: recomputing the digest
   without remapping the bullets would erase the only signal that `sql-plan-prompt` is owed a run. Say
   `route stale — /sql-plan {LEVEL} owed` in the final report and let specialist 2 handle the bullets it
   can see.
