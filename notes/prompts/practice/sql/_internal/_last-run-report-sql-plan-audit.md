@@ -1,7 +1,7 @@
 # Last run — `sql-plan-audit`
 
 **Date:** 2026-08-28 · **Target:** `practice/sql/PLANNING.md` + `practice/sql/junior/PLANNING-junior.md` · **Scope:** `full` · **Level:** `junior`
-**Status:** open
+**Status:** applied in 58a9fa53 · cold reviewer: approve-with-tightening
 
 1. **Plan vs reality** — the split worked, and the evidence for that is **not** the four green traces.
    This pipeline still has no whole-artefact reader written by a non-slice-owner (`plan-audit`'s
@@ -38,5 +38,9 @@
    that cannot find the file and falls back to a plain `sha256sum` gets a mismatch on a route that is
    in fact current, and this prompt's contract then prints `route stale — /sql-plan junior owed` and
    sends Victor to re-run the planner for nothing. The output differs and is wrong, which is condition
-   3 met. No breach log exists for this prompt (none has ever been written), so no `fixed`/`confirmed`
+   3 met. **Applied in `58a9fa53`, tightened by the cold reviewer**: it ruled condition 1 met for the
+   path half only and killed the drafted three-line explanation of the consequence as theory — the
+   plain-`sha256sum` failure did not happen this run — and as redundant against the Hard rule at line
+   328, which already forbids repairing the digest. What survives is the path plus the four-word warning
+   the two sibling prompts carry verbatim, at zero net lines. No breach log exists for this prompt (none has ever been written), so no `fixed`/`confirmed`
    row was ruled on. Prompt is 259 lines, well under the ~500 budget, so one-in-one-out does not apply.
