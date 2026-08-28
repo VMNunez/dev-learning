@@ -2,8 +2,8 @@
 
 Plan status: current
 Coverage: notes/java/coverage/junior.md
-Coverage SHA-256: 8c66ee9b1f9117ae8394a2a72b43bf6a048c29725b90f45b138f478b537ba2d5
-Generated: 2026-08-26
+Coverage SHA-256: 2be5f410d021f4b5863355d6b7a6cf5807e46c120bd535442b49a139cb094aa0
+Generated: 2026-08-28
 Study order: the entry number is the reading order, 00 → 17, and it is identical to the number in the filename — the `NN` of `## NN` is always the `NN-` prefix of that entry’s `English:` and `Spanish:` files. The legacy files that broke this correspondence were renumbered on 2026-08-21, together with every repository-relative link that targeted them; `notes-plan-prompt.md` → Planning algorithm step 6 makes the match a standing requirement, so a future entry inserted into this route renumbers what follows it instead of leaving a gap or a remap table. On 2026-08-26 entry 12 was split into 12 (behaviour as a value) and 13 (streams and collectors) because one file carried two mental models, and entries 13–16 were renumbered to 14–17 with every repository-relative link that targeted them; entry 13's pair is the one prefix the route still owes a file, and its `Action: create` reserves the number.
 
 `Prerequisites` and `Depends on` list the nearest entries a chapter assumes; the full assumed set is their **transitive closure**. Entry 12 relies on entry 07's anonymous inner classes through the chain 09 → 08 → 07, and that is legal without restating 07.
@@ -48,7 +48,7 @@ Coverage concepts:
 - [x] Source, bytecode, and JVM execution — recognise that `javac` checks and compiles source into bytecode that a JVM executes, without requiring JVM-internals knowledge
 - [x] Compile-time vs runtime failure — distinguish type and syntax errors rejected by the compiler from exceptions and logic errors that appear while the program runs
 
-Audit note: `00-intro-java.md` is `refined` and frozen — nothing already in it may be rewritten. The topic-introduction invariants it once lacked were written by the 2026-08-20 run and are present today: `## Index of this note` and the seven-section orientation paragraph, `## What Java is, and the job it does in your stack`, `## Five traits that come back in every later chapter`, `## Coming from JavaScript — where the comparison helps, and where it lies`, and `## The route from here to Maven, and why it runs in that order` with its full table. Two defects remain, both correctable in place without restructuring: (a) the route callout still reads "Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet" and leaves `02-strings.md` as the one unlinked route entry, while both files now exist and the entry is `complete`; (b) the closing paragraph never states outright what a reader must have settled before opening `01`. Both are Victor's to authorise on a frozen pair — report them, do not rewrite around them.
+Audit note: `00-intro-java.md` is `refined` and frozen — nothing already in it may be rewritten. The topic-introduction invariants it once lacked were written by the 2026-08-20 run and are present today: `## Index of this note` and the seven-section orientation paragraph, `## What Java is, and the job it does in your stack`, `## Five traits that come back in every later chapter`, `## Coming from JavaScript — where the comparison helps, and where it lies`, and `## The route from here to Maven, and why it runs in that order` with its full table. Two defects remain, both correctable in place without restructuring: (a) the route callout still reads "Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet" and leaves `02-strings.md` as the one unlinked route entry, while both files now exist and the entry is `complete`; (b) the closing paragraph never states outright what a reader must have settled before opening `01`. Both are Victor's to authorise on a frozen pair — report them, do not rewrite around them. Until he does, defect (b) means entry 00 does not meet topic-introduction requirement 7, and reporting it is not discharging it.
 
 Rationale: What Java is, how source becomes executable, and when failures surface are the orientation every later chapter assumes. The entry-point signature and `System.out.println` are declared scaffolding: every subsequent chapter's examples print something, so the tokens must be recognisable here even though `static`, visibility, and arrays are each owned by a later entry.
 
@@ -298,7 +298,7 @@ Coverage concepts:
 - [ ] Call stack and method returns — each call creates a frame holding its local state, and returning or throwing removes frames toward the caller
 - [ ] Object aliasing — two references can point to the same mutable object, so a change through one reference is visible through the other
 
-Audit note: the pass-by-value bullet is currently taught twice — here at `05-memory-model.md`'s opening section and again at `04-methods.md`. This file is the owner; the audit of entry 04 removes the duplicate there. Two further defects, both from the 2026-08-21 renumber: the file closes with `## How this closes out the Java notes`, which declares the whole topic finished and hands off to Spring Boot from chapter five — it must become a handoff to entry 06 — and its prose still cites the pre-renumber numbering ("files 04–06", "file 07", "file 01") while three passages refer to `11-exceptions.md` as a chapter already read. All of it is corrected in both languages.
+Audit note: the pass-by-value bullet is currently taught twice — here at `05-memory-model.md`'s opening section and again at `04-methods.md`. This file is the owner; the audit of entry 04 removes the duplicate there. Two further defects, both from the 2026-08-21 renumber: the file closes with `## How this closes out the Java notes`, which declares the whole topic finished and hands off to Spring Boot from chapter five — it must become a handoff to entry 06, in the plan's own words: references are now understood in isolation, and entry 06 uses them to build classes whose state stays valid — and its prose still cites the pre-renumber numbering ("files 04–06", "file 07", "file 01") while three passages refer to `11-exceptions.md` as a chapter already read. All of it is corrected in both languages.
 
 Rationale: Argument copying, the call stack, and aliasing are three consequences of one fact — a variable holds either a value or a reference to something stored elsewhere. The stack/heap picture and a single garbage-collection callout are declared scaffolding: they are the mechanism this chapter's own questions depend on, and the standard requires mechanism over behaviour.
 
@@ -321,7 +321,7 @@ Depends on: 05
 
 Pending additions: none
 
-Narrative role: Build valid domain objects from the method and reference mechanics already learned, then answer the question those objects immediately raise — when are two of them the same?
+Narrative role: Build valid domain objects from the method and reference mechanics already learned, then answer the question those objects immediately raise — when are two of them the same? The chapter runs in two movements: first what one valid object is made of — state, visibility, `static`, `final`, records — and then when two of them count as the same value. The hash half of that second question waits for entry 10.
 
 Learning outcome: Design a small class or record whose constructor refuses invalid state, with controlled visibility, appropriate immutability, and correct value equality, and explain why identity comparison is the wrong default.
 
@@ -335,6 +335,8 @@ Must answer:
 - If that same check is written at the point where the field is finally used instead, what still exists in memory in the meantime, and which caller ends up seeing the failure?
 - What do `public`, package-private and `private` each let through, what does `protected` add over package-private, and why can that fourth one only be fully answered once entry 08 introduces subclasses?
 - What can a `static` member reach that an instance member cannot, and why does a `static` method have no `this`?
+- If a class holds nothing but `static` members, what does the compiler hand it that its author never wrote, and what does declaring a private constructor tell the next reader that a comment could not?
+- What does that private constructor actually contain, and what does a class of `static` factories lose by being impossible to instantiate?
 - What does each use of `final` prevent, when must a final field be assigned, and why does a final reference still not make its object immutable?
 - If a record's components are final, why can the object it holds still be modified from outside?
 - When is a record the right choice, what exactly does Java generate for its components, and why does defensively **copying** a mutable component in a compact constructor stay a middle-level concern even though **validating** a required component does not?
@@ -351,6 +353,7 @@ Coverage concepts:
 - [ ] Constructor invariants — validate an object's required state where it is built, with `Objects.requireNonNull` or an explicit throw, so an instance that would break its consumers cannot exist; a check placed at the point of use instead leaves the invalid object constructible and pushes the failure to whichever caller notices first
 - [ ] Encapsulation — keep representation private and expose behaviour or controlled access so callers cannot bypass class invariants
 - [ ] Access modifiers — distinguish `public`, `protected`, package-private, and `private` visibility when reading code across packages and hierarchies
+- [ ] Non-instantiable utility classes — a class holding only `static` members receives a public no-argument constructor from the compiler unless it declares one, so a private constructor is how the class states that an instance of it would be meaningless
 - [ ] `static` vs instance members — static state and behaviour belong to the class, while instance members require a particular object
 - [ ] `final` variables, fields, methods, and classes — prevent reassignment, overriding, or inheritance as applicable; a final field must be assigned exactly once (typically in the constructor), yet a final reference still does not make its object immutable
 - [ ] Records — use a concise data carrier with final components and generated accessors, canonical construction, `equals`, `hashCode`, and `toString`
@@ -367,7 +370,7 @@ Audit note: four separate conflicts, all requiring prose to move rather than mer
 (c) `### Anonymous class` belongs to entry 07; the surrounding `## Nested classes` framing stays here under the preservation rule, and entry 07's moved section opens with a one-sentence link back to it so the term is not orphaned.
 (d) The access-modifier and static-member bullets are currently also taught in `04-methods.md`; they consolidate here.
 
-Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised.
+Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. The compiler-supplied no-argument constructor is declared scaffolding here: the non-instantiable-utility-class bullet cannot be stated without it, so this chapter names the bare fact — a class that declares no constructor is handed a public one — and stops there. When Java supplies it, how `this(...)` chains constructors and why `super(...)` runs first are entry 08's `Constructor defaults and chaining` bullet. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised.
 
 Handoff: Concrete classes can now hold valid state and compare correctly; entry 07 separates the behaviour a caller needs from the particular class that happens to provide it.
 
@@ -448,7 +451,7 @@ Must answer:
 - What is the practical difference between an is-a inheritance relationship and a has-a composition relationship, and which one couples the two classes more tightly?
 - If the variable's declared type is the parent, how does Java know to run the child's method?
 - Now that subclasses exist, what does `protected` actually permit that entry 06 could only name?
-- When does Java supply a no-argument constructor for free, how does `this(...)` chain one constructor to another, and why must `super(...)` run before the subclass body?
+- Entry 06 needed the bare fact that a constructor-less class is handed a public no-argument one; now that subclasses exist, when exactly does Java supply it, how does `this(...)` chain one constructor to another, and why must `super(...)` run before the subclass body?
 - Why is overriding resolved at runtime while overloading is decided at compile time, and what bug does confusing the two produce?
 - When is an `instanceof` pattern variable the honest solution, and when is it a sign the abstraction is wrong?
 - What do `final` classes and `final` methods remove from this picture?
@@ -721,6 +724,7 @@ Must answer:
 - Which operations only describe work, and what makes the pipeline actually run?
 - Why does reusing a consumed stream throw instead of starting over?
 - What do `filter`, `map`, `flatMap`, `sorted`, and `distinct` each do to the elements flowing through, and which of them depend on contracts from entries 06 and 10?
+- What does `flatMap` do that `map` cannot, and what real shape — a list of orders each holding a list of lines — makes flattening the natural move rather than a nested loop?
 - Why must a `reduce` operation be associative, and what breaks when it is not?
 - Why is `anyMatch` the honest way to ask "is there at least one", and what does it stop doing the moment it finds a match that `filter(...).toList().isEmpty()` would have carried on doing?
 - What does `findFirst` hand back that `anyMatch` cannot, what does `allMatch` answer instead, and how does the caller's real question decide between the three?
@@ -870,7 +874,6 @@ Must answer:
 - How do target and retention decide where an annotation may be written and whether anything can still see it at runtime?
 - What changes when the consumer is the compiler, a build plugin, or a running framework?
 - Which parts of an unfamiliar annotation's documented contract must be checked before trusting it?
-- Why should `@Service` or `@Transactional` be treated as a preview of Spring Boot rather than as Java syntax?
 - Why should `@Service` or `@Transactional` be read as a preview of Spring Boot rather than as Java syntax, and where does this file's cross-topic preview callout belong?
 
 Coverage concepts:
