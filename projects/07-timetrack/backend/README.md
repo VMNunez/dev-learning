@@ -135,6 +135,10 @@ Controller → Service → Repository. Each layer only calls the one directly be
 JpaRepository            ← reads and writes data, no logic
 ```
 
+### Constructor injection ✓
+
+Every bean receives its collaborators through a single constructor — there is no `@Autowired` field anywhere, so Spring wires them without an annotation and each class states its whole dependency list in one signature. `DataInitializer` takes its `app.admin.*` seed values the same way, as `@Value` constructor parameters rather than fields: values injected after construction leave the runner constructible in a state where `run()` would save a user with a null email, and parameters are what let those fields be `final`.
+
 ### DTO boundary ✓
 
 Entities never leave the service layer. Every endpoint receives a request DTO and returns a response DTO. This controls exactly what the API exposes — password hashes, internal IDs and lazy-loaded relationships never reach the client.
