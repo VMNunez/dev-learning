@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **7 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
+| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **6 Lows open and no Medium** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
 | **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
@@ -181,6 +181,9 @@ Browser                               Server
   emails trimmed and lower-cased, project names trimmed and compared case-insensitively — and the
   same canonical value is used for the duplicate check and for the write. Two spellings of one
   identifier must never become two rows.
+- An existence question is asked with a derived `existsByX` query, never by loading the row and testing
+  the `Optional` — `findByX(...).isPresent()` selects and materialises an entity whose fields are then
+  thrown away. `findByX` stays for the paths that need the entity itself.
 - Every endpoint declares its own authorization rule with `@PreAuthorize`, including the ones open to any
   authenticated caller (`isAuthenticated()`). The filter chain's `anyRequest().authenticated()` is the
   perimeter, not the endpoint's contract: a matcher widened in `SecurityConfig` must not be able to open a
@@ -803,8 +806,8 @@ src/main/java/com/victor/timetrack/
 │   ├── TimeEntryService.java        (entry CRUD, ownership checks, status transitions)
 │   └── ReportService.java           (monthly aggregations for the three report endpoints)
 ├── repository/
-│   ├── UserRepository.java          (findByEmail)
-│   ├── ProjectRepository.java       (findByActiveTrue, existsByName)
+│   ├── UserRepository.java          (findByEmail, existsByEmail)
+│   ├── ProjectRepository.java       (findByActiveTrue, existsByNameIgnoreCase)
 │   ├── TimeEntryRepository.java     (JpaSpecificationExecutor + the report aggregation queries)
 │   └── TimeEntrySpecifications.java (static Specification factories — one per optional filter + the fetch-join)
 ├── model/
