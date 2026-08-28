@@ -334,7 +334,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Spring `Resource` abstraction — read classpath, filesystem, and URL-backed content through one interface without assuming every resource is a normal file
 - `Environment` and profiles — query active profiles and property sources as framework context while keeping environment-specific values outside business logic
 - `@Profile` conditional bean registration — include a component or configuration only when its profile expression matches the active environment instead of branching inside business code
-- Property placeholders vs Spring Expression Language in `@Value` — use `${...}` to resolve external properties and `#{...}` to evaluate Spring expressions, while preferring typed configuration binding when a cohesive settings group belongs to Boot configuration
+- Property placeholders vs Spring Expression Language in `@Value` — use `${...}` to resolve external properties and `#{...}` to evaluate Spring expressions, while preferring typed configuration binding when a cohesive settings group belongs to Boot configuration ✅ 07-timetrack — the three `app.admin.*` seed values and `app.jwt.secret` reach their beans as `${...}` placeholders, never hardcoded
 
 ### Validation integration
 
