@@ -41,6 +41,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `this` — refer to the current instance and disambiguate a field from a parameter with the same name ✅ 07-timetrack
 - Encapsulation — keep representation private and expose behaviour or controlled access so callers cannot bypass class invariants ✅ 07-timetrack
 - Access modifiers — distinguish `public`, `protected`, package-private, and `private` visibility when reading code across packages and hierarchies ✅ 07-timetrack
+- Non-instantiable utility classes — a class holding only `static` members receives a public no-argument constructor from the compiler unless it declares one, so a private constructor is how the class states that an instance of it would be meaningless ✅ 07-timetrack — `TimeEntrySpecifications` declares an empty private constructor guarding its five static `Specification` factories
 - `final` variables, fields, methods, and classes — prevent reassignment, overriding, or inheritance as applicable; a final field must be assigned exactly once (typically in the constructor), yet a final reference still does not make its object immutable ✅ 07-timetrack
 - Inheritance vs composition — inheritance models an is-a relationship, while composition builds behaviour from has-a collaborators and avoids unnecessary coupling
 - Polymorphism and dynamic dispatch — a parent or interface reference can hold different implementations, and an overridden instance method is selected from the runtime object ✅ 07-timetrack
