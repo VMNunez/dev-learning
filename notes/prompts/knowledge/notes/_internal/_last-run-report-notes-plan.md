@@ -1,64 +1,41 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-08-27
-Target: Architecture / junior / update
+Date: 2026-08-28
+Target: Spring Boot / junior / update
 Status: open
 
-- **Plan vs reality** — The trigger was a `stale` header and six added coverage bullets, but the run that
-  matched the trigger would have been wrong: the reconciliation the orchestrator drafted (10 unassigned
-  bullets filed into entries 02, 05 and 14, two middle-level bullets removed from 13 and 16) was
-  arithmetically clean — 72/72, no duplicates — and pedagogically broken, and **nothing in the mechanical
-  half of this prompt can see that**. The cold reviewer returned 16 corrections, 10 blocking, and the
-  three that decided the run were properties of the route: entry 02 had become a REST style chapter plus
-  a contract-drift defect taxonomy whose five bullets need persistence, DTOs and status codes it would
-  not meet for another four chapters; entry 05 had become 11 bullets across two altitudes (the shape of a
-  payload, and the promise of one field); and entry 08's only assigned bullet used *coupling*, taught in
-  09. Splitting 02 and 05, moving the drift taxonomy behind data access as the new 09, swapping 08/09 and
-  relocating the frontend chapter next to MVC took an 18-entry route to 20 and renumbered two existing
-  English notes. There is no whole-artefact pass in this prompt other than the reviewer, so it is the
-  only evidence this bullet has — and this run is the strongest case on file that one cold reviewer is
-  worth more than any number of per-file analysts.
-- **Report discipline** — Nothing discarded. The reviewer returned all five mandated proof elements
-  (`18 entries reviewed`, intro verdict, prerequisite-order verdict, concepts-used-before-taught list,
-  numbered corrections) with each correction marked BLOCKING or ADVISORY and named to an entry.
+- **Plan vs reality** — This prompt has no whole-artefact pass other than the cold reviewer, so the
+  reviewer is this bullet's only evidence and the traces prove nothing beyond "the machinery ran". It
+  returned 10 corrections on a route the mechanical half had just declared clean at 136/136, and the
+  three blocking ones were properties no arithmetic could reach: entry 00's introduction contract was
+  missing the note's own section map and had no owner named for Maven, which chapter 01 assumes from
+  its first bullet and which lives in the `java` topic; and entry 04 had gained `@PageableDefault`, a
+  controller-parameter annotation, while declaring `Depends on: 03` only. The eight added bullets were
+  routed by coverage section, which is exactly the kind of correct-looking mechanical routing that
+  misses an altitude change inside a section.
+- **Report discipline** — Nothing trimmed or discarded. The reviewer returned all five mandated proof
+  elements (`16 entries reviewed`, intro verdict, prerequisite-order verdict, concepts-used-before-taught
+  verdict, 10 numbered corrections each BLOCKING/ADVISORY and named to an entry) on the first dispatch.
 - **Failures & retries** — None. Required dispatches: 1 cold reviewer / 1 dispatched / 1 completed on the
-  first attempt. No discretionary analysts: five existing English notes were read whole by the
-  orchestrator, none exceeded 182 lines, and all five classified `keep`.
-- **Rule friction and rule breaches** — **One breach, `BRCH-0001`, first row of this prompt's new
-  breach log.** `_pipeline-self-report.md` → `What to write` requires the ledger reconciliation to be
-  committed *before and separately from* the report + tracker commit; the report and tracker were already
-  staged when the ledger row was added, and a pathspec-less `git commit` swept all three into `f419e0c0`.
-  Nothing on disk is wrong — the cost is that `REC-175` can no longer be read, reverted or cited apart
-  from the run that filed it, which is the whole reason the step separates them. The generalisable lesson
-  is narrower than the rule: this contract's `git status` instruction is written for *staging*, and a run
-  that has already staged one commit's files must also commit with an explicit pathspec. One correction was **rejected on the format rule**: the reviewer asked every entry to declare
-  cross-topic prerequisites (HTTP → General, JPA/transactions → Spring Boot, components → Angular), but
-  "Required plan format" states `Prerequisites` contains `none` or earlier entry numbers only, and
-  `Depends on` is the mechanical gate. The substance was accepted in the only field that can carry it —
-  must-answer questions defining the JPA entity (06), atomicity (08) and the persistence port (03), plus
-  entry 00's question naming which topics own framework mechanics. Worth noting for the reviewer's
-  dispatch: it quotes the plan and the standard but not the format rules, and this is the second run in
-  a row where a correct-sounding finding failed on a rule the reviewer could not see.
-- **Verdict** — change worth considering: **the cold reviewer's dispatch is under-specified in exactly
-  the places it produces false positives.** The prompt says to give it "only the selected coverage,
-  `_note-quality-standard.md`, existing note headings, and the proposed plan". Two consecutive runs have
-  now spent a round trip rejecting a confident finding the reviewer had no way to check — 2026-08-26 the
-  `Coverage SHA-256` rule, today the `Prerequisites` field rule — both of them in "Required plan format"
-  or "Coverage fingerprint", both cheap to include. The draft is a clause adding this prompt's own
-  "Required plan format" section and the fingerprint rule to the reviewer's inputs. Prompt is 466 lines,
-  inside the ~500-line budget. Not applied in this run: the run-start check forbids editing the prompt
-  and running it in the same pass. Filed as `REC-175` in `_recommendation-ledger.md` (f419e0c0), with the
-  cheaper alternative the same evidence supports recorded in its Resolution column.
+  first attempt. No discretionary analysts.
+- **Rule friction and rule breaches** — **One breach, `BRCH-0002`.** Guard 2 requires every English note
+  in all three level directories read end-to-end before classification. The run read none of the 16
+  (9,508 lines) and carried the 2026-08-02 classifications forward on a `git log --name-status` proof
+  that the level's inventory had not changed. The cost is precise: three `keep`-equivalent unassigned
+  verdicts and thirteen `keep` verdicts were *reported* this run and *verified* by the previous one, and
+  the thing git cannot see — prose drifting across a level boundary through ordinary edits — is
+  untested. Filed as `REC-177` (0d1f71a2). Friction, separately: the guard's cost is fixed while its
+  trigger is not, and a reconciliation whose input was eight coverage bullets cannot move a note
+  between levels at all.
+- **Verdict** — change worth considering: **Guard 2 needs a graded form.** A full read when the plan is
+  new, the inventory changed, or the level's notes were edited by anything other than a link
+  correction; otherwise a git-proved carry-forward that must be reported as a carry-forward. Not
+  applied in this run: the run-start check forbids editing the prompt and running it in the same pass.
 
-  Also carried forward, still unapplied and now three runs old: `## Legacy notes requiring split` has no
-  graded form, with the 2026-08-26 cold reviewer's cheaper counter-proposal on record — tighten step 7's
-  "substantive sections" to "**whole** substantive sections" rather than add a sixth vocabulary value.
-  Today's run hit the same boundary a sixth time and resolved it the same way (`03-layered-architecture.md`
-  carries DTO and state-machine sections owned by entries 06 and 16; both routed into that entry's
-  must-answer list as relocation instructions, not a split).
+  Carried forward, unapplied, now four runs old: `## Legacy notes requiring split` still has no graded
+  form, with the 2026-08-26 cold reviewer's cheaper counter-proposal on record — tighten step 7's
+  "substantive sections" to "**whole** substantive sections". This run did not test that boundary.
 
-  maps: **checked, no correction owed** — `_system-map.md` §7's `notes/{topic}/{level}/en|es/*.md` row and
-  `README.md`'s catalogue `Generates` cell were corrected in 0a92412f to state that this prompt renames
-  note pairs and repairs their inbound links, which is exactly what this run did (2 renames, 0 inbound
-  links found repository-wide). No row read as false. No whole-file read of a prompt or `SKILL.md`
-  occurred in this run, so the absence half of the map test did not fire.
+  maps: **checked, no correction owed** — `_system-map.md` §7's `notes/{topic}/coverage/notes-plan-{LEVEL}.md`
+  row and the `notes-plan` rows of §9 and §11 describe what this run did. No prompt or `SKILL.md` was
+  read end to end, so the whole-read trigger did not fire.
