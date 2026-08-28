@@ -347,6 +347,10 @@ Every column §7 declares as not null now says so on the mapping, and `TimeEntry
 
 `ProjectService` and `UserService` keep their `existsBy` check *and* wrap `saveAndFlush` in a `catch (DataIntegrityViolationException)` that rethrows the same `DuplicateResourceException`. The two are not redundant: a `SELECT` and an `INSERT` are two statements, so two requests can both read "absent" before either writes, and only the unique index decides that atomically. The check is what makes the common refusal legible — it is case-insensitive on `name`, which the index is not, and it costs no failed write. What the catch buys is that the rare path answers with the same contract as the common one, `fieldErrors.name` included, instead of the generic 409 a reactive form cannot place under an input. `saveAndFlush` is load-bearing here rather than stylistic: `save` stages the statement and the violation would surface at the commit flush, outside the `try`.
 
+### A repository is asked for the entity, or told to delete it, never both ✓
+
+`TimeEntryService.delete` already loads the entry to check ownership and refuse a non-`DRAFT` status, so it hands that instance to `delete(timeEntry)`. `deleteById(id)` is implemented as `findById(id).ifPresent(this::delete)` — it would ask for the same row a second time and, worse, absorb an absent id silently, applying a different not-found policy than the guard three lines above it, which answers `404`.
+
 ---
 
 ## Tradeoffs
