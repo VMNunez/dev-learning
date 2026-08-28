@@ -2,6 +2,7 @@ package com.victor.timetrack.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -41,14 +42,17 @@ public class TimeEntry {
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'DRAFT'")
     @Column(nullable = false)
     private EntryStatus status = EntryStatus.DRAFT;
 
     private String rejectionNote;
 
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 }
