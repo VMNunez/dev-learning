@@ -9,6 +9,10 @@ import java.time.LocalDate;
 
 
 public class TimeEntrySpecifications {
+
+    private TimeEntrySpecifications() {
+    }
+
     public static Specification<TimeEntry> fetchUserAndProject() {
         return (root, query, criteriaBuilder) -> {
             if (Long.class != query.getResultType() && long.class != query.getResultType()) {

@@ -176,7 +176,7 @@ public class TimeEntryService {
         TimeEntry saved = timeEntryRepository.save(timeEntry);
         return toResponse(saved);
     }
-    
+
     @Transactional
     public TimeEntryResponse reopen(Long id) {
         User user = authenticatedUserProvider.currentUser();
@@ -202,7 +202,7 @@ public class TimeEntryService {
             throw new InvalidStateTransitionException("You can only delete DRAFT entries");
         }
 
-        timeEntryRepository.deleteById(id);
+        timeEntryRepository.delete(timeEntry);
     }
 
     private TimeEntry findOwnedEntry(Long id, User user) {
