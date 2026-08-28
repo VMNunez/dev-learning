@@ -7,6 +7,7 @@ import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.repository.ProjectRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,9 +61,12 @@ public class ProjectService {
         project.setName(name);
         project.setDescription(request.getDescription());
 
-        Project saved = projectRepository.saveAndFlush(project);
-
-        return toResponse(saved);
+        try {
+            Project saved = projectRepository.saveAndFlush(project);
+            return toResponse(saved);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("name", "A project with this name already exists");
+        }
     }
 
     @Transactional
@@ -84,9 +88,12 @@ public class ProjectService {
         project.setName(name);
         project.setDescription(request.getDescription());
 
-        Project saved = projectRepository.save(project);
-
-        return toResponse(saved);
+        try {
+            Project saved = projectRepository.saveAndFlush(project);
+            return toResponse(saved);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("name", "A project with this name already exists");
+        }
     }
 
     @Transactional

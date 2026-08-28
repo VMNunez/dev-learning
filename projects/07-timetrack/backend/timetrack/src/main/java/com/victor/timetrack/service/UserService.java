@@ -15,6 +15,7 @@ import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.TimeEntryRepository;
 import com.victor.timetrack.repository.UserRepository;
 import com.victor.timetrack.util.EmailNormalizer;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class UserService {
             Sort.Order.asc("id"));
     private static final Set<EntryStatus> NON_TERMINAL_STATUSES =
             EnumSet.of(EntryStatus.DRAFT, EntryStatus.REJECTED);
-    
+
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
                        AuthenticatedUserProvider authenticatedUserProvider, TimeEntryRepository timeEntryRepository) {
         this.userRepository = userRepository;
@@ -69,17 +70,21 @@ public class UserService {
         newUser.setPassword(passwordEncoder.encode(generatedPassword));
         newUser.setRole(request.getRole());
 
-        User saved = userRepository.save(newUser);
+        try {
+            User saved = userRepository.saveAndFlush(newUser);
 
-        CreateUserResponse response = new CreateUserResponse();
-        response.setId(saved.getId());
-        response.setName(saved.getName());
-        response.setEmail(saved.getEmail());
-        response.setRole(saved.getRole());
-        response.setActive(saved.isActive());
-        response.setGeneratedPassword(generatedPassword);
+            CreateUserResponse response = new CreateUserResponse();
+            response.setId(saved.getId());
+            response.setName(saved.getName());
+            response.setEmail(saved.getEmail());
+            response.setRole(saved.getRole());
+            response.setActive(saved.isActive());
+            response.setGeneratedPassword(generatedPassword);
 
-        return response;
+            return response;
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("email", "Email already in use");
+        }
     }
 
     @Transactional
@@ -119,10 +124,12 @@ public class UserService {
             user.setActive(request.getActive());
         }
 
-        User saved = userRepository.save(user);
-
-        return toResponse(saved);
-
+        try {
+            User saved = userRepository.saveAndFlush(user);
+            return toResponse(saved);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateResourceException("email", "Email already in use");
+        }
     }
 
     @Transactional
