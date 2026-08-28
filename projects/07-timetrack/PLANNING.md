@@ -486,7 +486,8 @@ removes what a superuser adds on top — every other role's password hash in `pg
 through `COPY … PROGRAM`, and DDL against objects this project does not own.
 
 The role owns the database rather than holding `SELECT`/`INSERT`/`UPDATE`/`DELETE` alone because
-`ddl-auto=update` alters its own tables at startup. That is the coupling to record: the schema strategy
+`ddl-auto=update` issues DDL against its own tables at startup — creating them and adding columns, never
+altering one that already exists. That is the coupling to record: the schema strategy
 decides the floor on the privilege. Behind Flyway migrations — the deployment-shaped alternative — the
 runtime role could drop DDL entirely and the migration step would carry it instead.
 

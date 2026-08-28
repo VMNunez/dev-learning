@@ -448,7 +448,8 @@ The role is deliberately not `postgres`. What that buys is bounded and worth sta
 not stop an injection reaching this database's own tables — the app has full DML there by definition —
 but it removes everything a superuser adds on top, `pg_shadow` and every other role's password hash,
 `COPY … PROGRAM` shell execution, and DDL against objects this application does not own. It owns the
-`timetrack` database because `ddl-auto=update` alters its own tables at startup; behind Flyway
+`timetrack` database because `ddl-auto=update` issues DDL against its own tables at startup, creating
+them and adding columns; behind Flyway
 migrations it could be narrowed further, to `SELECT`/`INSERT`/`UPDATE`/`DELETE` and no DDL at all.
 
 ### The `dev` profile is not optional in local development
