@@ -134,6 +134,14 @@ only its own reader. Where the read is genuinely owed, resolve it `REC-112`'s wa
 inside the fence, for the one check that needs it, **with the mechanism that keeps it a section
 read**; a file under the 2000-line limit is loaded whole by a plain Read, so "that section only" is
 an instruction and `grep -n` plus `offset` is what executes it.
+**Also `REC-175`, which names the enumerator: a cold reviewer's own *acceptance proof* lists the
+verdicts it is required to return, and each one is owed the rule it is measured against — supply that
+rule, or fence the verdict out of scope; nothing else disposes of it.** An artefact carries fields and
+headers no mandated verdict covers, and a reviewer paid to find things will rule on them anyway from
+whatever it can infer — two `notes-plan` runs lost a round trip each to a digest it could not compute
+and a field restriction it could not read. The fence is not politeness: where another component already
+recomputes the value, name it, because a verdict with no rule and no fence is the one finding the loop
+cannot settle.
 
 **One creating commit is not only a reader's error — it is also an authoring *copy*, and the family
 is what names the foreign clause.** From `REC-139`. `REC-130` above dates a partition and reads a
