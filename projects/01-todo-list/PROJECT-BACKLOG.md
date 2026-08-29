@@ -17,6 +17,7 @@
 
 ### Low
 
+- [ ] `[frontend]` `npm test` falla en `task-item.spec.ts` con `NG0950: Input "task" is required but no value is available yet` — el spec de scaffold monta `TaskItem` sin aportar su `input.required<Task>()`, y el render de `task-item.html:3` revienta. Distinto del caso `app.spec.ts` (aquel afirmaba un `<h1>` inexistente): aquí falta el input obligatorio. Decidir entre pasarlo con `fixture.componentRef.setInput('task', …)` o borrar el spec como scaffold muerto. *(Effort: S)* *(raised 2026-08-29 while closing the `app.spec.ts` task — visto al correr `npm test --watch=false`)*
 - [ ] `[frontend]` `README.md` → How to run gives `cd dev-learning/angular/01-todo-list`, a path the repo reorganisation removed — the folder is `projects/01-todo-list`, so the documented clone-and-run sequence fails at step 2 for anyone reading the portfolio. *(Effort: S)* *(raised 2026-08-29 while closing the dead `App.title` task)*
 - [ ] `[frontend]` Delete the leftover CLI scaffold `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'` that no longer exists (`app.html` renders only `<router-outlet />`). Not a test gap (see the note above), just dead scaffold. *(Effort: S)*
 
