@@ -18,7 +18,9 @@ wiring table, the two-standard problem in step 9 and `## What no row owns yet` w
 his instruction, from a read of `README.md`, `_system-map.md` §1/§2/§7 and the four machinery files the
 loop would touch. `## The feedback signal Loop B does not have` and `## Staging — collect early, decide
 late` were added the same day, on his instruction, from an assessment of the target as a
-self-improving system rather than as a set of steps.
+self-improving system rather than as a set of steps. Step 7's episode shape — multiple TODO rounds, the
+frozen text as the only positive example, and rounds-to-freeze as the loop's own metric — is Victor's
+correction of that same day, and the reason the step no longer says "initial and final".
 
 ---
 
@@ -83,12 +85,33 @@ voice before he ever reads them.
 
 ## Loop B — the system learns his voice
 
-7. **Collection, from the reading side.** Every resolution of step 4 deposits evidence: the question
-   ID, his **verbatim** TODO, and the **initial and final** text of the answer. The before/after is the
-   payload — without it there is a result and no pattern. The writer is `study-content-writer`, whose
-   trigger already names `notes/interview-prep/` while its routing branches only on `{LEVEL}/en|es/`.
+7. **Collection — one episode per question, not one row per repair.** Evidence is deposited on every
+   resolution of step 4, but the unit is the question's **whole journey to the freeze**: `v0` as
+   generated, then each of his verbatim TODOs in order with the version it produced, and finally the
+   text that carries `[refined]`. The writer is `study-content-writer`, whose trigger already names
+   `notes/interview-prep/` while its routing branches only on `{LEVEL}/en|es/`.
    *`REC-184`. Note `REC-171`'s note sink deliberately refuses to store prose, under a countability
    argument that does not transfer; that is why this is a second sink and not a widening of the first.*
+
+   **A question can take more than one round, and that is the normal case, not an edge one** (Victor,
+   2026-08-29). He resolves a TODO, reads the result, and it is still not how he would say it. Three
+   consequences, and the first is the reason this step was rewritten:
+
+   - **Only the `[refined]` text is a positive example.** The output of round 1 in a three-round
+     question is a version **he rejected**. A design that stores "initial and final" per repair feeds
+     Loop B answers he refused as if they were answers he approved — not noise, but examples with the
+     wrong sign. The valid target is the frozen text and nothing else, exactly as `[refined]` already
+     means everywhere else in the system.
+   - **The intermediate versions are evidence too, as negatives.** *The system tried this and he still
+     said no* narrows a voice rule faster than a success does, so they are kept and **labelled
+     rejected**, never mixed into the positive corpus.
+   - **The episode closes on the freeze, not on the repair.** A row is open and accumulating rounds
+     until Victor writes `[refined]`; that marker is what completes it. So `study-content-writer`
+     appends, and the closing event belongs to the freeze — which also means an episode on a question
+     he never freezes stays open, and needs a disposition rather than sitting there forever.
+
+   The same shape applies to the notes family, where the equivalent of the freeze is
+   `Status: refined` in the plan and the pair Victor declares refined.
 8. **Maturity.** A pattern is due when it recurs **across different questions**, never on repetitions
    inside one — five occurrences in one answer is that answer's quirk, two questions is an invariant.
    *The threshold shape is `REC-171` (g)'s, applied to a different population.*
@@ -135,9 +158,12 @@ questions that were already written under it. **A loop with a door in and no doo
 
 What closing it requires is small and has to be decided before the first rule lands, not after:
 
-- **A count that moves.** TODOs per question, or per generated batch, recorded where a later run can
-  compare it — the corrections his own study block already produces, counted instead of discarded.
-  Without a before, no after means anything.
+- **A count that moves, and step 7 already produces it: rounds-to-freeze.** How many TODO rounds a
+  question needs before Victor writes `[refined]`. It is the closing number of every episode, it needs
+  no instrumentation beyond the sink itself, and it answers the question step 10 only asserts: if the
+  derived rules are learning his voice, questions generated after a rule freeze in fewer rounds than
+  the ones before it. **A rule whose cohort does not freeze faster did not pay**, and that is a
+  falsifiable statement about a voice rule, which is the thing this design otherwise lacks entirely.
 - **A rule that can be found again.** Each derived rule keeps the question IDs it was derived from, so
   a rule that stops paying can be traced back to the two answers that suggested it and withdrawn.
 - **A disposition field from the first row.** `REC-171`'s sink carries one; this one should be born
@@ -155,15 +181,18 @@ deciding is expensive, and every decision the design still owes — the maturity
 a voice rule, whether the corpus is even large enough to hold patterns — is answerable from data that
 does not exist yet and unanswerable from an empty file.
 
-- **Phase 0 — the sink alone.** Question ID, his verbatim TODO, the before and after of the answer, a
+- **Phase 0 — the sink alone.** One open episode per question: `v0`, then an appended round per TODO
+  (his verbatim words + the version it produced, marked rejected once a later round supersedes it),
+  the frozen text when `[refined]` lands, the rounds-to-freeze count that closes it, and a
   `Disposition` field. **No detector, no threshold, no consumer, no standard touched.** The writer is
-  `study-content-writer` at the moment it resolves a TODO, which already fires on that event. This is
-  the whole of what should be built first, and it is a fraction of the machinery the rest of this file
-  describes.
-- **Phase 1 — read it, once there is something to read.** With real rows in front of him: is there a
-  pattern at all? At what recurrence does one stop being a coincidence? Do his TODOs describe *voice*,
-  or mostly technical content — which would mean the loop he wants is a different loop. **This phase
-  can conclude that Loop B should not be built**, and that is a successful outcome, not a failure.
+  `study-content-writer` at the moment it resolves a TODO, which already fires on that event; the
+  closing write is triggered by the freeze. This is the whole of what should be built first, and it is
+  a fraction of the machinery the rest of this file describes.
+- **Phase 1 — read it, once there is something to read.** With real episodes in front of him: is there
+  a pattern at all? At what recurrence does one stop being a coincidence? What does rounds-to-freeze
+  actually look like — one round for most questions, or four? Do his TODOs describe *voice*, or mostly
+  technical content — which would mean the loop he wants is a different loop. **This phase can conclude
+  that Loop B should not be built**, and that is a successful outcome, not a failure.
 - **Phase 2 — the detector, the threshold, the gate.** Only here, and only with Phase 1's numbers,
   does anything reach `_interview-prep-standard.md` and `_portfolio-standard.md`.
 
@@ -186,7 +215,7 @@ updated in the same commit if one lands.
 | 3–4 | `notes/interview-prep/{LEVEL}/en\|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` · `study-block-close` | route, block-open, `/simulator`, both recounts | the symmetric repair-direction rule, and the re-translation reviewer `REC-183` (a) owes | `REC-183` |
 | 5 | same | Victor alone writes `[refined]` | — | nothing — already the contract | — |
 | 6 | `notes/interview-prep/routes/{LEVEL}.md` · `PROGRESS.md` `## Study progress` | `/interview-prep-route` only · the closing rituals | block-open, `study-block-close`, `authoring-progress-recount` | whether project questions enter the route, the block and the count at all | `REC-180` |
-| 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` | — | — | ID + verbatim TODO + before/after answer, and a `Disposition` field; the `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined | `REC-184` |
+| 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` | — | — | one **episode** per question: `v0`, a round per TODO (verbatim + its version, rejected once superseded), the `[refined]` text, rounds-to-freeze, `Disposition`. Two writes, not one — appended by `study-content-writer`, closed by the freeze. The `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined, and an episode stores more of it than a row | `REC-184` |
 | 8 | the same sink | — | its consumer | the across-questions threshold, and where the count is printed — `REC-171`'s equivalent is a close-out's `cosecha:` line | `REC-184` |
 | 9 | `_interview-prep-standard.md` **and** `_portfolio-standard.md` | **by hand only** — the standards fence, owned by `_session-rules.md` | their two disjoint chains | the approval gate, and a landing that reaches both chains | `REC-184` |
 
