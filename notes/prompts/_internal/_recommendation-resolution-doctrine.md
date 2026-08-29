@@ -36,6 +36,13 @@ only the Required sources list does. So when a prompt demands a verdict its own 
 support, measure its **siblings** before reasoning about the wording: `REC-110` closed on two of three
 coverage prompts already listing the file the third only pointed at. An asymmetry across prompts that
 share a standard is evidence, and it costs one grep.
+**Also `REC-183`, from the row's side: the sibling family may already carry the very rule the row says
+nobody states — and the row can cite that exact line as its precedent while misreading what it says.**
+That row quoted `_note-quality-standard.md` l.149 as an unrelated exception *proving the default was
+overridable*; l.148-155 is the symmetric TODO-direction rule it was asking for, live since 2026-08-20
+across five files. **Quote the text of every line a row cites before building on it.** A citation by
+description is the one form of evidence that can hand you the answer as though it were the precedent,
+and checking it is what collapsed a two-family sweep to one.
 
 **An isolation clause fences *content*, and a proof demanded of a fenced role must take a form the
 fence permits.** `REC-112` found the `en/`-blind Spanish reviewer told to "read only" its Spanish

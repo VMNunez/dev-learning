@@ -5,6 +5,8 @@ unless an open row of `_recommendation-ledger.md` says so, and every step below 
 it. It exists because the target spans four rows and lived only in one conversation: `REC-180`,
 `REC-183`, `REC-184` and `REC-171` (g) each carry one slice of it, and a row is forbidden from
 restating its neighbours, so the shape none of them can hold had nowhere to be written down.
+**`REC-183` closed 2026-08-29** — step 4 is the one slice that is built, and the rest of the file is
+still a target.
 
 **No run obeys this file.** It is not a standard and grants no authority: it is read at step 1 of
 resolving any row that cites it, so the resolution can see the whole loop before editing its own
@@ -72,7 +74,7 @@ voice before he ever reads them.
 4. **Repair, on the side it was raised.** A TODO in `es/` is resolved in `es/` and `en/` is
    re-translated from the resolved Spanish; a TODO in `en/` is resolved in `en/` and `es/` is
    re-translated from it. Symmetric, one rule. The master-of-record clause keeps governing identity and
-   stops governing repair direction. *`REC-183` — and this step is the one
+   stops governing repair direction. *`REC-183`, **applied 2026-08-29** — and this step is the one
    place the target was already half-built: the notes family has carried the identical rule since
    2026-08-20 (`_note-quality-standard.md`, `_session-rules.md`, `study-content-writer`, and the
    translate stage's STOP guard). What the row actually landed was the **interview-prep half**, in
@@ -224,7 +226,7 @@ updated in the same commit if one lands.
 | Step | File | Written by today | Read by today | What the target adds | Row |
 |---|---|---|---|---|---|
 | 1–2 | `notes/interview-prep/projects/*.md` | `/portfolio-audit` | `/simulator` | IDs, priority markers, an `es/` twin, a TODO channel — and readers: the route, the recall block, both recounts | `REC-180` |
-| 3–4 | `notes/interview-prep/{LEVEL}/en\|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` · `study-block-close` | route, block-open, `/simulator`, both recounts | **nothing — landed 2026-08-29.** The symmetric repair-direction rule is in `_interview-prep-standard.md`, the write prompt's Steps 1–2 and its output contract, the audit orchestrator's author dispatch, the review prompt's bilingual-integrity check, `study-content-writer` and `_session-rules.md`; (a)'s reviewer was ruled unnecessary and replaced by two checks — the Q&A route's written report and an `en/`-side back-translation clause | `REC-183` |
+| 3–4 | `notes/interview-prep/{LEVEL}/en\|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` · `study-block-close` | route, block-open, `/simulator`, both recounts | **nothing — landed 2026-08-29.** The symmetric repair-direction rule is in `_interview-prep-standard.md`, the write prompt's Steps 1–2 and its output contract, the audit orchestrator's author dispatch, the review prompt's bilingual-integrity check, `study-content-writer` and `_session-rules.md`; (a)'s reviewer was ruled unnecessary and replaced by two checks — the Q&A route's written report and an `en/`-side back-translation clause | `REC-183` (closed) |
 | 5 | same | Victor alone writes `[refined]` | — | nothing — already the contract | — |
 | 6 | `notes/interview-prep/routes/{LEVEL}.md` · `PROGRESS.md` `## Study progress` | `/interview-prep-route` only · the closing rituals | block-open, `study-block-close`, `authoring-progress-recount` | whether project questions enter the route, the block and the count at all | `REC-180` |
 | 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` | — | — | one **episode** per question: `v0`, a round per TODO (verbatim + its version, rejected once superseded), the `[refined]` text, rounds-to-freeze, `Disposition`. Two writes, not one — appended by `study-content-writer`, closed by the freeze. The `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined, and an episode stores more of it than a row | `REC-184` |
