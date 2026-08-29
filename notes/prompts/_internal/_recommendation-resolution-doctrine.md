@@ -942,6 +942,15 @@ verify the pattern selects that case and nothing wider *and nothing else that ne
 direction is the cheap half; a comment describing a class the glob does not select is the defect that
 survives for months, because the check never fails. And when a fix's own sweep keeps returning one more
 site of the same shape, that is the two-round cap working: the residue is a row, not a third repair.
+**And `REC-174`, its residue, which adds the two clauses a list of names cannot supply. A set may hold
+more than one CLASS, and until the classes are named apart it can be audited in one direction only:**
+every exemption there was read as "content copied from a run", so the files exempt for the opposite
+reason — authored, and the runtime is their subject or their quoted evidence — were invisible as a
+group, and one of them sat in the filter carrying no comment at all. **And when the repair elects a
+definer, the definer's own completeness is part of the fix**: this one named `_system-map.md` §7 as
+what decides who wrote a file, and §7 had no row for one of the six files the same commit was adding —
+the cold reviewer found it, not the sweep, because a sweep reads the population it rules and not the
+oracle it cites.
 
 **A non-ASCII literal in a BOM-less `.ps1` is not the character you typed.** Also `REC-084`, where it
 bit three times in one session — in the check, in the author's probe, and in the cold reviewer's.
