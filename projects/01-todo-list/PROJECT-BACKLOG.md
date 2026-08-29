@@ -17,7 +17,7 @@
 
 ### Low
 
-- [ ] `[frontend]` `README.md` → How to run gives `cd dev-learning/angular/01-todo-list`, a path the repo reorganisation removed — the folder is `projects/01-todo-list`, so the documented clone-and-run sequence fails at step 2 for anyone reading the portfolio. *(Effort: S)* *(raised 2026-08-29 while closing the dead `App.title` task)*
+*No open Low tasks.*
 
 ---
 
@@ -36,6 +36,7 @@
 
 #### Low
 
+- 2026-08-29 · **[Low]** `[frontend]` — README How to run path fixed to `dev-learning/projects/01-todo-list` after the repo reorg → README How to run
 - 2026-08-29 · **[Low]** `[frontend]` — `task-item.spec.ts` feeds its required `task` input with `componentRef.setInput` → README What I learned, coverage angular/junior
 - 2026-08-29 · **[Low]** `[frontend]` — scaffold `app.spec.ts` deleted; it asserted an `<h1>` the template no longer renders → suite verificada con `npm test`
 - 2026-08-29 · **[Low]** `[frontend]` — dead CLI scaffold `title` signal removed from `App` → README What I learned
