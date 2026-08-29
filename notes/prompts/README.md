@@ -396,6 +396,11 @@ closed `REC-NNN` promoted, plus the row-shape pricing table — read only by a s
 row, at its steps 1 and 3),
 `_recommendation-ledger-closed.md` (the ledger's resolved half: one line per closed `REC-NNN`, ordered
 by ID — read to deduplicate a candidate against work already ruled on, including rejected rows),
+`_interview-voice-spec.md` (the one target flow four open rows are slices of — the interview-answer
+voice pipeline, Loop A generation → translation → TODO → symmetric repair → `[refined]`, and Loop B
+collection → maturity → drafted rule → approval. **A target, not a description of what runs**: it
+grants no authority, no run obeys it, a standard beats it wherever they disagree, and every step names the
+row that owns it — read at step 1 by a session resolving `REC-180`, `REC-183` or `REC-184`),
 `system/_internal/_system-check-reconcile-prompt.md` (the mandate every one of `system-check`'s Step 4
 reconcilers is dispatched with: the two directions, the four claim dispositions and the return contract),
 `system/_internal/_system-check-report.md` (the latest explicit machinery audit: inventory and boundary
