@@ -162,6 +162,7 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 Maven is ecosystem tooling rather than Java language syntax; this section owns generic Java-build mechanics, while Spring Boot coverage owns starter, parent, and plugin behaviour.
 
 - Maven coordinates — identify an artifact through `groupId`, `artifactId`, and `version` ✅ 07-timetrack
+- Project metadata in `pom.xml` — distinguish the descriptive elements (`name`, `description`) from the publication-only blocks (`licenses`, `developers`, `scm`) a generator emits empty, and recognise that a declared-but-empty element states less than an absent one ✅ 07-timetrack — the pom declares only `name` and `description`; the empty `licenses`, `developers` and `scm` blocks the generator emitted are gone
 - `pom.xml` build structure — locate dependencies, plugins, properties, and inherited configuration without confusing their roles ✅ 07-timetrack
 - Dependency resolution — locate an artifact in Maven Central, add its coordinates, and let Maven resolve transitive dependencies while inspecting unexpected versions ✅ 07-timetrack
 - Build lifecycle — distinguish `clean`, `compile`, `test`, `package`, and `install` and know that a later lifecycle phase runs the earlier phases
