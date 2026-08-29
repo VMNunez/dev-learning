@@ -19,5 +19,9 @@
     (taskDeleted)="deleteTask($event)"
   />
 } @empty {
-  <p class="empty-message">No tasks yet</p>
+  @if (totalCount() === 0) {
+    <p class="empty-message">No tasks yet</p>
+  } @else {
+    <p class="empty-message">No tasks match this filter</p>
+  }
 }
