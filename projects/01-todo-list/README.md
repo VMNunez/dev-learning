@@ -89,9 +89,6 @@ No login — the app opens straight on the task list.
 - `componentRef.setInput()` — a required input has no parent in a test, so the harness must supply it before the first render
 - Service-owned state — one writer, many readers; data down through `input()`, events up through `output()`
 - State justified by its readers — a signal no template reads is not state, so the root component of a routed app declares none
-- CSS custom properties — `:root` and `var()` for a single source of colours
-- Flexbox — `display: flex`, `justify-content`, `align-items`, `gap`
-- `justify-content` / `align-items` — alignment belongs to the flex container; on a non-flex element they are parsed and silently ignored
 
 ---
 
