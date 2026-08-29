@@ -10,9 +10,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## High
 
-- [ ] `[frontend]` Trim the city input before emitting it. `weather-form.html` emits `city.value` raw, so a
-      leading/trailing space (`" Madrid"`) reaches the service as `q= Madrid`, OpenWeatherMap returns 404 and
-      the app shows "City not found" for a perfectly valid city. Emit `city.value.trim()`. — *effort: 5 min*
+*No open High tasks.*
 
 ## Medium
 
@@ -20,11 +18,6 @@ component/service split is correct; the gaps are all in input handling at the se
       into `q=${city}`, so accents or special characters (`São Paulo`, `&`, `#`) build a malformed query string
       and surface as a false "not found". Fix it by building the query with `HttpParams` — which also resolves
       the Low task below. — *effort: 15 min*
-- [ ] `[frontend]` Add the Enter-key handler to the search input. PLANNING.md step 5 asks for `(keyup.enter)` plus
-      a button, but only the button click is wired. — *effort: 5 min*
-- [ ] `[frontend]` Block empty / whitespace-only submissions in `weather-form`. Clicking Search on an empty field
-      emits `''` and fires an API call that can only fail. Disable the button (or skip the emit) when
-      `city.value.trim()` is empty. — *effort: 10 min*
 - [ ] `[frontend]` Add the `transition` + `transform: scale()` hover effect from PLANNING.md's key-patterns table —
       it is the one planned concept with no trace in the code (no `transition` or `scale` anywhere in the CSS).
       — *effort: 15 min*
@@ -35,6 +28,29 @@ component/service split is correct; the gaps are all in input handling at the se
       concatenation — the idiomatic Angular way, and it removes the manual-encoding bug class. — *effort: 15 min*
 - [ ] `[frontend]` Remove the leftover CLI scaffold in the root component: the empty `app.css` (with its unused
       `styleUrl`) and the `title` signal in `app.ts`, which is never read in `app.html`. — *effort: 5 min*
+
+---
+
+## Closed
+
+### Frontend
+
+#### High
+
+- 2026-08-29 · **[High]** `[frontend]` — the emitted city is trimmed before it crosses the `output()` boundary → README Architecture decisions, coverage architecture/junior
+
+#### Medium
+
+- 2026-08-29 · **[Medium]** `[frontend]` — Enter and the button click reach one `submit()` handler → README What I learned, coverage architecture/junior
+- 2026-08-29 · **[Medium]** `[frontend]` — an empty or whitespace-only search is rejected before any request → README Architecture decisions, coverage architecture/junior
+
+#### Low
+
+*No Low tasks closed yet.*
+
+### Backend
+
+*No backend tier — Angular-only project.*
 
 ---
 
