@@ -818,6 +818,11 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   cursor contract instead of assuming every list is safely returned at once ✅ 07-timetrack
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
   unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
+- Generated identity — an identifier must come from a source that guarantees uniqueness by
+  construction, such as a database sequence, a counter owned by the single writer of the collection, or
+  a random identifier wide enough that collisions are negligible; a clock reading is not one, because
+  every record created inside the same tick receives the same value, and any later operation that
+  locates a record by its identifier then acts on all of them at once ✅ 01-todo-list — `TaskService` owns a private `nextId` counter and stamps each new task with `nextId++`, so `toggleTask` and `deleteTask`, which `map`/`filter` over every match, and the `@for ... track task.id` in `task-list.html` can never resolve to two rows
 
 ### Presentation boundaries
 
