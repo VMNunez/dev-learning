@@ -16,7 +16,9 @@ Source: Victor, 2026-08-29, across the session that opened `REC-183` and `REC-18
 target; the measurements and the collisions are recorded in the rows, not here. The map placement, the
 wiring table, the two-standard problem in step 9 and `## What no row owns yet` were added 2026-08-29 on
 his instruction, from a read of `README.md`, `_system-map.md` §1/§2/§7 and the four machinery files the
-loop would touch.
+loop would touch. `## The feedback signal Loop B does not have` and `## Staging — collect early, decide
+late` were added the same day, on his instruction, from an assessment of the target as a
+self-improving system rather than as a set of steps.
 
 ---
 
@@ -90,6 +92,12 @@ voice before he ever reads them.
 8. **Maturity.** A pattern is due when it recurs **across different questions**, never on repetitions
    inside one — five occurrences in one answer is that answer's quirk, two questions is an invariant.
    *The threshold shape is `REC-171` (g)'s, applied to a different population.*
+   **Two questions is a placeholder, not a measurement, and must not be built as if it were one.** It
+   was chosen by analogy to a sink whose population is note pairs, before this sink held a single row.
+   Two co-occurrences in a nearly empty corpus are as likely to be a coincidence as a voice, and the
+   damage is worst exactly there: the earliest rules are the ones that govern the most future
+   questions. The number is to be **fixed from the corpus once it exists** — see `## Staging` — and
+   until then any figure written into machinery is a guess wearing a threshold's clothes.
 9. **Draft and approval.** Detection and drafting are **automatic**: Victor is told a rule is due and
    shown its draft without having initiated anything. The **landing is not** — a rule reaches the
    standard only through an approval gate, because that standard governs every question written
@@ -107,7 +115,62 @@ voice before he ever reads them.
    made to read.
 10. **Payoff.** New questions are generated already in his voice, so each turn of Loop A needs fewer of
     his TODOs. Loop B is what makes Loop A cheaper; without it this is a well-ordered bilingual bank
-    and nothing more.
+    and nothing more. *This step is an **assertion**, and the next section is about the fact that
+    nothing in the loop can currently tell whether it is true.*
+
+---
+
+## The feedback signal Loop B does not have
+
+**As written, steps 7–10 form an open loop.** A rule is derived from his corrections and applied to
+everything written afterwards, and **nothing ever checks whether the questions written after a rule
+needed fewer corrections than the ones written before it**. Every other loop in this repository closes:
+a prompt's refinement is decided by `_last-run-report*.md`, a skill's by `_skill-breach-log.md`, a step
+of the plan by its own done condition. Loop B has an input, a rule set and no verdict on itself.
+
+The consequence is not that it fails — it is that it cannot be told from a system that works. Rules
+accumulate, every one of them plausible on the two questions it came from, and the only reader who
+could notice that one of them is wrong is the person whose voice it claims to describe, reading
+questions that were already written under it. **A loop with a door in and no door out only grows.**
+
+What closing it requires is small and has to be decided before the first rule lands, not after:
+
+- **A count that moves.** TODOs per question, or per generated batch, recorded where a later run can
+  compare it — the corrections his own study block already produces, counted instead of discarded.
+  Without a before, no after means anything.
+- **A rule that can be found again.** Each derived rule keeps the question IDs it was derived from, so
+  a rule that stops paying can be traced back to the two answers that suggested it and withdrawn.
+- **A disposition field from the first row.** `REC-171`'s sink carries one; this one should be born
+  with it rather than gain it once a wrong rule is already in a standard.
+
+*No row owns any of this yet.* It is the difference between an improvement system and an accumulator,
+so it belongs in whichever row builds the sink rather than in a later one.
+
+---
+
+## Staging — collect early, decide late
+
+**Do not build Loop B in one piece.** The reason is not caution: it is that collecting is cheap and
+deciding is expensive, and every decision the design still owes — the maturity threshold, the shape of
+a voice rule, whether the corpus is even large enough to hold patterns — is answerable from data that
+does not exist yet and unanswerable from an empty file.
+
+- **Phase 0 — the sink alone.** Question ID, his verbatim TODO, the before and after of the answer, a
+  `Disposition` field. **No detector, no threshold, no consumer, no standard touched.** The writer is
+  `study-content-writer` at the moment it resolves a TODO, which already fires on that event. This is
+  the whole of what should be built first, and it is a fraction of the machinery the rest of this file
+  describes.
+- **Phase 1 — read it, once there is something to read.** With real rows in front of him: is there a
+  pattern at all? At what recurrence does one stop being a coincidence? Do his TODOs describe *voice*,
+  or mostly technical content — which would mean the loop he wants is a different loop. **This phase
+  can conclude that Loop B should not be built**, and that is a successful outcome, not a failure.
+- **Phase 2 — the detector, the threshold, the gate.** Only here, and only with Phase 1's numbers,
+  does anything reach `_interview-prep-standard.md` and `_portfolio-standard.md`.
+
+**The risk Phase 1 exists to catch, stated plainly:** the corpus may never reach maturity. If he
+refines twenty questions over two months and most of his TODOs are one-off, nothing recurs, no rule is
+ever due, and a fully built Loop B sits silent while nothing reports that it is silent. Phase 0 costs
+almost nothing and finds this out; Phase 2 built first would hide it behind machinery.
 
 ---
 
@@ -175,12 +238,12 @@ clause in an existing row, or a row of its own, before anything is built.
   harvests only TODOs he writes while *reading*, which is his editorial taste; the transcript is his
   voice, and the two are not the same corpus. Whether the block stops being read-only or hands the
   pair to `study-block-close` is the decision. Candidate home: a clause in `REC-184`.
-- **Step 10 asserts a payoff nothing measures.** "Fewer TODOs per turn" needs TODOs counted per
-  question or per generated batch, somewhere durable. Without it Loop B can never be shown to work —
-  and never retired if it does not.
-- **There is a door into the rule set and none out.** A pattern that matures on two questions and turns
-  out to be an artefact of those two has no retirement path. `REC-171`'s sink carries a `Disposition`
-  field for exactly this; Loop B's should be designed with one rather than gain one later.
+- **Everything in `## The feedback signal Loop B does not have`** — the count that moves, the
+  traceable rule, the `Disposition` field — is unowned, and is the part that decides whether this is an
+  improvement system or an accumulator. Not restated here.
+- **The staging in `## Staging`** is a recommendation with no row behind it. Phase 0 is the piece worth
+  opening first, and it is smaller than `REC-184` as currently written.
+- **The maturity number in step 8** is a placeholder no measurement supports.
 - **The third invariant above**, the pre-rule/post-rule split, has no owner.
 
 ## Sequencing
@@ -189,6 +252,13 @@ clause in an existing row, or a row of its own, before anything is built.
 readers the project bank needs) → `REC-184` (the voice sink and its consumer), which should not precede
 `REC-171` (g)'s first harvest: building a second extraction mechanism while the first has never run
 once produces two untested designs.
+
+**`REC-184` should be split along `## Staging`'s phases rather than sequenced as one row.** Phase 0 —
+the sink and its writer, nothing else — is blocked only behind `REC-180` (a row cannot store a question
+ID before question IDs exist) and can start the moment that lands, well before the notes harvest has
+run. Phase 2 is the part that must wait for `REC-171` (g), because the untested-design objection is
+about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
+the corpus months earlier at almost no cost, which is the whole argument of that section.
 
 **The transitive consequence, stated because it is easy to miss:** `REC-171` (g) is blocked behind
 `REC-170`, so the critical path of the voice loop begins at a row about the calibration exemplar of
