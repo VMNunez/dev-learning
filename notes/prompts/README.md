@@ -49,6 +49,28 @@ The workflow files in `notes/prompts/` are canonical and platform-neutral. They 
 - **Direct paste:** paste the canonical prompt into a supported runtime; it reads the runtime standard
   before dispatching any role.
 
+**That neutrality is enforced, not assumed, and the check is an exemption list before it is a scan.**
+The validator reads every `.md` file under `notes/prompts/` and fails any that carries platform-exclusive
+runtime syntax — a Claude model name, `general-purpose`, `run_in_background`, a tool that cannot also be an
+ordinary English word. What it does **not** read is published here as two classes, because an exemption
+whose class is unwritten is one nobody can audit, and both halves of that were live defects (`REC-172` (i),
+`REC-174`): **files written by a run or by the `PostToolUse` hook** — the generated reports, the run
+tracker, the friction, breach and TODO-harvest sinks, the cross-topic inbox, the market file, the skill-run counter — where a
+model name is a transcript of what happened and not an instruction; and **files that cannot do their job
+without the name** — this file, `_session-rules.md` and `_agent-runtime-standard.md`, whose *subject* is the
+runtime, plus both ledgers, which *quote* the tool and model names their findings were about. The two halves
+are stated apart on purpose: the second borrows the first class's reason inside an authored file, and
+blurring them is how `_recommendation-resolution-doctrine.md` — authored, quotes rows, but **instructs**, so
+it stays scanned — sat unruled either way. Membership follows what *wrote* the file, per its own header and
+its `_system-map.md` §7 row, never its filename, and it is ruled by hand: nothing detects a new sink, so
+one joins the list in the commit that creates it. `/system-check` excludes the same class from its
+inventory for the same reason, and the two lists were last reconciled 2026-08-29. **This scan is not one
+of the nine numbered invariants the next paragraph lists** — it runs ahead of them and the script leaves it
+unnumbered, which is why it went unpublished here until `REC-174`; the numbering below stays as it is,
+since two later paragraphs cite invariants 8 and 9 by number. The bare words `Bash`, `Grep`, `Read`,
+`Write`, `Edit` and `Glob` stay uncovered on purpose — "Git Bash", "Grep all three files" are legitimate
+prose, and a check that cries wolf gets disabled.
+
 Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
@@ -379,6 +401,9 @@ prompt that has never breached a step has no such file.
 failed skill steps, consumed by the next prompt close-out),
 `_skill-breach-log.md` (the skills’ own breach log: a run that finished its work and still did not go
 as its `SKILL.md` says — `SBRC-NNNN`, read by `skill-refine` alone, and by nothing as a work queue),
+`_skill-runs.md` (the rolling invocation counter the `PostToolUse` hook appends to on every `Skill` call —
+Git-ignored local state, `skill-refine`'s denominator for telling "ran 20 times and logged nothing" apart
+from "ran clean"; listed here 2026-08-29 with its `_system-map.md` §7 row, `REC-174`),
 `_ritual-friction.md` (friction without failure: a ritual that completed and cost more than it gave —
 `RITF-NNNN`, ruled on by `_recommendation-ledger.md` → `REC-054` (c), never adjudicated by a close-out),
 `knowledge/notes/_internal/_note-todo-harvest.md` (the countable index of Victor's own TODO corrections

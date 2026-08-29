@@ -176,7 +176,37 @@ foreach ($claudeLauncher in $claudeLaunchers) {
 $exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b|\b(SendMessage|WebFetch|WebSearch|TodoWrite|NotebookEdit|ExitPlanMode|AskUserQuestion|TaskOutput|MultiEdit|BashOutput|SlashCommand|KillShell)\b'
 $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md' |
     Where-Object {
-        $_.Name -ne 'README.md' -and
+        # THIS SET HOLDS TWO CLASSES AND STATED ONLY ONE (REC-174, the residue of REC-172 (i)).
+        # Every entry belongs to exactly one of them, and membership is decided by what a file's own
+        # header and its `_system-map.md` section 7 writer row say PRODUCED it - never by its filename:
+        #
+        #   CLASS A - WRITTEN BY A RUN OR A HOOK. Generated reports, runtime state, transcribed
+        #     evidence sinks. The content is copied from what happened, so a line naming a tool or a
+        #     model is EVIDENCE and not an instruction any runtime could obey.
+        #   CLASS B - AUTHORED, AND THE NAME IS WHAT THE FILE IS FOR. Exempt for the opposite reason
+        #     to class A: not because nobody wrote the line, but because the file cannot do its job
+        #     without it. Two sub-cases, kept apart because they are not the same claim:
+        #       B-i  the runtime is the SUBJECT - `README.md`, `_session-rules.md` and
+        #            `_agent-runtime-standard.md`, which exist to say what an adapter is.
+        #       B-ii authored prose that QUOTES transcribed evidence - both ledgers, whose rows and
+        #            closed lines quote the tool and model names the finding was about. This one
+        #            borrows class A's reason inside a class B file, which is why it is named: filing
+        #            it under B-i without saying so is how `_recommendation-resolution-doctrine.md`
+        #            below came to sit unruled.
+        #     RULED AND LEFT SCANNED, 2026-08-29: `_recommendation-resolution-doctrine.md`, split out
+        #     of the ledger on the same date as its closed half and sharing the habit of quoting rows,
+        #     is NOT exempt. It is case law that INSTRUCTS - "a resolution must", "the reviewer reads" -
+        #     so a model or subagent name in it would be an instruction to a runtime, which is exactly
+        #     what this invariant is for. Zero pattern hits today; if a future quotation needs one, the
+        #     repair is to name the runtime neutrally, not to exempt the file.
+        #
+        # Ruled over all 108 `.md` files under `notes/prompts/` on 2026-08-29, in BOTH directions - a
+        # class-A file outside the set, and a set member that turns out to be ordinary authored prose.
+        # Six class-A files were outside it that day and are added below. Nothing here DETECTS a class:
+        # a new file of either joins its list in the commit that creates it, which is the standing cost
+        # of naming rather than deriving, and is why the census date above is stated and not implied.
+
+        # --- CLASS A: written by a run or a hook -------------------------------------------------
         $_.Name -notlike '_last-run-report*' -and
         # Generated report, same class as `_last-run-report*`: its content is copied from a run, not authored.
         $_.Name -ne '_last-drift-report.md' -and
@@ -187,9 +217,10 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         # filename shapes - which is the REC-172 (i) defect: this exemption was one glob whose
         # comment described the family the glob does not select.
         #   `_breach-log-<prompt-name>.md` - the per-prompt logs of `_pipeline-self-report.md`
-        #     -> "The breach log", each read by its own close-out. NONE EXISTS YET: that contract
-        #     says one is "created on the first breach and never before", so this glob selects an
-        #     empty set today and is here for the population it will select.
+        #     -> "The breach log", each read by its own close-out. The first one exists as of
+        #     2026-08-27 (`_breach-log-notes-plan.md`, three `BRCH` rows quoting the step each run
+        #     broke); until then this glob selected an empty set and was here for the population it
+        #     would select.
         #   `_skill-breach-log.md` - the single `SBRC-NNNN` log read by `skill-refine` alone, and
         #     the sharpest case of all: a `Scope: shared` row over `_agent-runtime-standard.md`
         #     records a model or dispatch policy the run broke, so its Evidence clause names the
@@ -207,7 +238,48 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         # not on what it is about. Named separately for the same reason the two breach families are:
         # a glob wide enough to span all four would select any future `*harvest*` file unread.
         $_.Name -ne '_note-todo-harvest.md' -and
+        # The two audit reports, added 2026-08-29 (REC-174). Section 7 gives each ONE writer - its own
+        # audit prompt, "overwritten on each explicit run" - and both are git-tracked, which is why
+        # they read like canonical prose and sat here unexempted: a report quoting a `/system-gaps`
+        # candidate about runtime dispatch, or a `/system-check` finding about a model mapping, is the
+        # run's transcript of a defect and not a canonical instruction. Neither trips the pattern
+        # today; latent is how REC-172 (i) sat for months.
+        $_.Name -notin @('_system-check-report.md', '_system-gaps-report.md') -and
+        # `_skill-runs.md`, added with them, is the only member written by NO agent at all: the
+        # `PostToolUse` hook appends a row straight from raw tool-call input, so its `Args` column can
+        # hold whatever was typed. It is also the only member git ignores - which is not a reason to
+        # skip it, because this scan walks the DISK.
+        $_.Name -ne '_skill-runs.md' -and
+        # The three runtime/evidence-state files, added with them and found by the same cross-check:
+        # `system-check-prompt.md`'s inventory exclusion already grouped them as "runtime/evidence
+        # state" and this list did not. Their writers, per section 7 and each file's own header:
+        #   `_run-tracker.md` - every prompt's close-out, plus `coverage-bullet-add`; "Victor never
+        #     fills it by hand (though he may correct it)".
+        #   `_cross-topic-inbox.md` - FIVE writers and its header calls the list exhaustive: the three
+        #     coverage prompts, the `coverage-bullet-add` skill, AND a BY-HAND entry on a boundary
+        #     change, which `_topic-ownership.md` mandates. So "written by runs" is false of it, and
+        #     the class-A verdict survives anyway: a hand-filed routing row is still a transcript of a
+        #     gap some run found, not an instruction to a runtime. Stated rather than smoothed over,
+        #     because the definer is the writer and this one has a writer that is a person.
+        #   `_job-market-evidence.md` - `/evidence-intake` and `/cv tailor`, out of real postings:
+        #     transcription from OUTSIDE the system and the least controllable text in the tree.
+        # All three carry an authored header above transcribed rows, and that mixture is class A
+        # whole: the pattern scans the file, not the section, and the friction sinks - the same shape -
+        # settled it that way.
+        $_.Name -notin @('_run-tracker.md', '_cross-topic-inbox.md', '_job-market-evidence.md') -and
+
+        # --- CLASS B: authored, and the runtime is the subject ------------------------------------
         $_.Name -notin @(
+            # The hub: its "Platform adapters" section names Claude Code and Codex to say what an
+            # adapter IS. FOUR pattern hits today, measured, not assumed: `CLAUDE.md` (l.32) in the
+            # shared-runtime-context block ABOVE that section, which starts at l.38; `Claude Code`
+            # (l.45) in the section itself; and `general-purpose` plus `run_in_background` (l.54) in
+            # the passage that publishes this very exemption, added 2026-08-29. All four correct. The
+            # first draft of this comment said "two, both that section" without counting, which is
+            # REC-174's own failure mode committed inside its own repair. It was the first line of
+            # this filter and carried no reason at all until 2026-08-29 - the other-direction finding
+            # of REC-174: an exemption whose class nobody could read is one nobody can audit.
+            'README.md',
             '_session-rules.md',
             '_agent-runtime-standard.md',
             '_recommendation-ledger.md',
