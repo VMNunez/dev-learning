@@ -72,6 +72,7 @@ https://01angulartodolist.netlify.app/
 - Exhaustive `switch` over a union type — omitting `default` makes a new union member a compile error
 - CSS variables with `:root` and `var()`
 - Flexbox layout: `display: flex`, `justify-content`, `align-items`, `gap`
+- Alignment properties belong to the flex container — on a non-flex element they are parsed and silently ignored
 
 ---
 
