@@ -143,7 +143,7 @@ PROGRESS evidence is surfaced by `simulation-block-open` and adjudicated by the 
 
 | Project | project-brief | plan-audit | review-audit | readme-audit | portfolio-audit |
 |---|---|---|---|---|---|
-| 01-todo-list | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | 2026-08-29 (global only — Angular-only project; FIXED, README changed) | |
+| 01-todo-list | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | 2026-08-29 (global only — Angular-only project; FIXED, README changed) | 2026-08-29 (completed — ✅ Ready; 70 questions; dry run) |
 | 02-weather-app | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
 | 03-expense-tracker | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06; the run that motivated the Step 3b consistency reviewer) | | |
 | 04-meal-finder | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
