@@ -72,6 +72,7 @@ https://01angulartodolist.netlify.app/
 - Key event modifiers — `(keyup.enter)` handles Enter without inspecting the event object
 - Exhaustive `switch` over a union type — omitting `default` makes a new union member a compile error
 - `styleUrl` — a component declares one only when it has styles; an empty stylesheet is a build dependency that buys nothing
+- State is justified by its readers — a `signal` no template reads is not state, so the root component of a routed app declares none
 - CSS variables with `:root` and `var()`
 - Flexbox layout: `display: flex`, `justify-content`, `align-items`, `gap`
 - Alignment properties belong to the flex container — on a non-flex element they are parsed and silently ignored
