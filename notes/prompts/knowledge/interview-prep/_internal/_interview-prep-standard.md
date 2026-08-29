@@ -97,12 +97,25 @@ exactly this split as its Stage M (market analysis) feeding the author.
 
 Notes and Q&A both live in two languages, and the two files are **never allowed to drift**.
 
-- **`en/` is the master of record** for wording. If the same question exists in different forms in both
-  files, the `en/` version wins and `es/` is updated to match (translated).
+- **`en/` is the master of record** for identity and structure — the question's ID, its section, its
+  position, and the wording that survives a sync when the two files disagree and nothing says why. It
+  does **not** decide which side a defect is *repaired* on: that is the direction rule below, the one
+  operation this bullet does not govern.
 - **`es/` is where Victor studies and marks TODOs** — he reads from `es/`, so that is where his `TODO:`
   markers appear. Scan `es/` first for them.
+- **Resolving a TODO runs in the direction of the file that carries it** (Victor, 2026-08-29, stated
+  symmetrically — the same rule `_note-quality-standard.md` has carried for the notes family since
+  2026-08-20). A `TODO:` he writes in `es/` is resolved **in `es/`**, in Spanish, applying his
+  instruction as written, and the `en/` twin is then **re-translated from the repaired Spanish**. A
+  TODO in `en/` is resolved in `en/`, then translated into `es/`. Never route an `es/` TODO through
+  English first: his TODOs are corrections to the Spanish phrasing itself — the file he answers out
+  loud from — so rewriting the answer in English and translating it down discards the exact wording he
+  asked for, which is the whole payload of the marker. A section repaired on the `es/` side is
+  therefore **not** a drift the master-of-record bullet settles in `en/`'s favour; it is a twin that
+  owes a re-translation, and overwriting it is the one failure this rule exists to prevent.
 - **Every change is mirrored, translated.** Add a question, resolve a TODO, fix a marker order — it
-  happens in both files, same section, same position. Never touch one without the other.
+  happens in both files, same section, same position. Never touch one without the other. *Mirrored*
+  says both files end up saying the same thing; the direction rule says which side says it first.
 - Spanish prose reads as **natural Spanish**, not a word-for-word calque of the English. Same question,
   same answer, same emphasis — different words where Spanish needs them. Translate the Junior-tip label
   to `Consejo de entrevista:`; keep the technical vocabulary that Victor will hear in English on the job.
@@ -147,7 +160,10 @@ problem and leaves the block untouched.
 Only Victor can reopen a refined question, either by explicitly saying so or by adding a TODO to that
 question. Reopening removes both state markers in both languages before any edit: the previously
 studied version no longer exists, so its study evidence cannot survive. The corrected question must be
-refined and studied again. Adding a new question is always allowed; it is born unrefined.
+refined and studied again. The repair itself obeys the direction rule above, and the twin's
+re-translation is **part of the same reopening**: the markers are already gone from both languages, so
+a writer never leaves the twin stale on the grounds that the block was frozen. Adding a new question is
+always allowed; it is born unrefined.
 
 ---
 
