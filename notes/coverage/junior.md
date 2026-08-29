@@ -156,6 +156,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
 - HTTP error tests — flush an error response and assert the service's observable or state follows the documented failure path
 - `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction
+- `componentRef.setInput()` — supply a required input from a test before the first change detection, because a component contract that a parent normally satisfies is the test harness's responsibility once the component is mounted alone ✅ 01-todo-list — `task-item.spec.ts` feeds the `input.required<Task>()` through `componentRef.setInput` before `whenStable()`, where the render previously threw NG0950
 
 ### Debugging and maintained-code navigation
 
