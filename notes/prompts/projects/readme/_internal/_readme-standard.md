@@ -211,18 +211,16 @@ file.** A README commit covers every README that one piece of work touched — *
 README**, and never `git add` on all three by default. State it in both directions, because it has been
 misread in both. Who runs that commit differs, and only that:
 
-- **`readme-audit.md` — not auto-committed, and it hands over one commit for the project.**
-  `_session-rules.md` *permits* the agent to commit a project's `README.md` directly (authorized
-  2026-08-01), so declining is this pipeline's own choice and the branch is **not** the reason — a README
-  commits on the active feature branch either way. The reason is the size of the object: this pipeline
-  rewrites whole files across up to three audiences, and the summary of changes above is what Victor
-  reads before that rewrite lands. So the orchestrator leaves the fixes in the working tree and hands
-  over one `git add` per README that actually changed, followed by **one** `git commit`:
+- **`readme-audit.md` — auto-committed, one commit for the project** (authorized 2026-08-29, reversing
+  the earlier hand-over rule: Victor does not want to run this commit by hand). It uses the same
+  `_session-rules.md` permission (authorized 2026-08-01). The orchestrator stages one `git add` per
+  README that actually changed and runs **one** `git commit`:
   `docs: update {PROJECT_PATH} README(s) — [one-line summary]`, whose plural is the tell that a single
-  command covers the set. A README whose author→reviewer pair did not complete is excluded from it.
-  Under `PROJECT_PATH = all` that is one such set per project; `readme-audit.md` owns how they are printed.
+  command covers the set. The summary of changes above is still printed — it is now a review record,
+  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit.
+  Under `PROJECT_PATH = all` that is one such commit per project.
 - **`readme-concept-add` — commits its own entry, in one atomic commit for that entry.** It uses the
-  same 2026-08-01 permission the pipeline declines, because one line added to an existing section is not
+  same 2026-08-01 permission, because one line added to an existing section is not
   a rewrite anyone needs to read first. Its unit is the concept, so a cross-tier concept — the global
   README *plus* the tier that implements it, per "Which README owns a concept" — is still one commit.
   The skill's own file owns the rest of its commit contract.

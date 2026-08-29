@@ -18,12 +18,12 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 **Internal pieces this orchestrates** (you never launch these directly):
 `_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer).
 
-> **Not auto-committed — by design.** `_session-rules.md` permits the agent to commit a project's
-> `README.md` directly; this pipeline deliberately does not, because it rewrites whole files and the
-> summary of changes exists so Victor reads that rewrite before it lands. The subagents fix the files in
-> the working tree and the orchestrator **hands Victor one commit for the project** — one `git add` per
-> README that actually changed, never one commit per README and never all three by default. The rule is
-> owned by `_readme-standard.md` → "Summary + commit rule". There is no `DRY_RUN`.
+> **Auto-committed** (authorized 2026-08-29, reversing the earlier hand-over rule). `_session-rules.md`
+> permits the agent to commit a project's `README.md` directly, and this pipeline uses that permission:
+> the subagents fix the files and the orchestrator **runs one commit for the project** — one `git add`
+> per README that actually changed, never one commit per README and never all three by default. The
+> summary of changes is still printed, now for review *after* the commit rather than as a gate before
+> it. The rule is owned by `_readme-standard.md` → "Summary + commit rule". There is no `DRY_RUN`.
 
 ---
 
@@ -46,7 +46,7 @@ PROJECT_PATH = all
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type (and therefore which READMEs) is derived from the path — do not set it.
 
-**After the run:** review the changed READMEs and run the commit command it hands you. Then skim the
+**After the run:** review the changed READMEs — they are already committed. Then skim the
 **pipeline self-report** it prints (also saved to `_last-run-report.md`) — only if it shows a real
 failure of the machinery do these prompts get edited, in a separate session.
 
@@ -119,7 +119,7 @@ one-line-per-section summaries — do not accumulate anything longer in your con
 **Failure protocol.** If a subagent errors out or returns a report you cannot act on (no verdict, no
 summary), re-dispatch that same subagent once with the same instructions. If it fails again, stop that
 target, exclude its README from the commit command, and flag it clearly in the final summary — never
-hand Victor a commit that includes a README whose pipeline did not complete.
+commit a README whose pipeline did not complete.
 
 ## Cross-README coherence (full-stack only)
 
@@ -142,8 +142,8 @@ one README, so skip this.
 ## Finishing
 
 Print a **summary of changes** across all targets (one line per section changed, grouped by README), then
-**hand Victor the commit** — do not run it, per the **Not auto-committed — by design** note at the top of
-this prompt.
+**run the commit yourself**, per the **Auto-committed** note at the top of this prompt (`git status`
+immediately before staging and before committing).
 
 **What the set covers: one commit for this project**, staging one `git add` per README that actually
 changed — never one commit per README, and never all three by default. A target excluded by the Failure
@@ -182,19 +182,15 @@ whether these prompts need changing, so be honest, including "nothing to report"
 
 Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception — `git status` before add and before commit, stage only
-`_last-run-report.md`, message `docs: pipeline self-report for readme review of {PROJECT_PATH}`. (The
-never-auto-commit rule below applies to the README files, not to this one.) The prompts stay frozen
+`_last-run-report.md`, message `docs: pipeline self-report for readme review of {PROJECT_PATH}`. (It is a separate commit from the README set.) The prompts stay frozen
 unless this report shows a real failure. Also print the report in chat.
 
 ## Hard rules
 
-- **Never auto-commit the READMEs.** Always hand Victor the command, and hand him **one commit for the
-  project**, not one per README. The permission exists — `_session-rules.md` lets the agent commit a
-  project's `README.md`, and `readme-concept-add` uses it — so the reason this flow declines it is the
-  whole-file rewrite, not the branch. (`plan-audit` auto-commits `PLANNING.md` and `review-audit`
-  auto-commits `PROJECT-BACKLOG.md`, both inside the project folder; that is their contract, not this
-  one's.) The only file this flow commits itself is `_last-run-report.md` — prompt-system machinery
-  under the notes/prompts exception.
+- **Commit the READMEs yourself**, as **one commit for the project**, not one per README — the same
+  `_session-rules.md` permission `readme-concept-add` uses, and the same shape as `plan-audit`
+  (`PLANNING.md`) and `review-audit` (`PROJECT-BACKLOG.md`). Never ask Victor to run it. The other file
+  this flow commits is `_last-run-report.md`, separately, under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.
