@@ -39,6 +39,7 @@ https://02angularweatherapp.netlify.app/
 - `forkJoin` for parallel requests to load current weather and forecast at the same time instead of sequentially
 - `takeUntilDestroyed` to cancel subscriptions automatically when the component is destroyed — no `ngOnDestroy` needed
 - Environment files for the API key to keep secrets out of the repository
+- Input normalised in the component that captures it to keep raw text from crossing the `output()` boundary
 
 ---
 
@@ -64,6 +65,7 @@ https://02angularweatherapp.netlify.app/
 - `forkJoin` — run multiple HTTP requests in parallel
 - `ngOnInit` — run logic when the component loads
 - `signal()` and `computed()` — reactive state and derived values
+- `(keyup.enter)` — key modifier so Enter and the button click reach one handler
 - `number` pipe with format `'1.0-1'`
 - `SlicePipe` — cut strings in templates
 - Environment files — store API keys safely
