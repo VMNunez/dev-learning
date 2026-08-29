@@ -30,7 +30,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Fix the `### DTO boundary` snippet in `backend/README.md`, which shows `new ProjectResponse(...)` with an all-args constructor the `@Data`-only DTO does not declare; the real `toResponse` is setter-based *(Effort: Small)*
+*No open Low tasks.*
 
 ### Frontend
 
@@ -136,6 +136,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - 2026-07-08 · **[Medium]** `[backend]` — `GET /api/projects` filtered by role (active-only for employees) → already in README, PROGRESS
 
 #### Low
+
+- 2026-08-29 · **[Low]** `[backend]` — the `### DTO boundary` snippet now shows the real setter-based `toResponse`, not an all-args constructor `@Data` never generates → backend README `### DTO boundary` (the fix itself, `0d06bdd8`); coverage n/a — spring-boot/junior "Entity-to-DTO mapping implementation" already covers it and already carries ✅ 07-timetrack for this exact `toResponse`; PLANNING §0 + §22 Lows count. Verified against `ProjectResponse` (`@Data` only, no `@AllArgsConstructor`) and `ProjectService:107-115`
 
 - 2026-08-29 · **[Low]** `[backend]` — `pom.xml` declares a real `name` and `description`; the empty `url`, `licenses`, `developers` and `scm` blocks deleted → coverage java/junior (new "Project metadata in `pom.xml`" bullet, marked ✅ 07-timetrack); README n/a — build-file hygiene is not a Key pattern; PLANNING §0 + §22 Lows count. Verified with `./mvnw.cmd -q validate` (exit 0). The file was also reindented from tabs to 4 spaces in the same commit. `/notes-plan java junior` owed
 
