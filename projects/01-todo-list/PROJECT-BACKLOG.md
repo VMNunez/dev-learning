@@ -17,7 +17,7 @@
 
 ### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` `src/app/pages/todo-page/components/task-list/task-list.html` — the `@empty` block always renders "No tasks yet", so with tasks present but none matching the Active/Completed filter the app states something false. Distinguish "no tasks at all" from "no tasks match this filter" (found by portfolio-audit, 2026-08-29).
 
 ---
 
