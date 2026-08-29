@@ -18,6 +18,7 @@
 ### Low
 
 - [ ] `[frontend]` `app.css` is empty — drop the unused `styleUrl` reference. *(Effort: S)*
+- [ ] `[frontend]` `App` still holds the CLI scaffold field `protected readonly title = signal('01-todo-list')` (`app.ts:11`), which no template reads — `app.html` renders only `<router-outlet />`. Dead state, and it makes `signal` look used where it is not. *(Effort: S)* *(raised 2026-08-29 while triaging the «`app.css` is empty» task)*
 - [ ] `[frontend]` Delete the leftover CLI scaffold `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'` that no longer exists (`app.html` renders only `<router-outlet />`). Not a test gap (see the note above), just dead scaffold. *(Effort: S)*
 
 ---
