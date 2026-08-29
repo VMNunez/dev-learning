@@ -23,12 +23,6 @@ No login — the app opens straight on the task list.
 **Task list with active and completed tasks**
 ![App preview](screenshots/preview.png)
 
-**Active filter — only pending tasks**
-*(screenshot — active filter view — to be added)*
-
-**Empty state — no tasks match the filter**
-*(screenshot — empty state — to be added)*
-
 ---
 
 ## Features
