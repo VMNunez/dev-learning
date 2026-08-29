@@ -110,6 +110,10 @@ run.** Move any out-of-order section to its correct position.
    compresses them badly), bold caption above each, none below. First output a **Visual brief** (one
    line per screenshot: "Screenshot — [screen]: show [what must be visible]"), then a placeholder for
    each not-yet-captured visual: `*(screenshot — [screen name] — to be added)*`. Never skip silently.
+   - **A screen, not a state.** Count *distinct screens*, not variants of one — a filter applied, an
+     empty list or a validation error on the same view is a state, and a single-screen app is legitimately
+     done with one screenshot. Never add a placeholder for a state of a screen already shown; if the
+     README carries none for it, that is the correct count, not a gap to fill.
 5. **Features** — 5–6 bullets from the user's perspective, no technical terms.
    - Good: "Protected routes redirect unauthenticated users to the login page."
 6. **Architecture decisions** — 3 to 8, one line each, format `[what you chose] to [why it matters]`.
