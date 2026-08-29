@@ -1,25 +1,39 @@
 # LinkedIn Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+> **External-path preflight:** Before reading or writing `job-search/`, execute
+> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+
 Use in a **separate conversation**. No configuration needed — paste the whole prompt into a new chat.
 
 Run this when you are ready to update your LinkedIn profile before applying.
 The output is ready-to-paste text for every section — no rewriting needed, just copy each one.
 
-> **▶ Run first:** `progress-update` — the profile draws on `PROGRESS.md`; keep it current so projects and concepts are accurate.
+> **▶ Run first:** `progress-update` — the profile draws on `PROGRESS.md`; keep it current so project status and the level per topic are accurate. The **skills** half is not in that file: it comes from the standard's source 7 (the coverage markers).
 
 ---
 
 ````
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md`; never restate the
+> shared `Status:` meanings here.
+
+---
+
 ## Before starting
 
-First read `notes/prompts/strategy/apply/_application-standard.md`. It defines the **sources to read**
-(`CLAUDE.md`, `notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
-`notes/cv/cv-bullets.md`, and your existing CV in `personal/job-search`), the **universal bullet format**, the **skills pool** (required + preferred),
+First read `notes/prompts/strategy/apply/_internal/_application-standard.md`. It defines the **sources to read**
+(`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
+`notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for defensibility), the **universal bullet format**, the **skills pool** (required + preferred),
 the **Spanish / no-buzzword voice**, the **defensibility rule**, and the **project-selection
 heuristic**. This prompt does not repeat those rules — it adds only the LinkedIn-specific flow on top.
 
 Note: for LinkedIn also read `ROADMAP.md` specifically for the **LinkedIn checklist** (GitHub and
-LinkedIn section) and career target, and read `PROGRESS.md` for what each project demonstrates.
+LinkedIn section) and career target, and read `PROGRESS.md`'s `## Projects` for which projects are done
+and their headline topics. What a project demonstrates in detail comes from its `README.md` and
+`cv-bullets.md` (the standard's project-selection heuristic); what a **skill** is backed by comes from
+the standard's source 7.
 
 ---
 
@@ -128,8 +142,10 @@ PostgreSQL, TypeScript, SQL, Docker, REST APIs, Git, Maven
 JUnit, Jasmine, Angular Material, RxJS, HTML, CSS, Spring Security, Hibernate
 
 Apply the standard's **defensibility rule**: **do NOT add skills you cannot defend in an interview.**
-If you have not used Scrum/Agile in a structured way, do not add it. If you have not worked with
-Kubernetes or Microservices, do not add them.
+It binds the three lists above too, not only the extras below — under the standard's precedence rule a
+required-pool skill Victor cannot defend is left out of the Skills section and named as a gap, not
+padded in. If you have not used Scrum/Agile in a structured way, do not add it. If you have not worked
+with Kubernetes or Microservices, do not add them.
 
 ---
 
@@ -196,6 +212,10 @@ Print each section in this order, ready to copy directly into LinkedIn:
 **SKILLS TO ADD (in order):**
 [list]
 
+**SKILLS LEFT OUT — not defensible:**
+[required-pool skills omitted under the standard's precedence rule, and what each one leaves to close
+in a project — `Ninguna` if there are none; never drop the heading]
+
 ---
 **OPEN TO WORK SETTINGS:**
 [step-by-step instructions]
@@ -222,7 +242,17 @@ No commit message needed — this content goes directly into LinkedIn, not into 
 - About section opens with a specific sentence — no "apasionado" or "entusiasta"
 - Every experience bullet starts with a past-tense action verb and includes a concrete result
 - At least 2 projects listed with working GitHub links
-- All required skills added in the correct priority order
+- Every required skill Victor can defend added in the correct priority order, and any he cannot named
+  as a gap
 - "Open to work" configured with the right job titles and Spain as location
 - At least one post drafted and ready to publish when applications start
+
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/strategy/apply/_internal/_last-run-report-linkedin.md`, its own commit, then the refinement step.
+
 ````

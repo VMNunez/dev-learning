@@ -1,12 +1,15 @@
 package com.victor.timetrack.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
-@Data
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -14,8 +17,10 @@ import org.hibernate.annotations.ColumnDefault;
 public class User {
     @Id
     @GeneratedValue
+    @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false, unique = true)
@@ -25,9 +30,15 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @ColumnDefault("true")
-    private boolean active;
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
 }

@@ -1,62 +1,71 @@
 # Project plan audit — the single entry point for planning a project
 
-Run this **inside Claude Code**. It is the only project-plan prompt Victor launches. It builds or
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only project-plan prompt Victor launches. It builds or
 audits a project's `PLANNING.md` to the full standard, hands-off, in two shapes:
 
-- `MODE = new` — plan the next project: gap-analyse PROGRESS vs coverage, pick the best next project,
-  write a complete PLANNING.md, then have an independent reviewer audit and fix it before it commits.
+- `MODE = new` — plan the next project: take the chosen project and its gap bullets from the
+  `project-brief` (dispatched as Phase 0 if none is current), write a complete PLANNING.md, then have
+  the specialist reviewers audit and fix it before the orchestrator commits.
 - `MODE = review` — audit an existing PLANNING.md against the standard, fix what falls short, and
   commit (one project, or `PROJECT = all` for every project in turn).
 
 Both shapes use the same quality pipeline: the plan is **authored whole (new mode only), then audited
-and fixed by five cold specialist reviewers — one per concern** (architecture · data-model-api ·
-rules-security · steps-tests · branches-coverage) — before the orchestrator commits it. New mode adds
+and fixed by seven cold specialist reviewers — six owning one concern each** (architecture · data-model-api ·
+ui-design · rules-security · steps-tests · branches-coverage) **plus a final `whole-plan` coherence pass** — before the orchestrator commits it. New mode adds
 an **architecture advisor** between the author and the specialists (Phase 1b). Authoring stays
 whole because a plan's sections cross-reference; review is split so each specialist owns a small slice
 it cannot skim, catching what the author trusted. No report to apply by hand, no per-file launching —
 one command does everything.
 
-> **▶ Run first (new mode only):** `progress-update` — the gap analysis reads `PROGRESS.md`; if it is
-> stale it picks the wrong next project. (`review` mode has no prerequisite.)
+> **▶ Run first (new mode only):** `progress-update`, then `project-brief` — the brief chooses the
+> project and carries the gap bullets this flow's author consumes, and its own gap analysis rests on
+> `PROGRESS.md`. Phase 0 below dispatches `project-brief` for you when no current brief exists.
+> (`review` mode has no prerequisite.)
+
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_planning-standard.md` (the bar) · `plan-write-prompt.md` (author) ·
-`plan-architecture-prompt.md` (architecture advisor, new mode only) · `plan-review-prompt.md` (reviewer).
+`_planning-standard.md` (the bar) · `_plan-write-prompt.md` (author) ·
+`_plan-architecture-prompt.md` (architecture advisor, new mode only) · `_plan-review-prompt.md` (reviewer).
 
-> **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits nothing, so you can
-> read the diff before it lands. Once you trust it, `DRY_RUN = false` is fully hands-off.
+> **This flow always commits its own work** (Victor retired the `DRY_RUN` switch 2026-07-16 — the
+> pipeline is trusted to land its result). The safety valve is no longer a dry run but the gates
+> below: the specialist acceptance check and, in review mode, the history-preservation gate — if
+> either fails after its one re-dispatch, the orchestrator **does not commit** and reports, leaving the
+> working tree for Victor to inspect. The two end the run differently on the way there: the specialist
+> gate finishes dispatching the remaining concerns, the history gate stops where it stands. It never
+> commits a run that failed its own checks.
 
 ---
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below (config block + instructions),
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below (config block + instructions),
 fill only the config block, and let it run to the end. Pick the recipe:
 
 **A · Plan the next project** (a project just finished; plan the next one)
 ```
 MODE    = new
-PROJECT =            ← leave blank; new mode auto-detects from PROGRESS.md
-DRY_RUN = true       ← true the first time; false once you trust it
+PROJECT =            ← leave blank; new mode takes the project from the brief (Phase 0)
 ```
 
-**B · Audit one existing plan**
+**B · Audit one existing plan** (also the recipe for **restructuring a pre-standard plan** — e.g. a
+plan written before the 24-section standard existed; completed steps are preserved, see the
+history-preservation gate)
 ```
 MODE    = review
 PROJECT = projects/07-timetrack
-DRY_RUN = false
 ```
 
 **C · Audit every plan in one run**
 ```
 MODE    = review
 PROJECT = all
-DRY_RUN = false
 ```
 
 **Rules of thumb:**
-- **First time → `DRY_RUN = true`.** It writes and reviews everything but commits nothing; you read the
-  diff, then re-run with `DRY_RUN = false` (or paste the commits it printed).
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - `PROJECT = all` is **review mode only** — `new` mode plans a single next project by design.
 
@@ -68,23 +77,28 @@ DRY_RUN = false
 MODE    = [new | review]
 
 ## new mode:
-PROJECT = [blank — auto-detects the next project from PROGRESS.md]
+PROJECT = [blank — Phase 0's brief names the project and its number]
 
 ## review mode:
 PROJECT = [folder path, e.g. projects/07-timetrack | projects/06-hr-portal | all]
 
-## PROJECT = all (review mode only) audits every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT = all (review mode only) audits every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder,
 ## 05-task-manager, 06-hr-portal, 07-timetrack. The format is derived per project type by number
-## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 23-section audit).
+## (01–06 Angular-only → present-sections + universal checks only; 07+ full-stack → full 24-section audit).
 
-DRY_RUN = [false | true]
-
-Use MODE, PROJECT, and DRY_RUN wherever the prompt refers to {MODE}, {PROJECT}, or {DRY_RUN}.
+Use MODE and PROJECT wherever the prompt refers to {MODE} or {PROJECT}.
 
 ---
 
-You are the orchestrator for building Victor's project plans, hands-off. Do **not** read
+You are the orchestrator for building Victor's project plans, hands-off.
+
+> **Branch guard (step 0):** run `git branch --show-current`. Study/tracking materials commit on
+> whatever branch is currently active (the shared session rules) — a feature branch is the normal case; name it in
+> the final report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never
+> receives direct commits, only merges via PR.
+
+ Do **not** read
 `_planning-standard.md`, the plan itself, or any project file — the subagents read those (each only the
 slice its task needs); loading them here bloats the orchestrator's context for no benefit. Follow the
 branch for `{MODE}`. You stay light: you dispatch subagents, wait, and collect — you never write or
@@ -92,127 +106,284 @@ audit the plan in your own context.
 
 ## If MODE = new
 
+### Phase 0 — The brief (the choice, before any design)
+
+Which project to build is decided by `notes/prompts/projects/plan/project-brief-prompt.md`, not here
+and not by the author: it is one decision worth more than the 24 sections it produces, so it is made
+on one page, contested by a cold second opinion, and committed as a durable record before anything is
+designed against it.
+
+Resolve `NUMBER` (the next number above the highest existing `projects/` folder) and look for
+`projects/briefs/project-brief-{NUMBER}.md`:
+
+- **It exists and is current** — its `Status:` is `current`, its `Second opinion:` is `endorse` or
+  `endorse-with-scope-change`, its stored `Coverage SHA-256` matches the scope digest of
+  `notes/coverage/junior.md` today, and the highest existing folder and last completed project still
+  match its header. Compute the digest with the canonical command in "Evidence markers" in
+  `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, never a plain `sha256sum`: markers
+  are excluded from that digest by design, so an unstripped hash marks every brief stale the first time
+  a step closes. Use it. If only `Project markers counted:` has moved, that is **soft stale** — bullets
+  were demonstrated since the decision: name the delta and pass it to the author, which is the only
+  staleness the digest cannot see.
+- **It is missing or hard-stale** — launch one `role-appropriate` subagent, `reasoning tier: deep`,
+  `execution: foreground`: *"Read `notes/prompts/projects/plan/project-brief-prompt.md` and execute it
+  in full. It commits its own brief. Report the project chosen, the second opinion's verdict, and the
+  brief's path."* Wait for it.
+- **Its second opinion is `wrong project`, or the brief was not committed** — stop and report. Two cold
+  judgements disagree about the month of work this plan encodes; that is Victor's call to settle, and
+  designing 24 sections first would only make it expensive.
+
+**Phase 0 acceptance check.** The brief's header must carry `Coverage read: {n} lines, read to EOF`
+and a `Coverage SHA-256`. That confirmation is the truncation guard for the one file in this pipeline
+already past 2000 lines — it now sits with the run that actually reads it whole. A brief missing either
+field is unusable: re-run the brief prompt once, and if it fails again, stop rather than design against
+a gap analysis that may have been built on a partial read.
+
 ### Phase 1 — Author (one writing subagent)
 
-Launch one `general-purpose` subagent, `run_in_background: false`:
+Launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`:
 
-> Read `notes/prompts/projects/plan/plan-write-prompt.md` and execute it in full
-> (`PROJECT = {PROJECT}` — blank means auto-detect). Do the gap analysis, choose the next project,
-> design it, write the complete `PLANNING.md` to the contract in `_planning-standard.md`, and make the
-> ROADMAP.md + PROGRESS.md edits. **Do NOT commit** — an independent reviewer runs next and owns the
-> commit. Leave all three files in the working tree. Report the project chosen, the files touched, and
-> the one-line commit message you'd use.
+> Read `notes/prompts/projects/plan/_internal/_plan-write-prompt.md` and execute it in full for
+> `BRIEF = projects/briefs/project-brief-{NUMBER}.md`. The brief is the decision — do not re-choose the
+> project and do not re-derive the gap analysis. Design it, write the complete `PLANNING.md` to the
+> contract in `_planning-standard.md`, and make the ROADMAP.md + PROGRESS.md edits. **Do NOT commit** —
+> independent reviewers run next and **the orchestrator** owns the commit; no reviewer in this flow ever
+> commits. Leave all three files in the working tree.
+> **Open your report with the brief's path, its `Coverage SHA-256`, and confirmation you read the brief
+> end to end**, then the project, the files touched, and the one-line commit message you'd use.
 
-Wait for it. If it reports it could not choose or write a plan (blocked, missing context), stop and
+Wait for it. If it reports it could not write a plan (blocked, missing context, brief refused), stop and
 report — do not run the architecture advisor or reviewer on nothing.
+
+**Author acceptance check.** The report must open with the brief's path and fingerprint. The author no
+longer loads `notes/coverage/junior.md` into context — the brief carries the gap bullets verbatim — so
+what is checked here is that it worked from the brief rather than from its own reconstruction of one. If the
+line is missing, re-dispatch once quoting what was missing; if it fails again, note the gap in the
+self-report and continue — and here `continue` reaches the commit too, unlike the identically worded
+branch of the specialist acceptance check below. The difference is what comes after: `steps-tests`
+audits §3 and §4 against the brief itself, so a plan built from a reconstruction still meets a reader of
+the real brief, while the specialist check is the last gate before the commit and has none. (It is the
+only one of the seven that reads the brief; the other six could not catch this.) It **is** a content
+acceptance gate for all that, so a run that failed it commits and still closes out `blocked` naming it —
+the shape `interview-prep-audit` and `portfolio-audit` already use — never `completed`.
 
 ### Phase 1b — Architecture advisor (one architecture subagent)
 
-Launch a `general-purpose` subagent, `run_in_background: false`, on the plan the author just wrote:
+Launch a `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`, on the plan the author just wrote:
 
-> Read `notes/prompts/projects/plan/plan-architecture-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/plan/_internal/_plan-architecture-prompt.md` and execute it in full for
 > `PROJECT = «the chosen project folder path»`. Judge the drafted architecture (§6), the one new
 > architectural concept (§3), and the tradeoffs (§20) against Victor's current level and the coverage
 > gaps — fix over-engineering, under-engineering, and a misjudged new concept directly in those
 > sections. **Do NOT commit.** Report your architecture verdict, the one new concept, what you changed,
-> and any ripple the reviewer must reconcile.
+> and any ripple the reviewer must reconcile. In `new` mode read
+> `projects/briefs/project-brief-{NUMBER}.md` first: **its §3 list is the authority**, so if sharpening
+> §3 means dropping or replacing a concept the brief listed, report that as a ripple rather than editing
+> it away — `steps-tests` checks §3 against the brief.
 
 Wait for it. It only sharpens architecture; if it reports the architecture is already sound and changes
 nothing, that is fine — continue to the reviewer.
 
 ### Phase 2 — Review (specialist reviewers, one concern each)
 
-Do **not** hand one subagent the whole 23-section plan to audit — it would skim the last sections. Run
+Do **not** hand one subagent the whole 24-section plan to audit **against the standard** — it would skim
+the last sections. (The final `whole-plan` specialist does read the whole file, but it runs twelve
+enumerated coherence checks, not the standard's conformance checks. Different read, different risk.) Run
 the **specialist reviewers** defined in "Specialist review procedure" below over the just-authored plan.
-They fix directly and do not commit. Then go to "Finishing" (the orchestrator commits the plan + the
-ROADMAP.md / PROGRESS.md edits left in the working tree).
+They fix directly and do not commit. Then go to "Finishing" — the orchestrator makes the single commit.
 
 ## If MODE = review
 
 ### PROJECT = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block's
-Batch note and run the **single-project review below once per project**, fully finishing one (all five
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block's
+Batch note and run the **single-project review below once per project**, fully finishing one (all seven
 specialists + the orchestrator commit) before starting the next — never overlap, since the orchestrator
 commits per project and parallel commits race the git index. Put each project's report under a
 `### [project]` heading, and after the last one
 print the `_batch-mode.md` summary table (`Project | Result | Sections fixed`). **Condense as you go:**
-once a project is committed, its five specialist traces are spent — carry forward only one line per
+once a project is committed, its seven specialist traces are spent — carry forward only one line per
 project (`project · verdict · n fixes · commit hash`) and drop the traces from your working notes, or
 seven projects of traces will crowd out the later ones. If the run gets too
 long, finish the current project completely and stop with the "Completed / Remaining" line — a re-run
 resumes from the first unfinished project.
 
 ### Single project
-No author phase — the plan already exists. Run the **specialist reviewers** defined in "Specialist
-review procedure" below over `{PROJECT}/PLANNING.md`, then go to "Finishing" (the orchestrator commits
-just the plan).
+No author phase — the plan already exists. Review mode may **fully restructure a pre-standard plan**
+(one written before the 24-section standard — the specialists add missing sections, reformat old ones)
+— but restructuring changes *format*, never *history*. That is enforced by the gate below.
+
+**History snapshot (before dispatching any specialist).** Without reading the plan (stay light — a
+grep is a count, not a read), snapshot the done-work markers:
+`grep -n "✅" {PROJECT}/PLANNING.md` (the done-step headings) and keep the matched lines. If the plan
+records done steps some other way (a §0 "Steps 1–N done" line, a branch table with closed branches),
+grep those too. This is the baseline the finished plan must still contain.
+
+**History-preservation gate (after the last specialist, before Finishing).** Re-run the same greps.
+Every done step from the snapshot must still exist and still be marked done — renumbered or reworded
+is fine, **unmarked or missing is a failure**. The in-progress step must be the same real-world
+position it was. On failure: re-dispatch `steps-tests` once, quoting the lost steps verbatim; if the
+re-run still fails the gate, **abort without committing** and report exactly which history was lost —
+never commit a plan that lost completed work.
+
+Then run the **specialist reviewers** defined in "Specialist review procedure" below over
+`{PROJECT}/PLANNING.md`, apply the gate, and go to "Finishing" — the orchestrator makes the single
+commit.
 
 ---
 
 ## Specialist review procedure (used by both modes)
 
-The plan is reviewed by **five specialists, each owning one concrete concern** — so each cold subagent
+The plan is reviewed by **seven specialists — six owning one concrete concern, plus a final whole-plan
+coherence pass** — so each cold subagent
 audits a small, defined slice it cannot leave half-done. Dispatch them **sequentially**, in this order
 (they all edit the same `PLANNING.md`, so never overlap; none commits):
 
-1. `architecture` · 2. `data-model-api` · 3. `rules-security` · 4. `steps-tests` · 5. `branches-coverage`
+1. `architecture` · 2. `data-model-api` · 3. `ui-design` · 4. `rules-security` · 5. `steps-tests` ·
+6. `branches-coverage` · 7. `whole-plan`
+
+`ui-design` runs **after** `data-model-api` because it audits §14 against §13's page list, which that
+concern may still be fixing. It is its own concern rather than §14 riding at the tail of
+`data-model-api` for the same reason this phase is split at all: a slice that ends in a long section
+gets skimmed there.
 
 For an **Angular project (01–06)**, skip concerns whose sections the plan does not have (e.g. no
 backend API/security) — the reviewer prompt derives the format, but do not dispatch a concern with
-nothing to audit. For a **full-stack project (07+)**, run all five.
+nothing to audit. `ui-design` is the one concern that **always** runs, on both formats: an Angular-only
+plan has no numbered §14, so it audits whatever design/palette part that plan has. For a **full-stack
+project (07+)**, run all seven.
 
-For **each** concern in order, launch a fresh, independent `general-purpose` subagent,
-`run_in_background: false`:
+For **each** concern in order, launch a fresh, independent `role-appropriate` subagent,
+`reasoning tier: deep`, `execution: foreground`:
 
-> Read `notes/prompts/projects/plan/plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
-> `SCOPE = «this concern»`, `DRY_RUN = true`. Read **only the files and standard sections your
+> Read `notes/prompts/projects/plan/_internal/_plan-review-prompt.md` and execute it for `PROJECT = {PROJECT}`,
+> `SCOPE = «this concern»` (leave `DRY_RUN` unset — a dispatched concern never commits by contract, so
+> the flag has nothing to switch off). Read
+> **only the files and standard sections your
 > concern's row lists in that prompt's reading map** — never the whole standard. Audit **only your
 > concern's** sections/invariants/checks (the `{SCOPE}` table in that prompt), fix what falls short
 > directly in the file, and **do NOT commit** — the orchestrator commits once after every concern.
 > Return your verdict and the **check-by-check trace of your slice** in that prompt's compact report
 > format (one line per check — never paste plan content), plus any cross-concern ripple to reconcile.
 
+**After the six concerns, dispatch one last specialist, `SCOPE = whole-plan`.** It runs last because it
+reads the file the other six have finished fixing, and it is the only reviewer that reads `PLANNING.md`
+end to end in one context. It audits **coherence, not conformance** — the six already checked every
+section they own against the standard, and re-running those checks is not its job. Its slice is twelve
+checks:
+
+- **The ten sections no concern owns — §1, §2, §4, §5, §9, §11, §17, §18, §19, §21 — one check each.**
+  These are the exception to "coherence, not conformance": they have no other owner, so for these ten it
+  checks content against its **section spec** in the standard as well as against the rest of the plan.
+  Only §1 and §9 carry a `**Pass:**` line; for the other eight the spec is the shape the section itself
+  states — column sets, counts, formats. `branches-coverage` only checks that they exist. **§2 and §4 are
+  split**: their claims against the brief — §4's rows, §2's gap and delta bullets — belong to
+  `steps-tests`, the only scope that reads it; `whole-plan` owns both sections' shape (§2's 3–4 bullets
+  and four named contents, §4's three columns and 8–12 limit).
+- **Cross-section contradictions** — a rule stated in one section and broken by prose in another, where
+  the second section's owner has no reason to read the first.
+- **`PROJECT-BACKLOG.md` against the plan** — the task list Victor actually executes is read by no other
+  specialist, so a decision recorded in §8 can ship while the backlog still states the version it
+  superseded.
+
+It fixes what it finds directly and emits no ripples (there is no later specialist to route them to). It
+does not commit. Its trace is **twelve rows, always** — one per orphan section (✅ or the fix made), one
+for contradictions, one for the backlog — so the acceptance check below applies to it unchanged; a short
+trace is a skim, and "nothing found" is a ✅ in a row, never a missing row. It runs on **both formats**: on
+an Angular plan (01–06) it audits whichever of the ten sections that plan has, and skips the backlog check
+if the project has no `PROJECT-BACKLOG.md`.
+
 Wait for each specialist before dispatching the next. Collect their traces and any ripples; if a ripple
 lands in a concern already reviewed, re-dispatch that one specialist to reconcile it — **at most one
 re-dispatch per concern per run**. If the reconciliation pass leaves new ripples, record them in the
-pipeline self-report instead of iterating further.
+pipeline self-report instead of iterating further — except a ripple that is a **verified factual error**
+and not a design disagreement (a wrong component, file, or cross-reference name, checked against the
+code): the orchestrator corrects it in the plan itself — **every occurrence, not just the line the
+specialist named** — before committing, rather than ship a line it knows is wrong, and names the
+correction in the self-report.
 
-**Specialist acceptance check:** a specialist's report is acceptable only if its trace has **one row
-per check its slice owns**. If rows are missing or the report is unusable, re-dispatch that specialist
-once, quoting what was missing; if it fails again, note the gap in the self-report and continue — never
-silently accept a partial trace.
+**Specialist acceptance check:** a specialist's report is acceptable only if it **declares
+`checks owned: n`** **and** returns a trace of exactly `n` rows — plus two read declarations the
+reviewer prompt's truncation guard owes you, and only these two. **`whole-plan`**: the plan's
+`{n} lines, read to EOF`. **`branches-coverage`**: `{n} lines · §23 read through line {n}` — the
+plan's last section and the line it was read through, which on an Angular plan (01–06) is the last
+section that scope owns; on a full-stack plan the two numbers must agree, and a second number falling
+short is a truncated read, not a finding about the plan. **Demand nothing from the other five** (the
+reviewer prompt's `Reading map` says why). You never read the reviewer prompt or the standard, so `n`
+is the specialist's own declaration — deliberately: it makes the count checkable here, and auditable
+against the reviewer's scope table afterwards, where a bare "one row per check its slice owns" was
+checkable nowhere. `whole-plan` is the one scope whose `n` you know independently:
+**twelve, always**. If anything is missing or the report is unusable, re-dispatch that specialist once,
+quoting what was missing; if it fails again, **this gate has failed and the run does not commit**:
+record the gap in the self-report, **continue dispatching the remaining specialists**, and let Finishing
+refuse the commit. **`continue` scopes the phase, never the commit** — stopping mid-phase would leave
+the plan audited by some concerns and not others with nothing recording which, and there is no third
+option here the way there is in `readme-audit`, which drops one target's README from its commit command
+and finishes the others: all seven specialists edit the **one** `PLANNING.md`, so excluding an
+unverified slice from the commit *is* not committing. The close-out then records the run `blocked`
+naming this gate, per `_agent-runtime-standard.md` → "Runnable close-out contract", whose rule that only
+a run satisfying its content acceptance gates closes out as `completed` is what settles the word.
+Never silently accept a partial trace or a possibly truncated read.
 
 ## Finishing
 
 The specialist reviewers left every fix in the working tree; **the orchestrator does the single commit**
-(they never commit). One atomic commit per plan.
+(they never commit). One atomic commit per plan. **Gate first:** if any specialist's acceptance check
+still failed after its one re-dispatch, or (review mode) the history-preservation gate still failed
+after its own, do NOT commit — leave the working tree as-is, report what failed and why, and close out
+`blocked` naming that gate. Those two are the only gates that reach this line: the Phase 0 and author
+acceptance checks stop or continue where they are stated and never arrive here. **In `PROJECT = all`
+this is per project, not per run**: the failed project is left uncommitted and named in its `### [project]`
+section, the remaining projects still run — the loop's rule is one finished project before the next, and
+a project that cannot be committed is finished for this run — and the run's single close-out records
+that project `blocked` while the others record what they earned.
 
-**If `{DRY_RUN}` = false:** commit now.
+Otherwise commit now — with the safety check first: run `git status` before the add and again before
+the commit, confirm only the intended files are staged (`git restore --staged` anything else — a
+project code file left staged from an earlier step must never ride along):
+
+**First, if `whole-plan`'s trace row reports a `PROJECT-BACKLOG.md` fix, add
+`{PROJECT}/PROJECT-BACKLOG.md` to whichever `git add` below applies** — in either mode, and never by
+default: an untouched backlog stays unstaged and the safety check above unstages it. Its twelfth check
+reconciles the backlog against the plan's recorded decisions and fixes it **in the backlog file**, so the
+reconciliation rides in this same commit rather than a second one, which would fork "one atomic commit
+per plan".
+
 - **`new` mode** (the author left ROADMAP.md + PROGRESS.md in the working tree with the plan): `git add
   {PROJECT}/PLANNING.md ROADMAP.md PROGRESS.md`, then
   `git commit -m "docs: add PLANNING.md for project 0X [name] — closes [main gap], introduces [key concept] (reviewed)"`.
 - **`review` mode** (only the plan changed): `git add {PROJECT}/PLANNING.md`, then
   `git commit -m "docs: improve PLANNING.md for {PROJECT} — <one-line summary of main fixes>"`.
-Report the commit made and each specialist's verdict/trace.
 
-**If `{DRY_RUN}` = true:** nothing is committed — all changes are left in the working tree for Victor
-to read. Print the atomic commit sequence above to run after reviewing the diff, one command per code
-block. In `new` mode that is the three-file commit; in `review` mode, one commit per plan.
+Report the commit made and each specialist's verdict/trace.
 
 ## Hard rules
 
-- **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
-  rule is "never auto-commit"; he lifted it for the audit orchestrators. **The orchestrator commits
-  once** (the specialist reviewers never do). It applies nowhere else — normal sessions still hand
-  Victor the command.
+- **Model tier: every subagent in this flow launches with the top model available** (pass
+  `reasoning tier: deep` — or the session's higher tier if one exists — on each Agent call; never haiku, and
+  never silently inherit a cheap session model). This is deliberate, not an oversight to optimize:
+  the author designs what Victor will learn for a month, the advisor and specialists rewrite plan
+  prose — quality here is guaranteed by judgment, not by structure, so it is the wrong place to save
+  tokens (contrast `progress-update`, whose mechanical subagents are tiered down explicitly). Revisit
+  only with a real run's self-report as evidence, and per-scope, not wholesale.
+
+- **Auto-commit is authorized for this flow — always** (Victor retired the `DRY_RUN` condition
+  2026-07-16). His global rule is "never auto-commit"; he lifted it for the audit orchestrators, and
+  the authorship boundary in the shared session rules holds: PLANNING.md / ROADMAP.md / PROGRESS.md /
+  PROJECT-BACKLOG.md are system machinery, never his code or `practice/` work. **The orchestrator commits once** (the specialist
+  reviewers never do) — unless a gate failed, in which case it aborts without committing. It applies
+  nowhere else — normal sessions still hand Victor the command.
 - **One atomic commit per plan.** In new mode that single commit carries PLANNING.md + ROADMAP.md +
-  PROGRESS.md (they are one logical change: registering the new project). Never `git add .`.
+  PROGRESS.md (they are one logical change: registering the new project), and in **either** mode it also
+  carries `PROJECT-BACKLOG.md` when `whole-plan` fixed it. Never `git add .`.
 - **The plan is authored whole, reviewed by specialists — one concern per subagent.** Authoring needs
   the whole plan in one context (the sections cross-reference); review does not, so it is split into
-  five cold specialists (architecture · data-model-api · rules-security · steps-tests ·
-  branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace.
-- **Strict sequence, never overlapping.** new mode: author → architecture advisor → the five
-  specialists (in order) → orchestrator commit; review mode: the five specialists → orchestrator commit.
+  six cold specialists (architecture · data-model-api · ui-design · rules-security · steps-tests ·
+  branches-coverage), each owning a small slice it cannot skim and returning a check-by-check trace,
+  **and closed by a seventh `whole-plan` pass that owns only what a slice structurally cannot see: the
+  ten unowned sections, cross-section contradictions, and `PROJECT-BACKLOG.md`.**
+- **Strict sequence, never overlapping.** new mode: brief (Phase 0, committed by its own prompt) →
+  author → architecture advisor → the six specialists (in order) → `whole-plan` → orchestrator commit;
+  review mode: the six specialists → `whole-plan` → orchestrator commit.
   Each must see the previous one's finished work, and they all edit the same file. (The architecture
   advisor is new-mode only, on the author side; the `architecture` specialist reviewer independently
   re-checks §6/§3/§20 in both modes.)
@@ -220,7 +391,7 @@ block. In `new` mode that is the three-file commit; in `review` mode, one commit
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

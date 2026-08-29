@@ -1,464 +1,412 @@
 # Coverage Prompt
 
-Use in a **separate conversation**. Fill in the two values in the configuration block, then paste everything into a new chat.
+Create or recalibrate one topic with one professional level as the primary target. Later-level runs
+also protect the completeness of their prerequisite levels.
 
-Use this prompt when you want to create a new `coverage.md` for a notes folder, or update an existing one when new concepts have been learned, the project scope has changed, or topics need to be promoted from `future-learning.md`.
+> **▶ Run first:** nothing — this is the per-topic producer for coverage and every global mirror its
+> classifications affect.
 
-> **▶ Run first:** nothing — it can create coverage from scratch. Optional: `evidence-intake` to refresh the market evidence its Step 2 subagent reads.
+## Configuration
 
----
-
-**How to use:**
-
-1. Fill in `TOPIC` — the subject to cover (e.g. Angular, SQL, Java, Spring Boot)
-2. Fill in `NOTES_PATH` — the notes folder to review (e.g. `notes/angular/`, `notes/sql/`)
-3. Paste the entire prompt into a new chat
-
----
-
-```
-## Configuration — edit only this block
-## Replace the [ ] with your value and delete the brackets.
-
-TOPIC = [Angular | Angular Material | CSS | JavaScript | TypeScript | SQL | Java | Spring Boot | Architecture | Git | General | Security | all]
-NOTES_PATH = [notes/angular/ | notes/angular-material/ | notes/css/ | notes/javascript/ | notes/typescript/ | notes/sql/ | notes/java/ | notes/spring-boot/ | notes/architecture/ | notes/git/ | notes/general/ | notes/security/]
-
-## TOPIC = all runs this prompt on every topic in turn — see notes/prompts/_batch-mode.md.
-## Batch order (NOTES_PATH derived per topic): Angular, Angular Material, Spring Boot
-## (also reads notes/java/), Java, Architecture, Security, TypeScript, JavaScript, CSS, SQL,
-## Git, General.
-
-Notes on specific topics:
-- General: not yet migrated to en/-es/ — its numbered files sit in the topic root
-  (notes/general/), not in an en/ subfolder; read them from there in Step 1.3.
-- Spring Boot: set NOTES_PATH = notes/spring-boot/ — coverage.md is written there.
-  Additionally read notes/java/en/ when reading existing notes (Step 1.3), because Spring Boot
-  coverage must include Java language concepts that appear in Spring Boot code.
-  Also read notes/spring-boot/layer-reference.md — it defines what belongs in each layer
-  (controller, service, repository) and is directly relevant for coverage decisions about
-  where annotations and logic should live.
-  Testing (JUnit 5, Mockito — what each does, what to mock, what `@ExtendWith` enables,
-  the difference between a unit test and an integration test) is always in scope for
-  Spring Boot — interviewers use it as a hard filter because almost no junior candidate has it.
-- Angular: testing concepts (Jasmine, TestBed, what `HttpClientTestingModule` does, the
-  difference between a spy and a mock, how to test a service vs a component) are always
-  in scope — same reason as Spring Boot: rare at junior level, strong differentiator.
-- Java: focus on language concepts needed to write and understand Spring Boot code. Skip anything
-  that does not appear in a Spring Boot context (GUI, threads, streams, advanced collections).
-- SQL: database is PostgreSQL. Include PostgreSQL-specific syntax and behaviour where it differs
-  from standard SQL.
-- General: covers HTTP, JSON, env vars, testing concepts, SOLID, code principles, Docker basics
-  (`docker-compose up`, what a container is, environment variables in Compose, why containerisation
-  matters in a consultancy project). Docker is moving from "nice to have" to baseline expectation
-  at Spanish consultancies in 2026 — include it.
-- Angular Material: focus on components used in Victor's projects and likely to appear in a
-  technical test or interview (MatTable, MatDialog, MatFormField, MatButton, etc.). Scope =
-  understanding each component's purpose, key inputs/outputs, and typical usage patterns.
-  Theming (how to customise colours in v19+) is in scope. Internal implementation and
-  rarely-used components are not. The boundary with notes/angular/ is: if the concept is
-  about Angular itself (directives, signals, routing), it belongs in angular/; if it is
-  specific to a Material component's API or behaviour, it belongs here.
-- Security: covers AuthN/AuthZ, hashing, JWT design, CORS, XSS, CSRF, SQL injection.
-- Architecture: in scope — REST principles, layered architecture, MVC, coordinator pattern,
-  smart/dumb components, service layer, repository pattern. Out of scope (future-learning) —
-  microservices, event-driven architecture, DDD, CQRS, distributed systems.
-
-Use TOPIC and NOTES_PATH wherever the prompt refers to {TOPIC} or {NOTES_PATH}.
-
----
-
-I want you to create or update the coverage.md file for {TOPIC}.
-
-Before starting, read:
-- `notes/prompts/knowledge/coverage/_coverage-standard.md` — **the standard: what a good coverage.md contains**
-  (what belongs in scope, the three item types, confusable pairs, the AI factor, item/file format).
-  Everything about *content quality* lives there — this prompt only adds the *per-topic flow* on top.
-- `CLAUDE.md` — teaching rules and the notes/ subfolder structure.
-- `notes/prompts/_shared-context.md` — my profile, the **Spanish job market 2026**, and the **AI
-  factor 2026**.
-- `ROADMAP.md` — the current phase, deadline, and what is post-junior scope. This is the source of the
-  job target. Do not use any hardcoded role/company/date — read the target from ROADMAP and
-  `_shared-context` and defer to them (see "The job target is the source" in the standard).
-- `notes/prompts/_job-market-evidence.md` — real junior postings from the target companies, distilled
-  into recurring requirements. Per the standard's "Two sources", the deep market analysis in Step 2 is
-  **primary**; this file **complements** it: every recurring skill that touches {TOPIC} must still map to
-  coverage items (a floor to raise), but it is a small sample — its silence never shrinks coverage, and
-  a real posting overrides the analysis only where they concretely conflict.
-
-`coverage.md` is the single source of truth for what Victor must learn about {TOPIC}, derived from
-the job — not from the notes. The full definition, and why projects don't define scope, is in the
-standard's "What coverage.md is" section.
-
-**Concepts only — coverage feeds the notes.** Every item must be a *studyable concept* (a mechanism,
-an annotation, a decision, a gotcha) that `notes-audit` can turn into a study note. Working methods,
-interview conduct, and "how to behave in the round" (think out loud, build in vertical slices, the
-order to read a PR in) are NOT coverage items — the *concepts underneath them* are (e.g. not "read the
-trace before editing code" but "`Caused by:` — the root cause sits at the bottom of a nested stack
-trace"). Route conduct/method material to the interview-prep prompts, never into coverage.md.
-
----
-
-## Subagent roles — one concern each, read-only
-
-This prompt uses cold subagents, each with a **single concern** and **no write access**:
-- **Step 2 — market analyst:** derives the market-demand floor for {TOPIC}. Returns a list; edits nothing.
-- **Step 4a — adversarial interviewers (a fan-out, not one):** each hunts, from its own angle, the
-  concepts an interviewer would probe that coverage misses. Each returns a gap list; none edits anything.
-
-Never merge these into one subagent and never give any of them a second job — a subagent that both analyses
-and writes, or covers two concerns at once, splits its attention and lowers quality. **The generator
-(this context) is the only editor:** it consolidates the returned lists and writes coverage.md,
-future-learning.md, and the sync to notes/coverage.md.
-
-### Model policy — per role, to protect quality while saving tokens
-
-Pass an explicit `model` override on every subagent dispatch:
-
-| Role | `model:` | Why |
-|------|----------|-----|
-| **Generator (this context / session)** | **Opus** | It word-crafts every coverage item to the standard — the real quality bottleneck. Run the session on Opus. |
-| Step 2 — market analyst | `sonnet` | Web-search + list; retrieval-heavy, and the Opus generator judges the result against the standard afterwards. |
-| **Step 4a — every adversarial angle** | **`opus`** | Generating genuinely hard interview gotchas and spotting the missing concept is the deepest reasoning here — a weak model asks softballs and misses gaps. |
-
-This differs from `notes-audit` on purpose: there the session/orchestrator was light (just dispatch) so it ran on Sonnet with A/B bumped to Opus; **here the session IS the author**, so it runs on Opus. If Victor wants maximum saving and accepts more risk, the market analyst can stay Sonnet — but **never drop a 4a angle below Opus, and never save tokens by running fewer angles**: that is the pass that finds the holes, and a coverage file with holes silently propagates into the notes and the interview prep.
-
----
-
-## Step 1 — Read the existing state
-
-Before reading any file, re-read the configuration block above — some topics have additional
-reading instructions (e.g. Spring Boot requires reading `notes/java/` in step 1.3 as well).
-
-Read these files before making any decision:
-
-1. `{NOTES_PATH}coverage.md` — if it exists, use it as the starting point. Do not remove
-   items without a clear reason.
-2. `{NOTES_PATH}future-learning.md` — check if any concept listed there has now become
-   in-scope given the job target read from ROADMAP + `_shared-context` (role, deadline).
-3. All numbered note files in `{NOTES_PATH}en/` — read them to understand what has been studied
-   and what examples already exist. This is context, not the source of coverage decisions.
-   Skip `future-learning.md` and `coverage.md` in this pass. (Note: the numbered files live in
-   the `en/` subfolder; `coverage.md` and `future-learning.md` live in the topic root.)
-4. When updating an existing `coverage.md`, touch only the items that are new, wrong, or
-   being promoted/demoted. Leave correct existing bullets untouched, word for word — an
-   unprompted reword of unrelated items makes the resulting commit noisy and hard to review.
-
----
-
-## Step 2 — Derive coverage from a deep market analysis (cold subagent), not the notes
-
-Scope for {TOPIC} comes **primarily** from a deep analysis of what the Spanish market asks a junior with
-Victor's objectives — the backbone defined in the standard's "Two sources" section — with the real
-postings complementing it. Run that analysis in a **cold subagent** so it can web-search without
-bloating this context.
-
-**In Claude Code:** launch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
-
-> You are a specialist in the Spanish IT job market for junior developers. Read `ROADMAP.md` and
-> `notes/prompts/_shared-context.md` for the candidate's exact objectives (target role, companies,
-> stack, timeline, profile) and `notes/prompts/knowledge/coverage/_coverage-standard.md` for what a
-> coverage item is. The topic is {TOPIC}.
->
-> Produce a **deep analysis of what the Spanish market asks a junior with these objectives, specifically
-> for {TOPIC}**:
-> - Run a **live web search** of current Spanish junior postings and technical-interview norms for
->   {TOPIC} in this stack (the target companies plus Tecnoempleo / InfoJobs / LinkedIn España); quote the
->   requirement text you find and date it. If web search is unavailable, say so and use your trained
->   knowledge of the 2026 Spanish market.
-> - Cross-check `notes/prompts/_job-market-evidence.md` (real postings already on file) as a
->   **complement** — it is a small sample, so it corroborates and adds a frequency signal; it does not
->   bound the analysis.
->
-> Return the **required {TOPIC} scope from the market's perspective**: a list of must-know items, each as
-> `concept — one interview-anchored sentence` in the standard's format and tagged by section, and for
-> each a short source note (which posting/search supports it, or "fundamental interviewers still probe
-> even though postings under-list it"). Add a separate short list of **"signals to watch — not a junior
-> floor"** (senior-ish items to keep OUT). Do not write coverage.md; return only the analysis.
-
-Then **you** (the generator) treat the returned items as the {TOPIC} **market-demand floor** and derive
-coverage from them plus the standard's scope logic — the interviewer mindset ("what would I ask to test
-whether they really know this?"), the IN/OUT filter, the AI factor, and the confusable-pairs rule, all
-defined in `_coverage-standard.md`. The job target (role, companies, deadline) comes from ROADMAP +
-`_shared-context`, never from a value baked into this prompt.
-
-**Not in Claude Code (plain chat):** do the analysis yourself, explicitly — reason through what the
-Spanish market asks a junior with these objectives for {TOPIC}, use a web search if the environment
-allows, cross-check the evidence file, and write the market-demand item list *before* deriving coverage.
-The independence is weaker than a real subagent, so actually produce the list; do not skip to writing.
-
-Two things this per-topic run must still hold onto:
-- **The notes are not the source.** If {TOPIC}'s notes are sparse or missing, still derive full
-  coverage from what the target screening tests. A gap in the notes is a notes problem, not a reason
-  to shrink coverage.
-- **Topic-specific scope** from the configuration block above still applies (e.g. testing is always
-  in scope for Spring Boot and Angular; Java stays within Spring-Boot-relevant language concepts;
-  Docker basics belong under General). Fold those in as you decide {TOPIC}'s items.
-
----
-
-## Step 3 — The bidirectional check with future-learning.md
-
-**Promote from future-learning → coverage:**
-For each concept in `future-learning.md`: is it now in scope, given the job target read from
-ROADMAP + `_shared-context` (role, companies, deadline)? Apply the same IN/OUT + AI-factor criteria
-from the standard.
-If yes: add it to coverage and remove it from `future-learning.md`.
-
-**Demote from coverage → future-learning:**
-If coverage currently contains something too advanced for a junior screening, move it.
-Write a short explanation in `future-learning.md` of why it is post-junior scope.
-
-**Add new entries to future-learning:**
-If you identify a concept that is real and worth knowing post-hire — and it is not already
-in `future-learning.md` — add it. Do not create a full note file for it.
-
-**Remove entries from future-learning entirely:**
-If an entry in `future-learning.md` is no longer relevant at all — wrong topic, outdated,
-or not needed in any future phase — delete it. Do not move it anywhere; simply remove it.
-Note this in the summary table under "Removed from future-learning".
-
----
-
-## Step 4 — Write or update coverage.md
-
-Write the file at `{NOTES_PATH}coverage.md`.
-
-**File structure:**
-
-```markdown
-# Minimum Coverage — {TOPIC}
-
-[One or two sentences. State what this file defines and anchor it to the job target read from
-ROADMAP + _shared-context. Example shape: "Topics a junior must know to pass a technical screening
-at the target consultancies in the target year. Every item must be explainable with a real example."]
-
-## [Section name]
-- concept — why it matters and what the interviewer is testing
-
-## [Section name]
-- ...
+```text
+TOPIC = [one registered topic from `_internal/_topic-ownership.md`]
+LEVEL = [junior | middle | senior]
+NOTES_PATH = [optional — derive from TOPIC]
+MODE = [update | dry-run]
 ```
 
-**Apply every item/file-format and content check from `_coverage-standard.md`** as you write:
-item format (concept — interview-anchored sentence, good-vs-bad), one concept per item, no fenced
-code, section naming and size (5–10 items), filtering-risk section order, and — before closing each
-section — the three-types check and the confusable-pairs check. Then run the standard's
-**completeness test** for the whole file before saving. Do not restate those rules here; the standard
-is the single source for them.
+`TOPIC = all` is intentionally unsupported. Run Angular and Angular Material in separate conversations and do the same for every other topic.
 
-**Restructuring is allowed — and expected on a real update.** When new items push a section past the
-standard's size limit, **split it** into two sections with functional names rather than letting it
-bloat; likewise, create a new section when a cluster of gaps has no home. Two consequences: the "leave
-correct existing bullets untouched" rule in Step 1.4 is about **wording**, not about where a bullet
-lives — moving an unchanged bullet into a better section is fine; and Step 4b must then mirror the new
-and renamed **headings**, not only the bullets.
+## Runtime contract
 
----
+Before dispatching roles, read:
 
-## Step 4a — Adversarial gap hunt: a fan-out of angles, uncapped
+- `notes/prompts/_internal/_agent-runtime-standard.md`
+- the active platform adapter
 
-The generator (Steps 1–4) tends to trust its own list, and a single interviewer only finds the gaps
-that fit inside its own question set. **This is the pass that decides whether coverage is complete, so
-it is deliberately the most expensive one.** Two rules make it work, and both were learned from a real
-run where one capped interviewer returned 13 gaps and looked convergent — while three further angles
-then found 80+ more:
+Use the runtime's planning and collaboration facilities. Canonical tiers are not literal model IDs.
+Subagents are read-only. If the market analyst, either normal cold reviewer, or the first-run boundary
+reviewer when required cannot be dispatched, stop; there is no single-agent fallback.
 
-- **Never cap the questions.** Do not ask a subagent for "the 12 questions you would ask". A capped
-  interviewer finds the gaps that fit in 12 questions; it does not find the gaps. Every dispatch says
-  *as many as you genuinely would use — be exhaustive for this angle*.
-- **Fan out by angle, not by repetition.** Running the same generic interviewer twice returns the same
-  list. Different **angles** interrogate different surfaces of the topic — and the surfaces the generic
-  interviewer never touches (what breaks at the keyboard, what the take-home actually exercises) are
-  where the real holes are.
+## Resolve paths
 
-**In Claude Code:** launch these as **parallel** `general-purpose` subagents, `model: opus`,
-`run_in_background: false`. Adapt the angle list to {TOPIC} — drop any that is meaningless for the
-topic (a "production debugging" angle makes no sense for CSS) and add one the topic obviously needs:
+- `TOPIC_ROOT = notes/{topic}/` unless NOTES_PATH explicitly provides that topic root
+- `TARGET_FILE = {TOPIC_ROOT}coverage/{LEVEL}.md`
+- `SIBLING_FILES = the other two files in {TOPIC_ROOT}coverage/`
+- `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
+- `NOTES_PLANS = all existing notes-plan-{junior|middle|senior}.md files for this topic and every
+  adjacent topic whose coverage may move`
+- `LOCKED_BULLETS = [x] Coverage concepts assigned to Status: refined entries in NOTES_PLANS, matched
+  by exact scope text after stripping the checkbox and every trailing MARKERS entry from plan and
+  coverage copies; [ ] concepts are not locked`
+- `MARKERS = every trailing marker a bullet may carry: the project evidence marker
+  ✅ NN-slug — {evidence} and the drill marker ✅ sql:{file-slug}`. Both are defined in "Evidence
+  markers" in the standard, both are state rather than scope, and **every preservation, capture, and
+  validation rule below applies to both**. Naming only the project marker is how a redraft destroys the
+  drill markers: nothing else in the system records which coverage a graded exercise file drilled.
+- `TOPIC_BOUNDARY = this topic's row in _internal/_topic-ownership.md`
+- `ADJACENT_TOPICS = the complete comparison set declared by TOPIC_BOUNDARY`
+- `LEVEL_UNCALIBRATED = the selected Coverage tracker cell has no completed run` (scaffold files and
+  existing bullets do not count as an execution)
+- `FIRST_RUN = LEVEL is junior, this topic has its own explicit admission decision under "Admitting a
+  new topic" in _internal/_topic-ownership.md, no Coverage J/M/S tracker cell has a completed run, and
+  all three local topic coverage files are absent or contain zero coverage bullets`; count only plain
+  bullets using the standard `- ` syntax
+- Existing bullets in any local level file make `FIRST_RUN` false. Classify them normally and preserve
+  their evidence markers through the existing Step 2 and Step 3 rules. Middle and senior always have
+  `FIRST_RUN = false`.
 
-1. **Live code review** — "here is a snippet, what is wrong with it?". The *concepts* a reviewer needs:
-   annotations that silently do nothing, wrong layer, misused framework idioms, tests that pass but
-   prove nothing. *This angle maps directly onto the 2026 code-review round — never skip it.*
-2. **Design and decisions** — "why X over Y?" and "how would you build this?" across the topic's real
-   design space.
-3. **Take-home / live coding** — the *concepts* behind doing the work from a blank IDE: what someone
-   who cannot bootstrap the project, wire the DB, or unblock a failed first run is missing (the
-   mechanism of the wrapper/tooling, what an error actually means, where configuration comes from).
-4. **Debugging what broke** — the errors he will actually hit and be asked about: startup failures, the
-   framework's own exception messages and what they really mean, a slow endpoint.
+## Required sources
 
-Give each subagent this brief (substituting its angle):
+Count lines before every whole-file read and read to EOF:
 
-> You are a senior engineer at one of the target consultancies (read `ROADMAP.md`,
-> `notes/prompts/_shared-context.md` for the exact role/companies/level, and
-> `notes/prompts/_job-market-evidence.md` for what they hire for — a small sample that corroborates,
-> never bounds, your probes) interviewing a candidate at the target level. The topic is {TOPIC}. Read
-> `{NOTES_PATH}coverage.md` and `notes/prompts/knowledge/coverage/_coverage-standard.md`.
->
-> Your angle is: **<ANGLE + its one-line description from the list above>**.
->
-> Generate as MANY probes from this angle as you genuinely would use — **do not stop at a fixed
-> number; be exhaustive for this angle.** Then check each probe against the CURRENT coverage.md and
-> output **only the gaps**: what a candidate could not answer from coverage as written, each as a
-> coverage item in the standard's format (`concept — interview-anchored sentence`), tagged with the
-> section it belongs in (propose a new section if none fits). **Every gap must be a studyable
-> concept** — a mechanism, annotation, decision, or gotcha a note can be written about — never a
-> working method or interview conduct ("think out loud", "build in slices"); when a method matters,
-> return the concept underneath it. Do not rewrite existing items. Be adversarial — assume the
-> coverage is incomplete until your probes prove otherwise. List separately, under
-> **"OUT — post-junior"**, anything you judge beyond what a junior at this target is filtered on.
+1. `_internal/_coverage-standard.md`
+2. `notes/prompts/_internal/_session-rules.md`
+3. `notes/prompts/_internal/_shared-context.md`
+4. `notes/prompts/_internal/_job-market-evidence.md`
+5. `_internal/_topic-ownership.md`
+6. all three topic scope files when present
+7. `NOTES_PLANS` when present, including every complete `Status: refined` entry and its checkbox-marked
+   `Coverage concepts` list
+8. this topic's heading in `_internal/_cross-topic-inbox.md`
+9. `{TOPIC_ROOT}coverage/verify-{LEVEL}.md` when present — its `## Open gaps` are proposed items from
+   the completeness gate. On full recalibration also read every sibling `verify-*.md` and take **only**
+   the open gaps whose metadata prefix targets `LEVEL`: a middle or senior verification raises
+   prerequisite gaps against an earlier level, and no other run would ever read them. They are judged by
+   the same Step 2 rules, but this run never edits a sibling findings file — an accepted gap becomes a
+   normal bullet, so the sibling's own next run rejects it as already present.
+10. the previous coverage-prompt self-report
 
-**Stop rule:** you are done when a fresh angle returns only duplicates of what the others already
-found. Heavy overlap between angles is the convergence signal — it means the surface is covered, not
-that the pass was wasted.
+On full recalibration, also read all three coverage files of every `ADJACENT_TOPICS` entry to EOF.
+On a `FIRST_RUN`, these reads are the mandatory boundary-migration input, not optional context.
 
-Then **you** (the generator) consolidate: deduplicate across the angles, check each proposed gap
-against the standard's IN/OUT filter and the "concepts only" rule above, add every genuine one to the
-right section of `{NOTES_PATH}coverage.md` in the standard's format, and discard the rest (note those
-in the summary as "adversary-suggested, left out — reason").
+`ROADMAP.md`, notes, practice plans, project plans, and project code are downstream artifacts, not
+scope evidence. Do not read them to establish or raise the competency floor.
 
-Two routing rules when handling the discards:
-- **Discarded ≠ vanished.** For any gap you discard as out-of-junior-scope, confirm it is already
-  recorded in `future-learning.md`; if it is not, add it there (Step 5 performs the write). A discarded
-  item must never disappear — it is either in coverage or in future-learning, never nowhere.
-- **Owned by another topic.** If a proposed gap belongs to a different topic's coverage by ownership
-  (e.g. JUnit/Mockito items surfaced during a Java run belong to Spring Boot coverage, per the
-  configuration block's per-topic notes), leave it OUT of this file and route it to its owner — note it
-  in the summary as "owned by <topic>, not added here". Do not re-litigate the same misplaced gap on
-  every run.
+For Spring Boot, also inspect Java coverage headings and `notes/spring-boot/layer-reference.md`.
 
-**Not in Claude Code (plain chat):** run the angles yourself, one at a time and explicitly — switch
-hats per angle, generate the probes cold and uncapped, list the gaps, then add the genuine ones. The
-independence is much weaker than real subagents, so actually write the probes out; do not skim the
-coverage and declare it complete.
+## Run scope — full recalibration or consuming verify gaps
 
----
+This prompt has two shapes; Step 0 fixes which one and records it in the plan.
 
-## Step 4b — Keep notes/coverage.md in sync
+**Full recalibration** (default) runs every step. Use it whenever this topic/level coverage does not yet exist, its ownership row or an adjacent boundary changed, any other recalibration trigger is active — a shared-context, job-market-evidence, or coverage-standard change, an unresolved recommendation, or a pending `_cross-topic-inbox.md` entry under this topic — or you are unsure.
 
-`notes/coverage.md` is a combined file that mirrors all 12 topic `coverage.md` files in one
-place, for cross-topic analysis. It must always contain **exactly the same content** as each
-topic file — never a paraphrase, a shortened version, or a summary.
+**Verify-gap fast path** applies only when all of these hold:
 
-Whenever `{NOTES_PATH}coverage.md` is created or edited in Step 4, immediately apply the same
-change to its section inside `notes/coverage.md`:
+- `verify-{LEVEL}.md` exists with `Verdict: gaps` and a non-empty `## Open gaps`;
+- its stored `Coverage SHA-256` matches the current `TARGET_FILE`'s **scope bytes** (evidence markers
+  stripped — see "Evidence markers" in the standard), so every gap was raised against today's scope;
+- no `_cross-topic-inbox.md` entry is pending under this topic;
+- neither this topic's ownership row nor an adjacent boundary changed since its last coverage run;
+- no other recalibration trigger is active.
 
-**If the section for {TOPIC} does not yet exist in `notes/coverage.md`:** insert it at the
-correct position following the study-priority order: Angular → Angular Material →
-Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL →
-Git → General. Add a `---` separator before and after the new section.
+Its purpose is to not re-derive the whole market floor just to add an already-verified gap: the floor was set when this coverage was built, and `verify` already read the file to EOF under the market-floor lens to raise the gap. It changes exactly three steps:
 
-1. Find the section for {TOPIC} in `notes/coverage.md` — it starts at the line `## {TOPIC}`
-   and ends right before the next `## ` heading (or end of file if {TOPIC} is General, the
-   last section).
-2. Replace that whole section with the new content from `{NOTES_PATH}coverage.md`, transformed
-   like this:
-   - The title line `# Minimum Coverage — {TOPIC}` becomes `## {TOPIC}` (drop the
-     "Minimum Coverage — " prefix, keep one heading level deeper than the source).
-   - The description paragraph right after the title is copied verbatim, word for word.
-   - Every `## [Section name]` in the source becomes `### [Section name]` (one heading level
-     deeper) — content and order stay otherwise identical, including any `---` separators
-     between subsections if the source file uses them.
-3. Keep the `---` separator before and after the section so it stays cleanly divided from the
-   topics before and after it in the study-priority order (Angular → Angular Material →
-   Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git →
-   General).
+- **Step 1 is skipped** — the floor is not re-derived.
+- **Step 2 is scoped to the open gaps** — judge each open gap exactly as Step 2 already mandates (record add/discard), plus any single move an accepted gap forces; do not re-classify every existing item.
+- **Step 4 dispatches one cold reviewer**, scoped to the added and moved items: placement, ownership, duplication across the three level files, and factual accuracy.
 
-Do this for every edit, not just full rewrites — if only one bullet changes in
-`{NOTES_PATH}coverage.md`, change that same bullet in `notes/coverage.md` too. The two files
-must never drift apart. **This includes structure:** if Step 4 split, renamed, added or removed a
-section, the mirrored section must gain, rename or lose the same `###` heading. When an update is
-large enough that patching bullet by bullet is error-prone, rebuild the whole `## {TOPIC}` section
-from the topic file in one replacement — that is the safer path, not a shortcut.
+Everything else — the Step 0 guards, the Step 3 draft and adversarial pass, the Step 5 mirror rebuild and validation, and the Step 6 commits and self-report — runs unchanged. The "verify gaps are proposals, never pre-approved" rule is never relaxed. When unsure whether a trigger is active, run the full recalibration. The runtime contract's stop-on-dispatch-failure rule applies to the roles the selected scope actually dispatches; a scope that does not dispatch the market analyst or the second reviewer is not a fallback and does not trip that rule.
 
-> **Windows encoding warning:** on Windows, PowerShell 5.1 `Get-Content`/`Set-Content` without an
-> explicit encoding reads a UTF-8 file as ANSI and silently corrupts every non-ASCII character
-> (em dashes become `â€”`) — it happened on a real run. Rebuild `notes/coverage.md` with explicit
-> UTF-8 reads and BOM-less UTF-8 writes (or use the Read/Edit/Write tools, which handle this), and
-> re-read the result checking a line with an em dash before committing.
+## Step 0 — Guards and plan
 
-**Cross-topic overlap check:**
-Before finalizing, scan the other sections of `notes/coverage.md` for items that overlap with
-what you just added or changed (e.g. REST status codes or "service layer" could plausibly sit
-under Architecture, Spring Boot, or Angular). If the same concept already exists elsewhere,
-keep it in the topic where an interviewer is most likely to ask it, and mention the overlap in
-the final summary instead of duplicating the item.
+1. Stop on `main`.
+2. Execute the run-start decision table in `_pipeline-self-report.md` against the previous
+   coverage-prompt self-report; never restate the shared `Status:` meanings here.
+3. Create a plan containing every step, validation, mirror rebuild, self-report, tracker update, and update-mode commits.
+4. Run `git status --short` and preserve unrelated changes.
+5. Confirm one topic only.
+6. Resolve `TOPIC_BOUNDARY` and `ADJACENT_TOPICS`. Stop if the topic is unregistered, an adjacent topic
+   is missing from the registry, or the relationship is not reciprocal. A missing topic must first go
+   through the admission contract in `_topic-ownership.md`; never infer and silently create its boundary.
+7. Set `LEVEL_UNCALIBRATED` and `FIRST_RUN`. `LEVEL_UNCALIBRATED` forces full recalibration and
+   disqualifies the verify-gap fast path. If this topic has its own admission decision, no Coverage
+   J/M/S cell is completed, and all three local coverage files contain zero `- ` bullets, stop unless
+   `LEVEL = junior`; a newly admitted topic must be initialized through its junior `FIRST_RUN` before
+   middle or senior. On `FIRST_RUN`, add the boundary migration and every affected local/global file to
+   the plan, and state that no adjacent-owner bullet will be copied into the new topic; an accepted
+   ownership transfer is a move.
+8. For middle, inspect junior progression evidence. For senior, inspect both junior and middle
+   progression evidence. The gate itself is defined in "Progression gate" in `_coverage-standard.md`;
+   its observable evidence is the earlier level's `Notes` and `Interview` cells in
+   `_internal/_run-tracker.md` reading complete over their plan denominators. Mapping a later level is
+   allowed before consolidation; downstream authoring is not.
+   State the current gate explicitly. Treat those earlier coverage files as cumulative prerequisite
+   floors: they are not only context for the selected level.
+9. Determine the run scope (full recalibration or verify-gap fast path — see "Run scope" above) and
+   record it in the plan; when unsure, choose full recalibration.
+10. Build `LOCKED_BULLETS` before classification. Stop if a refined entry's `[x]` bullet is absent
+    from its recorded topic/level coverage: the freeze is already broken and must not be guessed back
+    into place.
 
-**Verify the sync before reporting done:**
-Re-read the {TOPIC} section in `notes/coverage.md` and the full content of
-`{NOTES_PATH}coverage.md` side by side. Confirm every bullet matches exactly — only the
-heading levels should differ (`#` → `##`, `##` → `###`). If anything differs, fix
-`notes/coverage.md` now, before moving to Step 5.
+## Step 1 — Establish the level floor
 
----
+*Skipped in the verify-gap fast path (see Run scope).*
 
-## Step 5 — Update future-learning.md
+Dispatch one cold market analyst. It receives only the target role, selected level,
+`_coverage-standard.md`, `_shared-context.md`, `_job-market-evidence.md`, current live evidence, and
+this mandate. It must not inspect `ROADMAP.md`, existing topic coverage, notes, practice plans, project
+plans, or project code:
 
-After writing coverage.md:
-- Remove concepts promoted to coverage
-- Add concepts demoted from coverage or newly identified as post-junior
-- Remove entries identified in Step 3 as no longer relevant at all (wrong topic, outdated, or not needed in any future phase) — simply delete them
-- Do not rewrite the whole file — only touch the entries that changed
-- Preserve the phased structure (Phase 1, Phase 2, Phase 3) if it already exists
-- If `future-learning.md` does not exist yet for this topic, create it with a short intro
-  line and at least one `## Phase` section grouping concepts by when they become relevant
-  (during the job, 6–12 months in, senior level)
+> Identify concepts whose absence would materially weaken a developer at the selected topic and level. Use current live evidence when available. Separate recurring requirements, ordinary fundamentals, practical autonomy signals, and differentiators. Do not inspect existing topic scope files and do not edit files. Do not impose an item count.
 
----
+Acceptance proof:
 
-## Execution
+- confirms whether live search ran;
+- identifies target role and selected level;
+- separates evidence classes;
+- for junior, confirms that mid/senior postings did not raise the floor;
+- for middle, distinguishes application/team autonomy from senior/platform ownership;
+- for senior, identifies responsibility that genuinely requires deep production, platform, or multi-team ownership.
 
-Apply all changes directly to the files. Do not describe what you would write — write it.
+Re-dispatch once if proof is missing.
 
-After all edits, print a short summary:
+## Step 2 — Classify the existing topic
 
-| Change | Detail |
-|--------|--------|
-| Angles run in Step 4a | [which angles, and where they converged — "angle 4 returned only duplicates"] |
-| Added to coverage | [list of new items] |
-| Sections split / added | [structural changes, or "none"] |
-| Modified in coverage | [list of updated items — one line per change, or "none"] |
-| Promoted from future-learning | [list or "none"] |
-| Demoted to future-learning | [item — one-line reason it no longer belongs in coverage, or "none"] |
-| Removed from future-learning | [item — one-line reason it was removed, or "none"] |
-| Synced to notes/coverage.md | [yes — X bullets changed / no changes needed] |
+*In the verify-gap fast path this is scoped to the open gaps only (see Run scope).*
 
-If coverage.md did not exist before and was created from scratch, only show the
-"Added to coverage" row grouped by section. Skip the promoted/demoted/modified/removed rows.
-The "Synced to notes/coverage.md" row always appears, even when creating from scratch.
+Read all three topic files to EOF and classify every existing item:
 
-"Promoted from future-learning" = concept moved into coverage (now in scope).
-"Removed from future-learning" = concept deleted entirely because it is no longer relevant
-(wrong topic, outdated, or not needed anywhere — not just post-junior).
+- **KEEP HERE** — belongs to the selected level and topic.
+- **LOCKED IN PLACE** — marked `[x]` in a `Status: refined` notes-plan entry; preserve its scope text
+  byte-for-byte after stripping the trailing evidence marker, even when current calibration would
+  place it elsewhere, and record the placement conflict.
+- **MOVE TO JUNIOR** — belongs to the junior foundation, regardless of the selected level.
+- **MOVE TO MIDDLE** — belongs to middle autonomy, regardless of the selected level.
+- **MOVE TO SENIOR** — belongs to senior ownership, production scale, platform depth, or justified specialisation.
+- **DELETE** — duplicated, non-conceptual, or plainly wrong text (see the limit below).
+- **ROUTE** — belongs to another topic; keep only a concrete implementation twin when justified.
 
-**Commit the changes yourself.** Coverage files live under `notes/`, so this is one of the
-cases where Claude commits directly (CLAUDE.md "Non-negotiables" exception for `notes/` and
-`notes/prompts/`) — do not hand the commands to Victor. No `Co-Authored-By` lines. The commit
-must be atomic — only the coverage files, nothing else.
+Then run the cumulative prerequisite-integrity check:
 
-**Mandatory safety check before committing — never skip it:**
-1. Run `git status` and read the full list of changed/staged files.
-2. Stage only the coverage files:
+- when `LEVEL = middle`, check whether the middle scope assumes any material junior concept absent
+  from `coverage/junior.md`;
+- when `LEVEL = senior`, check whether the senior scope assumes any material junior or middle concept
+  absent from the corresponding earlier file;
+- add each confirmed missing prerequisite directly to its correct earlier level, subject to the same
+  market, ownership, one-concept, deduplication, and evidence-marker rules as selected-level items;
+- do not expand this into a complete fresh market derivation for the earlier levels. Record incidental
+  gaps found while calibrating the selected level; explicit earlier-level runs remain responsible for
+  proving those levels complete.
 
-```
-git add {NOTES_PATH}coverage.md {NOTES_PATH}future-learning.md notes/coverage.md
-```
+**DELETE never removes a real concept.** It applies to exact duplicates (the surviving copy stays),
+non-conceptual filler such as dictionary definitions, and claims that are simply wrong with no
+correct concept behind them. Anything that names a genuine concept is relocated instead — junior,
+middle, senior, or another topic's inbox. "Too basic", "too advanced", "not on the current market
+floor", and "the file is getting long" are reasons to MOVE, never to DELETE. Items already present in
+the file are assumed to be there on purpose — often because they appear in the repository's own
+projects — so when in doubt between deleting and moving, move. Every DELETE is listed individually in
+the final summary with its reason.
 
-If `{NOTES_PATH}future-learning.md` was not modified, remove it from the `git add` command.
+The refined-note lock outranks every classification except `LOCKED IN PLACE`. Never reword the scope text, move,
+delete, merge, split, route, or reorder a `LOCKED_BULLET`, and never create a normalized twin at the
+destination that calibration would otherwise prefer. Bullets assigned only to `pending` or `complete`
+entries remain movable, as does a refined entry's `[ ]` pending addition; report the resulting
+notes-plan fingerprint mismatch so `notes-plan` remaps them before further note authoring. Appending a
+valid evidence marker remains allowed and does not change the lock.
 
-3. Run `git status` again and confirm **only** `notes/` coverage paths are staged. If any
-   project code file, or any file this prompt did not touch, is staged, `git restore --staged`
-   it before continuing — a stray code file has ridden along into a notes commit before.
-4. Only once the staged list is clean, commit:
+Correct factual errors before making scope decisions. Apply this topic's inbox entries through the
+same classification and clear every processed entry. Apply each level-prefixed open gap from
+`verify-{LEVEL}.md`, and each `LEVEL`-targeted gap read from a sibling `verify-*.md`, the same way:
+remove the metadata prefix, verify or correct its target level, then
+add or discard it and say which in the summary. A gap the gate raised is a proposal, never a
+pre-approved item.
 
-```
-git commit -m "docs: update {TOPIC} coverage — <one line summary of main changes>"
-```
+On full recalibration, compare every retained or proposed concept against all three files of every
+adjacent topic. On `FIRST_RUN`, classify every adjacent bullet that could fall inside the new
+boundary as **KEEP WITH ADJACENT OWNER** or **MOVE TO NEW TOPIC**. A move removes the old bullet,
+preserves its evidence marker verbatim, and records every affected topic and level. Never satisfy a new
+topic by copying an existing bullet or by leaving normalized twins on both sides.
 
-Report the commit hash in the final summary so Victor can see it landed.
+Before editing, capture every `LOCKED_BULLET` with its topic, level, section, byte-exact scope text
+(every trailing `MARKERS` entry stripped), and
+relative order inside its refined entry. Also capture every trailing `MARKERS` entry, in its original
+order on the line, from every marked bullet in every affected
+topic file and mirror. After editing, compare those marker multisets byte-for-byte. Rewording, changing
+level, or changing topic never changes, reorders, or drops a marker of either kind; any mismatch blocks
+the draft and commit.
 
-### Final step — pipeline self-report
+## Step 3 — Draft the selected level
 
-This prompt dispatches subagents, so it ends like every orchestrator: read
-`notes/prompts/_pipeline-self-report.md` and execute it for this run. Because this folder is shared
-with `coverage-audit-prompt.md`, write the report as `_last-run-report-coverage-prompt.md`, commit it
-on its own, and print the five bullets in chat.
+The orchestrator is the only repository editor.
+
+Write `TARGET_FILE`, add confirmed prerequisite gaps to the correct earlier level file, move
+reclassified material to the correct level file, and route other-topic proposals to the inbox. On
+`FIRST_RUN`, also apply accepted boundary moves to adjacent topic files; the orchestrator remains
+the only repository editor.
+
+An existing bullet carrying any `MARKERS` entry keeps every one of them verbatim and in their original
+order through KEEP HERE, any
+MOVE, ROUTE, or factual correction — including when the concept sentence is rewritten from scratch. This
+step is the one most likely to destroy markers, because it redrafts a whole level file: never author a
+marker here, and never drop one. Read "Evidence markers" in the standard first, including the drill
+marker subsection — a bullet may carry `✅ sql:{file-slug}` before its project marker.
+
+Apply the standard's item format, topic ownership, level definitions, and qualitative stopping rule. Never add or remove an item to satisfy a numeric count.
+
+Before closing the draft, run an adversarial pass. Stop when it yields only duplicates, different-level material, another topic's ownership, or unjustified specialisation.
+
+## Step 4 — Cold final review
+
+Dispatch two cold reviewers after the draft exists.
+
+*In the verify-gap fast path, dispatch one scoped reviewer instead (see Run scope).*
+
+### Reviewer A — level calibration
+
+Reads the three final topic coverage files, target, evidence, and standard. Returns only:
+
+- missing selected-level requirements;
+- missing prerequisite requirements in every earlier level required by the selected level;
+- items placed too low or too high;
+- cross-level contradictions or duplicates;
+- factual errors;
+- selected-file item count as information only, never as a verdict.
+
+### Reviewer B — quality and ownership
+
+Reads all three topic level files, every adjacent topic's three level files, the relevant global mirrors, targeted owner files, the ownership registry, and standard. Returns only:
+
+- grouped or dictionary-definition items;
+- missing important confusable pairs;
+- duplicate or misplaced ownership;
+- unclear section structure;
+- `MARKERS` entries of either kind missing, altered, reordered, duplicated, or detached from a
+  surviving moved concept;
+- locked bullets altered, moved, reordered, duplicated, or detached from their refined plan entry;
+- confirmation: `N items reviewed`.
+
+Both reports must state the selected file's line count and that it was read to EOF. Re-dispatch a failed reviewer once. Apply accepted findings, then repeat factual and mechanical checks.
+
+### Reviewer C — first-run boundary migration only
+
+When `FIRST_RUN` is true, dispatch one additional cold reviewer after A and B. It reads the
+ownership registry, the new topic's three final files, every adjacent topic's three final files, the
+affected mirrors, and the pre-run versions from Git. It returns only:
+
+- concepts copied or left under more than one owner;
+- moves that violate the registered boundary;
+- marked concepts whose complete `MARKERS` set is missing, altered, reordered, duplicated, or attached
+  to the wrong surviving concept;
+- confirmation: `N moved concepts and M pre-run markers reviewed`.
+
+Its report must state every whole-file line count and EOF confirmation. Re-dispatch once if the proof is
+missing; a failed second report blocks the run. This reviewer never proposes new scope—the market and
+normal reviewers own that judgment.
+
+Both reviewers judge scope only from the target in `_shared-context.md`, current market evidence,
+ordinary fundamentals, and the standard's level definitions. A concept's presence in `ROADMAP.md`,
+notes, exercises, projects, or plans is never evidence that it belongs at the selected level.
+
+## Step 5 — Rebuild and validate the level mirror
+
+Rebuild `## {TOPIC}` in `GLOBAL_MIRROR` from `TARGET_FILE`:
+
+- topic `##` headings become `###`;
+- bullets and order remain identical;
+- introduction appears once.
+
+If a prerequisite-integrity finding or cross-level move changed a sibling level, rebuild this topic's
+heading in that level's global mirror too. No local sibling edit may ship with a stale mirror.
+
+If the first-run boundary migration changed an adjacent topic/level, rebuild that topic heading in the
+matching global mirror from its source file in the same run. A new topic is not complete while an old
+mirror still contains a moved concept.
+
+Validate:
+
+1. local/mirror bullet text and order match — including every trailing `MARKERS` entry, which is part
+   of the bullet text and must appear identically, and in the same order, in both files;
+2. local/mirror headings match;
+3. expected top-level topics remain exactly once;
+4. no checkbox, numbered coverage item, or fenced code exists;
+5. no exact duplicate exists;
+6. no normalized concept occurs in more than one of the three level files;
+7. the selected file contains no obvious other-topic section;
+8. no normalized concept occurs in the selected topic and any adjacent topic at any level;
+9. the pre/post `MARKERS` multisets — project and drill markers counted separately — match exactly
+   across every affected topic file and mirror;
+10. every locked bullet's scope text remains byte-identical in the same section, topic, level, and refined plan
+    entry, with its relative locked-bullet order unchanged;
+11. `git diff --check` passes and the complete declared diff is inspected.
+12. For every affected notes plan, recalculate its stored coverage SHA-256 over its level file's scope bytes
+   (both marker kinds stripped, per the standard's canonical command). A mismatch is the expected
+   refresh signal: report `notes-plan-prompt` as the next step so it can remap the final coverage
+   before another note is built, and record that debt on disk in Step 6 — a summary is read once, a
+   stale flag is read by every later session that asks whether the plan still maps coverage.
+   This is not a return to `coverage-verify`.
+
+## Step 6 — Update mode
+
+Dry run never writes coverage artifacts, but its self-report and `dry-run` tracker outcome are still
+committed as execution evidence.
+
+In update mode:
+
+1. Commit changed topic scope files and every affected global mirror atomically. When `verify-{LEVEL}.md`
+   supplied gaps, blank its `## Open gaps` to `*(none)*` and set `Verdict: superseded` in the same
+   commit, add `Superseded by Coverage SHA-256: <new TARGET_FILE digest>`. That single fingerprint
+   proves which final scope consumed the gaps; earlier levels are not fingerprinted.
+   Preserve `## Locked placement conflicts` unchanged as historical evidence; consuming actionable
+   gaps never erases a conflict Victor deliberately chose to freeze.
+   No run re-proposes a consumed gap. That superseded verification is
+   execution history, not a new gate: continue directly to `notes-plan-prompt`. A fresh
+   `coverage-verify` may be run later for new completeness evidence, but it is never required before
+   planning or authoring notes.
+   Include in this same commit a `Plan status: stale` header edit for every notes plan whose fingerprint
+   mismatched in validation 12 — a metadata-only one-line change that touches no entry, status,
+   checkbox, or `Pending additions` queue, and that `notes-plan` resets to `current` on its next run. It
+   is what makes the `Plan status: current` guard in `notes-audit` and `interview-prep-audit` a live gate
+   instead of a field nothing ever writes.
+2. Refresh the `## Coverage demonstrated` table in `PROGRESS.md` for this topic and level, in the same
+   commit as the coverage files. Authoring changes the denominator, so leaving the table alone makes it
+   overstate the demonstrated share until the next `progress-update` run.
+   **`progress-update-prompt.md` step D8 owns the table's format, its counting rule, and the `*`
+   provisional mark — read D8 and follow it.** Recount the cell with the two greps there rather than
+   adjusting the printed value, rewrite that cell and the level's `**Total**`, and drop the `*` from the
+   cell now that this run has recorded a coverage execution for the level. If cross-level moves changed
+   another level's file, recount those cells too. Touch no other row, and never touch
+   `Professional level by topic` — a denominator that moved is not a promotion or a demotion.
+3. Commit inbox routing separately only when another topic receives proposals.
+4. Before every add and commit, inspect status and stage only declared paths.
+5. Write the pipeline self-report.
+6. Update the run tracker: the Coverage cell for the topic and level; the Coverage cell of any sibling
+   level whose file a prerequisite-integrity finding or cross-level move changed, so it stops claiming a
+   state this run superseded; the stale flag on the `Plan J|M|S` cell of every notes plan whose
+   fingerprint mismatched; and the same flag on the `coverage-audit` row when its recorded run for this
+   level predates this one — a convergence pass cannot still claim the level converges once a topic
+   moved under it. Use the exact flag form and accumulation rule declared in `_run-tracker.md`:
+   `+N` is the running total of bullets added since that plan last ran, so add this run's additions to
+   any count already on the cell rather than writing a second flag beside it.
+7. Commit self-report and tracker together.
+8. Verify both commits with `git show --stat`.
+
+For step 4, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in full. Its
+declared report path is `_internal/_last-run-report-coverage-prompt.md`; update the selected
+Coverage J/M/S cell in `_internal/_run-tracker.md`.
+
+## Final summary
+
+Report:
+
+- branch, mode, topic, and level;
+- ownership boundary, adjacent topics, and the `LEVEL_UNCALIBRATED` and `FIRST_RUN` states;
+- for a `FIRST_RUN`, every boundary move and affected local/global mirror;
+- run scope (full recalibration or verify-gap fast path);
+- progression-gate state;
+- selected file lines/items before and after;
+- all whole-file EOF confirmations;
+- kept, prerequisite gaps added by level, moved to junior/middle/senior, deleted, corrected, and routed counts;
+- locked-bullet count and every locked placement conflict;
+- markers preserved, counted by kind (project / drill), and gaps consumed from a sibling `verify-*.md`;
+- market analyst and reviewer completion;
+- first-run boundary reviewer completion or `n/a`;
+- qualitative stopping-rule result;
+- mirror parity;
+- notes-plan state (`missing`, `current`, or `refresh required`) and, for `refresh required`, the plans
+  set to `Plan status: stale`, the stale flag written on each `Plan` cell with its running `+N`, and
+  `notes-plan-prompt` named as the next step without sending the workflow back to `coverage-verify`;
+- files and commits;
+- unresolved risks or `none`.
+
+Do not finish while a plan item remains incomplete.

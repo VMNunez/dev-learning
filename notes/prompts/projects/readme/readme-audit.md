@@ -1,6 +1,8 @@
 # README audit — the single entry point for reviewing a project's README(s)
 
-Run this **inside Claude Code**. It is the only readme prompt Victor launches. It reviews and fixes a
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only readme prompt Victor launches. It reviews and fixes a
 project's README(s) to the full standard, hands-off: one README at a time, each **authored/fixed then
 cold-reviewed by two subagents**. Run it after a project or a big feature, or whenever a README feels
 stale — and always **before** `portfolio-audit`, which assumes the READMEs are correct.
@@ -11,19 +13,23 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 > **▶ Run first:** nothing — it only needs `PLANNING.md` and the existing README(s). It is itself a
 > prerequisite of `portfolio-audit`.
 
-**Internal pieces this orchestrates** (you never launch these directly):
-`_readme-standard.md` (the bar) · `readme-write-prompt.md` (author) · `readme-review-prompt.md` (reviewer).
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
-> **Not auto-committed — by design.** Like `review-audit`, this writes README files inside the project
-> folder, which follow the project's **feature-branch → PR → main** workflow. The subagents fix the
-> files in the working tree and the orchestrator **hands Victor the commit command** — one per README
-> actually changed. There is no `DRY_RUN`.
+**Internal pieces this orchestrates** (you never launch these directly):
+`_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer).
+
+> **Not auto-committed — by design.** `_session-rules.md` permits the agent to commit a project's
+> `README.md` directly; this pipeline deliberately does not, because it rewrites whole files and the
+> summary of changes exists so Victor reads that rewrite before it lands. The subagents fix the files in
+> the working tree and the orchestrator **hands Victor one commit for the project** — one `git add` per
+> README that actually changed, never one commit per README and never all three by default. The rule is
+> owned by `_readme-standard.md` → "Summary + commit rule". There is no `DRY_RUN`.
 
 ---
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below, fill only the config block, and
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below, fill only the config block, and
 let it run. Pick the recipe:
 
 **A · Review one project's README(s)**
@@ -51,7 +57,7 @@ failure of the machinery do these prompts get edited, in a separate session.
 
 PROJECT_PATH = [projects/01-todo-list | ... | projects/06-hr-portal | projects/07-timetrack | all]
 
-## PROJECT_PATH = all runs on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_PATH = all runs on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Batch targets (ordered): projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The READMEs are derived per type (by project number: 01–06 Angular-only,
 ## 07+ full-stack): angular → [global]; full-stack → [global, backend, frontend].
@@ -61,17 +67,19 @@ Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}.
 ---
 
 You are the orchestrator for reviewing Victor's README(s), hands-off. First read
-`notes/prompts/projects/readme/_readme-standard.md` so you know the bar, which READMEs each project type
+`notes/prompts/projects/readme/_internal/_readme-standard.md` so you know the bar, which READMEs each project type
 has, and the commit rule. Then run the procedure below. You stay light: the subagents read the rules and
 edit the files — you never write a README in your own context.
 
 ## If PROJECT_PATH = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, finishing one before the next. Put each
 project's report under a `### [project]` heading, and after the last print the `_batch-mode.md` summary
 table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s generic
-`Target | Result | Files changed` one, and batch-mode's per-target commit rule is replaced here by the
-commit hand-over (READMEs are never auto-committed). Once a project is finished, carry forward only its
+`Target | Result | Files changed` one. `_batch-mode.md`'s "Commits" section binds here with its target
+read as the **project**, never the individual README, so two projects are never squashed together — and
+with one override: a project's set is one `git add` per changed README plus one `git commit`, not that
+section's single `add` + `commit` pair. Once a project is finished, carry forward only its
 summary table row — drop its per-target detail from your working context before starting the next project.
 Otherwise, follow the procedure once.
 
@@ -85,16 +93,18 @@ none of the subagents commit, so you may run the pairs for different targets in 
 authors for all targets in one block, wait for all, then launch the reviewers in one block. Within a
 target the reviewer must always run **after** its author.
 
-**Subagent A — author.** Launch one `general-purpose` subagent, `run_in_background: false`:
+**Subagent A — author.** Launch one `role-appropriate` subagent, `reasoning tier: deep`, `execution: foreground`
+(recruiter-facing prose — the portfolio's front door):
 
-> Read `notes/prompts/projects/readme/readme-write-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/readme/_internal/_readme-write-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Fix that one README to the standard.
 > **Do NOT commit.** Report the summary of changes and any intentional placeholder.
 
-Wait for A, then **subagent B — reviewer.** Launch a second, independent `general-purpose` subagent,
-`run_in_background: false`:
+Wait for A, then **subagent B — reviewer.** Launch a second, independent `role-appropriate` subagent,
+`reasoning tier: standard`, `execution: foreground` (conformance against a highly prescriptive standard —
+the structure guarantees quality here, and the author already ran at the top tier):
 
-> Read `notes/prompts/projects/readme/readme-review-prompt.md` and execute it in full for
+> Read `notes/prompts/projects/readme/_internal/_readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Audit the just-authored README hard against
 > the standard and fix what falls short directly. **Do NOT commit.** Report the section trace, your
 > verdict (PASS/FIXED), and whether the README changed.
@@ -115,7 +125,8 @@ hand Victor a commit that includes a README whose pipeline did not complete.
 
 Because the three targets are written by separate subagents, the same decision can be described
 inconsistently between them (a tradeoff or pattern told one way in `global` and another in `backend`).
-After the pairs finish, launch one more `general-purpose` subagent (`run_in_background: false`) — do
+After the pairs finish, launch one more `role-appropriate` subagent (`reasoning tier: standard`,
+`execution: foreground` — cross-checking three files for contradictions, changes nothing) — do
 **not** read the READMEs yourself; they stay out of your context:
 
 > Read the three READMEs of `{PROJECT_PATH}` (`README.md`, `backend/README.md`, `frontend/README.md`)
@@ -131,8 +142,14 @@ one README, so skip this.
 ## Finishing
 
 Print a **summary of changes** across all targets (one line per section changed, grouped by README), then
-**hand Victor the commit** — do not run it (see the by-design note). Include only the READMEs that
-actually changed, one `git add` per file, e.g.:
+**hand Victor the commit** — do not run it, per the **Not auto-committed — by design** note at the top of
+this prompt.
+
+**What the set covers: one commit for this project**, staging one `git add` per README that actually
+changed — never one commit per README, and never all three by default. A target excluded by the Failure
+protocol is left out of the set even if its file changed. On `PROJECT_PATH = all`, one such set per
+project, printed together at the end in project order. Example, for a full-stack project whose three
+READMEs all changed:
 
 ```
 git add {PROJECT_PATH}/README.md
@@ -150,7 +167,7 @@ git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of ma
 ## Pipeline self-report (orchestrator, last)
 
 After the commit hand-over, write a short **Pipeline self-report** to
-`notes/prompts/projects/readme/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
+`notes/prompts/projects/readme/_internal/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
 observations about the run itself, not the READMEs. This is the evidence a later session uses to decide
 whether these prompts need changing, so be honest, including "nothing to report":
 - **Report discipline** — which subagents, if any, blew their line budget or returned reports that had
@@ -161,7 +178,7 @@ whether these prompts need changing, so be honest, including "nothing to report"
 - **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
 - **Anything else** that made the run harder than it should be.
 - **Verdict** — "pipeline clean" or "change worth considering: X" (the uniform criterion from
-  `notes/prompts/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
+  `notes/prompts/_internal/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
 
 Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception — `git status` before add and before commit, stage only
@@ -171,10 +188,13 @@ unless this report shows a real failure. Also print the report in chat.
 
 ## Hard rules
 
-- **Never auto-commit the READMEs.** They follow the project's feature-branch workflow; always hand
-  Victor the command. (The `plan-audit` / `portfolio-audit` auto-commit exception does not extend to
-  them — same as `review-audit`.) The only file this flow commits itself is `_last-run-report.md` —
-  prompt-system machinery under the notes/prompts exception.
+- **Never auto-commit the READMEs.** Always hand Victor the command, and hand him **one commit for the
+  project**, not one per README. The permission exists — `_session-rules.md` lets the agent commit a
+  project's `README.md`, and `readme-concept-add` uses it — so the reason this flow declines it is the
+  whole-file rewrite, not the branch. (`plan-audit` auto-commits `PLANNING.md` and `review-audit`
+  auto-commits `PROJECT-BACKLOG.md`, both inside the project folder; that is their contract, not this
+  one's.) The only file this flow commits itself is `_last-run-report.md` — prompt-system machinery
+  under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.

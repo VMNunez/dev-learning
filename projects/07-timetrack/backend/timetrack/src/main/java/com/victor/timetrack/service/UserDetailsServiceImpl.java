@@ -2,10 +2,13 @@ package com.victor.timetrack.service;
 
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
+import com.victor.timetrack.util.EmailNormalizer;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -16,14 +19,30 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
+    @NullMarked
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
+        User user = userRepository.findByEmail(EmailNormalizer.normalize(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+        return toUserDetails(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id " + id));
+
+        return toUserDetails(user);
+    }
+
+    private UserDetails toUserDetails(User user) {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().name())
+                .disabled(!user.isActive())
                 .build();
     }
 }
+

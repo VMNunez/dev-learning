@@ -1,24 +1,48 @@
-# Progress Update Prompt — orchestrator
+# Progress Update Prompt — auditor (orchestrator)
 
-Run this **inside Claude Code**. It rebuilds `PROGRESS.md` from reality, hands-off: an orchestrator
-that **fans out one cold subagent per project** to extract that project's concepts, plus one subagent
-for SQL, then **merges everything itself** and commits. No project's PLANNING.md ever loads into the
+> **This prompt writes one section (demoted 2026-08-05, REC-039).** `PROGRESS.md` is maintained
+> incrementally by the closing rituals (`step-complete`, `backlog-task-close`, `coverage-mark`,
+> `coverage-bullet-add`, `study-block-close`, `sql-grade`, `simulation-review`), each writing the cell it owns in the session
+> that produced it. So this prompt **audits**: it measures every section against its real sources and
+> **reports the drift**, naming the writer that owns the repair. It edits exactly one section itself —
+> `Professional level by topic`, whose `Current tracked level`, `Knowledge consolidation` and
+> `Next gate` cells need all 13 topics at once and no ritual can compute. Its fourth cell,
+> `Practical evidence`, is the one cell of the matrix this prompt **shares**: the closing rituals
+> write it in the session that earned it, and D7 makes this prompt *preserve, then add*. Editing any
+> other section would put a second writer on a cell with no such rule, where the second one wins by
+> accident and nothing announces it. The ownership table below is the contract.
+
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It audits `PROGRESS.md` against what each project's
+`PLANNING.md` **declares** — never against the code; the extraction standard forbids subagents from
+reading it, so a fixed bug or refactor is invisible here until the plan records it. Hands-off: an
+orchestrator that **fans out one cold subagent per project** to confirm that project's step status,
+plus one subagent for SQL, then measures the rest itself. No project's PLANNING.md ever loads into the
 orchestrator's own context — it stays light and only holds PROGRESS.md plus the small simulations
 tracker (which it reads directly — a subagent for one tiny file costs more context than it saves).
 
-> **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit` and `roadmap-review`, which read `PROGRESS.md`.
+> **▶ Run first:** nothing — this is a producer. Run it *before* `plan-audit`, `cv-prompt` and `roadmap-review`, which read `PROGRESS.md`.
+
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
 One optional setting — pick a `MODE` (see below); if you omit it, the prompt defaults to `active`.
 
 Run this when PROGRESS.md feels out of sync: after finishing a step or a project, after a long block
-of sessions, or before running `plan-audit` (its gap analysis reads PROGRESS.md). If
-PROGRESS.md is incomplete, that gap analysis is wrong.
+of sessions, or before `cv-prompt` and `project-brief`, which build on it. **A clean drift report is
+the useful outcome** — it is what closes gate G6 and SQL G3, and it costs one run to obtain.
 
-**This prompt does NOT read `notes/coverage.md`.** Coverage tracks what Victor must *learn* —
-PROGRESS.md tracks what he *has learned*. A stale coverage.md does not affect this prompt.
+**Coverage is read for one thing only: counting evidence markers (D8).** Coverage defines what Victor
+must *learn*; PROGRESS.md records what he *has learned*. The two stayed separate until the `✅ NN-slug — {evidence}`
+evidence marker made the coverage file carry demonstrated state as well as scope. So this prompt
+counts markers and totals per topic and level, and reads nothing else from those files — never a
+concept, never a bullet's text. A stale or incomplete coverage level affects only its own denominator
+in the D8 table, never any other section.
 
 **Internal piece this orchestrates** (never launched directly):
-`_concept-extraction-standard.md` — the Format A/B/C extraction contract each project subagent runs.
+`_concept-extraction-standard.md` — its Steps 0–2 (read-to-EOF, format detection, step status) are what
+each project subagent runs here. **Its Step 3 belongs to `step-complete`, not to this prompt, and its
+Step 4 is a tombstone** — see D1.
 
 ---
 
@@ -30,7 +54,7 @@ MODE = [active | all]
 ## active (default) — audit ONLY the current in-progress project. Completed projects are assumed
 ##                    already recorded. Fast everyday refresh after a step or a session block.
 ## all             — audit every project (all completed + the active one). Run periodically, or
-##                   before plan-audit, to catch anything missed in completed projects.
+##                   before a portfolio gate, to catch anything missed in completed projects.
 
 SQL (Step B) and simulations (Step C) are always audited, in both modes.
 
@@ -38,31 +62,46 @@ Use MODE wherever the prompt refers to {MODE}.
 
 ---
 
-You are the **orchestrator**. You read `PROGRESS.md` once (to learn its structure and what is already
-recorded), dispatch subagents to gather facts, then merge their reports into PROGRESS.md yourself and
-commit. You never read a PLANNING.md directly — the project subagents do that and hand you back a
-short concept list.
+> **Branch guard (step 0):** run `git branch --show-current`. PROGRESS.md commits on whatever branch
+> is currently active (the shared session rules) — a feature branch is the normal case; name it in the final
+> report. If you are on **`main`**, stop and ask Victor which branch to use — `main` never receives
+> direct commits, only merges via PR.
 
-First read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` so you know the exact
+You are the **orchestrator**. You read `PROGRESS.md` once, dispatch subagents to gather facts, measure
+every section against its sources, write `Professional level by topic`, and report the rest as drift.
+You never read a PLANNING.md directly — the project subagents do that and hand you back a step status.
+
+First read `notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` so you know the exact
 contract each project subagent follows and the shape of what it returns.
 
 ---
 
-## What PROGRESS.md is — and is not
+## Who writes what in PROGRESS.md — the ownership contract
 
-Tracks: the projects table · per-project concept summaries (one paragraph each) · technology sections
-(the detailed concept list by topic: Angular, Java, Spring Boot, CSS, SQL…) · simulation progress ·
-complementary skills.
+| Section | Written by | This prompt |
+|---|---|---|
+| `Professional level by topic` | **this prompt** — `Current tracked level`, `Knowledge consolidation`, `Next gate` · `step-complete` and `backlog-task-close` — `Practical evidence`, in session | **writes** — and on `Practical evidence` it may only **add**; rewriting or dropping an entry it did not write is forbidden there, whatever the rest of the row says. D7 holds that rule |
+| `Coverage demonstrated` | `coverage-mark` + `coverage-bullet-add` (the cells they touch, plus `Total`) · `coverage-prompt` (one topic+level) · `coverage-audit` (a whole level) | measures and reports (D8) |
+| `Authoring progress` | `authoring-progress-recount` (all three rows, recounted whenever a note or question reaches an authored state) | measures and reports (D10) |
+| `Study progress` | `study-block-close` (all three rows, recounted at the end of the 13:30 block) | measures and reports (D9) |
+| `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
+| `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
+| `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |
+| `Useful resources`, the header prose | nobody automatic — Victor edits them by hand | untouched |
 
-Does NOT contain: explanations (→ notes/) · future learning (→ future-learning.md) · architecture or
-strategy (→ ROADMAP.md).
+**Owning a format is not owning the write.** D8 below remains the authority on the coverage table's
+format, counting rule and `*` convention — four other writers read it and defer to it. That stays
+exactly as it is; what changed is that this prompt no longer *edits* the cells it specifies.
 
-**Entry format:** one line per concept. Key syntax/API in backticks, optional short dash-clause.
-- `signal()`, `signal.set()`, `signal.update()` — name is clear, no explanation needed
-- `effect()` — runs a side effect automatically when a tracked signal changes
-- `@PreAuthorize("hasRole('X')")` — method-level authorization; checked after JWT is validated
+**A drift line is not a weaker outcome than an edit.** Every section above has a writer that computes
+it from primary sources in the session that changed it; a second writer arriving days later with the
+same arithmetic adds nothing, and one arriving with *worse* inputs silently destroys detail — the
+`Status` cell of a project row is prose the ritual knows and a `✅` scan cannot reconstruct. So the
+report names the owner, and the repair is one targeted re-run rather than a merge.
 
-Never multi-line. If a concept needs more than one line, it belongs in notes/, not here.
+**The D-labels are deliberately not renumbered.** `coverage-mark`, `coverage-bullet-add`,
+`coverage-prompt` and `coverage-audit` all cite "step D8" by name; D1 and D2 are tombstones so those
+citations keep resolving.
 
 ---
 
@@ -72,13 +111,17 @@ Read:
 1. `PROGRESS.md` — the current version. Learn its exact structure, section order, and format. Note
    the projects table and each project's status. Treat statuses as a starting point — the subagents
    verify them.
-2. The "Current study progress" and "Active project" lines of CLAUDE.md — general orientation only
-   (which project is active). CLAUDE.md is already loaded into your context by Claude Code; do **not**
+2. The "Current study progress" and "Active project" lines of the shared session rules — general orientation only
+   (which project is active). the shared session rules is already loaded into your context by the supported agent runtime; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
+3. For each topic row in `Professional level by topic`, inspect the selected level's persistent notes
+   plan at headings/status/studied-field level and the interview-prep bank fingerprint plus lifecycle
+   counts. Read the selected level's interview CORE route metadata too. These artifacts distinguish
+   authored, refined and studied consolidation; do not load their prose.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
-  CLAUDE.md "Active project" line.
+  the shared session rules "Active project" line.
 - **all** — every project below.
 
 Project paths, in order:
@@ -87,56 +130,73 @@ Project paths, in order:
 - Full-stack: `projects/07-timetrack` (Format B) and any later ones in PROGRESS.md (Format C if they
   have a numbered Section 3, else Format B)
 
-For each project in scope, lift its `PROGRESS_HINT` from the PROGRESS.md you just read: the project's
-`### Project NN` summary heading, plus any `### Project NN` sub-heading inside a technology section.
-These few lines are all a project subagent needs for the Format B step-status fallback.
+For each project in scope, keep its `## Projects` table row — its `Status` cell, verbatim — in **your
+own** notes for D5. It is the thing you audit, and it is **never** sent to a subagent: a step status
+derived from that cell and then compared against it agrees by construction, which is D6's rule and the
+defect `REC-136` removed on 2026-08-13. `PROJECT_PATH` is the whole launch input.
 
 ---
 
-## Step A — Fan out one subagent per project
+## Step A — Fan out one subagent per project: confirm the step status
 
-For **each** project in scope, launch a `general-purpose` subagent, `run_in_background: false`. In
-`MODE: all`, launch them all in a single message so they run in parallel (they only read — no
+For **each** project in scope, launch a `role-appropriate` subagent, `execution: foreground`,
+**`reasoning tier: mechanical`** — it locates `✅` markers against an explicit format contract and
+returns three lines; the report contract plus the orchestrator's re-dispatch rule catch a bad report.
+In `MODE: all`, launch them all in a single message so they run in parallel (they only read — no
 git-index contention); in `MODE: active` there is just one. Each subagent's instruction:
 
-> Read `notes/prompts/strategy/tracking/_concept-extraction-standard.md` and execute it in full for
-> `PROJECT_PATH = «path»`. Here is the `PROGRESS_HINT` for this project (use it only for the Format B
-> step-status fallback):
-> ```
-> «the summary heading + technology sub-heading lifted in Step 0»
-> ```
+> Read `notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` and execute **Steps 0,
+> 1 and 2 only** for `PROJECT_PATH = «path»`. Do not extract concepts — Step 3 is not yours, and Step 4
+> is a tombstone. `PROJECT_PATH` is your whole input: you are given nothing out of PROGRESS.md, because
+> your report is what that file gets audited against.
 > Read ONLY the standard and this project's `PLANNING.md` — not the project's code, README, or any
 > other file. Do not read or write PROGRESS.md; do not commit. Report back **only** the three items
-> the standard specifies — the format detected, the confirmed step status, and the concept table
-> (Concept · Section · From step) — with no PLANNING.md excerpts and no reasoning trace.
+> Step 5 keeps — the read verification (line count + read-to-EOF), the format detected, and the
+> confirmed step status with its derivation note — with no PLANNING.md excerpts and no reasoning
+> trace. If the read verification is missing or the subagent could not reach EOF, re-dispatch it once
+> quoting Step 0 — never accept a step status from a possibly truncated read.
 
-Wait for every project subagent to finish and collect its report. Keep the reports — Step D merges them.
+`not derivable — no ✅ markers in PLANNING.md` is a **complete** Format B report, not a failed one:
+D5 measures it against the row and decides there whether it is drift. Never re-dispatch to get a
+number out of it, and never supply one yourself from the row you are auditing.
+
+Wait for every project subagent to finish and collect its report. Keep the reports — D5 uses them.
 
 ---
 
 ## Step B — Subagent: audit SQL exercises
 
-Launch one `general-purpose` subagent, `run_in_background: false`:
+Launch one `role-appropriate` subagent, `execution: foreground`, **`reasoning tier: mechanical`** — it runs two
+git commands and formats their output; no judgment involved, and the zero-file guard already covers
+the one failure mode:
 
-> Audit the SQL exercises **as they exist on `main`** (study materials live on `main`; the working
-> tree is usually behind, so do NOT count working-tree files — count the `main` version).
-> **Count without loading file contents into your context** — two commands are enough:
-> - List the SQL files on main: `git ls-tree -r --name-only main -- practice/sql/ sql/`
->   (double pathspec: covers the current home `practice/sql/` and the legacy `sql/` until the one-time
->   migration on `main` is done). **Guard: if it returns 0 files, ABORT the SQL step and report it —
->   never rewrite the tracker table with zeros.**
-> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" main -- practice/sql/ sql/`
->   (output is `main:<path>:<count>`). Only `git show` a file if its count looks wrong (e.g. zero
->   for a file that clearly holds exercises) — and then only to recheck the headers, not to study it.
+> Audit the SQL exercises **as they exist in committed history** — count both the active branch
+> (`HEAD`) and `main`, and take the **higher count per file**. Since 2026-07-14 study materials
+> commit on the active branch, so new SQL lands on `HEAD`; but SQL committed under the previous rule
+> went straight to `main` and may not be merged into the current branch yet. Counting a single ref
+> silently drops whichever topics live only on the other one. Do NOT count uncommitted working-tree
+> files.
+> **Count without loading file contents into your context** — two commands per ref:
+> - List the SQL files: `git ls-tree -r --name-only HEAD -- practice/sql/ sql/`, then the same with
+>   `main` (double pathspec: covers the current home `practice/sql/` and the legacy `sql/` until the
+>   one-time migration is done). **Guard: if BOTH refs return 0 files, ABORT the SQL step and report
+>   it — never report a table of zeros as a finding.**
+> - Count exercise headers per file: `git grep -cE "^-- (Exercise [0-9]+:|#[0-9]+ \|)" HEAD -- practice/sql/ sql/`,
+>   then the same with `main` (output is `<ref>:<path>:<count>`). Only `git show` a file if its count
+>   looks wrong (e.g. zero for a file that clearly holds exercises) — and then only to recheck the
+>   headers, not to study it.
 >
-> Two file shapes exist: a flat file (`practice/sql/01-basics.sql`) or a subfolder (`practice/sql/02-joins/exercises.sql`).
+> Exercise files live one per topic inside their level's directory (`practice/sql/junior/01-basics.sql`).
+> Two legacy shapes may still appear on `main`: a flat `practice/sql/01-basics.sql` or a per-topic
+> subfolder `practice/sql/02-joins/exercises.sql` — report either under its level path.
 > The regex covers the two header patterns in use:
 > - `-- Exercise N:` at line start (sql-exercises-prompt topics: joins, group-by, subqueries…)
 > - `-- #N |` at line start, N one or more digits — `-- #1 |`, `-- #01 |`, `-- #40 |` (the basics file)
 >
 > Return **only** one row per topic: `| Topic | Folder | Exercises (exact count) |`, using the real path in the
-> Folder column (`practice/sql/01-basics.sql` for flat, `practice/sql/02-joins/` for subfolders; if a file
-> still lives at the legacy `sql/...` on main, report it under its `practice/sql/...` home). Only list topics
+> Folder column (`practice/sql/junior/01-basics.sql`; if a file still lives at a legacy `sql/...`,
+> flat `practice/sql/NN-...`, or per-topic-subfolder path on either ref, report it under its
+> `practice/sql/{LEVEL}/...` home). Only list topics
 > found by the commands above. Do not estimate; do not assign a status — the orchestrator does that.
 
 Wait and collect.
@@ -146,153 +206,312 @@ Wait and collect.
 ## Step C — Audit simulations (orchestrator, directly)
 
 No subagent here — `practice/simulations/TRACKER.md` is one small file, and a subagent round-trip would cost
-more context than reading it. Read it yourself and note: total simulations completed (✅ Pass or
-⚠️ Borderline both count as completed), split by type — Angular / Spring Boot / SQL — each as
-`X Pass, X Borderline, X Fail`. If TRACKER.md does not exist or shows 0, record all zeros.
+more context than reading it. Read it yourself and note totals split first by the row's **Level**
+(junior / middle / senior), then by type — Angular / Spring Boot / SQL — each as
+`X Pass, X Borderline, X Fail`. A legacy row with no Level is junior only for the original 15-test
+bank; a newly generated row without Level is structural drift, not something to guess. Count
+completed as ✅ Pass + ⚠️ Borderline. Count the **`Status`** column, never `Self-assessment` — the two use
+different scales (Status is Pass/Borderline/Fail; Self-assessment is Solid/Good/Weak/Failed), so the
+wrong column yields plausible numbers and no error. Rows still ⏳ Pending count as nothing. If
+TRACKER.md does not exist, report that as a structural finding rather than a count of zeros.
 
 ---
 
-## Step D — Merge everything into PROGRESS.md (orchestrator)
+## Step D — Measure every section against its sources (orchestrator)
 
-You now hold every subagent report and the full current PROGRESS.md. Merge:
+You now hold every subagent report and the full current PROGRESS.md. **D7 is the only one of these
+that ends in an edit.** For the others, measure, compare against what the file says, and record any
+mismatch as a row for the Step E drift report — never as an edit, however obvious the fix looks.
 
-### D1 — Concepts (from Step A reports)
+### D1 — Tombstone: concept extraction
 
-For each concept in each project report, check whether it already appears in the target technology
-section of PROGRESS.md. Add only genuinely missing concepts.
+This prompt used to fan out a full concept extraction per project. It has had no destination since
+2026-08-03, when PROGRESS.md's per-technology sections were deleted: a concept's only home is the
+coverage checklist, via `coverage-bullet-add` / `coverage-mark`. The "report coverage work owed" line
+that replaced it was **never executable** — deciding whether a concept is missing from the checklist
+needs the coverage files' contents, which the subagent is forbidden to read and this orchestrator only
+`grep -c`s. Removed 2026-08-05; the fan-out now asks for the step status alone.
 
-> **`**Concept learned:**` lines are high-level summaries.** PROGRESS.md is often more granular (the
-> line says "JWT flow" but PROGRESS.md already has 10+ bullets on JWT internals). If a summary label
-> is already covered by existing detailed bullets, treat it as accounted for — do **not** add it as a
-> new one-liner. Only add a specific concept genuinely absent with no equivalent entry.
+**Never write a concept into PROGRESS.md, in any section, in any form.** The `Key concepts` cell of a
+project row is a handful of headline topics that the row's author set — it is not an inventory and is
+not maintained here; if it names something the project demonstrably never did, that is a drift row.
 
-For the in-progress project, do not add concepts from the step still in progress — unless one already
-appears in PROGRESS.md (learned early), in which case leave it as-is, never remove it.
+### D2 — Tombstone: the deleted per-technology sections
 
-### D2 — Creating a missing technology section
+There are no per-technology concept sections to create or maintain (removed 2026-08-03). If a past
+PROGRESS.md revision is used as a reference, ignore its `## Angular` / `## Java` / `## Spring Boot`
+/ `## CSS` / `## Complementary skills in practice` sections and the SQL `### Querying data` block —
+re-creating any of them is a defect, not a fix.
 
-If a concept needs a section that does not exist yet, create it (same heading + one-line-bullet format
-as the others).
+### D3 — `## Practice completed` → `### Exercise route` (from the Step B report)
 
-**Java section, first creation — special case.** Before adding new Java concepts, scan the Spring Boot
-section for entries that are *pure Java* constructs per the standard's definition (`Optional<T>`,
-`long` vs `Long`, primitive/wrapper types, `try/catch`, access modifiers, default field values like
-`private Boolean active = true`). **Move** those from Spring Boot to the new Java section — remove from
-Spring Boot, add to Java. Log each as Removed under Spring Boot and Added under Java in the diff. Place
-the new Java section after Spring Boot; place a new General section after SQL. Only after this cleanup,
-add remaining new Java concepts.
+**Owner: `sql-exercises MODE = review`, whose Step 4b holds the full contract** — the two tables'
+columns, the `Corrected` vs `Route progress` distinction, where the target comes from, and the `Total`
+rules. Read
+`notes/prompts/practice/sql/_internal/_sql-exercises-review.md` §4b and measure against it. **Do not
+restate its schema here**: a copy of another prompt's table shape is what rotted this step once
+already — it described columns (`Exercises scored`) and a section number (§5) that the live contract
+had long replaced with `Corrected` / `Route progress` / `Steps closed` and §1.
 
-### D3 — SQL section (from Step B report)
+Compare the file's tables against `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §1 and the Step B counts,
+and report as drift: a route target that disagrees with §1, a file with no row, a row whose status
+contradicts its score, a `Total` that does not sum its own column. Never downgrade a `closed ✅` and
+never write a corrected figure — name it and let the owner re-run.
 
-The SQL section has two parts — keep both:
-- **Part A — SQL concepts learned** (`SELECT DISTINCT`, `ORDER BY`, `IS NULL`…). These come from
-  project PLANNING.md SQL steps (Step A), not the exercises folder. Leave untouched here.
-- **Part B — Exercises tracker.** Rewrite it from the Step B counts, in this format:
+### D4 — `## Practice completed` → `### Timed simulations` (from the Step C counts)
 
-  ```
-  ### Exercises completed
+**Owner: `simulation-review` Step 5**, which holds the Pass/Borderline/Fail verdict — the thing that
+decides the numbers. Compare your Step C counts with the per-level roll-up and each level's track
+table; report any cell that disagrees, plus a missing level/track row. Denominators come from the
+number of TRACKER rows for that level and track, never from an example. A level with no rows is `—`,
+not `0/0`.
 
-  X total exercises across Y topics
+### D5 — `## Projects` (from the Step A step statuses)
 
-  | Topic | Folder | Exercises | Status |
-  |-------|--------|-----------|--------|
-  | basics / SELECT | practice/sql/01-basics.sql | N | solid ✅ |
-  | joins | practice/sql/02-joins/ | N | in progress ⏳ |
-  ```
+**Owner: `step-complete`**, which writes the `Status` cell in the session that finished the step.
+Compare each subagent's confirmed status against the row and report a mismatch — a Done ✓ marker that
+disagrees with the plan, a `🔜` on a project with completed steps, a step count that has moved on.
 
-  Status rules:
-  - Keep any topic already `solid ✅` — never downgrade.
-  - A topic being converted from prose to the table for the first time → `in progress ⏳` (solid needs
-    an explicit sql-exercises-prompt review scoring above 80% — it cannot be inferred).
-  - Any topic with a file/folder not yet in PROGRESS.md → `in progress ⏳`.
-  - Victor upgrades to `solid ✅` manually after a review scores above 80%.
+**Report the mismatch; never rewrite the cell.** The `Status` cell carries detail a `✅` scan cannot
+reconstruct — sub-steps (`Step 7a next`, where the plan marks only `Step 7`) and non-step facts the
+ritual recorded (`backend backlog fully closed`). Overwriting it with a derived string loses both
+silently, which is exactly the failure this demotion exists to stop. If the plan and the row disagree,
+say which is likely stale: a plan missing a `✅` is a `PLANNING.md` fix, a row behind the plan is a
+`step-complete` that did not finish.
 
-  If the sub-section does not exist, create it. If it exists in another format, rewrite it as this
-  table (one of the few cases where reformatting is allowed).
+**A `not derivable` return is measured against the row, not reported blind.** A Format B plan
+carrying no `✅` anywhere is a primary fact — *no step is marked complete* — and comparing it with the
+row is your step, not the subagent's. Two outcomes, and the row decides which:
 
-### D4 — Simulations section (from the Step C counts)
+- **The row also records no completed step** (`Not started 🔜`, or a status that neither names a
+  finished step nor points past the first one — `Step 1 in progress` qualifies, `Step 4 next` does
+  not, because it records Steps 1–3 done without naming them): plan and row agree. There is nothing
+  to repair and no drift row — a project between
+  `plan-audit MODE = new` and its first `step-complete` is *supposed* to carry no `✅`, and reporting
+  it would open a row no owner could ever clear and hold both gates short for the life of the project.
+- **The row claims one or more completed steps:** that is the drift, and it is the case D5 exists to
+  catch. Report it — the row's current text in the "What PROGRESS.md says" column,
+  `plan carries no ✅ marker` in the sources column, and `step-complete`, or adding the `✅` to the
+  finished step's heading, as the owner. This is what stops G6 closing on a project whose row claims
+  steps its plan never recorded.
 
-Update the counts if the section exists; otherwise add:
+There are no `### Project NN` blocks or technology sub-headings left (removed 2026-08-03). Do not
+re-create one, and do not look for one.
 
+### D6 — Measurement discipline
+
+- Measure from primary sources, never from the file you are auditing — a figure read back out of
+  PROGRESS.md and compared with itself always agrees.
+- **A section you cannot measure is a finding, not a silence.** A missing `## Practice completed`, an
+  absent TRACKER.md, a level with no route file: report the structural gap.
+- **Never invent or recreate a concept section.** PROGRESS.md's declared status sections are the level
+  matrix, `Coverage demonstrated`, `Study progress`, `Projects`, `Practice completed`, and
+  `Useful resources`. A new section is legitimate only when its source, unit, writer, reader and audit
+  rule are added to the ownership contract in the same machinery change. Per-technology concept lists
+  remain forbidden: coverage owns concepts; PROGRESS records only their effects and track progress.
+
+### D7 — `Professional level by topic` — **the one section this prompt writes**
+
+Refresh the matrix without duplicating coverage concepts:
+
+- `Knowledge consolidation`: report notes **authored** separately from notes **studied**
+  (`Studied: YYYY-MM-DD` over the same entries), then report whether the selected-level Q&A fingerprint
+  and CORE route are current, with refined/studied CORE and full-bank counts. A stale or incomplete
+  denominator is named as such, never rendered as `0%`. Authored is `complete` plus `refined` entries
+  **that owe no unconsumed `Pending additions`** — a field reading `none`, and a legacy entry with no
+  such field, both owe nothing — the same arithmetic D10, `notes-plan-prompt.md` and the `Notes J/M/S`
+  tracker cells use. This prose cell is the per-topic reading; the per-level numbers live
+  in `Authoring progress` and are D10's to measure, so quote them rather than recomputing a second
+  figure here.
+- `Practical evidence`: **preserve, then add.** `step-complete` and `backlog-task-close` write this
+  cell in session, so what is already there is a record, not a draft — keep every explicit entry and
+  append only project, exercise, simulation, or unaided-recall evidence this run verified. This is the
+  one cell of the matrix you share, and preservation is what makes sharing safe.
+- `Next gate`: name the first unmet consolidation or practical condition.
+- Never promote `building` to `demonstrated` from file completion alone. Promotion requires all notes
+  entries complete, current selected-level Q&A, and at least one explicit unaided practical or
+  explanation check for that topic.
+- Never activate middle while junior is not demonstrated, or senior while middle is not demonstrated.
+- Middle promotion requires explicit autonomous ownership evidence. Senior promotion requires real
+  production, platform, or multi-team ownership; notes, interview prep, and personal projects alone
+  can never produce `Senior — demonstrated`.
+- If evidence is insufficient, keep the existing conservative level and state what remains open.
+- **The D8 and D9 percentages never promote a level by themselves.** A topic at 100% demonstrated
+  coverage or 100% study progress stays
+  `building` until the unaided practical or explanation check in the rules above is met. The ratio is
+  an instrument, not a gate; treating it as one would let file bookkeeping award a level that no
+  demonstration backs.
+
+### D8 — `Coverage demonstrated` — the format authority, measured not written
+
+**This step defines the table's format, counting rule and `*` convention, and four other writers read
+it and defer to it** — `coverage-mark` and `coverage-bullet-add` for a single bullet, `coverage-prompt`
+for one topic+level, `coverage-audit` for a whole level. That specification stays here and they keep
+citing "step D8". What this prompt no longer does is **edit** the cells: those four recount from the
+same files with the same commands in the session that changed them, so a fifth writer arriving later
+can only agree — or disagree because its inputs were worse.
+
+Recount every cell and **report** any that disagrees, naming the topic, the level, the file's figure
+and yours. One row per topic, one column per level, each cell the share of that level's coverage
+bullets carrying an evidence marker.
+
+Count from the **topic** files, `notes/{topic}/coverage/{LEVEL}.md`, never from the
+`notes/coverage/{LEVEL}.md` mirror. This is `_coverage-standard.md`'s mirror rule, not a local
+preference, and its reason is **not** that the mirror is untrustworthy — the validator proves the two
+files identical, line by line, on every run. It is that a **measurement** is taken from the declared
+source of truth, because these figures are copied into `PROGRESS.md`, which records no provenance, and
+because the commands below are two `grep -c` per file with nothing loaded. Authoritative *and* free is
+why the rule bites here and not at `roadmap-review`'s cross-topic gap enumeration, where the same
+choice would cost thirteen reads and the validator's parity line already buys the mirror. Two counts
+per file:
+
+```bash
+grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md      # total   — the denominator
+grep -cE ' ✅ [0-9]{2}-[a-z0-9-]+' notes/{topic}/coverage/{LEVEL}.md   # marked  — the numerator
 ```
-## Simulations
 
-- Angular: X completed (X Pass, X Borderline, X Fail)
-- Spring Boot: X completed (X Pass, X Borderline, X Fail)
-- SQL: X completed (X Pass, X Borderline, X Fail)
-- Total: X / 15 minimum target
-```
+The marker pattern is deliberately **unanchored**: a marker written before 2026-08-01 ends the line, a
+newer one is followed by its evidence clause, and both must count.
 
-All zeros if none — that makes it visible the block has not started.
+Cell format is exactly `marked/total (P%)`, `P` rounded to a whole number — `34/86 (40%)`. A level
+with no file yet is `—`, not `0/0`. A newly admitted topic may have a zero-bullet scaffold file before
+its first completed Coverage tracker run; that cell is also `—`, because no denominator exists yet.
+The `Total` row is recounted as the sum of the column's numerators over the sum of its denominators,
+never accumulated from the printed total.
 
-### D5 — Projects table and headings (from Step A step-statuses)
+**Provisional denominators.** Read `notes/prompts/_internal/_run-tracker.md`. If the `Coverage {J|M|S}`
+cell for that topic and level is empty, the level was never authored by the coverage pipeline, so its
+total is a stub that will move: the cell carries a `*` and the footnote below the table explains the
+mark. A `*` that should have been dropped — the tracker now records a run — is itself a drift row.
 
-- **Projects table:** fix any status marker that disagrees with a subagent's confirmed status. Done ✓
-  = all learning steps complete; ⏳ = at least one still in progress; 🔜 = not started.
-- **Per-project summary heading** (`### Project NN` in the summaries block):
-  - Done ✓ before this run: touch only if factually wrong.
-  - Still ⏳ after this run: update the parenthetical to the actual status (e.g. "Steps 1–3 done,
-    Step 4 in progress") and verify its `**New concepts:**` line covers every extracted concept.
-  - Newly completed this run (was ⏳, now Done ✓): **remove** the step-tracking parenthetical — the
-    format becomes `### Project NN — Name`, matching projects 01–06.
-- **Technology sub-headings:** if a section groups a project with a sub-heading like
-  `### Project 07 — TimeTrack (Step 1 ✓ Step 2 ✓ Step 3 ✓ Step 4 in progress ⏳)`, update its
-  parenthetical to the confirmed status (canonical: `(Step 1 ✓ … Step N in progress ⏳)`). If the
-  project just became Done ✓, remove the parenthetical. Summary heading and sub-headings must stay in
-  sync.
+The table sits immediately after `Professional level by topic`, its topic rows in the same order, so
+the two read together.
 
-### D6 — General merge rules
+### D9 — `Study progress` — measured, never written here
 
-- Keep the exact structure and section order of the current PROGRESS.md.
-- Keep existing content — remove nothing unless factually wrong or a duplicate.
-- Do not reformat correct entries; do not expand entries — one line per concept, maximum.
+**Owner: `study-block-close`.** Recompute the three rows with the same contract the ritual uses:
+
+- Notes, per level: dated `Studied:` entries over all numbered entries, but only when every required
+  registered-topic plan exists, is `current`, and its coverage fingerprint matches. A missing legacy
+  `Studied` field is an unstudied entry, not a missing denominator.
+- Interview CORE, per level: stable question IDs carrying both `[refined]` and `[studied]` in both
+  languages over all IDs selected by the current `notes/interview-prep/routes/{LEVEL}.md`. The route's
+  inventory fingerprint must match the current English-bank inventory. A one-sided marker counts once
+  and is reported as mirror drift for `study-block-close`; the audit itself does not repair it.
+- Interview bank, per level: stable question IDs carrying both `[refined]` and `[studied]` in both
+  languages over all English master question identities. Count only when every required topic bank
+  exists, both languages carry current coverage fingerprints, stable-ID parity passes, and no duplicate
+  ID exists. Angular Material shares Angular's bank; all other registered topics own their file.
+
+Compare the result with `PROGRESS.md` and emit one drift row per mismatched cell. `—` is required when
+the denominator gate is not met; never sum only the current subset and present it as a level total.
+
+### D10 — `Authoring progress` — measured, never written here
+
+**Owner: `authoring-progress-recount`.** Recompute the three rows with the same contract the skill uses:
+
+- Notes authored, per level: entries whose `Status:` is `complete`, plus `refined` entries owing no
+  unconsumed `Pending additions` — an absent field owes nothing — over all numbered entries across the
+  registered topics' plans. That denominator is the plans on disk, so it may legitimately exceed the sum
+  of the `Notes J/M/S` tracker cells, which omit a topic the plan pipeline never ran. This
+  count is **not** gated on `Plan status: current`. A level holding a stale or tracker-flagged plan
+  keeps its number and carries `*`; only a level with no plan at all is `—`. A cell blanked where a
+  plan exists is a drift row, and so is a `*` that no stale plan justifies any more.
+- Interview CORE refined and Interview bank refined, per level: D9's denominators and gates exactly,
+  with `[refined]` alone as the numerator instead of `[refined] [studied]`. Both are `—` until the
+  banks carry stable IDs, which is the correct reading and never a drift row on its own.
+
+The two sections are **not** ordered: an entry that was studied and has since been assigned a new
+coverage bullet keeps its `Studied` date while dropping out of the authored numerator, so studied may
+legitimately exceed authored. Read a level where it does as the signal it is — refined prose owing an
+append — and check it against the `Pending additions` lists rather than reporting it as drift. Compare
+the result with `PROGRESS.md` and emit one drift row per mismatched cell, naming
+`authoring-progress-recount` as the repair.
 
 ---
 
-## Step E — Apply the edits and print the diff
+## Step E — Write the matrix, then print the drift report
 
-Apply the merge as **targeted in-place edits** (Edit tool, one edit per change) — do NOT rewrite the
-whole file. You already hold the current PROGRESS.md from Step 0; rewriting it wholesale wastes
-output tokens and risks silently dropping sections. After editing, run `git diff PROGRESS.md` and
-skim it — every hunk must correspond to a row in the table below; an unexplained hunk means an edit
-went wrong. Then print:
+**The edit.** Apply D7 as **targeted in-place edits** (one edit per change, never a rewrite) to
+`Professional level by topic` and nothing else. Then run `git diff PROGRESS.md`: **every hunk must fall
+inside that table** — and every hunk touching `Practical evidence` must only **add**, since one
+rewriting or dropping an entry a ritual wrote passes the section test and still breaks D7. Either way:
+revert it and report the section as drift instead. This diff check is the mechanical guard behind the
+whole ownership contract.
 
-**Changes made:**
-| Section | Added | Corrected | Removed |
-|---------|-------|-----------|---------|
-| Projects table | | | |
-| Angular | | | |
-| Java | | | |
-| Spring Boot | | | |
-| CSS | | | |
-| Deployment | | | |
-| TypeScript | | | |
-| Architecture | | | |
-| Security | | | |
-| General | | | |
-| SQL | | | |
-| Simulations | | | |
+Then print two things.
 
-- **Added** = anything new — missing concepts, updated SQL counts, updated simulation counts, new
-  per-project summary data.
-- **Corrected** = entries that were wrong (wrong project number, stale step status, exercise count
-  raised to the file's real value).
-- **Removed** = duplicates or factually wrong entries.
-- Java section created for the first time: log each moved entry as Removed under Spring Boot and Added
-  under Java.
+**1 — Level matrix, what changed:**
 
-Write "—" for an unchanged section; skip rows for sections that do not exist in PROGRESS.md.
+| Topic | Field | Was | Now | Why |
+|---|---|---|---|---|
 
-**Low-confidence statuses:** if any project subagent derived its step status from the
-`PROGRESS_HINT` fallback (or the hint overrode the ✅ markers) rather than from ✅ markers alone,
-add one line after the table naming the project and suggesting Victor add the missing ✅ to that
-step's heading in PLANNING.md — that makes the next run self-sufficient.
+One row per edited cell; `—` and one line saying so if the matrix was already accurate.
+
+**2 — Drift report** — every mismatch D3, D4, D5, D8, D9 and D10 found:
+
+| Section | What PROGRESS.md says | What the sources say | Owner to re-run |
+|---|---|---|---|
+| Coverage demonstrated · Java junior | `47/128 (37%)` | `49/128 (38%)` | `coverage-mark` wrote a marker without refreshing the cell — re-run it, or `/coverage-audit junior` |
+| Projects · 07 | `Steps 1–6 done, Step 7 next` | plan has no ✅ on 7a | `step-complete`, or add the ✅ to PLANNING.md |
+
+**An empty drift report is the good outcome, and it is what closes both gates that read it** — G6 in a
+project's `PLANNING.md` §23, and SQL G3, whose rule is `practice/sql/PLANNING.md` §9 and whose box is
+ticked in its §11 — say so explicitly rather than printing an empty table with no verdict. Order rows by how much the consumer cares:
+`Coverage demonstrated` and `Professional level by topic` are read by `project-brief`, `review-audit`
+and `backlog-task-open`; the `Practice completed` tables are read only by their own writers.
+
+**An unmarked plan D5 ruled drift is in the drift table, not in a footnote.** Where D5's second
+branch fired, the row reaches `_last-drift-report.md` verbatim like any other and holds the gate open
+until the `✅` is added; where its first branch fired, plan and row agreed and there is nothing to
+print. The line that used to sit here instead — a suggestion printed after the tables, whose
+persistence into the report file was never contracted — went with `REC-136`.
+
+**The record — the report is a file, not only a chat message.** After printing, write everything you
+just printed to `notes/prompts/strategy/tracking/_internal/_last-drift-report.md`, overwriting the
+previous run's — **every run, the clean one included**, which is otherwise the outcome that leaves no
+trace at all: a run whose matrix was already accurate does not commit `PROGRESS.md` either. It is read
+by whoever ticks those two boxes, by hand and days later, when this chat is gone. Header, then the two
+tables verbatim:
+
+```
+# Progress-update drift report
+
+Date: YYYY-MM-DD · MODE = {MODE} · Branch: <branch>
+Scope: <the project paths this run audited> · SQL: <audited | aborted by Step B's guard>
+Verdict: no drift | N drift rows — open until each Owner named below has re-run
+```
+
+**The scope line is what makes a gate tick falsifiable**, so it is never omitted: `MODE = active`
+audits one project, so a clean verdict is evidence for that project's gate and for no other's. A
+section you could not measure is a D6 finding, and it reaches the verdict line as drift, never as
+silence.
 
 ---
 
 ## Step F — Commit
 
-PROGRESS.md is tracked and lives on `main` per CLAUDE.md. Per the commit-hygiene rule, run
+**The drift report commits on every run, alone and first.** It is machinery under `notes/prompts/`,
+so commit it directly — and never fold it into the matrix commit below, whose hygiene check exists to
+prove that nothing but `PROGRESS.md` rode along with it:
+
+```
+git add notes/prompts/strategy/tracking/_internal/_last-drift-report.md
+```
+
+```
+git commit -m "docs: progress-update drift report — {MODE}, [scope]"
+```
+
+Run `git status` before the add and again before the commit: `PROGRESS.md` is modified and unstaged at
+this point, so the add must name the report path and nothing else. `git show --stat HEAD` must list one
+file.
+
+**The matrix commit happens only if D7 edited something.** A run whose matrix was already accurate
+says that plainly instead of committing an unchanged file.
+
+PROGRESS.md follows the active branch per the shared session rules (2026-07-14 — `main` only receives merges via
+PR). Per the commit-hygiene rule, run
 `git status` right before the add and again right before the commit — confirm nothing but
 PROGRESS.md gets staged (`git restore --staged` anything else). Then:
 
@@ -301,17 +520,21 @@ git add PROGRESS.md
 ```
 
 ```
-git commit -m "docs: refresh PROGRESS.md — [main change, e.g. 'add project 07 Spring Boot concepts, fix projects table']"
+git commit -m "docs: refresh PROGRESS.md level matrix — [main change, e.g. 'Spring Boot evidence for Step 6, SQL next gate']"
 ```
 
-> **Auto-commit note.** Victor's global rule is "never auto-commit." This orchestrator may run the
-> commit itself (same lift already granted to the notes-audit orchestrator) **only when it has
-> finished a clean merge**. If anything is uncertain, print the two blocks above and let Victor run
-> them instead.
+> **Auto-commit note.** Victor's global rule is "never auto-commit." The drift-report commit above sits
+> outside it — `notes/prompts/` is machinery this orchestrator commits directly — and it happens on every
+> run, the clean one included. The lift on **`PROGRESS.md`** is the narrower one: this orchestrator may
+> run the matrix commit itself (same lift already granted to the notes-audit orchestrator) **only when the
+> matrix edit is clean**. If anything is uncertain, print the `git add PROGRESS.md` and `git commit`
+> blocks and let Victor run them instead.
+> **Never commit a repair to a section this prompt does not own** — that is the owner's commit, in the
+> owner's run.
 
 ### Final step — pipeline self-report
 
-After everything above is done, read `notes/prompts/_pipeline-self-report.md` and execute it for this
+After everything above is done, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it for this
 run — write the report file in this orchestrator's folder, commit it on its own, and print the five
 bullets in chat.
 

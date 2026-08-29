@@ -3,6 +3,7 @@ package com.victor.timetrack.controller;
 import com.victor.timetrack.dto.request.LoginRequest;
 import com.victor.timetrack.dto.response.AuthResponse;
 import com.victor.timetrack.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(authService.login(request));
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        return ResponseEntity.ok(authService.login(request,httpRequest.getRemoteAddr()));
     }
 }

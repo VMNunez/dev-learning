@@ -1,9 +1,0 @@
-# Coverage prompt — last run self-report
-
-**Date:** 2026-07-13 · **Target:** TOPIC = Spring Boot, NOTES_PATH = notes/spring-boot/ (third update of the same file, first run of the reverted-then-refined prompt: uncapped fan-out + concepts-only rule, no purpose-filter section)
-
-1. **Plan vs reality** — The refined design worked: five subagents (Sonnet market analyst + four Opus angles) ran in parallel and returned on-format. The market analyst confirmed zero market gaps for the third consecutive run. The four angles proposed ~30 gaps against a file the same fan-out had already hardened this morning; 21 survived the generator's filter — mostly a genuinely new surface (bootstrap/config *mechanics*: classpath root, relaxed binding, `.m2`, GAV, `-parameters`, Surefire naming) that this morning's angles had expressed as *method* items and today's concepts-only briefs expressed as studyable concepts. That is direct evidence the concepts-only rewrite of angles 3–4 changed the output shape, not just the filtering.
-2. **Report discipline** — Clean. All five returned section-tagged item lists with their own "OUT — post-junior" splits; no code dumps, no conduct items. The design angle explicitly declined to re-propose material already demoted to future-learning.
-3. **Failures & retries** — None; all five completed first try.
-4. **Rule friction** — None material. The don't-re-litigate rule paid off (5 proposed gaps were already deliberate future-learning entries and were dropped without debate). The new UTF-8 warning in Step 4b was followed via a bash/awk whole-section rebuild; the byte-diff verification passed first try with zero mojibake. One borderline call the prompt left to judgement, resolved without friction: `Optional`-as-field routed to Java ownership.
-5. **Verdict** — Pipeline clean; the concepts-only briefs and the Windows encoding warning are both validated on their first outing. No change proposed.
