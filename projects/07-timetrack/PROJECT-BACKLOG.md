@@ -30,7 +30,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — Fill or delete the Spring Initializr scaffold metadata still in `pom.xml`: empty `<name/>`, `<description/>`, and empty `<licenses>`, `<developers>`, `<scm>` blocks. It is the first thing a reviewer opening the build file sees *(Effort: Small)*
 - [ ] **[Low]** `[backend]` — Fix the `### DTO boundary` snippet in `backend/README.md`, which shows `new ProjectResponse(...)` with an all-args constructor the `@Data`-only DTO does not declare; the real `toResponse` is setter-based *(Effort: Small)*
 
 ### Frontend
@@ -137,6 +136,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 - 2026-07-08 · **[Medium]** `[backend]` — `GET /api/projects` filtered by role (active-only for employees) → already in README, PROGRESS
 
 #### Low
+
+- 2026-08-29 · **[Low]** `[backend]` — `pom.xml` declares a real `name` and `description`; the empty `url`, `licenses`, `developers` and `scm` blocks deleted → coverage java/junior (new "Project metadata in `pom.xml`" bullet, marked ✅ 07-timetrack); README n/a — build-file hygiene is not a Key pattern; PLANNING §0 + §22 Lows count. Verified with `./mvnw.cmd -q validate` (exit 0). The file was also reindented from tabs to 4 spaces in the same commit. `/notes-plan java junior` owed
 
 - 2026-08-28 · **[Low]** `[backend]` — `TimeEntryService.delete` hands the repository the entry it already loaded, and `TimeEntrySpecifications` declares a private constructor; the third item, renaming `findByFilter` to `getAll`, is dropped — DECISION, no code change, because `ReportController`'s three list endpoints already establish that a list method is named for what it does when it is not a plain "all" → coverage spring-boot/junior (new "`delete(entity)` vs `deleteById(id)`" bullet) + java/junior (new "Non-instantiable utility classes" bullet), both marked ✅ 07-timetrack; backend README Key patterns; PLANNING §6 repository rule, §15 `deleteById` mention corrected, §0 and §22 counts. Verified with 5 manual checks: create DRAFT, `DELETE` → 204, absent from the list, `DELETE` on a SUBMITTED entry → 409, and the entry intact afterwards
 - 2026-08-28 · **[Low]** `[backend]` — `JwtUtil` and `SecurityConfig` take their three `@Value` values as `final` constructor parameters → coverage spring/junior ("Constructor injection") + spring-boot/junior ("`@Value` vs `@ConfigurationProperties`"), both already marked ✅ 07-timetrack; global README `@Value` bullet and backend README `Constructor injection` Key pattern corrected (no longer say "field"); PLANNING §6 rule widened to any method + §0 Lows count. Verified with 5 manual checks: `dev` boot, login (HS384 token, 1 h expiry), `GET /api/users` with Bearer, CORS preflight from `:4200` (200 + `Allow-Origin`) and from `:9999` (403, no header)
