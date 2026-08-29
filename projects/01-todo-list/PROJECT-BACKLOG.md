@@ -17,7 +17,6 @@
 
 ### Low
 
-- [ ] `[frontend]` Reconcile routing with the plan — `app.config.ts` provides `provideRouter` and the shell uses `RouterOutlet`, but PLANNING.md says "No routing — single page". Either drop the router and render `TodoPage` directly, or update PLANNING.md. *(Effort: S)*
 - [ ] `[frontend]` `app.css` is empty — drop the unused `styleUrl` reference. *(Effort: S)*
 - [ ] `[frontend]` Delete the leftover CLI scaffold `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'` that no longer exists (`app.html` renders only `<router-outlet />`). Not a test gap (see the note above), just dead scaffold. *(Effort: S)*
 
@@ -38,6 +37,7 @@
 
 #### Low
 
+- 2026-08-29 · **[Low]** `[frontend]` — single `''` route documented as a deliberate bootstrap choice — DECISION, no code change → resuelto en 35fc3516; README Architecture decisions, PLANNING Tradeoffs
 - 2026-08-29 · **[Low]** `[frontend]` — dead `align-items` dropped from a non-flex `<span>` → README What I learned, coverage css/junior
 - 2026-08-29 · **[Low]** `[frontend]` — unreachable `default:` dropped so the `Filter` switch is exhaustive → README What I learned, coverage typescript/junior
 - 2026-08-29 · **[Low]** `[frontend]` — `&&` short-circuit-as-statement replaced by a guard clause in `TaskForm.submit()` → coverage javascript/junior
