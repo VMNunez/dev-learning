@@ -146,8 +146,13 @@ Entities never leave the service layer. Every endpoint receives a request DTO an
 ```java
 // Entity → DTO mapping in one private method, reused across all service methods
 private ProjectResponse toResponse(Project project) {
-    return new ProjectResponse(project.getId(), project.getName(),
-            project.getDescription(), project.isActive(), project.getCreatedAt());
+    ProjectResponse response = new ProjectResponse();
+    response.setId(project.getId());
+    response.setName(project.getName());
+    response.setDescription(project.getDescription());
+    response.setActive(project.isActive());
+    response.setCreatedAt(project.getCreatedAt());
+    return response;
 }
 ```
 
