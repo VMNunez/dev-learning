@@ -21,6 +21,11 @@ component/service split is correct; the gaps are all in input handling at the se
 - [ ] `[frontend]` Add the `transition` + `transform: scale()` hover effect from PLANNING.md's key-patterns table —
       it is the one planned concept with no trace in the code (no `transition` or `scale` anywhere in the CSS).
       — *effort: 15 min*
+- [ ] `[frontend]` The README Tradeoffs section claims "Single component over split components", but the project
+      ships four (`weather-page` plus `weather-form`, `weather-card`, `weather-forecast`) and PLANNING's "Pages and
+      components" section plans exactly that split — so the bullet documents a decision the project never took, on
+      the file a recruiter reads first. Replace it with a tradeoff the project did make. — *effort: 10 min*
+      *(raised 2026-08-29 while closing the search-input tasks)*
 
 ## Low
 
