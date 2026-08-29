@@ -74,12 +74,16 @@ sub-concept); a sentence explaining how to read every table; exact error message
   prefix is the only shared part; technical proper names with no Spanish equivalent (`maven`, `enums`,
   `streams`, `lambdas`) keep theirs. A new section added → write it in `en/`, then re-sync `es/`.
 - **Resolving a TODO runs in the direction of the file that carries it** — the one operation that
-  overrides the canonical-source rule above (given 2026-08-20). A TODO Victor wrote in `es/` is
+  overrides the canonical-source bullet at the top of this step (given 2026-08-20). A TODO Victor wrote in `es/` is
   resolved **in `es/`**, in Spanish, applying his instruction as written; only then is the updated
   `es/` file translated back into `en/`. A TODO in `en/` is resolved in `en/`, then translated into
   `es/`. Never route an `es/` TODO through English first — his TODOs are usually corrections to the
   Spanish prose itself ("no uses esa palabra", "esa frase está mal expresada"), and rewriting in
-  English and re-translating discards the exact wording he asked for.
+  English and re-translating discards the exact wording he asked for. **This bullet is the one in this
+  step that is family-generic**: it governs an interview-prep Q&A TODO exactly as it governs a note
+  (`_interview-prep-standard.md` → *The bilingual en/es contract*, 2026-08-29), and there it narrows
+  the same canonical-source default the first bullet states. The bullets around it — number-prefixed
+  Spanish filenames, the plan, the trims — are notes-shaped and do not transfer.
 - **Intentional trims are made in `en/`.** If Victor cut something from `es/` (e.g. JS filler — never
   add those, see the no-JS-filler rule), do not restore it; remove it from `en/` too so it stays gone.
   Never re-add to `es/` content that is absent from `en/`.
@@ -190,8 +194,16 @@ Interview-prep has no per-file plan. Existing topic banks may still receive inli
 interview standard. Allocate the next stable bilingual question ID; every new question is unrefined.
 Only Victor's explicit confirmation may append `[refined]` in both languages. Once present, the whole
 bilingual block is immutable. A TODO on that block or an explicit reopen first removes `[refined]` and
-`[studied]` from both languages, then permits the edit; the changed version must be refined and studied
-again. The 13:30 closing ritual, not this writer, owns `[studied]` after a final active-recall PASS.
+`[studied]` from both languages, then permits the edit — which runs in the direction of the file
+carrying the marker, resolved in the language it was written in and the twin re-translated from the
+repaired side (Step 3); the changed version must be refined and studied again. The 13:30 closing
+ritual, not this writer, owns `[studied]` after a final active-recall PASS.
+
+**This route owes the same report the frozen-note route owes, and for the same reason: it has no cold
+reviewer and no diff gate.** Quote the instruction you acted on (the `TODO:` text, or Victor's words in
+chat), name the question ID and the side you repaired, state that the twin was re-translated from that
+side and not from the stale English, and — where the block was `[refined]` — that both markers came off
+both languages first. Write it even when the fix was one word.
 Once you have appended `[refined]` to a question in both languages, **invoke the
 `authoring-progress-recount` skill** with that bank's level. It owns the two interview rows end to end,
 it commits `PROGRESS.md`, and you neither count nor edit them here. Do not reproduce its counting. One

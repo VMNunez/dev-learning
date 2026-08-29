@@ -81,7 +81,7 @@ service, so the "schema" lives entirely in the type.
 
 | Field | TS type | Constraints | Notes |
 |---|---|---|---|
-| `id` | `number` | required, unique | Generated client-side with `Date.now()`; enough for an in-memory list, and the field a real backend would own |
+| `id` | `number` | required, unique | Generated in the service with a private counter (`nextId++`); `Date.now()` cannot be used because two tasks created within the same millisecond would share a value. The field a real backend would own with a sequence |
 | `title` | `string` | required, non-empty after `trim()` | The form rejects whitespace-only input before calling the service |
 | `completed` | `boolean` | required, defaults to `false` on create | A two-state flag, not a status enum — see the tradeoff below |
 

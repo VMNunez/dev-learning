@@ -5,6 +5,8 @@ import type { Task } from '../models/task.model';
   providedIn: 'root',
 })
 export class TaskService {
+  private nextId = 4;
+
   tasks = signal<Task[]>([
     { id: 1, title: 'Learn Angular', completed: false },
     { id: 2, title: 'Build a to-do app', completed: false },
@@ -12,7 +14,7 @@ export class TaskService {
   ]);
 
   addTask(title: string): void {
-    const newTask = { id: Date.now(), title, completed: false };
+    const newTask = { id: this.nextId++, title, completed: false };
     this.tasks.update((tasks) => [...tasks, newTask]);
   }
 

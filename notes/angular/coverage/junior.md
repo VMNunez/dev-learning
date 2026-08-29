@@ -9,6 +9,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure ✅ 01-todo-list
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
+- Key event modifiers — filter a keyboard event in the binding itself with `(keyup.enter)` rather than inspecting the event object in the component, so the template states which keystroke it handles ✅ 01-todo-list — `task-form.html` binds `(keyup.enter)="submit(taskInput)"` on the input so Enter and the button click reach one handler
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
 - `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
@@ -16,6 +17,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
 - `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
+- `@empty` — attach a collection's empty case to the loop instead of a sibling condition, and recognise that it reports only that the loop's own expression rendered nothing, so a filtered list must consult its unfiltered source to say why it is empty ✅ 01-todo-list — `task-list.html` nests `@if (totalCount() === 0)` inside `@empty` so a filtered miss and an empty list read differently
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions ✅ 03-expense-tracker
 - Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
@@ -150,6 +152,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
 - HTTP error tests — flush an error response and assert the service's observable or state follows the documented failure path
 - `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction
+- `componentRef.setInput()` — supply a required input from a test before the first change detection, because a component contract that a parent normally satisfies is the test harness's responsibility once the component is mounted alone ✅ 01-todo-list — `task-item.spec.ts` feeds the `input.required<Task>()` through `componentRef.setInput` before `whenStable()`, where the render previously threw NG0950
 
 ## Debugging and maintained-code navigation
 

@@ -43,7 +43,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Lexical scope and shadowing — resolve a name from its nearest enclosing scope and avoid hiding an outer binding accidentally
 - Hoisting — predict the different pre-declaration behaviour of function declarations, `var`, and lexical declarations
 - Temporal Dead Zone — recognise why reading a `let` or `const` binding before its declaration throws
-- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow
+- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow ✅ 01-todo-list — `TaskForm.submit()` returns early on an empty trimmed title instead of nesting the service call in an `if`
 - `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code ✅ 01-todo-list
 - Classic `for` loop — use explicit initialisation, condition, and update when index or irregular stepping control is required
 - `while` vs `do...while` — choose whether the condition must be checked before the first iteration or after one guaranteed execution

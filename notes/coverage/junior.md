@@ -14,6 +14,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure ✅ 01-todo-list
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
+- Key event modifiers — filter a keyboard event in the binding itself with `(keyup.enter)` rather than inspecting the event object in the component, so the template states which keystroke it handles ✅ 01-todo-list — `task-form.html` binds `(keyup.enter)="submit(taskInput)"` on the input so Enter and the button click reach one handler
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
 - `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
@@ -21,6 +22,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
 - `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
+- `@empty` — attach a collection's empty case to the loop instead of a sibling condition, and recognise that it reports only that the loop's own expression rendered nothing, so a filtered list must consult its unfiltered source to say why it is empty ✅ 01-todo-list — `task-list.html` nests `@if (totalCount() === 0)` inside `@empty` so a filtered miss and an empty list read differently
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions ✅ 03-expense-tracker
 - Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
@@ -155,6 +157,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
 - HTTP error tests — flush an error response and assert the service's observable or state follows the documented failure path
 - `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction
+- `componentRef.setInput()` — supply a required input from a test before the first change detection, because a component contract that a parent normally satisfies is the test harness's responsibility once the component is mounted alone ✅ 01-todo-list — `task-item.spec.ts` feeds the `input.required<Task>()` through `componentRef.setInput` before `whenStable()`, where the render previously threw NG0950
 
 ### Debugging and maintained-code navigation
 
@@ -818,6 +821,11 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   cursor contract instead of assuming every list is safely returned at once ✅ 07-timetrack
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
   unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
+- Generated identity — an identifier must come from a source that guarantees uniqueness by
+  construction, such as a database sequence, a counter owned by the single writer of the collection, or
+  a random identifier wide enough that collisions are negligible; a clock reading is not one, because
+  every record created inside the same tick receives the same value, and any later operation that
+  locates a record by its identifier then acts on all of them at once ✅ 01-todo-list — `TaskService` owns a private `nextId` counter and stamps each new task with `nextId++`, so `toggleTask` and `deleteTask`, which `map`/`filter` over every match, and the `@for ... track task.id` in `task-list.html` can never resolve to two rows
 
 ### Presentation boundaries
 
@@ -1247,7 +1255,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
 - User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
-- Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows
+- Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
 
 ### Null safety and assertions
@@ -1339,7 +1347,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Lexical scope and shadowing — resolve a name from its nearest enclosing scope and avoid hiding an outer binding accidentally
 - Hoisting — predict the different pre-declaration behaviour of function declarations, `var`, and lexical declarations
 - Temporal Dead Zone — recognise why reading a `let` or `const` binding before its declaration throws
-- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow
+- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow ✅ 01-todo-list — `TaskForm.submit()` returns early on an empty trimmed title instead of nesting the service call in an `if`
 - `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code ✅ 01-todo-list
 - Classic `for` loop — use explicit initialisation, condition, and update when index or irregular stepping control is required
 - `while` vs `do...while` — choose whether the condition must be checked before the first iteration or after one guaranteed execution
@@ -1511,6 +1519,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Flex sizing — explain how `flex-basis`, `flex-grow`, and `flex-shrink` negotiate an item's size and read the `flex` shorthand without assuming `flex: 1` means only “take remaining space” ✅ 01-todo-list
 - Per-item alignment — override the container's cross-axis alignment for one item with `align-self`
 - `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
+- Container properties vs item properties — `justify-content`, `align-items`, `gap` and `flex-wrap` are read only by an element whose own `display` is `flex` or `grid`, while `align-self`, `order` and the `flex` shorthand belong to its children; an alignment property declared on any other element is parsed into the computed style and then silently ignored, so a dead rule produces no error and is only caught by reading that element's `display` ✅ 01-todo-list — in `task-item.css` the alignment properties appear only on `.task-item`, the one rule that declares `display: flex`; the `.task-title` span carries none
 - `margin: auto` on flex items — absorb available space on the selected side to separate an item without adding a wrapper element
 - Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
 

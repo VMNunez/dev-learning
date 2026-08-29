@@ -10,7 +10,11 @@ import { TaskService } from '../../services/task.service';
 export class TaskForm {
   private taskService = inject(TaskService);
 
-  addTask(title: string) {
-    title.trim() && this.taskService.addTask(title.trim());
+  submit(input: HTMLInputElement) {
+    const title = input.value.trim();
+    if (!title) return;
+
+    this.taskService.addTask(title);
+    input.value = '';
   }
 }

@@ -755,6 +755,17 @@ market-selected Q&A with `interview-prep-audit`, then build the cross-topic CORE
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
 - Every new question is unrefined. Victor explicitly adds `[refined]` only after accepting it; no
   writer may alter a refined block or infer that state from quality.
+- **A `TODO:` is resolved in the language of the file that carries it** (2026-08-29) — the same rule
+  the bilingual notes section states, now written into `_interview-prep-standard.md` for the Q&A
+  family. A marker in `es/` is answered in Spanish, in his words, and the `en/` twin is re-translated
+  from that; a marker in `en/` runs the other way. `en/` stays master of record for the question's
+  identity and structure and stops deciding repair direction, so a sync never restores the English
+  over an `es/`-side repair. On a `[refined]` question the marker is the reopening: both state markers
+  come off both languages first, and the twin's re-translation belongs to that same reopening.
+  **That last half is where the two families deliberately differ** — a TODO costs a `refined` *note*
+  nothing (`Status` and `Studied` both survive, see the bilingual notes section above), while it costs
+  a refined *question* both markers, because a question is one atomic block a correction replaces
+  whole and a note is many sections of which a TODO touches one.
 
 ### Study state and the 13:30 closing ritual
 
