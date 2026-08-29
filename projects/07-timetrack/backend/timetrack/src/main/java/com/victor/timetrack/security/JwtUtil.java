@@ -14,35 +14,40 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    @Value("${app.jwt.secret}")
-    private String secret;
+    private final String secret;
+    private final long expiration;
 
-    @Value("${app.jwt.expiration}")
-    private long expiration;
+    public JwtUtil(@Value("${app.jwt.secret}") String secret,
+                   @Value("${app.jwt.expiration}") long expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+    }
 
-    public String generateToken(String username) {
+    public String generateToken(Long userId) {
         return Jwts.builder()
-                .subject(username)
+                .subject(String.valueOf(userId))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
-
     }
 
-    public String extractUsername(String token){
-        return parseClaims(token).getSubject();
+    public Long extractUserId(String token) {
+        return Long.valueOf(parseClaims(token).getSubject());
     }
 
-    public boolean isValid(String token,String email){
-        try{
-            return extractUsername(token).equals(email);
-        } catch (JwtException e){
+    public boolean isValid(String token, Long userId) {
+        try {
+            Claims claims = parseClaims(token);
+
+            return claims.getSubject().equals(String.valueOf(userId))
+                    && claims.getExpiration().after(new Date());
+        } catch (JwtException e) {
             return false;
         }
     }
 
-    private Claims parseClaims(String token){
+    private Claims parseClaims(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()

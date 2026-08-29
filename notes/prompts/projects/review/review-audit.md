@@ -1,6 +1,8 @@
 # Review audit — the single entry point for reviewing a project
 
-Run this **inside Claude Code**. It is the only review-audit prompt Victor launches. It reviews a
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+Run this **inside the supported agent runtime**. It is the only review-audit prompt Victor launches. It reviews a
 **built** project against the contract its own `PLANNING.md` set — code quality, correctness, security,
 and tests — and writes a prioritized list of improvement tasks to `{PROJECT_PATH}/PROJECT-BACKLOG.md`.
 That backlog is what `portfolio-audit` reads for its go/no-go verdict, so a security hole found here
@@ -23,21 +25,25 @@ fixes everything himself to learn.**
 > **▶ Run first:** nothing — it reads `PLANNING.md` and the source, not the README. (`readme-audit`
 > is a prerequisite of `portfolio-audit`, which reads the READMEs — not of this review.)
 
+> **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
+
 **Internal pieces this orchestrates** (you never launch these directly):
-`_review-standard.md` (the bar — all the checklists) · `review-flow-prompt.md` (per-slice functional
-reviewer: quality + correctness + tests) · `review-security-prompt.md` (per-slice attacker pass,
+`_review-standard.md` (the bar — all the checklists) · `_review-flow-prompt.md` (per-slice functional
+reviewer: quality + correctness + tests) · `_review-security-prompt.md` (per-slice attacker pass,
 full-stack only).
 
-> **Not auto-committed — by design.** This writes `PROJECT-BACKLOG.md` inside the project folder, which
-> follows the project's **feature-branch → PR → main** workflow. The orchestrator writes the backlog to
-> the working tree and **hands Victor the commit command** — it never commits for him. There is no
-> `DRY_RUN`.
+> **The orchestrator commits the backlog itself.** `PROJECT-BACKLOG.md` is written by this pipeline and
+> by the two backlog skills, never by Victor, so it auto-commits in any flow (shared session rules,
+> authorized 2026-07-29). It is a **docs** commit on the **active branch** — it still follows the
+> project's **feature-branch → PR → main** workflow and never lands on `main` directly, and the
+> "Victor makes code commits himself" rule is untouched. Separate from the Step 6 self-report commit.
+> There is no `DRY_RUN`.
 
 ---
 
 ## How to use — recipes
 
-Open a fresh chat **inside Claude Code**, paste the whole prompt below, fill only the config block, and
+Open a fresh chat **inside the supported agent runtime**, paste the whole prompt below, fill only the config block, and
 let it run. Pick the recipe:
 
 **A · Review one project**
@@ -59,15 +65,15 @@ REVIEW_SCOPE = backend
 **Rules of thumb:**
 - `REVIEW_SCOPE` defaults to `full`. Use `backend` / `frontend` when the whole-project run is too long —
   a partial run only touches its own tier's backlog tasks and only refreshes its own tier's
-  "Last Reviewed" date, so the other tier still shows as stale (or `never`) until you review it.
+  "Last Reviewed" date, so the other tier still shows as unreviewed (or `never`) until you review it.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The project type is derived from the path — do not set it.
 - Angular projects 01–06 are frontend-only: they get the frontend flow slices, the learning-objectives
   pass, their own `PROJECT-BACKLOG.md` and a commit — but no security pass (no backend to attack).
-- **After the run:** commit the backlog with the command the orchestrator hands you, then in your next
-  main session just say the review ran — Claude reads the auto-committed
-  `projects/review/_last-run-report.md` (Step 6) and tells you whether these prompts need a change
-  (they stay frozen unless that report shows a real failure).
+- **After the run:** nothing to commit by hand — the orchestrator commits the backlog and, separately,
+  its self-report. In your next main session just say the review ran: the coding agent reads
+  `projects/review/_internal/_last-run-report.md` (Step 6) and tells you whether these prompts need a
+  change (they stay frozen unless that report shows a real failure).
 
 ---
 
@@ -77,14 +83,16 @@ REVIEW_SCOPE = backend
 PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | all]
 REVIEW_SCOPE = [full | backend | frontend]
 
-## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_batch-mode.md.
+## PROJECT_PATH = all runs the review on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
-## The 30-day "Last Reviewed" gate applies per full-stack project — recently reviewed ones are skipped.
+## The per-tier unreviewed-code gate applies to every project — on 01–06 that is the `frontend` line. It
+## stops and offers FORCE on every 01–06 project today: neither signal can fire in that older format.
 ##
 ## REVIEW_SCOPE limits the review to one tier so a big project can be split across sessions instead of
-## one long run. Default = full. `backend` runs only Steps 1–2; `frontend` runs only Step 3; both skip
-## the whole-project learning-objectives pass (Step 4) and touch only their own tier's backlog tasks
+## one long run. Default = full. `backend` runs Steps 1–2 + 3b; `frontend` runs Step 3 + 3b — Step 3b is
+## a **per-tier** step, not a frontend one, and runs on every scope. Both partial scopes skip the
+## whole-project learning-objectives pass (Step 4) and touch only their own tier's backlog tasks
 ## (see Step 5). Angular 01–06 are frontend-only regardless — `backend` on them is a no-op.
 
 Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}, and REVIEW_SCOPE wherever it refers to
@@ -93,37 +101,46 @@ Use PROJECT_PATH wherever the prompt refers to {PROJECT_PATH}, and REVIEW_SCOPE 
 ---
 
 You are the orchestrator for reviewing Victor's projects. First read
-`notes/prompts/projects/review/_review-standard.md` so you know the bar, the gate, the priority rules,
+`notes/prompts/projects/review/_internal/_review-standard.md` so you know the bar, the gate, the priority rules,
 and the backlog format. Then run the procedure below. You stay light: the slice reviewers read the
 source and hand you back findings tables — you map the slices and merge. You never read the full source
 yourself.
 
 ## If PROJECT_PATH = all
-Per `notes/prompts/_batch-mode.md`, expand `all` into the ordered project list from the config block and
+Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
 each project's report under a `### [project]` heading, and after the last print this pipeline's own
 summary table (`Project | Quality | High | Medium | Low` — a deliberate override of `_batch-mode.md`'s
-generic `Target | Result | Files changed`). **Once a project's backlog is written, drop
+generic `Target | Result | Files changed`).
+**Step 6 is the exception to "once per project."** It is the run-level close-out, not part of the
+per-target procedure, so it runs **once, after the last project** — one report, one `_run-tracker.md`
+update setting the cell of every project this run actually finished, one commit. Only Steps 0–5 repeat. `_batch-mode.md` →
+"The run-level close-out is not part of step 2's 'entire procedure'" owns the rule.
+**Once a project's backlog is written, drop
 its slice tables from your working state** — carry forward only its summary row; the detail lives in
 its `PROJECT-BACKLOG.md`. This keeps a 7-project run from drowning your context in stale findings. Otherwise, follow the procedure once.
 
 ## Single-project procedure
 
 ### Step 0 — Gate and map the slices (orchestrator)
-Derive the project type from the path. **Full-stack:** apply the standard's **per-tier 30-day gate**
-against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — backend:**` /
-`**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. If every
-tier in scope was reviewed < 30 days ago, stop and offer FORCE; if only some are fresh, continue with
-the stale/`never` ones and say which you are skipping. A missing backlog = never reviewed → continue.
-**Before you gate on the date, apply the standard's "the gate measures unreviewed code, not elapsed
-time" rule** — if a tier has completed a step since its last review, it holds code no reviewer has seen,
-and the 30-day window does not apply to it. Check the ✅ steps against the tier's date first; only gate
-on the date when the tier has gained no step.
+Derive the project type from the path. **Full-stack:** apply the standard's **per-tier unreviewed-code
+gate** against `{PROJECT_PATH}/PROJECT-BACKLOG.md` — read its `**Last Reviewed — backend:**` /
+`**Last Reviewed — frontend:**` lines and gate **only the tiers {REVIEW_SCOPE} will review**. A missing
+backlog, an absent header, a tier line reading `never`, or one whose date carries the standard's
+`(incomplete — …)` qualifier → continue. **What decides is whether the tier
+gained code, never how old the date is. Two signals, either one enough:** a **✅ step** completed after that date, and **backlog tasks
+closed after it** (the `## Closed` ledger's dated lines for that tier). The fix campaign this pipeline's
+own output generates moves no step, so the ✅ marks alone cannot see it. If either fired, continue
+however recent the date is; if neither did, stop and offer FORCE, naming both signals and the days
+since. Always report the days since. If the gate stops only some of the tiers in scope, continue with
+the rest and say which you are skipping and why.
 Then **map the review slices** — this is light structural work (you list slices, you do not review code).
 
 **Apply {REVIEW_SCOPE} first — map only the tiers it names:**
-- `backend` → map only the backend slices; skip the frontend map and Steps 3–4.
-- `frontend` → map only the frontend slices; skip the backend map and Steps 1–2 and 4.
+- `backend` → map only the backend slices; skip the frontend map, Step 3 and Step 4 — but **not Step
+  3b**, which is per-tier, not frontend, and runs on every scope (on Angular 01–06 there is no backend
+  tier, so `backend` stays a no-op).
+- `frontend` → map only the frontend slices; skip the backend map, Steps 1–2 and Step 4; Step 3b runs.
 - `full` (default) → map both tiers and run every step.
 
 Slices, per tier:
@@ -150,7 +167,7 @@ backlog. The standard's scope limit already forbids this; Step 0 is where it bec
 Step 0 is the only place that knows which steps are done.
 
 **Tests are part of that exclusion, and it is derived from the project number — not from the ✅ marks.**
-Per CLAUDE.md ("Testing rules"), testing enters the roadmap at **project 07** (services: JUnit/Jasmine)
+Per the shared session rules ("Testing rules"), testing enters the roadmap at **project 07** (services: JUnit/Jasmine)
 and **project 08** (components: TestBed). So:
 - **Projects 01–06:** tests are **out of scope entirely**. Their `.spec.ts` files are untouched Angular
   CLI scaffold — empty `should create` assertions are the expected state, not a gap.
@@ -170,7 +187,8 @@ to 06 will reproduce those three false Highs unless this line is passed down.
 
 **Angular 01–06** are **frontend-only**, not informational: map **frontend feature slices +
 `frontend-infra`**, skip Steps 1–2 (there is no backend, so no backend flow and **no security pass**),
-and run Steps 3, 4 and 5 in full — including writing `PROJECT-BACKLOG.md` and handing over the commit.
+and run Steps 3, 4 and 5 in full — including writing `PROJECT-BACKLOG.md` and **committing it yourself**,
+exactly as on a full-stack project (this pipeline never hands that commit over — see Step 5).
 Gate them on the `frontend` line only; their backlog's backend line stays `n/a — Angular-only`, and
 every task is tagged `[frontend]`. **Full-stack:** run every step.
 
@@ -182,38 +200,38 @@ every task is tagged `[frontend]`. **Full-stack:** run every step.
 
 ### Model policy — per slice, to protect the findings that matter while saving tokens
 Pass an explicit `model` override on every dispatch, matched to how much deep reasoning the slice needs.
-**Finding a correctness bug or a vulnerability is generative, adversarial reasoning → Opus; checking
-structure/patterns against a fixed checklist is verification → Sonnet (~1/5 the cost).** The backend is
+**Finding a correctness bug or a vulnerability is generative, adversarial reasoning → deep-reasoning; checking
+structure/patterns against a fixed checklist is verification → standard-reasoning (~1/5 the cost).** The backend is
 where a missed bug is costly and where a weak model skims past subtle flaws — so it never drops below
-Opus. Frontend flow and the learning-objectives pass are largely structural verification and ride Sonnet.
+deep-reasoning. Frontend flow and the learning-objectives pass are largely structural verification and ride standard-reasoning.
 
 | Role | `model:` | Why |
 |------|----------|-----|
-| **Orchestrator (this context / session)** | **Opus** | It maps the slices, dedups across them, and word-crafts each backlog task with its priority. Run the session on Opus. |
-| **Step 1 — backend flow (per resource)** | **`opus`** | Correctness on the real path: N+1, transaction boundaries, §8 business rules — the subtle bugs a lighter model misses. |
-| **Step 1 — backend security (per resource)** | **`opus`** | Adversarial hunt for authz/ownership/injection/exposure — the review's analog of coverage's Analyst C; never drop it. |
-| **Step 2 — persistence-config flow** | **`opus`** | Datasource/transactions/fetch/N+1 — subtle backend correctness, same bar as Step 1 flow. |
-| **Step 2 — security-infra** | **`opus`** | SecurityConfig, JWT filter, CORS, hashing, secrets — the highest-stakes attack surface. |
-| Step 3 — frontend flow (per feature + frontend-infra) | `sonnet` | Component/service split, subscription cleanup, validation timing, tests — structural pattern-matching, lower stakes. |
-| Step 3b — cross-slice consistency (per tier) | `sonnet` | Comparing slices against a fixed list of axes — verification, not generation. |
-| Step 4 — learning-objectives | `sonnet` | Locate each concept and mark ✅/⚠️/❌ against the rubric — verification, not generation. |
+| **Orchestrator (this context / session)** | **deep-reasoning** | It maps the slices, dedups across them, and word-crafts each backlog task with its priority. Run the session on deep-reasoning. |
+| **Step 1 — backend flow (per resource)** | **`deep`** | Correctness on the real path: N+1, transaction boundaries, §8 business rules — the subtle bugs a lighter model misses. |
+| **Step 1 — backend security (per resource)** | **`deep`** | Adversarial hunt for authz/ownership/injection/exposure — the review's analog of coverage's Analyst C; never drop it. |
+| **Step 2 — persistence-config flow** | **`deep`** | Datasource/transactions/fetch/N+1 — subtle backend correctness, same bar as Step 1 flow. |
+| **Step 2 — security-infra** | **`deep`** | SecurityConfig, JWT filter, CORS, hashing, secrets — the highest-stakes attack surface. |
+| Step 3 — frontend flow (per feature + frontend-infra) | `standard` | Component/service split, subscription cleanup, validation timing, tests — structural pattern-matching, lower stakes. |
+| Step 3b — cross-slice consistency (per tier) | `standard` | Comparing slices against a fixed list of axes — verification, not generation. |
+| Step 4 — learning-objectives | `standard` | Locate each concept and mark ✅/⚠️/❌ against the rubric — verification, not generation. |
 
-Never drop the backend flow or any security slice below Opus (those are the passes that catch the bugs
-and holes that block portfolio-ready), and never drop the orchestrator below Opus (it writes the
-backlog). If Victor asks for maximum saving, the two Sonnet slices are already the cheapest safe setting —
+Never drop the backend flow or any security slice below deep-reasoning (those are the passes that catch the bugs
+and holes that block portfolio-ready), and never drop the orchestrator below deep-reasoning (it writes the
+backlog). If Victor asks for maximum saving, the two standard-reasoning slices are already the cheapest safe setting —
 do not push backend or security down to save tokens. **Step 5 re-dispatches use the same model the
 original slice used.**
 
 ### Step 1 — Backend, one flow + one security reviewer per resource
-For **each** backend resource, dispatch two `general-purpose` subagents, `run_in_background: false`
-(flow → `model: opus`, security → `model: opus`):
+For **each** backend resource, dispatch two `role-appropriate` subagents, `execution: foreground`
+(flow → `reasoning tier: deep`, security → `reasoning tier: deep`):
 
-> **(flow)** Read `notes/prompts/projects/review/review-flow-prompt.md` and execute it for
+> **(flow)** Read `notes/prompts/projects/review/_internal/_review-flow-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `TIER = backend`, `SCOPE = «resource»`. Trace the resource's full
 > `model → repository → service → controller → DTO → tests` flow and return its findings table + trace.
 > **Do not edit any file, do not write the backlog, do not commit.**
 
-> **(security)** Read `notes/prompts/projects/review/review-security-prompt.md` and execute it for
+> **(security)** Read `notes/prompts/projects/review/_internal/_review-security-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SCOPE = «resource»`. Hunt each of that resource's endpoints for
 > authorization/ownership/injection/data-exposure flaws and return its findings table + trace. **Do not
 > edit any file, do not commit.**
@@ -221,28 +239,31 @@ For **each** backend resource, dispatch two `general-purpose` subagents, `run_in
 Collect every table.
 
 ### Step 2 — Backend, cross-cutting reviewers
-Dispatch (both `model: opus`):
-> **(flow)** `review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
+Dispatch (both `reasoning tier: deep`):
+> **(flow)** `_review-flow-prompt.md` with `TIER = backend`, `SCOPE = persistence-config` — datasource,
 > `application.properties`, transactions, fetch/N+1, docker env.
-> **(security)** `review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
+> **(security)** `_review-security-prompt.md` with `SCOPE = security-infra` — SecurityConfig, JWT filter,
 > CORS, hashing, secrets/credentials, global exception handler.
 
 Collect both tables.
 
 ### Step 3 — Frontend, one flow reviewer per feature (+ frontend-infra)
-For **each** frontend feature, and once for `frontend-infra`, dispatch (`model: sonnet`):
-> `review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
-> service split, types, state, subscription cleanup, validation timing, and that slice's tests.
+For **each** frontend feature, and once for `frontend-infra`, dispatch (`reasoning tier: standard`):
+> `_review-flow-prompt.md` with `TIER = frontend`, `SCOPE = «feature»` (or `frontend-infra`) — component/
+> service split, types, state, subscription cleanup, validation timing, that slice's tests, **and the
+> standard's frontend-security greps** (`[innerHTML]`, `bypassSecurityTrust*`, sensitive data in
+> `localStorage`) — on full-stack projects too: the cold security pass is backend-only, so this is the
+> only lens that ever looks at the frontend, and `frontend-infra` is where the token lives.
 
 Collect every table.
 
-### Step 3b — Cross-slice consistency pass (one subagent per tier)
+### Step 3b — Cross-slice consistency pass (one subagent per tier — runs on every {REVIEW_SCOPE})
 The one reviewer allowed to look **across** slices — because consistency is a property *between* them and
 a slice reviewer structurally cannot see it. It reads **narrowly and widely**: only the axes below, over
 every feature of the tier, never the full code. Run it for each tier in {REVIEW_SCOPE} (frontend on
-Angular 01–06). Dispatch one `general-purpose` subagent, `model: sonnet`, `run_in_background: false`:
+Angular 01–06). Dispatch one `role-appropriate` subagent, `reasoning tier: standard`, `execution: foreground`:
 
-> Read `notes/prompts/projects/review/_review-standard.md` — **only** the "Pattern consistency across the
+> Read `notes/prompts/projects/review/_internal/_review-standard.md` — **only** the "Pattern consistency across the
 > project" block and the priority rules. Then, across **every** feature of `TIER = «tier»` in
 > `{PROJECT_PATH}`, compare the slices against each other on that block's axes **only** — state approach,
 > smart/dumb decomposition, persistence/side-effect mechanism, styling tokens, empty/loading/error states
@@ -262,9 +283,9 @@ which the local finding cannot.
 
 ### Step 4 — Learning-objectives pass (one subagent)
 **Skip this step entirely if {REVIEW_SCOPE} is `backend` or `frontend`** — it judges whole-project
-concept coverage and only makes sense on a `full` run. Dispatch one `general-purpose` subagent,
-`model: sonnet`, `run_in_background: false`:
-> Read `notes/prompts/projects/review/_review-standard.md` ("Learning-objectives rubric" — that section
+concept coverage and only makes sense on a `full` run. Dispatch one `role-appropriate` subagent,
+`reasoning tier: standard`, `execution: foreground`:
+> Read `notes/prompts/projects/review/_internal/_review-standard.md` ("Learning-objectives rubric" — that section
 > only) and, from `{PROJECT_PATH}/PLANNING.md`, only §3 (new concepts) / §4 (review concepts). Then
 > work **concept by concept, not file by file**: for each concept, locate where it should live with a
 > targeted search (grep for its annotation/class/pattern — e.g. `@RestControllerAdvice`,
@@ -273,15 +294,17 @@ concept coverage and only makes sense on a `full` run. Dispatch one `general-pur
 > ⚠️ Shallow / ❌ Missing with a one-line note (file:line for ✅/⚠️). Return only the table + the tally —
 > no code excerpts. **Do not edit any file.**
 
-### Step 5 — Merge into the backlog + hand over the commit (orchestrator)
+### Step 5 — Merge into the backlog + commit it (orchestrator)
 You now hold a findings table per slice (flow + security), plus the learning-objectives verdict.
 
 **First, verify coverage against your Step 0 map.** For each slice, compare the reviewer's trace with
-the files that slice owns (the flow prompt's Step 1 table / the security prompt's endpoint list): every
-owned file/endpoint must appear in the trace. A report whose trace misses part of its slice — or that
+the files that slice owns (the flow prompt's Step 1 table / the security prompt's endpoint list **and its
+file rows**): every owned file/endpoint must appear in the trace, and every file row must carry its
+line count and closing quote. A report whose trace misses part of its slice — or that
 came back with no trace at all — does **not** count as reviewed: re-dispatch that one slice once; if it
-fails again, list it as **"not reviewed"** in the chat summary and move on. Never treat a silent or
-partial report as clean.
+fails again, list it as **"not reviewed"** in the chat summary **and carry it into that tier's
+`Last Reviewed` qualifier when you stamp it below** — the summary dies with the session and the line is
+what the next run's gate reads — then move on. Never treat a silent or partial report as clean.
 
 Then merge the verified tables into one prioritized task list per the standard's
 task/priority/effort rules:
@@ -293,23 +316,88 @@ task/priority/effort rules:
 - **Deduplicate across slices** — the same business-rule gap can surface in a resource's flow, its
   security pass, and a cross-cutting slice at once; keep one task, the most specific (usually: enforce
   the rule in the service + add the test that proves it).
+- **Reconcile contradictions across slices before writing any task — dedup is not enough.** A slice
+  reviewer sees only its own files, so it can report "X is missing" when X is actually defined in a file
+  another slice owns. When two tables disagree about the same symbol — one says a class/rule/style/token
+  is absent, another says it exists and is used — you are the only one holding both, so **resolve it
+  against the real code** (one targeted grep/read of the symbol) before it reaches the backlog. Drop the
+  false half; never file a "missing X" task while another slice reports X working.
+  > On the 2026-07-16 run of 05-task-manager, the `task-page` reviewer filed "no CSS defines `.btn-danger`"
+  > (it lives in `material-theme.scss`, owned by `frontend-infra`) while the `frontend-infra` reviewer
+  > reported that same `.btn-danger` as a working scoped `mat.theme()`. Both tables were in front of the
+  > orchestrator; the false Medium still reached the backlog and was only caught on a manual spot-check.
+  > This is a structural blind spot of slicing — the orchestrator is the only reviewer positioned to catch it.
 - Turn each quality finding and each ⚠️/❌ learning-objective into a specific task with a priority and an
   effort estimate.
 - "Beyond junior scope" hardening ideas go in the chat summary, not the backlog.
 
+**Then run the level-fit pass over the merged list, per the standard's "Level fit" rules — before a
+single task is written.** You are the only reader in this pipeline positioned to do it: the slice
+reviewers read code, never the coverage files or `PROGRESS.md`. Read, once, for the whole run:
+
+- **`PROGRESS.md` §`Professional level by topic`** — where Victor stands per topic.
+- **`PROGRESS.md` §`Coverage demonstrated`** — the per-topic `Junior | Middle | Senior` percentages.
+  This is the fast read: one table gives the open gate for every topic at once. A `*` on a cell means
+  that level was never generated by the coverage pipeline, so its file is a provisional sketch — it may
+  *suggest* a level, never rule on one, and its denominator will move. Do not re-derive this from
+  `_run-tracker.md`; the asterisk already carries it.
+- `notes/prompts/_internal/_shared-context.md` — target role and timeline.
+
+Then, per task, grep its core concept through `notes/{topic}/coverage/{junior,middle,senior}.md` — the
+`✅ NN-slug — {evidence}` markers there say which bullets Victor has already applied in project code, so a concept
+whose neighbours are marked is squarely at level. (The global `notes/coverage/{LEVEL}.md` mirror carries
+the same bullets and markers; either answers the question, so read whichever you already have open.)
+**An unmarked bullet means "not yet marked", not "not covered"** — the marker went live 2026-07-30 and
+the backfill is still finishing, so absence of a ✅ is never evidence *against* a concept being at
+level.
+
+**Route each concept to its topic before grepping** — the authority is the "Topic isolation" section of
+`notes/prompts/knowledge/coverage/_internal/_coverage-standard.md` (altitude, not subject matter: the
+neutral topics own the principle, the technology topics own the mechanism). The gates differ sharply
+between topics, so a bad routing flips the verdict; when it is a close call, grep both and take the
+lower gate.
+
+Then apply the necessity test: **at level** → normal task · **above level but strictly necessary for this
+project to be correct** → keep it, tag the line `⬆ {level} — reason` · **above level and merely nice**
+→ out of `## Tasks`, into the backlog's `## Beyond the current gate` section *and* the chat summary,
+with the gate that would make it due. Necessity beats level every time; never downgrade a real defect
+to keep the list short.
+
+**Read `## Beyond the current gate` before writing anything**, alongside the `## Closed` ledger: a
+finding already parked there is not re-raised while its gate holds, and one whose gate has since moved
+leaves the section and becomes a normal task.
+
+**No secret value reaches the chat summary, the backlog, or the self-report.** Both slice reviewers cite
+a secret by location and kind only, and the flow reviewer's **secret-valued** config findings arrive as
+the key plus whether its value is a literal or an `${ENV}` reference — so an API key, password, token, connection
+string or signing secret should never reach you as a value. If one does, strip it before you write it
+anywhere: cite the file, the line and what the secret is, say it must be rotated and moved to an env var,
+and never paste the material, not even partially masked (a `7b6aec…` prefix still leaks material and
+confirms which key it is). This holds for the run's own self-report too — a reviewer that returned a raw
+value is a rule breach worth recording, and the breach is recorded by naming it, never by quoting the
+value as evidence. You commit both `PROJECT-BACKLOG.md` and that report, so a value copied into either is
+the leak it was reporting. This changes how a secret is cited, never whether it is raised.
+
 First print a brief chat summary: **Overall quality** (Strong/Good/Needs work + one sentence) · **Top
-findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Slices reviewed** (count).
+findings** (2–3) · **Learning objectives** (how many ✅/⚠️/❌) · **Slices reviewed** (count) · **Beyond
+the current gate** (how many findings the level-fit pass parked, and how many lines it graduated back
+into `## Tasks` because their gate had moved — `none` when both are zero).
 
 Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog
 format: the **per-tier "Last Reviewed" lines**, the overall quality rating, and the full task list as
-checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`). Preserve tasks already
-checked off (✅).
+checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`), and the
+`## Beyond the current gate` section for what the level-fit pass parked (same tier tag; create the
+section if missing, with a placeholder line when it is empty). Preserve tasks already checked off (✅).
 
 **Stamp today's date only on the tiers this run actually reviewed** — a `backend` run sets
 `**Last Reviewed — backend:**` to today and leaves the `frontend` line exactly as it was (a date, or
-`never`). That is what keeps a partial run from ever making an unreviewed tier look reviewed. If the
-backlog still carries the old single `**Last Reviewed:**` line, rewrite the header into the two-line
-per-tier form now (per the standard's migration note).
+`never`). That is what keeps a partial run from ever making an unreviewed tier look reviewed.
+**A tier holding a slice left "not reviewed" gets today's date plus the standard's
+`(incomplete — «slice(s)» not reviewed)` qualifier**, naming every such slice — a plain date claims
+every slice of the tier was read, and the gate above would then stop the one run that would read them.
+**A tier where *every* slice was left "not reviewed" is not a tier this run reviewed — leave its line
+exactly as it was**: overwriting it would destroy the date a real run earned and put a date on a tier
+reading `never`.
 
 **On a partial {REVIEW_SCOPE} run, only touch the reviewed tier's tasks.** A `backend` run rewrites the
 `[backend]`-tagged tasks and leaves every `[frontend]` task untouched (and vice versa) — never delete or
@@ -329,34 +417,43 @@ git commit -m "docs: review {PROJECT_PATH} — <one line summary of main finding
 ```
 
 ### Step 6 — Pipeline self-report (orchestrator, last)
-After the commit hand-over, write a short **Pipeline self-report** to
-`notes/prompts/projects/review/_last-run-report.md` (overwrite; header: date + project) — meta-
-observations about the run itself, not the code. This is the evidence a later session uses to decide
-whether these prompts need changing, so be honest, including "nothing to report":
-- **Slices mapped** — the Step 0 list, and whether any turned out wrong (missing resource, slice too
-  big/small).
-- **Report discipline** — which reviewers, if any, came back with code excerpts/narrative that had to
-  be discarded.
-- **Trace verification** — traces that failed the Step 5 check, re-dispatches made, any slice left
-  "not reviewed", any false alarm.
-- **Dedup** — how many cross-slice duplicates were merged, and whether matching them was hard
-  (a sign the business-rule-tag improvement is needed).
-- **Anything else** that made the run harder than it should be.
-- **Verdict** — one line: "pipeline clean" or "change worth considering: <what>" (the shared
-  criterion from `_pipeline-self-report.md`).
+After the backlog commit, **execute `notes/prompts/_internal/_pipeline-self-report.md` in full.** That
+file is the contract, not a summary of one: the ledger reconciliation, the `Status:` line, the five
+bullets, the close-out check against disk, the `_run-tracker.md` update, the two-file commit and its
+`git show --stat HEAD` verification, and the at-end refinement gate all apply here unchanged. This
+step only says what *this* pipeline puts in them. Write the report to
+`notes/prompts/projects/review/_internal/_last-run-report.md` (overwrite; header: date + project +
+scope + `Status:`), one line per bullet — meta-observations about the run itself, never the findings,
+which live in `PROJECT-BACKLOG.md`:
 
-Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
-directly** under the notes/prompts exception — `git status` before add and before commit, stage only
-`_last-run-report.md`, message `docs: pipeline self-report for review-audit run on {PROJECT_PATH}`
-(the shared contract's format). (The
-never-auto-commit rule below applies to `PROJECT-BACKLOG.md`, not to this file.) A later main session
-reads this file to decide if the prompts need a change — they stay frozen unless it shows a real
-failure. Also print the report in chat.
+1. **Plan vs reality** — the Step 0 slice map: any resource missed, any slice too big or too small. No
+   step in this pipeline reads the finished backlog whole, so say that in one clause and claim no more
+   than the traces prove.
+2. **Report discipline** — reviewers that came back with code excerpts or narrative that had to be
+   discarded.
+3. **Failures & retries** — traces that failed the Step 5 check, re-dispatches made, any slice left
+   "not reviewed", any false alarm.
+4. **Rule friction and rule breaches** — the shared bullet, plus what is specific here: how many
+   cross-slice duplicates were merged and whether matching them was hard, and any cross-slice
+   contradiction the Step 5 reconciliation had to resolve against real code.
+5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
+
+**The `_run-tracker.md` half is not optional, and it is the half this pipeline has always dropped.**
+Set the `review-audit` cell of this project's row in `## Per-project prompts` to today's date, with the
+scope in parentheses when partial (`2026-07-23 (backend only)`). That column sat **empty for all seven
+projects** until 2026-08-06 while four runs had written their report — the report-written /
+tracker-skipped failure the shared contract names, reproduced here because this step never mentioned
+the tracker. The cell is an **execution record, not review state** — the gate reads the backlog's
+per-tier lines and never this cell, so the two are allowed to differ without either being wrong.
+The commit carries **two** files, verified with `git show --stat HEAD`, message
+`docs: pipeline self-report for review-audit run on {PROJECT_PATH}`. It is prompt-system machinery, so
+it commits directly, always **separate** from the backlog commit. Also print the five bullets in chat.
 
 ## Hard rules
 
-- **Commit the backlog yourself** (authorized 2026-07-14 — same standing as `plan-audit` /
-  `portfolio-audit`; Victor does not want to run these by hand). It is a docs commit for a file this
+- **Commit the backlog yourself** — `PROJECT-BACKLOG.md` is written by this pipeline and the two backlog
+  skills, never by Victor, so the shared session rules have it auto-commit in any flow (authorized
+  2026-07-29, widening the 2026-07-14 pipeline-only permission). It is a docs commit for a file this
   pipeline wrote, so it does not touch the "Victor makes code commits himself" rule. `git status` before
   add and before commit; stage **only** `PROJECT-BACKLOG.md`, never a project code file that was left
   staged from an earlier step. It commits on the active branch, never on `main`. The Step 6
@@ -379,19 +476,27 @@ failure. Also print the report in chat.
   preserved verbatim — a partial run must never make an unreviewed tier look reviewed.
 - **Review state lives in `{PROJECT_PATH}/PROJECT-BACKLOG.md`, per tier — nowhere else.** No missing file
   = never reviewed; a tier line of `never` = that tier never reviewed. There is no root-level review
-  index, by design: a second copy of the date would drift out of sync with the backlog.
-- **Security findings are always High**, and findings are deduplicated across every slice.
+  index, by design: a second copy of the date would drift out of sync with the backlog. **`_run-tracker.md`
+  is not that index** — its cell records that *this prompt executed* on this target, exactly like every
+  other orchestrator's cell, and the Step 0 gate never reads it. When the two disagree, the backlog wins
+  and the cell is simply behind.
+- **Every *confirmed* security finding is High** (the standard defines confirmed) — a finding resting
+  only on a silent plan, such as a `localStorage` token PLANNING never rules on, is the Medium
+  "decide and document" it describes. Findings are deduplicated across every slice.
 - **Model per slice, always explicit** (see Model policy): backend flow + every security slice + the
-  orchestrator run on **Opus**; frontend flow and learning-objectives on **Sonnet**. Never drop backend
-  or security below Opus to save tokens — those are the passes that catch what blocks portfolio-ready.
+  orchestrator run on **deep-reasoning**; frontend flow and learning-objectives on **standard-reasoning**. Never drop backend
+  or security below deep-reasoning to save tokens — those are the passes that catch what blocks portfolio-ready.
 - **No trace, no review.** A slice counts as reviewed only when its trace covers every file/endpoint
   the slice owns (verified in Step 5 against the Step 0 map). Failed or partial reports get one
-  re-dispatch, then an explicit "not reviewed" in the summary — never a silent pass.
+  re-dispatch, then an explicit "not reviewed" in the summary **and in its tier's `Last Reviewed`
+  qualifier** — never a silent pass, and never a plain date over a slice nobody read.
 - **Bounded reports only.** Every subagent returns its findings table + trace and nothing else — no
   code excerpts, no narrative. If one overflows, keep its table + trace and discard the rest; never let
   a verbose reviewer crowd the merge.
 - Angular 01–06 are frontend-only — frontend flow reviewers + learning-objectives, then a
-  `[frontend]`-tagged backlog and the commit hand-over, exactly like the frontend tier of a full-stack
-  project. Never a security pass for them (no backend).
+  `[frontend]`-tagged backlog and its commit, exactly like the frontend tier of a full-stack project.
+  Never a **cold security pass** for them (no backend to attack) — but the standard's frontend-security
+  greps ride the flow reviewer on **every** Angular tier, 01–06 and 07+ alike, because nothing else in
+  the pipeline ever looks at frontend code with a security lens.
 
 ````

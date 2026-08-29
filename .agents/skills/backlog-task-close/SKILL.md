@@ -1,0 +1,487 @@
+---
+name: backlog-task-close
+description: >
+  Run the backlog-task closing ritual WHENEVER a task from the active project's PROJECT-BACKLOG.md is
+  finished during a daily session — the moment Victor's fix for that task works and is committed, or he
+  says it is done ("ya está la tarea del backlog", "cerrado lo del @Transactional", "marca esa tarea
+  como hecha", "task done"). Marking the box ✅ is NOT the ritual: a closed task must also land its
+  concept in the topic's coverage file, the project README, PLANNING.md — including its §0 quick
+  reference, a table it shares with `step-complete` under a stated cell partition — and PROGRESS.md, and only then
+  collapse into a one-line entry in the backlog's Closed ledger so the file stops growing. The failure
+  mode this exists for is a task that gets checked off and leaves no trace anywhere else — the fix ships
+  but the learning is never recorded, and the backlog turns into a wall of dead prose. Do NOT trigger
+  for completed learning-plan steps (that is the step-complete skill), for ordinary mid-task commits, or
+  inside the review-audit / portfolio-audit pipelines.
+---
+
+# Backlog-task closing ritual (daily session)
+
+**Shared failure close-out.** The write counts below describe successful and expected no-op or
+ineligibility paths. If this invoked ritual cannot complete a declared step, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill cannot finish — durable friction"; do not
+restate or widen that trigger here.
+
+**Shared deviation close-out.** Every invocation ends by printing `desvíos: ninguno` or
+`desvíos: SBRC-NNNN` as its report's last line, on clean runs too. If this ritual finished its work and
+the text above is what made it improvise, ask a question this contract forbids, re-derive state the
+trigger declared resolved, or write outside its declared writer set, follow
+`notes/prompts/_internal/_session-rules.md` → "When a skill's own text is what went wrong — the skill
+breach log"; do not restate or widen that trigger here.
+
+
+A task from `{PROJECT_PATH}/PROJECT-BACKLOG.md` just finished. Checking its box is the *last* thing you
+do, not the first. Walk every step below in order (0 through 5, including sub-steps 1a, 1b and 3b),
+without being asked. If one genuinely does not apply, **say so explicitly** in the chat summary instead
+of silently skipping it.
+
+The task should already carry a verdict from `backlog-task-open`, which validated it against PLANNING,
+the ledger and its real scope before any work started. If it does not — the task was worked on without
+that pass — say so in the summary; a fix that was never triaged may have been the wrong fix.
+
+This is the task-level twin of the `step-complete` skill. That one fires on a **learning-plan step**
+(PLANNING §15 / project 07's learning plan) and touches three files. This one fires on a **backlog
+task** and touches five, because a backlog task is a *concept Victor did not plan to learn* — it came
+out of a review — so it has to be pushed back into the planning and coverage artefacts that never
+anticipated it.
+
+**Do not edit Victor's project code here.** The fix is already written, by him. This ritual only
+touches documentation and coverage.
+
+---
+
+## 0 — Identify the task and the concept
+
+Quote the exact task line from `PROJECT-BACKLOG.md` back to Victor before doing anything, and state in
+one sentence **each concept it taught**. Everything downstream keys off those concepts, so getting them
+wrong poisons all five updates.
+
+**A task teaches as many concepts as it teaches — list them all.** One fix routinely crosses topics: an
+aggregate rewritten in the database teaches a persistence concept (`spring-boot`) *and* the SQL that
+expresses it (`sql`), and each of those is a separate bullet in a separate file. Steps 1, 1a and 2 all
+take a **list**, and the report table carries one row per concept. Naming only the headline concept is
+the common failure: the others are demonstrated in the same commit and silently leave no trace.
+
+Four kinds of task exist, and they close differently:
+
+- **Code task** — a fix landed in the project. Normal path, all steps below apply.
+- **Design decision (no code change)** — the task concluded "this is our convention, leave it"
+  (e.g. project 07's fail-fast manual-check entry). Steps 1–2 still apply *if* the convention is a
+  real concept; PLANNING.md gets the convention recorded in its rules section rather than as a step;
+  PROGRESS.md is usually **n/a** (nothing was demonstrated). Say which ones you skipped and why.
+- **Already resolved** — `backlog-task-open` proved the finding was real when the review ran and that
+  later work has since fixed it. **This is a code task, not a design decision**, and the distinction is
+  load-bearing: code Victor wrote *does* demonstrate the concept, so steps 1 and 1a run in full and the
+  evidence marker is earned exactly as on the normal path. The only things that differ are that no fix
+  is written here, and that the ledger line carries `DECISION, no code change` with the **commit that
+  actually fixed it** in its `→` tail (that phrase describes *this close*, which changed no code — not
+  the project, which did). Filing it as a design decision instead is the trap: it would skip the marker
+  and lose the demonstration, which is precisely the "fixed in passing, recorded nowhere" debt that
+  `backlog-task-open` routes here to pay.
+- **False positive, or dropped without a fix** — `backlog-task-open` proved either that the code is
+  correct as it stands and always was (false positive), or that the task will never be right *for this
+  project* (dropped). **Nothing was built and nothing was chosen**, so steps 1 through 4 are all
+  **n/a** — say so explicitly and go straight to step 5. The trap is filing these as a design decision:
+  that path authors a coverage bullet and a README **Tradeoffs** entry "if the convention is a real
+  concept", and a finding the reviewer got wrong is not a convention Victor decided to keep. The ledger
+  line still carries `DECISION, no code change`, and its `→` tail must say *why the code is right*
+  (false positive) or *why it will never be right here* (dropped) — that tail is the only thing standing
+  between the same finding and the next `review-audit` run re-raising it.
+
+Read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
+skills — the coverage topics distinguish `Spring` (container, beans, proxies, transactions) from
+`Spring Boot` (auto-configuration, runtime, externalized configuration, and concrete Boot-stack
+integration), and the trap they exist for is a pure Java construct landing under Spring Boot just
+because the fix happened in a Spring project (`Optional<T>` is Java; `@Transactional` is Spring).
+
+---
+
+## 1 — Coverage: is the concept already there?
+
+**Invoke the `coverage-bullet-add` skill**, passing **every concept from step 0** — not only the headline
+one — and the level Victor is currently working at. It owns this decision end to end: routing the concept to its owning `notes/` topic
+by altitude, searching the level file, authoring the bullet under the right section if it is missing,
+mirroring it into `notes/coverage/{LEVEL}.md` with a diff check, and reporting the `/notes-plan` remap the
+new bullet owes. Do not reproduce its logic here, and do not re-derive the topic routing yourself.
+
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
+
+- **Give it the concept, not a technology label.** The skill needs the *`notes/` topic*, which it derives
+  by altitude; a label you attached in step 0 answers a different question.
+- **A design decision with no code change** can still be a real concept — pass it through, and let the
+  skill decide whether it belongs on the checklist.
+
+The common outcome is **already covered**, and that is a *good* result: it means the review found a gap in
+the code, not in the curriculum. Fold the skill's report rows into this ritual's final table.
+
+If the selected topic has no completed Coverage tracker run, treat its files as scaffolding: the skill
+routes the concept to the inbox and reports the first `/coverage` run as owed. Never bypass that gate by
+adding a lone bullet to a new topic during a backlog close.
+
+### 1a — Mark the concepts as demonstrated
+
+**Applies either way** — whether step 1 found each bullet already covered or had to write it. This is the
+sub-step that keeps the coverage file honest about what Victor can *prove*, and it runs on the common
+"already covered" path too, which is precisely where a close would otherwise leave no trace.
+
+**Invoke the `coverage-mark` skill**, passing **every concept from step 0**, **the topic `coverage-bullet-add`
+reported for each** (not a technology label), the level, and the project's folder name. The marking list is
+usually *longer* than the authoring list: a bullet that was already covered still gets its marker here, so a
+fix touching four existing bullets marks four while authoring none. It appends the `✅ NN-slug — {evidence}` evidence marker to the matching bullet in the topic file and the
+mirror, and reports the level's marked/total count. Do not reproduce its logic here.
+
+Two cases it will report back as skipped, both correct:
+
+- a **design decision with no code change** — nothing was built, so nothing is demonstrated;
+- a concept already marked from an earlier project — first project wins.
+
+**An "already resolved" task is not one of them.** Code was written; it just landed in an earlier
+session. Pass it to `coverage-mark` normally, and derive the evidence clause from the code as it stands
+today, not from the session that wrote it — the clause names what a reader could open and check, and
+the reader cannot see which commit produced it.
+
+Fold its report rows into this ritual's final table.
+
+**Marker preservation is a close blocker.** If ownership moved a previously marked bullet from an
+adjacent topic, the entire `✅ NN-slug — {evidence}` suffix must exist verbatim on the surviving bullet
+in its new topic and in the matching global mirror. Do not remove/recreate it or mark it as a new
+demonstration. A mismatch stops the close before the backlog entry reaches the ledger.
+
+### 1b — Carry the skill's owed work into the session
+
+The mirror write, the diff check, and the `/notes-plan` decision all happen **inside
+`coverage-bullet-add`** — this sub-step does not repeat them. What it owns is what the skill hands back:
+
+- If the skill reports **`/notes-plan {topic} {LEVEL}` owed**, surface it in this ritual's report table and
+  keep it for the *end of the session*. One run per affected topic+level, batched — several closes touching
+  the same topic and level are still a single owed run, and it is never run per bullet.
+- If the skill reports **drift it found but did not fix** (bullets missing from the mirror that predate this
+  task), say so as its own decision. Do not fold someone else's drift into this close.
+
+If nothing was written — the common already-covered path — this sub-step is **n/a**; say so and move on.
+
+---
+
+## 2 — Project README: land the concept
+
+**Invoke the `readme-concept-add` skill** with **every concept from step 0**. It owns this decision end to end:
+deriving which READMEs exist from the project number, routing the concept by **audience** to the global /
+backend / frontend file, checking whether it is already represented, and writing it in that section's own
+format under the README standard. Do not reproduce its logic here and do not pick the file yourself.
+
+Two things to pass it explicitly, because they are this ritual's context and not the skill's:
+
+- **The concept, not a technology label.** A technology is not a README audience.
+- **A design decision with no code change** can still be a real README entry — a convention deliberately
+  kept is exactly what the Tradeoffs section is for. Pass it through and let the skill decide.
+
+A backlog task's concept is almost always tier-level, so the common answer is a **Key patterns** entry in
+the tier README — not "What I learned", which the standard gives only to the global file. If the concept is
+already represented, the skill reports **nothing written**; that is a good outcome, and a README with one
+bullet per bug fix is a worse README. Fold its report rows into this ritual's final table.
+
+---
+
+### 2b — Retire what the fix made false
+
+Every step so far **adds**. This one **removes**, and it is the only step that does: a fix that replaces a
+mechanism leaves the old one described as current in files nobody reopened. The failure mode is a README
+that teaches a technique the code no longer contains — worse than an absent entry, because it reads as
+true and an interviewer can open the class and see it is not.
+
+Run it on every code task, right after the README entry, while the diff is still in front of you:
+
+1. **List what the fix deleted or replaced** — the class, annotation, query style, library call, endpoint
+   or field that is no longer there. Read the diff, do not recall it.
+2. **Grep each one** across the project's `README.md`, its tier READMEs and `PLANNING.md`, plus the
+   coverage bullet's own evidence clause when the marker names the deleted mechanism. One `grep -rn` per
+   symbol; the cost is seconds and the alternative is a claim that rots silently.
+3. **Correct every hit in the same commit as the rest of the close.** A claim the fix made false is
+   rewritten to what the code does now, or deleted when the concept left the project entirely. Deleting an
+   entry is a legitimate outcome: a "What I learned" bullet naming a technique that no longer appears is
+   not learning the project can still show.
+4. **A contradicted rule is a finding, not a typo.** When the fix uses a pattern PLANNING documents as
+   broken — or breaks one it documents as required — restate the rule with the condition that makes both
+   true, and say so in the report. Silently deleting the old rule loses the reason it was written.
+
+Report what you retired, or say **"nothing stale"** explicitly. Silence here is indistinguishable from
+not having looked, which is exactly how these accumulate.
+
+---
+
+## 3 — PLANNING.md: was this ever planned?
+
+Search PLANNING.md for the concept. Three outcomes:
+
+- **It was planned** — the step that owns it exists. Nothing to add; name the step in your summary.
+- **It was not planned and it belongs in the plan** — the concept is part of the project's real
+  engineering contract (a layer rule, an error-contract rule, a security rule). Add it to the
+  **rules/architecture section it belongs to** (§6 engineering rules, §10 API contract, etc.), *not* as
+  a new step — the work is already done, and inventing a retroactive step corrupts the step numbering
+  that PROGRESS.md and the G-gates read.
+- **It was not planned and it does not belong** — one-off polish, a tooling tweak, a config move. Say
+  so explicitly and add nothing. Not every fix is a plan-level concern.
+
+When you do edit PLANNING.md, keep it to the plan's own voice and format; do not annotate it with
+"added because of backlog task X" — the ledger in step 5 already records that.
+
+### 3b — PLANNING §0: keep the session quick reference true
+
+§0 calls itself *"the authoritative pointer to the live step"*, and during a backlog-fix branch **the
+backlog is the live work** — `Current step` reads something like `G3 backend backlog fix (not a §15
+step)` precisely because that is where the project is. Read the live value; do not assume this one.
+Outside a daily session the only thing that repairs this
+table is `plan-audit` (`MODE = new` authors it, a G2 pass rewrites it), so a run of closes that never
+touches it leaves the pointer dated to the first one.
+
+**Inside a daily session §0 has two writers, this ritual and `step-complete`** (partition added
+2026-08-11, `REC-091`; this section used to claim it was the only one, and so did the other ritual —
+both were wrong). Both fire in the 08:00 block, so a morning that closes a task *and* finishes a step
+runs them back to back:
+
+- **Read §0 as it stands before writing it**, never as the pre-session state. Whether a step closed
+  earlier this morning is settled by **one command**, because §15's `✅` markers are undated and
+  `Last updated` is stamped by this ritual too:
+  `git log -p --since=midnight -- {PROJECT_PATH}/PLANNING.md` — both rituals commit that file
+  themselves, so a commit today whose diff adds a §15 `✅` is a step close. Do not use the backlog's
+  `## Closed` dates for this: those lines are written by *this* ritual, so they detect your own earlier
+  closes, not the step ritual. And nothing on disk states which step was live yesterday, so never infer
+  it from `Current step` alone.
+- **Do not overwrite the route cells** — `Current step`, and the `Done condition` that belongs to it,
+  are `step-complete`'s when a §15 step closed earlier in the same session. Repointing the plan at the
+  next step is the more informative statement, and a close that follows it must not degrade it back to
+  the backlog-fix pointer.
+- **The order is not fixed** — whichever event happens first in the morning runs first, so this ritual
+  may be either the first or the second writer. The rule that holds in both directions: **the one that
+  writes §0 second re-derives `Next gate` against the `Current step` as it then stands**, carrying the
+  other's fact forward.
+
+Unlike `step-complete`, most closes move only part of it. Check each cell and change only what the
+close made false:
+
+- **Last updated** — **always**, every close, today's date. This is the cell that makes the rest
+  trustworthy, and it is the one a close forgets. It is never n/a.
+- **Current step** — when the close changes *what is being worked on* **and no §15 step closed earlier
+  in the same session**: the last task at a priority clears, or the task was the one gating the next
+  §15 step (7a's account-password Medium is the live example — closing it removes a documented blocker
+  and that sentence in §0 becomes wrong). If `step-complete` already repointed it today, leave its
+  pointer alone and say the close moved no route cell.
+- **Done condition** — only when this ritual owns `Current step` under the bullet above, because the
+  condition has to describe the step that cell names. When `step-complete` repointed it earlier today,
+  the condition is already the next §15 step's and this close leaves it alone.
+- **Next gate** — when the close satisfies a gate's sign-off condition. Closing the last open **High**
+  is the case that matters: §23 signs G3 off only when every High is fixed and merged, so that close is
+  what turns the gate from blocked to signable — **unless the gate's box is untickable for a reason the
+  backlog states in a second place**, the commonest being the tier's `**Last Reviewed — «tier»:**` line
+  — backend for G3, frontend for G4: `never`, or a date carrying `(incomplete — …)`, means a slice nobody
+  read, and no High clearing signs *that* tier off. §23's box owns the full condition; this is the half
+  the backlog shows you.
+  Write `blocked — «tier» tier not fully reviewed` then, not `signable`. Say it in §0, and say it in the
+  report. The cell holds
+  two things and only one of them is yours:
+  - **which gate it names** is derived — the first gate in §23's **chain** **not yet signed off**; a
+    gate whose trigger fired but whose sign-off is still pending is still
+    that gate. If a step close moved `Current step` today, the derivation decides the name, not this
+    ritual's preference. (The rule is `_planning-standard.md` invariant 10, whose quality-gate rules
+    define *signed off* as the gate's closure-checklist box being tickable of the project branch as it
+    stands, plus any stricter sign-off the plan's own §23 gate cell states.);
+  - **whether that gate is blocked or signable** is a fact about the backlog, which this ritual is the
+    one positioned to *author* — `step-complete` reads the same two backlog facts to re-derive the gate,
+    but the event that moves the qualifier is a close.
+    Write it as a qualifier on the derived gate (`G3 — signable, last High merged`), so it survives
+    a later re-derivation instead of being overwritten by one.
+
+  Neither ritual silently reverts the other; when the invariant and the qualifier cannot both hold, the
+  invariant wins and the report says the qualifier was dropped.
+- **Current branch** — only if the close ends the branch's work per §22. Same condition in every file
+  that states it; a step closing in the same session does not change it.
+- **Phase** — only if the close moved the project across a phase boundary, which a backlog fix almost
+  never does. Say "unchanged" rather than skipping it silently.
+
+A close that legitimately moves none of these still updates `Last updated`. State which cells you
+changed, and say "no other cell moved" rather than staying silent — silence here is indistinguishable
+from having skipped the step.
+
+**Open-task counts live outside §0 too, and they are yours in the same edit.** PLANNING states how many
+tasks are open in more than one place — §0's `Current step` cell, and §22's *Immediate action* prose,
+which reasons about the gate from that number. A close that clears a task and refreshes only the table
+leaves the prose asserting a count that is now wrong, and prose reads as more authoritative than a cell
+precisely because it argues. So `grep -n` PLANNING for every statement of the open-task count before
+committing step 3's edit, and correct each one in place, in that same commit — the number, the priority
+breakdown, and any clause whose conclusion the new number changes ("no open task at any priority" after a
+task is raised). Report them alongside the §0 cells. This is a fact about the backlog, never a repoint:
+route cells stay exactly as `step-complete` or step 3b left them today.
+
+---
+
+## 4 — PROGRESS.md: status only, never the concept
+
+**The concept does not go in PROGRESS.md** (changed 2026-08-03: its per-technology concept lists were
+deleted because they duplicated the coverage files without evidence). Step 1 put the concept on the
+coverage checklist and step 1a marked it — that is its only home. Never re-create a `## Angular`-style
+list of concepts here.
+
+This ritual updates **one** thing in PROGRESS.md: the `Professional level by topic` row's
+practical-evidence cell, when this fix gives that table real evidence — a backlog task closed against a
+review finding is exactly that kind of demonstration. If it does not, PROGRESS.md is **n/a** for this
+close. Say so out loud.
+
+**Do not touch the `## Coverage demonstrated` table here.** `coverage-bullet-add` and `coverage-mark`
+recount their own cells and the `**Total**` row from the files in step 1, and they commit PROGRESS.md
+with that write. A second edit from this ritual is a second writer on one table, derived from memory
+rather than from a recount — read the figure back from their report for your final table instead.
+
+---
+
+## 5 — Collapse the task into the Closed ledger
+
+Only now, and only if steps 1–4 are done (or explicitly declared n/a), remove the task's full entry
+from the `## Tasks` list and add **one line** to a `## Closed` section at the end of the file. Create
+that section if it does not exist, directly after the task list.
+
+Ledger line format:
+
+```
+- YYYY-MM-DD · **[Priority]** `[tier]` — short summary (max ~15 words) → where the concept landed
+```
+
+Worked examples:
+
+```
+## Closed
+
+### Backend
+
+#### High
+
+- 2026-07-09 · **[High]** `[backend]` — `UserResponse` DTO stops the BCrypt hash leaking → README, coverage spring-boot/junior
+
+#### Medium
+
+*No medium tasks closed yet.*
+
+#### Low
+
+- 2026-07-28 · **[Low]** `[backend]` — `show-sql` moved to `application-dev.properties` → README
+- 2026-07-09 · **[Low]** `[backend]` — fail-fast manual checks kept as the project's convention — DECISION, no code change → PLANNING §6, notes/spring-boot/en/05
+
+### Frontend
+
+*No frontend tasks closed yet — Step 7a (Angular) has not started.*
+```
+
+Ledger rules:
+
+- **Split by tier, then by priority, then newest first within each priority.** `## Closed` carries a
+  `### Backend` and a `### Frontend` subsection, each with `#### High` / `#### Medium` / `#### Low`
+  underneath — the same two-level split `## Tasks` uses, so a closed finding is found the same way an
+  open one is. Put the line under its tier's *and* its priority's heading; keep the inline
+  `` `[tier]` `` tag and the `**[Priority]**` marker on the line anyway — a partial-scope review run
+  greps for them, and the line must stay self-describing if it is ever read out of context.
+- **No heading is ever left bare — empty means a placeholder line, not blank space.** A tier with
+  nothing closed keeps its heading plus one italic line; so does every empty priority inside it
+  (`*No High tasks closed yet.*`). The same applies to `## Tasks` when you remove the last task at a
+  priority: leave `*No open High tasks.*` behind, never an empty heading. A blank section reads as
+  "never filled in" when it actually means "nothing outstanding" — and at a priority Victor just
+  cleared, that is the opposite of the message.
+- **Filing a line under its priority heading is the one reordering allowed.** Everything else about
+  ledger order is frozen (see the never-delete rule below).
+- The `→` tail is the point of the whole line: it tells a future `review-audit` that this finding is
+  closed *and* where its knowledge now lives, so it is not re-raised as a new finding.
+- A **design decision with no code change** must say `DECISION, no code change` in the line. That entry
+  is the only surviving record that a reviewer deliberately chose the current behaviour — losing it is
+  how the same non-bug gets re-reported every review.
+- Never delete a ledger line. The ledger is append-only; only the verbose `## Tasks` entry is removed.
+- Never move a task to the ledger while its box is `[ ]` and unfixed.
+
+If a task is being closed as **won't fix / no longer relevant** (not fixed, just dropped), it still goes
+to the ledger, with the reason in place of the concept tail: `→ dropped: superseded by Step 7a rewrite`.
+
+---
+
+## Incidental findings — write them, do not mention them
+
+This ritual is **not a second review**. It does not go looking for defects, does not fix what it finds,
+and does not widen or reopen the task it is closing — widening a task in flight is what `REC-173`
+guards against. But closing is exactly when the next finding surfaces: the fix just written makes the
+identical defect visible in a sibling class. A finding disposed of in the chat does not survive the
+session, and `review-audit` — the gate that would find it again — fires a few times per project.
+
+So a real defect noticed while closing is **added to `## Tasks` in `PROJECT-BACKLOG.md` in the same
+turn** — the file this ritual is already editing — at its tier and priority, in the standard task
+format, with an effort estimate and a provenance note:
+
+```
+*(raised 2026-08-28 while closing the `DataInitializer` task — same defect shape, different classes)*
+```
+
+Wherever PLANNING states an open-task count — §0's `Current step` cell **and** §22's *Immediate action*
+prose — update that **number**, and any claim the new number falsifies, in place in the same commit — a
+fact about the backlog, in the shape §3b already uses for the `Next gate` qualifier. It is **not** a repoint: leave
+the route cell that holds it exactly as `step-complete` or step 3b left it today. Do **not** triage the
+new task here — `backlog-task-open` owns that, when Victor picks it up — and do not fix it. *Real*
+means seen in the code this close was already reading; a suspicion and a style preference are not
+findings, and no pass is ever started to go and look.
+
+This is its own logical change, so it takes its own commit, separate from step 5's collapse:
+`docs(backlog): raise <finding> found while closing <task>`.
+
+---
+
+## Commits
+
+Per CLAUDE.md and the shared session rules. Do **not** bundle these — one atomic commit per **logical
+change**, which is the session rules' unit and not "per file": the bullets below deliberately put several
+files in one commit where they are one change, and never split one change across two.
+Everything below lands on the **active branch** (`main` only receives merges via PR).
+
+**You commit yourself:**
+
+- `notes/**/coverage/*.md` — handled by `coverage-bullet-add` and `coverage-mark`, which commit their own
+  writes under the standing `notes/` authorization. Do not re-stage those files here; if both skills ran in
+  the same close, they fold the authoring and the marking into one coverage commit.
+- **`PROGRESS.md` rides in that coverage commit** when step 1 or 1a wrote anything — those skills edit the
+  `Coverage demonstrated` table and commit the file with their write. So make this ritual's own evidence-cell
+  edit (step 4) **before** invoking them, and let their commit carry it. Only when step 1 and 1a both wrote
+  nothing does PROGRESS.md take a commit of its own here.
+- `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit`, by `backlog-task-open`
+  (the `⏸ Deferred` marker and a raised incidental finding) and by this skill, never by Victor, so the
+  authorship boundary puts it on your side. Its own atomic commit, separate from the coverage one — and
+  a task raised for an incidental finding is a **second**, separate commit, carrying the PLANNING §0
+  count with it.
+- `PLANNING.md` — authorized 2026-08-01. The ritual writes this entry itself, so the authorship boundary
+  puts it on your side. Its own atomic commit, carrying both the rules-section entry (step 3) and the §0
+  refresh (step 3b), which are one logical change.
+- The README — **not yours**: step 2 hands it to `readme-concept-add`, which writes the entry and commits
+  it under the same 2026-08-01 authorization, in one commit for that entry. Do not restage it here.
+
+**Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
+then `git commit` block), one command per block:
+
+- Any **project code** he wrote to fix the task. This is the whole of his side, and it does not move:
+  the authorship boundary is what the 2026-08-01 authorization turns on, so code stays his even though
+  every doc file around it is now yours.
+
+Before every commit you run, apply the hygiene rule: `git status` right before `git add` and right
+before `git commit`, so no project code file is staged alongside a doc file.
+
+---
+
+## Report back
+
+Close with a compact table so Victor can see at a glance that nothing was skipped silently:
+
+| Target | Result |
+|---|---|
+| Coverage (`spring/junior`) | already covered — "declarative transaction boundaries" |
+| Topic chosen | `security` — access-control rule, not the Spring mechanism |
+| Evidence marker | marked `✅ 07-timetrack` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
+| Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
+| `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
+| README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
+| Retired | `README.md:112` stream-`reduce` bullet rewritten; `backend/README.md:256` `Specification` scope corrected (or: nothing stale) |
+| Incidental findings | none (or: raised as `[Low]` `[backend]` — `JwtUtil` / `SecurityConfig` field injection) |
+| PLANNING.md | added to §6 engineering rules |
+| PLANNING §0 | `Last updated` → today; no other cell moved (or: last open High cleared — `Next gate` now says G3 signable) |
+| PROGRESS.md | n/a — evidence cell unchanged (coverage table owned by the coverage skills) |
+| Gate due | none (or: G3 sign-off is now unblocked — PR `fix/backend-backlog` into `projects/07-timetrack`) |
+| Backlog | task collapsed into `## Closed` |

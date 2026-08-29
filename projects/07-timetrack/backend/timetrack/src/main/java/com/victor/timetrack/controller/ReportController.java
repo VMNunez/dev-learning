@@ -1,7 +1,8 @@
 package com.victor.timetrack.controller;
 
-import com.victor.timetrack.dto.response.EmployeeHoursReportResponse;
+import com.victor.timetrack.dto.response.UserHoursReportResponse;
 import com.victor.timetrack.dto.response.ProjectHoursReportResponse;
+import com.victor.timetrack.dto.response.ReportSummaryResponse;
 import com.victor.timetrack.service.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,12 +26,18 @@ public class ReportController {
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping("/by-project")
     public ResponseEntity<List<ProjectHoursReportResponse>> getHoursByProject(@RequestParam YearMonth month){
-        return ResponseEntity.status(200).body(reportService.getHoursByProject(month));
+        return ResponseEntity.ok(reportService.getHoursByProject(month));
     }
 
     @PreAuthorize("hasRole('MANAGER')")
-    @GetMapping("/by-employee")
-    public ResponseEntity<List<EmployeeHoursReportResponse>> getHoursByEmployee(@RequestParam YearMonth month){
-        return ResponseEntity.status(200).body(reportService.getHoursByEmployee(month));
+    @GetMapping("/by-user")
+    public ResponseEntity<List<UserHoursReportResponse>> getHoursByUser(@RequestParam YearMonth month){
+        return ResponseEntity.ok(reportService.getHoursByUser(month));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/summary")
+    public ResponseEntity<ReportSummaryResponse> getSummary(@RequestParam YearMonth month){
+        return ResponseEntity.ok(reportService.getSummary(month));
     }
 }

@@ -1,2 +1,8 @@
 # IntelliJ IDEA — personal IDE settings, never commit these
 **/.idea/
+
+# Resumable /system-check evidence — local runtime state, never committed
+/.system-check/
+
+# Skill invocation counter — local rolling denominator, never committed
+/notes/prompts/_internal/_skill-runs.md

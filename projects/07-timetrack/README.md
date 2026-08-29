@@ -83,7 +83,7 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `@PostMapping`, `@PutMapping`, `@DeleteMapping` — HTTP method annotations for full CRUD
 - `ResponseEntity.noContent().build()` — status 204 with no body, used on DELETE
 - `ResponseEntity<Void>` — return type when the response has no body
-- `@Value("${property.name}")` — injects a value from `application.properties` into a class field
+- `@Value("${property.name}")` — injects a value from `application.properties` into a constructor parameter, so the bean is never built without it
 - `@Component` — registers a utility class as a Spring bean with no specific role
 - `long` vs `Long` — primitive when value is always present; wrapper class when `null` is meaningful
 - JWT structure — header (algorithm) + payload (sub, iat, exp claims) + signature (HMAC using the secret key)
@@ -103,6 +103,34 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `YearMonth` — binds automatically from `?month=2025-05`; `.atDay(1)`/`.atEndOfMonth()` convert it to a date range
 - Repositories organized by entity, controllers/services by feature — a report query still lives on the entity's repository
 - Spring Security `/error` gotcha — an unhandled exception can return a misleading 401 if `/error` isn't excluded from `.anyRequest().authenticated()`
+- `Specification<T>` + `JpaSpecificationExecutor` — dynamic optional filters built as predicates, one static factory per filter, `cb.conjunction()` when a filter is absent
+- `InvalidStateTransitionException` → 409 vs `BusinessRuleViolationException` → 400 — a state-machine conflict is a different HTTP class than an input-data rule
+- `PATCH /api/entries/{id}/reopen` — owner-only transition `REJECTED → DRAFT` that clears the rejection note, reviving a rejected entry
+- Inactive users can't log in — `.disabled(!user.isActive())` on the `UserDetails` builder + a `DisabledException` handler returning the same generic 401 as bad credentials (no user enumeration)
+- Reports count trusted hours only — the aggregates filter on `status = APPROVED` so DRAFT/SUBMITTED/REJECTED never inflate the totals
+- Broken object-level authorization (BOLA) — a filter on the list endpoint must also be applied on the detail endpoint (`getById`), returning 404 not 403 so the resource's existence isn't confirmed
+- Aggregating in the database rather than in memory — a read that answers with three scalars sums them in the query instead of loading the month's rows as entities
+- User-management endpoints (manager only) — `POST`/`PUT`/`DELETE /api/users`, BCrypt-hashing the password on create, soft delete, duplicate email mapped to 409
+- Spring Profiles — `application-{profile}.properties` merges onto the base config, loaded only when that profile is active
+- `@Profile("dev")` on a bean — the bean isn't instantiated at all outside the active profile, not just skipped
+- `CommandLineRunner` — Spring calls `run()` once after the context loads, with all beans available
+- Startup seeding in Java over `data.sql` — BCrypt hash built at runtime from an env var, never committed to git
+- Idempotent seed — `findByEmail(...).isPresent()` guard replaces SQL's `ON CONFLICT DO NOTHING`
+- Foreign key `ON DELETE RESTRICT` — can't delete a parent row while a child still references it (SQL state `23503`)
+- SLF4J `Logger` over `System.out.println` — log levels, automatic context (timestamp/thread/class), and proper stacktrace formatting via `log.error("message", e)`
+- `SecureRandom` over `Random` — generating an initial account password with a predictable seed would let an attacker reconstruct it; `SecureRandom` draws from a cryptographically secure source instead
+- A dedicated exception per response shape, not just per status code — `InvalidPasswordException` exists next to `BusinessRuleViolationException` even though both map to 400, and it carries the field its message belongs to, so one handler renders both password failures under their own input with no conditional logic
+- `@Transactional` / `@Transactional(readOnly = true)` — an atomic write boundary on every service write method, and read-only intent declared on every pure-read method so the persistence provider can skip dirty checking
+- N+1 fix — `@ManyToOne(fetch = FetchType.LAZY)` plus a `LEFT JOIN FETCH` added through a `Specification`, guarded by `query.getResultType()` so it's skipped on `COUNT` queries
+- `GROUP BY` on id **and** name — grouping a report aggregate by display name alone silently merges two rows that happen to share a name; grouping by id keeps them separate and gives the frontend a stable row key
+- `@Column(precision, scale)` + `@DecimalMin`/`@DecimalMax`/`@Digits` — constrains a `BigDecimal` field at both the DB column and the request DTO, so an over-precision value gets a 400 instead of silently losing precision at the DB's default scale
+- Boxed `Boolean` → primitive `boolean` renames Lombok's generated getter from `getX()` to `isX()` — applied to `Project.active` the same way as the earlier `User.active` fix, updating every call site
+- Optional field on an Update DTO (`Boolean active`, applied only when non-null) — lets `PUT` stay a full-replacement contract while still supporting reactivation of a soft-deleted row
+- Segregation of duties — a manager cannot approve or reject their own time entry; ownership is resolved from the JWT via `SecurityContextHolder`, the same pattern used for every other ownership check
+- Bare `@GeneratedValue` resolves to `AUTO` — Hibernate 6 picks a sequence generator on PostgreSQL, not native identity/auto-increment, even though the plan's entity tables originally said "auto-increment"
+- `AccountStatusUserDetailsChecker` — re-validates the loaded `UserDetails`' account status inside `JwtFilter` on every request, so a token issued before deactivation is rejected on its very next request instead of staying valid until it expires
+- `@Size(max = ...)` on every unconstrained request string, including a lower bound (72) for login password — matches BCrypt's real truncation boundary, capping the CPU an unauthenticated caller can force
+- Token lifetime as a tradeoff — cutting `app.jwt.expiration` from 24h to 60min balances a usable work session against the blast radius of a token stolen from `localStorage`
 
 ---
 
@@ -147,13 +175,27 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 
 *Full Docker setup coming in the final step.*
 
-**Requirements:** Java 25, PostgreSQL running locally, database named `timetrack`
+**Requirements:** Java 25, PostgreSQL running locally, and a database named `timetrack` owned by a
+non-superuser role `timetrack_app` — the app never connects as `postgres`. The two `CREATE` statements
+are in [backend/README.md](backend/README.md#how-to-run-alone)
 
-Set `DB_PASSWORD` as an environment variable (IntelliJ: Run → Edit Configurations → Environment variables).
+Set these environment variables before starting the app (IntelliJ: Run → Edit Configurations →
+Environment variables):
+
+| Variable | What it is |
+|---|---|
+| `DB_PASSWORD` | Password of the `timetrack_app` PostgreSQL role |
+| `JWT_SECRET` | Signing key for access tokens — any string of at least 32 bytes |
+| `ADMIN_PASSWORD` | Password of the first manager account, seeded at startup |
+| `SPRING_PROFILES_ACTIVE=dev` | Activates the `dev` profile. **Required locally** — there is no public register endpoint, so without it no account is seeded and every login returns 401 |
 
 Open `projects/07-timetrack/backend/timetrack/` in IntelliJ and run `TimetrackApplication.java`.
 
-API available at `http://localhost:8080`
+API available at `http://localhost:8080`, and you can log in as `manager@timetrack.com` with the password
+you set in `ADMIN_PASSWORD`.
+
+See [backend/README.md](backend/README.md#how-to-run-alone) for what each variable is read from and why
+the profile is mandatory.
 
 ---
 

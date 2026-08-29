@@ -1,5 +1,10 @@
 # CV Prompt
 
+> **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
+
+> **External-path preflight:** Before reading or writing `job-search/`, execute
+> `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
+
 Use in a **separate conversation**. Fill in the configuration block before pasting.
 
 Run this when you are ready to write or update your CV for Spanish consultancy applications.
@@ -7,10 +12,10 @@ The output is complete, ready-to-paste CV text in Spanish — copy it into your 
 
 Three modes:
 - **`create`** — builds the CV from scratch using your profile, projects, and existing personal data
-- **`review`** — audits an existing CV and rewrites any weak sections (read from `personal/job-search` or pasted)
+- **`review`** — audits an existing CV and rewrites any weak sections (read from `job-search` or pasted)
 - **`tailor`** — adapts your base CV to one specific job offer, keyword-matched to what that offer asks
 
-> **▶ Run first:** `progress-update` (so `PROGRESS.md` is current). Optional: `portfolio-audit` for polished `cv-bullets`.
+> **▶ Run first:** `progress-update`, and its drift repaired, not merely run — it audits `PROGRESS.md`, it does not repair it. Optional: `portfolio-audit` for polished `cv-bullets`.
 > Mind ROADMAP.md's **CV gate**: update the CV only once project 07 is live on GitHub with a README
 > that includes at least one architecture decision — not before.
 
@@ -29,21 +34,28 @@ Three modes:
 ## Configuration — edit only this block
 
 MODE       = [create | review | tailor]
-EDUCATION  = [your degree, university, and year — e.g. "Grado en Administración de Empresas, Universidad Complutense de Madrid, 2017" | "no university degree" | auto — read it from my existing CV in personal/job-search]
+EDUCATION  = [your degree, university, and year — e.g. "Grado en Administración de Empresas, Universidad Complutense de Madrid, 2017" | "no university degree" | auto — read it from my existing CV in job-search]
 CAMBRIDGE  = [obtained (B2) | in progress (B1→B2) | not yet started]
 LOCATION   = [your city — e.g. "Madrid" | "Barcelona" | auto]
 PHONE      = [your phone number — e.g. "+34 612 345 678" | auto — read it from my existing CV]
 PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack, 06-hr-portal, 05-task-manager" | auto — let the prompt choose the 3 strongest]
-BASE_CV    = [tailor mode only: path to the master CV to start from | auto — the most recent in personal/job-search/master]
+BASE_CV    = [tailor mode only: path to the master CV to start from | auto — the most recent in job-search/master]
+
+---
+
+> **Run-start check (step 0):** before any content work, execute `_single-shot-self-report.md` Step 5
+> against `notes/prompts/strategy/apply/_internal/_last-run-report-cv.md`; never restate the shared
+> `Status:` meanings here.
 
 ---
 
 ## Before starting
 
-First read `notes/prompts/strategy/apply/_application-standard.md` — the shared standard both
-application prompts follow. It defines the **sources to read** (`CLAUDE.md`,
-`notes/prompts/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
-`notes/cv/cv-bullets.md`, and your existing CV in `personal/job-search`), the **universal bullet format**, the **ATS keyword pool** (required +
+First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared
+job-application standard. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
+`notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
+`notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for
+defensibility), the **universal bullet format**, the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
 CV-specific flow on top.
@@ -53,7 +65,7 @@ CV-specific flow on top.
 ## Where CVs live and are saved
 
 Finished CVs are personal documents with your phone and email — they are **never committed to the
-repo**. They live outside it, at `C:\Users\Victor\Documents\main\personal\job-search\`:
+repo**. They live outside it, at `C:\Users\Victor\Documents\main\job-search\`:
 - `master/` — your base CV(s): the canonical version you keep current
 - `applications/` — one tailored CV per job offer, named `empresa-puesto.md`
 - `assets/` — your headshot; the `[FOTO]` placeholder in the CV points here
@@ -87,7 +99,7 @@ apply them here without restating them.
 **If MODE = create:** proceed directly to Step 1.
 
 **If MODE = review:** before Step 1, read the CV to audit — either the one pasted at the end of this
-chat, or, if nothing is pasted, the most recent file in `personal/job-search/master/` (or `archive/`, including
+chat, or, if nothing is pasted, the most recent file in `job-search/master/` (or `archive/`, including
 `currículum.pdf`).
 - Note which projects are included → use them as the starting point for Step 1 instead of choosing from scratch
 - Note which bullets are weak, missing a result, or use filler language → flag them so Step 3 rewrites them
@@ -148,7 +160,9 @@ junior en consultora donde aplicar y seguir desarrollando estas competencias."
 ---
 
 **HABILIDADES TÉCNICAS**
-*(example structure — regenerate the real cells from PROGRESS.md at run time; never copy this table as-is)*
+*(example structure — regenerate the real cells at run time from the standard's keyword pool under its
+Precedence and Defensibility rules; never copy this table as-is, and never source them from `PROGRESS.md`,
+which holds no technology inventory)*
 
 | Frontend       | Backend             | Base de datos  | Herramientas   |
 |----------------|---------------------|----------------|----------------|
@@ -215,9 +229,15 @@ For every bullet that fails: rewrite it in place and show the before/after.
 
 Go through the **required keyword list from the standard** (`Angular`, `Spring Boot`, `Java`,
 `PostgreSQL`, `REST API`, `JWT`, `Docker`, `TypeScript`, `SQL`, `JUnit`, `Jasmine`, `Git`, `Maven`).
-For each keyword: ✅ present naturally in the CV / ❌ missing.
+For each keyword: ✅ present and defensible / ⚠️ present but not defensible / ❌ missing — the standard's
+**Defensibility rule** names the evidence that decides it (source 7's project markers first, the project
+itself when a marker is absent). A ⚠️ keyword is
+struck from the CV and printed on Step 6's **ATS keywords not defensible** line, next to the missing
+keywords that fail the same test.
 
-For each missing required keyword: propose a natural place to add it without forcing it.
+For each missing required keyword, apply the standard's **precedence rule** before proposing anything:
+if Victor can defend it in an interview, propose a natural place to add it without forcing it; if he
+cannot, it stays out of the CV and is reported as a **gap** — no placement, no softened wording.
 
 **In `tailor` mode:** also audit against the **specific offer's keywords** extracted in mode handling.
 For this CV those take priority over the generic list — a keyword the offer names but the standard's
@@ -241,8 +261,8 @@ Print the complete final CV text, ready to copy into a Word or PDF template. All
 and 5 already applied.
 
 Then **save it to the personal folder outside the repo** (create the file):
-- `create` / `review` → `C:\Users\Victor\Documents\main\personal\job-search\master\cv-<yyyy-mm>.md`
-- `tailor` → `C:\Users\Victor\Documents\main\personal\job-search\applications\<empresa>-<puesto>.md`
+- `create` / `review` → `C:\Users\Victor\Documents\main\job-search\master\cv-<yyyy-mm>.md`
+- `tailor` → `C:\Users\Victor\Documents\main\job-search\applications\<empresa>-<puesto>.md`
 
 Writing outside the project directory may prompt for permission the first time — that is expected.
 Never commit a CV to the repo; export the final version to PDF yourself for sending.
@@ -250,7 +270,9 @@ Never commit a CV to the repo; export the final version to PDF yourself for send
 Then print:
 
 **ATS keywords present:** list of keywords found in the CV
-**ATS keywords missing:** list of required keywords not found (with suggested placement)
+**ATS keywords missing:** required keywords not found but defensible (with suggested placement)
+**ATS keywords not defensible:** required keywords left out under the standard's precedence rule — the
+gap to close in a project, not in the CV
 **Estimated length:** fits on one page / slightly over (X lines to cut)
 **Saved to:** the exact path written above
 **(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know
@@ -262,7 +284,7 @@ what to shore up before the interview
 
 A full, real job offer is high-value evidence for what the target market actually asks — stronger than
 the web-search extracts already on file. After tailoring, record it in
-`notes/prompts/_job-market-evidence.md`. That file **is** in the repo (public posting data, no personal
+`notes/prompts/_internal/_job-market-evidence.md`. That file **is** in the repo (public posting data, no personal
 information) and feeds `coverage-prompt` / `coverage-audit-prompt` as the required floor — so every offer
 you tailor to also sharpens what you study.
 
@@ -276,12 +298,20 @@ you tailor to also sharpens what you study.
 Commit it **separately** from the CV (the CV is never committed; the evidence is):
 
 ```
-git add notes/prompts/_job-market-evidence.md
+git add notes/prompts/_internal/_job-market-evidence.md
 ```
 
 ```
 git commit -m "docs: add <company> <role> posting to job-market-evidence"
 ```
+
+---
+
+## Final step — write the self-report
+
+Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in full: the close-out check
+against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
+`notes/prompts/strategy/apply/_internal/_last-run-report-cv.md`, its own commit, then the refinement step.
 
 [paste your current CV (review mode) or the full job offer (tailor mode) below this line]
 ````

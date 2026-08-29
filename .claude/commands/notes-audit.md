@@ -1,6 +1,6 @@
 ---
-description: Build or audit study notes for a topic or a single file (orchestrator, runs inside Claude Code)
-argument-hint: SCOPE=folder|file TOPIC=<topic>|all [FILE=path]
+description: Build or audit exactly one planned study note (orchestrator, runs inside Claude Code)
+argument-hint: TOPIC=<topic> LEVEL=junior|middle|senior NOTE=01
 ---
 
 Read `notes/prompts/knowledge/notes/notes-audit.md` and execute it in full as the hands-off orchestrator it describes, running inside Claude Code.
@@ -8,6 +8,6 @@ Read `notes/prompts/knowledge/notes/notes-audit.md` and execute it in full as th
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- The prompt's own config block and instructions are authoritative — execute them exactly (plan → one cold inspector per existing file → per-file four-stage chain: English author → English reviewer → translator en→es → en-blind Spanish reviewer, with en/ as canonical source, atomic commit per file).
+- Resolve exactly one current persistent-plan entry and run its four-stage chain.
 - If the configuration is empty or incomplete, ask for the missing config-block values before launching any subagent.
-- The pipeline always commits — one atomic commit per file, made by the Spanish reviewer (the last stage).
+- Never accept an arbitrary file path or a folder/all run.

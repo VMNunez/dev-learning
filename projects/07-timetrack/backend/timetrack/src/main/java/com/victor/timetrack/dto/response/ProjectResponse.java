@@ -9,6 +9,6 @@ public class ProjectResponse {
     private Long id;
     private String name;
     private String description;
-    private Boolean active ;
+    private boolean active;
     private LocalDateTime createdAt;
 }

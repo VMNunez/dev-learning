@@ -1,64 +1,53 @@
 package com.victor.timetrack.service;
 
 import com.victor.timetrack.dto.request.CreateTimeEntryRequest;
+import com.victor.timetrack.dto.request.UpdateTimeEntryRequest;
 import com.victor.timetrack.dto.response.TimeEntryResponse;
 import com.victor.timetrack.exception.BusinessRuleViolationException;
+import com.victor.timetrack.exception.ForbiddenOperationException;
+import com.victor.timetrack.exception.InvalidStateTransitionException;
 import com.victor.timetrack.exception.ResourceNotFoundException;
-import com.victor.timetrack.exception.UnauthorizedException;
 import com.victor.timetrack.model.EntryStatus;
 import com.victor.timetrack.model.Project;
 import com.victor.timetrack.model.TimeEntry;
 import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.ProjectRepository;
 import com.victor.timetrack.repository.TimeEntryRepository;
-import com.victor.timetrack.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.victor.timetrack.repository.TimeEntrySpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
+import java.time.YearMonth;
 
 @Service
 public class TimeEntryService {
     private final TimeEntryRepository timeEntryRepository;
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final AuthenticatedUserProvider authenticatedUserProvider;
+    private static final BigDecimal MIN_HOURS = new BigDecimal("0.5");
+    private static final BigDecimal MAX_HOURS = new BigDecimal("24");
+
 
     public TimeEntryService(
             TimeEntryRepository timeEntryRepository,
             ProjectRepository projectRepository,
-            UserRepository userRepository) {
+            AuthenticatedUserProvider authenticatedUserProvider) {
         this.timeEntryRepository = timeEntryRepository;
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+        this.authenticatedUserProvider = authenticatedUserProvider;
     }
 
+    @Transactional
     public TimeEntryResponse create(CreateTimeEntryRequest request) {
+        User user = authenticatedUserProvider.currentUser();
+        Project project = resolveProject(request.getProjectId(), false);
 
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
-
-        if (request.getDate().isAfter(LocalDate.now())) {
-            throw new BusinessRuleViolationException("Date cannot be in the future");
-        }
-
-        if (!project.getActive()) {
-            throw new BusinessRuleViolationException("Project is not active");
-        }
-
-        BigDecimal min = new BigDecimal("0.5");
-        BigDecimal max = new BigDecimal("24");
-
-        if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
-            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
-        }
+        validateEntryData(request.getDate(), request.getHours());
 
         TimeEntry timeEntry = new TimeEntry();
         timeEntry.setUser(user);
@@ -72,19 +61,17 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional
     public TimeEntryResponse submit(Long id) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
-
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only submit your own time entries");
-        }
+        User user = authenticatedUserProvider.currentUser();
+        TimeEntry timeEntry = findOwnedEntry(id, user);
 
         if (timeEntry.getStatus() != EntryStatus.DRAFT) {
-            throw new BusinessRuleViolationException("Employee can only submit DRAFT entries");
+            throw new InvalidStateTransitionException("Employee can only submit DRAFT entries");
+        }
+
+        if (!timeEntry.getProject().isActive()) {
+            throw new BusinessRuleViolationException("Cannot submit an entry for an inactive project");
         }
 
         timeEntry.setStatus(EntryStatus.SUBMITTED);
@@ -95,12 +82,18 @@ public class TimeEntryService {
 
     }
 
+    @Transactional
     public TimeEntryResponse approve(Long id) {
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
-        if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
-            throw new BusinessRuleViolationException("Manager can only approve SUBMITTED entries");
+        if (timeEntry.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenOperationException("Managers cannot approve their own time entries");
+        }
+
+        if (timeEntry.getStatus() != EntryStatus.SUBMITTED) {
+            throw new InvalidStateTransitionException("Manager can only approve SUBMITTED entries");
         }
 
         timeEntry.setStatus(EntryStatus.APPROVED);
@@ -110,12 +103,18 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
+    @Transactional
     public TimeEntryResponse reject(Long id, String rejectionNote) {
+        User user = authenticatedUserProvider.currentUser();
         TimeEntry timeEntry = timeEntryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
 
-        if (!timeEntry.getStatus().equals(EntryStatus.SUBMITTED)) {
-            throw new BusinessRuleViolationException("Manager can only reject SUBMITTED entries");
+        if (timeEntry.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenOperationException("Managers cannot reject their own time entries");
+        }
+
+        if (timeEntry.getStatus() != EntryStatus.SUBMITTED) {
+            throw new InvalidStateTransitionException("Manager can only reject SUBMITTED entries");
         }
 
         timeEntry.setStatus(EntryStatus.REJECTED);
@@ -126,53 +125,48 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
-    public List<TimeEntryResponse> getAll() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = Objects.requireNonNull(auth).getName();
+    @Transactional(readOnly = true)
+    public Page<TimeEntryResponse> findByFilter(Long userId, Long projectId, EntryStatus status, YearMonth month,
+                                                Pageable pageable) {
+        boolean isManager = authenticatedUserProvider.isManager();
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
+        LocalDate start = null;
+        LocalDate end = null;
 
-        boolean isManager = Objects.requireNonNull(auth).getAuthorities().stream()
-                .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_MANAGER"));
+        if (month != null) {
+            start = month.atDay(1);
+            end = month.atEndOfMonth();
+        }
 
-        return isManager
-                ? timeEntryRepository.findAll().stream().map(this::toResponse).toList()
-                : timeEntryRepository.findByUser(user).stream().map(this::toResponse).toList();
+        if (!isManager) {
+            User user = authenticatedUserProvider.currentUser();
+            userId = user.getId();
+        }
+
+        Specification<TimeEntry> spec = Specification
+                .where(TimeEntrySpecifications.hasUserId(userId))
+                .and(TimeEntrySpecifications.hasProjectId(projectId))
+                .and(TimeEntrySpecifications.hasStatus(status))
+                .and(TimeEntrySpecifications.dateBetween(start, end))
+                .and(TimeEntrySpecifications.fetchUserAndProject());
+
+        return timeEntryRepository.findAll(spec, pageable)
+                .map(this::toResponse);
     }
 
-    public TimeEntryResponse update(Long id, CreateTimeEntryRequest request) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
-        Project project = projectRepository.findById(request.getProjectId())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException("Project not found with id " + request.getProjectId()));
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+    @Transactional
+    public TimeEntryResponse update(Long id, UpdateTimeEntryRequest request) {
+        User user = authenticatedUserProvider.currentUser();
+        TimeEntry timeEntry = findOwnedEntry(id, user);
 
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only update your own time entries");
+        if (timeEntry.getStatus() != EntryStatus.DRAFT) {
+            throw new InvalidStateTransitionException("You can only update DRAFT entries");
         }
 
-        if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
-            throw new BusinessRuleViolationException("You can only update DRAFT entries");
-        }
+        boolean callerKnowsItExists = timeEntry.getProject().getId().equals(request.getProjectId());
+        Project project = resolveProject(request.getProjectId(), callerKnowsItExists);
 
-        if (request.getDate().isAfter(LocalDate.now())) {
-            throw new BusinessRuleViolationException("Date cannot be in the future");
-        }
-
-        if (!project.getActive()) {
-            throw new BusinessRuleViolationException("Project is not active");
-        }
-
-        BigDecimal min = new BigDecimal("0.5");
-        BigDecimal max = new BigDecimal("24");
-
-        if (request.getHours().compareTo(min) < 0 || request.getHours().compareTo(max) > 0) {
-            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
-        }
+        validateEntryData(request.getDate(), request.getHours());
 
         timeEntry.setProject(project);
         timeEntry.setDate(request.getDate());
@@ -183,28 +177,72 @@ public class TimeEntryService {
         return toResponse(saved);
     }
 
-    public void delete(Long id) {
-        String email = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
-        TimeEntry timeEntry = timeEntryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+    @Transactional
+    public TimeEntryResponse reopen(Long id) {
+        User user = authenticatedUserProvider.currentUser();
+        TimeEntry timeEntry = findOwnedEntry(id, user);
 
-        if (!timeEntry.getUser().getId().equals(user.getId())) {
-            throw new UnauthorizedException("You can only delete your own time entries");
+        if (timeEntry.getStatus() != EntryStatus.REJECTED) {
+            throw new InvalidStateTransitionException("Employee can only reopen REJECTED entries");
         }
 
-        if (!timeEntry.getStatus().equals(EntryStatus.DRAFT)) {
-            throw new BusinessRuleViolationException("You can only delete DRAFT entries");
-        }
+        timeEntry.setStatus(EntryStatus.DRAFT);
+        timeEntry.setRejectionNote(null);
 
-        timeEntryRepository.deleteById(id);
+        TimeEntry saved = timeEntryRepository.save(timeEntry);
+
+        return toResponse(saved);
     }
+
+    @Transactional
+    public void delete(Long id) {
+        User user = authenticatedUserProvider.currentUser();
+        TimeEntry timeEntry = findOwnedEntry(id, user);
+        if (timeEntry.getStatus() != EntryStatus.DRAFT) {
+            throw new InvalidStateTransitionException("You can only delete DRAFT entries");
+        }
+
+        timeEntryRepository.delete(timeEntry);
+    }
+
+    private TimeEntry findOwnedEntry(Long id, User user) {
+        return timeEntryRepository.findById(id)
+                .filter(entry -> entry.getUser().getId().equals(user.getId()))
+                .orElseThrow(() -> new ResourceNotFoundException("Entry not found with id " + id));
+    }
+
+    private void validateEntryData(LocalDate date, BigDecimal hours) {
+        if (date.isAfter(LocalDate.now())) {
+            throw new BusinessRuleViolationException("Date cannot be in the future");
+        }
+
+        if (hours.compareTo(MIN_HOURS) < 0 || hours.compareTo(MAX_HOURS) > 0) {
+            throw new BusinessRuleViolationException("Hours must be between 0.5 and 24");
+        }
+    }
+
+    private Project resolveProject(Long projectId, boolean callerKnowsItExists) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with id " + projectId));
+
+        if (!project.isActive() && !callerKnowsItExists) {
+            throw new ResourceNotFoundException("Project not found with id " + projectId);
+        }
+
+        if (!project.isActive()) {
+            throw new BusinessRuleViolationException("Project is not active");
+        }
+
+        return project;
+    }
+
 
     private TimeEntryResponse toResponse(TimeEntry timeEntry) {
         TimeEntryResponse response = new TimeEntryResponse();
         response.setId(timeEntry.getId());
+        response.setUserId(timeEntry.getUser().getId());
         response.setUserName(timeEntry.getUser().getName());
+        response.setProjectId(timeEntry.getProject().getId());
         response.setProjectName(timeEntry.getProject().getName());
         response.setDate(timeEntry.getDate());
         response.setHours(timeEntry.getHours());
