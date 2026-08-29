@@ -17,6 +17,7 @@
 
 ### Low
 
+- [ ] `[frontend]` `README.md` → How to run gives `cd dev-learning/angular/01-todo-list`, a path the repo reorganisation removed — the folder is `projects/01-todo-list`, so the documented clone-and-run sequence fails at step 2 for anyone reading the portfolio. *(Effort: S)* *(raised 2026-08-29 while closing the dead `App.title` task)*
 - [ ] `[frontend]` Delete the leftover CLI scaffold `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'` that no longer exists (`app.html` renders only `<router-outlet />`). Not a test gap (see the note above), just dead scaffold. *(Effort: S)*
 
 ---
