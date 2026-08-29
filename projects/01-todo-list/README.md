@@ -97,7 +97,7 @@ git clone https://github.com/VMNunez/dev-learning.git
 ```
 
 ```
-cd dev-learning/angular/01-todo-list
+cd dev-learning/projects/01-todo-list
 ```
 
 ```
