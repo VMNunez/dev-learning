@@ -69,6 +69,7 @@ https://01angulartodolist.netlify.app/
 - `computed()` — derived values from signals
 - Class binding `[class.x]` — apply CSS classes conditionally
 - Key event modifiers — `(keyup.enter)` handles Enter without inspecting the event object
+- Exhaustive `switch` over a union type — omitting `default` makes a new union member a compile error
 - CSS variables with `:root` and `var()`
 - Flexbox layout: `display: flex`, `justify-content`, `align-items`, `gap`
 
