@@ -68,6 +68,7 @@ https://01angulartodolist.netlify.app/
 - `signal()`, `signal.update()`, `signal.set()` — reactive state
 - `computed()` — derived values from signals
 - Class binding `[class.x]` — apply CSS classes conditionally
+- Key event modifiers — `(keyup.enter)` handles Enter without inspecting the event object
 - CSS variables with `:root` and `var()`
 - Flexbox layout: `display: flex`, `justify-content`, `align-items`, `gap`
 
