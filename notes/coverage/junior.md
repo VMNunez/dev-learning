@@ -1517,6 +1517,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Flex sizing — explain how `flex-basis`, `flex-grow`, and `flex-shrink` negotiate an item's size and read the `flex` shorthand without assuming `flex: 1` means only “take remaining space” ✅ 01-todo-list
 - Per-item alignment — override the container's cross-axis alignment for one item with `align-self`
 - `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
+- Container properties vs item properties — `justify-content`, `align-items`, `gap` and `flex-wrap` are read only by an element whose own `display` is `flex` or `grid`, while `align-self`, `order` and the `flex` shorthand belong to its children; an alignment property declared on any other element is parsed into the computed style and then silently ignored, so a dead rule produces no error and is only caught by reading that element's `display` ✅ 01-todo-list — in `task-item.css` the alignment properties appear only on `.task-item`, the one rule that declares `display: flex`; the `.task-title` span carries none
 - `margin: auto` on flex items — absorb available space on the selected side to separate an item without adding a wrapper element
 - Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
 
