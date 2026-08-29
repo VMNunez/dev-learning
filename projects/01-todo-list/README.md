@@ -70,6 +70,7 @@ No login — the app opens straight on the task list.
 - `@Component` — how to create a standalone component
 - `input()` and `output()` — signal-based communication between components
 - `@for` and `@empty` — render a list and handle the empty state
+- `@empty` scope — it reports on the loop's own expression, so a filtered list needs the unfiltered count to explain itself
 - `@if` — show or hide elements based on a condition
 - `@Injectable` with `providedIn: 'root'` — one shared instance created on first use
 - `inject()` — function-based dependency injection, no constructor parameter
