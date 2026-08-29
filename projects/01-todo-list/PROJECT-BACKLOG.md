@@ -3,7 +3,7 @@
 **Last Reviewed — backend:** n/a — Angular-only
 **Last Reviewed — frontend:** 2026-07-14
 
-**Overall quality:** Good — clean smart/dumb split, correct signal/computed state and strict typing throughout. Nothing blocks portfolio-ready; the open tasks are small correctness and polish items.
+**Overall quality:** Good — clean smart/dumb split, correct signal/computed state and strict typing throughout. Nothing blocks portfolio-ready; every task raised has been fixed and closed.
 
 > **Tests are out of scope for this project.** Per CLAUDE.md ("Testing rules"), testing is introduced in project 07 (services) and project 08 (components). The `.spec.ts` files here are untouched Angular CLI scaffold, and their absence of real assertions is **not** a finding.
 
@@ -17,7 +17,7 @@
 
 ### Low
 
-- [ ] **[Low]** `[frontend]` `src/app/pages/todo-page/components/task-list/task-list.html` — the `@empty` block always renders "No tasks yet", so with tasks present but none matching the Active/Completed filter the app states something false. Distinguish "no tasks at all" from "no tasks match this filter" (found by portfolio-audit, 2026-08-29).
+*No open Low tasks.*
 
 ---
 
@@ -36,6 +36,7 @@
 
 #### Low
 
+- 2026-08-29 · **[Low]** `[frontend]` — `@empty` distinguishes an empty list from an empty filter result → README What I learned, coverage angular/junior
 - 2026-08-29 · **[Low]** `[frontend]` — README How to run path fixed to `dev-learning/projects/01-todo-list` after the repo reorg → README How to run
 - 2026-08-29 · **[Low]** `[frontend]` — `task-item.spec.ts` feeds its required `task` input with `componentRef.setInput` → README What I learned, coverage angular/junior
 - 2026-08-29 · **[Low]** `[frontend]` — scaffold `app.spec.ts` deleted; it asserted an `<h1>` the template no longer renders → suite verificada con `npm test`
