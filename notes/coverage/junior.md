@@ -1253,7 +1253,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
 - User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
-- Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows
+- Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
 
 ### Null safety and assertions
