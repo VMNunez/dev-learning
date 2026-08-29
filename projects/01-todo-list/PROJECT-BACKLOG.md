@@ -17,7 +17,6 @@
 
 ### Low
 
-- [ ] `[frontend]` `app.css` is empty — drop the unused `styleUrl` reference. *(Effort: S)*
 - [ ] `[frontend]` `App` still holds the CLI scaffold field `protected readonly title = signal('01-todo-list')` (`app.ts:11`), which no template reads — `app.html` renders only `<router-outlet />`. Dead state, and it makes `signal` look used where it is not. *(Effort: S)* *(raised 2026-08-29 while triaging the «`app.css` is empty» task)*
 - [ ] `[frontend]` Delete the leftover CLI scaffold `app.spec.ts` — it asserts an `<h1>` containing `'Hello, 01-todo-list'` that no longer exists (`app.html` renders only `<router-outlet />`). Not a test gap (see the note above), just dead scaffold. *(Effort: S)*
 
@@ -38,6 +37,7 @@
 
 #### Low
 
+- 2026-08-29 · **[Low]** `[frontend]` — empty `app.css` deleted and its `styleUrl` dropped from `App` → README What I learned, coverage angular/junior
 - 2026-08-29 · **[Low]** `[frontend]` — single `''` route documented as a deliberate bootstrap choice — DECISION, no code change → resuelto en 35fc3516; README Architecture decisions, PLANNING Tradeoffs
 - 2026-08-29 · **[Low]** `[frontend]` — dead `align-items` dropped from a non-flex `<span>` → README What I learned, coverage css/junior
 - 2026-08-29 · **[Low]** `[frontend]` — unreachable `default:` dropped so the `Filter` switch is exhaustive → README What I learned, coverage typescript/junior
