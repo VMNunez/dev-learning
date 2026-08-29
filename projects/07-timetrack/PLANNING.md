@@ -13,11 +13,11 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **G3 backend backlog fix (not a §15 step)**, on `fix/backend-backlog`. The next §15 step is **Step 7a — Angular shell + auth**, and its **High** gate is now clear: the 2026-08-06 `review-audit` re-opened the backend tier with 3 Highs, all three closed on 2026-08-23, leaving **no open task at any priority** (the last Medium, per-endpoint authorization rules, closed 2026-08-25). What still stands between here and Step 7a is the PR of `fix/backend-backlog` into `projects/07-timetrack` |
-| **Current branch** | `fix/backend-backlog`. Its §22 closing condition is met again as of 2026-08-23 — every backend High is `[x]`, `reopen` passed its Postman check on 2026-07-22 and `PATCH /api/users/me/password` closed on 2026-07-29 — so the **PR into `projects/07-timetrack` is due**. `feat/angular-shell-auth` is created from `projects/07-timetrack` **after** that merge |
+| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off; `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier**, so nothing gates this step. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
+| **Current branch** | `feat/angular-shell-auth`, cut from `projects/07-timetrack` after the 2026-08-29 merge. `fix/backend-backlog` met its §22 closing condition and is done — do not commit to it again. Per §22 this branch PRs back into `projects/07-timetrack` when Step 7a's done condition passes |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
-| **Next gate** | G3 sign-off — **signable, last backend High merged into the branch**: all three Highs of the 2026-08-06 round closed 2026-08-23 (secrets in pushed history, `JwtFilter` blank token, undocumented runtime configuration), and the backend tier's `**Last Reviewed**` carries no incomplete qualifier. §23 completes the sign-off when `fix/backend-backlog` PRs into `projects/07-timetrack`. G4 (frontend review) follows when `feat/angular-manager-pages` merges after Step 7d |
-| **Phase** | Backend (Phase 4) — its backlog reopened on 2026-08-06 and the frontend phase has not started; Step 7a opens Phase 5 once G3 signs off |
+| **Next gate** | G4 — frontend review — **blocked, no frontend code exists yet**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7a–7d |
+| **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
 | **Last updated** | 2026-08-29 |
 
 ---
@@ -1593,9 +1593,9 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 > `PATCH /api/users/me/password`. That endpoint did not exist when this step was planned: the
 > account-password flow (`SecureRandom` generation · `CreateUserResponse` · the endpoint itself) was an
 > open **Medium** in `PROJECT-BACKLOG.md`, not a §15 step, and it gated this step because 7a ships its
-> consumer. It is **built and closed** — see the ledger line dated 2026-07-29 — so the only thing left
-> between here and starting is merging `fix/backend-backlog` into `projects/07-timetrack`, which also
-> signs G3 off. Nothing else blocks this step.
+> consumer. It is **built and closed** — see the ledger line dated 2026-07-29 — and
+> `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70), which signed G3 off.
+> Nothing blocks this step.
 
 - Angular project with Angular Material; `environment.ts` with the API base URL
 - **The §14 design system is set up here, before any page exists** — `styles/material-theme.scss` with the
@@ -1955,9 +1955,9 @@ stricter bar — no open High *or* Medium — is satisfied months before the clo
 earlier plan for this branch anticipated leaving those tasks open for G7; that is no longer the state.
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
-Remaining sequence, with no High or Medium backlog work left in it: PR `fix/backend-backlog` into
-`projects/07-timetrack` (which signs G3 off) → create `feat/angular-shell-auth` from
-`projects/07-timetrack` → Step 7a.
+Remaining sequence, with no backlog work left in it at any priority: `fix/backend-backlog` merged into
+`projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), signing G3 off → create
+`feat/angular-shell-auth` from `projects/07-timetrack` → Step 7a.
 
 ---
 
@@ -1990,7 +1990,7 @@ The project is never declared finished early — it is closed only when every bo
 ```
 - [ ] Every §15 step's done condition passes, each with its step-complete ritual (G1)
 - [ ] PLANNING.md still matches what was built — re-run plan-audit MODE=review if §15/§22 moved (G2)
-- [ ] review-audit REVIEW_SCOPE=backend has run, and every High task it found is fixed (G3)
+- [x] review-audit REVIEW_SCOPE=backend has run, and every High task it found is fixed (G3)
 - [ ] review-audit REVIEW_SCOPE=frontend has run, and every High task it found is fixed (G4)
 - [ ] readme-audit has run — global + backend + frontend READMEs at standard (G5)
 - [ ] progress-update MODE=active has run **and its drift report came back empty** — anything it named is repaired by the owner it named (G6)
