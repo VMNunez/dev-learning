@@ -400,7 +400,9 @@ by ID — read to deduplicate a candidate against work already ruled on, includi
 voice pipeline, Loop A generation → translation → TODO → symmetric repair → `[refined]`, and Loop B
 collection → maturity → drafted rule → approval. **A target, not a description of what runs**: it
 grants no authority, no run obeys it, a standard beats it wherever they disagree, and every step names the
-row that owns it — read at step 1 by a session resolving `REC-180`, `REC-183` or `REC-184`),
+row that owns it — read at step 1 by a session resolving `REC-180`, `REC-183`, `REC-184` **or
+`REC-171` (g)/(h)**, that last one because `REC-184` binds its approval gate to be ruled with the notes
+harvest's or the two mechanisms diverge),
 `system/_internal/_system-check-reconcile-prompt.md` (the mandate every one of `system-check`'s Step 4
 reconcilers is dispatched with: the two directions, the four claim dispositions and the return contract),
 `system/_internal/_system-check-report.md` (the latest explicit machinery audit: inventory and boundary
