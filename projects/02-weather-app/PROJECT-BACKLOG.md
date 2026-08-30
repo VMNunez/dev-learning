@@ -28,6 +28,11 @@ component/service split is correct; the gaps are all in input handling at the se
 - [ ] `[frontend]` Remove the leftover CLI scaffold in the root component: the empty `app.css` (with its unused
       `styleUrl`) and the `title` signal in `app.ts`, which is never read in `app.html`. — *effort: 5 min*
 
+- [ ] `[frontend]` The forecast icon `<img>` in `weather-forecast.html:10` has no `alt` attribute, so a screen
+      reader announces the raw icon file name instead of the weather; the sibling icon in `weather-card.html:5`
+      already sets one. — *effort: 5 min*
+      *(raised 2026-08-30 while triaging the hover-effect task)*
+
 ---
 
 ## Closed
