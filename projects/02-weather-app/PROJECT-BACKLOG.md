@@ -31,6 +31,14 @@ component/service split is correct; the gaps are all in input handling at the se
       recruiter follows fail at the second command. — *effort: 5 min*
       *(raised 2026-08-30 while triaging the README Tradeoffs task)*
 
+- [ ] `[frontend]` `npm test` bundles the five `.spec.ts` files but executes **zero** tests — Vitest reports
+      `Test Files 0 passed (5)` / `Tests 0 passed (0)` and no failure — so the command gives no signal at all:
+      the false `should render title` assertion removed today had never once run. The `test` target in
+      `angular.json:71` is a bare `@angular/build:unit-test` builder with no `options`. Tests are out of scope
+      for this project, but a test command that silently runs nothing is not: the same scaffold ships in
+      projects 01 and 03–06, and project 08 is where component testing starts. — *effort: 30 min*
+      *(raised 2026-08-30 while triaging the CLI-scaffold task)*
+
 ---
 
 ## Closed
