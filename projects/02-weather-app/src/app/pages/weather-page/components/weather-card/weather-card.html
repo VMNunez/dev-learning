@@ -2,7 +2,7 @@
   <div class="weather-card">
     <div class="weather-header">
       <h2 class="city-name">{{ weather()!.name }}</h2>
-      <img [src]="getIconUrl(weather()!.weather[0].icon)" alt="weather icon" />
+      <img [src]="getIconUrl(weather()!.weather[0].icon)" alt="" />
     </div>
     <p class="temperature">{{ weather()!.main.temp | number: '1.0-1' }}ºC</p>
     <p class="description">{{ weather()!.weather[0].description }}</p>
