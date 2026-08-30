@@ -18,11 +18,6 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Low
 
-- [ ] `[frontend]` The forecast icon `<img>` in `weather-forecast.html:10` has no `alt` attribute, so a screen
-      reader announces the raw icon file name instead of the weather; the sibling icon in `weather-card.html:5`
-      already sets one. — *effort: 5 min*
-      *(raised 2026-08-30 while triaging the hover-effect task)*
-
 - [ ] `[frontend]` The How to run section still says `cd dev-learning/angular/02-weather-app`, a path the
       repository reorg removed when `angular/` became `projects/` — so the clone-and-run instructions a
       recruiter follows fail at the second command. — *effort: 5 min*
@@ -61,6 +56,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Low
 
+- 2026-08-30 · **[Low]** `[frontend]` — both weather icons marked decorative with `alt=""`, not just the forecast one → README Architecture decisions; coverage proposal routed to `_cross-topic-inbox.md` — no registered topic owns neutral HTML accessibility
 - 2026-08-30 · **[Low]** `[frontend]` — root component stripped of CLI scaffold: `app.css`, `styleUrl`, `title` signal, `app.spec.ts` → README What I learned; no coverage write — `styleUrl` bullet already ✅ 01-todo-list
 - 2026-08-30 · **[Low]** `[frontend]` — the query string is built with `HttpParams`, not template-literal concatenation → same commit as the Medium above
 
