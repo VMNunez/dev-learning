@@ -39,6 +39,11 @@ component/service split is correct; the gaps are all in input handling at the se
       projects 01 and 03–06, and project 08 is where component testing starts. — *effort: 30 min*
       *(raised 2026-08-30 while triaging the CLI-scaffold task)*
 
+- [ ] `[frontend]` PLANNING's `Key patterns introduced` table still says environment files `Store the API key
+      safely` — the exact claim commit `05fac184` removed from the README on 2026-08-30, so the plan now
+      asserts what the README was corrected for. — *effort: 5 min*
+      *(raised 2026-08-30 while closing the CLI-scaffold task)*
+
 ---
 
 ## Closed
