@@ -18,9 +18,6 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Low
 
-- [ ] `[frontend]` Remove the leftover CLI scaffold in the root component: the empty `app.css` (with its unused
-      `styleUrl`) and the `title` signal in `app.ts`, which is never read in `app.html`. — *effort: 5 min*
-
 - [ ] `[frontend]` The forecast icon `<img>` in `weather-forecast.html:10` has no `alt` attribute, so a screen
       reader announces the raw icon file name instead of the weather; the sibling icon in `weather-card.html:5`
       already sets one. — *effort: 5 min*
@@ -64,6 +61,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Low
 
+- 2026-08-30 · **[Low]** `[frontend]` — root component stripped of CLI scaffold: `app.css`, `styleUrl`, `title` signal, `app.spec.ts` → README What I learned; no coverage write — `styleUrl` bullet already ✅ 01-todo-list
 - 2026-08-30 · **[Low]** `[frontend]` — the query string is built with `HttpParams`, not template-literal concatenation → same commit as the Medium above
 
 ### Backend
