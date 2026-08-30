@@ -36,7 +36,8 @@ this file owns only the boundary between them.
 | Security | Threats, attack models, authentication/authorization concepts, credential handling, and defensive controls | Concrete client/server integration mechanics to Angular, Spring, or Spring Boot; Git history mechanics to Git | Angular, Spring, Spring Boot, Git, Architecture, General | after Architecture |
 | TypeScript | TypeScript's type system, compiler behaviour, modules, and JavaScript interoperation | JavaScript runtime semantics to JavaScript; Angular framework behaviour to Angular | JavaScript, Angular | after Security |
 | JavaScript | JavaScript runtime and language semantics, including Promise behaviour and the event loop | Static typing to TypeScript; Observable/RxJS integration to Angular | TypeScript, Angular, General | after TypeScript |
-| CSS | Cascade, specificity, selectors, layout, responsive styling, visual rendering, and browser CSS behaviour | Component-framework APIs to Angular/Angular Material; TypeScript or JavaScript behaviour to their language topics | Angular, Angular Material, General | after JavaScript |
+| HTML | Markup semantics, document structure, native element behaviour, forms and labelling, and framework-neutral accessibility: the accessibility tree, accessible names, focus and keyboard operability | Browser styling mechanics to CSS; template syntax and framework bindings to Angular; accessibility supplied by the library to Angular Material; neutral HTTP and content negotiation to General | CSS, Angular, Angular Material, General | after JavaScript |
+| CSS | Cascade, specificity, selectors, layout, responsive styling, visual rendering, and browser CSS behaviour | Component-framework APIs to Angular/Angular Material; TypeScript or JavaScript behaviour to their language topics | Angular, Angular Material, General, HTML | after HTML |
 | SQL | Relational query language, schema constraints, transactions, indexes, query planning, and database behaviour | JPA and Spring persistence integration to Spring Boot; neutral data-transfer vocabulary to General | Spring Boot, Architecture, General | after CSS |
 | Git | Distributed version-control concepts, repository state, history, branching, remotes, integration, recovery, and hosted-review workflow recognition | CI/CD system construction to General; credential incident response to Security | General, Security | after SQL |
 | General | Framework-neutral HTTP, JSON, testing vocabulary, configuration, containers, delivery-tool awareness, and cross-stack development fundamentals | Concrete framework implementations to Angular/Spring/Spring Boot; threats and defences to Security; design ownership to Architecture | Angular, Spring, Spring Boot, Architecture, Git, Security, SQL, JavaScript, Java, CSS | after Git |
@@ -70,3 +71,18 @@ mirror heading here; the first `coverage-prompt` run owns those artifacts and th
 - Adjacent topics: Spring Boot, Java, Architecture, Security, General.
 - Mirror position: after Angular Material.
 - Migration trigger: first coverage run must use full recalibration and migrate boundary overlaps.
+
+### HTML — admitted 2026-08-30
+
+- Professional competency: markup semantics and framework-neutral accessibility are asked about
+  independently of any framework in target frontend screenings, and they survive a change of framework
+  intact; no registered topic claimed them, so the family was unowned rather than deliberately excluded.
+- Owns: element semantics and document structure, native element behaviour, forms and labelling, the
+  accessibility tree and accessible-name computation, focus and keyboard operability.
+- Excludes / delegates: browser styling mechanics to CSS; template syntax and bindings to Angular;
+  library-supplied accessibility to Angular Material; neutral HTTP and content negotiation to General.
+- Adjacent topics: CSS, Angular, Angular Material, General.
+- Mirror position: after JavaScript (CSS's predecessor moves from JavaScript to HTML).
+- Migration trigger: first coverage run must use full recalibration and migrate boundary overlaps — in
+  particular the accessibility bullets currently held by Angular Material, which keeps only what the
+  library itself supplies, and the `<img>`-facing and focus-outline bullets in CSS junior.
