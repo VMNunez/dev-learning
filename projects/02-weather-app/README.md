@@ -38,10 +38,11 @@ https://02angularweatherapp.netlify.app/
 
 - `forkJoin` for parallel requests to load current weather and forecast at the same time instead of sequentially
 - `takeUntilDestroyed` to cancel subscriptions automatically when the component is destroyed — no `ngOnDestroy` needed
-- Environment files for the API key to keep secrets out of the repository
+- Environment files for the API key to keep the credential out of the repository and out of git history
 - Input normalised in the component that captures it to keep raw text from crossing the `output()` boundary
 - `HttpParams` for the query string so every value is URL-encoded and user input cannot become query syntax
 - `prefers-reduced-motion` honoured so the decorative card hover is dropped while the loading spinner only slows, never stops
+- Container and presentation components split so the page owns the API call and the state while the form, card and forecast only receive inputs and emit intent
 
 ---
 
