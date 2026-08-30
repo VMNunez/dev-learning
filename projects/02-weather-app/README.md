@@ -69,6 +69,7 @@ https://02angularweatherapp.netlify.app/
 - `forkJoin` — run multiple HTTP requests in parallel
 - `ngOnInit` — run logic when the component loads
 - `signal()` and `computed()` — reactive state and derived values
+- State justified by its readers — a signal no template reads is not state, so the root component of a routed app declares none
 - `(keyup.enter)` — key modifier so Enter and the button click reach one handler
 - `number` pipe with format `'1.0-1'`
 - `SlicePipe` — cut strings in templates
@@ -78,6 +79,7 @@ https://02angularweatherapp.netlify.app/
 - `@keyframes` and `animation` — CSS animations
 - CSS spinner: `border-top-color` + `rotate` + `border-radius: 50%`
 - `transition` and `transform: scale()` — hover effects
+- `styleUrl` — a component declares one only when it has styles; an empty stylesheet is a build dependency that buys nothing
 
 ---
 
