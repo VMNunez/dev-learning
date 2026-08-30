@@ -72,7 +72,7 @@ https://02angularweatherapp.netlify.app/
 - `(keyup.enter)` — key modifier so Enter and the button click reach one handler
 - `number` pipe with format `'1.0-1'`
 - `SlicePipe` — cut strings in templates
-- Environment files — store API keys safely
+- Environment files — keep API keys out of the repository, not out of the bundle
 - `takeUntilDestroyed` — cancel HTTP subscriptions automatically when a component is destroyed
 - `DestroyRef` — Angular token injected to notify observables when the component lifecycle ends
 - `@keyframes` and `animation` — CSS animations
