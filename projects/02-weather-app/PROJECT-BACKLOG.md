@@ -14,10 +14,6 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Medium
 
-- [ ] `[frontend]` URL-encode the city name in `weather.service.ts` (lines 13, 19). The name is interpolated raw
-      into `q=${city}`, so accents or special characters (`São Paulo`, `&`, `#`) build a malformed query string
-      and surface as a false "not found". Fix it by building the query with `HttpParams` — which also resolves
-      the Low task below. — *effort: 15 min*
 - [ ] `[frontend]` Add the `transition` + `transform: scale()` hover effect from PLANNING.md's key-patterns table —
       it is the one planned concept with no trace in the code (no `transition` or `scale` anywhere in the CSS).
       — *effort: 15 min*
@@ -29,8 +25,6 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Low
 
-- [ ] `[frontend]` Build the query string with `HttpParams` in `weather.service.ts` instead of template-literal
-      concatenation — the idiomatic Angular way, and it removes the manual-encoding bug class. — *effort: 15 min*
 - [ ] `[frontend]` Remove the leftover CLI scaffold in the root component: the empty `app.css` (with its unused
       `styleUrl`) and the `title` signal in `app.ts`, which is never read in `app.html`. — *effort: 5 min*
 
@@ -46,12 +40,13 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Medium
 
+- 2026-08-30 · **[Medium]** `[frontend]` — the city name is URL-encoded by `HttpParams` instead of raw interpolation → README Architecture decisions, coverage angular + security/junior
 - 2026-08-29 · **[Medium]** `[frontend]` — Enter and the button click reach one `submit()` handler → README What I learned, coverage architecture/junior
 - 2026-08-29 · **[Medium]** `[frontend]` — an empty or whitespace-only search is rejected before any request → README Architecture decisions, coverage architecture/junior
 
 #### Low
 
-*No Low tasks closed yet.*
+- 2026-08-30 · **[Low]** `[frontend]` — the query string is built with `HttpParams`, not template-literal concatenation → same commit as the Medium above
 
 ### Backend
 
