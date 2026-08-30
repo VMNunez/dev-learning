@@ -42,6 +42,7 @@ https://02angularweatherapp.netlify.app/
 - Input normalised in the component that captures it to keep raw text from crossing the `output()` boundary
 - `HttpParams` for the query string so every value is URL-encoded and user input cannot become query syntax
 - `prefers-reduced-motion` honoured so the decorative card hover is dropped while the loading spinner only slows, never stops
+- `alt=""` on the weather icons to mark them decorative — the description is already rendered as text beside each one, so an accessible name would only repeat it
 - Container and presentation components split so the page owns the API call and the state while the form, card and forecast only receive inputs and emit intent
 
 ---
