@@ -74,6 +74,8 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## General
 
+- **Ownership ruling needed — no registered topic claims framework-neutral HTML markup semantics.** Decorative vs informative images — an image whose information is already carried by adjacent text is decorative and takes `alt=""`, which gives it `role="presentation"` and removes it from the accessibility tree, whereas an *absent* `alt` leaves `role="img"` and lets the accessible name fall back to the `src` filename (proposed level: junior · source run: `backlog-task-close` on 02-weather-app, 2026-08-30). `_topic-ownership.md` gives no topic an `Owns` claim here: Angular Material owns only the accessibility *supplied by the library*, CSS owns cascade, layout and visual rendering, and General's row names HTTP, JSON, testing vocabulary, configuration and containers. General is the nearest candidate under "cross-stack development fundamentals", but none of its junior sections is a home for this bullet, so accepting it means either opening a markup/accessibility section here or admitting a new topic — a schema change requiring explicit authorization and a boundary migration. Already applied in project code (`02-weather-app` gives both weather icons `alt=""` because the forecast and card templates render the description as adjacent text), so whichever run authors the bullet leaves a `coverage-mark` evidence marker owed.
+
 *(Empty — the three proposals were consumed by the General junior full recalibration on 2026-07-30: framework-specific Jackson and TestBed ownership was removed, while neutral serialization, test structure, setup, and meaningful assertions were retained or added.)*
 
 ## JavaScript
