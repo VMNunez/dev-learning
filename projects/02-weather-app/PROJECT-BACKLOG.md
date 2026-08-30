@@ -14,11 +14,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Medium
 
-- [ ] `[frontend]` The README Tradeoffs section claims "Single component over split components", but the project
-      ships four (`weather-page` plus `weather-form`, `weather-card`, `weather-forecast`) and PLANNING's "Pages and
-      components" section plans exactly that split — so the bullet documents a decision the project never took, on
-      the file a recruiter reads first. Replace it with a tradeoff the project did make. — *effort: 10 min*
-      *(raised 2026-08-29 while closing the search-input tasks)*
+*No open Medium tasks.*
 
 ## Low
 
@@ -47,6 +43,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Medium
 
+- 2026-08-30 · **[Medium]** `[frontend]` — the false single-component tradeoff is replaced by the three the project took → README Tradeoffs + Architecture decisions; no coverage bullet — nothing new demonstrated
 - 2026-08-30 · **[Medium]** `[frontend]` — the planned hover effect ships with a `prefers-reduced-motion` guard → README Architecture decisions, coverage css/junior
 - 2026-08-30 · **[Medium]** `[frontend]` — the city name is URL-encoded by `HttpParams` instead of raw interpolation → README Architecture decisions, coverage angular + security/junior
 - 2026-08-29 · **[Medium]** `[frontend]` — Enter and the button click reach one `submit()` handler → README What I learned, coverage architecture/junior
