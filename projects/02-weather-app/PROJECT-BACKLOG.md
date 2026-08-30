@@ -30,6 +30,11 @@ component/service split is correct; the gaps are all in input handling at the se
       already sets one. — *effort: 5 min*
       *(raised 2026-08-30 while triaging the hover-effect task)*
 
+- [ ] `[frontend]` The How to run section still says `cd dev-learning/angular/02-weather-app`, a path the
+      repository reorg removed when `angular/` became `projects/` — so the clone-and-run instructions a
+      recruiter follows fail at the second command. — *effort: 5 min*
+      *(raised 2026-08-30 while triaging the README Tradeoffs task)*
+
 ---
 
 ## Closed
