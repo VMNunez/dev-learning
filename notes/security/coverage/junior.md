@@ -174,7 +174,7 @@ review without taking on specialist or production-platform ownership.
 - SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
   an ORM cannot make string-built queries safe ✅ 07-timetrack
 - Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
-  by concatenating unchecked input
+  by concatenating unchecked input ✅ 02-weather-app — the city name reaches the OpenWeatherMap query through `HttpParams`, never concatenated into the URL
 - Unsafe deserialisation — accept constrained DTO and data formats instead of reconstructing arbitrary
   attacker-selected object types or enabling polymorphic type resolution casually
 - Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,

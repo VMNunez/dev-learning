@@ -69,7 +69,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 - `provideHttpClient()` and its feature functions — enable `HttpClient` application-wide at bootstrap and opt into behaviour such as the Fetch backend or interceptors through explicit `with...()` features instead of separate providers ✅ 02-weather-app
 - Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON ✅ 02-weather-app
-- `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
+- `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged ✅ 02-weather-app — `WeatherService` chains `new HttpParams().set(...)` three times and passes the result to `get()`
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
 - Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
 
@@ -1105,7 +1105,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
   an ORM cannot make string-built queries safe ✅ 07-timetrack
 - Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
-  by concatenating unchecked input
+  by concatenating unchecked input ✅ 02-weather-app — the city name reaches the OpenWeatherMap query through `HttpParams`, never concatenated into the URL
 - Unsafe deserialisation — accept constrained DTO and data formats instead of reconstructing arbitrary
   attacker-selected object types or enabling polymorphic type resolution casually
 - Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,
@@ -1220,7 +1220,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
-- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
+- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature
