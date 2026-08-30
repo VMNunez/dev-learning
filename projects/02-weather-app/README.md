@@ -48,7 +48,8 @@ https://02angularweatherapp.netlify.app/
 ## Tradeoffs
 
 - `subscribe` over `async` pipe — explicit subscription management was clearer for learning the Observable lifecycle
-- Single component over split components — the focus was HTTP patterns, not component architecture
+- API key in the shipped bundle over a proxy backend — a frontend-only project cannot hide the key from the browser; the environment file keeps it out of the repository, and a proxy backend was out of scope
+- One midday reading per day over aggregating each day's eight forecast slots — the 5-day list stays comparable day to day at the cost of the real daily minimum and maximum
 
 ---
 
