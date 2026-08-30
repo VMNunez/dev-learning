@@ -14,9 +14,6 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Medium
 
-- [ ] `[frontend]` Add the `transition` + `transform: scale()` hover effect from PLANNING.md's key-patterns table —
-      it is the one planned concept with no trace in the code (no `transition` or `scale` anywhere in the CSS).
-      — *effort: 15 min*
 - [ ] `[frontend]` The README Tradeoffs section claims "Single component over split components", but the project
       ships four (`weather-page` plus `weather-form`, `weather-card`, `weather-forecast`) and PLANNING's "Pages and
       components" section plans exactly that split — so the bullet documents a decision the project never took, on
@@ -45,6 +42,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Medium
 
+- 2026-08-30 · **[Medium]** `[frontend]` — the planned hover effect ships with a `prefers-reduced-motion` guard → README Architecture decisions, coverage css/junior
 - 2026-08-30 · **[Medium]** `[frontend]` — the city name is URL-encoded by `HttpParams` instead of raw interpolation → README Architecture decisions, coverage angular + security/junior
 - 2026-08-29 · **[Medium]** `[frontend]` — Enter and the button click reach one `submit()` handler → README What I learned, coverage architecture/junior
 - 2026-08-29 · **[Medium]** `[frontend]` — an empty or whitespace-only search is rejected before any request → README Architecture decisions, coverage architecture/junior
@@ -71,8 +69,8 @@ component/service split is correct; the gaps are all in input handling at the se
 | `SlicePipe` | ✅ Demonstrated | `weather-forecast.html:7` |
 | Environment files (API key) | ✅ Demonstrated | `weather.service.ts:3,13,19` |
 | `@keyframes` + `animation` | ✅ Demonstrated | `weather-page.css:12,28` |
-| `transition` + `transform: scale()` | ❌ Missing | not present anywhere in the CSS |
+| `transition` + `transform: scale()` | ✅ Demonstrated | `weather-forecast.css:31,37` |
 
-**Tally:** 8 ✅ · 0 ⚠️ · 1 ❌
+**Tally:** 9 ✅ · 0 ⚠️ · 0 ❌
 
 Tests are out of scope for this project — testing enters the roadmap at project 07.
