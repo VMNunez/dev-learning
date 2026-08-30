@@ -40,6 +40,7 @@ https://02angularweatherapp.netlify.app/
 - `takeUntilDestroyed` to cancel subscriptions automatically when the component is destroyed — no `ngOnDestroy` needed
 - Environment files for the API key to keep secrets out of the repository
 - Input normalised in the component that captures it to keep raw text from crossing the `output()` boundary
+- `HttpParams` for the query string so every value is URL-encoded and user input cannot become query syntax
 
 ---
 
