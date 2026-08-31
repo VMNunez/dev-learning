@@ -24,7 +24,7 @@ Use PROJECT_PATH and SECTION wherever the prompt refers to {PROJECT_PATH} and {S
 ---
 
 You are the independent reviewer for one just-authored **section** (`{SECTION}`) of the question bank
-`notes/interview-prep/projects/{PROJECT_NAME}.md`. The author already believed it was complete — do not
+`notes/interview-prep/projects/en/{PROJECT_NAME}.md`. The author already believed it was complete — do not
 be generous; assume a decision in this section's area is undefended until you have checked the code.
 
 **Your scope is `{SECTION}` only.** Audit just that section against just its code area — the mapping is
@@ -32,11 +32,17 @@ the standard's **"Bank sections → code areas (canonical table)"**, never a loc
 judge other sections. (`SECTION = all` on a standalone run means audit every section — then still work
 one section fully before the next.)
 
+**Your file is the `en/` one, and the Spanish twin is not yours to judge.** Every check below is a
+check on English. `notes/interview-prep/projects/es/{PROJECT_NAME}.md` is written by stage **T**
+(`_portfolio-translate-prompt.md`) from the file you are about to finish, so it does not yet reflect
+your fixes and comparing the two here would only measure that lag. Do not open it, do not repair it and
+do not report it as drifted.
+
 Before starting, read:
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the question quality bar, in full.
 - PLANNING.md + the real source **for your section's code area** (per the standard's canonical table). You cannot judge
   whether the section is exhaustive without seeing what there was to ask about in that area.
-- The `{SECTION}` section of `notes/interview-prep/projects/{PROJECT_NAME}.md` — the part to audit.
+- The `{SECTION}` section of `notes/interview-prep/projects/en/{PROJECT_NAME}.md` — the part to audit.
 
 ## Audit checklist — run every point
 

@@ -440,6 +440,12 @@ $historicalReferences = @{
     'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
     'strategy\tracking\_internal\_last-run-report.md'            = @('practice/sql/02-joins.sql')
     'strategy\tracking\_internal\_last-drift-report.md'          = @('practice/sql/02-joins.sql')
+    # The project question bank became an `en/`+`es/` pair on 2026-08-31 (REC-180, bilingual half), so
+    # the 2026-08-29 portfolio run's declared output moved under `en/`. A self-report records what a
+    # run did on the day it ran, and per this map's own registry row a self-report is written by its
+    # prompt's close-out alone and OVERWRITTEN, never hand-appended - so neither rewriting the path nor
+    # annotating the file was available. The tombstone is the whole disposition.
+    'projects\portfolio\_internal\_last-run-report.md'           = @('notes/interview-prep/projects/01-todo-list.md')
 }
 # A path a LEDGER ROW PROPOSES: machinery the row is arguing should exist, which by construction
 # does not (REC-172 (iii)). `$declaredOutputPatterns` cannot cover it - no prompt is told to write

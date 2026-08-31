@@ -2,10 +2,12 @@
 
 **Internal component. Not runnable.** This is the single source of truth for the **portfolio gate**:
 the final go/no-go check on a project before it goes on the CV, LinkedIn, or into a job application.
-All three pieces of the portfolio pipeline read it:
+All four pieces of the portfolio pipeline read it:
 
 - `_portfolio-write-prompt.md` (the **author**) reads it for the interview-question quality bar.
 - `_portfolio-review-prompt.md` (the **reviewer**) reads it to audit the question bank against that bar.
+- `_portfolio-translate-prompt.md` (the **translator**) reads it for the file template and the bank's
+  section list; the Spanish rules themselves are not here, they are in that prompt.
 - `portfolio-audit.md` (the **orchestrator**) reads it for the verdict logic and the CV / GitHub formats.
 
 ## What the portfolio gate is for
@@ -13,8 +15,8 @@ All three pieces of the portfolio pipeline read it:
 It answers one question: **is the project at `{PROJECT_PATH}` ready to show a recruiter and reference
 in a job application right now — not "ready eventually", ready today?** It produces four things:
 
-1. A bank of **project-specific interview questions** (saved regardless of the verdict — they are
-   useful prep even for an unfinished project).
+1. A bank of **project-specific interview questions**, as an `en/` + `es/` pair (saved regardless of
+   the verdict — they are useful prep even for an unfinished project).
 2. A **go/no-go verdict** (✅ Ready / ⚠️ Almost / ❌ Not ready).
 3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub repo
    description** (English).
@@ -128,10 +130,27 @@ Otherwise apply:
 
 ## Interview-question quality bar
 
-The question bank lives at `notes/interview-prep/projects/{PROJECT_NAME}.md` (`{PROJECT_NAME}` = the
-last path segment, e.g. `07-timetrack`). It complements the levelled topic-based files in
-`interview-prep/{LEVEL}/en/`
+The question bank is a **bilingual pair**: `notes/interview-prep/projects/en/{PROJECT_NAME}.md` and
+`notes/interview-prep/projects/es/{PROJECT_NAME}.md` (`{PROJECT_NAME}` = the last path segment, e.g.
+`07-timetrack`, and **the same filename in both** — the project folder is an identifier, not prose, so
+it is never translated, exactly as the levelled banks keep `angular.md` in `en/` and `es/`). It
+complements the levelled topic-based files in `interview-prep/{LEVEL}/en/`
 and `es/` — these are **project-specific**, about the actual implementation decisions made here.
+
+**`en/` is authored and audited; `es/` is produced from it and never written by hand.** Everything in
+this section — the quality bar, the exhaustiveness rule, the format and the append/dedupe rule — is a
+rule about `en/`, and the author and the reviewer are never dispatched at the Spanish file. The twin is
+owed by `_portfolio-translate-prompt.md` (stage **T**), which runs once per project after every section
+is finished and carries the whole Spanish contract: natural Spanish, structural parity, and which side
+a `TODO:` marker is repaired on. A run that stops before stage T leaves the pair half-built, and the
+orchestrator declares that rather than hiding it.
+
+**Why the bank is authored in English and studied in Spanish.** Victor answers out loud in Spanish, so
+`es/` is the file that matters at the moment of use; `en/` is authored first because the code, the
+identifiers and PLANNING.md are English, and a question mined from them is written once in the language
+of its own evidence and then rendered. That is the order the notes family already runs, and it is why
+translation is its own stage rather than one more instruction to an author who has just spent its whole
+context walking Java.
 
 **Every question must:**
 - Target a **decision, a pattern, or a gotcha** — never "what is X". It must be answerable only by
@@ -159,7 +178,12 @@ interviewer will find.*
 **Append + dedupe:** if the file exists, append only questions not already there. Never add a question
 covering the same decision or code path as an existing one, even if worded differently.
 
-**File template:**
+**File template** (`en/`; the `es/` twin is the same file with the header translated — stage T owns it,
+and its two Spanish lines are `Preguntas específicas de las decisiones de implementación tomadas
+en este proyecto.` / ``Úsalas junto a los archivos por tema en `interview-prep/{LEVEL}/es/`.``, the H1 kept as
+`# Preguntas de entrevista — {PROJECT_NAME}` (the project name itself never translated), and the
+five section headings translated as `Arquitectura y patrones` · `Seguridad y autenticación` · `Reglas
+de negocio` · `Decisiones técnicas` · `Testing`):
 ```markdown
 # Interview Questions — {PROJECT_NAME}
 

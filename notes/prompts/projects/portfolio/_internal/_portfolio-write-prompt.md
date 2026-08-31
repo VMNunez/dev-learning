@@ -7,7 +7,7 @@ subagent at it; you can also run it standalone to draft one project's question b
 
 **What it does.** Reads **one section's** code area of the project and PLANNING.md and writes the
 **exhaustive set of project-specific interview questions for that section** into
-`notes/interview-prep/projects/{PROJECT_NAME}.md`. The orchestrator runs it once per bank section
+`notes/interview-prep/projects/en/{PROJECT_NAME}.md`. The orchestrator runs it once per bank section
 (`{SECTION}`), so each run is a small, specific task that cannot skim a tail — the failure mode when one
 prompt tries to author the whole bank. It does **not** compute the verdict, write the CV bullet, or
 commit — the orchestrator owns those.
@@ -47,6 +47,14 @@ that, never a local copy.
 
 (`SECTION = all` on a standalone run means author every section — then still work one section fully
 before the next, and read each section's area as above.)
+
+**You write English, and only into `en/`.** The bank is a bilingual pair and the Spanish twin at
+`notes/interview-prep/projects/es/{PROJECT_NAME}.md` belongs to stage **T**
+(`_portfolio-translate-prompt.md`), which runs after every section is finished. Never create it, never
+append to it, and never write a Spanish question here — a section translated early is translated from a
+draft the reviewer has not seen yet, which is the re-sync the notes family split this stage out to
+avoid. If the `es/` twin already exists from an earlier run, you still do not touch it; your section
+lands in `en/` and stage T brings the twin into line.
 
 ## Step 1 — Read the project
 
@@ -92,7 +100,7 @@ Examples of the shape (adapt to the actual code):
 
 Apply the standard's **exhaustiveness rule** within your section: as many questions as there are real
 decisions and patterns to defend in this area — do not cap at 5. Save them under the `{SECTION}` heading
-in `notes/interview-prep/projects/{PROJECT_NAME}.md` using the standard's file template (create the
+in `notes/interview-prep/projects/en/{PROJECT_NAME}.md` using the standard's file template (create the
 heading if the file/section does not exist yet); if questions for this section already exist, append
 only what is not already there and never duplicate a decision or code path already covered.
 
