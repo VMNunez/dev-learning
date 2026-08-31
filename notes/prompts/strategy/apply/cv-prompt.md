@@ -55,7 +55,8 @@ First read `notes/prompts/strategy/apply/_internal/_application-standard.md` —
 job-application standard. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
 `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
 `notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for
-defensibility), the **universal bullet format**, the **ATS keyword pool** (required +
+defensibility), the **universal bullet format**, the **Project-bullet spec** (the eight conditions a
+sourced `cv-bullets.md` entry is re-checked against), the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
 CV-specific flow on top.
@@ -129,6 +130,12 @@ For each chosen project, follow the standard's rule on sourcing bullets: use the
 `notes/cv/cv-bullets.md` as the primary bullet if it exists (use it as-is — it was already polished by
 `portfolio-audit`), otherwise draft the primary bullet from the project's `README.md`. In both
 cases, read the README.md to find supporting details for the 2nd and 3rd bullets in the project section.
+
+**Re-check every sourced entry against the standard's Project-bullet spec here, and report — do not
+repair.** The eight conditions, run over the entry as it stands. Keep the bullet as it is whatever the
+result, and carry the failures to Step 6, naming the project, the conditions and the run that repairs
+them (`/portfolio-audit` on that project). An entry that is merely weak is never replaced by a
+README-drafted substitute; that route exists only for a project with no entry at all.
 
 ---
 
@@ -223,6 +230,15 @@ qualitative one if no measurable result exists, no filler words like "participé
 
 For every bullet that fails: rewrite it in place and show the before/after.
 
+**One exception, and it is the standard's, not this step's: a project bullet sourced from
+`notes/cv/cv-bullets.md` is never rewritten here.** It was already checked in Step 1 against the
+Project-bullet spec, whose condition 5 **supersedes this step's concrete-result rule** for a persisted
+project bullet — so a sourced bullet that names a technical decision and no result is correct here, not
+weak — and which is stricter on length besides. It reaches the CV as-is and its failures are reported at
+Step 6 — the *as-is* rule is
+what keeps the CV and the committed file in step, and a bullet quietly improved here is the drift that
+rule exists to prevent.
+
 ---
 
 ## Step 4 — ATS keyword audit
@@ -273,6 +289,10 @@ Then print:
 **ATS keywords missing:** required keywords not found but defensible (with suggested placement)
 **ATS keywords not defensible:** required keywords left out under the standard's precedence rule — the
 gap to close in a project, not in the CV
+**Project bullets needing a re-run:** for each entry sourced from `notes/cv/cv-bullets.md` that fails
+the Project-bullet spec, the project, the conditions it fails, and `/portfolio-audit` on that project as
+the run that repairs it — print `none` when every sourced entry passes, since the line is the only
+route those failures have out of this run
 **Estimated length:** fits on one page / slightly over (X lines to cut)
 **Saved to:** the exact path written above
 **(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know

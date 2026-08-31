@@ -133,6 +133,75 @@ supports is left out and reported as a gap under the Precedence rule above.
 
 ---
 
+## Project-bullet spec — the persisted `cv-bullets.md` entry
+
+The **checkable** contract for the one bullet per project persisted in `notes/cv/cv-bullets.md`. It is
+not a second bullet format: the Universal bullet format above governs every bullet in every document,
+and this section is the conditions a *persisted project* bullet is verified against — three of them
+running a rule stated above as a check rather than restating it. It is scoped to that file: an
+experience bullet drafted inside `cv-prompt` or `linkedin-prompt` answers to the universal format and
+not to this list.
+
+**Every project that has a bullet is held to every condition, whatever the project is.** A tutorial-shaped
+project earns an impeccable bullet exactly like a full-stack one; whether that project belongs in a given
+CV at all is the **Project-selection heuristic** below, and this list never answers it. Reading a weak
+project into a lowered bar is the one misreading that would make the spec worthless.
+
+**Conditions 1-4 and 6 are decided by reading the bullet — present or absent, a string search, never a
+matter of taste.** Conditions 5, 7 and 8 are judgements against **named evidence** and are never left to
+taste either: 5 against the project's own code and `README.md`, 7 against the other projects the same
+file holds, 8 against the coverage markers the Defensibility rule above names. So the same project
+yields the same verdict on any run, which is the whole reason this is a list and not prose.
+
+Two execution points run the identical list: `portfolio-audit` Phase 3 checks the bullet it drafted
+**before saving it**, and a prompt that both reads this standard and sources an entry from that file
+re-checks it and **reports** a failure rather than rewriting it, per the sourcing rule below. That is
+`cv-prompt` and `linkedin-prompt` today; `cover-letter-prompt` declares the heuristic out of its scope
+and `profile-readme-prompt` does not read this standard, so neither owes the check.
+
+1. **Length — 15 to 30 words, one line.** Past thirty the bullet is skipped in the recruiter's ~6-second
+   first pass; below fifteen a project bullet has not said what it built and with what. Count the words.
+2. **Plain text only.** No bold, italics or any emphasis markup, no em dash, no arrows, checkmarks or
+   decorative symbols: an ATS reads each bullet as one line, strips emphasis and renders decorative
+   characters as noise. `%` and `/` are permitted **only inside a figure** (`40%`, `CI/CD`), never as
+   punctuation, because a parser that truncates on them truncates on the stray one. Commas and periods
+   separate the clauses.
+3. **Opens with a past-tense verb** from the Universal bullet format's set above, and carries no string
+   from its filler list — run that rule as a check, do not re-derive it.
+4. **Carries at least one keyword from the pool above, as the exact string.** `Spring Boot`, never
+   "Spring"; `PostgreSQL`, never "Postgres"; `JUnit`, never "tests unitarios" alone. The parser matches
+   strings, not intent.
+5. **States one figure of scale or one named technical decision** — this is the persisted project
+   bullet's form of the Universal bullet format's concrete result, and **supersedes it here**, because a
+   portfolio project has no users, revenue or hours saved — so the qualitative result that rule falls
+   back on is, for a project bullet, exactly the unfalsifiable clause condition 7 rejects. That
+   supersession is local to this list: an experience bullet still takes the qualitative fallback. The
+   legitimate substitute is **scale** — entities, endpoints,
+   roles, tables, tests, all countable in the project's own code — or the decision itself, named
+   specifically enough that its `README.md` and code answer for it. An honest approximation qualifies; an
+   invented user count or percentage does not, and no bullet is padded with a number to satisfy this.
+6. **Contains no buzzword the Voice rules above ban**, and none of `amplia experiencia`,
+   `tecnologías de vanguardia`. A string search; do not re-derive the banned list.
+7. **Passes the swap test.** Substitute another project into the bullet — another section of
+   `cv-bullets.md`, or, while that file holds fewer than two, any other project under `projects/`: if it
+   stays true of that one too, the bullet is generic and fails. This is the condition an AI screen is built to
+   catch — interchangeable phrasing is the flag, and verifiable specificity is what that voice cannot
+   fake — and the one condition real work can always pass.
+8. **Defensible line by line**, per the Defensibility rule above and judged on its evidence: every
+   keyword the bullet names carries a `✅ NN-slug` marker, or is backed by the project the bullet is
+   about.
+
+**A condition the drafting run cannot satisfy is reported, never softened**: named on the run's output
+with its reason, the way the Precedence rule reports a keyword gap. Conditions 1-4, 6 and 7 are always
+satisfiable by rewriting and so are never reported — except that **a reported 8 reports 4 with it**,
+since striking an undefensible keyword can leave no pool keyword to carry. **5 and 8 are the two
+that can survive a rewrite**, and both are findings about the project rather than about the wording —
+5 where it has no scale to state and no decision specific enough to name, 8 where the bullet's only
+honest keywords are ones Victor cannot yet defend, which reports 4 with it. Neither is resolved by
+weakening the sentence.
+
+---
+
 ## Project-selection heuristic
 
 When choosing the 3 strongest projects to feature, apply this shared logic:
@@ -149,3 +218,12 @@ use its polished entry in `notes/cv/cv-bullets.md` as the primary bullet if pres
 polished against the portfolio lens — use it as-is, do not rewrite it); if the project has no entry
 there, draft the primary bullet from the project's `README.md` ("What I learned" section and
 architecture decisions). In both cases, read the README for supporting details for the remaining bullets.
+
+**A sourced entry is re-checked against the Project-bullet spec and reported, never repaired in place** —
+by the prompts that apply this heuristic, which is `cv-prompt` and `linkedin-prompt`.
+Run the eight conditions over the entry as it stands; if any fails, use the bullet as it is and print,
+on the run's output, the project, the conditions it fails and the exact run that repairs it
+(`/portfolio-audit` on that project). Rewriting it here would put the polished text and the committed
+file out of step with no record — the entry is `portfolio-audit`'s to write, and a consumer that
+silently improves it is the failure the *as-is* rule exists to prevent. Drafting a substitute from the
+README is reserved for a project with **no entry at all**, never for one whose entry is merely weak.

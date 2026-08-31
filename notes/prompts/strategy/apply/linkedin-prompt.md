@@ -25,7 +25,7 @@ The output is ready-to-paste text for every section — no rewriting needed, jus
 
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md`. It defines the **sources to read**
 (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
-`notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for defensibility), the **universal bullet format**, the **skills pool** (required + preferred),
+`notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for defensibility), the **universal bullet format**, the **Project-bullet spec** (the eight conditions a sourced `cv-bullets.md` entry is re-checked against), the **skills pool** (required + preferred),
 the **Spanish / no-buzzword voice**, the **defensibility rule**, and the **project-selection
 heuristic**. This prompt does not repeat those rules — it adds only the LinkedIn-specific flow on top.
 
@@ -112,6 +112,13 @@ Draft project entries for the top 3 projects by applying the **project-selection
 standard** (full-stack project first; then the most complex Angular project; then one more that shows a
 different skill — preferring recency and concept coverage).
 
+Where a project has an entry in `notes/cv/cv-bullets.md`, that entry is its polished bullet and reaches
+the profile **as-is**. **Re-check it against the standard's Project-bullet spec and report — never repair
+it here**: run the eight conditions over the entry as it stands, keep the bullet whatever the result, and
+carry each failure to the `PROJECT BULLETS NEEDING A RE-RUN` heading of the final output. The entry is
+`portfolio-audit`'s to write, and a consumer that silently improves it puts the profile and the committed
+file out of step with no record.
+
 For each project entry:
 - **Name:** the project name (e.g. "TimeTrack — Full-Stack Time Tracking App")
 - **Date:** the approximate month/year it was completed (or "In progress" if still active)
@@ -119,7 +126,8 @@ For each project entry:
 - **Skills associated:** tag the main technologies (LinkedIn lets you add associated skills per project)
 - **GitHub link:** always include
 
-The first bullet should describe what the app does from a user perspective.
+The first bullet is the `cv-bullets.md` entry where one exists, used as-is; otherwise it describes what
+the app does from a user perspective.
 The second bullet should mention the most technically significant decision (e.g. JWT over sessions).
 The third bullet (optional) should mention tests if they exist.
 
@@ -215,6 +223,13 @@ Print each section in this order, ready to copy directly into LinkedIn:
 **SKILLS LEFT OUT — not defensible:**
 [required-pool skills omitted under the standard's precedence rule, and what each one leaves to close
 in a project — `Ninguna` if there are none; never drop the heading]
+
+---
+**PROJECT BULLETS NEEDING A RE-RUN:**
+[for each entry sourced from `notes/cv/cv-bullets.md` that fails the standard's Project-bullet spec: the
+project, the conditions it fails, and `/portfolio-audit` on that project as the run that repairs it —
+`Ninguno` if every sourced entry passes; never drop the heading, since this line is the only route those
+failures have out of an output-only run]
 
 ---
 **OPEN TO WORK SETTINGS:**

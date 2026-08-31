@@ -298,35 +298,36 @@ removed — omit if the project has no tests]
 
 ## CV bullet format
 
-Read `notes/prompts/strategy/apply/_internal/_application-standard.md` first — the bullet lands in the Spanish CV
-**as-is** (`cv-prompt` uses it without rewriting), so it must already comply:
-- **Spanish** (the CV is screened in Spanish).
-- **Format:** past-tense action verb (Desarrollé, Implementé, Construí, Diseñé) + what was built +
-  one concrete result or defensible decision that shows depth. No filler ("participé en", "colaboré en").
-- **ATS keywords** from the standard's pool (Angular, Spring Boot, PostgreSQL, JWT, Docker, JUnit…)
-  where they genuinely apply.
-- **Defensibility:** nothing Victor cannot defend line by line.
+Read `notes/prompts/strategy/apply/_internal/_application-standard.md` first — the bullet lands in the
+Spanish CV **as-is** (`cv-prompt` uses it without rewriting), so it must already comply. Its
+**Project-bullet spec** is the whole bar and is deliberately not restated here: eight conditions — 1-4
+and 6 a string search over the bullet, 5, 7 and 8 judged against the evidence that section names — plus
+the universal format, the keyword pool, the Spanish voice rules and
+the defensibility rule that section sits under. Phase 3 verifies the drafted bullet against **every**
+condition before saving it, and prints any it could not satisfy.
 
-`[Verbo en pasado] [qué es] con [tecnologías clave] — [un resultado concreto o una decisión que demuestra profundidad]`
+`[Verbo en pasado] [qué es] con [tecnologías clave], [una cifra de escala o una decisión que demuestra profundidad]`
 
-Draft **two options** and show both to Victor. The persistent file has a stricter contract: a committed
-`notes/cv/cv-bullets.md` contains **one chosen bullet per project**, because the apply prompts consume
-that entry as polished input rather than as a decision they are allowed to make.
+Draft **one** bullet — the best that satisfies every condition — and print, on its own line, any
+condition it could not satisfy and why. A condition a run cannot meet is a **report**, not a menu, which
+is why no option is offered and no choice is asked for. **Every project that gets a bullet is held to
+all eight conditions**, whatever the project is — a ❌ verdict, which writes none, is the only exemption; which projects a document features is the application standard's
+project-selection heuristic and never this section. The persistent file's contract: a committed
+`notes/cv/cv-bullets.md` contains **one bullet per project**, because the apply prompts consume that
+entry as polished input rather than as a decision they are allowed to make.
 
-- With `DRY_RUN = true`, save both options under a `## {PROJECT_PATH}` heading (replace the section if
-  it exists) and leave them uncommitted for Victor to compare in the diff.
-- With `DRY_RUN = false`, save both options as pending working-tree output, present them, and **pause
-  before the content commit** for Victor to choose A or B. Delete the other option and the choice marker,
-  verify that exactly one bullet remains in the section, and only then continue toward the atomic commit.
-  In `PROJECT_PATH = all`, finish that choice and commit for the current project before starting the
-  next target. A dry batch instead leaves each target's two-option section uncommitted under the normal
-  dry-run contract.
+- With `DRY_RUN = true`, save the bullet under a `## {PROJECT_PATH}` heading (replace the section if it
+  exists) and leave it uncommitted for Victor to read in the diff.
+- With `DRY_RUN = false`, save it under the same heading and continue toward the atomic commit. **There
+  is no choice pause on this path**; in `PROJECT_PATH = all`, commit the current project before starting
+  the next target.
 
 **File-wide integrity gate before every commit that stages `cv-bullets.md`:** scan the complete file,
 not only the current project. Every `## {PROJECT_PATH}` section must contain exactly one bullet and no
-`choose one` marker. On a non-dry run, any older two-option section pauses the commit for Victor's
-selection too; clean every such section before staging the file. On a dry run, the handoff tells Victor
-to satisfy this same whole-file gate before running the printed manual commit.
+`choose one` marker. A section still carrying two options or that marker was written before the choice
+gate was retired: on a non-dry run **pause for Victor's selection there** — the run drafts one bullet, it does not
+retro-choose between two he was owed — and clean the section before staging the file. On a dry run, the
+handoff tells Victor to satisfy this same whole-file gate before running the printed manual commit.
 
 If the file does not exist, create it with the header:
 ```markdown
@@ -337,21 +338,11 @@ Used by `cv-prompt` when drafting the Projects section of your CV.
 
 ---
 ```
-Entry format:
+Entry format — the same on every path, because only one bullet is ever drafted:
 ```markdown
 ## {PROJECT_PATH}
 
-*(choose one — delete the other before committing)*
-
-- [Option A]
-- [Option B]
-```
-
-Committed entry format:
-```markdown
-## {PROJECT_PATH}
-
-- [Chosen option]
+- [Bullet]
 ```
 
 ---
