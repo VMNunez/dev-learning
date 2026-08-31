@@ -109,9 +109,14 @@ cd dev-learning/projects/02-weather-app
 npm install
 ```
 
-The API key is not in the repository. Get a free one at [openweathermap.org](https://openweathermap.org/api) and create the two environment files below — `npm start` reads the development one, `npm run build` reads the other:
+The API key is not in the repository. Get a free one at [openweathermap.org](https://openweathermap.org/api), then create the `src/environments/` folder and the two files below:
 
-`src/environments/environment.development.ts` and `src/environments/environment.ts`
+```
+src/environments/environment.ts               ← read by npm run build
+src/environments/environment.development.ts   ← read by npm start
+```
+
+Both files hold the same thing:
 
 ```ts
 export const environment = {
