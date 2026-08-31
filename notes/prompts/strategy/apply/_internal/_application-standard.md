@@ -213,6 +213,26 @@ When choosing the 3 strongest projects to feature, apply this shared logic:
 3. **One more that shows a different skill** — a project that demonstrates a capability the first two
    do not.
 
+**A project whose premise is reconstructible from its name ranks below one whose is not, and this is
+what the Project-bullet spec above delegates here.** `_shared-context.md` (source 2) frames the target as
+someone who made decisions and can explain them, "not someone who followed a tutorial and memorised the
+steps", and `ROADMAP.md`'s own account of what a Spanish consultancy looks for in a junior opens with
+"Real project — not a tutorial, not a course certificate". A to-do list, a weather app, an expense
+tracker or a recipe search says nothing in its name that separates it from that, so it ranks below a
+project whose premise does. This applies at **every slot whose own rule above leaves more than one
+candidate** — where rule 2's *most patterns interviewers ask about* leaves two Angular projects level,
+this is what separates them — and it is applied **before** the recency and concept-coverage preference
+stated below, which orders whatever it leaves tied.
+
+**This preference ranks the candidates; it does not decide how many projects the document features.**
+
+**A low-ranked project that is still featured is carried by its entry.** The run states, in the bullets
+it drafts for that project, what the name does not give away: the architecture, the state model, the
+auth, the tests, which is what both consumers' project-bullet contracts already draft. That is an instruction to
+the drafting run and not a check on it: the Project-bullet spec above is scoped to `cv-bullets.md`, and a
+project with no entry there reaches the document as a bullet drafted from its `README.md` that no
+condition of that spec is ever run over.
+
 Prefer **recency** and **concept coverage** when deciding between candidates. For each chosen project,
 use its polished entry in `notes/cv/cv-bullets.md` as the primary bullet if present (it was already
 polished against the portfolio lens — use it as-is, do not rewrite it); if the project has no entry

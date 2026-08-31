@@ -110,7 +110,9 @@ Write: "Desarrollé el módulo de [feature] de una SaaS con Next.js + TypeScript
 
 Draft project entries for the top 3 projects by applying the **project-selection heuristic from the
 standard** (full-stack project first; then the most complex Angular project; then one more that shows a
-different skill — preferring recency and concept coverage).
+different skill). Wherever a slot's own rule leaves more than one candidate, the
+standard ranks a project whose **premise is not reconstructible from its name** above one whose is,
+before recency and concept coverage.
 
 Where a project has an entry in `notes/cv/cv-bullets.md`, that entry is its polished bullet and reaches
 the profile **as-is**. **Re-check it against the standard's Project-bullet spec and report — never repair

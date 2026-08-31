@@ -122,7 +122,9 @@ given). Then:
 
 If PROJECTS = auto: apply the **project-selection heuristic from the standard** to choose the 3
 strongest projects (full-stack first, then the most complex Angular project, then one more that shows
-a different skill; prefer recency and concept coverage).
+a different skill). Wherever a slot's own rule leaves more than one candidate, the
+standard ranks a project whose **premise is not reconstructible from its name** above one whose is,
+before recency and concept coverage.
 
 If PROJECTS is a specific list: use those exact projects, in that order.
 
