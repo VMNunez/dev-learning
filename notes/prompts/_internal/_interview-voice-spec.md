@@ -5,8 +5,10 @@ unless an open row of `_recommendation-ledger.md` says so, and every step below 
 it. It exists because the target spans four rows and lived only in one conversation: `REC-180`,
 `REC-183`, `REC-184` and `REC-171` (g) each carry one slice of it, and a row is forbidden from
 restating its neighbours, so the shape none of them can hold had nowhere to be written down.
-**`REC-183` closed 2026-08-29** — step 4 is the one slice that is built, and the rest of the file is
-still a target.
+**Loop A is now largely built and Loop B is not.** `REC-183` closed 2026-08-29 (step 4, both banks);
+`REC-180`'s two halves landed 2026-08-31 and gave the **project** bank steps 1–5 except the priority
+marker — the `es/` twin, stable IDs, the freeze and the TODO channel. What remains a pure target is step
+6 for that bank (three open rulings) and the whole of Loop B, steps 7–10.
 
 **No run obeys this file.** It is not a standard and grants no authority: it is read at step 1 of
 resolving any row that cites it, so the resolution can see the whole loop before editing its own
@@ -35,14 +37,16 @@ that branch, and steps 1–6 are already implemented **for the levelled bank alo
 
 Two things about that placement are load-bearing and neither is visible from the diagram:
 
-- **The project bank is not on that branch at all.** `_system-map.md` §7 gives
-  `notes/interview-prep/projects/en|es/*.md` one writer, `/portfolio-audit`, and **one external** reader, `/simulator`
-  — it is a leaf of Chain B, not a node of Chain A. Measured 2026-08-29: the string `projects` does not
-  appear in `interview-prep-route-prompt.md`, `interview-prep-block-open/SKILL.md`,
-  `study-block-close/SKILL.md` or `authoring-progress-recount/SKILL.md`. So `REC-180` is not only
-  "IDs, priority markers and an `es/` twin": it is **admitting the project bank into Chain A's study
-  branch**, which four readers would have to be widened for. A file no route lists cannot be reached by
-  the block that would study it, so step 6 below cannot fire for it at any cost.
+- **The project bank is still not on that branch, and the identity half did not put it there.**
+  `_system-map.md` §7 now gives `notes/interview-prep/projects/en|es/*.md` three writers —
+  `/portfolio-audit`, `study-content-writer` on a `TODO:` alone, and Victor for the markers — and still
+  **one external** reader, `/simulator`. That is the point: identity, the freeze and the TODO channel are
+  all **Chain B**, and none of them is a study hop. Re-measured 2026-08-31: the string `projects` still
+  does not appear in `interview-prep-route-prompt.md`, `interview-prep-block-open/SKILL.md`,
+  `study-block-close/SKILL.md` or `authoring-progress-recount/SKILL.md`. So what is left of `REC-180`'s
+  step-6 half is **admitting the project bank into Chain A's study branch**, which those four readers
+  would have to be widened for. A file no route lists cannot be reached by the block that would study
+  it, so step 6 below still cannot fire for it at any cost.
 - **Loop B is in no chain of the diagram.** It is a second loop of the kind §12 describes — machinery
   reopened from evidence — but with a sink of its own rather than a `_last-run-report*.md`, and its
   closest built relative is `REC-171`'s `_note-todo-harvest.md`, one folder away in Chain A.
@@ -64,7 +68,12 @@ voice before he ever reads them.
 1. **Generation.** `/portfolio-audit` writes the project bank from that project's code; the levelled
    bank is written by `/interview-prep-audit` from a topic. Each question is born with a **stable ID**
    and a **priority marker** (`⭐⭐⭐`/`⭐⭐`/`⭐`), ordered `⭐⭐⭐ → ⭐⭐ → ⭐` within its section.
-   *Project bank today has neither: `REC-180`.*
+   *Project bank: the **ID landed 2026-08-31** (`REC-180`, identity half) as `{PROJECT_NAME}-{NNN}` — the
+   project folder in the slot a topic prefix takes, since a project bank has neither topic nor level —
+   allocated over the whole file by the author, checked for collisions by the reviewer and the
+   orchestrator's cross-section scan, and copied verbatim by stage T. **Priority markers are still
+   owed**, and the consequence is live: `/simulator` ranks its plan by stars, so a woven project question
+   enters that sequence unranked.*
 2. **Translation.** The English file gets its `es/` twin — natural Spanish, never a calque, same
    question in the same position. *Built for the **project** bank 2026-08-31 (`REC-180`, bilingual
    half): `_portfolio-translate-prompt.md` is stage T of `portfolio-audit`, dispatched once per project
@@ -80,7 +89,11 @@ voice before he ever reads them.
    there already.*
 3. **Study.** Victor reads, normally from `es/`, and writes a `TODO:` wherever the answer is not how he
    would say it. **A taste-and-phrasing TODO is a first-class TODO**, not a lesser kind of defect
-   report: it is the whole point of the loop.
+   report: it is the whole point of the loop. *Landed for the **project** bank 2026-08-31 (`REC-180`,
+   identity half): `_portfolio-standard.md` carries the channel and states that clause in its own words,
+   `study-content-writer` gained the branch that resolves one — the bank's only TODO resolver, since
+   every portfolio role either writes `en/` on a run started for another reason or stops outright — and
+   stage T's `TODO-STOPPED` stopped being a placeholder guard and became that channel's guard.*
 4. **Repair, on the side it was raised.** A TODO in `es/` is resolved in `es/` and `en/` is
    re-translated from the resolved Spanish; a TODO in `en/` is resolved in `en/` and `es/` is
    re-translated from it. Symmetric, one rule. The master-of-record clause keeps governing identity and
@@ -98,7 +111,11 @@ voice before he ever reads them.
    prompt's bilingual-integrity test now runs in **both** directions, so an `en/` answer reading as a
    back-translation of Spanish fails it exactly as a calqued `es/` does.*
 5. **Freeze.** Victor — and only Victor — writes `[refined]`. The question's content is frozen from
-   that moment; a new TODO or his word are the only things that unfreeze it.
+   that moment; a new TODO or his word are the only things that unfreeze it. *Landed for the **project**
+   bank 2026-08-31 (`REC-180`, identity half), where it binds four roles rather than two: the author, the
+   reviewer, the translator (whose normal operation is to re-render the whole twin) and the
+   orchestrator's cross-section dedupe (whose normal operation is to delete a duplicate). Its ladder has
+   **two** states, not three — `[studied]` is not admitted there while step 6's three rulings are open.*
 6. **Studied.** `[studied]` is written by `study-block-close` when he answers it correctly in an
    active-recall block. *For the project bank this is not one open decision but three, and `REC-180`
    owns all of them: whether `/interview-prep-route` lists project questions at all, since a question
@@ -112,8 +129,9 @@ voice before he ever reads them.
 7. **Collection — one episode per question, not one row per repair.** Evidence is deposited on every
    resolution of step 4, but the unit is the question's **whole journey to the freeze**: `v0` as
    generated, then each of his verbatim TODOs in order with the version it produced, and finally the
-   text that carries `[refined]`. The writer is `study-content-writer`, whose trigger already names
-   `notes/interview-prep/` while its routing branches only on `{LEVEL}/en|es/`.
+   text that carries `[refined]`. The writer is `study-content-writer`, whose trigger names
+   `notes/interview-prep/` and whose routing gained its project-bank branch on 2026-08-31 — so the
+   writer this step needs now reaches the file; what it still lacks is a sink to write the episode into.
    *`REC-184`. Note `REC-171`'s note sink deliberately refuses to store prose, under a countability
    argument that does not transfer; that is why this is a second sink and not a widening of the first.*
 
@@ -157,8 +175,14 @@ voice before he ever reads them.
    one crossing**. Of the portfolio chain, `portfolio-audit.md`, `_portfolio-write-prompt.md` and
    `_portfolio-review-prompt.md` never read the interview-prep standard; the fourth piece,
    `_portfolio-translate-prompt.md` (added 2026-08-31), reads exactly one section of it — "The
-   bilingual en/es contract" — and nothing else in that family. No file of the interview-prep chain
-   reads the portfolio one. **That crossing does not carry a voice rule**: it is scoped to one named
+   bilingual en/es contract" — and nothing else in that family. **Re-measured 2026-08-31 after the
+   identity half: there are now two crossings, and the second is a skill rather than a prompt.**
+   `study-content-writer` is a declared reader of *both* standards — the levelled one for a
+   `{LEVEL}` pair, and `_portfolio-standard.md` → "Question identity, the refined freeze and the TODO
+   channel" for a project pair — so the chains are no longer disjoint at the skill layer. It changes
+   nothing below: that skill resolves TODOs and authors no question, so it is not a route a **voice rule**
+   could travel; the two prompt chains remain disjoint, and no file of the interview-prep chain reads the
+   portfolio standard. **That crossing does not carry a voice rule**: it is scoped to one named
    section, and a rule landed anywhere else in the interview-prep standard still does not reach the
    project bank. A voice
    rule landed only in the first would refine the levelled bank and leave the project bank — the
@@ -240,11 +264,11 @@ updated in the same commit if one lands.
 
 | Step | File | Written by today | Read by today | What the target adds | Row |
 |---|---|---|---|---|---|
-| 1–2 | `notes/interview-prep/projects/en\|es/*.md` | `/portfolio-audit` — `en/` by its author + reviewer, `es/` by its translator (stage T, 2026-08-31) | `/simulator`, at its own `LANGUAGE` only — plus, inside the writing gate itself, the translator reading `en/` as its source | **the `es/` twin: landed 2026-08-31.** Still owed: IDs, priority markers, the `[refined]` freeze, a TODO channel, and an `es`-review owner (new — nothing checks the twin's Spanish fenced from the English) — and readers: the route, the recall block, both recounts | `REC-180` |
+| 1–2 | `notes/interview-prep/projects/en\|es/*.md` | `/portfolio-audit` — `en/` by its author + reviewer, `es/` by its translator (stage T, 2026-08-31) · `study-content-writer`, on a `TODO:` alone (2026-08-31) · Victor, who alone writes and reopens `[refined]` | `/simulator`, at its own `LANGUAGE` only — plus, inside the writing gate itself, the translator reading `en/` as its source | **landed: the `es/` twin (2026-08-31), then stable IDs, the `[refined]` freeze and the TODO channel (2026-08-31, identity half).** Still owed: priority markers, an `es`-review owner (nothing checks the twin's Spanish fenced from the English), the three `[studied]` rulings — and readers: the route, the recall block, both recounts | `REC-180` |
 | 3–4 | `notes/interview-prep/{LEVEL}/en\|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` · `study-block-close` | route, block-open, `/simulator`, both recounts | **nothing — landed 2026-08-29.** The symmetric repair-direction rule is in `_interview-prep-standard.md`, the write prompt's Steps 1–2 and its output contract, the audit orchestrator's author dispatch, the review prompt's bilingual-integrity check, `study-content-writer` and `_session-rules.md`; (a)'s reviewer was ruled unnecessary and replaced by two checks — the Q&A route's written report and an `en/`-side back-translation clause | `REC-183` (closed) |
 | 5 | same | Victor alone writes `[refined]` | — | nothing — already the contract | — |
 | 6 | `notes/interview-prep/routes/{LEVEL}.md` · `PROGRESS.md` `## Study progress` | `/interview-prep-route` only · the closing rituals | block-open, `study-block-close`, `authoring-progress-recount` | whether project questions enter the route, the block and the count at all | `REC-180` |
-| 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` | — | — | one **episode** per question: `v0`, a round per TODO (verbatim + its version, rejected once superseded), the `[refined]` text, rounds-to-freeze, `Disposition`. Two writes, not one — appended by `study-content-writer`, closed by the freeze. The `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined, and an episode stores more of it than a row | `REC-184` |
+| 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` — **unblocked 2026-08-31**, since a row can now store a question ID | — | — | one **episode** per question: `v0`, a round per TODO (verbatim + its version, rejected once superseded), the `[refined]` text, rounds-to-freeze, `Disposition`. Two writes, not one — appended by `study-content-writer`, closed by the freeze. The `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined, and an episode stores more of it than a row | `REC-184` |
 | 8 | the same sink | — | its consumer | the across-questions threshold, and where the count is printed — `REC-171`'s equivalent is a close-out's `cosecha:` line | `REC-184` |
 | 9 | `_interview-prep-standard.md` **and** `_portfolio-standard.md` | **by hand only** — the standards fence, owned by `_session-rules.md` | their two disjoint chains | the approval gate, and a landing that reaches both chains | `REC-184` |
 
@@ -306,15 +330,18 @@ clause in an existing row, or a row of its own, before anything is built.
 
 ## Sequencing
 
-`REC-183` (repair direction) → `REC-180` (the `es` twin **landed 2026-08-31**; still IDs, priority, the
-TODO channel, an `es`-review owner, and the four readers the project bank needs) → `REC-184` (the voice sink and its consumer), which should not precede
+`REC-183` (repair direction) → `REC-180` (the `es` twin, then **IDs, the freeze and the TODO channel,
+both halves landed 2026-08-31**; still priority markers, an `es`-review owner, and the four readers the
+project bank needs) → `REC-184` (the voice sink and its consumer), whose **Phase 0 is no longer blocked**
+and which should not precede
 `REC-171` (g)'s first harvest: building a second extraction mechanism while the first has never run
 once produces two untested designs.
 
 **`REC-184` should be split along `## Staging`'s phases rather than sequenced as one row.** Phase 0 —
-the sink and its writer, nothing else — is blocked only behind `REC-180` (a row cannot store a question
-ID before question IDs exist) and can start the moment that lands, well before the notes harvest has
-run. Phase 2 is the part that must wait for `REC-171` (g), because the untested-design objection is
+the sink and its writer, nothing else — was blocked only behind `REC-180` (a row cannot store a question
+ID before question IDs exist) **and that block lifted on 2026-08-31**: the project bank has IDs, the
+freeze that closes an episode, and the channel that opens its rounds. It can start now, well before the
+notes harvest has run. Phase 2 is the part that must wait for `REC-171` (g), because the untested-design objection is
 about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
 the corpus months earlier at almost no cost, which is the whole argument of that section.
 

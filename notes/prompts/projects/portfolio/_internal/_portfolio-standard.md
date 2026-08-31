@@ -10,6 +10,12 @@ All four pieces of the portfolio pipeline read it:
   section list; the Spanish rules themselves are not here, they are in that prompt.
 - `portfolio-audit.md` (the **orchestrator**) reads it for the verdict logic and the CV / GitHub formats.
 
+**One reader from outside the pipeline**, listed here rather than left as an unnamed exception — exactly
+as `_interview-prep-standard.md` lists this family's translator as its own: `study-content-writer`, the
+in-session skill, reads **"Question identity, the refined freeze and the TODO channel"** when it resolves
+a `TODO:` Victor wrote in a project-bank pair. That section is the whole of what binds it here; the rest
+of this file is the gate's contract and none of its business.
+
 ## What the portfolio gate is for
 
 It answers one question: **is the project at `{PROJECT_PATH}` ready to show a recruiter and reference
@@ -137,9 +143,14 @@ it is never translated, exactly as the levelled banks keep `angular.md` in `en/`
 complements the levelled topic-based files in `interview-prep/{LEVEL}/en/`
 and `es/` — these are **project-specific**, about the actual implementation decisions made here.
 
-**`en/` is authored and audited; `es/` is produced from it and never written by hand.** Everything in
-this section — the quality bar, the exhaustiveness rule, the format and the append/dedupe rule — is a
-rule about `en/`, and the author and the reviewer are never dispatched at the Spanish file. The twin is
+**`en/` is authored and audited; `es/` is produced from it and no *pipeline role* writes it by hand.**
+The quality bar, the exhaustiveness rule, the format and the append/dedupe rule are rules about `en/`,
+and the author and the reviewer are never dispatched at the Spanish file. **Two things below are not
+rules about `en/` and must not be read as though they were**: the `[refined]` freeze binds both
+languages at once, and the TODO channel is `es/`-first by design — Victor studies from the Spanish, so
+that is where his markers appear and, under the direction rule, where their repair is written. Both are
+in "Question identity, the refined freeze and the TODO channel" below, and the hand that writes them is
+his and `study-content-writer`'s, never this pipeline's. The twin is
 owed by `_portfolio-translate-prompt.md` (stage **T**), which runs once per project after every section
 is finished and carries the whole Spanish contract: natural Spanish, structural parity, and which side
 a `TODO:` marker is repaired on. A run that stops before stage T leaves the pair half-built, and the
@@ -168,15 +179,91 @@ patterns to defend. **Do not cap at 5.** Cover every decision, every pattern, ev
 every testing choice that could come up in a 30-minute technical interview. *A thin file is a gap the
 interviewer will find.*
 
+### Question identity, the refined freeze and the TODO channel
+
+**Scope extension ruled by Victor 2026-08-29** (`REC-180`): the two Q&A banks **behave practically
+identically** — only the source (a project's own code, not a topic) and the question type differ — so
+every rule of `_interview-prep-standard.md` transfers here unless it is structurally impossible. What is
+structurally impossible is everything keyed to a `{LEVEL}` route: the CORE route,
+`interview-prep-block-open`, `study-block-close`'s recount, the coverage fingerprint. A project bank has
+no level and sits on no study route, so **`[studied]` is not admitted here.** That marker's three
+rulings — whether the route lists project questions at all, whether `study-block-close` may write into a
+file this standard governs and its own does not, and whether `PROGRESS.md`'s `## Study progress` rows
+count them — are open in `REC-180`, and a marker nobody recounts is a state that lies.
+
+**Transfer decided where the rule came from; it did not decide where the text lives.** The paragraph
+above says the levelled standard's rules *apply* here; this one says they are **written here**, and the
+two are not in tension. The rules below are this file's own text and are not read from
+`_interview-prep-standard.md`: that standard governs the levelled bank, says in its own reader list that
+it does not govern this one, and its single crossing into this family is the bilingual contract stage T
+reads. Two standards stating the same rule about two banks is the shape Victor ruled for; one standard
+reaching across chains is what he did not.
+
+**Every question carries a stable identifier**, first inside the bold text, immutable and identical in
+`en/` and `es/`:
+
+**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** [refined]
+
+Format `{PROJECT_NAME}-{NNN}`: the project folder name — which takes the slot a topic prefix takes in the
+levelled bank, since a project has neither topic nor level — and a zero-padded counter from `001`. **The
+counter runs over the whole file, never per section.** Sections are absent on some projects (an
+Angular-only project with no auth and no tests has three of five) and the cross-section dedupe moves a
+question between headings, so a per-section counter collides the first time either happens. Allocate the
+next unused number **in the file**; never recycle one after a deletion and never renumber to close a gap
+— the gap is what proves the ID was not reused.
+
+**Question state has exactly two valid forms here**, one fewer than the levelled bank:
+
+- **Unrefined** — no state marker. Every role in this pipeline may rewrite any part of the block.
+- **Refined** — `[refined]`, at the end of the bold line. **Victor alone writes it**, once the question,
+  the answer, the code and the translation are to his taste. From that moment the complete bilingual
+  block is frozen byte-for-byte **in both languages against every role in this pipeline**: the author
+  does not rewrite it, the reviewer reports its defects instead of fixing them, the translator leaves its
+  Spanish exactly as it stands, and the orchestrator's cross-section dedupe never deletes it.
+
+The freeze is what makes this gate safely **re-runnable**. Without it, every later run of
+`portfolio-audit` on a project hands Victor's polished answers to a cold reviewer whose mandate is to
+improve them, and the improvement is a loss.
+
+**Only Victor reopens a refined question** — by saying so, or by writing a `TODO:` on it. Reopening
+removes `[refined]` from **both** languages before any edit, and the repair runs **in the direction of
+the file carrying the marker** (the bilingual contract stage T already reads): a marker in `es/` is
+answered in Spanish, in his words, and the `en/` twin is re-translated from that; a marker in `en/` runs
+the other way. The twin's re-translation belongs to the same reopening, so no writer leaves it stale on
+the grounds that the block was frozen.
+
+**A TODO about voice or phrasing is a first-class reopen, not a lesser kind of defect report.** Victor
+answers these questions out loud, in Spanish, in a room: an answer that is technically correct and does
+not sound like him is a defect of this bank exactly as a wrong one is. *"The answer was already right"*
+is never a reason to refuse the reopen or to narrow the repair to the words he did not object to. That is
+the loop this channel exists to close, and the freeze would forbid it if this paragraph were missing.
+
+**No role of this pipeline resolves a TODO.** The author and the reviewer are dispatched at `en/` on a
+run started for another reason; the translator stops outright rather than overwrite a Spanish edit. A
+TODO is resolved in a daily session by `study-content-writer`, which reads this section for a
+project-bank pair, and the reopening is its write.
+
+**Priority markers are not part of this bank yet.** `REC-180` still owes them, together with the
+proportion calibration five fixed project sections need and the levelled bank's 8–12-question topic
+section does not. The bold line therefore carries no `⭐`, and the consequence is real rather than
+cosmetic: `/simulator` ranks its plan `⭐⭐⭐ → ⭐⭐ → ⭐`, so a woven project question enters that sequence
+unranked. Do not invent a marker to close the gap.
+
+---
+
 **Format per question:**
 ```
-**[Question as an interviewer would ask it?]**
+**[{PROJECT_NAME}-NNN] Question as an interviewer would ask it?** [refined]
 
 [Model answer — 2–4 sentences, references the real code, uses "I chose"/"I decided".]
 ```
+The `[refined]` marker is present only on a question Victor has frozen; a question this pipeline writes
+is born without it and no role of the pipeline may add it.
 
-**Append + dedupe:** if the file exists, append only questions not already there. Never add a question
-covering the same decision or code path as an existing one, even if worded differently.
+**Append + dedupe:** if the file exists, append only questions not already there — each with the next
+unused ID in the file. Never add a question covering the same decision or code path as an existing one,
+even if worded differently. **A refined question is never the one dropped**: where an appended question
+duplicates a frozen one, the appended one goes.
 
 **File template** (`en/`; the `es/` twin is the same file with the header translated — stage T owns it,
 and its two Spanish lines are `Preguntas específicas de las decisiones de implementación tomadas

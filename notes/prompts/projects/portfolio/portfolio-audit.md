@@ -140,10 +140,15 @@ while half of it is missing. **Context guard for batch runs:** with ~7 projects 
 to 5 sections × 2 subagents, plus one translator), full decision-by-decision traces returned to you
 would saturate your own
 context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
-author to its **question count and any decision it could not cover**, the reviewer to its **question
-count, its questions-vs-decisions ratio, and the uncovered decisions if that ratio is below 1**, the
-translator to its **verdict, its per-section counts and its total** — not the
-full trace (the trace still drives their own work; it just stays in their context). The translator's
+author to its **question count, its allocated ID range and any decision it could not cover**, the
+reviewer to its **question count, its questions-vs-decisions ratio, the IDs it allocated or repaired,
+and the uncovered decisions if that ratio is below 1**, the
+translator to its **verdict, its per-section counts including the frozen-kept ones, and its total** —
+not the full trace (the trace still drives their own work; it just stays in their context).
+**Every defect a subagent found inside a `[refined]` block returns in `all` mode too, verbatim and by
+ID.** That is not trace and it is not summarisable: the freeze stopped every role from repairing it, the
+hard rule below makes the final report its only route to Victor, and a batch that drops it is the one
+shape in which a frozen question stays wrong forever. The translator's
 per-section counts are the exception that is not a trace: they are the parity proof, they are two
 numbers per section, and without them nothing in the run has checked the twin at all. Otherwise, for one project, follow the procedure.
 
@@ -166,10 +171,14 @@ question file, so never overlap. For each section, run author then reviewer; nei
 
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
-> (the standard's canonical table) plus PLANNING.md, and write **only this section's** questions to
-> `notes/interview-prep/projects/en/«name».md` per the standard. **Do NOT commit.** Build a
+> (the standard's canonical table) plus PLANNING.md — **and the bank file itself, whose bold lines you
+> need for the ID counter and the dedupe rule** — and write **only this section's** questions to
+> `notes/interview-prep/projects/en/«name».md` per the standard — each with the next unused
+> `«name»-NNN` ID **allocated over the whole file**, and never touching a block that carries `[refined]`.
+> **Do NOT commit.** Build a
 > decision-by-decision trace in your own context to drive exhaustiveness, but return only the
-> **question count and any decision you could not cover** — the reviewer re-walks the code itself.
+> **question count, the ID range you allocated, any defect you found in a refined block, and any
+> decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. **If A returns `BLOCKED`** — it could not complete the section — that section gets no
 reviewer: note it and move to the next. Skipping B is not the whole disposition, because A has already
@@ -197,8 +206,14 @@ the wrong place to save):
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-review-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
-> thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED), the
-> **questions-vs-decisions ratio for this section**, and — only if that ratio is still below 1 — the
+> thin/weak/duplicate questions directly — **except inside a `[refined]` block, which you judge, count
+> and report but never repair**. Check every question carries a well-formed, unique `«name»-NNN` ID,
+> reading the whole bank file's **bold lines only** for it — uniqueness is a whole-file property and your
+> section cannot answer it alone. Report a collision with a question outside your section rather than
+> renumbering it; the cross-section renumber is mine.
+> **Do NOT commit.** Return your verdict (PASS/FIXED), the
+> **questions-vs-decisions ratio for this section**, the IDs you allocated or repaired, every defect you
+> left standing inside a refined block, and — only if that ratio is still below 1 — the
 > **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
 > Write your findings and verdict to «scratch path for this section» as you reach them, before
 > returning; if you cannot finish, say `BLOCKED — <reason>` and which questions you already changed.
@@ -231,6 +246,23 @@ over the finished bank (the same decision or code path landing in two sections �
 where an interviewer is likeliest to ask it, remove the other). Fix a stray duplicate directly — this
 needs the whole-file view, so it belongs here, not in a per-section subagent. Then continue to Phase 1b.
 
+**Two constraints on that scan, both from the standard's identity section.** A question carrying
+`[refined]` is **never the one you delete**: where a frozen question and an unrefined one duplicate, the
+unrefined one goes, and where two frozen ones do, you delete neither and report the pair by ID. And the
+scan is the run's **last** chance to catch a **duplicate ID** — each section's reviewer checks for one
+and repairs what it can see, but each allocated from its own read of the file, so a collision between two
+sections is one only a whole-file pass is guaranteed to catch. Renumber the later of
+the two to the next unused number in the file, never a frozen one (its ID is part of what is frozen —
+report that pair instead), and never renumber to close a gap a deletion left.
+
+**Count the questions carrying no ID at all, and report the number.** Each section's reviewer allocates
+the missing IDs in its own section, so on a healthy run this is zero — but a section whose author
+returned `BLOCKED` never got a reviewer, and a bank written before this rule existed (`01-todo-list`,
+79 questions) carries none until its first run under it. A question with no ID cannot be named by a
+`TODO:` or frozen with `[refined]`, so a non-zero count is a debt this run leaves behind and the final
+report says so by section. Do not backfill them yourself: allocating IDs across a bank is per-section
+work, and the section that was blocked is the one nobody finished.
+
 **Do the dedupe before Phase 1b, never after.** A duplicate removed from the English after the twin
 exists leaves an orphan question in the Spanish that no parity count catches until the next run — the
 `es/` would simply have one section one question longer, which reads as a translator error rather than
@@ -247,8 +279,11 @@ substitution):
 > `PROJECT_PATH = {PROJECT_PATH}`. Translate the finished
 > `notes/interview-prep/projects/en/«name».md` into its twin
 > `notes/interview-prep/projects/es/«name».md`. **Do NOT commit.** «If any section was left
-> half-written, name it here so it is skipped rather than half-translated.» Return `TRANSLATED`,
-> `RE-SYNCED`, `TODO-STOPPED` or `BLOCKED`, the per-section English/Spanish question counts, the
+> half-written, name it here so it is skipped rather than half-translated.» Copy every question ID
+> verbatim, and **keep the existing Spanish of a `[refined]` question byte-for-byte** instead of
+> re-rendering it. Return `TRANSLATED`,
+> `RE-SYNCED`, `TODO-STOPPED` or `BLOCKED`, the per-section English/Spanish question counts **and their
+> frozen-kept counts**, the
 > totals, and any English question you believe is wrong — which you did not change.
 
 It runs **once per project, not once per section**: the whole point of the stage is that it sees one
@@ -329,7 +364,10 @@ sequence instead, exactly as on any other verdict. Either way, record this proje
 Otherwise print, in this order:
 1. "Saved X questions to notes/interview-prep/projects/en/«name».md, and X to its `es/` twin" (do not
    reprint the questions). If the two numbers differ, or the twin is missing, say which sections and
-   why — a pair reported as one number is the one thing a later reader cannot check.
+   why — a pair reported as one number is the one thing a later reader cannot check. Add the **ID range
+   this run allocated**, and, on its own line, **every defect a subagent reported inside a `[refined]`
+   block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
+   role from repairing them, and Victor is the only reader who can reopen one.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
 3. CV bullet (two options) — **omit if ❌**.
 4. GitHub description (one option) — **omit if ❌**.
@@ -417,6 +455,13 @@ the diff.
   overlap a section's two subagents or two sections — the reviewer must see a finished section, and
   they edit the same file. Never skip the reviewer pass, and never run the translator before the last
   section's reviewer and the cross-section dedupe have finished.
+- **A `[refined]` question is Victor's, and no role of this run may write, alter or delete one.** The
+  standard's freeze binds the author, the reviewer, the translator and your own cross-section dedupe;
+  the marker is written by Victor alone and reopened by him alone, by his word or by a `TODO:`. Every
+  defect a subagent finds inside a frozen block reaches him through the final report and nowhere else,
+  so print those lines rather than folding them into a count. `[studied]` is **not** admitted in this
+  bank at all — its three rulings are open in `REC-180` — so a run that finds one reports it as
+  malformed and changes nothing.
 - **The English is authored and the Spanish is rendered — never the other way round, and never both at
   once.** The author and the reviewer write only `en/`; the translator writes only `es/` and changes no
   English. A run that lets one role do both produces a Spanish file written before the English was

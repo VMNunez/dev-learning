@@ -3,7 +3,8 @@ name: study-content-writer
 description: >
   Load and apply Victor's quality standards WHENEVER you are about to write, refine, complete,
   or resolve a TODO in a study-notes file (notes/{topic}/{level}/en/ or es/) or an interview-prep Q&A
-  file (`notes/interview-prep/{LEVEL}/en/` or `es/`) DURING A DAILY SESSION — i.e. any time outside the
+  file (`notes/interview-prep/{LEVEL}/en/` or `es/`, and the project question banks in
+  `notes/interview-prep/projects/en/` or `es/`) DURING A DAILY SESSION — i.e. any time outside the
   dedicated /notes-audit or /interview-prep-audit runs. These standards otherwise only load inside
   those separate audit pipelines, so inline note/Q&A writing silently misses the bar. Trigger on
   requests like "add a note about X", "write up what we just learned", "add an interview question
@@ -43,6 +44,14 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
   read `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` in full.
 - Writing or refining an **interview question** (`notes/interview-prep/{LEVEL}/en|es/*.md`) →
   read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` in full.
+- Resolving a TODO in a **project question bank** (`notes/interview-prep/projects/en|es/*.md`) →
+  read `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` → **"Question identity, the
+  refined freeze and the TODO channel"**, and nothing else in that file — the rest is `/portfolio-audit`'s
+  gate contract. **That bank has its own standard and the levelled one does not govern it** (it says so
+  in its own reader list): no level, no coverage fingerprint, no priority markers, no `[studied]` state,
+  and an ID keyed to the project folder rather than to a topic. Loading the wrong standard here is the
+  failure this branch exists to prevent — it would have you allocate a `{TOPIC}-{L}-NNN` ID and verify a
+  fingerprint the file has never carried.
 - If the task touches both, read both.
 
 These files are the single source of truth — do not summarize or approximate them from memory.
@@ -199,13 +208,43 @@ carrying the marker, resolved in the language it was written in and the twin re-
 repaired side (Step 3); the changed version must be refined and studied again. The 13:30 closing
 ritual, not this writer, owns `[studied]` after a final active-recall PASS.
 
+**The project question banks (`notes/interview-prep/projects/en|es/*.md`) are a narrower route: you
+resolve TODOs there and author nothing.** Those questions are written by `/portfolio-audit` from a
+project's own code, and allocating an ID or adding a question here would put content in a bank that gate
+re-walks section by section. Your one write is the repair his marker asks for — and, where the block was frozen, the removal of
+`[refined]` that reopening it requires. You never write that marker back on. Under
+`_portfolio-standard.md`'s identity section:
+
+- **The TODO is the reopening.** If the block carries `[refined]`, remove that marker from **both**
+  languages before touching a word, then repair in the direction of the file carrying the marker — an
+  `es/` TODO answered in Spanish, in his wording, and the `en/` twin re-translated from that — and leave
+  it unrefined. Only Victor writes `[refined]` back, when the block is his again.
+- **A TODO about voice or phrasing is a first-class reopen.** He answers these out loud, in Spanish, in
+  a room; an answer that is correct and does not sound like him is a defect of this bank. Never argue
+  that the answer was already right, and never narrow the repair to the words he did not name.
+- **The bound is the question block**, exactly as the marked passage bounds a frozen note. A TODO asking
+  for a question the bank does not have, or for a section reorganised, is reported and handed back to
+  `/portfolio-audit` — that is its gate's work, not yours.
+- **`[studied]` is not admitted in this bank at all** (`REC-180`'s three rulings are open), so you never
+  write it here and you report one you find as malformed.
+- **A question with no ID yet is still repaired, and named by its quoted bold line instead.** The banks
+  written before the identity rules landed (2026-08-31) carry none until their next `/portfolio-audit`
+  run allocates them — `01-todo-list`'s 79 questions are all of them today. Never allocate one yourself
+  to have something to cite: an ID handed out here would collide with the one that run assigns. Say in
+  the report that the bank owes its IDs and to which run.
+- **No harvest row.** The note-TODO sink is scoped to note prose, and the Q&A voice sink is `REC-184`'s
+  and does not exist yet — so this route prints no `cosecha:` line and invents no row. Its evidence is
+  the report below.
+
 **This route owes the same report the frozen-note route owes, and for the same reason: it has no cold
 reviewer and no diff gate.** Quote the instruction you acted on (the `TODO:` text, or Victor's words in
 chat), name the question ID and the side you repaired, state that the twin was re-translated from that
 side and not from the stale English, and — where the block was `[refined]` — that both markers came off
 both languages first. Write it even when the fix was one word.
 Once you have appended `[refined]` to a question in both languages, **invoke the
-`authoring-progress-recount` skill** with that bank's level. It owns the two interview rows end to end,
+`authoring-progress-recount` skill** with that bank's level. **That is the levelled banks only**: a
+project bank has no level to pass, no row in `PROGRESS.md` counting it, and you never write `[refined]`
+there in the first place — so the project route above invokes nothing. It owns the two interview rows end to end,
 it commits `PROGRESS.md`, and you neither count nor edit them here. Do not reproduce its counting. One
 thing to pass it explicitly, because it is this route's context and not the skill's: the exact question
 IDs that became `[refined]` in this session, so it can say whether its gate or your write is the reason

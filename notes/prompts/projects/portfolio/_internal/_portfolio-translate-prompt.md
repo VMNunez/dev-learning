@@ -76,11 +76,14 @@ on, and write nothing.
 `es/` on disk is Victor's and is intact, and re-dispatching you would deterministically stop again. It
 is the one outcome where the twin exists, is correct, and must be left out of the run's commit.
 
-> This is a **guard, not a channel.** The project bank has no TODO contract of its own yet — that half
-> of `REC-180` is still open, along with stable IDs, priority markers and the `[refined]` freeze. What
-> this clause does is refuse to destroy a Spanish edit if Victor makes one; it does not license the
-> loop. Until that freeze exists, report any place the `es/` differs from a faithful rendering of the
-> `en/` in a way a hand edit would explain, rather than silently overwriting it.
+> This is the channel's **guard**, and the channel is now real: `_portfolio-standard.md` → "Question
+> identity, the refined freeze and the TODO channel" gives this bank the `[refined]` freeze and the
+> `TODO:` reopen, and names `study-content-writer` as the only role that resolves one. You are still not
+> that role. What this clause does is refuse to destroy a Spanish edit while its repair is owed
+> elsewhere; a whole-file stop is deliberate and is not softened by the channel existing. Report any
+> other place the `es/` differs from a faithful rendering of the `en/` in a way a hand edit would
+> explain, rather than silently overwriting it. (Priority markers are the one half of that row still
+> open, so neither file carries a `⭐` and you never add one.)
 
 **Stop if the `en/` bank does not exist.** There is nothing to mirror, and creating an `es/` file from
 nothing is how a twin with no source ends up on disk. Report `BLOCKED — <reason>`.
@@ -91,6 +94,33 @@ which is worse than an absent one. Omit that section's heading from the `es/` en
 `skipped — blocked upstream` in your trace, and translate every other section normally: four good
 sections are worth having, and stopping the whole twin over one of them buys nothing. Parity is owed on
 every section except the ones you were told to skip.
+
+---
+
+## A refined question is frozen — in your file too
+
+A question whose bold line carries `[refined]` was accepted by Victor in **both** languages, and the
+standard's freeze binds you as it binds the author and the reviewer. Concretely, on a **re-sync**:
+
+- **Keep the existing Spanish block byte-for-byte.** Do not re-render it, do not improve its wording, do
+  not "bring it into line" with an English sentence that reads differently now. You are the role most
+  likely to break this by accident, because your normal operation is to rewrite the whole twin from the
+  English — and a frozen block is precisely the one whose Spanish is not derived from today's English.
+- **It still counts** in that section's parity numbers, and it still appears in your trace, marked
+  `frozen — kept`.
+- **If the English side of a frozen question has changed** — the two no longer say the same thing — that
+  is not yours to reconcile in either direction. Report it, naming the ID, and leave both files alone: a
+  frozen block whose English moved means some role edited what it may not, and overwriting the Spanish
+  would destroy the evidence.
+
+On a **first translation** the twin has no counterpart to keep, so a frozen English question is rendered
+like any other and reported by ID — a freeze cannot be honoured by preserving bytes that never existed.
+
+**Two things you do write on a frozen question:** its **ID**, verbatim (identity is mastered in `en/` and
+carrying it across is the whole reason it exists), and the **`[refined]` marker** onto the Spanish bold
+line where the twin lacks it. Mirroring an existing marker is not assigning one — you are the pair's
+parity role, and a twin whose questions are unmarked while the English is frozen is a pair no later
+reader can trust. You never write that marker on a question the `en/` does not already carry it on.
 
 ---
 
@@ -111,6 +141,9 @@ Spanish.
 - **Answers stay in the first person, and "I chose" / "I decided" become `elegí` / `decidí`.** The whole
   bar of this bank is that the answer sounds like the person who wrote the code; an answer rendered
   into impersonal Spanish (`se utiliza`, `se decidió`) fails it exactly as the English passive would.
+- **Question IDs are copied verbatim, never renumbered and never re-ordered.** `[01-todo-list-004]` is
+  the same question in both files; that is the only thing tying a Spanish block to its English twin once
+  a rewrite has changed every word around it.
 - **Identifiers, code, filenames, class and method names stay verbatim.** `WeatherService`,
   `takeUntilDestroyed`, `@Transactional`, `HttpParams`, `signal()` — never translated, never accented,
   never re-cased. The same goes for the technical English Victor uses at work (*deploy, refactor,
@@ -125,8 +158,10 @@ Spanish.
 ## Section-by-section trace (mandatory — proof you translated the whole bank)
 
 List **every section heading in order** and, next to each, its English question count, its Spanish
-question count, and `translated` (new) or `re-synced` (it already existed and you updated it). The two
-counts must be equal for every section. A report without this trace is not accepted — it is your proof
+question count, how many of them were `frozen — kept`, and `translated` (new) or `re-synced` (it already
+existed and you updated it). The two counts must be equal for every section, and the frozen count is
+part of the trace because a frozen block you silently re-rendered is invisible in a count that only
+compares totals. A report without this trace is not accepted — it is your proof
 you reached the last question instead of stopping in the middle of a long bank.
 
 ---
@@ -140,8 +175,10 @@ atomic commit with the `en/` bank and the CV bullet. Report:
   nothing because the `es/` carries Victor's markers) — and `BLOCKED` only where you were unable to
   finish. The four are disjoint: only the first two mean you changed the file.
 - The **"N lines, read to EOF"** line for each file you read whole.
-- The section-by-section trace, with the per-section counts.
+- The section-by-section trace, with the per-section counts and the per-section frozen count.
 - The total question count, `en/` and `es/`, which must match.
+- The IDs of every `[refined]` question you kept, of every one you rendered for the first time, and of
+  any whose English has moved under the freeze — which you did not reconcile.
 - Any English question or answer you believe is wrong (for a follow-up author run — you did **not**
   change it), and any place the existing Spanish diverged in a way that looked deliberate.
 

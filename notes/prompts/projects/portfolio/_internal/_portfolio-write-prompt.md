@@ -33,7 +33,9 @@ My profile, the Spanish job market, and what consultancies look for are in
 The reviewer runs next and the orchestrator owns the commit.
 
 Before starting, read `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the interview-question
-quality bar, the file template, and the append/dedupe rule. That is what you author against.
+quality bar, the file template, the append/dedupe rule, and **"Question identity, the refined freeze and
+the TODO channel"**, which governs the ID you allocate on every question you write and the blocks you may
+not touch. That is what you author against.
 
 ---
 
@@ -48,6 +50,20 @@ that, never a local copy.
 (`SECTION = all` on a standalone run means author every section — then still work one section fully
 before the next, and read each section's area as above.)
 
+**A question carrying `[refined]` is frozen and is not yours.** Victor wrote that marker; the standard's
+freeze binds every role of this pipeline, you included. Do not reword it, do not re-answer it, do not
+re-cite its code, do not move it out of its section, and do not delete it as a duplicate of something you
+are writing — where your new question duplicates a frozen one, **yours** is the one that does not get
+written. If you believe a frozen question is wrong, say so in your report and leave it byte-for-byte as
+it stands. Only Victor reopens one.
+
+**Every question you write is born unrefined and carries a stable ID.** Read the whole file before
+allocating: the format is `{PROJECT_NAME}-{NNN}` and the counter runs over the **file**, not your
+section, so the next unused number is the highest one present anywhere in the bank plus one. Never
+recycle an ID a deleted question used and never renumber existing questions to close a gap — other
+sections, the Spanish twin and Victor's own TODOs address questions by that number. You never write
+`[refined]` yourself, in either language, for any reason.
+
 **You write English, and only into `en/`.** The bank is a bilingual pair and the Spanish twin at
 `notes/interview-prep/projects/es/{PROJECT_NAME}.md` belongs to stage **T**
 (`_portfolio-translate-prompt.md`), which runs after every section is finished. Never create it, never
@@ -61,9 +77,12 @@ lands in `en/` and stage T brings the twin into line.
 **When `{SECTION}` ≠ all (the normal orchestrated run), your reading list is small and fixed:**
 `{PROJECT_PATH}/PLANNING.md`, `notes/prompts/_internal/_shared-context.md` (the target companies and
 the interview context — the source for both, per the standard's quality bar), and **only your
-section's code area** from the standard's canonical table — nothing else. Do not read the other READMEs, the other
-layers, or files outside your area: the per-section split exists precisely so each subagent's context
-stays on one area. Read before writing anything.
+section's code area** from the standard's canonical table, **and the bank file
+`notes/interview-prep/projects/en/{PROJECT_NAME}.md` itself** — nothing else. Do not read the other
+READMEs, the other layers, or files outside your area: the per-section split exists precisely so each
+subagent's context stays on one area. The bank file is named here because two of your rules need it and
+neither is satisfiable from your section alone: the ID counter runs over the whole file, and the
+append/dedupe rule is a claim about what the file already contains. Read before writing anything.
 
 **Only when `SECTION = all` (standalone run)**, read the full per-type list below on top of PLANNING.md
 and `_shared-context.md`:
@@ -100,8 +119,9 @@ Examples of the shape (adapt to the actual code):
 
 Apply the standard's **exhaustiveness rule** within your section: as many questions as there are real
 decisions and patterns to defend in this area — do not cap at 5. Save them under the `{SECTION}` heading
-in `notes/interview-prep/projects/en/{PROJECT_NAME}.md` using the standard's file template (create the
-heading if the file/section does not exist yet); if questions for this section already exist, append
+in `notes/interview-prep/projects/en/{PROJECT_NAME}.md` using the standard's file template and its
+per-question format — `**[{PROJECT_NAME}-NNN] Question?**`, the ID first inside the bold text — creating
+the heading if the file/section does not exist yet; if questions for this section already exist, append
 only what is not already there and never duplicate a decision or code path already covered.
 
 These questions are saved **regardless of the eventual verdict** — they are useful prep even for an
@@ -114,6 +134,10 @@ unfinished project.
 Do not commit. Leave the question file in the working tree. Report:
 - The project type detected and the files you read for `{SECTION}`.
 - How many questions you wrote for this section (and how many were appended vs already there).
+- **The ID range you allocated** (e.g. `01-todo-list-042` … `-057`) and the highest ID that existed in
+  the file before you started. The next section's author allocates from the file, so a run that cannot
+  say what it took is a run nothing can check for a collision.
+- Any **refined** question in your section you believe is wrong — which you did not change.
 - Any decision you found but could not cover with a question (with why).
 
 **If you cannot finish the section**, stop and open your report with `BLOCKED — <reason>`, then state
