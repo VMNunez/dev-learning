@@ -100,8 +100,13 @@ Source files for full mode — read all of these:
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/security.md
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/sql.md
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/general.md
-- notes/interview-prep/projects/ — read all files in this folder if they exist;
-  if the folder is empty or does not exist, skip without error.
+- notes/interview-prep/{LANGUAGE}-side project banks:
+  notes/interview-prep/projects/{LANGUAGE}/ — read all files in that one language folder if they
+  exist; if it is empty or does not exist, skip without error. **Never read both languages.** The
+  project bank became a bilingual pair on 2026-08-31, and reading the folder above it would feed you
+  every question twice, once in each language, and conduct a {LANGUAGE} interview off English source
+  text. A project whose `es/` twin is missing is simply not in an `es` session's sources — say so in
+  the opening snapshot rather than falling back to the English.
 
 (CSS, Git, and JavaScript — the only three of the twelve banks left out — are deliberately excluded
 from full mode: a Spanish consultancy screen for this stack leads with TypeScript, not vanilla JS,
@@ -109,7 +114,8 @@ and CSS/Git are rarely its core. Use topic mode to drill any of them on their ow
 
 Source files for topic mode:
 - notes/interview-prep/{LEVEL}/{LANGUAGE}/{TOPIC}.md
-- notes/interview-prep/projects/ — same rule as above.
+- notes/interview-prep/projects/{LANGUAGE}/ — same rule as above, including the never-both-languages
+  half of it.
 
 ---
 

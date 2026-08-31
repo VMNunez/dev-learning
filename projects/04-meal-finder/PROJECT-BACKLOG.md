@@ -39,6 +39,8 @@
 - [ ] **[Low]** `[frontend]` — Remove the unused `title` signal in `app.ts:11`, left over from the CLI scaffold. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Convert the three routes to `loadComponent()` lazy loading in `app.routes.ts`; the app is small, but reviewers look for the pattern. *(Effort: Small)*
 
+- [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/04-meal-finder`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+
 ---
 
 ## Learning objectives

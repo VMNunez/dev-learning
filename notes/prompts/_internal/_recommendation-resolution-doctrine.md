@@ -232,6 +232,23 @@ over** — the same fix cited `coverage/{LEVEL}.md` for evidence markers that ex
 so pin the path to the value that holds or verify all of them; a template is the cheapest way to
 assert two things you never checked.
 
+**A rule written in a standard is not a rule that runs, and "the sibling family already does this" is
+a claim about *disk*, not about text.** From `REC-180`'s identity half. The row's whole framing was that
+transferring stable IDs and the `[refined]` freeze to the project question bank was cheap because
+"everything the request needs already runs for the levelled bank" — which
+`_interview-prep-standard.md` does mandate, in a section three prompts and three skills read as a
+contract. Measured across all eleven files of `notes/interview-prep/junior/en/`: **669 questions, 0 IDs,
+0 `[refined]`, 0 `[studied]`, 0 legacy `[x]`**, and the `Interview` columns of `_run-tracker.md` empty
+for all fourteen topics — the migration that assigns them belongs to `interview-prep-audit`, which has
+never run. The rules were live text over an artefact that had never been through the run that applies
+them, so the transfer was a **first implementation**, not an inheritance, exactly as the same row's
+translate stage had been two days earlier. Two things generalise. **Count the marker, not the mandate**:
+one `grep -c` per file over the artefacts the standard governs, before pricing anything as a copy — it
+is the same cost as reading the standard and it is the only thing that separates a rule from a rule
+that happened. And **a tracker column is the cheapest such instrument in the repository**: it records
+which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
+opening a single artefact.
+
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
 `✅` markers across projects 01–06, so the constructs are Victor's real code and only the file
@@ -351,7 +368,8 @@ resolution needs is the test.
 | A row whose fix is already on disk from a dead session | adopting it — an edited uncommitted tree reads like an applied fix (`REC-135`) | re-measure from scratch; that is what finds the sites the dead session missed |
 | A row whose fix replaces a **false premise** with an ownership rule | the scene-setting around the ownership half (`REC-150`) | condition every remaining claim about the tree or delete it |
 | A row whose fix **quotes a sibling that is already right** | the paragraph *around* the sentence taken (`REC-154`) | read what the sibling prints underneath it — exceptions travel with house phrasing |
-| A row whose fix is a **deletion** | the check a deletion owes and an addition does not (`REC-153`, `REC-142`) | name the clause chain that still carries the boundary the duplicate was covering |
+| A row saying a mandatory **read** is unaffordable | naming the population that still owes the read, not grading the trigger that fires it (`REC-177`) | ask what already *states* the answer the read would re-derive — three runs disagreed only on size and the axis was ownership; what owes prose is the population nothing else states |
+| A row whose fix is a **deletion** | the check a deletion owes and an addition does not (`REC-153`, `REC-142`) | name the clause chain that still carries the boundary the duplicate was covering. Also `REC-176`: deleting a file either ledger cites turns that path into a permanent licensed `REPORT:` line in `validate-prompt-system.ps1` — expected output on every later run, never a typo |
 | A row whose fix only makes an existing path more **visible** | the map rows describing the file's *kind* (`REC-113`) | `maps unaffected` is easiest to get wrong where nothing the fix wrote is new |
 | A row that adds **no check** | the reviewer, because the injection budget does not apply (`REC-091`) | on a row that adds no check, the reviewer *is* the check |
 | A row that keeps **failing review** | rounds, and a fix that grows every pass (`REC-092`) | it is not under-built — check whether it is being answered at the wrong altitude, and count the rounds |
@@ -942,6 +960,15 @@ verify the pattern selects that case and nothing wider *and nothing else that ne
 direction is the cheap half; a comment describing a class the glob does not select is the defect that
 survives for months, because the check never fails. And when a fix's own sweep keeps returning one more
 site of the same shape, that is the two-round cap working: the residue is a row, not a third repair.
+**And `REC-174`, its residue, which adds the two clauses a list of names cannot supply. A set may hold
+more than one CLASS, and until the classes are named apart it can be audited in one direction only:**
+every exemption there was read as "content copied from a run", so the files exempt for the opposite
+reason — authored, and the runtime is their subject or their quoted evidence — were invisible as a
+group, and one of them sat in the filter carrying no comment at all. **And when the repair elects a
+definer, the definer's own completeness is part of the fix**: this one named `_system-map.md` §7 as
+what decides who wrote a file, and §7 had no row for one of the six files the same commit was adding —
+the cold reviewer found it, not the sweep, because a sweep reads the population it rules and not the
+oracle it cites.
 
 **A non-ASCII literal in a BOM-less `.ps1` is not the character you typed.** Also `REC-084`, where it
 bit three times in one session — in the check, in the author's probe, and in the cold reviewer's.

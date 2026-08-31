@@ -10,8 +10,9 @@ go/no-go gate** on a finished project, with one declared human choice before an 
 is it ready to show a recruiter and reference in a job
 application **today**? It produces four things (see `_portfolio-standard.md`):
 
-1. An **exhaustive bank of project-specific interview questions** — built **one bank section at a time**,
-   each authored then cold-reviewed by its own pair of subagents (so no section gets skimmed), saved
+1. An **exhaustive bank of project-specific interview questions, in English and Spanish** — the
+   English built **one bank section at a time**, each authored then cold-reviewed by its own pair of
+   subagents (so no section gets skimmed), then translated once per project into its `es/` twin. Saved
    regardless of the verdict.
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
 3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub description**.
@@ -49,7 +50,8 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 
 **Internal pieces this orchestrates** (you never launch these directly):
 `_portfolio-standard.md` (the bar) · `_portfolio-write-prompt.md` (question author) ·
-`_portfolio-review-prompt.md` (question reviewer).
+`_portfolio-review-prompt.md` (question reviewer) · `_portfolio-translate-prompt.md` (the `es/`
+translator, stage T).
 
 > **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits **none of the audit
 > outputs**, so you can read the diff first. (`DRY_RUN` governs the audit outputs only — the pipeline
@@ -109,15 +111,20 @@ before a ✅/⚠️ non-dry content commit.
 
 > **Run baseline (step 0).** Record the current commit (`git rev-parse HEAD`) as `{BASELINE}`, and per
 > project, before its first author dispatch, run `git status --porcelain` on
-> `notes/interview-prep/projects/«name».md`. Every section subagent writes into that one file and the
+> `notes/interview-prep/projects/en/«name».md`. Every section subagent writes into that one file and the
 > commit stages it wholesale, so this is the last moment a section's pre-run bytes are identifiable. A
 > clean file means `{BASELINE}` holds them and the restore branch below is available; a dirty one means
 > it does not. This is a baseline-availability check and nothing else.
+>
+> **The `es/` twin is deliberately not baselined.** Phase 1b's only disposition is leave-and-declare, so
+> a baseline for it would have no consumer — and reading one would imply a restore branch that does not
+> exist. Its safety comes from stage T's own STOP conditions, not from `{BASELINE}`.
 
 First read
 `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` so you know the verdict logic, the question
 bar, and the CV / GitHub formats. Then run the procedure below. You stay light on the heavy part: you
-dispatch the two question subagents and wait — you never author the question bank in your own context.
+dispatch the question subagents and the translator and wait — you never author or translate the
+question bank in your own context.
 The verdict + CV bullet + GitHub description are short and deterministic, so you do those yourself.
 
 ## If PROJECT_PATH = all
@@ -127,16 +134,27 @@ run the **single-project procedure below once per project**, fully finishing one
 its explicit no-commit handoff and leave its pending options under that project's own section. Never
 overlap, since their subagents edit shared files and parallel commits race the git index.
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
-summary table (`Project | Verdict | Questions`). **Context guard for batch runs:** with ~7 projects × up
-to 5 sections × 2 subagents, full decision-by-decision traces returned to you would saturate your own
+summary table (`Project | Verdict | Questions`), whose Questions cell carries **both counts** —
+`en/N · es/N`, or `en/N · es/—` where the twin was not produced, so a batch cannot report a bank as done
+while half of it is missing. **Context guard for batch runs:** with ~7 projects × (up
+to 5 sections × 2 subagents, plus one translator), full decision-by-decision traces returned to you
+would saturate your own
 context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
-author to its **question count and any decision it could not cover**, the reviewer to its **question
-count, its questions-vs-decisions ratio, and the uncovered decisions if that ratio is below 1** — not the
-full trace (the trace still drives their own work; it just stays in their context). Otherwise, for one project, follow the procedure.
+author to its **question count, its allocated ID range and any decision it could not cover**, the
+reviewer to its **question count, its questions-vs-decisions ratio, the IDs it allocated or repaired,
+and the uncovered decisions if that ratio is below 1**, the
+translator to its **verdict, its per-section counts including the frozen-kept ones, and its total** —
+not the full trace (the trace still drives their own work; it just stays in their context).
+**Every defect a subagent found inside a `[refined]` block returns in `all` mode too, verbatim and by
+ID.** That is not trace and it is not summarisable: the freeze stopped every role from repairing it, the
+hard rule below makes the final report its only route to Victor, and a batch that drops it is the one
+shape in which a frozen question stays wrong forever. The translator's
+per-section counts are the exception that is not a trace: they are the parity proof, they are two
+numbers per section, and without them nothing in the run has checked the twin at all. Otherwise, for one project, follow the procedure.
 
 ## Single-project procedure
 
-### Phase 1 — Question bank (one cold author → reviewer per SECTION)
+### Phase 1a — English question bank (one cold author → reviewer per SECTION)
 
 **The unit of deep work is one section of the bank, not the whole bank.** The bank has five fixed
 sections, each mapping to a distinct code area — so each is a specific, self-contained task a subagent
@@ -153,17 +171,21 @@ question file, so never overlap. For each section, run author then reviewer; nei
 
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-write-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
-> (the standard's canonical table) plus PLANNING.md, and write **only this section's** questions to
-> `notes/interview-prep/projects/«name».md` per the standard. **Do NOT commit.** Build a
+> (the standard's canonical table) plus PLANNING.md — **and the bank file itself, whose bold lines you
+> need for the ID counter and the dedupe rule** — and write **only this section's** questions to
+> `notes/interview-prep/projects/en/«name».md` per the standard — each with the next unused
+> `«name»-NNN` ID **allocated over the whole file**, and never touching a block that carries `[refined]`.
+> **Do NOT commit.** Build a
 > decision-by-decision trace in your own context to drive exhaustiveness, but return only the
-> **question count and any decision you could not cover** — the reviewer re-walks the code itself.
+> **question count, the ID range you allocated, any defect you found in a refined block, and any
+> decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. **If A returns `BLOCKED`** — it could not complete the section — that section gets no
 reviewer: note it and move to the next. Skipping B is not the whole disposition, because A has already
 written into the shared question file and the commit below stages that file wholesale. Take
 `_agent-runtime-standard.md`'s returned-blocked branch, which this prompt binds as: **restore** that
-section's span in `notes/interview-prep/projects/«name».md` from
-`git show {BASELINE}:notes/interview-prep/projects/«name».md` — that one section's span only, never the
+section's span in `notes/interview-prep/projects/en/«name».md` from
+`git show {BASELINE}:notes/interview-prep/projects/en/«name».md` — that one section's span only, never the
 file, which holds the sections this run already finished — **but only when all three hold**: the file
 was **tracked** at `{BASELINE}`, that section's heading **existed in it there**, and the file was clean
 at `{BASELINE}`. Otherwise **leave it and declare it** as `blocked — partial`. The three conditions are
@@ -184,8 +206,14 @@ the wrong place to save):
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-review-prompt.md` and execute it for
 > `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
-> thin/weak/duplicate questions directly. **Do NOT commit.** Return your verdict (PASS/FIXED), the
-> **questions-vs-decisions ratio for this section**, and — only if that ratio is still below 1 — the
+> thin/weak/duplicate questions directly — **except inside a `[refined]` block, which you judge, count
+> and report but never repair**. Check every question carries a well-formed, unique `«name»-NNN` ID,
+> reading the whole bank file's **bold lines only** for it — uniqueness is a whole-file property and your
+> section cannot answer it alone. Report a collision with a question outside your section rather than
+> renumbering it; the cross-section renumber is mine.
+> **Do NOT commit.** Return your verdict (PASS/FIXED), the
+> **questions-vs-decisions ratio for this section**, the IDs you allocated or repaired, every defect you
+> left standing inside a refined block, and — only if that ratio is still below 1 — the
 > **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
 > Write your findings and verdict to «scratch path for this section» as you reach them, before
 > returning; if you cannot finish, say `BLOCKED — <reason>` and which questions you already changed.
@@ -216,7 +244,75 @@ holding a not-complete section still records `blocked` and not `dry-run`.
 **After all sections — orchestrator (light global scan).** Do a quick cross-section duplicate scan
 over the finished bank (the same decision or code path landing in two sections → keep it in the one
 where an interviewer is likeliest to ask it, remove the other). Fix a stray duplicate directly — this
-needs the whole-file view, so it belongs here, not in a per-section subagent. Then continue to Phase 2.
+needs the whole-file view, so it belongs here, not in a per-section subagent. Then continue to Phase 1b.
+
+**Two constraints on that scan, both from the standard's identity section.** A question carrying
+`[refined]` is **never the one you delete**: where a frozen question and an unrefined one duplicate, the
+unrefined one goes, and where two frozen ones do, you delete neither and report the pair by ID. And the
+scan is the run's **last** chance to catch a **duplicate ID** — each section's reviewer checks for one
+and repairs what it can see, but each allocated from its own read of the file, so a collision between two
+sections is one only a whole-file pass is guaranteed to catch. Renumber the later of
+the two to the next unused number in the file, never a frozen one (its ID is part of what is frozen —
+report that pair instead), and never renumber to close a gap a deletion left.
+
+**Count the questions carrying no ID at all, and report the number.** Each section's reviewer allocates
+the missing IDs in its own section, so on a healthy run this is zero — but a section whose author
+returned `BLOCKED` never got a reviewer, and a bank written before this rule existed (`01-todo-list`,
+79 questions) carries none until its first run under it. A question with no ID cannot be named by a
+`TODO:` or frozen with `[refined]`, so a non-zero count is a debt this run leaves behind and the final
+report says so by section. Do not backfill them yourself: allocating IDs across a bank is per-section
+work, and the section that was blocked is the one nobody finished.
+
+**Do the dedupe before Phase 1b, never after.** A duplicate removed from the English after the twin
+exists leaves an orphan question in the Spanish that no parity count catches until the next run — the
+`es/` would simply have one section one question longer, which reads as a translator error rather than
+as your edit.
+
+### Phase 1b — Spanish twin (one translator per PROJECT, after every section)
+
+The English bank is now finished and deduped, so it is a stable source. **Subagent T — translator
+(whole bank).** Launch one `role-appropriate` subagent, `reasoning tier: deep`,
+`execution: foreground` (rendering an interview answer so it still sounds like Victor is judgment, not
+substitution):
+
+> Read `notes/prompts/projects/portfolio/_internal/_portfolio-translate-prompt.md` and execute it for
+> `PROJECT_PATH = {PROJECT_PATH}`. Translate the finished
+> `notes/interview-prep/projects/en/«name».md` into its twin
+> `notes/interview-prep/projects/es/«name».md`. **Do NOT commit.** «If any section was left
+> half-written, name it here so it is skipped rather than half-translated.» Copy every question ID
+> verbatim, and **keep the existing Spanish of a `[refined]` question byte-for-byte** instead of
+> re-rendering it. Return `TRANSLATED`,
+> `RE-SYNCED`, `TODO-STOPPED` or `BLOCKED`, the per-section English/Spanish question counts **and their
+> frozen-kept counts**, the
+> totals, and any English question you believe is wrong — which you did not change.
+
+It runs **once per project, not once per section**: the whole point of the stage is that it sees one
+stable, reviewed source, and five per-section translators would each re-derive the register from
+scratch and produce a twin that changes voice at every heading.
+
+**Parity gate — act on T's counts, don't just record them.** If any section's Spanish count differs
+from its English count, or a section is missing that was not named as skipped, the twin is not done:
+re-dispatch T **once**, naming the exact sections that disagree. One retry maximum; if parity still
+fails, **this content acceptance gate has failed** — name the mismatched sections in the final report
+and record this project `blocked` in `_run-tracker.md`, on the dry branch too, exactly as a below-1
+ratio does in Phase 1a.
+
+**If T returns `TODO-STOPPED`, the parity gate does not apply and neither does a retry.** The `es/` on
+disk carries `TODO:` markers Victor wrote, so stage T wrote nothing at all: the twin is intact, it is
+**his**, and it is simply older than the English this run just changed. Do not re-dispatch — T would
+stop on the same markers. Label it `es/ untouched — TODO stop`, name the markers in the final report so
+he knows the twin is now behind, and **leave the `es/` file out of the commit entirely** (see the
+staging rule below). The project still records `blocked` in `_run-tracker.md`, because the pair this
+run was supposed to produce was not produced.
+
+**If T returns `BLOCKED`** — a half-written twin — take the leave-and-declare side, never the restore
+side. The `es/` is created by this stage, so on a first run there is nothing at `{BASELINE}` to restore
+to, and on a later run restoring would throw away a twin that is more current than the committed one.
+Declare it `blocked — partial (es/)`, and the project records `blocked`.
+
+**A missing twin does not move the Phase 2 verdict**, for the reason the thin-bank rule already gives
+below: the verdict is the go/no-go on the **project**, and no part of it reads the question bank in
+either language.
 
 ### Phase 2 — Verdict (orchestrator)
 
@@ -266,7 +362,12 @@ sequence instead, exactly as on any other verdict. Either way, record this proje
 `_run-tracker.md`. Then the self-report.
 
 Otherwise print, in this order:
-1. "Saved X questions to notes/interview-prep/projects/«name».md" (do not reprint the questions).
+1. "Saved X questions to notes/interview-prep/projects/en/«name».md, and X to its `es/` twin" (do not
+   reprint the questions). If the two numbers differ, or the twin is missing, say which sections and
+   why — a pair reported as one number is the one thing a later reader cannot check. Add the **ID range
+   this run allocated**, and, on its own line, **every defect a subagent reported inside a `[refined]`
+   block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
+   role from repairing them, and Victor is the only reader who can reopen one.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
 3. CV bullet (two options) — **omit if ❌**.
 4. GitHub description (one option) — **omit if ❌**.
@@ -287,14 +388,34 @@ Otherwise print, in this order:
 the add and again before the commit, confirm only the intended `notes/` files are staged
 (`git restore --staged` anything else, especially project code left staged from an earlier step).
 If ✅/⚠️ (cv-bullets was written):
-`git add notes/interview-prep/projects/«name».md notes/cv/cv-bullets.md`, then
+`git add notes/interview-prep/projects/en/«name».md notes/cv/cv-bullets.md`, **plus
+`notes/interview-prep/projects/es/«name».md` when that file exists on disk**, then
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
-If ❌ (no cv-bullets): `git add notes/interview-prep/projects/«name».md`, then the same commit message.
+If ❌ (no cv-bullets): `git add notes/interview-prep/projects/en/«name».md`, plus the `es/` path on the
+same condition, then the same commit message.
+
+**Both halves are staged on every verdict branch — but only the `es/` this run actually wrote.** The
+test is T's return token, **not** whether the file is on disk, and the two differ on the case that
+matters:
+
+- `TRANSLATED` / `RE-SYNCED` → **stage the `es/`.** A commit carrying the English alone leaves the twin
+  behind for a run that will never notice it is missing.
+- `BLOCKED`, or the translator died → the file may be half-written or absent. Stage it only if it
+  exists, and label the commit `blocked — partial (es/)`. `git add` on a pathspec that matches nothing
+  aborts the whole add, so never name a path you have not checked.
+- `TODO-STOPPED` → **never stage it.** This is the one case a disk check gets backwards: the file is
+  present *because* stage T refused to touch it, and what is in the working tree is Victor's own
+  Spanish, written while studying and quite possibly uncommitted. Staging it would commit his authored
+  prose inside a `docs: portfolio-audit …` commit, under an auto-commit authorization that covers this
+  run's **outputs** and nothing else. Label the commit `es/ untouched — TODO stop`.
+
+The pre-add safety check below cannot catch this for you — it confirms only that the staged `notes/`
+paths were intended, and on this branch the `es/` path *looks* intended.
 
 **A project with a not-complete section still commits — but labelled.** Name every such section in the
 commit message body with its shape (`blocked — partial` restored / `blocked — partial` left in the tree
-/ `uncovered decisions`). Its outcome is not decided here — Phase 1's two-shapes rule already fixed it
-as `blocked`, on the dry branch too. The label is not ceremony: this bank has no machine-readable
+/ `uncovered decisions` / `parity failed (es/)` / `blocked — partial (es/)`). Its outcome is not decided here — Phase 1a's two-shapes rule and Phase 1b's parity and
+`TODO-STOPPED` branches already fixed it as `blocked`, on the dry branch too. The label is not ceremony: this bank has no machine-readable
 freshness marker of its own — no fingerprint, and `/simulator` reads the folder ungated — so that label
 and the tracker cell are the only marks either shape leaves on disk.
 
@@ -320,16 +441,31 @@ the diff.
   has exactly one bullet and no choice marker; validating only the section written this run is not enough.
 - **Questions are saved regardless of the verdict** — a ❌ still commits the question file.
 - **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
-  orchestrator commits once, after every section's author→reviewer pair is done; the section subagents
-  never commit.
+  orchestrator commits once, after every section's author→reviewer pair **and the project's translator**
+  are done; neither the section subagents nor the translator commits.
 - **One SECTION per subagent — never the whole bank.** Authoring and review run one cold subagent per
   bank section, in sequence, each mining only that section's code area and returning a
   decision-by-decision trace. A subagent handed the whole project would skim the last sections (thin
   Testing/Business-Rules is exactly that failure). Whole-bank work is limited to the light cross-section
-  dedupe the orchestrator does at the end.
-- **Author then reviewer per section, sequentially.** Never overlap a section's two subagents or two
-  sections — the reviewer must see a finished section, and they edit the same file. Never skip the
-  reviewer pass.
+  dedupe the orchestrator does at the end **and to the translator**, which is whole-bank on purpose:
+  its job is one consistent Spanish voice across the file, and a per-section split would re-derive that
+  voice five times. It is also the one whole-bank role that cannot skim, because its own parity counts
+  are checked section by section.
+- **Author then reviewer per section, sequentially, then one translator for the project.** Never
+  overlap a section's two subagents or two sections — the reviewer must see a finished section, and
+  they edit the same file. Never skip the reviewer pass, and never run the translator before the last
+  section's reviewer and the cross-section dedupe have finished.
+- **A `[refined]` question is Victor's, and no role of this run may write, alter or delete one.** The
+  standard's freeze binds the author, the reviewer, the translator and your own cross-section dedupe;
+  the marker is written by Victor alone and reopened by him alone, by his word or by a `TODO:`. Every
+  defect a subagent finds inside a frozen block reaches him through the final report and nowhere else,
+  so print those lines rather than folding them into a count. `[studied]` is **not** admitted in this
+  bank at all — its three rulings are open in `REC-180` — so a run that finds one reports it as
+  malformed and changes nothing.
+- **The English is authored and the Spanish is rendered — never the other way round, and never both at
+  once.** The author and the reviewer write only `en/`; the translator writes only `es/` and changes no
+  English. A run that lets one role do both produces a Spanish file written before the English was
+  audited, which is the re-sync this stage exists to avoid.
 
 ### Final step — pipeline self-report
 

@@ -22,7 +22,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
-- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
+- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature

@@ -181,16 +181,19 @@ whether these prompts need changing, so be honest, including "nothing to report"
   `notes/prompts/_internal/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
 
 Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
-directly** under the notes/prompts exception — `git status` before add and before commit, stage only
-`_last-run-report.md`, message `docs: pipeline self-report for readme review of {PROJECT_PATH}`. (It is a separate commit from the README set.) The prompts stay frozen
+directly** under the notes/prompts exception, per `_pipeline-self-report.md` → "How to commit it" —
+`git status` before add and before commit, staging `_last-run-report.md` **and** `_run-tracker.md`
+(plus `_breach-log-readme-audit.md` when this run wrote a row or moved a disposition in it), message
+`docs: pipeline self-report for readme review of {PROJECT_PATH}`. (It is a separate commit from the README set.) The prompts stay frozen
 unless this report shows a real failure. Also print the report in chat.
 
 ## Hard rules
 
 - **Commit the READMEs yourself**, as **one commit for the project**, not one per README — the same
   `_session-rules.md` permission `readme-concept-add` uses, and the same shape as `plan-audit`
-  (`PLANNING.md`) and `review-audit` (`PROJECT-BACKLOG.md`). Never ask Victor to run it. The other file
-  this flow commits is `_last-run-report.md`, separately, under the notes/prompts exception.
+  (`PLANNING.md`) and `review-audit` (`PROJECT-BACKLOG.md`). Never ask Victor to run it. The other files
+  this flow commits are `_last-run-report.md` and `_run-tracker.md` (plus the breach log when this run
+  wrote one), separately, under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.

@@ -1,7 +1,7 @@
 # Interview-prep standard — what a good interview-prep file contains
 
 This is the **shared standard** for interview-prep Q&A files. It is not a runnable prompt — it holds
-no configuration and does nothing on its own. Its readers fall into four groups, and the list is
+no configuration and does nothing on its own. Its readers fall into five groups, and the list is
 open — every **writer** of a Q&A file reads this file and is listed here rather than treated as an
 exception. Read-only judges are not required to: `/simulator` grades Victor *against* the bank and
 `/progress-update` counts it, neither reads this standard, and neither appears below.
@@ -30,6 +30,19 @@ guards.
   question they did not just write, however far from this bar it sits. Judging one is not rewriting
   it — they still deduplicate against existing questions and still report a defect they notice, which
   is the only thing they may do about one.
+
+**`_portfolio-translate-prompt.md`**, the one reader from outside this family, and the narrowest —
+scoped to **"The bilingual en/es contract" alone**. It renders a *project* question bank
+(`notes/interview-prep/projects/en|es/*.md`) into Spanish, and that bank is **not governed by this
+standard**: it has no level, no coverage fingerprint and no `[studied]` state. It **does** carry stable
+IDs and the `[refined]` freeze since 2026-08-31, and a `TODO:` reopen channel of its own — but they are
+`_portfolio-standard.md`'s own rules, written there deliberately rather than borrowed from here, because
+one standard reaching across two disjoint chains is what `REC-180` ruled against. Its ID is
+`{PROJECT_NAME}-{NNN}`, not the `{TOPIC}-{LEVEL}-{NNN}` below. What that row still owes it is priority
+markers with a calibration for five fixed sections, an `es`-review owner this family has no equivalent
+of either, and the three `[studied]` rulings. Nothing here binds it except the
+bilingual section, and it is listed under the open-list rule above rather than left as the unnamed
+exception it would otherwise be. The rest of its contract is `_portfolio-standard.md`'s.
 
 **The in-session skills**, each scoped by its own `SKILL.md`: `study-content-writer` (unrefined,
 reopened or refining content), `interview-prep-block-open` (the lifecycle and answer-quality sections,

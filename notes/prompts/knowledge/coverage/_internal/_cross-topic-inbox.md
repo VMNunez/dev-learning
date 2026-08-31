@@ -83,3 +83,9 @@ is still the source, and the owning topic's three level files remain its only sc
 ## TypeScript
 
 *(Empty — the barrel re-export proposal routed from the JavaScript junior run on 2026-07-29 was consumed and accepted by the TypeScript junior recalibration on 2026-07-29.)*
+
+## HTML
+
+- Decorative vs informative images — an image whose information is already carried by adjacent text is decorative and takes `alt=""`, which gives it `role="presentation"` and removes it from the accessibility tree, whereas an *absent* `alt` leaves `role="img"` and lets the accessible name fall back to the `src` filename (proposed level: junior · source run: `backlog-task-close` on 02-weather-app, 2026-08-30). Routed to General on 2026-08-30 when no topic owned it, and moved here the same day when the HTML topic was admitted. Already applied in project code (`02-weather-app` gives both weather icons `alt=""` because the forecast and card templates render the description as adjacent text), so the run that authors the bullet leaves a `coverage-mark` evidence marker owed.
+
+- **Pending boundary migration — HTML admitted 2026-08-30.** Until HTML's first `/coverage` run and a rerun of every adjacent topic complete, these topic/levels are recorded pending per `_topic-ownership.md`: `html` junior/middle/senior (never generated), and `css`, `angular`, `angular-material` and `general` at all three levels, whose bullets the migration must classify and **move** — never copy — with their evidence markers verbatim.

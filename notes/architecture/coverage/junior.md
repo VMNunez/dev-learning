@@ -116,6 +116,10 @@ apply in a small codebase, and defend with concrete trade-offs.
 
 - Container / presentational component pattern — a container owns feature integration while focused
   presentation components render inputs and emit user intent without fetching their own remote data ✅ 01-todo-list
+- A presentation component's emitted event is a contract, not an echo of the DOM — the raw input
+  value is normalised and checked before it crosses the boundary, so the parent and every later
+  listener receive a value already fit to use; deferring that check to the consumer makes each new
+  listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level

@@ -69,7 +69,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 - `provideHttpClient()` and its feature functions — enable `HttpClient` application-wide at bootstrap and opt into behaviour such as the Fetch backend or interceptors through explicit `with...()` features instead of separate providers ✅ 02-weather-app
 - Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON ✅ 02-weather-app
-- `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged
+- `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged ✅ 02-weather-app — `WeatherService` chains `new HttpParams().set(...)` three times and passes the result to `get()`
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
 - Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
 
@@ -831,6 +831,10 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - Container / presentational component pattern — a container owns feature integration while focused
   presentation components render inputs and emit user intent without fetching their own remote data ✅ 01-todo-list
+- A presentation component's emitted event is a contract, not an echo of the DOM — the raw input
+  value is normalised and checked before it crosses the boundary, so the parent and every later
+  listener receive a value already fit to use; deferring that check to the consumer makes each new
+  listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
@@ -1101,7 +1105,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - SQL injection — bind query parameters and never concatenate untrusted input into SQL or JPQL;
   an ORM cannot make string-built queries safe ✅ 07-timetrack
 - Injection beyond SQL — avoid building shell commands, templates, expressions, paths, or log records
-  by concatenating unchecked input
+  by concatenating unchecked input ✅ 02-weather-app — the city name reaches the OpenWeatherMap query through `HttpParams`, never concatenated into the URL
 - Unsafe deserialisation — accept constrained DTO and data formats instead of reconstructing arbitrary
   attacker-selected object types or enabling polymorphic type resolution casually
 - Mass assignment / over-posting — constrain request DTO fields so a client cannot set roles,
@@ -1216,7 +1220,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
-- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
+- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature
@@ -1494,7 +1498,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Cascade decision order — resolve ordinary author declarations through importance, specificity, and source order rather than assuming the last rule always wins
 - Cascade origins — distinguish user-agent, user, and author declarations and know that origin and importance are resolved before specificity, so a more specific selector does not always win
 - Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately
-- Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier
+- Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier ✅ 02-weather-app — `animation-duration: 2.4s` overrides only the duration longhand of `animation: spin 0.8s linear infinite`, leaving the keyframes name and `infinite` intact
 
 ### Selectors and specificity
 
@@ -1550,7 +1554,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Content-driven breakpoints — add a breakpoint where the layout or content stops working rather than memorising device widths; intrinsic Grid patterns can remove some breakpoints entirely ✅ 04-meal-finder
 - Fluid images — constrain an image to its container while preserving its intrinsic aspect ratio
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
-- `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback
+- `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback ✅ 02-weather-app — the decorative card hover is dropped under a `reduce` query while the loading spinner is only slowed from 0.8s to 2.4s
 - Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right
 - Responsive content testing — test narrow widths, zoom, long labels, translated text, and missing or oversized media because a layout is responsive only if real content can change without clipping
 

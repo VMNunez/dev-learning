@@ -223,8 +223,15 @@ The orchestrator enumerates, from disk rather than from either map:
 Exclude generated reports (`_last-run-report*.md`, `_last-drift-report.md`, this prompt's output report
 — whose previous edition Step 0 reads as a continuity source, never as an inventory member —
 and `_system-gaps-report.md`), runtime/evidence state (`_run-tracker.md`, `_skill-friction.md`,
-`_ritual-friction.md`, `_job-market-evidence.md`, `_cross-topic-inbox.md`), and every live artifact
-outside the machinery set above. `_recommendation-ledger.md` remains in scope for
+`_ritual-friction.md`, `_job-market-evidence.md`, `_cross-topic-inbox.md`, `_skill-breach-log.md`,
+every `_breach-log-<prompt-name>.md`, `_note-todo-harvest.md` and the Git-ignored `_skill-runs.md`),
+and every live artifact outside the machinery set above. **The two exclusions above are one class
+under two names, and it is defined by what WROTE the file** — a run or the `PostToolUse` hook, never
+its filename: the content is a transcript, so auditing it as canonical machinery rules on a sentence
+nobody authored. The four names added 2026-08-29 (`REC-174`) were each written after this paragraph
+was, which is the failure mode to expect from a list rather than a rule; `validate-prompt-system.ps1`
+carries the same class as its `$canonicalFiles` class-A exemption, so a file joining one list joins
+the other, and this paragraph is where a run notices that the two have drifted. `_recommendation-ledger.md` remains in scope for
 its improvement-loop contract and, with `_recommendation-ledger-closed.md`, for deduplicating new
 machinery findings, but its open rows are not an operational-debt queue; `_recommendation-resolution-doctrine.md` is in scope as the case law those
 four steps cite, never as a queue. Do not follow a path merely because an audited file names it: record the
