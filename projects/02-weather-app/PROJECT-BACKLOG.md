@@ -18,14 +18,6 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Low
 
-- [ ] `[frontend]` `npm test` bundles the five `.spec.ts` files but executes **zero** tests — Vitest reports
-      `Test Files 0 passed (5)` / `Tests 0 passed (0)` and no failure — so the command gives no signal at all:
-      the false `should render title` assertion removed today had never once run. The `test` target in
-      `angular.json:71` is a bare `@angular/build:unit-test` builder with no `options`. Tests are out of scope
-      for this project, but a test command that silently runs nothing is not: the same scaffold ships in
-      projects 01 and 03–06, and project 08 is where component testing starts. — *effort: 30 min*
-      *(raised 2026-08-30 while triaging the CLI-scaffold task)*
-
 - [ ] `[frontend]` PLANNING's `Key patterns introduced` table still says environment files `Store the API key
       safely` — the exact claim commit `05fac184` removed from the README on 2026-08-30, so the plan now
       asserts what the README was corrected for. — *effort: 5 min*
@@ -51,6 +43,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Low
 
+- 2026-08-31 · **[Low]** `[frontend]` — `npm test` runs all five specs green, config untouched — DECISION, no code change → the bare `test` target is fully defaulted by the builder schema (`required: []`), so nothing was ever misconfigured; the audit's shell cut the 71s jsdom environment setup short and read an aborted run as a completed empty one
 - 2026-08-31 · **[Low]** `[frontend]` — How to run path corrected to `projects/` and the two placeholder environment files documented → README How to run; no coverage mark — documentation only, no code written
 - 2026-08-30 · **[Low]** `[frontend]` — both weather icons marked decorative with `alt=""`, not just the forecast one → README Architecture decisions; coverage proposal routed to `_cross-topic-inbox.md` — no registered topic owns neutral HTML accessibility
 - 2026-08-30 · **[Low]** `[frontend]` — root component stripped of CLI scaffold: `app.css`, `styleUrl`, `title` signal, `app.spec.ts` → README What I learned; no coverage write — `styleUrl` bullet already ✅ 01-todo-list
