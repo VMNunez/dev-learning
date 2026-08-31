@@ -17,6 +17,8 @@ smart/dumb split on the dashboard) never made it into the code.
 - [ ] **[Low]** `[frontend]` — Replace `id: Date.now()` in `TransactionService.addTransaction()` with `crypto.randomUUID()`. Two submits inside the same millisecond (fast double-click) produce duplicate ids, and `deleteTransaction(id)` then removes both rows at once. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Extract the repeated `'transactions'` localStorage key in `TransactionService` into a `private readonly STORAGE_KEY` constant (used in 3 places). *(Effort: Small)*
 
+- [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/03-expense-tracker`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+
 ## Learning objectives
 
 | Concept | Verdict | Note |
