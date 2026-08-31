@@ -145,7 +145,7 @@ PROGRESS evidence is surfaced by `simulation-block-open` and adjudicated by the 
 | Project | project-brief | plan-audit | review-audit | readme-audit | portfolio-audit |
 |---|---|---|---|---|---|
 | 01-todo-list | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | 2026-08-29 (global only — Angular-only project; FIXED, README changed) | 2026-08-29 (completed — ✅ Ready; 79 questions; dry run — outputs committed by hand, CV bullet chosen and re-polished outside the run) ⚠ stale — bank predates the `en/`+`es/` pair and the identity rules (both 2026-08-31): the 79 questions owe their Spanish twin and their `01-todo-list-NNN` IDs, both discharged by the next `/portfolio-audit projects/01-todo-list`, whose own count of ID-less questions is what carries the debt forward |
-| 02-weather-app | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
+| 02-weather-app | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | 2026-08-31 (global only — Angular-only project; author FIXED, cold reviewer PASS/unchanged; README changed) | |
 | 03-expense-tracker | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06; the run that motivated the Step 3b consistency reviewer) | | |
 | 04-meal-finder | | | 2026-07-14 (frontend only — Angular-only project; backfilled 2026-08-06) | | |
 | 05-task-manager | | | 2026-07-16 (frontend only — Angular-only project; backfilled 2026-08-06; the `.btn-danger` cross-slice contradiction) | | |
