@@ -232,6 +232,23 @@ over** — the same fix cited `coverage/{LEVEL}.md` for evidence markers that ex
 so pin the path to the value that holds or verify all of them; a template is the cheapest way to
 assert two things you never checked.
 
+**A rule written in a standard is not a rule that runs, and "the sibling family already does this" is
+a claim about *disk*, not about text.** From `REC-180`'s identity half. The row's whole framing was that
+transferring stable IDs and the `[refined]` freeze to the project question bank was cheap because
+"everything the request needs already runs for the levelled bank" — which
+`_interview-prep-standard.md` does mandate, in a section three prompts and three skills read as a
+contract. Measured across all eleven files of `notes/interview-prep/junior/en/`: **669 questions, 0 IDs,
+0 `[refined]`, 0 `[studied]`, 0 legacy `[x]`**, and the `Interview` columns of `_run-tracker.md` empty
+for all fourteen topics — the migration that assigns them belongs to `interview-prep-audit`, which has
+never run. The rules were live text over an artefact that had never been through the run that applies
+them, so the transfer was a **first implementation**, not an inheritance, exactly as the same row's
+translate stage had been two days earlier. Two things generalise. **Count the marker, not the mandate**:
+one `grep -c` per file over the artefacts the standard governs, before pricing anything as a copy — it
+is the same cost as reading the standard and it is the only thing that separates a rule from a rule
+that happened. And **a tracker column is the cheapest such instrument in the repository**: it records
+which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
+opening a single artefact.
+
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
 `✅` markers across projects 01–06, so the constructs are Victor's real code and only the file
