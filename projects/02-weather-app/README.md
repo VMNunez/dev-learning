@@ -1,6 +1,6 @@
 # Weather App
 
-My 2nd learning project — weather app that fetches real data from an external API and shows current conditions and a 5-day forecast.
+My 2nd learning project — weather app where you search a city and see its weather right now and for the next 5 days.
 
 ---
 
@@ -72,13 +72,13 @@ https://02angularweatherapp.netlify.app/
 - `signal()` and `computed()` — reactive state and derived values
 - State justified by its readers — a signal no template reads is not state, so the root component of a routed app declares none
 - `(keyup.enter)` — key modifier so Enter and the button click reach one handler
-- `number` pipe with format `'1.0-1'`
+- `number` pipe with format `'1.0-1'` — `DecimalPipe`, one decimal on every temperature
 - `SlicePipe` — cut strings in templates
 - Environment files — keep API keys out of the repository, not out of the bundle
 - `takeUntilDestroyed` — cancel HTTP subscriptions automatically when a component is destroyed
 - `DestroyRef` — Angular token injected to notify observables when the component lifecycle ends
 - `@keyframes` and `animation` — CSS animations
-- CSS spinner: `border-top-color` + `rotate` + `border-radius: 50%`
+- CSS spinner — `border-top-color` + `rotate` + `border-radius: 50%` on a square element
 - `transition` and `transform: scale()` — hover effects
 - `styleUrl` — a component declares one only when it has styles; an empty stylesheet is a build dependency that buys nothing
 
@@ -90,8 +90,32 @@ https://02angularweatherapp.netlify.app/
 |---|---|
 | Framework | Angular 21 |
 | Language | TypeScript |
+| HTTP | Angular `HttpClient` + RxJS |
+| State | Angular signals |
 | Styles | CSS |
 | API | OpenWeatherMap |
+| Deployment | Netlify |
+
+---
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── app.ts / app.html                  ← root component, renders the router outlet only
+│   ├── app.config.ts                      ← providers: router + `provideHttpClient()`
+│   ├── app.routes.ts                      ← one route: '' → WeatherPage
+│   └── pages/weather-page/                ← the only page: owns the search, the API call and the state
+│       ├── components/
+│       │   ├── weather-form/              ← search input, emits the city name
+│       │   ├── weather-card/              ← current conditions for the searched city
+│       │   └── weather-forecast/          ← the 5-day list, one card per day
+│       ├── models/                        ← interfaces for the OpenWeatherMap responses
+│       ├── services/                      ← `WeatherService`, the two HttpClient calls
+│       └── utils/                         ← `getIconUrl()`, shared by both display components
+└── environments/                          ← API key, never committed (see How to run)
+```
 
 ---
 
