@@ -210,7 +210,7 @@ other row is live: the assertion is still in the file, and its status is what a 
 | tutorial-genre projects rank lower | standard, Project-selection heuristic | **Unfounded here** — the only source naming the genre exclusion returned 403 |
 | CV written in Spanish | standard, Voice rules | **Unfounded** — cvapp.es was checked for it and says nothing; see `REC-182` |
 | CV fits one page | `cv-prompt`, and the standard throughout | **Founded** — "una página para menos de 7 años de experiencia" |
-| a recruiter reads a cover letter "in 20 seconds" | `cover-letter-prompt.md` Step / ~250-word rule | **Out of scope, deliberately** — every source here measures *CVs*, not cover letters, and a partial extract never proves an absence. Found by this file's own sweep on 2026-08-31 and left standing, unfounded and uncontradicted, rather than corrected by analogy to the CV figure |
+| a recruiter reads a cover letter "in 20 seconds" | `cover-letter-prompt.md` Step / ~250-word rule | **Out of scope, deliberately** — every source here measures *CVs*, not cover letters, and a partial extract never proves an absence. Found by this file's own sweep on 2026-08-31 and left standing, unfounded and uncontradicted, rather than corrected by analogy to the CV figure. **`REC-188` opened the same day** to source the cover letter properly — that row's population is the whole prompt, not this one line |
 
 ---
 
