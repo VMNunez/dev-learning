@@ -263,10 +263,17 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         #     because the definer is the writer and this one has a writer that is a person.
         #   `_job-market-evidence.md` - `/evidence-intake` and `/cv tailor`, out of real postings:
         #     transcription from OUTSIDE the system and the least controllable text in the tree.
-        # All three carry an authored header above transcribed rows, and that mixture is class A
+        #   `_application-evidence.md` - added 2026-08-31 (`REC-187`), the presentation sibling of the
+        #     row above and the same class for the same reason: quoted text fetched from career and ATS
+        #     articles, so the least controllable text in the tree now has two files, not one. Written
+        #     by hand in the session that needs it - no prompt owns it, which changes its writer but
+        #     not its class, exactly as `_cross-topic-inbox.md`'s by-hand entry did not change that
+        #     file's. Exempted BEFORE it ever trips the scan: nothing in the first fill hits the
+        #     pattern, and a later quote naming a tool or a model would be transcribed evidence.
+        # All four carry an authored header above transcribed rows, and that mixture is class A
         # whole: the pattern scans the file, not the section, and the friction sinks - the same shape -
         # settled it that way.
-        $_.Name -notin @('_run-tracker.md', '_cross-topic-inbox.md', '_job-market-evidence.md') -and
+        $_.Name -notin @('_run-tracker.md', '_cross-topic-inbox.md', '_job-market-evidence.md', '_application-evidence.md') -and
 
         # --- CLASS B: authored, and the runtime is the subject ------------------------------------
         $_.Name -notin @(

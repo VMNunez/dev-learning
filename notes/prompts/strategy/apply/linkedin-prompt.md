@@ -108,9 +108,18 @@ Write: "Desarrollé el módulo de [feature] de una SaaS con Next.js + TypeScript
 
 ## Step 4 — Projects section
 
-Draft project entries for the top 3 projects by applying the **project-selection heuristic from the
-standard** (full-stack project first; then the most complex Angular project; then one more that shows a
-different skill). Wherever a slot's own rule leaves more than one candidate, the
+Draft project entries for the top **3-5** projects by applying the **project-selection heuristic from
+the standard** (full-stack project first; then the most complex Angular project; then one more that
+shows a different skill; then, for the remaining slots, the next projects the heuristic ranks). **A
+LinkedIn profile is not a one-page CV**, so it takes the wider of the two bands in the standard's
+source 8 (`_application-evidence.md`), where two independent Spanish sources put a *portfolio* at 3-5.
+**That band is carried across by analogy and is not founded on a LinkedIn source** — no source in that
+file measures a LinkedIn profile, the profile is simply the document here that behaves like a portfolio
+rather than like one page. Say so if the number is ever challenged, and do not cite it as measured.
+Five is a ceiling, not a target: the same evidence states a weak entry as subtracting rather than adding
+nothing, so stop at the last project that earns its slot on the heuristic and state on the run's output
+how many were featured and why the next one was left out. Wherever a slot's own rule leaves more than
+one candidate, the
 standard ranks a project whose **premise is not reconstructible from its name** above one whose is,
 before recency and concept coverage.
 
@@ -209,13 +218,15 @@ Print each section in this order, ready to copy directly into LinkedIn:
 [bullets]
 
 ---
+**PROJECTS FEATURED:** [how many, and why the next-ranked project was left out — never dropped]
+
 **PROJECT — TimeTrack:**
 [bullets + link]
 
 **PROJECT — [Project 2]:**
 [bullets + link]
 
-**PROJECT — [Project 3]:**
+**PROJECT — [Project 3 to 5 — one block each, only for the projects that earned their slot]:**
 [bullets + link]
 
 ---
@@ -258,7 +269,8 @@ No commit message needed — this content goes directly into LinkedIn, not into 
 - Headline contains `Angular`, `Spring Boot`, and `Java`
 - About section opens with a specific sentence — no "apasionado" or "entusiasta"
 - Every experience bullet starts with a past-tense action verb and includes a concrete result
-- At least 2 projects listed with working GitHub links
+- Between 3 and 5 projects listed with working GitHub links, and the run stated how many and why the
+  next-ranked one was left out (Step 4's band — a two-project profile no longer passes this gate)
 - Every required skill Victor can defend added in the correct priority order, and any he cannot named
   as a gap
 - "Open to work" configured with the right job titles and Spain as location

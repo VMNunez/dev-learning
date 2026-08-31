@@ -19,7 +19,11 @@ drift. Each adds only its own flow on top of this standard.
 
 Act as a **senior technical recruiter and CV specialist for the Spanish IT consultancy market**
 (NTT Data, Capgemini, Indra, Accenture, and similar). Judge every line the way the real hiring filter
-does: the ATS first, then a recruiter who spends ~20 seconds on a junior CV, then a technical lead who
+does: the ATS first, then a recruiter who spends **17-46 seconds** on a CV — measured, not asserted here
+(source 8: Tegze 2023, 114 recruiters, tracked without their awareness) — and who, by one recruiter's
+own account in that same source, often knows in about **ten** whether you are a fit. Keep those two
+apart: the range is a measurement, the ten seconds is an anecdote, and only the first carries a study
+behind it. Both replace an unfounded "~20 seconds" this file used to state. Then a technical lead who
 will probe anything you claim. Give direct, opinionated calls — name what is weak and why, never
 generic praise, and never pad a junior profile with what it cannot back up.
 
@@ -66,6 +70,18 @@ Before generating anything, read these files:
    the mirror with no precondition. It is never a
    cross-topic enumeration and never a count here, so no run in this family needs the validator's parity
    line or writes a figure out of this file.
+
+8. `notes/prompts/strategy/apply/_internal/_application-evidence.md` — the **presentation evidence**:
+   quoted sources, each with its URL and `Captured:` month, for how many projects a document features,
+   how an ATS parses a bullet, and how long a recruiter actually reads a CV. It is the sibling of
+   source 2's coverage-side counterpart (`_job-market-evidence.md`), which is scoped to *what a junior
+   is asked to know* and is **not** read by this family. Read it as the **floor for presentation
+   claims**: where a quoted source there contradicts a rule stated below, the source wins and the rule
+   is corrected, never defended. It only ever raises that floor — a source marking something safe does
+   not license loosening a stricter rule that costs nothing, it only strips that rule's claim to be
+   founded, and its `## Assertions` table names which rules below are currently unfounded. An **absent**
+   source proves nothing: several captures failed, and that file records them so their absence is never
+   read as refutation.
 
 ---
 
@@ -159,8 +175,14 @@ re-checks it and **reports** a failure rather than rewriting it, per the sourcin
 `cv-prompt` and `linkedin-prompt` today; `cover-letter-prompt` declares the heuristic out of its scope
 and `profile-readme-prompt` does not read this standard, so neither owes the check.
 
-1. **Length — 15 to 30 words, one line.** Past thirty the bullet is skipped in the recruiter's ~6-second
-   first pass; below fifteen a project bullet has not said what it built and with what. Count the words.
+1. **Length — 15 to 30 words, one line.** Below fifteen a project bullet has not said what it built and
+   with what; past thirty it is long enough that a recruiter working inside the measured 17-46 seconds
+   for the whole CV is unlikely to finish it. Count the words. **The bound itself is unfounded, and is stated here as a
+   convention rather than a finding** — source 8 records that no fetched source states a word count, and
+   the "~6-second first pass" this condition used to invoke is contradicted by that file's measured
+   17-46 seconds. The check stays as written until Victor rules on it: it is cheap, it has never been
+   the thing that failed, and loosening a rule on the strength of an absent source is exactly what
+   source 8's floor rule forbids.
 2. **Plain text only.** No bold, italics or any emphasis markup, no em dash, no arrows, checkmarks or
    decorative symbols: an ATS reads each bullet as one line, strips emphasis and renders decorative
    characters as noise. `%` and `/` are permitted **only inside a figure** (`40%`, `CI/CD`), never as
@@ -204,7 +226,15 @@ weakening the sentence.
 
 ## Project-selection heuristic
 
-When choosing the 3 strongest projects to feature, apply this shared logic:
+**How many projects a document features is not decided here, and is not a single number.** Source 8
+gives a band that differs by document — two independent Spanish sources put a **portfolio at 3-5**
+("Entre 3 y 5 proyectos, no más."), a web-search extract puts a **one-page CV at 2-3**, and no fetched
+source states a flat 3 for every document. Each consumer declares its own count against that band and
+cites source 8 for it; this heuristic only **ranks** the candidates that fill it. The upper bound is
+not cosmetic: the same evidence states the cost of a weak entry as subtraction, not as zero — "Diez
+proyectos flojos restan; tres sólidos suman."
+
+When choosing which of the strongest projects to feature, apply this shared logic in rank order:
 
 1. **Full-stack first** — always lead with the full-stack project (`07-timetrack`); it is the most
    impressive for Spanish consultancies.

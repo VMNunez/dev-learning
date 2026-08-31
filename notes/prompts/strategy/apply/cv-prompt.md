@@ -38,7 +38,7 @@ EDUCATION  = [your degree, university, and year — e.g. "Grado en Administraci�
 CAMBRIDGE  = [obtained (B2) | in progress (B1→B2) | not yet started]
 LOCATION   = [your city — e.g. "Madrid" | "Barcelona" | auto]
 PHONE      = [your phone number — e.g. "+34 612 345 678" | auto — read it from my existing CV]
-PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack, 06-hr-portal, 05-task-manager" | auto — let the prompt choose the 3 strongest]
+PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack, 06-hr-portal, 05-task-manager" | auto — let the prompt choose the 2-3 strongest that fit one page]
 BASE_CV    = [tailor mode only: path to the master CV to start from | auto — the most recent in job-search/master]
 
 ---
@@ -120,9 +120,17 @@ given). Then:
 
 ## Step 1 — Choose the projects to include
 
-If PROJECTS = auto: apply the **project-selection heuristic from the standard** to choose the 3
+If PROJECTS = auto: apply the **project-selection heuristic from the standard** to choose the **2-3**
 strongest projects (full-stack first, then the most complex Angular project, then one more that shows
-a different skill). Wherever a slot's own rule leaves more than one candidate, the
+a different skill). **Two or three, not always three** — this is a one-page CV, which is the tighter of
+the two bands in the standard's source 8 (`_application-evidence.md`), and the same evidence states a
+weak entry as subtracting rather than adding nothing. **The 2-3 rests on a web-search extract, not on a
+fetched quote** — it is the weakest support in that file, and the honest thing to say if it is ever
+challenged. What the evidence founds directly is the **page**, not the count — "una página para menos
+de 7 años de experiencia" — so the real upper bound is what fits on it, and 3 is where the extract puts
+that for a junior. Take the third slot only when its project earns
+it on the heuristic; where it would be filled by a project the heuristic ranks low, ship two and say so
+on the run's output. Wherever a slot's own rule leaves more than one candidate, the
 standard ranks a project whose **premise is not reconstructible from its name** above one whose is,
 before recency and concept coverage.
 
@@ -295,6 +303,8 @@ gap to close in a project, not in the CV
 the Project-bullet spec, the project, the conditions it fails, and `/portfolio-audit` on that project as
 the run that repairs it — print `none` when every sourced entry passes, since the line is the only
 route those failures have out of this run
+**Projects featured:** how many, and — when Step 1 shipped two rather than three — which project was
+left out and on which point of the heuristic it lost its slot; this line is never dropped
 **Estimated length:** fits on one page / slightly over (X lines to cut)
 **Saved to:** the exact path written above
 **(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know
