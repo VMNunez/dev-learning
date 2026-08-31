@@ -102,11 +102,21 @@ git clone https://github.com/VMNunez/dev-learning.git
 ```
 
 ```
-cd dev-learning/angular/02-weather-app
+cd dev-learning/projects/02-weather-app
 ```
 
 ```
 npm install
+```
+
+The API key is not in the repository. Get a free one at [openweathermap.org](https://openweathermap.org/api) and create the two environment files below — `npm start` reads the development one, `npm run build` reads the other:
+
+`src/environments/environment.development.ts` and `src/environments/environment.ts`
+
+```ts
+export const environment = {
+  apiKey: 'YOUR_API_KEY',
+};
 ```
 
 ```
