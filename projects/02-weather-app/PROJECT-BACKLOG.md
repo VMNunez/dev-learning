@@ -18,10 +18,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Low
 
-- [ ] `[frontend]` PLANNING's `Key patterns introduced` table still says environment files `Store the API key
-      safely` — the exact claim commit `05fac184` removed from the README on 2026-08-30, so the plan now
-      asserts what the README was corrected for. — *effort: 5 min*
-      *(raised 2026-08-30 while closing the CLI-scaffold task)*
+*No open Low tasks.*
 
 ---
 
@@ -43,6 +40,7 @@ component/service split is correct; the gaps are all in input handling at the se
 
 #### Low
 
+- 2026-08-31 · **[Low]** `[frontend]` — PLANNING's `Key patterns` cell no longer claims environment files store the key safely → PLANNING `Key patterns introduced`; no coverage write — bullet already ✅ 02-weather-app
 - 2026-08-31 · **[Low]** `[frontend]` — `npm test` runs all five specs green, config untouched — DECISION, no code change → the bare `test` target is fully defaulted by the builder schema (`required: []`), so nothing was ever misconfigured; the audit's shell cut the 71s jsdom environment setup short and read an aborted run as a completed empty one
 - 2026-08-31 · **[Low]** `[frontend]` — How to run path corrected to `projects/` and the two placeholder environment files documented → README How to run; no coverage mark — documentation only, no code written
 - 2026-08-30 · **[Low]** `[frontend]` — both weather icons marked decorative with `alt=""`, not just the forecast one → README Architecture decisions; coverage proposal routed to `_cross-topic-inbox.md` — no registered topic owns neutral HTML accessibility
