@@ -193,6 +193,25 @@ file, since one commit removes the row here and adds the line there.
 
 ## Suggested order for the open items
 
+**Victor ruled the head of this queue on 2026-08-31, and it is a ruling on value, not a measurement:
+the interview-prep TODO loop closes first, in two sessions — `REC-180`'s remaining `en`/`es` slice, then
+`REC-184`.** It displaces `REC-185` and `REC-164`, both of which were ahead of it under the four rules
+below, and it does not repair the gap the next paragraph admits: the workable set is still unranked, and
+this entry ranks two rows out of it by what they are worth to him, which is the one input no sweep of
+this file produces. **Why those two, and in that order.** The first session is `REC-180`'s **stable IDs +
+`[refined]` freeze + TODO channel proper**, taken together because the dependency is real and not a
+shared file: a TODO cannot name a question or match it to its twin while the bank measures 0 IDs, and a
+freeze is what a TODO reopens — a channel with nothing frozen behind it reopens nothing. That session
+carries the clause the row already drafted and must not lose: a TODO about *voice and phrasing* is a
+first-class reopen, or the freeze forbids the exact loop this priority exists to close. The second is
+`REC-184`, which is what makes the loop *learn* rather than only repair, and it is not blocked on the
+first — the levelled bank has had the TODO channel for months and still has no sink that can hold the
+before/after pair. **What this priority does not carry**: `REC-180`'s priority markers and their
+proportion calibration, its three `[studied]` rulings (the route, `study-block-close`'s marker, and
+whether `PROGRESS.md`'s `## Study progress` rows count project questions), and the `es`-review owner its
+bilingual half added to the open set. Each is a different analysis, and pulling them in because they
+share a row is the batching failure this section names three paragraphs down.
+
 **`REC-171`'s collection half shipped 2026-08-27, and the workable set has not been re-measured since; the three rows this paragraph last flagged as unranked — `REC-173`, `REC-174`, `REC-175` — all closed instead, `REC-174` on 2026-08-29, so what it says about them is history and what it says about the gap still stands.** What that half established still stands and is why it went first: the sink and its writers had to exist *before* the refined pairs accumulate, because a pair refined before the sink exists is a pair whose TODOs are gone. What remains of it is (g), which shares `REC-170`'s four-pair gate and is sequenced behind that row. **Of the rows this paragraph was written about, `REC-164` is still workable and still unstarted — `REC-172` closed 2026-08-27 — and the three that arrived after it were never ranked here at all before they were worked, which this paragraph records rather than repairs** — a suggested order asserted without measuring is worse than an admitted gap, which is the `REC-046` lesson applied to this section itself. Two of the three were residues of rows resolved that week (`REC-174` from `REC-172`, `REC-175` from two `notes-plan` runs) and one was note rot found by a pipeline (`REC-173`); none was obviously ahead of `REC-164`, and all three were taken before it anyway — a residue is picked up while its parent is still legible, which is a real reason and still not a measurement. Ranking what is open is a measurement pass, not a reading of this file. `REC-168` closed 2026-08-26 and it went first under *a correction
 that stops a wrong run comes before a build* — until it settled, every breach a pipeline recorded was
 deleted by that pipeline's next run, `REC-164`'s own sweep included. Its step 1 half-confirmed the
