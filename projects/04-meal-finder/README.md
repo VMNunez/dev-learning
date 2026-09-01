@@ -92,6 +92,7 @@ https://04mealfinder.netlify.app/
 - Explicit remote states — the failure flag is set by the callback that observes the failure, never inferred from absent data, and `loadFinished` names what it asserts: the attempt is over, error included
 - `Location.back()` — navigate to the previous page in the browser history
 - Accessible name of a form control — a `<label for>` bound to the input's `id` names the field; a `placeholder` is an example value and never a name
+- One `h1` per routed page — headings are the document outline, not a size scale; the brand in the nav is a link, so the search page states what it is with its own `h1`, and the rule that styles both page titles lives in the global stylesheet because component styles are scoped and cannot be shared
 - `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` and `visibility: hidden` remove
 - `routerLinkActive` — the router marks the nav link of the current route, so the shell never compares the URL itself; the brand link adds `{ exact: true }` because an active link matches by prefix and `/` would otherwise stay marked everywhere, and `ariaCurrentWhenActive` puts the same fact in the accessibility tree
 - Pressed state of a toggle — the category buttons say which filter is on twice: `[class.active]` for the eye and `[attr.aria-pressed]` for the accessibility tree, because a filled background reaches only one of the two
