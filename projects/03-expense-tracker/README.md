@@ -46,6 +46,7 @@ https://03angularexpensetracker.netlify.app/
 - localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
 - Default form date built from the local clock — `getFullYear`/`getMonth`/`getDate` instead of `toISOString()`, which reports the UTC calendar day and would pre-fill yesterday's date after local midnight
 - Transaction ids generated with `crypto.randomUUID()` instead of `Date.now()` — a timestamp collides for two submits inside the same millisecond, and `deleteTransaction` filters by id equality, so the collision would delete both rows
+- Form controls typed to match the model — `nonNullable: true` and a literal union for the type select, with `getRawValue()` and a narrowing guard on submit, so the emitted value is a `NewTransaction` without an `as` assertion hiding a mismatch
 
 ---
 
