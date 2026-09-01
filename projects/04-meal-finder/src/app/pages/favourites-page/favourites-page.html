@@ -3,6 +3,7 @@
 
   <app-category-filter
     [categories]="allCategories()"
+    [selected]="selectedCategory()"
     (categorySelected)="onSelectedCategory($event)"
   />
 

@@ -6,14 +6,30 @@
 
 .category-btn {
   padding: 0.6rem 1.2rem;
-  background-color: var(--primary);
-  color: #fff;
-  border: none;
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
   border-radius: 6px;
+  font: inherit;
   font-size: 1rem;
   cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .category-btn:hover {
-  opacity: 0.85;
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.category-btn.active {
+  background-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.category-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }

@@ -7,6 +7,7 @@ import { Component, input, output } from '@angular/core';
 })
 export class CategoryFilter {
   categories = input.required<string[]>();
+  selected = input.required<string>();
 
   categorySelected = output<string>();
 }
