@@ -2,7 +2,7 @@
   <button type="button" class="back-link" (click)="goBack()">&larr; Back</button>
   @if (mealDetails() && loadFinished()) {
     <div class="meal-card">
-      <img class="meal-img" [src]="mealDetails()!.strMealThumb" />
+      <img class="meal-img" [src]="mealDetails()!.strMealThumb" alt="" />
       <div class="meal-details">
         <div class="meal-header">
           <h1 class="meal-title">{{ mealDetails()!.strMeal }}</h1>
