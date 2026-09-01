@@ -89,6 +89,8 @@ app/
 | `computed()` for nav counts | Live favourite count in the nav bar |
 | `input.required()` + `output()` | The presentational `meal-card` and `category-filter` — data in, user intent out, no service injected, so two pages reuse the same card |
 | `:host` selector | An extracted component adds a wrapper element that is `display: inline` by default, so the filter's flex layout moves into its own stylesheet |
+| `<a [routerLink]>` as the card root | An element that navigates is a link, so keyboard focus, Enter and open-in-new-tab come from the tag; the favourite button sits outside it because a control cannot nest inside an anchor |
+| `:focus-visible` + `:has()` | A focus ring for keyboard entry only, raised from the link to the whole card |
 | `overflow: hidden` on cards | Prevent images from breaking the card layout |
 | `position: absolute` + `top/right` | Favourite button overlay on the card |
 | `transition` on base element | Smooth hover — never put transition on `:hover` |
