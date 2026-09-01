@@ -19,6 +19,7 @@
 
 ### Low
 
+- [ ] **[Low]** `[frontend]` — Encode the search term before it reaches the URL: `meal.service.ts` interpolates `name` straight into `search.php?s=${name}`, so a term containing `&`, `#`, `+` or a space is parsed as query syntax and the request silently searches for the wrong thing (`beef & rice` searches for `beef `). Wrap it in `encodeURIComponent()`, or build the query with `HttpParams`. *(Effort: Small)* *(raised 2026-09-01 while closing the service-boundary error-handling task — same file, seen while rewriting the two request URLs)*
 - [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add `[alt]="meal().strMeal"` to the meal image (`meal-card.html:12`) — it currently has no `alt` at all. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Drop the `as string` casts in `meal-detail-page.ts:29,53` and narrow the nullable `mealId` with a real guard (`if (!this.mealId) return;`); the casts throw away exactly the null-safety the type provides. *(Effort: Small)*
