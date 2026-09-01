@@ -78,6 +78,8 @@ https://04mealfinder.netlify.app/
 - Container / presentational split — a child that renders `input()` data and emits `output()` events owns no domain state, which is what lets two different parents reuse it
 - `:host` — extracting a component adds a wrapper element that is `display: inline` by default, so layout the parent used to provide moves into the child's stylesheet
 - Navigating elements are links — the card root is an `<a [routerLink]>`, not a `<div>` with a click handler, so keyboard focus, Enter, the `link` role and open-in-new-tab come from the tag
+- Acting elements are buttons — the "Back" control is a `<button type="button">`, because an `<a>` with no `href` is skipped by the tab order, computes no `link` role and never fires on Enter
+- Resetting a native control — a `<button>` styled as plain text needs its user-agent `background`, `border`, `padding` and `cursor` undone and `font: inherit` set, since form controls do not inherit the page font
 - Interactive content does not nest — the favourite `<button>` sits outside the card's link and is positioned over it, because a control inside an `<a>` is invalid and its activation ambiguous
 - `:focus-visible` — a focus ring shown for keyboard entry and not for a mouse click, raised to the whole card with the `:has()` relational selector
 - `(keyup.enter)` — trigger a method when the user presses Enter
