@@ -42,6 +42,7 @@ https://03angularexpensetracker.netlify.app/
 - `computed()` for filtering to recalculate automatically when the signal changes, without a manual trigger
 - Persistence declared once with `effect()` — the service constructor writes the signal to localStorage whenever it changes, so no mutator has to remember to save
 - localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
+- Default form date built from the local clock — `getFullYear`/`getMonth`/`getDate` instead of `toISOString()`, which reports the UTC calendar day and would pre-fill yesterday's date after local midnight
 
 ---
 
