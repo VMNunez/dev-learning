@@ -33,10 +33,6 @@
 .nav-link.active {
   color: var(--primary);
   font-weight: 700;
-}
-
-.brand.active,
-.nav-link.active {
   text-decoration: underline;
   text-underline-offset: 6px;
 }
