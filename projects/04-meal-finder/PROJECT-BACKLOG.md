@@ -22,7 +22,6 @@
 - [ ] **[Low]** `[frontend]` — Encode the search term before it reaches the URL: `meal.service.ts` interpolates `name` straight into `search.php?s=${name}`, so a term containing `&`, `#`, `+` or a space is parsed as query syntax and the request silently searches for the wrong thing (`beef & rice` searches for `beef `). Wrap it in `encodeURIComponent()`, or build the query with `HttpParams`. *(Effort: Small)* *(raised 2026-09-01 while closing the service-boundary error-handling task — same file, seen while rewriting the two request URLs)*
 - [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add `[alt]="meal().strMeal"` to the meal image (`meal-card.html:12`) — it currently has no `alt` at all. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Convert the three routes to `loadComponent()` lazy loading in `app.routes.ts`; the app is small, but reviewers look for the pattern. *(Effort: Small)*
 
 - [ ] **[Low]** `[frontend]` — Give the category filter an active affordance: the buttons in `category-filter.html` never reflect the selected category — the component receives no `selected` input at all — and `category-filter.css` styles only `:hover`, so once a filter is applied nothing on screen says which one — the grid shrinks with no visible cause. Bind `[class.active]` (and `aria-pressed`) from the selected category, "All" included. *(Effort: Small)* *(raised 2026-09-01 while closing the URL-state task)*
 - [ ] **[Low]** `[frontend]` — Give the nav an active-route affordance: `app.html:2-3` uses plain `routerLink`, so on `/favourites` nothing marks the current page and `app.css:29` styles only `:hover`. Add `routerLinkActive` plus `ariaCurrentWhenActive`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
@@ -60,6 +59,7 @@
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — all four routes lazy-loaded with `loadComponent()`, initial bundle 253 → 238 kB → README, PLANNING; coverage already marked 06-hr-portal
 - 2026-09-01 · **[Low]** `[frontend]` — `**` wildcard route renders a not-found page instead of a blank outlet → README, PLANNING; coverage already marked 06-hr-portal
 - 2026-09-01 · **[Low]** `[frontend]` — nullable route id narrowed by an early return instead of `as string` — DECISION, no code change → fixed by `73a4129b`; README, coverage typescript/junior
 - 2026-09-01 · **[Low]** `[frontend]` — scaffold `title` signal removed from the root component — DECISION, no code change → fixed by `157c2366`; no concept to record
