@@ -6,7 +6,7 @@ My 3rd learning project — personal finance tracker where users log income and 
 
 ## Why this project
 
-Forms and validation appear in almost every business app. I built this project to understand how reactive forms work, how to validate user input properly, and how to navigate between pages — patterns that appear in every real Angular project.
+Forms and validation appear in almost every business app. I built this project to understand how reactive forms work, how to validate user input properly, and how to navigate between pages before applying those patterns in a real codebase.
 
 ---
 
@@ -18,18 +18,20 @@ https://03angularexpensetracker.netlify.app/
 
 ## Screenshots
 
-**App overview**
-![App preview](screenshots/preview.png)
+**Dashboard — balance, income and expense totals, filter bar and transaction list**
+![Dashboard](screenshots/preview.png)
+
+**Add transaction — validated form with inline error messages**
+*(screenshot — add transaction page — to be added)*
 
 ---
 
 ## Features
 
-- Add income and expense transactions with a validated form
+- Add income and expense transactions through a validated form with inline error messages
 - Real-time balance, total income and total expenses
 - Filter transactions by type: All, Income, Expense
-- Delete transactions
-- Form validation with inline error messages
+- Delete a transaction from the list
 - Data persists after page refresh
 - Responsive — works on mobile and desktop
 
@@ -37,23 +39,22 @@ https://03angularexpensetracker.netlify.app/
 
 ## Architecture decisions
 
-- Smart/dumb component pattern — both pages are containers that own the state, and every child only receives `input()` and emits `output()`
-- Dashboard split into `summary-card`, `filter-bar` and `transaction-list` — the page keeps the service and the `computed()` totals, the children never inject anything
-- Component styles moved with the markup they style — each child owns its rules and uses `:host` for the layout the parent's `<div>` used to provide
-- Reactive forms over template-driven — `markAllAsTouched()` on submit requires TypeScript control over the form
-- `computed()` for filtering to recalculate automatically when the signal changes, without a manual trigger
+- Smart/dumb component split — the two pages own the state and the service, and `summary-card`, `filter-bar`, `transaction-list` and `transaction-form` only take `input()` and emit `output()`, so every child is reusable and testable in isolation
+- Component styles moved with the markup they style — each child owns its rules and uses `:host` for the layout the parent's wrapper used to provide, so no parent CSS reaches into a child
+- `computed()` for the filtered list and the totals to recalculate automatically when the signal changes, without a manual trigger
 - Persistence declared once with `effect()` — the service constructor writes the signal to localStorage whenever it changes, so no mutator has to remember to save
 - localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
-- Default form date built from the local clock — `getFullYear`/`getMonth`/`getDate` instead of `toISOString()`, which reports the UTC calendar day and would pre-fill yesterday's date after local midnight
-- Transaction ids generated with `crypto.randomUUID()` instead of `Date.now()` — a timestamp collides for two submits inside the same millisecond, and `deleteTransaction` filters by id equality, so the collision would delete both rows
+- Default form date built from the local clock (`getFullYear`/`getMonth`/`getDate`) instead of `toISOString()`, which reports the UTC day and would pre-fill yesterday after local midnight
+- Transaction ids from `crypto.randomUUID()` instead of `Date.now()`, because two submits in the same millisecond would collide and `deleteTransaction` filters by id equality — deleting both rows
 - Form controls typed to match the model — `nonNullable: true` and a literal union for the type select, with `getRawValue()` and a narrowing guard on submit, so the emitted value is a `NewTransaction` without an `as` assertion hiding a mismatch
 
 ---
 
 ## Tradeoffs
 
-- localStorage over a real backend — the focus was reactive forms and routing, not data persistence
-- `Omit<T, K>` for the create type over a separate interface — one source of truth for the transaction shape
+- Reactive forms over template-driven forms — `markAllAsTouched()` on submit and a typed form value need TypeScript control over the form, which the template-driven API does not give
+- localStorage over a real backend — the focus was reactive forms and routing, and a fake API would have added setup without teaching either
+- `Omit<T, K>` for the create type over a separate interface — one source of truth for the transaction shape, so adding a field cannot leave the two definitions out of sync
 
 ---
 
@@ -72,6 +73,8 @@ https://03angularexpensetracker.netlify.app/
 - `hasError()` and `touched` — show error messages at the right moment
 - `markAllAsTouched()` — trigger all errors on submit
 - `form.reset()` — reset form to initial values after submit
+- `nonNullable` controls — a control that never widens its type to `null` on reset
+- `getRawValue()` — typed form value that needs no `as` assertion on submit
 - `routerLink` and `RouterOutlet` — navigation between pages
 - `Router` service — programmatic navigation with `router.navigate()`
 - `computed()` with filters — derived state that reacts to signals
@@ -80,6 +83,8 @@ https://03angularexpensetracker.netlify.app/
 - Smart/dumb component pattern — containers own the state, children take `input()` and emit `output()`
 - `:host` — style a component's own element when it replaces a styled `<div>` in the parent
 - View encapsulation — a parent's CSS cannot reach markup that moved into a child component
+- `crypto.randomUUID()` — collision-free ids, unlike a `Date.now()` timestamp
+- Local-clock date formatting — `toISOString()` returns the UTC day, not today's local date
 - `position: absolute` and `position: relative` — element positioning
 - `@media (min-width)` — responsive design, mobile first
 
@@ -91,7 +96,34 @@ https://03angularexpensetracker.netlify.app/
 |---|---|
 | Framework | Angular 21 |
 | Language | TypeScript |
-| Styles | CSS |
+| Forms | Angular Reactive Forms |
+| Routing | Angular Router |
+| State | Angular signals (`signal`, `computed`, `effect`) |
+| Persistence | Browser localStorage |
+| Styles | CSS (mobile-first) |
+
+---
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── models/                                 ← Transaction, NewTransaction and Filter types
+│   ├── services/                               ← TransactionService: the signal, the computed totals and the localStorage sync
+│   ├── pages/
+│   │   ├── dashboard-page/                     ← smart page: owns the filter signal and the totals
+│   │   │   └── components/
+│   │   │       ├── summary-card/               ← dumb: renders one labelled amount
+│   │   │       ├── filter-bar/                 ← dumb: shows the active filter, emits the new one
+│   │   │       └── transaction-list/           ← dumb: renders the filtered list, emits the id to delete
+│   │   └── add-transaction-page/               ← smart page: saves the transaction and navigates back
+│   │       └── components/
+│   │           └── transaction-form/           ← dumb: owns the reactive form, emits the new transaction
+│   ├── app.routes.ts                           ← the two routes: dashboard and add
+│   └── app.ts                                  ← root component with the RouterOutlet
+└── styles.css                                  ← global styles and CSS variables
+```
 
 ---
 
