@@ -10,5 +10,5 @@ import { Transaction } from '../../../../models/transaction.model';
 })
 export class TransactionList {
   transactions = input.required<Transaction[]>();
-  deleteTransaction = output<number>();
+  deleteTransaction = output<string>();
 }

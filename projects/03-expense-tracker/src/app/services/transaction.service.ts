@@ -16,11 +16,11 @@ export class TransactionService {
   }
 
   addTransaction(newTransaction: NewTransaction): void {
-    const transaction = { ...newTransaction, id: Date.now() };
+    const transaction = { ...newTransaction, id: crypto.randomUUID() };
     this.transactionList.update((transactions) => [...transactions, transaction]);
   }
 
-  deleteTransaction(deleteId: number): void {
+  deleteTransaction(deleteId: string): void {
     this.transactionList.update((transactions) =>
       transactions.filter((transaction) => transaction.id !== deleteId),
     );

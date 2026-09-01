@@ -32,7 +32,7 @@ export class DashboardPage {
 
   balance = computed(() => this.totalIncome() - this.totalExpense());
 
-  onDeleteTransaction(id: number) {
+  onDeleteTransaction(id: string) {
     this.transactionService.deleteTransaction(id);
   }
 
