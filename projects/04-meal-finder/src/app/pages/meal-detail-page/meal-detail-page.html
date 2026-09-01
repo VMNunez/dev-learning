@@ -1,6 +1,6 @@
 <div class="container">
   <button type="button" class="back-link" (click)="goBack()">&larr; Back</button>
-  @if (mealDetails() && hasLoad()) {
+  @if (mealDetails() && loadFinished()) {
     <div class="meal-card">
       <img class="meal-img" [src]="mealDetails()!.strMealThumb" />
       <div class="meal-details">
@@ -32,12 +32,13 @@
         }
       </div>
     </div>
-  } @else if (!hasLoad()) {
+  } @else if (!loadFinished()) {
     <div class="spinner-container">
       <div class="load-spinner"></div>
     </div>
-  } @else {
-    <!-- hasLoad() is true but mealDetails() is null — API failed -->
+  } @else if (hasError()) {
     <p class="empty-message">Could not load this meal. Go back and try again.</p>
+  } @else {
+    <p class="empty-message">Meal not found.</p>
   }
 </div>

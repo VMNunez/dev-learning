@@ -25,7 +25,8 @@ export class MealDetailPage {
 
   mealDetails = signal<Meal | null>(null);
   isLoading = signal<boolean>(false);
-  hasLoad = signal<boolean>(false);
+  loadFinished = signal<boolean>(false);
+  hasError = signal<boolean>(false);
 
   isFavourite = computed(() => this.favouriteService.favouriteIds().has(this.mealId() ?? ''));
   favouriteLabel = computed(() => {
@@ -39,19 +40,21 @@ export class MealDetailPage {
       if (!id) return;
 
       this.isLoading.set(true);
-      this.hasLoad.set(false);
+      this.loadFinished.set(false);
+      this.hasError.set(false);
 
       const subscription = this.mealService.getMealById(id).subscribe({
         next: (mealResponse: MealResponse) => {
           this.mealDetails.set(mealResponse.meals?.[0] ?? null);
           this.isLoading.set(false);
-          this.hasLoad.set(true);
+          this.loadFinished.set(true);
         },
         error: (err) => {
           console.error(err);
           this.mealDetails.set(null);
+          this.hasError.set(true);
           this.isLoading.set(false);
-          this.hasLoad.set(true);
+          this.loadFinished.set(true);
         },
       });
 
