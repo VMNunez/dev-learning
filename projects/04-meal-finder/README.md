@@ -84,6 +84,8 @@ https://04mealfinder.netlify.app/
 - `Location.back()` — navigate to the previous page in the browser history
 - Accessible name of a form control — a `<label for>` bound to the input's `id` names the field; a `placeholder` is an example value and never a name
 - `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` and `visibility: hidden` remove
+- Accessible name of an icon-only control — a glyph like `★` computes to no usable name, so the favourite toggles carry an explicit `aria-label` that also states the current state
+- `[attr.x]` binding — ARIA attributes have no DOM property behind them, so they need attribute binding; the label itself is a `computed()` in the class, not an expression in the template
 - `overflow: hidden` on a card — clips image corners with `border-radius`
 - `position: absolute` + `top/right` — place a badge over a card
 - `transition` on the base element, not on `:hover` — correct hover animation pattern
