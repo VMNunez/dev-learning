@@ -38,16 +38,16 @@ and filter transactions by type.
 app/
 ├── app.component               ← root with RouterOutlet
 ├── pages/
-│   ├── home-page/
-│   │   ├── home-page.component          ← smart, owns transactions signal
-│   │   ├── summary-card/
-│   │   │   └── summary-card.component   ← dumb, receives totals
-│   │   ├── filter-bar/
-│   │   │   └── filter-bar.component     ← dumb, emits selected filter
-│   │   └── transaction-list/
-│   │       └── transaction-list.component ← dumb, receives filtered list, emits delete
-│   └── add-page/
-│       └── add-page.component           ← smart, owns the form, navigates on submit
+│   ├── dashboard-page/
+│   │   ├── dashboard-page                ← smart, owns the filter signal and the computed totals
+│   │   └── components/
+│   │       ├── summary-card              ← dumb, receives a label, an amount and a tone
+│   │       ├── filter-bar                ← dumb, receives the active filter, emits the new one
+│   │       └── transaction-list          ← dumb, receives the filtered list, emits the id to delete
+│   └── add-transaction-page/
+│       ├── add-transaction-page          ← smart, saves and navigates on submit
+│       └── components/
+│           └── transaction-form          ← dumb, owns the form, emits the new transaction
 └── services/
     └── transaction.service.ts           ← signal + localStorage sync
 ```
@@ -59,7 +59,7 @@ app/
 - One `signal<Transaction[]>` in `TransactionService`, synced to localStorage with `effect()`
 - Data read back from localStorage is untrusted — it is parsed defensively and shape-checked before it enters the signal
 - `computed()` for balance, total income, total expenses, and filtered list
-- Smart/dumb component pattern — home-page owns the state, children only display
+- Smart/dumb component pattern — the dashboard page owns the state, its children only receive inputs and emit intent
 - `Router.navigate()` on form submit to return to the list
 
 ---
