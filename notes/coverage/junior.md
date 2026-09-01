@@ -67,6 +67,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
 - `asReadonly()` — expose a service's writable signal as a read-only handle so consumers stay reactive while the service's own methods remain the only writers ✅ 04-meal-finder — `FavouriteService` keeps the writable signal private and exposes `favourites` through `asReadonly()`, so `addFavourite`/`deleteFavourite` are the only writers the three pages can reach
+- Deriving the lookup rather than the predicate — answer a per-key question by deriving the whole lookup structure once, because `computed()` takes no arguments by design and a parameterised method cannot be memoised ✅ 04-meal-finder — `FavouriteService.favouriteIds` derives a `Set` of ids once, so the three pages ask `has(id)` instead of each keeping its own parameterised scan
 
 ### HTTP integration
 
@@ -145,6 +146,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 ### Change detection
 
 - Default change detection and Zone.js awareness — explain at a high level why asynchronous work can trigger checks across the component tree in established Angular applications
+- Template method calls vs `computed()` — recognise that a function called from a template re-runs on every change detection because it caches nothing, while a computed signal returns its stored value until a source signal changes, so a per-item call inside a loop repeats the whole scan on every check ✅ 04-meal-finder — `search-page.html` calls `isFavourite(meal.idMeal)` once per card on every check, so the method resolves through the memoised `Set` rather than re-scanning the favourites array
 - `OnPush` change detection — recognise the notifications that mark a view for checking and why in-place mutation can leave an input-based view stale
 - Signals with `OnPush` — explain how a signal read in a template notifies Angular without treating signals as a reason to mutate objects in place
 - Production-build verification — run a production build because template compilation, budgets, and optimisation can expose failures hidden by the development server
