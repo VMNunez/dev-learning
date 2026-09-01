@@ -15,7 +15,7 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Handle HTTP failures once at the service boundary: `meal.service.ts:19-27` returns the raw `HttpClient.get()` observable with no `catchError`, so every page reinvents transport-error handling. Map failures to a consistent shape in the service. *(Effort: Small)*
+*No open Medium tasks.*
 
 ### Low
 
@@ -47,6 +47,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — `MealService` translates every transport failure once with `catchError` and rethrows a domain `Error` → README, PLANNING, coverage angular/junior + typescript/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — detail page models four remote states, `200 {"meals": null}` split from a transport error → README, PLANNING
 - 2026-09-01 · **[Medium]** `[frontend]` — favourite membership derived once as a `computed()` `Set` in `FavouriteService` → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — detail page's back control rendered as a real `<button>`, user-agent styles reset → README, PLANNING, coverage css/junior, `_cross-topic-inbox.md` (html)
