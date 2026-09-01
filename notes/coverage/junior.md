@@ -1202,7 +1202,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Type-system foundations
 
-- TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation
+- TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation ✅ 04-meal-finder — `http.get<MealResponse>()` validates nothing, so the model declares `meals: Meal[] | null` and both subscribers normalise the value the endpoint really sends
 - Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values ✅ 01-todo-list
 - Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types ✅ 01-todo-list
 - `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking ✅ 06-hr-portal
@@ -1264,7 +1264,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Null safety and assertions
 
-- `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
+- `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use ✅ 04-meal-finder — the nullable `MealResponse.meals` stops compiling at every consumer until each one handles the absent case
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 05-task-manager
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal
