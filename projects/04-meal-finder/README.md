@@ -37,6 +37,7 @@ https://04mealfinder.netlify.app/
 
 ## Architecture decisions
 
+- `MealService` and `FavouriteService` split by responsibility — one owns the HTTP calls, the other the favourites state, so the favourites page never depends on `HttpClient`
 - `effect()` + localStorage for favourites — automatic sync with no manual save calls anywhere in the app
 - `computed()` for all filtering — memoized and recalculates only when the source signal changes
 - `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
@@ -67,6 +68,7 @@ https://04mealfinder.netlify.app/
 - `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect runs again for a new route id
 - `computed()` — derive filtering, counts and unique categories from signals
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
+- `asReadonly()` — keep the writable signal private in the service so its methods are the only writers
 - `takeUntilDestroyed` + `DestroyRef` — cancel HTTP subscriptions when a component is destroyed
 - Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised where it enters the app
 - `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
