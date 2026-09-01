@@ -66,6 +66,7 @@ https://04mealfinder.netlify.app/
 - `computed()` — derive filtering, counts and unique categories from signals
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `takeUntilDestroyed` + `DestroyRef` — cancel HTTP subscriptions when a component is destroyed
+- Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised where it enters the app
 - `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
 - `(keyup.enter)` — trigger a method when the user presses Enter
 - `[disabled]` binding — disable a button based on a reactive condition
