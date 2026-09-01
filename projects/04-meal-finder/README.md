@@ -49,6 +49,7 @@ https://04mealfinder.netlify.app/
 - The nav lives in the root component around `<router-outlet />` — the router destroys each routed page, so chrome that must survive navigation belongs outside the outlet, and its favourites badge is a `computed()` over the `FavouriteService` signal rather than a copy per page
 - `meal-card` and `category-filter` are presentational — they inject no service and receive their data through `input.required()`, so the same card serves the search page as a favourite toggle and the favourites page as a remove control
 - Transport failures are translated once in `MealService` — every call maps the response to a domain type and `catchError` rethrows a single domain `Error`, so a page reacts to one failure shape instead of reinventing logging and normalisation per subscriber
+- Query strings are built with `HttpParams`, never interpolated — `&`, `#` and `+` are query syntax, so a search for `beef & rice` concatenated into the URL reaches the API as `beef ` with no error to notice
 - `hasSearched`, `loadFinished` and `hasError` signals to express four distinct states — TheMealDB answers an unknown id with `200 {"meals": null}`, so a missing recipe and a failed request are different outcomes and a single results array can express neither
 
 ---
