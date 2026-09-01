@@ -23,7 +23,6 @@
 - [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add `[alt]="meal().strMeal"` to the meal image (`meal-card.html:12`) — it currently has no `alt` at all. *(Effort: Small)*
 
-- [ ] **[Low]** `[frontend]` — Give the nav an active-route affordance: `app.html:2-3` uses plain `routerLink`, so on `/favourites` nothing marks the current page and `app.css:29` styles only `:hover`. Add `routerLinkActive` plus `ariaCurrentWhenActive`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Restore a heading on the search page: the old `<h1>Meal Finder</h1>` went with the page header, and the brand in the nav is an `<a>`, not a heading, so `/` now renders with zero `h1` while `/favourites` still has one (`favourites-page.html:2`). *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Fix or delete the scaffold spec: `app.spec.ts:21` still asserts an `h1` containing `Hello, 04-meal-finder`, a signal the root component no longer has. It was already failing before the nav work (the root template never had that heading), and it is the last file referencing the deleted `title`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Make "Back" go somewhere inside the app: `meal-detail-page.ts:71` calls `Location.back()`, which replays browser history, so a detail URL opened directly (shared link, refresh, new tab) sends the user out of the site instead of to the search page. Fall back to a `routerLink`/`router.navigate(['/'])` when there is no in-app history. *(Effort: Small)* *(raised 2026-09-01 while triaging the fake back-link task)*
@@ -58,6 +57,7 @@
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — nav marks the current route with `routerLinkActive` + `ariaCurrentWhenActive`, root link exact → README, PLANNING, coverage angular/junior (2 bullets authored)
 - 2026-09-01 · **[Low]** `[frontend]` — category filter states the selected category with `[class.active]` + `aria-pressed` → README, PLANNING, `_cross-topic-inbox.md` (html)
 - 2026-09-01 · **[Low]** `[frontend]` — all four routes lazy-loaded with `loadComponent()`, initial bundle 253 → 238 kB → README, PLANNING; coverage already marked 06-hr-portal
 - 2026-09-01 · **[Low]** `[frontend]` — `**` wildcard route renders a not-found page instead of a blank outlet → README, PLANNING; coverage already marked 06-hr-portal
