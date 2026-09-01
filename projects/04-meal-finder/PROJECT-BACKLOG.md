@@ -21,7 +21,6 @@
 
 - [ ] **[Low]** `[frontend]` — Encode the search term before it reaches the URL: `meal.service.ts` interpolates `name` straight into `search.php?s=${name}`, so a term containing `&`, `#`, `+` or a space is parsed as query syntax and the request silently searches for the wrong thing (`beef & rice` searches for `beef `). Wrap it in `encodeURIComponent()`, or build the query with `HttpParams`. *(Effort: Small)* *(raised 2026-09-01 while closing the service-boundary error-handling task — same file, seen while rewriting the two request URLs)*
 
-- [ ] **[Low]** `[frontend]` — Fix or delete the scaffold spec: `app.spec.ts:21` still asserts an `h1` containing `Hello, 04-meal-finder`, a signal the root component no longer has. It was already failing before the nav work (the root template never had that heading), and it is the last file referencing the deleted `title`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/04-meal-finder`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
 
 ---
@@ -53,6 +52,7 @@
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — whole scaffold spec suite repaired, 6 failures → 11 passing tests (task named 1 file, 8 were broken) → PLANNING, coverage angular/junior
 - 2026-09-01 · **[Low]** `[frontend]` — last raw hex replaced by `--on-primary` / `--favourite` / `--favourite-inactive` tokens → README, PLANNING; coverage already marked 01-todo-list
 - 2026-09-01 · **[Low]** `[frontend]` — Back falls back to `/` when the detail URL was opened directly, via a navigation count → README, PLANNING, coverage angular/junior (1 bullet authored)
 - 2026-09-01 · **[Low]** `[frontend]` — both meal images marked decorative with `alt=""` (task asked for the name; adjacent text already carries it) → README
@@ -97,4 +97,5 @@ Scored against the "Key patterns introduced" table in `PLANNING.md`.
 | `position: absolute` + `top/right` overlay | ✅ | `search-page.css:135-137` |
 | `transition` on base element | ✅ | `search-page.css:107-109` |
 
-Tests are out of scope for this project — testing enters the roadmap at project 07.
+Authored test coverage is out of scope for this project — it enters the roadmap at project 07. The CLI's generated specs are still
+kept compiling and green (repaired 2026-09-01), because a suite that fails on `npm test` is a defect a recruiter sees before any feature.
