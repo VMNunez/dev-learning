@@ -78,7 +78,7 @@ app/
 | `effect()` | Trigger API call when a signal changes |
 | `effect()` cleanup callback | Cancel the in-flight request before the effect re-runs for a new route id |
 | `localStorage + effect()` | Persist favourites automatically |
-| `Array.some()` | Check if a meal is already in favourites |
+| A `computed()` `Set` in the service | Favourite membership is derived once and queried with `has(id)`; a template method call re-runs on every change detection, and a `computed()` takes no arguments, so the lookup structure is what gets derived |
 | `[...new Set()]` | Extract unique category names from the results |
 | `optional chaining ?.` | Safe access on nullable API response |
 | `(input)` event | Track search text on every keystroke |
