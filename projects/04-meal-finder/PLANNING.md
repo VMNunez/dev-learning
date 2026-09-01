@@ -86,6 +86,7 @@ app/
 | `hasSearched` signal | Show empty state only after a search, not on load |
 | `(keyup.enter)` | Submit search by pressing Enter |
 | `@else if` | Handle multiple template states |
+| `HttpParams` for every query string | The search term and the meal id reach `search.php` / `lookup.php` as parameters, never interpolated into the URL; `&`, `#` and `+` are query syntax, so a concatenated term silently changes what was searched for |
 | One failure translation at the service boundary | `MealService` maps each response to a domain type and pipes `catchError` → `throwError(new Error(...))`; the transport envelope and the logging stay in the service, so a page only ever handles one failure shape |
 | Four remote states, not two | An unknown id answers `200 {"meals": null}`, so "not found" and "request failed" are separate branches; the failure is recorded by the callback that observes it, never inferred from the absence of data |
 | `loadComponent()` on every route | Each routed page is imported lazily, so it leaves the initial bundle and arrives as its own chunk on first navigation |
