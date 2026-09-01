@@ -96,6 +96,7 @@ https://04mealfinder.netlify.app/
 - `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` and `visibility: hidden` remove
 - `routerLinkActive` — the router marks the nav link of the current route, so the shell never compares the URL itself; the brand link adds `{ exact: true }` because an active link matches by prefix and `/` would otherwise stay marked everywhere, and `ariaCurrentWhenActive` puts the same fact in the accessibility tree
 - Pressed state of a toggle — the category buttons say which filter is on twice: `[class.active]` for the eye and `[attr.aria-pressed]` for the accessibility tree, because a filled background reaches only one of the two
+- Decorative images take `alt=""` — both meal photos sit beside the meal name in text, so an `alt` carrying that name would announce it twice; an *absent* `alt` is the bug, because it leaves the image in the accessibility tree named after the file
 - Accessible name of an icon-only control — a glyph like `★` computes to no usable name, so the favourite toggles carry an explicit `aria-label` that also states the current state
 - `[attr.x]` binding — ARIA attributes have no DOM property behind them, so they need attribute binding; the label itself is a `computed()` in the class, not an expression in the template
 - `overflow: hidden` on a card — clips image corners with `border-radius`
