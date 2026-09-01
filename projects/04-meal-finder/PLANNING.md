@@ -80,7 +80,7 @@ app/
 | `[...new Set()]` | Extract unique category names from the results |
 | `optional chaining ?.` | Safe access on nullable API response |
 | `(input)` event | Track search text on every keystroke |
-| `[disabled]` binding | Disable search button when input is empty |
+| `[disabled]` binding | Disable search button when input is empty — the guard itself lives in `onSearchMeals()`, so `(keyup.enter)` obeys the same rule |
 | `hasSearched` signal | Show empty state only after a search, not on load |
 | `(keyup.enter)` | Submit search by pressing Enter |
 | `@else if` | Handle multiple template states |
