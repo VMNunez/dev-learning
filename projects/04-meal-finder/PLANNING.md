@@ -15,7 +15,7 @@ Uses the MealDB public API.
 ## Key features
 
 - Search meals by name
-- Filter results by category
+- Filter favourites by category
 - Click a meal to see the full recipe on a detail page
 - Save and remove meals from favourites
 - Favourites persist in localStorage
@@ -38,17 +38,18 @@ Uses the MealDB public API.
 ```
 app/
 ├── app.component                 ← root with nav and RouterOutlet
+├── components/
+│   ├── meal-card/
+│   │   └── meal-card.component           ← dumb, receives meal, emits favourite toggle
+│   └── category-filter/
+│       └── category-filter.component     ← dumb, receives categories, emits selection
 ├── pages/
 │   ├── search-page/
-│   │   ├── search-page.component         ← smart, owns search and filter signals
-│   │   ├── meal-card/
-│   │   │   └── meal-card.component       ← dumb, receives meal, emits favourite toggle
-│   │   └── category-filter/
-│   │       └── category-filter.component ← dumb, receives categories, emits selection
+│   │   └── search-page.component         ← smart, owns the search signals
 │   ├── detail-page/
 │   │   └── detail-page.component         ← smart, reads route param, calls API
 │   └── favourites-page/
-│       └── favourites-page.component     ← smart, reads favourites signal
+│       └── favourites-page.component     ← smart, reads favourites signal and owns the category filter
 └── services/
     ├── meal.service.ts           ← HttpClient calls to MealDB
     └── favourite.service.ts     ← signal + localStorage sync
@@ -86,6 +87,8 @@ app/
 | `(keyup.enter)` | Submit search by pressing Enter |
 | `@else if` | Handle multiple template states |
 | `computed()` for nav counts | Live favourite count in the nav bar |
+| `input.required()` + `output()` | The presentational `meal-card` and `category-filter` — data in, user intent out, no service injected, so two pages reuse the same card |
+| `:host` selector | An extracted component adds a wrapper element that is `display: inline` by default, so the filter's flex layout moves into its own stylesheet |
 | `overflow: hidden` on cards | Prevent images from breaking the card layout |
 | `position: absolute` + `top/right` | Favourite button overlay on the card |
 | `transition` on base element | Smooth hover — never put transition on `:hover` |
@@ -97,8 +100,8 @@ app/
 1. Set up routing with search, detail, and favourites pages
 2. Create `MealService` with search and getById methods
 3. Create `FavouriteService` with a signal synced to localStorage via `effect()`
-4. Build search page — search input, category filter, meal grid
+4. Build search page — search input and meal grid
 5. Build `meal-card` — dumb component with favourite button overlay
 6. Build detail page — read route param, call API inside `effect()`
-7. Build favourites page — show saved meals, allow removal
+7. Build favourites page — show saved meals, filter them by category, allow removal
 8. Add live nav count with `computed()` on the favourites signal
