@@ -264,6 +264,20 @@ the defect lives in, rather than repeating the mechanism at every site: both rou
 review returned a false universal about rendering that the *repair* had written, which is `REC-126`'s
 *a repair states no new fact* arriving on ground where the fact is a spec nobody had opened.
 
+**Deleting a number deletes a gate, so a de-numbering fix is priced as *writing a test*, never as a
+deletion.** From `REC-191`, which replaced six fixed section sizes in `_readme-standard.md` because
+Victor's bar is relevance and not arithmetic. The caps were not dead letters: the `03-expense-tracker`
+run used one to merge a duplicated architecture decision and to move a tradeoff out of the wrong
+section. A bound that can fail an item is a gate; prose that can only ever be satisfied is taste, and
+swapping the first for the second reads exactly like a fix while removing the check. So every removed
+bound — **ceiling or floor, since a floor is what forces padding** — leaves behind a clause a cold
+reviewer can use to reject a **named** item, and the precedent is usually already in the same file
+(`_readme-standard.md` never says "no fixed number" without following it with a test: "a screen, not a
+state"). Verify it the only way the claim can be verified: apply each new test by hand to one artefact
+the old bound **approved** — nothing it approved may now fail — and one it never audited, where at
+least one item must be rejectable. A test that rejects nothing is the defect the row was opened to
+prevent, arriving inside the fix.
+
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
 `✅` markers across projects 01–06, so the constructs are Victor's real code and only the file
