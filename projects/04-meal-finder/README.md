@@ -70,9 +70,9 @@ https://04mealfinder.netlify.app/
 - `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect runs again for a new route id
 - `computed()` — derive filtering, counts and unique categories from signals
 - `RouterOutlet` and the application shell — the router destroys and recreates the routed component on every navigation, so persistent chrome goes in the root component
+- Routed view state in the URL — the search term travels as `?q=`, written with `router.navigate()` and read back with `toSignal(queryParamMap)`, so results survive navigation and `/` is linkable
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `asReadonly()` — keep the writable signal private in the service so its methods are the only writers
-- `takeUntilDestroyed` + `DestroyRef` — cancel HTTP subscriptions when a component is destroyed
 - Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised where it enters the app
 - `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
 - `(keyup.enter)` — trigger a method when the user presses Enter
