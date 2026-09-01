@@ -40,6 +40,7 @@ https://04mealfinder.netlify.app/
 - `MealService` and `FavouriteService` split by responsibility — one owns the HTTP calls, the other the favourites state, so the favourites page never depends on `HttpClient`
 - `effect()` + localStorage for favourites — automatic sync with no manual save calls anywhere in the app
 - `computed()` for all filtering — memoized and recalculates only when the source signal changes
+- Favourite membership is derived once in `FavouriteService` as a `computed()` `Set` of ids — a template method call re-runs on every change detection, and a `computed()` takes no arguments, so what gets derived is the lookup structure rather than the per-meal predicate
 - `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
 - `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
 - The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
