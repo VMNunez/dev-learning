@@ -32,3 +32,11 @@ body {
   white-space: nowrap;
   border: 0;
 }
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+}
