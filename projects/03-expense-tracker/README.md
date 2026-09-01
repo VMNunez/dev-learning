@@ -45,6 +45,7 @@ https://03angularexpensetracker.netlify.app/
 - Persistence declared once with `effect()` — the service constructor writes the signal to localStorage whenever it changes, so no mutator has to remember to save
 - localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
 - Default form date built from the local clock — `getFullYear`/`getMonth`/`getDate` instead of `toISOString()`, which reports the UTC calendar day and would pre-fill yesterday's date after local midnight
+- Transaction ids generated with `crypto.randomUUID()` instead of `Date.now()` — a timestamp collides for two submits inside the same millisecond, and `deleteTransaction` filters by id equality, so the collision would delete both rows
 
 ---
 
