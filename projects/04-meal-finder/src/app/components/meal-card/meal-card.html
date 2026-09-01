@@ -1,18 +1,20 @@
-<div class="meal-card" [routerLink]="['/detail', meal().idMeal]">
-  <div class="card-head">
-    <p class="meal-title">{{ meal().strMeal }}</p>
-    <button
-      class="favourite-btn"
-      [class.active]="isFavourite()"
-      [attr.aria-label]="favouriteLabel()"
-      (click)="onToggle($event)"
-    >
-      @if (isFavourite()) {
-        ★
-      } @else {
-        ☆
-      }
-    </button>
-  </div>
-  <img class="meal-img" [src]="meal().strMealThumb" />
+<div class="meal-card">
+  <a class="meal-link" [routerLink]="['/detail', meal().idMeal]">
+    <div class="card-head">
+      <p class="meal-title">{{ meal().strMeal }}</p>
+    </div>
+    <img class="meal-img" [src]="meal().strMealThumb" />
+  </a>
+  <button
+    class="favourite-btn"
+    [class.active]="isFavourite()"
+    [attr.aria-label]="favouriteLabel()"
+    (click)="onToggle()"
+  >
+    @if (isFavourite()) {
+      ★
+    } @else {
+      ☆
+    }
+  </button>
 </div>

@@ -20,8 +20,7 @@ export class MealCard {
       : `Add ${this.meal().strMeal} to favourites`,
   );
 
-  onToggle(event: MouseEvent) {
-    event.stopPropagation();
+  onToggle() {
     this.favouriteToggled.emit(this.meal());
   }
 }
