@@ -3,7 +3,7 @@
 **Last Reviewed — backend:** n/a — Angular-only
 **Last Reviewed — frontend:** 2026-07-14
 
-**Overall quality:** Good — the signal/`computed()`/`takeUntilDestroyed` work is solid and every async page has loading and error states, but the app quietly diverges from its own PLANNING.md (no `FavouriteService`, no `effect()` in the detail page, no shared nav, no dumb components).
+**Overall quality:** Good — the signal/`computed()`/`takeUntilDestroyed` work is solid and every async page has loading and error states, but the app quietly diverges from its own PLANNING.md (no dumb components).
 
 ---
 
@@ -15,7 +15,6 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Build the shared nav in the root component: `app.html` is only `<router-outlet />`, so each page hand-rolls its own header and the favourites `computed()` count exists on the search page alone (`search-page.ts:23`). PLANNING describes the root as "root with nav and RouterOutlet" with a live count. Move the nav (links + count badge) into `app.html`. *(Effort: Medium)*
 - [ ] **[Medium]** `[frontend]` — Extract the planned dumb components `meal-card` and `category-filter`: the card markup is duplicated between `search-page.html` and `favourites-page.html`, and neither page decomposes. PLANNING specifies both as presentational children that receive input and emit events — the smart/dumb split is the pattern to show off here. *(Effort: Medium)*
 - [ ] **[Medium]** `[frontend]` — Fix the dead-end category filter on the favourites page: the "All" button only renders `@if (favourites().length > 0)` while the grid is driven by `filteredFavourites()`, so removing the last favourite of the selected category leaves the user on an empty grid. Gate the reset/button on `filteredFavourites().length`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Make the search results survive navigation: the results live in `meals = signal<Meal[]>([])` inside `SearchPage` (`search-page.ts:18`), so the router destroys them on the way to `/detail/:id` and `← Back` returns to an empty search page — the term is nowhere in the URL either, so `/` is not linkable to a result set. Put the term on the URL with `[queryParams]` and read it back as a signal, re-running the search on load. *(Effort: Medium)* *(raised 2026-09-01 while triaging the shared-nav task)*
@@ -56,6 +55,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — nav and live favourites count moved into the root component, outside the outlet → README, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — empty-search guard moved into `onSearchMeals()`, covering the Enter path → README, PLANNING
 
 #### Low
@@ -89,7 +89,7 @@ Scored against the "Key patterns introduced" table in `PLANNING.md`.
 | `(keyup.enter)` | ✅ | `search-page.html:16` |
 | `@else if` | ✅ | `search-page.html:34`, `meal-detail-page.html:34` |
 | `takeUntilDestroyed` + `DestroyRef` | ✅ | `search-page.ts:15,32`, `meal-detail-page.ts:17,36` |
-| `computed()` for nav counts | ✅ | `search-page.ts:23-25` (but only on the search page — see the shared-nav task) |
+| `computed()` for nav counts | ✅ | `app.ts:14` — derived in the root component from the `FavouriteService` signal, so the badge is live on every route |
 | `overflow: hidden` on cards | ✅ | `search-page.css:105` |
 | `position: absolute` + `top/right` overlay | ✅ | `search-page.css:135-137` |
 | `transition` on base element | ✅ | `search-page.css:107-109` |
