@@ -73,6 +73,7 @@ app/
 |---|---|
 | Route parameters (`path: 'detail/:id'`) | Detail page URL |
 | `toSignal(ActivatedRoute.paramMap)` | Read the meal id from the URL as a signal, not a one-shot snapshot |
+| `toSignal(ActivatedRoute.queryParamMap)` + `router.navigate()` | Keep the search term in the URL as `?q=` so results survive navigation and `/` is linkable |
 | `effect()` | Trigger API call when a signal changes |
 | `effect()` cleanup callback | Cancel the in-flight request before the effect re-runs for a new route id |
 | `localStorage + effect()` | Persist favourites automatically |
@@ -84,7 +85,6 @@ app/
 | `hasSearched` signal | Show empty state only after a search, not on load |
 | `(keyup.enter)` | Submit search by pressing Enter |
 | `@else if` | Handle multiple template states |
-| `takeUntilDestroyed` + `DestroyRef` | Cancel subscriptions on destroy |
 | `computed()` for nav counts | Live favourite count in the nav bar |
 | `overflow: hidden` on cards | Prevent images from breaking the card layout |
 | `position: absolute` + `top/right` | Favourite button overlay on the card |
