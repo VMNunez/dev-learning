@@ -79,6 +79,7 @@ app/
 | `Omit<T, K>` | Remove `id` from the Transaction type for the form |
 | Local-clock date formatting | Default value of the form's date field, instead of the UTC day |
 | `crypto.randomUUID()` | Transaction ids, instead of deriving them from `Date.now()` |
+| `nonNullable` controls + literal union + `getRawValue()` | Form value typed to match the model, so the submit needs no `as` assertion |
 | Smart/dumb pattern | First time applied explicitly by name |
 | `@media (min-width)` | Mobile-first responsive layout |
 | `position: absolute` + `relative` | Overlay elements |
