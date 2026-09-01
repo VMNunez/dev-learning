@@ -7,3 +7,5 @@ export interface Transaction {
 }
 
 export type NewTransaction = Omit<Transaction, 'id'>;
+
+export type Filter = 'all' | 'income' | 'expense';
