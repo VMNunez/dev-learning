@@ -10,7 +10,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking ✅ 06-hr-portal
 - `void` vs `never` — distinguish a function result callers ignore from a control-flow path that cannot produce any value
 - `object` vs `Object` vs `{}` — avoid broad object-like types whose assignability differs from the specific property shape an application contract needs
-- `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type
+- `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type ✅ 04-meal-finder — the `catchError` callback in `MealService` types the caught value `unknown` and only logs it, so nothing reads a property off it unnarrowed
 - Structural typing — compatibility depends on required members rather than declared names, which explains both convenient object assignment and accidental shape compatibility
 - Union types — model a value that may have one of several types and narrow it before using member-specific operations ✅ 01-todo-list
 - Intersection types — require a value to satisfy all combined object contracts without confusing an intersection with a runtime merge

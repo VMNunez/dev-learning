@@ -85,7 +85,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `concatMap()` vs `exhaustMap()` — queue ordered inner work with `concatMap()` and ignore new triggers with `exhaustMap()` while current work is active, especially for writes and form submissions
 - Search pipeline operators — combine `debounceTime()`, `distinctUntilChanged()`, and `switchMap()` to avoid premature, duplicate, and stale requests
 - Nested subscriptions vs flattening operators — compose dependent asynchronous work in one pipeline so cancellation, errors, and cleanup remain visible
-- `catchError()` — recover, translate, or rethrow an error without silently converting every failure into successful empty data
+- `catchError()` — recover, translate, or rethrow an error without silently converting every failure into successful empty data ✅ 04-meal-finder — `MealService.handleFailure` logs once and rethrows a domain `Error`, so a network failure never arrives at a page as an empty result list
 - `catchError()` placement around flattening operators — recover inside an inner request when the outer interaction stream must remain alive and catch outside only when terminating the whole pipeline is intended
 - `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
