@@ -88,6 +88,7 @@ app/
 | `@else if` | Handle multiple template states |
 | One failure translation at the service boundary | `MealService` maps each response to a domain type and pipes `catchError` → `throwError(new Error(...))`; the transport envelope and the logging stay in the service, so a page only ever handles one failure shape |
 | Four remote states, not two | An unknown id answers `200 {"meals": null}`, so "not found" and "request failed" are separate branches; the failure is recorded by the callback that observes it, never inferred from the absence of data |
+| `**` wildcard route | An unmatched URL renders `NotFoundPage` rather than a blank outlet; it is declared last because route matching is first-wins |
 | `computed()` for nav counts | Live favourite count in the nav bar |
 | `input.required()` + `output()` | The presentational `meal-card` and `category-filter` — data in, user intent out, no service injected, so two pages reuse the same card |
 | `:host` selector | An extracted component adds a wrapper element that is `display: inline` by default, so the filter's flex layout moves into its own stylesheet |
