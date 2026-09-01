@@ -41,7 +41,8 @@ project. Your attention budget belongs to the README.
 - **Per-section rules** — each section meets its specific rule (format strings like `[X] over [Y] —
   [reason]`, the interview test on architecture decisions, table-not-list for Tech stack, recall-list
   brevity for "What I learned", specific roles in the API table, prose-only Auth flow, `*(planned)*` for
-  absent tests, etc.).
+  absent tests, etc.). Every rule about *arrangement* is checked against the standard's *Source is not
+  render* — the blank lines, not the order of the lines.
 - **Quality filter** — every section passes both the recruiter and the interviewer lens; cut or sharpen
   anything that only impresses one.
 - **Truthfulness** — no section claims something not in the code/PLANNING; "What I learned" and patterns
@@ -49,7 +50,7 @@ project. Your attention budget belongs to the README.
 - **In-progress markers** — no leftover "coming soon" fragments except one clean placeholder per
   genuinely-unbuilt section; no working notes.
 - **Visuals (`global`)** — the Visual brief and placeholders are present and correct; images stacked
-  vertically, not in a grid.
+  vertically, not in a grid; **blank lines** between caption, image and next image.
 - **Full-stack `global`** — the "Full technical details" final line is present with resolving paths; a
   Testing row exists in Tech stack if the project has tests.
 
