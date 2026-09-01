@@ -1257,7 +1257,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Narrowing and safe control flow
 
-- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
+- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
