@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { Meal, MealResponse } from '../models/meal.model';
 import { catchError, map, Observable, throwError } from 'rxjs';
@@ -12,14 +12,18 @@ export class MealService {
   private readonly baseUrl = 'https://www.themealdb.com/api/json/v1/1';
 
   searchMeals(name: string): Observable<Meal[]> {
-    return this.http.get<MealResponse>(`${this.baseUrl}/search.php?s=${name}`).pipe(
+    const params = new HttpParams().set('s', name);
+
+    return this.http.get<MealResponse>(`${this.baseUrl}/search.php`, { params }).pipe(
       map((response) => response.meals ?? []),
       this.handleFailure('search meals'),
     );
   }
 
   getMealById(id: string): Observable<Meal | null> {
-    return this.http.get<MealResponse>(`${this.baseUrl}/lookup.php?i=${id}`).pipe(
+    const params = new HttpParams().set('i', id);
+
+    return this.http.get<MealResponse>(`${this.baseUrl}/lookup.php`, { params }).pipe(
       map((response) => response.meals?.[0] ?? null),
       this.handleFailure('load the meal'),
     );
