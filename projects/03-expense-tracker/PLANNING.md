@@ -57,6 +57,7 @@ app/
 ## State management
 
 - One `signal<Transaction[]>` in `TransactionService`, synced to localStorage with `effect()`
+- Data read back from localStorage is untrusted — it is parsed defensively and shape-checked before it enters the signal
 - `computed()` for balance, total income, total expenses, and filtered list
 - Smart/dumb component pattern — home-page owns the state, children only display
 - `Router.navigate()` on form submit to return to the list
