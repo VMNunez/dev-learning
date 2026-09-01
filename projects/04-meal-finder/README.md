@@ -77,7 +77,9 @@ https://04mealfinder.netlify.app/
 - Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised where it enters the app
 - Container / presentational split — a child that renders `input()` data and emits `output()` events owns no domain state, which is what lets two different parents reuse it
 - `:host` — extracting a component adds a wrapper element that is `display: inline` by default, so layout the parent used to provide moves into the child's stylesheet
-- `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
+- Navigating elements are links — the card root is an `<a [routerLink]>`, not a `<div>` with a click handler, so keyboard focus, Enter, the `link` role and open-in-new-tab come from the tag
+- Interactive content does not nest — the favourite `<button>` sits outside the card's link and is positioned over it, because a control inside an `<a>` is invalid and its activation ambiguous
+- `:focus-visible` — a focus ring shown for keyboard entry and not for a mouse click, raised to the whole card with the `:has()` relational selector
 - `(keyup.enter)` — trigger a method when the user presses Enter
 - `[disabled]` binding — disable a button based on a reactive condition
 - `hasSearched` and `hasLoad` signal patterns — distinguish between loading, no results and not searched yet
