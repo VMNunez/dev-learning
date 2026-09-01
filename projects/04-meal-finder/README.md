@@ -43,6 +43,7 @@ https://04mealfinder.netlify.app/
 - Favourite membership is derived once in `FavouriteService` as a `computed()` `Set` of ids — a template method call re-runs on every change detection, and a `computed()` takes no arguments, so what gets derived is the lookup structure rather than the per-meal predicate
 - `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
 - `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
+- Every route is lazy with `loadComponent()` — each page becomes its own chunk, so the initial bundle carries the shell and the router rather than all four pages (253 kB → 238 kB here)
 - A `**` wildcard route renders a not-found page instead of an empty outlet — it is declared last, because the router matches first-wins and a `**` placed earlier would swallow every other route
 - The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
 - The nav lives in the root component around `<router-outlet />` — the router destroys each routed page, so chrome that must survive navigation belongs outside the outlet, and its favourites badge is a `computed()` over the `FavouriteService` signal rather than a copy per page
