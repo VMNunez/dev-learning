@@ -3,7 +3,7 @@
 **Last Reviewed — backend:** n/a — Angular-only
 **Last Reviewed — frontend:** 2026-07-14
 
-**Overall quality:** Good — the signal/`computed()`/`takeUntilDestroyed` work is solid and every async page has loading and error states, but the app quietly diverges from its own PLANNING.md (no dumb components).
+**Overall quality:** Good — the signal/`computed()`/`effect()` cleanup work is solid and every async page has loading and error states, but the app quietly diverges from its own PLANNING.md (no dumb components).
 
 ---
 
@@ -17,7 +17,6 @@
 
 - [ ] **[Medium]** `[frontend]` — Extract the planned dumb components `meal-card` and `category-filter`: the card markup is duplicated between `search-page.html` and `favourites-page.html`, and neither page decomposes. PLANNING specifies both as presentational children that receive input and emit events — the smart/dumb split is the pattern to show off here. *(Effort: Medium)*
 - [ ] **[Medium]** `[frontend]` — Fix the dead-end category filter on the favourites page: the "All" button only renders `@if (favourites().length > 0)` while the grid is driven by `filteredFavourites()`, so removing the last favourite of the selected category leaves the user on an empty grid. Gate the reset/button on `filteredFavourites().length`. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Make the search results survive navigation: the results live in `meals = signal<Meal[]>([])` inside `SearchPage` (`search-page.ts:18`), so the router destroys them on the way to `/detail/:id` and `← Back` returns to an empty search page — the term is nowhere in the URL either, so `/` is not linkable to a result set. Put the term on the URL with `[queryParams]` and read it back as a signal, re-running the search on load. *(Effort: Medium)* *(raised 2026-09-01 while triaging the shared-nav task)*
 - [ ] **[Medium]** `[frontend]` — Give the search input a real label: `search-page.html:14` has only a `placeholder`, which screen readers do not announce and which vanishes on focus. Add a `<label for="meal">` (visually hidden if needed) or an `aria-label`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Add accessible names to every icon-only button: the `★`/`☆` favourite toggles (`search-page.html:43`, `meal-detail-page.html:9`) and the `×` remove button (`favourites-page.html:20`) announce as just "button". Bind an `aria-label` that reflects the current state. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Make the meal cards keyboard-reachable: they are `<div class="meal-card" [routerLink]="...">` (`search-page.html:40`, `favourites-page.html`), and `routerLink` on a `div` is not focusable or activatable by keyboard. Render them as `<a [routerLink]>`. *(Effort: Small)*
@@ -55,6 +54,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — search term moved to the URL as `?q=`, results re-derived on load → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — nav and live favourites count moved into the root component, outside the outlet → README, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — empty-search guard moved into `onSearchMeals()`, covering the Enter path → README, PLANNING
 
@@ -72,7 +72,7 @@
 
 Scored against the "Key patterns introduced" table in `PLANNING.md`.
 
-**Tally: 17 ✅ Demonstrated · 0 ⚠️ Shallow · 0 ❌ Missing**
+**Tally: 16 ✅ Demonstrated · 0 ⚠️ Shallow · 1 ❌ Missing**
 
 | Concept | Status | Note |
 |---|---|---|
@@ -88,7 +88,7 @@ Scored against the "Key patterns introduced" table in `PLANNING.md`.
 | `hasSearched` signal | ✅ | `search-page.ts:17` |
 | `(keyup.enter)` | ✅ | `search-page.html:16` |
 | `@else if` | ✅ | `search-page.html:34`, `meal-detail-page.html:34` |
-| `takeUntilDestroyed` + `DestroyRef` | ✅ | `search-page.ts:15,32`, `meal-detail-page.ts:17,36` |
+| `takeUntilDestroyed` + `DestroyRef` | ❌ | No longer in the project — the detail page always used `effect()` + `onCleanup`, and the search page moved to the same mechanism when its term went to the URL |
 | `computed()` for nav counts | ✅ | `app.ts:14` — derived in the root component from the `FavouriteService` signal, so the badge is live on every route |
 | `overflow: hidden` on cards | ✅ | `search-page.css:105` |
 | `position: absolute` + `top/right` overlay | ✅ | `search-page.css:135-137` |
