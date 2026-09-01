@@ -9,6 +9,11 @@ README(s) must contain and how each section must be written**. All pieces of the
 - `readme-concept-add` (the **in-session skill**) reads "Which README owns a concept" plus the section
   format it routes to, and the granularity half of the commit rule, which binds it too.
 
+**What founds the rules below.** `notes/prompts/projects/readme/_internal/_readme-evidence.md`, beside
+this file, holds the quoted sources for them and an `## Assertions` table giving each rule's evidential
+status, on the discipline its own header states. Consult it when a bar is questioned; no run prompt
+reads it (`REC-193`, 2026-09-01).
+
 ## What the readme review is for
 
 It reviews and fixes a project's README(s) so each one earns its place in a junior portfolio. Run it
