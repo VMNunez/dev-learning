@@ -24,11 +24,11 @@ https://04mealfinder.netlify.app/
 
 **Meal detail**
 
-*(screenshot — meal detail page — to be added)*
+![Meal detail — recipe image, category and area tags, instructions and the favourite toggle](screenshots/detail.png)
 
 **Favourites**
 
-*(screenshot — favourites page with the category filter — to be added)*
+![Favourites page — saved meals with the category filter above the grid](screenshots/favourites.png)
 
 ---
 
