@@ -1,12 +1,33 @@
-import { Injectable, signal } from '@angular/core';
+import { effect, Injectable, signal } from '@angular/core';
 import { NewTransaction, Transaction } from '../models/transaction.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TransactionService {
+  private readonly STORAGE_KEY = 'transactions';
+
+  transactionList = signal<Transaction[]>(this.loadTransactions());
+
+  constructor() {
+    effect(() => {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.transactionList()));
+    });
+  }
+
+  addTransaction(newTransaction: NewTransaction): void {
+    const transaction = { ...newTransaction, id: Date.now() };
+    this.transactionList.update((transactions) => [...transactions, transaction]);
+  }
+
+  deleteTransaction(deleteId: number): void {
+    this.transactionList.update((transactions) =>
+      transactions.filter((transaction) => transaction.id !== deleteId),
+    );
+  }
+
   private loadTransactions(): Transaction[] {
-    const data = localStorage.getItem('transactions');
+    const data = localStorage.getItem(this.STORAGE_KEY);
     if (!data) return [];
 
     try {
@@ -22,20 +43,5 @@ export class TransactionService {
       console.error('Stored transactions could not be parsed; starting empty.', error);
       return [];
     }
-  }
-
-  transactionList = signal<Transaction[]>(this.loadTransactions());
-
-  addTransaction(newTransaction: NewTransaction): void {
-    const transaction = { ...newTransaction, id: Date.now() };
-    this.transactionList.update((transactions) => [...transactions, transaction]);
-    localStorage.setItem('transactions', JSON.stringify(this.transactionList()));
-  }
-
-  deleteTransaction(deleteId: number): void {
-    this.transactionList.update((transactions) =>
-      transactions.filter((transaction) => transaction.id !== deleteId),
-    );
-    localStorage.setItem('transactions', JSON.stringify(this.transactionList()));
   }
 }
