@@ -42,6 +42,7 @@ https://04mealfinder.netlify.app/
 - `computed()` for all filtering — memoized and recalculates only when the source signal changes
 - `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
 - `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
+- The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
 - `hasSearched` and `hasLoad` signals to express three distinct states — a single results array cannot distinguish between loading, no results and not searched yet
 
 ---
