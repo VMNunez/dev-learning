@@ -1452,6 +1452,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
 - Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant ✅ 03-expense-tracker — the transaction form's private `today()` builds the default date from `getFullYear`/`getMonth`/`getDate`, so a submit after local midnight is not dated to the previous UTC day
 - Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
+- Unique identifier generation — obtain identity from a dedicated generator such as `crypto.randomUUID`, in the secure context it requires, rather than deriving it from a clock reading, because timestamps collide whenever two values are created inside the same resolution step ✅ 03-expense-tracker — `TransactionService.addTransaction()` builds `id` with `crypto.randomUUID()` and `Transaction.id` is a `string`, so two submits inside the same millisecond no longer collide in `deleteTransaction`
 
 ### Errors and runtime boundaries
 
