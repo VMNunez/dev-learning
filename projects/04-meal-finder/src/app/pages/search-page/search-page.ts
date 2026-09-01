@@ -32,7 +32,7 @@ export class SearchPage {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (mealResponse: MealResponse) => {
-          this.meals.set(mealResponse.meals);
+          this.meals.set(mealResponse.meals ?? []);
           this.hasSearched.set(true);
           this.isLoading.set(false);
         },

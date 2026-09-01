@@ -36,7 +36,7 @@ export class MealDetailPage implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (mealResponse: MealResponse) => {
-          this.mealDetails.set(mealResponse.meals[0]);
+          this.mealDetails.set(mealResponse.meals?.[0] ?? null);
           this.isLoading.set(false);
           this.hasLoad.set(true);
         },
