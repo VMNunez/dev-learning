@@ -106,6 +106,15 @@ app/
 
 ---
 
+## Testing
+
+Authored tests begin at project 07; this project writes none as a learning objective. What it does hold is that the
+specs the Angular CLI generates stay compiling and green: `ng test` is part of a clone-and-run, so a red suite is a
+defect whether or not the tests were the point. Each spec provides exactly what its unit injects, and a required
+`input()` is supplied with `componentRef.setInput()` before the first change detection.
+
+---
+
 ## Learning steps
 
 1. Set up routing with search, detail, and favourites pages
