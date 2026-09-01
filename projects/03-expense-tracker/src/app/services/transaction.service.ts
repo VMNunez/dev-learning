@@ -7,7 +7,21 @@ import { NewTransaction, Transaction } from '../models/transaction.model';
 export class TransactionService {
   private loadTransactions(): Transaction[] {
     const data = localStorage.getItem('transactions');
-    return data ? JSON.parse(data) : [];
+    if (!data) return [];
+
+    try {
+      const parsed = JSON.parse(data);
+
+      if (!Array.isArray(parsed)) {
+        console.error('Stored transactions are not an array; starting empty.', parsed);
+        return [];
+      }
+
+      return parsed;
+    } catch (error) {
+      console.error('Stored transactions could not be parsed; starting empty.', error);
+      return [];
+    }
   }
 
   transactionList = signal<Transaction[]>(this.loadTransactions());
