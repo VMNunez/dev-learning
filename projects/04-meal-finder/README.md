@@ -80,8 +80,6 @@ https://04mealfinder.netlify.app/
 
 ## What I learned
 
-Full explanations live in [`notes/angular/`](../../notes/angular/).
-
 - Route parameters — `path: 'detail/:id'` read from `paramMap` as a stream, not a `snapshot`
 - `effect()` — run a side effect automatically when a signal it reads changes
 - `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect re-runs
