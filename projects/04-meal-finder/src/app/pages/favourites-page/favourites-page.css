@@ -4,28 +4,12 @@
   padding: 2rem 1rem;
 }
 
-.favourites-head {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
 .page-title {
   font-size: 2rem;
   font-weight: 700;
   text-align: center;
   color: var(--primary);
-}
-
-.back-link {
-  color: var(--text-muted);
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.back-link:hover {
-  opacity: 0.7;
+  margin-bottom: 1.5rem;
 }
 
 .empty-message {
@@ -68,7 +52,9 @@
   box-shadow: 0 4px 12px var(--shadow);
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .favourite-card:hover {

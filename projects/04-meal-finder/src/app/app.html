@@ -1,1 +1,11 @@
+<nav class="app-nav">
+  <a class="brand" routerLink="/">Meal Finder</a>
+  <a class="nav-link" routerLink="/favourites">
+    Favourites
+    @if (favouritesNumber() > 0) {
+      <span class="count-badge">{{ favouritesNumber() }}</span>
+    }
+  </a>
+</nav>
+
 <router-outlet />

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, DestroyRef } from '@angular/core';
+import { Component, inject, signal, DestroyRef } from '@angular/core';
 import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 import { RouterLink } from '@angular/router';
@@ -20,11 +20,6 @@ export class SearchPage {
   searchTerm = signal<string>('');
   hasError = signal<boolean>(false);
   isLoading = signal<boolean>(false);
-  favourites = this.favouriteService.favourites;
-
-  favouritesNumber = computed(() => {
-    return this.favourites().length;
-  });
 
   onSearchMeals(meal: string) {
     const term = meal.trim();
