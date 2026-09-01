@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal, computed, DestroyRef } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MealService } from '../../services/meal.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { Meal, MealResponse } from '../../models/meal.model';
 import { Location } from '@angular/common';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-meal-detail-page',
@@ -11,30 +12,31 @@ import { Location } from '@angular/common';
   templateUrl: './meal-detail-page.html',
   styleUrl: './meal-detail-page.css',
 })
-export class MealDetailPage implements OnInit {
+export class MealDetailPage {
   private activatedRoute = inject(ActivatedRoute);
   private mealService = inject(MealService);
-  private destroyRef = inject(DestroyRef);
   private location = inject(Location);
 
-  mealId: string | null = null;
+  mealId = toSignal(this.activatedRoute.paramMap.pipe(map((params) => params.get('id'))), {
+    initialValue: null,
+  });
+
   mealDetails = signal<Meal | null>(null);
   isLoading = signal<boolean>(false);
   hasLoad = signal<boolean>(false);
-  isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId));
+
   favouriteMeals = this.mealService.favourites;
+  isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId()));
 
-  ngOnInit(): void {
-    this.mealId = this.activatedRoute.snapshot.paramMap.get('id');
-    this.loadMeal(this.mealId as string);
-  }
+  constructor() {
+    effect((onCleanup) => {
+      const id = this.mealId();
+      if (!id) return;
 
-  loadMeal(id: string): void {
-    this.isLoading.set(true);
-    this.mealService
-      .getMealById(id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
+      this.isLoading.set(true);
+      this.hasLoad.set(false);
+
+      const subscription = this.mealService.getMealById(id).subscribe({
         next: (mealResponse: MealResponse) => {
           this.mealDetails.set(mealResponse.meals?.[0] ?? null);
           this.isLoading.set(false);
@@ -42,16 +44,21 @@ export class MealDetailPage implements OnInit {
         },
         error: (err) => {
           console.error(err);
+          this.mealDetails.set(null);
           this.isLoading.set(false);
           this.hasLoad.set(true);
         },
       });
+
+      onCleanup(() => subscription.unsubscribe());
+    });
   }
 
   toggleFavourite(meal: Meal) {
-    this.isFavourite()
-      ? this.mealService.deleteFavourite(this.mealId as string)
-      : this.mealService.addFavourite(meal);
+    const id = this.mealId();
+    if (!id) return;
+
+    this.isFavourite() ? this.mealService.deleteFavourite(id) : this.mealService.addFavourite(meal);
   }
 
   goBack() {
