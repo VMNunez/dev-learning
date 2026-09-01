@@ -249,6 +249,21 @@ that happened. And **a tracker column is the cheapest such instrument in the rep
 which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
 opening a single artefact.
 
+**A rule stated against an artefact's *source* is not a rule about the artefact anyone sees, and where
+the deliverable is rendered, the reviewer inherits that blindness.** From `REC-192`.
+`_readme-standard.md`'s "bold caption above each" is satisfied by a caption on the line immediately
+before its image — which CommonMark makes one paragraph, laid out inline beside the picture. Two
+`readme-audit` runs read the section, checked the source, saw the caption above and passed; ten wrong
+pairs shipped. The separating test is cheap and it is about the rule's **grammar**: a rule naming a
+*block type* ("always a table", "one command per code block") is self-executing, because writing that
+block is unambiguous; a rule stating a *spatial relation between two blocks* ("above each", "stacked
+vertically", "after each, one sentence") says nothing about what separates them, and separation is the
+whole of the layout. So on any artefact whose deliverable is its **rendered** form, enumerate the
+positional rules rather than the visual sections — and state the correction **once**, in the register
+the defect lives in, rather than repeating the mechanism at every site: both rounds of this row's own
+review returned a false universal about rendering that the *repair* had written, which is `REC-126`'s
+*a repair states no new fact* arriving on ground where the fact is a spec nobody had opened.
+
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
 `✅` markers across projects 01–06, so the constructs are Victor's real code and only the file
