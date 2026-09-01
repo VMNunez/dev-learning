@@ -21,6 +21,7 @@ No login — the app opens straight on the task list.
 ## Screenshots
 
 **Task list with active and completed tasks**
+
 ![App preview](screenshots/preview.png)
 
 ---

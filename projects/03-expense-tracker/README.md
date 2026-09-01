@@ -19,9 +19,11 @@ https://03angularexpensetracker.netlify.app/
 ## Screenshots
 
 **Dashboard — balance, income and expense totals, filter bar and transaction list**
+
 ![Dashboard](screenshots/preview.png)
 
 **Add transaction — typed form with the date pre-filled from the local clock**
+
 ![Add transaction](screenshots/add-transaction.png)
 
 ---
