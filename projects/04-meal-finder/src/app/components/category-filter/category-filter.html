@@ -1,0 +1,8 @@
+@if (categories().length > 0) {
+  <button class="category-btn" (click)="categorySelected.emit('')">All</button>
+}
+@for (category of categories(); track category) {
+  <button class="category-btn" (click)="categorySelected.emit(category)">
+    {{ category }}
+  </button>
+}

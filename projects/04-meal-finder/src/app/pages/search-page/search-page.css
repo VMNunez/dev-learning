@@ -73,51 +73,6 @@
   animation: spin 0.8s linear infinite;
 }
 
-.meal-card {
-  background-color: var(--surface);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px var(--shadow);
-  overflow: hidden;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.meal-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px var(--shadow);
-}
-
-.favourite-btn.active {
-  color: #ffd700;
-}
-
-.meal-img {
-  width: 100%;
-  display: block;
-}
-.card-head {
-  position: relative;
-  padding: 0.75rem;
-}
-.meal-title {
-  font-weight: 600;
-  text-align: center;
-}
-
-.favourite-btn {
-  position: absolute;
-  top: 50%;
-  right: 0.5rem;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #ccc;
-  transition: color 0.2s ease;
-}
 .empty-message {
   grid-column: 1 / -1;
   text-align: center;

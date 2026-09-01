@@ -1,0 +1,13 @@
+<div class="meal-card" [routerLink]="['/detail', meal().idMeal]">
+  <div class="card-head">
+    <p class="meal-title">{{ meal().strMeal }}</p>
+    <button class="favourite-btn" [class.active]="isFavourite()" (click)="onToggle($event)">
+      @if (isFavourite()) {
+        ★
+      } @else {
+        ☆
+      }
+    </button>
+  </div>
+  <img class="meal-img" [src]="meal().strMealThumb" />
+</div>

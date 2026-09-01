@@ -1,25 +1,18 @@
 <div class="container">
   <h1 class="page-title">My Favourites</h1>
 
-  <div class="categories-container">
-    @if (favourites().length > 0) {
-      <button class="category-btn" (click)="onSelectedCategory('')">All</button>
-    }
-    @for (category of allCategories(); track category) {
-      <button class="category-btn" (click)="onSelectedCategory(category)">
-        {{ category }}
-      </button>
-    }
-  </div>
+  <app-category-filter
+    [categories]="allCategories()"
+    (categorySelected)="onSelectedCategory($event)"
+  />
+
   <div class="favourites-container">
     @for (favourite of filteredFavourites(); track favourite.idMeal) {
-      <div class="favourite-card" [routerLink]="['/detail', favourite.idMeal]">
-        <div class="favourite-head">
-          <p class="favourite-title">{{ favourite.strMeal }}</p>
-          <button class="remove-btn" (click)="toggleFavourite(favourite, $event)">&times;</button>
-        </div>
-        <img class="favourite-img" [src]="favourite.strMealThumb" />
-      </div>
+      <app-meal-card
+        [meal]="favourite"
+        [isFavourite]="true"
+        (favouriteToggled)="toggleFavourite($event)"
+      />
     } @empty {
       <p class="empty-message">No favourites found.</p>
     }
