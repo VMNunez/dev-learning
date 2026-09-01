@@ -301,14 +301,31 @@ One paragraph: the single most important thing to remember about this project.
 A table: **README file · Audience · When to write it** (global + backend + frontend). Then, per
 README, its planned sections.
 
+**§19-§21 plan three sections of a README, so their sizes are owned by**
+`notes/prompts/projects/readme/_internal/_readme-standard.md` — its **Global README rules 6, 7 and 8**,
+not the backend rules of the same numbers — the standard those sections are later audited against.
+**State no count here:** a number in this file is a second source that drifts from the first, which is
+exactly what `6–8` against `3 to 8` was until 2026-09-01. The tests themselves are restated below, so a
+plan review never has to open that file; only the sizes are dereferenced.
+
+**A plan written before 2026-09-01 still carries the deleted caps** (`07-timetrack` §19 "6-8 maximum",
+§21 "max 3 bullets"), and `_readme-write-prompt.md` reads `PLANNING.md` on every run — so the dead cap
+reaches the README author through the plan. **Strike that clause from §19-§21 on the next `plan-audit`
+of any project whose plan states one**; it is a deletion, not a rewrite, and needs no new judgement.
+
 ### 19. Architecture decisions to document in the global README
-6–8 one-line decisions. Format: `[what you did] to [why it matters]`.
+One-line decisions. Format: `[what you did] to [why it matters]`. As many as pass the **interview test**
+(the reason already answers "why?" — the same test design check 5 applies to §6 and §20) and are
+**distinct** (no two naming the same choice); no fixed number, and never padded to reach one.
 
 ### 20. Tradeoffs to document in the global README
-3–4 one-line tradeoffs. Format: `[option chosen] over [option rejected] — [reason]`.
+One-line tradeoffs. Format: `[option chosen] over [option rejected] — [reason]`. As many as name a real
+rejected option with something actually given up; design check 5 applies to every reason here. No fixed
+number.
 
 ### 21. Future improvements
-3 maximum. Domain-realistic only — no AI, no microservices.
+Domain-realistic only — no AI, no microservices. Each an improvement a user would notice, never a
+developer learning goal. No fixed number.
 
 ### 22. Git branch strategy
 The branch plan as a table: **Branch · Covers (steps) · Opens · Closes**. Then one line naming the

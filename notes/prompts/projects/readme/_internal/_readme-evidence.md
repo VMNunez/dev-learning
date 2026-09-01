@@ -373,9 +373,10 @@ What recurs across the fetched sources, and what it means for `_readme-standard.
 
 ## Assertions in `_readme-standard.md` this file bears on
 
-**This table describes the standard as it stands after this file's own commit on 2026-09-01, and before
-`REC-191` rewrites any bar.** Line numbers are that commit's and will drift — the quoted bar text is
-what identifies the site. A row's status is what a run must respect; `Unfounded` never means "delete
+**This table describes the standard as it stood on 2026-09-01, before `REC-191` rewrote the six numeric
+bars into inclusion tests** — each of which now cites its row here, so the rows are read as the
+provenance of the test that replaced the number, not as live bars. Line numbers are that commit's and
+will drift — the quoted bar text is what identifies the site. A row's status is what a run must respect; `Unfounded` never means "delete
 it" — it means the rule stands on its author's authority and a ruling is owed. The three labels are the
 sibling file's: **founded** (a quoted source states it), **reasoned** (carried across by analogy from a
 source that measures something adjacent, and marked as such at the site), **unfounded** (no source

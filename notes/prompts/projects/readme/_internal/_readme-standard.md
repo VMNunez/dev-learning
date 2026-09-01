@@ -46,7 +46,10 @@ Derive the type from the project number (01–06 Angular-only, 07+ full-stack); 
 ## Universal rules — apply to every README
 
 **Read PLANNING.md first.** Extract the app concept, learning objectives, and key patterns. The README
-must reflect what was actually built and learned — not what sounded good to write.
+must reflect what was actually built and learned — not what sounded good to write. **A section size
+stated in a PLANNING.md is not a bar.** Plans written before 2026-09-01 restate caps this file has since
+replaced with inclusion tests (`07-timetrack` §19 "6-8 maximum", §21 "max 3 bullets"); the sizes below
+are this file's, and a count read out of a plan is ignored — never applied, never flagged as a conflict.
 
 **In-progress marker scan.** Before checking sections, scan the README for: "coming soon", "to be
 added", "in progress", "Step X — coming soon", "Updated as each step is completed", and inline progress
@@ -134,17 +137,46 @@ run.** Move any out-of-order section to its correct position.
      empty list or a validation error on the same view is a state, and a single-screen app is legitimately
      done with one screenshot. Never add a placeholder for a state of a screen already shown; if the
      README carries none for it, that is the correct count, not a gap to fill.
-5. **Features** — 5–6 bullets from the user's perspective, no technical terms.
-   - Good: "Protected routes redirect unauthenticated users to the login page."
-6. **Architecture decisions** — 3 to 8, one line each, format `[what you chose] to [why it matters]`.
-   Each must pass the interview test (an interviewer asks "why?" and the line already answers). Never pad.
+5. **Features** — optimal count for the project (no fixed number), from the user's perspective, no
+   technical terms.
+   - **A behaviour, not a capability.** One bullet per behaviour a user can see happen. A bullet naming
+     a library, a layer or an internal quality ("clean architecture", "uses Angular Material") names no
+     behaviour and fails; two bullets describing the same behaviour at different granularity are one.
+     A project with four user-visible behaviours is legitimately done with four bullets. A quality the
+     user *experiences across every screen* — responsive layout, offline persistence — is a behaviour
+     and passes as one bullet; it is the internal ones that fail.
+   - Good: "Protected routes redirect unauthenticated users to the login page." · Good: "Responsive —
+     works on mobile and desktop." · Bad: "Built with standalone components."
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Features — `5–6` bullets" — number unfounded, the
+     user-perspective rule founded in kind.)*
+6. **Architecture decisions** — optimal count for the project (no fixed number), one line each, format
+   `[what you chose] to [why it matters]`. Two tests, and a line failing either is cut or merged:
+   - **The interview test** — an interviewer asks "why?" and the line already answers. A line stating
+     only what was chosen fails.
+   - **The distinctness test** — no two decisions name the same choice. Two lines about one choice are
+     merged into the stronger one, never both kept.
+   - Never pad, and never cut a line that passes both tests to reach a number.
    - Good: "Coordinator pattern to centralise page state and keep the table and filters independently reusable."
-7. **Tradeoffs** — 3 to 4 bullets, format `[X] over [Y] — [reason]`. The reason is a real decision, not
-   a default ("because it is simpler" is not a reason — say what you gave up and why it made sense).
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Architecture decisions — `3 to 8`" — number
+     unfounded, the section founded.)*
+7. **Tradeoffs** — optimal count for the project (no fixed number), format `[X] over [Y] — [reason]`.
+   - **Something must actually have been given up.** `Y` is a real alternative that was available in
+     this project, and the reason says what choosing `X` cost — "because it is simpler" is not a reason.
+     A bullet with no `Y`, or whose `Y` was never an option here, is not a tradeoff: rewrite it, or move
+     it to Architecture decisions where it belongs.
    - Good: "Functional guards over class-based guards — Angular v15+ convention, less boilerplate."
-8. **Future improvements** — 3 max, realistic for the domain (no AI, microservices, blockchain). Each a
-   feature that makes the app more production-ready (pagination, email notifications, file export), not
-   a developer learning goal.
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Tradeoffs — `3 to 4` bullets" — unfounded, and the
+     section itself is this repository's deliberate choice for an interview reader.)*
+8. **Future improvements** — optimal count for the project (no fixed number), realistic for the domain
+   (no AI, microservices, blockchain).
+   - **A user would notice it.** Each item is a feature that makes the app more production-ready
+     (pagination, email notifications, file export), never a developer learning goal ("learn RxJS
+     operators", "refactor to standalone components") — which is cut whether the list has two items or six.
+   - **A reader of *this* README would miss it.** The improvement's absence is something the app as
+     described visibly lacks. An item that would be a fine idea for any app of any kind is not specific
+     to this one and is cut — this is the clause that bounds an otherwise unbounded list of good ideas.
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Future improvements — `3 max`" — number unfounded,
+     the section founded.)*
 9. **What I learned** — one bullet per concept, format `` `ConceptName` — one-line reminder ``. A recall
    list, not a tutorial (full explanations live in `notes/`). Cross-check against PLANNING.md's learning
    objectives; add any that are missing.
@@ -191,16 +223,25 @@ structure → Backend and frontend details.**
 3. **Auth flow** — numbered steps of the full request lifecycle: login → BCrypt check → JWT generated →
    client sends token → JwtFilter validates → SecurityContextHolder → endpoint executes. One sentence
    per step, prose only, no code blocks.
-4. **Security considerations** — ≥4 bullets covering every measure actually in the code: password
-   hashing, secret management (no committed credentials), authorization enforcement, input validation +
-   error handling. Only list what is really there.
+4. **Security considerations** — one bullet per measure **actually in the code**, optimal count for the
+   project (no fixed number). Where to look: password hashing, secret management (no committed
+   credentials), authorization enforcement, input validation + error handling.
+   - **The test runs in both directions.** Nothing that is in the code is missing from the list, and
+     nothing in the list is absent from the code — a bullet that cannot be pointed at a file fails. A
+     project with three real measures is legitimately done with three bullets.
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Backend Security considerations — `≥4` bullets" —
+     unfounded, and a floor is precisely what forces padding.)*
 5. **Folder structure** — annotated tree of every package (controller / service / repository / model /
    dto request+response / exception / security), **fenced**, one-line comment per folder.
 6. **Key patterns** — one entry per pattern, format `[Pattern] — [why used, not just what]`. Must
    include: layered architecture, DTO boundary, GlobalExceptionHandler. Code snippets encouraged (the
    audience is a technical interviewer).
-7. **Tradeoffs** — format `[X] over [Y] — [reason]`, the 3 most important for this project; each
-   answerable in an interview ("because it is simpler" is not a reason).
+7. **Tradeoffs** — format `[X] over [Y] — [reason]`, the ones that are genuinely important for this
+   project (no fixed number). Same test as global rule 7: `Y` is a real alternative that was available
+   here and the reason says what was given up, each answerable in an interview ("because it is simpler"
+   is not a reason).
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Backend Tradeoffs — the 3 most important" —
+     unfounded.)*
 8. **How to run alone** — without Docker: Java version, how to set `DB_PASSWORD` (IntelliJ path), the DB
    name to create in pgAdmin, how to start, the base URL. Include seed credentials if `data.sql` seeds
    a first account.
