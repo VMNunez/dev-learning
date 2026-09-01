@@ -204,6 +204,15 @@ open.
   and `@PreAuthorize("hasRole('EMPLOYEE')")` answered 403 before the code under test ever ran —
   *"debes indicarme con quien hago login"*. A test whose actor is wrong proves nothing and costs a
   round trip.
+- **Tests go out one per message — a numbered list of them is this rule failing, not satisfying it.**
+  Never enumerate the whole battery up front and never compress it into two telegraphic lines: send
+  test 1 alone, complete (the literal action — which screen, where to click, what to type — the
+  expected result stated before he runs it, and the rule it proves), and do not so much as mention
+  test 2 until Victor has pasted the result of test 1. Stated 2026-09-01 on the shared-nav task of
+  project 04, where five tests arrived as one numbered list — *"dime las pruebas de una en una,
+  estas fallando a la hora de ponerme las pruebas, te las tengo que pedir siempre de nuevo para que
+  me las expliques bien"*. Correct content in list form is still the defect: the list is what makes
+  him ask again.
 - **Every technical explanation carries two layers, in this order, at every help level.** The simple
   layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
   the other: without the first Victor cannot see the problem, without the second he cannot write the
