@@ -37,7 +37,9 @@ https://03angularexpensetracker.netlify.app/
 
 ## Architecture decisions
 
-- Smart/dumb component pattern — the form component only emits data, the page handles saving and updating the list
+- Smart/dumb component pattern — both pages are containers that own the state, and every child only receives `input()` and emits `output()`
+- Dashboard split into `summary-card`, `filter-bar` and `transaction-list` — the page keeps the service and the `computed()` totals, the children never inject anything
+- Component styles moved with the markup they style — each child owns its rules and uses `:host` for the layout the parent's `<div>` used to provide
 - Reactive forms over template-driven — `markAllAsTouched()` on submit requires TypeScript control over the form
 - `computed()` for filtering to recalculate automatically when the signal changes, without a manual trigger
 - Persistence declared once with `effect()` — the service constructor writes the signal to localStorage whenever it changes, so no mutator has to remember to save
@@ -73,7 +75,9 @@ https://03angularexpensetracker.netlify.app/
 - `computed()` with filters — derived state that reacts to signals
 - `effect()` — synchronise a signal with an external system (localStorage) instead of repeating the write in every mutator
 - `Omit<T, K>` — TypeScript utility type to remove fields from an existing type
-- Smart/dumb component pattern — page handles logic, form only emits
+- Smart/dumb component pattern — containers own the state, children take `input()` and emit `output()`
+- `:host` — style a component's own element when it replaces a styled `<div>` in the parent
+- View encapsulation — a parent's CSS cannot reach markup that moved into a child component
 - `position: absolute` and `position: relative` — element positioning
 - `@media (min-width)` — responsive design, mobile first
 
