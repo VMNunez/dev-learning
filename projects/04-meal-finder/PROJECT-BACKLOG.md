@@ -3,7 +3,7 @@
 **Last Reviewed — backend:** n/a — Angular-only
 **Last Reviewed — frontend:** 2026-07-14
 
-**Overall quality:** Good — the signal/`computed()`/`takeUntilDestroyed` work is solid and every async page has loading and error states, but the app quietly diverges from its own PLANNING.md (no `FavouriteService`, no `effect()` in the detail page, no shared nav, no dumb components) and one normal search path can crash the results list.
+**Overall quality:** Good — the signal/`computed()`/`takeUntilDestroyed` work is solid and every async page has loading and error states, but the app quietly diverges from its own PLANNING.md (no `FavouriteService`, no `effect()` in the detail page, no shared nav, no dumb components).
 
 ---
 
@@ -11,7 +11,6 @@
 
 ### High
 
-- [ ] **[High]** `[frontend]` — Fix the no-results crash: `MealResponse.meals` is typed `Meal[]`, but MealDB returns `{"meals": null}` when nothing matches, and `search-page.ts:35` sets that `null` straight into `meals = signal<Meal[]>([])`, so `@for (meal of meals())` iterates `null`. Trigger: search for `zzzz`. Type the field `meals: Meal[] | null` and coalesce to `[]` in the subscriber so the `@empty` block renders instead. *(Effort: Small)*
 - [ ] **[High]** `[frontend]` — Rebuild the detail page on the planned `effect()` pattern: `meal-detail-page.ts:27-30` uses `ngOnInit` + `activatedRoute.snapshot.paramMap.get('id')`, a one-shot read. PLANNING ("State management", Step 6) specifies an `effect()` driven by the route param — the project's headline learning objective. Angular reuses the component instance when only `:id` changes, so a navigation between two detail URLs leaves the previous meal on screen. Convert the param to a signal (`toSignal(activatedRoute.paramMap)`) and load inside an `effect()`. *(Effort: Medium)*
 - [ ] **[High]** `[frontend]` — Extract a `FavouriteService` (signal + `effect()` localStorage sync + `addFavourite`/`deleteFavourite`) out of `MealService`, leaving `MealService` with only `searchMeals`/`getMealById`. PLANNING lists the two services separately; today one service owns both HTTP and persistence, which breaks single responsibility — the first thing an interviewer probes when they see it. *(Effort: Medium)*
 
@@ -40,6 +39,28 @@
 - [ ] **[Low]** `[frontend]` — Convert the three routes to `loadComponent()` lazy loading in `app.routes.ts`; the app is small, but reviewers look for the pattern. *(Effort: Small)*
 
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/04-meal-finder`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+
+---
+
+## Closed
+
+### Frontend
+
+#### High
+
+- 2026-09-01 · **[High]** `[frontend]` — `MealResponse.meals` typed `Meal[] | null`, normalised at both subscribers → README, coverage typescript/junior
+
+#### Medium
+
+*No medium tasks closed yet.*
+
+#### Low
+
+*No low tasks closed yet.*
+
+### Backend
+
+*No backend tasks — Angular-only project.*
 
 ---
 
