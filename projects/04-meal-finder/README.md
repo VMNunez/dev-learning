@@ -46,6 +46,7 @@ https://04mealfinder.netlify.app/
 - The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
 - The nav lives in the root component around `<router-outlet />` — the router destroys each routed page, so chrome that must survive navigation belongs outside the outlet, and its favourites badge is a `computed()` over the `FavouriteService` signal rather than a copy per page
 - `meal-card` and `category-filter` are presentational — they inject no service and receive their data through `input.required()`, so the same card serves the search page as a favourite toggle and the favourites page as a remove control
+- Transport failures are translated once in `MealService` — every call maps the response to a domain type and `catchError` rethrows a single domain `Error`, so a page reacts to one failure shape instead of reinventing logging and normalisation per subscriber
 - `hasSearched`, `loadFinished` and `hasError` signals to express four distinct states — TheMealDB answers an unknown id with `200 {"meals": null}`, so a missing recipe and a failed request are different outcomes and a single results array can express neither
 
 ---
@@ -75,7 +76,7 @@ https://04mealfinder.netlify.app/
 - Routed view state in the URL — the search term travels as `?q=`, written with `router.navigate()` and read back with `toSignal(queryParamMap)`, so results survive navigation and `/` is linkable
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `asReadonly()` — keep the writable signal private in the service so its methods are the only writers
-- Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised where it enters the app
+- Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised once in `MealService`, which is where it enters the app; the pages receive `Meal[]` and `Meal | null` and never see the envelope
 - Container / presentational split — a child that renders `input()` data and emits `output()` events owns no domain state, which is what lets two different parents reuse it
 - `:host` — extracting a component adds a wrapper element that is `display: inline` by default, so layout the parent used to provide moves into the child's stylesheet
 - Navigating elements are links — the card root is an `<a [routerLink]>`, not a `<div>` with a click handler, so keyboard focus, Enter, the `link` role and open-in-new-tab come from the tag
