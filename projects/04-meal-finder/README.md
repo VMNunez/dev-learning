@@ -74,6 +74,7 @@ https://04mealfinder.netlify.app/
 - `computed()` — derive filtering, counts and unique categories from signals
 - `RouterOutlet` and the application shell — the router destroys and recreates the routed component on every navigation, so persistent chrome goes in the root component
 - Routed view state in the URL — the search term travels as `?q=`, written with `router.navigate()` and read back with `toSignal(queryParamMap)`, so results survive navigation and `/` is linkable
+- Narrowing beats asserting — the route id is `string | null`, so the effect reads it into a local and returns early on `!id`; an `as string` would have removed the null from the type without removing it from the value
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `asReadonly()` — keep the writable signal private in the service so its methods are the only writers
 - Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised once in `MealService`, which is where it enters the app; the pages receive `Meal[]` and `Meal | null` and never see the envelope
