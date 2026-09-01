@@ -63,6 +63,7 @@ app/
 - `effect()` to sync favourites to localStorage
 - `effect()` in detail page to trigger API call when route param changes
 - `localStorage + effect()` pattern — init signal from localStorage on service creation
+- `asReadonly()` on the favourites signal — `FavouriteService` keeps the writable handle private so its own methods are the only writers
 
 ---
 
