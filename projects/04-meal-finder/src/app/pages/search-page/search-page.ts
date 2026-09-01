@@ -73,7 +73,7 @@ export class SearchPage {
   }
 
   isFavourite(id: string) {
-    return this.favouriteService.favourites().some((meal) => meal.idMeal === id);
+    return this.favouriteService.favouriteIds().has(id);
   }
 
   toggleFavourite(meal: Meal) {

@@ -27,8 +27,7 @@ export class MealDetailPage {
   isLoading = signal<boolean>(false);
   hasLoad = signal<boolean>(false);
 
-  favouriteMeals = this.favouriteService.favourites;
-  isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId()));
+  isFavourite = computed(() => this.favouriteService.favouriteIds().has(this.mealId() ?? ''));
   favouriteLabel = computed(() => {
     const name = this.mealDetails()?.strMeal ?? 'this meal';
     return this.isFavourite() ? `Remove ${name} from favourites` : `Add ${name} to favourites`;

@@ -1,4 +1,4 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 import type { Meal } from '../models/meal.model';
 
 @Injectable({
@@ -10,6 +10,8 @@ export class FavouriteService {
   );
 
   readonly favourites = this._favourites.asReadonly();
+
+  readonly favouriteIds = computed(() => new Set(this.favourites().map((meal) => meal.idMeal)));
 
   constructor() {
     effect(() => {

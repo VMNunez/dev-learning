@@ -15,18 +15,10 @@ export class FavouritesPage {
   selectedCategory = signal<string>('');
   favourites = this.favouriteService.favourites;
 
-  isFavourite(id: string) {
-    return this.favourites().some((favourite) => favourite.idMeal === id);
-  }
-
   toggleFavourite(favourite: Meal) {
-    if (this.isFavourite(favourite.idMeal)) {
-      this.favouriteService.deleteFavourite(favourite.idMeal);
-      if (this.filteredFavourites().length === 0) {
-        this.selectedCategory.set('');
-      }
-    } else {
-      this.favouriteService.addFavourite(favourite);
+    this.favouriteService.deleteFavourite(favourite.idMeal);
+    if (this.filteredFavourites().length === 0) {
+      this.selectedCategory.set('');
     }
   }
 
