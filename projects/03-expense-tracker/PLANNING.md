@@ -77,6 +77,7 @@ app/
 | `localStorage + effect()` | Persist and restore data automatically |
 | `computed()` with filters | Filtered transaction list |
 | `Omit<T, K>` | Remove `id` from the Transaction type for the form |
+| Local-clock date formatting | Default value of the form's date field, instead of the UTC day |
 | Smart/dumb pattern | First time applied explicitly by name |
 | `@media (min-width)` | Mobile-first responsive layout |
 | `position: absolute` + `relative` | Overlay elements |
