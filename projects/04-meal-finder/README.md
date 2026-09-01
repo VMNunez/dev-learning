@@ -39,6 +39,7 @@ https://04mealfinder.netlify.app/
 
 - `effect()` + localStorage for favourites — automatic sync with no manual save calls anywhere in the app
 - `computed()` for all filtering — memoized and recalculates only when the source signal changes
+- `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
 - `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
 - `hasSearched` and `hasLoad` signals to express three distinct states — a single results array cannot distinguish between loading, no results and not searched yet
 
@@ -61,8 +62,9 @@ https://04mealfinder.netlify.app/
 
 ## What I learned
 
-- Route parameters — `path: 'detail/:id'` and `ActivatedRoute` to read the URL segment
+- Route parameters — `path: 'detail/:id'` and `ActivatedRoute.paramMap` as a stream, not a `snapshot`, so a change of `:id` reloads the page
 - `effect()` — run side effects automatically when a signal changes
+- `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect runs again for a new route id
 - `computed()` — derive filtering, counts and unique categories from signals
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `takeUntilDestroyed` + `DestroyRef` — cancel HTTP subscriptions when a component is destroyed
