@@ -11,7 +11,7 @@
 
 ### High
 
-- [ ] **[High]** `[frontend]` — Extract a `FavouriteService` (signal + `effect()` localStorage sync + `addFavourite`/`deleteFavourite`) out of `MealService`, leaving `MealService` with only `searchMeals`/`getMealById`. PLANNING lists the two services separately; today one service owns both HTTP and persistence, which breaks single responsibility — the first thing an interviewer probes when they see it. *(Effort: Medium)*
+*No open High tasks.*
 
 ### Medium
 
@@ -47,6 +47,7 @@
 
 #### High
 
+- 2026-09-01 · **[High]** `[frontend]` — `FavouriteService` split out of `MealService`, favourites signal exposed `asReadonly()` → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[High]** `[frontend]` — detail page driven by `toSignal(paramMap)` + `effect()` with cleanup → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[High]** `[frontend]` — `MealResponse.meals` typed `Meal[] | null`, normalised at both subscribers → README, coverage typescript/junior
 
@@ -74,8 +75,8 @@ Scored against the "Key patterns introduced" table in `PLANNING.md`.
 |---|---|---|
 | Route parameters (`path: 'detail/:id'`) | ✅ | `app.routes.ts:12` |
 | `toSignal(ActivatedRoute.paramMap)` | ✅ | `meal-detail-page.ts:24-26` |
-| `effect()` | ✅ | The localStorage sync (`meal.service.ts:14`) and the planned route-param effect driving the detail-page API call, with an `onCleanup` cancelling the in-flight request |
-| `localStorage + effect()` | ✅ | `meal.service.ts:11,14-16` |
+| `effect()` | ✅ | The localStorage sync (`favourite.service.ts:14`) and the planned route-param effect driving the detail-page API call, with an `onCleanup` cancelling the in-flight request |
+| `localStorage + effect()` | ✅ | `favourite.service.ts:8,15-19` |
 | `Array.some()` | ✅ | `search-page.ts:49`, `favourites-page.ts:18`, `meal-detail-page.ts:24` |
 | `[...new Set()]` | ✅ | `favourites-page.ts:34` |
 | Optional chaining `?.` | ✅ | `meal-detail-page.html:27` |
