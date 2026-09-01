@@ -1544,7 +1544,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Position
 - `static` vs `relative` positioning — keep an element in normal flow and use relative offsets without removing its original layout space
-- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it
+- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it ✅ 04-meal-finder — the visually hidden search label sits inside the flex `.search-container` without taking a slot in the row
 - `fixed` vs `sticky` positioning — distinguish a box normally anchored to the viewport from one that remains in flow until it reaches an inset within its scroll container
 - Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
