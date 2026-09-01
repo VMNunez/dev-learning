@@ -61,6 +61,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation ✅ 01-todo-list
 - `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state ✅ 04-meal-finder
 - `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system ✅ 04-meal-finder
+- `effect()` cleanup function — register cleanup inside an effect so work started by the previous run is cancelled before it re-executes or the injection context is destroyed ✅ 04-meal-finder — the detail-page effect unsubscribes the in-flight `getMealById` through `onCleanup` before reloading for a new route id
 - Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
@@ -80,7 +81,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
 - `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
 - `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request ✅ 02-weather-app
-- `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects
+- `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects ✅ 04-meal-finder — `paramMap.pipe(map(params => params.get("id")))` narrows the router stream to the id before it becomes a signal
 - `switchMap()` — cancel a stale inner request when a newer search term or route value arrives
 - `switchMap()` vs `mergeMap()` — cancel replaceable work with `switchMap()` and preserve deliberate concurrent inner work with `mergeMap()` instead of choosing by habit
 - `concatMap()` vs `exhaustMap()` — queue ordered inner work with `concatMap()` and ignore new triggers with `exhaustMap()` while current work is active, especially for writes and form submissions
@@ -91,7 +92,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
 - Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete ✅ 02-weather-app
-- `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects
+- `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects ✅ 04-meal-finder — the detail page turns `ActivatedRoute.paramMap` into a `mealId` signal read by both an `effect()` and a `computed()`
 
 ### Routing and cross-cutting HTTP behaviour
 
