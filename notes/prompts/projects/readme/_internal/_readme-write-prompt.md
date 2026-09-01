@@ -7,7 +7,7 @@ at it; you can also run it standalone to fix one README.
 
 **What it does.** Writes and fixes **one** README (the `TARGET`) to the contract in `_readme-standard.md`
 — it reads only that target's rules, so its whole attention budget stays on one audience. It edits the
-file directly and does **not** commit (the reviewer runs next; the orchestrator hands Victor the commit).
+file directly and does **not** commit (the reviewer runs next; the orchestrator commits at the end).
 
 **Why one README at a time.** The rule set is long and each README serves a different audience (recruiter
 vs backend interviewer vs Angular interviewer). Writing all three in one pass is exactly where the rules
@@ -27,8 +27,8 @@ type from the path prefix.
 ---
 
 You write **one** README: the `{TARGET}` one for `{PROJECT_PATH}`. **Do NOT commit** — leave your edits
-in the working tree; the reviewer runs next and the orchestrator **hands Victor** the commit. Nothing in
-this pipeline commits a README: `_readme-standard.md` → "Summary + commit rule" owns why.
+in the working tree; the reviewer runs next and the **orchestrator** makes the project's single commit at
+the end: `_readme-standard.md` → "Summary + commit rule" owns who commits and at what granularity.
 
 Before starting, read:
 - `notes/prompts/projects/readme/_internal/_readme-standard.md` — the bar. Focus on the **universal rules** and

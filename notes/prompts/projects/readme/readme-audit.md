@@ -166,7 +166,7 @@ git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of ma
 
 ## Pipeline self-report (orchestrator, last)
 
-After the commit hand-over, write a short **Pipeline self-report** to
+After the commit, write a short **Pipeline self-report** to
 `notes/prompts/projects/readme/_internal/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
 observations about the run itself, not the READMEs. This is the evidence a later session uses to decide
 whether these prompts need changing, so be honest, including "nothing to report":

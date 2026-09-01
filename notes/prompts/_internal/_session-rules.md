@@ -986,6 +986,25 @@ machinery and let it decide the result: the maps are derived, never override a p
 and do not license widening the task into `/system-check` or a whole-system audit. The ordinary
 `map-sync` read and change triggers still apply to everything opened or edited.
 
+**A launcher points at a commit or gate rule; it never restates one.** A launcher in
+`.claude/commands/` + `.codex/commands/` may say what the prompt is, what its arguments are, that the
+prompt's own instructions are authoritative, and what the *executor* may not do while running it — it may
+**not** state who runs a commit, whether a flow auto-commits, what a flow commits, or what a verdict
+gates. **One test decides it: could the prompt reverse this sentence tomorrow without touching the
+launcher?** If yes, the launcher must point, never restate. Both `/readme-audit` launchers carried "it
+hands Victor the commit at the end, **per its own rule**" for three days after the prompt reversed to
+auto-committing (2026-08-29), and the attribution was the harm, not the staleness: a launcher that
+*cites* the prompt gives the executor a reason never to open it. Launchers are not mirrors (see the
+skills rule above), so every such clause is two separate sites. Write the pointer instead: name the
+prompt's file **and the section inside it**, then stop.
+
+What the test lets stand, as examples and not as an exemption list: a rule these session rules own rather
+than a prompt (`sql-exercises` — the `.sql` answers are Victor's and are never staged; `cv`, `tracker`,
+`profile-readme` — the output lives outside this repo), and a rail on the executor's own conduct inside
+the launcher (`coverage-verify`, `system-check` — do not chain another workflow, do not publish a partial
+verdict). Naming that a pipeline *has* a commit step is description; naming **who runs** it is a
+restatement.
+
 **A skill is named bare; only a launcher takes a slash.** A `/name` written in any repo file is either a
 launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's own built-ins
 (`/code-review`, `/model`). The nineteen in-session skills have neither, so they are written

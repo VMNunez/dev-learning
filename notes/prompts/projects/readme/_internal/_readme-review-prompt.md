@@ -1,7 +1,7 @@
 # README review prompt — second-pass auditor for ONE README
 
 This is the **reviewer half** of the readme pipeline: the write prompt authors/fixes one README, then
-this prompt audits and fixes it before the orchestrator hands Victor the commit. A cold reviewer with no
+this prompt audits and fixes it before the orchestrator commits the project's READMEs. A cold reviewer with no
 stake in the draft catches what the author, close to their own text, misses — a section that reads fine
 to the writer but fails the recruiter or interviewer lens.
 
@@ -63,7 +63,7 @@ Where a check fails, **fix it directly** in the README. Preserve the author's co
 what misses the bar. If the README is genuinely already at bar, change nothing and record it as PASS.
 
 ## Finish — no commit
-Do **not** commit (the orchestrator hands Victor the command). Leave your fixes in the working tree.
+Do **not** commit — the orchestrator makes the project's single commit at the end (`_readme-standard.md` → "Summary + commit rule"). Leave your fixes in the working tree.
 Report, in **at most 20 lines**:
 - A **section trace** — one line per required section of this target, `[Section] — OK | FIXED: <what>`.
   This is your proof of a full pass: a report without the trace means the audit did not cover every

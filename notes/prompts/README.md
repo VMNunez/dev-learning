@@ -72,6 +72,9 @@ since two later paragraphs cite invariants 8 and 9 by number. The bare words `Ba
 prose, and a check that cries wolf gets disabled.
 
 Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
+**A launcher's `Rules` may point at a prompt's commit or gate rule and may never restate one** — the test
+and its worked exemptions are in `_internal/_session-rules.md` → "A launcher points at a commit or gate
+rule"; the validator does not check this, so it is caught by reading.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
 editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
 checks nine invariants nothing else can see: that both catalogues advertise the **same** arguments for a
