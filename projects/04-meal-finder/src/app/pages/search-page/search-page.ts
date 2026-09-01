@@ -1,8 +1,9 @@
-import { Component, inject, signal, DestroyRef } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
-import { RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 import { FavouriteService } from '../../services/favourite.service';
 
 @Component({
@@ -13,24 +14,36 @@ import { FavouriteService } from '../../services/favourite.service';
 })
 export class SearchPage {
   private mealService = inject(MealService);
-  private destroyRef = inject(DestroyRef);
   private favouriteService = inject(FavouriteService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+
   meals = signal<Meal[]>([]);
   hasSearched = signal<boolean>(false);
   searchTerm = signal<string>('');
   hasError = signal<boolean>(false);
   isLoading = signal<boolean>(false);
 
-  onSearchMeals(meal: string) {
-    const term = meal.trim();
-    if (!term) return;
+  private queryTerm = toSignal(
+    this.activatedRoute.queryParamMap.pipe(map((params) => params.get('q') ?? '')),
+    { initialValue: '' },
+  );
 
-    this.isLoading.set(true);
-    this.hasError.set(false);
-    this.mealService
-      .searchMeals(term)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
+  constructor() {
+    effect((onCleanup) => {
+      const term = this.queryTerm().trim();
+      this.searchTerm.set(term);
+
+      if (!term) {
+        this.meals.set([]);
+        this.hasSearched.set(false);
+        return;
+      }
+
+      this.isLoading.set(true);
+      this.hasError.set(false);
+
+      const subscription = this.mealService.searchMeals(term).subscribe({
         next: (mealResponse: MealResponse) => {
           this.meals.set(mealResponse.meals ?? []);
           this.hasSearched.set(true);
@@ -43,6 +56,19 @@ export class SearchPage {
           this.isLoading.set(false);
         },
       });
+
+      onCleanup(() => subscription.unsubscribe());
+    });
+  }
+
+  onSearchMeals(meal: string) {
+    const term = meal.trim();
+    if (!term) return;
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { q: term },
+    });
   }
 
   isFavourite(id: string) {
