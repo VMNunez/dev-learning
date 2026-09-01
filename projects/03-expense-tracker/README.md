@@ -40,6 +40,7 @@ https://03angularexpensetracker.netlify.app/
 - Smart/dumb component pattern — the form component only emits data, the page handles saving and updating the list
 - Reactive forms over template-driven — `markAllAsTouched()` on submit requires TypeScript control over the form
 - `computed()` for filtering to recalculate automatically when the signal changes, without a manual trigger
+- Persistence declared once with `effect()` — the service constructor writes the signal to localStorage whenever it changes, so no mutator has to remember to save
 - localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
 
 ---
@@ -69,6 +70,7 @@ https://03angularexpensetracker.netlify.app/
 - `routerLink` and `RouterOutlet` — navigation between pages
 - `Router` service — programmatic navigation with `router.navigate()`
 - `computed()` with filters — derived state that reacts to signals
+- `effect()` — synchronise a signal with an external system (localStorage) instead of repeating the write in every mutator
 - `Omit<T, K>` — TypeScript utility type to remove fields from an existing type
 - Smart/dumb component pattern — page handles logic, form only emits
 - `position: absolute` and `position: relative` — element positioning
