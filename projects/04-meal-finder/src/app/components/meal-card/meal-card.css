@@ -40,7 +40,7 @@
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #ccc;
+  color: var(--favourite-inactive);
   transition: color 0.2s ease;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .favourite-btn.active {
-  color: #ffd700;
+  color: var(--favourite);
 }
 
 .meal-img {

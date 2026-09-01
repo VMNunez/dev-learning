@@ -20,12 +20,12 @@
 
 .category-btn:hover {
   background-color: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .category-btn.active {
   background-color: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   font-weight: 600;
 }
 
