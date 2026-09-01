@@ -23,7 +23,6 @@
 - [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add `[alt]="meal().strMeal"` to the meal image (`meal-card.html:12`) — it currently has no `alt` at all. *(Effort: Small)*
 
-- [ ] **[Low]** `[frontend]` — Give the category filter an active affordance: the buttons in `category-filter.html` never reflect the selected category — the component receives no `selected` input at all — and `category-filter.css` styles only `:hover`, so once a filter is applied nothing on screen says which one — the grid shrinks with no visible cause. Bind `[class.active]` (and `aria-pressed`) from the selected category, "All" included. *(Effort: Small)* *(raised 2026-09-01 while closing the URL-state task)*
 - [ ] **[Low]** `[frontend]` — Give the nav an active-route affordance: `app.html:2-3` uses plain `routerLink`, so on `/favourites` nothing marks the current page and `app.css:29` styles only `:hover`. Add `routerLinkActive` plus `ariaCurrentWhenActive`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Restore a heading on the search page: the old `<h1>Meal Finder</h1>` went with the page header, and the brand in the nav is an `<a>`, not a heading, so `/` now renders with zero `h1` while `/favourites` still has one (`favourites-page.html:2`). *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Fix or delete the scaffold spec: `app.spec.ts:21` still asserts an `h1` containing `Hello, 04-meal-finder`, a signal the root component no longer has. It was already failing before the nav work (the root template never had that heading), and it is the last file referencing the deleted `title`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
@@ -59,6 +58,7 @@
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — category filter states the selected category with `[class.active]` + `aria-pressed` → README, PLANNING, `_cross-topic-inbox.md` (html)
 - 2026-09-01 · **[Low]** `[frontend]` — all four routes lazy-loaded with `loadComponent()`, initial bundle 253 → 238 kB → README, PLANNING; coverage already marked 06-hr-portal
 - 2026-09-01 · **[Low]** `[frontend]` — `**` wildcard route renders a not-found page instead of a blank outlet → README, PLANNING; coverage already marked 06-hr-portal
 - 2026-09-01 · **[Low]** `[frontend]` — nullable route id narrowed by an early return instead of `as string` — DECISION, no code change → fixed by `73a4129b`; README, coverage typescript/junior
