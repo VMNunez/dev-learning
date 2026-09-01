@@ -1,6 +1,6 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { MealService } from '../../services/meal.service';
-import type { Meal, MealResponse } from '../../models/meal.model';
+import type { Meal } from '../../models/meal.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
@@ -45,13 +45,12 @@ export class SearchPage {
       this.hasError.set(false);
 
       const subscription = this.mealService.searchMeals(term).subscribe({
-        next: (mealResponse: MealResponse) => {
-          this.meals.set(mealResponse.meals ?? []);
+        next: (meals: Meal[]) => {
+          this.meals.set(meals);
           this.hasSearched.set(true);
           this.isLoading.set(false);
         },
-        error: (error) => {
-          console.error(error);
+        error: () => {
           this.hasError.set(true);
           this.hasSearched.set(true);
           this.isLoading.set(false);

@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, effect } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MealService } from '../../services/meal.service';
-import type { Meal, MealResponse } from '../../models/meal.model';
+import type { Meal } from '../../models/meal.model';
 import { Location } from '@angular/common';
 import { map } from 'rxjs';
 import { FavouriteService } from '../../services/favourite.service';
@@ -44,13 +44,12 @@ export class MealDetailPage {
       this.hasError.set(false);
 
       const subscription = this.mealService.getMealById(id).subscribe({
-        next: (mealResponse: MealResponse) => {
-          this.mealDetails.set(mealResponse.meals?.[0] ?? null);
+        next: (meal: Meal | null) => {
+          this.mealDetails.set(meal);
           this.isLoading.set(false);
           this.loadFinished.set(true);
         },
-        error: (err) => {
-          console.error(err);
+        error: () => {
           this.mealDetails.set(null);
           this.hasError.set(true);
           this.isLoading.set(false);
