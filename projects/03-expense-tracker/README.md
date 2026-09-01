@@ -40,6 +40,7 @@ https://03angularexpensetracker.netlify.app/
 - Smart/dumb component pattern — the form component only emits data, the page handles saving and updating the list
 - Reactive forms over template-driven — `markAllAsTouched()` on submit requires TypeScript control over the form
 - `computed()` for filtering to recalculate automatically when the signal changes, without a manual trigger
+- localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
 
 ---
 
