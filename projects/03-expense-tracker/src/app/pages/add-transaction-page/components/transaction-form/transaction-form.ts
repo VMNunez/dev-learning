@@ -13,7 +13,7 @@ export class TransactionForm {
     description: new FormControl<string | null>('', Validators.required),
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
     type: new FormControl<string | null>('', Validators.required),
-    date: new FormControl<string>(new Date().toISOString().split('T')[0], Validators.required),
+    date: new FormControl<string>(this.today(), Validators.required),
   });
 
   transactionSubmit = output<NewTransaction>();
@@ -23,7 +23,7 @@ export class TransactionForm {
 
     if (this.transactionForm.valid) {
       this.transactionSubmit.emit(this.transactionForm.value as NewTransaction);
-      this.transactionForm.reset({ date: new Date().toISOString().split('T')[0] });
+      this.transactionForm.reset({ date: this.today() });
     }
   }
 
@@ -38,5 +38,13 @@ export class TransactionForm {
   }
   get date() {
     return this.transactionForm.get('date');
+  }
+
+  private today(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
