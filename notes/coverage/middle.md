@@ -252,7 +252,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ### Modern cascade and authoring
 
-- `:has()` relational selector — read and write simple parent- or sibling-state selectors while keeping a class or state attribute as the clearer option when application logic already owns the state
+- `:has()` relational selector — read and write simple parent- or sibling-state selectors while keeping a class or state attribute as the clearer option when application logic already owns the state ✅ 04-meal-finder — `.meal-card:has(.meal-link:focus-visible)` elevates the card from its descendant link's focus state
 - `:is()` vs `:where()` — both group selector alternatives, but `:is()` takes the specificity of its most specific argument while `:where()` always contributes zero specificity
 - Cascade layers with `@layer` — order style origins deliberately without escalating selector specificity
 - Native CSS nesting — organise related selectors without changing the resulting specificity unintentionally

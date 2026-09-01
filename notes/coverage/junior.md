@@ -1503,7 +1503,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### Cascade and inheritance
 - Cascade decision order — resolve ordinary author declarations through importance, specificity, and source order rather than assuming the last rule always wins
 - Cascade origins — distinguish user-agent, user, and author declarations and know that origin and importance are resolved before specificity, so a more specific selector does not always win
-- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately
+- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately ✅ 04-meal-finder — `.meal-link` takes `color: inherit` to undo the user-agent link colour the card must not show
 - Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier ✅ 02-weather-app — `animation-duration: 2.4s` overrides only the duration longhand of `animation: spin 0.8s linear infinite`, leaving the keyframes name and `infinite` intact
 
 ### Selectors and specificity
@@ -1515,7 +1515,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
 - Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
-- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation
+- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
 - Specificity scoring — compare inline styles, IDs, classes/attributes/pseudo-classes, and elements/pseudo-elements as separate columns; source order decides only after the relevant cascade criteria and specificity tie
 - `!important` — raises a declaration into the important cascade, after which origin, layer, and
