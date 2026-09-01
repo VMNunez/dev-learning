@@ -10,10 +10,19 @@ import type { NewTransaction } from '../../../../models/transaction.model';
 })
 export class TransactionForm {
   transactionForm = new FormGroup({
-    description: new FormControl<string | null>('', Validators.required),
+    description: new FormControl('', {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
     amount: new FormControl<number | null>(null, [Validators.required, Validators.min(0.01)]),
-    type: new FormControl<string | null>('', Validators.required),
-    date: new FormControl<string>(this.today(), Validators.required),
+    type: new FormControl<'income' | 'expense' | ''>('', {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    date: new FormControl(this.today(), {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
   });
 
   transactionSubmit = output<NewTransaction>();
@@ -21,10 +30,14 @@ export class TransactionForm {
   onSubmit() {
     this.transactionForm.markAllAsTouched();
 
-    if (this.transactionForm.valid) {
-      this.transactionSubmit.emit(this.transactionForm.value as NewTransaction);
-      this.transactionForm.reset({ date: this.today() });
-    }
+    if (!this.transactionForm.valid) return;
+
+    const { description, amount, type, date } = this.transactionForm.getRawValue();
+
+    if (amount === null || type === '') return;
+
+    this.transactionSubmit.emit({ description, amount, type, date });
+    this.transactionForm.reset({ date: this.today() });
   }
 
   get description() {
