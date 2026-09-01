@@ -6,9 +6,10 @@
 > `notes/prompts/_internal/_external-path-preflight.md`. Stop before any write if it fails.
 
 Run this **inside the supported agent runtime**. It is the only portfolio prompt Victor launches. It runs the **final
-go/no-go gate** on a finished project, with one declared human choice before an eligible non-dry commit:
-is it ready to show a recruiter and reference in a job
-application **today**? It produces four things (see `_portfolio-standard.md`):
+go/no-go gate** on a finished project — is it ready to show a recruiter and reference in a job
+application **today**? It runs hands-off on every normal path; the only thing that stops it is a
+`cv-bullets.md` section left with two options by a pre-2026-08-31 run, whose choice was owed to Victor
+(Finishing item 6). It produces four things (see `_portfolio-standard.md`):
 
 1. An **exhaustive bank of project-specific interview questions, in English and Spanish** — the
    English built **one bank section at a time**, each authored then cold-reviewed by its own pair of
@@ -56,9 +57,10 @@ translator, stage T).
 > **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits **none of the audit
 > outputs**, so you can read the diff first. (`DRY_RUN` governs the audit outputs only — the pipeline
 > self-report is prompt-system machinery and commits itself either way; see the final step.) Once you
-> trust it, `DRY_RUN = false` commits those outputs for you. For a ✅/⚠️ verdict, that commit pauses once
-> for Victor to choose the one CV bullet that may persist; a ❌ verdict has no choice gate. Pushing the
-> profile README from its own repo also remains a hand step by design.
+> trust it, `DRY_RUN = false` commits those outputs for you, with no pause on any verdict — the one
+> exception being a `cv-bullets.md` section a pre-retirement run left holding two options, which stops a
+> non-dry run for the choice that was owed to Victor. Pushing the profile README from its own repo
+> remains a hand step by design.
 
 ---
 
@@ -101,8 +103,9 @@ Use PROJECT_PATH and DRY_RUN wherever the prompt refers to {PROJECT_PATH} and {D
 
 ---
 
-You are the orchestrator for the portfolio gate. Run hands-off except for the declared CV-bullet choice
-before a ✅/⚠️ non-dry content commit.
+You are the orchestrator for the portfolio gate. Run hands-off: no verdict declares a human choice any
+more. The single surviving pause is a legacy two-option `cv-bullets.md` section on a non-dry run
+(Finishing item 6), which is a leftover to clear and not a gate this prompt owns.
 
 > **Branch guard (step 0):** run `git branch --show-current`. Study materials commit on whatever
 > branch is currently active (the shared session rules) — a feature branch is the normal case; name it in the final
@@ -130,8 +133,8 @@ The verdict + CV bullet + GitHub description are short and deterministic, so you
 ## If PROJECT_PATH = all
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next: with
-`{DRY_RUN} = false`, resolve any CV-bullet choice and commit that project; with `{DRY_RUN} = true`, finish
-its explicit no-commit handoff and leave its pending options under that project's own section. Never
+`{DRY_RUN} = false`, commit that project; with `{DRY_RUN} = true`, finish its explicit no-commit handoff
+and leave its pending bullet under that project's own section. Never
 overlap, since their subagents edit shared files and parallel commits race the git index.
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
 summary table (`Project | Verdict | Questions`), whose Questions cell carries **both counts** —
@@ -338,9 +341,16 @@ auto-fix):
 
 **Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 2 stopped the gate**, where
 there is no verdict at all: a stop writes no CV bullet, so nothing may reach `notes/cv/cv-bullets.md` on
-that path. Otherwise, per the standard: draft two Spanish
-CV bullet options (read `_application-standard.md` first) and save them to `notes/cv/cv-bullets.md`; draft
+that path. Otherwise, per the standard: draft **one** Spanish
+CV bullet (read `_application-standard.md` first) and save it to `notes/cv/cv-bullets.md`; draft
 one English GitHub description (output only — Victor sets it in the repo settings manually).
+
+**Verify the bullet against that standard's Project-bullet spec before it reaches the file** — the
+eight conditions, run over the drafted text. Rewrite until 1-4, 6 and 7 pass; they always can. Save the
+bullet, then print any condition it still fails and why, on its own line of Finishing item 3 — in
+practice only 5 and 8, the two that survive a rewrite, and both are findings about the project rather
+than about the wording. **Every project's bullet is held to all eight**, whatever the project is;
+whether it belongs in a CV is the standard's project-selection heuristic and not this check.
 
 **Only when the verdict is ✅ Ready** (a truly portfolio-ready project, not ⚠️ Almost), **update Victor's
 GitHub profile README directly**. It lives at `dev/portfolio/VMNunez` — his GitHub profile repo, **outside
@@ -369,22 +379,24 @@ Otherwise print, in this order:
    block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
    role from repairing them, and Victor is the only reader who can reopen one.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
-3. CV bullet (two options) — **omit if ❌**.
+3. CV bullet (one) — **omit if ❌**. On its own line under it, **every Project-bullet spec condition
+   the saved bullet does not satisfy**, quoted with its reason; print `spec: all conditions satisfied`
+   when there are none, so a silent run is distinguishable from a compliant one.
 4. GitHub description (one option) — **omit if ❌**.
 5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
    commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
-6. If ✅/⚠️, both draft options are in `notes/cv/cv-bullets.md`, but a committed section may contain
-   exactly one. With `{DRY_RUN}` = true print "edit `notes/cv/cv-bullets.md` to keep only your chosen
-   bullet **before running the commit below**; then scan the whole file and verify every project section
-   has exactly one bullet and no `choose one` marker". With `{DRY_RUN}` = false, present A and B and **pause
-   before the content commit** for Victor to choose one. Do not continue, start the next batch target,
-   or run the final self-report while that answer is pending. After the answer, delete the other option
-   and the choice marker, then run the same integrity gate over the **whole** `cv-bullets.md`: every
-   project section must have exactly one bullet and no choice marker. If an older section still has two
-   options, pause for Victor's selection there too and clean it before staging the file. In
-   `PROJECT_PATH = all`, resume and commit this project before starting the next one.
+6. If ✅/⚠️, the one drafted bullet is in `notes/cv/cv-bullets.md`. **There is no choice pause.** Run the standard's integrity gate over the
+   **whole** file before staging it either way: every project section must have exactly one bullet and
+   no `choose one` marker. With `{DRY_RUN}` = true print "scan the whole file and verify every project
+   section has exactly one bullet and no `choose one` marker **before running the commit below**". With
+   `{DRY_RUN}` = false the gate is yours to run. **Only a section left by a pre-2026-08-31 run can still
+   carry two options or the marker.** On a non-dry run, pause for Victor's selection there — that choice
+   was owed to him and this run does not make it — and do not continue, start the next batch target, or
+   run the final self-report while that answer is pending. On a dry run there is no pause: the handoff
+   tells him to clean that section before running the printed commit, like any other dry-run write. In `PROJECT_PATH = all`, commit this project before
+   starting the next one.
 
-**If `{DRY_RUN}` = false:** after the choice gate above when one applies, commit atomically — with the safety check first: run `git status` before
+**If `{DRY_RUN}` = false:** after the integrity gate above, commit atomically — with the safety check first: run `git status` before
 the add and again before the commit, confirm only the intended `notes/` files are staged
 (`git restore --staged` anything else, especially project code left staged from an earlier step).
 If ✅/⚠️ (cv-bullets was written):
@@ -434,9 +446,9 @@ the diff.
 ## Hard rules
 
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
-  rule is "never auto-commit"; he lifted it for the audit orchestrators. For a ✅/⚠️ verdict the
-  authorization begins only after Victor chooses the single CV bullet; it never authorizes committing
-  both options. It applies nowhere else.
+  rule is "never auto-commit"; he lifted it for the audit orchestrators. It never authorizes committing
+  a section holding more than one bullet — on a ✅/⚠️ verdict the authorization begins once the
+  whole-file integrity gate below passes. It applies nowhere else.
 - **`cv-bullets.md` is staged only after its whole-file integrity gate passes.** Every project section
   has exactly one bullet and no choice marker; validating only the section written this run is not enough.
 - **Questions are saved regardless of the verdict** — a ❌ still commits the question file.

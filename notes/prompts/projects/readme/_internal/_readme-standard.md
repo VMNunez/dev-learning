@@ -70,6 +70,19 @@ short snippet says it better.
 file. Do not rewrite sections that are already correct — only touch what needs to change. Record what
 changed for the summary at the end.
 
+**Source is not render — every rule about *arrangement* is a rule about blank lines.** A README is judged
+on the page GitHub draws, and adjacent lines are **one block** unless a blank line — or a self-delimiting
+block like a fence or a heading — separates them. Written adjacently the layout stops being the one the
+rule asked for: a caption directly above its image joins that image's paragraph and is laid out *inline*,
+landing beside it whenever the image is narrow enough to share the column (and otherwise merely losing
+the gap); a sentence directly under the last row of a table is absorbed as another **row** of that table;
+a folder tree written flush against the surrounding prose, outside a fenced block, collapses into a
+single paragraph. So separate every caption, image, table, tree, multi-line list and the prose around
+them with a blank line, and always fence a tree. This is the one class of rule an author can satisfy in
+the *source* and still get wrong on the *page* — checking it means checking the blank lines, not the
+order of the lines. Ten caption/image pairs shipped wrong across `01`–`06` under a rule that said only
+"caption above each".
+
 **Which README owns a concept.** On a full-stack project the tier a file changed in is a *hint*, not the
 answer — the question is which reader needs the concept. Four outcomes:
 
@@ -107,9 +120,11 @@ run.** Move any out-of-order section to its correct position.
    password`, one per role). If none exists, flag it as missing — do not skip the section.
 4. **Screenshots** — optimal count for the project (no fixed number); read PLANNING.md + Features to
    find the essential screens. Plain markdown images stacked vertically (never a 2×2 table — GitHub
-   compresses them badly), bold caption above each, none below. First output a **Visual brief** (one
-   line per screenshot: "Screenshot — [screen]: show [what must be visible]"), then a placeholder for
-   each not-yet-captured visual: `*(screenshot — [screen name] — to be added)*`. Never skip silently.
+   compresses them badly), bold caption above each, none below, **each its own paragraph** — a blank
+   line between a caption and its image and between one image and the next, per *Source is not render*
+   above. First output a **Visual brief** (one line per screenshot: "Screenshot — [screen]: show
+   [what must be visible]"), then a placeholder for each not-yet-captured visual:
+   `*(screenshot — [screen name] — to be added)*`. Never skip silently.
    - **A screen, not a state.** Count *distinct screens*, not variants of one — a filter applied, an
      empty list or a validation error on the same view is a state, and a single-screen app is legitimately
      done with one screenshot. Never add a placeholder for a state of a screen already shown; if the
@@ -132,8 +147,8 @@ run.** Move any out-of-order section to its correct position.
    - Bad: "- Angular Material" (too vague) · a multi-sentence definition (too long — belongs in notes/).
 10. **Tech stack** — always a table (never a bullet list). Columns: Layer | Technology. Every layer the
     project actually uses.
-11. **Project structure** — folder tree, one-line explanation per folder (or per file when a folder has
-    few files with non-obvious names).
+11. **Project structure** — folder tree **in a fenced code block**, one-line explanation per folder (or
+    per file when a folder has few files with non-obvious names).
 12. **How to run** — one command per code block, order: clone → cd → npm install → ng serve (or npm
     start). If it uses env vars, add a step before `ng serve`: "Copy `.env.example` to `.env` and fill
     in `API_KEY` (get it from [service])."
@@ -149,7 +164,8 @@ structure → Backend and frontend details.**
   `ng serve` in separate terminals before Docker. Do not apply the Angular rule 12 here.
 - **Visuals** — optimal mix of GIFs and screenshots (no fixed count). GIFs for multi-step interactions,
   screenshots for dashboards/forms/empty states/role differences. Stacked vertically, GIFs before
-  screenshots, max 5 MB per GIF. If the frontend is not built, leave placeholders for all visuals.
+  screenshots, max 5 MB per GIF — and the blank lines of *Source is not render* are what make them
+  stacked. If the frontend is not built, leave placeholders for all visuals.
   First output a **Visual brief** (one line per GIF: "GIF — [name]: show [step 1] → [step 2] → [step
   3]"; one line per screenshot).
 - **Final line:** "Full technical details: [backend/README.md](backend/README.md) and
@@ -165,7 +181,8 @@ structure → Backend and frontend details.**
    MANAGER, Public — never "All"/"Authenticated"). A not-yet-implemented endpoint stays in the table
    with role + description, only its row marked `*(planned)*` — not the whole section.
 2. **Database schema** — one table per entity (name, type, constraints, notes); after each, one sentence
-   on its key design decision (why soft delete, why a status enum vs a boolean).
+   on its key design decision (why soft delete, why a status enum vs a boolean) — **blank line first**,
+   or GFM absorbs that sentence as one more row of the table it follows.
 3. **Auth flow** — numbered steps of the full request lifecycle: login → BCrypt check → JWT generated →
    client sends token → JwtFilter validates → SecurityContextHolder → endpoint executes. One sentence
    per step, prose only, no code blocks.
@@ -173,7 +190,7 @@ structure → Backend and frontend details.**
    hashing, secret management (no committed credentials), authorization enforcement, input validation +
    error handling. Only list what is really there.
 5. **Folder structure** — annotated tree of every package (controller / service / repository / model /
-   dto request+response / exception / security), one-line comment per folder.
+   dto request+response / exception / security), **fenced**, one-line comment per folder.
 6. **Key patterns** — one entry per pattern, format `[Pattern] — [why used, not just what]`. Must
    include: layered architecture, DTO boundary, GlobalExceptionHandler. Code snippets encouraged (the
    audience is a technical interviewer).
@@ -190,7 +207,7 @@ structure → Backend and frontend details.**
 
 ## Frontend README rules (full-stack only) — sections in this exact order
 
-1. **Folder structure** — one-line explanation per folder.
+1. **Folder structure** — fenced tree, one-line explanation per folder.
 2. **State management** — the three-level pattern: signals for local component state, services for
    shared cross-component state, coordinator pattern for page-level orchestration. One sentence per level.
 3. **Key patterns** — one entry per pattern, format `[Pattern] — [why needed]`. Must include: auth

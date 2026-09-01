@@ -23,15 +23,19 @@ https://06-hr-portal.netlify.app
 ## Screenshots
 
 **Login**
+
 ![Login](screenshots/login.png)
 
 **Admin dashboard**
+
 ![Admin dashboard](screenshots/dashboard-admin.png)
 
 **Employee management**
+
 ![Employees](screenshots/employees.png)
 
 **Leave requests**
+
 ![Leave requests](screenshots/leave-requests.png)
 
 ---

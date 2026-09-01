@@ -155,6 +155,29 @@ open.
      does, why this approach is used, which existing code it connects to, and the important alternative
      or common mistake when one matters. Wait for Victor to implement or confirm understanding before
      giving the next step; never dump the whole task at once.
+- **The three levels are offered in Victor's own words, verbatim, as the last block of the message.**
+  The wording below is his, dictated 2026-09-01, and is copied exactly — numbered `1)` `2)` `3)` so he
+  can answer with a single digit, in Spanish, never through a picker widget (`AskUserQuestion` was
+  explicitly rejected 2026-08-24, because a dialog cannot be re-read later in the scrollback when he
+  wants to switch mid-task):
+
+  ```
+  ### Tres modos
+
+  Dime cómo lo quieres:
+
+  1) **Objetivo** — te digo solo qué debe cumplir el resultado y lo escribes tú entero.
+  2) **Pistas** — te voy dando la firma o el nombre del método en cada paso, sin el código.
+  3) **Código a revisar** — te doy la versión final y la criticas tú.
+
+  Puedes cambiar de modo a mitad sin problema.
+  ```
+
+  `1)`, `2)` and `3)` *are* Level 1, Level 2 and Level 3 above — the same contract, in the presentation
+  he asked for; a bare `3` in his next message selects Level 3 and nothing else. Level 3 keeps its
+  one-step-at-a-time rule: "la versión final" is the final shape of **the step in hand**, never the whole
+  task dumped at once. Stated 2026-09-01 on the `as NewTransaction` task of project 03 — *"asi es como me
+  gusta que lo pongas, quiero que guardes ese formato en el repositorio para que siempre persista"*.
 - **Never silently increase the help level.** If Victor is stuck at Level 1, offer Level 2; if Level 2
   is insufficient, offer Level 3. Only Victor chooses the transition. A direct request for code selects
   Level 3 and is answered immediately without pushing him back to an earlier level.

@@ -249,6 +249,21 @@ that happened. And **a tracker column is the cheapest such instrument in the rep
 which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
 opening a single artefact.
 
+**A rule stated against an artefact's *source* is not a rule about the artefact anyone sees, and where
+the deliverable is rendered, the reviewer inherits that blindness.** From `REC-192`.
+`_readme-standard.md`'s "bold caption above each" is satisfied by a caption on the line immediately
+before its image — which CommonMark makes one paragraph, laid out inline beside the picture. Two
+`readme-audit` runs read the section, checked the source, saw the caption above and passed; ten wrong
+pairs shipped. The separating test is cheap and it is about the rule's **grammar**: a rule naming a
+*block type* ("always a table", "one command per code block") is self-executing, because writing that
+block is unambiguous; a rule stating a *spatial relation between two blocks* ("above each", "stacked
+vertically", "after each, one sentence") says nothing about what separates them, and separation is the
+whole of the layout. So on any artefact whose deliverable is its **rendered** form, enumerate the
+positional rules rather than the visual sections — and state the correction **once**, in the register
+the defect lives in, rather than repeating the mechanism at every site: both rounds of this row's own
+review returned a false universal about rendering that the *repair* had written, which is `REC-126`'s
+*a repair states no new fact* arriving on ground where the fact is a spec nobody had opened.
+
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
 `✅` markers across projects 01–06, so the constructs are Victor's real code and only the file
@@ -305,6 +320,15 @@ against a 1820-line plan): condition the claim or cite the instrument, never ass
 every sentence it writes that still asserts a *tree state* is a candidate** — both its rounds
 returned exactly that, written by the repair, inside a paragraph whose own thesis is "not a fact
 about the tree".
+**Also `REC-181`, which names the second shape and it is the repair's own sweep: a claim the round
+repaired at its owner survives in every place the round did not know it was restated, including the
+restatements that same round wrote.** Four of its round-2 blockers were one phrase — a decidability
+claim corrected in the spec and left standing in two map rows and a subordinate standard — and a fifth
+was a *justification* invented to found the repair on (`REC-150`'s split, arriving from the repair's
+side: the mandate was right and the reason was false, and it would have propagated to a step that
+enforces the opposite). So after every repair round, grep the phrase you just rewrote, not the file you
+just edited — and re-read any sentence the repair wrote to explain *why*, since a fix draws its reason
+from the context that made it necessary and that context is exactly what a cold reader does not share.
 
 **A fix that adopts a sibling's house phrasing inherits its live exceptions, not only its rules.**
 From `REC-154`, whose reviewer found the repair had copied `roadmap-review`'s four marker-reading
@@ -372,6 +396,8 @@ resolution needs is the test.
 | A row whose fix is a **deletion** | the check a deletion owes and an addition does not (`REC-153`, `REC-142`) | name the clause chain that still carries the boundary the duplicate was covering. Also `REC-176`: deleting a file either ledger cites turns that path into a permanent licensed `REPORT:` line in `validate-prompt-system.ps1` — expected output on every later run, never a typo |
 | A row whose fix only makes an existing path more **visible** | the map rows describing the file's *kind* (`REC-113`) | `maps unaffected` is easiest to get wrong where nothing the fix wrote is new |
 | A row that adds **no check** | the reviewer, because the injection budget does not apply (`REC-091`) | on a row that adds no check, the reviewer *is* the check |
+| A row replacing a **prose bar with a checkable one** | not the conditions — the *restatements* of the bar and every branch that existed because a human judged what the check now decides (`REC-181`: four files carried the bar, six sites branched on the choice gate it retired) | count the restatements and the branches **before** the conditions; the owner is the file the whole family reads, and the restatement that declares itself subordinate is what names it |
+| A row whose ruling needs a fact the repo has no evidence layer for | the **warrant**, not the clause — two rounds went on replacing a citation that was not on disk with a bare assertion, then on re-founding it at a source that only corroborates (`REC-186`) | before writing the ruling, name the file on disk that would found it; where none exists the ruling ships reduced to what an existing source already says, and what it could not found is a row of its own (`REC-187`) |
 | A row that keeps **failing review** | rounds, and a fix that grows every pass (`REC-092`) | it is not under-built — check whether it is being answered at the wrong altitude, and count the rounds |
 | Any row, at the sweep | the *column* of the artefact that holds the value, not only the file (`REC-084`) | run `validate-prompt-system.ps1` before the dispatch, not before the commit: a reviewer inherits step 1's population and cannot find a site the measurement was blind to (`REC-120`) |
 

@@ -1253,9 +1253,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
-- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value
+- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
-- Equality narrowing — use equality with a literal or another typed value to refine compatible union members
+- Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
 - User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
@@ -1266,7 +1266,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
-- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
+- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 05-task-manager
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
@@ -1283,7 +1283,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing
 - `satisfies` — check that an expression conforms to a contract while retaining useful inferred literal and property information
-- Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof
+- Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof ✅ 03-expense-tracker — the transaction form declares each control's own type instead of asserting `form.value as NewTransaction` at the emit
 - `typeof` in type positions — derive a type from an existing value without confusing it with the runtime `typeof` operator
 - Enum runtime behaviour — recognise that regular TypeScript enums emit runtime objects rather than existing only in the type system
 - String enums vs literal unions — choose between a runtime enum object and an erased union of allowed values based on actual runtime needs
@@ -1391,7 +1391,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
-- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
+- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing ✅ 03-expense-tracker — `TransactionService.loadTransactions()` treats the stored string as untrusted text and survives a `SyntaxError` from `JSON.parse`
 
 ### Arrays and iteration
 
@@ -1450,15 +1450,16 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
-- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
+- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant ✅ 03-expense-tracker — the transaction form's private `today()` builds the default date from `getFullYear`/`getMonth`/`getDate`, so a submit after local midnight is not dated to the previous UTC day
 - Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
+- Unique identifier generation — obtain identity from a dedicated generator such as `crypto.randomUUID`, in the secure context it requires, rather than deriving it from a clock reading, because timestamps collide whenever two values are created inside the same resolution step ✅ 03-expense-tracker — `TransactionService.addTransaction()` builds `id` with `crypto.randomUUID()` and `Transaction.id` is a `string`, so two submits inside the same millisecond no longer collide in `deleteTransaction`
 
 ### Errors and runtime boundaries
 
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
 - Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
-- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently
+- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently ✅ 03-expense-tracker — the localStorage read resolves the parse failure at its own boundary and logs the original error instead of swallowing it
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
 - Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
 - Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime

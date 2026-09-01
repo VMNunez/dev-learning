@@ -19,6 +19,7 @@ https://02angularweatherapp.netlify.app/
 ## Screenshots
 
 **App overview**
+
 ![App preview](screenshots/preview.png)
 
 ---

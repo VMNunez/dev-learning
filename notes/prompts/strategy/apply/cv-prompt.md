@@ -38,7 +38,7 @@ EDUCATION  = [your degree, university, and year — e.g. "Grado en Administraci�
 CAMBRIDGE  = [obtained (B2) | in progress (B1→B2) | not yet started]
 LOCATION   = [your city — e.g. "Madrid" | "Barcelona" | auto]
 PHONE      = [your phone number — e.g. "+34 612 345 678" | auto — read it from my existing CV]
-PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack, 06-hr-portal, 05-task-manager" | auto — let the prompt choose the 3 strongest]
+PROJECTS   = [comma-separated list of projects to include — e.g. "07-timetrack, 06-hr-portal, 05-task-manager" | auto — let the prompt choose the 2-3 strongest that fit one page]
 BASE_CV    = [tailor mode only: path to the master CV to start from | auto — the most recent in job-search/master]
 
 ---
@@ -55,7 +55,8 @@ First read `notes/prompts/strategy/apply/_internal/_application-standard.md` —
 job-application standard. It defines the **sources to read** (`notes/prompts/_internal/_session-rules.md`,
 `notes/prompts/_internal/_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, the optional
 `notes/cv/cv-bullets.md`, your existing CV in `job-search`, and `notes/coverage/junior.md` for
-defensibility), the **universal bullet format**, the **ATS keyword pool** (required +
+defensibility), the **universal bullet format**, the **Project-bullet spec** (the eight conditions a
+sourced `cv-bullets.md` entry is re-checked against), the **ATS keyword pool** (required +
 preferred), the **Spanish / no-buzzword voice**, the **defensibility rule**, and the
 **project-selection heuristic**. This prompt does not repeat those rules — it adds only the
 CV-specific flow on top.
@@ -119,9 +120,19 @@ given). Then:
 
 ## Step 1 — Choose the projects to include
 
-If PROJECTS = auto: apply the **project-selection heuristic from the standard** to choose the 3
+If PROJECTS = auto: apply the **project-selection heuristic from the standard** to choose the **2-3**
 strongest projects (full-stack first, then the most complex Angular project, then one more that shows
-a different skill; prefer recency and concept coverage).
+a different skill). **Two or three, not always three** — this is a one-page CV, which is the tighter of
+the two bands in the standard's source 8 (`_application-evidence.md`), and the same evidence states a
+weak entry as subtracting rather than adding nothing. **The 2-3 rests on a web-search extract, not on a
+fetched quote** — it is the weakest support in that file, and the honest thing to say if it is ever
+challenged. What the evidence founds directly is the **page**, not the count — "una página para menos
+de 7 años de experiencia" — so the real upper bound is what fits on it, and 3 is where the extract puts
+that for a junior. Take the third slot only when its project earns
+it on the heuristic; where it would be filled by a project the heuristic ranks low, ship two and say so
+on the run's output. Wherever a slot's own rule leaves more than one candidate, the
+standard ranks a project whose **premise is not reconstructible from its name** above one whose is,
+before recency and concept coverage.
 
 If PROJECTS is a specific list: use those exact projects, in that order.
 
@@ -129,6 +140,12 @@ For each chosen project, follow the standard's rule on sourcing bullets: use the
 `notes/cv/cv-bullets.md` as the primary bullet if it exists (use it as-is — it was already polished by
 `portfolio-audit`), otherwise draft the primary bullet from the project's `README.md`. In both
 cases, read the README.md to find supporting details for the 2nd and 3rd bullets in the project section.
+
+**Re-check every sourced entry against the standard's Project-bullet spec here, and report — do not
+repair.** The eight conditions, run over the entry as it stands. Keep the bullet as it is whatever the
+result, and carry the failures to Step 6, naming the project, the conditions and the run that repairs
+them (`/portfolio-audit` on that project). An entry that is merely weak is never replaced by a
+README-drafted substitute; that route exists only for a project with no entry at all.
 
 ---
 
@@ -223,6 +240,15 @@ qualitative one if no measurable result exists, no filler words like "participé
 
 For every bullet that fails: rewrite it in place and show the before/after.
 
+**One exception, and it is the standard's, not this step's: a project bullet sourced from
+`notes/cv/cv-bullets.md` is never rewritten here.** It was already checked in Step 1 against the
+Project-bullet spec, whose condition 5 **supersedes this step's concrete-result rule** for a persisted
+project bullet — so a sourced bullet that names a technical decision and no result is correct here, not
+weak — and which is stricter on length besides. It reaches the CV as-is and its failures are reported at
+Step 6 — the *as-is* rule is
+what keeps the CV and the committed file in step, and a bullet quietly improved here is the drift that
+rule exists to prevent.
+
 ---
 
 ## Step 4 — ATS keyword audit
@@ -273,6 +299,12 @@ Then print:
 **ATS keywords missing:** required keywords not found but defensible (with suggested placement)
 **ATS keywords not defensible:** required keywords left out under the standard's precedence rule — the
 gap to close in a project, not in the CV
+**Project bullets needing a re-run:** for each entry sourced from `notes/cv/cv-bullets.md` that fails
+the Project-bullet spec, the project, the conditions it fails, and `/portfolio-audit` on that project as
+the run that repairs it — print `none` when every sourced entry passes, since the line is the only
+route those failures have out of this run
+**Projects featured:** how many, and — when Step 1 shipped two rather than three — which project was
+left out and on which point of the heuristic it lost its slot; this line is never dropped
 **Estimated length:** fits on one page / slightly over (X lines to cut)
 **Saved to:** the exact path written above
 **(tailor mode) Gap analysis:** the `HAVE / PARTIAL / MISSING` table against the offer, so you know

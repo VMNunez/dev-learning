@@ -83,7 +83,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
-- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
+- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing ✅ 03-expense-tracker — `TransactionService.loadTransactions()` treats the stored string as untrusted text and survives a `SyntaxError` from `JSON.parse`
 
 ## Arrays and iteration
 
@@ -142,15 +142,16 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
-- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
+- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant ✅ 03-expense-tracker — the transaction form's private `today()` builds the default date from `getFullYear`/`getMonth`/`getDate`, so a submit after local midnight is not dated to the previous UTC day
 - Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
+- Unique identifier generation — obtain identity from a dedicated generator such as `crypto.randomUUID`, in the secure context it requires, rather than deriving it from a clock reading, because timestamps collide whenever two values are created inside the same resolution step ✅ 03-expense-tracker — `TransactionService.addTransaction()` builds `id` with `crypto.randomUUID()` and `Transaction.id` is a `string`, so two submits inside the same millisecond no longer collide in `deleteTransaction`
 
 ## Errors and runtime boundaries
 
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
 - Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
-- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently
+- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently ✅ 03-expense-tracker — the localStorage read resolves the parse failure at its own boundary and logs the original error instead of swallowing it
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
 - Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
 - Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime

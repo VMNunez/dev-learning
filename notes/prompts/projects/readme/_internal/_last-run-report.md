@@ -1,12 +1,11 @@
 # Pipeline self-report — readme-audit
 
-Date: 2026-08-31 · Project: projects/02-weather-app (Angular → target `global` only)
-Status: applied in 3b42923c
+Date: 2026-09-01 · Project: projects/03-expense-tracker (Angular → target `global` only)
+Status: open
 
-- **Report discipline** — both subagents returned inside their line budgets; nothing discarded, no re-dispatch, no code dumps.
-- **Trace verification** — the reviewer's trace covered all 12 required sections in standard order, with a per-section verdict; no gap, no re-dispatch, no false alarm.
+- **Report discipline** — both subagents returned inside their line budgets, with the `N lines, read to EOF` proof for the standard and their own prompt; nothing discarded, no code dumps, no re-dispatch.
+- **Trace verification** — the reviewer's trace covered all 12 required sections in standard order with a per-section verdict; no gap, no re-dispatch, no false alarm. The two reports disagree by one on the standard's length (230 vs 231 lines, `wc -l` says 230) — a trailing-newline artefact, not a partial read.
 - **Coherence** — N/A: Angular project, single README, coherence subagent correctly skipped.
 - **Failure protocol** — not triggered; no subagent errored and no README was excluded from the commit.
-- **Anything else** — one real rule friction: this prompt's self-report step says "stage only `_last-run-report.md`", but the shared `_pipeline-self-report.md` mandates a `_run-tracker.md` write every run and its "How to commit it" section — which names `readme-audit` explicitly — stages the report **and** the tracker, with a `git show --stat` check that fails a commit listing only the report. Followed literally, this prompt's line leaves the tracker uncommitted. Resolved as the 01 run did on disk (`5056f272` staged both), so the narrower line is wrong, not merely ambiguous.
-- **Verdict** — change worth considering: `readme-audit.md`'s self-report step must stage `_last-run-report.md` **and** `_run-tracker.md` (plus the breach log when one is written), matching the shared contract it executes; drafted, cold-reviewed and applied in `3b42923c`, which also fixed the `## Hard rules` line the change contradicted.
-- **Cold reviewer** — approve-with-tightening (cut the justification clause, widened the breach-log condition to "wrote a row or moved a disposition", and required the `## Hard rules` line in the same commit); applied in the form it approved.
+- **Anything else** — two contradictions found by reading, neither of them in this prompt. (1) Both `/readme-audit` launchers still order the pre-2026-08-29 hand-over commit and attribute it to "its own rule", which the prompt has contradicted since that date; it cost nothing only because the launchers' first rule declares the prompt authoritative. Routed to `REC-190` (`9cd5207f`) — a launcher is neither this prompt nor a rulebook, so the at-end refinement, scoped to the prompt file that ran, cannot reach it. (2) `_pipeline-self-report.md` → "How to commit it" still cites `readme-audit` as an example of a pipeline "whose main output is never auto-committed"; **rejected on bar condition 3** — a stale example in a shared contract this run may not edit, and it changed no output.
+- **Verdict** — pipeline clean for `readme-audit.md` itself: no finding this run targets the prompt file that executed, so no draft and no cold-reviewer dispatch. The live item is `REC-190`, in the ledger, not here.

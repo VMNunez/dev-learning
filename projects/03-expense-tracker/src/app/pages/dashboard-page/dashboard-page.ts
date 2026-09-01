@@ -1,13 +1,14 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { TransactionService } from '../../services/transaction.service';
 import { RouterLink } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
-
-type Filter = 'all' | 'income' | 'expense';
+import { SummaryCard } from './components/summary-card/summary-card';
+import { FilterBar } from './components/filter-bar/filter-bar';
+import { TransactionList } from './components/transaction-list/transaction-list';
+import { Filter } from '../../models/transaction.model';
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, SummaryCard, FilterBar, TransactionList],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.css',
 })
@@ -31,7 +32,7 @@ export class DashboardPage {
 
   balance = computed(() => this.totalIncome() - this.totalExpense());
 
-  onDeleteTransaction(id: number) {
+  onDeleteTransaction(id: string) {
     this.transactionService.deleteTransaction(id);
   }
 

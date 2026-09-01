@@ -19,6 +19,7 @@ https://05taskmanager.netlify.app/
 ## Screenshots
 
 **App overview**
+
 ![App preview](screenshots/preview.png)
 
 ---

@@ -1,5 +1,5 @@
 export interface Transaction {
-  id: number;
+  id: string;
   description: string;
   amount: number;
   type: 'income' | 'expense';
@@ -7,3 +7,5 @@ export interface Transaction {
 }
 
 export type NewTransaction = Omit<Transaction, 'id'>;
+
+export type Filter = 'all' | 'income' | 'expense';
