@@ -82,6 +82,8 @@ https://04mealfinder.netlify.app/
 - `[disabled]` binding — disable a button based on a reactive condition
 - `hasSearched` and `hasLoad` signal patterns — distinguish between loading, no results and not searched yet
 - `Location.back()` — navigate to the previous page in the browser history
+- Accessible name of a form control — a `<label for>` bound to the input's `id` names the field; a `placeholder` is an example value and never a name
+- `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` and `visibility: hidden` remove
 - `overflow: hidden` on a card — clips image corners with `border-radius`
 - `position: absolute` + `top/right` — place a badge over a card
 - `transition` on the base element, not on `:hover` — correct hover animation pattern
