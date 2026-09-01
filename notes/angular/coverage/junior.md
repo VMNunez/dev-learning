@@ -60,6 +60,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
+- `asReadonly()` — expose a service's writable signal as a read-only handle so consumers stay reactive while the service's own methods remain the only writers ✅ 04-meal-finder — `FavouriteService` keeps the writable signal private and exposes `favourites` through `asReadonly()`, so `addFavourite`/`deleteFavourite` are the only writers the three pages can reach
 
 ## HTTP integration
 
