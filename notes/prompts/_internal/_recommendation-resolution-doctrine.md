@@ -247,7 +247,13 @@ one `grep -c` per file over the artefacts the standard governs, before pricing a
 is the same cost as reading the standard and it is the only thing that separates a rule from a rule
 that happened. And **a tracker column is the cheapest such instrument in the repository**: it records
 which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
-opening a single artefact.
+opening a single artefact. **Also `REC-195`, which names the third form and it is the cheapest
+to miss: an invariant nobody triggers is not a gate.** Invariant 9 had checked the closure schema for
+weeks and still let `REC-190` land with two fields and its verdict missing, because
+`validate-prompt-system.ps1` has no CI and no hook — it runs when someone runs it — and the act that
+*writes* the line it reads, collapsing a row, was not in its trigger list. So when a check exists and
+the defect it checks for shipped anyway, measure the **trigger**, not the check: name the act that
+produces the artefact and put it in that list, before rewriting a rule that was already correct.
 
 **A rule stated against an artefact's *source* is not a rule about the artefact anyone sees, and where
 the deliverable is rendered, the reviewer inherits that blindness.** From `REC-192`.
