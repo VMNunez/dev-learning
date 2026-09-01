@@ -9,7 +9,6 @@ dashboard is still missing.
 
 ## Tasks
 
-- [ ] **[Medium]** `[frontend]` — Fix the default date in `transaction-form.ts` (initial value and `reset()`): `new Date().toISOString().split('T')[0]` computes the date in UTC, so in Spain (UTC+1/+2) any transaction entered between local midnight and 1–2am is pre-filled with yesterday's date. Build the string from `getFullYear()`/`getMonth()`/`getDate()` instead. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Split `dashboard-page` into the dumb children PLANNING.md planned (`summary-card`, `filter-bar`, `transaction-list`). It is currently one monolithic smart component holding markup, state and click handlers together, so the smart/dumb pattern is only demonstrated on the add-transaction page. *(Effort: Medium)*
 - [ ] **[Low]** `[frontend]` — Stop force-casting `this.transactionForm.value as NewTransaction` in `transaction-form.ts`. The form's `type` control is `string | null` while the model wants `'income' | 'expense'`; build the emitted object field by field (or narrow `type` explicitly) so the assertion is not hiding a real type mismatch. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Replace `id: Date.now()` in `TransactionService.addTransaction()` with `crypto.randomUUID()`. Two submits inside the same millisecond (fast double-click) produce duplicate ids, and `deleteTransaction(id)` then removes both rows at once. *(Effort: Small)*
@@ -27,7 +26,7 @@ dashboard is still missing.
 
 #### Medium
 
-*No medium tasks closed yet.*
+- 2026-09-01 · **[Medium]** `[frontend]` — default form date built from the local clock, not the UTC day → README, PLANNING Key patterns, coverage javascript/junior
 
 #### Low
 
