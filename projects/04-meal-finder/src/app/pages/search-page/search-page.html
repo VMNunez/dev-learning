@@ -1,5 +1,7 @@
 <div class="container">
   <div class="search-container">
+    <label class="visually-hidden" for="meal">Search for a meal</label>
+
     <input
       [value]="searchTerm()"
       (input)="searchTerm.set(meal.value)"
