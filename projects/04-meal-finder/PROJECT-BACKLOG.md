@@ -11,7 +11,6 @@
 
 ### High
 
-- [ ] **[High]** `[frontend]` — Rebuild the detail page on the planned `effect()` pattern: `meal-detail-page.ts:27-30` uses `ngOnInit` + `activatedRoute.snapshot.paramMap.get('id')`, a one-shot read. PLANNING ("State management", Step 6) specifies an `effect()` driven by the route param — the project's headline learning objective. Angular reuses the component instance when only `:id` changes, so a navigation between two detail URLs leaves the previous meal on screen. Convert the param to a signal (`toSignal(activatedRoute.paramMap)`) and load inside an `effect()`. *(Effort: Medium)*
 - [ ] **[High]** `[frontend]` — Extract a `FavouriteService` (signal + `effect()` localStorage sync + `addFavourite`/`deleteFavourite`) out of `MealService`, leaving `MealService` with only `searchMeals`/`getMealById`. PLANNING lists the two services separately; today one service owns both HTTP and persistence, which breaks single responsibility — the first thing an interviewer probes when they see it. *(Effort: Medium)*
 
 ### Medium
@@ -48,6 +47,7 @@
 
 #### High
 
+- 2026-09-01 · **[High]** `[frontend]` — detail page driven by `toSignal(paramMap)` + `effect()` with cleanup → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[High]** `[frontend]` — `MealResponse.meals` typed `Meal[] | null`, normalised at both subscribers → README, coverage typescript/junior
 
 #### Medium
@@ -68,13 +68,13 @@
 
 Scored against the "Key patterns introduced" table in `PLANNING.md`.
 
-**Tally: 16 ✅ Demonstrated · 1 ⚠️ Shallow · 0 ❌ Missing**
+**Tally: 17 ✅ Demonstrated · 0 ⚠️ Shallow · 0 ❌ Missing**
 
 | Concept | Status | Note |
 |---|---|---|
 | Route parameters (`path: 'detail/:id'`) | ✅ | `app.routes.ts:12` |
-| `ActivatedRoute.snapshot.paramMap.get()` | ✅ | `meal-detail-page.ts:28` |
-| `effect()` | ⚠️ Shallow | Only the localStorage sync (`meal.service.ts:14`); the planned `effect()` driving the detail-page API call was never built |
+| `toSignal(ActivatedRoute.paramMap)` | ✅ | `meal-detail-page.ts:24-26` |
+| `effect()` | ✅ | The localStorage sync (`meal.service.ts:14`) and the planned route-param effect driving the detail-page API call, with an `onCleanup` cancelling the in-flight request |
 | `localStorage + effect()` | ✅ | `meal.service.ts:11,14-16` |
 | `Array.some()` | ✅ | `search-page.ts:49`, `favourites-page.ts:18`, `meal-detail-page.ts:24` |
 | `[...new Set()]` | ✅ | `favourites-page.ts:34` |
