@@ -1,11 +1,12 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MealService } from '../../services/meal.service';
 import type { Meal } from '../../models/meal.model';
 import { Location } from '@angular/common';
 import { map } from 'rxjs';
 import { FavouriteService } from '../../services/favourite.service';
+import { NavigationHistoryService } from '../../services/navigation-history.service';
 
 @Component({
   selector: 'app-meal-detail-page',
@@ -18,6 +19,8 @@ export class MealDetailPage {
   private mealService = inject(MealService);
   private favouriteService = inject(FavouriteService);
   private location = inject(Location);
+  private router = inject(Router);
+  private navigationHistory = inject(NavigationHistoryService);
 
   mealId = toSignal(this.activatedRoute.paramMap.pipe(map((params) => params.get('id'))), {
     initialValue: null,
@@ -71,6 +74,11 @@ export class MealDetailPage {
   }
 
   goBack() {
-    this.location.back();
+    if (this.navigationHistory.canGoBack()) {
+      this.location.back();
+      return;
+    }
+
+    this.router.navigate(['/']);
   }
 }
