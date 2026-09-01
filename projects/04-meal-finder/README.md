@@ -42,7 +42,7 @@ https://04mealfinder.netlify.app/
 - `computed()` for all filtering — memoized and recalculates only when the source signal changes
 - Favourite membership is derived once in `FavouriteService` as a `computed()` `Set` of ids — a template method call re-runs on every change detection, and a `computed()` takes no arguments, so what gets derived is the lookup structure rather than the per-meal predicate
 - `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
-- `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
+- `Location.back()` on the detail page, guarded by a navigation count — the page is reachable from two routes, so a hardcoded link would be wrong for one of them; but browser history is not application history, so `NavigationHistoryService` counts the navigations this app performed and Back routes to `/` when a detail URL was opened directly
 - Every route is lazy with `loadComponent()` — each page becomes its own chunk, so the initial bundle carries the shell and the router rather than all four pages (253 kB → 238 kB here)
 - A `**` wildcard route renders a not-found page instead of an empty outlet — it is declared last, because the router matches first-wins and a `**` placed earlier would swallow every other route
 - The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
@@ -90,7 +90,7 @@ https://04mealfinder.netlify.app/
 - `(keyup.enter)` — trigger a method when the user presses Enter
 - `[disabled]` binding — disable a button based on a reactive condition
 - Explicit remote states — the failure flag is set by the callback that observes the failure, never inferred from absent data, and `loadFinished` names what it asserts: the attempt is over, error included
-- `Location.back()` — navigate to the previous page in the browser history
+- `Location.back()` is browser history, not app history — it replays whatever the tab visited, so on a shared link or a refresh it leaves the site; a back control needs to know whether this app ever navigated, which is what counting `NavigationEnd` events from bootstrap answers
 - Accessible name of a form control — a `<label for>` bound to the input's `id` names the field; a `placeholder` is an example value and never a name
 - One `h1` per routed page — headings are the document outline, not a size scale; the brand in the nav is a link, so the search page states what it is with its own `h1`, and the rule that styles both page titles lives in the global stylesheet because component styles are scoped and cannot be shared
 - `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` and `visibility: hidden` remove
