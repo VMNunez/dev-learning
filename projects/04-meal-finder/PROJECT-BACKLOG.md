@@ -15,7 +15,6 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Unify how "is this a favourite?" is derived: `meal-detail-page.ts:24` uses a `computed()`, while `search-page.ts:48` and `favourites-page.ts:17` re-scan the array in a plain method on every call. The convention the majority of the derived state follows is `computed()` — make all three match. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Unify the error state: `search-page` sets an explicit `hasError` signal, while `meal-detail-page` infers failure structurally from `hasLoad() && !mealDetails()` (`meal-detail-page.html:34`). Give the detail page the same explicit `hasError` signal every other async page uses. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Handle HTTP failures once at the service boundary: `meal.service.ts:19-27` returns the raw `HttpClient.get()` observable with no `catchError`, so every page reinvents transport-error handling. Map failures to a consistent shape in the service. *(Effort: Small)*
 
@@ -50,6 +49,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — favourite membership derived once as a `computed()` `Set` in `FavouriteService` → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — detail page's back control rendered as a real `<button>`, user-agent styles reset → README, PLANNING, coverage css/junior, `_cross-topic-inbox.md` (html)
 - 2026-09-01 · **[Medium]** `[frontend]` — meal card root rendered as `<a [routerLink]>`, favourite button moved out of the link → README, PLANNING, coverage css/junior + css/middle, `_cross-topic-inbox.md` (html)
 - 2026-09-01 · **[Medium]** `[frontend]` — both favourite toggles named by a state-aware `aria-label` derived with `computed()` → README, coverage angular/junior, `_cross-topic-inbox.md` (html)
@@ -74,7 +74,7 @@
 
 Scored against the "Key patterns introduced" table in `PLANNING.md`.
 
-**Tally: 16 ✅ Demonstrated · 0 ⚠️ Shallow · 1 ❌ Missing**
+**Tally: 15 ✅ Demonstrated · 0 ⚠️ Shallow · 2 ❌ Missing**
 
 | Concept | Status | Note |
 |---|---|---|
@@ -82,7 +82,7 @@ Scored against the "Key patterns introduced" table in `PLANNING.md`.
 | `toSignal(ActivatedRoute.paramMap)` | ✅ | `meal-detail-page.ts:24-26` |
 | `effect()` | ✅ | The localStorage sync (`favourite.service.ts:14`) and the planned route-param effect driving the detail-page API call, with an `onCleanup` cancelling the in-flight request |
 | `localStorage + effect()` | ✅ | `favourite.service.ts:8,15-19` |
-| `Array.some()` | ✅ | `search-page.ts:49`, `favourites-page.ts:18`, `meal-detail-page.ts:24` |
+| `Array.some()` | ❌ | No longer in the project — the three membership scans were replaced by `FavouriteService.favouriteIds`, a `computed()` `Set` queried with `has(id)` |
 | `[...new Set()]` | ✅ | `favourites-page.ts:34` |
 | Optional chaining `?.` | ✅ | `meal-detail-page.html:27` |
 | `(input)` event | ✅ | `search-page.html:15` |
