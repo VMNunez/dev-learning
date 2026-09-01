@@ -15,7 +15,6 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Unify the error state: `search-page` sets an explicit `hasError` signal, while `meal-detail-page` infers failure structurally from `hasLoad() && !mealDetails()` (`meal-detail-page.html:34`). Give the detail page the same explicit `hasError` signal every other async page uses. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Handle HTTP failures once at the service boundary: `meal.service.ts:19-27` returns the raw `HttpClient.get()` observable with no `catchError`, so every page reinvents transport-error handling. Map failures to a consistent shape in the service. *(Effort: Small)*
 
 ### Low
@@ -23,7 +22,6 @@
 - [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add `[alt]="meal().strMeal"` to the meal image (`meal-card.html:12`) — it currently has no `alt` at all. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Drop the `as string` casts in `meal-detail-page.ts:29,53` and narrow the nullable `mealId` with a real guard (`if (!this.mealId) return;`); the casts throw away exactly the null-safety the type provides. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Rename `hasLoad` (`meal-detail-page.ts:23`) to `loadFinished` — it means "the attempt is over", including on error, which the current name does not convey. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add a wildcard route (`path: '**'`) in `app.routes.ts`; an unknown URL currently renders a blank outlet. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Remove the unused `title` signal in `app.ts:11`, left over from the CLI scaffold. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Convert the three routes to `loadComponent()` lazy loading in `app.routes.ts`; the app is small, but reviewers look for the pattern. *(Effort: Small)*
@@ -49,6 +47,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — detail page models four remote states, `200 {"meals": null}` split from a transport error → README, PLANNING
 - 2026-09-01 · **[Medium]** `[frontend]` — favourite membership derived once as a `computed()` `Set` in `FavouriteService` → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — detail page's back control rendered as a real `<button>`, user-agent styles reset → README, PLANNING, coverage css/junior, `_cross-topic-inbox.md` (html)
 - 2026-09-01 · **[Medium]** `[frontend]` — meal card root rendered as `<a [routerLink]>`, favourite button moved out of the link → README, PLANNING, coverage css/junior + css/middle, `_cross-topic-inbox.md` (html)
@@ -62,7 +61,7 @@
 
 #### Low
 
-*No low tasks closed yet.*
+- 2026-09-01 · **[Low]** `[frontend]` — `hasLoad` renamed `loadFinished`, the name now asserts that the attempt is over → README
 
 ### Backend
 
