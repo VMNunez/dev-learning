@@ -202,22 +202,10 @@ file, since one commit removes the row here and adds the line there.
 
 ## Suggested order for the open items
 
-**`REC-193` closed the same day (`c72fb848`), so the head of this pair is now `REC-191`, and it opens
-with `unfounded` — not `reasoned` — as the measured status of all six of its bars.** What follows is
-why the pair exists, kept because `REC-191` is still open.
-
-**`REC-193` → `REC-191` was a forced pair, ruled by Victor on 2026-09-01 while `REC-191` was being
-worked, and the split is the ruling.** He rejected the drafted fix on the ground that its inclusion
-tests were falsifiable but **ungrounded** — they test whether a bullet is legitimate, never whether the
-section works on the reader it is written for — and the analysis then found the larger fact:
-`_readme-standard.md` has no evidence layer at all, while its sibling family has had one since
-`REC-187`. The pair is carried as two rows rather than one two-session row for the reason the ledger's
-own step 3 gives: a row closes only on a cold reviewer's `approve`, so evidence work held inside
-`REC-191` would sit uncommitted in an open row with nothing recording it. `REC-193` closes on its own
-file and commit, **including on a negative result** — a measured absence of sources is what tells
-`REC-191` its bars can only be `reasoned`. What this pair deliberately does not carry is every format
-proposal the evidence surfaces that is not a section size; each is one row of its own with the quote
-that founds it.
+**The `REC-193` → `REC-191` pair is closed** — `REC-193` on `c72fb848`, `REC-191` on `7da3bad6`, both
+2026-09-01, with `REC-194` (`4ed9c584`) as the residue `REC-193` opened and closed the same day. Why the
+pair existed and what each half ruled is in `_recommendation-ledger-closed.md` and `git log -p`; nothing
+in it orders an open row any more.
 
 **Victor ruled the head of this queue again on 2026-08-31, later the same day, and this ruling
 displaces the interview-prep one below: the CV bullet work closes first, in two sessions — `REC-181`'s
