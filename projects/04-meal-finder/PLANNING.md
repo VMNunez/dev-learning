@@ -90,6 +90,7 @@ app/
 | `input.required()` + `output()` | The presentational `meal-card` and `category-filter` — data in, user intent out, no service injected, so two pages reuse the same card |
 | `:host` selector | An extracted component adds a wrapper element that is `display: inline` by default, so the filter's flex layout moves into its own stylesheet |
 | `<a [routerLink]>` as the card root | An element that navigates is a link, so keyboard focus, Enter and open-in-new-tab come from the tag; the favourite button sits outside it because a control cannot nest inside an anchor |
+| `<button type="button">` for an in-page action | An element that acts rather than navigates is a button; an `<a>` with no `href` is out of the tab order, has no `link` role and never fires on Enter, so the detail page's "Back" control is a button whose user-agent background, border, padding, font and cursor are reset |
 | `:focus-visible` + `:has()` | A focus ring for keyboard entry only, raised from the link to the whole card |
 | `overflow: hidden` on cards | Prevent images from breaking the card layout |
 | `position: absolute` + `top/right` | Favourite button overlay on the card |
