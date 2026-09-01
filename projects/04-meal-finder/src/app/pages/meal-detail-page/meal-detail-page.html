@@ -9,6 +9,7 @@
           <button
             class="favourite-btn"
             [class.active]="isFavourite()"
+            [attr.aria-label]="favouriteLabel()"
             (click)="toggleFavourite(mealDetails()!)"
           >
             @if (isFavourite()) {

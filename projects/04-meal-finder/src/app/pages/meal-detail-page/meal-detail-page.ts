@@ -29,6 +29,10 @@ export class MealDetailPage {
 
   favouriteMeals = this.favouriteService.favourites;
   isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId()));
+  favouriteLabel = computed(() => {
+    const name = this.mealDetails()?.strMeal ?? 'this meal';
+    return this.isFavourite() ? `Remove ${name} from favourites` : `Add ${name} to favourites`;
+  });
 
   constructor() {
     effect((onCleanup) => {

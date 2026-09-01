@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import type { Meal } from '../../models/meal.model';
 import { RouterLink } from '@angular/router';
 
@@ -13,6 +13,12 @@ export class MealCard {
   isFavourite = input.required<boolean>();
 
   favouriteToggled = output<Meal>();
+
+  favouriteLabel = computed(() =>
+    this.isFavourite()
+      ? `Remove ${this.meal().strMeal} from favourites`
+      : `Add ${this.meal().strMeal} to favourites`,
+  );
 
   onToggle(event: MouseEvent) {
     event.stopPropagation();
