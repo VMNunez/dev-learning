@@ -1255,7 +1255,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
-- Equality narrowing — use equality with a literal or another typed value to refine compatible union members
+- Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
 - User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
@@ -1266,7 +1266,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
-- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
+- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 05-task-manager
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
@@ -1283,7 +1283,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing
 - `satisfies` — check that an expression conforms to a contract while retaining useful inferred literal and property information
-- Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof
+- Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof ✅ 03-expense-tracker — the transaction form declares each control's own type instead of asserting `form.value as NewTransaction` at the emit
 - `typeof` in type positions — derive a type from an existing value without confusing it with the runtime `typeof` operator
 - Enum runtime behaviour — recognise that regular TypeScript enums emit runtime objects rather than existing only in the type system
 - String enums vs literal unions — choose between a runtime enum object and an erased union of allowed values based on actual runtime needs
