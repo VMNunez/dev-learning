@@ -71,8 +71,9 @@ app/
 | Pattern | Where used |
 |---|---|
 | Route parameters (`path: 'detail/:id'`) | Detail page URL |
-| `ActivatedRoute.snapshot.paramMap.get()` | Read the meal id from the URL |
+| `toSignal(ActivatedRoute.paramMap)` | Read the meal id from the URL as a signal, not a one-shot snapshot |
 | `effect()` | Trigger API call when a signal changes |
+| `effect()` cleanup callback | Cancel the in-flight request before the effect re-runs for a new route id |
 | `localStorage + effect()` | Persist favourites automatically |
 | `Array.some()` | Check if a meal is already in favourites |
 | `[...new Set()]` | Extract unique category names from the results |
