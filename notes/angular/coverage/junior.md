@@ -8,6 +8,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies ✅ 01-todo-list
 - Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure ✅ 01-todo-list
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
+- Attribute binding — reach for `[attr.x]` when the target is an HTML attribute with no DOM property behind it, such as an ARIA attribute or an SVG attribute, because a plain `[x]` binding on those silently sets nothing ✅ 04-meal-finder — both favourite toggles carry `[attr.aria-label]="favouriteLabel()"`, the only binding in the project whose target has no DOM property
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Key event modifiers — filter a keyboard event in the binding itself with `(keyup.enter)` rather than inspecting the event object in the component, so the template states which keystroke it handles ✅ 01-todo-list — `task-form.html` binds `(keyup.enter)="submit(taskInput)"` on the input so Enter and the button click reach one handler
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
