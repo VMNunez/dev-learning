@@ -9,7 +9,6 @@ smart/dumb split on the dashboard) never made it into the code.
 
 ## Tasks
 
-- [ ] **[High]** `[frontend]` — Wrap the `JSON.parse` in `TransactionService.loadTransactions()` in a `try/catch` that falls back to `[]`. Trigger: a malformed value under the `transactions` localStorage key makes the parse throw inside the field initializer, the service fails to construct and the app never bootstraps (blank page) with no way for the user to recover. *(Effort: Small)*
 - [ ] **[High]** `[frontend]` — Replace the manual `localStorage.setItem()` calls duplicated in `addTransaction()` and `deleteTransaction()` with a single `effect()` in the `TransactionService` constructor that reads `transactionList()` and writes it out. `effect()` is the headline pattern in PLANNING.md's "Key patterns introduced" table and currently appears nowhere in the app — the persistence is imperative instead. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Fix the default date in `transaction-form.ts` (initial value and `reset()`): `new Date().toISOString().split('T')[0]` computes the date in UTC, so in Spain (UTC+1/+2) any transaction entered between local midnight and 1–2am is pre-filled with yesterday's date. Build the string from `getFullYear()`/`getMonth()`/`getDate()` instead. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Split `dashboard-page` into the dumb children PLANNING.md planned (`summary-card`, `filter-bar`, `transaction-list`). It is currently one monolithic smart component holding markup, state and click handlers together, so the smart/dumb pattern is only demonstrated on the add-transaction page. *(Effort: Medium)*
@@ -18,6 +17,28 @@ smart/dumb split on the dashboard) never made it into the code.
 - [ ] **[Low]** `[frontend]` — Extract the repeated `'transactions'` localStorage key in `TransactionService` into a `private readonly STORAGE_KEY` constant (used in 3 places). *(Effort: Small)*
 
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/03-expense-tracker`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+
+## Closed
+
+### Frontend
+
+#### High
+
+- 2026-09-01 · **[High]** `[frontend]` — `loadTransactions()` survives a corrupt or wrong-shaped stored value → README, PLANNING State management, coverage javascript/junior + typescript/junior
+
+#### Medium
+
+*No medium tasks closed yet.*
+
+#### Low
+
+*No low tasks closed yet.*
+
+### Backend
+
+*No backend tasks — Angular-only project.*
+
+---
 
 ## Learning objectives
 
