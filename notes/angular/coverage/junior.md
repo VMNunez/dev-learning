@@ -154,14 +154,14 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 ## Testing Angular behaviour
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
-- `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies
+- `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies ✅ 04-meal-finder — each page spec adds exactly the providers its unit injects (`provideRouter([])` for the routed pages, plus `provideHttpClient()` for the two that call the API), where the scaffold suite failed on `NG0201: No provider found for ActivatedRoute`
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
 - Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation
 - HTTP tests with `provideHttpClientTesting()` — intercept a request with `HttpTestingController`, assert method, URL, and body, then flush the intended response
 - `provideHttpClientTesting()` vs `HttpClientTestingModule` — use the standalone provider in current code and recognise the deprecated module-based setup in older suites
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
 - HTTP error tests — flush an error response and assert the service's observable or state follows the documented failure path
-- `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction
+- `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction ✅ 04-meal-finder — `category-filter.spec.ts` changes the `selected` input, awaits `whenStable()` and reads back which button carries `aria-pressed="true"`, instead of asserting the component was constructed
 - `componentRef.setInput()` — supply a required input from a test before the first change detection, because a component contract that a parent normally satisfies is the test harness's responsibility once the component is mounted alone ✅ 01-todo-list — `task-item.spec.ts` feeds the `input.required<Task>()` through `componentRef.setInput` before `whenStable()`, where the render previously threw NG0950
 
 ## Debugging and maintained-code navigation
