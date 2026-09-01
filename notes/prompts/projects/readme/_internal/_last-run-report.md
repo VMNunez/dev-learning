@@ -1,11 +1,11 @@
 # Pipeline self-report — readme-audit
 
-Date: 2026-09-01 · Project: projects/03-expense-tracker (Angular → target `global` only)
-Status: open
+Date: 2026-09-01 · Project: projects/04-meal-finder (Angular → target `global` only)
+Status: clean
 
-- **Report discipline** — both subagents returned inside their line budgets, with the `N lines, read to EOF` proof for the standard and their own prompt; nothing discarded, no code dumps, no re-dispatch.
-- **Trace verification** — the reviewer's trace covered all 12 required sections in standard order with a per-section verdict; no gap, no re-dispatch, no false alarm. The two reports disagree by one on the standard's length (230 vs 231 lines, `wc -l` says 230) — a trailing-newline artefact, not a partial read.
+- **Report discipline** — both subagents returned inside their line budgets with the `N lines, read to EOF` proof; nothing discarded, no code dumps, no re-dispatch.
+- **Trace verification** — the reviewer's trace covered all 12 required sections in standard order with a per-section verdict; no gap, no re-dispatch, no false alarm.
 - **Coherence** — N/A: Angular project, single README, coherence subagent correctly skipped.
 - **Failure protocol** — not triggered; no subagent errored and no README was excluded from the commit.
-- **Anything else** — two contradictions found by reading, neither of them in this prompt. (1) Both `/readme-audit` launchers still order the pre-2026-08-29 hand-over commit and attribute it to "its own rule", which the prompt has contradicted since that date; it cost nothing only because the launchers' first rule declares the prompt authoritative. Routed to `REC-190` (`9cd5207f`) — a launcher is neither this prompt nor a rulebook, so the at-end refinement, scoped to the prompt file that ran, cannot reach it. (2) `_pipeline-self-report.md` → "How to commit it" still cites `readme-audit` as an example of a pipeline "whose main output is never auto-committed"; **rejected on bar condition 3** — a stale example in a shared contract this run may not edit, and it changed no output.
-- **Verdict** — pipeline clean for `readme-audit.md` itself: no finding this run targets the prompt file that executed, so no draft and no cold-reviewer dispatch. The live item is `REC-190`, in the ledger, not here.
+- **Anything else** — the author's read-proof counts were off by one in both directions it gave (`_readme-standard.md` 313 vs `wc -l` 312; `_readme-write-prompt.md` 70 vs 69) while the reviewer's matched exactly (312, 77); the 2026-09-01 run on `03-expense-tracker` logged the same one-line gap on the same file, so this is the second occurrence. It falsifies nothing — a full read is what the proof asserts and both reports show one — and no output changed, so it is recorded, not routed. The reviewer's prose also miscounted Architecture decisions as 15 where the file has 14; again report-only. The run-start check found the predecessor's `Status: open` item, `REC-190`, already closed in `3b4a00a7`.
+- **Verdict** — pipeline clean: no finding this run targets `readme-audit.md` or any file it may edit, so no draft and no cold-reviewer dispatch.
