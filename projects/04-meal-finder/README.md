@@ -43,6 +43,7 @@ https://04mealfinder.netlify.app/
 - `toSignal(paramMap)` + `effect()` on the detail page — the router reuses the component instance when only `:id` changes, so the page reacts to the parameter instead of reading it once
 - `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
 - The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
+- The nav lives in the root component around `<router-outlet />` — the router destroys each routed page, so chrome that must survive navigation belongs outside the outlet, and its favourites badge is a `computed()` over the `FavouriteService` signal rather than a copy per page
 - `hasSearched` and `hasLoad` signals to express three distinct states — a single results array cannot distinguish between loading, no results and not searched yet
 
 ---
@@ -68,6 +69,7 @@ https://04mealfinder.netlify.app/
 - `effect()` — run side effects automatically when a signal changes
 - `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect runs again for a new route id
 - `computed()` — derive filtering, counts and unique categories from signals
+- `RouterOutlet` and the application shell — the router destroys and recreates the routed component on every navigation, so persistent chrome goes in the root component
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `asReadonly()` — keep the writable signal private in the service so its methods are the only writers
 - `takeUntilDestroyed` + `DestroyRef` — cancel HTTP subscriptions when a component is destroyed
