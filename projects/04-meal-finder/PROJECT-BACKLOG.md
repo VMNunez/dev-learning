@@ -15,11 +15,10 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Extract the planned dumb components `meal-card` and `category-filter`: the card markup is duplicated between `search-page.html` and `favourites-page.html`, and neither page decomposes. PLANNING specifies both as presentational children that receive input and emit events — the smart/dumb split is the pattern to show off here. *(Effort: Medium)*
-- [ ] **[Medium]** `[frontend]` — Fix the dead-end category filter on the favourites page: the "All" button only renders `@if (favourites().length > 0)` while the grid is driven by `filteredFavourites()`, so removing the last favourite of the selected category leaves the user on an empty grid. Gate the reset/button on `filteredFavourites().length`. *(Effort: Small)*
+- [ ] **[Medium]** `[frontend]` — Re-check the dead-end category filter on the favourites page: the "All" button now renders `@if (categories().length > 0)` inside `category-filter`, and `favourites-page.ts:toggleFavourite` already resets `selectedCategory` when the filtered grid empties. Verify whether any dead end survives before changing anything. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Give the search input a real label: `search-page.html:14` has only a `placeholder`, which screen readers do not announce and which vanishes on focus. Add a `<label for="meal">` (visually hidden if needed) or an `aria-label`. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Add accessible names to every icon-only button: the `★`/`☆` favourite toggles (`search-page.html:43`, `meal-detail-page.html:9`) and the `×` remove button (`favourites-page.html:20`) announce as just "button". Bind an `aria-label` that reflects the current state. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Make the meal cards keyboard-reachable: they are `<div class="meal-card" [routerLink]="...">` (`search-page.html:40`, `favourites-page.html`), and `routerLink` on a `div` is not focusable or activatable by keyboard. Render them as `<a [routerLink]>`. *(Effort: Small)*
+- [ ] **[Medium]** `[frontend]` — Add accessible names to every icon-only button: the `★`/`☆` favourite toggle (`meal-card.html:4`, now shared by both pages) and the detail page's toggle (`meal-detail-page.html:9`) announce as just "button". Bind an `aria-label` that reflects the current state. *(Effort: Small)*
+- [ ] **[Medium]** `[frontend]` — Make the meal cards keyboard-reachable: the card root is `<div class="meal-card" [routerLink]="...">` (`meal-card.html:1`), and `routerLink` on a `div` is not focusable or activatable by keyboard. Render it as `<a [routerLink]>`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Replace the detail page's fake link: `meal-detail-page.html:2` is an `<a (click)="goBack()">` with no `href`, so it is not focusable and is not announced as interactive. Use a `<button>`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Unify how "is this a favourite?" is derived: `meal-detail-page.ts:24` uses a `computed()`, while `search-page.ts:48` and `favourites-page.ts:17` re-scan the array in a plain method on every call. The convention the majority of the derived state follows is `computed()` — make all three match. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Unify the error state: `search-page` sets an explicit `hasError` signal, while `meal-detail-page` infers failure structurally from `hasLoad() && !mealDetails()` (`meal-detail-page.html:34`). Give the detail page the same explicit `hasError` signal every other async page uses. *(Effort: Small)*
@@ -27,15 +26,15 @@
 
 ### Low
 
-- [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear in all three page stylesheets (e.g. `search-page.css:55,118,143`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Add `[alt]="meal.strMeal"` to the meal images (`search-page.html:55` and the favourites card) — they currently have no `alt` at all. *(Effort: Small)*
+- [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
+- [ ] **[Low]** `[frontend]` — Add `[alt]="meal().strMeal"` to the meal image (`meal-card.html:12`) — it currently has no `alt` at all. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Drop the `as string` casts in `meal-detail-page.ts:29,53` and narrow the nullable `mealId` with a real guard (`if (!this.mealId) return;`); the casts throw away exactly the null-safety the type provides. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Rename `hasLoad` (`meal-detail-page.ts:23`) to `loadFinished` — it means "the attempt is over", including on error, which the current name does not convey. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Add a wildcard route (`path: '**'`) in `app.routes.ts`; an unknown URL currently renders a blank outlet. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Remove the unused `title` signal in `app.ts:11`, left over from the CLI scaffold. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Convert the three routes to `loadComponent()` lazy loading in `app.routes.ts`; the app is small, but reviewers look for the pattern. *(Effort: Small)*
 
-- [ ] **[Low]** `[frontend]` — Give the category filter an active affordance: the buttons in `favourites-page.html:6-12` never reflect `selectedCategory()`, and `favourites-page.css:29-41` styles only `:hover`, so once a filter is applied nothing on screen says which one — the grid shrinks with no visible cause. Bind `[class.active]` (and `aria-pressed`) from the selected category, "All" included. *(Effort: Small)* *(raised 2026-09-01 while closing the URL-state task)*
+- [ ] **[Low]** `[frontend]` — Give the category filter an active affordance: the buttons in `category-filter.html` never reflect the selected category — the component receives no `selected` input at all — and `category-filter.css` styles only `:hover`, so once a filter is applied nothing on screen says which one — the grid shrinks with no visible cause. Bind `[class.active]` (and `aria-pressed`) from the selected category, "All" included. *(Effort: Small)* *(raised 2026-09-01 while closing the URL-state task)*
 - [ ] **[Low]** `[frontend]` — Give the nav an active-route affordance: `app.html:2-3` uses plain `routerLink`, so on `/favourites` nothing marks the current page and `app.css:29` styles only `:hover`. Add `routerLinkActive` plus `ariaCurrentWhenActive`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Restore a heading on the search page: the old `<h1>Meal Finder</h1>` went with the page header, and the brand in the nav is an `<a>`, not a heading, so `/` now renders with zero `h1` while `/favourites` still has one (`favourites-page.html:2`). *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Fix or delete the scaffold spec: `app.spec.ts:21` still asserts an `h1` containing `Hello, 04-meal-finder`, a signal the root component no longer has. It was already failing before the nav work (the root template never had that heading), and it is the last file referencing the deleted `title`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
@@ -55,6 +54,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — `meal-card` and `category-filter` extracted as presentational children reused by two pages → README, PLANNING, coverage architecture/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — search term moved to the URL as `?q=`, results re-derived on load → README, PLANNING, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — nav and live favourites count moved into the root component, outside the outlet → README, coverage angular/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — empty-search guard moved into `onSearchMeals()`, covering the Enter path → README, PLANNING
