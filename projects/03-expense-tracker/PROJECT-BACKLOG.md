@@ -9,7 +9,6 @@ implemented.
 
 ## Tasks
 
-- [ ] **[Low]** `[frontend]` — Stop force-casting `this.transactionForm.value as NewTransaction` in `transaction-form.ts`. The form's `type` control is `string | null` while the model wants `'income' | 'expense'`; build the emitted object field by field (or narrow `type` explicitly) so the assertion is not hiding a real type mismatch. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/03-expense-tracker`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
 
 ## Closed
@@ -28,6 +27,7 @@ implemented.
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — form controls typed to the model, submit emits without `as NewTransaction` → README, PLANNING Key patterns, coverage typescript/junior
 - 2026-09-01 · **[Low]** `[frontend]` — transaction ids generated with `crypto.randomUUID()` instead of `Date.now()` → README, PLANNING Key patterns, coverage javascript/junior
 - 2026-09-01 · **[Low]** `[frontend]` — `'transactions'` key extracted into `private readonly STORAGE_KEY` → coverage typescript/junior (`readonly` properties)
 
