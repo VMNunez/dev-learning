@@ -15,7 +15,6 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Give the search input a real label: `search-page.html:14` has only a `placeholder`, which screen readers do not announce and which vanishes on focus. Add a `<label for="meal">` (visually hidden if needed) or an `aria-label`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Add accessible names to every icon-only button: the `★`/`☆` favourite toggle (`meal-card.html:4`, now shared by both pages) and the detail page's toggle (`meal-detail-page.html:9`) announce as just "button". Bind an `aria-label` that reflects the current state. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Make the meal cards keyboard-reachable: the card root is `<div class="meal-card" [routerLink]="...">` (`meal-card.html:1`), and `routerLink` on a `div` is not focusable or activatable by keyboard. Render it as `<a [routerLink]>`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Replace the detail page's fake link: `meal-detail-page.html:2` is an `<a (click)="goBack()">` with no `href`, so it is not focusable and is not announced as interactive. Use a `<button>`. *(Effort: Small)*
@@ -53,6 +52,7 @@
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — search input named by a visually hidden `<label for>` instead of its placeholder → README, coverage css/junior, `_cross-topic-inbox.md` (html)
 - 2026-09-01 · **[Medium]** `[frontend]` — favourites category filter has no dead end — DECISION, no code change → the "All" guard and the `selectedCategory` reset in `toggleFavourite` both predate the 2026-07-14 review (3b786bdd)
 - 2026-09-01 · **[Medium]** `[frontend]` — `meal-card` and `category-filter` extracted as presentational children reused by two pages → README, PLANNING, coverage architecture/junior
 - 2026-09-01 · **[Medium]** `[frontend]` — search term moved to the URL as `?q=`, results re-derived on load → README, PLANNING, coverage angular/junior
