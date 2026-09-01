@@ -45,6 +45,11 @@ project. Your attention budget belongs to the README.
   render* — the blank lines, not the order of the lines.
 - **Quality filter** — every section passes both the recruiter and the interviewer lens; cut or sharpen
   anything that only impresses one.
+- **Own-text test** — every claim the README makes is stated in the README's own text (a sentence, a
+  bullet or a table cell) and never only inside a visual — the standard's *A third reader, and it is not
+  human*. Fix it in the section that owns the claim (Tech stack, Features, the title sentence), and on a
+  full-stack project let *Which README owns a concept* decide which README that is — never by touching
+  the visual.
 - **Truthfulness** — no section claims something not in the code/PLANNING; "What I learned" and patterns
   match the plan's learning objectives (add any missing objective).
 - **In-progress markers** — no leftover "coming soon" fragments except one clean placeholder per

@@ -68,6 +68,25 @@ A section that fails both is noise — cut or rewrite it. Passing only the recru
 the goal is a consultancy that asks technical questions. Never define basic terms — a README assumes a
 developer reader.
 
+**A third reader, and it is not human.** Before a recruiter opens the repository, a screen may
+already have read it: many recruiting teams run tooling that parses GitHub profiles and repositories
+as part of sourcing and screening. That reader gets no section of its own and no second voice — it
+gets one inclusion test: **every claim this README makes is stated in this README's own text** — a
+sentence, a bullet or a table cell — **and never only inside a visual.** A visual may be the best
+place a thing is *shown*; it may never be the only place it is *stated* — a technology named only in
+a screenshot caption, a role difference visible only inside a GIF, an app whose what-it-does lives
+only in the demo image. Each of those is fixed in the section that owns the claim — Tech stack for a
+technology, Features for a behaviour, the title sentence for what the app does — and on a full-stack
+project *Which README owns a concept* decides which README that section sits in. Never by touching
+the visual. And this rule licenses nothing beyond that test: it is not a reason to trim or shrink
+visuals — the evidence for them is the stronger of the two and the machine side is *absent*, not
+negative — nor a word or length budget of its own, the Length rule below being the recruiter's lens
+and not this reader's, nor XML-style tagging.
+
+*(Evidence: `_readme-evidence.md` → Assertions, "A README is read by an LLM as well as a human" — that
+the reader exists is founded; everything about what it rewards is **reasoned**, carried from CV sources
+and a library-docs paper, and marked as such here.)*
+
 **Length — recruiter lens.** The global README is scanned in seconds; keep it tight enough that a
 recruiter reaches "What I learned" without fatigue. When a section runs long, the depth belongs in the
 backend/frontend README or in `notes/` — link to it, do not inline it. The backend/frontend READMEs may
