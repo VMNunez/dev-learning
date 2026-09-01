@@ -19,7 +19,7 @@
 
 ### Low
 
-- [ ] **[Low]** `[frontend]` — Encode the search term before it reaches the URL: `meal.service.ts` interpolates `name` straight into `search.php?s=${name}`, so a term containing `&`, `#`, `+` or a space is parsed as query syntax and the request silently searches for the wrong thing (`beef & rice` searches for `beef `). Wrap it in `encodeURIComponent()`, or build the query with `HttpParams`. *(Effort: Small)* *(raised 2026-09-01 while closing the service-boundary error-handling task — same file, seen while rewriting the two request URLs)*
+*No open Low tasks.*
 
 
 ---
@@ -51,6 +51,7 @@
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — both API queries built with `HttpParams`, the search term no longer interpolated into the URL → README, PLANNING; coverage already marked 02-weather-app (angular/junior + security/junior)
 - 2026-09-01 · **[Low]** `[frontend]` — `How to run` path corrected to `projects/` after the repository reorg → README only, no concept
 - 2026-09-01 · **[Low]** `[frontend]` — whole scaffold spec suite repaired, 6 failures → 11 passing tests (task named 1 file, 8 were broken) → PLANNING, coverage angular/junior
 - 2026-09-01 · **[Low]** `[frontend]` — last raw hex replaced by `--on-primary` / `--favourite` / `--favourite-inactive` tokens → README, PLANNING; coverage already marked 01-todo-list
