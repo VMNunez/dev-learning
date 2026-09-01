@@ -124,7 +124,7 @@ git clone https://github.com/VMNunez/dev-learning.git
 ```
 
 ```
-cd dev-learning/angular/04-meal-finder
+cd dev-learning/projects/04-meal-finder
 ```
 
 ```
