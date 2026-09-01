@@ -76,7 +76,10 @@ Both launcher catalogs contain exactly 31 files and must reference the same 31 c
 and its worked exemptions are in `_internal/_session-rules.md` → "A launcher points at a commit or gate
 rule"; the validator does not check this, so it is caught by reading.
 Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a prompt — and after
-editing a skill, a coverage file, a notes plan, or any file another file points at, since it also
+editing a skill, a coverage file, a notes plan, or any file another file points at, **and before the
+commit that collapses a ledger row**, which is the one act that writes the line invariant 9 reads and was
+missing from this list until `REC-195` (the `REC-190` closure landed with two schema fields absent and
+was found by a later session's run, a day late). Run it, since it also
 checks nine invariants nothing else can see: that both catalogues advertise the **same** arguments for a
 command and that every key a launcher advertises is one the canonical prompt's own `## Configuration`
 block accepts, in both directions — a key the prompt accepts and neither launcher mentions fails too,
@@ -193,7 +196,14 @@ header states** — one physical line per resolved `REC-NNN`, ordered by ID, end
 commit hash or an em dash where the closure implemented nothing, never a `{commit}` template; a two-map
 declaration from `REC-058` on, which is where the field becomes continuous on disk; and, from `REC-107`
 on **and only where the line names a real commit**, a `cold reviewer:` field reaching `approve` or
-`approve-with-tightening` — a rejection gates no edit and owes no reviewer. No ID may be open in
+`approve-with-tightening` — a rejection gates no edit and owes no reviewer. **One escape, added
+2026-09-01 (`REC-195`): `cold reviewer: unrecorded`**, for a verdict no artefact preserved — `REC-190`
+was collapsed with the token missing and neither the deleted row, the commit nor any report held it, so
+silence and an invented `approve` were the only two options, one indistinguishable from a skipped gate
+and the other the self-approval this check exists to expose. It is accepted only as the **first** token
+of the field and only when the clause names a `REC-NNN` row adjudicating it, and every use is counted on
+the PASS line, so it cannot accumulate unseen. It is not offered to invariant 8's self-reports: those are
+written by the run that held the gate, where a verdict is never lost, only omitted. No ID may be open in
 `_recommendation-ledger.md` and closed here at once. Until this check nothing read that schema, though
 three files state it, which is how the 2026-08-18 collapse left six rejected rows carrying the literal
 `{commit}`. Two published limits and one deliberate non-gate: it proves the fields are **present**, never

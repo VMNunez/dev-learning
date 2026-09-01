@@ -90,6 +90,10 @@ promotes lands there and never here, which is what stops this file growing again
    tokens were written for a drafted edit, and this path has already improvised a fourth (`revise`).
    Then the two-map test's own declaration, `maps unaffected` / `maps: <map> — <row>`, because the
    reviewer is the last gate before the commit that has to carry that edit.
+   **Write the returned token into the row the moment it returns, not at the collapse.** The review and
+   the collapse are routinely different sessions, and the second cannot recover what the first never
+   wrote down: `REC-190`'s verdict was lost exactly that way and its line now reads
+   `cold reviewer: unrecorded` forever (`REC-195`). The token costs four words in the Resolution cell.
    **The rounds are what this gate costs, and the loop has four controls.** Only `reject` or
    `sweep: incomplete` opens a round — `approve-with-tightening` means what it says: apply it in the
    form approved and close the row. The reviewer passes the bar it applies, so a finding that changes
@@ -108,7 +112,11 @@ promotes lands there and never here, which is what stops this file growing again
    historical lines are not retrofitted. **`validate-prompt-system.ps1` invariant 9 reads that
    schema** — the shape, the ID order, the commit field, the two-map declaration from `REC-058` and
    the verdict on any line naming a real commit — so a closure that drops a field fails the run
-   instead of being found by the next reader. What it cannot see is whether the reviewer ran;
+   instead of being found by the next reader. **Run it before the closure commit, not after**: nothing
+   triggers that script automatically, and `REC-190` was collapsed on 2026-09-01 missing two fields and
+   a verdict that by then no artefact held — found a day later by a run doing something else, when the
+   token was already unrecoverable (`REC-195`). One command, at the one moment it can still be repaired.
+   What it cannot see is whether the reviewer ran;
    `README.md` states that limit with the rest of its contract. Before collapsing, promote any rule the row established that
    governs **future** work into `_recommendation-resolution-doctrine.md`, the file this preamble's steps
    cite. A rule that other items obey must not stay buried in a
