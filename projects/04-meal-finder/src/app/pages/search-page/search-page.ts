@@ -27,10 +27,13 @@ export class SearchPage {
   });
 
   onSearchMeals(meal: string) {
+    const term = meal.trim();
+    if (!term) return;
+
     this.isLoading.set(true);
     this.hasError.set(false);
     this.mealService
-      .searchMeals(meal)
+      .searchMeals(term)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (mealResponse: MealResponse) => {
