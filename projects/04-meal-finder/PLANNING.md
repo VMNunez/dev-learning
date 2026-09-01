@@ -92,6 +92,7 @@ app/
 | `**` wildcard route | An unmatched URL renders `NotFoundPage` rather than a blank outlet; it is declared last because route matching is first-wins |
 | `computed()` for nav counts | Live favourite count in the nav bar |
 | `input.required()` + `output()` | The presentational `meal-card` and `category-filter` — data in, user intent out, no service injected, so two pages reuse the same card |
+| Back guarded by an app-navigation count | `Location.back()` replays browser history, so a directly opened detail URL would leave the site; `NavigationHistoryService` counts `NavigationEnd` from bootstrap and the page falls back to `/` |
 | `routerLinkActive` + `ariaCurrentWhenActive` | The router marks the current nav link; the root link needs `{ exact: true }` because active matching is prefix-based |
 | Selected state as an `input()` | The filter is presentational, so the page owns `selectedCategory` and passes it back down; the child states it as `[class.active]` for the eye and `[attr.aria-pressed]` for the accessibility tree |
 | `:host` selector | An extracted component adds a wrapper element that is `display: inline` by default, so the filter's flex layout moves into its own stylesheet |
