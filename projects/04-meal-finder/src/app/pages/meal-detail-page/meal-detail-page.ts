@@ -5,6 +5,7 @@ import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 import { Location } from '@angular/common';
 import { map } from 'rxjs';
+import { FavouriteService } from '../../services/favourite.service';
 
 @Component({
   selector: 'app-meal-detail-page',
@@ -15,6 +16,7 @@ import { map } from 'rxjs';
 export class MealDetailPage {
   private activatedRoute = inject(ActivatedRoute);
   private mealService = inject(MealService);
+  private favouriteService = inject(FavouriteService);
   private location = inject(Location);
 
   mealId = toSignal(this.activatedRoute.paramMap.pipe(map((params) => params.get('id'))), {
@@ -25,7 +27,7 @@ export class MealDetailPage {
   isLoading = signal<boolean>(false);
   hasLoad = signal<boolean>(false);
 
-  favouriteMeals = this.mealService.favourites;
+  favouriteMeals = this.favouriteService.favourites;
   isFavourite = computed(() => this.favouriteMeals().some((meal) => meal.idMeal === this.mealId()));
 
   constructor() {
@@ -58,7 +60,9 @@ export class MealDetailPage {
     const id = this.mealId();
     if (!id) return;
 
-    this.isFavourite() ? this.mealService.deleteFavourite(id) : this.mealService.addFavourite(meal);
+    this.isFavourite()
+      ? this.favouriteService.deleteFavourite(id)
+      : this.favouriteService.addFavourite(meal);
   }
 
   goBack() {

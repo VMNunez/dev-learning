@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { MealService } from '../../services/meal.service';
 import type { Meal } from '../../models/meal.model';
 import { RouterLink } from '@angular/router';
+import { FavouriteService } from '../../services/favourite.service';
 
 @Component({
   selector: 'app-favourites-page',
@@ -10,9 +10,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './favourites-page.css',
 })
 export class FavouritesPage {
-  private mealService = inject(MealService);
+  private favouriteService = inject(FavouriteService);
   selectedCategory = signal<string>('');
-  favourites = this.mealService.favourites;
+  favourites = this.favouriteService.favourites;
 
   isFavourite(id: string) {
     return this.favourites().some((favourite) => favourite.idMeal === id);
@@ -21,12 +21,12 @@ export class FavouritesPage {
   toggleFavourite(favourite: Meal, event: MouseEvent) {
     event.stopPropagation();
     if (this.isFavourite(favourite.idMeal)) {
-      this.mealService.deleteFavourite(favourite.idMeal);
+      this.favouriteService.deleteFavourite(favourite.idMeal);
       if (this.filteredFavourites().length === 0) {
         this.selectedCategory.set('');
       }
     } else {
-      this.mealService.addFavourite(favourite);
+      this.favouriteService.addFavourite(favourite);
     }
   }
 

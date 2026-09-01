@@ -3,6 +3,7 @@ import { MealService } from '../../services/meal.service';
 import type { Meal, MealResponse } from '../../models/meal.model';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FavouriteService } from '../../services/favourite.service';
 
 @Component({
   selector: 'app-search-page',
@@ -13,12 +14,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class SearchPage {
   private mealService = inject(MealService);
   private destroyRef = inject(DestroyRef);
+  private favouriteService = inject(FavouriteService);
   meals = signal<Meal[]>([]);
   hasSearched = signal<boolean>(false);
   searchTerm = signal<string>('');
   hasError = signal<boolean>(false);
   isLoading = signal<boolean>(false);
-  favourites = this.mealService.favourites;
+  favourites = this.favouriteService.favourites;
 
   favouritesNumber = computed(() => {
     return this.favourites().length;
@@ -46,13 +48,13 @@ export class SearchPage {
   }
 
   isFavourite(id: string) {
-    return this.mealService.favourites().some((meal) => meal.idMeal === id);
+    return this.favouriteService.favourites().some((meal) => meal.idMeal === id);
   }
 
   toggleFavourite(meal: Meal, event: MouseEvent) {
     event.stopPropagation();
     this.isFavourite(meal.idMeal)
-      ? this.mealService.deleteFavourite(meal.idMeal)
-      : this.mealService.addFavourite(meal);
+      ? this.favouriteService.deleteFavourite(meal.idMeal)
+      : this.favouriteService.addFavourite(meal);
   }
 }
