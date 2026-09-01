@@ -4,12 +4,11 @@
 **Last Reviewed — frontend:** 2026-07-14
 
 **Overall quality:** Good — clean signal-based architecture with no HTTP in components and consistent
-CSS theme tokens. `effect()` persistence has since been implemented; the smart/dumb split on the
-dashboard is still missing.
+CSS theme tokens. `effect()` persistence and the dashboard's smart/dumb split have since been
+implemented.
 
 ## Tasks
 
-- [ ] **[Medium]** `[frontend]` — Split `dashboard-page` into the dumb children PLANNING.md planned (`summary-card`, `filter-bar`, `transaction-list`). It is currently one monolithic smart component holding markup, state and click handlers together, so the smart/dumb pattern is only demonstrated on the add-transaction page. *(Effort: Medium)*
 - [ ] **[Low]** `[frontend]` — Stop force-casting `this.transactionForm.value as NewTransaction` in `transaction-form.ts`. The form's `type` control is `string | null` while the model wants `'income' | 'expense'`; build the emitted object field by field (or narrow `type` explicitly) so the assertion is not hiding a real type mismatch. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Replace `id: Date.now()` in `TransactionService.addTransaction()` with `crypto.randomUUID()`. Two submits inside the same millisecond (fast double-click) produce duplicate ids, and `deleteTransaction(id)` then removes both rows at once. *(Effort: Small)*
 
@@ -26,6 +25,7 @@ dashboard is still missing.
 
 #### Medium
 
+- 2026-09-01 · **[Medium]** `[frontend]` — `dashboard-page` split into `summary-card`, `filter-bar` and `transaction-list` → README, PLANNING component tree, coverage angular/junior + architecture/junior (already covered and marked)
 - 2026-09-01 · **[Medium]** `[frontend]` — default form date built from the local clock, not the UTC day → README, PLANNING Key patterns, coverage javascript/junior
 
 #### Low
@@ -51,10 +51,10 @@ dashboard is still missing.
 | `localStorage` + `effect()` | ✅ Demonstrated | transaction.service.ts — single `effect()` in the constructor persists the signal |
 | `computed()` with filters | ✅ Demonstrated | dashboard-page.ts:20-49 |
 | `Omit<T, K>` | ✅ Demonstrated | transaction.model.ts:9 |
-| Smart/dumb pattern | ⚠️ Shallow | dashboard-page is monolithic; only add-transaction-page/transaction-form splits |
+| Smart/dumb pattern | ✅ Demonstrated | both pages are containers; `summary-card`, `filter-bar`, `transaction-list` and `transaction-form` take `input()` and emit `output()` |
 | `@media (min-width)` | ✅ Demonstrated | dashboard-page.css:163-170 |
 | `position: absolute` + `relative` | ✅ Demonstrated | dashboard-page.css:86,131-133 |
 
-**Tally:** 10 ✅ · 1 ⚠️ · 0 ❌
+**Tally:** 11 ✅ · 0 ⚠️ · 0 ❌
 
 Tests are out of scope for this project — testing enters the roadmap at project 07.
