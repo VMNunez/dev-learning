@@ -1253,7 +1253,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
-- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value
+- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
@@ -1391,7 +1391,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
-- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
+- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing ✅ 03-expense-tracker — `TransactionService.loadTransactions()` treats the stored string as untrusted text and survives a `SyntaxError` from `JSON.parse`
 
 ### Arrays and iteration
 
@@ -1458,7 +1458,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
 - Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
-- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently
+- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently ✅ 03-expense-tracker — the localStorage read resolves the parse failure at its own boundary and logs the original error instead of swallowing it
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
 - Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
 - Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime

@@ -55,7 +55,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
-- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value
+- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
