@@ -86,6 +86,7 @@ app/
 | `hasSearched` signal | Show empty state only after a search, not on load |
 | `(keyup.enter)` | Submit search by pressing Enter |
 | `@else if` | Handle multiple template states |
+| Four remote states, not two | An unknown id answers `200 {"meals": null}`, so "not found" and "request failed" are separate branches; the failure is recorded by the callback that observes it, never inferred from the absence of data |
 | `computed()` for nav counts | Live favourite count in the nav bar |
 | `input.required()` + `output()` | The presentational `meal-card` and `category-filter` — data in, user intent out, no service injected, so two pages reuse the same card |
 | `:host` selector | An extracted component adds a wrapper element that is `display: inline` by default, so the filter's flex layout moves into its own stylesheet |
