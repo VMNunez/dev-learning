@@ -94,7 +94,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
-- `some` vs `every` — express existential or universal checks with short-circuiting ✅ 04-meal-finder
+- `some` vs `every` — express existential or universal checks with short-circuiting ✅ 06-hr-portal — `employee.service.ts` and `department.service.ts` short-circuit their uniqueness checks with `some`
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
