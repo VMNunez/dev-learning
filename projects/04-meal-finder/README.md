@@ -44,6 +44,7 @@ https://04mealfinder.netlify.app/
 - `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
 - The empty-search guard lives in `onSearchMeals()`, not only in the button's `[disabled]` — the Enter key is a second entry path to the same operation, and a UI-level rule does not cover it
 - The nav lives in the root component around `<router-outlet />` — the router destroys each routed page, so chrome that must survive navigation belongs outside the outlet, and its favourites badge is a `computed()` over the `FavouriteService` signal rather than a copy per page
+- `meal-card` and `category-filter` are presentational — they inject no service and receive their data through `input.required()`, so the same card serves the search page as a favourite toggle and the favourites page as a remove control
 - `hasSearched` and `hasLoad` signals to express three distinct states — a single results array cannot distinguish between loading, no results and not searched yet
 
 ---
@@ -74,6 +75,8 @@ https://04mealfinder.netlify.app/
 - `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
 - `asReadonly()` — keep the writable signal private in the service so its methods are the only writers
 - Nullable API responses — a response type is an unchecked assertion, so `meals` is typed `Meal[] | null` and normalised where it enters the app
+- Container / presentational split — a child that renders `input()` data and emits `output()` events owns no domain state, which is what lets two different parents reuse it
+- `:host` — extracting a component adds a wrapper element that is `display: inline` by default, so layout the parent used to provide moves into the child's stylesheet
 - `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
 - `(keyup.enter)` — trigger a method when the user presses Enter
 - `[disabled]` binding — disable a button based on a reactive condition
