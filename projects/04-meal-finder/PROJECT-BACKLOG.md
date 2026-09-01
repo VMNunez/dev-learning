@@ -20,7 +20,6 @@
 ### Low
 
 - [ ] **[Low]** `[frontend]` — Encode the search term before it reaches the URL: `meal.service.ts` interpolates `name` straight into `search.php?s=${name}`, so a term containing `&`, `#`, `+` or a space is parsed as query syntax and the request silently searches for the wrong thing (`beef & rice` searches for `beef `). Wrap it in `encodeURIComponent()`, or build the query with `HttpParams`. *(Effort: Small)* *(raised 2026-09-01 while closing the service-boundary error-handling task — same file, seen while rewriting the two request URLs)*
-- [ ] **[Low]** `[frontend]` — Tokenize the remaining raw hex: `#fff`, `#ccc` and `#ffd700` appear across the page and component stylesheets (e.g. `search-page.css`, `meal-card.css`, `category-filter.css`) while every other colour comes from a `var(--token)` defined in `styles.css`. Add `--on-primary` / `--favourite` / `--favourite-inactive` tokens. *(Effort: Small)*
 
 - [ ] **[Low]** `[frontend]` — Fix or delete the scaffold spec: `app.spec.ts:21` still asserts an `h1` containing `Hello, 04-meal-finder`, a signal the root component no longer has. It was already failing before the nav work (the root template never had that heading), and it is the last file referencing the deleted `title`. *(Effort: Small)* *(raised 2026-09-01 by the cold review of the shared-nav task)*
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/04-meal-finder`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
@@ -54,6 +53,7 @@
 
 #### Low
 
+- 2026-09-01 · **[Low]** `[frontend]` — last raw hex replaced by `--on-primary` / `--favourite` / `--favourite-inactive` tokens → README, PLANNING; coverage already marked 01-todo-list
 - 2026-09-01 · **[Low]** `[frontend]` — Back falls back to `/` when the detail URL was opened directly, via a navigation count → README, PLANNING, coverage angular/junior (1 bullet authored)
 - 2026-09-01 · **[Low]** `[frontend]` — both meal images marked decorative with `alt=""` (task asked for the name; adjacent text already carries it) → README
 - 2026-09-01 · **[Low]** `[frontend]` — search page regains its `h1`, shared `.page-title` rule hoisted to the global stylesheet → README, `_cross-topic-inbox.md` (html)
