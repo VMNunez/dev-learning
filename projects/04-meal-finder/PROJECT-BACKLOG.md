@@ -15,7 +15,6 @@
 
 ### Medium
 
-- [ ] **[Medium]** `[frontend]` — Guard the Enter key with the same rule as the button: `search-page.html:16` calls `onSearchMeals(meal.value)` on `(keyup.enter)`, bypassing the `[disabled]="!searchTerm().trim()"` guard, so pressing Enter on an empty input fires a real API call and flips `hasSearched` to true. Move the `trim()` check inside `onSearchMeals`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Build the shared nav in the root component: `app.html` is only `<router-outlet />`, so each page hand-rolls its own header and the favourites `computed()` count exists on the search page alone (`search-page.ts:23`). PLANNING describes the root as "root with nav and RouterOutlet" with a live count. Move the nav (links + count badge) into `app.html`. *(Effort: Medium)*
 - [ ] **[Medium]** `[frontend]` — Extract the planned dumb components `meal-card` and `category-filter`: the card markup is duplicated between `search-page.html` and `favourites-page.html`, and neither page decomposes. PLANNING specifies both as presentational children that receive input and emit events — the smart/dumb split is the pattern to show off here. *(Effort: Medium)*
 - [ ] **[Medium]** `[frontend]` — Fix the dead-end category filter on the favourites page: the "All" button only renders `@if (favourites().length > 0)` while the grid is driven by `filteredFavourites()`, so removing the last favourite of the selected category leaves the user on an empty grid. Gate the reset/button on `filteredFavourites().length`. *(Effort: Small)*
@@ -53,7 +52,7 @@
 
 #### Medium
 
-*No medium tasks closed yet.*
+- 2026-09-01 · **[Medium]** `[frontend]` — empty-search guard moved into `onSearchMeals()`, covering the Enter path → README, PLANNING
 
 #### Low
 
