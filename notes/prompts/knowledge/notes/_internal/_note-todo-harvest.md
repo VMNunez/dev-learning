@@ -141,3 +141,5 @@ arrival.
 | NTH-0007 | 2026-09-02 | java/junior/01 | es | referencia-ambigua | 1 | PORQUE YO ENTIENDO QUE AQUI SE REFIERE EN REALIDAD A LOS METODOS QU SE USAN REALMENTE PARA COMAPARAR STRING | missing | — | open |
 | NTH-0008 | 2026-09-02 | java/junior/01 | es | mecanismo | 2 | NO ENTIENDO NADA DE "Para los siete tipos numéricos, ambas cosas coinciden…" | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
 | NTH-0009 | 2026-09-02 | java/junior/01 | es | tabla-sin-uso-real | 1 | ME GUSTARIA UNA COLUMNA QUE PUSIERA EL USO HABITUAL | missing | — | open |
+| NTH-0010 | 2026-09-02 | java/junior/01 | es | termino-traducido-no-usado | 4 | EN VEZ DE USAR PILA … ME GUSTA USAR LA PALABRA STACK / PREFIERO QUE PONGAS HEAP | missing | — | open |
+| NTH-0011 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 1 | LO DE UNO DENTRO DE OTRO NO LO ENTIENDO | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
