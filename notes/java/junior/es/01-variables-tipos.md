@@ -14,11 +14,76 @@ En Java hay dos formas de guardar datos en memoria. La primera es almacenar el *
 Esta distinción — guardar el valor o guardar una dirección — es la base de la que sale casi todo lo que verás en el resto de la página, así que merece la pena dibujarla. Las dos declaraciones de abajo se escriben casi igual, pero dejan la memoria de dos formas distintas: una guarda el valor y la otra guarda una dirección.
 
 ```java
-int number;      // declarado, todavía sin asignar
-String name;     // declarado, todavía sin asignar
+int number = 42;
+String name = "Victor";
 ```
 
-En el código de arriba, `name` plantea una pregunta que `number` no puede plantear: las dos variables están declaradas y a ninguna se le ha asignado nada todavía, ¿qué tiene entonces `name` escrito dentro?
+```
+        int number = 42                  String name = "Victor"
+
+   ┌──────────────────────┐         ┌──────────────────────┐
+   │  number │    42      │         │  name   │  0x7f3a20  │  ← una dirección, no el texto
+   └──────────────────────┘         └────────────┬─────────┘
+     el valor ESTÁ aquí                          │ apunta a
+                                                 ▼
+                                    ┌──────────────────────────┐
+                                    │  objeto String "Victor"  │
+                                    └──────────────────────────┘
+                                       el valor vive AQUÍ
+```
+
+Todo lo que más adelante en esta página parece contradictorio sale del esquema anterior, es decir, de cómo se guarda cada dato en memoria. Por ejemplo: `==` sobre dos `String` compara las dos direcciones de memoria que guardan las variables, no el texto al que esas direcciones apuntan. Por eso el texto se compara con `equals()` en su lugar; los métodos que sí sirven para comparar `String` — `equals()`, `equalsIgnoreCase()`, `compareTo()` — están en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), y qué está preguntando realmente `equals()` se explica en [06-poo-clases.md](06-poo-clases.md).
+
+Otra particularidad que sale de lo mismo: un `int` nunca puede ser `null`, porque en su hueco de memoria solo cabe un número y no existe ningún número que signifique «vacío». Un `Integer` sí puede serlo, porque en su hueco no hay un número sino una dirección, y una dirección sí admite el valor especial «no apunto a ningún objeto» — eso es exactamente lo que significa `null`.
+
+Lo que el dibujo todavía no cuenta es _dónde_ están esos dos huecos dentro de la memoria del programa: la variable vive en una zona (el _stack_, o pila) y el objeto al que apunta vive en otra (el _heap_, o montón). Dicho con los dos casos del dibujo: cuando declaras un primitivo, la variable y su valor no son dos cosas guardadas en dos sitios — la variable **es** el hueco reservado en el stack, y el valor está escrito directamente dentro de ese hueco; cuando declaras un objeto, en el stack está solo la variable, y lo que hay escrito dentro de ella no es el objeto sino la dirección de memoria del heap donde ese objeto está; el objeto entero está en el heap. La regla es: **toda variable local vive en el stack y todo objeto vive en el heap** — y los campos de un objeto no son variables locales, así que viajan dentro de su objeto. Esa segunda mitad del esquema es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md), que retoma este mismo diagrama en detalle.
+
+Java tiene 8 tipos primitivos. Cada uno tiene un tamaño fijo y un rango de valores posibles. Los rangos son útiles para saber cuándo cambiar de tipo: por ejemplo, si un contador puede superar los 2.1 mil millones, `int` se queda corto y necesitas `long`.
+
+| Tipo      | Tamaño               | Rango aproximado                         | Uso habitual                                                                                               | Ejemplo                  |
+| --------- | -------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `byte`    | 8 bits               | ±1.27 × 10²                              | Casi nunca suelto: aparece como `byte[]` al leer un archivo o el cuerpo de una petición                    | `byte level = 5;`        |
+| `short`   | 16 bits              | ±3.27 × 10⁴                              | Prácticamente nunca en backend; solo para ahorrar memoria en arrays enormes                                | `short year = 2025;`     |
+| `int`     | 32 bits              | ±2.14 × 10⁹                              | El entero por defecto: contadores, índices de bucle, edades, cantidades                                    | `int age = 31;`          |
+| `long`    | 64 bits              | ±9.2 × 10¹⁸                              | Ids de base de datos y marcas de tiempo en milisegundos (`System.currentTimeMillis()`)                     | `long id = 1234567890L;` |
+| `float`   | 32 bits              | ±3.4 × 10³⁸ (~7 cifras significativas)   | Casi nunca: gráficos o datos científicos donde sobra precisión y falta memoria                             | `float tax = 0.21f;`     |
+| `double`  | 64 bits              | ±1.7 × 10³⁰⁸ (~15 cifras significativas) | Medidas y cálculos científicos (pesos, distancias, porcentajes). **Nunca dinero** — para eso, `BigDecimal` | `double price = 19.99;`  |
+| `boolean` | 1 bit de información | `true` o `false`                         | Estados de sí/no y el resultado de una condición: `isActive`, `hasPermission`                              | `boolean active = true;` |
+| `char`    | 16 bits              | Una unidad de código UTF-16 (0 a 65,535) | Un único carácter suelto: una inicial, un separador, una nota de examen                                    | `char grade = 'A';`      |
+
+La columna `Uso habitual` es la que contesta a "¿y cuál elijo yo?": en el día a día vas a escribir `int`, `long`, `boolean` y `double`, y los otros cuatro los vas a **leer** en código ajeno mucho más de lo que los vas a escribir.
+
+La columna `Tamaño` merece una lectura más cuidadosa, porque en realidad responde a dos preguntas distintas que casi siempre dan el mismo número:
+
+- **Cuánta información distinta cabe en el tipo** — cuántos valores diferentes puede representar.
+- **Cuántos bits de memoria le reserva la JVM** — lo que ocupa de verdad en la RAM.
+
+Para los siete tipos numéricos las dos respuestas coinciden: un `int` guarda 32 bits de información y ocupa 32 bits. Por eso puedes leer esa columna sin pensarlo.
+
+`boolean` es la única fila donde se separan. De información transporta exactamente un bit: solo tiene dos valores posibles, `true` y `false`, y para distinguir dos valores basta un bit. De memoria ocupa mucho más, porque la especificación de la JVM no define ninguna forma de guardar un bit suelto — una variable o un campo `boolean` se queda con una ranura entera, que en la práctica es el espacio de un `int`. La única excepción es cuando están en fila dentro de un `boolean[]`: ahí sí se compactan, a un byte por elemento.
+
+> **Qué te está diciendo entonces el `1 bit` de esa fila.** Te dice que el tipo tiene dos valores posibles, no que te cueste un bit de RAM. Es la diferencia entre "este dato solo necesita un bit para expresarse" y "este dato ocupa un bit en memoria" — lo primero es cierto, lo segundo no. En la práctica esto no cambia ni una línea del código que escribas; está aquí para que la fila no te deje una idea falsa de lo que cuesta un `boolean`.
+
+Un **carácter Unicode** es cualquier símbolo de cualquier sistema de escritura del mundo: letras latinas, chino, árabe, emojis, símbolos matemáticos. El estándar Unicode asigna un número único (un _code point_) a cada símbolo — y `char` almacena una porción de 16 bits de esa numeración, de 0 a 65,535.
+
+> **Alcance exacto: un `char` no almacena "cualquier carácter Unicode".** Lo que guarda un `char` es un número de 16 bits, de 0 a 65,535, y ese número es el code point del símbolo: su posición en la tabla de Unicode. El problema es que esa tabla tiene muchos más símbolos que 65,536 — llega hasta la posición 1,114,111 — así que un `char` solo alcanza a los símbolos que caen dentro de sus primeras 65,536 posiciones. Eso es lo que significa "hasta U+FFFF": `U+FFFF` es la manera habitual de escribir el número 65,535 en hexadecimal, y marca el último símbolo al que llega un `char`. Ahí dentro caben las letras latinas, el griego, el cirílico, el árabe y la mayor parte del chino. Todo lo que está por encima de ese número — emojis, muchas escrituras históricas, la mayoría de los alfanuméricos matemáticos — no cabe en 16 bits, y Java lo guarda partido en **dos** `char` que solo significan algo juntos (un _par sustituto_ o _surrogate pair_). Por eso no existe ningún `char` que valga "😀": no es que no quepa por poco, es que hacen falta dos `char` para almacenarlo. Pruébalo y el compilador te detiene antes de que el programa llegue a ejecutarse:
+>
+> ```java
+> char c = '😀';   // MAL — error: character literal contains more than one UTF-16 code unit
+> ```
+>
+> Ese reparto en uno o dos `char` no se queda dentro del tipo `char`: lo arrastra también `String`, que no es más que una secuencia de `char`. Por eso `"😀".length()` devuelve **2**, no 1: `length()` no cuenta símbolos, cuenta cuántos `char` tiene el `String`, y el emoji ocupa dos de ellos. Si lo que quieres es contar los símbolos tal y como los ve una persona al leerlos — el emoji cuenta como uno, aunque por dentro ocupe dos `char` —, ese conteo te lo da `"😀".codePointCount(0, 2)`, que devuelve **1**. Este es el mecanismo detrás de todo bug de "mi substring cortó un emoji por la mitad". En desarrollo web rara vez tocas `char` directamente — el texto completo va en `String` — pero la sorpresa de la longitud te llega igualmente a través de `String`.
+
+En la práctica usas `int`, `long`, `double` y `boolean` para casi todo. `float` y `byte` raramente se necesitan.
+
+### Variables de referencia y `null`
+
+```java
+int number = 42;
+String name = "Victor";
+```
+
+En el diagrama de arriba(TODO: AHORA SE PUEDE DECIR QUE EN EL CODIGO DE ARRIBA), `name` plantea una pregunta que `number` no puede plantear: ¿qué tiene escrito `name` dentro mientras todavía no le has asignado ningún objeto?
 
 `number` es un hueco de 32 bits en el que siempre hay un número escrito. Un campo `int` de una clase que declaras y nunca asignas arranca valiendo `0` — sí, exactamente eso: se declara sin valor y empieza en `0`, porque Java rellena esos 32 bits con ceros al crear el objeto. (La variable local es el caso aparte: ahí Java no rellena nada, y el compilador te obliga a asignarla antes de leerla.) Y no hay forma de dejar ese hueco «vacío»: las 32 posiciones están siempre ocupadas por ceros y unos, y todas las combinaciones posibles de esos bits ya están cogidas — cada una significa un número concreto. No queda ninguna libre a la que darle el significado «aquí no hay nada».
 
