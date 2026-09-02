@@ -71,6 +71,8 @@ https://04mealfinder.netlify.app/
 ## Future improvements
 
 - Search by ingredient
+- Meal planner — assign meals to days of the week
+- Shopping list generated from a selected meal plan
 
 ---
 
