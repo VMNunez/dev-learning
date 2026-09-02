@@ -32,26 +32,37 @@ String name = "Victor";
                                        the value lives HERE
 ```
 
-Everything that looks contradictory later on this page comes out of the diagram above — that is, out of how each piece of data is stored in memory. For example: `==` on two `String`s compares the two memory addresses the variables hold, not the text those addresses point to. That is why text is compared with `equals()` instead; the concrete methods used to compare it are in [02-strings.md](02-strings.md), and what `equals()` is really asking is explained in [06-oop-classes.md](06-oop-classes.md).
+Everything that looks contradictory later on this page comes out of the diagram above — that is, out of how each piece of data is stored in memory. For example: `==` on two `String`s compares the two memory addresses the variables hold, not the text those addresses point to. That is why text is compared with `equals()` instead; the methods that actually do compare a `String` — `equals()`, `equalsIgnoreCase()`, `compareTo()` — are in [02-strings.md](02-strings.md), and what `equals()` is really asking is explained in [06-oop-classes.md](06-oop-classes.md).
 
 Another quirk that comes out of the same thing: an `int` can never be `null`, because its memory slot only fits a number and there is no number that means "empty". An `Integer` can be, because its slot holds an address rather than a number, and an address does admit the special value "I point to no object" — which is exactly what `null` means.
 
-What the drawing does not yet tell you is *where* those two slots sit inside the program's memory: the variable lives in one area (the stack) and the object it points to lives in another (the heap). That second half of the picture is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
+What the drawing does not yet tell you is *where* those two slots sit inside the program's memory: the variable lives in one area (the stack) and the object it points to lives in another (the heap). Put in terms of the two cases in the drawing: when you declare a primitive, the variable **and** its value both sit on the stack, one inside the other; when you declare an object, the stack holds only the variable with the address, and the whole object sits on the heap. The rule, with the one precision it needs, is: **every local variable lives on the stack and every object lives on the heap** — and an object's fields are not local variables, so they travel inside their object, on the heap. That second half of the picture is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
 
-Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
+Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: for example, if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
 
-| Type      | Size   | Approximate range                          | Example                  |
-| --------- | ------ | ------------------------------------------ | ------------------------ |
-| `byte`    | 8 bit  | ±1.27 × 10²                                | `byte level = 5;`        |
-| `short`   | 16 bit | ±3.27 × 10⁴                                | `short year = 2025;`     |
-| `int`     | 32 bit | ±2.14 × 10⁹                                | `int age = 31;`          |
-| `long`    | 64 bit | ±9.2 × 10¹⁸                                | `long id = 1234567890L;` |
-| `float`   | 32 bit | ±3.4 × 10³⁸ (~7 significant digits)        | `float tax = 0.21f;`     |
-| `double`  | 64 bit | ±1.7 × 10³⁰⁸ (~15 significant digits)      | `double price = 19.99;`  |
-| `boolean` | 1 bit of information | `true` or `false`              | `boolean active = true;` |
-| `char`    | 16 bit | One UTF-16 code unit (0 to 65,535)         | `char grade = 'A';`      |
+| Type      | Size   | Approximate range                          | Typical use | Example                  |
+| --------- | ------ | ------------------------------------------ | ------------------------------------------------------------------------------------- | ------------------------ |
+| `byte`    | 8 bit  | ±1.27 × 10²                                | Almost never on its own: shows up as `byte[]` when reading a file or a request body     | `byte level = 5;`        |
+| `short`   | 16 bit | ±3.27 × 10⁴                                | Practically never in backend code; only to save memory in very large arrays             | `short year = 2025;`     |
+| `int`     | 32 bit | ±2.14 × 10⁹                                | The default integer: counters, loop indexes, ages, quantities                           | `int age = 31;`          |
+| `long`    | 64 bit | ±9.2 × 10¹⁸                                | Database ids and millisecond timestamps (`System.currentTimeMillis()`)                  | `long id = 1234567890L;` |
+| `float`   | 32 bit | ±3.4 × 10³⁸ (~7 significant digits)        | Almost never: graphics or scientific data where precision is spare and memory is not    | `float tax = 0.21f;`     |
+| `double`  | 64 bit | ±1.7 × 10³⁰⁸ (~15 significant digits)      | Measurements and scientific maths (weights, distances, percentages). **Never money** — use `BigDecimal` | `double price = 19.99;`  |
+| `boolean` | 1 bit of information | `true` or `false`              | Yes/no state and the result of a condition: `isActive`, `hasPermission`                 | `boolean active = true;` |
+| `char`    | 16 bit | One UTF-16 code unit (0 to 65,535)         | A single standalone character: an initial, a separator, an exam grade                   | `char grade = 'A';`      |
 
-Read the `Size` column as "how much information the type can hold", not always as "how many bits the JVM hands it". For the seven numeric types the two are the same. `boolean` is the exception: it carries exactly one bit of *meaning*, but the JVM specification does not define a one-bit storage form — a `boolean` local or field occupies a full slot (in practice the space of an `int`), and only inside a `boolean[]` is it packed down to a byte each. So the row tells you the type has two possible values; it does not tell you it costs one bit of RAM.
+The `Typical use` column is the one that answers "so which do I pick?": day to day you will write `int`, `long`, `boolean` and `double`, and the other four you will **read** in other people's code far more often than you will write them.
+
+The `Size` column deserves a closer reading, because it actually answers two different questions that almost always give the same number:
+
+- **How much information fits in the type** — how many different values it can represent.
+- **How many bits of memory the JVM hands it** — what it really costs in RAM.
+
+For the seven numeric types the two answers coincide: an `int` holds 32 bits of information and occupies 32 bits. That is why you can read the column without thinking about it.
+
+`boolean` is the only row where they come apart. In information it carries exactly one bit: it has just two possible values, `true` and `false`, and one bit is enough to tell two values apart. In memory it costs far more, because the JVM specification defines no way to store a lone bit — a `boolean` local or field takes a full slot, in practice the space of an `int`. The one exception is when they sit in a row inside a `boolean[]`: there they are packed down, one byte each.
+
+> **What the `1 bit` in that row is actually telling you.** It tells you the type has two possible values, not that it costs you one bit of RAM. That is the difference between "this piece of data only needs one bit to express itself" and "this piece of data occupies one bit in memory" — the first is true, the second is not. In practice this changes not a line of the code you write; it is here so the row does not leave you with a false idea of what a `boolean` costs.
 
 A **Unicode character** is any symbol from any writing system in the world: Latin letters, Chinese, Arabic, emojis, mathematical symbols. The Unicode standard assigns a unique number (a *code point*) to every symbol — and `char` stores one 16-bit slice of that numbering, from 0 to 65,535.
 

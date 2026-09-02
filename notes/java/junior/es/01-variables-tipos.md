@@ -32,26 +32,37 @@ String name = "Victor";
                                        el valor vive AQUÍ
 ```
 
-Todo lo que más adelante en esta página parece contradictorio sale del esquema anterior, es decir, de cómo se guarda cada dato en memoria. Por ejemplo: `==` sobre dos `String` compara las dos direcciones de memoria que guardan las variables, no el texto al que esas direcciones apuntan. Por eso el texto se compara con `equals()` en su lugar; los métodos concretos que se usan para compararlo están en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), y qué está preguntando realmente `equals()` se explica en [06-poo-clases.md](06-poo-clases.md).
+Todo lo que más adelante en esta página parece contradictorio sale del esquema anterior, es decir, de cómo se guarda cada dato en memoria. Por ejemplo: `==` sobre dos `String` compara las dos direcciones de memoria que guardan las variables, no el texto al que esas direcciones apuntan. Por eso el texto se compara con `equals()` en su lugar; los métodos que sí sirven para comparar `String` — `equals()`, `equalsIgnoreCase()`, `compareTo()` — están en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), y qué está preguntando realmente `equals()` se explica en [06-poo-clases.md](06-poo-clases.md).
 
 Otra particularidad que sale de lo mismo: un `int` nunca puede ser `null`, porque en su hueco de memoria solo cabe un número y no existe ningún número que signifique «vacío». Un `Integer` sí puede serlo, porque en su hueco no hay un número sino una dirección, y una dirección sí admite el valor especial «no apunto a ningún objeto» — eso es exactamente lo que significa `null`.
 
-Lo que el dibujo todavía no cuenta es *dónde* están esos dos huecos dentro de la memoria del programa: la variable vive en una zona (la pila, _stack_) y el objeto al que apunta vive en otra (el montón, _heap_). Esa segunda mitad del esquema es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md), que retoma este mismo diagrama en detalle.
+Lo que el dibujo todavía no cuenta es _dónde_ están esos dos huecos dentro de la memoria del programa: la variable vive en una zona (la pila, _stack_) y el objeto al que apunta vive en otra (el montón, _heap_). Dicho con los dos casos del dibujo: cuando declaras un primitivo, la variable **y** su valor están los dos en la pila, uno dentro del otro; cuando declaras un objeto, en la pila está solo la variable con la dirección, y el objeto entero está en el montón. La regla, con la única precisión que hay que añadirle, es: **toda variable local vive en la pila y todo objeto vive en el montón** — y los campos de un objeto no son variables locales, así que viajan dentro de su objeto, en el montón. Esa segunda mitad del esquema es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md), que retoma este mismo diagrama en detalle.
 
-Java tiene 8 tipos primitivos. Cada uno tiene un tamaño fijo y un rango de valores posibles. Los rangos son útiles para saber cuándo cambiar de tipo: si un contador puede superar los 2.1 mil millones, `int` se queda corto y necesitas `long`.
+Java tiene 8 tipos primitivos. Cada uno tiene un tamaño fijo y un rango de valores posibles. Los rangos son útiles para saber cuándo cambiar de tipo: por ejemplo, si un contador puede superar los 2.1 mil millones, `int` se queda corto y necesitas `long`.
 
-| Tipo      | Tamaño               | Rango aproximado                         | Ejemplo                  |
-| --------- | -------------------- | ---------------------------------------- | ------------------------ |
-| `byte`    | 8 bits               | ±1.27 × 10²                              | `byte level = 5;`        |
-| `short`   | 16 bits              | ±3.27 × 10⁴                              | `short year = 2025;`     |
-| `int`     | 32 bits              | ±2.14 × 10⁹                              | `int age = 31;`          |
-| `long`    | 64 bits              | ±9.2 × 10¹⁸                              | `long id = 1234567890L;` |
-| `float`   | 32 bits              | ±3.4 × 10³⁸ (~7 cifras significativas)   | `float tax = 0.21f;`     |
-| `double`  | 64 bits              | ±1.7 × 10³⁰⁸ (~15 cifras significativas) | `double price = 19.99;`  |
-| `boolean` | 1 bit de información | `true` o `false`                         | `boolean active = true;` |
-| `char`    | 16 bits              | Una unidad de código UTF-16 (0 a 65,535) | `char grade = 'A';`      |
+| Tipo | Tamaño | Rango aproximado | Uso habitual | Ejemplo |
+| --------- | -------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------ |
+| `byte` | 8 bits | ±1.27 × 10² | Casi nunca suelto: aparece como `byte[]` al leer un archivo o el cuerpo de una petición | `byte level = 5;` |
+| `short` | 16 bits | ±3.27 × 10⁴ | Prácticamente nunca en backend; solo para ahorrar memoria en arrays enormes | `short year = 2025;` |
+| `int` | 32 bits | ±2.14 × 10⁹ | El entero por defecto: contadores, índices de bucle, edades, cantidades | `int age = 31;` |
+| `long` | 64 bits | ±9.2 × 10¹⁸ | Ids de base de datos y marcas de tiempo en milisegundos (`System.currentTimeMillis()`) | `long id = 1234567890L;` |
+| `float` | 32 bits | ±3.4 × 10³⁸ (~7 cifras significativas) | Casi nunca: gráficos o datos científicos donde sobra precisión y falta memoria | `float tax = 0.21f;` |
+| `double` | 64 bits | ±1.7 × 10³⁰⁸ (~15 cifras significativas) | Medidas y cálculos científicos (pesos, distancias, porcentajes). **Nunca dinero** — para eso, `BigDecimal` | `double price = 19.99;` |
+| `boolean` | 1 bit de información | `true` o `false` | Estados de sí/no y el resultado de una condición: `isActive`, `hasPermission` | `boolean active = true;` |
+| `char` | 16 bits | Una unidad de código UTF-16 (0 a 65,535) | Un único carácter suelto: una inicial, un separador, una nota de examen | `char grade = 'A';` |
 
-Lee la columna `Tamaño` como "cuánta información puede guardar el tipo", no siempre como "cuántos bits le reserva la JVM". Para los siete tipos numéricos, ambas cosas coinciden. `boolean` es la excepción: transporta exactamente un bit de _significado_, pero la especificación de la JVM no define una forma de almacenamiento de un solo bit — una variable local o un campo `boolean` ocupa una ranura completa (en la práctica, el espacio de un `int`), y solo dentro de un `boolean[]` se empaqueta a razón de un byte por elemento. Así que la fila te dice que el tipo tiene dos valores posibles; no te dice que cueste un bit de RAM.
+La columna `Uso habitual` es la que contesta a "¿y cuál elijo yo?": en el día a día vas a escribir `int`, `long`, `boolean` y `double`, y los otros cuatro los vas a **leer** en código ajeno mucho más de lo que los vas a escribir.
+
+La columna `Tamaño` merece una lectura más cuidadosa, porque en realidad responde a dos preguntas distintas que casi siempre dan el mismo número:
+
+- **Cuánta información distinta cabe en el tipo** — cuántos valores diferentes puede representar.
+- **Cuántos bits de memoria le reserva la JVM** — lo que ocupa de verdad en la RAM.
+
+Para los siete tipos numéricos las dos respuestas coinciden: un `int` guarda 32 bits de información y ocupa 32 bits. Por eso puedes leer esa columna sin pensarlo.
+
+`boolean` es la única fila donde se separan. De información transporta exactamente un bit: solo tiene dos valores posibles, `true` y `false`, y para distinguir dos valores basta un bit. De memoria ocupa mucho más, porque la especificación de la JVM no define ninguna forma de guardar un bit suelto — una variable o un campo `boolean` se queda con una ranura entera, que en la práctica es el espacio de un `int`. La única excepción es cuando están en fila dentro de un `boolean[]`: ahí sí se compactan, a un byte por elemento.
+
+> **Qué te está diciendo entonces el `1 bit` de esa fila.** Te dice que el tipo tiene dos valores posibles, no que te cueste un bit de RAM. Es la diferencia entre "este dato solo necesita un bit para expresarse" y "este dato ocupa un bit en memoria" — lo primero es cierto, lo segundo no. En la práctica esto no cambia ni una línea del código que escribas; está aquí para que la fila no te deje una idea falsa de lo que cuesta un `boolean`.
 
 Un **carácter Unicode** es cualquier símbolo de cualquier sistema de escritura del mundo: letras latinas, chino, árabe, emojis, símbolos matemáticos. El estándar Unicode asigna un número único (un _code point_) a cada símbolo — y `char` almacena una porción de 16 bits de esa numeración, de 0 a 65,535.
 

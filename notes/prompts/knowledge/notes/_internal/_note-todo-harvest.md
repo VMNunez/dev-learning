@@ -137,4 +137,7 @@ arrival.
 | NTH-0003 | 2026-09-02 | java/junior/01 | es | floritura-literaria | 4 | ES UNA MALA EXPRESION | unapplied | `_note-quality-standard.md` → `Sentence-level register` (cut the literary flourish) | open |
 | NTH-0004 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 3 | CON ESO DE LAS CAJAS … SE ENTIENDE MAL | missing | — | open |
 | NTH-0005 | 2026-09-02 | java/junior/01 | es | termino-sin-presentar | 1 | UN FLAG??? | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
-| NTH-0006 | 2026-09-02 | java/junior/01 | es | ejemplo-sin-senalar | 2 | ESTO ES OTRO EJEMPLO, PERO DEBES INDICARLO | missing | — | open |
+| NTH-0006 | 2026-09-02 | java/junior/01 | es | ejemplo-sin-senalar | 3 | ESTO ES OTRO EJEMPLO, PERO DEBES INDICARLO | missing | — | open |
+| NTH-0007 | 2026-09-02 | java/junior/01 | es | referencia-ambigua | 1 | PORQUE YO ENTIENDO QUE AQUI SE REFIERE EN REALIDAD A LOS METODOS QU SE USAN REALMENTE PARA COMAPARAR STRING | missing | — | open |
+| NTH-0008 | 2026-09-02 | java/junior/01 | es | mecanismo | 2 | NO ENTIENDO NADA DE "Para los siete tipos numéricos, ambas cosas coinciden…" | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
+| NTH-0009 | 2026-09-02 | java/junior/01 | es | tabla-sin-uso-real | 1 | ME GUSTARIA UNA COLUMNA QUE PUSIERA EL USO HABITUAL | missing | — | open |
