@@ -284,6 +284,22 @@ the old bound **approved** — nothing it approved may now fail — and one it n
 least one item must be rejectable. A test that rejects nothing is the defect the row was opened to
 prevent, arriving inside the fix.
 
+**An escape clause the artefact's own format already satisfies saves everything, and the test that
+carries it cuts nothing.** From `REC-196`, the sibling of `REC-191`'s *a test that rejects nothing is the
+defect the row was opened to prevent, arriving inside the fix* — that one is about a bound deleted, this
+one about a bound written with a hole in it. The new inclusion test for `What I learned` was given a
+let-out: a bullet naming the same symbol as a line above survives "when it states the mechanism that line
+does not". Rule 9's **own format** is `` `ConceptName` — one-line reminder ``, so every well-formed bullet
+states a mechanism by construction; the clause was satisfied by all of them and the test went from cutting
+six of fourteen on `06-hr-portal` to cutting **zero**, which round 1 had not seen because it reviewed the
+version without the let-out. So before writing an exception into a test, **check it against the format the
+artefact is already required to have** — the format spec is the population the exception quantifies over,
+and where they coincide the exception is a repeal. The repair is not a better-worded exception but a
+different shape: the detail that tempted it **merges into the surviving item** instead of licensing a
+second one. And the instrument that caught it is `REC-191`'s, applied to the *second* draft as well as the
+first: re-apply the test by hand to an artefact it previously cut, and count. A round that only re-reads
+the wording will not see a clause that is false only in aggregate.
+
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
 `✅` markers across projects 01–06, so the constructs are Victor's real code and only the file
