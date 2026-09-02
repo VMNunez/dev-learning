@@ -79,18 +79,13 @@ https://04mealfinder.netlify.app/
 ## What I learned
 
 - `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect re-runs
-- Narrowing beats asserting — a `string | null` route id is read into a local and returned early on, never `as string`
 - `asReadonly()` — keep the writable signal private so the service's own methods are the only writers
-- Nullable API responses — `Meal[] | null` normalised once at the service boundary; pages never see the envelope
-- The tag follows what the element does — `<a [routerLink]>` navigates and brings focus, Enter, the `link` role and open-in-new-tab, while an in-page action is a `<button type="button">`, since an `<a>` with no `href` is skipped by the tab order and never fires on Enter
-- Interactive content does not nest — the favourite button is positioned over the card's link, not inside it
-- `:focus-visible` + `:has()` — a focus ring for keyboard entry only, raised from the link to the whole card
-- Accessible name — a `<label for>` names a field where a `placeholder` is only an example value, and an `aria-label` names an icon-only control, since `★` computes to no name
-- One `h1` per routed page — headings are the document outline, not a size scale
-- `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` removes
-- Decorative images take `alt=""` — an absent `alt` leaves the image named after its file; a filled one repeats the caption
-- Pressed state of a toggle — `[attr.aria-pressed]` puts the selected filter in the accessibility tree, which the `.active` class alone leaves out; ARIA attributes have no DOM property behind them, so they need attribute binding, `[attr.x]`, not property binding
+- Attribute binding, not property binding — `[attr.aria-pressed]`, because an ARIA attribute has no DOM property behind it and `[ariaPressed]` would silently do nothing
 - `routerLinkActive` — marks the current nav link; the brand link needs `{ exact: true }` because matching is prefix-based
+- Narrowing beats asserting — a `string | null` route id is read into a local and returned early on, never `as string`
+- Nullable API responses — `Meal[] | null` normalised once at the service boundary; pages never see the envelope
+- Semantics decide the element — `<a [routerLink]>` navigates and brings focus, Enter and open-in-new-tab, `<button type="button">` acts in place, one `<h1>` per routed page, and no interactive control nested inside another
+- Every control needs an accessible name — `aria-label` on an icon-only `★`, `<label for>` where a `placeholder` is only an example value, `.visually-hidden` for text the eye does not need, and `alt=""` so a decorative image is not named after its file
 
 ---
 
