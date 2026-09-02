@@ -43,6 +43,18 @@ overridable*; l.148-155 is the symmetric TODO-direction rule it was asking for, 
 across five files. **Quote the text of every line a row cites before building on it.** A citation by
 description is the one form of evidence that can hand you the answer as though it were the precedent,
 and checking it is what collapsed a two-family sweep to one.
+**Also `REC-197`, one register up, where what the row says nobody asks is already asked by the very roles
+it is adding a third to — and the *fix* is what asserts the absence.** That row proposed a reader-effect
+judge because `readme-audit`'s two subagents "cold-review for conformance and nothing reads the README for
+effect"; `_readme-standard.md`'s *Quality filter* carries the recruiter and interviewer lenses, sits 47
+lines below the paragraph the fix inserted, and is an item on the author's step 2 and the reviewer's
+checklist — so three sentences the fix wrote were false in the file they were written into. The addition
+survived because its warrant was never the missing question: it is the **unit and the vantage** — per
+section with the rule set in hand, versus the whole artefact with no checklist. So before founding a new
+role on *nobody asks this*, grep the existing roles' own checklists for the question, and where they do
+ask it, found the addition on what changes about **how** it is asked. That is also the only thing
+separating it from `REC-042`'s illegitimate second computation, which the same row invoked to refuse its
+other half.
 
 **An isolation clause fences *content*, and a proof demanded of a fenced role must take a form the
 fence permits.** `REC-112` found the `en/`-blind Spanish reviewer told to "read only" its Spanish
