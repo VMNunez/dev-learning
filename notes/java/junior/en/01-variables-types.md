@@ -9,9 +9,9 @@ The [intro](00-intro-java.md) left you with the big idea that Java is **statical
 
 > 📖 Docs: [Baeldung — Introduction to Java Primitives](https://www.baeldung.com/java-primitives) → read: "Primitive Data Types" — the eight types with their exact ranges, one sub-section each, plus "Overflow".
 
-In Java there are two ways to store data in memory. The first is to store the **value directly** — the number 42 or the boolean `true` is stored exactly where the variable lives. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `User`, or any class) use the second.
+In Java there are two ways to store data in memory. The first is to store the **value directly**: the data itself lives inside the variable, in the memory slot that variable occupies. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `User`, or any class) use the second.
 
-This is the single most structural idea on the page, so it is worth drawing. Two declarations that look almost identical produce two completely different memory layouts:
+This is the single most structural idea on the page, so it is worth drawing. The two declarations below are written almost the same way, but they leave memory in two different shapes: one holds the value, the other holds an address.
 
 ```java
 int number = 42;
@@ -32,7 +32,7 @@ String name = "Victor";
                                        the value lives HERE
 ```
 
-Everything surprising later on this page comes out of that picture. `==` on two `String`s compares the two addresses in the left-hand boxes, not the text in the right-hand box — which is why text is compared with `equals()` instead ([02-strings.md](02-strings.md) shows the calls, and [06-oop-classes.md](06-oop-classes.md) explains what `equals()` is really asking). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because the address slot can hold "points to nothing". And where those boxes physically live — the stack for the variable, the heap for the object — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
+Everything that looks contradictory later on this page comes out of the diagram above — that is, out of how each piece of data is stored in memory. `==` on two `String`s compares the two memory addresses the variables hold, not the text those addresses point to. That is why text is compared with `equals()` instead. The concrete calls are in [02-strings.md](02-strings.md), and what `equals()` is really asking is explained in [06-oop-classes.md](06-oop-classes.md). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because its address slot can hold "points to nothing". And where each piece physically lives — the variable on the stack, the object on the heap — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
 
 Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
 
