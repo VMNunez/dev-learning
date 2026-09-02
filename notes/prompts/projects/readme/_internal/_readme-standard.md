@@ -89,7 +89,9 @@ and a library-docs paper, and marked as such here.)*
 
 **Length — recruiter lens.** The global README is scanned in seconds; keep it tight enough that a
 recruiter reaches "What I learned" without fatigue. When a section runs long, the depth belongs in the
-backend/frontend README or in `notes/` — link to it, do not inline it. The backend/frontend READMEs may
+backend/frontend README — link to it, do not inline it. On a single-README project there is no such
+file and no second home: what runs long is **cut**, never relocated, and `notes/` is not a sink for
+it — the two pipelines are independent, and a README rule may not spend the other one's file. The backend/frontend READMEs may
 run deeper (their audience is a technical interviewer), but still no wall of prose where a table or a
 short snippet says it better.
 
@@ -197,10 +199,68 @@ run.** Move any out-of-order section to its correct position.
    - *(Evidence: `_readme-evidence.md` → Assertions, "Future improvements — `3 max`" — number unfounded,
      the section founded.)*
 9. **What I learned** — one bullet per concept, format `` `ConceptName` — one-line reminder ``. A recall
-   list, not a tutorial (full explanations live in `notes/`). Cross-check against PLANNING.md's learning
-   objectives; add any that are missing.
+   list, not a tutorial. Optimal count for the project (no fixed number): the section grows with the work,
+   and what bounds it is the three tests below, never a number. Cross-check against PLANNING.md's learning
+   objectives and add any that are missing — an **adder only**: a plan describes the project as planned,
+   not the one its backlog produced, so it never decides what stays.
+   - **The placement test** — rule 6's distinctness test ("no two decisions name **the same choice**"),
+     applied across the section boundary instead of within one section. Where Architecture decisions or
+     Tradeoffs already states the same choice, one line survives and the other is cut.
+     - **Same choice told twice — cut, and merge upward what the survivor lacks.** A detail the bullet
+       carries and the line above does not is **not** a reason to keep a second bullet: rule 9's own
+       format gives every well-formed bullet a mechanism after the em dash, so "it adds a mechanism"
+       would save all of them and the test would cut nothing. The detail moves into the surviving line;
+       the bullet goes. *Worked cut:* `` - `canActivate: [authGuard, adminGuard]` — stacked guards; all
+       must pass for the route to activate `` beside "Stacked guards (`authGuard` + `adminGuard`) to keep
+       authentication and authorisation as separate concerns" — one choice, told twice; *all must pass*
+       merges up and the bullet is cut.
+     - **A shared symbol is not automatically a shared choice.** Where the bullet's subject is a
+       different **fact** about the same symbol rather than the same decision, it stays. *Worked
+       survivor:* `` - `effect()` cleanup — the cleanup callback cancels the in-flight request before the
+       effect re-runs `` beside "`effect()` + `localStorage` to sync every change automatically" — same
+       symbol, two unrelated facts, neither restating the other. The question is *does the line above
+       already make this point*, not *does the line above use this word*.
+     - **The survivor is chosen for the reader who needs it, not automatically the upper section.** Merge
+       into whichever wording is stronger, and leave it where its own section's contract puts it — a
+       reason belongs upstairs, a recall line belongs here. This test removes a duplicate; it does not
+       rank the sections.
+     - **It de-duplicates and never promotes.** A concept the sections above do *not* state stays here
+       even when it carries a rejected alternative — moving it up would invent a project decision the
+       author did not make, and what counts as a decision is rule 6's judgement. **Known cost, accepted:**
+       a genuine `[X] over [Y]` tradeoff already written into this section is **reported in the run's
+       summary and left where it is**. No rule sweeps it back to Tradeoffs today, and this test will not.
+   - **One bullet per concept, not one per name.** Rule 5's granularity clause ("two bullets describing
+     the same behaviour at different granularity are one"), applied to concepts: a concept spread over
+     one bullet per annotation, per HTTP verb or per helper method is **one** bullet. Seven lines naming
+     `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PathVariable` and `@RequestBody` separately are
+     one line about the controller's request mapping. This is the test that reaches a section whose
+     bullets never duplicate anything above, because de-duplication cannot see them.
+   - **The behaviour test** — rule 5's *a behaviour, not a capability*, applied to a concept. A concept
+     whose absence would change only how the app *looks*, and not what it *does*, is cut.
+     **The line is the bullet's stated purpose, never the CSS property it uses.** `overflow: hidden`
+     clipping a card's corners is looks; `overflow: hidden` inside `.visually-hidden`, whose stated
+     purpose is keeping text in the accessibility tree, is behaviour — the same declaration, opposite
+     verdicts, and the bullet's own sentence is what separates them. Anything whose reason is the
+     accessibility tree, the keyboard or the focus order passes, whatever implements it: an accessible
+     name, a focus ring that exists so keyboard entry is visible, a pressed state exposed to assistive
+     technology. A `transition`, a badge's position, a colour token whose stated reason is
+     appearance are looks — and a bullet whose stated reason is something else again, neither the tree
+     nor the eye, is judged by rule 9's other two tests and not by this one. **A bullet that is half
+     each is split or rewritten to its behavioural half**, never kept whole for the sake of the other.
+   - **What may be added here as a further test, and what may not.** Only a test the agent applying this
+     standard can answer from the repository in front of it. A criterion resting on what the author
+     *remembers* — whether he would survive the follow-up question — names no applier: the agent running
+     this file cannot know it, so the test is either never applied or invented. All three tests above are
+     answerable from the README's own text, which is what makes them enforceable at the gate.
    - Good: "- `CanActivateFn` — functional route guard; no class, no `@Injectable`"
-   - Bad: "- Angular Material" (too vague) · a multi-sentence definition (too long — belongs in notes/).
+   - Bad: "- Angular Material" (too vague) · a multi-sentence definition (too long) · a bullet restating a
+     choice already made in Architecture decisions (placement) · "- `overflow: hidden` on a card — clips
+     image corners" (behaviour) · `` - `@PathVariable` — reads a dynamic URL segment `` sitting beside
+     `` - `@RequestBody` — converts JSON into the DTO `` and five more of the same shape (granularity —
+     one line about the controller's request mapping).
+   - *(Evidence: `_readme-evidence.md` → Assertions, "What I learned" — the **section** is founded by
+     soltech's "Lessons learned during development" and "What the developer learned during the process";
+     the three tests are this file's own, extended from rules 6 and 5, and none carries a number.)*
 10. **Tech stack** — always a table (never a bullet list). Columns: Layer | Technology. Every layer the
     project actually uses.
 11. **Project structure** — folder tree **in a fenced code block**, one-line explanation per folder (or

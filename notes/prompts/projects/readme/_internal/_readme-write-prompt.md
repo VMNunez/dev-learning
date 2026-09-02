@@ -57,6 +57,11 @@ Check this README's sections against the standard's rules for your `{TARGET}`, i
 - Move any out-of-order section to its correct position.
 - Apply the **quality filter** (recruiter + interviewer lens) to each section — cut or rewrite noise.
 - Do **not** rewrite sections that are already correct — only touch what misses the bar.
+- **`What I learned` is the exception to the line above**, because its defect is invisible section by
+  section: every bullet can be well formed while the section as a whole restates Architecture decisions.
+  Run rule 9's **placement**, **behaviour** and **one-bullet-per-concept** tests here, after Architecture
+  decisions and Tradeoffs are final, and cut what they cut. Without this the author adds on every pass
+  what the reviewer then removes.
 - For visual sections (`global` only), output the **Visual brief** and add placeholders as the standard
   specifies — never skip silently.
 

@@ -158,6 +158,21 @@ reproductions and bootcamp homework unless genuinely strong. **This is an extrac
 and is the weakest entry in this file. It is kept only because it is the sole source separating the CV
 number from the portfolio number, which is the distinction the Synthesis below turns on.
 
+### soltech.net — What Do Hiring Managers Actually Look For in a GitHub Portfolio? · full article
+
+URL: https://soltech.net/what-do-hiring-managers-actually-look-for-in-a-github-portfolio/
+No date displayed on the page · Captured: 2026-09
+
+> "A strong GitHub portfolio typically includes: Three to five well-documented projects"
+
+Captured 2026-09-02 while resolving `REC-196`, whose subject was the README standard; this sentence is
+the **project-count** half of that fetch and belongs here rather than in
+`projects/readme/_internal/_readme-evidence.md`, which files the same source for what a README explains.
+It is the **fourth** source for the 3-5 portfolio band and the **first anglophone one** — the band had
+rested on three Spanish sources, and the evidence quality note above says why that mattered. It raises
+the floor rather than moving it: the number is the same, and what changes is that the band no longer
+depends on one language's career writing.
+
 ---
 
 ## Failed captures
@@ -184,7 +199,9 @@ What recurs across the fetched sources, and what it means for `_application-stan
 1. **The project count is a band, and it differs by document.** Three independent Spanish sources give
    **3-5 for a portfolio** ("Entre 3 y 5 proyectos, no más."; "Mostrar entre 3 y 5 trabajos es más que
    suficiente."; "Tres a cinco proyectos que cada uno demuestre algo diferente son mucho más efectivos
-   que diez clones", the third added 2026-09-01). The anglophone extract gives **2-3 for a one-page
+   que diez clones", the third added 2026-09-01), and soltech.net gives the same band in English — "A
+   strong GitHub portfolio typically includes: Three to five well-documented projects" — the fourth
+   source for it and the first not in Spanish, added 2026-09-02. The anglophone extract gives **2-3 for a one-page
    CV**. No fetched source anywhere states a flat 3 for every document. The standard used to assert a
    single "3 strongest projects", applied equally by `cv-prompt` and `linkedin-prompt`; that is not
    what the evidence says, and all three sites were corrected to per-document bands
@@ -218,7 +235,7 @@ other row is live: the assertion is still in the file, and its status is what a 
 
 | Assertion | Site | Status against this file |
 |---|---|---|
-| project count is a band, declared per document, not a flat 3 | standard, Project-selection heuristic | **Founded** — 3-5 portfolio (three Spanish sources as of 2026-09-01, archisacademy the third), 2-3 one-page CV (extract). `Resolved 2026-08-31`: this replaced "3 strongest projects", which no fetched source supported |
+| project count is a band, declared per document, not a flat 3 | standard, Project-selection heuristic | **Founded** — 3-5 portfolio (three Spanish sources as of 2026-09-01, archisacademy the third, plus soltech.net in English from 2026-09-02, the fourth and the first not in Spanish), 2-3 one-page CV (extract). `Resolved 2026-08-31`: this replaced "3 strongest projects", which no fetched source supported |
 | `PROJECTS = auto` chooses 2-3 that fit one page | `cv-prompt.md` | **Founded on an extract only**, not a fetched quote — the weakest support in this file. `Resolved 2026-08-31`: replaced "the 3 strongest" |
 | Step 4 features 3-5 projects | `linkedin-prompt.md` | **Reasoned, not founded** — the 3-5 band is measured for a *portfolio*; no fetched source measures a LinkedIn profile. Carried across by analogy and marked as such at the site. `Resolved 2026-08-31`: replaced "top 3 projects" |
 | recruiter spends 17-46s, ~10s anecdotal first judgement | standard, Expert stance | **Founded**, with the two kept apart: the range is Tegze's measurement, the ten seconds is one recruiter's account. `Resolved 2026-08-31`: replaced an unfounded "~20 seconds" |

@@ -43,6 +43,15 @@ project. Your attention budget belongs to the README.
   brevity for "What I learned", specific roles in the API table, prose-only Auth flow, `*(planned)*` for
   absent tests, etc.). Every rule about *arrangement* is checked against the standard's *Source is not
   render* — the blank lines, not the order of the lines.
+- **`What I learned` inclusion** — rule 9's **placement**, **behaviour** and **one-bullet-per-concept**
+  tests, all three answerable from this README's own text. A bullet restating a choice already made in
+  Architecture decisions (or Tradeoffs) survives once, in the section that owns the choice, and is cut
+  here, its extra detail merged upward; a bullet whose absence would change only how the app *looks* and
+  not what it *does* is cut; a concept spread over one bullet per annotation, verb or helper is one
+  bullet. The first of the three **compares two sections**, so run it after both are final; the third is
+  the one that reaches a section whose bullets duplicate nothing above. State the bullet count before and
+  after in the summary. A run that cuts nothing says so — the section is bounded by these tests and by no
+  number.
 - **Quality filter** — every section passes both the recruiter and the interviewer lens; cut or sharpen
   anything that only impresses one.
 - **Own-text test** — every claim the README makes is stated in the README's own text (a sentence, a
@@ -51,7 +60,9 @@ project. Your attention budget belongs to the README.
   full-stack project let *Which README owns a concept* decide which README that is — never by touching
   the visual.
 - **Truthfulness** — no section claims something not in the code/PLANNING; "What I learned" and patterns
-  match the plan's learning objectives (add any missing objective).
+  match the plan's learning objectives (add any missing objective). The plan is an **adder only** here: it
+  describes the project as planned, not the one its backlog produced, so it never licenses keeping a
+  bullet the inclusion test above cuts.
 - **In-progress markers** — no leftover "coming soon" fragments except one clean placeholder per
   genuinely-unbuilt section; no working notes.
 - **Visuals (`global`)** — the Visual brief and placeholders are present and correct; images stacked

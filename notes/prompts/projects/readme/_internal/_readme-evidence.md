@@ -33,8 +33,8 @@ junior is asked to know** — it anchors coverage, not presentation. This file i
 
 **Evidence quality note.** The sources below were captured **2026-09** by direct fetch. One fetch
 returned 403 and one 404; both are recorded under `## Failed captures` rather than dropped, together
-with three numbers that only ever appeared in a search synthesis. **Twelve sources** are quoted here
-and authority is uneven, so it is stated per source: four are Spanish career/bootcamp sites, six are
+with three numbers that only ever appeared in a search synthesis. **Fourteen sources** are quoted here
+and authority is uneven, so it is stated per source: four are Spanish career/bootcamp sites, eight are
 anglophone career articles, one is an arXiv paper, and one — the only source found that gives numeric
 section sizes — is a personal blog writing about **open-source library READMEs**, a different genre
 from a portfolio README.
@@ -271,6 +271,63 @@ contributing guide, usage examples), a genre whose reader is a developer decidin
 dependency, not a recruiter deciding whether to interview a junior. Its 3-7 band is recorded because it
 exists, not because it founds anything.
 
+### soltech.net — What Do Hiring Managers Actually Look For in a GitHub Portfolio? · full article
+
+URL: https://soltech.net/what-do-hiring-managers-actually-look-for-in-a-github-portfolio/
+No date displayed on the page · Captured: 2026-09
+
+Its list of what helpful READMEs explain prints as seven separate bullets, reproduced here as it prints:
+
+> * "The problem being solved"
+> * "The intended users"
+> * "Key technical decisions"
+> * "Screenshots or workflow examples"
+> * "Known limitations"
+> * "Future improvements"
+> * "Lessons learned during development"
+
+And, of what strong portfolios explain:
+
+> "Which tradeoffs had to be made"
+
+> "What the developer learned during the process"
+
+> "I've noticed that candidates who openly discuss iteration and learning often leave a stronger
+> impression than candidates presenting highly polished projects without explanation."
+
+> "Real-world software development is rarely perfect or linear. Acknowledging that reality demonstrates
+> maturity and self-awareness."
+
+The first source found that names **both** *Tradeoffs* and *What I learned* as README content — and the
+second twice, once in the seven bullets above and once in its "Technical Judgment Matters" list. It
+**falsifies this file's own earlier verdict** that the two sections were this repository's inventions
+(`## Synthesis` point 8, corrected 2026-09-02 under `REC-196`). It counts nothing: no section is given a
+size, so it founds the **sections** and none of their bars — the same shape as archisacademy and hakia.
+Its last two quotes are the only fetched statement of *why* a learning section earns its place, and they
+are about the reader's impression, not about length. The same fetch returned a project-count sentence,
+which is `_application-evidence.md`'s scope and was **filed there** in the same pass, not parked here.
+
+### codementor.io — How to Impress in a Junior Developer Job Interview · full article
+
+URL: https://www.codementor.io/learn-programming/junior-developer-interview-tips-to-success
+No date displayed on the page · Captured: 2026-09
+
+> "Lastly, a README is a fantastic place to share your thinking around your program."
+
+> "Address any limitations, and talk about how you would improve or extend upon your program if you had
+> more time."
+
+> "You may be asked to explain why you made a particular choice, or how a certain algorithm works. You
+> want to have a better answer than "I don't know" or "I don't remember"."
+
+Scoped to the **coding-challenge review**, not to a portfolio README, so it is `reasoned` here rather than
+founded — but it is the second source to place the author's *thinking* inside the README, and its
+limitations/improvements sentence corroborates rule 8 in kind. Its third quote was proposed in `REC-196`
+as an inclusion test for `What I learned` — keep what survives the follow-up question — and **rejected
+2026-09-02**: the quote is about what the *candidate* prepares, and the agent applying `_readme-standard.md`
+cannot evaluate what an author remembers, so as a rule it would be either never applied or invented. It is
+recorded here as evidence about interviews, and it founds no test in the standard.
+
 ---
 
 ## Failed captures
@@ -343,10 +400,15 @@ What recurs across the fetched sources, and what it means for `_readme-standard.
    counts.** There is no Spanish-market divergence to carry here — unlike `_application-evidence.md`,
    where the 3-5 portfolio band is specifically Spanish. Where a rule rests only on an anglophone source
    (the LLM layer, in full), it is marked `reasoned`.
-8. **Two of the standard's sections are named by no source at all**: *Tradeoffs* (hakia's "Challenges
-   and Solutions" is adjacent, not the same) and *What I learned*. Both are uncontradicted; both are this
-   repository's own inventions for an interview audience, and the file says so rather than pretending
-   otherwise.
+8. **Both sections this file once called repo inventions are named by a source** — corrected 2026-09-02
+   under `REC-196`, so what follows is a retraction and not a fresh claim. soltech.net's seven bullets of what a helpful
+   README explains end "Known limitations", "Future improvements", "**Lessons learned during
+   development**", and separately, of what strong portfolios explain, it gives "**Which tradeoffs had to
+   be made**" and "What the developer learned during the process". *Tradeoffs* and *What I learned* are therefore founded as
+   **sections**; hakia's "Challenges and Solutions" stays adjacent rather than the same thing, and no
+   source gives either a size. **What the earlier verdict got right is the discipline, not the finding**:
+   it was reached by a capture that had not found this page, and *a partial extract never proves an
+   absence* — this file's own rule, arriving against this file.
 9. **Section order is prescribed by every source that prescribes a list, and they agree on the opening
    and disagree on nothing else that matters.** Identity first, then what it does, then proof: codarium
    orders it repository name → one-liner → demo → purpose; hakia opens with Project Overview, then Live
@@ -386,7 +448,7 @@ addresses it). None of the six numeric bars is `reasoned`: nothing is being carr
 |---|---|---|
 | Features — `5–6` bullets | rule 5, l.137 | **Number unfounded; content founded.** No career source counts features. The only band found anywhere (`3-7`, Forge Tools) is a library-README blog, and it happens to contain 5–6 without founding it. The user-perspective rule is founded in kind by hakia's "Key Features" and fonzi's "the problem, approach" |
 | Architecture decisions — `3 to 8`, interview test | rule 6, l.139 | **Number unfounded; the section is founded.** archisacademy: "Cómo estructuras el código y cómo tomas decisiones de arquitectura"; hakia: "Explain why you chose each one for this project". Neither counts them |
-| Tradeoffs — `3 to 4` bullets | rule 7, l.142 | **Unfounded, and the section itself is named by no fetched source.** hakia's "Challenges and Solutions" is the nearest and is not the same thing. Uncontradicted; a deliberate choice of this repository for an interview reader |
+| Tradeoffs — `3 to 4` bullets | rule 7, l.142 | **Number unfounded; the section is founded** — corrected 2026-09-02 (`REC-196`), having read here as invention-by-this-repo until soltech.net was captured: "Which tradeoffs had to be made", in its list of what strong portfolios explain. hakia's "Challenges and Solutions" is still the nearest *other* source and still not the same thing. No source counts them |
 | Future improvements — `3 max` | rule 8, l.145 | **Number unfounded; the section is founded.** corecode's "Roadmap: … los siguientes pasos en tu código" and hakia's "Future Improvements". Neither counts them |
 | Backend Security considerations — `≥4` bullets | backend rule 4, l.194 | **Unfounded.** No fetched source addresses a per-tier technical README at all. It is also a **floor**, which is what forces padding — the specific risk Victor named on 2026-09-01 |
 | Backend Tradeoffs — "the 3 most important" | backend rule 7, l.202 | **Unfounded**, same silence as above |
@@ -397,7 +459,7 @@ addresses it). None of the six numeric bars is `reasoned`: nothing is being carr
 | The README is what a recruiter meets first, and is skimmed | standard purpose, throughout | **Founded.** platzi: "el primer archivo que una persona verá"; bulldogjob: "IT recruiters browse through their candidates' GitHub accounts"; fonzi: "seconds to minutes"; hakia: 15 s on portfolio sites; codarium: "They do not have time for that. They are not technical." |
 | Title + one sentence, plain language, no tech words | rule 1, l.117 | **Founded in kind, not in size.** codarium's "Concise one-liner" within "60 characters" and Forge Tools' "One sentence, maximum two" both support one sentence; the *plain-language* rule is this repository's own and is uncontradicted |
 | The README must answer what / why / stack / how to run | section set, rules 1-3 + 10-12 | **Founded** by four sources that agree almost word for word (archisacademy, platzi, fonzi, nexusitgroup) |
-| "What I learned" section | rule 9, l.148 | **Unfounded and unmentioned by every source.** A learning-diary artefact, uncontradicted, and worth keeping only if it survives an interview-reader test — not an evidence question |
+| "What I learned" section | rule 9 | **Section founded; all three of its tests are the standard's own and none is a number** — corrected 2026-09-02 (`REC-196`), having read here as unmentioned-by-every-source until soltech.net was captured. That source names it twice: "Lessons learned during development", the last of the seven bullets of what a helpful README explains, and "What the developer learned during the process" among what strong portfolios explain; it also gives the only fetched reason the section earns its place — "candidates who openly discuss iteration and learning often leave a stronger impression than candidates presenting highly polished projects without explanation". codementor's "a README is a fantastic place to share your thinking around your program" corroborates in kind, `reasoned` (its scope is a coding-challenge review). **No source sizes it**, which is why rule 9 bounds it with a placement test, a behaviour test and a one-bullet-per-concept test, extended from rules 6 and 5, and with no count. The **defensibility** criterion codementor's "I don't know / I don't remember" suggests was rejected the same day: the applier is `readme-audit`, which cannot know what the author remembers |
 | A README is read by an LLM as well as a human | universal rule *A third reader, and it is not human* | **Founded that the reader exists** (fonzi, for repositories; cvwon, for CVs); **reasoned at best** for what it rewards, so the rule is marked `reasoned` at its site. `REC-194` adopted exactly one test on this evidence — every claim the README makes is stated in the README's own text, a sentence, a bullet or a table cell, and never only inside a visual — and refused three things the same evidence does not carry: any trimming of visuals (founded for a human reader, **unmeasured** for a machine one, and absence is not a negative result), any word or length budget, and XML-style tagging, which arXiv 2504.09798v2 measures for an LLM consuming a library's docs and not for a human reading a portfolio. Two further candidates were dropped: **headings that name the thing**, already enforced by the fixed, named section list each target carries; and **the stack named in text**, which is subsumed by the test above — a badge is an image on the page GitHub draws — with rule 10 supplying only the *where* (`Layer` / `Technology`, every layer the project uses) and no source-backed rule about badges owed |
 
 ---
