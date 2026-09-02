@@ -78,11 +78,16 @@ En la práctica usas `int`, `long`, `double` y `boolean` para casi todo. `float`
 
 ### Variables de referencia y `null`
 
-En el diagrama de arriba, `name` plantea una pregunta que `number` no puede plantear: ¿qué tiene escrito `name` dentro mientras todavía no le has asignado ningún objeto?
+```java
+int number = 42;
+String name = "Victor";
+```
 
-`number` es un hueco de 32 bits en el que siempre hay un número escrito. Un campo `int` que nunca tocaste tiene escrito `0`, y no hay forma de dejarlo «vacío»: las 32 posiciones están ocupadas por ceros y unos pase lo que pase, y cualquier combinación posible de esos bits ya se lee como algún número. No sobra ningún patrón al que darle el significado «aquí no hay nada».
+En el diagrama de arriba(TODO: AHORA SE PUEDE DECIR QUE EN EL CODIGO DE ARRIBA), `name` plantea una pregunta que `number` no puede plantear: ¿qué tiene escrito `name` dentro mientras todavía no le has asignado ningún objeto?
 
-`name` no guarda el texto: guarda la dirección de memoria donde está el objeto `String`. Y ahí sí sobra un valor que no señala a ninguna parte, porque no todas las direcciones posibles corresponden a un objeto real. Java reserva uno de esos valores para significar exactamente eso y lo escribe **`null`**: «esta variable existe, pero no identifica ningún objeto».
+`number` es un hueco de 32 bits en el que siempre hay un número escrito. Un campo `int` de una clase que declaras y nunca asignas arranca valiendo `0` — sí, exactamente eso: se declara sin valor y empieza en `0`, porque Java rellena esos 32 bits con ceros al crear el objeto. (La variable local es el caso aparte: ahí Java no rellena nada, y el compilador te obliga a asignarla antes de leerla.) Y no hay forma de dejar ese hueco «vacío»: las 32 posiciones están siempre ocupadas por ceros y unos, y todas las combinaciones posibles de esos bits ya están cogidas — cada una significa un número concreto. No queda ninguna libre a la que darle el significado «aquí no hay nada».
+
+`name` no guarda el texto: guarda la dirección de memoria donde está el objeto `String`. Con las direcciones sí queda sitio libre, porque hay valores que no corresponden a ningún objeto real. Java aparta uno de ellos y le da un solo significado — «esta variable no apunta a ningún objeto» — y ese valor es **`null`**. Por eso `name` puede contestar a la pregunta de arriba y `number` no: `null` es una dirección más de las que caben en el hueco, que existe precisamente para decir que ahí no hay nada.
 
 ```java
 String name = null;      // BIEN — la caja existe y contiene "apunta a nada"

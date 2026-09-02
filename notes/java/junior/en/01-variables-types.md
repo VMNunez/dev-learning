@@ -80,11 +80,16 @@ In practice you use `int`, `long`, `double`, and `boolean` for almost everything
 
 ### Reference variables and `null` — enough to read the rest of this page
 
+```java
+int number = 42;
+String name = "Victor";
+```
+
 In the diagram above, `name` raises a question `number` cannot raise: what is written inside `name` while you have not assigned it any object yet?
 
-`number` is a 32-bit slot with a number always written in it. An `int` field you never touched has `0` written in it, and there is no way to leave it "empty": those 32 positions hold zeros and ones no matter what, and every possible arrangement of them already reads as some number. No pattern is left over to be given the meaning "nothing here".
+`number` is a 32-bit slot with a number always written in it. An `int` field of a class you declare and never assign starts out as `0` — yes, exactly that: declared with no value, and it begins at `0`, because Java fills those 32 bits with zeros when the object is created. (A local variable is the exception: there Java fills in nothing, and the compiler forces you to assign it before you read it.) And there is no way to leave that slot "empty": the 32 positions are always occupied by zeros and ones, and every possible arrangement of those bits is already taken — each one means some specific number. None is left over to be given the meaning "nothing here".
 
-`name` does not hold the text: it holds the memory address where the `String` object lives. And there a value that points nowhere is left over, because not every possible address corresponds to a real object. Java reserves one of those values to mean exactly that and writes it **`null`**: "this variable exists, but it identifies no object".
+`name` does not hold the text: it holds the memory address where the `String` object lives. With addresses there is room left over, because some values do not correspond to any real object. Java sets one of them aside and gives it a single meaning — "this variable points at no object" — and that value is **`null`**. That is why `name` can answer the question above and `number` cannot: `null` is just another of the addresses that fit in the slot, and it exists precisely to say there is nothing there.
 
 ```java
 String name = null;      // BIEN — the box exists and holds "points to nothing"
