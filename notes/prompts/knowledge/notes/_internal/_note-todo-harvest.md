@@ -132,13 +132,13 @@ arrival.
 
 | ID | Date | Pair | Lang | Category | Count | Quote | Verdict | Rule | Disposition |
 |---|---|---|---|---|---|---|---|---|---|
-| NTH-0001 | 2026-09-02 | java/junior/01 | es | ejemplo-innecesario | 1 | NO ME GUSTA MUCHO ESTE EJEMPLO EN ESTE MOMENTO DEL PARRAFO | missing | — | open |
-| NTH-0002 | 2026-09-02 | java/junior/01 | es | frase-sobrecargada | 5 | ES MALISIMA, MUY MAL EXPRESADA / PODRIA ESTAR UN POCO MAS CLARA | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0001 | 2026-09-02 | java/junior/01 | es | ejemplo-innecesario | 2 | NO ME GUSTA MUCHO ESTE EJEMPLO EN ESTE MOMENTO DEL PARRAFO / QUITA EL EJEMPLO … PORQUE YA SE HA NOMBRADO ARRIBA | missing | — | open |
+| NTH-0002 | 2026-09-02 | java/junior/01 | es | frase-sobrecargada | 6 | ES MALISIMA, MUY MAL EXPRESADA / PODRIA ESTAR UN POCO MAS CLARA / UNA VARIABLE DE REFERENCIA APUNTA A UN OBJETO Y PUEDE APUNTAR A NINGUNO | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
 | NTH-0003 | 2026-09-02 | java/junior/01 | es | floritura-literaria | 4 | ES UNA MALA EXPRESION | unapplied | `_note-quality-standard.md` → `Sentence-level register` (cut the literary flourish) | open |
 | NTH-0004 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 4 | CON ESO DE LAS CAJAS … SE ENTIENDE MAL / EMPIEZAS HABLANDO DE LAS CAJAS Y ESO NO ME GUSTA | missing | — | open |
 | NTH-0005 | 2026-09-02 | java/junior/01 | es | termino-sin-presentar | 2 | UN FLAG??? | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
 | NTH-0006 | 2026-09-02 | java/junior/01 | es | ejemplo-sin-senalar | 3 | ESTO ES OTRO EJEMPLO, PERO DEBES INDICARLO | missing | — | open |
-| NTH-0007 | 2026-09-02 | java/junior/01 | es | referencia-ambigua | 2 | CUENTA LOS CHAR QUE TIENE UN STRING / PORQUE YO ENTIENDO QUE AQUI SE REFIERE EN REALIDAD A LOS METODOS QU SE USAN REALMENTE PARA COMAPARAR STRING | missing | — | open |
+| NTH-0007 | 2026-09-02 | java/junior/01 | es | referencia-ambigua | 3 | UNO DE ELLOS? UN OBJETO? UN BIT? / CUENTA LOS CHAR QUE TIENE UN STRING / PORQUE YO ENTIENDO QUE AQUI SE REFIERE EN REALIDAD A LOS METODOS QU SE USAN REALMENTE PARA COMAPARAR STRING | missing | — | open |
 | NTH-0008 | 2026-09-02 | java/junior/01 | es | mecanismo | 6 | MUY MUY MAL EXPLICADO / NO ENTIENDO NADA DE "Para los siete tipos numéricos, ambas cosas coinciden…" | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
 | NTH-0009 | 2026-09-02 | java/junior/01 | es | tabla-sin-uso-real | 1 | ME GUSTARIA UNA COLUMNA QUE PUSIERA EL USO HABITUAL | missing | — | open |
 | NTH-0010 | 2026-09-02 | java/junior/01 | es | termino-traducido-no-usado | 4 | EN VEZ DE USAR PILA … ME GUSTA USAR LA PALABRA STACK / PREFIERO QUE PONGAS HEAP | missing | — | open |
