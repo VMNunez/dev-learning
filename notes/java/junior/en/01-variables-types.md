@@ -149,7 +149,7 @@ The table above gave you all 8 primitives, with their size and their range. This
 
 The table gives you the exact ranges, but you do not need to memorise them: to decide between `int` and `long` a single reference number is enough, the 2.1 billion ceiling of `int`. **Default to `int`, and reach for `long` only when the value can plausibly pass about 2.1 billion.** In backend work that is a short and predictable list: database identifiers (a table rarely holds two billion rows, but ids come from a sequence that never reuses a number, so they outrun the row count), timestamps in milliseconds since 1970 (`System.currentTimeMillis()` returns a `long`, and milliseconds passed the `int` range about 25 days into 1970), and time measured in nanoseconds (`System.nanoTime()`, used to time how long a method takes: an `int` of nanoseconds runs out after 2.1 seconds). Ages, list sizes, page numbers, HTTP status codes and loop counters stay `int` forever.
 
-> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one. What makes the first line below work is that there is an `int` literal being stored in a `long`, and that direction — from a smaller type to a wider one — has a name of its own: **widening**, and Java performs it silently. The opposite, putting a large value into a smaller type, is **narrowing**, and that one it makes you request in writing. Both have their own section further down; for now, hold on to this: the suffix has nothing to do with the variable's type, only with whether the literal fits in an `int`:
+> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one. What makes the first line below work is that there is an `int` literal being stored in a `long`, and that direction — from a smaller type to a wider one — is precisely the one Java allows without asking you for anything: it has a name of its own, **widening**, and Java performs it silently. The opposite, putting a large value into a smaller type, is **narrowing**, and that one it makes you request in writing. Both have their own section further down; for now, hold on to this: the suffix has nothing to do with the variable's type, only with whether the literal fits in an `int`:
 >
 > ```java
 > long smallId = 5;               // BIEN — no suffix needed
@@ -158,7 +158,17 @@ The table gives you the exact ranges, but you do not need to memorise them: to d
 >
 > The first line is fine because `5` is a perfectly legal `int` literal and `int` → `long` is a widening conversion, which Java performs silently (the *Widening* section below). The second needs the suffix because the literal itself does not fit in 32 bits, and the compiler judges the literal before it ever looks at the variable — the callout above traces that exact error. So the rule is: **suffix the literal only when the literal alone is too big for an `int`**. Writing `5L` is not wrong, just noise.
 
-There is a third place the `L` decides the outcome, and it has nothing to do with the declared type of the variable: arithmetic. `1000 * 60 * 60 * 24 * 30` overflows even when you store the result in a `long`, because the multiplication is carried out in `int` before the assignment is considered. That is the *Overflow* section further down — and it is the case where a missing `L` produces a wrong number instead of a compile error.
+There is a third place the `L` decides the outcome, and it has nothing to do with the declared type of the variable: arithmetic. `1000 * 60 * 60 * 24 * 30` overflows even when you store the result in a `long`, because the multiplication is carried out in `int` before the assignment is considered. That last part is the piece worth getting right, because it is counter-intuitive: the compiler resolves the right-hand expression **whole and on its own**, without once looking at which variable it is going into. And the type of an arithmetic operation is decided by its operands, never by its destination: `int * int` gives `int`, always. The trace is this:
+
+> 1. `1000 * 60` → both operands are `int` literals, so the result is an `int`: `60000`.
+> 2. `60000 * 60` → still `int * int`: `3600000`.
+> 3. `3600000 * 24` → `int`: `86400000`.
+> 4. `86400000 * 30` → `int` again, but the true result, 2,592,000,000, does not fit in an `int`. It overflows **here**, at step 4, and what is left is a negative number.
+> 5. **Only now** does the assignment come into play: that already-broken `int` is taken and converted to `long` (widening). The conversion works perfectly — it is converting the garbage with complete fidelity.
+>
+> Declaring the variable as `long` arrives too late: the damage is done at step 4. What fixes the calculation is forcing the arithmetic itself to be `long`, by putting the `L` on the first literal (`1000L * 60 * 60 * 24 * 30`): from there on every step is `long * int`, Java promotes the `int` to `long`, and the whole chain is computed in 64 bits.
+
+That is the *Overflow* section further down — and it is the case where a missing `L` produces a wrong number instead of a compile error.
 
 ### Building a `BigDecimal` — never `new BigDecimal(0.1)`
 
