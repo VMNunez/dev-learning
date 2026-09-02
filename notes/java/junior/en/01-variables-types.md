@@ -139,7 +139,7 @@ The table above gave you all 8 primitives, with their size and their range. This
 
 > **Money — never `double` or `float`.** For financial values use `BigDecimal`: a plain Java class, from the `java.math` package, that does exact arithmetic. `double` cannot represent 0.1 exactly in binary because computers express numbers as sums of powers of 2 (1/2, 1/4, 1/8…), and 0.1 cannot be expressed as a finite sum of those powers — just like 1/3 cannot be written exactly in decimal (0.333…). The processor stores the closest approximation it can, and that small error accumulates across operations until you get `0.09999999...` instead of `0.1`. `BigDecimal` avoids this by operating on the actual digits, without the representation error.
 
-**Boolean** — for flags and conditions:
+**Boolean** — for flags and conditions. A *flag* is a variable whose only job is to answer yes or no to a question about the state of something: `isActive` ("is this account still active?"), `hasRole` ("does this user have this role?"), `emailVerified` ("has the address been confirmed?"). It does not hold a piece of domain data, it holds a decision already made, so the code that comes after can ask about it with an `if` instead of recomputing it:
 - `boolean` — holds only `true` or `false`. Used for `isActive`, `hasRole`, `isEmpty`.
 
 **Character** — for single characters:
@@ -147,9 +147,9 @@ The table above gave you all 8 primitives, with their size and their range. This
 
 ### `int` or `long` — how to choose, and when the literal needs the `L`
 
-The table gives you the ranges; the decision rule is simpler than the numbers. **Default to `int`, and reach for `long` only when the value can plausibly pass about 2.1 billion.** In backend work that is a short and predictable list: database identifiers (a table rarely holds two billion rows, but ids come from a sequence that never reuses a number, so they outrun the row count), timestamps in milliseconds since 1970 (`System.currentTimeMillis()` returns a `long`, and milliseconds passed the `int` range about 25 days into 1970), byte counts of anything file-sized, and running totals that accumulate for years. Ages, list sizes, page numbers, HTTP status codes and loop counters stay `int` forever.
+The table gives you the exact ranges, but you do not need to memorise them: to decide between `int` and `long` a single reference number is enough, the 2.1 billion ceiling of `int`. **Default to `int`, and reach for `long` only when the value can plausibly pass about 2.1 billion.** In backend work that is a short and predictable list: database identifiers (a table rarely holds two billion rows, but ids come from a sequence that never reuses a number, so they outrun the row count), timestamps in milliseconds since 1970 (`System.currentTimeMillis()` returns a `long`, and milliseconds passed the `int` range about 25 days into 1970), and time measured in nanoseconds (`System.nanoTime()`, used to time how long a method takes: an `int` of nanoseconds runs out after 2.1 seconds). Ages, list sizes, page numbers, HTTP status codes and loop counters stay `int` forever.
 
-> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one:
+> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one. What makes the first line below work is that there is an `int` literal being stored in a `long`, and that direction — from a smaller type to a wider one — has a name of its own: **widening**, and Java performs it silently. The opposite, putting a large value into a smaller type, is **narrowing**, and that one it makes you request in writing. Both have their own section further down; for now, hold on to this: the suffix has nothing to do with the variable's type, only with whether the literal fits in an `int`:
 >
 > ```java
 > long smallId = 5;               // BIEN — no suffix needed
