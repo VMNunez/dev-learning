@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → read: "Overview" and "Primitive Data Types"
 > 📖 [Oracle Docs — Primitive types and variables](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 
-The [intro](00-intro-java.md) left you with the big idea that Java is **statically typed**: every variable has a type fixed at compile time, and that type never changes. That raises the obvious next question — *what are those types?* This file answers it. Before you can write a single class, a loop, or a method, you need the raw materials: the exact set of types Java gives you to hold a number, a flag, a piece of text, and how they behave in memory. Everything from here on — every field in every Spring Boot entity, every method parameter — is built out of the types on this page.
+The [intro](00-intro-java.md) left you with the big idea that Java is **statically typed**: every variable has a type fixed at compile time, and that type never changes. That raises the obvious next question — *what are those types?* This file answers it. Before you can write a single class, a loop, or a method, you need the raw materials: the exact set of types Java gives you to hold a number, a true/false value, a piece of text, and how they behave in memory. Everything from here on — every field in every Spring Boot entity, every method parameter — is built out of the types on this page.
 
 ## Primitive types
 
@@ -11,7 +11,7 @@ The [intro](00-intro-java.md) left you with the big idea that Java is **statical
 
 In Java there are two ways to store data in memory. The first is to store the **value directly**: the data itself lives inside the variable, in the memory slot that variable occupies. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `User`, or any class) use the second.
 
-This is the single most structural idea on the page, so it is worth drawing. The two declarations below are written almost the same way, but they leave memory in two different shapes: one holds the value, the other holds an address.
+This distinction — storing the value or storing an address — is the basis of almost everything you will see in the rest of the page, so it is worth drawing. The two declarations below are written almost the same way, but they leave memory in two different shapes: one holds the value, the other holds an address.
 
 ```java
 int number = 42;
@@ -32,7 +32,11 @@ String name = "Victor";
                                        the value lives HERE
 ```
 
-Everything that looks contradictory later on this page comes out of the diagram above — that is, out of how each piece of data is stored in memory. `==` on two `String`s compares the two memory addresses the variables hold, not the text those addresses point to. That is why text is compared with `equals()` instead. The concrete calls are in [02-strings.md](02-strings.md), and what `equals()` is really asking is explained in [06-oop-classes.md](06-oop-classes.md). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because its address slot can hold "points to nothing". And where each piece physically lives — the variable on the stack, the object on the heap — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
+Everything that looks contradictory later on this page comes out of the diagram above — that is, out of how each piece of data is stored in memory. For example: `==` on two `String`s compares the two memory addresses the variables hold, not the text those addresses point to. That is why text is compared with `equals()` instead; the concrete methods used to compare it are in [02-strings.md](02-strings.md), and what `equals()` is really asking is explained in [06-oop-classes.md](06-oop-classes.md).
+
+Another quirk that comes out of the same thing: an `int` can never be `null`, because its memory slot only fits a number and there is no number that means "empty". An `Integer` can be, because its slot holds an address rather than a number, and an address does admit the special value "I point to no object" — which is exactly what `null` means.
+
+What the drawing does not yet tell you is *where* those two slots sit inside the program's memory: the variable lives in one area (the stack) and the object it points to lives in another (the heap). That second half of the picture is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
 
 Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
 

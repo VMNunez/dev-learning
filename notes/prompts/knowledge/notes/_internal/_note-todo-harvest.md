@@ -133,6 +133,8 @@ arrival.
 | ID | Date | Pair | Lang | Category | Count | Quote | Verdict | Rule | Disposition |
 |---|---|---|---|---|---|---|---|---|---|
 | NTH-0001 | 2026-09-02 | java/junior/01 | es | ejemplo-innecesario | 1 | NO ME GUSTA MUCHO ESTE EJEMPLO EN ESTE MOMENTO DEL PARRAFO | missing | — | open |
-| NTH-0002 | 2026-09-02 | java/junior/01 | es | frase-sobrecargada | 1 | PODRIA ESTAR UN POCO MAS CLARA | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
-| NTH-0003 | 2026-09-02 | java/junior/01 | es | floritura-literaria | 1 | ES UNA MALA EXPRESION | unapplied | `_note-quality-standard.md` → `Sentence-level register` (cut the literary flourish) | open |
+| NTH-0002 | 2026-09-02 | java/junior/01 | es | frase-sobrecargada | 2 | PODRIA ESTAR UN POCO MAS CLARA | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0003 | 2026-09-02 | java/junior/01 | es | floritura-literaria | 4 | ES UNA MALA EXPRESION | unapplied | `_note-quality-standard.md` → `Sentence-level register` (cut the literary flourish) | open |
 | NTH-0004 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 3 | CON ESO DE LAS CAJAS … SE ENTIENDE MAL | missing | — | open |
+| NTH-0005 | 2026-09-02 | java/junior/01 | es | termino-sin-presentar | 1 | UN FLAG??? | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0006 | 2026-09-02 | java/junior/01 | es | ejemplo-sin-senalar | 2 | ESTO ES OTRO EJEMPLO, PERO DEBES INDICARLO | missing | — | open |

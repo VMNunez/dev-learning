@@ -3,7 +3,7 @@
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → leer: "Overview" y "Primitive Data Types"
 > 📖 [Oracle Docs — Primitive types and variables](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 
-La [introducción](00-intro-java.md) te dejó con la idea central de que Java es de **tipado estático**: cada variable tiene un tipo fijado en tiempo de compilación, y ese tipo nunca cambia. Eso lleva directamente a la siguiente pregunta — _¿cuáles son esos tipos?_ Este archivo la responde. Antes de escribir una sola clase, un bucle o un método, necesitas la materia prima: el conjunto exacto de tipos que Java te da para guardar un número, un flag, un trozo de texto, y cómo se comportan en memoria. Todo lo que viene a partir de aquí — cada campo de cada entidad de Spring Boot, cada parámetro de método — se construye a partir de los tipos de esta página.
+El [00-intro-java.md](00-intro-java.md) te dejó con la idea central de que Java es de **tipado estático**: cada variable tiene un tipo fijado en tiempo de compilación, y ese tipo nunca cambia. Eso lleva directamente a la siguiente pregunta — _¿cuáles son esos tipos?_ Este archivo la responde. Antes de escribir una sola clase, un bucle o un método, necesitas la materia prima: el conjunto exacto de tipos que Java te da para guardar un número, un valor de verdadero/falso, un trozo de texto, y cómo se comportan en memoria. Todo lo que viene a partir de aquí — cada campo de cada entidad de Spring Boot, cada parámetro de un método — se construye a partir de los tipos de esta página.
 
 ## Tipos primitivos
 
@@ -11,7 +11,7 @@ La [introducción](00-intro-java.md) te dejó con la idea central de que Java es
 
 En Java hay dos formas de guardar datos en memoria. La primera es almacenar el **valor directamente**: el dato en sí vive dentro de la propia variable, en el sitio de memoria que ocupa esa variable. La segunda es guardar una **referencia** — en lugar del dato en sí, la variable contiene una dirección de memoria que apunta a dónde está el objeto real, como un enlace. Los **tipos primitivos** usan la primera forma: almacenan el valor directamente, sin referencias. Los **objetos** (como `String`, `User`, o cualquier clase) usan la segunda.
 
-Esta es la idea más estructural de toda la página, así que merece la pena dibujarla. Las dos declaraciones de abajo se escriben casi igual, pero dejan la memoria de dos formas distintas: una guarda el valor y la otra guarda una dirección.
+Esta distinción — guardar el valor o guardar una dirección — es la base de la que sale casi todo lo que verás en el resto de la página, así que merece la pena dibujarla. Las dos declaraciones de abajo se escriben casi igual, pero dejan la memoria de dos formas distintas: una guarda el valor y la otra guarda una dirección.
 
 ```java
 int number = 42;
@@ -32,7 +32,11 @@ String name = "Victor";
                                        el valor vive AQUÍ
 ```
 
-Todo lo que más adelante en esta página parece contradictorio sale del esquema anterior, es decir, de cómo se guarda cada dato en memoria. `==` sobre dos `String` compara las dos direcciones de memoria que guardan las variables, no el texto al que esas direcciones apuntan. Por eso el texto se compara con `equals()` en su lugar. Las llamadas concretas están en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), y qué está preguntando realmente `equals()` se explica en [06-poo-clases.md](06-poo-clases.md). Un `int` nunca puede ser `null` porque no hay ninguna dirección que dejar vacía; un `Integer` sí puede, porque su hueco de dirección puede contener «apunta a nada». Y dónde vive físicamente cada cosa — la variable en la pila (_stack_) y el objeto en el montón (_heap_) — es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md), que retoma este mismo diagrama en detalle.
+Todo lo que más adelante en esta página parece contradictorio sale del esquema anterior, es decir, de cómo se guarda cada dato en memoria. Por ejemplo: `==` sobre dos `String` compara las dos direcciones de memoria que guardan las variables, no el texto al que esas direcciones apuntan. Por eso el texto se compara con `equals()` en su lugar; los métodos concretos que se usan para compararlo están en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), y qué está preguntando realmente `equals()` se explica en [06-poo-clases.md](06-poo-clases.md).
+
+Otra particularidad que sale de lo mismo: un `int` nunca puede ser `null`, porque en su hueco de memoria solo cabe un número y no existe ningún número que signifique «vacío». Un `Integer` sí puede serlo, porque en su hueco no hay un número sino una dirección, y una dirección sí admite el valor especial «no apunto a ningún objeto» — eso es exactamente lo que significa `null`.
+
+Lo que el dibujo todavía no cuenta es *dónde* están esos dos huecos dentro de la memoria del programa: la variable vive en una zona (la pila, _stack_) y el objeto al que apunta vive en otra (el montón, _heap_). Esa segunda mitad del esquema es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md), que retoma este mismo diagrama en detalle.
 
 Java tiene 8 tipos primitivos. Cada uno tiene un tamaño fijo y un rango de valores posibles. Los rangos son útiles para saber cuándo cambiar de tipo: si un contador puede superar los 2.1 mil millones, `int` se queda corto y necesitas `long`.
 
