@@ -74,13 +74,17 @@ A **Unicode character** is any symbol from any writing system in the world: Lati
 >
 > The message reads oddly until you know the mechanism: the compiler consumes the first of the two code units, expects the closing `'` immediately after it, finds the second code unit instead, and reports the literal as unclosed. It is not a badly worded "too many characters" error — from the compiler's point of view a `char` literal holds exactly one code unit and the emoji simply is not one.
 >
-> That split into one or two `char`s does not stay inside the `char` type: `String` drags it along too, since a `String` is just a sequence of `char`s. That is why `"😀".length()` returns **2**, not 1: `length()` counts `char`s, and the emoji takes two of them. If what you want is to count symbols the way a person reading them sees them — the emoji counts as one, even though it takes two `char`s internally — that count is what `"😀".codePointCount(0, 2)` gives you, and it returns **1**. This is the mechanism behind every "my substring cut an emoji in half" bug. In web development you rarely touch `char` directly — full text goes in `String` — but the length surprise reaches you through `String`.
+> That split into one or two `char`s does not stay inside the `char` type: `String` drags it along too, since a `String` is just a sequence of `char`s. That is why `"😀".length()` returns **2**, not 1: `length()` does not count symbols, it counts how many `char`s the `String` holds, and the emoji takes two of them. If what you want is to count symbols the way a person reading them sees them — the emoji counts as one, even though it takes two `char`s internally — that count is what `"😀".codePointCount(0, 2)` gives you, and it returns **1**. This is the mechanism behind every "my substring cut an emoji in half" bug. In web development you rarely touch `char` directly — full text goes in `String` — but the length surprise reaches you through `String`.
 
 In practice you use `int`, `long`, `double`, and `boolean` for almost everything. `float` and `byte` are rarely needed.
 
 ### Reference variables and `null` — enough to read the rest of this page
 
-The right-hand box in that diagram raises a question the left-hand one cannot: what is in `name` *before* you point it at anything? A primitive box always holds a number — an `int` field you never touched holds `0`, and there is no way to make it hold "nothing", because the box is 32 bits of number and every arrangement of those bits already means some number. A reference box holds an address, and an address slot has one extra state available to it: **`null`**, the address that points at no object.
+In the diagram above, `name` raises a question `number` cannot raise: what is written inside `name` while you have not assigned it any object yet?
+
+`number` is a 32-bit slot with a number always written in it. An `int` field you never touched has `0` written in it, and there is no way to leave it "empty": those 32 positions hold zeros and ones no matter what, and every possible arrangement of them already reads as some number. No pattern is left over to be given the meaning "nothing here".
+
+`name` does not hold the text: it holds the memory address where the `String` object lives. And there a value that points nowhere is left over, because not every possible address corresponds to a real object. Java reserves one of those values to mean exactly that and writes it **`null`**: "this variable exists, but it identifies no object".
 
 ```java
 String name = null;      // BIEN — the box exists and holds "points to nothing"
