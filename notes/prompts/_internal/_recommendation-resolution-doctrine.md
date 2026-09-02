@@ -281,6 +281,18 @@ positional rules rather than the visual sections — and state the correction **
 the defect lives in, rather than repeating the mechanism at every site: both rounds of this row's own
 review returned a false universal about rendering that the *repair* had written, which is `REC-126`'s
 *a repair states no new fact* arriving on ground where the fact is a spec nobody had opened.
+**Also `REC-199`, one register up and about the grammar of a *gate* rather than of a rule: a standard
+whose sections are written as **inclusion** tests cannot be policed by a veto worded as a **prohibition**
+check.** `readme-audit` let its reader-effect judge delete anything the applier could not "name the rule
+it would break" against; `_readme-standard.md` forbids almost nothing and *includes* almost everything —
+eight of its sections are worded that way — so the applier had nothing nameable when the judge cut two
+`Future improvements` bullets rule 8 positively includes, and applied the cut correctly per the text it
+was given. The two grammars are invisible to each other: every clause read fine in isolation. **So when a
+gate delegates a veto, count how the owning standard's sections are *worded* before trusting the veto's
+verb** — `grep -c` for the inclusion form is the whole measurement — and where they include rather than
+forbid, the veto must say *breaks **or contradicts**, including a rule that positively includes what the
+item removes*. The fix is one clause at the applier and never a checklist at the proposer: constraining
+the proposer re-imports the rule set that step exists to escape.
 
 **Deleting a number deletes a gate, so a de-numbering fix is priced as *writing a test*, never as a
 deletion.** From `REC-191`, which replaced six fixed section sizes in `_readme-standard.md` because
@@ -311,6 +323,21 @@ different shape: the detail that tempted it **merges into the surviving item** i
 second one. And the instrument that caught it is `REC-191`'s, applied to the *second* draft as well as the
 first: re-apply the test by hand to an artefact it previously cut, and count. A round that only re-reads
 the wording will not see a clause that is false only in aggregate.
+**Also `REC-200`, which adds the mirror half and the reason to run the instrument *before* the reviewer:
+a test can also reject the artefact the rule is calibrated against, and that failure is invisible to
+every reading of the wording.** Two of its tests failed that way in one day — a placement test whose only
+worked cut (`03-expense-tracker`'s `effect()` pair) was the same shape as a bullet in the approved
+`04-meal-finder`, and a form test whose "one concept per bullet" clause rejected
+`` `signal()` and `computed()` — reactive state and derived values `` in both the approved file and the
+one the section's voice is calibrated against. Neither is arguable once counted and neither is visible
+until you count: so **name the calibration artefact, apply the draft test to it by hand, and report the
+count in the dispatch** — `REC-191`'s instrument is a step-2 obligation, not a reviewer's job, and a
+round-1 `reject` is what it costs to skip it. The cheapest form of the count is often a single
+measurement of the artefact's own shape (here, a longest-bullet length of 124 and 129 characters against
+the 214-319 the unaudited project carries), which sizes a bound and falsifies a bad one in one command.
+**And a test retired this way is retired by name in the standard**, with the reintroduction it must
+refuse — "including as a narrower test over X" — because the next reader's instinct is to rescope rather
+than to drop, and the rescoping is what already failed.
 
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
