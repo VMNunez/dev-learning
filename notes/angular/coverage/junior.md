@@ -8,6 +8,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Standalone `@Component` — explain how Angular turns a class, template, and styles into a self-contained UI unit with directly declared dependencies ✅ 01-todo-list
 - Component `imports` — identify where a standalone template gets its directives, pipes, and child components; a missing import is a common practical-test failure ✅ 01-todo-list
 - Interpolation vs property binding — distinguish string rendering with `{{ }}` from assigning a DOM or component property with `[]` ✅ 01-todo-list
+- Attribute binding — reach for `[attr.x]` when the target is an HTML attribute with no DOM property behind it, such as an ARIA attribute or an SVG attribute, because a plain `[x]` binding on those silently sets nothing ✅ 04-meal-finder — both favourite toggles carry `[attr.aria-label]="favouriteLabel()"`, the only binding in the project whose target has no DOM property
 - Event binding — handle a template event with `()` and explain why the template delegates behaviour to the component class ✅ 01-todo-list
 - Key event modifiers — filter a keyboard event in the binding itself with `(keyup.enter)` rather than inspecting the event object in the component, so the template states which keystroke it handles ✅ 01-todo-list — `task-form.html` binds `(keyup.enter)="submit(taskInput)"` on the input so Enter and the button click reach one handler
 - Two-way binding — recognise `[()]` as property plus event binding and decide when explicit one-way data flow is clearer
@@ -56,9 +57,12 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `computed()` — derive read-only state from signals so the value stays consistent without manual synchronisation ✅ 01-todo-list
 - `effect()` — perform an external side effect when dependencies change and avoid using it as a writable substitute for derived state ✅ 04-meal-finder
 - `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system ✅ 04-meal-finder
+- `effect()` cleanup function — register cleanup inside an effect so work started by the previous run is cancelled before it re-executes or the injection context is destroyed ✅ 04-meal-finder — the detail-page effect unsubscribes the in-flight `getMealById` through `onCleanup` before reloading for a new route id
 - Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
+- `asReadonly()` — expose a service's writable signal as a read-only handle so consumers stay reactive while the service's own methods remain the only writers ✅ 04-meal-finder — `FavouriteService` keeps the writable signal private and exposes `favourites` through `asReadonly()`, so `addFavourite`/`deleteFavourite` are the only writers the three pages can reach
+- Deriving the lookup rather than the predicate — answer a per-key question by deriving the whole lookup structure once, because `computed()` takes no arguments by design and a parameterised method cannot be memoised ✅ 04-meal-finder — `FavouriteService.favouriteIds` derives a `Set` of ids once, so the three pages ask `has(id)` instead of each keeping its own parameterised scan
 
 ## HTTP integration
 
@@ -75,32 +79,37 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
 - `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
 - `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request ✅ 02-weather-app
-- `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects
+- `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects ✅ 04-meal-finder — `paramMap.pipe(map(params => params.get("id")))` narrows the router stream to the id before it becomes a signal
 - `switchMap()` — cancel a stale inner request when a newer search term or route value arrives
 - `switchMap()` vs `mergeMap()` — cancel replaceable work with `switchMap()` and preserve deliberate concurrent inner work with `mergeMap()` instead of choosing by habit
 - `concatMap()` vs `exhaustMap()` — queue ordered inner work with `concatMap()` and ignore new triggers with `exhaustMap()` while current work is active, especially for writes and form submissions
 - Search pipeline operators — combine `debounceTime()`, `distinctUntilChanged()`, and `switchMap()` to avoid premature, duplicate, and stale requests
 - Nested subscriptions vs flattening operators — compose dependent asynchronous work in one pipeline so cancellation, errors, and cleanup remain visible
-- `catchError()` — recover, translate, or rethrow an error without silently converting every failure into successful empty data
+- `catchError()` — recover, translate, or rethrow an error without silently converting every failure into successful empty data ✅ 04-meal-finder — `MealService.handleFailure` logs once and rethrows a domain `Error`, so a network failure never arrives at a page as an empty result list
 - `catchError()` placement around flattening operators — recover inside an inner request when the outer interaction stream must remain alive and catch outside only when terminating the whole pipeline is intended
 - `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
 - Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete ✅ 02-weather-app
-- `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects
+- `toSignal()` vs manual subscription — expose a displayed Observable as signal state while keeping imperative subscription for deliberate multi-step side effects ✅ 04-meal-finder — the detail page turns `ActivatedRoute.paramMap` into a `mealId` signal read by both an `effect()` and a `computed()`
 
 ## Routing and cross-cutting HTTP behaviour
 
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
+- Application shell outside the outlet — place chrome that must survive navigation in the root component around `RouterOutlet`, because the router destroys and recreates the routed component on every navigation ✅ 04-meal-finder — the nav and its favourites badge sit in `app.html` above `<router-outlet />`, so the count stays on screen while `/`, `/detail/:id` and `/favourites` are mounted and destroyed under it
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path ✅ 06-hr-portal
 - `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible ✅ 06-hr-portal
+- Routed view state in the URL — keep state the user must find again, such as a search term, in the URL and re-derive the view from it on load, because the router destroys the routed component and its signals on every navigation, so anything held only in fields is gone on return ✅ 04-meal-finder — the search page navigates to `/?q=term` instead of holding the term in a field, and rebuilds its results from `toSignal(queryParamMap)`, so `← Back` from a detail page restores the search
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes ✅ 04-meal-finder
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it ✅ 06-hr-portal
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
 - Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination ✅ 03-expense-tracker
+- `routerLinkActive` — let the router add a class to the link whose route is currently active instead of comparing the URL by hand in the component, and state the same fact in the accessibility tree with `ariaCurrentWhenActive`, because a colour or a weight change reaches only the eye ✅ 04-meal-finder — both nav links carry `routerLinkActive="active"` and `ariaCurrentWhenActive="page"`, so `/favourites` is marked without the shell tracking the URL itself
+- `routerLinkActiveOptions` exact matching — recognise that an active link matches by URL *prefix* by default, so a link to the root path stays active on every route until `{ exact: true }` narrows it to the whole URL ✅ 04-meal-finder — the brand link to `/` carries `[routerLinkActiveOptions]="{ exact: true }"` so it does not stay marked on `/favourites` and `/detail/:id`
 - Browser history navigation — return to the previous entry through `Location` when a page is reachable from several routes, instead of hardcoding one destination that is wrong for every other caller ✅ 06-hr-portal
+- A deep-linked page has no in-app history — `Location.back()` replays the *browser's* history, which on a URL opened directly (a shared link, a refresh, a new tab) holds the page the user came from outside the site, so a back control has to know whether this application performed an earlier navigation and fall back to a real in-app destination when it did not ✅ 04-meal-finder — `NavigationHistoryService` counts `NavigationEnd` events from bootstrap and the detail page routes to `/` instead of calling `back()` while that count is 1
 - Wildcard routes and redirect order — place a `**` fallback last because Angular uses first-match-wins route evaluation ✅ 06-hr-portal
 - Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL ✅ 06-hr-portal
 - `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect ✅ 06-hr-portal
@@ -135,6 +144,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 ## Change detection
 
 - Default change detection and Zone.js awareness — explain at a high level why asynchronous work can trigger checks across the component tree in established Angular applications
+- Template method calls vs `computed()` — recognise that a function called from a template re-runs on every change detection because it caches nothing, while a computed signal returns its stored value until a source signal changes, so a per-item call inside a loop repeats the whole scan on every check ✅ 04-meal-finder — `search-page.html` calls `isFavourite(meal.idMeal)` once per card on every check, so the method resolves through the memoised `Set` rather than re-scanning the favourites array
 - `OnPush` change detection — recognise the notifications that mark a view for checking and why in-place mutation can leave an input-based view stale
 - Signals with `OnPush` — explain how a signal read in a template notifies Angular without treating signals as a reason to mutate objects in place
 - Production-build verification — run a production build because template compilation, budgets, and optimisation can expose failures hidden by the development server
@@ -144,14 +154,14 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 ## Testing Angular behaviour
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
-- `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies
+- `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies ✅ 04-meal-finder — each page spec adds exactly the providers its unit injects (`provideRouter([])` for the routed pages, plus `provideHttpClient()` for the two that call the API), where the scaffold suite failed on `NG0201: No provider found for ActivatedRoute`
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
 - Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation
 - HTTP tests with `provideHttpClientTesting()` — intercept a request with `HttpTestingController`, assert method, URL, and body, then flush the intended response
 - `provideHttpClientTesting()` vs `HttpClientTestingModule` — use the standalone provider in current code and recognise the deprecated module-based setup in older suites
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
 - HTTP error tests — flush an error response and assert the service's observable or state follows the documented failure path
-- `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction
+- `ComponentFixture` — trigger change detection, query rendered DOM, simulate an interaction, and assert visible component behaviour rather than mere construction ✅ 04-meal-finder — `category-filter.spec.ts` changes the `selected` input, awaits `whenStable()` and reads back which button carries `aria-pressed="true"`, instead of asserting the component was constructed
 - `componentRef.setInput()` — supply a required input from a test before the first change detection, because a component contract that a parent normally satisfies is the test harness's responsibility once the component is mounted alone ✅ 01-todo-list — `task-item.spec.ts` feeds the `input.required<Task>()` through `componentRef.setInput` before `whenStable()`, where the render previously threw NG0950
 
 ## Debugging and maintained-code navigation

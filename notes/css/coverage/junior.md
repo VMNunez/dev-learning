@@ -25,7 +25,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## Cascade and inheritance
 - Cascade decision order — resolve ordinary author declarations through importance, specificity, and source order rather than assuming the last rule always wins
 - Cascade origins — distinguish user-agent, user, and author declarations and know that origin and importance are resolved before specificity, so a more specific selector does not always win
-- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately
+- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately ✅ 04-meal-finder — `.meal-link` takes `color: inherit` to undo the user-agent link colour the card must not show
+- Styling a native control against its user-agent defaults — form controls arrive with their own background, border, padding, and `cursor`, and unlike ordinary elements they do not inherit `font` from their ancestors, so making one match the surrounding text means explicitly resetting those declarations instead of only adding the intended ones ✅ 04-meal-finder — the detail page's `.back-link` button is reset with `background: none; border: none; padding: 0; font: inherit; cursor: pointer` so it reads as the plain text link it replaced
 - Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier ✅ 02-weather-app — `animation-duration: 2.4s` overrides only the duration longhand of `animation: spin 0.8s linear infinite`, leaving the keyframes name and `infinite` intact
 
 ## Selectors and specificity
@@ -37,7 +38,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
 - Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
-- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation
+- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
 - Specificity scoring — compare inline styles, IDs, classes/attributes/pseudo-classes, and elements/pseudo-elements as separate columns; source order decides only after the relevant cascade criteria and specificity tie
 - `!important` — raises a declaration into the important cascade, after which origin, layer, and
@@ -67,7 +68,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ## Position
 - `static` vs `relative` positioning — keep an element in normal flow and use relative offsets without removing its original layout space
-- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it
+- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it ✅ 04-meal-finder — the visually hidden search label sits inside the flex `.search-container` without taking a slot in the row
 - `fixed` vs `sticky` positioning — distinguish a box normally anchored to the viewport from one that remains in flow until it reaches an inset within its scroll container
 - Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that

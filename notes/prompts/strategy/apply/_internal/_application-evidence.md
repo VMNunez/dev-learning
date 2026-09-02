@@ -60,6 +60,23 @@ Published 2025-08-22 · Captured: 2026-08
 
 Second, independent Spanish source giving the same band as prometeo-fp.
 
+### archisacademy.com — Portfolio de Programador vs CV (2026) · full article
+
+URL: https://archisacademy.com/es/blogs/portfolio-programador-vs-cv-2026
+Published 2026-05-12 · Captured: 2026-09
+
+> "Tres a cinco proyectos que cada uno demuestre algo diferente son mucho más efectivos que diez clones"
+
+> "Un perfil de GitHub lleno de clones de tutoriales y aplicaciones de lista de tareas a medio terminar
+> apenas es mejor que no tener portfolio"
+
+Third, independent Spanish source on the 3-5 band, and the **first fetched source anywhere in this file
+to state the tutorial-genre exclusion** — the claim that had stood unfounded here since 2026-08, when
+the only page naming it returned 403. Fetched 2026-09 by the `REC-193` evidence build for the readme
+family and filed here rather than there, per that file's scope rule: project count and project genre
+are this file's question. Its README-composition quotes stayed in
+`notes/prompts/projects/readme/_internal/_readme-evidence.md`.
+
 ### valhallaresume.com — CV para desarrolladores de software · full article
 
 URL: https://www.valhallaresume.com/es/blog/cv-para-desarrolladores-de-software
@@ -141,6 +158,21 @@ reproductions and bootcamp homework unless genuinely strong. **This is an extrac
 and is the weakest entry in this file. It is kept only because it is the sole source separating the CV
 number from the portfolio number, which is the distinction the Synthesis below turns on.
 
+### soltech.net — What Do Hiring Managers Actually Look For in a GitHub Portfolio? · full article
+
+URL: https://soltech.net/what-do-hiring-managers-actually-look-for-in-a-github-portfolio/
+No date displayed on the page · Captured: 2026-09
+
+> "A strong GitHub portfolio typically includes: Three to five well-documented projects"
+
+Captured 2026-09-02 while resolving `REC-196`, whose subject was the README standard; this sentence is
+the **project-count** half of that fetch and belongs here rather than in
+`projects/readme/_internal/_readme-evidence.md`, which files the same source for what a README explains.
+It is the **fourth** source for the 3-5 portfolio band and the **first anglophone one** — the band had
+rested on three Spanish sources, and the evidence quality note above says why that mattered. It raises
+the floor rather than moving it: the number is the same, and what changes is that the band no longer
+depends on one language's career writing.
+
 ---
 
 ## Failed captures
@@ -152,8 +184,9 @@ Recorded so the next run does not re-derive them and does not read their absence
   no article body (2026-08). Repeatedly surfaced by search as a 3-5 source; **unverified**.
 - `devbyces4r.me/blog/portafolio-github-pages-2026/` — HTTP 403 (2026-08). This is the page a search
   synthesis attributed the explicit tutorial-genre exclusion to ("no incluyas proyectos de tutorial:
-  app de tareas, app del clima, base de datos de películas"). **That sentence is therefore unquoted and
-  unfounded here**, even though it matches what the standard already says.
+  app de tareas, app del clima, base de datos de películas"). **That sentence stays unquoted here** —
+  but the exclusion it states is no longer unfounded: archisacademy founded it on 2026-09-01, see that
+  row of the Assertions table.
 - `interviewpal.com` data study (11.2s average over 4,289 resume reviews) — HTTP 403 (2026-08).
   Reported by search only; **not usable**.
 
@@ -163,12 +196,16 @@ Recorded so the next run does not re-derive them and does not read their absence
 
 What recurs across the fetched sources, and what it means for `_application-standard.md`:
 
-1. **The project count is a band, and it differs by document.** Two independent Spanish sources give
+1. **The project count is a band, and it differs by document.** Three independent Spanish sources give
    **3-5 for a portfolio** ("Entre 3 y 5 proyectos, no más."; "Mostrar entre 3 y 5 trabajos es más que
-   suficiente."). The anglophone extract gives **2-3 for a one-page CV**. No fetched source anywhere
-   states a flat 3 for every document. The standard used to assert a single "3 strongest projects",
-   applied equally by `cv-prompt` and `linkedin-prompt`; that is not what the evidence says, and all
-   three sites were corrected to per-document bands (`Resolved 2026-08-31` — see the Assertions table).
+   suficiente."; "Tres a cinco proyectos que cada uno demuestre algo diferente son mucho más efectivos
+   que diez clones", the third added 2026-09-01), and soltech.net gives the same band in English — "A
+   strong GitHub portfolio typically includes: Three to five well-documented projects" — the fourth
+   source for it and the first not in Spanish, added 2026-09-02. The anglophone extract gives **2-3 for a one-page
+   CV**. No fetched source anywhere states a flat 3 for every document. The standard used to assert a
+   single "3 strongest projects", applied equally by `cv-prompt` and `linkedin-prompt`; that is not
+   what the evidence says, and all three sites were corrected to per-document bands
+   (`Resolved 2026-08-31` — see the Assertions table).
 2. **Quality over quantity is stated as subtraction, not as zero.** "Diez proyectos flojos restan; tres
    sólidos suman." A weak project makes the document worse, which is why the band has an upper bound at
    all.
@@ -198,7 +235,7 @@ other row is live: the assertion is still in the file, and its status is what a 
 
 | Assertion | Site | Status against this file |
 |---|---|---|
-| project count is a band, declared per document, not a flat 3 | standard, Project-selection heuristic | **Founded** — 3-5 portfolio (two Spanish sources), 2-3 one-page CV (extract). `Resolved 2026-08-31`: this replaced "3 strongest projects", which no fetched source supported |
+| project count is a band, declared per document, not a flat 3 | standard, Project-selection heuristic | **Founded** — 3-5 portfolio (three Spanish sources as of 2026-09-01, archisacademy the third, plus soltech.net in English from 2026-09-02, the fourth and the first not in Spanish), 2-3 one-page CV (extract). `Resolved 2026-08-31`: this replaced "3 strongest projects", which no fetched source supported |
 | `PROJECTS = auto` chooses 2-3 that fit one page | `cv-prompt.md` | **Founded on an extract only**, not a fetched quote — the weakest support in this file. `Resolved 2026-08-31`: replaced "the 3 strongest" |
 | Step 4 features 3-5 projects | `linkedin-prompt.md` | **Reasoned, not founded** — the 3-5 band is measured for a *portfolio*; no fetched source measures a LinkedIn profile. Carried across by analogy and marked as such at the site. `Resolved 2026-08-31`: replaced "top 3 projects" |
 | recruiter spends 17-46s, ~10s anecdotal first judgement | standard, Expert stance | **Founded**, with the two kept apart: the range is Tegze's measurement, the ten seconds is one recruiter's account. `Resolved 2026-08-31`: replaced an unfounded "~20 seconds" |
@@ -207,7 +244,7 @@ other row is live: the assertion is still in the file, and its status is what a 
 | no em dash | standard, cond. 2 | **Founded only for date ranges** — the source's sentence is "Avoid em dashes (—) in date ranges"; the blanket ban is wider than the quote and is not thereby refuted |
 | `%` and `/` only inside a figure | standard, cond. 2 | **Unfounded and stricter than evidence** — left standing pending a ruling |
 | exact-string keyword matching | standard, cond. 4 | **Unfounded** — not addressed by any fetched source |
-| tutorial-genre projects rank lower | standard, Project-selection heuristic | **Unfounded here** — the only source naming the genre exclusion returned 403 |
+| tutorial-genre projects rank lower | standard, Project-selection heuristic | **Founded 2026-09-01** — archisacademy: "Un perfil de GitHub lleno de clones de tutoriales y aplicaciones de lista de tareas a medio terminar apenas es mejor que no tener portfolio". It had stood **unfounded** since 2026-08, when the only page naming the exclusion returned 403 |
 | CV written in Spanish | standard, Voice rules | **Unfounded** — cvapp.es was checked for it and says nothing; see `REC-182` |
 | CV fits one page | `cv-prompt`, and the standard throughout | **Founded** — "una página para menos de 7 años de experiencia" |
 | a recruiter reads a cover letter "in 20 seconds" | `cover-letter-prompt.md` Step / ~250-word rule | **Out of scope, deliberately** — every source here measures *CVs*, not cover letters, and a partial extract never proves an absence. Found by this file's own sweep on 2026-08-31 and left standing, unfounded and uncontradicted, rather than corrected by analogy to the CV figure. **`REC-188` opened the same day** to source the cover letter properly — that row's population is the whole prompt, not this one line |

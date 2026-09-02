@@ -43,6 +43,18 @@ overridable*; l.148-155 is the symmetric TODO-direction rule it was asking for, 
 across five files. **Quote the text of every line a row cites before building on it.** A citation by
 description is the one form of evidence that can hand you the answer as though it were the precedent,
 and checking it is what collapsed a two-family sweep to one.
+**Also `REC-197`, one register up, where what the row says nobody asks is already asked by the very roles
+it is adding a third to — and the *fix* is what asserts the absence.** That row proposed a reader-effect
+judge because `readme-audit`'s two subagents "cold-review for conformance and nothing reads the README for
+effect"; `_readme-standard.md`'s *Quality filter* carries the recruiter and interviewer lenses, sits 47
+lines below the paragraph the fix inserted, and is an item on the author's step 2 and the reviewer's
+checklist — so three sentences the fix wrote were false in the file they were written into. The addition
+survived because its warrant was never the missing question: it is the **unit and the vantage** — per
+section with the rule set in hand, versus the whole artefact with no checklist. So before founding a new
+role on *nobody asks this*, grep the existing roles' own checklists for the question, and where they do
+ask it, found the addition on what changes about **how** it is asked. That is also the only thing
+separating it from `REC-042`'s illegitimate second computation, which the same row invoked to refuse its
+other half.
 
 **An isolation clause fences *content*, and a proof demanded of a fenced role must take a form the
 fence permits.** `REC-112` found the `en/`-blind Spanish reviewer told to "read only" its Spanish
@@ -247,7 +259,13 @@ one `grep -c` per file over the artefacts the standard governs, before pricing a
 is the same cost as reading the standard and it is the only thing that separates a rule from a rule
 that happened. And **a tracker column is the cheapest such instrument in the repository**: it records
 which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
-opening a single artefact.
+opening a single artefact. **Also `REC-195`, which names the third form and it is the cheapest
+to miss: an invariant nobody triggers is not a gate.** Invariant 9 had checked the closure schema for
+weeks and still let `REC-190` land with two fields and its verdict missing, because
+`validate-prompt-system.ps1` has no CI and no hook — it runs when someone runs it — and the act that
+*writes* the line it reads, collapsing a row, was not in its trigger list. So when a check exists and
+the defect it checks for shipped anyway, measure the **trigger**, not the check: name the act that
+produces the artefact and put it in that list, before rewriting a rule that was already correct.
 
 **A rule stated against an artefact's *source* is not a rule about the artefact anyone sees, and where
 the deliverable is rendered, the reviewer inherits that blindness.** From `REC-192`.
@@ -263,6 +281,36 @@ positional rules rather than the visual sections — and state the correction **
 the defect lives in, rather than repeating the mechanism at every site: both rounds of this row's own
 review returned a false universal about rendering that the *repair* had written, which is `REC-126`'s
 *a repair states no new fact* arriving on ground where the fact is a spec nobody had opened.
+
+**Deleting a number deletes a gate, so a de-numbering fix is priced as *writing a test*, never as a
+deletion.** From `REC-191`, which replaced six fixed section sizes in `_readme-standard.md` because
+Victor's bar is relevance and not arithmetic. The caps were not dead letters: the `03-expense-tracker`
+run used one to merge a duplicated architecture decision and to move a tradeoff out of the wrong
+section. A bound that can fail an item is a gate; prose that can only ever be satisfied is taste, and
+swapping the first for the second reads exactly like a fix while removing the check. So every removed
+bound — **ceiling or floor, since a floor is what forces padding** — leaves behind a clause a cold
+reviewer can use to reject a **named** item, and the precedent is usually already in the same file
+(`_readme-standard.md` never says "no fixed number" without following it with a test: "a screen, not a
+state"). Verify it the only way the claim can be verified: apply each new test by hand to one artefact
+the old bound **approved** — nothing it approved may now fail — and one it never audited, where at
+least one item must be rejectable. A test that rejects nothing is the defect the row was opened to
+prevent, arriving inside the fix.
+
+**An escape clause the artefact's own format already satisfies saves everything, and the test that
+carries it cuts nothing.** From `REC-196`, the sibling of `REC-191`'s *a test that rejects nothing is the
+defect the row was opened to prevent, arriving inside the fix* — that one is about a bound deleted, this
+one about a bound written with a hole in it. The new inclusion test for `What I learned` was given a
+let-out: a bullet naming the same symbol as a line above survives "when it states the mechanism that line
+does not". Rule 9's **own format** is `` `ConceptName` — one-line reminder ``, so every well-formed bullet
+states a mechanism by construction; the clause was satisfied by all of them and the test went from cutting
+six of fourteen on `06-hr-portal` to cutting **zero**, which round 1 had not seen because it reviewed the
+version without the let-out. So before writing an exception into a test, **check it against the format the
+artefact is already required to have** — the format spec is the population the exception quantifies over,
+and where they coincide the exception is a repeal. The repair is not a better-worded exception but a
+different shape: the detail that tempted it **merges into the surviving item** instead of licensing a
+second one. And the instrument that caught it is `REC-191`'s, applied to the *second* draft as well as the
+first: re-apply the test by hand to an artefact it previously cut, and count. A round that only re-reads
+the wording will not see a clause that is false only in aggregate.
 
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33

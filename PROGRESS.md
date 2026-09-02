@@ -31,17 +31,17 @@ exercises, simulations, and unaided explanation demonstrate it.
 
 | Topic | Current tracked level | Knowledge consolidation | Practical evidence | Next gate |
 |---|---|---|---|---|
-| Angular | Junior — building | Notes plan stale (0/17 complete); junior Q&A pending full audit | Projects 01–06; project 07 frontend pending | Refresh the junior notes plan |
+| Angular | Junior — building | Notes plan stale (0/17 complete); junior Q&A pending full audit | Projects 01–06, including a detail page driven by a route-param signal and an `effect()` whose cleanup cancels the in-flight request when the router reuses the component instance, and an application shell whose nav sits outside the `router-outlet` and derives its live count with `computed()` from the service signal, and a search page whose term lives in the URL as `?q=` so results survive navigation, and a presentational meal card that injects no service and is driven by two different pages through `input.required()` and `output()`, and icon-only favourite toggles whose accessible name is derived with `computed()` and bound with `[attr.aria-label]`, and a single `computed()` `Set` of favourite ids in the service that the three pages query instead of each re-scanning the array, and a `MealService` that translates every transport failure once with `catchError` and rethrows a domain `Error` so no page reinvents it; project 07 frontend pending | Refresh the junior notes plan |
 | Angular Material | Junior — building | Notes 0/16; shares Angular junior Q&A | Projects 05–06 | Complete junior notes and the Material sections of Angular Q&A |
 | Spring | Junior — building | Notes 0/12; junior Q&A pending full audit | Core mechanisms already used inside project 07; evidence migration pending | Complete junior notes/Q&A and explain the core mechanisms unaided |
 | Spring Boot | Junior — building | Notes plan stale (0/16 complete); junior Q&A pending full audit | Project 07 backend | Refresh the junior notes plan |
 | Java | Junior — building | Notes plan current, fingerprint matches (1/17 authored, 0 studied); junior Q&A pending full audit | Applied in project 07 | Author the remaining 16 junior notes |
 | Architecture | Junior — building | Notes plan stale (0/18 complete); junior Q&A pending full audit | Layered and coordinator patterns across projects | Refresh the junior notes plan |
 | Security | Junior — building | Notes plan stale (0/13 complete); junior Q&A pending full audit | Guards/interceptors in project 06; JWT/RBAC, query-input allow-listing, login throttling, a token identity bound to the immutable user id, and a password change that refuses an unchanged credential in project 07 | Refresh the junior notes plan |
-| TypeScript | Junior — building | Notes plan stale (0/15 complete); junior Q&A pending full audit | Projects 01–07, including a project 03 reactive form whose control types match the model so the submitted value needs no `as` assertion | Refresh the junior notes plan |
+| TypeScript | Junior — building | Notes plan stale (0/15 complete); junior Q&A pending full audit | Projects 01–07, including a project 03 reactive form whose control types match the model so the submitted value needs no `as` assertion, and a project 04 API model that types `MealResponse.meals` as `Meal[] | null` because the endpoint returns `null` on no match | Refresh the junior notes plan |
 | SQL | Junior — building | Notes plan stale (0/17 complete); junior Q&A pending full audit | PostgreSQL project work, including a least-privilege application role in project 07; exercises in progress | Refresh the junior notes plan |
 | JavaScript | Junior — building | Notes plan stale (0/22 complete); junior Q&A pending full audit | Applied throughout Angular projects, including a localStorage read in project 03 that survives both a corrupt stored value and a well-formed one of the wrong shape, a default form date built from the local clock rather than `toISOString()`, and entity ids generated with `crypto.randomUUID()` instead of `Date.now()` | Refresh the junior notes plan |
-| CSS | Junior — building | Notes plan stale (0/16 complete); junior Q&A pending full audit | Projects 01–06, including a `prefers-reduced-motion` guard that drops the decorative hover and slows the loading spinner in project 02 | Refresh the junior notes plan |
+| CSS | Junior — building | Notes plan stale (0/16 complete); junior Q&A pending full audit | Projects 01–06, including a `prefers-reduced-motion` guard that drops the decorative hover and slows the loading spinner in project 02, and a project 04 `.visually-hidden` utility that takes the search label out of the flex row with `position: absolute` while keeping it in the accessibility tree, and a keyboard-only focus ring raised with `:focus-visible` and lifted to the whole card with `:has()`, and a text-styled `<button>` whose user-agent background, border, padding, font and cursor are reset explicitly | Refresh the junior notes plan |
 | Git | Junior — building | Notes plan stale (0/8 complete); junior Q&A pending full audit | Daily feature-branch workflow | Refresh the junior notes plan |
 | General | Junior — building | Notes plan stale (0/21 complete); junior Q&A pending full audit | HTTP, testing, debugging, configuration across projects | Refresh the junior notes plan |
 
@@ -58,20 +58,20 @@ level in the table above.
 
 | Topic | Junior | Middle | Senior |
 |---|---|---|---|
-| Angular | 70/130 (54%) | 0/12 (0%)* | 0/6 (0%)* |
+| Angular | 85/140 (61%) | 0/12 (0%)* | 0/6 (0%)* |
 | Angular Material | 46/76 (61%) | 3/13 (23%)* | 0/3 (0%)* |
 | Spring | 8/58 (14%) | 0/25 (0%)* | 0/7 (0%)* |
 | Spring Boot | 89/137 (65%) | 1/14 (7%)* | 0/5 (0%)* |
 | Java | 54/131 (41%) | 3/14 (21%)* | 0/5 (0%)* |
 | Architecture | 41/74 (55%) | 0/17 (0%)* | 0/5 (0%)* |
 | Security | 50/104 (48%) | 1/10 (10%)* | 0/5 (0%)* |
-| TypeScript | 24/81 (30%) | 0/15 (0%)* | 0/4 (0%)* |
+| TypeScript | 28/81 (35%) | 0/15 (0%)* | 0/4 (0%)* |
 | SQL | 26/151 (17%) | 0/16 (0%)* | 0/5 (0%)* |
-| JavaScript | 38/130 (29%) | 0/13 (0%)* | 0/4 (0%)* |
-| CSS | 49/113 (43%) | 0/10 (0%)* | 0/4 (0%)* |
+| JavaScript | 37/130 (28%) | 0/13 (0%)* | 0/4 (0%)* |
+| CSS | 53/114 (46%) | 1/10 (10%)* | 0/4 (0%)* |
 | Git | 26/92 (28%) | 0/4 (0%)* | 0/4 (0%)* |
 | General | 30/117 (26%) | 0/13 (0%)* | 0/5 (0%)* |
-| **Total** | **551/1394 (40%)** | **8/176 (5%)** | **0/62 (0%)** |
+| **Total** | **573/1405 (41%)** | **9/176 (5%)** | **0/62 (0%)** |
 
 `*` provisional denominator — that level's coverage has not been generated by the coverage pipeline
 yet (no run recorded in `notes/prompts/_internal/_run-tracker.md`), so its total will move.

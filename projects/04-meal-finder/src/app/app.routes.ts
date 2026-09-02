@@ -1,19 +1,23 @@
 import { Routes } from '@angular/router';
-import { SearchPage } from './pages/search-page/search-page';
-import { MealDetailPage } from './pages/meal-detail-page/meal-detail-page';
-import { FavouritesPage } from './pages/favourites-page/favourites-page';
 
 export const routes: Routes = [
   {
     path: '',
-    component: SearchPage,
+    loadComponent: () => import('./pages/search-page/search-page').then((m) => m.SearchPage),
   },
   {
     path: 'detail/:id',
-    component: MealDetailPage,
+    loadComponent: () =>
+      import('./pages/meal-detail-page/meal-detail-page').then((m) => m.MealDetailPage),
   },
   {
     path: 'favourites',
-    component: FavouritesPage,
+    loadComponent: () =>
+      import('./pages/favourites-page/favourites-page').then((m) => m.FavouritesPage),
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./pages/not-found-page/not-found-page').then((m) => m.NotFoundPage),
   },
 ];

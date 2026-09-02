@@ -3,9 +3,10 @@
 > **Runtime contract:** Before dispatching any role, read `notes/prompts/_internal/_agent-runtime-standard.md` and translate its canonical roles, reasoning tiers, and execution modes through the shared session rules.
 
 Run this **inside the supported agent runtime**. It is the only readme prompt Victor launches. It reviews and fixes a
-project's README(s) to the full standard, hands-off: one README at a time, each **authored/fixed then
-cold-reviewed by two subagents**. Run it after a project or a big feature, or whenever a README feels
-stale — and always **before** `portfolio-audit`, which assumes the READMEs are correct.
+project's README(s) to the full standard, hands-off: one README at a time, each **authored/fixed, then
+cold-reviewed against the standard, then judged by the reader it is written for** — three subagents, and
+the judge's items are applied by the reviewer inside the same run. Run it after a project or a big
+feature, or whenever a README feels stale — and always **before** `portfolio-audit`, which assumes the READMEs are correct.
 
 - **Angular projects (01–06)** — one README (`global`).
 - **Full-stack projects (07+)** — three READMEs (`global`, `backend`, `frontend`), different audiences.
@@ -16,7 +17,8 @@ stale — and always **before** `portfolio-audit`, which assumes the READMEs are
 > **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
 **Internal pieces this orchestrates** (you never launch these directly):
-`_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer).
+`_readme-standard.md` (the bar) · `_readme-write-prompt.md` (author) · `_readme-review-prompt.md` (reviewer) ·
+`_readme-effect-prompt.md` (reader-effect judge).
 
 > **Auto-committed** (authorized 2026-08-29, reversing the earlier hand-over rule). `_session-rules.md`
 > permits the agent to commit a project's `README.md` directly, and this pipeline uses that permission:
@@ -139,6 +141,50 @@ If it reports conflicts, re-dispatch the **reviewer** subagent for each README t
 the conflict line so it knows exactly what to align — and note it in the summary. Angular projects have
 one README, so skip this.
 
+## Reader-effect judge (every project, every target — the run's last content step)
+
+A and B do apply the standard's quality filter, but they apply it **per section with the rule set in
+hand** — so a README can clear every section's own rule and still not land as a page: `04-meal-finder`
+passed this gate with 37 well-formed `What I learned` bullets. This step hands one subagent the whole
+file, no checklist, and the reader that README is actually written for.
+
+Launch one `role-appropriate` subagent **per target** (`reasoning tier: deep` — a judgment with no
+checklist behind it, which is that tier's own criterion; `execution: foreground`). They write
+nothing and touch different files, so **launch all targets in one block**. On full-stack it runs
+**after** the coherence pass, so a tier README is judged in the wording that survived it:
+
+> Read `notes/prompts/projects/readme/_internal/_readme-effect-prompt.md` and execute it in full for
+> `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Judge that one README as its real reader.
+> **Change no file and do NOT commit.** Return your verdict and your cut/add/keep lines in its format.
+
+Then, for each target that returned items, **re-dispatch its reviewer (B)** quoting them verbatim — the
+same channel the coherence branch uses:
+
+> Read `notes/prompts/projects/readme/_internal/_readme-review-prompt.md` and execute it in full for
+> `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. You are dispatched with quoted effect
+> items: «paste the judge's lines». Apply them to the README. **Do NOT commit.** Report which you
+> applied and which you rejected, each rejection naming the rule of the standard it would break.
+
+**The run applies the items; it never hands them over.** B's default is to apply — it rejects only where
+the standard positively contradicts an item, and a rejection is valid **only citing the rule it fails**.
+An `effect-only` item carries no rule and is applied on the reader's authority unless B can name the rule
+it would break. Never print the judge's items as work left for Victor: the whole point of this step is
+that the README ships fixed inside the same run.
+
+**A judge is advisory, so it never blocks the commit.** If one errors twice under the Failure protocol,
+say so in the summary and commit that README on A+B's work — unlike an author or a reviewer, whose
+failure excludes its README from the commit.
+
+**The applier re-dispatch is advisory for the same reason, and its failure has one named outcome.** The
+README's own author→reviewer pair already completed before this step ran, so a B that fails twice while
+applying effect items does **not** retract that and does **not** exclude the README. This run records no
+baseline for the applier's span, so nothing here reverts anything: commit the file **as it stands, part-
+applied**, and declare that in the commit message, in the summary and in the self-report's Effect judge
+bullet — which items landed, which did not, and that the file is mid-application. That is
+`_agent-runtime-standard.md`'s *leave it and declare it*, the branch it defines for exactly this case.
+It is the one path on which items outlive the run, and it is a declared failure, never the normal
+ending.
+
 ## Finishing
 
 Print a **summary of changes** across all targets (one line per section changed, grouped by README), then
@@ -166,7 +212,7 @@ git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of ma
 
 ## Pipeline self-report (orchestrator, last)
 
-After the commit hand-over, write a short **Pipeline self-report** to
+After the commit, write a short **Pipeline self-report** to
 `notes/prompts/projects/readme/_internal/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
 observations about the run itself, not the READMEs. This is the evidence a later session uses to decide
 whether these prompts need changing, so be honest, including "nothing to report":
@@ -175,12 +221,18 @@ whether these prompts need changing, so be honest, including "nothing to report"
 - **Trace verification** — reviewer traces that were missing/incomplete, re-dispatches made, any false alarm.
 - **Coherence** — conflicts the coherence subagent found (a sign the author prompts under-specify a
   shared decision), or `COHERENT`.
+- **Effect judge** — how many items it returned per target and how many B rejected. It reads each
+  finished README whole and is not written by that README's slice owners, so per
+  `_pipeline-self-report.md` bullet 1 its findings **outrank the green traces** as evidence that the
+  author→reviewer split worked — alongside the coherence pass, which qualifies the same way on
+  full-stack. A target where the judge returned a long list is one where A and B were both satisfied by
+  something that does not land.
 - **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
 - **Anything else** that made the run harder than it should be.
 - **Verdict** — "pipeline clean" or "change worth considering: X" (the uniform criterion from
   `notes/prompts/_internal/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
 
-Six bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
+Seven bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception, per `_pipeline-self-report.md` → "How to commit it" —
 `git status` before add and before commit, staging `_last-run-report.md` **and** `_run-tracker.md`
 (plus `_breach-log-readme-audit.md` when this run wrote a row or moved a disposition in it), message
@@ -197,5 +249,9 @@ unless this report shows a real failure. Also print the report in chat.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.
-- Never skip the reviewer pass.
+- Never skip the reviewer pass, and never skip the reader-effect judge — a run that stops at B has
+  answered only the conformance question.
+- **The judge proposes and B writes.** Never let the judge edit a README, and never end a *successful*
+  run with its items unapplied and printed as a to-do list for Victor — the one exception is the twice-
+  failed applier above, where they are declared as a failure rather than handed over as work.
 ````

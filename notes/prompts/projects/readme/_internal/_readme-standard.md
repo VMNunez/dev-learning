@@ -5,9 +5,18 @@ README(s) must contain and how each section must be written**. All pieces of the
 
 - `_readme-write-prompt.md` (the **author**) reads the rules for the one README it is writing.
 - `_readme-review-prompt.md` (the **reviewer**) reads the same rules to audit that README.
+- `_readme-effect-prompt.md` (the **reader-effect judge**) reads the quality filter's two lenses — plus
+  rule 9 on `global`, the one section whose failure is invisible bullet by bullet — and nothing else
+  here: it judges whether the finished README lands on the reader it is written for, proposes cuts and
+  additions, and **never edits a file**; the reviewer applies them.
 - `readme-audit.md` (the **orchestrator**) reads the "which READMEs" logic and the commit rule.
 - `readme-concept-add` (the **in-session skill**) reads "Which README owns a concept" plus the section
   format it routes to, and the granularity half of the commit rule, which binds it too.
+
+**What founds the rules below.** `notes/prompts/projects/readme/_internal/_readme-evidence.md`, beside
+this file, holds the quoted sources for them and an `## Assertions` table giving each rule's evidential
+status, on the discipline its own header states. Consult it when a bar is questioned; no run prompt
+reads it (`REC-193`, 2026-09-01).
 
 ## What the readme review is for
 
@@ -15,6 +24,15 @@ It reviews and fixes a project's README(s) so each one earns its place in a juni
 after a project or a big feature, or whenever a README feels stale — and always **before**
 `portfolio-audit` (that gate assumes the READMEs are already correct). It is a **write/fix** job: the
 author and reviewer edit the README files directly, they do not just report.
+
+**The quality filter below is applied twice, and the second reading is not the first one repeated.**
+The author and the reviewer apply it **per section, with this whole rule set in hand** — which is the
+only way they can apply it, and it means every section can clear its own rule while the finished page
+still lands on nobody. So the run's last content step is the **reader-effect judge**: one per README,
+handed the file whole and no checklist, wearing the audience *Two project formats* below gives that
+target — recruiter for `global`, technical interviewer for the two tier READMEs.
+It reads and proposes; the reviewer applies. That split is deliberate — a judge that edited would move
+the bar on every run, and this file stays the authority.
 
 This readme review is the project's **G5** gate — it runs after every High from G3/G4 (`review-audit`)
 is fixed and committed, and before G7 (`portfolio-audit`), which reads the READMEs it produces. The gate
@@ -41,7 +59,10 @@ Derive the type from the project number (01–06 Angular-only, 07+ full-stack); 
 ## Universal rules — apply to every README
 
 **Read PLANNING.md first.** Extract the app concept, learning objectives, and key patterns. The README
-must reflect what was actually built and learned — not what sounded good to write.
+must reflect what was actually built and learned — not what sounded good to write. **A section size
+stated in a PLANNING.md is not a bar.** Plans written before 2026-09-01 restate caps this file has since
+replaced with inclusion tests (`07-timetrack` §19 "6-8 maximum", §21 "max 3 bullets"); the sizes below
+are this file's, and a count read out of a plan is ignored — never applied, never flagged as a conflict.
 
 **In-progress marker scan.** Before checking sections, scan the README for: "coming soon", "to be
 added", "in progress", "Step X — coming soon", "Updated as each step is completed", and inline progress
@@ -60,9 +81,30 @@ A section that fails both is noise — cut or rewrite it. Passing only the recru
 the goal is a consultancy that asks technical questions. Never define basic terms — a README assumes a
 developer reader.
 
+**A third reader, and it is not human.** Before a recruiter opens the repository, a screen may
+already have read it: many recruiting teams run tooling that parses GitHub profiles and repositories
+as part of sourcing and screening. That reader gets no section of its own and no second voice — it
+gets one inclusion test: **every claim this README makes is stated in this README's own text** — a
+sentence, a bullet or a table cell — **and never only inside a visual.** A visual may be the best
+place a thing is *shown*; it may never be the only place it is *stated* — a technology named only in
+a screenshot caption, a role difference visible only inside a GIF, an app whose what-it-does lives
+only in the demo image. Each of those is fixed in the section that owns the claim — Tech stack for a
+technology, Features for a behaviour, the title sentence for what the app does — and on a full-stack
+project *Which README owns a concept* decides which README that section sits in. Never by touching
+the visual. And this rule licenses nothing beyond that test: it is not a reason to trim or shrink
+visuals — the evidence for them is the stronger of the two and the machine side is *absent*, not
+negative — nor a word or length budget of its own, the Length rule below being the recruiter's lens
+and not this reader's, nor XML-style tagging.
+
+*(Evidence: `_readme-evidence.md` → Assertions, "A README is read by an LLM as well as a human" — that
+the reader exists is founded; everything about what it rewards is **reasoned**, carried from CV sources
+and a library-docs paper, and marked as such here.)*
+
 **Length — recruiter lens.** The global README is scanned in seconds; keep it tight enough that a
 recruiter reaches "What I learned" without fatigue. When a section runs long, the depth belongs in the
-backend/frontend README or in `notes/` — link to it, do not inline it. The backend/frontend READMEs may
+backend/frontend README — link to it, do not inline it. On a single-README project there is no such
+file and no second home: what runs long is **cut**, never relocated, and `notes/` is not a sink for
+it — the two pipelines are independent, and a README rule may not spend the other one's file. The backend/frontend READMEs may
 run deeper (their audience is a technical interviewer), but still no wall of prose where a table or a
 short snippet says it better.
 
@@ -129,22 +171,109 @@ run.** Move any out-of-order section to its correct position.
      empty list or a validation error on the same view is a state, and a single-screen app is legitimately
      done with one screenshot. Never add a placeholder for a state of a screen already shown; if the
      README carries none for it, that is the correct count, not a gap to fill.
-5. **Features** — 5–6 bullets from the user's perspective, no technical terms.
-   - Good: "Protected routes redirect unauthenticated users to the login page."
-6. **Architecture decisions** — 3 to 8, one line each, format `[what you chose] to [why it matters]`.
-   Each must pass the interview test (an interviewer asks "why?" and the line already answers). Never pad.
+5. **Features** — optimal count for the project (no fixed number), from the user's perspective, no
+   technical terms.
+   - **A behaviour, not a capability.** One bullet per behaviour a user can see happen. A bullet naming
+     a library, a layer or an internal quality ("clean architecture", "uses Angular Material") names no
+     behaviour and fails; two bullets describing the same behaviour at different granularity are one.
+     A project with four user-visible behaviours is legitimately done with four bullets. A quality the
+     user *experiences across every screen* — responsive layout, offline persistence — is a behaviour
+     and passes as one bullet; it is the internal ones that fail.
+   - Good: "Protected routes redirect unauthenticated users to the login page." · Good: "Responsive —
+     works on mobile and desktop." · Bad: "Built with standalone components."
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Features — `5–6` bullets" — number unfounded, the
+     user-perspective rule founded in kind.)*
+6. **Architecture decisions** — optimal count for the project (no fixed number), one line each, format
+   `[what you chose] to [why it matters]`. Two tests, and a line failing either is cut or merged:
+   - **The interview test** — an interviewer asks "why?" and the line already answers. A line stating
+     only what was chosen fails.
+   - **The distinctness test** — no two decisions name the same choice. Two lines about one choice are
+     merged into the stronger one, never both kept.
+   - Never pad, and never cut a line that passes both tests to reach a number.
    - Good: "Coordinator pattern to centralise page state and keep the table and filters independently reusable."
-7. **Tradeoffs** — 3 to 4 bullets, format `[X] over [Y] — [reason]`. The reason is a real decision, not
-   a default ("because it is simpler" is not a reason — say what you gave up and why it made sense).
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Architecture decisions — `3 to 8`" — number
+     unfounded, the section founded.)*
+7. **Tradeoffs** — optimal count for the project (no fixed number), format `[X] over [Y] — [reason]`.
+   - **Something must actually have been given up.** `Y` is a real alternative that was available in
+     this project, and the reason says what choosing `X` cost — "because it is simpler" is not a reason.
+     A bullet with no `Y`, or whose `Y` was never an option here, is not a tradeoff: rewrite it, or move
+     it to Architecture decisions where it belongs.
    - Good: "Functional guards over class-based guards — Angular v15+ convention, less boilerplate."
-8. **Future improvements** — 3 max, realistic for the domain (no AI, microservices, blockchain). Each a
-   feature that makes the app more production-ready (pagination, email notifications, file export), not
-   a developer learning goal.
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Tradeoffs — `3 to 4` bullets" — unfounded, and the
+     section itself is this repository's deliberate choice for an interview reader.)*
+8. **Future improvements** — optimal count for the project (no fixed number), realistic for the domain
+   (no AI, microservices, blockchain).
+   - **A user would notice it.** Each item is a feature that makes the app more production-ready
+     (pagination, email notifications, file export), never a developer learning goal ("learn RxJS
+     operators", "refactor to standalone components") — which is cut whether the list has two items or six.
+   - **A reader of *this* README would miss it.** The improvement's absence is something the app as
+     described visibly lacks. An item that would be a fine idea for any app of any kind is not specific
+     to this one and is cut — this is the clause that bounds an otherwise unbounded list of good ideas.
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Future improvements — `3 max`" — number unfounded,
+     the section founded.)*
 9. **What I learned** — one bullet per concept, format `` `ConceptName` — one-line reminder ``. A recall
-   list, not a tutorial (full explanations live in `notes/`). Cross-check against PLANNING.md's learning
-   objectives; add any that are missing.
+   list, not a tutorial. Optimal count for the project (no fixed number): the section grows with the work,
+   and what bounds it is the three tests below, never a number. Cross-check against PLANNING.md's learning
+   objectives and add any that are missing — an **adder only**: a plan describes the project as planned,
+   not the one its backlog produced, so it never decides what stays.
+   - **The placement test** — rule 6's distinctness test ("no two decisions name **the same choice**"),
+     applied across the section boundary instead of within one section. Where Architecture decisions or
+     Tradeoffs already states the same choice, one line survives and the other is cut.
+     - **Same choice told twice — cut, and merge upward what the survivor lacks.** A detail the bullet
+       carries and the line above does not is **not** a reason to keep a second bullet: rule 9's own
+       format gives every well-formed bullet a mechanism after the em dash, so "it adds a mechanism"
+       would save all of them and the test would cut nothing. The detail moves into the surviving line;
+       the bullet goes. *Worked cut:* `` - `canActivate: [authGuard, adminGuard]` — stacked guards; all
+       must pass for the route to activate `` beside "Stacked guards (`authGuard` + `adminGuard`) to keep
+       authentication and authorisation as separate concerns" — one choice, told twice; *all must pass*
+       merges up and the bullet is cut.
+     - **A shared symbol is not automatically a shared choice.** Where the bullet's subject is a
+       different **fact** about the same symbol rather than the same decision, it stays. *Worked
+       survivor:* `` - `effect()` cleanup — the cleanup callback cancels the in-flight request before the
+       effect re-runs `` beside "`effect()` + `localStorage` to sync every change automatically" — same
+       symbol, two unrelated facts, neither restating the other. The question is *does the line above
+       already make this point*, not *does the line above use this word*.
+     - **The survivor is chosen for the reader who needs it, not automatically the upper section.** Merge
+       into whichever wording is stronger, and leave it where its own section's contract puts it — a
+       reason belongs upstairs, a recall line belongs here. This test removes a duplicate; it does not
+       rank the sections.
+     - **It de-duplicates and never promotes.** A concept the sections above do *not* state stays here
+       even when it carries a rejected alternative — moving it up would invent a project decision the
+       author did not make, and what counts as a decision is rule 6's judgement. **Known cost, accepted:**
+       a genuine `[X] over [Y]` tradeoff already written into this section is **reported in the run's
+       summary and left where it is**. No rule sweeps it back to Tradeoffs today, and this test will not.
+   - **One bullet per concept, not one per name.** Rule 5's granularity clause ("two bullets describing
+     the same behaviour at different granularity are one"), applied to concepts: a concept spread over
+     one bullet per annotation, per HTTP verb or per helper method is **one** bullet. Seven lines naming
+     `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PathVariable` and `@RequestBody` separately are
+     one line about the controller's request mapping. This is the test that reaches a section whose
+     bullets never duplicate anything above, because de-duplication cannot see them.
+   - **The behaviour test** — rule 5's *a behaviour, not a capability*, applied to a concept. A concept
+     whose absence would change only how the app *looks*, and not what it *does*, is cut.
+     **The line is the bullet's stated purpose, never the CSS property it uses.** `overflow: hidden`
+     clipping a card's corners is looks; `overflow: hidden` inside `.visually-hidden`, whose stated
+     purpose is keeping text in the accessibility tree, is behaviour — the same declaration, opposite
+     verdicts, and the bullet's own sentence is what separates them. Anything whose reason is the
+     accessibility tree, the keyboard or the focus order passes, whatever implements it: an accessible
+     name, a focus ring that exists so keyboard entry is visible, a pressed state exposed to assistive
+     technology. A `transition`, a badge's position, a colour token whose stated reason is
+     appearance are looks — and a bullet whose stated reason is something else again, neither the tree
+     nor the eye, is judged by rule 9's other two tests and not by this one. **A bullet that is half
+     each is split or rewritten to its behavioural half**, never kept whole for the sake of the other.
+   - **What may be added here as a further test, and what may not.** Only a test the agent applying this
+     standard can answer from the repository in front of it. A criterion resting on what the author
+     *remembers* — whether he would survive the follow-up question — names no applier: the agent running
+     this file cannot know it, so the test is either never applied or invented. All three tests above are
+     answerable from the README's own text, which is what makes them enforceable at the gate.
    - Good: "- `CanActivateFn` — functional route guard; no class, no `@Injectable`"
-   - Bad: "- Angular Material" (too vague) · a multi-sentence definition (too long — belongs in notes/).
+   - Bad: "- Angular Material" (too vague) · a multi-sentence definition (too long) · a bullet restating a
+     choice already made in Architecture decisions (placement) · "- `overflow: hidden` on a card — clips
+     image corners" (behaviour) · `` - `@PathVariable` — reads a dynamic URL segment `` sitting beside
+     `` - `@RequestBody` — converts JSON into the DTO `` and five more of the same shape (granularity —
+     one line about the controller's request mapping).
+   - *(Evidence: `_readme-evidence.md` → Assertions, "What I learned" — the **section** is founded by
+     soltech's "Lessons learned during development" and "What the developer learned during the process";
+     the three tests are this file's own, extended from rules 6 and 5, and none carries a number.)*
 10. **Tech stack** — always a table (never a bullet list). Columns: Layer | Technology. Every layer the
     project actually uses.
 11. **Project structure** — folder tree **in a fenced code block**, one-line explanation per folder (or
@@ -186,16 +315,25 @@ structure → Backend and frontend details.**
 3. **Auth flow** — numbered steps of the full request lifecycle: login → BCrypt check → JWT generated →
    client sends token → JwtFilter validates → SecurityContextHolder → endpoint executes. One sentence
    per step, prose only, no code blocks.
-4. **Security considerations** — ≥4 bullets covering every measure actually in the code: password
-   hashing, secret management (no committed credentials), authorization enforcement, input validation +
-   error handling. Only list what is really there.
+4. **Security considerations** — one bullet per measure **actually in the code**, optimal count for the
+   project (no fixed number). Where to look: password hashing, secret management (no committed
+   credentials), authorization enforcement, input validation + error handling.
+   - **The test runs in both directions.** Nothing that is in the code is missing from the list, and
+     nothing in the list is absent from the code — a bullet that cannot be pointed at a file fails. A
+     project with three real measures is legitimately done with three bullets.
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Backend Security considerations — `≥4` bullets" —
+     unfounded, and a floor is precisely what forces padding.)*
 5. **Folder structure** — annotated tree of every package (controller / service / repository / model /
    dto request+response / exception / security), **fenced**, one-line comment per folder.
 6. **Key patterns** — one entry per pattern, format `[Pattern] — [why used, not just what]`. Must
    include: layered architecture, DTO boundary, GlobalExceptionHandler. Code snippets encouraged (the
    audience is a technical interviewer).
-7. **Tradeoffs** — format `[X] over [Y] — [reason]`, the 3 most important for this project; each
-   answerable in an interview ("because it is simpler" is not a reason).
+7. **Tradeoffs** — format `[X] over [Y] — [reason]`, the ones that are genuinely important for this
+   project (no fixed number). Same test as global rule 7: `Y` is a real alternative that was available
+   here and the reason says what was given up, each answerable in an interview ("because it is simpler"
+   is not a reason).
+   - *(Evidence: `_readme-evidence.md` → Assertions, "Backend Tradeoffs — the 3 most important" —
+     unfounded.)*
 8. **How to run alone** — without Docker: Java version, how to set `DB_PASSWORD` (IntelliJ path), the DB
    name to create in pgAdmin, how to start, the base URL. Include seed credentials if `data.sql` seeds
    a first account.
@@ -238,7 +376,12 @@ misread in both. Who runs that commit differs, and only that:
   README that actually changed and runs **one** `git commit`:
   `docs: update {PROJECT_PATH} README(s) — [one-line summary]`, whose plural is the tell that a single
   command covers the set. The summary of changes above is still printed — it is now a review record,
-  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit.
+  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit. **The
+  reader-effect judge is not part of that pair and never excludes a README**: it is advisory, so a run
+  whose judge failed twice commits the README on the author and reviewer's work and says so in the
+  summary — the pair is what the commit rests on. The same holds for the **re-dispatch that applies**
+  the judge's items: it runs after the pair completed, so its own failure excludes nothing either, and
+  the file is committed part-applied with that stated in the commit message and the summary.
   Under `PROJECT_PATH = all` that is one such commit per project.
 - **`readme-concept-add` — commits its own entry, in one atomic commit for that entry.** It uses the
   same 2026-08-01 permission, because one line added to an existing section is not

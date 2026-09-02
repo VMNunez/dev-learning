@@ -86,9 +86,11 @@ Write it in **the format the standard gives that section**, in the section's exi
 shape, in the position its ordering implies — not appended at the end of the file.
 
 One rule worth restating, because it is what an inline edit breaks every time: **no explanations**. A
-README entry is a recall line; the depth belongs in `notes/`, and linking beats inlining. If the concept is
-real but the honest entry would be long, that is the signal it belongs in `notes/` with a one-line pointer
-here — not a longer bullet.
+README entry is a recall line. If the concept is real but the honest entry would be long, shorten it to the
+mechanism — and if it will not shorten, that is the signal the concept does not belong in this section at
+all. **`notes/` is not where it goes**: the standard's Length rule stopped routing README depth there
+(`REC-196`, 2026-09-02), the two pipelines are independent, and what fails a README rule is cut, never
+relocated behind a pointer.
 
 ## 3b — Clear the markers the project has outgrown
 

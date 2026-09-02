@@ -790,6 +790,7 @@ $closedBudget = 700
 $closedRowsScanned = 0
 $closedLongest = 0
 $closedOverBudget = 0
+$closedUnrecorded = 0
 # $emDash is built from its code point by invariant 8 above: this file carries no UTF-8 BOM, so a
 # literal one arrives as two characters under PowerShell 5.1 and matches nothing, in silence.
 $closedRowPattern = '^- `REC-(?<id>[0-9]{3})`(?<residue> residue)? ' + $emDash + ' '
@@ -846,12 +847,51 @@ if ($closedSplit.Count -ne 2) {
         $implemented = $tail.Success -and $tail.Value -cne ('`' + $emDash + '`')
         if ($id -ge 107 -and $implemented) {
             $verdictAt = $line.IndexOf('cold reviewer:')
+            # The escape, and why it is not a loophole (`REC-195`). A verdict the collapse never
+            # wrote cannot be recovered afterwards: `REC-190` was closed on 2026-09-01 with no
+            # token, and neither the deleted row, the commit message nor any report holds it.
+            # Silence and an invented `approve` are the two wrong answers - the first is
+            # indistinguishable from a skipped gate, the second IS the self-approval this invariant
+            # exists to expose. So an explicit `unrecorded` is accepted under three conditions that
+            # keep it a record rather than a way out: it opens the field it is read from, it names a
+            # `REC-NNN` row accounting for it, and every use is COUNTED ON THE PASS LINE, so the
+            # escape cannot accumulate unseen. It is deliberately not offered to invariant 8's
+            # self-reports: that report is written by the run that held the gate, so there a verdict
+            # is never lost, only omitted.
+            #
+            # ORDER AND POSITION, both from this fix's own two cold-review rounds. The approve test
+            # runs FIRST and keeps its original reach - the tail from the FIRST occurrence, scanned
+            # forward - so a row whose prose *quotes* the escape ahead of its real field still
+            # passes on the real one; the draft tested `unrecorded` first, from that same first
+            # occurrence, and would have read the quotation as the verdict and never checked the
+            # field at all (round 1's `reject`). The escape is then tested against EVERY occurrence
+            # rather than one chosen position, and the citation may sit on any of them: reading only
+            # the last failed a real cited field that its own line echoed afterwards, and reading
+            # only the first is the rejected draft. This row's own closure line, which has to quote
+            # the formula to say what it shipped, is the instance both single-position readings get
+            # wrong.
+            #
+            # WHAT IT STILL CANNOT SETTLE, published rather than assumed: a line that quotes
+            # `cold reviewer: unrecorded` in prose and carries no real verdict field is admitted as
+            # unrecorded rather than failing. It is not silent - it needs the `REC-NNN` citation and
+            # it moves the PASS-line count - and no reading of the characters on disk can separate
+            # that line from one meaning it.
             if ($verdictAt -lt 0) {
                 Add-ValidationError "REC-$rowId applied an edit and carries no 'cold reviewer:' field; on disk that is indistinguishable from a row that skipped the gate."
-            } elseif ($line.Substring($verdictAt) -cnotmatch '(?<![A-Za-z0-9-])approve(?:-with-tightening)?(?![A-Za-z0-9-])') {
+            } elseif ($line.Substring($verdictAt) -cmatch '(?<![A-Za-z0-9-])approve(?:-with-tightening)?(?![A-Za-z0-9-])') {
                 # Bounded on BOTH sides (`REC-065`) so `disapprove` cannot satisfy it, and searched
                 # only from the field onwards, so the word appearing in the row's prose cannot. The
                 # historical `reject, then approve-with-tightening` shape still passes, as it must.
+            } elseif ($line -cmatch 'cold reviewer:[ ]*unrecorded(?![A-Za-z0-9-])') {
+                $closedUnrecorded++
+                $cited = $false
+                foreach ($fieldMatch in [regex]::Matches($line, 'cold reviewer:[ ]*unrecorded(?![A-Za-z0-9-])')) {
+                    if ($line.Substring($fieldMatch.Index) -cmatch 'unrecorded.*REC-[0-9]{3}') { $cited = $true }
+                }
+                if (-not $cited) {
+                    Add-ValidationError "REC-$rowId writes 'cold reviewer: unrecorded' and names no REC-NNN row accounting for it; an unrecoverable verdict is admitted by pointing at the row that adjudicates it, never by the word alone."
+                }
+            } else {
                 Add-ValidationError "REC-$rowId carries a 'cold reviewer:' field that never reaches an approving verdict; only approve or approve-with-tightening may reach step 4."
             }
         }
@@ -1556,9 +1596,11 @@ if ($selfReportReports.Count -gt 0) {
     $selfReportReports | ForEach-Object { Write-Output "  - $_" }
 }
 # Outside -MachineryOnly for invariant 8's reason: the ledger archive is machinery and so is the
-# ledger that indexes it. Three numbers, and the last two are the budget proxy, never a gate - a
-# closure that restates its whole resolution moves them before the file is visibly growing again.
-Write-Output "PASS: closed ledger lines carry their closure schema ($closedRowsScanned rows, longest $closedLongest chars, $closedOverBudget over the $closedBudget-char one-line budget)"
+# ledger that indexes it. Four numbers. The middle two are the budget proxy, never a gate - a
+# closure that restates its whole resolution moves them before the file is visibly growing again -
+# and the fourth is `REC-195`'s escape, printed for exactly the same reason: an unrecorded verdict
+# that nobody counts is one nobody notices accumulating.
+Write-Output "PASS: closed ledger lines carry their closure schema ($closedRowsScanned rows, longest $closedLongest chars, $closedOverBudget over the $closedBudget-char one-line budget, $closedUnrecorded with an unrecorded verdict)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 if ($MachineryOnly) {
     Write-Output 'SKIP: live coverage, notes-plan, SQL-route (including declared exercise names), and simulation-route state (machinery-only mode)'

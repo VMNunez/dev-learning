@@ -1,14 +1,15 @@
 <div class="container">
-  <a class="back-link" (click)="goBack()">&larr; Back</a>
-  @if (mealDetails() && hasLoad()) {
+  <button type="button" class="back-link" (click)="goBack()">&larr; Back</button>
+  @if (mealDetails() && loadFinished()) {
     <div class="meal-card">
-      <img class="meal-img" [src]="mealDetails()!.strMealThumb" />
+      <img class="meal-img" [src]="mealDetails()!.strMealThumb" alt="" />
       <div class="meal-details">
         <div class="meal-header">
           <h1 class="meal-title">{{ mealDetails()!.strMeal }}</h1>
           <button
             class="favourite-btn"
             [class.active]="isFavourite()"
+            [attr.aria-label]="favouriteLabel()"
             (click)="toggleFavourite(mealDetails()!)"
           >
             @if (isFavourite()) {
@@ -31,12 +32,13 @@
         }
       </div>
     </div>
-  } @else if (!hasLoad()) {
+  } @else if (!loadFinished()) {
     <div class="spinner-container">
       <div class="load-spinner"></div>
     </div>
-  } @else {
-    <!-- hasLoad() is true but mealDetails() is null — API failed -->
+  } @else if (hasError()) {
     <p class="empty-message">Could not load this meal. Go back and try again.</p>
+  } @else {
+    <p class="empty-message">Meal not found.</p>
   }
 </div>

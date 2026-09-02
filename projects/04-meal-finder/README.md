@@ -18,36 +18,53 @@ https://04mealfinder.netlify.app/
 
 ## Screenshots
 
-**App overview**
+**Search results**
 
-![App preview](screenshots/preview.png)
+![Search results — meal cards for a search term](screenshots/preview.png)
+
+**Meal detail**
+
+![Meal detail — recipe image, category and area tags, instructions and the favourite toggle](screenshots/detail.png)
+
+**Favourites**
+
+![Favourites page — saved meals with the category filter above the grid](screenshots/favourites.png)
 
 ---
 
 ## Features
 
-- Search meals by name using TheMealDB API
-- Browse results as cards with image and name
+- Search meals by name and browse the results as a grid of cards
 - Click a meal to see the full recipe on a detail page
 - Save and remove favourite meals
 - Filter favourites by category
 - Persistent favourites across page refreshes
+- A spinner while a search runs, a "no meals found" message when nothing matches and an error message when the request fails — never a blank screen
+- Fully usable with a keyboard alone, with every control's state and name announced to screen readers
 
 ---
 
 ## Architecture decisions
 
-- `effect()` + localStorage for favourites — automatic sync with no manual save calls anywhere in the app
-- `computed()` for all filtering — memoized and recalculates only when the source signal changes
-- `Location.back()` on the detail page — the page is reachable from two routes; a hardcoded link would always go to the wrong one
-- `hasSearched` and `hasLoad` signals to express three distinct states — a single results array cannot distinguish between loading, no results and not searched yet
+- `MealService` and `FavouriteService` split by responsibility to keep the favourites page free of `HttpClient` and the search page free of persistence
+- `effect()` + `localStorage` in `FavouriteService` to persist every change automatically, with no save call anywhere in the app
+- `computed()` for every derived value to memoise it and keep templates free of method calls that re-run on each change detection
+- `toSignal(paramMap)` on the `detail/:id` route to reload the recipe when only `:id` changes, since the router reuses the component instance
+- The search term kept in the URL as `?q=` to make results survive navigation and a search linkable
+- `Location.back()` guarded by a `NavigationHistoryService` count to fall back to `/` when a detail URL was opened directly, since browser history is not application history
+- `loadComponent()` on every route to ship each page as its own chunk instead of one bundle carrying all four (253 kB → 238 kB)
+- `meal-card` and `category-filter` kept presentational so the search page and the favourites page reuse the same card
+- `catchError` in `MealService` rethrowing a domain error to give every page a single failure shape to handle
+- `HttpParams` for every query string so `&`, `#` and `+` in a search term cannot silently change what was searched for
+- Separate `isLoading`, `loadFinished` and `hasError` signals to tell loading, empty, not-found and error apart, since TheMealDB answers an unknown id with `200 {"meals": null}`
 
 ---
 
 ## Tradeoffs
 
-- TheMealDB (free, no key) over a paid API — simpler setup keeps the focus on routing patterns, not configuration
-- `subscribe` over `async` pipe — explicit subscription management was clearer for learning the Observable lifecycle
+- TheMealDB over a keyed recipe API — no secret to manage in a public repo and a one-command clone-and-run, giving up server-side filtering and a dataset I could extend
+- `subscribe` inside an `effect()` over the `async` pipe — the component owns the loading, empty, not-found and error states explicitly, at the cost of wiring the teardown by hand in the effect's cleanup callback
+- Favourites in `localStorage` over a backend — persistence with no server to build, so favourites live in one browser and are lost when its storage is cleared
 
 ---
 
@@ -61,19 +78,26 @@ https://04mealfinder.netlify.app/
 
 ## What I learned
 
-- Route parameters — `path: 'detail/:id'` and `ActivatedRoute` to read the URL segment
-- `effect()` — run side effects automatically when a signal changes
-- `computed()` — derive filtering, counts and unique categories from signals
-- `localStorage + effect()` pattern — init signal from localStorage, keep it in sync automatically
-- `takeUntilDestroyed` + `DestroyRef` — cancel HTTP subscriptions when a component is destroyed
-- `event.stopPropagation()` — prevent a button click from bubbling to a parent `routerLink`
-- `(keyup.enter)` — trigger a method when the user presses Enter
-- `[disabled]` binding — disable a button based on a reactive condition
-- `hasSearched` and `hasLoad` signal patterns — distinguish between loading, no results and not searched yet
-- `Location.back()` — navigate to the previous page in the browser history
-- `overflow: hidden` on a card — clips image corners with `border-radius`
-- `position: absolute` + `top/right` — place a badge over a card
-- `transition` on the base element, not on `:hover` — correct hover animation pattern
+- `HttpClient` — call an external API from a service, never from a component
+- `HttpParams` — build the query string so user input cannot become query syntax
+- `catchError` — translate an HTTP failure into one domain error the pages handle
+- `signal()` and `computed()` — reactive state and derived values
+- `asReadonly()` — expose a signal read-only so the service's own methods are the only writers
+- `effect()` — sync a signal with an external system (localStorage) instead of writing in every mutator
+- `effect()` cleanup — cancel the in-flight request before the effect re-runs
+- `toSignal()` — read `paramMap` and `queryParamMap` as signals instead of subscribing
+- `input.required()` and `output()` — presentational components take data in and emit intent out
+- `loadComponent()` — lazy route, one chunk per page instead of one bundle
+- `routerLinkActive` — mark the current nav link; the brand link needs `{ exact: true }`
+- `Location.back()` — browser history is not application history, so a direct URL needs a fallback
+- `[attr.x]` binding — ARIA attributes have no DOM property behind them, so `[attr.aria-pressed]`, not `[ariaPressed]`
+- Narrowing beats asserting — read a `string | null` route id into a local and return early, never `as string`
+- Nullable API responses — normalise `Meal[] | null` once at the service boundary
+- `<a>` vs `<button>` — an `<a>` navigates, a `<button>` acts; an `<a>` with no `href` is skipped by the tab order
+- `aria-label` and `<label for>` — a name for an icon-only control, and for a field whose `placeholder` is only an example
+- `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` removes
+- `alt=""` — mark a decorative image so it is not named after its file
+- `:focus-visible` + `:has()` — a focus ring for keyboard entry only, raised to the whole card
 
 ---
 
@@ -83,8 +107,33 @@ https://04mealfinder.netlify.app/
 |---|---|
 | Framework | Angular 21 |
 | Language | TypeScript |
-| Styles | CSS |
+| Routing | Angular Router — lazy routes, route + query parameters |
+| State | Angular signals — `signal`, `computed`, `effect` |
+| HTTP | `HttpClient` + `HttpParams` |
+| Persistence | Browser `localStorage` |
+| Styles | CSS with custom-property tokens |
 | API | TheMealDB (free, no API key) |
+| Hosting | Netlify |
+
+---
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── components/          presentational components — data in, events out, no service injected
+│   │   ├── meal-card/       meal image, name and favourite toggle; reused by search and favourites
+│   │   └── category-filter/ category buttons for the favourites page
+│   ├── models/              the Meal domain type
+│   ├── pages/               routed pages — search, meal detail, favourites, not found
+│   ├── services/            MealService (HTTP), FavouriteService (state + localStorage),
+│   │                        NavigationHistoryService (navigation count for the Back control)
+│   ├── app.routes.ts        lazy route table, wildcard route last
+│   ├── app.config.ts        application providers — router and HttpClient
+│   └── app.ts / app.html    root shell — nav with the live favourites badge, plus the router outlet
+└── styles.css               global styles and the colour tokens every component reads
+```
 
 ---
 
@@ -95,7 +144,7 @@ git clone https://github.com/VMNunez/dev-learning.git
 ```
 
 ```
-cd dev-learning/angular/04-meal-finder
+cd dev-learning/projects/04-meal-finder
 ```
 
 ```

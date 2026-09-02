@@ -1,1 +1,23 @@
+<nav class="app-nav">
+  <a
+    class="brand"
+    routerLink="/"
+    routerLinkActive
+    [routerLinkActiveOptions]="{ exact: true }"
+    ariaCurrentWhenActive="page"
+    >Meal Finder</a
+  >
+  <a
+    class="nav-link"
+    routerLink="/favourites"
+    routerLinkActive="active"
+    ariaCurrentWhenActive="page"
+  >
+    Favourites
+    @if (favouritesNumber() > 0) {
+      <span class="count-badge">{{ favouritesNumber() }}</span>
+    }
+  </a>
+</nav>
+
 <router-outlet />

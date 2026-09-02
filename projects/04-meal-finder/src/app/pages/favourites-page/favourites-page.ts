@@ -1,32 +1,24 @@
 import { Component, inject, signal, computed } from '@angular/core';
-import { MealService } from '../../services/meal.service';
 import type { Meal } from '../../models/meal.model';
-import { RouterLink } from '@angular/router';
+import { FavouriteService } from '../../services/favourite.service';
+import { MealCard } from '../../components/meal-card/meal-card';
+import { CategoryFilter } from '../../components/category-filter/category-filter';
 
 @Component({
   selector: 'app-favourites-page',
-  imports: [RouterLink],
+  imports: [MealCard, CategoryFilter],
   templateUrl: './favourites-page.html',
   styleUrl: './favourites-page.css',
 })
 export class FavouritesPage {
-  private mealService = inject(MealService);
+  private favouriteService = inject(FavouriteService);
   selectedCategory = signal<string>('');
-  favourites = this.mealService.favourites;
+  favourites = this.favouriteService.favourites;
 
-  isFavourite(id: string) {
-    return this.favourites().some((favourite) => favourite.idMeal === id);
-  }
-
-  toggleFavourite(favourite: Meal, event: MouseEvent) {
-    event.stopPropagation();
-    if (this.isFavourite(favourite.idMeal)) {
-      this.mealService.deleteFavourite(favourite.idMeal);
-      if (this.filteredFavourites().length === 0) {
-        this.selectedCategory.set('');
-      }
-    } else {
-      this.mealService.addFavourite(favourite);
+  toggleFavourite(favourite: Meal) {
+    this.favouriteService.deleteFavourite(favourite.idMeal);
+    if (this.filteredFavourites().length === 0) {
+      this.selectedCategory.set('');
     }
   }
 

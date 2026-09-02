@@ -4,13 +4,13 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Type-system foundations
 
-- TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation
+- TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation ✅ 04-meal-finder — `http.get<MealResponse>()` validates nothing, so the model declares `meals: Meal[] | null` and both subscribers normalise the value the endpoint really sends
 - Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values ✅ 01-todo-list
 - Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types ✅ 01-todo-list
 - `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking ✅ 06-hr-portal
 - `void` vs `never` — distinguish a function result callers ignore from a control-flow path that cannot produce any value
 - `object` vs `Object` vs `{}` — avoid broad object-like types whose assignability differs from the specific property shape an application contract needs
-- `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type
+- `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type ✅ 04-meal-finder — the `catchError` callback in `MealService` types the caught value `unknown` and only logs it, so nothing reads a property off it unnarrowed
 - Structural typing — compatibility depends on required members rather than declared names, which explains both convenient object assignment and accidental shape compatibility
 - Union types — model a value that may have one of several types and narrow it before using member-specific operations ✅ 01-todo-list
 - Intersection types — require a value to satisfy all combined object contracts without confusing an intersection with a runtime merge
@@ -52,7 +52,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Narrowing and safe control flow
 
-- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
+- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
@@ -66,7 +66,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Null safety and assertions
 
-- `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
+- `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use ✅ 04-meal-finder — the nullable `MealResponse.meals` stops compiling at every consumer until each one handles the absent case
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
 - Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 05-task-manager
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal

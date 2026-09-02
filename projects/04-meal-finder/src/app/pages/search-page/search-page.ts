@@ -1,58 +1,83 @@
-import { Component, computed, inject, signal, DestroyRef } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { MealService } from '../../services/meal.service';
-import type { Meal, MealResponse } from '../../models/meal.model';
-import { RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import type { Meal } from '../../models/meal.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { FavouriteService } from '../../services/favourite.service';
+import { MealCard } from '../../components/meal-card/meal-card';
 
 @Component({
   selector: 'app-search-page',
-  imports: [RouterLink],
+  imports: [MealCard],
   templateUrl: './search-page.html',
   styleUrl: './search-page.css',
 })
 export class SearchPage {
   private mealService = inject(MealService);
-  private destroyRef = inject(DestroyRef);
+  private favouriteService = inject(FavouriteService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
+
   meals = signal<Meal[]>([]);
   hasSearched = signal<boolean>(false);
   searchTerm = signal<string>('');
   hasError = signal<boolean>(false);
   isLoading = signal<boolean>(false);
-  favourites = this.mealService.favourites;
 
-  favouritesNumber = computed(() => {
-    return this.favourites().length;
-  });
+  private queryTerm = toSignal(
+    this.activatedRoute.queryParamMap.pipe(map((params) => params.get('q') ?? '')),
+    { initialValue: '' },
+  );
 
-  onSearchMeals(meal: string) {
-    this.isLoading.set(true);
-    this.hasError.set(false);
-    this.mealService
-      .searchMeals(meal)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (mealResponse: MealResponse) => {
-          this.meals.set(mealResponse.meals);
+  constructor() {
+    effect((onCleanup) => {
+      const term = this.queryTerm().trim();
+      this.searchTerm.set(term);
+
+      if (!term) {
+        this.meals.set([]);
+        this.hasSearched.set(false);
+        return;
+      }
+
+      this.isLoading.set(true);
+      this.hasError.set(false);
+
+      const subscription = this.mealService.searchMeals(term).subscribe({
+        next: (meals: Meal[]) => {
+          this.meals.set(meals);
           this.hasSearched.set(true);
           this.isLoading.set(false);
         },
-        error: (error) => {
-          console.error(error);
+        error: () => {
           this.hasError.set(true);
           this.hasSearched.set(true);
           this.isLoading.set(false);
         },
       });
+
+      onCleanup(() => subscription.unsubscribe());
+    });
+  }
+
+  onSearchMeals(meal: string) {
+    const term = meal.trim();
+    if (!term) return;
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { q: term },
+    });
   }
 
   isFavourite(id: string) {
-    return this.mealService.favourites().some((meal) => meal.idMeal === id);
+    return this.favouriteService.favouriteIds().has(id);
   }
 
-  toggleFavourite(meal: Meal, event: MouseEvent) {
-    event.stopPropagation();
+  toggleFavourite(meal: Meal) {
     this.isFavourite(meal.idMeal)
-      ? this.mealService.deleteFavourite(meal.idMeal)
-      : this.mealService.addFavourite(meal);
+      ? this.favouriteService.deleteFavourite(meal.idMeal)
+      : this.favouriteService.addFavourite(meal);
   }
 }
