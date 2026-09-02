@@ -5,6 +5,10 @@ README(s) must contain and how each section must be written**. All pieces of the
 
 - `_readme-write-prompt.md` (the **author**) reads the rules for the one README it is writing.
 - `_readme-review-prompt.md` (the **reviewer**) reads the same rules to audit that README.
+- `_readme-effect-prompt.md` (the **reader-effect judge**) reads the quality filter's two lenses — plus
+  rule 9 on `global`, the one section whose failure is invisible bullet by bullet — and nothing else
+  here: it judges whether the finished README lands on the reader it is written for, proposes cuts and
+  additions, and **never edits a file**; the reviewer applies them.
 - `readme-audit.md` (the **orchestrator**) reads the "which READMEs" logic and the commit rule.
 - `readme-concept-add` (the **in-session skill**) reads "Which README owns a concept" plus the section
   format it routes to, and the granularity half of the commit rule, which binds it too.
@@ -20,6 +24,15 @@ It reviews and fixes a project's README(s) so each one earns its place in a juni
 after a project or a big feature, or whenever a README feels stale — and always **before**
 `portfolio-audit` (that gate assumes the READMEs are already correct). It is a **write/fix** job: the
 author and reviewer edit the README files directly, they do not just report.
+
+**The quality filter below is applied twice, and the second reading is not the first one repeated.**
+The author and the reviewer apply it **per section, with this whole rule set in hand** — which is the
+only way they can apply it, and it means every section can clear its own rule while the finished page
+still lands on nobody. So the run's last content step is the **reader-effect judge**: one per README,
+handed the file whole and no checklist, wearing the audience *Two project formats* below gives that
+target — recruiter for `global`, technical interviewer for the two tier READMEs.
+It reads and proposes; the reviewer applies. That split is deliberate — a judge that edited would move
+the bar on every run, and this file stays the authority.
 
 This readme review is the project's **G5** gate — it runs after every High from G3/G4 (`review-audit`)
 is fixed and committed, and before G7 (`portfolio-audit`), which reads the READMEs it produces. The gate
@@ -363,7 +376,12 @@ misread in both. Who runs that commit differs, and only that:
   README that actually changed and runs **one** `git commit`:
   `docs: update {PROJECT_PATH} README(s) — [one-line summary]`, whose plural is the tell that a single
   command covers the set. The summary of changes above is still printed — it is now a review record,
-  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit.
+  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit. **The
+  reader-effect judge is not part of that pair and never excludes a README**: it is advisory, so a run
+  whose judge failed twice commits the README on the author and reviewer's work and says so in the
+  summary — the pair is what the commit rests on. The same holds for the **re-dispatch that applies**
+  the judge's items: it runs after the pair completed, so its own failure excludes nothing either, and
+  the file is committed part-applied with that stated in the commit message and the summary.
   Under `PROJECT_PATH = all` that is one such commit per project.
 - **`readme-concept-add` — commits its own entry, in one atomic commit for that entry.** It uses the
   same 2026-08-01 permission, because one line added to an existing section is not

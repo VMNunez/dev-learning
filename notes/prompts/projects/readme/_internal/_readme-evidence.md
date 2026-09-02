@@ -27,9 +27,9 @@ junior is asked to know** — it anchors coverage, not presentation. This file i
   file is not thereby refuted.
 - **Quote, do not invent.** Only text that actually appears at the URL is written here. Every entry
   carries its `Captured:` month and whether it is a `full article` or a `web-search extract`.
-- **The run prompts do not read this file.** `_readme-write-prompt.md` and `_readme-review-prompt.md`
-  read the standard, which is where a rule founded here is written down; a second read added to every
-  run is a cost the evidence does not need.
+- **The run prompts do not read this file.** `_readme-write-prompt.md`, `_readme-review-prompt.md` and
+  `_readme-effect-prompt.md` read the standard, which is where a rule founded here is written down; a
+  second read added to every run is a cost the evidence does not need.
 
 **Evidence quality note.** The sources below were captured **2026-09** by direct fetch. One fetch
 returned 403 and one 404; both are recorded under `## Failed captures` rather than dropped, together

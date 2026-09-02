@@ -74,6 +74,15 @@ project. Your attention budget belongs to the README.
 README contradicting the others), fix that conflict and re-run only the affected sections' checks —
 trace only those sections, not the full list.
 
+**If dispatched with quoted effect items** (the reader-effect judge, `_readme-effect-prompt.md`, read
+this README as the recruiter or the technical interviewer it is written for), **apply them** — that is
+the default and the run ends with them in the file, never handed on to Victor. You are the writer at
+this point: cut what it says to cut, add what it says is missing, and leave what it flagged as carrying
+the file. An item marked `effect-only` carries no rule behind it and is applied on that reader's
+authority. **Reject one only where the standard positively contradicts it, and only by naming the rule
+it would break** — no rule, no rejection. Report which items you applied and which you rejected with
+that rule, and trace only the sections you touched.
+
 ## Fix, don't just report
 Where a check fails, **fix it directly** in the README. Preserve the author's correct work; only change
 what misses the bar. If the README is genuinely already at bar, change nothing and record it as PASS.

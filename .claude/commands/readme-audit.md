@@ -8,6 +8,6 @@ Read `notes/prompts/projects/readme/readme-audit.md` and execute it in full as t
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- The prompt's own config block and instructions are authoritative — execute them exactly (per-README author + cold reviewer subagents for global/backend/frontend).
+- The prompt's own config block and instructions are authoritative — execute them exactly, including which subagents it dispatches per README and in what order. Do not take that list from this launcher.
 - Commit behaviour is the prompt's and is read there, never from here: its **Auto-committed** note and `notes/prompts/projects/readme/_internal/_readme-standard.md` → "Summary + commit rule". Do not take a commit rule from this launcher.
 - If the configuration is empty or incomplete, ask for the missing config-block values before launching any subagent.
