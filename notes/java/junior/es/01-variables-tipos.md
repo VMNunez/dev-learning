@@ -83,7 +83,7 @@ int number = 42;
 String name = "Victor";
 ```
 
-En el diagrama de arriba(TODO: AHORA SE PUEDE DECIR QUE EN EL CODIGO DE ARRIBA), `name` plantea una pregunta que `number` no puede plantear: ¿qué tiene escrito `name` dentro mientras todavía no le has asignado ningún objeto?
+En el código de arriba, `name` plantea una pregunta que `number` no puede plantear: ¿qué tiene escrito `name` dentro mientras todavía no le has asignado ningún objeto?
 
 `number` es un hueco de 32 bits en el que siempre hay un número escrito. Un campo `int` de una clase que declaras y nunca asignas arranca valiendo `0` — sí, exactamente eso: se declara sin valor y empieza en `0`, porque Java rellena esos 32 bits con ceros al crear el objeto. (La variable local es el caso aparte: ahí Java no rellena nada, y el compilador te obliga a asignarla antes de leerla.) Y no hay forma de dejar ese hueco «vacío»: las 32 posiciones están siempre ocupadas por ceros y unos, y todas las combinaciones posibles de esos bits ya están cogidas — cada una significa un número concreto. No queda ninguna libre a la que darle el significado «aquí no hay nada».
 

@@ -143,4 +143,4 @@ arrival.
 | NTH-0009 | 2026-09-02 | java/junior/01 | es | tabla-sin-uso-real | 1 | ME GUSTARIA UNA COLUMNA QUE PUSIERA EL USO HABITUAL | missing | — | open |
 | NTH-0010 | 2026-09-02 | java/junior/01 | es | termino-traducido-no-usado | 4 | EN VEZ DE USAR PILA … ME GUSTA USAR LA PALABRA STACK / PREFIERO QUE PONGAS HEAP | missing | — | open |
 | NTH-0011 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 1 | LO DE UNO DENTRO DE OTRO NO LO ENTIENDO | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
-| NTH-0012 | 2026-09-02 | java/junior/01 | es | codigo-no-a-la-vista | 1 | ME GUSTARIA VER EL CODIGO JUSTO ENCIMA DEL PARRAFO PARA TENERLO A LA VISTA | missing | — | open |
+| NTH-0012 | 2026-09-02 | java/junior/01 | es | codigo-no-a-la-vista | 2 | ME GUSTARIA VER EL CODIGO JUSTO ENCIMA DEL PARRAFO PARA TENERLO A LA VISTA | missing | — | open |

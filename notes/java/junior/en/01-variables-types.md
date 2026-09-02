@@ -85,7 +85,7 @@ int number = 42;
 String name = "Victor";
 ```
 
-In the diagram above, `name` raises a question `number` cannot raise: what is written inside `name` while you have not assigned it any object yet?
+In the code above, `name` raises a question `number` cannot raise: what is written inside `name` while you have not assigned it any object yet?
 
 `number` is a 32-bit slot with a number always written in it. An `int` field of a class you declare and never assign starts out as `0` — yes, exactly that: declared with no value, and it begins at `0`, because Java fills those 32 bits with zeros when the object is created. (A local variable is the exception: there Java fills in nothing, and the compiler forces you to assign it before you read it.) And there is no way to leave that slot "empty": the 32 positions are always occupied by zeros and ones, and every possible arrangement of those bits is already taken — each one means some specific number. None is left over to be given the meaning "nothing here".
 
