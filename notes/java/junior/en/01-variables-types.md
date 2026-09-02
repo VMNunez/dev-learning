@@ -98,7 +98,7 @@ int number = null;       // MAL — error: incompatible types: <null> cannot be 
 
 That is the whole of the primitive-versus-reference split you need for this page: a primitive variable points at its value — or more exactly, *is* its value — while a reference variable points at an object and may point at none.
 
-> **What is still missing about `null`, and which file each part is in.** Being able to read `null` in the examples below is everything this file asks of you. Three questions stay open, and none of them can be answered here because each one needs something you have not studied yet.
+> **What is still missing about `null`, and which file each part is in.** Being able to read `null` in the examples still to come in this same file — the `user != null` check in the operators section, the `Long id` that starts out `null`, the `null` a map returns for a key that is not there — is everything this file asks of you. Three questions stay open, and none of them can be answered here because each one needs something you have not studied yet.
 >
 > The first: what exactly is written inside a reference variable, and why the program blows up on the line where you use a reference holding `null` and not before. That is in [05-memory-model.md](05-memory-model.md).
 >
@@ -107,6 +107,8 @@ That is the whole of the primitive-versus-reference split you need for this page
 > The third: what an object is — the thing the reference points at when it is not `null` — and how one object is compared with another. That is in [06-oop-classes.md](06-oop-classes.md).
 
 ### Types by category
+
+The table above gave you all 8 primitives, with their size and their range. This section regroups them by what they are for, and stops only on the ones you will actually write day to day, along with the traps they bring with them.
 
 **Integer numbers** — for counting, IDs, ages, quantities:
 - `byte` and `short` — whole numbers just like `int` and `long`, only with a much smaller range. They cannot hold decimals. In practice you will see them in old code or when working with binary data.

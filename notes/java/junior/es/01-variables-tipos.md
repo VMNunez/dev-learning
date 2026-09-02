@@ -96,15 +96,17 @@ int number = null;       // MAL — error: incompatible types: <null> cannot be 
 
 Esa es toda la división primitivo-frente-a-referencia que necesitas para esta página: una variable primitiva apunta a su valor — o más exactamente, _es_ su valor —, mientras que una variable de referencia apunta a un objeto y puede no apuntar a ninguno.
 
-> **Qué queda por explicar de `null`, y en qué archivo está cada parte.** Poder leer `null` en los ejemplos de abajo es todo lo que este archivo te pide. Quedan tres preguntas abiertas, y ninguna se puede contestar aquí porque cada una necesita algo que todavía no has estudiado.
+> **Qué queda por explicar de `null`, y en qué archivo está cada parte.** Poder leer `null` en los ejemplos que quedan de este mismo archivo — la comprobación `user != null` de la sección de operadores, el `Long id` que empieza valiendo `null`, el `null` que devuelve un mapa cuando la clave no existe — es todo lo que este archivo te pide. Quedan tres preguntas abiertas, y ninguna se puede contestar aquí porque cada una necesita algo que todavía no has estudiado.
 >
 > La primera: qué hay escrito exactamente dentro de una variable de referencia, y por qué el programa revienta en la línea en la que usas una referencia que vale `null` y no antes. Eso lo tienes en [05-modelo-de-memoria.md](05-modelo-de-memoria.md).
 >
-> La segunda: en qué punto del código se comprueba si un valor es `null`. Lo normal es comprobarlo en la primera línea del método que lo recibe: si el valor que llega es `null`, el método corta ahí mismo y ni siquiera empieza a trabajar con él, de modo que un valor inservible no llega a las líneas de más abajo ni a los métodos que esas líneas llaman. A esa comprobación de la primera línea se le llama _cláusula de guarda_. Para escribirla te hace falta saber antes qué es un parámetro y qué es un valor de retorno, así que está en [04-metodos.md](04-metodos.md).
+> La segunda: en qué punto del código se comprueba si un valor es `null`. Lo normal es comprobarlo en la primera línea del método que lo recibe: si el valor que llega es `null`, el método corta ahí mismo y ni siquiera empieza a trabajar con él, de modo que un valor inservible no llega a las líneas de más abajo ni a los métodos que esas líneas llaman. A esa comprobación de la primera línea se le llama _cláusula de guarda_ (en inglés, _guard clause_ — es el nombre con el que la vas a encontrar en el código y en cualquier revisión). Para escribirla te hace falta saber antes qué es un parámetro y qué es un valor de retorno que está en [04-metodos.md](04-metodos.md).
 >
 > La tercera: qué es un objeto — eso a lo que apunta la referencia cuando no vale `null` — y cómo se compara un objeto con otro. Eso está en [06-poo-clases.md](06-poo-clases.md).
 
 ### Tipos por categoría
+
+La tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango. Esta sección los reagrupa por para qué sirven y se detiene solo en los que vas a escribir de verdad en el día a día, con las trampas que traen consigo.
 
 **Números enteros** — para contar, IDs, edades, cantidades:
 
@@ -112,7 +114,7 @@ Esa es toda la división primitivo-frente-a-referencia que necesitas para esta p
 - `int` — tu número entero de uso diario. Úsalo por defecto.
 - `long` — cuando `int` no es suficientemente grande. Los IDs de base de datos suelen ser `Long` porque crecen mucho. Fíjate en el sufijo `L`: `1234567890L`.
 
-> **Por qué el sufijo `L` no es opcional.** Un literal numérico a secas en el código fuente de Java es un `int`, siempre — el compilador decide el tipo del literal _antes_ de mirar la variable a la que lo estás asignando. Así que en `long id = 1234567890123;` el compilador lee `1234567890123` como un literal `int`, comprueba que no cabe en 32 bits, y se detiene ahí mismo:
+> **Por qué el sufijo `L` no es opcional.** Un literal numérico(TODO: IMAGINO QUE UN LITERAL NUMERICO TE REFIERES A UN NUMERO TAL CUAL) a secas en el código fuente de Java es un `int`, siempre — el compilador decide el tipo del literal _antes_ de mirar la variable a la que lo estás asignando. Así que en `long id = 1234567890123;` el compilador lee `1234567890123` como un literal `int`, comprueba que no cabe en 32 bits, y se detiene ahí mismo:
 >
 > ```java
 > long id = 1234567890123;    // MAL — error: integer number too large
