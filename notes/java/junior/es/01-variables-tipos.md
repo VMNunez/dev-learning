@@ -106,7 +106,7 @@ Esa es toda la división primitivo-frente-a-referencia que necesitas para esta p
 
 ### Tipos por categoría
 
-La tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango. Esta sección los reagrupa por para qué sirven y se detiene solo en los que vas a escribir de verdad en el día a día, con las trampas que traen consigo.
+La tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango. Esta sección los reagrupa según para qué sirven y se detiene solo en los que vas a escribir de verdad en el día a día, con las trampas que traen consigo.
 
 **Números enteros** — para contar, IDs, edades, cantidades:
 
@@ -114,7 +114,7 @@ La tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango.
 - `int` — tu número entero de uso diario. Úsalo por defecto.
 - `long` — cuando `int` no es suficientemente grande. Los IDs de base de datos suelen ser `Long` porque crecen mucho. Fíjate en el sufijo `L`: `1234567890L`.
 
-> **Por qué el sufijo `L` no es opcional.** Un literal numérico(TODO: IMAGINO QUE UN LITERAL NUMERICO TE REFIERES A UN NUMERO TAL CUAL) a secas en el código fuente de Java es un `int`, siempre — el compilador decide el tipo del literal _antes_ de mirar la variable a la que lo estás asignando. Así que en `long id = 1234567890123;` el compilador lee `1234567890123` como un literal `int`, comprueba que no cabe en 32 bits, y se detiene ahí mismo:
+> **Por qué el sufijo `L` no es opcional.** Un **literal** es un valor escrito tal cual en el código fuente: el `1234567890123` del ejemplo de abajo, o el `0.21` que verás en el siguiente apartado — el número en sí, no la variable que lo guarda ni el resultado de una operación. Y un literal numérico a secas en el código fuente de Java es un `int`, siempre — el compilador decide el tipo del literal _antes_ de mirar la variable a la que lo estás asignando. Así que en `long id = 1234567890123;` el compilador lee `1234567890123` como un literal `int`, comprueba que no cabe en 32 bits, y se detiene ahí mismo:
 >
 > ```java
 > long id = 1234567890123;    // MAL — error: integer number too large

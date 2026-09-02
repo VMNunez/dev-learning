@@ -115,7 +115,7 @@ The table above gave you all 8 primitives, with their size and their range. This
 - `int` — your everyday whole number. Use this by default.
 - `long` — when `int` is not big enough. Database IDs are often `Long` because they grow very large. Notice the `L` suffix: `1234567890L`.
 
-> **Why the `L` suffix is not optional.** A bare numeric literal in Java source is an `int`, always — the compiler decides the literal's type *before* it looks at the variable you are assigning it to. So in `long id = 1234567890123;` the compiler reads `1234567890123` as an `int` literal, finds it does not fit in 32 bits, and stops right there:
+> **Why the `L` suffix is not optional.** A **literal** is a value written out as-is in the source code: the `1234567890123` in the example below, or the `0.21` you will meet in the next bullet — the number itself, not the variable holding it nor the result of an operation. And a bare numeric literal in Java source is an `int`, always — the compiler decides the literal's type *before* it looks at the variable you are assigning it to. So in `long id = 1234567890123;` the compiler reads `1234567890123` as an `int` literal, finds it does not fit in 32 bits, and stops right there:
 >
 > ```java
 > long id = 1234567890123;    // MAL — error: integer number too large
