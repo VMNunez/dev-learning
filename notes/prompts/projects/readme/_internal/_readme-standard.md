@@ -184,12 +184,19 @@ run.** Move any out-of-order section to its correct position.
    - *(Evidence: `_readme-evidence.md` → Assertions, "Features — `5–6` bullets" — number unfounded, the
      user-perspective rule founded in kind.)*
 6. **Architecture decisions** — optimal count for the project (no fixed number), one line each, format
-   `[what you chose] to [why it matters]`. Two tests, and a line failing either is cut or merged:
+   `[what you chose] to [why it matters]`. Three tests, and a line failing any of them is cut, merged or
+   trimmed:
    - **The interview test** — an interviewer asks "why?" and the line already answers. A line stating
      only what was chosen fails.
    - **The distinctness test** — no two decisions name the same choice. Two lines about one choice are
      merged into the stronger one, never both kept.
-   - Never pad, and never cut a line that passes both tests to reach a number.
+   - **A decision line carrying mechanism prose is over-long.** The format is one line, `[what you
+     chose] to [why it matters]`, and the *why* is a reason, not a walkthrough: "the signal is
+     initialised from storage when the service is created and the effect re-runs whenever a signal it
+     reads changes" is mechanism and does not belong here. **Mechanism lives downstairs**, in rule 9's
+     recall line, which is the section written to carry it. A line that has grown three clauses is cut
+     back to its reason; nothing is deleted, it moves.
+   - Never pad, and never cut a line that passes all three tests to reach a number.
    - Good: "Coordinator pattern to centralise page state and keep the table and filters independently reusable."
    - *(Evidence: `_readme-evidence.md` → Assertions, "Architecture decisions — `3 to 8`" — number
      unfounded, the section founded.)*
@@ -216,39 +223,60 @@ run.** Move any out-of-order section to its correct position.
    and what bounds it is the three tests below, never a number. Cross-check against PLANNING.md's learning
    objectives and add any that are missing — an **adder only**: a plan describes the project as planned,
    not the one its backlog produced, so it never decides what stays.
-   - **The placement test** — rule 6's distinctness test ("no two decisions name **the same choice**"),
-     applied across the section boundary instead of within one section. Where Architecture decisions or
-     Tradeoffs already states the same choice, one line survives and the other is cut.
-     - **Same choice told twice — cut, and merge upward what the survivor lacks.** A detail the bullet
-       carries and the line above does not is **not** a reason to keep a second bullet: rule 9's own
-       format gives every well-formed bullet a mechanism after the em dash, so "it adds a mechanism"
-       would save all of them and the test would cut nothing. The detail moves into the surviving line;
-       the bullet goes. *Worked cut:* `` - `canActivate: [authGuard, adminGuard]` — stacked guards; all
-       must pass for the route to activate `` beside "Stacked guards (`authGuard` + `adminGuard`) to keep
-       authentication and authorisation as separate concerns" — one choice, told twice; *all must pass*
-       merges up and the bullet is cut.
-     - **A shared symbol is not automatically a shared choice.** Where the bullet's subject is a
-       different **fact** about the same symbol rather than the same decision, it stays. *Worked
-       survivor:* `` - `effect()` cleanup — the cleanup callback cancels the in-flight request before the
-       effect re-runs `` beside "`effect()` + `localStorage` to sync every change automatically" — same
-       symbol, two unrelated facts, neither restating the other. The question is *does the line above
-       already make this point*, not *does the line above use this word*.
-     - **The survivor is chosen for the reader who needs it, not automatically the upper section.** Merge
-       into whichever wording is stronger, and leave it where its own section's contract puts it — a
-       reason belongs upstairs, a recall line belongs here. This test removes a duplicate; it does not
-       rank the sections.
-     - **It de-duplicates and never promotes.** A concept the sections above do *not* state stays here
-       even when it carries a rejected alternative — moving it up would invent a project decision the
-       author did not make, and what counts as a decision is rule 6's judgement. **Known cost, accepted:**
-       a genuine `[X] over [Y]` tradeoff already written into this section is **reported in the run's
-       summary and left where it is**. No rule sweeps it back to Tradeoffs today, and this test will not.
-   - **One bullet per concept, not one per name.** Rule 5's granularity clause ("two bullets describing
+   - **Structure — full-stack projects only.** On `07+` this section carries two subsections,
+     `### Backend` first and `### Frontend` second; on `01`–`06` the list is flat. They are `###`
+     headings **inside** one `##` section, not sections of their own, so the section-order check does not
+     read them as misplaced. The reason is measured: `07-timetrack`'s flat list reached 64 bullets,
+     nearly all Spring, in the one section a recruiter scans in seconds. **A tier that is not built yet
+     gets no empty heading**: while a project has only its backend, the section carries `### Backend`
+     alone and gains `### Frontend` when there is something to put in it — the in-progress rule above
+     governs an unbuilt tier, not this clause.
+   - **Order — what the project exists to teach comes first.** Angular then TypeScript on `01`–`06`;
+     `### Backend` before `### Frontend` on `07+`. HTML, CSS and accessibility bullets come last. **This
+     is not a quota and not a removal test: nothing is cut for being HTML, it is ordered behind.** What
+     founds each half differs, and both are on disk. *Backend before frontend* is
+     `_job-market-evidence.md` → `## Synthesis` — Java ~13/14 and Spring Boot ~11/14, "the core of the
+     target roles". *Framework internals before HTML/CSS* is **not** that frequency list, which puts
+     HTML/CSS at ~5/14, level with TypeScript; it is `_shared-context.md` → `## Profile`, whose bet
+     clause is that the junior pool is crowded with React and "the bet only pays off if I can show real
+     understanding and real decisions". HTML and CSS are the baseline every candidate claims; the
+     framework internals are the differentiator. *Worked example, on disk:*
+     `projects/04-meal-finder/README.md` opens with a run of Angular bullets from `HttpClient` to
+     `Location.back()` and closes with HTML and a11y. It is the calibration artefact, not a perfect
+     specimen — its `[attr.x]` ARIA line sits ahead of its two TypeScript lines — and **an audit does not
+     reorder a file to make it match more exactly than it does**; this rule fires on a section that
+     leads with the wrong material, not on an adjacent pair.
+
+   **The three tests run in this order, and the form test only over the survivors** — shaping a bullet the
+   next filter will delete is wasted work.
+
+   - **Duplication across the section boundary is NOT a defect, and no test here removes it.** A concept
+     stated as a *decision* in `Architecture decisions` or `Tradeoffs` and again as a *recall line* here
+     is one concept at **two altitudes**, not one told twice: the upper section is read once, by an
+     interviewer looking for judgement, and this one is *scanned*, as an index of recall. The shared
+     symbol is the index entry pointing at the decision. `02-weather-app` carries `forkJoin`,
+     `takeUntilDestroyed` and its environment-files decision in both sections and is the artefact this
+     section is calibrated against **for the cross-section repeat and for the bullet's form** — its three
+     CSS-appearance bullets are what test 2 exists to cut, and that is not a contradiction.
+     - **A `placement test` cutting exactly this lived here for part of 2026-09-02 (`REC-196`) and was
+       retired the same day by `REC-200`. Do not reintroduce it in any form**, including as a narrower
+       test over "the same reason" — that rescoping was drafted and failed its own acceptance test. The
+       measurements are in `_readme-evidence.md` → Assertions, "What I learned"; what binds an applier is
+       this paragraph. **What bounds this section are the three tests below.**
+     - **Nothing moves between the sections either way.** A concept the sections above do *not* state
+       stays here even when it carries a rejected alternative — promoting it would invent a project
+       decision the author did not make, and what counts as a decision is rule 6's judgement. A decision
+       line is likewise never demoted into this section to avoid a repeat. Each section is written to its
+       own contract and the repeat is the point. **Known cost, accepted:** a genuine `[X] over [Y]`
+       tradeoff already written into this section is **reported in the run's summary and left where it
+       is**; no rule sweeps it back to Tradeoffs today.
+   - **1 — One bullet per concept, not one per name.** Rule 5's granularity clause ("two bullets describing
      the same behaviour at different granularity are one"), applied to concepts: a concept spread over
      one bullet per annotation, per HTTP verb or per helper method is **one** bullet. Seven lines naming
      `@PostMapping`, `@PutMapping`, `@DeleteMapping`, `@PathVariable` and `@RequestBody` separately are
      one line about the controller's request mapping. This is the test that reaches a section whose
-     bullets never duplicate anything above, because de-duplication cannot see them.
-   - **The behaviour test** — rule 5's *a behaviour, not a capability*, applied to a concept. A concept
+     bullets duplicate nothing above — which is where a granularity defect hides in plain sight.
+   - **2 — The behaviour test** — rule 5's *a behaviour, not a capability*, applied to a concept. A concept
      whose absence would change only how the app *looks*, and not what it *does*, is cut.
      **The line is the bullet's stated purpose, never the CSS property it uses.** `overflow: hidden`
      clipping a card's corners is looks; `overflow: hidden` inside `.visually-hidden`, whose stated
@@ -256,24 +284,50 @@ run.** Move any out-of-order section to its correct position.
      verdicts, and the bullet's own sentence is what separates them. Anything whose reason is the
      accessibility tree, the keyboard or the focus order passes, whatever implements it: an accessible
      name, a focus ring that exists so keyboard entry is visible, a pressed state exposed to assistive
-     technology. A `transition`, a badge's position, a colour token whose stated reason is
-     appearance are looks — and a bullet whose stated reason is something else again, neither the tree
-     nor the eye, is judged by rule 9's other two tests and not by this one. **A bullet that is half
-     each is split or rewritten to its behavioural half**, never kept whole for the sake of the other.
+     technology. **And rule 5's own escape travels with the test derived from it: a quality the user
+     experiences *across every screen* — responsive layout, offline persistence, reduced motion honoured
+     — is a behaviour and passes.** That bound is rule 5's and is imported intact, not widened: a loading
+     indicator is not *across every screen* and does not need this clause, because it is a behaviour a
+     user watches happen under rule 5's ordinary test. A `transition`, a badge's position, a colour token
+     whose stated reason is appearance are looks — and a bullet whose stated reason is something else
+     again, neither the tree nor the eye, is judged by rule 9's other tests and not by this one. **A
+     bullet that is half each is split or rewritten to its behavioural half**, never kept whole for the
+     sake of the other.
+   - **3 — The form test.** **One line, and one sentence.** A bullet is `` `Symbol` — reminder ``: the em
+     dash, then a single statement that ends where the line ends. This promotes the format at the head of
+     this rule into something that rejects — until 2026-09-02 the only thing refusing a malformed bullet
+     was the *Bad* list's "a multi-sentence definition (too long)", which no enumerated test applied.
+     - **It bounds the sentence, not the vocabulary.** It is neither a ban on commas nor a rule that a
+       bullet may name only one symbol. This rule's own *Good* example,
+       `` `CanActivateFn` — functional route guard; no class, no `@Injectable` ``, carries a semicolon and
+       two commas; `` - `signal()` and `computed()` — reactive state and derived values `` names two
+       symbols inside one statement about one idea. **Both pass**, and a draft of this test that rejected
+       them was withdrawn on 2026-09-02 for rejecting the artefacts this section is calibrated against.
+     - **What it rejects** is the shape it was written for: a bullet that runs to a second sentence, or
+       chains clauses until the line stops being scannable. Seven concepts compressed into one
+       comma-chained paragraph cleared every other rule of this section and read worse than the seven
+       lines it replaced. Where a bullet will not shorten to one sentence, that is usually test 1 telling
+       you it is holding more than one concept.
    - **What may be added here as a further test, and what may not.** Only a test the agent applying this
      standard can answer from the repository in front of it. A criterion resting on what the author
      *remembers* — whether he would survive the follow-up question — names no applier: the agent running
      this file cannot know it, so the test is either never applied or invented. All three tests above are
-     answerable from the README's own text, which is what makes them enforceable at the gate.
+     answerable from the README's own text, which is what makes them enforceable at the gate. **And a
+     test proposed here is verified before it is written**, the `REC-191` way: apply it by hand to an
+     artefact the current rules approve — nothing they approve may newly fail — and to one they have
+     never audited, where something must be rejectable. Both halves have failed here inside a fix, in
+     one day: a placement test that cut the approved artefact, and a form test that rejected it.
    - Good: "- `CanActivateFn` — functional route guard; no class, no `@Injectable`"
-   - Bad: "- Angular Material" (too vague) · a multi-sentence definition (too long) · a bullet restating a
-     choice already made in Architecture decisions (placement) · "- `overflow: hidden` on a card — clips
-     image corners" (behaviour) · `` - `@PathVariable` — reads a dynamic URL segment `` sitting beside
+   - Bad: "- Angular Material" (too vague) · a multi-sentence definition, or clauses chained until the
+     line stops being scannable (form) · "- `overflow: hidden` on a card — clips image corners"
+     (behaviour) · `` - `@PathVariable` — reads a dynamic URL segment `` sitting beside
      `` - `@RequestBody` — converts JSON into the DTO `` and five more of the same shape (granularity —
-     one line about the controller's request mapping).
+     one line about the controller's request mapping). **Not bad:** a bullet naming a concept
+     `Architecture decisions` also names — that is the two-altitude repeat this section is built on.
    - *(Evidence: `_readme-evidence.md` → Assertions, "What I learned" — the **section** is founded by
      soltech's "Lessons learned during development" and "What the developer learned during the process";
-     the three tests are this file's own, extended from rules 6 and 5, and none carries a number.)*
+     the three tests are this file's own, extended from rules 6 and 5, and none carries a number. The
+     ordering rule is founded separately and in two halves, as its own paragraph above states.)*
 10. **Tech stack** — always a table (never a bullet list). Columns: Layer | Technology. Every layer the
     project actually uses.
 11. **Project structure** — folder tree **in a fenced code block**, one-line explanation per folder (or

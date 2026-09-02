@@ -315,8 +315,10 @@ of any project whose plan states one**; it is a deletion, not a rewrite, and nee
 
 ### 19. Architecture decisions to document in the global README
 One-line decisions. Format: `[what you did] to [why it matters]`. As many as pass the **interview test**
-(the reason already answers "why?" — the same test design check 5 applies to §6 and §20) and are
-**distinct** (no two naming the same choice); no fixed number, and never padded to reach one.
+(the reason already answers "why?" — the same test design check 5 applies to §6 and §20), are
+**distinct** (no two naming the same choice), and stay **one line carrying a reason and not a mechanism**
+(a walkthrough of how the thing works belongs in the README's `What I learned` recall line, not here);
+no fixed number, and never padded to reach one.
 
 ### 20. Tradeoffs to document in the global README
 One-line tradeoffs. Format: `[option chosen] over [option rejected] — [reason]`. As many as name a real

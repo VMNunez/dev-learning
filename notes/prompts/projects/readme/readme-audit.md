@@ -163,13 +163,51 @@ same channel the coherence branch uses:
 > Read `notes/prompts/projects/readme/_internal/_readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. You are dispatched with quoted effect
 > items: «paste the judge's lines». Apply them to the README. **Do NOT commit.** Report which you
-> applied and which you rejected, each rejection naming the rule of the standard it would break.
+> applied; **return any objection unresolved** — the item quoted verbatim and the clause of the standard
+> you invoke, quoted — rather than deciding it yourself; and flag any `effect-only` cut you applied that
+> a later run would regenerate.
 
-**The run applies the items; it never hands them over.** B's default is to apply — it rejects only where
-the standard positively contradicts an item, and a rejection is valid **only citing the rule it fails**.
-An `effect-only` item carries no rule and is applied on the reader's authority unless B can name the rule
-it would break. Never print the judge's items as work left for Victor: the whole point of this step is
-that the README ships fixed inside the same run.
+**The run applies the items; it never hands them over.** B's default is to apply. Never print the judge's
+items as work left for Victor: the whole point of this step is that the README ships fixed inside the
+same run.
+
+**What counts as a valid objection.** A rule of the standard the item **breaks *or contradicts*, and a
+rule that positively *includes* what the item cuts qualifies.** The standard's sections are written as
+inclusion tests rather than prohibitions — rules 4, 5, 6, 7, 8, 9 and the backend's 4 and 7 — so
+"no rule forbids removing this" is not a reason to remove it, which is how an `effect-only` cut once took
+`04-meal-finder`'s `Future improvements` from three bullets to one against rule 8's own two inclusion
+tests. This widens *which* clauses count and never licenses an objection on taste: no clause, no
+objection, and the item is applied on the reader's authority.
+
+**You settle the objection, not B.** B wrote or fixed the text the judge is reading, so it is judge and
+party on its own prose — and the clause above widens what it may invoke, which sharpens that conflict
+rather than easing it. So B returns the objection unresolved and **you rule on it**, with the judge's
+item and B's quoted clause both in front of you: sustain it (the item is dropped, and the summary says
+which clause carried it) or overrule it (re-dispatch B to apply that one item). Record the outcome in the
+summary either way. *(The 2026-09-02 self-report set aside a **fresh cold applier** on the ground that B
+rejected nothing that run; this is the cheaper arbitration, and it is owed because the widened clause
+above is new.)*
+
+**The vantage this ruling is made from, because you have no other.** Your light-context rule stands — you
+still never write a README — but you may **read the one section in dispute**, and only that section, when
+the two quotes do not settle it: `grep -n "^## "` the file and read from that heading to the next. The
+coherence pass's "they stay out of your context" governs **that** step; this bounded read is the single
+exception, and it ends when the objection is settled. If the section still does not settle it, **sustain
+the objection**: leaving a bullet a rule arguably includes is the recoverable error, and the summary
+records that you sustained it for want of a decision, which is the signal that the standard's clause is
+unclear.
+
+**A cut a later run would undo is a finding about the standard.** Where B flags an `effect-only` `CUT` of
+a `What I learned` bullet whose concept is a `PLANNING.md` learning objective, the next author will re-add
+it from that plan and the next judge will cut it again. Carry that flag into the summary and into the
+self-report's Effect judge bullet as `⚠ regenerable — standard gap`, naming the bullet.
+
+**That flag is a standing signal, not an automatic trigger.** Nothing in this pipeline reads the previous
+run's flags — the self-report is a single file overwritten by every project's run, and step 0 reads only
+its `Status` line — so no run can tell a repeat from a first sighting on its own. What the flag does is
+put the case in front of whoever reads the report: **a bullet flagged here that Victor recognises from an
+earlier run is a `_recommendation-ledger.md` row**, for the durable per-project sink this pipeline does
+not have. Do not claim to have compared against a previous run.
 
 **A judge is advisory, so it never blocks the commit.** If one errors twice under the Failure protocol,
 say so in the summary and commit that README on A+B's work — unlike an author or a reviewer, whose
@@ -221,12 +259,15 @@ whether these prompts need changing, so be honest, including "nothing to report"
 - **Trace verification** — reviewer traces that were missing/incomplete, re-dispatches made, any false alarm.
 - **Coherence** — conflicts the coherence subagent found (a sign the author prompts under-specify a
   shared decision), or `COHERENT`.
-- **Effect judge** — how many items it returned per target and how many B rejected. It reads each
-  finished README whole and is not written by that README's slice owners, so per
-  `_pipeline-self-report.md` bullet 1 its findings **outrank the green traces** as evidence that the
-  author→reviewer split worked — alongside the coherence pass, which qualifies the same way on
-  full-stack. A target where the judge returned a long list is one where A and B were both satisfied by
-  something that does not land.
+- **Effect judge** — how many items it returned per target, how many B objected to, **how those
+  objections were settled** (sustained / overruled / sustained for want of a decision), and how many
+  items carry `⚠ regenerable — standard gap`. Those are machinery facts; *which* bullets they were is
+  content and belongs in the run's chat summary, per `_pipeline-self-report.md`. The judge reads each
+  finished README whole and is not written by that README's
+  slice owners, so per `_pipeline-self-report.md` bullet 1 its findings **outrank the green traces** as
+  evidence that the author→reviewer split worked — alongside the coherence pass, which qualifies the same
+  way on full-stack. A target where the judge returned a long list is one where A and B were both
+  satisfied by something that does not land.
 - **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
 - **Anything else** that made the run harder than it should be.
 - **Verdict** — "pipeline clean" or "change worth considering: X" (the uniform criterion from

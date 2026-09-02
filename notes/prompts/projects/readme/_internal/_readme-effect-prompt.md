@@ -79,8 +79,11 @@ carrying the file so B does not lose it.
 - `KEEP` — the two or three things doing the real work, so a later pass does not strip them.
 
 Each item names the **section** it is in, and closes with either the rule it fails
-(`rule 9 — placement`, `quality filter — recruiter lens`) or the word `effect-only` when nothing in the
-standard reaches it. `effect-only` is legitimate and is most of what you are for; what is not legitimate
+(`rule 9 — form`, `quality filter — recruiter lens`) or the word `effect-only` when nothing in the
+standard reaches it. **One cut you may not propose on `What I learned`: a bullet naming a concept
+`Architecture decisions` *or `Tradeoffs`* also names.** Rule 9 states that repeat is the section's shape, not a defect,
+and a placement test that cut it was retired on 2026-09-02 for draining the artefact this pipeline is
+calibrated against. `effect-only` is legitimate and is most of what you are for; what is not legitimate
 is dressing an opinion up as a rule that does not say that.
 
 ## What you may not do
