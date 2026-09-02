@@ -133,10 +133,10 @@ arrival.
 | ID | Date | Pair | Lang | Category | Count | Quote | Verdict | Rule | Disposition |
 |---|---|---|---|---|---|---|---|---|---|
 | NTH-0001 | 2026-09-02 | java/junior/01 | es | ejemplo-innecesario | 2 | NO ME GUSTA MUCHO ESTE EJEMPLO EN ESTE MOMENTO DEL PARRAFO / QUITA EL EJEMPLO … PORQUE YA SE HA NOMBRADO ARRIBA | missing | — | open |
-| NTH-0002 | 2026-09-02 | java/junior/01 | es | frase-sobrecargada | 6 | ES MALISIMA, MUY MAL EXPRESADA / PODRIA ESTAR UN POCO MAS CLARA / UNA VARIABLE DE REFERENCIA APUNTA A UN OBJETO Y PUEDE APUNTAR A NINGUNO | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0002 | 2026-09-02 | java/junior/01 | es | frase-sobrecargada | 8 | ES MALISIMA, MUY MAL EXPRESADA / PODRIA ESTAR UN POCO MAS CLARA / NO ME GUSTA LA FRASE "y cada uno pertenece al capítulo que tiene el vocabulario para explicarlo" / MUY MAL EXPRESADO LO DE QUE ES UN OBJETO SIQUIERA | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
 | NTH-0003 | 2026-09-02 | java/junior/01 | es | floritura-literaria | 4 | ES UNA MALA EXPRESION | unapplied | `_note-quality-standard.md` → `Sentence-level register` (cut the literary flourish) | open |
 | NTH-0004 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 4 | CON ESO DE LAS CAJAS … SE ENTIENDE MAL / EMPIEZAS HABLANDO DE LAS CAJAS Y ESO NO ME GUSTA | missing | — | open |
-| NTH-0005 | 2026-09-02 | java/junior/01 | es | termino-sin-presentar | 2 | UN FLAG??? | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0005 | 2026-09-02 | java/junior/01 | es | termino-sin-presentar | 3 | UN FLAG??? / NO ENTIENDO LA FRASE "la cláusula de guarda a la entrada de un método" | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
 | NTH-0006 | 2026-09-02 | java/junior/01 | es | ejemplo-sin-senalar | 3 | ESTO ES OTRO EJEMPLO, PERO DEBES INDICARLO | missing | — | open |
 | NTH-0007 | 2026-09-02 | java/junior/01 | es | referencia-ambigua | 3 | UNO DE ELLOS? UN OBJETO? UN BIT? / CUENTA LOS CHAR QUE TIENE UN STRING / PORQUE YO ENTIENDO QUE AQUI SE REFIERE EN REALIDAD A LOS METODOS QU SE USAN REALMENTE PARA COMAPARAR STRING | missing | — | open |
 | NTH-0008 | 2026-09-02 | java/junior/01 | es | mecanismo | 6 | MUY MUY MAL EXPLICADO / NO ENTIENDO NADA DE "Para los siete tipos numéricos, ambas cosas coinciden…" | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
@@ -145,3 +145,4 @@ arrival.
 | NTH-0011 | 2026-09-02 | java/junior/01 | es | metafora-en-vez-de-termino | 1 | LO DE UNO DENTRO DE OTRO NO LO ENTIENDO | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` (mechanism before behaviour) | open |
 | NTH-0012 | 2026-09-02 | java/junior/01 | es | codigo-no-a-la-vista | 2 | ME GUSTARIA VER EL CODIGO JUSTO ENCIMA DEL PARRAFO PARA TENERLO A LA VISTA | missing | — | open |
 | NTH-0013 | 2026-09-02 | java/junior/01 | es | ejemplo-no-coincide-con-la-frase | 1 | IMAGINO QUE TE REFIERES A CUANDO TENGAMOS ESTO | missing | — | open |
+| NTH-0014 | 2026-09-02 | java/junior/01 | es | repeticion-de-lo-ya-dicho | 1 | ESTA FRASE YA APARECIA … QUE LO TENEMOS MAS ARRIBA, NO HACE FALTA REPETIRLO EN ESTE PARRAFO | missing | — | open |

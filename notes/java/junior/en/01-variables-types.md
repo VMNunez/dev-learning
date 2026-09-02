@@ -98,7 +98,13 @@ int number = null;       // MAL — error: incompatible types: <null> cannot be 
 
 That is the whole of the primitive-versus-reference split you need for this page: a primitive variable points at its value — or more exactly, *is* its value — while a reference variable points at an object and may point at none.
 
-> **Why almost everything else about references lives in another file.** `null` is the doorway to three separate mechanisms, and each one belongs to the chapter that has the vocabulary for it. What a reference physically holds, where the object it points at actually lives, and why the failure surfaces on the exact line that follows the address is [05-memory-model.md](05-memory-model.md) — it needs the stack-versus-heap split first. Where you *check* for `null` — the guard clause at the entrance of a method, so a bad value never travels deeper into your code — is [04-methods.md](04-methods.md), which needs parameters and return values first. And what an object is at all, plus how two of them are compared, is [06-oop-classes.md](06-oop-classes.md). Being able to read `null` in the examples below is everything this file asks of you.
+> **What is still missing about `null`, and which file each part is in.** Being able to read `null` in the examples below is everything this file asks of you. Three questions stay open, and none of them can be answered here because each one needs something you have not studied yet.
+>
+> The first: what exactly is written inside a reference variable, and why the program blows up on the line where you use a reference holding `null` and not before. That is in [05-memory-model.md](05-memory-model.md).
+>
+> The second: at which point in the code you check whether a value is `null`. The usual place is the first line of the method that receives it: if the incoming value is `null`, the method stops right there and never starts working with it, so a useless value never reaches the lines below or the methods those lines call. That first-line check is called a _guard clause_. Writing one means knowing what a parameter and a return value are first, so it is in [04-methods.md](04-methods.md).
+>
+> The third: what an object is — the thing the reference points at when it is not `null` — and how one object is compared with another. That is in [06-oop-classes.md](06-oop-classes.md).
 
 ### Types by category
 

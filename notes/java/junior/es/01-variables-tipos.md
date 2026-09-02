@@ -96,7 +96,13 @@ int number = null;       // MAL — error: incompatible types: <null> cannot be 
 
 Esa es toda la división primitivo-frente-a-referencia que necesitas para esta página: una variable primitiva apunta a su valor — o más exactamente, _es_ su valor —, mientras que una variable de referencia apunta a un objeto y puede no apuntar a ninguno.
 
-> **Por qué casi todo lo demás sobre referencias vive en otro archivo.** `null` es la puerta de entrada a tres mecanismos separados, y cada uno pertenece al capítulo que tiene el vocabulario para explicarlo. Qué contiene físicamente una referencia, dónde vive realmente el objeto al que apunta, y por qué el fallo aparece justo en la línea que sigue a la dirección, es [05-modelo-de-memoria.md](05-modelo-de-memoria.md) — necesita primero la separación stack-versus-heap. Dónde _compruebas_ si algo es `null` — la cláusula de guarda a la entrada de un método, para que un valor incorrecto nunca viaje más adentro de tu código — es [04-metodos.md](04-metodos.md), que necesita primero parámetros y valores de retorno. Y qué es un objeto siquiera, además de cómo se comparan dos de ellos, es [06-poo-clases.md](06-poo-clases.md). Poder leer `null` en los ejemplos de abajo es todo lo que este archivo te pide.
+> **Qué queda por explicar de `null`, y en qué archivo está cada parte.** Poder leer `null` en los ejemplos de abajo es todo lo que este archivo te pide. Quedan tres preguntas abiertas, y ninguna se puede contestar aquí porque cada una necesita algo que todavía no has estudiado.
+>
+> La primera: qué hay escrito exactamente dentro de una variable de referencia, y por qué el programa revienta en la línea en la que usas una referencia que vale `null` y no antes. Eso lo tienes en [05-modelo-de-memoria.md](05-modelo-de-memoria.md).
+>
+> La segunda: en qué punto del código se comprueba si un valor es `null`. Lo normal es comprobarlo en la primera línea del método que lo recibe: si el valor que llega es `null`, el método corta ahí mismo y ni siquiera empieza a trabajar con él, de modo que un valor inservible no llega a las líneas de más abajo ni a los métodos que esas líneas llaman. A esa comprobación de la primera línea se le llama _cláusula de guarda_. Para escribirla te hace falta saber antes qué es un parámetro y qué es un valor de retorno, así que está en [04-metodos.md](04-metodos.md).
+>
+> La tercera: qué es un objeto — eso a lo que apunta la referencia cuando no vale `null` — y cómo se compara un objeto con otro. Eso está en [06-poo-clases.md](06-poo-clases.md).
 
 ### Tipos por categoría
 
