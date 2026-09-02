@@ -114,14 +114,14 @@ La tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango.
 - `int` — tu número entero de uso diario. Úsalo por defecto.
 - `long` — cuando `int` no es suficientemente grande. Los IDs de base de datos suelen ser `Long` porque crecen mucho. Fíjate en el sufijo `L`: `1234567890L`.
 
-> **Por qué el sufijo `L` no es opcional.** Un **literal** es un valor escrito tal cual en el código fuente: el `1234567890123` del ejemplo de abajo, o el `0.21` que verás en el siguiente apartado — el número en sí, no la variable que lo guarda ni el resultado de una operación. Y un literal numérico a secas en el código fuente de Java es un `int`, siempre — el compilador decide el tipo del literal _antes_ de mirar la variable a la que lo estás asignando. Así que en `long id = 1234567890123;` el compilador lee `1234567890123` como un literal `int`, comprueba que no cabe en 32 bits, y se detiene ahí mismo:
+> **Por qué el sufijo `L` no es opcional.** Un **literal** es un valor escrito tal cual en el código fuente: el `1234567890123` del ejemplo de abajo, o el `0.21` que verás en el siguiente apartado — el número en sí, no la variable que lo guarda ni el resultado de una operación. Y un literal numérico **entero** a secas en el código fuente de Java es un `int`, siempre — solo el entero: un literal con parte decimal como `0.21` es un `double` por defecto, nunca un `float`, y de eso va el sufijo `f` del apartado siguiente. El compilador decide el tipo del literal _antes_ de mirar la variable a la que lo estás asignando. Así que en `long id = 1234567890123;` el compilador lee `1234567890123` como un literal `int`, comprueba que no cabe en 32 bits, y se detiene ahí mismo:
 >
 > ```java
 > long id = 1234567890123;    // MAL — error: integer number too large
 > long id = 1234567890123L;   // BIEN — la L convierte el literal en long desde el principio
 > ```
 >
-> Fíjate en dónde apunta el error: al literal, no a la asignación. El `long` de la izquierda nunca llega a ayudar, porque el literal ya era ilegal por sí solo. El sufijo es lo que cambia el tipo del literal. La `l` minúscula también funciona, pero nadie la usa — es indistinguible de un `1` en la mayoría de las fuentes tipográficas.
+> Fíjate en dónde apunta el error: al literal, no a la asignación. El `long` de la izquierda no llega a ayudar, porque el literal ya era ilegal por sí solo. El sufijo es lo que cambia el tipo del literal. La `l` minúscula también funciona, pero nadie la usa — es indistinguible de un `1` en la mayoría de las fuentes tipográficas.
 
 **Números decimales** — para precios, porcentajes, tasas:
 
@@ -138,7 +138,7 @@ La tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango.
 
 - `double` — la opción por defecto para decimales. Mayor precisión: hasta ~15 cifras significativas. `3.141592653589793`, por ejemplo, cabe cómodamente en un `double`.
 
-> **Dinero en Spring Boot:** nunca uses `double` ni `float` para valores financieros. Usa `BigDecimal` — es una clase de Java pura (paquete `java.math`, no de Spring Boot) que hace aritmética exacta. `double` no puede representar 0.1 exactamente en binario porque los ordenadores expresan los números como sumas de potencias de 2 (1/2, 1/4, 1/8…), y 0.1 no se puede expresar como una suma finita de esas potencias — igual que 1/3 no se puede escribir exactamente en decimal (0.333…). El procesador guarda la aproximación más cercana que puede construir, y ese pequeño error se va acumulando entre operaciones hasta que obtienes `0.09999999...` en vez de `0.1`. `BigDecimal` evita esto operando sobre las cifras reales, sin el error de representación.
+> **Dinero — nunca `double` ni `float`.** Para valores financieros usa `BigDecimal`: una clase de Java pura, del paquete `java.math`, que hace aritmética exacta. `double` no puede representar 0.1 exactamente en binario porque los ordenadores expresan los números como sumas de potencias de 2 (1/2, 1/4, 1/8…), y 0.1 no se puede expresar como una suma finita de esas potencias — igual que 1/3 no se puede escribir exactamente en decimal (0.333…). El procesador guarda la aproximación más cercana que puede construir, y ese pequeño error se va acumulando entre operaciones hasta que obtienes `0.09999999...` en vez de `0.1`. `BigDecimal` evita esto operando sobre las cifras reales, sin el error de representación.
 
 **Boolean** — para flags y condiciones:
 

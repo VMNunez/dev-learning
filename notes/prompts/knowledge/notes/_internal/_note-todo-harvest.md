@@ -147,3 +147,5 @@ arrival.
 | NTH-0013 | 2026-09-02 | java/junior/01 | es | ejemplo-no-coincide-con-la-frase | 1 | IMAGINO QUE TE REFIERES A CUANDO TENGAMOS ESTO | missing | — | open |
 | NTH-0014 | 2026-09-02 | java/junior/01 | es | repeticion-de-lo-ya-dicho | 1 | ESTA FRASE YA APARECIA … QUE LO TENEMOS MAS ARRIBA, NO HACE FALTA REPETIRLO EN ESTE PARRAFO | missing | — | open |
 | NTH-0015 | 2026-09-02 | java/junior/01 | es | seccion-sin-entradilla | 1 | AQUI PUEDES INDICAR EN UNA BREVE FRASE QUE MAS ARRIBA YA VIMOS LOS TIPOS (EN UNA TABLA) Y QUE AHORA VAS A EXPLICAR … LOS TIPOS QUE NOS VAMOS A ENCONTRAR … EN EL DIA A DIA | missing | — | open |
+| NTH-0016 | 2026-09-02 | java/junior/01 | es | afirmacion-absoluta-imprecisa | 1 | SIEMPRE NO CREO … te refieres a los literales numericos enteros | missing | — | open |
+| NTH-0017 | 2026-09-02 | java/junior/01 | es | lead-in-contradice-contenido | 1 | SI ES DE JAVA PURA NO ME DIGAS EN EL TITULO DEL PARRAFO "DINERO EN SPRING BOOT" PORQUE ME LIAS | missing | — | open |
