@@ -212,7 +212,7 @@ error: bad operand types for binary operator '<'
 
 Lee las dos líneas adicionales como el compilador mostrando su razonamiento: nombra lo que encontró a cada lado del operador, para que puedas ver que ninguno de los dos es un número que sepa comparar. `<` y `>` están integrados en el lenguaje solo para primitivos, y `BigDecimal` es un objeto, así que no hay nada sobre lo que esa instrucción pueda actuar. Java no tiene **sobrecarga de operadores**: no te deja redefinir qué significan `+`, `<` o `==` cuando los aplicas a tus propias clases. El significado de cada símbolo está fijado dentro del lenguaje y ninguna clase puede cambiarlo. (En otros lenguajes sí se puede — en C++ o en Python una clase puede declarar qué hace `<` sobre sus objetos — y por eso conviene saber que Java eligió lo contrario.)
 
-Esa es la frase que hay que desmontar. Cuando escribes `a < b`, el compilador no entra a mirar dentro de la clase de `a` en busca de nada: `<` es una instrucción del lenguaje que solo sabe operar sobre números primitivos, así que si los operandos no lo son, no hay nada que ejecutar y el error salta en compilación. La clase `BigDecimal` no tiene ninguna forma de decir "cuando alguien escriba `<` sobre mí, haz esto". Lo único que una clase puede publicar es un **método** — un nombre al que llamas tú explícitamente con un punto — y eso es justo lo que hace `BigDecimal`: en lugar de un símbolo reservado por el lenguaje, te ofrece `compareTo()`.
+Esa es la frase que hay que desmontar. Cuando escribes `a < b`, el compilador no entra a mirar dentro de la clase de `a` en busca de nada: `<` es una instrucción del lenguaje que solo sabe operar sobre números primitivos, así que si los operandos no lo son, no hay nada que ejecutar y el error salta en compilación. La clase `BigDecimal` no tiene ninguna forma de decir "cuando alguien escriba `<` sobre mí, haz esto". Lo único que una clase puede publicar es un **método**(TODO: NO ME GUSTA LA FRASE "Lo único que una clase puede publicar es un **método**") — al que llamas explícitamente con un punto — y eso es justo lo que hace `BigDecimal`: en lugar de un símbolo reservado por el lenguaje, te ofrece el método `compareTo()`.
 
 ```java
 BigDecimal a = new BigDecimal("0.5");
@@ -222,9 +222,9 @@ a < b;              // MAL  — no compila: `<` no existe para objetos
 a.compareTo(b) < 0; // BIEN — un método de la clase, y el `<` ya compara dos int
 ```
 
-El instinto siguiente suele ser `.equals()`, pero ahí hay una trampa: `.equals()` en `BigDecimal` también compara la **escala** (cuántos decimales tiene representados internamente el número), no solo el valor matemático. Por eso `new BigDecimal("24.0").equals(new BigDecimal("24"))` devuelve `false` — para Java, "24.0" y "24" son objetos con escalas distintas (una cifra decimal frente a ninguna), aunque matemáticamente sean el mismo número.
+El instinto siguiente suele ser `.equals()`(//TODO: SUELE SER USAR .EQUALS PARA COMPARAR DOS BIGDECIMAL), pero ahí hay una trampa: `.equals()` en `BigDecimal` también compara la **escala** (cuántos decimales tiene representados internamente el número), no solo el valor matemático. Por eso `new BigDecimal("24.0").equals(new BigDecimal("24"))` devuelve `false` — para Java, "24.0" y "24" son objetos con escalas distintas (una cifra decimal frente a ninguna), aunque matemáticamente sean el mismo número.
 
-La siguiente opción — y la buena — es precisamente ese método. `BigDecimal` implementa la interfaz `Comparable<BigDecimal>`, que aporta el método `compareTo(BigDecimal other)`. Una **interfaz** aquí es solo un contrato que una clase firma diciendo "yo ofrezco estos métodos" — qué son las interfaces y cómo escribir las tuyas propias está en [07-interfaces-abstractas.md](07-interfaces-abstractas.md), y el `<BigDecimal>` entre corchetes angulares es un _argumento de tipo genérico_, léelo por ahora como "comparable específicamente contra otros `BigDecimal`" y se cubre en detalle en [09-genericos.md](09-genericos.md). Ninguno de los dos es algo que necesites hoy; solo necesitas saber de dónde viene `compareTo`. Este método sí compara el valor matemático real de los dos `BigDecimal` que intervienen — el objeto sobre el que lo llamas (`this`) y el que le pasas como argumento (`other`) —, ignorando la escala, y devuelve un `int`:
+La siguiente opción — y la buena — es precisamente ese método (TODO: ES USAR EL METODO, EL COMPARETO). `BigDecimal` implementa la interfaz `Comparable<BigDecimal>`, que aporta el método `compareTo(BigDecimal other)`. Una **interfaz** aquí es solo un contrato que una clase firma diciendo "yo ofrezco estos métodos" — qué son las interfaces y cómo escribir las tuyas propias está en [07-interfaces-abstractas.md](07-interfaces-abstractas.md), y el `<BigDecimal>` entre corchetes angulares es un _argumento de tipo genérico_, léelo por ahora como "comparable específicamente contra otros `BigDecimal`" y se cubre en detalle en [09-genericos.md](09-genericos.md). Ninguno de los dos es algo que necesites hoy; solo necesitas saber de dónde viene `compareTo`. Este método sí compara el valor matemático real de los dos `BigDecimal` que intervienen — el objeto sobre el que lo llamas (`this`) y el que le pasas como argumento (`other`) —, ignorando la escala, y devuelve un `int`:
 
 - negativo si `this` es menor que `other`
 - `0` si son matemáticamente iguales
@@ -250,11 +250,13 @@ if (hours.compareTo(new BigDecimal("0.5")) < 0 || hours.compareTo(new BigDecimal
 }
 ```
 
-(`throw new RuntimeException(...)` es **lanzar una excepción**: el método se detiene en esa línea y, en vez de devolver un valor, entrega un objeto de error a quien lo llamó. Lanzar y manejar son las dos mitades de la misma historia y aquí solo estás haciendo la primera — léelo como "detente y avisa". Quién recoge ese error después, y cómo se maneja, es [11-excepciones.md](11-excepciones.md).)
+(`throw new RuntimeException(...)` es **lanzar una excepción**: el método se detiene en esa línea y, en vez de devolver un valor, entrega un objeto de error a quien lo llamó. Quién recoge ese error después, y cómo se maneja, es [11-excepciones.md](11-excepciones.md).)
 
 Léelo así: "si `hours` comparado con 0.5 da negativo (es decir, `hours` es menor que 0.5) O `hours` comparado con 24 da positivo (`hours` es mayor que 24), lanza la excepción".
 
 > **`compareTo() == 0` para igualdad, nunca `equals()`.** Si alguna vez necesitas comprobar igualdad de valor entre dos `BigDecimal` (por ejemplo, "¿el total facturado es exactamente 100?"), usa `total.compareTo(new BigDecimal("100")) == 0`, no `total.equals(new BigDecimal("100"))` — porque si `total` llegó como `"100.00"` (con dos decimales, algo habitual cuando viene de una columna `DECIMAL(10,2)` de la base de datos), `.equals()` devolvería `false` aunque el valor sea idéntico.
+
+//TODO: MANTENEMOS ESTE TODO PORQUE HE REVISADO HASTA ESTA PARTE DEL ARCHIVO Y DEBO SEGUIR REVISANDO MAS ADELANTE
 
 ### Aritmética de `BigDecimal` — cada operación devuelve un objeto nuevo, y la división exige una escala
 
