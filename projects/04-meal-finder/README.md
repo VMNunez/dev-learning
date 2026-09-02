@@ -47,16 +47,16 @@ https://04mealfinder.netlify.app/
 ## Architecture decisions
 
 - `MealService` and `FavouriteService` split by responsibility to keep the favourites page free of `HttpClient` and the search page free of persistence
-- `effect()` + `localStorage` in `FavouriteService` to sync every change automatically — the signal is initialised from storage when the service is created and the effect re-runs whenever a signal it reads changes, so there is no save call anywhere in the app
-- `computed()` for every derived value — filtered lists, unique categories, the nav count, a `Set` of favourite ids — to memoise them and keep templates free of method calls that re-run on each change detection
-- `toSignal(paramMap)` + `effect()` on the `detail/:id` route to reload the recipe when only `:id` changes — the router reuses the component instance, so a `snapshot` read once would never update
-- The search term kept in the URL as `?q=` — written with `router.navigate()`, read back with `toSignal(queryParamMap)` — to make results survive navigation and `/` linkable
+- `effect()` + `localStorage` in `FavouriteService` to persist every change automatically, with no save call anywhere in the app
+- `computed()` for every derived value to memoise it and keep templates free of method calls that re-run on each change detection
+- `toSignal(paramMap)` on the `detail/:id` route to reload the recipe when only `:id` changes, since the router reuses the component instance
+- The search term kept in the URL as `?q=` to make results survive navigation and a search linkable
 - `Location.back()` guarded by a `NavigationHistoryService` count to fall back to `/` when a detail URL was opened directly, since browser history is not application history
-- `loadComponent()` on every route to ship each page as its own chunk instead of one bundle carrying all four (253 kB → 238 kB)
-- `meal-card` and `category-filter` kept presentational — `input.required()` in, `output()` out, no service injected — to let the search page and the favourites page reuse the same card
-- One failure translation in `MealService` (`catchError` rethrowing a domain `Error`) to give every page a single failure shape to handle
-- `HttpParams` for every query string to stop `&`, `#` and `+` in a search term from silently changing what was searched for
-- Separate `isLoading`, `loadFinished` and `hasError` signals to tell four states apart, since TheMealDB answers an unknown id with `200 {"meals": null}` and a single results array expresses neither
+- `loadComponent()` on every route to ship each page as its own chunk instead of one bundle carrying all four (253 kB → 238 kB)
+- `meal-card` and `category-filter` kept presentational so the search page and the favourites page reuse the same card
+- `catchError` in `MealService` rethrowing a domain error to give every page a single failure shape to handle
+- `HttpParams` for every query string so `&`, `#` and `+` in a search term cannot silently change what was searched for
+- Separate `isLoading`, `loadFinished` and `hasError` signals to tell loading, empty, not-found and error apart, since TheMealDB answers an unknown id with `200 {"meals": null}`
 
 ---
 
@@ -78,14 +78,26 @@ https://04mealfinder.netlify.app/
 
 ## What I learned
 
-- `effect()` cleanup — the cleanup callback cancels the in-flight request before the effect re-runs
-- `asReadonly()` — keep the writable signal private so the service's own methods are the only writers
-- Attribute binding, not property binding — `[attr.aria-pressed]`, because an ARIA attribute has no DOM property behind it and `[ariaPressed]` would silently do nothing
-- `routerLinkActive` — marks the current nav link; the brand link needs `{ exact: true }` because matching is prefix-based
-- Narrowing beats asserting — a `string | null` route id is read into a local and returned early on, never `as string`
-- Nullable API responses — `Meal[] | null` normalised once at the service boundary; pages never see the envelope
-- Semantics decide the element — `<a [routerLink]>` navigates and brings focus, Enter and open-in-new-tab, `<button type="button">` acts in place, one `<h1>` per routed page, and no interactive control nested inside another
-- Every control needs an accessible name — `aria-label` on an icon-only `★`, `<label for>` where a `placeholder` is only an example value, `.visually-hidden` for text the eye does not need, and `alt=""` so a decorative image is not named after its file
+- `HttpClient` — call an external API from a service, never from a component
+- `HttpParams` — build the query string so user input cannot become query syntax
+- `catchError` — translate an HTTP failure into one domain error the pages handle
+- `signal()` and `computed()` — reactive state and derived values
+- `asReadonly()` — expose a signal read-only so the service's own methods are the only writers
+- `effect()` — sync a signal with an external system (localStorage) instead of writing in every mutator
+- `effect()` cleanup — cancel the in-flight request before the effect re-runs
+- `toSignal()` — read `paramMap` and `queryParamMap` as signals instead of subscribing
+- `input.required()` and `output()` — presentational components take data in and emit intent out
+- `loadComponent()` — lazy route, one chunk per page instead of one bundle
+- `routerLinkActive` — mark the current nav link; the brand link needs `{ exact: true }`
+- `Location.back()` — browser history is not application history, so a direct URL needs a fallback
+- `[attr.x]` binding — ARIA attributes have no DOM property behind them, so `[attr.aria-pressed]`, not `[ariaPressed]`
+- Narrowing beats asserting — read a `string | null` route id into a local and return early, never `as string`
+- Nullable API responses — normalise `Meal[] | null` once at the service boundary
+- `<a>` vs `<button>` — an `<a>` navigates, a `<button>` acts; an `<a>` with no `href` is skipped by the tab order
+- `aria-label` and `<label for>` — a name for an icon-only control, and for a field whose `placeholder` is only an example
+- `.visually-hidden` — a clipped one-pixel box keeps text in the accessibility tree, which `display: none` removes
+- `alt=""` — mark a decorative image so it is not named after its file
+- `:focus-visible` + `:has()` — a focus ring for keyboard entry only, raised to the whole card
 
 ---
 
