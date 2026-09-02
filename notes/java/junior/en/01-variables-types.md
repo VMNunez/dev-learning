@@ -174,7 +174,7 @@ That is the *Overflow* section further down — and it is the case where a missi
 
 > 📖 Docs: [Baeldung — BigDecimal and BigInteger in Java](https://www.baeldung.com/java-bigdecimal-biginteger) → read: "BigDecimal" — the constructors and why the `String` one is the safe default.
 
-The callout above told you to reach for `BigDecimal` instead of `double` for money. There is a trap one step later: `BigDecimal` has a constructor that takes a `double`, and using it hands the `double` problem straight back to you, only now frozen into an object that claims to be exact.
+The section above told you to reach for `BigDecimal` instead of `double` for money. There is a trap one step later: `BigDecimal` has a constructor that takes a `double`, and using it hands the `double` problem straight back to you, only now frozen into an object that claims to be exact.
 
 Look at what each of the three ways to build "0.1" actually produces. This is real output, not an illustration:
 
@@ -184,14 +184,14 @@ BigDecimal.valueOf(0.1)    // 0.1                                               
 new BigDecimal("0.1")      // 0.1                                                          ← BIEN
 ```
 
-The mechanism is the one the money callout described, caught in the act. By the time `new BigDecimal(0.1)` runs, the literal `0.1` has *already* been converted to a `double`, and a `double` cannot hold 0.1 — it holds the nearest binary value it can build out of halves, quarters and eighths, which is that 55-digit number. `BigDecimal` then does its job perfectly: it faithfully records the exact value it was handed. The error was not introduced by `BigDecimal`; it was baked into the argument before the constructor was even called, and `BigDecimal` is simply the first tool precise enough to show it to you.
+The mechanism is the one the money section described, caught in the act. By the time `new BigDecimal(0.1)` runs, the literal `0.1` has *already* been converted to a `double`, and a `double` cannot hold 0.1 — it holds the nearest binary value it can build out of halves, quarters and eighths, which is that 55-digit number. `BigDecimal` then does its job perfectly: it faithfully records the exact value it was handed. The error was not introduced by `BigDecimal`; it was baked into the argument before the constructor was even called, and `BigDecimal` is simply the first tool precise enough to show it to you.
 
 The two safe forms both avoid ever letting the value exist as a `double`:
 
 - **`new BigDecimal("0.1")`** — the `String` constructor reads the digits you literally wrote, one character at a time. No binary approximation happens because no `double` is ever involved. Reach for this when the value comes from a config file, a JSON body, or a literal you typed.
 - **`BigDecimal.valueOf(0.1)`** — takes a `double`, but internally runs it through `Double.toString()` first and then parses *that* text. `Double.toString()` prints the shortest decimal that round-trips back to the same `double`, which for `0.1` is the string `"0.1"` — so you land on exactly the value the `String` constructor would have given you. Reach for this when the value is already sitting in a `double` variable and you cannot go back and change where it came from.
 
-> **Then why does the `double` constructor exist at all?** Because it is the only one that tells the truth about a `double`. If you are debugging *why* a computation drifted, `new BigDecimal(someDouble)` is the tool that shows you the actual stored value rather than the friendly rounded print-out. It is a diagnostic instrument, not a way to create money. In application code, treat `new BigDecimal(` applied to a `double` or `float` as a bug — this is exactly what a reviewer flags in a pull request. (Passing an `int` or a `long` is harmless, since those hold their values exactly; it is only the floating-point types that arrive already wrong.)
+> **Then why does the `double` constructor exist at all?** Because it is the only one that tells the truth about a `double`. If you are debugging *why* a computation drifted, `new BigDecimal(someDouble)` is the tool that shows you the actual stored value rather than the rounded, friendly number. It is a diagnostic instrument, not a way to create values that hold money. In code that ships to production, treat `new BigDecimal(` applied to a `double` or `float` as a bug — this is exactly what a reviewer flags in a pull request. (Passing an `int` or a `long` is harmless, since those hold their values exactly; it is only the floating-point types that arrive already wrong.)
 
 In the TimeTrack backend, `TimeEntry.hours` is declared `private BigDecimal hours;` for this reason (`projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/model/TimeEntry.java`) — hours get summed into reports, and a `double` would drift by a fraction of an hour once enough entries were added up.
 
