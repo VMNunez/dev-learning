@@ -90,6 +90,7 @@ app/
 | `table-layout: fixed` | Equal-width columns in the Material table |
 | `grid-column: 1 / -1` | Span a form field across all grid columns |
 | Context-specific theme | Scope `mat.theme()` to a CSS class for the delete button |
+| Guarded `localStorage` load | Parse stored text in `try`/`catch` and validate its shape before it reaches the signal |
 
 ---
 
