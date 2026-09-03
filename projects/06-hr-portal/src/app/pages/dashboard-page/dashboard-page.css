@@ -15,13 +15,26 @@
   gap: 1rem;
 }
 
-.stat-card {
+/* The anchor is the flex child now, so it carries the sizing; the card fills it.
+   `cursor: pointer` is gone with it — a real link already has one. */
+.stat-card-link {
   flex: 1;
-  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--mat-sys-corner-medium);
+}
+
+.stat-card-link:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.stat-card {
+  height: 100%;
   transition: opacity 150ms ease;
 }
 
-.stat-card:hover {
+.stat-card-link:hover .stat-card {
   background-color: var(--mat-sys-secondary-container);
 }
 
@@ -156,7 +169,7 @@
     flex-wrap: wrap;
   }
 
-  .stat-card {
+  .stat-card-link {
     min-width: calc(50% - 0.5rem);
   }
 }
