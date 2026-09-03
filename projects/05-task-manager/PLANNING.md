@@ -37,19 +37,18 @@ sorting, pagination, and delete confirmation. Built with Angular Material.
 ```
 app/
 ├── app.ts                             ← root shell, renders `<router-outlet />` only
-├── pages/
-│   └── tasks-page/
-│       ├── tasks-page.component       ← coordinator: owns all state and events
-│       ├── task-filters/
-│       │   └── task-filters.component ← dumb, receives filter values, emits changes
-│       ├── task-table/
-│       │   └── task-table.component   ← dumb, receives tasks, emits edit/delete
-│       ├── task-dialog/
-│       │   └── task-dialog.component  ← dialog form, handles add and edit mode
-│       └── confirm-dialog/
-│           └── confirm-dialog.component ← reusable confirmation dialog
-└── services/
-    └── task.service.ts                ← signal<Task[]>, CRUD methods
+├── models/
+│   └── task.model.ts                  ← `Task` interface and its union types
+└── pages/
+    └── task-page/
+        ├── task-page.ts               ← coordinator: owns all state and events
+        ├── components/
+        │   ├── task-filters/          ← dumb, receives filter values, emits changes
+        │   ├── task-table/            ← dumb, receives tasks, emits edit/delete
+        │   ├── task-dialog/           ← dialog form, handles add and edit mode
+        │   └── confirm-dialog/        ← reusable confirmation dialog
+        └── services/
+            └── task.service.ts        ← signal<Task[]>, CRUD methods
 ```
 
 ---
@@ -60,7 +59,7 @@ app/
 - `computed()` for filtered list and stat card counts
 - `MatTableDataSource` for sorting and pagination
 - `MatDialog` service to open dialogs; `afterClosed()` to receive results
-- Coordinator pattern — tasks-page owns all signals and handles all events from children
+- Coordinator pattern — task-page owns all signals and handles all events from children
 
 ---
 
