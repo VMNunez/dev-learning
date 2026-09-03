@@ -92,7 +92,9 @@ https://04mealfinder.netlify.app/
 - `toSignal()` — read `paramMap` and `queryParamMap` as signals instead of subscribing
 - `input.required()` and `output()` — presentational components take data in and emit intent out
 - `loadComponent()` — lazy route, one chunk per page instead of one bundle
+- `**` wildcard route — an unmatched URL renders the not-found page; declared last, since matching is first-wins
 - `routerLinkActive` — mark the current nav link; the brand link needs `{ exact: true }`
+- `@if` / `@else if` / `@for` — built-in control flow renders one remote state at a time, no `*ngIf` import
 - `Location.back()` — browser history is not application history, so a direct URL needs a fallback
 - `[attr.x]` binding — ARIA attributes have no DOM property behind them, so `[attr.aria-pressed]`, not `[ariaPressed]`
 - Narrowing beats asserting — read a `string | null` route id into a local and return early, never `as string`
