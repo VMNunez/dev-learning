@@ -106,6 +106,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - A route parameter is always text — `paramMap.get()` yields `string | null` whatever the model declares, so converting it is a decision that has to agree with the identifier's real type; a conversion that no longer matches fails silently, because the lookup simply finds nothing and the view renders as if the record did not exist ✅ 06-hr-portal — `DepartmentForm.ngOnInit` hands `paramMap.get('id')` straight to `getById`, the `Number(rawId)` conversion dropped once `Department.id` became a `string`
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path ✅ 06-hr-portal
+- A query param is untrusted text — `queryParamMap.get()` yields `string | null` however narrow a union the view's filter declares, and any value can be typed into the address bar or survive in a shared link, so an unrecognised one is rejected at the read and the default restored; asserting it into the union instead selects a filter no record can match, and the view answers with its ordinary empty state, which is indistinguishable from a genuinely empty result ✅ 06-hr-portal — `LeaveRequestPage.ngOnInit` passes `queryParamMap.get('status')` through `isLeaveRequestFilter` and leaves the signal at `'all'` when it fails, so `?status=foo` lists every request instead of rendering an empty table
 - `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible ✅ 06-hr-portal
 - Routed view state in the URL — keep state the user must find again, such as a search term, in the URL and re-derive the view from it on load, because the router destroys the routed component and its signals on every navigation, so anything held only in fields is gone on return ✅ 04-meal-finder — the search page navigates to `/?q=term` instead of holding the term in a field, and rebuilds its results from `toSignal(queryParamMap)`, so `← Back` from a detail page restores the search
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes ✅ 04-meal-finder
@@ -1283,7 +1284,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
-- Indexed access types — obtain a property's value type from an existing object contract without duplicating it
+- Indexed access types — obtain a property's value type from an existing object contract without duplicating it ✅ 06-hr-portal — `LeaveRequestStatus` is declared as `(typeof LEAVE_REQUEST_STATUSES)[number]`, so the union is read off the array rather than restated beside it
 - Async function typing — recognise that an `async` function returns `Promise<T>` and that the annotation does not prevent runtime rejection
 
 ### Narrowing and safe control flow
@@ -1296,7 +1297,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid ✅ 06-hr-portal — `DepartmentForm.onSubmit` tests `editId !== null` rather than `if (this.editId())`, so an identifier that is a `string` cannot read as "not editing"
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
-- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
+- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows ✅ 06-hr-portal — `isLeaveRequestFilter(value): value is LeaveRequestFilter` is the one check the leave-request page narrows through, so the query-param read needs no `as` assertion
 - Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
 
@@ -1319,7 +1320,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Literal preservation and contract checking
 
-- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing
+- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing ✅ 06-hr-portal — `LEAVE_REQUEST_STATUSES` and `LEAVE_REQUEST_FILTERS` are declared `as const`, so their members stay literal types instead of widening to `string[]`
+- A literal union derived from an `as const` list — declare the permitted values once as a readonly array and derive the type from it with an indexed access over `number`, so the allow-list a runtime check reads and the union a signature declares are the same declaration and cannot drift apart when a member is added or removed ✅ 06-hr-portal — `LEAVE_REQUEST_FILTERS` is both the array the guard's `includes` reads and the source of the `LeaveRequestFilter` type, and the filter dropdown renders its options from that same constant
 - `satisfies` — check that an expression conforms to a contract while retaining useful inferred literal and property information
 - Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof ✅ 03-expense-tracker — the transaction form declares each control's own type instead of asserting `form.value as NewTransaction` at the emit
 - `typeof` in type positions — derive a type from an existing value without confusing it with the runtime `typeof` operator

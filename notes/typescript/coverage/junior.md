@@ -48,7 +48,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
-- Indexed access types — obtain a property's value type from an existing object contract without duplicating it
+- Indexed access types — obtain a property's value type from an existing object contract without duplicating it ✅ 06-hr-portal — `LeaveRequestStatus` is declared as `(typeof LEAVE_REQUEST_STATUSES)[number]`, so the union is read off the array rather than restated beside it
 - Async function typing — recognise that an `async` function returns `Promise<T>` and that the annotation does not prevent runtime rejection
 
 ## Narrowing and safe control flow
@@ -61,7 +61,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid ✅ 06-hr-portal — `DepartmentForm.onSubmit` tests `editId !== null` rather than `if (this.editId())`, so an identifier that is a `string` cannot read as "not editing"
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
-- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
+- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows ✅ 06-hr-portal — `isLeaveRequestFilter(value): value is LeaveRequestFilter` is the one check the leave-request page narrows through, so the query-param read needs no `as` assertion
 - Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
 
@@ -84,7 +84,8 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Literal preservation and contract checking
 
-- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing
+- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing ✅ 06-hr-portal — `LEAVE_REQUEST_STATUSES` and `LEAVE_REQUEST_FILTERS` are declared `as const`, so their members stay literal types instead of widening to `string[]`
+- A literal union derived from an `as const` list — declare the permitted values once as a readonly array and derive the type from it with an indexed access over `number`, so the allow-list a runtime check reads and the union a signature declares are the same declaration and cannot drift apart when a member is added or removed ✅ 06-hr-portal — `LEAVE_REQUEST_FILTERS` is both the array the guard's `includes` reads and the source of the `LeaveRequestFilter` type, and the filter dropdown renders its options from that same constant
 - `satisfies` — check that an expression conforms to a contract while retaining useful inferred literal and property information
 - Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof ✅ 03-expense-tracker — the transaction form declares each control's own type instead of asserting `form.value as NewTransaction` at the emit
 - `typeof` in type positions — derive a type from an existing value without confusing it with the runtime `typeof` operator
