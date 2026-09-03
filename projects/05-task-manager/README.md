@@ -75,6 +75,7 @@ https://05taskmanager.netlify.app/
 - `mat.theme()` in `material-theme.scss` — set palette and typography once for the whole app
 - Context-specific themes — scope `mat.theme()` to a CSS class for a different palette per component
 - `--mat-sys-*` CSS variables — Material design tokens for theme-aware colors
+- System token over custom property — a role Material already names (`--mat-sys-on-surface-variant`) is read from the theme, so `styles.css` only declares what Material has no token for
 - Coordinator pattern — page owns all state; child components only display and emit
 - `crypto.randomUUID()` for entity ids — a clock reading collides when two records are created in the same millisecond
 - Local date components over `toISOString()` — `toISOString()` reads the clock in UTC, so a date derived from it shifts the day after local midnight
