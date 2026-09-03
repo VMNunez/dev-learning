@@ -110,6 +110,7 @@ https://06-hr-portal.netlify.app
 - Auth persistence — `signal()` initialised from localStorage + `effect()` to save on every change
 - A refused write has to be visible — `updateStatus` returns a `boolean` so the page's snackbar reports the refusal instead of confirming a change that never happened
 - App shell scroll layout — `overflow: hidden` on `app-root` keeps toolbar and sidebar fixed
+- `routerLink` needs an `<a>` — on any other element it navigates on click but writes no `href`, so the card is not Tab-reachable and announces no link role
 
 ---
 
