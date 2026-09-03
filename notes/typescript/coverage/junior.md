@@ -59,7 +59,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
-- Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
+- Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid ✅ 06-hr-portal — `DepartmentForm.onSubmit` tests `editId !== null` rather than `if (this.editId())`, so an identifier that is a `string` cannot read as "not editing"
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
 - User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
 - Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
