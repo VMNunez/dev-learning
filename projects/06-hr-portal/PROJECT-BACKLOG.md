@@ -16,7 +16,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Medium
 
-- [ ] **[Medium]** `[frontend]` — Type the leave-request date controls honestly: `leave-request-dialog.ts:27-29` declares them as `FormControl<string>` (inferred from `''`) but `MatDatepicker` puts a `Date` in them at runtime, masked by the `as unknown as Date` double cast at :41-49. Declare `FormControl<Date | null>` and drop the cast. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Parameterize `dialog.open` with its result type in `leave-request-page.ts:70-87`, so `afterClosed()` stops yielding `Observable<any>` and `data.startDate/endDate/reason` stop being implicit `any`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Clear the fake-latency timer in `login-page.ts:49`: `onSubmit()` schedules a `setTimeout(..., 1000)` with no cleanup, so navigating away before it fires runs the callback against a destroyed component. Store the id and clear it in `ngOnDestroy`, or use `timer()` + `takeUntilDestroyed()`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Make the dashboard stat cards real links: `dashboard-page.html:9,18,32,41,104` put `routerLink` on `<mat-card>`, so they navigate on click but have no `href`, are not Tab-reachable, and announce no link role. Wrap the content in an `<a routerLink>`. *(Effort: Small)*
@@ -46,6 +45,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Medium
 
+- 2026-09-03 · **[Medium]** `[frontend]` — leave-request date controls typed `FormControl<Date | null>`, both double casts and both `!` gone → README What I learned, PLANNING key patterns (new row), coverage angular/junior + typescript/junior (all already covered and marked)
 - 2026-09-03 · **[Medium]** `[frontend]` — employee dialog email errors gated on `touched` like every sibling field → README What I learned, PLANNING validation rules (new row), coverage angular/junior (already covered + already marked ✅ 03)
 - 2026-09-03 · **[Medium]** `[frontend]` — employee `status` query param validated too, and the union carried into the filter child's `input()`/`output()` → README architecture decisions, PLANNING validation rules + key patterns (new row), coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and javascript/junior (marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Medium]** `[frontend]` — `status` query param validated by a type predicate over an `as const` list → README What I learned + architecture decisions, PLANNING validation rules + key patterns, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (new bullet + 3 marked ✅ 06-hr-portal)
