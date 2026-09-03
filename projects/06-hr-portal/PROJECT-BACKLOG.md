@@ -5,14 +5,13 @@
 
 **Overall quality:** Good — every planned pattern is present and used meaningfully, the smart/dumb
 split and signal+`effect()` persistence are consistent across the app, and the persisted session is
-now credential-free, but a UTC date-serialization bug that fires on every leave request and a
-unique-email rule that a linear stepper lets past keep it from portfolio-ready.
+now credential-free and calendar dates are serialized from the local clock, but a unique-email rule
+that a linear stepper lets past keeps it from portfolio-ready.
 
 ---
 
 ## High
 
-- [ ] **[High]** `[frontend]` — Fix the UTC date-only serialization: `leave-request-dialog.ts:33-35` (`dateFormat()`) and `employee-dialog.ts:118` (`startDate` default) both use `toISOString().split('T')[0]`, which returns the **UTC** date. Trigger: the datepicker hands back a `Date` at local midnight, so in Spain (UTC+1/+2) every leave request stores the *previous* day. Build the string from `getFullYear()/getMonth()/getDate()` instead. *(Effort: Small)*
 - [ ] **[High]** `[frontend]` — Enforce the unique-email rule on submit, not only on "Next": `employee-dialog.ts` calls `emailExists` in `onNext()` only. Trigger: type a format-valid duplicate email, click the **step-2 header** directly (linear stepper marks step 1 complete once it is format-valid), fill step 2, submit → the duplicate saves. Re-check in `onSubmit()`. *(Effort: Small)*
 
 ## Medium
@@ -47,6 +46,7 @@ unique-email rule that a linear stepper lets past keep it from portfolio-ready.
 
 #### High
 
+- 2026-09-03 · **[High]** `[frontend]` — calendar dates serialized from the local clock via a shared `toLocalDateString()` → README, PLANNING key patterns, coverage javascript/junior (already marked ✅ 03)
 - 2026-09-03 · **[High]** `[frontend]` — password no longer persisted; localStorage holds a credential-free `SessionUser` → README, PLANNING, coverage security/junior
 
 #### Medium
@@ -65,9 +65,9 @@ unique-email rule that a linear stepper lets past keep it from portfolio-ready.
 
 ## Learning objectives
 
-Against PLANNING's "Key patterns introduced" table (28 concepts):
+Against PLANNING's "Key patterns introduced" table (29 concepts):
 
-**27 ✅ Demonstrated · 1 ⚠️ Shallow · 0 ❌ Missing**
+**28 ✅ Demonstrated · 1 ⚠️ Shallow · 0 ❌ Missing**
 
 - ⚠️ **App shell scroll fix** — half applied: `app-root { overflow: hidden }` is there, `html { height: 100% }` is not, so the `body` percentage height never resolves. See the Medium task above.
 
