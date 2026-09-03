@@ -100,6 +100,7 @@ https://06-hr-portal.netlify.app
 - `MatSidenav` app shell — persistent sidebar with role-filtered navigation links
 - `MatDatepicker` — calendar picker with `provideNativeDateAdapter()`
 - Typed reactive forms — `MatDatepicker` writes a `Date` into its control, so one inferred from `''` needs an `as unknown as Date` at every read; `FormControl<Date | null>` removes the cast
+- Typed dialog results — `MatDialog.open<T, D, R>` leaves `R` at `any`, so naming the result type there and on the dialog's own `MatDialogRef` turns a renamed field into a compile error instead of a blank value
 - Local-clock date serialization — `toISOString()` shifts a picked date to UTC, so `YYYY-MM-DD` is built from `getFullYear`/`getMonth`/`getDate`
 - Conditional `displayColumns` with `computed()` — show or hide table columns based on role
 - Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap`
