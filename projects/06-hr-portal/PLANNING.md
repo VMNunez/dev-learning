@@ -71,7 +71,7 @@ src/app/
 
 ## State management
 
-- `signal<User | null>` in `AuthService`, synced to localStorage with `effect()`
+- `signal<SessionUser | null>` in `AuthService` — the credential-free shape — synced to localStorage with `effect()`
 - `signal<Employee[]>` in `EmployeeService`, `signal<Department[]>` in `DepartmentService`
 - `computed()` for filtered lists, role checks (`isAdmin`), and filtered nav links
 - All signals stored as references (no `()`) in child components to stay reactive
@@ -91,7 +91,7 @@ src/app/
 | `HttpInterceptorFn` | Attach auth token to every request |
 | `req.clone({ setHeaders: { ... } })` | HTTP requests are immutable — must clone |
 | `withInterceptors([fn])` | Register functional interceptors in `app.config.ts` |
-| Auth persistence pattern | `signal(JSON.parse(localStorage.getItem(...) ?? 'null'))` + `effect()` |
+| Auth persistence pattern | A credential-free `SessionUser` read back through a private parser + `effect()` |
 | `??` nullish coalescing | Safe fallback when localStorage value is null |
 | Dual-mode dialog | Same dialog handles add and edit via `MAT_DIALOG_DATA` check |
 | `inject<Type \| undefined>(MAT_DIALOG_DATA)` | Optional dialog data injection |
