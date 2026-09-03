@@ -492,7 +492,8 @@ plus the README standard, which does not auto-load. This section remains the sou
   The two stay separate: **marking never authors a bullet, and authoring never writes a marker.** A new
   bullet a `/notes-plan` remap owes is reported and flagged in `_run-tracker.md`, never remapped by hand.
 - `projects/0X-projectname/README.md` — the concept's entry, routed **by audience** to the global /
-  backend / frontend README by the `readme-concept-add` skill under the README standard. "What I learned"
+  backend / frontend README by the `readme-concept-add` skill under the README standard, **plus the
+  entries `readme-concept-add`'s own diff sweep finds that the step never named**. "What I learned"
   exists **only in the global README**; a tier-level concept lands in that tier's "Key patterns", and a
   convention deliberately kept lands in "Tradeoffs". Never assume the section — the standard owns it.
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed. On a **split step**, the ✅ goes on the sub-step (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one.
@@ -581,7 +582,8 @@ never the only one:
   — on the "already covered" path too, which is the common one. A design decision with no code change
   demonstrates nothing and is left unmarked; an **already-resolved** task *is* marked, because code was
   written, just in an earlier session. Same contract and same `coverage-mark` skill as above.
-- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`. A
+- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`,
+  plus the entries that skill's own diff sweep finds the close never named. A
   backlog concept is almost always tier-level, so "Key patterns" in the tier README is the expected
   answer and "What I learned" (global README only) is the exception, not the default.
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it

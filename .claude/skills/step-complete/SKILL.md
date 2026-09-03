@@ -158,9 +158,10 @@ Fold both skills' report rows into this ritual's final table.
 ## 4 — Project README: land the step's concepts
 
 **Invoke the `readme-concept-add` skill** with the step's concepts. It owns this decision end to end:
-deriving which READMEs exist from the project number, routing each concept by **audience** to the global /
-backend / frontend file, checking whether it is already represented, and writing it in that section's own
-format under the README standard. Do not reproduce its logic here and do not pick the file yourself.
+sweeping the step's own diff for decisions this ritual never named (its step 0), deriving which READMEs
+exist from the project number, routing each concept by **audience** to the global / backend / frontend
+file, checking whether it is already represented, and writing it in that section's own format under the
+README standard. Do not reproduce its logic here and do not pick the file yourself.
 
 Two things to pass it explicitly, because they are this ritual's context and not the skill's:
 
@@ -170,9 +171,11 @@ Two things to pass it explicitly, because they are this ritual's context and not
   by which folder changed; handing it the tier as the answer is how an API contract ends up buried in a
   backend README instead of the global one.
 
-If the existing entries already cover the step's concepts, the skill will report **nothing written**, and
-that is a good outcome — a README with one bullet per step is worse than one that names what the project
-taught. Fold its report rows into this ritual's final table.
+If the existing entries already cover the step's concepts, the skill will report **nothing written for
+them**, and that is a good outcome — a README with one bullet per step is worse than one that names what
+the project taught. That is not the same as the skill writing nothing: its own step-0 sweep reads the
+step's diff and may add a decision this ritual never named, on exactly that path. Fold its report rows
+into this ritual's final table.
 
 ## 5 — PLANNING §0: repoint the session quick reference
 
@@ -263,8 +266,9 @@ Everything lands on the **active branch** (`main` only receives merges via PR).
   table edit and the marker are one logical change. So sequence this ritual's own PROGRESS.md edit (the
   `## Projects` status cell, and the evidence cell) **before** invoking them, and let their commit carry
   all of it. Only when step 3 wrote nothing at all does PROGRESS.md need a commit of its own here.
-- The README — committed by `readme-concept-add` itself, in **one** commit for the entry it wrote, even
-  when a cross-tier concept put that entry in two READMEs. Do not restage it here.
+- The README — committed by `readme-concept-add` itself, in **one** commit for what it wrote, even when a
+  cross-tier concept put an entry in two READMEs, and when its step-0 sweep added entries this ritual
+  never named. Do not restage it here.
 - `PLANNING.md` — **you commit it yourself**, authorized 2026-08-01, one atomic commit covering both the
   step's ✅ (step 1) and the §0 repoint (step 5): they are the same logical change, and a §0 still pointing
   at a step whose ✅ already landed is the exact staleness step 5 exists to prevent.
@@ -293,6 +297,6 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Topic chosen | `spring-boot` — the framework mechanism, not the neutral boundary rule |
 | Evidence marker | marked `✅ 07-timetrack` — 24/139 junior bullets demonstrated |
 | `/notes-plan` owed | yes — `/notes-plan spring-boot junior`, run once at end of session |
-| README | `backend` / Key patterns — 2 entries added; 1 concept already represented |
+| README | `backend` / Key patterns — 2 entries added; 1 concept already represented; *(swept)* id tie-breaker on a paged sort — added, not named by this step |
 | PLANNING §0 | repointed to Step 6 — branch `feat/reports`, done condition copied verbatim, phase unchanged, dated today · `Next gate` re-derived as G3, keeping this morning's close qualifier "signable, last High merged" (or: qualifier **dropped** — the re-derivation names G4, which the close's fact does not describe) |
 | Gate due | none yet (or: G3 backend review is now due — `review-audit REVIEW_SCOPE = backend`) |
