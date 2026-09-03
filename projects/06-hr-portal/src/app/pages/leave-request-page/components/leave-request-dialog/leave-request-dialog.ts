@@ -26,8 +26,8 @@ export class LeaveRequestDialog {
   today = new Date();
 
   newLeaveRequest = new FormGroup({
-    startDate: new FormControl('', Validators.required),
-    endDate: new FormControl('', Validators.required),
+    startDate: new FormControl<Date | null>(null, Validators.required),
+    endDate: new FormControl<Date | null>(null, Validators.required),
     reason: new FormControl('', Validators.required),
   });
 
@@ -35,15 +35,23 @@ export class LeaveRequestDialog {
     this.newLeaveRequest.markAllAsTouched();
 
     if (this.newLeaveRequest.valid) {
-      const formValue = this.newLeaveRequest.value;
-      if (formValue.endDate! < formValue.startDate!) {
+      const { startDate, endDate, reason } = this.newLeaveRequest.getRawValue();
+
+      // `Validators.required` already rejects an empty control, but a reset leaves
+      // `null` in it, so the value is narrowed here rather than asserted.
+      if (!startDate || !endDate || !reason) {
+        return;
+      }
+
+      if (endDate < startDate) {
         this.newLeaveRequest.controls.endDate.setErrors({ invalidDate: true });
         return;
       }
+
       this.dialogRef.close({
-        startDate: toLocalDateString(formValue.startDate as unknown as Date),
-        endDate: toLocalDateString(formValue.endDate as unknown as Date),
-        reason: formValue.reason as string,
+        startDate: toLocalDateString(startDate),
+        endDate: toLocalDateString(endDate),
+        reason,
       });
     }
   }
