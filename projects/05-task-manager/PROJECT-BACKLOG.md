@@ -12,8 +12,6 @@
 - [ ] **[Low]** `[frontend]` — Remove the leftover CLI-scaffold `title` signal in `app.ts:10-11` (and its `signal` import); `app.html` renders only `<router-outlet />`, so it is dead code. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Improve keyboard support on the stat-card filters in `task-page.html`: they are `<div role="button" tabindex="0" (click) (keydown.enter)>`, reachable via Enter but not Space. Use a real `<button>` styled as a card, or also handle `keydown.space`. *(Effort: Small)*
 
-- [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/05-task-manager`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
-
 ---
 
 ## Closed
@@ -36,4 +34,5 @@
 
 #### Low
 
+- 2026-09-03 · **[Low]** `[frontend]` — `How to run` clone path corrected from `angular/` to `projects/` → README
 - 2026-09-03 · **[Low]** `[frontend]` — `localStorage` read parsed in `try`/`catch` and shape-checked with `Array.isArray` → README "What I learned", PLANNING key patterns (coverage javascript/typescript junior already marked)
