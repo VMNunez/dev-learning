@@ -533,7 +533,17 @@ skill never fires inside a prompt pipeline run — so a self-report's at-end ref
 machinery and cannot fire it, ran the test with the which-map table and no walk at all. Where an
 executor holds the only statement of a rule, read its **own exclusions** as the list of readers it
 silently fails, and move the rule to the owner those paths already point at — the executor keeps the
-mandate's heading and points for its content.
+mandate's heading and points for its content. **`REC-203` is its sixth instance, and it reaches the one
+party the rule never bound: the *owner*.** *Diff it against the source before committing* is addressed to
+whoever writes the copy, so nothing fires for the person editing the rule that copies restate —
+`_planning-standard.md` §18's completeness promise over `_readme-standard.md`'s rules 6-8 was true only
+for as long as the last reader of both files. **Where a restatement carries a completeness promise, the
+enumeration belongs at the definer, naming every copy**, which is what `REC-074` had already built in
+`_simulation-plan-standard.md` §4 and this row instantiated rather than inventing a checker for one pair.
+Its own second lesson is that such an enumeration **is** the thing it guards: the first draft said "both
+consumers" where four plan prompts read the copy and one of the two it named reads the produced file
+instead, and two rounds took the copy count from one to five — enumerate from what *defines* the
+population, never from the copies the defect brought to mind.
 
 **A possessive is an ownership claim, and it survives the sweep that deletes the explicit one.** From
 `REC-119`, where the false universal — "**this prompt is its only writer**" — had a twin one sentence
