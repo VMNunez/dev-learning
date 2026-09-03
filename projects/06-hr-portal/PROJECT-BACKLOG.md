@@ -16,7 +16,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Medium
 
-- [ ] **[Medium]** `[frontend]` — Gate the email `required` error on `touched` in `employee-dialog.html:30`. Every other field in the same form checks `.touched`; email does not, so "Email is required" renders the instant the dialog opens, before any interaction. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Type the leave-request date controls honestly: `leave-request-dialog.ts:27-29` declares them as `FormControl<string>` (inferred from `''`) but `MatDatepicker` puts a `Date` in them at runtime, masked by the `as unknown as Date` double cast at :41-49. Declare `FormControl<Date | null>` and drop the cast. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Parameterize `dialog.open` with its result type in `leave-request-page.ts:70-87`, so `afterClosed()` stops yielding `Observable<any>` and `data.startDate/endDate/reason` stop being implicit `any`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Clear the fake-latency timer in `login-page.ts:49`: `onSubmit()` schedules a `setTimeout(..., 1000)` with no cleanup, so navigating away before it fires runs the callback against a destroyed component. Store the id and clear it in `ngOnDestroy`, or use `timer()` + `takeUntilDestroyed()`. *(Effort: Small)*
@@ -47,6 +46,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Medium
 
+- 2026-09-03 · **[Medium]** `[frontend]` — employee dialog email errors gated on `touched` like every sibling field → README What I learned, PLANNING validation rules (new row), coverage angular/junior (already covered + already marked ✅ 03)
 - 2026-09-03 · **[Medium]** `[frontend]` — employee `status` query param validated too, and the union carried into the filter child's `input()`/`output()` → README architecture decisions, PLANNING validation rules + key patterns (new row), coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and javascript/junior (marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Medium]** `[frontend]` — `status` query param validated by a type predicate over an `as const` list → README What I learned + architecture decisions, PLANNING validation rules + key patterns, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (new bullet + 3 marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Medium]** `[frontend]` — app-shell scroll fix already complete — DECISION, no code change → `html { height: 100% }` lives in `material-theme.scss:8`, loaded before `styles.css` per `angular.json:27`
