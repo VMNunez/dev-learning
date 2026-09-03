@@ -94,6 +94,7 @@ https://06-hr-portal.netlify.app
 - `loadComponent` with dynamic import — lazy loading; component code only loads on navigation
 - `HttpInterceptorFn` — functional interceptor; clones the request to add the auth header
 - `CanDeactivateFn` — warns the user before leaving a form with unsaved changes
+- `takeUntilDestroyed()` — cancels work still in flight when the page is destroyed; called outside a constructor it needs the `DestroyRef` passed explicitly
 - `MatStepper` — multi-step form with `[linear]="true"` and per-step form group validation
 - Validation display state — an error renders only once the control is `touched`; validity alone is true from construction, so an ungated `required` accuses the user before any interaction
 - `MatSnackBar` — toast notifications after every key action
