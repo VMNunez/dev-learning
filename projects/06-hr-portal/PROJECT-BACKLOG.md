@@ -17,7 +17,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 ## Medium
 
 - [ ] **[Medium]** `[frontend]` — Parameterize the six remaining `dialog.open` calls with their result types: `deactivate-guard.ts:16`, `department-page.ts:23`, `employee-dialog.ts:132`, `employee-page.ts:83,100,122` all leave `MatDialog.open<T, D, R>`'s `R` at its `any` default, so every `afterClosed()` yields `Observable<any>` and the `confirmed` / `data` callbacks are unchecked — a renamed field on `Employee` would compile and reach the service as `undefined`. Type each `MatDialogRef` at the dialog end too, so the contract is checked at both ends. *(Effort: Small)* *(raised 2026-09-03 while triaging the leave-request `dialog.open` task — same defect shape, six other call sites)*
-- [ ] **[Medium]** `[frontend]` — Make the dashboard stat cards real links: `dashboard-page.html:9,18,32,41,104` put `routerLink` on `<mat-card>`, so they navigate on click but have no `href`, are not Tab-reachable, and announce no link role. Wrap the content in an `<a routerLink>`. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Decompose `dashboard-page` into presentational children. It is the one outlier on the smart/dumb axis: every other page (`employee-page`, `department-page`, `leave-request-page`) splits into table/filters/dialog children, while the dashboard holds all markup + computed state in one component (`dashboard-page.ts:1-53`, 139-line template). Follow the convention the other three set. *(Effort: Medium)*
 
 ## Low
@@ -43,6 +42,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Medium
 
+- 2026-09-03 · **[Medium]** `[frontend]` — the five dashboard stat cards wrapped in `<a routerLink>` with a `:focus-visible` ring, sizing moved to the anchor → README What I learned, PLANNING key patterns (new row) + accessibility floor corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal); HTML `<a>`-vs-click concept already parked in `_cross-topic-inbox.md` under 04
 - 2026-09-03 · **[Medium]** `[frontend]` — login fake latency is `timer()` + `takeUntilDestroyed(destroyRef)`, so an orphan callback can no longer log the user in → README What I learned, PLANNING key patterns (new row), coverage angular/junior (new *injection context* bullet, marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Medium]** `[frontend]` — leave-request `dialog.open` parameterized with a `LeaveRequestFormResult` derived from the model, typed at both ends → README What I learned, PLANNING key patterns (new row), coverage typescript/junior (already covered and marked)
 - 2026-09-03 · **[Medium]** `[frontend]` — leave-request date controls typed `FormControl<Date | null>`, both double casts and both `!` gone → README What I learned, PLANNING key patterns (new row), coverage angular/junior + typescript/junior (all already covered and marked)
