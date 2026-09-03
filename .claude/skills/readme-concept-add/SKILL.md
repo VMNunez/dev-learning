@@ -71,6 +71,18 @@ Two things this skill adds, because they are the inline caller's context and not
 Grep the target README for the concept's key symbol, not the wording of the step or task — the README
 names patterns, not fixes.
 
+**One exception, and it is narrow: the global README's `What I learned`.** Rule 9 states outright that a
+concept named in `Architecture decisions` or `Tradeoffs` **and** again as a recall line here is not a
+duplicate — the two sections are read differently and the repeat is the section's shape. A whole-file
+grep collapses that: it finds `HttpParams` upstairs, reports "already represented", and the recall line
+rule 9 wants is never written. So **when the concept routes to `What I learned`, search that section
+only**; a hit anywhere else in the file is not representation for this purpose.
+
+**Everywhere else the whole-file grep stands, and it is what keeps the file honest.** Two sections of a
+tier README are not two altitudes: a concept named in the backend's `Auth flow` **is** represented in
+that README, and writing it again under `Key patterns` states it twice in one file. The two-altitude
+licence is rule 9's alone.
+
 **If it is already represented:** say so, name the exact entry, and write nothing. This is a *good*
 outcome and it is common. Per the standard, a README with one bullet per step, or one per bug fix, is a
 **worse** README than one that names what the project taught — the bar for adding a line is that the file
@@ -84,6 +96,17 @@ Do not reword an existing entry to match the vocabulary of the step or task that
 
 Write it in **the format the standard gives that section**, in the section's existing voice and bullet
 shape, in the position its ordering implies — not appended at the end of the file.
+
+**In `What I learned` that position is a rule, not a preference.** Rule 9 orders the section by what the
+project exists to teach — Angular then TypeScript on `01`–`06`, `### Backend` before `### Frontend` on
+`07+` — with HTML, CSS and accessibility last. Appending to the end of the list is only correct when the
+concept genuinely belongs last.
+
+**On a full-stack project, place the entry inside the matching `###` subsection *if it is there*.** A
+project whose section is still a flat list, or whose second tier is not built, does not gain a heading
+from this skill: that restructure is `readme-audit`'s, and adding a section is on this skill's forbidden
+list above. Write the entry where the ordering rule puts it in the list as it stands, and **report** that
+the section is still flat.
 
 One rule worth restating, because it is what an inline edit breaks every time: **no explanations**. A
 README entry is a recall line. If the concept is real but the honest entry would be long, shorten it to the
