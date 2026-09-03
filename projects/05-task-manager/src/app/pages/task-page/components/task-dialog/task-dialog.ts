@@ -79,7 +79,7 @@ export class TaskDialog {
     if (this.newTaskForm.valid) {
       const formValue = this.newTaskForm.value;
       const task: Task = {
-        id: this.data ? this.data.task.id : Date.now(),
+        id: this.data ? this.data.task.id : crypto.randomUUID(),
         name: formValue.name as string,
         status: formValue.status as TaskStatus,
         priority: formValue.priority as TaskPriority,
