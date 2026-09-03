@@ -280,6 +280,7 @@ validation and `MatSnackBar` feedback instead.
 | `dialogRef.close(true)` | Return boolean from confirmation dialog |
 | Multiple filter signals + `computed()` | Chain filters with `&&`; `'all'` as no-filter default |
 | `MatDatepicker` + `provideNativeDateAdapter()` | Date input with calendar popup |
+| Control typed to what its accessor writes | `startDate` and `endDate` are `FormControl<Date \| null>`, the type `MatDatepickerInput` actually sets, so the submit reads them without an `as unknown as Date` |
 | Local-clock date serialization | `toISOString()` returns the UTC day — build `YYYY-MM-DD` from `getFullYear`/`getMonth`/`getDate` |
 | Conditional `displayColumns` with `computed()` | Change columns based on role — never use `@if` on `ng-container matColumnDef` |
 | `ActivatedRoute.snapshot.queryParamMap.get()` | Read query params on load |
