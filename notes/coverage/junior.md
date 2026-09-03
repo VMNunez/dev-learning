@@ -201,6 +201,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once ✅ 05-task-manager
 - `mat.theme()` — apply a supported Material 3 theme without depending on the generated component DOM ✅ 05-task-manager
 - Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases
+- System colour roles over ad-hoc custom properties — express a role the theme already defines (surface, outline, secondary text) with its `--mat-sys-*` token so one theme change moves every use of that role at once ✅ 05-task-manager — every secondary-text rule (`.filter-text`, `.stat-label`, the table's meta cells) reads `--mat-sys-on-surface-variant`, and `styles.css` keeps custom properties only for roles Material has no token for
 - Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals ✅ 05-task-manager
 - Overlay styling boundary — recognise that dialogs, menus, selects, tooltips, and snack bars render in an overlay container outside the opener's component subtree ✅ 05-task-manager
 
