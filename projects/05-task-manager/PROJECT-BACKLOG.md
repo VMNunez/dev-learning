@@ -9,7 +9,6 @@
 
 ## Tasks
 
-- [ ] **[High]** `[frontend]` — Fix the UTC date bug when creating a task: `task-dialog.ts` builds `createdAt` with `new Date().toISOString().split('T')[0]`, which returns the **UTC** date. Between local midnight and 1–2am in Spain (UTC+1/+2) a task created "today" is stamped with yesterday's date. Build the date from local components (`getFullYear`/`getMonth`/`getDate`) or a date library instead. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Replace `Date.now()` as the task id in `task-dialog.ts` with `crypto.randomUUID()` (or an incrementing counter). Two tasks added within the same millisecond (fast double-click / two tabs) collide on id, and later `editTask`/`deleteTask` then match both rows. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Reconcile the theme palette: PLANNING.md's "Key patterns introduced" documents `mat.$violet-palette`, but `material-theme.scss` uses `mat.$blue-palette` for primary and tertiary. Either switch the code to the violet palette or update PLANNING.md to match the code. (Also the one ⚠️ Shallow item in the learning-objectives pass.) *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Use a consistent token for "secondary text": `task-page.css:76` (`.filter-text`) uses `var(--text-secondary)`, while the same role elsewhere (`task-page.css:22`, `task-table.css:63`) uses `var(--mat-sys-on-surface-variant)`. Align `.filter-text` to the majority token. *(Effort: Small)*
@@ -18,3 +17,25 @@
 - [ ] **[Low]** `[frontend]` — Improve keyboard support on the stat-card filters in `task-page.html`: they are `<div role="button" tabindex="0" (click) (keydown.enter)>`, reachable via Enter but not Space. Use a real `<button>` styled as a card, or also handle `keydown.space`. *(Effort: Small)*
 
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/05-task-manager`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+
+---
+
+## Closed
+
+### Backend
+
+*No backend tasks — Angular-only project.*
+
+### Frontend
+
+#### High
+
+- 2026-09-03 · **[High]** `[frontend]` — `createdAt` built from the local clock instead of `toISOString()` → README "What I learned", coverage javascript/junior (already marked 03-expense-tracker)
+
+#### Medium
+
+*No medium tasks closed yet.*
+
+#### Low
+
+*No low tasks closed yet.*
