@@ -18,15 +18,19 @@ https://05taskmanager.netlify.app/
 
 ## Screenshots
 
-**App overview**
+**Task list with filters and stat cards**
 
 ![App preview](screenshots/preview.png)
+
+**Add/edit task dialog**
+
+*(screenshot — task dialog — to be added)*
 
 ---
 
 ## Features
 
-- List tasks in a Material table with sortable columns
+- List tasks in a table with sortable columns and pagination for long lists
 - Add and edit tasks in a dialog with form validation
 - Delete tasks with a confirmation step
 - Filter tasks by status, priority and name
@@ -40,10 +44,10 @@ https://05taskmanager.netlify.app/
 ## Architecture decisions
 
 - Coordinator pattern on the page to avoid passing the task list through multiple levels — table, filters and dialog all share the same state, and the page is the single place that manages it
-- `MatTableDataSource` instead of a plain array to get sorting and pagination for free — connecting it to `MatSort` in `ngAfterViewInit` is all it takes
-- Dual-mode dialog for add and edit to avoid maintaining two near-identical forms — the dialog checks `MAT_DIALOG_DATA` to decide its mode and calls `patchValue()` in edit mode
-- Reusable `ConfirmDialog` in `shared/` so delete, discard-changes and clear-filters all use the same confirmation component with different text
-- `ErrorStateMatcher` to delay validation errors until submit instead of showing them as soon as a field is touched — better UX for forms the user is still filling in
+- `MatTableDataSource` instead of a plain array to get sorting and pagination without hand-writing them
+- Dual-mode dialog for add and edit to avoid maintaining two near-identical forms that would drift apart
+- Reusable `ConfirmDialog` to give delete and discard-changes one confirmation component with different title, message and button labels
+- `ErrorStateMatcher` to delay validation errors until submit, so a form the user is still filling in does not scold them mid-typing
 
 ---
 
@@ -56,7 +60,6 @@ https://05taskmanager.netlify.app/
 
 ## Future improvements
 
-- Pagination for large task lists
 - Due dates with overdue highlighting
 - Export tasks to CSV
 
@@ -65,24 +68,17 @@ https://05taskmanager.netlify.app/
 ## What I learned
 
 - `MatTableModule` + `MatTableDataSource` — Material table with sorting and filtering
-- `MatSort` + `@ViewChild` + `ngAfterViewInit` — connect sorting to the table after the view loads
+- `MatSort` + `MatPaginator` + `@ViewChild` + `ngAfterViewInit` — connect sorting and pagination to the table after the view loads
 - `MatDialog.open()` + `afterClosed()` — open a dialog and receive data back
-- `MAT_DIALOG_DATA` — inject data passed by the parent into the dialog
-- `MatDialogRef.close(value)` — close the dialog and pass a value back
+- `MAT_DIALOG_DATA` + `MatDialogRef.close(value)` — the dialog's data contract: the parent's data in, the result out on close
 - Test doubles for runtime-minted tokens — `MatDialog.open()` creates `MatDialogRef` and `MAT_DIALOG_DATA`, so the dialog specs provide both with `useValue` instead of opening a real dialog
 - `patchValue()` — pre-fill a reactive form with existing data for edit flows
 - `ErrorStateMatcher` — custom class that controls when `mat-error` appears
-- `NgClass` — apply multiple CSS classes dynamically based on task data
-- `mat.theme()` in `material-theme.scss` — set palette and typography once for the whole app
-- Context-specific themes — scope `mat.theme()` to a CSS class for a different palette per component
-- `--mat-sys-*` CSS variables — Material design tokens for theme-aware colors
-- System token over custom property — a role Material already names (`--mat-sys-on-surface-variant`) is read from the theme, so `styles.css` only declares what Material has no token for
+- `mat.theme()` and `--mat-sys-*` tokens in `material-theme.scss` — palette and typography set once for the whole app, re-scoped to a class for the delete button, with component CSS reading theme roles instead of hard-coded colors
 - Coordinator pattern — page owns all state; child components only display and emit
 - `crypto.randomUUID()` for entity ids — a clock reading collides when two records are created in the same millisecond
 - Local date components over `toISOString()` — `toISOString()` reads the clock in UTC, so a date derived from it shifts the day after local midnight
 - Stored data as untrusted input — `JSON.parse` on a `localStorage` value is wrapped in `try`/`catch` and checked with `Array.isArray` before it reaches the signal, so corrupted storage falls back to an empty list instead of breaking the app
-- CSS grid — `grid-template-columns: 1fr 1fr` for two-column forms; `grid-column: 1 / -1` to span full width
-- `table-layout: fixed` + `.mat-column-*` — control column widths in a Material table
 - Native `<button>` over `role="button"` — the tag supplies Space, Enter and focus; `[attr.aria-pressed]` states which stat-card filter is active
 
 ---
@@ -94,7 +90,33 @@ https://05taskmanager.netlify.app/
 | Framework | Angular 21 |
 | UI library | Angular Material 21 |
 | Language | TypeScript |
-| Styles | CSS |
+| Styles | CSS + SCSS (Material theming) |
+| Storage | `localStorage` |
+| Testing | Vitest |
+
+---
+
+## Project structure
+
+```
+src/app/
+├── app.ts                          root shell, renders the router outlet
+├── app.routes.ts                   single route to the task page
+├── models/
+│   └── task.model.ts               Task interface and its status/priority union types
+└── pages/
+    └── task-page/
+        ├── task-page.ts            coordinator — owns all state and handles child events
+        ├── components/
+        │   ├── task-table/         displays the Material table, emits edit/delete
+        │   ├── task-filters/       status, priority and name filters, emits changes
+        │   ├── task-dialog/        reactive form dialog, add and edit mode
+        │   └── confirm-dialog/     reusable confirmation dialog
+        └── services/
+            └── task.service.ts     signal<Task[]> with CRUD and localStorage persistence
+```
+
+Global styles live in `src/styles.css`; the Material palette and the scoped delete-button theme live in `src/material-theme.scss`.
 
 ---
 
