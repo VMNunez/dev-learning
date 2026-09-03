@@ -9,7 +9,6 @@
 
 ## Tasks
 
-- [ ] **[Medium]** `[frontend]` — The CLI-scaffold specs for both dialogs fail: `confirm-dialog.spec.ts` and `task-dialog.spec.ts` instantiate the component through `TestBed` without providing `MatDialogRef` or `MAT_DIALOG_DATA`, so both throw `NG0201: No provider found for MatDialogRef`. Provide the two tokens the dialogs inject, as project 04 does for its routed pages. *(Effort: Small)* *(raised 2026-09-03 while triaging the «leftover `title` signal» task)*
 - [ ] **[Low]** `[frontend]` — PLANNING § *Pages and components* still describes the pre-Angular-20 file layout: `tasks-page` for the shipped `task-page`, and `*.component` suffixes the CLI no longer generates. Align the tree with the files on disk. *(Effort: Small)* *(raised 2026-09-03 while closing the leftover `title` signal task)*
 
 ---
@@ -28,6 +27,7 @@
 
 #### Medium
 
+- 2026-09-03 · **[Medium]** `[frontend]` — dialog specs provide `MatDialogRef` and `MAT_DIALOG_DATA` as `useValue` doubles → README "What I learned", coverage angular/junior (new bullet + 3 marked)
 - 2026-09-03 · **[Medium]** `[frontend]` — `.filter-text` reads `--mat-sys-on-surface-variant`; dead `--text-secondary` removed → README "What I learned", coverage angular-material/junior (new bullet)
 - 2026-09-03 · **[Medium]** `[frontend]` — PLANNING palette references aligned to the shipped `mat.$blue-palette` → PLANNING (features, patterns, steps), 07 PLANNING §design, junior Angular Q&A
 - 2026-09-03 · **[Medium]** `[frontend]` — task ids from `crypto.randomUUID()`, `Task.id` widened to `string` across 6 sites → README "What I learned", coverage typescript/junior (new bullet), javascript/junior
