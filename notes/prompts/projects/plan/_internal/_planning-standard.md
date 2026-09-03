@@ -318,16 +318,22 @@ One-line decisions. Format: `[what you did] to [why it matters]`. As many as pas
 (the reason already answers "why?" — the same test design check 5 applies to §6 and §20), are
 **distinct** (no two naming the same choice), and stay **one line carrying a reason and not a mechanism**
 (a walkthrough of how the thing works belongs in the README's `What I learned` recall line, not here);
-no fixed number, and never padded to reach one.
+no fixed number, never padded to reach one, and never cut a line that passes all three tests to
+reach one.
 
 ### 20. Tradeoffs to document in the global README
 One-line tradeoffs. Format: `[option chosen] over [option rejected] — [reason]`. As many as name a real
-rejected option with something actually given up; design check 5 applies to every reason here. No fixed
-number.
+rejected option that was available in this project, with something actually given up; design check 5
+applies to every reason here, and "because it is simpler" is not a reason. A bullet with no rejected
+option, or whose rejected option was never an option here, is not a tradeoff: rewrite it, or move it
+to §19. No fixed number.
 
 ### 21. Future improvements
-Domain-realistic only — no AI, no microservices. Each an improvement a user would notice, never a
-developer learning goal. No fixed number.
+Domain-realistic only — no AI, no microservices, no blockchain. Each an improvement a user would
+notice, never a developer learning goal. **And a reader of *this* README would miss it** — the
+improvement's absence is something the app as described visibly lacks; an item that would be a fine
+idea for any app of any kind is not specific to this one and is cut, which is the clause that bounds
+an otherwise unbounded list of good ideas. No fixed number.
 
 ### 22. Git branch strategy
 The branch plan as a table: **Branch · Covers (steps) · Opens · Closes**. Then one line naming the
