@@ -76,6 +76,7 @@ https://05taskmanager.netlify.app/
 - Context-specific themes — scope `mat.theme()` to a CSS class for a different palette per component
 - `--mat-sys-*` CSS variables — Material design tokens for theme-aware colors
 - Coordinator pattern — page owns all state; child components only display and emit
+- Local date components over `toISOString()` — `toISOString()` reads the clock in UTC, so a date derived from it shifts the day after local midnight
 - CSS grid — `grid-template-columns: 1fr 1fr` for two-column forms; `grid-column: 1 / -1` to span full width
 - `table-layout: fixed` + `.mat-column-*` — control column widths in a Material table
 
