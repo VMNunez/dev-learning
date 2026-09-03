@@ -4,7 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
 import { EmployeeService } from '../../core/services/employee.service';
-import type { Employee } from '../../models/employee.model';
+import { isEmployeeStatusFilter } from '../../models/employee.model';
+import type { Employee, EmployeeStatusFilter } from '../../models/employee.model';
 import { EmployeeTable } from './components/employee-table/employee-table';
 import { EmployeeFilters } from './components/employee-filters/employee-filters';
 import { DepartmentService } from '../../core/services/department.service';
@@ -27,7 +28,7 @@ export class EmployeePage implements OnInit {
   departments = this.departmentService.departments;
   searchTerm = signal<string>('');
   selectedDepartment = signal<string>('');
-  selectedStatus = signal<string>('');
+  selectedStatus = signal<EmployeeStatusFilter>('');
   filteredEmployees = computed(() => {
     return this.employees().filter((employee) => {
       const searchTermMatch =
@@ -55,7 +56,7 @@ export class EmployeePage implements OnInit {
   ngOnInit(): void {
     const initialStatus = this.route.snapshot.queryParamMap.get('status');
 
-    if (initialStatus) {
+    if (isEmployeeStatusFilter(initialStatus)) {
       this.selectedStatus.set(initialStatus);
     }
   }
@@ -68,7 +69,7 @@ export class EmployeePage implements OnInit {
     this.selectedDepartment.set(department);
   }
 
-  updateStatus(status: string) {
+  updateStatus(status: EmployeeStatusFilter) {
     this.selectedStatus.set(status);
   }
 
