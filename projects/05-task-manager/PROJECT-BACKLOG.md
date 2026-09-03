@@ -9,9 +9,9 @@
 
 ## Tasks
 
-- [ ] **[Low]** `[frontend]` — Remove the leftover CLI-scaffold `title` signal in `app.ts:10-11` (and its `signal` import); `app.html` renders only `<router-outlet />`, so it is dead code. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — The CLI-scaffold specs for both dialogs fail: `confirm-dialog.spec.ts` and `task-dialog.spec.ts` instantiate the component through `TestBed` without providing `MatDialogRef` or `MAT_DIALOG_DATA`, so both throw `NG0201: No provider found for MatDialogRef`. Provide the two tokens the dialogs inject, as project 04 does for its routed pages. *(Effort: Small)* *(raised 2026-09-03 while triaging the «leftover `title` signal» task)*
 - [ ] **[Low]** `[frontend]` — Improve keyboard support on the stat-card filters in `task-page.html`: they are `<div role="button" tabindex="0" (click) (keydown.enter)>`, reachable via Enter but not Space. Use a real `<button>` styled as a card, or also handle `keydown.space`. *(Effort: Small)*
+- [ ] **[Low]** `[frontend]` — PLANNING § *Pages and components* still describes the pre-Angular-20 file layout: `tasks-page` for the shipped `task-page`, and `*.component` suffixes the CLI no longer generates. Align the tree with the files on disk. *(Effort: Small)* *(raised 2026-09-03 while closing the leftover `title` signal task)*
 
 ---
 
@@ -35,5 +35,6 @@
 
 #### Low
 
+- 2026-09-03 · **[Low]** `[frontend]` — CLI-scaffold `title` signal and its stale `should render title` spec removed → coverage architecture/junior (new bullet, marked), PLANNING component tree
 - 2026-09-03 · **[Low]** `[frontend]` — `How to run` clone path corrected from `angular/` to `projects/` → README
 - 2026-09-03 · **[Low]** `[frontend]` — `localStorage` read parsed in `try`/`catch` and shape-checked with `Array.isArray` → README "What I learned", PLANNING key patterns (coverage javascript/typescript junior already marked)
