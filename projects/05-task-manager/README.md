@@ -103,7 +103,7 @@ git clone https://github.com/VMNunez/dev-learning.git
 ```
 
 ```
-cd dev-learning/angular/05-task-manager
+cd dev-learning/projects/05-task-manager
 ```
 
 ```
