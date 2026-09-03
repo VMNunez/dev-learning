@@ -65,6 +65,7 @@ https://06-hr-portal.netlify.app
 - Leave-request transitions guarded in `LeaveRequestService` rather than in the template that hides the buttons — the template only decides what is drawn, so a rule that lives there is bypassed by every other caller and the invalid state still reaches localStorage
 - The leave-request filter's permitted values declared once as an `as const` list with the union derived from it — the dropdown's options, the runtime check and the type are one declaration, so adding a status cannot leave the guard rejecting it
 - The status union carried into the filter child's `input()` and `output()` rather than left as `string` — a value validated at the query-param read re-widens at the component boundary otherwise, and the compiler stops rejecting a filter no record can match
+- The employee dialog closes with the same `Omit<Employee, 'id'>` payload in both modes and the page re-stamps the id it already holds — a union of two result shapes would compile only by making every caller narrow it, and the id is the row's, never the form's
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
 - A credential-free session shape in localStorage — only the email and role the app reads back, re-projected on read so an entry saved by an older build drops its password
 
