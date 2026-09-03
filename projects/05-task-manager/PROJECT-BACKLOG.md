@@ -9,7 +9,7 @@
 
 ## Tasks
 
-- [ ] **[Low]** `[frontend]` — PLANNING § *Pages and components* still describes the pre-Angular-20 file layout: `tasks-page` for the shipped `task-page`, and `*.component` suffixes the CLI no longer generates. Align the tree with the files on disk. *(Effort: Small)* *(raised 2026-09-03 while closing the leftover `title` signal task)*
+*No open tasks.*
 
 ---
 
@@ -34,6 +34,7 @@
 
 #### Low
 
+- 2026-09-03 · **[Low]** `[frontend]` — PLANNING component tree realigned with the files on disk → PLANNING (Pages and components, State management)
 - 2026-09-03 · **[Low]** `[frontend]` — stat-card filters are native `<button>` toggles with `aria-pressed`, not `role="button"` divs → README "What I learned", `_cross-topic-inbox.md` HTML proposal (marker owed), css/junior already marked
 - 2026-09-03 · **[Low]** `[frontend]` — CLI-scaffold `title` signal and its stale `should render title` spec removed → coverage architecture/junior (new bullet, marked), PLANNING component tree
 - 2026-09-03 · **[Low]** `[frontend]` — `How to run` clone path corrected from `angular/` to `projects/` → README
