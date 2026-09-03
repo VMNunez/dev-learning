@@ -45,9 +45,12 @@ https://05taskmanager.netlify.app/
 
 - Coordinator pattern on the page to avoid passing the task list through multiple levels — table, filters and dialog all share the same state, and the page is the single place that manages it
 - `MatTableDataSource` instead of a plain array to get sorting and pagination without hand-writing them
+- Filtering as a `computed()` in the coordinator instead of `MatTableDataSource.filterPredicate` to keep three independent criteria and the stat-card counts reading one derived list
 - Dual-mode dialog for add and edit to avoid maintaining two near-identical forms that would drift apart
 - Reusable `ConfirmDialog` to give delete and discard-changes one confirmation component with different title, message and button labels
+- `effect()` in the service so persistence follows state automatically — no component calls a save method, so no path can forget to
 - `ErrorStateMatcher` to delay validation errors until submit, so a form the user is still filling in does not scold them mid-typing
+- Scoped Material theme in `material-theme.scss` instead of overriding Material's CSS to keep the delete button's red inside the theme system, where a palette change still reaches it
 
 ---
 
@@ -75,11 +78,15 @@ https://05taskmanager.netlify.app/
 - `patchValue()` — pre-fill a reactive form with existing data for edit flows
 - `ErrorStateMatcher` — custom class that controls when `mat-error` appears
 - `mat.theme()` and `--mat-sys-*` tokens in `material-theme.scss` — palette and typography set once for the whole app, re-scoped to a class for the delete button, with component CSS reading theme roles instead of hard-coded colors
+- `signal()` and `computed()` — writable state and derived values; the filtered list and the stat-card counts are computed from the task signal, never stored twice
+- `input()` and `output()` — signal-based component API: data down from the parent, events up from the child
+- `effect()` — bridge a signal to a non-reactive API; it writes the task list to `localStorage` and pushes it into `MatTableDataSource`
 - Coordinator pattern — page owns all state; child components only display and emit
 - `crypto.randomUUID()` for entity ids — a clock reading collides when two records are created in the same millisecond
 - Local date components over `toISOString()` — `toISOString()` reads the clock in UTC, so a date derived from it shifts the day after local midnight
 - Stored data as untrusted input — `JSON.parse` on a `localStorage` value is wrapped in `try`/`catch` and checked with `Array.isArray` before it reaches the signal, so corrupted storage falls back to an empty list instead of breaking the app
 - Native `<button>` over `role="button"` — the tag supplies Space, Enter and focus; `[attr.aria-pressed]` states which stat-card filter is active
+- `LiveAnnouncer` — CDK service that announces the new sort direction to screen readers, which get no visual arrow
 
 ---
 
