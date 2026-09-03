@@ -168,8 +168,10 @@ A new request is always created as `pending`; the creator cannot choose its stat
 ```
 
 `pending` is the only state with outgoing transitions, and both `approved` and `rejected` are
-deliberately terminal — a decided request is history, so there is no re-open path and the approve /
-reject buttons render only while `status === 'pending'`.
+deliberately terminal — a decided request is history, so there is no re-open path. The rule is enforced
+in `LeaveRequestService.updateStatus()`, which refuses any move out of a non-`pending` state and any
+move back into `pending`, and reports the refusal to its caller; the approve / reject buttons rendering
+only while `status === 'pending'` is presentation of that rule, not the rule itself.
 
 ### Employee status
 
@@ -256,6 +258,7 @@ validation and `MatSnackBar` feedback instead.
 |---|---|
 | Core/Feature/Shared layering | `core/` singletons, `pages/` features, `shared/` reusable UI, top-level `models/` for the domain interfaces |
 | Coordinator page component | Filter + table pages own the state; the table and dialog stay presentational |
+| Workflow invariant in the owning service | `LeaveRequestService.updateStatus()` refuses a transition out of a decided request and returns whether it applied, so the page's snackbar reports the real outcome |
 | `CanActivateFn` | `auth-guard.ts` and `admin-guard.ts` |
 | Guest guard (`CanActivateFn` inverted) | `no-auth-guard.ts` on `login` — bounces an already-authenticated session to `/dashboard` |
 | `router.createUrlTree(['/login'])` | Redirect from a guard |
