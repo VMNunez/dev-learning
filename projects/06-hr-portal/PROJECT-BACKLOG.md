@@ -36,6 +36,8 @@ portfolio-ready.
 - [ ] **[Low]** `[frontend]` — Decide and document one add/edit mechanism: `department-page` uses a routed form (`department-form`) while `employee-page` and `leave-request-page` use a `MatDialog` for the same job. Both are defensible — the routed form is what makes the `CanDeactivate` guard demonstrable — so if it stays, note the reason in PLANNING rather than leaving it looking accidental. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Drop the non-null assertions in `login-page.ts:47-50` (`formValue.email!`). Safe today behind the `if (this.loginForm.valid)` guard, but a typed getter would narrow the value without the `!`. *(Effort: Small)*
 
+- [ ] **[Low]** `[frontend]` — Guard the `localStorage` read in `auth.service.ts:21`: `JSON.parse(localStorage.getItem('currentUser') ?? 'null')` runs in a **field initializer**, so a corrupt or truncated value makes `JSON.parse` throw while Angular is constructing the root `AuthService` — the whole app fails to bootstrap and renders a blank page, and because the bad value stays in storage the failure survives every reload. The `?? 'null'` fallback only covers a *missing* key, never an invalid one. Wrap the parse and fall back to `null`. *(Effort: Small)* *(raised 2026-09-03 while triaging the plaintext-password task)*
+
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/06-hr-portal`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
 
 ---
