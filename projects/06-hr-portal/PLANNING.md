@@ -287,6 +287,7 @@ validation and `MatSnackBar` feedback instead.
 | `MatSnackBar` | Feedback after every CRUD action |
 | `MatStepper` with `[stepControl]` | Multi-step employee creation form |
 | Validation at the form's save exit | A linear stepper re-enters a completed step from its header, so a rule checked only in the `Next` handler never runs |
+| Service-owned id generation | The owning service takes the entity without its id and stamps `crypto.randomUUID()` — a clock reading collides inside one millisecond, and a caller-built entity spreads the rule across every caller |
 
 ---
 
