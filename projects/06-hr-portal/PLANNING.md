@@ -228,7 +228,9 @@ cross-project identity contrast is on record to compare against.
 the token pair only tints it), so no meaning is carried by colour alone; there are no icon-only buttons
 in the app, so no icon needs a label; focus is Material's default ring, kept visible by the app-shell
 override `a.active:focus:not(:hover)::before { opacity: 0 }`, which suppresses the *hover* wash and not
-the focus ring.
+the focus ring — except the dashboard stat cards, whose wrapping anchor has no Material ring of its own
+and declares a `:focus-visible` outline in `dashboard-page.css`. Every navigating surface is an `<a>`, so
+each one is reachable with Tab and announced as a link.
 
 **Motion:** none beyond Material's own component transitions — nothing loops, so there is no motion
 budget to honour and no `prefers-reduced-motion` block to write.
@@ -286,6 +288,7 @@ validation and `MatSnackBar` feedback instead.
 | Conditional `displayColumns` with `computed()` | Change columns based on role — never use `@if` on `ng-container matColumnDef` |
 | `ActivatedRoute.snapshot.queryParamMap.get()` | Read query params on load |
 | `[queryParams]` on `routerLink` | Pre-apply a filter when navigating |
+| A navigating surface is an `<a>` | `routerLink` writes an `href` only on an anchor, so the dashboard stat cards wrap their `mat-card` in `<a class="stat-card-link">` — the tab stop, the `link` role and the context menu all follow from the `href`, never from the click handler |
 | `MatSidenav` app shell | Fixed toolbar + sidebar + scrollable content area |
 | `routerLinkActive="active"` + `#rla` | Highlight the active nav link |
 | Active link focus fix | `a.active:focus:not(:hover)::before { opacity: 0 }` |
