@@ -93,6 +93,7 @@ https://06-hr-portal.netlify.app
 - `MatSnackBar` — toast notifications after every key action
 - `MatSidenav` app shell — persistent sidebar with role-filtered navigation links
 - `MatDatepicker` — calendar picker with `provideNativeDateAdapter()`
+- Local-clock date serialization — `toISOString()` shifts a picked date to UTC, so `YYYY-MM-DD` is built from `getFullYear`/`getMonth`/`getDate`
 - Conditional `displayColumns` with `computed()` — show or hide table columns based on role
 - Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap`
 - Auth persistence — `signal()` initialised from localStorage + `effect()` to save on every change
