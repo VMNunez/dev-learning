@@ -61,6 +61,7 @@ https://06-hr-portal.netlify.app
 - `CanDeactivate` only on the department form — the only place where accidental data loss is a real risk
 - `filteredNavLinks computed()` in the root component to keep sidebar links in sync with the current user without duplicating role checks in children
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
+- A credential-free session shape in localStorage — only the email and role the app reads back, re-projected on read so an entry saved by an older build drops its password
 
 ---
 
