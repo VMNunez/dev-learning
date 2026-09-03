@@ -278,6 +278,7 @@ validation and `MatSnackBar` feedback instead.
 | Dual-mode dialog | Same dialog handles add and edit via `MAT_DIALOG_DATA` check |
 | `inject<Type \| undefined>(MAT_DIALOG_DATA)` | Optional dialog data injection |
 | `dialogRef.close(true)` | Return boolean from confirmation dialog |
+| `dialog.open<T, D, R>` parameterized | The dialog's result type is named at the call site and on the dialog's own `MatDialogRef`, so `afterClosed()` is checked instead of yielding `any` |
 | Multiple filter signals + `computed()` | Chain filters with `&&`; `'all'` as no-filter default |
 | `MatDatepicker` + `provideNativeDateAdapter()` | Date input with calendar popup |
 | Control typed to what its accessor writes | `startDate` and `endDate` are `FormControl<Date \| null>`, the type `MatDatepickerInput` actually sets, so the submit reads them without an `as unknown as Date` |
