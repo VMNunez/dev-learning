@@ -5,12 +5,14 @@ import type { Task } from '../../../models/task.model';
   providedIn: 'root',
 })
 export class TaskService {
+  private readonly STORAGE_KEY = 'tasks';
+
   members = ['Ana', 'Carlos', 'María', 'David', 'Laura'];
-  tasks = signal<Task[]>(JSON.parse(localStorage.getItem('tasks') ?? '[]'));
+  tasks = signal<Task[]>(this.loadTasks());
 
   constructor() {
     effect(() => {
-      localStorage.setItem('tasks', JSON.stringify(this.tasks()));
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.tasks()));
     });
   }
 
@@ -26,5 +28,24 @@ export class TaskService {
     this.tasks.update((tasks) =>
       tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)),
     );
+  }
+
+  private loadTasks(): Task[] {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    if (!data) return [];
+
+    try {
+      const parsed: unknown = JSON.parse(data);
+
+      if (!Array.isArray(parsed)) {
+        console.error('Stored tasks are not an array; starting empty.', parsed);
+        return [];
+      }
+
+      return parsed;
+    } catch (error) {
+      console.error('Stored tasks could not be parsed; starting empty.', error);
+      return [];
+    }
   }
 }
