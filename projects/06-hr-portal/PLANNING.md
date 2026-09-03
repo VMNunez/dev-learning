@@ -98,6 +98,7 @@ src/app/
 | `dialogRef.close(true)` | Return boolean from confirmation dialog |
 | Multiple filter signals + `computed()` | Chain filters with `&&`; `'all'` as no-filter default |
 | `MatDatepicker` + `provideNativeDateAdapter()` | Date input with calendar popup |
+| Local-clock date serialization | `toISOString()` returns the UTC day — build `YYYY-MM-DD` from `getFullYear`/`getMonth`/`getDate` |
 | Conditional `displayColumns` with `computed()` | Change columns based on role — never use `@if` on `ng-container matColumnDef` |
 | `ActivatedRoute.snapshot.queryParamMap.get()` | Read query params on load |
 | `[queryParams]` on `routerLink` | Pre-apply a filter when navigating |
