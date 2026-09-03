@@ -149,6 +149,7 @@ than from input. The status transition — the one write over a record the emplo
 | Department | `name` and `description` required |
 | Leave request | `startDate`, `endDate` and `reason` required; dates serialized from the local clock as `YYYY-MM-DD` |
 | Any dirty routed form | leaving it must be confirmed — `deactivateGuard` on the department form |
+| Any status filter read from the URL | the value is checked against the permitted list before it is applied and the filter falls back to `all` otherwise — a query param is outside input the app controls, so it is validated at the read rather than asserted into the union |
 
 ### Leave request state machine
 
@@ -259,6 +260,7 @@ validation and `MatSnackBar` feedback instead.
 | Core/Feature/Shared layering | `core/` singletons, `pages/` features, `shared/` reusable UI, top-level `models/` for the domain interfaces |
 | Coordinator page component | Filter + table pages own the state; the table and dialog stay presentational |
 | Workflow invariant in the owning service | `LeaveRequestService.updateStatus()` refuses a transition out of a decided request and returns whether it applied, so the page's snackbar reports the real outcome |
+| Closed value set declared once | `LEAVE_REQUEST_FILTERS` is an `as const` list; its union is derived from it and its members feed the guard and the filter dropdown, so the runtime allow-list and the type cannot drift apart |
 | `CanActivateFn` | `auth-guard.ts` and `admin-guard.ts` |
 | Guest guard (`CanActivateFn` inverted) | `no-auth-guard.ts` on `login` — bounces an already-authenticated session to `/dashboard` |
 | `router.createUrlTree(['/login'])` | Redirect from a guard |
