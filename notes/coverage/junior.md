@@ -927,6 +927,13 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   itself becomes part of the workflow's invariants ✅ 07-timetrack — `UserService.update` refuses a
   promotion to MANAGER while the user still holds DRAFT or REJECTED entries, whose submit and reopen
   transitions are EMPLOYEE-only
+- Enforcement lives with the state's owner — a transition rule expressed only in the view that hides
+  the unavailable action is not enforced at all, because the component or service that owns the state
+  still accepts that move from any other caller and persists it; conditional rendering removes the
+  button, while a guard in the owner removes the transition ✅ 06-hr-portal — `LeaveRequestService.updateStatus` refuses any move whose current status is not `pending`, the rule the table's `@if (request.status === 'pending')` was the only thing expressing
+- A refused transition has to be observable to its caller — a guard that leaves the state unchanged and
+  says nothing lets the caller report the success it assumed, so the operation answers whether it
+  applied and the caller's feedback branches on that answer rather than on having been called ✅ 06-hr-portal — `updateStatus` returns a `boolean` and `LeaveRequestPage.onStatusChange` shows "Only a pending request can be approved or rejected" when it is `false`
 
 ### Boundary patterns in maintained code
 
