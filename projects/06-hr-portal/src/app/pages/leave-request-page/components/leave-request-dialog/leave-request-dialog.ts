@@ -6,6 +6,16 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { toLocalDateString } from '../../../../shared/utils/date.util';
+import type { LeaveRequest } from '../../../../models/leave-request.model';
+
+/**
+ * What the dialog closes with. Derived from the domain model rather than restated,
+ * so a new field on `LeaveRequest` cannot silently bypass this form.
+ *
+ * `id` and `status` are the service's to stamp; `employeeEmail` is taken from the
+ * session by the page, never from a form field.
+ */
+export type LeaveRequestFormResult = Omit<LeaveRequest, 'id' | 'status' | 'employeeEmail'>;
 
 @Component({
   selector: 'app-leave-request-dialog',
@@ -22,7 +32,7 @@ import { toLocalDateString } from '../../../../shared/utils/date.util';
   styleUrl: './leave-request-dialog.css',
 })
 export class LeaveRequestDialog {
-  private dialogRef = inject(MatDialogRef<LeaveRequestDialog>);
+  private dialogRef = inject(MatDialogRef<LeaveRequestDialog, LeaveRequestFormResult>);
   today = new Date();
 
   newLeaveRequest = new FormGroup({

@@ -4,6 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestDialog } from './components/leave-request-dialog/leave-request-dialog';
+import type { LeaveRequestFormResult } from './components/leave-request-dialog/leave-request-dialog';
 import { LeaveRequestTable } from './components/leave-request-table/leave-request-table';
 import { isLeaveRequestFilter } from '../../models/leave-request.model';
 import type { LeaveRequestFilter, LeaveRequestStatus } from '../../models/leave-request.model';
@@ -68,10 +69,13 @@ export class LeaveRequestPage implements OnInit {
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(LeaveRequestDialog, {
-      width: '500px',
-      autoFocus: false,
-    });
+    const dialogRef = this.dialog.open<LeaveRequestDialog, undefined, LeaveRequestFormResult>(
+      LeaveRequestDialog,
+      {
+        width: '500px',
+        autoFocus: false,
+      },
+    );
 
     dialogRef.afterClosed().subscribe({
       next: (data) => {
