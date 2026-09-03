@@ -49,7 +49,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type ✅ 05-task-manager
-- Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
+- Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance ✅ 05-task-manager — the dialog specs bind both runtime tokens with `useValue`, one carrying a full `ConfirmDialogData` and the other `null` for the create case
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
@@ -160,8 +160,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
 - `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies ✅ 04-meal-finder — each page spec adds exactly the providers its unit injects (`provideRouter([])` for the routed pages, plus `provideHttpClient()` for the two that call the API), where the scaffold suite failed on `NG0201: No provider found for ActivatedRoute`
+- Runtime-supplied injection tokens in tests — recognise that a value the framework mints when it creates the unit, such as a dialog's reference and its data token, is provided by no module, so a spec that mounts the unit alone must supply it as a double rather than importing more of the library ✅ 05-task-manager — `confirm-dialog.spec.ts` and `task-dialog.spec.ts` register `MatDialogRef` and `MAT_DIALOG_DATA` themselves, where mounting the dialogs alone threw `NG0201: No provider found for MatDialogRef`
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
-- Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation
+- Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation ✅ 05-task-manager — the injected `MatDialogRef` double is a `vi.fn()` `close`, asserted to receive `true` on confirm and the built task only once the form is valid
 - HTTP tests with `provideHttpClientTesting()` — intercept a request with `HttpTestingController`, assert method, URL, and body, then flush the intended response
 - `provideHttpClientTesting()` vs `HttpClientTestingModule` — use the standalone provider in current code and recognise the deprecated module-based setup in older suites
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
