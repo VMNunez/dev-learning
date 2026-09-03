@@ -148,6 +148,7 @@ than from input. The status transition — the one write over a record the emplo
 | Employee | `email` unique across employees — checked at the form's **save exit**, not in the `Next` handler, because a linear stepper can re-enter a completed step from its header; a duplicate sets `duplicateEmail` on the control |
 | Department | `name` and `description` required |
 | Leave request | `startDate`, `endDate` and `reason` required; dates serialized from the local clock as `YYYY-MM-DD` |
+| Any form field | its `mat-error` renders only once the control is `touched` — a `required` validator fails from construction, so a message gated on validity alone accuses the user before the field has been reached |
 | Any dirty routed form | leaving it must be confirmed — `deactivateGuard` on the department form |
 | Any status filter read from the URL | the value is checked against the permitted list before it is applied and the filter falls back to its no-filter default otherwise (`all` on leave requests, `''` on employees) — a query param is outside input the app controls, so it is validated at the read rather than asserted into the union |
 
