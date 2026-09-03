@@ -120,6 +120,12 @@ apply in a small codebase, and defend with concrete trade-offs.
   value is normalised and checked before it crosses the boundary, so the parent and every later
   listener receive a value already fit to use; deferring that check to the consumer makes each new
   listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
+- A rule enforced inside a control's event handler is only as strong as the number of paths that reach
+  that control — a multi-step form whose navigation offers a second route to the same save leaves the
+  rule unchecked, so the guard belongs at the single exit where the data leaves the boundary and the
+  handler keeps only the earlier feedback ✅ 06-hr-portal — `EmployeeDialog.hasDuplicateEmail()` runs from
+  both `onNext` and `onSubmit`, because the linear stepper's step-2 header reaches the save without the
+  Next button
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
