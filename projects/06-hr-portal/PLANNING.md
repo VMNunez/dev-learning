@@ -111,6 +111,7 @@ src/app/
 | Signal reference vs snapshot | Store `service.signal` (no `()`), not `service.signal()` |
 | `MatSnackBar` | Feedback after every CRUD action |
 | `MatStepper` with `[stepControl]` | Multi-step employee creation form |
+| Validation at the form's save exit | A linear stepper re-enters a completed step from its header, so a rule checked only in the `Next` handler never runs |
 
 ---
 
