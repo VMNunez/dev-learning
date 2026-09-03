@@ -40,9 +40,10 @@ and `_topic-ownership.md` before editing anything.** They own the marker's forma
 contract, and topic boundary.
 
 This skill only ever *appends a marker to an existing bullet*. It never writes, rewords, or deletes a
-bullet. If the concept has no bullet, that is `coverage-bullet-add`'s job (or `/coverage`) — say so and
-stop; do not author scope here. The calling ritual runs that skill *before* this one, so a missing bullet at
-this point usually means it was deliberately not authored.
+bullet — authoring belongs to `coverage-bullet-add` (or `/coverage`), and nothing below changes that. A
+concept the **caller passed** with no bullet is that skill's decision, taken minutes ago: name it and
+stop. One the **§2b sweep** found was never seen by it, and §2b routes it there rather than reporting it
+into a session that ends.
 
 ---
 
@@ -78,8 +79,12 @@ Open `notes/{topic}/coverage/{junior|middle|senior}.md` for the level in questio
 concept's key symbol, not the wording of the step or task. Then:
 
 - **One clear match** — normal case, proceed.
-- **No match** — the concept is not in coverage. Report it as unmarked and name it; the calling ritual's
-  coverage step decides whether it is a genuine gap. Never invent the bullet to have something to mark.
+- **No match** — the concept is not in coverage. **When a ritual called you**, this branch is for the
+  concepts it passed: `coverage-bullet-add` ran on every one of them minutes ago and left this one bare
+  — declined, routed to `_cross-topic-inbox.md`, or stopped at its scaffolding gate. Report it as
+  unmarked, name it, say which of the three, and do not route it back; that re-litigates a decision
+  already taken. On the **direct** path no adder ran at all, so treat it exactly as §2b treats a swept
+  concept. Never invent the bullet to have something to mark.
 - **Several plausible matches** — mark only the bullet whose *concept* the code demonstrates, not every
   bullet in the neighbourhood. A step that used `@Transactional` demonstrates declarative transaction
   boundaries; it does not demonstrate proxy-based annotation behaviour just because the same proxy is
@@ -119,6 +124,25 @@ standard-library type it uses: **is there a bullet for this, and is it still unm
 - **Report the swept marks as their own rows**, labelled so the caller can see which ones it did not
   pass in. That visibility is the point: a ritual that silently found extra bullets teaches the caller
   nothing about what it was failing to notice.
+
+**A swept concept with no bullet is authored, not reported.** The ritual's authoring step ran *before*
+this one and will not run again, so "report it and let the caller decide" hands the finding to a step
+that has already closed, and the chat does not survive the session — the same failure
+`backlog-task-close`'s "Incidental findings" section already fixed for defects.
+
+- **Draft the bullet before invoking.** Write the sentence as it would appear in the level file, then
+  look at it. If what comes out is a method or an API name, it was not a concept — drop it and say so.
+  If it reads as something someone at this level must understand, invoke `coverage-bullet-add` with it,
+  and mark it here normally. This bar sits **on top of** the adder's step-3 filter, not in place of it:
+  **two authored bullets on a large diff is a lot, and zero is the normal result** — a sweep that
+  authors freely is how a level file inflates, which is what the older prohibition held.
+- **First project still wins.** The construct may pre-date this diff. If you already know an earlier
+  project demonstrates it, the marker and its clause name **that** project and say where you saw it;
+  never open a search across projects to find out — that is the backfill this skill refuses to start
+  mid-ritual, and a marker for the current project would falsely date the first demonstration.
+- **Carry back what the adder owes.** If `coverage-bullet-add` reports a `/notes-plan {topic} {LEVEL}`
+  remap for the bullet it just wrote, that debt reaches the session only through your §5 report — put it
+  in a row of its own. A ritual that never passed the concept in has no other way to learn it exists.
 
 If the sweep finds nothing, say **"nothing further in the diff"** rather than staying silent — an
 unstated sweep is indistinguishable from a skipped one.
@@ -196,9 +220,11 @@ One row per concept, inside the calling ritual's report table when there is one:
 |---|---|---|
 | declarative transaction boundaries | `spring` / junior | marked ✅ 07-timetrack — "every service write method carries `@Transactional`, reads `readOnly = true`" (topic + mirror, 24/139 marked) |
 | proxy-based annotation behaviour | `spring` / junior | already marked ✅ 06-hr-portal — left as is, clause not backfilled |
-| BOLA on the mutation endpoints | `security` / junior | not marked — no bullet exists yet, flagged as a possible gap |
+| BOLA on the mutation endpoints | `security` / junior | not marked — no bullet, and this run's `coverage-bullet-add` declined it; named, not re-routed |
 | fail-fast manual checks | `spring-boot` / junior | not marked — DECISION, no code change |
 | *(swept)* `Records` | `java` / junior | marked ✅ 07-timetrack — the private `Attempts(int, Instant)` carrier — found by the step-2b sweep, not passed in |
+| *(swept)* fixed-width numeric formatting | `javascript` / junior | bullet authored via `coverage-bullet-add`, then marked ✅ 03-expense-tracker — `padStart(2, '0')` on the amount fields — already known to be the first project to do it, so the marker is 03's and not this close's |
+| *(swept)* `Optional.ofNullable` | `java` / junior | drafted and dropped — the sentence came out as an API name, not a concept |
 
 Rows the step-2b sweep found carry a `*(swept)*` marker so the caller can see what it did not pass in;
 when the sweep found nothing, say so in a row of its own.
@@ -218,6 +244,10 @@ The commit boundary depends on what this run wrote:
 - **Marker only** — one atomic marking commit, separate from an earlier authoring commit.
 - **Bullet + marker in the same run** — the calling `step-complete` or `backlog-task-close` ritual folds
   authoring and marking into one coverage commit.
+- **A bullet the §2b sweep authored** — it belongs to *this* run, so you carry it: `coverage-bullet-add`
+  does not commit on this path. Stage its bullet in both copies, `_run-tracker.md` and `PROGRESS.md`
+  alongside your marker — under a calling ritual that is the run's one coverage commit; on the direct
+  path you make it yourself.
 
 ```
 docs(coverage): mark <concept> as demonstrated in project NN
