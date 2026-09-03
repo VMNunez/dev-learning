@@ -20,7 +20,7 @@ sorting, pagination, and delete confirmation. Built with Angular Material.
 - Delete a task with a confirmation dialog
 - Filter tasks by status and priority
 - Live stat cards showing counts per status
-- Custom purple theme via `mat.theme()`
+- Custom blue theme via `mat.theme()`
 
 ---
 
@@ -69,7 +69,7 @@ app/
 | Pattern | Where used |
 |---|---|
 | `mat.theme()` | Global and scoped Material theming |
-| `mat.$violet-palette` | Replace default palette without CSS overrides |
+| `mat.$blue-palette` | Replace the default palette without CSS overrides |
 | `--mat-sys-*` CSS variables | Material design tokens (color, surface, typography) |
 | `MatTableModule` | `mat-table`, `matColumnDef`, `*matCellDef`, `*matHeaderCellDef` |
 | `MatTableDataSource` | Handles sorting, filtering, pagination automatically |
@@ -96,7 +96,7 @@ app/
 ## Learning steps
 
 1. Set up Angular Material with `ng add @angular/material`
-2. Create `material-theme.scss` with `mat.theme()` and the violet palette
+2. Create `material-theme.scss` with `mat.theme()` and the blue palette
 3. Define the `Task` interface and build `TaskService` with a signal
 4. Build the coordinator page with `MatTableDataSource`, sort, and paginator
 5. Build `task-table` as a dumb component — column definitions, sort headers, action buttons
