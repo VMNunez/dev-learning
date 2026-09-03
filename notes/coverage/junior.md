@@ -47,6 +47,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves ✅ 01-todo-list
 - `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton ✅ 01-todo-list
 - `inject()` — obtain a dependency in an injection context without a constructor parameter, the style current Angular code prefers ✅ 01-todo-list
+- Injection context — recognise that `inject()` and the APIs built on it, such as `takeUntilDestroyed()`, resolve their dependency only while a class is being constructed, so calling one from a method needs the reference captured as a field and passed explicitly ✅ 06-hr-portal — `LoginPage` injects `DestroyRef` as a field and passes it to `takeUntilDestroyed(this.destroyRef)` inside `onSubmit`, where the implicit form would throw
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type ✅ 05-task-manager
