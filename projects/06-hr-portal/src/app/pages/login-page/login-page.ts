@@ -28,9 +28,18 @@ export class LoginPage {
   isLoading = signal<boolean>(false);
   hasError = signal<boolean>(false);
 
+  // `nonNullable` makes `reset()` restore `''` instead of `null`, which is what an
+  // empty credential field actually means — and it is what lets the submit read the
+  // values without asserting the `null` away.
   loginForm = new FormGroup({
-    email: new FormControl<string>('', [Validators.required, Validators.email]),
-    password: new FormControl<string>('', [Validators.required, Validators.minLength(8)]),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8)],
+    }),
   });
 
   get email() {
@@ -47,7 +56,7 @@ export class LoginPage {
 
     if (this.loginForm.valid) {
       this.isLoading.set(true);
-      const formValue = this.loginForm.value;
+      const { email, password } = this.loginForm.getRawValue();
 
       // Fake latency, standing in for the backend call this page will make later.
       // `takeUntilDestroyed` unsubscribes when the page is destroyed, so a login left
@@ -56,7 +65,7 @@ export class LoginPage {
       timer(1000)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
-          this.authService.login(formValue.email!, formValue.password!);
+          this.authService.login(email, password);
           if (this.authService.isLoggedIn()) {
             this.router.navigate(['/dashboard']);
           } else {
