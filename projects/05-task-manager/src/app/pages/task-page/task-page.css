@@ -73,7 +73,7 @@
 .filter-text {
   visibility: hidden;
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .filter-text.filter-text-active {
