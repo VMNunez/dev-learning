@@ -17,14 +17,14 @@ export class LeaveRequestService {
     this.leaveRequests.update((leaveRequests) => [
       ...leaveRequests,
       {
-        id: Date.now(),
+        id: crypto.randomUUID(),
         status: 'pending',
         ...newLeaveRequest,
       },
     ]);
   }
 
-  updateStatus(id: number, newStatus: LeaveRequestStatus) {
+  updateStatus(id: string, newStatus: LeaveRequestStatus) {
     this.leaveRequests.update((leaveRequests) => {
       return leaveRequests.map((leaveRequest) => {
         if (leaveRequest.id === id) {

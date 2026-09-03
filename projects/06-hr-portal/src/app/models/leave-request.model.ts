@@ -1,7 +1,7 @@
 export type LeaveRequestStatus = 'pending' | 'approved' | 'rejected';
 
 export interface LeaveRequest {
-  id: number;
+  id: string;
   employeeEmail: string;
   startDate: string;
   endDate: string;

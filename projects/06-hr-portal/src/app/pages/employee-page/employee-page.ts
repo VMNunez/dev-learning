@@ -95,7 +95,7 @@ export class EmployeePage implements OnInit {
     });
   }
 
-  onDelete(id: number) {
+  onDelete(id: string) {
     const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '500px',
       autoFocus: false,

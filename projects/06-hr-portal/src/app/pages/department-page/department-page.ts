@@ -19,7 +19,7 @@ export class DepartmentPage {
   private snackBar = inject(MatSnackBar);
   departments = this.departmentService.departments;
 
-  onDelete(id: number) {
+  onDelete(id: string) {
     const dialogRef = this.dialog.open(ConfirmDialog, {
       width: '500px',
       autoFocus: false,

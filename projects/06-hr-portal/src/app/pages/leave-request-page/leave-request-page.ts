@@ -87,7 +87,7 @@ export class LeaveRequestPage implements OnInit {
     });
   }
 
-  onStatusChange(id: number, status: LeaveRequestStatus) {
+  onStatusChange(id: string, status: LeaveRequestStatus) {
     this.leaveRequestService.updateStatus(id, status);
     this.snackBar.open(`Leave request ${status}`, 'Close', { duration: 3000 });
   }
