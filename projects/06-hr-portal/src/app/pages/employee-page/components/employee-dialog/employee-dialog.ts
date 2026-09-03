@@ -91,9 +91,14 @@ export class EmployeeDialog {
     return this.secondFormGroup.get('status');
   }
 
-  onSubmit() {
+  onSubmit(stepper: MatStepper) {
     this.firstFormGroup.markAllAsTouched();
     this.secondFormGroup.markAllAsTouched();
+
+    if (this.hasDuplicateEmail()) {
+      stepper.selectedIndex = 0;
+      return;
+    }
 
     if (this.firstFormGroup.valid && this.secondFormGroup.valid) {
       const firstFormValue = this.firstFormGroup.value;
@@ -149,17 +154,29 @@ export class EmployeeDialog {
   onNext(stepper: MatStepper) {
     this.firstFormGroup.markAllAsTouched();
     if (this.firstFormGroup.valid) {
-      const firstFormValue = this.firstFormGroup.value;
-      const isDuplicate = this.employeeService.emailExists(
-        firstFormValue.email as string,
-        this.data?.employee.id,
-      );
-
-      if (isDuplicate) {
-        this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
+      if (this.hasDuplicateEmail()) {
         return;
       }
       stepper.next();
     }
+  }
+
+  /**
+   * Checks the unique-email rule and flags the control when it fails.
+   * Both exits of the dialog go through it: the linear stepper lets the user
+   * reach step 2 by clicking its header, which never runs `onNext()`.
+   */
+  private hasDuplicateEmail(): boolean {
+    const email = this.firstFormGroup.value.email;
+    if (!email) {
+      return false;
+    }
+
+    const isDuplicate = this.employeeService.emailExists(email, this.data?.employee.id);
+    if (isDuplicate) {
+      this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
+    }
+
+    return isDuplicate;
   }
 }

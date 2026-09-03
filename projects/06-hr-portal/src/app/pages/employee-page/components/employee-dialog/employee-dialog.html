@@ -83,7 +83,7 @@
     @if (stepper.selectedIndex === 0) {
       <button matButton="filled" (click)="onNext(stepper)">Next</button>
     } @else {
-      <button matButton="filled" (click)="onSubmit()">
+      <button matButton="filled" (click)="onSubmit(stepper)">
         @if (data) {
           Edit Employee
         } @else {
