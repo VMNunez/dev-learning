@@ -79,6 +79,7 @@ https://05taskmanager.netlify.app/
 - Coordinator pattern — page owns all state; child components only display and emit
 - `crypto.randomUUID()` for entity ids — a clock reading collides when two records are created in the same millisecond
 - Local date components over `toISOString()` — `toISOString()` reads the clock in UTC, so a date derived from it shifts the day after local midnight
+- Stored data as untrusted input — `JSON.parse` on a `localStorage` value is wrapped in `try`/`catch` and checked with `Array.isArray` before it reaches the signal, so corrupted storage falls back to an empty list instead of breaking the app
 - CSS grid — `grid-template-columns: 1fr 1fr` for two-column forms; `grid-column: 1 / -1` to span full width
 - `table-layout: fixed` + `.mat-column-*` — control column widths in a Material table
 
