@@ -5,14 +5,14 @@
 
 **Overall quality:** Good — every planned pattern is present and used meaningfully, the smart/dumb
 split and signal+`effect()` persistence are consistent across the app, and the persisted session is
-now credential-free and calendar dates are serialized from the local clock, but a unique-email rule
-that a linear stepper lets past keeps it from portfolio-ready.
+now credential-free, calendar dates are serialized from the local clock and the unique-email rule is
+enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ---
 
 ## High
 
-- [ ] **[High]** `[frontend]` — Enforce the unique-email rule on submit, not only on "Next": `employee-dialog.ts` calls `emailExists` in `onNext()` only. Trigger: type a format-valid duplicate email, click the **step-2 header** directly (linear stepper marks step 1 complete once it is format-valid), fill step 2, submit → the duplicate saves. Re-check in `onSubmit()`. *(Effort: Small)*
+*No open High tasks.*
 
 ## Medium
 
@@ -46,6 +46,7 @@ that a linear stepper lets past keeps it from portfolio-ready.
 
 #### High
 
+- 2026-09-03 · **[High]** `[frontend]` — unique-email rule enforced at the dialog's save exit, not only on "Next" → README, PLANNING key patterns, coverage architecture/junior (new bullet, marked ✅ 06-hr-portal)
 - 2026-09-03 · **[High]** `[frontend]` — calendar dates serialized from the local clock via a shared `toLocalDateString()` → README, PLANNING key patterns, coverage javascript/junior (already marked ✅ 03)
 - 2026-09-03 · **[High]** `[frontend]` — password no longer persisted; localStorage holds a credential-free `SessionUser` → README, PLANNING, coverage security/junior
 
