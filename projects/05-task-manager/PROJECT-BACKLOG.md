@@ -9,7 +9,6 @@
 
 ## Tasks
 
-- [ ] **[Low]** `[frontend]` — Type and guard the localStorage read in `task.service.ts:9`: `JSON.parse(localStorage.getItem('tasks') ?? '[]')` is an implicit `any` assigned into `signal<Task[]>` with no validation. Type the result and wrap it in a try/catch with a `[]` fallback so corrupted storage can't silently break the shape. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Remove the leftover CLI-scaffold `title` signal in `app.ts:10-11` (and its `signal` import); `app.html` renders only `<router-outlet />`, so it is dead code. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Improve keyboard support on the stat-card filters in `task-page.html`: they are `<div role="button" tabindex="0" (click) (keydown.enter)>`, reachable via Enter but not Space. Use a real `<button>` styled as a card, or also handle `keydown.space`. *(Effort: Small)*
 
@@ -37,4 +36,4 @@
 
 #### Low
 
-*No low tasks closed yet.*
+- 2026-09-03 · **[Low]** `[frontend]` — `localStorage` read parsed in `try`/`catch` and shape-checked with `Array.isArray` → README "What I learned", PLANNING key patterns (coverage javascript/typescript junior already marked)
