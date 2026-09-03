@@ -659,12 +659,12 @@ A Material component that displays validation error messages inside a `mat-form-
 **Why did you use `mat.theme()` in SCSS instead of CSS class overrides to customize the Material theme?** ⭐⭐
 
 What they really want to know: Do you understand the Material theming system, or did you find a hack that worked?
-A: `mat.theme()` is the official API — it sets color, typography, and density through Material's design token system. Every component in the app picks up the theme automatically through `--mat-sys-*` CSS variables. CSS overrides are fragile: they break when Angular Material updates internal class names across versions, and they bypass the token system so components that generate their own internal styles ignore them. In the task manager and HR portal I define the theme once in `material-theme.scss` using `mat.$violet-palette` — all Material components use the same palette with no per-component overrides needed.
+A: `mat.theme()` is the official API — it sets color, typography, and density through Material's design token system. Every component in the app picks up the theme automatically through `--mat-sys-*` CSS variables. CSS overrides are fragile: they break when Angular Material updates internal class names across versions, and they bypass the token system so components that generate their own internal styles ignore them. In the task manager and HR portal I define the theme once in `material-theme.scss` using a built-in palette — `mat.$blue-palette` in 05, `mat.$azure-palette` in 06 — and all Material components use the same palette with no per-component overrides needed.
 
 Red flag answer: "I overrode the CSS classes." — The interviewer knows it works. They want to hear that you used the official API and understand why it exists.
 
-> **Junior tip:** This question separates developers who read the Material docs from those who Googled a fix. Mention `mat.theme()`, `mat.$violet-palette`, and `--mat-sys-*` variables — these signal real familiarity with Material.
-> **Consejo de entrevista:** Esta pregunta separa a los desarrolladores que leyeron la documentación de los que buscaron un arreglo en Google. Menciona `mat.theme()`, `mat.$violet-palette` y las variables `--mat-sys-*`.
+> **Junior tip:** This question separates developers who read the Material docs from those who Googled a fix. Mention `mat.theme()`, `mat.$blue-palette`, and `--mat-sys-*` variables — these signal real familiarity with Material.
+> **Consejo de entrevista:** Esta pregunta separa a los desarrolladores que leyeron la documentación de los que buscaron un arreglo en Google. Menciona `mat.theme()`, `mat.$blue-palette` y las variables `--mat-sys-*`.
 
 ---
 

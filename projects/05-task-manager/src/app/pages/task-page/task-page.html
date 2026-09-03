@@ -9,62 +9,58 @@
   </header>
 
   <div class="stats-row">
-    <div
+    <button
       class="stat-card"
+      type="button"
       [class.active]="selectedStatus() === 'all'"
+      [attr.aria-pressed]="selectedStatus() === 'all'"
       (click)="onStatusChange('all')"
-      (keydown.enter)="onStatusChange('all')"
-      role="button"
-      tabindex="0"
     >
       <div class="stat-header">
         <mat-icon>assignment</mat-icon>
         <span class="stat-label">Total</span>
       </div>
       <span class="stat-value">{{ totalTasks() }}</span>
-    </div>
-    <div
+    </button>
+    <button
       class="stat-card"
-      (click)="onStatusChange('pending')"
-      (keydown.enter)="onStatusChange('pending')"
+      type="button"
       [class.active]="selectedStatus() === 'pending'"
-      role="button"
-      tabindex="0"
+      [attr.aria-pressed]="selectedStatus() === 'pending'"
+      (click)="onStatusChange('pending')"
     >
       <div class="stat-header">
         <mat-icon>schedule</mat-icon>
         <span class="stat-label">Pending</span>
       </div>
       <span class="stat-value">{{ pendingTasks() }}</span>
-    </div>
-    <div
+    </button>
+    <button
       class="stat-card"
+      type="button"
       [class.active]="selectedStatus() === 'in-progress'"
+      [attr.aria-pressed]="selectedStatus() === 'in-progress'"
       (click)="onStatusChange('in-progress')"
-      (keydown.enter)="onStatusChange('in-progress')"
-      role="button"
-      tabindex="0"
     >
       <div class="stat-header">
         <mat-icon>autorenew</mat-icon>
         <span class="stat-label">In Progress</span>
       </div>
       <span class="stat-value">{{ inProgressTasks() }}</span>
-    </div>
-    <div
+    </button>
+    <button
       class="stat-card"
+      type="button"
       [class.active]="selectedStatus() === 'done'"
+      [attr.aria-pressed]="selectedStatus() === 'done'"
       (click)="onStatusChange('done')"
-      (keydown.enter)="onStatusChange('done')"
-      role="button"
-      tabindex="0"
     >
       <div class="stat-header">
         <mat-icon>task_alt</mat-icon>
         <span class="stat-label">Done</span>
       </div>
       <span class="stat-value">{{ doneTasks() }}</span>
-    </div>
+    </button>
   </div>
 
   <app-task-filters

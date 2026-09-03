@@ -49,7 +49,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type ✅ 05-task-manager
-- Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
+- Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance ✅ 05-task-manager — the dialog specs bind both runtime tokens with `useValue`, one carrying a full `ConfirmDialogData` and the other `null` for the create case
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
@@ -160,8 +160,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
 - `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies ✅ 04-meal-finder — each page spec adds exactly the providers its unit injects (`provideRouter([])` for the routed pages, plus `provideHttpClient()` for the two that call the API), where the scaffold suite failed on `NG0201: No provider found for ActivatedRoute`
+- Runtime-supplied injection tokens in tests — recognise that a value the framework mints when it creates the unit, such as a dialog's reference and its data token, is provided by no module, so a spec that mounts the unit alone must supply it as a double rather than importing more of the library ✅ 05-task-manager — `confirm-dialog.spec.ts` and `task-dialog.spec.ts` register `MatDialogRef` and `MAT_DIALOG_DATA` themselves, where mounting the dialogs alone threw `NG0201: No provider found for MatDialogRef`
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
-- Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation
+- Spies and test doubles — control a collaborator with `vi.spyOn()` in Vitest or `spyOn()` in Jasmine and assert the interaction without reproducing its implementation ✅ 05-task-manager — the injected `MatDialogRef` double is a `vi.fn()` `close`, asserted to receive `true` on confirm and the built task only once the form is valid
 - HTTP tests with `provideHttpClientTesting()` — intercept a request with `HttpTestingController`, assert method, URL, and body, then flush the intended response
 - `provideHttpClientTesting()` vs `HttpClientTestingModule` — use the standalone provider in current code and recognise the deprecated module-based setup in older suites
 - `HttpTestingController.verify()` — fail a test when expected requests remain outstanding or unexpected requests were left unresolved
@@ -201,6 +202,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once ✅ 05-task-manager
 - `mat.theme()` — apply a supported Material 3 theme without depending on the generated component DOM ✅ 05-task-manager
 - Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases
+- System colour roles over ad-hoc custom properties — express a role the theme already defines (surface, outline, secondary text) with its `--mat-sys-*` token so one theme change moves every use of that role at once ✅ 05-task-manager — every secondary-text rule (`.filter-text`, `.stat-label`, the table's meta cells) reads `--mat-sys-on-surface-variant`, and `styles.css` keeps custom properties only for roles Material has no token for
 - Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals ✅ 05-task-manager
 - Overlay styling boundary — recognise that dialogs, menus, selects, tooltips, and snack bars render in an overlay container outside the opener's component subtree ✅ 05-task-manager
 
@@ -888,6 +890,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   responsibility to one of them; they often work together but describe different relationships
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
+- Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
+  kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
+  is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
@@ -1229,6 +1234,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### Object contracts
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
+- A shared model type as the single source of truth — changing a field's type in the model turns every signature that names it into a compilation error, so a contract change is enumerated by the compiler rather than hunted by hand ✅ 05-task-manager — widening `Task.id` from `number` to `string` failed compilation at every signature naming it, so `output<string>()` in `task-table`, `TaskService.deleteTask(taskId: string)` and `TaskPage.onDeleteTask(id: string)` were enumerated by `tsc` rather than found by grep
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
@@ -1460,6 +1466,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
+- Fixed-width numeric formatting — pad numeric components to a constant width when composing a sortable string, because lexicographic order only matches numeric order while every field has the same number of digits ✅ 03-expense-tracker — the transaction form's `today()` pads month and day with `String(...).padStart(2, '0')`, so the stored `YYYY-MM-DD` strings compare as text in the same order as the dates they name
 - Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant ✅ 03-expense-tracker — the transaction form's private `today()` builds the default date from `getFullYear`/`getMonth`/`getDate`, so a submit after local midnight is not dated to the previous UTC day
 - Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
 - Unique identifier generation — obtain identity from a dedicated generator such as `crypto.randomUUID`, in the secure context it requires, rather than deriving it from a clock reading, because timestamps collide whenever two values are created inside the same resolution step ✅ 03-expense-tracker — `TransactionService.addTransaction()` builds `id` with `crypto.randomUUID()` and `Transaction.id` is a `string`, so two submits inside the same millisecond no longer collide in `deleteTransaction`
@@ -2118,6 +2125,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - False positive vs false negative — distinguish a test that passes despite a defect from one that fails despite correct behaviour
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
 - Vacuous-test review — detect missing assertions, assertions unrelated to the action, and mocks that only confirm their own setup
+- Permanently failing test — a test that fails for a reason unrelated to a defect is repaired or deleted, because a suite that is normally red makes a real regression unreadable
 
 ### Configuration and environments
 

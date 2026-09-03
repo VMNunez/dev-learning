@@ -33,7 +33,7 @@ export class TaskTable implements AfterViewInit {
   dataSource = new MatTableDataSource<Task>([]);
   displayedColumns = ['name', 'status', 'priority', 'assignee', 'createdAt', 'actions'];
   tasks = input<Task[]>([]);
-  taskId = output<number>();
+  taskId = output<string>();
   taskToEdit = output<Task>();
   hasTasks = input<boolean>(false);
 
@@ -51,7 +51,7 @@ export class TaskTable implements AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  deleteTask(id: number) {
+  deleteTask(id: string) {
     this.taskId.emit(id);
   }
 

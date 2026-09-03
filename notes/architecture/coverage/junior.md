@@ -163,6 +163,9 @@ apply in a small codebase, and defend with concrete trade-offs.
   responsibility to one of them; they often work together but describe different relationships
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
+- Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
+  kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
+  is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or

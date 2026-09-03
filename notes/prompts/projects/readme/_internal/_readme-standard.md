@@ -459,8 +459,9 @@ misread in both. Who runs that commit differs, and only that:
   the judge's items: it runs after the pair completed, so its own failure excludes nothing either, and
   the file is committed part-applied with that stated in the commit message and the summary.
   Under `PROJECT_PATH = all` that is one such commit per project.
-- **`readme-concept-add` — commits its own entry, in one atomic commit for that entry.** It uses the
-  same 2026-08-01 permission, because one line added to an existing section is not
-  a rewrite anyone needs to read first. Its unit is the concept, so a cross-tier concept — the global
-  README *plus* the tier that implements it, per "Which README owns a concept" — is still one commit.
+- **`readme-concept-add` — commits its own entries, in one atomic commit for the invocation.** It uses the
+  same 2026-08-01 permission, because a line added to an existing section is not
+  a rewrite anyone needs to read first. Its unit is the **run**, not the concept: a cross-tier concept —
+  the global README *plus* the tier that implements it, per "Which README owns a concept" — is one commit,
+  and so is a set of concepts, whether its caller named them or its own diff sweep found them.
   The skill's own file owns the rest of its commit contract.

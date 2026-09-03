@@ -659,12 +659,12 @@ Un componente Material que muestra mensajes de error de validación dentro de un
 **¿Por qué usaste `mat.theme()` en SCSS en vez de sobreescribir clases CSS para personalizar el tema de Material?** ⭐⭐
 
 Lo que realmente quieren saber: ¿Entiendes el sistema de theming de Material, o encontraste un hack que funcionó?
-R: `mat.theme()` es la API oficial — establece color, tipografía y densidad a través del sistema de design tokens de Material. Todos los componentes de la app recogen el tema automáticamente mediante las variables CSS `--mat-sys-*`. Sobreescribir clases CSS es frágil: se rompe cuando Angular Material actualiza los nombres de clase internos entre versiones, y bypasea el sistema de tokens para que los componentes que generan sus propios estilos internos no reciban el cambio. En el task manager y el HR portal defino el tema una vez en `material-theme.scss` usando `mat.$violet-palette` — todos los componentes Material usan la misma paleta sin necesidad de sobrescrituras por componente.
+R: `mat.theme()` es la API oficial — establece color, tipografía y densidad a través del sistema de design tokens de Material. Todos los componentes de la app recogen el tema automáticamente mediante las variables CSS `--mat-sys-*`. Sobreescribir clases CSS es frágil: se rompe cuando Angular Material actualiza los nombres de clase internos entre versiones, y bypasea el sistema de tokens para que los componentes que generan sus propios estilos internos no reciban el cambio. En el task manager y el HR portal defino el tema una vez en `material-theme.scss` usando una paleta incorporada — `mat.$blue-palette` en el 05, `mat.$azure-palette` en el 06 — y todos los componentes Material usan la misma paleta sin necesidad de sobrescrituras por componente.
 
 Respuesta mala: "Sobreescribí las clases CSS." — El entrevistador sabe que funciona. Quiere escuchar que usaste la API oficial y entiendes por qué existe.
 
-> **Consejo de entrevista:** Esta pregunta separa a los desarrolladores que leyeron la documentación de Material de los que buscaron un arreglo rápido en Google. Menciona `mat.theme()`, `mat.$violet-palette` y las variables `--mat-sys-*` — estas señales demuestran familiaridad real con Material.
-> **Junior tip:** Mention `mat.theme()`, `mat.$violet-palette`, and `--mat-sys-*` variables — these signal real familiarity with Material docs.
+> **Consejo de entrevista:** Esta pregunta separa a los desarrolladores que leyeron la documentación de Material de los que buscaron un arreglo rápido en Google. Menciona `mat.theme()`, `mat.$blue-palette` y las variables `--mat-sys-*` — estas señales demuestran familiaridad real con Material.
+> **Junior tip:** Mention `mat.theme()`, `mat.$blue-palette`, and `--mat-sys-*` variables — these signal real familiarity with Material docs.
 
 ---
 

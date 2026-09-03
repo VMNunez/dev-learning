@@ -9,12 +9,33 @@
 
 ## Tasks
 
-- [ ] **[High]** `[frontend]` — Fix the UTC date bug when creating a task: `task-dialog.ts` builds `createdAt` with `new Date().toISOString().split('T')[0]`, which returns the **UTC** date. Between local midnight and 1–2am in Spain (UTC+1/+2) a task created "today" is stamped with yesterday's date. Build the date from local components (`getFullYear`/`getMonth`/`getDate`) or a date library instead. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Replace `Date.now()` as the task id in `task-dialog.ts` with `crypto.randomUUID()` (or an incrementing counter). Two tasks added within the same millisecond (fast double-click / two tabs) collide on id, and later `editTask`/`deleteTask` then match both rows. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Reconcile the theme palette: PLANNING.md's "Key patterns introduced" documents `mat.$violet-palette`, but `material-theme.scss` uses `mat.$blue-palette` for primary and tertiary. Either switch the code to the violet palette or update PLANNING.md to match the code. (Also the one ⚠️ Shallow item in the learning-objectives pass.) *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Use a consistent token for "secondary text": `task-page.css:76` (`.filter-text`) uses `var(--text-secondary)`, while the same role elsewhere (`task-page.css:22`, `task-table.css:63`) uses `var(--mat-sys-on-surface-variant)`. Align `.filter-text` to the majority token. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Type and guard the localStorage read in `task.service.ts:9`: `JSON.parse(localStorage.getItem('tasks') ?? '[]')` is an implicit `any` assigned into `signal<Task[]>` with no validation. Type the result and wrap it in a try/catch with a `[]` fallback so corrupted storage can't silently break the shape. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Remove the leftover CLI-scaffold `title` signal in `app.ts:10-11` (and its `signal` import); `app.html` renders only `<router-outlet />`, so it is dead code. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Improve keyboard support on the stat-card filters in `task-page.html`: they are `<div role="button" tabindex="0" (click) (keydown.enter)>`, reachable via Enter but not Space. Use a real `<button>` styled as a card, or also handle `keydown.space`. *(Effort: Small)*
+*No open tasks.*
 
-- [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/05-task-manager`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+---
+
+## Closed
+
+### Backend
+
+*No backend tasks — Angular-only project.*
+
+### Frontend
+
+#### High
+
+- 2026-09-03 · **[High]** `[frontend]` — `createdAt` built from the local clock instead of `toISOString()` → README "What I learned", coverage javascript/junior (already marked 03-expense-tracker)
+
+#### Medium
+
+- 2026-09-03 · **[Medium]** `[frontend]` — dialog specs provide `MatDialogRef` and `MAT_DIALOG_DATA` as `useValue` doubles → README "What I learned", coverage angular/junior (new bullet + 3 marked)
+- 2026-09-03 · **[Medium]** `[frontend]` — `.filter-text` reads `--mat-sys-on-surface-variant`; dead `--text-secondary` removed → README "What I learned", coverage angular-material/junior (new bullet)
+- 2026-09-03 · **[Medium]** `[frontend]` — PLANNING palette references aligned to the shipped `mat.$blue-palette` → PLANNING (features, patterns, steps), 07 PLANNING §design, junior Angular Q&A
+- 2026-09-03 · **[Medium]** `[frontend]` — task ids from `crypto.randomUUID()`, `Task.id` widened to `string` across 6 sites → README "What I learned", coverage typescript/junior (new bullet), javascript/junior
+
+#### Low
+
+- 2026-09-03 · **[Low]** `[frontend]` — PLANNING component tree realigned with the files on disk → PLANNING (Pages and components, State management)
+- 2026-09-03 · **[Low]** `[frontend]` — stat-card filters are native `<button>` toggles with `aria-pressed`, not `role="button"` divs → README "What I learned", `_cross-topic-inbox.md` HTML proposal (marker owed), css/junior already marked
+- 2026-09-03 · **[Low]** `[frontend]` — CLI-scaffold `title` signal and its stale `should render title` spec removed → coverage architecture/junior (new bullet, marked), PLANNING component tree
+- 2026-09-03 · **[Low]** `[frontend]` — `How to run` clone path corrected from `angular/` to `projects/` → README
+- 2026-09-03 · **[Low]** `[frontend]` — `localStorage` read parsed in `try`/`catch` and shape-checked with `Array.isArray` → README "What I learned", PLANNING key patterns (coverage javascript/typescript junior already marked)
