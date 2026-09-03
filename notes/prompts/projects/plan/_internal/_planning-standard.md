@@ -308,6 +308,14 @@ not the backend rules of the same numbers — the standard those sections are la
 exactly what `6–8` against `3 to 8` was until 2026-09-01. The tests themselves are restated below, so a
 plan review never has to open that file; only the sizes are dereferenced.
 
+**§19-§21 are that restatement and not a second owner.** A test or a format string is never changed here
+alone: the change belongs in `_readme-standard.md`'s rules 6, 7 and 8 and reaches §19-§21 in the same
+commit — and `_plan-architecture-prompt.md`'s §20 check with them, which carries rule 7's format string a
+second time on this side of the pair. That is the duty stated from the other side at the head of that
+file's rule block. `REC-201` found three of those tests missing here and two nominal, and nothing
+announced it — this copy stays internally coherent, and every prompt that reads §19-§21 is a plan prompt
+that never opens the owner.
+
 **A plan written before 2026-09-01 still carries the deleted caps** (`07-timetrack` §19 "6-8 maximum",
 §21 "max 3 bullets"), and `_readme-write-prompt.md` reads `PLANNING.md` on every run — so the dead cap
 reaches the README author through the plan. **Strike that clause from §19-§21 on the next `plan-audit`

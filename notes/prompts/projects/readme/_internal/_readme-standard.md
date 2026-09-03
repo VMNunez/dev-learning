@@ -153,6 +153,26 @@ Section order (Angular): **Title → Why this project → Live demo → Screensh
 decisions → Tradeoffs → Future improvements → What I learned → Tech stack → Project structure → How to
 run.** Move any out-of-order section to its correct position.
 
+**Rules 6, 7 and 8 are restated outside this file under a completeness promise, and the restatement is
+diffed against them in the commit that touches either side.** `_planning-standard.md` §18 states that its
+§19-§21 restate every test these three rules state, "so a plan review never has to open that file", and
+the plan pipeline reads that copy alone: `_plan-write-prompt.md` writes §19-§21 from it,
+`_plan-architecture-prompt.md` reads §20 in its slice, and `_plan-review-prompt.md` audits §19 and §21 in
+its `whole-plan` scope and §20 in its `architecture` scope. No plan prompt opens this file, and one hop
+further out `_readme-write-prompt.md` reads the resulting `PLANNING.md` on every run. **So a test or a
+format string added, reworded or retired in rule 6, 7 or 8 is carried in the same commit** to §19-§21 and
+to four copies inside this family, the last of them held in two places: **backend rule 7** below, which
+restates global rule 7's test and its format, and **frontend rule 5**, which carries that format alone
+and no test; `_readme-effect-prompt.md`, which restates rule 8's two inclusion tests, rule 6's three-test
+count and the list of sections whose numbers became inclusion tests, in prose the judge applies wherever
+its bounded read of the owning rule does not reach; and the enumeration of which rules are *worded* as
+inclusion tests, carried identically by `readme-audit.md` and `_readme-review-prompt.md`, which is the
+copy that rots when a rule of 6-8 stops being one. **The copy is kept rather than
+dereferenced**, which the doctrine's first instruction would prefer, because §18's reason is a plan
+review's read budget and `REC-201` repaired the copy rather than deleting it. Nothing announces this drift
+on its own: a copy stays internally coherent and its readers never open this file, which is why `REC-201`
+found three of these tests missing and two nominal only once someone counted them clause by clause.
+
 1. **Title + one sentence** — plain language, no tech words, project number included. Says what the app
    does and who uses it, not what the developer learned.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
