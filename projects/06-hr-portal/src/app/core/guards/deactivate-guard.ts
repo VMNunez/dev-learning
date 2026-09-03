@@ -2,7 +2,10 @@ import { CanDeactivateFn } from '@angular/router';
 import { DepartmentForm } from '../../pages/department-page/department-form/department-form';
 import { inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../shared/components/confirm-dialog/confirm-dialog';
 import { map } from 'rxjs';
 
 export const deactivateGuard: CanDeactivateFn<DepartmentForm> = (
@@ -13,7 +16,7 @@ export const deactivateGuard: CanDeactivateFn<DepartmentForm> = (
 ) => {
   const dialog = inject(MatDialog);
   if (component.departmentForm.dirty) {
-    const dialogRef = dialog.open(ConfirmDialog, {
+    const dialogRef = dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
       width: '500px',
       autoFocus: false,
       data: {

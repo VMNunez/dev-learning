@@ -11,11 +11,32 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../../../../models/employee.model';
-import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DepartmentService } from '../../../../core/services/department.service';
 import { EmployeeService } from '../../../../core/services/employee.service';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { toLocalDateString } from '../../../../shared/utils/date.util';
+
+/**
+ * What the dialog is opened with. Present in edit mode, absent in create mode —
+ * the `undefined` half is what `MAT_DIALOG_DATA` yields when no `data` is passed.
+ */
+export interface EmployeeDialogData {
+  employee: Employee;
+}
+
+/**
+ * What the dialog closes with. Derived from the domain model rather than restated,
+ * so a new field on `Employee` cannot silently bypass this form.
+ *
+ * `id` is the row's, not the form's: create mode has none yet and edit mode already
+ * has it at the call site, so both modes close with the same shape and the page
+ * stamps the id back on.
+ */
+export type EmployeeFormResult = Omit<Employee, 'id'>;
 
 @Component({
   selector: 'app-employee-dialog',
@@ -34,11 +55,11 @@ import { toLocalDateString } from '../../../../shared/utils/date.util';
 export class EmployeeDialog {
   private departmentService = inject(DepartmentService);
   private employeeService = inject(EmployeeService);
-  private dialogRef = inject(MatDialogRef);
+  private dialogRef = inject(MatDialogRef<EmployeeDialog, EmployeeFormResult>);
   private dialog = inject(MatDialog);
   private formBuilder = inject(FormBuilder);
   isLinear = true;
-  data = inject<{ employee: Employee } | undefined>(MAT_DIALOG_DATA);
+  data = inject<EmployeeDialogData | undefined>(MAT_DIALOG_DATA);
   departments = this.departmentService.departments;
 
   firstFormGroup = this.formBuilder.group({
@@ -115,7 +136,6 @@ export class EmployeeDialog {
       if (this.data) {
         this.dialogRef.close({
           ...newEmployee,
-          id: this.data.employee.id,
           startDate: this.data.employee.startDate,
         });
       } else {
@@ -129,7 +149,7 @@ export class EmployeeDialog {
 
   onCancel() {
     if (this.firstFormGroup.dirty || this.secondFormGroup.dirty) {
-      const dialogRef = this.dialog.open(ConfirmDialog, {
+      const dialogRef = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         width: '500px',
         autoFocus: false,
         data: {
