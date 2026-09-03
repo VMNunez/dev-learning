@@ -69,6 +69,7 @@ https://05taskmanager.netlify.app/
 - `MatDialog.open()` + `afterClosed()` — open a dialog and receive data back
 - `MAT_DIALOG_DATA` — inject data passed by the parent into the dialog
 - `MatDialogRef.close(value)` — close the dialog and pass a value back
+- Test doubles for runtime-minted tokens — `MatDialog.open()` creates `MatDialogRef` and `MAT_DIALOG_DATA`, so the dialog specs provide both with `useValue` instead of opening a real dialog
 - `patchValue()` — pre-fill a reactive form with existing data for edit flows
 - `ErrorStateMatcher` — custom class that controls when `mat-error` appears
 - `NgClass` — apply multiple CSS classes dynamically based on task data
