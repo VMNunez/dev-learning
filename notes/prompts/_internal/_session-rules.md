@@ -130,7 +130,7 @@ open.
 ## Language rules — IMPORTANT
 
 - **Responder siempre en español** en las sesiones de estudio — esta es la preferencia actual de Victor
-- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
+- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, **títulos y descripciones de PR** (ver "Pull request descriptions"), archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
 - Las notas en `notes/{topic}/{level}/es/` sí se escriben en español — ese es su propósito
 - **Pausado 2026-07-14: no corregir el inglés de Victor durante las sesiones de estudio** — mientras las sesiones sean en español, no añadir correcciones de inglés al final de las respuestas. Retomar si Victor lo pide de nuevo.
 - Usar vocabulario técnico real en inglés dentro de las explicaciones en español — *deploy, refactor, boilerplate, breaking change, merge conflict, trade-off, edge case, under the hood* — porque Victor los escuchará así en el trabajo
@@ -901,8 +901,19 @@ All README format rules and quality standards live in `notes/prompts/projects/re
 
 ### Pull request descriptions
 
-- Always provide a PR description when opening a PR, in a Markdown code block so Victor can copy-paste it
-- Format: title + bullet list of changes under `## Changes` + one line under `## Why` explaining the decision behind the main change
+- Always provide the PR **title and description** when opening a PR, each in its own Markdown code
+  block so Victor can copy-paste it. He opens the PR by hand on GitHub — never `gh pr create`.
+- **Both are always written in English, with no exception.** They are technical documents under the
+  Language rules, so a session held in Spanish never carries over into them. This is the rule the
+  agent has broken more than once by drafting the description in the language of the session.
+- Title: `type(scope): summary` — the same grammar as a commit message, one line.
+- Description structure, fixed:
+  - an opening sentence saying what the branch closes
+  - one `##` heading per area touched
+  - bullets grouped by theme, each opening with its claim in **bold**
+  - `## RECs applied` when the branch resolves `_recommendation-ledger.md` rows — ID plus the
+    cold-review verdict
+  - `## Open debt` last, naming what the branch deliberately left out
 - The coding agent always writes the branch name, commit message, and PR description — Victor does not write these
 
 ### Study materials follow the active branch — no direct commits to `main`
