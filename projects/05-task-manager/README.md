@@ -82,6 +82,7 @@ https://05taskmanager.netlify.app/
 - Stored data as untrusted input — `JSON.parse` on a `localStorage` value is wrapped in `try`/`catch` and checked with `Array.isArray` before it reaches the signal, so corrupted storage falls back to an empty list instead of breaking the app
 - CSS grid — `grid-template-columns: 1fr 1fr` for two-column forms; `grid-column: 1 / -1` to span full width
 - `table-layout: fixed` + `.mat-column-*` — control column widths in a Material table
+- Native `<button>` over `role="button"` — the tag supplies Space, Enter and focus; `[attr.aria-pressed]` states which stat-card filter is active
 
 ---
 
