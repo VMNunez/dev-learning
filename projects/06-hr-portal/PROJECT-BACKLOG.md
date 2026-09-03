@@ -4,15 +4,14 @@
 **Last Reviewed — frontend:** 2026-07-16
 
 **Overall quality:** Good — every planned pattern is present and used meaningfully, the smart/dumb
-split and signal+`effect()` persistence are consistent across the app, but a plaintext password in
-`localStorage` and a UTC date-serialization bug that fires on every leave request keep it from
-portfolio-ready.
+split and signal+`effect()` persistence are consistent across the app, and the persisted session is
+now credential-free, but a UTC date-serialization bug that fires on every leave request and a
+unique-email rule that a linear stepper lets past keep it from portfolio-ready.
 
 ---
 
 ## High
 
-- [ ] **[High]** `[frontend]` — Stop persisting the password to `localStorage`: `auth.service.ts:21-26` stores the full `User` object (including plaintext `password`) via the `effect()`. Persist a credential-free shape (email + role) instead, and keep reading it back with the same `?? 'null'` pattern. *(Effort: Small)*
 - [ ] **[High]** `[frontend]` — Fix the UTC date-only serialization: `leave-request-dialog.ts:33-35` (`dateFormat()`) and `employee-dialog.ts:118` (`startDate` default) both use `toISOString().split('T')[0]`, which returns the **UTC** date. Trigger: the datepicker hands back a `Date` at local midnight, so in Spain (UTC+1/+2) every leave request stores the *previous* day. Build the string from `getFullYear()/getMonth()/getDate()` instead. *(Effort: Small)*
 - [ ] **[High]** `[frontend]` — Enforce the unique-email rule on submit, not only on "Next": `employee-dialog.ts` calls `emailExists` in `onNext()` only. Trigger: type a format-valid duplicate email, click the **step-2 header** directly (linear stepper marks step 1 complete once it is format-valid), fill step 2, submit → the duplicate saves. Re-check in `onSubmit()`. *(Effort: Small)*
 
@@ -39,6 +38,28 @@ portfolio-ready.
 - [ ] **[Low]** `[frontend]` — Guard the `localStorage` read in `auth.service.ts:21`: `JSON.parse(localStorage.getItem('currentUser') ?? 'null')` runs in a **field initializer**, so a corrupt or truncated value makes `JSON.parse` throw while Angular is constructing the root `AuthService` — the whole app fails to bootstrap and renders a blank page, and because the bad value stays in storage the failure survives every reload. The `?? 'null'` fallback only covers a *missing* key, never an invalid one. Wrap the parse and fall back to `null`. *(Effort: Small)* *(raised 2026-09-03 while triaging the plaintext-password task)*
 
 - [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/06-hr-portal`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+
+---
+
+## Closed
+
+### Frontend
+
+#### High
+
+- 2026-09-03 · **[High]** `[frontend]` — password no longer persisted; localStorage holds a credential-free `SessionUser` → README, PLANNING, coverage security/junior
+
+#### Medium
+
+*No Medium tasks closed yet.*
+
+#### Low
+
+*No Low tasks closed yet.*
+
+### Backend
+
+*n/a — Angular-only project.*
 
 ---
 
