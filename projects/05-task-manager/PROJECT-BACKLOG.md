@@ -9,7 +9,6 @@
 
 ## Tasks
 
-- [ ] **[Medium]** `[frontend]` — Reconcile the theme palette: PLANNING.md's "Key patterns introduced" documents `mat.$violet-palette`, but `material-theme.scss` uses `mat.$blue-palette` for primary and tertiary. Either switch the code to the violet palette or update PLANNING.md to match the code. (Also the one ⚠️ Shallow item in the learning-objectives pass.) *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Use a consistent token for "secondary text": `task-page.css:76` (`.filter-text`) uses `var(--text-secondary)`, while the same role elsewhere (`task-page.css:22`, `task-table.css:63`) uses `var(--mat-sys-on-surface-variant)`. Align `.filter-text` to the majority token. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Type and guard the localStorage read in `task.service.ts:9`: `JSON.parse(localStorage.getItem('tasks') ?? '[]')` is an implicit `any` assigned into `signal<Task[]>` with no validation. Type the result and wrap it in a try/catch with a `[]` fallback so corrupted storage can't silently break the shape. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Remove the leftover CLI-scaffold `title` signal in `app.ts:10-11` (and its `signal` import); `app.html` renders only `<router-outlet />`, so it is dead code. *(Effort: Small)*
@@ -33,6 +32,7 @@
 
 #### Medium
 
+- 2026-09-03 · **[Medium]** `[frontend]` — PLANNING palette references aligned to the shipped `mat.$blue-palette` → PLANNING (features, patterns, steps), 07 PLANNING §design, junior Angular Q&A
 - 2026-09-03 · **[Medium]** `[frontend]` — task ids from `crypto.randomUUID()`, `Task.id` widened to `string` across 6 sites → README "What I learned", coverage typescript/junior (new bullet), javascript/junior
 
 #### Low
