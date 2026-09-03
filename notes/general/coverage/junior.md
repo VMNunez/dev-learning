@@ -92,6 +92,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - False positive vs false negative — distinguish a test that passes despite a defect from one that fails despite correct behaviour
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
 - Vacuous-test review — detect missing assertions, assertions unrelated to the action, and mocks that only confirm their own setup
+- Permanently failing test — a test that fails for a reason unrelated to a defect is repaired or deleted, because a suite that is normally red makes a real regression unreadable
 
 ## Configuration and environments
 

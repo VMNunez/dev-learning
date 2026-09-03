@@ -889,6 +889,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   responsibility to one of them; they often work together but describe different relationships
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
+- Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
+  kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
+  is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
@@ -2121,6 +2124,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - False positive vs false negative — distinguish a test that passes despite a defect from one that fails despite correct behaviour
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
 - Vacuous-test review — detect missing assertions, assertions unrelated to the action, and mocks that only confirm their own setup
+- Permanently failing test — a test that fails for a reason unrelated to a defect is repaired or deleted, because a suite that is normally red makes a real regression unreadable
 
 ### Configuration and environments
 
