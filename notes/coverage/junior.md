@@ -1229,6 +1229,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### Object contracts
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
+- A shared model type as the single source of truth — changing a field's type in the model turns every signature that names it into a compilation error, so a contract change is enumerated by the compiler rather than hunted by hand ✅ 05-task-manager — widening `Task.id` from `number` to `string` failed compilation at every signature naming it, so `output<string>()` in `task-table`, `TaskService.deleteTask(taskId: string)` and `TaskPage.onDeleteTask(id: string)` were enumerated by `tsc` rather than found by grep
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
