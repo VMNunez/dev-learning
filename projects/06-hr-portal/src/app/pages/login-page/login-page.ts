@@ -1,4 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +24,7 @@ import { Router } from '@angular/router';
 export class LoginPage {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
   isLoading = signal<boolean>(false);
   hasError = signal<boolean>(false);
 
@@ -46,15 +49,21 @@ export class LoginPage {
       this.isLoading.set(true);
       const formValue = this.loginForm.value;
 
-      setTimeout(() => {
-        this.authService.login(formValue.email!, formValue.password!);
-        if (this.authService.isLoggedIn()) {
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.hasError.set(true);
-          this.isLoading.set(false);
-        }
-      }, 1000);
+      // Fake latency, standing in for the backend call this page will make later.
+      // `takeUntilDestroyed` unsubscribes when the page is destroyed, so a login left
+      // in flight cannot navigate an app that has already moved on. It needs the
+      // `DestroyRef` explicitly here: `onSubmit` is not an injection context.
+      timer(1000)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.authService.login(formValue.email!, formValue.password!);
+          if (this.authService.isLoggedIn()) {
+            this.router.navigate(['/dashboard']);
+          } else {
+            this.hasError.set(true);
+            this.isLoading.set(false);
+          }
+        });
     }
   }
 }
