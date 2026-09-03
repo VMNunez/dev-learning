@@ -36,7 +36,7 @@ sorting, pagination, and delete confirmation. Built with Angular Material.
 
 ```
 app/
-├── app.component                      ← root with toolbar
+├── app.ts                             ← root shell, renders `<router-outlet />` only
 ├── pages/
 │   └── tasks-page/
 │       ├── tasks-page.component       ← coordinator: owns all state and events
