@@ -64,6 +64,7 @@ https://06-hr-portal.netlify.app
 - Entity ids generated inside the owning service with `crypto.randomUUID()` — a clock reading gives two records created in the same millisecond the same id, and letting the calling component build the entity would put the rule in as many places as there are callers
 - Leave-request transitions guarded in `LeaveRequestService` rather than in the template that hides the buttons — the template only decides what is drawn, so a rule that lives there is bypassed by every other caller and the invalid state still reaches localStorage
 - The leave-request filter's permitted values declared once as an `as const` list with the union derived from it — the dropdown's options, the runtime check and the type are one declaration, so adding a status cannot leave the guard rejecting it
+- The status union carried into the filter child's `input()` and `output()` rather than left as `string` — a value validated at the query-param read re-widens at the component boundary otherwise, and the compiler stops rejecting a filter no record can match
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
 - A credential-free session shape in localStorage — only the email and role the app reads back, re-projected on read so an entry saved by an older build drops its password
 
