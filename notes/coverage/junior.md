@@ -103,6 +103,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
+- `routerLink` on a host that is not an anchor — the directive writes an `href` only on an `<a>`, so on any other element the click still navigates while the tab stop, the `link` role and the browser's context menu are silently absent ✅ 06-hr-portal — the dashboard's five stat cards are `<a class="stat-card-link" routerLink>` wrapping the `mat-card`, replacing a `routerLink` sitting on the `mat-card` itself
 - Application shell outside the outlet — place chrome that must survive navigation in the root component around `RouterOutlet`, because the router destroys and recreates the routed component on every navigation ✅ 04-meal-finder — the nav and its favourites badge sit in `app.html` above `<router-outlet />`, so the count stays on screen while `/`, `/detail/:id` and `/favourites` are mounted and destroyed under it
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
