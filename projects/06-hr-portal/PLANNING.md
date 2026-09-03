@@ -293,6 +293,7 @@ validation and `MatSnackBar` feedback instead.
 | `filteredNavLinks = computed()` | Show only links the current role can access |
 | `isAdmin = computed()` | Single source of truth for role checks |
 | Signal reference vs snapshot | Store `service.signal` (no `()`), not `service.signal()` |
+| `takeUntilDestroyed(destroyRef)` | Work a page starts is cancelled when the page is destroyed, so a login left in flight cannot navigate an app that already moved on; the `DestroyRef` is passed explicitly because a method is not an injection context |
 | `MatSnackBar` | Feedback after every CRUD action |
 | `MatStepper` with `[stepControl]` | Multi-step employee creation form |
 | Validation at the form's save exit | A linear stepper re-enters a completed step from its header, so a rule checked only in the `Next` handler never runs |
