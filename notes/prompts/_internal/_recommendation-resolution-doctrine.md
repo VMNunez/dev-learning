@@ -515,7 +515,18 @@ line-oriented grep for that phrase could ever return it; a cold reviewer reading
 and the next pass found the same block calling a file "not in **this table**" — a deictic whose
 referent had been deleted, matching no search for the claim's words at all. **Search multiline
 (`rg -U`), and sweep for the claim's *referent* as well as its wording**: a measurement run line by
-line over prose that wraps measures the margin, not the claim. **`REC-165` is the rule's converse, and it
+line over prose that wraps measures the margin, not the claim. **`REC-198` is its fifth instance, and
+there the fork was in the *framing* rather than in any word.** `readme-audit.md`'s close-out named its
+own seven bullets and called them "this pipeline's tailored version" of `_pipeline-self-report.md`,
+where the other eighteen orchestrators open theirs with an executing verb — so nothing in the file said
+the contract's refinement gate, close-out check, skill-friction and ledger steps applied at all, and
+runs reached them only through a run-start pointer written for another purpose. **A derived section
+says it executes its source before it says what it puts in it**: the tailored part is content *inside* a
+contract, never a version *of* one. And the sentence that imports the source — "all apply here
+unchanged" — is itself a falsifiable claim, so check it item by item before writing it. This one
+restated the contract's five bullets as seven, and the cold reviewer found bullet 4's breach half with
+no home among them, which made "unchanged" false for the single item the restatement had actually
+changed. **`REC-165` is the rule's converse, and it
 rots the same way: a rule stated *only* in the ritual that executes it is unavailable to every path that
 ritual is excluded from.** The two-map change test's row walk lived in `map-sync` §1 alone, and that
 skill never fires inside a prompt pipeline run — so a self-report's at-end refinement, which edits the
