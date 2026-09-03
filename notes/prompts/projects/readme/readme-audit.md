@@ -263,10 +263,17 @@ git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of ma
 
 ## Pipeline self-report (orchestrator, last)
 
-After the commit, write a short **Pipeline self-report** to
-`notes/prompts/projects/readme/_internal/_last-run-report.md` (overwrite; header: date + project(s)) — meta-
-observations about the run itself, not the READMEs. This is the evidence a later session uses to decide
-whether these prompts need changing, so be honest, including "nothing to report":
+After the commit, **execute `notes/prompts/_internal/_pipeline-self-report.md` in full.** That file is
+the contract, not a summary of one: the skill-friction and ledger reconciliation, the `Status:` line,
+the five bullets — restated as the seven below — the close-out check against disk, the
+`_run-tracker.md` update, the two-file commit
+and its `git show --stat HEAD` verification, the breach-log rulings and the at-end refinement gate all
+apply here unchanged. This step only says what **this** pipeline puts in them.
+
+Write a short **Pipeline self-report** to
+`notes/prompts/projects/readme/_internal/_last-run-report.md` (overwrite; header: date + project(s) +
+`Status:`) — meta-observations about the run itself, not the READMEs. This is the evidence a later
+session uses to decide whether these prompts need changing, so be honest, including "nothing to report":
 - **Report discipline** — which subagents, if any, blew their line budget or returned reports that had
   to be discarded.
 - **Trace verification** — reviewer traces that were missing/incomplete, re-dispatches made, any false alarm.
@@ -284,15 +291,17 @@ whether these prompts need changing, so be honest, including "nothing to report"
   way on full-stack. A target where the judge returned a long list is one where A and B were both
   satisfied by something that does not land.
 - **Failure protocol** — subagents that errored, second failures, any README excluded from the commit.
-- **Anything else** that made the run harder than it should be.
+- **Anything else** that made the run harder than it should be — **and any rule this run broke** (a
+  skipped gate, a mandated dispatch not made, an effect item applied unread). That half is the
+  contract's bullet 4, and a breach named here also earns a row in `_breach-log-readme-audit.md`.
 - **Verdict** — "pipeline clean" or "change worth considering: X" (the uniform criterion from
-  `notes/prompts/_internal/_pipeline-self-report.md`, of which these bullets are this pipeline's tailored version).
+  `notes/prompts/_internal/_pipeline-self-report.md`).
 
 Seven bullets, one line each. This file is prompt-system machinery (not a project file), so **commit it
 directly** under the notes/prompts exception, per `_pipeline-self-report.md` → "How to commit it" —
 `git status` before add and before commit, staging `_last-run-report.md` **and** `_run-tracker.md`
 (plus `_breach-log-readme-audit.md` when this run wrote a row or moved a disposition in it), message
-`docs: pipeline self-report for readme review of {PROJECT_PATH}`. (It is a separate commit from the README set.) The prompts stay frozen
+`docs: pipeline self-report for readme-audit run on {PROJECT_PATH}`. (It is a separate commit from the README set.) The prompts stay frozen
 unless this report shows a real failure. Also print the report in chat.
 
 ## Hard rules
@@ -300,8 +309,8 @@ unless this report shows a real failure. Also print the report in chat.
 - **Commit the READMEs yourself**, as **one commit for the project**, not one per README — the same
   `_session-rules.md` permission `readme-concept-add` uses, and the same shape as `plan-audit`
   (`PLANNING.md`) and `review-audit` (`PROJECT-BACKLOG.md`). Never ask Victor to run it. The other files
-  this flow commits are `_last-run-report.md` and `_run-tracker.md` (plus the breach log when this run
-  wrote one), separately, under the notes/prompts exception.
+  this flow commits are the shared contract's — `_last-run-report.md` and `_run-tracker.md` at
+  minimum — separately, under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never `git add` all three by default.
