@@ -62,6 +62,7 @@ https://06-hr-portal.netlify.app
 - `CanDeactivate` only on the department form — the only place where accidental data loss is a real risk
 - `filteredNavLinks computed()` in the root component to keep sidebar links in sync with the current user without duplicating role checks in children
 - Entity ids generated inside the owning service with `crypto.randomUUID()` — a clock reading gives two records created in the same millisecond the same id, and letting the calling component build the entity would put the rule in as many places as there are callers
+- Leave-request transitions guarded in `LeaveRequestService` rather than in the template that hides the buttons — the template only decides what is drawn, so a rule that lives there is bypassed by every other caller and the invalid state still reaches localStorage
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
 - A credential-free session shape in localStorage — only the email and role the app reads back, re-projected on read so an entry saved by an older build drops its password
 
@@ -100,6 +101,7 @@ https://06-hr-portal.netlify.app
 - Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap`
 - Route params are always text — `paramMap.get('id')` returns `string | null`, so converting it has to agree with the model's id type or the lookup silently finds nothing
 - Auth persistence — `signal()` initialised from localStorage + `effect()` to save on every change
+- A refused write has to be visible — `updateStatus` returns a `boolean` so the page's snackbar reports the refusal instead of confirming a change that never happened
 - App shell scroll layout — `overflow: hidden` on `app-root` keeps toolbar and sidebar fixed
 
 ---
