@@ -95,6 +95,7 @@ https://06-hr-portal.netlify.app
 - `HttpInterceptorFn` — functional interceptor; clones the request to add the auth header
 - `CanDeactivateFn` — warns the user before leaving a form with unsaved changes
 - `MatStepper` — multi-step form with `[linear]="true"` and per-step form group validation
+- Validation display state — an error renders only once the control is `touched`; validity alone is true from construction, so an ungated `required` accuses the user before any interaction
 - `MatSnackBar` — toast notifications after every key action
 - `MatSidenav` app shell — persistent sidebar with role-filtered navigation links
 - `MatDatepicker` — calendar picker with `provideNativeDateAdapter()`
