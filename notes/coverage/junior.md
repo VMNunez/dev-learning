@@ -20,6 +20,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
+- A child's `input()` and `output()` types are part of the domain boundary — declaring them as `string` when the parent's state is a narrow union re-widens the value at the boundary, so the narrowing a runtime check bought survives only inside the parent and the compiler stops rejecting a filter value nothing can match ✅ 06-hr-portal — `EmployeeFilters` declares `selectedStatus` as `input<EmployeeStatusFilter>` and `statusChange` as `output<EmployeeStatusFilter>`, so the union the page validated at the query-param read is the same one the filter child speaks
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
 - `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
@@ -1443,7 +1444,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
 - `some` vs `every` — express existential or universal checks with short-circuiting ✅ 06-hr-portal — `employee.service.ts` and `department.service.ts` short-circuit their uniqueness checks with `some`
-- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
+- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup ✅ 06-hr-portal — the status guards ask `EMPLOYEE_STATUS_FILTERS.includes(value)` for plain membership rather than an index they would then compare to `-1`
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
 - Array sorting — provide an appropriate comparator and account for `sort` mutating the array

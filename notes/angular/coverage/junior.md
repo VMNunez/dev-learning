@@ -15,6 +15,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
+- A child's `input()` and `output()` types are part of the domain boundary — declaring them as `string` when the parent's state is a narrow union re-widens the value at the boundary, so the narrowing a runtime check bought survives only inside the parent and the compiler stops rejecting a filter value nothing can match ✅ 06-hr-portal — `EmployeeFilters` declares `selectedStatus` as `input<EmployeeStatusFilter>` and `statusChange` as `output<EmployeeStatusFilter>`, so the union the page validated at the query-param read is the same one the filter child speaks
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
 - `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
