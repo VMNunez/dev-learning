@@ -88,8 +88,13 @@ export class LeaveRequestPage implements OnInit {
   }
 
   onStatusChange(id: string, status: LeaveRequestStatus) {
-    this.leaveRequestService.updateStatus(id, status);
-    this.snackBar.open(`Leave request ${status}`, 'Close', { duration: 3000 });
+    const applied = this.leaveRequestService.updateStatus(id, status);
+
+    const message = applied
+      ? `Leave request ${status}`
+      : 'Only a pending request can be approved or rejected';
+
+    this.snackBar.open(message, 'Close', { duration: 3000 });
   }
 
   onStatusFilterChange(status: LeaveRequestStatus | 'all') {

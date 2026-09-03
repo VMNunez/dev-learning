@@ -24,18 +24,28 @@ export class LeaveRequestService {
     ]);
   }
 
-  updateStatus(id: string, newStatus: LeaveRequestStatus) {
-    this.leaveRequests.update((leaveRequests) => {
-      return leaveRequests.map((leaveRequest) => {
-        if (leaveRequest.id === id) {
-          return {
-            ...leaveRequest,
-            status: newStatus,
-          };
-        } else {
-          return leaveRequest;
-        }
-      });
-    });
+  /**
+   * Applies an admin decision to a leave request.
+   *
+   * `pending` is the only state with outgoing transitions: `approved` and `rejected` are terminal,
+   * so a decided request can never be re-decided or re-opened. The rule lives here, where the state
+   * actually changes, rather than only in the template that hides the buttons.
+   *
+   * @returns `true` when the transition was applied, `false` when it was refused.
+   */
+  updateStatus(id: string, newStatus: LeaveRequestStatus): boolean {
+    const leaveRequest = this.leaveRequests().find((request) => request.id === id);
+
+    if (!leaveRequest || leaveRequest.status !== 'pending' || newStatus === 'pending') {
+      return false;
+    }
+
+    this.leaveRequests.update((leaveRequests) =>
+      leaveRequests.map((request) =>
+        request.id === id ? { ...request, status: newStatus } : request,
+      ),
+    );
+
+    return true;
   }
 }
