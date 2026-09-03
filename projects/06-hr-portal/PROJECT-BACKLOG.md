@@ -16,7 +16,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Medium
 
-- [ ] **[Medium]** `[frontend]` — Validate the `status` query param in `employee-page.ts:56-60` too: the same unvalidated `queryParamMap.get('status')` drives `selectedStatus`, which is declared `signal<string>('')` rather than the `'active' | 'inactive' | ''` the model allows, so `?status=foo` silently renders an empty employee table exactly as on the leave-request page. Type the signal to the union and reject an unknown value. *(Effort: Small)* *(raised 2026-09-03 while triaging the leave-request `status` query-param task)*
 - [ ] **[Medium]** `[frontend]` — Gate the email `required` error on `touched` in `employee-dialog.html:30`. Every other field in the same form checks `.touched`; email does not, so "Email is required" renders the instant the dialog opens, before any interaction. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Type the leave-request date controls honestly: `leave-request-dialog.ts:27-29` declares them as `FormControl<string>` (inferred from `''`) but `MatDatepicker` puts a `Date` in them at runtime, masked by the `as unknown as Date` double cast at :41-49. Declare `FormControl<Date | null>` and drop the cast. *(Effort: Small)*
 - [ ] **[Medium]** `[frontend]` — Parameterize `dialog.open` with its result type in `leave-request-page.ts:70-87`, so `afterClosed()` stops yielding `Observable<any>` and `data.startDate/endDate/reason` stop being implicit `any`. *(Effort: Small)*
@@ -48,6 +47,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Medium
 
+- 2026-09-03 · **[Medium]** `[frontend]` — employee `status` query param validated too, and the union carried into the filter child's `input()`/`output()` → README architecture decisions, PLANNING validation rules + key patterns (new row), coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and javascript/junior (marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Medium]** `[frontend]` — `status` query param validated by a type predicate over an `as const` list → README What I learned + architecture decisions, PLANNING validation rules + key patterns, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (new bullet + 3 marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Medium]** `[frontend]` — app-shell scroll fix already complete — DECISION, no code change → `html { height: 100% }` lives in `material-theme.scss:8`, loaded before `styles.css` per `angular.json:27`
 - 2026-09-03 · **[Medium]** `[frontend]` — leave-request transitions guarded in the service, refusal reported to the caller → README architecture decisions + What I learned, PLANNING business rules + key patterns, coverage architecture/junior (2 new bullets, marked ✅ 06-hr-portal)
