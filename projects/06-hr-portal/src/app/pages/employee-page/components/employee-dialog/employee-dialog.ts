@@ -15,6 +15,7 @@ import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/conf
 import { DepartmentService } from '../../../../core/services/department.service';
 import { EmployeeService } from '../../../../core/services/employee.service';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { toLocalDateString } from '../../../../shared/utils/date.util';
 
 @Component({
   selector: 'app-employee-dialog',
@@ -115,7 +116,7 @@ export class EmployeeDialog {
       } else {
         this.dialogRef.close({
           ...newEmployee,
-          startDate: new Date().toISOString().split('T')[0],
+          startDate: toLocalDateString(new Date()),
         });
       }
     }
