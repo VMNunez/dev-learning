@@ -1108,6 +1108,13 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   insecure transport, and cross-site sending respectively
 - Token storage in browsers — Web Storage exposes tokens to JavaScript and therefore XSS, while
   `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls ✅ 07-timetrack
+- Client-side session state — what a browser persists about the signed-in user is a projection holding
+  only the fields the application reads back, never the credential that proved the identity, because
+  anything in Web Storage is readable by any script on the page and outlives the session it belonged to ✅ 06-hr-portal — `AuthService` persists a `SessionUser` built by `toSession`, so `localStorage.currentUser` holds email and role only
+- Remediation of already-stored data — changing what a client writes leaves every value persisted under
+  the old shape untouched, so the entry is re-projected or discarded when it is read; otherwise the
+  sensitive field is written straight back on the next save and the fix never reaches the users who
+  already hold one ✅ 06-hr-portal — `readStoredSession` re-projects the stored entry at boot, so a value saved with the old password field loses it on first read
 
 ### Injection, validation, and unsafe input
 
