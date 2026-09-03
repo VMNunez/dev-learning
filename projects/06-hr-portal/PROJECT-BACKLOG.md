@@ -66,9 +66,9 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Learning objectives
 
-Against PLANNING's "Key patterns introduced" table (29 concepts):
+Against PLANNING's "Key patterns introduced" table (33 concepts):
 
-**28 ✅ Demonstrated · 1 ⚠️ Shallow · 0 ❌ Missing**
+**32 ✅ Demonstrated · 1 ⚠️ Shallow · 0 ❌ Missing**
 
 - ⚠️ **App shell scroll fix** — half applied: `app-root { overflow: hidden }` is there, `html { height: 100% }` is not, so the `body` percentage height never resolves. See the Medium task above.
 
