@@ -58,6 +58,7 @@ https://06-hr-portal.netlify.app
 - Stacked guards (`authGuard` + `adminGuard`) to keep authentication and authorisation as separate concerns
 - Coordinator pattern on pages with filters and a table to centralise state and keep children reusable
 - `MatStepper` for employee creation to split a long form into manageable steps
+- Unique-email check at the dialog's save exit rather than in the `Next` handler — a linear stepper lets a completed step be re-entered from its header, which skips that button
 - `CanDeactivate` only on the department form — the only place where accidental data loss is a real risk
 - `filteredNavLinks computed()` in the root component to keep sidebar links in sync with the current user without duplicating role checks in children
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
