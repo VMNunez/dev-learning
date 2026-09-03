@@ -61,6 +61,7 @@ https://06-hr-portal.netlify.app
 - Unique-email check at the dialog's save exit rather than in the `Next` handler — a linear stepper lets a completed step be re-entered from its header, which skips that button
 - `CanDeactivate` only on the department form — the only place where accidental data loss is a real risk
 - `filteredNavLinks computed()` in the root component to keep sidebar links in sync with the current user without duplicating role checks in children
+- Entity ids generated inside the owning service with `crypto.randomUUID()` — a clock reading gives two records created in the same millisecond the same id, and letting the calling component build the entity would put the rule in as many places as there are callers
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
 - A credential-free session shape in localStorage — only the email and role the app reads back, re-projected on read so an entry saved by an older build drops its password
 
@@ -97,6 +98,7 @@ https://06-hr-portal.netlify.app
 - Local-clock date serialization — `toISOString()` shifts a picked date to UTC, so `YYYY-MM-DD` is built from `getFullYear`/`getMonth`/`getDate`
 - Conditional `displayColumns` with `computed()` — show or hide table columns based on role
 - Query params — `[queryParams]` on `routerLink`, read with `ActivatedRoute.snapshot.queryParamMap`
+- Route params are always text — `paramMap.get('id')` returns `string | null`, so converting it has to agree with the model's id type or the lookup silently finds nothing
 - Auth persistence — `signal()` initialised from localStorage + `effect()` to save on every change
 - App shell scroll layout — `overflow: hidden` on `app-root` keeps toolbar and sidebar fixed
 
