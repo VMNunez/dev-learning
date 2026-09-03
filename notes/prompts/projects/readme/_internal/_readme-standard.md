@@ -5,10 +5,12 @@ README(s) must contain and how each section must be written**. All pieces of the
 
 - `_readme-write-prompt.md` (the **author**) reads the rules for the one README it is writing.
 - `_readme-review-prompt.md` (the **reviewer**) reads the same rules to audit that README.
-- `_readme-effect-prompt.md` (the **reader-effect judge**) reads the quality filter's two lenses — plus
-  rule 9 on `global`, the one section whose failure is invisible bullet by bullet — and nothing else
-  here: it judges whether the finished README lands on the reader it is written for, proposes cuts and
-  additions, and **never edits a file**; the reviewer applies them.
+- `_readme-effect-prompt.md` (the **reader-effect judge**) reads the quality filter's two lenses, plus
+  rule 9 on `global` — the one section whose failure is invisible bullet by bullet — plus, for each
+  section it proposes a cut in, that section's own rule, which is what makes an `effect-only` label a
+  checked claim rather than an assertion about an unread file (`REC-202`). Nothing else here: it judges
+  whether the finished README lands on the reader it is written for, proposes cuts and additions, and
+  **never edits a file**; the reviewer applies them.
 - `readme-audit.md` (the **orchestrator**) reads the "which READMEs" logic and the commit rule.
 - `readme-concept-add` (the **in-session skill**) reads "Which README owns a concept" plus the section
   format it routes to, and the granularity half of the commit rule, which binds it too.

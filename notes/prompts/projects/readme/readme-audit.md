@@ -191,11 +191,22 @@ above is new.)*
 **The vantage this ruling is made from, because you have no other.** Your light-context rule stands — you
 still never write a README — but you may **read the one section in dispute**, and only that section, when
 the two quotes do not settle it: `grep -n "^## "` the file and read from that heading to the next. The
-coherence pass's "they stay out of your context" governs **that** step; this bounded read is the single
-exception, and it ends when the objection is settled. If the section still does not settle it, **sustain
+coherence pass's "they stay out of your context" governs **that** step; the exceptions to it are two and
+both are bounded — the `git diff` you read against the judge's item list before committing, and this one
+section, which ends when the objection is settled. If the section still does not settle it, **sustain
 the objection**: leaving a bullet a rule arguably includes is the recoverable error, and the summary
 records that you sustained it for want of a decision, which is the signal that the standard's clause is
 unclear.
+
+**Verify the application before you commit, on every target — `Objections returned: none` is not
+evidence.** A silent application returns nothing to arbitrate, so the ruling above never fires and the
+run's report reads exactly like a correct run's. So once the appliers have returned and before the
+commit, `git diff` **each README that changed** and read it **against that target's item list**: every
+cut in the diff is one an item named, and nothing else went with it. Where the diff shows a cut from a
+section a rule of the standard positively *includes*, re-dispatch that target's B with the rule's tests
+quoted, and settle it as an objection **you** raised — B did not, and that is the finding, not the
+repair. This is the check that made the 2026-09-02 `04-meal-finder` commit correct while every trace on
+the run was green; it ran out of band then and it is a step now (`REC-202`).
 
 **A cut a later run would undo is a finding about the standard.** Where B flags an `effect-only` `CUT` of
 a `What I learned` bullet whose concept is a `PLANNING.md` learning objective, the next author will re-add
@@ -225,9 +236,11 @@ ending.
 
 ## Finishing
 
-Print a **summary of changes** across all targets (one line per section changed, grouped by README), then
-**run the commit yourself**, per the **Auto-committed** note at the top of this prompt (`git status`
-immediately before staging and before committing).
+Print a **summary of changes** across all targets (one line per section changed, grouped by README),
+**verify the effect items landed as their items named** (`## Reader-effect judge` → *Verify the
+application before you commit* — the `git diff` read against each target's item list, which happens
+before this commit and not after it), then **run the commit yourself**, per the **Auto-committed** note
+at the top of this prompt (`git status` immediately before staging and before committing).
 
 **What the set covers: one commit for this project**, staging one `git add` per README that actually
 changed — never one commit per README, and never all three by default. A target excluded by the Failure
@@ -260,11 +273,13 @@ whether these prompts need changing, so be honest, including "nothing to report"
 - **Coherence** — conflicts the coherence subagent found (a sign the author prompts under-specify a
   shared decision), or `COHERENT`.
 - **Effect judge** — how many items it returned per target, how many B objected to, **how those
-  objections were settled** (sustained / overruled / sustained for want of a decision), and how many
-  items carry `⚠ regenerable — standard gap`. Those are machinery facts; *which* bullets they were is
-  content and belongs in the run's chat summary, per `_pipeline-self-report.md`. The judge reads each
-  finished README whole and is not written by that README's
-  slice owners, so per `_pipeline-self-report.md` bullet 1 its findings **outrank the green traces** as
+  objections were settled** (sustained / overruled / sustained for want of a decision), how many
+  items carry `⚠ regenerable — standard gap`, and **what the pre-commit `git diff` verification found**
+  — a run whose verification found nothing says so, because zero objections plus an unreported check is
+  the shape the 2026-09-02 run had when it was wrong. Those are machinery facts; *which* bullets they
+  were is content and belongs in the run's chat summary, per `_pipeline-self-report.md`. The judge reads
+  each finished README whole and is not written by that README's slice owners, so per
+  `_pipeline-self-report.md` bullet 1 its findings **outrank the green traces** as
   evidence that the author→reviewer split worked — alongside the coherence pass, which qualifies the same
   way on full-stack. A target where the judge returned a long list is one where A and B were both
   satisfied by something that does not land.
@@ -292,6 +307,9 @@ unless this report shows a real failure. Also print the report in chat.
 - **Only commit READMEs that changed** — never `git add` all three by default.
 - Never skip the reviewer pass, and never skip the reader-effect judge — a run that stops at B has
   answered only the conformance question.
+- **Never commit an applied effect item you have not read in the diff.** Zero objections is not a pass:
+  the 2026-09-02 `04-meal-finder` run was green on every trace while B silently applied a cut the
+  standard's own rule 8 contradicts (`REC-202`).
 - **The judge proposes and B writes.** Never let the judge edit a README, and never end a *successful*
   run with its items unapplied and printed as a to-do list for Victor — the one exception is the twice-
   failed applier above, where they are declared as a failure rather than handed over as work.

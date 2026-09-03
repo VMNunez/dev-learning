@@ -62,6 +62,38 @@ returns a verdict neither reader would give.
    to read and the quality filter is your whole bar. You read these so a `cut` you propose can name the
    rule it already fails; you are not auditing the section list, and no other rule of that file is yours
    to check.
+4. **The rule that owns a section you are cutting from — read it *before* you label that `CUT`
+   `effect-only`.** That word asserts that *no rule of the standard reaches this item*, which is a claim
+   about a file and not a feeling about a bullet: you cannot make it about a rule you have not opened.
+   So for every section you propose a `CUT` in — once per **section**, not per item — find its owning
+   rule and read it, in your `{TARGET}`'s block and nowhere else:
+   - `grep -n "^## "` the standard. Your block is `## Global README rules` / `## Backend README rules` /
+     `## Frontend README rules`, and it **ends at the next `## `**. Everything below is bounded by those
+     two line numbers, because `Tradeoffs` has a rule in all three blocks and `8.` is a different rule in
+     two of them — neither a bare title nor a number identifies one on its own.
+   - List that block's rules with `awk 'NR>=<start> && NR<=<end> && /^[0-9]+\. /'` and match your section
+     to one **by title**. Where the README's heading is not the rule's words — `## API endpoints`
+     against `1. **API endpoints table**`, `## State management approach` against
+     `2. **State management**` — fall back to **ordinal position**: each block opens with its sections in
+     order and numbers its rules in that same order, so the Nth section is rule N.
+   - Read from that rule's line to the **next numbered rule inside the block** (the last rule ends at the
+     block's own `## `). Never take a stop marker from outside the range: `^10\. ` after the backend's
+     rule 9 lands 63 lines back in the global block.
+   - Only a section with **no rule at its position in your block** has no owning rule; `effect-only` is
+     then honest and the item says `no owning rule`. A grep that simply missed is not that case.
+   **Then label what you found — and the question is not whether the item passes that rule.** These
+   rules are inclusion tests, so ask the one thing the label turns on: **does this rule positively
+   include the item you are about to cut?** If it does, the cut contradicts the standard and
+   `effect-only` is false — drop it, or keep it citing the rule the item actually fails. Rule 8 says an
+   improvement a user would notice and *this* README's reader would miss belongs; `Meal planner` and
+   `Shopping list` pass both tests, and the `04-meal-finder` cut removing them was proposed twice under
+   `effect-only` — a rule 8 judgement made without opening rule 8. If instead the rule is **silent about
+   the ground you are cutting on** — a line that passes all three of rule 6's tests and still is not a
+   *decision*, which rule 6 has no test for — `effect-only` is the honest label and the cut stands.
+   That gap is what you are for, and reading the rule is how you tell the two apart.
+   **The bound is the point:** one rule, for one cut, to label it honestly. You are not auditing that
+   section against the rule, not checking its other items, and no rule you were not sent to read is yours
+   to open. `ADD` and `KEEP` never trigger this read.
 
 Read nothing else. Not `PLANNING.md`, not the project's code, not the other READMEs — you are the
 reader, and the reader has only this file. Every claim you make about the README is about what is on
@@ -80,7 +112,9 @@ carrying the file so B does not lose it.
 
 Each item names the **section** it is in, and closes with either the rule it fails
 (`rule 9 — form`, `quality filter — recruiter lens`) or the word `effect-only` when nothing in the
-standard reaches it. **One cut you may not propose on `What I learned`: a bullet naming a concept
+standard reaches it. **A `CUT` may not carry `effect-only` until you have read that section's owning
+rule** — read-list point 4: the label is a claim about the standard, so it is honest only after the
+look. **One cut you may not propose on `What I learned`: a bullet naming a concept
 `Architecture decisions` *or `Tradeoffs`* also names.** Rule 9 states that repeat is the section's shape, not a defect,
 and a placement test that cut it was retired on 2026-09-02 for draining the artefact this pipeline is
 calibrated against. `effect-only` is legitimate and is most of what you are for; what is not legitimate
@@ -107,7 +141,7 @@ Open with `N lines, read to EOF` for the README. Then, in **at most 12 lines**:
 
 - `LANDS` — the file does its job for your reader and you propose nothing.
 - Otherwise one line per item:
-  `CUT | ADD | KEEP — <section> — <one-line reason, in your reader's voice> — <rule cited | effect-only>`
+  `CUT | ADD | KEEP — <section> — <one-line reason, in your reader's voice> — <rule cited | effect-only | no owning rule>`
 
 Order the lines by how much they cost your reader, worst first. If you have more than ten items, you are
 listing nits: return the ten that matter and say so in the last line.
