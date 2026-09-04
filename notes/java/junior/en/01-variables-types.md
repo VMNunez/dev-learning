@@ -282,7 +282,33 @@ BigDecimal diff  = gross.subtract(net);                                 // 21.00
 BigDecimal half  = gross.divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);  // 60.50  ← divide is the only one that demands a scale and a rounding mode
 ```
 
-**Scale is the number of digits kept after the decimal point, and it is part of the object**, and each operation decides the result's scale on its own: `add` and `subtract` keep the larger scale of the two operands, and `multiply` adds the two together — two decimals times two decimals gives four — which is why `21.0000` comes out where you were expecting `21.00`. None of those three asks you how to round, because they do not need to; `divide` is the only one you are obliged to tell. You correct it when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops. Neither `multiply`, nor `add`, nor `subtract` has a version that takes a scale and a rounding mode — only `divide` does, and out of necessity, because without that information there are divisions it cannot resolve — so here it is always two steps: the operation first, then `setScale`. That does not mean two lines: you can chain them into one, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, because `multiply` hands you back a `BigDecimal` you can already call `setScale` on:
+**Scale is the number of digits kept after the decimal point, and it is part of the object**: `21.00` has scale 2 and `21.0000` has scale 4, even though the value is the same. Each operation works out its result's scale from a fixed rule that does not depend on what you want — only on the scales the operands arrive with. Read the table as "if I go in with these two scales, I come out with this one":
+
+| Operation | Result's scale | Example |
+|---|---|---|
+| `add`, `subtract` | the **larger** of the two | scale 2 with scale 4 → 4 |
+| `multiply` | the **sum** of the two | scale 2 times scale 2 → 4 |
+| `divide` | the one **you** pass | mandatory: there is no automatic rule |
+
+Follow the chain in the example above step by step, because that is exactly where the scale of 4 appears and never leaves again:
+
+1. `net` and `rate` are built from `"100.00"` and `"0.21"` → **scale 2** both.
+2. `vat = net.multiply(rate)` → `multiply` adds the scales: 2 + 2 = **scale 4**. `vat` is `21.0000`.
+3. `gross = net.add(vat)` → `add` takes the larger: `net` brings 2, but **`vat` already brings 4** → **scale 4**. `gross` is `121.0000`.
+4. `diff = gross.subtract(net)` → the larger of 4 and 2 → **scale 4**. `diff` is `21.0000`.
+
+> **`add`'s two operands did not both have scale 2: only `net` did.** `vat` was not written by hand, it came out of `multiply`, and it came out with four decimals already. Scale is inherited forwards: the moment a multiplication inflates it, everything you compute from that object drags the four decimals along, even when the other operand brings two. That is why `diff` comes out `21.0000` and not `21.00` — `subtract` is not inventing decimals, `gross` was already carrying them.
+
+You do not tell `add`, `subtract` or `multiply` how to round, and that is not an oversight in the API: **they cannot need it**. The sum, the difference and the product of two finite decimals are always another finite decimal, so the table's rule is enough to represent the _exact_ result — no digit is dropped, and where nothing is dropped there is nothing to round. That is why their signatures take a single argument, the other operand, while `divide`'s takes three:
+
+```java
+BigDecimal multiply(BigDecimal multiplicand);                                  // 1 argument: there is no decision to make
+BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode);   // 3: how many decimals to keep and what to do with the rest
+```
+
+`divide` is the only operation that can land on a quotient with infinitely many digits — `10 / 3` is `3.333...` and never terminates — and there no automatic rule helps: you have to say how many decimals to keep and what to do with the ones that go. Hence the three arguments, and hence its being the only one obliged to ask.
+
+So where do you choose the scale and rounding of the other three's results? In a separate step, when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops. Neither `multiply`, nor `add`, nor `subtract` has an overload that takes a scale and a rounding mode, so here it is always two steps: the operation first, then `setScale`. That does not mean two lines: you can chain them into one, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, because `multiply` hands you back a `BigDecimal` you can already call `setScale` on:
 
 ```java
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
