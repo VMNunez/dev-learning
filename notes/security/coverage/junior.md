@@ -22,6 +22,9 @@ review without taking on specialist or production-platform ownership.
   trying to enumerate every malicious value ✅ 07-timetrack
 - Secure defaults and fail closed — an absent rule, invalid credential, unexpected exception, or
   unavailable dependency must not silently make a protected operation public ✅ 07-timetrack
+- Stubbed control as a security claim — a stand-in that carries a real mechanism's name while
+  nothing issues, signs, or verifies it reads as working protection to every later reader, so the
+  code states at the point of use what it does not yet do ✅ 06-hr-portal — `auth-interceptor.ts` opens with a PLACEHOLDER block saying nothing issues or verifies the value the `Bearer` header carries
 
 ## Authentication and authorisation
 
@@ -162,6 +165,13 @@ review without taking on specialist or production-platform ownership.
   insecure transport, and cross-site sending respectively
 - Token storage in browsers — Web Storage exposes tokens to JavaScript and therefore XSS, while
   `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls ✅ 07-timetrack
+- Client-side session state — what a browser persists about the signed-in user is a projection holding
+  only the fields the application reads back, never the credential that proved the identity, because
+  anything in Web Storage is readable by any script on the page and outlives the session it belonged to ✅ 06-hr-portal — `AuthService` persists a `SessionUser` built by `toSession`, so `localStorage.currentUser` holds email and role only
+- Remediation of already-stored data — changing what a client writes leaves every value persisted under
+  the old shape untouched, so the entry is re-projected or discarded when it is read; otherwise the
+  sensitive field is written straight back on the next save and the fix never reaches the users who
+  already hold one ✅ 06-hr-portal — `readStoredSession` re-projects the stored entry at boot, so a value saved with the old password field loses it on first read
 
 ## Injection, validation, and unsafe input
 

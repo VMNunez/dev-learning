@@ -4,49 +4,74 @@
 **Last Reviewed — frontend:** 2026-07-16
 
 **Overall quality:** Good — every planned pattern is present and used meaningfully, the smart/dumb
-split and signal+`effect()` persistence are consistent across the app, but a plaintext password in
-`localStorage` and a UTC date-serialization bug that fires on every leave request keep it from
-portfolio-ready.
+split and signal+`effect()` persistence are consistent across the app, and the persisted session is
+now credential-free, calendar dates are serialized from the local clock and the unique-email rule is
+enforced at the dialog's save exit, so nothing is outstanding at any priority.
 
 ---
 
 ## High
 
-- [ ] **[High]** `[frontend]` — Stop persisting the password to `localStorage`: `auth.service.ts:21-26` stores the full `User` object (including plaintext `password`) via the `effect()`. Persist a credential-free shape (email + role) instead, and keep reading it back with the same `?? 'null'` pattern. *(Effort: Small)*
-- [ ] **[High]** `[frontend]` — Fix the UTC date-only serialization: `leave-request-dialog.ts:33-35` (`dateFormat()`) and `employee-dialog.ts:118` (`startDate` default) both use `toISOString().split('T')[0]`, which returns the **UTC** date. Trigger: the datepicker hands back a `Date` at local midnight, so in Spain (UTC+1/+2) every leave request stores the *previous* day. Build the string from `getFullYear()/getMonth()/getDate()` instead. *(Effort: Small)*
-- [ ] **[High]** `[frontend]` — Enforce the unique-email rule on submit, not only on "Next": `employee-dialog.ts` calls `emailExists` in `onNext()` only. Trigger: type a format-valid duplicate email, click the **step-2 header** directly (linear stepper marks step 1 complete once it is format-valid), fill step 2, submit → the duplicate saves. Re-check in `onSubmit()`. *(Effort: Small)*
+*No open High tasks.*
 
 ## Medium
 
-- [ ] **[Medium]** `[frontend]` — Generate ids with `crypto.randomUUID()` instead of `Date.now()`: `employee.service.ts:19`, `leave-request.service.ts:16-25`, and `department-form.ts:85`. Two adds inside the same millisecond (fast double-submit) collide, and every later edit/delete by that id then hits both rows. Move department id generation into `DepartmentService` while you are there — it currently lives in the component. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Guard the leave-request state machine in the service: `leave-request.service.ts:27-40` `updateStatus()` will flip an already-approved request back to `pending` or straight to `rejected`. The "only a pending request can be approved/rejected" rule currently lives only in the template's `@if`. Enforce it where the state actually changes. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Validate the `status` query param before applying it: `leave-request-page.ts:61-67` casts `queryParamMap.get('status')` straight to the union type. A stale link like `?status=foo` sets an invalid status and the table silently renders empty with no explanation. Check it against `statusOptions`, fall back to `'all'`. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Gate the email `required` error on `touched` in `employee-dialog.html:30`. Every other field in the same form checks `.touched`; email does not, so "Email is required" renders the instant the dialog opens, before any interaction. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Type the leave-request date controls honestly: `leave-request-dialog.ts:27-29` declares them as `FormControl<string>` (inferred from `''`) but `MatDatepicker` puts a `Date` in them at runtime, masked by the `as unknown as Date` double cast at :41-49. Declare `FormControl<Date | null>` and drop the cast. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Parameterize `dialog.open` with its result type in `leave-request-page.ts:70-87`, so `afterClosed()` stops yielding `Observable<any>` and `data.startDate/endDate/reason` stop being implicit `any`. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Clear the fake-latency timer in `login-page.ts:49`: `onSubmit()` schedules a `setTimeout(..., 1000)` with no cleanup, so navigating away before it fires runs the callback against a destroyed component. Store the id and clear it in `ngOnDestroy`, or use `timer()` + `takeUntilDestroyed()`. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Make the dashboard stat cards real links: `dashboard-page.html:9,18,32,41,104` put `routerLink` on `<mat-card>`, so they navigate on click but have no `href`, are not Tab-reachable, and announce no link role. Wrap the content in an `<a routerLink>`. *(Effort: Small)*
-- [ ] **[Medium]** `[frontend]` — Decompose `dashboard-page` into presentational children. It is the one outlier on the smart/dumb axis: every other page (`employee-page`, `department-page`, `leave-request-page`) splits into table/filters/dialog children, while the dashboard holds all markup + computed state in one component (`dashboard-page.ts:1-53`, 139-line template). Follow the convention the other three set. *(Effort: Medium)*
-- [ ] **[Medium]** `[frontend]` — Complete the app-shell scroll fix in `styles.css`: only `body { height: 100% }` (:22) is set — `html` has no height anywhere, and a percentage height on `body` needs `html` to have an explicit height to resolve against, so the rule currently does nothing. PLANNING's own pattern table documents the fix as `html, body { height: 100% }` + `app-root { overflow: hidden }`; add the missing `html` selector. *(Effort: Small)*
+*No open Medium tasks.*
 
 ## Low
 
-- [ ] **[Low]** `[frontend]` — Use `this.editId() !== null` instead of `if (this.editId())` in `department-form.ts:75`. A falsy id reads as "not editing"; harmless today only because `Date.now()` never returns 0, but it becomes a live bug the moment ids are regenerated as small sequential integers. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Signal that the interceptor's token is a stub: `auth-interceptor.ts:7,12` attaches `Authorization: Bearer ${email}` — the "token" is the user's email, not a real token. Inert without a backend, but the `Bearer` naming reads as functioning auth to an interviewer. Add a comment marking it a placeholder for a real backend token. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Decide and document one add/edit mechanism: `department-page` uses a routed form (`department-form`) while `employee-page` and `leave-request-page` use a `MatDialog` for the same job. Both are defensible — the routed form is what makes the `CanDeactivate` guard demonstrable — so if it stays, note the reason in PLANNING rather than leaving it looking accidental. *(Effort: Small)*
-- [ ] **[Low]** `[frontend]` — Drop the non-null assertions in `login-page.ts:47-50` (`formValue.email!`). Safe today behind the `if (this.loginForm.valid)` guard, but a typed getter would narrow the value without the `!`. *(Effort: Small)*
+*No open Low tasks.*
 
-- [ ] **[Low]** `[frontend]` — Fix the `How to run` path in `README.md`: it still says `cd dev-learning/angular/06-hr-portal`, a path the repository reorg removed when `angular/` became `projects/`, so the clone-and-run instructions a recruiter follows fail at the second command. *(Effort: Small)* *(raised 2026-08-31 while triaging the same defect in project 02)*
+---
+
+## Closed
+
+### Frontend
+
+#### High
+
+- 2026-09-03 · **[High]** `[frontend]` — unique-email rule enforced at the dialog's save exit, not only on "Next" → README, PLANNING key patterns, coverage architecture/junior (new bullet, marked ✅ 06-hr-portal)
+- 2026-09-03 · **[High]** `[frontend]` — calendar dates serialized from the local clock via a shared `toLocalDateString()` → README, PLANNING key patterns, coverage javascript/junior (already marked ✅ 03)
+- 2026-09-03 · **[High]** `[frontend]` — password no longer persisted; localStorage holds a credential-free `SessionUser` → README, PLANNING, coverage security/junior
+
+#### Medium
+
+- 2026-09-04 · **[Medium]** `[frontend]` — `dashboard-page` split into `stat-card`, `dashboard-panel` (`ng-content`) and `panel-item` → README What I learned, PLANNING folder structure + key patterns (new row), coverage angular/junior + architecture/junior (both already covered, marked ✅ 06-hr-portal); css/junior structural pseudo-classes marked ✅ 05-task-manager by the diff sweep
+- 2026-09-03 · **[Medium]** `[frontend]` — every `dialog.open` parameterized `<T, D, R>` and typed at the dialog end → README architecture decisions, PROGRESS TypeScript evidence, coverage typescript/junior + architecture/junior (all already covered and marked)
+- 2026-09-03 · **[Medium]** `[frontend]` — the five dashboard stat cards wrapped in `<a routerLink>` with a `:focus-visible` ring, sizing moved to the anchor → README What I learned, PLANNING key patterns (new row) + accessibility floor corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal); HTML `<a>`-vs-click concept already parked in `_cross-topic-inbox.md` under 04
+- 2026-09-03 · **[Medium]** `[frontend]` — login fake latency is `timer()` + `takeUntilDestroyed(destroyRef)`, so an orphan callback can no longer log the user in → README What I learned, PLANNING key patterns (new row), coverage angular/junior (new *injection context* bullet, marked ✅ 06-hr-portal)
+- 2026-09-03 · **[Medium]** `[frontend]` — leave-request `dialog.open` parameterized with a `LeaveRequestFormResult` derived from the model, typed at both ends → README What I learned, PLANNING key patterns (new row), coverage typescript/junior (already covered and marked)
+- 2026-09-03 · **[Medium]** `[frontend]` — leave-request date controls typed `FormControl<Date | null>`, both double casts and both `!` gone → README What I learned, PLANNING key patterns (new row), coverage angular/junior + typescript/junior (all already covered and marked)
+- 2026-09-03 · **[Medium]** `[frontend]` — employee dialog email errors gated on `touched` like every sibling field → README What I learned, PLANNING validation rules (new row), coverage angular/junior (already covered + already marked ✅ 03)
+- 2026-09-03 · **[Medium]** `[frontend]` — employee `status` query param validated too, and the union carried into the filter child's `input()`/`output()` → README architecture decisions, PLANNING validation rules + key patterns (new row), coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and javascript/junior (marked ✅ 06-hr-portal)
+- 2026-09-03 · **[Medium]** `[frontend]` — `status` query param validated by a type predicate over an `as const` list → README What I learned + architecture decisions, PLANNING validation rules + key patterns, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (new bullet + 3 marked ✅ 06-hr-portal)
+- 2026-09-03 · **[Medium]** `[frontend]` — app-shell scroll fix already complete — DECISION, no code change → `html { height: 100% }` lives in `material-theme.scss:8`, loaded before `styles.css` per `angular.json:27`
+- 2026-09-03 · **[Medium]** `[frontend]` — leave-request transitions guarded in the service, refusal reported to the caller → README architecture decisions + What I learned, PLANNING business rules + key patterns, coverage architecture/junior (2 new bullets, marked ✅ 06-hr-portal)
+- 2026-09-03 · **[Medium]** `[frontend]` — entity ids generated by `crypto.randomUUID()` inside the owning service, `Department.id` now a `string` → README architecture decisions + What I learned, PLANNING key patterns, coverage architecture/junior (new bullet, marked ✅ 06-hr-portal) and angular/junior (new bullet, marked ✅ 06-hr-portal)
+
+#### Low
+
+- 2026-09-04 · **[Low]** `[frontend]` — providers supplied in the nine scaffolded specs, suite now 28/28 → coverage general/junior (2 new bullets) + angular-material/junior (1 new bullet), all marked ✅ 06-hr-portal; PROGRESS Angular/General evidence; README and PLANNING not written — testing is out of scope for this project
+- 2026-09-04 · **[Low]** `[frontend]` — `deactivate-guard.spec.ts` typed `CanDeactivateFn<DepartmentForm>` so the suite compiles (18/28 pass) → coverage angular/junior (new bullet, marked ✅ 06-hr-portal); README and PLANNING not written — testing is out of scope for this project
+- 2026-09-04 · **[Low]** `[frontend]` — the three domain collections read through one generic `readStoredArray<T>()` instead of three unguarded parses → PLANNING folder structure + business rules (new row), coverage typescript/junior (generic functions marked ✅ 06-hr-portal); architecture/junior DRY already ✅ 05, README not written — extracting a shared util reads the same in any project of this stack
+- 2026-09-04 · **[Low]** `[frontend]` — How to run path corrected to `projects/` after the reorg → README How to run; no coverage mark — documentation only, no code written
+- 2026-09-04 · **[Low]** `[frontend]` — the stored session is parsed inside a `try` and narrowed by an `isStoredSession` predicate, `Role` now derived from a `ROLES` `as const` list → README architecture decisions, PLANNING business rules + 2 key-pattern rows corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (`Partial<T>` marked ✅ 06-hr-portal by the diff sweep)
+- 2026-09-04 · **[Low]** `[frontend]` — both add/edit surfaces kept — DECISION, no code change: a dialog has no route, so `CanDeactivateFn` can only exist on the routed form → PLANNING per-page UI (new paragraph), README architecture decisions (reason corrected), coverage angular/junior (new bullet, marked ✅ 06-hr-portal)
+- 2026-09-04 · **[Low]** `[frontend]` — interceptor's `Bearer` value marked a placeholder at the point of use → README Tradeoffs + What I learned corrected, PLANNING folder structure corrected, coverage security/junior (new bullet, marked ✅ 06-hr-portal)
+- 2026-09-03 · **[Low]** `[frontend]` — login controls declared `nonNullable` and read with `getRawValue()`, both `!` gone → coverage angular/junior + typescript/junior (already covered and marked); README and PLANNING already represent it via the typed-control entries
+- 2026-09-03 · **[Low]** `[frontend]` — `editId !== null` replaces the truthiness test in `department-form.ts` → closed inside the `crypto.randomUUID()` task, coverage typescript/junior (marked ✅ 06-hr-portal)
+
+### Backend
+
+*n/a — Angular-only project.*
 
 ---
 
 ## Learning objectives
 
-Against PLANNING's "Key patterns introduced" table (28 concepts):
+Against PLANNING's "Key patterns introduced" table (34 concepts):
 
-**27 ✅ Demonstrated · 1 ⚠️ Shallow · 0 ❌ Missing**
-
-- ⚠️ **App shell scroll fix** — half applied: `app-root { overflow: hidden }` is there, `html { height: 100% }` is not, so the `body` percentage height never resolves. See the Medium task above.
+**34 ✅ Demonstrated · 0 ⚠️ Shallow · 0 ❌ Missing**
 
 Notes on two concepts that look like gaps but are not:
 - `CanDeactivateFn` is wired only on the department-form routes (`app.routes.ts:37-38, 46-47`). The employee create/edit flow is dialog-based, so a route guard structurally does not apply there — the concept is demonstrated where it can be.

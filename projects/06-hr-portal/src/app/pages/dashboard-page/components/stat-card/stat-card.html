@@ -1,0 +1,11 @@
+<a class="stat-card-link" [routerLink]="link()" [queryParams]="queryParams()">
+  <mat-card appearance="outlined" class="stat-card">
+    <mat-card-content>
+      <div class="stat-header">
+        <mat-icon>{{ icon() }}</mat-icon>
+        <span class="stat-label">{{ label() }}</span>
+      </div>
+      <strong class="stat-number">{{ value() }}</strong>
+    </mat-card-content>
+  </mat-card>
+</a>

@@ -4,8 +4,10 @@ import { AuthService } from '../../core/services/auth.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { LeaveRequestDialog } from './components/leave-request-dialog/leave-request-dialog';
+import type { LeaveRequestFormResult } from './components/leave-request-dialog/leave-request-dialog';
 import { LeaveRequestTable } from './components/leave-request-table/leave-request-table';
-import type { LeaveRequestStatus } from '../../models/leave-request.model';
+import { isLeaveRequestFilter } from '../../models/leave-request.model';
+import type { LeaveRequestFilter, LeaveRequestStatus } from '../../models/leave-request.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LeaveRequestFilters } from './components/leave-request-filters/leave-request-filters';
 import { ActivatedRoute } from '@angular/router';
@@ -23,7 +25,7 @@ export class LeaveRequestPage implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
-  selectedStatus = signal<LeaveRequestStatus | 'all'>('all');
+  selectedStatus = signal<LeaveRequestFilter>('all');
   searchTerm = signal<string>('');
   currentUser = this.authService.currentUser;
   leaveRequests = this.leaveRequestService.leaveRequests;
@@ -61,16 +63,19 @@ export class LeaveRequestPage implements OnInit {
   ngOnInit(): void {
     const initialStatus = this.route.snapshot.queryParamMap.get('status');
 
-    if (initialStatus) {
-      this.selectedStatus.set(initialStatus as LeaveRequestStatus | 'all');
+    if (isLeaveRequestFilter(initialStatus)) {
+      this.selectedStatus.set(initialStatus);
     }
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(LeaveRequestDialog, {
-      width: '500px',
-      autoFocus: false,
-    });
+    const dialogRef = this.dialog.open<LeaveRequestDialog, undefined, LeaveRequestFormResult>(
+      LeaveRequestDialog,
+      {
+        width: '500px',
+        autoFocus: false,
+      },
+    );
 
     dialogRef.afterClosed().subscribe({
       next: (data) => {
@@ -87,12 +92,17 @@ export class LeaveRequestPage implements OnInit {
     });
   }
 
-  onStatusChange(id: number, status: LeaveRequestStatus) {
-    this.leaveRequestService.updateStatus(id, status);
-    this.snackBar.open(`Leave request ${status}`, 'Close', { duration: 3000 });
+  onStatusChange(id: string, status: LeaveRequestStatus) {
+    const applied = this.leaveRequestService.updateStatus(id, status);
+
+    const message = applied
+      ? `Leave request ${status}`
+      : 'Only a pending request can be approved or rejected';
+
+    this.snackBar.open(message, 'Close', { duration: 3000 });
   }
 
-  onStatusFilterChange(status: LeaveRequestStatus | 'all') {
+  onStatusFilterChange(status: LeaveRequestFilter) {
     this.selectedStatus.set(status);
   }
 

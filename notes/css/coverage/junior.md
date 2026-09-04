@@ -36,7 +36,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — target elements through exact ancestry and sibling relationships ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
-- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
+- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()` ✅ 05-task-manager — `task-dialog.css:12` targets `mat-form-field:nth-child(5)` by position instead of adding a class
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
 - `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
@@ -54,7 +54,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
 - Container properties vs item properties — `justify-content`, `align-items`, `gap` and `flex-wrap` are read only by an element whose own `display` is `flex` or `grid`, while `align-self`, `order` and the `flex` shorthand belong to its children; an alignment property declared on any other element is parsed into the computed style and then silently ignored, so a dead rule produces no error and is only caught by reading that element's `display` ✅ 01-todo-list — in `task-item.css` the alignment properties appear only on `.task-item`, the one rule that declares `display: flex`; the `.task-title` span carries none
 - `margin: auto` on flex items — absorb available space on the selected side to separate an item without adding a wrapper element
-- Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
+- `order` and the reverse directions reorder visually only — flex and grid can place an item anywhere in the line without moving it in the document, so the painted arrangement and the source order are two different things
 
 ## CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
@@ -147,7 +147,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `border-radius: 9999px` — create pill ends across changing aspect ratios while reserving `50%` for shapes derived from each axis ✅ 05-task-manager
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair ✅ 04-meal-finder
-- `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
+- `outline` vs `border` — `outline` sits outside the border and does not take up layout space, which is what makes it the property a focus ring is drawn with; style it through `button:focus-visible` instead of substituting a `border`, which would shift the layout every time an element is focused ✅ 01-todo-list
 - `aspect-ratio` — preserve a width-to-height ratio when one dimension is resolved and reserve predictable media space before content loads
 
 ## Overflow

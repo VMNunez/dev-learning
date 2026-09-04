@@ -1,35 +1,43 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-08-28
-Target: Java / junior / update
+Date: 2026-09-04
+Target: Security / junior / update
 Status: clean
 
-- **Plan vs reality** — A one-bullet reconciliation, and the cold reviewer was again the only evidence
-  beyond "the machinery ran". The mechanical half certified 130/130 exact bullets, zero duplicates,
-  zero paraphrases, entry-number-equals-file-number clean across all 18 entries — and the reviewer
-  still returned 8 corrections, 2 of them blocking, on a delta of one bullet and one question. Both
-  blocking ones were the same seam: the new `Must answer` on entry 06 asks what the compiler hands a
-  class that declares no constructor, which is entry **08**'s `Constructor defaults and chaining`
-  bullet, so the run had written a concept-used-before-taught into an entry that declares its other
-  two scaffolding borrows (`throw`, `protected`) explicitly. Fixed by declaring the borrow in 06's
-  `Rationale` and marking the seam in 08's own question. Worth recording because it generalises: the
-  arithmetic gate cannot see a *question* that reaches outside its entry, only a *bullet* that does,
-  and a one-bullet delta is exactly the size at which a run stops expecting to be corrected.
-- **Report discipline** — One cold reviewer, one round, foreground, `deep`. Nothing trimmed.
-- **Failures & retries** — None. Required dispatches: 1; actual: 1; re-dispatches: 0. Acceptance proof
-  complete on the first return (`N entries reviewed: 18`, intro verdict, prerequisite-order verdict,
-  8 numbered corrections with blocking marks).
-- **Rule friction and rule breaches** — One breach, `BRCH-0003` (`this prompt`, Guard 2, `open`): the
-  16 English notes (8,245 lines, 700K) were not read end-to-end; the 2026-08-26 classifications were
-  carried forward on a content-commit proof plus a complete heading inventory. The named cause is new
-  and is not cost: ~200k tokens of prose against a 200k context window means the read does not fit in
-  the run obliged to perform it. Filed as the third data point on `REC-177` (`5b0b5b8a`, committed
-  alone, which is `BRCH-0001`'s lesson applied). The three runs now disagree only on size — 2,024
-  lines met the guard, 8,245 and 9,508 did not — so the row is no longer about "reconciliation" at
-  all. One acceptance, one rejection on the reviewer's non-blocking findings: correction 4 was applied
-  without its closing clause, which asserted that entry 00 "is not eligible for `Studied`" — a rule no
-  contract in this system states, and `Studied` is not this prompt's field to gate.
-- **Verdict** — pipeline clean. No prompt edit drafted, so no cold reviewer was dispatched for one.
-  The Guard 2 finding is not a prompt edit this run may make: it is `REC-177`'s to resolve, and
-  editing the guard inside the run that breached it is the entangled pattern the refinement step
-  forbids.
+- **Plan vs reality** — The reviewer returned `BLOCKED` with 19 findings on a plan whose mechanical half
+  was clean (107/107 exact, zero duplicates, zero paraphrases, entry-number-equals-file-number across
+  13 entries), and 13 of the 19 were the same defect: an assigned coverage concept with no `Must answer`
+  question forcing the note to teach it. That defect is invisible to every check this prompt performs —
+  exact assignment proves a bullet is *owned*, never that the entry's contract *commissions* it — and it
+  was present in 9 of 13 entries, including the topic's own title concept in entry 02 and `CORS is not
+  authorisation` in entry 04. This is the second consecutive run in which the reviewer's findings landed
+  overwhelmingly outside the bullet delta (12 new bullets triggered the run; the findings were about the
+  other 95). The generalisable fact is now confirmed rather than suspected: **`Planning algorithm` step 12
+  requires the pedagogical contract to exist, and nothing anywhere requires it to *cover the assigned
+  concept set*.** A cheap mechanical gate would catch most of it — for each entry, does any `Must answer`
+  question name the subject of each assigned bullet — and it would run before the reviewer instead of
+  spending the deep tier on bookkeeping. That is a candidate prompt edit, parked for a second occurrence
+  under bar condition 1; two runs is the threshold, and this is run two, so the next `notes-plan` run that
+  reproduces it should file the `REC` rather than re-observe it.
+- **Report discipline** — One cold reviewer, one round, foreground, `deep`. Complete acceptance proof on
+  the first dispatch, including the four labelled verdict lines and a split ruling with both resulting
+  learning outcomes written out. Nothing trimmed.
+- **Failures & retries** — None. Required dispatches: 1; actual: 1; re-dispatches: 0.
+- **Rule friction and rule breaches** — No breach. Guard 2 was met at zero cost and is **not** evidence of
+  the kind `BRCH-0002`/`BRCH-0003` are waiting on: the unowned population was empty (all five existing
+  pairs are commissioned by prior plan entries, `## Unassigned existing notes` was `*(none)*`), so no file
+  was owed an end-to-end read and none was read. Their dispositions are unchanged at `confirmed 1/3`.
+  One friction point worth recording because it contradicts last run's: the entry-03 split forced a
+  three-pair renumber, and the prompt's instruction to correct **every** inbound link repository-wide hit
+  a case the rule does not address — the two inbound links carried the note's number in their *display
+  text* as well as their target (`[security/05-security-vulnerabilities.md](…)`). Correcting only the
+  target, which is what `Planning algorithm` step 6 literally authorises ("Only the link target changes in
+  those files"), would have published a link whose visible text names a file that no longer exists. Both
+  were corrected. Low cost here (2 links), but the rule as written permits the wrong answer.
+  One rejection: reviewer finding 10 proposed a new `Audit note:` field on entries 01, 02, 06 and 07 to
+  record where a legacy file's orphaned sections migrate. Rejected as written — `Required plan format`
+  enumerates the fields and this is not one of them, so the validator would not know it. The substance was
+  real and was applied instead as explicit migration clauses in those entries' `Rationale`, the same
+  disposition last run used for its rejected finding.
+- **Verdict** — pipeline clean. The `Must answer` coverage gate is a live candidate at 2/2 occurrences but
+  was not drafted this run, so no cold reviewer was dispatched for a prompt edit.

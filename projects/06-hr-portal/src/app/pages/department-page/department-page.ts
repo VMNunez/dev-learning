@@ -4,7 +4,10 @@ import { DepartmentList } from './components/department-list/department-list';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../shared/components/confirm-dialog/confirm-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -19,8 +22,8 @@ export class DepartmentPage {
   private snackBar = inject(MatSnackBar);
   departments = this.departmentService.departments;
 
-  onDelete(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialog, {
+  onDelete(id: string) {
+    const dialogRef = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
       width: '500px',
       autoFocus: false,
       data: {

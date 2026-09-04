@@ -23,7 +23,6 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 ## Buttons, icons, menus, and tooltips
 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
-- Icon buttons and accessible names — pair `matIconButton` actions with an `aria-label` or equivalent name because an icon or tooltip alone is not a reliable accessible label
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
@@ -105,3 +104,4 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Responsive Material composition — adapt sidenav mode, dialog dimensions, action density, and wide-table presentation because Material components do not make a page responsive automatically
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
+- Application-wide Material dependencies under test — a component configured once for the whole application, such as a date-entry control and the adapter that decides its value representation, has none of that configuration in a bare test environment and must be given it again wherever it is mounted alone ✅ 06-hr-portal — `leave-request-dialog.spec.ts` repeats `provideNativeDateAdapter()` that `app.config.ts` supplies once for the running app
