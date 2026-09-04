@@ -382,7 +382,7 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 
 > Nadie compara los dos métodos en tiempo de ejecución ni salta ningún aviso: el contrato de Java es que `a.compareTo(b) == 0` y `a.equals(b)` deberían dar siempre la misma respuesta, y `BigDecimal` es una de las pocas clases que lo incumple, porque su `equals` mira la escala y su `compareTo` no. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada en el `TreeMap`
 
-> El segundo `put` no lanza nada, no devuelve un error y no imprime un aviso: para el `TreeMap` esa clave ya estaba, así que hace lo que hace siempre un `put` sobre una clave existente — pisar su valor. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
+> El segundo `put` no lanza nada, no devuelve un error y no imprime un aviso: para el `TreeMap` esa clave ya estaba, y un `put` sobre una clave que ya existe no añade nada, sustituye el valor que había por el del nuevo `put`. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
 
 ---
 

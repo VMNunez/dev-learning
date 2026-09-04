@@ -408,7 +408,7 @@ The first three differ from each other only on the exact half; outside that case
 > ratesHash.get(new BigDecimal("1.0"));    // "base rate"    ← the base one is untouched
 > ```
 >
-> The second `put` throws nothing, returns no error and prints no warning: to the `TreeMap` that key was already there, so it does what a `put` on an existing key always does — overwrite its value. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
+> The second `put` throws nothing, returns no error and prints no warning: to the `TreeMap` that key was already there, and a `put` on a key that already exists adds nothing, it replaces the value that was there with the one from the new `put`. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
