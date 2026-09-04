@@ -202,9 +202,10 @@ on **and only where the line names a real commit**, a `cold reviewer:` field rea
 was collapsed with the token missing and neither the deleted row, the commit nor any report held it, so
 silence and an invented `approve` were the only two options, one indistinguishable from a skipped gate
 and the other the self-approval this check exists to expose. It is accepted only as the **first** token
-of the field, only when the clause names a `REC-NNN` row adjudicating it and carries the round count it
-replaces, and every use is counted on the PASS line, so it cannot accumulate unseen. It annotates a
-closure already on disk; it is never a way for a live resolution to reach step 4. It is not offered to invariant 8's self-reports: those are
+of the field and only when the clause names a `REC-NNN` row adjudicating it — and, where its rounds ran,
+carries the round count it replaces and the words `no closing round` — and every use is counted on the
+PASS line, so it cannot accumulate unseen. It annotates a closure already on disk; it is never a way for
+a live resolution to reach step 4. It is not offered to invariant 8's self-reports: those are
 written by the run that held the gate, where a verdict is never lost, only omitted. No ID may be open in
 `_recommendation-ledger.md` and closed here at once. Until this check nothing read that schema, though
 three files state it, which is how the 2026-08-18 collapse left six rejected rows carrying the literal
@@ -214,9 +215,9 @@ again here; a row that applied an edit and wrote the em dash escapes the verdict
 on the line can settle that; and step 4's **one line plus at most one promotion** budget is *reported* as
 a character count beside the longest row, never enforced. 700 was set when it sat above the 90th
 percentile (662 characters) and below the thousand-character closures the budget was written against;
-over the 168 rows on disk today the 90th percentile is **709** and 18 rows are over, so the threshold
-no longer sits where that reasoning put it — the number still moves before the file is visibly growing
-again, but it is now measuring a file that has already grown. Like invariant 8 it is **not** skipped under `-MachineryOnly`: the
+over the 198 rows on disk today the 90th percentile is **1,848** and 47 rows are over — re-measured
+2026-09-04 against the PASS line — so the threshold no longer sits where that reasoning put it, and the
+number it now reports is a file that has already grown past it rather than one about to.
 object under test and the oracle are the same machinery file.
 
 `/system-check` invokes the same validator with `-MachineryOnly`: prompt/launcher/skill/path/map/report/ledger

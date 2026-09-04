@@ -850,6 +850,10 @@ if ($closedSplit.Count -ne 2) {
             # The escape, and why it is not a loophole (`REC-195`). A verdict the collapse never
             # wrote cannot be recovered afterwards: `REC-190` was closed on 2026-09-01 with no
             # token, and neither the deleted row, the commit message nor any report holds it.
+            # `REC-209` admitted a SECOND case this check cannot tell from the first - a field whose
+            # rounds ran and never reached a closing one - and the round count plus the words
+            # `no closing round` that separate them are prose the archive header requires and no
+            # test here can see.
             # Silence and an invented `approve` are the two wrong answers - the first is
             # indistinguishable from a skipped gate, the second IS the self-approval this invariant
             # exists to expose. So an explicit `unrecorded` is accepted under three conditions that
@@ -889,7 +893,7 @@ if ($closedSplit.Count -ne 2) {
                     if ($line.Substring($fieldMatch.Index) -cmatch 'unrecorded.*REC-[0-9]{3}') { $cited = $true }
                 }
                 if (-not $cited) {
-                    Add-ValidationError "REC-$rowId writes 'cold reviewer: unrecorded' and names no REC-NNN row accounting for it; an unrecoverable verdict is admitted by pointing at the row that adjudicates it, never by the word alone."
+                    Add-ValidationError "REC-$rowId writes 'cold reviewer: unrecorded' and names no REC-NNN row accounting for it; a verdict that was lost, or one whose rounds never reached a closing one, is admitted by pointing at the row that adjudicates it, never by the word alone."
                 }
             } else {
                 Add-ValidationError "REC-$rowId carries a 'cold reviewer:' field that never reaches an approving verdict; only approve or approve-with-tightening may reach step 4."

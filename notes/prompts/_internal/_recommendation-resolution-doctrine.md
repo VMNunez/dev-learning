@@ -1028,8 +1028,10 @@ that count is the only surviving record of what the gate actually did. **It anno
 disk and is never a route to step 4**: a resolution in flight whose reviewer returned `reject` has an
 unclosed gate rather than a lost verdict, and step 3's loop is what it owes. Reopening is reserved for a
 closure whose findings are **unapplied on disk** — a defect in the fix, not in the record. Step 3 still
-writes the verdict the moment the reviewer returns (`REC-195`), and the PASS-line count is the instrument:
-three uses inside four days, measured 2026-09-04, says that rule is not holding, not that the escape works.
+writes the verdict the moment the reviewer returns (`REC-195`) and step 4 admits only an approving one; the
+PASS-line count is the instrument over both, and its three uses inside four days, measured 2026-09-04 — one
+a token nobody wrote down, two a row collapsed on a standing `reject` — say those two rules are not holding,
+not that the escape works.
 
 **A check over a hand-written convention settles three things before it exists — the convention's
 *forms*, the *column* the value sits in, and the *value* itself — then publishes its own reach as a
