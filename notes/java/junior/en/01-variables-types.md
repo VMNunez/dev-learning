@@ -314,9 +314,12 @@ So if you want to impose a scale and a rounding mode on the result of `add`, `su
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 ```
 
-`RoundingMode.HALF_UP` is the rule you already know: if what gets dropped is `.5` or more, the last digit you keep goes up; if it is less than `.5`, it stays as it is. That is why `0.125` at scale 2 becomes `0.13`. On negatives, "up" means away from zero, so `-0.125` becomes `-0.13`. It is normally what invoicing wants.
+`RoundingMode.HALF_UP` is the rule you already know: if what gets dropped is `.5` or more, the last digit you keep goes up; if it is less than `.5`, it stays as it is. That is why `0.125` at scale 2 becomes `0.13`, and `0.124` stays at `0.12`. On negatives, "up" means away from zero, so `-0.125` becomes `-0.13`. It is normally what invoicing wants.
 
-`HALF_EVEN` (banker's rounding) is the other one you will meet in financial code. It behaves **exactly like `HALF_UP` except in one case**: when what gets dropped is an exact half (`.5` and nothing behind it). There it does not always go up — it looks at the last digit you keep and leaves the result on the nearest **even** one: if that digit is already even it stays, if it is odd it goes up by one.
+`HALF_EVEN` (banker's rounding) is the other one you will meet in financial code, and the first thing it asks is whether what it is about to drop is **exactly half** — that is, whether the first leftover digit is a `5` with nothing behind it:
+
+- **If it is not an exact half** — `0.1253` at scale 2, where a `3` still follows the `5` — it behaves **just like `HALF_UP`**: what is left over (`53`) is past halfway, so it goes up, and the result is `0.13`. With `0.1243` the leftover `43` does not reach halfway, so it goes down to `0.12`. In this case both rules always agree.
+- **If it is an exact half** — `0.125` at scale 2 — is where they part. `HALF_UP` always goes up; `HALF_EVEN` leaves the result on the nearest **even** digit, which can be upwards or downwards: it looks at the last digit you keep, and if it is already even it stays, if it is odd it goes up by one.
 
 ```java
 new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← exact half: always up
@@ -325,9 +328,28 @@ new BigDecimal("0.135").setScale(2, RoundingMode.HALF_UP);     // 0.14  ← exac
 new BigDecimal("0.125").setScale(2, RoundingMode.HALF_EVEN);   // 0.12  ← exact half and the 2 is already even → stays
 new BigDecimal("0.135").setScale(2, RoundingMode.HALF_EVEN);   // 0.14  ← exact half and the 3 is odd → up to 4
 new BigDecimal("0.126").setScale(2, RoundingMode.HALF_EVEN);   // 0.13  ← not an exact half, the 6 decides: same as HALF_UP
+new BigDecimal("0.1253").setScale(2, RoundingMode.HALF_EVEN);  // 0.13  ← a 3 follows the 5: no longer an exact half, goes up
+new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← the leftover does not reach halfway: goes down
 ```
 
 > **Why a bank cares.** With `HALF_UP` every exact half goes up, always. Round a million amounts that land on `.5` and you have added a little too much a million times and never too little: the accumulated total drifts upward. `HALF_EVEN` splits those ties — some go up and some stay, depending on whether the preceding digit is odd or even — so the errors cancel each other out and the total stays pinned to the real value. With a handful of amounts it makes no difference; with millions it does.
+
+`HALF_DOWN` does exist, and six more modes with it: `RoundingMode` is an `enum` with eight constants in total, and `HALF_UP`, `HALF_DOWN` and `HALF_EVEN` are just the three that ask themselves what to do **when what gets dropped falls exactly halfway**. The other five never ask: they always decide in the same direction. Read the table as "if I drop this, which way does the last digit I keep go?":
+
+| Constant | What it does | `0.125` at scale 2 | `-0.125` at scale 2 |
+|---|---|---|---|
+| `HALF_UP` | exact half → away from zero | `0.13` | `-0.13` |
+| `HALF_DOWN` | exact half → towards zero | `0.12` | `-0.12` |
+| `HALF_EVEN` | exact half → to the nearest even digit | `0.12` | `-0.12` |
+| `UP` | always away from zero, even for a leftover `1` | `0.13` | `-0.13` |
+| `DOWN` | always towards zero (truncates) | `0.12` | `-0.12` |
+| `CEILING` | always up the number line (`+∞`) | `0.13` | `-0.12` |
+| `FLOOR` | always down the number line (`-∞`) | `0.12` | `-0.13` |
+| `UNNECESSARY` | you assert no rounding will be needed | `ArithmeticException` | `ArithmeticException` |
+
+The first three differ from each other only on the exact half; outside that case all three do the same thing. And look at the last column, where the one distinction that usually catches people shows up: "down" does not mean the same in `DOWN` as in `FLOOR`. `DOWN` goes towards zero, so `-0.125` rises to `-0.12`; `FLOOR` goes towards `-∞`, so it drops to `-0.13`. On positive numbers the two agree, which is why the bug only appears the day a negative amount arrives.
+
+> **Which to use in practice.** `HALF_UP` for invoicing and amounts a customer sees, `HALF_EVEN` when you aggregate many values and the drift matters. `HALF_DOWN` exists and is almost never used. `UNNECESSARY` is not a way of rounding but an **assertion**: you are saying "no rounding should be needed here", and if it is needed it throws `ArithmeticException` instead of swallowing it — useful when you would rather find out a computation lost precision than discover it in a mismatched total.
 
 > **Division is the one operation that refuses to run until you say how to round.** `divide` with a single argument computes the *exact* quotient, and when the exact quotient never ends there is no correct value it could return — so it throws rather than silently inventing one:
 >

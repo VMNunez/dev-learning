@@ -315,9 +315,12 @@ Entonces, si quieres imponer una escala y un redondeo al resultado de `add`, `su
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 ```
 
-`RoundingMode.HALF_UP` es la regla que ya conoces: si lo que se descarta es `.5` o más, el último dígito que conservas sube; si es menos de `.5`, se queda como está. Por eso `0.125` con escala 2 se convierte en `0.13`. En negativos "sube" significa alejarse de cero, así que `-0.125` se convierte en `-0.13`. Es normalmente lo que quiere la facturación.
+`RoundingMode.HALF_UP` es la regla que ya conoces: si lo que se descarta es `.5` o más, el último dígito que conservas sube; si es menos de `.5`, se queda como está. Por eso `0.125` con escala 2 se convierte en `0.13`, y `0.124` se queda en `0.12`. En negativos "sube" significa alejarse de cero, así que `-0.125` se convierte en `-0.13`. Es normalmente lo que quiere la facturación.
 
-`HALF_EVEN` (redondeo bancario) es la otra que te vas a encontrar en código financiero. Se comporta **exactamente igual que `HALF_UP` salvo en un caso**: cuando lo que se descarta es un medio exacto (`.5` y nada más detrás). Ahí no sube siempre — mira el último dígito que conservas y deja el resultado en el **par** más cercano: si ese dígito ya es par, se queda; si es impar, sube uno.
+`HALF_EVEN` (redondeo bancario) es la otra que te vas a encontrar en código financiero, y lo primero que hace es preguntarse si lo que va a descartar es **exactamente medio** — es decir, si el primer dígito que sobra es un `5` y detrás de ese `5` no hay nada más:
+
+- **Si no es medio exacto** — `0.1253` con escala 2, donde detrás del `5` todavía queda un `3` — se comporta **igual que `HALF_UP`**: lo que sobra (`53`) pasa de la mitad, así que sube, y el resultado es `0.13`. Con `0.1243` sobraría `43`, no llega a la mitad, y baja a `0.12`. En este caso las dos reglas dan siempre lo mismo.
+- **Si es medio exacto** — `0.125` con escala 2 — es donde se separan. `HALF_UP` sube siempre; `HALF_EVEN` deja el resultado en el **par** más cercano, y eso puede ser por exceso o por defecto: mira el último dígito que conservas, y si ya es par se queda, si es impar sube uno.
 
 ```java
 new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← medio exacto: siempre sube
@@ -326,9 +329,28 @@ new BigDecimal("0.135").setScale(2, RoundingMode.HALF_UP);     // 0.14  ← medi
 new BigDecimal("0.125").setScale(2, RoundingMode.HALF_EVEN);   // 0.12  ← medio exacto y el 2 ya es par → se queda
 new BigDecimal("0.135").setScale(2, RoundingMode.HALF_EVEN);   // 0.14  ← medio exacto y el 3 es impar → sube al 4
 new BigDecimal("0.126").setScale(2, RoundingMode.HALF_EVEN);   // 0.13  ← no es medio exacto, manda el 6: igual que HALF_UP
+new BigDecimal("0.1253").setScale(2, RoundingMode.HALF_EVEN);  // 0.13  ← detrás del 5 hay un 3: ya no es medio exacto, sube
+new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← lo que sobra no llega a la mitad: baja
 ```
 
 > **Por qué a un banco le importa.** Con `HALF_UP`, cada medio exacto sube, siempre. Si redondeas un millón de importes que caen en `.5`, un millón de veces has sumado un poco de más y nunca de menos: el total acumulado se desvía hacia arriba. `HALF_EVEN` reparte esos empates — unos suben y otros bajan, según el dígito anterior sea impar o par —, así que los errores se compensan entre sí y el total se queda pegado al valor real. Con un puñado de importes da igual; con millones, no.
+
+Sí existe `HALF_DOWN`, y seis modos más: `RoundingMode` es un `enum` con ocho constantes en total, y `HALF_UP`, `HALF_DOWN` y `HALF_EVEN` solo son las tres que se preguntan qué hacer **cuando lo que se descarta cae justo en medio**. Las otras cinco ni se lo preguntan: deciden siempre en la misma dirección. Lee la tabla como "si descarto esto, ¿hacia dónde va el último dígito que conservo?":
+
+| Constante | Qué hace | `0.125` con escala 2 | `-0.125` con escala 2 |
+|---|---|---|---|
+| `HALF_UP` | medio exacto → se aleja de cero | `0.13` | `-0.13` |
+| `HALF_DOWN` | medio exacto → se acerca a cero | `0.12` | `-0.12` |
+| `HALF_EVEN` | medio exacto → al dígito par más cercano | `0.12` | `-0.12` |
+| `UP` | siempre se aleja de cero, aunque sobre un `1` | `0.13` | `-0.13` |
+| `DOWN` | siempre se acerca a cero (trunca) | `0.12` | `-0.12` |
+| `CEILING` | siempre hacia arriba en la recta (`+∞`) | `0.13` | `-0.12` |
+| `FLOOR` | siempre hacia abajo en la recta (`-∞`) | `0.12` | `-0.13` |
+| `UNNECESSARY` | afirmas que no hará falta redondear | `ArithmeticException` | `ArithmeticException` |
+
+Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese caso las tres hacen lo mismo. Y fíjate en la última columna, que es donde se ve la única distinción que suele confundir: "abajo" no significa lo mismo en `DOWN` que en `FLOOR`. `DOWN` va hacia cero, así que `-0.125` sube a `-0.12`; `FLOOR` va hacia `-∞`, así que baja a `-0.13`. Con números positivos las dos coinciden, y por eso el bug solo aparece el día que llega un importe negativo.
+
+> **Cuál usar en la práctica.** `HALF_UP` para facturación e importes que ve un cliente, `HALF_EVEN` cuando agregas muchos valores y te importa la deriva. `HALF_DOWN` existe y casi nunca se usa. `UNNECESSARY` no es una forma de redondear sino una **aserción**: le dices "aquí no debería hacer falta redondear nada", y si hace falta lanza `ArithmeticException` en vez de tragárselo — útil cuando prefieres enterarte de que un cálculo perdió precisión antes que descubrirlo en un descuadre.
 
 > **La división es la única operación que se niega a ejecutarse hasta que le dices cómo redondear.** `divide` con un solo argumento calcula el cociente _exacto_, y cuando el cociente exacto no termina nunca no hay ningún valor correcto que pudiera devolver — así que lanza una excepción en lugar de inventarse uno en silencio:
 >
