@@ -386,6 +386,12 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 > tarifas.put(new BigDecimal("1.00"), "tarifa nocturna");   // no añade: sustituye el valor de la anterior
 > tarifas.size();                          // 1                ← creías tener dos tarifas
 > tarifas.get(new BigDecimal("1.0"));      // "tarifa nocturna" ← la base ya no existe
+>
+> Map<BigDecimal, String> tarifasHash = new HashMap<>();
+> tarifasHash.put(new BigDecimal("1.0"), "tarifa base");
+> tarifasHash.put(new BigDecimal("1.00"), "tarifa nocturna");   // sí añade: para equals es otra clave
+> tarifasHash.size();                          // 2                ← las dos tarifas siguen ahí
+> tarifasHash.get(new BigDecimal("1.0"));      // "tarifa base"     ← la base intacta
 > ```
 >
 > El segundo `put` no lanza nada, no devuelve un error y no imprime un aviso: para el `TreeMap` esa clave ya estaba, así que hace lo que hace siempre un `put` sobre una clave existente — pisar su valor. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
