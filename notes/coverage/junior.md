@@ -128,7 +128,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
 - Route-scoped features reach only routed surfaces — a guard, a resolver or a route parameter serves
   what the router activates, so a form opened in a dialog forfeits all three and its equivalent
-  protection has to be rebuilt inside the dialog; choosing the surface is choosing the toolbox
+  protection has to be rebuilt inside the dialog; choosing the surface is choosing the toolbox ✅ 06-hr-portal — `app.routes.ts:113-114` hangs `deactivateGuard` on the two department-form routes, while the employee and leave-request dialogs have no route to hang one on
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
 - Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
 - `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
