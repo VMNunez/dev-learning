@@ -22,7 +22,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 - [ ] **[Low]** `[frontend]` — Supply the missing providers in the nine CLI-scaffolded specs that now fail at runtime: `app.spec.ts`, `dashboard-page`, `department-page`, `department-form`, `employee-page`, `employee-dialog`, `leave-request-page`, `leave-request-dialog` and `confirm-dialog` all mount a unit whose injector needs something the bare `TestBed.configureTestingModule({})` does not give — `provideRouter([])` for anything with a `routerLink`, `MatDialogRef` + `MAT_DIALOG_DATA` as `useValue` doubles for a dialog (the shape `04-meal-finder` already uses). 18 of 28 tests pass; these ten are the remainder. Testing is out of scope for this project, so this is presentation, not coverage. *(Effort: Medium)* *(raised 2026-09-04 while closing the spec-compilation task — a separate defect: those specs compile now and fail on injection)*
 
-- [ ] **[Low]** `[frontend]` — Make the generated spec files compile so `ng test` runs: `deactivate-guard.spec.ts:8` spreads `guardParameters`, whose elements are `unknown`, into `deactivateGuard(...)`, so the whole suite fails to build with `TS2345` before a single test executes — every other spec in the project is unreachable, including the ones the CLI wrote for the new dashboard children. Testing is out of scope for this project, but a suite that cannot compile is worse than none: it reads as broken tests to anyone who clones the repo. Either type the guard's test parameters or delete the spec. *(Effort: Small)* *(raised 2026-09-04 while triaging the dashboard decomposition task)*
 
 
 ---
@@ -54,6 +53,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Low
 
+- 2026-09-04 · **[Low]** `[frontend]` — `deactivate-guard.spec.ts` typed `CanDeactivateFn<DepartmentForm>` so the suite compiles (18/28 pass) → coverage angular/junior (new bullet, marked ✅ 06-hr-portal); README and PLANNING not written — testing is out of scope for this project
 - 2026-09-04 · **[Low]** `[frontend]` — the three domain collections read through one generic `readStoredArray<T>()` instead of three unguarded parses → PLANNING folder structure + business rules (new row), coverage typescript/junior (generic functions marked ✅ 06-hr-portal); architecture/junior DRY already ✅ 05, README not written — extracting a shared util reads the same in any project of this stack
 - 2026-09-04 · **[Low]** `[frontend]` — How to run path corrected to `projects/` after the reorg → README How to run; no coverage mark — documentation only, no code written
 - 2026-09-04 · **[Low]** `[frontend]` — the stored session is parsed inside a `try` and narrowed by an `isStoredSession` predicate, `Role` now derived from a `ROLES` `as const` list → README architecture decisions, PLANNING business rules + 2 key-pattern rows corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (`Partial<T>` marked ✅ 06-hr-portal by the diff sweep)
