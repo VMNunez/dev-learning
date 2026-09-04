@@ -628,7 +628,7 @@ Java allows this silently because the destination type's range fully contains th
 > // has only 24, so the nearest representable value, 16777216, is stored
 > ```
 >
-> The same happens for `long` → `double` past 2⁵³. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data". For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these two lossy widenings are the dangerous ones: they are the losses nobody is watching.
+> The same happens for `long` → `double` past 2⁵³. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data": it never overflows because the compiler only allows widening into a type whose range contains the source's, so the value always fits; what can be lost on the way are digits of the number, not its magnitude. For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these two lossy widenings are the dangerous ones: they are the losses nobody is watching.
 
 ### Narrowing (manual)
 
