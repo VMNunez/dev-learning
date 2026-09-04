@@ -530,8 +530,10 @@ Two more you will read constantly: `++` and `--` add or subtract one in place (`
 >
 > ```java
 > int i = 5;
-> i = i + 3.5;    // MAL — error: incompatible types: possible lossy conversion from double to int
-> i += 3.5;       // ✅ compiles — and i is 8, because 8.5 was truncated back to int
+> i = i + 3.5;          // MAL — error: incompatible types: possible lossy conversion from double to int
+> i = (int) i + 3.5;    // MAL — the cast only applies to i, and the sum is a double again: same error
+> i = (int) (i + 3.5);  // ✅ the cast written by hand, over the whole sum
+> i += 3.5;             // ✅ compiles — and i is 8, because 8.5 was truncated back to int
 > ```
 >
 > Nothing here needs fixing in your own arithmetic. The point is to recognise `+=` as the one place a narrowing conversion happens with no visible cast, so a compound assignment that compiles is never proof that the two types actually match.

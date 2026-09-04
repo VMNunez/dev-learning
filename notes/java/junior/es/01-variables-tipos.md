@@ -502,8 +502,10 @@ Dos más que verás constantemente: `++` y `--` suman o restan uno (`count++`), 
 >
 > ```java
 > int i = 5;
-> i = i + 3.5;    // MAL — error: incompatible types: possible lossy conversion from double to int
-> i += 3.5;       // ✅ compila — y i vale 8, porque 8.5 se truncó de vuelta a int
+> i = i + 3.5;          // MAL — error: incompatible types: possible lossy conversion from double to int
+> i = (int) i + 3.5;    // MAL — el cast solo afecta a i, y la suma vuelve a ser double: mismo error
+> i = (int) (i + 3.5);  // ✅ el cast escrito a mano, sobre el resultado entero de la suma
+> i += 3.5;             // ✅ compila — y i vale 8, porque 8.5 se truncó de vuelta a int
 > ```
 >
 > Aquí no hay nada que arreglar en tu propia aritmética. El punto es reconocer `+=` como el único sitio donde ocurre una conversión de narrowing sin ningún cast visible, así que una asignación compuesta que compila nunca es prueba de que los dos tipos realmente coincidan.
