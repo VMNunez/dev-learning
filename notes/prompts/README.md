@@ -691,7 +691,9 @@ Each generated file, with who writes it and who depends on it:
   `linkedin-prompt`, re-run the spec over what they source and report a failure instead of rewriting it.
   **A section heading you have marked `[refined]` is frozen** — `portfolio-audit` will not replace it,
   and deleting the marker is how you reopen it. That is Victor's marker alone: no run ever writes or
-  removes it, and the four readers ignore it.
+  removes it, and the four readers read the **entry** the same either way — `cv-prompt` and
+  `linkedin-prompt` name the marker in their re-run line, since the run that repairs a failing entry
+  refuses a frozen section.
 - **`interview-prep/{LEVEL}/en/*.md` + `{LEVEL}/es/*.md`** — written by `interview-prep-audit` (the
   whole bank), `simulation-review` and `code-review-practice` (born-unrefined insertions only, under
   the standard's "Adding questions from outside the audit"), `study-content-writer` (unrefined, reopened

@@ -340,7 +340,7 @@ content-pipeline prohibitions: a pipeline may never assign the marker and never 
 - With `DRY_RUN = true`, save the bullet under a `## {PROJECT_PATH}` heading (replace the section if it
   exists **and does not carry `[refined]`**) and leave it uncommitted for Victor to read in the diff.
 - With `DRY_RUN = false`, save it under the same heading, **under the same prohibition**, and continue
-  toward the atomic commit — which `cv-bullets.md` may not enter, per the staging rule below. **There
+  toward the atomic commit — which `cv-bullets.md` may not enter **on either of the paths the staging rule below names**. **There
   is no choice pause on this path**; in `PROJECT_PATH = all`, commit the current project before starting
   the next target.
 
@@ -348,15 +348,15 @@ content-pipeline prohibitions: a pipeline may never assign the marker and never 
 not only the current project. Every `## {PROJECT_PATH}` section must contain exactly one bullet and no
 `choose one` marker, **and every project must have exactly one section** — the check the optional
 `[refined]` suffix makes necessary: a run matching the heading as an exact line concludes the section is
-missing and appends a second one for the same project, which two one-bullet sections would otherwise pass. A section still carrying two options or that marker was written before the choice
+missing and appends a second one for the same project, which two one-bullet sections would otherwise pass. A section still carrying two options or a `choose one` marker was written before the choice
 gate was retired: on a non-dry run **pause for Victor's selection there** — the run drafts one bullet, it does not
 retro-choose between two he was owed — and clean the section before staging the file. On a dry run, the
 handoff tells Victor to satisfy this same whole-file gate before running the printed manual commit.
 
 **And one check that scan cannot make, because it is about the change and not the file.** *"Every section
 has one bullet"* is a property of the text as it stands; *"a frozen bullet is still the one Victor froze"*
-needs a baseline. So, before staging: `git diff notes/cv/cv-bullets.md` against live `HEAD` — **not
-`{BASELINE}`**, which in `PROJECT_PATH = all` is several commits behind by the second iteration.
+needs a baseline. So, before staging: `git diff HEAD -- notes/cv/cv-bullets.md`, with the `HEAD` side read from
+`git show HEAD:notes/cv/cv-bullets.md` — live `HEAD`, **not `{BASELINE}`**, which in `PROJECT_PATH = all` is several commits behind by the second iteration.
 
 **A section carrying `[refined]` both on disk and in `HEAD`, whose bullet differs between the two, is
 reported and nothing else.** Name it under Finishing item 6, leave `cv-bullets.md` **unstaged**, and say
@@ -371,7 +371,7 @@ the design and not a limitation:
 - A section whose marker is on disk but **not** in `HEAD` is outside this check: that is Victor freezing a
   bullet he just polished, and there is no frozen baseline to compare it against.
 
-**The staging half is the same rule for the same reason.** `git add` takes the whole file, so staging it
+**On those two paths, the staging half is the same rule for the same reason.** `git add` takes the whole file, so staging it
 would carry his hand-authored bullet into a `docs: portfolio-audit …` commit, under an authorization that
 covers this run's **outputs** and nothing else — the ruling `_interview-prep-standard.md` already makes
 for an uncommitted insertion swept into a later audit's commit, and the one this prompt's `TODO-STOPPED`

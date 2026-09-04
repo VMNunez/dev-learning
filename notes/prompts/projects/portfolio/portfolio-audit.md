@@ -134,7 +134,8 @@ The verdict + CV bullet + GitHub description are short and deterministic, so you
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next: with
 `{DRY_RUN} = false`, commit that project; with `{DRY_RUN} = true`, finish its explicit no-commit handoff
-and leave its pending bullet under that project's own section. Never
+and leave its pending bullet under that project's own section — unless that section is frozen, where
+nothing is written and item 6 prints the drafted bullet instead. Never
 overlap, since their subagents edit shared files and parallel commits race the git index.
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
 summary table (`Project | Verdict | Questions`), whose Questions cell carries **both counts** —
@@ -398,7 +399,8 @@ Otherwise print, in this order:
    **whole** file before staging it either way: every project section must have exactly one bullet and
    no `choose one` marker, and no project carrying two sections. **Then the standard's baseline check,
    which that scan cannot make — and which reports and does nothing else:**
-   `git diff notes/cv/cv-bullets.md` against live `HEAD` (not `{BASELINE}`). A section carrying
+   `git diff HEAD -- notes/cv/cv-bullets.md`, the `HEAD` side read from `git show HEAD:notes/cv/cv-bullets.md`
+   (live `HEAD`, not `{BASELINE}`) — the plain `git diff <path>` form compares against the index, not `HEAD`. A section carrying
    `[refined]` **both on disk and in `HEAD`** whose bullet differs between them is **reported here**, on
    either `{DRY_RUN}` value. **Never restore it, never edit it, never stage it.** The prohibition in
    Phase 3 already stops this run from writing a marked section, so a marked section that changed is
@@ -407,7 +409,9 @@ Otherwise print, in this order:
    **Whenever that report fires — or a section's `[refined]` is on disk but not in `HEAD`, which is a
    freeze he has not committed — leave `cv-bullets.md` unstaged entirely**, name the section here, **say
    that any bullet this run wrote is sitting in the working tree and that he must commit the file by
-   hand before the next run**, and label the commit `cv-bullets not staged — <reason>`. Same ruling as
+   hand before the next run**, and label the commit `cv-bullets not staged — <reason>` — **and equally where this project's section was
+   simply frozen and unchanged**. Print the hand-back `git add` + `git commit` pair for the file at the end,
+   in target order, per `_internal/_batch-mode.md`'s rule for a commit the prompt hands to Victor. Same ruling as
    `TODO-STOPPED` below, for the same reason: `git add` is whole-file and this run's authorization covers
    its own outputs, not his prose.
    With `{DRY_RUN}` = true print "scan the whole file and verify every project
