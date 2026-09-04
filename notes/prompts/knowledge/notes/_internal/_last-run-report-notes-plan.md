@@ -1,35 +1,37 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-08-28
-Target: Java / junior / update
+Date: 2026-09-04
+Target: Angular / junior / update
 Status: clean
 
-- **Plan vs reality** — A one-bullet reconciliation, and the cold reviewer was again the only evidence
-  beyond "the machinery ran". The mechanical half certified 130/130 exact bullets, zero duplicates,
-  zero paraphrases, entry-number-equals-file-number clean across all 18 entries — and the reviewer
-  still returned 8 corrections, 2 of them blocking, on a delta of one bullet and one question. Both
-  blocking ones were the same seam: the new `Must answer` on entry 06 asks what the compiler hands a
-  class that declares no constructor, which is entry **08**'s `Constructor defaults and chaining`
-  bullet, so the run had written a concept-used-before-taught into an entry that declares its other
-  two scaffolding borrows (`throw`, `protected`) explicitly. Fixed by declaring the borrow in 06's
-  `Rationale` and marking the seam in 08's own question. Worth recording because it generalises: the
-  arithmetic gate cannot see a *question* that reaches outside its entry, only a *bullet* that does,
-  and a one-bullet delta is exactly the size at which a run stops expecting to be corrected.
-- **Report discipline** — One cold reviewer, one round, foreground, `deep`. Nothing trimmed.
-- **Failures & retries** — None. Required dispatches: 1; actual: 1; re-dispatches: 0. Acceptance proof
-  complete on the first return (`N entries reviewed: 18`, intro verdict, prerequisite-order verdict,
-  8 numbered corrections with blocking marks).
-- **Rule friction and rule breaches** — One breach, `BRCH-0003` (`this prompt`, Guard 2, `open`): the
-  16 English notes (8,245 lines, 700K) were not read end-to-end; the 2026-08-26 classifications were
-  carried forward on a content-commit proof plus a complete heading inventory. The named cause is new
-  and is not cost: ~200k tokens of prose against a 200k context window means the read does not fit in
-  the run obliged to perform it. Filed as the third data point on `REC-177` (`5b0b5b8a`, committed
-  alone, which is `BRCH-0001`'s lesson applied). The three runs now disagree only on size — 2,024
-  lines met the guard, 8,245 and 9,508 did not — so the row is no longer about "reconciliation" at
-  all. One acceptance, one rejection on the reviewer's non-blocking findings: correction 4 was applied
-  without its closing clause, which asserted that entry 00 "is not eligible for `Studied`" — a rule no
-  contract in this system states, and `Studied` is not this prompt's field to gate.
+- **Plan vs reality** — The largest reconciliation this prompt has run (22 new bullets, +18% on a
+  127-bullet plan) and the first where the mechanical half and the reviewer disagreed about *where the
+  work was*. The arithmetic gate certified 149/149 exact, zero duplicates, zero paraphrases,
+  entry-number-equals-file-number clean across 18 entries — and then returned `BLOCKED` with 5 blocking
+  findings, **four of which were about entries the delta never touched**: entry 00 commissioned neither
+  invariant 6 (the map of the introduction's own sections) nor invariant 7 (what `01` silently assumes),
+  entry 01 carried a `Must answer` answerable only from entry 04's bullet — and its own migration line
+  sends that material to 04 — and entry 08 introduced `Observable`, `subscribe()` and "cold" with no
+  question defining any of them. Those four have been in the plan since 2026-08-02 and survived that
+  run's cold review. The generalisable fact is that a bullet-delta run's attention follows the delta,
+  and this prompt has no step that reads the finished plan whole against the standard other than the
+  reviewer — so the reviewer is not a check on the delta, it is the only reader of the other 90%.
+  The one finding the delta *did* produce was the fifth: entry 11 gained `Child routes and nested
+  outlets` a `Must answer` had never covered, and splitting the chapter is what made the omission visible.
+- **Report discipline** — One cold reviewer, one round, foreground, `deep`, with a scratch path. Nothing
+  trimmed; the return carried complete acceptance proof on the first dispatch.
+- **Failures & retries** — None. Required dispatches: 1; actual: 1; re-dispatches: 0.
+- **Rule friction and rule breaches** — No breach. Guard 2 was reached and met for the first time under
+  its post-`5870ed6b` wording: the unowned population was the 4 `_legacy/` English-only notes (580
+  lines), read end-to-end, and the 14 numbered notes were classified from the entries that commission
+  them. `BRCH-0002` and `BRCH-0003` therefore advance to `confirmed 1/3`. One friction point, low cost:
+  the entry-number-equals-file-number rule and Planning algorithm step 6 make a same-level renumber
+  mandatory and expensive to reason about, but neither says to **measure the link surface first** — this
+  run's turned out to be zero (no file anywhere links to an Angular junior note by number), which is
+  what made a 4-file renumber a non-decision. A run that assumed the surface was large would have
+  declined a repair the prompt does not permit declining. Not worth a prompt edit on one occurrence.
+  One rejection: the reviewer's non-blocking finding 6 proposed multi-number `Prerequisites` on entries
+  12, 13 and 15. Rejected — `Depends on` is a linear chain in all 18 entries, and truthful dependency
+  sets on three of them make the field mean two things in one file. The substance was applied instead as
+  explicit borrow clauses in those entries' `Rationale`, the form entry 04 already used.
 - **Verdict** — pipeline clean. No prompt edit drafted, so no cold reviewer was dispatched for one.
-  The Guard 2 finding is not a prompt edit this run may make: it is `REC-177`'s to resolve, and
-  editing the guard inside the run that breached it is the entangled pattern the refinement step
-  forbids.
