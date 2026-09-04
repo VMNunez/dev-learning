@@ -623,7 +623,9 @@ Java allows this silently because the destination type's range fully contains th
 > ```java
 > int precise = 16777217;      // int (32 bits) — 2^24 + 1
 > float widened = precise;     // float (32 bits) — automatic, no cast and no warning
-> System.out.println(widened); // 1.6777216E7  ← 16777216, not 16777217. The 1 is gone.
+> System.out.println(widened); // 1.6777216E7  ← 16777216, not 16777217
+> // the final 7 has become a 6: 16777217 needs 25 bits of digits and a float
+> // has only 24, so the nearest representable value, 16777216, is stored
 > ```
 >
 > The same happens for `long` → `double` past 2⁵³. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data". For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these two lossy widenings are the dangerous ones: they are the losses nobody is watching.
