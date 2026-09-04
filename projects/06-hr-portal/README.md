@@ -161,7 +161,7 @@ git clone https://github.com/VMNunez/dev-learning.git
 ```
 
 ```
-cd dev-learning/angular/06-hr-portal
+cd dev-learning/projects/06-hr-portal
 ```
 
 ```
