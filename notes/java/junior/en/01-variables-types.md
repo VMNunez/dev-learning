@@ -579,7 +579,7 @@ And the one for `||`, the **logical OR** (read "or"), read the same way: here `B
 | `true` | `false` | `true` | no |
 | `true` | `true` | `true` | no |
 
-That is **short-circuiting**, and it is not an optimisation you may or may not get: it is a guarantee written into the language, and real code is built on it. The pattern you will write a hundred times is a null check standing guard in front of the call that would fail:
+That is **short-circuiting**: the language guarantees that the right side is not evaluated, so you can write code that relies on it. The commonest use is checking that something is not `null` on the left side, so that the right side, which would fail on `null`, never runs:
 
 ```java
 if (user != null && user.getName().isBlank()) { ... }

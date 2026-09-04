@@ -542,7 +542,7 @@ La tabla de `&&`, el **AND lógico** (se lee «y»). La última columna dice si 
 | `true`  | `false` | `false`  | sí              |
 | `true`  | `true`  | `true`   | sí              |
 
-Y la de `||`, el **OR lógico** (se lee «o»), que se lee igual: aquí `B` solo se evalúa cuando `A` es `false`, porque un `A` verdadero ya decide el resultado.
+Y la de `||`, el **OR lógico** (se lee «o»): aquí `B` solo se evalúa cuando `A` es `false`, porque un `A` verdadero ya decide el resultado.
 
 | `A`     | `B`     | `A \|\| B` | ¿se evalúa `B`? |
 | ------- | ------- | ---------- | --------------- |
@@ -551,7 +551,7 @@ Y la de `||`, el **OR lógico** (se lee «o»), que se lee igual: aquí `B` solo
 | `true`  | `false` | `true`     | no              |
 | `true`  | `true`  | `true`     | no              |
 
-Eso es **short-circuiting**, y no es una optimización que puede o no darse: es una garantía escrita en el lenguaje, y código real se construye sobre ella. El patrón que vas a escribir cien veces es una comprobación de null haciendo guardia delante de la llamada que fallaría:
+Eso es el **cortocircuito** (*short-circuiting*): el lenguaje garantiza que ese lado derecho no se evalúa, así que puedes escribir código que dependa de ello. El uso más habitual es comprobar que algo no es `null` en el lado izquierdo, para que el lado derecho, que fallaría con `null`, no llegue a ejecutarse:
 
 ```java
 if (user != null && user.getName().isBlank()) { ... }
