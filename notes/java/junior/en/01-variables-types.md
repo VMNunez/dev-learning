@@ -555,7 +555,7 @@ if (active = true) {     // ✅ compiles — assigns true, then always enters th
 }
 ```
 
-The compiler says nothing. The only thing that flags it is IntelliJ, which underlines the line with an **inspection** — a warning from the IDE itself, not a Java error — and that squiggle is all there is between you and a branch that always runs: `active = true` sets `active` back to `true` every time round and hands that `true` to the `if`, so the condition can never be false. That is why a boolean condition is written `if (active)` and never `if (active == true)`: where you write no `==`, there is no `==` that can end up as a single `=`.
+The compiler says nothing. The only thing that flags it is IntelliJ, which underlines the line with an **inspection** — a warning from the IDE itself, not a Java error — and that squiggle is all there is between you and a branch that always runs: `active = true` sets `active` back to `true` every time round and hands that `true` to the `if`, so the condition can never be false. That is why a boolean condition is written `if (active)` and never `if (active == true)`: where you write no `==`, there is no `==` that can end up as a single `=` and create the bug. That is the practical rule: with a `boolean` variable, keep the equality operator out of the condition and write the variable on its own.
 
 ### Short-circuit evaluation — why `&&` and `||` may never look at their right operand
 
