@@ -76,6 +76,10 @@ src/app/
 ├── pages/
 │   ├── login-page/                  ← credential form, writes the session
 │   ├── dashboard-page/              ← role-aware: admin totals vs the employee's own requests
+│   │   └── components/
+│   │       ├── stat-card/           ← presentational linked metric card
+│   │       ├── dashboard-panel/     ← presentational card shell, rows projected with ng-content
+│   │       └── panel-item/          ← presentational row, optional status badge
 │   ├── employee-page/               ← admin only: coordinator owning filters + employee state
 │   │   └── components/
 │   │       ├── employee-filters/    ← presentational filter inputs
@@ -229,7 +233,7 @@ the token pair only tints it), so no meaning is carried by colour alone; there a
 in the app, so no icon needs a label; focus is Material's default ring, kept visible by the app-shell
 override `a.active:focus:not(:hover)::before { opacity: 0 }`, which suppresses the *hover* wash and not
 the focus ring — except the dashboard stat cards, whose wrapping anchor has no Material ring of its own
-and declares a `:focus-visible` outline in `dashboard-page.css`. Every navigating surface is an `<a>`, so
+and declares a `:focus-visible` outline in `stat-card.css`. Every navigating surface is an `<a>`, so
 each one is reachable with Tab and announced as a link.
 
 **Motion:** none beyond Material's own component transitions — nothing loops, so there is no motion
@@ -262,6 +266,7 @@ validation and `MatSnackBar` feedback instead.
 |---|---|
 | Core/Feature/Shared layering | `core/` singletons, `pages/` features, `shared/` reusable UI, top-level `models/` for the domain interfaces |
 | Coordinator page component | Filter + table pages own the state; the table and dialog stay presentational |
+| `ng-content` over a configuration input | The dashboard's panel wrapper receives its rows as projected markup, so three panels listing different entities share one shell instead of the wrapper growing an input per entity shape |
 | Workflow invariant in the owning service | `LeaveRequestService.updateStatus()` refuses a transition out of a decided request and returns whether it applied, so the page's snackbar reports the real outcome |
 | Closed value set declared once | `LEAVE_REQUEST_FILTERS` and `EMPLOYEE_STATUS_FILTERS` are `as const` lists; each union is derived from its list and its members feed the guard and the filter dropdown, so the runtime allow-list and the type cannot drift apart |
 | The domain union reaches the presentational child | a filter child's `input()`/`output()` are typed to the union, not to `string`, so a value validated at the query-param read cannot re-widen at the component boundary |
