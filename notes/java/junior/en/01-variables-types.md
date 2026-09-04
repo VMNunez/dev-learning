@@ -390,7 +390,7 @@ The first three differ from each other only on the exact half; outside that case
 > tree.size();   // 1 ← compareTo sees them as equal: the second overwrites the first
 > ```
 >
-> `BigDecimal`'s javadoc calls this "inconsistent with equals": its natural ordering and its `equals` do not agree. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
+> `BigDecimal`'s javadoc calls this "inconsistent with equals": its natural ordering — the one `compareTo` defines — says `1.0` and `1.00` are equal, while its `equals` says they are different, and in Java the two are normally expected to agree. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
