@@ -498,7 +498,7 @@ if (name) { ... }    // MAL — error: incompatible types: String cannot be conv
 
 Dos más que verás constantemente: `++` y `--` suman o restan uno (`count++`), y el operador condicional de tres partes `condition ? a : b` elige entre dos valores. Ese último pertenece a [03-flujo-de-control.md](03-flujo-de-control.md), donde elegir es el tema.
 
-> **`+=` hace un cast que tú no escribes.** `a += b` no es lo mismo que `a = a + b`. La especificación define `a += b` como `a = (T) (a + b)`, donde `T` es el tipo de la variable de la izquierda: primero se calcula `a + b` con las reglas normales, y luego el compilador pone él solo el cast a `T` sobre el resultado. Ese cast que no ves es el que hace la conversión de narrowing que un `=` normal se negaría a hacer sin que tú la escribas:
+> **`+=` hace un cast que tú no escribes.** `+=` y sus hermanos `-=` `*=` `/=` `%=` se llaman **asignaciones compuestas**, y `a += b` no es lo mismo que `a = a + b`. La especificación define `a += b` como `a = (T) (a + b)`, donde `T` es el tipo de la variable de la izquierda: primero se calcula `a + b` con las reglas normales, y luego el compilador pone él solo el cast a `T` sobre el resultado. Ese cast que no ves es el que hace la conversión de narrowing que un `=` normal se negaría a hacer sin que tú la escribas:
 >
 > ```java
 > int i = 5;
@@ -508,7 +508,7 @@ Dos más que verás constantemente: `++` y `--` suman o restan uno (`count++`), 
 > i += 3.5;             // ✅ compila — y i vale 8, porque 8.5 se truncó de vuelta a int
 > ```
 >
-> Aquí no hay nada que arreglar en tu propia aritmética. El punto es reconocer `+=` como el único sitio donde ocurre una conversión de narrowing sin ningún cast visible, así que una asignación compuesta que compila nunca es prueba de que los dos tipos realmente coincidan.
+> El punto es reconocer `+=` como el único sitio donde ocurre una conversión de narrowing sin ningún cast visible, así que una asignación compuesta que compila nunca es prueba de que los dos tipos realmente coincidan.
 
 ### `=` cuando querías decir `==`
 
