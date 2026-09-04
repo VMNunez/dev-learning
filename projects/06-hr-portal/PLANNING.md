@@ -255,6 +255,14 @@ instead of mapping to the Material type scale. The tokens above are centralised;
 There is no backend, so no page has a network loading or error state; failures surface as form
 validation and `MatSnackBar` feedback instead.
 
+**Two add/edit surfaces, on purpose.** Departments create and edit through a routed form while
+employees and leave requests use a `MatDialog` for the same job. A dialog has no route, and
+`CanDeactivateFn` is a *route* guard, so the unsaved-changes confirmation cannot be attached to one:
+the routed form is the only surface in this project where that concept is demonstrable. Departments
+carry the fewest fields, so they pay the least for the extra navigation, and the two dialog flows keep
+the user on the table they were reading. Making all three the same would cost the project either the
+guard or the dialog pattern.
+
 **Responsive intent:** the dashboard card grid collapses at 1024px and 768px; the data tables and the
 `MatSidenav` shell target desktop and are not reflowed — a deliberate scope limit for a demo.
 
