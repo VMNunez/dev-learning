@@ -392,7 +392,7 @@ The first three differ from each other only on the exact half; outside that case
 >
 > `BigDecimal`'s javadoc calls this "inconsistent with equals". Both are methods of the same class and you can call them yourself on the same pair of values.
 
-> Nothing compares the two methods at runtime and no warning fires: Java's contract is that `a.compareTo(b) == 0` and `a.equals(b)` should always give the same answer, and `BigDecimal` is one of the few classes that breaks it, because its `equals` looks at the scale and its `compareTo` does not. You are right that they are applied at different moments, and that is exactly the problem: each collection picks one of the two, so the inconsistency only shows up when you switch collections — `HashMap` stores two entries and `TreeMap` one. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry:
+> Nothing compares the two methods at runtime and no warning fires: Java's contract is that `a.compareTo(b) == 0` and `a.equals(b)` should always give the same answer, and `BigDecimal` is one of the few classes that breaks it, because its `equals` looks at the scale and its `compareTo` does not. You are right that they are applied at different moments, and that is exactly the problem: each collection picks one of the two, so the inconsistency only shows up when you switch collections — `HashMap` stores two entries and `TreeMap` one. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry in the `TreeMap`:
 >
 > ```java
 > Map<BigDecimal, String> rates = new TreeMap<>();
