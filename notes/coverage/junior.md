@@ -1294,7 +1294,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
 - Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
-- Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
+- Generic functions and interfaces — relate input and output types without replacing that relationship with `any` ✅ 06-hr-portal — `readStoredArray<T>(key): T[]` is the one guarded `localStorage` read the three domain services share, each supplying its own entity type at the call site instead of the helper returning `any[]`
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
