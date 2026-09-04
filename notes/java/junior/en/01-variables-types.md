@@ -435,7 +435,7 @@ System.out.println(count);   // MAL — error: variable count might not have bee
 
 The compiler runs an analysis called **definite assignment**: it walks every possible route the execution could take from the declaration to this line and asks "is there a route that reaches here without passing through an assignment?" If even one such route exists, it refuses to compile. That is why the message says "*might* not have been initialized" rather than "was not" — the compiler is not claiming this particular run would fail; it is saying it cannot prove the opposite for every run.
 
-> **Then why does this compile for an object's field?** Because the rule applies to **local variables** only — variables declared inside a method. A **field** (declared directly in the class body, outside any method) is not covered by definite assignment: the JVM gives every field an automatic default value when the object is created. Numeric fields start at `0` (`0.0` for `double`/`float`), `boolean` fields at `false`, and every object-typed field — `String`, `Integer`, `User` — at `null`.
+> **Then why does this compile for a variable declared inside the class, outside any method?** Because the rule applies to **local variables** only — variables declared inside a method. A **field** (declared directly in the class body, outside any method) is not covered by definite assignment: the JVM gives every field an automatic default value when the object is created. Numeric fields start at `0` (`0.0` for `double`/`float`), `boolean` fields at `false`, and every object-typed field — `String`, `Integer`, `User` — at `null`.
 >
 > ```java
 > public class User {
