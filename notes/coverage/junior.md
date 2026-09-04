@@ -2,7 +2,7 @@
 
 Combined junior hiring coverage for every topic in the notes folder.
 Source files: one `coverage/junior.md` per topic folder — this file is a read-only mirror for cross-topic analysis.
-Order follows study priority: Angular → Angular Material → Spring → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → CSS → SQL → Git → General.
+Order follows study priority: Angular → Angular Material → Spring → Spring Boot → Java → Architecture → Security → TypeScript → JavaScript → HTML → CSS → SQL → Git → General.
 
 ---
 
@@ -20,13 +20,14 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `input()` — receive optional parent-to-child data and handle its absence explicitly instead of hiding it behind a default that reads as real data ✅ 02-weather-app
 - `input.required()` — declare mandatory parent-to-child data so a missing value fails at the template boundary rather than as an undefined read later ✅ 01-todo-list
 - `output()` — send typed child events to a parent without making the child depend on the parent's implementation ✅ 01-todo-list
+- A child's `input()` and `output()` types are part of the domain boundary — declaring them as `string` when the parent's state is a narrow union re-widens the value at the boundary, so the narrowing a runtime check bought survives only inside the parent and the compiler stops rejecting a filter value nothing can match ✅ 06-hr-portal — `EmployeeFilters` declares `selectedStatus` as `input<EmployeeStatusFilter>` and `statusChange` as `output<EmployeeStatusFilter>`, so the union the page validated at the query-param read is the same one the filter child speaks
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
 - `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
 - `@empty` — attach a collection's empty case to the loop instead of a sibling condition, and recognise that it reports only that the loop's own expression rendered nothing, so a filtered list must consult its unfiltered source to say why it is empty ✅ 01-todo-list — `task-list.html` nests `@if (totalCount() === 0)` inside `@empty` so a filtered miss and an empty list read differently
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions ✅ 03-expense-tracker
-- Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
+- Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs ✅ 06-hr-portal — `dashboard-panel` projects the three dashboard panels' differing rows into one card shell, so the wrapper needs no per-entity input
 - Components vs attribute directives — use a component when behaviour owns a view and a directive when behaviour augments an existing host element
 - Custom attribute directives and host interaction — implement reusable host-element behaviour and connect host properties or events through directive host bindings and listeners without taking ownership of the element's view
 - Conditional class and style binding — use focused class and style bindings for dynamic presentation and recognise `ngClass` or `ngStyle` when maintained templates apply several values together ✅ 01-todo-list
@@ -46,7 +47,13 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Angular dependency injection — explain that an injector creates and supplies dependencies so classes depend on contracts and configured providers rather than constructing collaborators themselves ✅ 01-todo-list
 - `@Injectable({ providedIn: 'root' })` — recognise an application-wide service and the state-leak risk of keeping request- or component-specific mutable state in a singleton ✅ 01-todo-list
 - `inject()` — obtain a dependency in an injection context without a constructor parameter, the style current Angular code prefers ✅ 01-todo-list
+- Injection context — recognise that `inject()` and the APIs built on it, such as `takeUntilDestroyed()`, resolve their dependency only while a class is being constructed, so calling one from a method needs the reference captured as a field and passed explicitly ✅ 06-hr-portal — `LoginPage` injects `DestroyRef` as a field and passes it to `takeUntilDestroyed(this.destroyRef)` inside `onSubmit`, where the implicit form would throw
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
+- A root singleton's field initializer has no error boundary above it — the injector builds that service
+  while the application is starting, so anything thrown there fails the whole bootstrap to a blank page
+  instead of degrading one feature, and when the throw comes from persisted state the failure repeats on
+  every reload; work that reads anything the app does not control belongs behind a call that can return
+  a safe value ✅ 06-hr-portal — `AuthService.readStoredSession()` is called from the `currentUser` field initializer, so its `try`/`catch` and shape check are what keep a corrupt `localStorage` entry from blanking the app on every reload
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type ✅ 05-task-manager
 - Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance ✅ 05-task-manager — the dialog specs bind both runtime tokens with `useValue`, one carrying a full `ConfirmDialogData` and the other `null` for the create case
@@ -101,17 +108,20 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 - Router bootstrap and outlet — register routing with `provideRouter` and give routed components a rendering location with `RouterOutlet` ✅ 01-todo-list
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
+- `routerLink` on a host that is not an anchor — the directive writes an `href` only on an `<a>`, so on any other element the click still navigates while the tab stop, the `link` role and the browser's context menu are silently absent ✅ 06-hr-portal — the dashboard's five stat cards are `<a class="stat-card-link" routerLink>` wrapping the `mat-card`, replacing a `routerLink` sitting on the `mat-card` itself
 - Application shell outside the outlet — place chrome that must survive navigation in the root component around `RouterOutlet`, because the router destroys and recreates the routed component on every navigation ✅ 04-meal-finder — the nav and its favourites badge sit in `app.html` above `<router-outlet />`, so the count stays on screen while `/`, `/detail/:id` and `/favourites` are mounted and destroyed under it
 - Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
+- A route parameter is always text — `paramMap.get()` yields `string | null` whatever the model declares, so converting it is a decision that has to agree with the identifier's real type; a conversion that no longer matches fails silently, because the lookup simply finds nothing and the view renders as if the record did not exist ✅ 06-hr-portal — `DepartmentForm.ngOnInit` hands `paramMap.get('id')` straight to `getById`, the `Number(rawId)` conversion dropped once `Department.id` became a `string`
 - `ActivatedRoute` query params — read optional Angular view filters from `queryParamMap` without making them part of the resource path ✅ 06-hr-portal
+- A query param is untrusted text — `queryParamMap.get()` yields `string | null` however narrow a union the view's filter declares, and any value can be typed into the address bar or survive in a shared link, so an unrecognised one is rejected at the read and the default restored; asserting it into the union instead selects a filter no record can match, and the view answers with its ordinary empty state, which is indistinguishable from a genuinely empty result ✅ 06-hr-portal — `LeaveRequestPage.ngOnInit` passes `queryParamMap.get('status')` through `isLeaveRequestFilter` and leaves the signal at `'all'` when it fails, so `?status=foo` lists every request instead of rendering an empty table
 - `[queryParams]` on `routerLink` — set optional view state on the destination URL while navigating declaratively so the resulting page stays linkable and reproducible ✅ 06-hr-portal
 - Routed view state in the URL — keep state the user must find again, such as a search term, in the URL and re-derive the view from it on load, because the router destroys the routed component and its signals on every navigation, so anything held only in fields is gone on return ✅ 04-meal-finder — the search page navigates to `/?q=term` instead of holding the term in a field, and rebuilds its results from `toSignal(queryParamMap)`, so `← Back` from a detail page restores the search
 - `ActivatedRoute.snapshot` vs observable params — use a snapshot for a one-time value and subscribe when the same component instance can receive later parameter changes ✅ 04-meal-finder
 - Lazy route loading — use `loadComponent` or `loadChildren` to keep feature code out of the initial bundle until navigation requires it ✅ 06-hr-portal
 - `loadComponent` vs `loadChildren` — lazy-load one routed component or an entire child route tree according to the feature boundary
 - Declarative vs programmatic navigation — use `routerLink` in templates and `Router.navigate()` when component logic determines the destination ✅ 03-expense-tracker
-- `routerLinkActive` — let the router add a class to the link whose route is currently active instead of comparing the URL by hand in the component, and state the same fact in the accessibility tree with `ariaCurrentWhenActive`, because a colour or a weight change reaches only the eye ✅ 04-meal-finder — both nav links carry `routerLinkActive="active"` and `ariaCurrentWhenActive="page"`, so `/favourites` is marked without the shell tracking the URL itself
+- `routerLinkActive` — let the router add a class to the link whose route is currently active instead of comparing the URL by hand in the component, and set the accompanying `aria-current` through the directive's own `ariaCurrentWhenActive` input rather than a second hand-written attribute binding ✅ 04-meal-finder — both nav links carry `routerLinkActive="active"` and `ariaCurrentWhenActive="page"`, so `/favourites` is marked without the shell tracking the URL itself
 - `routerLinkActiveOptions` exact matching — recognise that an active link matches by URL *prefix* by default, so a link to the root path stays active on every route until `{ exact: true }` narrows it to the whole URL ✅ 04-meal-finder — the brand link to `/` carries `[routerLinkActiveOptions]="{ exact: true }"` so it does not stay marked on `/favourites` and `/detail/:id`
 - Browser history navigation — return to the previous entry through `Location` when a page is reachable from several routes, instead of hardcoding one destination that is wrong for every other caller ✅ 06-hr-portal
 - A deep-linked page has no in-app history — `Location.back()` replays the *browser's* history, which on a URL opened directly (a shared link, a refresh, a new tab) holds the page the user came from outside the site, so a back control has to know whether this application performed an earlier navigation and fall back to a real in-app destination when it did not ✅ 04-meal-finder — `NavigationHistoryService` counts `NavigationEnd` events from bootstrap and the detail page routes to `/` instead of calling `back()` while that count is 1
@@ -121,6 +131,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks ✅ 06-hr-portal
 - Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
+- Route-scoped features reach only routed surfaces — a guard, a resolver or a route parameter serves
+  what the router activates, so a form opened in a dialog forfeits all three and its equivalent
+  protection has to be rebuilt inside the dialog; choosing the surface is choosing the toolbox ✅ 06-hr-portal — `app.routes.ts:113-114` hangs `deactivateGuard` on the two department-form routes, while the employee and leave-request dialogs have no route to hang one on
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
 - Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
 - `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
@@ -159,6 +172,10 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 ### Testing Angular behaviour
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
+- A scaffolded spec's type arguments are part of the unit's contract — the CLI fills a generic harness
+  with a placeholder because it cannot know which type the unit was declared against, and a placeholder
+  that never gets narrowed fails the whole suite at compile time, before any assertion runs, taking
+  every unrelated spec with it ✅ 06-hr-portal — `deactivate-guard.spec.ts` types its harness `CanDeactivateFn<DepartmentForm>`, the component the guard is declared against, where the CLI's `unknown` left the whole suite failing on `TS2345` before any test ran
 - `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies ✅ 04-meal-finder — each page spec adds exactly the providers its unit injects (`provideRouter([])` for the routed pages, plus `provideHttpClient()` for the two that call the API), where the scaffold suite failed on `NG0201: No provider found for ActivatedRoute`
 - Runtime-supplied injection tokens in tests — recognise that a value the framework mints when it creates the unit, such as a dialog's reference and its data token, is provided by no module, so a spec that mounts the unit alone must supply it as a double rather than importing more of the library ✅ 05-task-manager — `confirm-dialog.spec.ts` and `task-dialog.spec.ts` register `MatDialogRef` and `MAT_DIALOG_DATA` themselves, where mounting the dialogs alone threw `NG0201: No provider found for MatDialogRef`
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
@@ -209,7 +226,6 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 ### Buttons, icons, menus, and tooltips
 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
-- Icon buttons and accessible names — pair `matIconButton` actions with an `aria-label` or equivalent name because an icon or tooltip alone is not a reliable accessible label
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
@@ -291,6 +307,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Responsive Material composition — adapt sidenav mode, dialog dimensions, action density, and wide-table presentation because Material components do not make a page responsive automatically
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
+- Application-wide Material dependencies under test — a component configured once for the whole application, such as a date-entry control and the adapter that decides its value representation, has none of that configuration in a bare test environment and must be given it again wherever it is mounted alone ✅ 06-hr-portal — `leave-request-dialog.spec.ts` repeats `provideNativeDateAdapter()` that `app.config.ts` supplies once for the running app
 
 ## Spring
 
@@ -821,6 +838,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
 - Create vs Update request DTOs — separate them when the operations have different validation,
   optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match ✅ 07-timetrack
+- Identity is stamped by the collection's owner, not by the caller — the operation that creates a record accepts every field except the generated identifier, so there is exactly one place the identifier can come from and the signature is what says so; letting the caller supply it puts the generation rule in as many places as there are callers, and each one is free to use a different source ✅ 06-hr-portal — `DepartmentService.addDepartment` takes `Omit<Department, 'id'>` and stamps `crypto.randomUUID()` itself, so `DepartmentForm` cannot supply one, matching `addEmployee` and `addLeaveRequest`
 - Nullable field in a request versus in a response — in a partial-update request an absent value legitimately means "leave this one alone", so the field must be able to hold nothing; in a response the same shape advertises a state the model can never be in, so a value the domain always has is declared as one that cannot be absent ✅ 07-timetrack — `ProjectResponse.active` is primitive while `UpdateProjectRequest.active` stays nullable, so an omitted field and `false` never collapse
 - Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
   prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients ✅ 07-timetrack
@@ -847,9 +865,15 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   value is normalised and checked before it crosses the boundary, so the parent and every later
   listener receive a value already fit to use; deferring that check to the consumer makes each new
   listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
+- A rule enforced inside a control's event handler is only as strong as the number of paths that reach
+  that control — a multi-step form whose navigation offers a second route to the same save leaves the
+  rule unchecked, so the guard belongs at the single exit where the data leaves the boundary and the
+  handler keeps only the earlier feedback ✅ 06-hr-portal — `EmployeeDialog.hasDuplicateEmail()` runs from
+  both `onNext` and `onSubmit`, because the linear stepper's step-2 header reaches the save without the
+  Next button
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
-- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
+- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
 
 ### Testing strategy
 
@@ -919,6 +943,13 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   itself becomes part of the workflow's invariants ✅ 07-timetrack — `UserService.update` refuses a
   promotion to MANAGER while the user still holds DRAFT or REJECTED entries, whose submit and reopen
   transitions are EMPLOYEE-only
+- Enforcement lives with the state's owner — a transition rule expressed only in the view that hides
+  the unavailable action is not enforced at all, because the component or service that owns the state
+  still accepts that move from any other caller and persists it; conditional rendering removes the
+  button, while a guard in the owner removes the transition ✅ 06-hr-portal — `LeaveRequestService.updateStatus` refuses any move whose current status is not `pending`, the rule the table's `@if (request.status === 'pending')` was the only thing expressing
+- A refused transition has to be observable to its caller — a guard that leaves the state unchanged and
+  says nothing lets the caller report the success it assumed, so the operation answers whether it
+  applied and the caller's feedback branches on that answer rather than on having been called ✅ 06-hr-portal — `updateStatus` returns a `boolean` and `LeaveRequestPage.onStatusChange` shows "Only a pending request can be approved or rejected" when it is `false`
 
 ### Boundary patterns in maintained code
 
@@ -968,6 +999,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   trying to enumerate every malicious value ✅ 07-timetrack
 - Secure defaults and fail closed — an absent rule, invalid credential, unexpected exception, or
   unavailable dependency must not silently make a protected operation public ✅ 07-timetrack
+- Stubbed control as a security claim — a stand-in that carries a real mechanism's name while
+  nothing issues, signs, or verifies it reads as working protection to every later reader, so the
+  code states at the point of use what it does not yet do ✅ 06-hr-portal — `auth-interceptor.ts` opens with a PLACEHOLDER block saying nothing issues or verifies the value the `Bearer` header carries
 
 ### Authentication and authorisation
 
@@ -1108,6 +1142,13 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   insecure transport, and cross-site sending respectively
 - Token storage in browsers — Web Storage exposes tokens to JavaScript and therefore XSS, while
   `HttpOnly` cookies reduce token theft but require deliberate CSRF and cookie controls ✅ 07-timetrack
+- Client-side session state — what a browser persists about the signed-in user is a projection holding
+  only the fields the application reads back, never the credential that proved the identity, because
+  anything in Web Storage is readable by any script on the page and outlives the session it belonged to ✅ 06-hr-portal — `AuthService` persists a `SessionUser` built by `toSession`, so `localStorage.currentUser` holds email and role only
+- Remediation of already-stored data — changing what a client writes leaves every value persisted under
+  the old shape untouched, so the entry is re-projected or discarded when it is read; otherwise the
+  sensitive field is written straight back on the next save and the fix never reaches the users who
+  already hold one ✅ 06-hr-portal — `readStoredSession` re-projects the stored entry at boot, so a value saved with the old password field loses it on first read
 
 ### Injection, validation, and unsafe input
 
@@ -1257,11 +1298,11 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
 - Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
-- Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
+- Generic functions and interfaces — relate input and output types without replacing that relationship with `any` ✅ 06-hr-portal — `readStoredArray<T>(key): T[]` is the one guarded `localStorage` read the three domain services share, each supplying its own entity type at the call site instead of the helper returning `any[]`
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
-- Indexed access types — obtain a property's value type from an existing object contract without duplicating it
+- Indexed access types — obtain a property's value type from an existing object contract without duplicating it ✅ 06-hr-portal — `LeaveRequestStatus` is declared as `(typeof LEAVE_REQUEST_STATUSES)[number]`, so the union is read off the array rather than restated beside it
 - Async function typing — recognise that an `async` function returns `Promise<T>` and that the annotation does not prevent runtime rejection
 
 ### Narrowing and safe control flow
@@ -1272,9 +1313,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
-- Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
+- Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid ✅ 06-hr-portal — `DepartmentForm.onSubmit` tests `editId !== null` rather than `if (this.editId())`, so an identifier that is a `string` cannot read as "not editing"
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
-- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
+- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows ✅ 06-hr-portal — `isLeaveRequestFilter(value): value is LeaveRequestFilter` is the one check the leave-request page narrows through, so the query-param read needs no `as` assertion
 - Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
 
@@ -1288,7 +1329,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Utility and derived types
 
-- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
+- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch ✅ 06-hr-portal — `isStoredSession` narrows the parsed value through `Partial<SessionUser>`, so each field is read as possibly absent and checked instead of asserted present
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
@@ -1297,7 +1338,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Literal preservation and contract checking
 
-- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing
+- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing ✅ 06-hr-portal — `LEAVE_REQUEST_STATUSES` and `LEAVE_REQUEST_FILTERS` are declared `as const`, so their members stay literal types instead of widening to `string[]`
+- A literal union derived from an `as const` list — declare the permitted values once as a readonly array and derive the type from it with an indexed access over `number`, so the allow-list a runtime check reads and the union a signature declares are the same declaration and cannot drift apart when a member is added or removed ✅ 06-hr-portal — `LEAVE_REQUEST_FILTERS` is both the array the guard's `includes` reads and the source of the `LeaveRequestFilter` type, and the filter dropdown renders its options from that same constant
 - `satisfies` — check that an expression conforms to a contract while retaining useful inferred literal and property information
 - Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof ✅ 03-expense-tracker — the transaction form declares each control's own type instead of asserting `form.value as NewTransaction` at the emit
 - `typeof` in type positions — derive a type from an existing value without confusing it with the runtime `typeof` operator
@@ -1419,7 +1461,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
 - `some` vs `every` — express existential or universal checks with short-circuiting ✅ 06-hr-portal — `employee.service.ts` and `department.service.ts` short-circuit their uniqueness checks with `some`
-- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
+- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup ✅ 06-hr-portal — the status guards ask `EMPLOYEE_STATUS_FILTERS.includes(value)` for plain membership rather than an index they would then compare to `-1`
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
 - Array sorting — provide an appropriate comparator and account for `sort` mutating the array
@@ -1490,6 +1532,116 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Basic performance diagnosis — measure before changing code and avoid repeated expensive work in hot loops or handlers without entering engine-level tuning
 - AI-generated JavaScript review — check runtime inputs, coercion, mutation, async completion, cleanup, error propagation, and observable behaviour before accepting generated code
 
+## HTML
+
+### Document structure and metadata
+
+- `<!DOCTYPE html>` — the first line switches the browser into standards mode; omitting it triggers quirks mode, where a set of legacy layout behaviours is reinstated and the page renders differently for no visible reason in the markup
+- `<html lang>` — declares the document's natural language, which is what selects the screen reader's pronunciation rules and the browser's hyphenation and spell-check dictionaries; an unset or wrong `lang` makes a Spanish page read aloud with English phonetics
+- `lang` on a fragment — a quotation or term in another language carries its own `lang` on the element that wraps it, so pronunciation switches for that span and returns afterwards
+- `<meta charset="utf-8">` — declares the byte encoding, and the specification requires it within the document's first 1024 bytes because the parser has to commit to an encoding before it reaches the content; declared late or not at all, accented characters arrive as replacement glyphs
+- `<meta name="viewport">` — without it a mobile browser lays the page out at a virtual desktop width and scales the result down, so a responsive stylesheet has nothing to respond to
+- `<title>` — names the document in the tab, the history, the bookmark and the search result, and is the first thing a screen reader announces on load, so it identifies the page rather than the site
+- The title after a client-side route change — a single-page application swaps the view without a document load, so unless the title is set on navigation every route keeps announcing the name of the page the user arrived on
+- `<head>` vs `<body>` — metadata, the title, stylesheets and scripts describe the document; only `<body>` content is rendered, and an element placed in the wrong one is silently relocated by the parser
+- Landmark elements — `<header>`, `<nav>`, `<main>`, `<aside>` and `<footer>` define navigable regions a screen-reader user can jump between, which a page built from anonymous `<div>`s does not have at all
+- One `<main>` per document — the element marks the page's primary content so a skip link and assistive navigation have a single unambiguous destination; a second visible `<main>` makes that target undefined
+- Naming repeated landmarks — two `<nav>` elements in one page are announced identically unless each carries its own `aria-label`, so the primary navigation and a breadcrumb or footer menu are distinguishable in the landmark list
+- One `<h1>` per page, and it names the page — headings are the document's outline, not a size scale, so every routed view owns exactly one `<h1>` stating what that view is; a brand or logo in the site chrome is a link, not a heading
+- Heading order without skips — `<h1>` through `<h6>` express nesting depth, so jumping from `<h2>` to `<h4>` because the smaller size looked right breaks the outline a screen reader navigates by
+- `id` vs `class` — an `id` is unique in the document and is the anchor that `for`, `aria-labelledby`, `aria-describedby` and fragment links point at; a `class` is a repeatable hook with no such role
+- A duplicated `id` silently breaks its references — `for`, `aria-labelledby` and `aria-describedby` resolve to the first match in the document, so a component rendered twice with a hard-coded `id` gives every later copy the first copy's label
+- Script loading position — a classic `<script>` in `<head>` blocks parsing where it sits, `defer` postpones execution until the document is parsed while preserving source order, and `async` runs it as soon as it arrives in whatever order the network delivers; both attributes apply only to a script with `src`, and a module script defers by default
+- `<iframe title>` — an embedded document is a landmark in the host page and is announced by its `title`, so a map, a video player or a payment frame without one is offered to the user as an unnamed region
+
+### Element semantics and content model
+
+- Semantic element vs `<div>` — choosing the element that describes the content gives the browser a role, default behaviour and keyboard contract for free; `<div>` and `<span>` are the deliberate choice of *no* semantics, correct only when nothing more specific applies
+- `<article>` vs `<section>` vs `<div>` — `<article>` is a block that would still make sense distributed on its own, `<section>` is a thematic group that owns a heading, and `<div>` is a styling hook with no meaning at all
+- Content model and invalid nesting — the specification says which elements may contain which, and a browser handed invalid markup does not error but silently repairs the tree, so a `<div>` inside a `<p>` or a stray `<li>` produces a DOM that no longer matches the source
+- Interactive content does not nest — a `<button>` inside an `<a>` is invalid markup whose activation target is ambiguous and whose accessibility tree browsers repair inconsistently, so a secondary action inside a linked card is a sibling of the link overlaid by positioning, never a child of it
+- Void elements — `<img>`, `<input>`, `<br>` and `<hr>` have no closing tag and no children because the content model gives them none, which is why writing `<input></input>` is meaningless rather than merely verbose
+- Boolean attributes — `disabled`, `required`, `checked`, `readonly` and `hidden` are true by their presence, so `disabled="false"` disables the control; only removing the attribute clears it
+- Character entities — `&lt;`, `&gt;` and `&amp;` write characters the parser would otherwise read as markup, while `&nbsp;` and the named entities for typographic characters exist to write a character the source encoding or the eye cannot distinguish; text that may contain `<` or `&` is escaped before it becomes part of the document
+- `<strong>`/`<em>` vs `<b>`/`<i>` — the first pair states importance and emphasis, which reaches the accessibility tree and can change intonation; the second pair marks text set apart by convention with no added meaning
+
+### Text, lists, and tables
+
+- Lists — `<ul>` for an unordered set, `<ol>` where the sequence is part of the meaning, and `<dl>` for name–value pairs; the element is what makes assistive technology announce the item count and position
+- Data tables — `<table>` with `<caption>`, `<thead>`, `<tbody>` and `<th scope>` binds each cell to its header, which is what lets a screen-reader user hear the column name with the value instead of a bare number; a table used for page layout destroys that reading order and is never the layout tool
+- `<figure>` and `<figcaption>` — associate a caption with the image, chart or code block it describes, so the relationship survives when the two are read out of visual context
+- `<time datetime>` — carries a machine-readable timestamp alongside the human-readable text, so "next Tuesday" is also an unambiguous date for tooling
+
+### Images
+
+- Informative image `alt` — the attribute carries the information the image conveys, in the words a sighted reader would take from it; restating the filename, writing "image of", or leaving it empty on a meaningful image all lose that information
+- Decorative vs informative images — an image whose information is already carried by adjacent text is decorative and takes `alt=""`, which gives it `role="presentation"` and removes it from the accessibility tree, whereas an *absent* `alt` leaves the image with `role="img"` and no computed name at all, which is why screen readers commonly fall back to announcing the `src` filename
+- `width` and `height` on `<img>` — the intrinsic dimensions let the browser reserve the right box before the bytes arrive, which is what stops the content below from jumping when the image finally loads
+
+### Links, buttons, and native interactive elements
+
+- Navigating elements must be links — an element that takes the user to another URL has to be an `<a>` with a real `href`, because keyboard reachability, the `link` role, Enter activation and the browser's own affordances (open in a new tab, copy link address) are all derived from the tag and its attributes, never from a click listener
+- Acting elements must be buttons — an element that performs an in-page action has to be a `<button>`, because focusability, the `button` role and activation by both Enter and Space come from the tag; the mirror of the rule above, and the reason a click handler on a `<div>` works with the mouse and with nothing else
+- `<a>` without `href` — an anchor with no `href` is not in the tab order, computes no `link` role and cannot be activated from the keyboard, so it is a styled span that only the mouse reaches
+- `role` declares semantics but supplies no behaviour — `role="button"` plus `tabindex="0"` tells assistive technology what the element claims to be while the browser still supplies none of the promised behaviour, so the announced Space-bar activation scrolls the page instead; the fix is the right element, not more attributes
+- Link text meaningful out of context — a screen-reader user can pull up the list of links on a page with no surrounding prose, so "read more" repeated six times identifies nothing; the destination belongs in the link text or in the name that replaces it
+- `<button>` defaults to `type="submit"` — a button inside a form submits it unless `type="button"` is stated, which is the classic accidental page reload; stating `type` explicitly on every button removes the whole class of bug
+- `<button>` vs `<input type="submit">` — the button element has content, so it can hold markup and an icon and its label is its children, while the input is void and its label is the `value` attribute that is also submitted
+- `target="_blank"` and `rel` — the specification now gives `target="_blank"` an implicit `noopener`, so the historic tab-nabbing hardening is a legacy concern; what remains a decision is that the link takes the user out of their current context without warning, and `rel="noreferrer"` still has to be asked for separately
+- Relative vs absolute URLs — a relative `href` resolves against the current document's URL, so the same markup points somewhere different once the page moves to a nested route
+- `<details>` and `<summary>` — a native disclosure widget whose open and closed state, keyboard operation and announcement are supplied by the browser, which is the baseline any hand-built accordion has to match
+- `<dialog>` and `showModal()` — the platform's own modal, supplying the top layer, the inert backdrop, focus containment and Escape-to-close, and the reference point for what a component library's dialog is reimplementing
+
+### Forms and labelling
+
+- Accessible name of a form control — a `<label for>` bound to the control's `id` is what names the field in the accessibility tree, while a `placeholder` sits at the bottom of the name computation and is used only when nothing better exists, so a placeholder-only control is announced by an example value rather than by what it is, and loses even that hint the moment the user types
+- Wrapping label vs `for` — a `<label>` that contains its control associates implicitly, which avoids inventing an `id`, but the explicit `for`/`id` pair survives markup that has to place the label elsewhere in the DOM
+- Clicking the label focuses the control — the association is not only for assistive technology; it enlarges the hit target of every checkbox and radio in the form, which is a visible defect when it is missing
+- `input` `type` — `text`, `email`, `number`, `password`, `date`, `checkbox`, `radio` and `file` each change the control the browser renders, the mobile keyboard it raises, the value it parses and the native validation it applies, so the type is a data decision rather than a cosmetic one
+- `name` and form submission — a control without a `name` is not submitted at all, and on radios and checkboxes it is `value` that reaches the server while the visible label never does
+- Form `method` — `get` puts the fields in the query string, which makes the result linkable and bookmarkable and is why a search form uses it, while `post` puts them in the request body for anything that changes state or should not appear in a URL or a history entry
+- `<fieldset>` and `<legend>` — group related controls, especially a radio set, so the group's question is announced together with each option instead of every option arriving without its context
+- `<select>` and `<option>` — the option's `value` is what is submitted while its text is only what is displayed, and `selected` chooses the initial option rather than the browser's default of the first one
+- `<textarea>` value semantics — the control's value is its child text, not a `value` attribute, so its initial content is written between the tags and any whitespace there is part of the value
+- `disabled` vs `readonly` — a disabled control is skipped by the keyboard and not submitted, while a readonly control is focusable, copyable and still submitted; choosing the wrong one silently drops a field from the payload
+- Native validation attributes — `required`, `min`/`max`, `step` and `pattern` make the browser block submission and show its own message before any script runs, while `maxlength` works differently by preventing the keystroke rather than failing the submit, and `novalidate` on the form turns the whole native gate off
+- Client validation is never the server's guarantee — every native constraint is a user-experience affordance a user can bypass with devtools or by posting directly, so the same rule exists again on the server
+- `autocomplete` tokens — `email`, `name`, `current-password` and `one-time-code` let the browser and password manager fill the field correctly, which is a few characters of markup and a measurable difference on a real form
+- `inputmode` — selects the mobile keyboard layout independently of `type`, for the cases where the value is digits but not a number the browser should parse
+- Error messaging tied to its field — an invalid control carries `aria-invalid` and points at its message with `aria-describedby`, so the error is announced with the field; a red border and red text alone reach only the eye
+- A form that would still submit without JavaScript — an `action`, a `method` and a real `<button type="submit">` mean the browser can post the form on its own, which is what makes intercepting the submit event a decision rather than the only thing holding the form together
+
+### The accessibility tree and accessible names
+
+- The accessibility tree — the browser derives a second tree from the DOM, holding each node's role, name, state and value, and that tree is what a screen reader reads; an element can look correct on screen and be absent, unnamed or mislabelled in it
+- Implicit roles — every native element already carries a role (`<button>` is `button`, `<a href>` is `link`, `<nav>` is `navigation`), which is the whole reason choosing the right element removes work rather than adding it
+- ARIA's first rule — use a native element instead of an ARIA attribute wherever one exists, because ARIA changes only what is announced and never what the browser does; ARIA is for the cases the platform has no element for
+- ARIA that contradicts its element — an author role that fights the tag it sits on is at best ignored and at worst believed: `role="presentation"` on a focusable control is discarded by the browser under the conflict-resolution rules, while `role="button"` on a link is honoured and leaves the announced semantics disagreeing with what Enter and Space actually do
+- Accessible-name precedence — the name is computed from an ordered set of sources, with `aria-labelledby` above `aria-label`, above the control's own label or content, above the `title` and `placeholder` fallbacks, so adding `aria-label` silently replaces the visible text a sighted user reads
+- `title` vs `aria-label` — the `title` attribute is a last-resort name source that appears as a mouse tooltip, is unreachable by touch and inconsistently announced, so it is a supplement and never the way a control gets its name
+- Accessible name of an icon-only control — a control whose only content is a glyph or an icon font computes to an unusable accessible name or none at all, so it needs an explicit `aria-label` naming the action it performs
+- Pressed state of a toggle control — a button that turns a setting on and off carries `aria-pressed`, which is what puts the on/off state in the accessibility tree; the control therefore states its state twice, once for the eye through a class and once for the tree through the attribute, because a colour or a filled-versus-outlined shape reaches only the eye
+- Expanded state of a disclosure — a trigger that shows and hides a panel, menu or submenu carries `aria-expanded` and points at what it controls with `aria-controls`, which is what a rotated chevron does not express; it is the state most often missing from a hand-built dropdown
+- Current item in a set — `aria-current` marks the active navigation link, step or page as the current one, which a background colour or a heavier weight cannot express
+- Live regions — an asynchronous change is announced only from inside a region marked `aria-live`, `role="status"` or `role="alert"`, so a result count, a save confirmation or a validation summary that simply appears is read only if the user happens to move there; `polite` waits for a pause and `assertive`, which `role="alert"` implies, interrupts, which is why it is reserved for errors
+- Hiding from the layout, from the tree, or from both — the `hidden` attribute and `display: none` remove an element from both, `visibility: hidden` also removes it from both while keeping its space, and `aria-hidden="true"` removes it only from the tree while leaving it visible and focusable; hiding a focusable control with `aria-hidden` produces a control the keyboard reaches and the screen reader cannot announce
+- Visually hidden but announced — the opposite case: text meant only for assistive technology has to leave the visual layout while staying in the accessibility tree, which none of the properties above can do because each removes it from both; the pattern is a positioned one-pixel box that is clipped rather than sized to zero
+
+### Focus and keyboard operability
+
+- Everything interactive is keyboard operable — a feature that can only be reached or triggered with a pointer is unusable for keyboard and screen-reader users, and it is the fastest defect to find: put the mouse down and Tab through the page
+- Sequential focus order follows DOM order — the tab sequence comes from the document, not from the visual arrangement, so a control moved on screen by layout is still reached where its markup sits, and a visual order that no longer matches the source is a reading-order defect rather than a styling detail
+- `tabindex` values — `0` puts a non-interactive element into the natural tab order, `-1` makes it focusable only from script for programmatic focus, and any positive value jumps it ahead of the whole document and is an anti-pattern in every real page
+- A visible focus indicator is required — a keyboard user has no other way to tell where they are, so an indicator removed for aesthetics is replaced rather than deleted; that it must exist and be perceivable is an accessibility obligation, while how it is drawn is a CSS decision
+- Moving focus deliberately — opening a dialog, revealing a panel or navigating in a single-page application leaves focus where it was unless code moves it, so focus is sent to the new content and returned to the trigger when it closes
+- Skip link to main content — a first focusable link that jumps past the navigation spares a keyboard user tabbing through the whole menu on every page, and it is the cheapest evidence that the page was actually used from the keyboard
+
+### Reading and reviewing markup
+
+- Reviewing markup for the recurring defects — the ones worth reading a snippet for are a click handler on a non-interactive element, a field whose only text is a placeholder, an `alt` restating the filename, a heading level chosen for its size, and `role`, `tabindex` and `aria-label` piled onto `<div>`s where three native elements would have done the job; the last is the canonical shape of generated markup, announced correctly and behaving wrongly
+- Inspecting the accessibility tree — browser devtools show the computed role, name and state of the selected element, which answers "what will a screen reader say here" without installing one
+- Automated accessibility checks and their limit — a Lighthouse or axe pass finds missing names, contrast failures and invalid ARIA cheaply, and cannot tell whether the reading order makes sense or the labels are honest, so the keyboard pass is not replaced by it
+
 ## CSS
 
 ### Box model
@@ -1526,7 +1678,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — target elements through exact ancestry and sibling relationships ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
-- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
+- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()` ✅ 05-task-manager — `task-dialog.css:12` targets `mat-form-field:nth-child(5)` by position instead of adding a class
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
 - `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
@@ -1544,7 +1696,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
 - Container properties vs item properties — `justify-content`, `align-items`, `gap` and `flex-wrap` are read only by an element whose own `display` is `flex` or `grid`, while `align-self`, `order` and the `flex` shorthand belong to its children; an alignment property declared on any other element is parsed into the computed style and then silently ignored, so a dead rule produces no error and is only caught by reading that element's `display` ✅ 01-todo-list — in `task-item.css` the alignment properties appear only on `.task-item`, the one rule that declares `display: flex`; the `.task-title` span carries none
 - `margin: auto` on flex items — absorb available space on the selected side to separate an item without adding a wrapper element
-- Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
+- `order` and the reverse directions reorder visually only — flex and grid can place an item anywhere in the line without moving it in the document, so the painted arrangement and the source order are two different things
 
 ### CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
@@ -1637,7 +1789,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `border-radius: 9999px` — create pill ends across changing aspect ratios while reserving `50%` for shapes derived from each axis ✅ 05-task-manager
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair ✅ 04-meal-finder
-- `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
+- `outline` vs `border` — `outline` sits outside the border and does not take up layout space, which is what makes it the property a focus ring is drawn with; style it through `button:focus-visible` instead of substituting a `border`, which would shift the layout every time an element is focused ✅ 01-todo-list
 - `aspect-ratio` — preserve a width-to-height ratio when one dimension is resolved and reserve predictable media space before content loads
 
 ### Overflow
@@ -2126,6 +2278,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
 - Vacuous-test review — detect missing assertions, assertions unrelated to the action, and mocks that only confirm their own setup
 - Permanently failing test — a test that fails for a reason unrelated to a defect is repaired or deleted, because a suite that is normally red makes a real regression unreadable
+- Test-double surface completeness — a hand-written double replaces the whole collaborator, not the one method under assertion, so every member the unit reaches during construction and setup must exist on it or the test dies with a type error long before any expectation is evaluated ✅ 06-hr-portal — the `MatDialogRef` double in `employee-dialog.spec.ts` also answers `backdropClick()`, which the component subscribes to in its constructor
+- Masked failure in a single test — a test stops at its first error, so a fault raised while the unit is being built hides every later assertion in that test, and removing the first cause is expected to reveal a second rather than turn the test green ✅ 06-hr-portal — `app.spec.ts`'s second test asserts the shell's real `.app-title`, the assertion left underneath once the missing `Router` stopped aborting that same test
 
 ### Configuration and environments
 

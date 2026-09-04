@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { LeaveRequestPage } from './leave-request-page';
 
@@ -9,6 +10,9 @@ describe('LeaveRequestPage', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LeaveRequestPage],
+      // Routed page: the unit injects `ActivatedRoute` (or renders `routerLink`), which only
+      // exists once a Router is provided. The empty route list keeps navigation out of scope.
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LeaveRequestPage);

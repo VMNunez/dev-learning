@@ -1,10 +1,18 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../shared/components/confirm-dialog/confirm-dialog';
 import { EmployeeDialog } from './components/employee-dialog/employee-dialog';
+import type {
+  EmployeeDialogData,
+  EmployeeFormResult,
+} from './components/employee-dialog/employee-dialog';
 import { EmployeeService } from '../../core/services/employee.service';
-import type { Employee } from '../../models/employee.model';
+import { isEmployeeStatusFilter } from '../../models/employee.model';
+import type { Employee, EmployeeStatusFilter } from '../../models/employee.model';
 import { EmployeeTable } from './components/employee-table/employee-table';
 import { EmployeeFilters } from './components/employee-filters/employee-filters';
 import { DepartmentService } from '../../core/services/department.service';
@@ -27,7 +35,7 @@ export class EmployeePage implements OnInit {
   departments = this.departmentService.departments;
   searchTerm = signal<string>('');
   selectedDepartment = signal<string>('');
-  selectedStatus = signal<string>('');
+  selectedStatus = signal<EmployeeStatusFilter>('');
   filteredEmployees = computed(() => {
     return this.employees().filter((employee) => {
       const searchTermMatch =
@@ -55,7 +63,7 @@ export class EmployeePage implements OnInit {
   ngOnInit(): void {
     const initialStatus = this.route.snapshot.queryParamMap.get('status');
 
-    if (initialStatus) {
+    if (isEmployeeStatusFilter(initialStatus)) {
       this.selectedStatus.set(initialStatus);
     }
   }
@@ -68,7 +76,7 @@ export class EmployeePage implements OnInit {
     this.selectedDepartment.set(department);
   }
 
-  updateStatus(status: string) {
+  updateStatus(status: EmployeeStatusFilter) {
     this.selectedStatus.set(status);
   }
 
@@ -79,11 +87,14 @@ export class EmployeePage implements OnInit {
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(EmployeeDialog, {
-      width: '500px',
-      autoFocus: false,
-      disableClose: true,
-    });
+    const dialogRef = this.dialog.open<EmployeeDialog, undefined, EmployeeFormResult>(
+      EmployeeDialog,
+      {
+        width: '500px',
+        autoFocus: false,
+        disableClose: true,
+      },
+    );
 
     dialogRef.afterClosed().subscribe({
       next: (newEmployee) => {
@@ -95,8 +106,8 @@ export class EmployeePage implements OnInit {
     });
   }
 
-  onDelete(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialog, {
+  onDelete(id: string) {
+    const dialogRef = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
       width: '500px',
       autoFocus: false,
       data: {
@@ -118,19 +129,22 @@ export class EmployeePage implements OnInit {
   }
 
   onEdit(employee: Employee) {
-    const dialogRef = this.dialog.open(EmployeeDialog, {
-      width: '500px',
-      autoFocus: false,
-      disableClose: true,
-      data: {
-        employee,
+    const dialogRef = this.dialog.open<EmployeeDialog, EmployeeDialogData, EmployeeFormResult>(
+      EmployeeDialog,
+      {
+        width: '500px',
+        autoFocus: false,
+        disableClose: true,
+        data: {
+          employee,
+        },
       },
-    });
+    );
 
     dialogRef.afterClosed().subscribe({
       next: (updatedEmployee) => {
         if (updatedEmployee) {
-          this.employeeService.editEmployee(updatedEmployee);
+          this.employeeService.editEmployee({ ...updatedEmployee, id: employee.id });
           this.snackBar.open('Employee updated', 'Close', { duration: 3000 });
         }
       },

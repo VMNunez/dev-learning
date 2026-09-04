@@ -2,7 +2,10 @@ import { Component, input, output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { LeaveRequestStatus } from '../../../../models/leave-request.model';
+import {
+  LEAVE_REQUEST_FILTERS,
+  type LeaveRequestFilter,
+} from '../../../../models/leave-request.model';
 import { TitleCasePipe } from '@angular/common';
 import { Role } from '../../../../models/user.model';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,15 +18,15 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class LeaveRequestFilters {
   role = input<Role | undefined>(undefined);
-  selectedStatus = input<LeaveRequestStatus | 'all'>('all');
+  selectedStatus = input<LeaveRequestFilter>('all');
   searchTerm = input<string>('');
   hasActiveFilters = input<boolean>(false);
   totalFilteredLeaveRequests = input<number>(0);
   totalLeaveRequests = input<number>(0);
-  statusChange = output<LeaveRequestStatus | 'all'>();
+  statusChange = output<LeaveRequestFilter>();
   searchChange = output<string>();
   clearAll = output<void>();
-  statusOptions = ['all', 'pending', 'approved', 'rejected'];
+  statusOptions = LEAVE_REQUEST_FILTERS;
 
   clearFilters() {
     this.clearAll.emit();

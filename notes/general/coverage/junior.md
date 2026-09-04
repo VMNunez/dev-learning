@@ -93,6 +93,8 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
 - Vacuous-test review — detect missing assertions, assertions unrelated to the action, and mocks that only confirm their own setup
 - Permanently failing test — a test that fails for a reason unrelated to a defect is repaired or deleted, because a suite that is normally red makes a real regression unreadable
+- Test-double surface completeness — a hand-written double replaces the whole collaborator, not the one method under assertion, so every member the unit reaches during construction and setup must exist on it or the test dies with a type error long before any expectation is evaluated ✅ 06-hr-portal — the `MatDialogRef` double in `employee-dialog.spec.ts` also answers `backdropClick()`, which the component subscribes to in its constructor
+- Masked failure in a single test — a test stops at its first error, so a fault raised while the unit is being built hides every later assertion in that test, and removing the first cause is expected to reveal a second rather than turn the test green ✅ 06-hr-portal — `app.spec.ts`'s second test asserts the shell's real `.app-title`, the assertion left underneath once the missing `Router` stopped aborting that same test
 
 ## Configuration and environments
 

@@ -1,0 +1,26 @@
+mat-card mat-card-content {
+  padding-top: 0.75rem;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-header-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+.panel-header-link:hover {
+  text-decoration: underline;
+}
+
+.panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}

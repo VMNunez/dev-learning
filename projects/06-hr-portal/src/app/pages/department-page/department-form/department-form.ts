@@ -26,7 +26,7 @@ export class DepartmentForm implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
-  editId = signal<number | null>(null);
+  editId = signal<string | null>(null);
 
   departmentForm = new FormGroup({
     name: new FormControl<string>('', Validators.required),
@@ -40,8 +40,8 @@ export class DepartmentForm implements OnInit {
   ngOnInit(): void {
     const rawId = this.route.snapshot.paramMap.get('id');
     if (rawId) {
-      this.editId.set(Number(rawId));
-      const department = this.departmentService.getById(Number(rawId));
+      this.editId.set(rawId);
+      const department = this.departmentService.getById(rawId);
       if (department) {
         this.departmentForm.patchValue({
           name: department.name,
@@ -72,21 +72,17 @@ export class DepartmentForm implements OnInit {
         description: formValue.description as string,
       };
 
-      if (this.editId()) {
-        const updateDepartment = {
-          id: this.editId() as number,
+      const editId = this.editId();
+      if (editId !== null) {
+        const updateDepartment: Department = {
+          id: editId,
           ...departmentData,
         };
 
         this.departmentService.editDepartment(updateDepartment);
         this.snackBar.open('Department updated', 'Close', { duration: 3000 });
       } else {
-        const newDepartment: Department = {
-          id: Date.now(),
-          ...departmentData,
-        };
-
-        this.departmentService.addDepartment(newDepartment);
+        this.departmentService.addDepartment(departmentData);
         this.snackBar.open('Department added', 'Close', { duration: 3000 });
       }
       this.departmentForm.markAsPristine();
