@@ -439,10 +439,10 @@ Esa única regla — _un nombre vive dentro de las llaves en las que se declaró
 ```
 class TimeEntry {                       ┐
     private BigDecimal hours;           │  CAMPO (FIELD) — visible en todos los
-                                        │  métodos de la clase, vive lo que vive el objeto
+                                        │  métodos de la clase, vive mientras viva el objeto
     void validate(int maxHours) {       ┤
                                         │  PARÁMETRO — una variable local que rellena
-        int extra = 0;                  │  quien llama; visible solo en este método,
+        int extra = 0;                  │  quien llama al método; visible solo aquí,
                                         │  desaparece al terminar el método
         if (maxHours > 8) {             ┤
             String warning = "long";    │  LOCAL — visible desde su declaración
