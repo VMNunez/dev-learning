@@ -987,6 +987,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   trying to enumerate every malicious value ✅ 07-timetrack
 - Secure defaults and fail closed — an absent rule, invalid credential, unexpected exception, or
   unavailable dependency must not silently make a protected operation public ✅ 07-timetrack
+- Stubbed control as a security claim — a stand-in that carries a real mechanism's name while
+  nothing issues, signs, or verifies it reads as working protection to every later reader, so the
+  code states at the point of use what it does not yet do ✅ 06-hr-portal — `auth-interceptor.ts` opens with a PLACEHOLDER block saying nothing issues or verifies the value the `Bearer` header carries
 
 ### Authentication and authorisation
 
