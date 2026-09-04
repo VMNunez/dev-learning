@@ -319,7 +319,7 @@ BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 `HALF_EVEN` (banker's rounding) is the other one you will meet in financial code, and the first thing it asks is whether what it is about to drop is **exactly half** — that is, whether the first leftover digit is a `5` with nothing behind it:
 
 - **If it is not an exact half** — `0.1253` at scale 2, where a `3` still follows the `5` — it behaves **just like `HALF_UP`**: what is left over (`53`) is past halfway, so it goes up, and the result is `0.13`. With `0.1243` the leftover `43` does not reach halfway, so it goes down to `0.12`. In this case both rules always agree.
-- **If it is an exact half** — `0.125` at scale 2 — is where they part. `HALF_UP` always goes up; `HALF_EVEN` leaves the result on the nearest **even** digit, which can be upwards or downwards: it looks at the last digit you keep, and if it is already even it stays, if it is odd it goes up by one.
+- **If it is an exact half** — `0.125` at scale 2 — is where they part. `HALF_UP` always goes up; `HALF_EVEN` leaves the result on the **nearest even number**, and that can round upwards or downwards.
 
 ```java
 new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← exact half: always up

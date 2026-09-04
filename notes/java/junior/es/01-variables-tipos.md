@@ -320,7 +320,7 @@ BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 `HALF_EVEN` (redondeo bancario) es la otra que te vas a encontrar en código financiero, y lo primero que hace es preguntarse si lo que va a descartar es **exactamente medio** — es decir, si el primer dígito que sobra es un `5` y detrás de ese `5` no hay nada más:
 
 - **Si no es medio exacto** — `0.1253` con escala 2, donde detrás del `5` todavía queda un `3` — se comporta **igual que `HALF_UP`**: lo que sobra (`53`) pasa de la mitad, así que sube, y el resultado es `0.13`. Con `0.1243` sobraría `43`, no llega a la mitad, y baja a `0.12`. En este caso las dos reglas dan siempre lo mismo.
-- **Si es medio exacto** — `0.125` con escala 2 — es donde se separan. `HALF_UP` sube siempre; `HALF_EVEN` deja el resultado en el **par** más cercano, y eso puede ser por exceso o por defecto: mira el último dígito que conservas, y si ya es par se queda, si es impar sube uno.
+- **Si es medio exacto** — `0.125` con escala 2 — es donde se separan. `HALF_UP` sube siempre; `HALF_EVEN` deja el resultado en el **número par más cercano**, y eso puede resultar en una aproximación por exceso o por defecto.
 
 ```java
 new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← medio exacto: siempre sube
@@ -337,16 +337,16 @@ new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← lo q
 
 Sí existe `HALF_DOWN`, y seis modos más: `RoundingMode` es un `enum` con ocho constantes en total, y `HALF_UP`, `HALF_DOWN` y `HALF_EVEN` solo son las tres que se preguntan qué hacer **cuando lo que se descarta cae justo en medio**. Las otras cinco ni se lo preguntan: deciden siempre en la misma dirección. Lee la tabla como "si descarto esto, ¿hacia dónde va el último dígito que conservo?":
 
-| Constante | Qué hace | `0.125` con escala 2 | `-0.125` con escala 2 |
-|---|---|---|---|
-| `HALF_UP` | medio exacto → se aleja de cero | `0.13` | `-0.13` |
-| `HALF_DOWN` | medio exacto → se acerca a cero | `0.12` | `-0.12` |
-| `HALF_EVEN` | medio exacto → al dígito par más cercano | `0.12` | `-0.12` |
-| `UP` | siempre se aleja de cero, aunque sobre un `1` | `0.13` | `-0.13` |
-| `DOWN` | siempre se acerca a cero (trunca) | `0.12` | `-0.12` |
-| `CEILING` | siempre hacia arriba en la recta (`+∞`) | `0.13` | `-0.12` |
-| `FLOOR` | siempre hacia abajo en la recta (`-∞`) | `0.12` | `-0.13` |
-| `UNNECESSARY` | afirmas que no hará falta redondear | `ArithmeticException` | `ArithmeticException` |
+| Constante     | Qué hace                                      | `0.125` con escala 2  | `-0.125` con escala 2 |
+| ------------- | --------------------------------------------- | --------------------- | --------------------- |
+| `HALF_UP`     | medio exacto → se aleja de cero               | `0.13`                | `-0.13`               |
+| `HALF_DOWN`   | medio exacto → se acerca a cero               | `0.12`                | `-0.12`               |
+| `HALF_EVEN`   | medio exacto → al dígito par más cercano      | `0.12`                | `-0.12`               |
+| `UP`          | siempre se aleja de cero, aunque sobre un `1` | `0.13`                | `-0.13`               |
+| `DOWN`        | siempre se acerca a cero (trunca)             | `0.12`                | `-0.12`               |
+| `CEILING`     | siempre hacia arriba en la recta (`+∞`)       | `0.13`                | `-0.12`               |
+| `FLOOR`       | siempre hacia abajo en la recta (`-∞`)        | `0.12`                | `-0.13`               |
+| `UNNECESSARY` | afirmas que no hará falta redondear           | `ArithmeticException` | `ArithmeticException` |
 
 Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese caso las tres hacen lo mismo. Y fíjate en la última columna, que es donde se ve la única distinción que suele confundir: "abajo" no significa lo mismo en `DOWN` que en `FLOOR`. `DOWN` va hacia cero, así que `-0.125` sube a `-0.12`; `FLOOR` va hacia `-∞`, así que baja a `-0.13`. Con números positivos las dos coinciden, y por eso el bug solo aparece el día que llega un importe negativo.
 
