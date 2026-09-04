@@ -383,13 +383,13 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 > ```java
 > Map<BigDecimal, String> tarifas = new TreeMap<>();
 > tarifas.put(new BigDecimal("1.0"), "tarifa base");
-> tarifas.put(new BigDecimal("1.00"), "tarifa nocturna");   // no añade: sustituye el valor de la anterior
+> tarifas.put(new BigDecimal("1.00"), "tarifa nocturna");   // sustituye el valor de la anterior: TreeMap usa compareTo
 > tarifas.size();                          // 1                ← creías tener dos tarifas
 > tarifas.get(new BigDecimal("1.0"));      // "tarifa nocturna" ← la base ya no existe
 >
 > Map<BigDecimal, String> tarifasHash = new HashMap<>();
 > tarifasHash.put(new BigDecimal("1.0"), "tarifa base");
-> tarifasHash.put(new BigDecimal("1.00"), "tarifa nocturna");   // sí añade: para equals es otra clave
+> tarifasHash.put(new BigDecimal("1.00"), "tarifa nocturna");   // añade una entrada nueva: HashMap usa equals
 > tarifasHash.size();                          // 2                ← las dos tarifas siguen ahí
 > tarifasHash.get(new BigDecimal("1.0"));      // "tarifa base"     ← la base intacta
 > ```

@@ -397,13 +397,13 @@ The first three differ from each other only on the exact half; outside that case
 > ```java
 > Map<BigDecimal, String> rates = new TreeMap<>();
 > rates.put(new BigDecimal("1.0"), "base rate");
-> rates.put(new BigDecimal("1.00"), "night rate");   // does not add: it replaces the previous value
+> rates.put(new BigDecimal("1.00"), "night rate");   // replaces the previous value: TreeMap uses compareTo
 > rates.size();                        // 1             ← you thought you had two rates
 > rates.get(new BigDecimal("1.0"));    // "night rate"   ← the base one is gone
 >
 > Map<BigDecimal, String> ratesHash = new HashMap<>();
 > ratesHash.put(new BigDecimal("1.0"), "base rate");
-> ratesHash.put(new BigDecimal("1.00"), "night rate");   // it does add: to equals that is another key
+> ratesHash.put(new BigDecimal("1.00"), "night rate");   // adds a new entry: HashMap uses equals
 > ratesHash.size();                        // 2             ← both rates are still there
 > ratesHash.get(new BigDecimal("1.0"));    // "base rate"    ← the base one is untouched
 > ```
