@@ -154,6 +154,7 @@ than from input. The status transition — the one write over a record the emplo
 | Leave request | `startDate`, `endDate` and `reason` required; dates serialized from the local clock as `YYYY-MM-DD` |
 | Any form field | its `mat-error` renders only once the control is `touched` — a `required` validator fails from construction, so a message gated on validity alone accuses the user before the field has been reached |
 | Any dirty routed form | leaving it must be confirmed — `deactivateGuard` on the department form |
+| The persisted session | it is read back through a shape check, not an `as` assertion — the parse runs in the root service's field initializer, so a truncated entry throws out of bootstrap and a valid value of the wrong shape yields a session with no role that the guards read as logged in |
 | Any status filter read from the URL | the value is checked against the permitted list before it is applied and the filter falls back to its no-filter default otherwise (`all` on leave requests, `''` on employees) — a query param is outside input the app controls, so it is validated at the read rather than asserted into the union |
 
 ### Leave request state machine
@@ -276,7 +277,7 @@ guard or the dialog pattern.
 | Coordinator page component | Filter + table pages own the state; the table and dialog stay presentational |
 | `ng-content` over a configuration input | The dashboard's panel wrapper receives its rows as projected markup, so three panels listing different entities share one shell instead of the wrapper growing an input per entity shape |
 | Workflow invariant in the owning service | `LeaveRequestService.updateStatus()` refuses a transition out of a decided request and returns whether it applied, so the page's snackbar reports the real outcome |
-| Closed value set declared once | `LEAVE_REQUEST_FILTERS` and `EMPLOYEE_STATUS_FILTERS` are `as const` lists; each union is derived from its list and its members feed the guard and the filter dropdown, so the runtime allow-list and the type cannot drift apart |
+| Closed value set declared once | `LEAVE_REQUEST_FILTERS`, `EMPLOYEE_STATUS_FILTERS` and `ROLES` are `as const` lists; each union is derived from its list and its members feed the guard and the filter dropdown, so the runtime allow-list and the type cannot drift apart |
 | The domain union reaches the presentational child | a filter child's `input()`/`output()` are typed to the union, not to `string`, so a value validated at the query-param read cannot re-widen at the component boundary |
 | `CanActivateFn` | `auth-guard.ts` and `admin-guard.ts` |
 | Guest guard (`CanActivateFn` inverted) | `no-auth-guard.ts` on `login` — bounces an already-authenticated session to `/dashboard` |
@@ -288,7 +289,7 @@ guard or the dialog pattern.
 | `HttpInterceptorFn` | Attach auth token to every request |
 | `req.clone({ setHeaders: { ... } })` | HTTP requests are immutable — must clone |
 | `withInterceptors([fn])` | Register functional interceptors in `app.config.ts` |
-| Auth persistence pattern | A credential-free `SessionUser` read back through a private parser + `effect()` |
+| Auth persistence pattern | A credential-free `SessionUser` read back through a private parser + `effect()`, the parser validating the stored value's shape before the signal trusts it |
 | `??` nullish coalescing | Safe fallback when localStorage value is null |
 | Dual-mode dialog | Same dialog handles add and edit via `MAT_DIALOG_DATA` check |
 | `inject<Type \| undefined>(MAT_DIALOG_DATA)` | Optional dialog data injection |
