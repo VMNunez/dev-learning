@@ -513,7 +513,7 @@ How you get an object that really does not change — immutability, records, and
 
 Everything so far has been about what a variable *holds*. Operators are how you combine what two variables hold into a new value, and Java's everyday set is small enough to lay out in one place. Four groups cover essentially all backend code:
 
-- **Arithmetic** — `+` `-` `*` `/` `%` — take numbers, produce a number. `%` is the remainder: `7 % 2` is `1`.
+- **Arithmetic** — `+` `-` `*` `/` `%` — take two numbers, and the result is another number. `%` is the remainder: `7 % 2` is `1`.
 - **Comparison** (relational `<` `>` `<=` `>=` and equality `==` `!=`) — take two values, produce a `boolean`.
 - **Logical** — `&&` (and), `||` (or), `!` (not) — take booleans, produce a `boolean`.
 - **Assignment** — `=` plus the compound forms `+=` `-=` `*=` `/=` `%=` — store a value in a variable, and the expression itself produces the value that was stored.

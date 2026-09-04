@@ -485,7 +485,7 @@ Cómo se consigue un objeto que de verdad no cambia — inmutabilidad, records, 
 
 Todo lo visto hasta ahora trataba sobre qué _contiene_ una variable. Los operadores son cómo combinas lo que contienen dos variables en un valor nuevo, y el conjunto habitual de Java es lo bastante pequeño como para exponerlo todo junto. Cuatro grupos cubren esencialmente todo el código de backend:
 
-- **Aritméticos** — `+` `-` `*` `/` `%` — toman números, producen un número. `%` es el resto: `7 % 2` es `1`.
+- **Aritméticos** — `+` `-` `*` `/` `%` — cogen dos números y el resultado es otro número. `%` es el resto: `7 % 2` es `1`.
 - **Comparación** (relacionales `<` `>` `<=` `>=` e igualdad `==` `!=`) — toman dos valores, producen un `boolean`.
 - **Lógicos** — `&&` (y), `||` (o), `!` (no) — toman booleanos, producen un `boolean`.
 - **Asignación** — `=` más las formas compuestas `+=` `-=` `*=` `/=` `%=` — guardan un valor en una variable, y la propia expresión produce el valor que se guardó.
