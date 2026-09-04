@@ -484,12 +484,12 @@ Of the four, all you need here is to be able to say where each name is visible. 
 
 ### Naming conventions
 
-These are not enforced by the compiler, but every Java codebase and every reviewer expects them, and Spring itself depends on the third one:
+These are not enforced by the compiler, but every Java codebase and every reviewer expects them:
 
 - **`camelCase` for variables, fields and methods** — `totalHours`, `isActive`, `findByEmail`. First word lowercase, each following word capitalised.
 - **`UPPER_SNAKE_CASE` for constants** — `MAX_HOURS`, `DEFAULT_ROLE`. Reserved for `static final` values; seeing it tells a reader "this never changes" before they read the modifiers.
 - **`PascalCase` for class names** — `TimeEntry`, `UserRepository`. Notice this is how you tell `Integer` (a class) from `int` (a primitive) at a glance.
-- Names are written in full, not abbreviated. `numberOfEmployees`, not `numEmp`. Java code is verbose by culture and a consultancy code review will pick at short names.
+- Names are written in full, not abbreviated. `numberOfEmployees`, not `numEmp`. Java names are written long by culture: if someone on your team reviews your code before it is merged, they will ask you to turn `numEmp` into `numberOfEmployees`.
 
 ### `final` — the one line you need here
 

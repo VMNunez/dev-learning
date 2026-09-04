@@ -456,12 +456,12 @@ De los cuatro, aquí solo necesitas saber decir dónde es visible cada variable.
 
 ### Convenciones de nombres
 
-No las impone el compilador, pero todo código base en Java y todo revisor las espera, y Spring en sí mismo depende de la tercera:
+No las impone el compilador, pero todo código base en Java y todo revisor las espera:
 
 - **`camelCase` para variables, campos y métodos** — `totalHours`, `isActive`, `findByEmail`. Primera palabra en minúscula, cada palabra siguiente con la inicial en mayúscula.
 - **`UPPER_SNAKE_CASE` para constantes** — `MAX_HOURS`, `DEFAULT_ROLE`. Reservado para valores `static final`; verlo le dice al lector "esto nunca cambia" antes incluso de que lea los modificadores.
 - **`PascalCase` para nombres de clase** — `TimeEntry`, `UserRepository`. Fíjate en que así es como distingues `Integer` (una clase) de `int` (un primitivo) de un vistazo.
-- Los nombres se escriben completos, no abreviados. `numberOfEmployees`, no `numEmp`. El código Java es verboso por cultura, y una revisión de código en una consultora te va a señalar los nombres cortos.
+- Los nombres se escriben completos, no abreviados. `numberOfEmployees`, no `numEmp`. En Java se escriben nombres largos por cultura: si en tu equipo alguien revisa tu código antes de fusionarlo, te va a pedir que cambies `numEmp` por `numberOfEmployees`.
 
 ### `final` — lo justo que necesitas aquí
 
