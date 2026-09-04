@@ -560,10 +560,13 @@ if (user != null && user.getName().isBlank()) { ... }
 Cuando `user` es `null`, el lado izquierdo es `false`, el lado derecho nunca se evalúa, `user.getName()` nunca se llama, y no hay `NullPointerException`. Intercambia los dos operandos y la comprobación deja de protegerte, porque la llamada se ejecuta antes que ella:
 
 ```java
-if (user.getName().isBlank() && user != null) { ... }   // MAL — NPE cada vez que user es null
+if (user.getName().isBlank() && user != null) { ... }   // MAL — revienta cada vez que user es null
+
+// Exception in thread "main" java.lang.NullPointerException:
+//     Cannot invoke "User.getName()" because "user" is null
 ```
 
-El orden de los operandos está haciendo trabajo real aquí. Eso es inusual — `a + b` y `b + a` son la misma expresión — y es la consecuencia práctica más importante del short-circuiting.
+El orden de los operandos altera el resultado. Eso es inusual — `a + b` y `b + a` son la misma expresión — y es la consecuencia práctica más importante del short-circuiting.
 
 > **"Nunca se evalúa" significa que nunca empieza, no que se deshace.** El código compilado comprueba el operando izquierdo y salta directamente por encima del bytecode del derecho, así que cualquier llamada a método, cualquier incremento y cualquier excepción que vivieran ahí simplemente no ocurren. Por eso poner trabajo con efectos secundarios dentro del operando derecho es una fuente fiable de bugs de "¿por qué esta línea nunca se ejecutó?": `if (isValid() && log(request))` no va a registrar ni una sola petición inválida.
 

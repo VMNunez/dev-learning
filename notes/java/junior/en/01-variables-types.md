@@ -588,10 +588,13 @@ if (user != null && user.getName().isBlank()) { ... }
 When `user` is `null`, the left side is `false`, the right side is never evaluated, `user.getName()` is never called, and there is no `NullPointerException`. Swap the two operands and the check stops protecting you, because the call runs before it does:
 
 ```java
-if (user.getName().isBlank() && user != null) { ... }   // MAL — NPE whenever user is null
+if (user.getName().isBlank() && user != null) { ... }   // MAL — blows up whenever user is null
+
+// Exception in thread "main" java.lang.NullPointerException:
+//     Cannot invoke "User.getName()" because "user" is null
 ```
 
-The order of the operands is doing real work here. That is unusual — `a + b` and `b + a` are the same expression — and it is the most important practical consequence of short-circuiting.
+The order of the operands changes the result. That is unusual — `a + b` and `b + a` are the same expression — and it is the most important practical consequence of short-circuiting.
 
 > **"Never evaluated" means never started, not undone.** The compiled code tests the left operand and jumps straight past the bytecode for the right one, so any method call, any increment and any exception that lived in there simply does not happen. This is why putting work with side effects inside the right operand is a reliable source of "why did this line never run?" bugs: `if (isValid() && log(request))` will not log a single invalid request.
 
