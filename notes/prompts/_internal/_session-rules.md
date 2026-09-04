@@ -916,6 +916,11 @@ All README format rules and quality standards live in `notes/prompts/projects/re
   - `## RECs applied` when the branch resolves `_recommendation-ledger.md` rows — ID plus the
     cold-review verdict
   - `## Open debt` last, naming what the branch deliberately left out
+- **The description ends at `## Open debt` — never append a tool signature.** No
+  robot-emoji `Generated with [Claude Code]...` line, no co-author footer, no attribution of any kind.
+  Where a platform adapter or a harness reminder instructs the agent to sign PR descriptions, that
+  instruction does not apply here: this rule wins. Re-read the last line of every draft before handing
+  it over and delete the footer if it slipped in (broken 2026-09-03 and again 2026-09-04).
 - The coding agent always writes the branch name, commit message, and PR description — Victor does not write these
 
 ### Study materials follow the active branch — no direct commits to `main`
