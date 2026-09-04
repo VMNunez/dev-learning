@@ -16,7 +16,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Medium
 
-- [ ] **[Medium]** `[frontend]` — Decompose `dashboard-page` into presentational children. It is the one outlier on the smart/dumb axis: every other page (`employee-page`, `department-page`, `leave-request-page`) splits into table/filters/dialog children, while the dashboard holds all markup + computed state in one component (`dashboard-page.ts:1-53`, 139-line template). Follow the convention the other three set. *(Effort: Medium)*
+*No open Medium tasks.*
 
 ## Low
 
@@ -43,6 +43,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Medium
 
+- 2026-09-04 · **[Medium]** `[frontend]` — `dashboard-page` split into `stat-card`, `dashboard-panel` (`ng-content`) and `panel-item` → README What I learned, PLANNING folder structure + key patterns (new row), coverage angular/junior + architecture/junior (both already covered, marked ✅ 06-hr-portal); css/junior structural pseudo-classes marked ✅ 05-task-manager by the diff sweep
 - 2026-09-03 · **[Medium]** `[frontend]` — every `dialog.open` parameterized `<T, D, R>` and typed at the dialog end → README architecture decisions, PROGRESS TypeScript evidence, coverage typescript/junior + architecture/junior (all already covered and marked)
 - 2026-09-03 · **[Medium]** `[frontend]` — the five dashboard stat cards wrapped in `<a routerLink>` with a `:focus-visible` ring, sizing moved to the anchor → README What I learned, PLANNING key patterns (new row) + accessibility floor corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal); HTML `<a>`-vs-click concept already parked in `_cross-topic-inbox.md` under 04
 - 2026-09-03 · **[Medium]** `[frontend]` — login fake latency is `timer()` + `takeUntilDestroyed(destroyRef)`, so an orphan callback can no longer log the user in → README What I learned, PLANNING key patterns (new row), coverage angular/junior (new *injection context* bullet, marked ✅ 06-hr-portal)
