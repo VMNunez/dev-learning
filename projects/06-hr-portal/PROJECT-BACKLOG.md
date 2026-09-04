@@ -22,7 +22,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 - [ ] **[Low]** `[frontend]` — Make the generated spec files compile so `ng test` runs: `deactivate-guard.spec.ts:8` spreads `guardParameters`, whose elements are `unknown`, into `deactivateGuard(...)`, so the whole suite fails to build with `TS2345` before a single test executes — every other spec in the project is unreachable, including the ones the CLI wrote for the new dashboard children. Testing is out of scope for this project, but a suite that cannot compile is worse than none: it reads as broken tests to anyone who clones the repo. Either type the guard's test parameters or delete the spec. *(Effort: Small)* *(raised 2026-09-04 while triaging the dashboard decomposition task)*
 
-- [ ] **[Low]** `[frontend]` — Guard the three domain services' `localStorage` reads the same way `auth.service.ts` now is: `employee.service.ts:8`, `department.service.ts:8` and `leave-request.service.ts:8` each run `JSON.parse(localStorage.getItem(...) ?? '[]')` in a **field initializer**, so a truncated entry throws while Angular constructs the root service and the app renders blank on every reload; a valid non-array value (`{}`, `"hi"`) throws nothing and reaches every `@for` and `computed()` as a non-iterable. `03-expense-tracker/transaction.service.ts:29-46` is the shape to follow. *(Effort: Small)* *(raised 2026-09-04 while triaging the `auth.service.ts` parse task — same defect shape, three more files)*
 
 ---
 
@@ -53,6 +52,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Low
 
+- 2026-09-04 · **[Low]** `[frontend]` — the three domain collections read through one generic `readStoredArray<T>()` instead of three unguarded parses → PLANNING folder structure + business rules (new row), coverage typescript/junior (generic functions marked ✅ 06-hr-portal); architecture/junior DRY already ✅ 05, README not written — extracting a shared util reads the same in any project of this stack
 - 2026-09-04 · **[Low]** `[frontend]` — How to run path corrected to `projects/` after the reorg → README How to run; no coverage mark — documentation only, no code written
 - 2026-09-04 · **[Low]** `[frontend]` — the stored session is parsed inside a `try` and narrowed by an `isStoredSession` predicate, `Role` now derived from a `ROLES` `as const` list → README architecture decisions, PLANNING business rules + 2 key-pattern rows corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (`Partial<T>` marked ✅ 06-hr-portal by the diff sweep)
 - 2026-09-04 · **[Low]** `[frontend]` — both add/edit surfaces kept — DECISION, no code change: a dialog has no route, so `CanDeactivateFn` can only exist on the routed form → PLANNING per-page UI (new paragraph), README architecture decisions (reason corrected), coverage angular/junior (new bullet, marked ✅ 06-hr-portal)
