@@ -1,3 +1,5 @@
+//TODO: FALTA EL INDICE DE ESTA NOTA
+
 # Variables y tipos
 
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → leer: "Overview" y "Primitive Data Types"
@@ -600,10 +602,11 @@ Java permite esto en silencio porque el rango del tipo destino contiene por comp
 > // solo tiene 24, así que se guarda el valor representable más cercano, 16777216
 > ```
 >
-> Lo mismo pasa con `long` → `double` a partir de 2⁵³. Nada te avisa, porque la regla que impone el compilador es _rango_, no _precisión_: el rango de `float` (±3.4 × 10³⁸) contiene cómodamente cualquier `int`, así que la conversión es legal, y el dígito perdido es un daño colateral que el lenguaje acepta. La afirmación fiable es entonces "el widening nunca desborda", no "el widening nunca pierde datos": no desborda porque el compilador solo permite widening hacia un tipo cuyo rango contiene el del origen, así que el valor siempre cabe; lo que puede perderse por el camino son cifras del número, no su magnitud. Para cada conversión de narrowing más abajo, el compilador sí te detiene y exige un cast — que es exactamente por qué estos dos widenings con pérdida son los peligrosos: son las pérdidas que nadie está vigilando.
+> Lo mismo pasa con `long` → `double`. Nada te avisa, porque la regla que impone el compilador es _rango_, no _precisión_: el rango de `float` (±3.4 × 10³⁸) contiene cómodamente cualquier `int`, así que la conversión es legal, y el dígito perdido es un daño colateral que el lenguaje acepta. La afirmación fiable es entonces "el widening nunca desborda", no "el widening nunca pierde datos": no desborda porque el compilador solo permite widening hacia un tipo cuyo rango contiene el del origen, así que el valor siempre cabe; lo que puede perderse por el camino son cifras del número, no su magnitud. Para cada conversión de narrowing más abajo, el compilador sí te detiene y exige un cast — que es exactamente por qué estos dos widenings con pérdida son los peligrosos: son las pérdidas que nadie está vigilando.
 
 ### Narrowing (manual)
 
+//TODO: HE REVISADO HASTA AQUI
 Cuando conviertes un tipo más grande a uno más pequeño, puede haber pérdida de datos — Java te obliga a decirlo explícitamente escribiendo el tipo destino entre paréntesis antes del valor:
 
 ```java
