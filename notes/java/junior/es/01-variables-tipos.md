@@ -536,14 +536,23 @@ El compilador no te avisa de nada. Lo único que lo señala es IntelliJ, que sub
 - `A && B` — si `A` es `false`, el resultado es `false` sea lo que sea `B`, así que `B` nunca se evalúa.
 - `A || B` — si `A` es `true`, el resultado es `true` sea lo que sea `B`, así que `B` nunca se evalúa.
 
-La tabla de los cuatro casos posibles; la última columna dice si `B` llega a evaluarse:
+La tabla de `&&`; la última columna dice si `B` llega a evaluarse:
 
-| `A` | `B` | `A && B` | `A \|\| B` | ¿se evalúa `B`? |
-|---|---|---|---|---|
-| `false` | `false` | `false` | `false` | en `&&` no; en `\|\|` sí |
-| `false` | `true` | `false` | `true` | en `&&` no; en `\|\|` sí |
-| `true` | `false` | `false` | `true` | en `&&` sí; en `\|\|` no |
-| `true` | `true` | `true` | `true` | en `&&` sí; en `\|\|` no |
+| `A` | `B` | `A && B` | ¿se evalúa `B`? |
+|---|---|---|---|
+| `false` | `false` | `false` | no |
+| `false` | `true` | `false` | no |
+| `true` | `false` | `false` | sí |
+| `true` | `true` | `true` | sí |
+
+Y la de `||`, que se lee igual:
+
+| `A` | `B` | `A \|\| B` | ¿se evalúa `B`? |
+|---|---|---|---|
+| `false` | `false` | `false` | sí |
+| `false` | `true` | `true` | sí |
+| `true` | `false` | `true` | no |
+| `true` | `true` | `true` | no |
 
 Eso es **short-circuiting**, y no es una optimización que puede o no darse: es una garantía escrita en el lenguaje, y código real se construye sobre ella. El patrón que vas a escribir cien veces es una comprobación de null haciendo guardia delante de la llamada que fallaría:
 

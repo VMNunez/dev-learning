@@ -564,14 +564,23 @@ The compiler says nothing. The only thing that flags it is IntelliJ, which under
 - `A && B` — if `A` is `false`, the result is `false` whatever `B` turns out to be, so `B` is never evaluated.
 - `A || B` — if `A` is `true`, the result is `true` whatever `B` turns out to be, so `B` is never evaluated.
 
-The table of all four cases; the last column says whether `B` is evaluated at all:
+The table for `&&`; the last column says whether `B` is evaluated at all:
 
-| `A` | `B` | `A && B` | `A \|\| B` | is `B` evaluated? |
-|---|---|---|---|---|
-| `false` | `false` | `false` | `false` | `&&` no; `\|\|` yes |
-| `false` | `true` | `false` | `true` | `&&` no; `\|\|` yes |
-| `true` | `false` | `false` | `true` | `&&` yes; `\|\|` no |
-| `true` | `true` | `true` | `true` | `&&` yes; `\|\|` no |
+| `A` | `B` | `A && B` | is `B` evaluated? |
+|---|---|---|---|
+| `false` | `false` | `false` | no |
+| `false` | `true` | `false` | no |
+| `true` | `false` | `false` | yes |
+| `true` | `true` | `true` | yes |
+
+And the one for `||`, read the same way:
+
+| `A` | `B` | `A \|\| B` | is `B` evaluated? |
+|---|---|---|---|
+| `false` | `false` | `false` | yes |
+| `false` | `true` | `true` | yes |
+| `true` | `false` | `true` | no |
+| `true` | `true` | `true` | no |
 
 That is **short-circuiting**, and it is not an optimisation you may or may not get: it is a guarantee written into the language, and real code is built on it. The pattern you will write a hundred times is a null check standing guard in front of the call that would fail:
 
