@@ -68,6 +68,7 @@ https://06-hr-portal.netlify.app
 - The employee dialog closes with the same `Omit<Employee, 'id'>` payload in both modes and the page re-stamps the id it already holds — a union of two result shapes would compile only by making every caller narrow it, and the id is the row's, never the form's
 - localStorage with signals and `effect()` to decouple data persistence from the Angular patterns being practised
 - A credential-free session shape in localStorage — only the email and role the app reads back, re-projected on read so an entry saved by an older build drops its password
+- The stored session is validated on read, never asserted — `AuthService` builds its signal in a field initializer, so a throw there escapes the root service's construction and the app bootstraps to a blank page on every reload until storage is cleared by hand; the read survives a truncated entry and a valid value of the wrong shape alike
 
 ---
 
