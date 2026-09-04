@@ -36,7 +36,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — target elements through exact ancestry and sibling relationships ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
-- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
+- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()` ✅ 05-task-manager — `task-dialog.css:12` targets `mat-form-field:nth-child(5)` by position instead of adding a class
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
 - `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal

@@ -129,7 +129,7 @@ apply in a small codebase, and defend with concrete trade-offs.
   Next button
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
-- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
+- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
 
 ## Testing strategy
 

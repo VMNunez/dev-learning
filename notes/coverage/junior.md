@@ -27,7 +27,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `@empty` — attach a collection's empty case to the loop instead of a sibling condition, and recognise that it reports only that the loop's own expression rendered nothing, so a filtered list must consult its unfiltered source to say why it is empty ✅ 01-todo-list — `task-list.html` nests `@if (totalCount() === 0)` inside `@empty` so a filtered miss and an empty list read differently
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
 - Safe navigation and nullish template values — render data that may not exist yet without hiding an invalid domain assumption behind broad non-null assertions ✅ 03-expense-tracker
-- Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs
+- Content projection with `ng-content` — recognise when a reusable wrapper should receive markup rather than a growing list of configuration inputs ✅ 06-hr-portal — `dashboard-panel` projects the three dashboard panels' differing rows into one card shell, so the wrapper needs no per-entity input
 - Components vs attribute directives — use a component when behaviour owns a view and a directive when behaviour augments an existing host element
 - Custom attribute directives and host interaction — implement reusable host-element behaviour and connect host properties or events through directive host bindings and listeners without taking ownership of the element's view
 - Conditional class and style binding — use focused class and style bindings for dynamic presentation and recognise `ngClass` or `ngStyle` when maintained templates apply several values together ✅ 01-todo-list
@@ -861,7 +861,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   Next button
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
-- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
+- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
 
 ### Testing strategy
 
@@ -1553,7 +1553,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — target elements through exact ancestry and sibling relationships ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
-- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
+- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()` ✅ 05-task-manager — `task-dialog.css:12` targets `mat-form-field:nth-child(5)` by position instead of adding a class
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
 - `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
