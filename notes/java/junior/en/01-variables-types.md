@@ -612,8 +612,8 @@ When you convert a smaller type to a larger one, the value always fits, so Java 
 
 ```java
 int x = 42;
-long y = x;        // int → long — automatic
-double z = x;      // int → double — automatic
+long y = x;        // int (32 bits) → long (64 bits) — automatic
+double z = x;      // int (32 bits) → double (64 bits) — automatic
 ```
 
 Java allows this silently because the destination type's range fully contains the source type's range — there is no value of `int` that a `long` cannot represent, so nothing can go wrong.

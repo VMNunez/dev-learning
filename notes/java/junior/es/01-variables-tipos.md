@@ -584,8 +584,8 @@ Cuando conviertes un tipo más pequeño a uno más grande, el valor siempre cabe
 
 ```java
 int x = 42;
-long y = x;        // int → long — automático
-double z = x;      // int → double — automático
+long y = x;        // int (32 bits) → long (64 bits) — automático
+double z = x;      // int (32 bits) → double (64 bits) — automático
 ```
 
 Java permite esto en silencio porque el rango del tipo destino contiene por completo el rango del tipo origen — no existe ningún valor de `int` que un `long` no pueda representar, así que nada puede salir mal.
