@@ -360,8 +360,7 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 > tarifas.get(new BigDecimal("1.00"));   // null ← misma cantidad, otra escala, otra clave
 > ```
 >
-> TODO: PERO DEBES HACER UNA BREVISIMA INTRODUCCION A LO QUE ES UN HASHMAP Y TREEMAP
-> `HashMap` y `TreeMap` deciden "¿es esta clave la que ya tengo?" con dos herramientas distintas, y ahí está el lío. `HashMap` lo decide con `equals`, y para `equals` la escala cuenta: `1.0` y `1.00` son dos claves distintas. `TreeMap` (que es un `SortedMap`, un mapa que mantiene las claves ordenadas) lo decide con `compareTo`, porque es lo que usa para ordenarlas, y para `compareTo` solo cuenta la cantidad: `1.0` y `1.00` son la misma clave. Un `SortedSet` (por ejemplo `TreeSet`) hace lo mismo con sus elementos.
+> `HashMap` y `TreeMap` son las dos implementaciones de mapa que vas a usar: `HashMap` no guarda ningún orden — te devuelve las claves como le conviene —, y `TreeMap` mantiene las claves ordenadas de menor a mayor. Las dos guardan pares clave→valor y las dos se usan igual (`put`, `get`); lo que cambia es el orden y, lo que aquí importa, cómo deciden si dos claves son la misma. Porque `HashMap` y `TreeMap` deciden "¿es esta clave la que ya tengo?" con dos herramientas distintas, y ahí está el lío. `HashMap` lo decide con `equals`, y para `equals` la escala cuenta: `1.0` y `1.00` son dos claves distintas. `TreeMap` (que es un `SortedMap`, un mapa que mantiene las claves ordenadas) lo decide con `compareTo`, porque es lo que usa para ordenarlas, y para `compareTo` solo cuenta la cantidad: `1.0` y `1.00` son la misma clave. Un `SortedSet` (por ejemplo `TreeSet`) hace lo mismo con sus elementos.
 >
 > Así que el mismo par de claves te da dos resultados opuestos según el mapa:
 >
