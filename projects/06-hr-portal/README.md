@@ -76,6 +76,7 @@ https://06-hr-portal.netlify.app
 - localStorage over a real backend — the focus of this project was Angular patterns, not data persistence
 - Single `isAdmin()` computed signal over role checks scattered across components — one place to change if the role logic evolves
 - Functional guards (`CanActivateFn`) over class-based guards — Angular v15+ convention, less boilerplate
+- No real bearer token — with no backend to issue or verify one, the interceptor sends the session email under the `Bearer` scheme and the file says so at the point of use, so the wiring is exercised without the code claiming authentication it does not perform
 
 ---
 
@@ -93,7 +94,7 @@ https://06-hr-portal.netlify.app
 - `canActivate: [authGuard, adminGuard]` — stacked guards; all must pass for the route to activate
 - `noAuthGuard` — redirects already-logged-in users away from the login page
 - `loadComponent` with dynamic import — lazy loading; component code only loads on navigation
-- `HttpInterceptorFn` — functional interceptor; clones the request to add the auth header
+- `HttpInterceptorFn` — functional interceptor; clones the request to add the auth header, here carrying a placeholder value rather than an issued token
 - `CanDeactivateFn` — warns the user before leaving a form with unsaved changes
 - `takeUntilDestroyed()` — cancels work still in flight when the page is destroyed; called outside a constructor it needs the `DestroyRef` passed explicitly
 - Content projection with `ng-content` — the dashboard's panel wrapper takes its rows as projected markup, so three panels listing different entities share one card shell instead of the wrapper growing an input per shape
