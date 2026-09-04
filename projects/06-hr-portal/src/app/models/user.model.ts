@@ -1,4 +1,10 @@
-export type Role = 'admin' | 'employee';
+export const ROLES = ['admin', 'employee'] as const;
+
+export type Role = (typeof ROLES)[number];
+
+export function isRole(value: unknown): value is Role {
+  return ROLES.includes(value as Role);
+}
 
 export interface User {
   email: string;
