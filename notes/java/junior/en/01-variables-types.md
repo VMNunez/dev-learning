@@ -518,7 +518,7 @@ Everything so far has been about what a variable *holds*. Operators are how you 
 - **Logical** — `&&` (and), `||` (or), `!` (not) — take booleans, produce a `boolean`.
 - **Assignment** — `=` plus the compound forms `+=` `-=` `*=` `/=` `%=` — store a value in a variable, and the expression itself produces the value that was stored.
 
-What each group *produces* is what decides where it may appear, and that is the part JavaScript habits get wrong. An `if (...)` needs a `boolean`, so only comparison and logical expressions may sit directly inside one; an arithmetic expression has to be compared against something first. Java has no truthy values at all — no non-empty string and no non-zero number counts as "true" — so `if (name)` and `if (count)` do not compile, and the compiler says so in exactly those terms:
+What each group *produces* is what decides where it may appear, and that is the part JavaScript habits get wrong. An `if (...)` needs a `boolean`, so only comparison and logical expressions may sit directly inside one; an arithmetic expression has to be compared against something first. Java has no truthy or falsy values (what in JavaScript makes a non-boolean value count as true or as false inside an `if`): no non-empty string counts as "true", and no `0` or empty string counts as "false", so `if (name)` and `if (count)` do not compile, and the compiler says so in exactly those terms:
 
 ```java
 if (name) { ... }    // MAL — error: incompatible types: String cannot be converted to boolean

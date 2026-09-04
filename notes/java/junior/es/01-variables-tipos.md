@@ -490,7 +490,7 @@ Todo lo visto hasta ahora trataba sobre qué _contiene_ una variable. Los operad
 - **Lógicos** — `&&` (y), `||` (o), `!` (no) — toman booleanos, producen un `boolean`.
 - **Asignación** — `=` más las formas compuestas `+=` `-=` `*=` `/=` `%=` — guardan un valor en una variable, y la propia expresión produce el valor que se guardó.
 
-Lo que produce cada grupo es lo que decide dónde puede aparecer, y esa es la parte donde los hábitos de JavaScript fallan. Un `if (...)` necesita un `boolean`, así que solo las expresiones de comparación y lógicas pueden ir directamente dentro de uno; una expresión aritmética tiene que compararse antes contra algo. Java no tiene valores truthy en absoluto — ningún string no vacío ni ningún número distinto de cero cuenta como "verdadero" — así que `if (name)` e `if (count)` no compilan, y el compilador lo dice exactamente en esos términos:
+Lo que produce cada grupo es lo que decide dónde puede aparecer, y esa es la parte donde los hábitos de JavaScript fallan. Un `if (...)` necesita un `boolean`, así que solo las expresiones de comparación y lógicas pueden ir directamente dentro de uno; una expresión aritmética tiene que compararse antes contra algo. Java no tiene valores truthy ni falsy (lo que en JavaScript hace que un valor que no es booleano cuente como verdadero o como falso dentro de un `if`): ningún string no vacío cuenta como "verdadero" ni un `0` o un string vacío cuentan como "falso", así que `if (name)` e `if (count)` no compilan, y el compilador lo dice exactamente en esos términos:
 
 ```java
 if (name) { ... }    // MAL — error: incompatible types: String cannot be converted to boolean
