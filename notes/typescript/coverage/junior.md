@@ -75,7 +75,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Utility and derived types
 
-- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
+- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch ✅ 06-hr-portal — `isStoredSession` narrows the parsed value through `Partial<SessionUser>`, so each field is read as possibly absent and checked instead of asserted present
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability

@@ -49,6 +49,11 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `inject()` — obtain a dependency in an injection context without a constructor parameter, the style current Angular code prefers ✅ 01-todo-list
 - Injection context — recognise that `inject()` and the APIs built on it, such as `takeUntilDestroyed()`, resolve their dependency only while a class is being constructed, so calling one from a method needs the reference captured as a field and passed explicitly ✅ 06-hr-portal — `LoginPage` injects `DestroyRef` as a field and passes it to `takeUntilDestroyed(this.destroyRef)` inside `onSubmit`, where the implicit form would throw
 - Constructor injection — read and write the parameter-based style still common in maintained code, without confusing construction with lifecycle work
+- A root singleton's field initializer has no error boundary above it — the injector builds that service
+  while the application is starting, so anything thrown there fails the whole bootstrap to a blank page
+  instead of degrading one feature, and when the throw comes from persisted state the failure repeats on
+  every reload; work that reads anything the app does not control belongs behind a call that can return
+  a safe value ✅ 06-hr-portal — `AuthService.readStoredSession()` is called from the `currentUser` field initializer, so its `try`/`catch` and shape check are what keep a corrupt `localStorage` entry from blanking the app on every reload
 - Provider scope — distinguish root and component providers because the provider location controls whether consumers share or receive separate service instances
 - `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type ✅ 05-task-manager
 - Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance ✅ 05-task-manager — the dialog specs bind both runtime tokens with `useValue`, one carrying a full `ConfirmDialogData` and the other `null` for the create case
@@ -1320,7 +1325,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Utility and derived types
 
-- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
+- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch ✅ 06-hr-portal — `isStoredSession` narrows the parsed value through `Partial<SessionUser>`, so each field is read as possibly absent and checked instead of asserted present
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
