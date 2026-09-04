@@ -452,7 +452,7 @@ class TimeEntry {                       ┐
                                         ┘  del if, tres líneas antes que `extra`
 ```
 
-Léelo como un solo anidamiento: las llaves del campo son la clase, así que sobrevive a cada llamada; las llaves del parámetro y de las locales son el método, así que se crean de nuevo en cada llamada y se descartan cuando termina; y una variable declarada dentro de una `{ }` interior se descarta en esa llave interior. Un **parámetro** no es una categoría especial — es una variable local cuya asignación inicial la hace quien llama, y por eso siempre está definitivamente asignado y nunca necesita la regla de la sección anterior. Los campos, y dónde vive el objeto que los contiene, están en [06-poo-clases.md](06-poo-clases.md) y [05-modelo-de-memoria.md](05-modelo-de-memoria.md); los parámetros como mecanismo — cómo entra el valor de quien llama — están en [04-metodos.md](04-metodos.md). Aquí solo necesitas poder decir dónde es visible cada nombre.
+De los cuatro, aquí solo necesitas saber decir dónde es visible cada nombre. Lo demás llega más adelante: los campos y dónde vive el objeto que los contiene, en [06-poo-clases.md](06-poo-clases.md) y [05-modelo-de-memoria.md](05-modelo-de-memoria.md); los parámetros y cómo entra en ellos el valor de quien llama, en [04-metodos.md](04-metodos.md).
 
 ### Convenciones de nombres
 

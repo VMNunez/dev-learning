@@ -480,7 +480,7 @@ class TimeEntry {                       ┐
                                         ┘  of the if, three lines before `extra` does
 ```
 
-Read it as one nesting: the field's braces are the class, so it outlives every call; the parameter's and the locals' braces are the method, so they are created fresh on each call and discarded when it returns; and a variable declared inside an inner `{ }` is discarded at that inner brace. A **parameter** is not a special category — it is a local variable whose initial assignment is performed by the caller, which is why it is always definitely assigned and never needs the rule in the previous section. Fields, and where the object holding them lives, are [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters as a mechanism — how the caller's value gets in — are [04-methods.md](04-methods.md). Here you only need to be able to say where each name is visible.
+Of the four, all you need here is to be able to say where each name is visible. The rest comes later: fields and where the object holding them lives, in [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters and how the caller's value gets into them, in [04-methods.md](04-methods.md).
 
 ### Naming conventions
 
