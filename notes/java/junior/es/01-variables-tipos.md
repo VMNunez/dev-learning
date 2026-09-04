@@ -527,7 +527,7 @@ if (active = true) {     // ✅ compila — asigna true, y entra en la rama siem
 }
 ```
 
-Nada te avisa en tiempo de compilación; IntelliJ lo marca como una inspección, y ese subrayado es lo único que hay entre tú y una rama que se ejecuta incondicionalmente. Es también la razón por la que una condición booleana se escribe `if (active)` y nunca `if (active == true)` — la forma corta no tiene ningún `=` que perder.
+El compilador no te avisa de nada. Lo único que lo señala es IntelliJ, que subraya la línea con una **inspección** — un aviso del propio IDE, no un error de Java — y ese subrayado es todo lo que hay entre tú y una rama que se ejecuta siempre: `active = true` vuelve a poner `active` a `true` en cada vuelta y le entrega ese `true` al `if`, así que la condición no puede ser falsa nunca. Por eso una condición booleana se escribe `if (active)` y nunca `if (active == true)`: donde no escribes ningún `==`, no hay ningún `==` que se te pueda quedar en un solo `=`.
 
 ### Evaluación short-circuit — por qué `&&` y `||` pueden no mirar jamás su operando derecho
 
