@@ -378,7 +378,17 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 >
 > El javadoc de `BigDecimal` llama a esto "inconsistent with equals". Los dos son métodos de la misma clase y puedes llamarlos tú mismo sobre el mismo par de valores.
 
-> Nadie compara los dos métodos en tiempo de ejecución ni salta ningún aviso: el contrato de Java es que `a.compareTo(b) == 0` y `a.equals(b)` deberían dar siempre la misma respuesta, y `BigDecimal` es una de las pocas clases que lo incumple, porque su `equals` mira la escala y su `compareTo` no. Tienes razón en que se aplican en momentos distintos, y ese es justo el problema: cada colección elige uno de los dos, así que la incoherencia solo se manifiesta cuando cambias de colección — `HashMap` guarda dos entradas y `TreeMap` una. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
+> Nadie compara los dos métodos en tiempo de ejecución ni salta ningún aviso: el contrato de Java es que `a.compareTo(b) == 0` y `a.equals(b)` deberían dar siempre la misma respuesta, y `BigDecimal` es una de las pocas clases que lo incumple, porque su `equals` mira la escala y su `compareTo` no. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada:
+>
+> ```java
+> Map<BigDecimal, String> tarifas = new TreeMap<>();
+> tarifas.put(new BigDecimal("1.0"), "tarifa base");
+> tarifas.put(new BigDecimal("1.00"), "tarifa nocturna");   // no añade: sustituye el valor de la anterior
+> tarifas.size();                          // 1                ← creías tener dos tarifas
+> tarifas.get(new BigDecimal("1.0"));      // "tarifa nocturna" ← la base ya no existe
+> ```
+>
+> El segundo `put` no lanza nada, no devuelve un error y no imprime un aviso: para el `TreeMap` esa clave ya estaba, así que hace lo que hace siempre un `put` sobre una clave existente — pisar su valor. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
 
 ---
 
