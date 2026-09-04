@@ -299,16 +299,16 @@ Follow the chain in the example above step by step, because that is exactly wher
 
 > **`add`'s two operands did not both have scale 2: only `net` did.** `vat` was not written by hand, it came out of `multiply`, and it came out with four decimals already. Scale is inherited forwards: the moment a multiplication inflates it, everything you compute from that object drags the four decimals along, even when the other operand brings two. That is why `diff` comes out `21.0000` and not `21.00` — `subtract` is not inventing decimals, `gross` was already carrying them.
 
-You do not tell `add`, `subtract` or `multiply` how to round, and that is not an oversight in the API: **they cannot need it**. The sum, the difference and the product of two finite decimals are always another finite decimal, so the table's rule is enough to represent the _exact_ result — no digit is dropped, and where nothing is dropped there is nothing to round. That is why their signatures take a single argument, the other operand, while `divide`'s takes three:
+You do not tell `add`, `subtract` or `multiply` how to round or what scale to use, and that is not an oversight in the API: **they do not need it**. The sum, the difference and the product of two finite decimals are always another finite decimal, so the table's rule is enough to represent the _exact_ result — no digit is dropped, and where nothing is dropped there is nothing to round. That is why these three methods take a single argument, the other operand, while `divide` takes three:
 
 ```java
 BigDecimal multiply(BigDecimal multiplicand);                                  // 1 argument: there is no decision to make
 BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode);   // 3: how many decimals to keep and what to do with the rest
 ```
 
-`divide` is the only operation that can land on a quotient with infinitely many digits — `10 / 3` is `3.333...` and never terminates — and there no automatic rule helps: you have to say how many decimals to keep and what to do with the ones that go. Hence the three arguments, and hence its being the only one obliged to ask.
+`divide` is the only operation whose result can have infinitely many digits — `10 / 3` is `3.333...` and never terminates — and there no automatic rule helps: you have to say how many decimals to keep and what to do with the ones that go. Hence the three arguments, and hence its being the only one obliged to ask.
 
-So where do you choose the scale and rounding of the other three's results? In a separate step, when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops. Neither `multiply`, nor `add`, nor `subtract` has an overload that takes a scale and a rounding mode, so here it is always two steps: the operation first, then `setScale`. That does not mean two lines: you can chain them into one, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, because `multiply` hands you back a `BigDecimal` you can already call `setScale` on:
+So if you want to impose a scale and a rounding mode on the result of `add`, `subtract` or `multiply`, where do you choose them? In a separate step, when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops. Neither `multiply`, nor `add`, nor `subtract` has an overload that takes a scale and a rounding mode, so here it is always two steps: the operation first, then `setScale`. That does not mean two lines: you can chain them into one, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, because `multiply` hands you back a `BigDecimal` you can already call `setScale` on:
 
 ```java
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00

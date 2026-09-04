@@ -287,11 +287,11 @@ BigDecimal half  = gross.divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);  
 
 **La escala es el número de dígitos que se conservan tras el punto decimal, y es parte del objeto**: `21.00` tiene escala 2 y `21.0000` tiene escala 4, aunque el valor sea el mismo. Cada operación calcula la escala de su resultado con una regla fija, que no depende de lo que tú quieras sino solo de las escalas que traen los operandos. Lee la tabla como "si entro con estas dos escalas, salgo con esta":
 
-| Operación | Escala del resultado | Ejemplo |
-|---|---|---|
-| `add`, `subtract` | la **mayor** de las dos | escala 2 con escala 4 → 4 |
-| `multiply` | la **suma** de las dos | escala 2 por escala 2 → 4 |
-| `divide` | la que **tú** le pasas | obligatoria: no hay regla automática |
+| Operación         | Escala del resultado    | Ejemplo                              |
+| ----------------- | ----------------------- | ------------------------------------ |
+| `add`, `subtract` | la **mayor** de las dos | escala 2 con escala 4 → 4            |
+| `multiply`        | la **suma** de las dos  | escala 2 por escala 2 → 4            |
+| `divide`          | la que **tú** le pasas  | obligatoria: no hay regla automática |
 
 Sigue la cadena del ejemplo de arriba paso a paso, porque es justo ahí donde la escala 4 aparece y ya no se va:
 
@@ -300,18 +300,16 @@ Sigue la cadena del ejemplo de arriba paso a paso, porque es justo ahí donde la
 3. `gross = net.add(vat)` → `add` coge la mayor: `net` trae 2, pero **`vat` ya trae 4** → **escala 4**. `gross` es `121.0000`.
 4. `diff = gross.subtract(net)` → la mayor entre 4 y 2 → **escala 4**. `diff` es `21.0000`.
 
-> **Los dos operandos de `add` no tenían escala 2: solo `net` la tenía.** `vat` no se escribió a mano, salió de `multiply`, y salió ya con cuatro decimales. La escala se hereda hacia adelante: en cuanto una multiplicación la infla, todo lo que calcules a partir de ese objeto arrastra los cuatro decimales aunque el otro operando traiga dos. Por eso `diff` sale `21.0000` y no `21.00` — no es que `subtract` invente decimales, es que `gross` ya los traía.
-
-A `add`, `subtract` y `multiply` no les dices cómo redondear, y no es un olvido de la API: **no pueden necesitarlo**. La suma, la resta y el producto de dos decimales finitos son siempre otro decimal finito, así que la regla de la tabla basta para representar el resultado _exacto_ — no se descarta ningún dígito, y donde no se descarta nada no hay nada que redondear. Por eso sus firmas reciben un único argumento, el otro operando, mientras que la de `divide` recibe tres:
+A `add`, `subtract` y `multiply` no les dices cómo redondear ni qué escala usar, y no es un olvido de la API: **no lo necesitan**. La suma, la resta y el producto de dos decimales finitos son siempre otro decimal finito, así que la regla de la tabla basta para representar el resultado _exacto_ — no se descarta ningún dígito, y donde no se descarta nada no hay nada que redondear. Por eso estos tres métodos reciben un único argumento, el otro operando, mientras que `divide` recibe tres:
 
 ```java
 BigDecimal multiply(BigDecimal multiplicand);                                  // 1 argumento: no hay ninguna decisión que tomar
 BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode);   // 3: cuántos decimales conservar y qué hacer con el resto
 ```
 
-`divide` es la única operación a la que le puede tocar un cociente con infinitos dígitos — `10 / 3` es `3.333...` y no termina nunca —, y ahí ninguna regla automática sirve: hay que decirle cuántos decimales conservar y qué hacer con los que se van. De ahí los tres argumentos, y de ahí que sea la única obligada a preguntarlo.
+`divide` es la única operación cuyo resultado puede tener infinitos dígitos — `10 / 3` es `3.333...` y no termina nunca —, y ahí ninguna regla automática sirve: hay que decirle cuántos decimales conservar y qué hacer con los que se van. De ahí los tres argumentos, y de ahí que sea la única obligada a preguntarlo.
 
-Entonces, ¿dónde eliges tú la escala y el redondeo del resultado de las otras tres? En un paso aparte, cuando estás listo para guardar o mostrar el valor, con `setScale`, que recibe la escala que quieres más un `RoundingMode` que dice qué hacer con los dígitos que descarta. Ni `multiply`, ni `add`, ni `subtract` tienen una versión sobrecargada que reciba escala y redondeo, así que aquí son siempre dos pasos: primero la operación, después `setScale`. Eso no significa dos líneas: puedes encadenarlos en una, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, porque `multiply` te devuelve un `BigDecimal` sobre el que ya puedes llamar a `setScale`:
+Entonces, si quieres imponer una escala y un redondeo al resultado de `add`, `subtract` o `multiply`, ¿dónde los eliges? En un paso aparte, cuando estás listo para guardar o mostrar el valor, con `setScale`, que recibe la escala que quieres más un `RoundingMode` que dice qué hacer con los dígitos que descarta. Ni `multiply`, ni `add`, ni `subtract` tienen una versión sobrecargada que reciba escala y redondeo, así que aquí son siempre dos pasos: primero la operación, después `setScale`. Eso no significa dos líneas: puedes encadenarlos en una, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, porque `multiply` te devuelve un `BigDecimal` sobre el que ya puedes llamar a `setScale`:
 
 ```java
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
