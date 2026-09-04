@@ -20,7 +20,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Low
 
-- [ ] **[Low]** `[frontend]` — Signal that the interceptor's token is a stub: `auth-interceptor.ts:7,12` attaches `Authorization: Bearer ${email}` — the "token" is the user's email, not a real token. Inert without a backend, but the `Bearer` naming reads as functioning auth to an interviewer. Add a comment marking it a placeholder for a real backend token. *(Effort: Small)*
 - [ ] **[Low]** `[frontend]` — Decide and document one add/edit mechanism: `department-page` uses a routed form (`department-form`) while `employee-page` and `leave-request-page` use a `MatDialog` for the same job. Both are defensible — the routed form is what makes the `CanDeactivate` guard demonstrable — so if it stays, note the reason in PLANNING rather than leaving it looking accidental. *(Effort: Small)*
 
 - [ ] **[Low]** `[frontend]` — Guard the `localStorage` read in `auth.service.ts:21`: `JSON.parse(localStorage.getItem('currentUser') ?? 'null')` runs in a **field initializer**, so a corrupt or truncated value makes `JSON.parse` throw while Angular is constructing the root `AuthService` — the whole app fails to bootstrap and renders a blank page, and because the bad value stays in storage the failure survives every reload. The `?? 'null'` fallback only covers a *missing* key, never an invalid one. Wrap the parse and fall back to `null`. *(Effort: Small)* *(raised 2026-09-03 while triaging the plaintext-password task)*
@@ -58,6 +57,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Low
 
+- 2026-09-04 · **[Low]** `[frontend]` — interceptor's `Bearer` value marked a placeholder at the point of use → README Tradeoffs + What I learned corrected, PLANNING folder structure corrected, coverage security/junior (new bullet, marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Low]** `[frontend]` — login controls declared `nonNullable` and read with `getRawValue()`, both `!` gone → coverage angular/junior + typescript/junior (already covered and marked); README and PLANNING already represent it via the typed-control entries
 - 2026-09-03 · **[Low]** `[frontend]` — `editId !== null` replaces the truthiness test in `department-form.ts` → closed inside the `crypto.randomUUID()` task, coverage typescript/junior (marked ✅ 06-hr-portal)
 
