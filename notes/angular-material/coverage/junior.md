@@ -23,7 +23,6 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 ## Buttons, icons, menus, and tooltips
 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
-- Icon buttons and accessible names — pair `matIconButton` actions with an `aria-label` or equivalent name because an icon or tooltip alone is not a reliable accessible label
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
