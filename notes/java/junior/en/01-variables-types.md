@@ -334,7 +334,7 @@ new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← the 
 
 > **Why a bank cares.** With `HALF_UP` every exact half goes up, always. Round a million amounts that land on `.5` and you have added a little too much a million times and never too little: the accumulated total drifts upward. `HALF_EVEN` splits those ties — some go up and some stay, depending on whether the preceding digit is odd or even — so the errors cancel each other out and the total stays pinned to the real value. With a handful of amounts it makes no difference; with millions it does.
 
-`HALF_DOWN` does exist, and six more modes with it: `RoundingMode` is an `enum` with eight constants in total, and `HALF_UP`, `HALF_DOWN` and `HALF_EVEN` are just the three that ask themselves what to do **when what gets dropped falls exactly halfway**. The other five never ask: they always decide in the same direction. Read the table as "if I drop this, which way does the last digit I keep go?":
+`RoundingMode` is an `enum` with eight constants in total, and `HALF_UP` and `HALF_EVEN` are only two of them. What it offers is exactly the table below, there are no others; read it as "if I drop this, which way does the last digit I keep go?":
 
 | Constant | What it does | `0.125` at scale 2 | `-0.125` at scale 2 |
 |---|---|---|---|

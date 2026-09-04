@@ -335,7 +335,7 @@ new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← lo q
 
 > **Por qué a un banco le importa.** Con `HALF_UP`, cada medio exacto sube, siempre. Si redondeas un millón de importes que caen en `.5`, un millón de veces has sumado un poco de más y nunca de menos: el total acumulado se desvía hacia arriba. `HALF_EVEN` reparte esos empates — unos suben y otros bajan, según el dígito anterior sea impar o par —, así que los errores se compensan entre sí y el total se queda pegado al valor real. Con un puñado de importes da igual; con millones, no.
 
-Sí existe `HALF_DOWN`, y seis modos más: `RoundingMode` es un `enum` con ocho constantes en total, y `HALF_UP`, `HALF_DOWN` y `HALF_EVEN` solo son las tres que se preguntan qué hacer **cuando lo que se descarta cae justo en medio**. Las otras cinco ni se lo preguntan: deciden siempre en la misma dirección. Lee la tabla como "si descarto esto, ¿hacia dónde va el último dígito que conservo?":
+`RoundingMode` es un `enum` con ocho constantes en total, y `HALF_UP` y `HALF_EVEN` solo son dos de ellas. Las que ofrece son todas las de la siguiente tabla, no hay más; léela como "si descarto esto, ¿hacia dónde va el último dígito que conservo?":
 
 | Constante     | Qué hace                                      | `0.125` con escala 2  | `-0.125` con escala 2 |
 | ------------- | --------------------------------------------- | --------------------- | --------------------- |
