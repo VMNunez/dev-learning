@@ -21,7 +21,6 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 ## Low
 
 
-- [ ] **[Low]** `[frontend]` — Guard the `localStorage` read in `auth.service.ts:21`: `JSON.parse(localStorage.getItem('currentUser') ?? 'null')` runs in a **field initializer**, so a corrupt or truncated value makes `JSON.parse` throw while Angular is constructing the root `AuthService` — the whole app fails to bootstrap and renders a blank page, and because the bad value stays in storage the failure survives every reload. The `?? 'null'` fallback only covers a *missing* key, never an invalid one. Wrap the parse and fall back to `null`. *(Effort: Small)* *(raised 2026-09-03 while triaging the plaintext-password task)*
 
 - [ ] **[Low]** `[frontend]` — Make the generated spec files compile so `ng test` runs: `deactivate-guard.spec.ts:8` spreads `guardParameters`, whose elements are `unknown`, into `deactivateGuard(...)`, so the whole suite fails to build with `TS2345` before a single test executes — every other spec in the project is unreachable, including the ones the CLI wrote for the new dashboard children. Testing is out of scope for this project, but a suite that cannot compile is worse than none: it reads as broken tests to anyone who clones the repo. Either type the guard's test parameters or delete the spec. *(Effort: Small)* *(raised 2026-09-04 while triaging the dashboard decomposition task)*
 
@@ -58,6 +57,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Low
 
+- 2026-09-04 · **[Low]** `[frontend]` — the stored session is parsed inside a `try` and narrowed by an `isStoredSession` predicate, `Role` now derived from a `ROLES` `as const` list → README architecture decisions, PLANNING business rules + 2 key-pattern rows corrected, coverage angular/junior (new bullet, marked ✅ 06-hr-portal) and typescript/junior (`Partial<T>` marked ✅ 06-hr-portal by the diff sweep)
 - 2026-09-04 · **[Low]** `[frontend]` — both add/edit surfaces kept — DECISION, no code change: a dialog has no route, so `CanDeactivateFn` can only exist on the routed form → PLANNING per-page UI (new paragraph), README architecture decisions (reason corrected), coverage angular/junior (new bullet, marked ✅ 06-hr-portal)
 - 2026-09-04 · **[Low]** `[frontend]` — interceptor's `Bearer` value marked a placeholder at the point of use → README Tradeoffs + What I learned corrected, PLANNING folder structure corrected, coverage security/junior (new bullet, marked ✅ 06-hr-portal)
 - 2026-09-03 · **[Low]** `[frontend]` — login controls declared `nonNullable` and read with `getRawValue()`, both `!` gone → coverage angular/junior + typescript/junior (already covered and marked); README and PLANNING already represent it via the typed-control entries
