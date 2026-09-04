@@ -30,6 +30,17 @@ That budget is what keeps this file from becoming the thing it was split out of.
 The ledger's step 1 states the mandate: measure against disk, budget the sweep rather than the edit,
 and name the set you measured. Everything below is what that measurement has got wrong before.
 
+**A row cites a quoted anchor, never a line number — and step 1 re-measures every number it inherits.**
+`REC-182`, whose citations rotted in **six days**: all five of its `README.md` numbers were wrong, its
+`_system-map.md` one off by one, its `_application-standard.md` ones off by more than a hundred, its
+load-bearing `_portfolio-standard.md` l.316 off by three, and two of its ten paths named the wrong
+folder — while the real set was 27 sites in 11 files. A row's numbers are a snapshot of a file other
+rows keep editing, so they are the one part of a finding guaranteed to decay, and step 1 then
+re-measures *from a map that misdirects it*. Cite the sentence: a quoted anchor survives every edit
+that does not delete the thing being cited, and a grep for it costs one command. **Where a row
+already carries numbers, correcting them is part of step 1's measurement**, not a courtesy — and
+correcting them in the row is what step 2 means by *in writing*.
+
 **A pointer is not a read, and the family is the cheapest test.** A `## Configuration` block naming an
 authority (`TOPIC = one registered topic from _topic-ownership.md`) puts nothing in the run's hands;
 only the Required sources list does. So when a prompt demands a verdict its own sources cannot
