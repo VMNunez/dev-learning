@@ -316,18 +316,72 @@ project-selection heuristic and never this section. The persistent file's contra
 `notes/cv/cv-bullets.md` contains **one bullet per project**, because the apply prompts consume that
 entry as polished input rather than as a decision they are allowed to make.
 
+**Refined bullets are frozen, and this is the one prohibition on the writer.** A section heading may carry
+a `[refined]` marker, and there are two states, only ever two: **no marker** — the section is this run's to
+replace, which is every section by default and the whole behaviour above; **`[refined]`** — Victor has
+polished that bullet and it is frozen byte-for-byte.
+
+**Victor alone writes that marker and Victor alone removes it.** The run never adds it, never strips it,
+and never replaces a section carrying it. Reopening a bullet is him deleting the marker, and that is the
+entire mechanism: one signal, written by him, read by this run. A `TODO:` line under a refined bullet is a
+note to himself about what he wants changed — it licenses nothing and the run does not read it.
+
+**Read that marker from the file as it stands on disk.** A marker Victor added and has not yet committed
+is a freeze like any other, and honouring it is the entire point of the rule. The reporting check below
+reads the marker on disk **and** in `HEAD` and needs both to fire; nothing in this section ever decides
+anything from `HEAD` alone.
+
+So: **never replace a section carrying `[refined]`.** Draft the bullet as usual and verify it as usual,
+then leave the section exactly as it stands and report it under Finishing item 6 — that item declares the
+bullet is in the file, so it is the one that would otherwise state something false — naming the project and
+printing the drafted bullet that was not saved. Same shape as `_interview-prep-standard.md`'s
+content-pipeline prohibitions: a pipeline may never assign the marker and never change what carries it.
+
 - With `DRY_RUN = true`, save the bullet under a `## {PROJECT_PATH}` heading (replace the section if it
-  exists) and leave it uncommitted for Victor to read in the diff.
-- With `DRY_RUN = false`, save it under the same heading and continue toward the atomic commit. **There
+  exists **and does not carry `[refined]`**) and leave it uncommitted for Victor to read in the diff.
+- With `DRY_RUN = false`, save it under the same heading, **under the same prohibition**, and continue
+  toward the atomic commit — which `cv-bullets.md` may not enter, per the staging rule below. **There
   is no choice pause on this path**; in `PROJECT_PATH = all`, commit the current project before starting
   the next target.
 
-**File-wide integrity gate before every commit that stages `cv-bullets.md`:** scan the complete file,
+**File-wide integrity gate before staging `cv-bullets.md`, and over the whole file whenever a bullet was drafted:** scan the complete file,
 not only the current project. Every `## {PROJECT_PATH}` section must contain exactly one bullet and no
-`choose one` marker. A section still carrying two options or that marker was written before the choice
+`choose one` marker, **and every project must have exactly one section** — the check the optional
+`[refined]` suffix makes necessary: a run matching the heading as an exact line concludes the section is
+missing and appends a second one for the same project, which two one-bullet sections would otherwise pass. A section still carrying two options or that marker was written before the choice
 gate was retired: on a non-dry run **pause for Victor's selection there** — the run drafts one bullet, it does not
 retro-choose between two he was owed — and clean the section before staging the file. On a dry run, the
 handoff tells Victor to satisfy this same whole-file gate before running the printed manual commit.
+
+**And one check that scan cannot make, because it is about the change and not the file.** *"Every section
+has one bullet"* is a property of the text as it stands; *"a frozen bullet is still the one Victor froze"*
+needs a baseline. So, before staging: `git diff notes/cv/cv-bullets.md` against live `HEAD` — **not
+`{BASELINE}`**, which in `PROJECT_PATH = all` is several commits behind by the second iteration.
+
+**A section carrying `[refined]` both on disk and in `HEAD`, whose bullet differs between the two, is
+reported and nothing else.** Name it under Finishing item 6, leave `cv-bullets.md` **unstaged**, and say
+the file needs Victor's own commit. **This check never restores, never edits, never stages** — which is
+the design and not a limitation:
+
+- The prohibition above already stops the run from writing a marked section, so a marked section that
+  changed is, on any correct run, **Victor's own edit**. A check that undid it could only ever fire on him.
+- Restoring from `HEAD` puts back a whole heading, marker included. Deleting the marker is how he reopens
+  a bullet, so a restore would silently revert a reopening — and make the run write the very marker it is
+  forbidden to write.
+- A section whose marker is on disk but **not** in `HEAD` is outside this check: that is Victor freezing a
+  bullet he just polished, and there is no frozen baseline to compare it against.
+
+**The staging half is the same rule for the same reason.** `git add` takes the whole file, so staging it
+would carry his hand-authored bullet into a `docs: portfolio-audit …` commit, under an authorization that
+covers this run's **outputs** and nothing else — the ruling `_interview-prep-standard.md` already makes
+for an uncommitted insertion swept into a later audit's commit, and the one this prompt's `TODO-STOPPED`
+disposition makes for the `es/` twin. **That precedent has two halves and both apply here:** leave the
+file unstaged, *and* say plainly that any bullet this run wrote is sitting in the working tree and that
+`cv-bullets.md` must be committed by hand before the next run — otherwise the next run inherits the same
+unstaged state and never commits it either. Label the commit `cv-bullets not staged — <reason>`: it is not
+"untouched" when this run wrote another project's bullet into it.
+
+A dry run prints the same report, unchanged, because the check acts on nothing either way.
 
 If the file does not exist, create it with the header:
 ```markdown
@@ -344,6 +398,11 @@ Entry format — the same on every path, because only one bullet is ever drafted
 
 - [Bullet]
 ```
+A heading may also read `## {PROJECT_PATH} [refined]`. **A run never writes that suffix** — it is Victor's,
+it means the section is frozen, and the format above is what a run produces every time. **The suffix is not
+part of the project path**, so a section carrying it is that project's section: locate a project's section
+by its `{PROJECT_PATH}` with the suffix optional, never by an exact-line match, or the run will decide the
+section is missing and write a duplicate.
 
 ---
 

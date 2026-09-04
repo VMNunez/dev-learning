@@ -345,6 +345,12 @@ that path. Otherwise, per the standard: draft **one** Spanish
 CV bullet (read `_application-standard.md` first) and save it to `notes/cv/cv-bullets.md`; draft
 one English GitHub description (output only — Victor sets it in the repo settings manually).
 
+**A section whose heading carries `[refined]` is frozen and this run does not touch it.** Victor alone
+writes that marker and alone removes it; deleting it is how he reopens a bullet. Draft and verify the
+bullet exactly as below, then leave the section as it stands and report it under Finishing item 6, which
+is the item that would otherwise claim the bullet reached the file. Never write the marker yourself, on
+any path, and do not read a `TODO:` line under a refined bullet — it is his note, not an instruction here.
+
 **Verify the bullet against that standard's Project-bullet spec before it reaches the file** — the
 eight conditions, run over the drafted text. Rewrite until 1-4, 6 and 7 pass; they always can. Save the
 bullet, then print any condition it still fails and why, on its own line of Finishing item 3 — in
@@ -380,17 +386,35 @@ Otherwise print, in this order:
    role from repairing them, and Victor is the only reader who can reopen one.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
 3. CV bullet (one) — **omit if ❌**. On its own line under it, **every Project-bullet spec condition
-   the saved bullet does not satisfy**, quoted with its reason; print `spec: all conditions satisfied`
+   the saved bullet does not satisfy** — or, where the section was frozen and nothing was saved, the
+   conditions the **drafted** bullet item 6 reports does not satisfy — quoted with its reason; print `spec: all conditions satisfied`
    when there are none, so a silent run is distinguishable from a compliant one.
 4. GitHub description (one option) — **omit if ❌**.
 5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
    commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
-6. If ✅/⚠️, the one drafted bullet is in `notes/cv/cv-bullets.md`. **There is no choice pause.** Run the standard's integrity gate over the
+6. If ✅/⚠️, the one drafted bullet is in `notes/cv/cv-bullets.md` — **unless that project's section
+   carries `[refined]`**, in which case say so here instead, name the project, and print the drafted
+   bullet that was not saved. A frozen section is left byte-for-byte as it stands. **There is no choice pause.** Run the standard's integrity gate over the
    **whole** file before staging it either way: every project section must have exactly one bullet and
-   no `choose one` marker. With `{DRY_RUN}` = true print "scan the whole file and verify every project
-   section has exactly one bullet and no `choose one` marker **before running the commit below**". With
+   no `choose one` marker, and no project carrying two sections. **Then the standard's baseline check,
+   which that scan cannot make — and which reports and does nothing else:**
+   `git diff notes/cv/cv-bullets.md` against live `HEAD` (not `{BASELINE}`). A section carrying
+   `[refined]` **both on disk and in `HEAD`** whose bullet differs between them is **reported here**, on
+   either `{DRY_RUN}` value. **Never restore it, never edit it, never stage it.** The prohibition in
+   Phase 3 already stops this run from writing a marked section, so a marked section that changed is
+   Victor's own edit — and restoring from `HEAD` would put the heading back too, reinstating a marker he
+   had deleted to reopen the bullet, which is the one thing this run may never write.
+   **Whenever that report fires — or a section's `[refined]` is on disk but not in `HEAD`, which is a
+   freeze he has not committed — leave `cv-bullets.md` unstaged entirely**, name the section here, **say
+   that any bullet this run wrote is sitting in the working tree and that he must commit the file by
+   hand before the next run**, and label the commit `cv-bullets not staged — <reason>`. Same ruling as
+   `TODO-STOPPED` below, for the same reason: `git add` is whole-file and this run's authorization covers
+   its own outputs, not his prose.
+   With `{DRY_RUN}` = true print "scan the whole file and verify every project
+   section has exactly one bullet, that no project carries two sections, and no `choose one` marker —
+   **and that no section refined both on disk and in `HEAD` has changed** — **before running the commit below**". With
    `{DRY_RUN}` = false the gate is yours to run. **Only a section left by a pre-2026-08-31 run can still
-   carry two options or the marker.** On a non-dry run, pause for Victor's selection there — that choice
+   carry two options or a `choose one` marker.** On a non-dry run, pause for Victor's selection there — that choice
    was owed to him and this run does not make it — and do not continue, start the next batch target, or
    run the final self-report while that answer is pending. On a dry run there is no pause: the handoff
    tells him to clean that section before running the printed commit, like any other dry-run write. In `PROJECT_PATH = all`, commit this project before
@@ -399,12 +423,18 @@ Otherwise print, in this order:
 **If `{DRY_RUN}` = false:** after the integrity gate above, commit atomically — with the safety check first: run `git status` before
 the add and again before the commit, confirm only the intended `notes/` files are staged
 (`git restore --staged` anything else, especially project code left staged from an earlier step).
-If ✅/⚠️ (cv-bullets was written):
+If ✅/⚠️ **and this run actually wrote the bullet** — not where the section was frozen, and not where
+`cv-bullets.md` carries an uncommitted freeze, both of which leave that path out of the `add` exactly as
+`TODO-STOPPED` does for the `es/` twin:
 `git add notes/interview-prep/projects/en/«name».md notes/cv/cv-bullets.md`, **plus
 `notes/interview-prep/projects/es/«name».md` when that file exists on disk**, then
 `git commit -m "docs: portfolio-audit «name» — <one-line summary + verdict>"`.
-If ❌ (no cv-bullets): `git add notes/interview-prep/projects/en/«name».md`, plus the `es/` path on the
-same condition, then the same commit message.
+If ❌ (no cv-bullets), **and equally on the two frozen-path cases above**: `git add
+notes/interview-prep/projects/en/«name».md`, plus the `es/` path on the
+same condition, then the same commit message — with the frozen cases carrying their label from item 6.
+**Skip the commit entirely, and say so, if `git diff --cached --quiet` reports nothing staged**: on a
+re-run over a mature bank the author adds nothing and the translator changes nothing, so a branch that
+no longer stages `cv-bullets.md` can reach `git commit` with an empty index.
 
 **Both halves are staged on every verdict branch — but only the `es/` this run actually wrote.** The
 test is T's return token, **not** whether the file is on disk, and the two differ on the case that
@@ -451,6 +481,11 @@ the diff.
   whole-file integrity gate below passes. It applies nowhere else.
 - **`cv-bullets.md` is staged only after its whole-file integrity gate passes.** Every project section
   has exactly one bullet and no choice marker; validating only the section written this run is not enough.
+- **A section carrying `[refined]` is never replaced, and the marker is never written by this run.** It is
+  Victor's signal that the bullet is frozen, and only he adds or removes it. Read it from the file as it
+  stands. The gate's `git diff` is a **report, never a repair**: a section refined both on disk and in
+  `HEAD` whose bullet changed is named in Finishing item 6 and `cv-bullets.md` is left unstaged — nothing
+  is restored, on either `{DRY_RUN}` value, because the change can only be Victor's own.
 - **Questions are saved regardless of the verdict** — a ❌ still commits the question file.
 - **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
   orchestrator commits once, after every section's author→reviewer pair **and the project's translator**
