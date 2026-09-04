@@ -98,7 +98,8 @@ src/app/
     ├── components/
     │   └── confirm-dialog/          ← reusable yes/no dialog, returns a boolean
     └── utils/
-        └── date.util.ts             ← local-clock YYYY-MM-DD serialization
+        ├── date.util.ts             ← local-clock YYYY-MM-DD serialization
+        └── storage.util.ts          ← the one guarded localStorage read every domain service uses
 ```
 
 ### Routes
@@ -154,6 +155,7 @@ than from input. The status transition — the one write over a record the emplo
 | Leave request | `startDate`, `endDate` and `reason` required; dates serialized from the local clock as `YYYY-MM-DD` |
 | Any form field | its `mat-error` renders only once the control is `touched` — a `required` validator fails from construction, so a message gated on validity alone accuses the user before the field has been reached |
 | Any dirty routed form | leaving it must be confirmed — `deactivateGuard` on the department form |
+| Any persisted collection | it is read back through `readStoredArray<T>()`, which returns an empty collection for a truncated entry and for a valid non-array value alike, so the three domain signals cannot be constructed from something no `@for` can iterate |
 | The persisted session | it is read back through a shape check, not an `as` assertion — the parse runs in the root service's field initializer, so a truncated entry throws out of bootstrap and a valid value of the wrong shape yields a session with no role that the guards read as logged in |
 | Any status filter read from the URL | the value is checked against the permitted list before it is applied and the filter falls back to its no-filter default otherwise (`all` on leave requests, `''` on employees) — a query param is outside input the app controls, so it is validated at the read rather than asserted into the union |
 
