@@ -1016,18 +1016,20 @@ said out loud while the branch that **closes** it left no trace at all — a cle
 branch**: if the answer is "the run that changes least", the gate is unfalsifiable exactly when it
 passes, and the box gets ticked from memory days later.
 
-**Also `REC-209`, which adds the bounded attempt and what the name must carry.** From the closures of
-`REC-204` and `REC-206`, both collapsed 2026-09-03 with a reviewer field ending on `reject`. That is
-neither a skipped gate nor a recorded approval: the rounds ran, their tightenings are on disk, and only
-the closing token was never written. `cold reviewer: unrecorded (REC-NNN)` is assigned to such a field
-**only after the bounded search that could falsify it** — the deleted `## Open` row, the fix commits and
-the closure commit — since a disposition costing nothing to assign absorbs everything; and it is written
-**with the round count it replaces** (`unrecorded (REC-209) — reject ×2, no closing round`), because the
-check reads the token while a later reader reads the line, and that count is the only surviving record of
-what the gate actually did. Reopening is reserved for a closure whose findings are **unapplied on disk** —
-a defect in the fix, not in the record. Step 3 still writes the verdict the moment the reviewer returns
-(`REC-195`), and the PASS-line count is the instrument: three uses inside four days says that rule is not
-holding, not that the escape works.
+**Also `REC-209`, which names that bounded attempt and what the name must carry.** From the closures of
+`REC-204` and `REC-206`, collapsed 2026-09-03 with a reviewer field ending on a reject token
+(`reject-with-rewrite ×5`, `reject ×2`): the rounds ran and their tightenings are on disk, and nothing the
+search below reaches records a closing round — so the field never reached an approving token and none was
+lost. `cold reviewer: unrecorded (REC-NNN)` is assigned to such a field **only after the bounded search
+that could falsify it** — the deleted `## Open` row, the fix commits and the closure commit — and it is
+written **with the round count it replaces and the words `no closing round`** (`unrecorded (REC-209) —
+reject ×2, no closing round`), because the check reads the token while a later reader reads the line, and
+that count is the only surviving record of what the gate actually did. **It annotates a closure already on
+disk and is never a route to step 4**: a resolution in flight whose reviewer returned `reject` has an
+unclosed gate rather than a lost verdict, and step 3's loop is what it owes. Reopening is reserved for a
+closure whose findings are **unapplied on disk** — a defect in the fix, not in the record. Step 3 still
+writes the verdict the moment the reviewer returns (`REC-195`), and the PASS-line count is the instrument:
+three uses inside four days, measured 2026-09-04, says that rule is not holding, not that the escape works.
 
 **A check over a hand-written convention settles three things before it exists — the convention's
 *forms*, the *column* the value sits in, and the *value* itself — then publishes its own reach as a

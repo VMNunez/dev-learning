@@ -197,12 +197,14 @@ commit hash or an em dash where the closure implemented nothing, never a `{commi
 declaration from `REC-058` on, which is where the field becomes continuous on disk; and, from `REC-107`
 on **and only where the line names a real commit**, a `cold reviewer:` field reaching `approve` or
 `approve-with-tightening` — a rejection gates no edit and owes no reviewer. **One escape, added
-2026-09-01 (`REC-195`): `cold reviewer: unrecorded`**, for a verdict no artefact preserved — `REC-190`
+2026-09-01 (`REC-195`): `cold reviewer: unrecorded`**, for a verdict no artefact preserved, or — from
+`REC-209` — a field whose rounds ran and never reached a closing one; `REC-190`
 was collapsed with the token missing and neither the deleted row, the commit nor any report held it, so
 silence and an invented `approve` were the only two options, one indistinguishable from a skipped gate
 and the other the self-approval this check exists to expose. It is accepted only as the **first** token
-of the field and only when the clause names a `REC-NNN` row adjudicating it, and every use is counted on
-the PASS line, so it cannot accumulate unseen. It is not offered to invariant 8's self-reports: those are
+of the field, only when the clause names a `REC-NNN` row adjudicating it and carries the round count it
+replaces, and every use is counted on the PASS line, so it cannot accumulate unseen. It annotates a
+closure already on disk; it is never a way for a live resolution to reach step 4. It is not offered to invariant 8's self-reports: those are
 written by the run that held the gate, where a verdict is never lost, only omitted. No ID may be open in
 `_recommendation-ledger.md` and closed here at once. Until this check nothing read that schema, though
 three files state it, which is how the 2026-08-18 collapse left six rejected rows carrying the literal
