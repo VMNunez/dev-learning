@@ -512,7 +512,7 @@ Dos más que verás constantemente: `++` y `--` suman o restan uno (`count++`), 
 
 ### `=` cuando querías decir `==`
 
-Escribir un signo igual en vez de dos es el desliz clásico de la familia C, y Java lo detecta — por la regla de tipos de arriba, no porque adivine tu intención. `if (count = 5)` asigna `5` a `count` y luego le entrega al `if` el _valor asignado_, un `int`, cuando necesita un `boolean`:
+Escribir un signo igual en vez de dos es el error de tecleo clásico en los lenguajes que heredaron la sintaxis de C — C, C++, C#, Java y JavaScript, todos escriben `=` para asignar y `==` para comparar — y Java lo detecta, por la regla de tipos de arriba y no porque adivine tu intención. `if (count = 5)` asigna `5` a `count` y luego le entrega al `if` el _valor asignado_, un `int`, cuando necesita un `boolean`, por lo que falla en tiempo de compilación:
 
 ```java
 if (count = 5) { ... }   // MAL — error: incompatible types: int cannot be converted to boolean

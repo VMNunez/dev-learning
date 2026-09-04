@@ -540,7 +540,7 @@ Two more you will read constantly: `++` and `--` add or subtract one in place (`
 
 ### `=` where you meant `==`
 
-Typing one equals sign instead of two is the classic C-family slip, and Java catches it — because of the type rule above, not because it guessed your intention. `if (count = 5)` assigns `5` to `count` and then hands the *assigned value*, an `int`, to the `if`, which needs a `boolean`:
+Typing one equals sign instead of two is the classic typo in the languages that inherited C's syntax — C, C++, C#, Java and JavaScript all write `=` to assign and `==` to compare — and Java catches it, because of the type rule above and not because it guessed your intention. `if (count = 5)` assigns `5` to `count` and then hands the *assigned value*, an `int`, to the `if`, which needs a `boolean`, so it fails at compile time:
 
 ```java
 if (count = 5) { ... }   // MAL — error: incompatible types: int cannot be converted to boolean
