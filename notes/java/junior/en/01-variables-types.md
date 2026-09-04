@@ -314,7 +314,20 @@ So if you want to impose a scale and a rounding mode on the result of `add`, `su
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 ```
 
-`RoundingMode.HALF_UP` is the rounding rule taught at school — a half rounds away from zero, so `0.125` becomes `0.13` — and it is normally what invoicing wants. `HALF_EVEN` (banker's rounding) is the other one you will meet in financial code: it sends a half to the nearest *even* digit, so a long series of roundings does not drift upward.
+`RoundingMode.HALF_UP` is the rule you already know: if what gets dropped is `.5` or more, the last digit you keep goes up; if it is less than `.5`, it stays as it is. That is why `0.125` at scale 2 becomes `0.13`. On negatives, "up" means away from zero, so `-0.125` becomes `-0.13`. It is normally what invoicing wants.
+
+`HALF_EVEN` (banker's rounding) is the other one you will meet in financial code. It behaves **exactly like `HALF_UP` except in one case**: when what gets dropped is an exact half (`.5` and nothing behind it). There it does not always go up — it looks at the last digit you keep and leaves the result on the nearest **even** one: if that digit is already even it stays, if it is odd it goes up by one.
+
+```java
+new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← exact half: always up
+new BigDecimal("0.135").setScale(2, RoundingMode.HALF_UP);     // 0.14  ← exact half: always up
+
+new BigDecimal("0.125").setScale(2, RoundingMode.HALF_EVEN);   // 0.12  ← exact half and the 2 is already even → stays
+new BigDecimal("0.135").setScale(2, RoundingMode.HALF_EVEN);   // 0.14  ← exact half and the 3 is odd → up to 4
+new BigDecimal("0.126").setScale(2, RoundingMode.HALF_EVEN);   // 0.13  ← not an exact half, the 6 decides: same as HALF_UP
+```
+
+> **Why a bank cares.** With `HALF_UP` every exact half goes up, always. Round a million amounts that land on `.5` and you have added a little too much a million times and never too little: the accumulated total drifts upward. `HALF_EVEN` splits those ties — some go up and some stay, depending on whether the preceding digit is odd or even — so the errors cancel each other out and the total stays pinned to the real value. With a handful of amounts it makes no difference; with millions it does.
 
 > **Division is the one operation that refuses to run until you say how to round.** `divide` with a single argument computes the *exact* quotient, and when the exact quotient never ends there is no correct value it could return — so it throws rather than silently inventing one:
 >

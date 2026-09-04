@@ -307,7 +307,7 @@ BigDecimal multiply(BigDecimal multiplicand);                                  /
 BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode);   // 3: cuántos decimales conservar y qué hacer con el resto
 ```
 
-`divide` es la única operación cuyo resultado puede tener infinitos dígitos — `10 / 3` es `3.333...` y no termina nunca —, y ahí ninguna regla automática sirve: hay que decirle cuántos decimales conservar y qué hacer con los que se van. De ahí los tres argumentos, y de ahí que sea la única obligada a preguntarlo.
+`divide` es la única operación cuyo resultado puede tener infinitos dígitos — `10 / 3` es `3.333...` y no termina nunca —, y ahí ninguna regla automática sirve: hay que decirle cuántos decimales conservar y qué hacer con los que se van. De ahí los tres argumentos.
 
 Entonces, si quieres imponer una escala y un redondeo al resultado de `add`, `subtract` o `multiply`, ¿dónde los eliges? En un paso aparte, cuando estás listo para guardar o mostrar el valor, con `setScale`, que recibe la escala que quieres más un `RoundingMode` que dice qué hacer con los dígitos que descarta. Ni `multiply`, ni `add`, ni `subtract` tienen una versión sobrecargada que reciba escala y redondeo, así que aquí son siempre dos pasos: primero la operación, después `setScale`. Eso no significa dos líneas: puedes encadenarlos en una, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, porque `multiply` te devuelve un `BigDecimal` sobre el que ya puedes llamar a `setScale`:
 
@@ -315,7 +315,20 @@ Entonces, si quieres imponer una escala y un redondeo al resultado de `add`, `su
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 ```
 
-`RoundingMode.HALF_UP` es la regla de redondeo que se enseña en el colegio — un medio redondea alejándose de cero, así que `0.125` se convierte en `0.13` — y es normalmente lo que quiere la facturación. `HALF_EVEN` (redondeo bancario) es la otra que te vas a encontrar en código financiero: envía un medio al dígito _par_ más cercano, así que una larga serie de redondeos no va derivando hacia arriba.
+`RoundingMode.HALF_UP` es la regla que ya conoces: si lo que se descarta es `.5` o más, el último dígito que conservas sube; si es menos de `.5`, se queda como está. Por eso `0.125` con escala 2 se convierte en `0.13`. En negativos "sube" significa alejarse de cero, así que `-0.125` se convierte en `-0.13`. Es normalmente lo que quiere la facturación.
+
+`HALF_EVEN` (redondeo bancario) es la otra que te vas a encontrar en código financiero. Se comporta **exactamente igual que `HALF_UP` salvo en un caso**: cuando lo que se descarta es un medio exacto (`.5` y nada más detrás). Ahí no sube siempre — mira el último dígito que conservas y deja el resultado en el **par** más cercano: si ese dígito ya es par, se queda; si es impar, sube uno.
+
+```java
+new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← medio exacto: siempre sube
+new BigDecimal("0.135").setScale(2, RoundingMode.HALF_UP);     // 0.14  ← medio exacto: siempre sube
+
+new BigDecimal("0.125").setScale(2, RoundingMode.HALF_EVEN);   // 0.12  ← medio exacto y el 2 ya es par → se queda
+new BigDecimal("0.135").setScale(2, RoundingMode.HALF_EVEN);   // 0.14  ← medio exacto y el 3 es impar → sube al 4
+new BigDecimal("0.126").setScale(2, RoundingMode.HALF_EVEN);   // 0.13  ← no es medio exacto, manda el 6: igual que HALF_UP
+```
+
+> **Por qué a un banco le importa.** Con `HALF_UP`, cada medio exacto sube, siempre. Si redondeas un millón de importes que caen en `.5`, un millón de veces has sumado un poco de más y nunca de menos: el total acumulado se desvía hacia arriba. `HALF_EVEN` reparte esos empates — unos suben y otros bajan, según el dígito anterior sea impar o par —, así que los errores se compensan entre sí y el total se queda pegado al valor real. Con un puñado de importes da igual; con millones, no.
 
 > **La división es la única operación que se niega a ejecutarse hasta que le dices cómo redondear.** `divide` con un solo argumento calcula el cociente _exacto_, y cuando el cociente exacto no termina nunca no hay ningún valor correcto que pudiera devolver — así que lanza una excepción en lugar de inventarse uno en silencio:
 >
