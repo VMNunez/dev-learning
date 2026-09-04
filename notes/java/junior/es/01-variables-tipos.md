@@ -463,9 +463,19 @@ No las impone el compilador, pero todo código base en Java y todo revisor las e
 - **`PascalCase` para nombres de clase** — `TimeEntry`, `UserRepository`. Fíjate en que así es como distingues `Integer` (una clase) de `int` (un primitivo) de un vistazo.
 - Los nombres se escriben completos, no abreviados. `numberOfEmployees`, no `numEmp`. En Java se escriben nombres largos por cultura: si en tu equipo alguien revisa tu código antes de fusionarlo, te va a pedir que cambies `numEmp` por `numberOfEmployees`.
 
-### `final` — lo justo que necesitas aquí
+### `final`
 
-`final` en una variable significa que puede asignarse exactamente una vez; una asignación posterior es un error de compilación (`cannot assign a value to final variable MAX_HOURS`). Con eso basta para leer las constantes `static final` nombradas arriba y los campos `private final` que aparecen en toda clase de servicio de Spring. Lo que `final` _no_ hace — congelar el objeto al que apunta una referencia — es una afirmación sobre objetos y no sobre valores, así que se responde en [06-poo-clases.md](06-poo-clases.md), junto con la inmutabilidad, los records, y la diferencia entre congelar un nombre y congelar lo que ese nombre nombra.
+`final` en una variable significa que puede asignarse exactamente una vez; una asignación posterior es un error de compilación (`cannot assign a value to final variable MAX_HOURS`). Con eso basta para leer las constantes `static final` nombradas arriba y los campos `private final` en los que una clase de servicio de Spring guarda las dependencias que recibe por el constructor.
+
+Lo que `final` **no** hace es congelar el objeto: protege el nombre, no el contenido. La variable no puede volver a apuntar a otra cosa, pero el objeto al que apunta sí puede cambiar por dentro.
+
+```java
+final List<String> names = new ArrayList<>();
+names.add("Ana");            // válido: cambia el objeto, no la variable
+names = new ArrayList<>();   // error de compilación: cannot assign a value to final variable names
+```
+
+Cómo se consigue un objeto que de verdad no cambia — inmutabilidad, records, y la diferencia entre congelar un nombre y congelar lo que ese nombre nombra — se ve en [06-poo-clases.md](06-poo-clases.md), cuando ya sepas qué es un objeto.
 
 ---
 

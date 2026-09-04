@@ -491,9 +491,19 @@ These are not enforced by the compiler, but every Java codebase and every review
 - **`PascalCase` for class names** — `TimeEntry`, `UserRepository`. Notice this is how you tell `Integer` (a class) from `int` (a primitive) at a glance.
 - Names are written in full, not abbreviated. `numberOfEmployees`, not `numEmp`. Java names are written long by culture: if someone on your team reviews your code before it is merged, they will ask you to turn `numEmp` into `numberOfEmployees`.
 
-### `final` — the one line you need here
+### `final`
 
-`final` on a variable means it may be assigned exactly once; a later assignment is a compile error (`cannot assign a value to final variable MAX_HOURS`). That is enough to read the `static final` constants named above and the `private final` fields that appear in every Spring service class. What `final` does *not* do — freeze the object a reference points at — is a statement about objects rather than about values, so it is answered in [06-oop-classes.md](06-oop-classes.md), alongside immutability, records, and the difference between freezing a name and freezing what it names.
+`final` on a variable means it may be assigned exactly once; a later assignment is a compile error (`cannot assign a value to final variable MAX_HOURS`). That is enough to read the `static final` constants named above and the `private final` fields a Spring service class holds the dependencies it receives through its constructor in.
+
+What `final` does **not** do is freeze the object: it protects the name, not the contents. The variable can never point at anything else, but the object it points at can still change inside.
+
+```java
+final List<String> names = new ArrayList<>();
+names.add("Ana");            // fine: the object changes, the variable does not
+names = new ArrayList<>();   // compile error: cannot assign a value to final variable names
+```
+
+How you get an object that really does not change — immutability, records, and the difference between freezing a name and freezing what it names — is covered in [06-oop-classes.md](06-oop-classes.md), once you know what an object is.
 
 ---
 
