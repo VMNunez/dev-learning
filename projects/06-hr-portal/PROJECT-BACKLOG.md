@@ -6,7 +6,7 @@
 **Overall quality:** Good — every planned pattern is present and used meaningfully, the smart/dumb
 split and signal+`effect()` persistence are consistent across the app, and the persisted session is
 now credential-free, calendar dates are serialized from the local clock and the unique-email rule is
-enforced at the dialog's save exit, so nothing at High priority is outstanding.
+enforced at the dialog's save exit, so nothing is outstanding at any priority.
 
 ---
 
@@ -20,9 +20,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 ## Low
 
-- [ ] **[Low]** `[frontend]` — Supply the missing providers in the nine CLI-scaffolded specs that now fail at runtime: `app.spec.ts`, `dashboard-page`, `department-page`, `department-form`, `employee-page`, `employee-dialog`, `leave-request-page`, `leave-request-dialog` and `confirm-dialog` all mount a unit whose injector needs something the bare `TestBed.configureTestingModule({})` does not give — `provideRouter([])` for anything with a `routerLink`, `MatDialogRef` + `MAT_DIALOG_DATA` as `useValue` doubles for a dialog (the shape `04-meal-finder` already uses). 18 of 28 tests pass; these ten are the remainder. Testing is out of scope for this project, so this is presentation, not coverage. *(Effort: Medium)* *(raised 2026-09-04 while closing the spec-compilation task — a separate defect: those specs compile now and fail on injection)*
-
-
+*No open Low tasks.*
 
 ---
 
@@ -53,6 +51,7 @@ enforced at the dialog's save exit, so nothing at High priority is outstanding.
 
 #### Low
 
+- 2026-09-04 · **[Low]** `[frontend]` — providers supplied in the nine scaffolded specs, suite now 28/28 → coverage general/junior (2 new bullets) + angular-material/junior (1 new bullet), all marked ✅ 06-hr-portal; PROGRESS Angular/General evidence; README and PLANNING not written — testing is out of scope for this project
 - 2026-09-04 · **[Low]** `[frontend]` — `deactivate-guard.spec.ts` typed `CanDeactivateFn<DepartmentForm>` so the suite compiles (18/28 pass) → coverage angular/junior (new bullet, marked ✅ 06-hr-portal); README and PLANNING not written — testing is out of scope for this project
 - 2026-09-04 · **[Low]** `[frontend]` — the three domain collections read through one generic `readStoredArray<T>()` instead of three unguarded parses → PLANNING folder structure + business rules (new row), coverage typescript/junior (generic functions marked ✅ 06-hr-portal); architecture/junior DRY already ✅ 05, README not written — extracting a shared util reads the same in any project of this stack
 - 2026-09-04 · **[Low]** `[frontend]` — How to run path corrected to `projects/` after the reorg → README How to run; no coverage mark — documentation only, no code written
