@@ -863,23 +863,34 @@ if ($closedSplit.Count -ne 2) {
             # self-reports: that report is written by the run that held the gate, so there a verdict
             # is never lost, only omitted.
             #
-            # ORDER AND POSITION, both from this fix's own two cold-review rounds. The approve test
-            # runs FIRST and keeps its original reach - the tail from the FIRST occurrence, scanned
-            # forward - so a row whose prose *quotes* the escape ahead of its real field still
-            # passes on the real one; the draft tested `unrecorded` first, from that same first
-            # occurrence, and would have read the quotation as the verdict and never checked the
-            # field at all (round 1's `reject`). The escape is then tested against EVERY occurrence
-            # rather than one chosen position, and the citation may sit on any of them: reading only
-            # the last failed a real cited field that its own line echoed afterwards, and reading
-            # only the first is the rejected draft. This row's own closure line, which has to quote
-            # the formula to say what it shipped, is the instance both single-position readings get
-            # wrong.
+            # ORDER AND POSITION, from this fix's own two cold-review rounds and `REC-210`. The
+            # approve test runs FIRST and keeps its original reach - the tail from the FIRST
+            # occurrence, scanned forward - so a row whose prose *quotes* the escape ahead of its
+            # real field still passes on the real one; the draft tested `unrecorded` first, from that
+            # same first occurrence, and would have read the quotation as the verdict and never
+            # checked the field at all (round 1's `reject`). The escape is then tested against EVERY
+            # occurrence rather than one chosen position: reading only the last failed a real cited
+            # field that its own line echoed afterwards, and reading only the first is the rejected
+            # draft. No line on disk exercises that today - all three rows reaching this branch carry
+            # one occurrence each, and the two that quote the formula in prose pass on the approve
+            # test above and never arrive here - so it is the shape the position choice guards
+            # against, not a live row. `REC-210` then bound the CITATION to the occurrence that needs
+            # it - `unrecorded (REC-NNN)`, the token's own parentheses - because scanning the rest of
+            # the LINE for any `REC-NNN` let `REC-206` pass with its citation stripped, satisfied by
+            # a row named 391 characters after the token that adjudicates no verdict (measured
+            # 2026-09-04 on the real line). That is `REC-157`'s anchor rule, which every other test in this
+            # invariant already obeys: inside a single line the field position is the column. One
+            # form, the one the doctrine publishes; `REC-190` was retrofitted to it rather than a
+            # second form being admitted to spare one line.
             #
-            # WHAT IT STILL CANNOT SETTLE, published rather than assumed: a line that quotes
-            # `cold reviewer: unrecorded` in prose and carries no real verdict field is admitted as
-            # unrecorded rather than failing. It is not silent - it needs the `REC-NNN` citation and
-            # it moves the PASS-line count - and no reading of the characters on disk can separate
-            # that line from one meaning it.
+            # WHAT IT STILL CANNOT SETTLE, published rather than assumed. A line that quotes
+            # `cold reviewer: unrecorded (REC-NNN)` in prose and carries no real verdict field is
+            # admitted as unrecorded rather than failing. It is not silent - it needs the citation
+            # and it moves the PASS-line count - and no reading of the characters on disk can
+            # separate that line from one meaning it. And the citation is proved PRESENT AND IN
+            # POSITION, never *adjudicating*: whether the cited row rules on this verdict is a claim
+            # about another file's contents, which this check does not make (`REC-076` - what a check
+            # cannot settle needs a name, or it silently becomes a pass).
             if ($verdictAt -lt 0) {
                 Add-ValidationError "REC-$rowId applied an edit and carries no 'cold reviewer:' field; on disk that is indistinguishable from a row that skipped the gate."
             } elseif ($line.Substring($verdictAt) -cmatch '(?<![A-Za-z0-9-])approve(?:-with-tightening)?(?![A-Za-z0-9-])') {
@@ -888,12 +899,8 @@ if ($closedSplit.Count -ne 2) {
                 # historical `reject, then approve-with-tightening` shape still passes, as it must.
             } elseif ($line -cmatch 'cold reviewer:[ ]*unrecorded(?![A-Za-z0-9-])') {
                 $closedUnrecorded++
-                $cited = $false
-                foreach ($fieldMatch in [regex]::Matches($line, 'cold reviewer:[ ]*unrecorded(?![A-Za-z0-9-])')) {
-                    if ($line.Substring($fieldMatch.Index) -cmatch 'unrecorded.*REC-[0-9]{3}') { $cited = $true }
-                }
-                if (-not $cited) {
-                    Add-ValidationError "REC-$rowId writes 'cold reviewer: unrecorded' and names no REC-NNN row accounting for it; a verdict that was lost, or one whose rounds never reached a closing one, is admitted by pointing at the row that adjudicates it, never by the word alone."
+                if ($line -cnotmatch 'cold reviewer:[ ]*unrecorded[ ]*\(REC-[0-9]{3}\)') {
+                    Add-ValidationError "REC-$rowId writes 'cold reviewer: unrecorded' and carries no '(REC-NNN)' in the token's own parentheses; a verdict that was lost, or one whose rounds never reached a closing one, is admitted by naming the row that adjudicates it where the token is read, never by the word alone and never by a row the rest of the line happens to mention."
                 }
             } else {
                 Add-ValidationError "REC-$rowId carries a 'cold reviewer:' field that never reaches an approving verdict; only approve or approve-with-tightening may reach step 4."

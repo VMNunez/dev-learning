@@ -93,7 +93,7 @@ promotes lands there and never here, which is what stops this file growing again
    **Write the returned token into the row the moment it returns, not at the collapse.** The review and
    the collapse are routinely different sessions, and the second cannot recover what the first never
    wrote down: `REC-190`'s verdict was lost exactly that way and its line now reads
-   `cold reviewer: unrecorded` forever (`REC-195`). The token costs four words in the Resolution cell.
+   `cold reviewer: unrecorded (REC-195)` forever. The token costs four words in the Resolution cell.
    **The rounds are what this gate costs, and the loop has four controls.** Only `reject` or
    `sweep: incomplete` opens a round — `approve-with-tightening` means what it says: apply it in the
    form approved and close the row. The reviewer passes the bar it applies, so a finding that changes
@@ -107,9 +107,10 @@ promotes lands there and never here, which is what stops this file growing again
 4. **Collapse the row into `## Closed` in `_recommendation-ledger-closed.md`** — only a `sweep: complete` review returning `approve` or
    `approve-with-tightening` may reach this step; `reject` and every incomplete sweep leave the row
    open under step 3. The one-line closure carries the ID, what the item was,
-   `cold reviewer: approve | approve-with-tightening` — or the `unrecorded` **record**
+   `cold reviewer: approve | approve-with-tightening` — or the `unrecorded (REC-NNN)` **record**
    `_recommendation-ledger-closed.md`'s header defines, which annotates a closure already on disk and is
-   never a route to this step — the two-map declaration, and the implementation
+   never a route to this step, written in that form because the citation is read from the token's own
+   parentheses and nowhere else on the line (`REC-210`) — the two-map declaration, and the implementation
    commit. This reviewer field starts with `REC-107`;
    historical lines are not retrofitted. **`validate-prompt-system.ps1` invariant 9 reads that
    schema** — the shape, the ID order, the commit field, the two-map declaration from `REC-058` and
