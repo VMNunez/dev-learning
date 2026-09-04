@@ -268,9 +268,9 @@ total = total.add(new BigDecimal("5.00"));  // BIEN — reassign to keep the res
 System.out.println(total);                  // 15.00
 ```
 
-There is no compiler error, because `total.add(...)` is a legal expression: it computes a value, and you chose to do nothing with it. The mechanism, step by step: `total` does not hold the number, it holds the address of the object that contains it, and that object offers no method able to change its digits. So `add` does the only thing it can — it adds, builds a new object with the result, and returns the address of that new object. If you assign that address to no variable, nobody knows where the new object is and it is discarded, while `total` still points at the same `10.00` as before.
+There is no compiler error, because `total.add(...)` is a legal expression: it computes a value, and you chose to do nothing with it. The mechanism, step by step: `total` does not hold the number, it holds the address of the object that contains it, and that object offers no method able to change its digits. So `add` does the only thing it can — it adds, builds a new object with the result, and returns the address in memory of that new object. If you assign that address to no variable, nobody knows where the new object is and it is discarded, while `total` still points at the same `10.00` as before.
 
-`BigDecimal`'s four arithmetic operations are named methods — `add`, `subtract`, `multiply` and `divide` — for the reason the `compareTo` section gave: Java has no operator overloading, so a class can never teach `+` to work on it.
+The four arithmetic operations `BigDecimal` offers are the methods `add`, `subtract`, `multiply` and `divide`. You cannot write `+`, `-`, `<`, `>` or `==` on two `BigDecimal`s: those operators only act on primitives, and a `BigDecimal` is an object.
 
 ```java
 BigDecimal net  = new BigDecimal("100.00");
@@ -282,7 +282,7 @@ BigDecimal diff  = gross.subtract(net);                                 // 21.00
 BigDecimal half  = gross.divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);  // 60.50  ← divide is the only one that demands a scale and a rounding mode
 ```
 
-**Scale is the number of digits kept after the decimal point, and it is part of the object rather than a display setting.** `multiply` adds the two scales together — two decimals times two decimals gives four — which is why `21.0000` comes out where you were expecting `21.00`. You correct it when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops:
+**Scale is the number of digits kept after the decimal point, and it is part of the object rather than a display setting.** `multiply` adds the two scales together — two decimals times two decimals gives four — which is why `21.0000` comes out where you were expecting `21.00`. You correct it when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops. `multiply` has no version that takes a scale and a rounding mode — only `divide` does, and out of necessity, because without that information there are divisions it cannot resolve — so here it is always two steps: the operation first, then `setScale`. That does not mean two lines: you can chain them into one, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, because `multiply` hands you back a `BigDecimal` you can already call `setScale` on:
 
 ```java
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
