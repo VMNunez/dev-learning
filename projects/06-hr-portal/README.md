@@ -59,7 +59,7 @@ https://06-hr-portal.netlify.app
 - Coordinator pattern on pages with filters and a table to centralise state and keep children reusable
 - `MatStepper` for employee creation to split a long form into manageable steps
 - Unique-email check at the dialog's save exit rather than in the `Next` handler — a linear stepper lets a completed step be re-entered from its header, which skips that button
-- `CanDeactivate` only on the department form — the only place where accidental data loss is a real risk
+- `CanDeactivate` only on the department form — a dialog has no route, so a route guard structurally cannot attach to the employee and leave-request flows; the routed form is where the unsaved-changes confirmation is possible at all, and departments carry the fewest fields so they pay the least for the extra navigation
 - `filteredNavLinks computed()` in the root component to keep sidebar links in sync with the current user without duplicating role checks in children
 - Entity ids generated inside the owning service with `crypto.randomUUID()` — a clock reading gives two records created in the same millisecond the same id, and letting the calling component build the entity would put the rule in as many places as there are callers
 - Leave-request transitions guarded in `LeaveRequestService` rather than in the template that hides the buttons — the template only decides what is drawn, so a rule that lives there is bypassed by every other caller and the invalid state still reaches localStorage
