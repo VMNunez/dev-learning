@@ -529,7 +529,7 @@ if (active = true) {     // ✅ compila — asigna true, y entra en la rama siem
 
 El compilador no te avisa de nada. Lo único que lo señala es IntelliJ, que subraya la línea con una **inspección** — un aviso del propio IDE, no un error de Java — y ese subrayado es todo lo que hay entre tú y una rama que se ejecuta siempre: `active = true` vuelve a poner `active` a `true` en cada vuelta y le entrega ese `true` al `if`, así que la condición no puede ser falsa nunca. Por eso una condición booleana se escribe `if (active)` y nunca `if (active == true)`: donde no escribes ningún `==`, no hay ningún `==` que se te pueda quedar en un solo `=` y crear el bug. La regla práctica es esa: con una variable `boolean`, evita el operador de igualdad en la condición y pon la variable sola.
 
-### Evaluación short-circuit — por qué `&&` y `||` pueden no mirar jamás su operando derecho
+### Evaluación short-circuit — por qué `&&` y `||` a veces no llegan a evaluar su lado derecho
 
 `&&` y `||` no evalúan los dos lados y luego combinan las dos respuestas. Evalúan el lado **izquierdo**, y luego preguntan si el lado derecho podría todavía cambiar el resultado:
 
