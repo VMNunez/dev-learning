@@ -590,11 +590,11 @@ double z = x;      // int (32 bits) → double (64 bits) — automático
 
 Java permite esto en silencio porque el rango del tipo destino contiene por completo el rango del tipo origen — no existe ningún valor de `int` que un `long` no pueda representar, así que nada puede salir mal.
 
-> **Alcance exacto: "widening" no siempre significa "sin pérdida de datos".** Dos de las conversiones de widening sí tienen pérdida, y Java las realiza automáticamente de todos modos. `int` → `float` y `long` → `double` se mueven ambas a un tipo _más ancho_ que, sin embargo, tiene _menos_ cifras significativas, porque un tipo de coma flotante gasta parte de sus bits en el exponente en lugar de en los dígitos. Un `float` tiene 32 bits como un `int`, pero solo unos 24 de ellos transportan dígitos:
+> **Alcance exacto: "widening" no siempre significa "sin pérdida de datos".** Dos de las conversiones de widening sí tienen pérdida, y Java las realiza automáticamente de todos modos. `int` (entero de 32 bits) → `float` (decimal de 32 bits) y `long` (entero de 64 bits) → `double` (decimal de 64 bits) pierden datos aunque el destino ocupe los mismos bits, porque tiene _menos_ cifras significativas, porque un tipo de coma flotante gasta parte de sus bits en el exponente en lugar de en los dígitos. Un `float` tiene 32 bits como un `int`, pero solo unos 24 de ellos transportan dígitos:
 >
 > ```java
-> int precise = 16777217;      // 2^24 + 1
-> float widened = precise;     // automático — sin cast, sin aviso
+> int precise = 16777217;      // int (32 bits) — 2^24 + 1
+> float widened = precise;     // float (32 bits) — automático, sin cast y sin aviso
 > System.out.println(widened); // 1.6777216E7  ← 16777216, no 16777217. El 1 desapareció.
 > ```
 >
