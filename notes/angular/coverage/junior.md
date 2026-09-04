@@ -167,6 +167,10 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 ## Testing Angular behaviour
 
 - Vitest vs Jasmine/Karma recognition — use the current CLI's Vitest default while reading Jasmine/Karma suites that remain common in maintained consultancy projects
+- A scaffolded spec's type arguments are part of the unit's contract — the CLI fills a generic harness
+  with a placeholder because it cannot know which type the unit was declared against, and a placeholder
+  that never gets narrowed fails the whole suite at compile time, before any assertion runs, taking
+  every unrelated spec with it ✅ 06-hr-portal — `deactivate-guard.spec.ts` types its harness `CanDeactivateFn<DepartmentForm>`, the component the guard is declared against, where the CLI's `unknown` left the whole suite failing on `TS2345` before any test ran
 - `TestBed` — configure Angular's injection and rendering environment only when the unit needs Angular-managed dependencies ✅ 04-meal-finder — each page spec adds exactly the providers its unit injects (`provideRouter([])` for the routed pages, plus `provideHttpClient()` for the two that call the API), where the scaffold suite failed on `NG0201: No provider found for ActivatedRoute`
 - Runtime-supplied injection tokens in tests — recognise that a value the framework mints when it creates the unit, such as a dialog's reference and its data token, is provided by no module, so a spec that mounts the unit alone must supply it as a double rather than importing more of the library ✅ 05-task-manager — `confirm-dialog.spec.ts` and `task-dialog.spec.ts` register `MatDialogRef` and `MAT_DIALOG_DATA` themselves, where mounting the dialogs alone threw `NG0201: No provider found for MatDialogRef`
 - Service unit tests — isolate business or state logic and verify observable outputs, state transitions, and collaborator calls
