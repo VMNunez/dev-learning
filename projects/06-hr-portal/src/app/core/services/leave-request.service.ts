@@ -1,11 +1,12 @@
 import { effect, Injectable, signal } from '@angular/core';
 import type { LeaveRequest, LeaveRequestStatus } from '../../models/leave-request.model';
+import { readStoredArray } from '../../shared/utils/storage.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LeaveRequestService {
-  leaveRequests = signal<LeaveRequest[]>(JSON.parse(localStorage.getItem('leaveRequests') ?? '[]'));
+  leaveRequests = signal<LeaveRequest[]>(readStoredArray<LeaveRequest>('leaveRequests'));
 
   constructor() {
     effect(() => {

@@ -1,11 +1,12 @@
 import { effect, Injectable, signal } from '@angular/core';
 import type { Department } from '../../models/department.model';
+import { readStoredArray } from '../../shared/utils/storage.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DepartmentService {
-  departments = signal<Department[]>(JSON.parse(localStorage.getItem('departments') || '[]'));
+  departments = signal<Department[]>(readStoredArray<Department>('departments'));
 
   constructor() {
     effect(() => {

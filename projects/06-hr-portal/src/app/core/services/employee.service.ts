@@ -1,11 +1,12 @@
 import { effect, Injectable, signal } from '@angular/core';
 import type { Employee } from '../../models/employee.model';
+import { readStoredArray } from '../../shared/utils/storage.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  employees = signal<Employee[]>(JSON.parse(localStorage.getItem('employees') ?? '[]'));
+  employees = signal<Employee[]>(readStoredArray<Employee>('employees'));
 
   constructor() {
     effect(() => {
