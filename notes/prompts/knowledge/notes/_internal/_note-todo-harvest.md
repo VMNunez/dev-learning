@@ -150,3 +150,4 @@ arrival.
 | NTH-0016 | 2026-09-02 | java/junior/01 | es | afirmacion-absoluta-imprecisa | 1 | SIEMPRE NO CREO … te refieres a los literales numericos enteros | missing | — | open |
 | NTH-0017 | 2026-09-02 | java/junior/01 | es | lead-in-contradice-contenido | 1 | SI ES DE JAVA PURA NO ME DIGAS EN EL TITULO DEL PARRAFO "DINERO EN SPRING BOOT" PORQUE ME LIAS | missing | — | open |
 | NTH-0018 | 2026-09-02 | java/junior/01 | es | ejemplo-poco-concreto | 1 | LOS EJEMPLOS … NO ME HAN GUSTADO | missing | — | open |
+| NTH-0019 | 2026-09-04 | java/junior/01 | es | salida-sin-leer | 1 | AQUI NOMBRA QUE LA PRIMERA LINEA NOS DICE EL TIPO DE ERROR | missing | — | open |
