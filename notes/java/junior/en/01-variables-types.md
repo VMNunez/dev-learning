@@ -618,7 +618,7 @@ double z = x;      // int (32 bits) → double (64 bits) — automatic
 
 Java allows this silently because the destination type's range fully contains the source type's range — there is no value of `int` that a `long` cannot represent, so nothing can go wrong.
 
-> **Exact scope: "widening" does not always mean "no data loss".** Two of the widening conversions are lossy, and Java performs them automatically anyway. `int` (32-bit integer) → `float` (32-bit decimal) and `long` (64-bit integer) → `double` (64-bit decimal) lose data even though the target takes the same number of bits, because it has *fewer* significant digits: a floating-point type spends part of its bits on the exponent instead of on the digits. A `float` has 32 bits like an `int`, but only about 24 of them carry digits:
+> **Exact scope: "widening" does not always mean "no data loss".** Two of the widening conversions are lossy, and Java performs them automatically anyway. `int` (32-bit integer) → `float` (32-bit decimal) and `long` (64-bit integer) → `double` (64-bit decimal) lose data even though the target takes the same number of bits, because it has *fewer* significant digits: a floating-point type spends part of its bits on the exponent instead of on the digits. A `float` has 32 bits like an `int`, but only about 24 of them carry digits. The other direction, `float` → `int` or `double` → `long`, is not safe either: that is narrowing rather than widening, it throws the decimal part away and demands an explicit cast, which is the next section.
 >
 > ```java
 > int precise = 16777217;      // int (32 bits) — 2^24 + 1
