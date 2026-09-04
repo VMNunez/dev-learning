@@ -480,7 +480,7 @@ class TimeEntry {                       ┐
                                         ┘  of the if, three lines before `extra` does
 ```
 
-Of the four, all you need here is to be able to say where each name is visible. The rest comes later: fields and where the object holding them lives, in [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters and how the caller's value gets into them, in [04-methods.md](04-methods.md).
+Of the four, all you need here is to be able to say where each name is visible. The rest comes later: fields and where the object holding them lives, in [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters and how a value is passed into them when the method is called, in [04-methods.md](04-methods.md).
 
 ### Naming conventions
 

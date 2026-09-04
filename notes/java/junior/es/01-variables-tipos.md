@@ -452,7 +452,7 @@ class TimeEntry {                       ┐
                                         ┘  del if, tres líneas antes que `extra`
 ```
 
-De los cuatro, aquí solo necesitas saber decir dónde es visible cada nombre. Lo demás llega más adelante: los campos y dónde vive el objeto que los contiene, en [06-poo-clases.md](06-poo-clases.md) y [05-modelo-de-memoria.md](05-modelo-de-memoria.md); los parámetros y cómo entra en ellos el valor de quien llama, en [04-metodos.md](04-metodos.md).
+De los cuatro, aquí solo necesitas saber decir dónde es visible cada variable. Lo demás llega más adelante: los campos y dónde vive el objeto que los contiene, en [06-poo-clases.md](06-poo-clases.md) y [05-modelo-de-memoria.md](05-modelo-de-memoria.md); los parámetros y cómo se les pasa el valor al llamar al método, en [04-metodos.md](04-metodos.md).
 
 ### Convenciones de nombres
 
