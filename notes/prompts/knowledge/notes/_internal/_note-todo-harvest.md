@@ -152,4 +152,4 @@ arrival.
 | NTH-0018 | 2026-09-02 | java/junior/01 | es | ejemplo-poco-concreto | 2 | LOS EJEMPLOS … NO ME HAN GUSTADO / Y 0.124 SE QUEDA 0.12 | missing | — | open |
 | NTH-0019 | 2026-09-04 | java/junior/01 | es | salida-sin-leer | 1 | AQUI NOMBRA QUE LA PRIMERA LINEA NOS DICE EL TIPO DE ERROR | missing | — | open |
 | NTH-0020 | 2026-09-04 | java/junior/01 | es | enumeracion-incompleta | 1 | NOMBRAS HALF-UP Y HALF-EVEN PERO NO SE SI HAY UN HALF-DOWN O ALGO ASI … O SI NO SE USA | missing | — | open |
-| NTH-0021 | 2026-09-04 | java/junior/01 | es | lead-in-metafora | 1 | NO ENTIENDO ESTE TITULO, ES REALMENTE MALO | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0021 | 2026-09-04 | java/junior/01 | es | lead-in-metafora | 2 | NO ENTIENDO ESTE TITULO, ES REALMENTE MALO / LA COMPARACION LA HACE INTERNAMENTE EL HASMAP USANDO INTERNAMENTE LOS METODOS EQUALS Y HASHCODE | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
