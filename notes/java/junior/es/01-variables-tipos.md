@@ -536,23 +536,23 @@ El compilador no te avisa de nada. Lo único que lo señala es IntelliJ, que sub
 - `A && B` — si `A` es `false`, el resultado es `false` sea lo que sea `B`, así que `B` nunca se evalúa.
 - `A || B` — si `A` es `true`, el resultado es `true` sea lo que sea `B`, así que `B` nunca se evalúa.
 
-La tabla de `&&`; la última columna dice si `B` llega a evaluarse:
+La tabla de `&&`, el **AND lógico** (se lee «y»). La última columna dice si `B` llega a evaluarse: con `&&` solo se evalúa cuando `A` es `true`, y eso es exactamente el cortocircuito. Para qué se usa lo tienes en el ejemplo justo debajo de las dos tablas:
 
-| `A` | `B` | `A && B` | ¿se evalúa `B`? |
-|---|---|---|---|
-| `false` | `false` | `false` | no |
-| `false` | `true` | `false` | no |
-| `true` | `false` | `false` | sí |
-| `true` | `true` | `true` | sí |
+| `A`     | `B`     | `A && B` | ¿se evalúa `B`? |
+| ------- | ------- | -------- | --------------- |
+| `false` | `false` | `false`  | no              |
+| `false` | `true`  | `false`  | no              |
+| `true`  | `false` | `false`  | sí              |
+| `true`  | `true`  | `true`   | sí              |
 
-Y la de `||`, que se lee igual:
+Y la de `||`, el **OR lógico** (se lee «o»), que se lee igual: aquí `B` solo se evalúa cuando `A` es `false`, porque un `A` verdadero ya decide el resultado.
 
-| `A` | `B` | `A \|\| B` | ¿se evalúa `B`? |
-|---|---|---|---|
-| `false` | `false` | `false` | sí |
-| `false` | `true` | `true` | sí |
-| `true` | `false` | `true` | no |
-| `true` | `true` | `true` | no |
+| `A`     | `B`     | `A \|\| B` | ¿se evalúa `B`? |
+| ------- | ------- | ---------- | --------------- |
+| `false` | `false` | `false`    | sí              |
+| `false` | `true`  | `true`     | sí              |
+| `true`  | `false` | `true`     | no              |
+| `true`  | `true`  | `true`     | no              |
 
 Eso es **short-circuiting**, y no es una optimización que puede o no darse: es una garantía escrita en el lenguaje, y código real se construye sobre ella. El patrón que vas a escribir cien veces es una comprobación de null haciendo guardia delante de la llamada que fallaría:
 

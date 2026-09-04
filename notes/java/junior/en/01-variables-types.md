@@ -564,7 +564,7 @@ The compiler says nothing. The only thing that flags it is IntelliJ, which under
 - `A && B` — if `A` is `false`, the result is `false` whatever `B` turns out to be, so `B` is never evaluated.
 - `A || B` — if `A` is `true`, the result is `true` whatever `B` turns out to be, so `B` is never evaluated.
 
-The table for `&&`; the last column says whether `B` is evaluated at all:
+The table for `&&`, the **logical AND** (read "and"). The last column says whether `B` is evaluated at all: with `&&` it is evaluated only when `A` is `true`, and that is exactly the short-circuit. What it is for is in the example just below the two tables:
 
 | `A` | `B` | `A && B` | is `B` evaluated? |
 |---|---|---|---|
@@ -573,7 +573,7 @@ The table for `&&`; the last column says whether `B` is evaluated at all:
 | `true` | `false` | `false` | yes |
 | `true` | `true` | `true` | yes |
 
-And the one for `||`, read the same way:
+And the one for `||`, the **logical OR** (read "or"), read the same way: here `B` is evaluated only when `A` is `false`, because a true `A` already decides the result.
 
 | `A` | `B` | `A \|\| B` | is `B` evaluated? |
 |---|---|---|---|
