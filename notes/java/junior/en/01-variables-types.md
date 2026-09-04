@@ -374,7 +374,7 @@ The first three differ from each other only on the exact half; outside that case
 > rates.get(new BigDecimal("1.00"));   // null ← same amount, different scale, different key
 > ```
 >
-> `SortedMap` and `SortedSet` fail from the other side: they order by `compareTo`, so they treat the two as *one* key while `equals` insists they are two, and the javadoc calls that natural ordering "inconsistent with equals". The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps arrive in [10-collections.md](10-collections.md); why `equals` and `hashCode` govern them is [06-oop-classes.md](06-oop-classes.md).
+> `SortedMap` and `SortedSet` fail from the other side: they do not look keys up with `equals` or `hashCode`, they order them with `compareTo`. And since `compareTo` returns `0` when comparing `1.0` with `1.00`, to them the two are the _same_ key: if you insert both, the second one is not filed separately, it replaces the first. That is the mismatch — the collection says there is one key and `equals` says there are two — and the javadoc calls that natural ordering "inconsistent with equals". The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps are covered in [10-collections.md](10-collections.md); why `equals` and `hashCode` decide what a map finds is explained in [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
