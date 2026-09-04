@@ -374,7 +374,7 @@ The first three differ from each other only on the exact half; outside that case
 > rates.get(new BigDecimal("1.00"));   // null ← same amount, different scale, different key
 > ```
 >
-> `HashMap` and `TreeMap` are the two structures that store key→value pairs, and both are used the same way (`put`, `get`); the difference is that `TreeMap` keeps those pairs ordered by their key and `HashMap` keeps no order at all. On a `get` or a `size`, each one uses a different method internally to decide whether two keys are the same: `HashMap` uses `equals`, and to `equals` the scale counts, so `1.0` and `1.00` are two different keys; `TreeMap` uses `compareTo`, which is what it orders with, and to `compareTo` only the amount counts, so `1.0` and `1.00` are the same key.
+> `HashMap` and `TreeMap` are two structures that store key→value pairs, and they are the two most used map implementations in Java — `HashMap` is the default choice and `TreeMap` the one you reach for when you need the keys ordered. Both use the same methods (`put`, `get`); the difference is that `TreeMap` keeps those pairs ordered by their key and `HashMap` keeps no order at all. On a `get` or a `size`, each one uses a different method internally to decide whether two keys are the same: `HashMap` uses `equals`, and to `equals` the scale counts, so `1.0` and `1.00` are two different keys; `TreeMap` uses `compareTo`, which is what it orders with, and `compareTo` does not care about the scale: it only looks at the amount, so `1.0` and `1.00` are the same key.
 >
 > So the same pair of keys gives you opposite results depending on the map:
 >

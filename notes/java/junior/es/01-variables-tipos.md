@@ -360,7 +360,7 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 > tarifas.get(new BigDecimal("1.00"));   // null ← misma cantidad, otra escala, otra clave
 > ```
 >
-> `HashMap` y `TreeMap` son las dos estructuras que almacenan pares clave→valor, y las dos se usan igual (`put`, `get`); la diferencia es que `TreeMap` mantiene esos pares ordenados según su clave y `HashMap` no guarda ningún orden. Al hacer un `get` o un `size`, cada una usa internamente un método distinto para decidir si dos claves son la misma: `HashMap` usa `equals`, y para `equals` la escala cuenta, así que `1.0` y `1.00` son dos claves distintas; `TreeMap` usa `compareTo`, que es con lo que ordena, y para `compareTo` solo cuenta la cantidad, así que `1.0` y `1.00` son la misma clave.
+> `HashMap` y `TreeMap` son dos estructuras que almacenan pares clave→valor, y son las dos implementaciones de mapa que más se usan en Java — `HashMap` es la opción por defecto y `TreeMap` la que se usa cuando hacen falta las claves ordenadas. Las dos usan igual los métodos (`put`, `get`); la diferencia es que `TreeMap` mantiene esos pares ordenados según su clave y `HashMap` no guarda ningún orden. Al hacer un `get` o un `size`, cada una usa internamente un método distinto para decidir si dos claves son la misma: `HashMap` usa `equals`, y para `equals` la escala cuenta, así que `1.0` y `1.00` son dos claves distintas; `TreeMap` usa `compareTo`, que es con lo que ordena, y a `compareTo` la escala no le importa: solo mira la cantidad, así que `1.0` y `1.00` son la misma clave.
 >
 > Así que el mismo par de claves te da dos resultados opuestos según el mapa:
 >
