@@ -308,6 +308,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Responsive Material composition — adapt sidenav mode, dialog dimensions, action density, and wide-table presentation because Material components do not make a page responsive automatically
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
+- Application-wide Material dependencies under test — a component configured once for the whole application, such as a date-entry control and the adapter that decides its value representation, has none of that configuration in a bare test environment and must be given it again wherever it is mounted alone ✅ 06-hr-portal — `leave-request-dialog.spec.ts` repeats `provideNativeDateAdapter()` that `app.config.ts` supplies once for the running app
 
 ## Spring
 
@@ -2168,6 +2169,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Coverage percentage vs test quality — use coverage to find unexecuted code, never as proof that assertions are meaningful or risks are covered
 - Vacuous-test review — detect missing assertions, assertions unrelated to the action, and mocks that only confirm their own setup
 - Permanently failing test — a test that fails for a reason unrelated to a defect is repaired or deleted, because a suite that is normally red makes a real regression unreadable
+- Test-double surface completeness — a hand-written double replaces the whole collaborator, not the one method under assertion, so every member the unit reaches during construction and setup must exist on it or the test dies with a type error long before any expectation is evaluated ✅ 06-hr-portal — the `MatDialogRef` double in `employee-dialog.spec.ts` also answers `backdropClick()`, which the component subscribes to in its constructor
+- Masked failure in a single test — a test stops at its first error, so a fault raised while the unit is being built hides every later assertion in that test, and removing the first cause is expected to reveal a second rather than turn the test green ✅ 06-hr-portal — `app.spec.ts` asserted the CLI's `Hello, 06-hr-portal` heading, which only surfaced once the missing `Router` stopped aborting the same test first
 
 ### Configuration and environments
 
