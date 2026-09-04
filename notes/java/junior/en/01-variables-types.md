@@ -559,10 +559,19 @@ The compiler says nothing. The only thing that flags it is IntelliJ, which under
 
 ### Short-circuit evaluation — why `&&` and `||` sometimes never evaluate their right-hand side
 
-`&&` and `||` do not evaluate both sides and then combine the two answers. They evaluate the **left** side, and then ask whether the right side could still change the outcome:
+`&&` and `||` do not work out both sides first. They evaluate the **left** side, and then ask whether the right side could still change the outcome:
 
 - `A && B` — if `A` is `false`, the result is `false` whatever `B` turns out to be, so `B` is never evaluated.
 - `A || B` — if `A` is `true`, the result is `true` whatever `B` turns out to be, so `B` is never evaluated.
+
+The table of all four cases; the last column says whether `B` is evaluated at all:
+
+| `A` | `B` | `A && B` | `A \|\| B` | is `B` evaluated? |
+|---|---|---|---|---|
+| `false` | `false` | `false` | `false` | `&&` no; `\|\|` yes |
+| `false` | `true` | `false` | `true` | `&&` no; `\|\|` yes |
+| `true` | `false` | `false` | `true` | `&&` yes; `\|\|` no |
+| `true` | `true` | `true` | `true` | `&&` yes; `\|\|` no |
 
 That is **short-circuiting**, and it is not an optimisation you may or may not get: it is a guarantee written into the language, and real code is built on it. The pattern you will write a hundred times is a null check standing guard in front of the call that would fail:
 

@@ -531,10 +531,19 @@ El compilador no te avisa de nada. Lo único que lo señala es IntelliJ, que sub
 
 ### Evaluación short-circuit — por qué `&&` y `||` a veces no llegan a evaluar su lado derecho
 
-`&&` y `||` no evalúan los dos lados y luego combinan las dos respuestas. Evalúan el lado **izquierdo**, y luego preguntan si el lado derecho podría todavía cambiar el resultado:
+`&&` y `||` no calculan primero los dos lados. Evalúan el lado **izquierdo**, y luego preguntan si el lado derecho podría todavía cambiar el resultado:
 
 - `A && B` — si `A` es `false`, el resultado es `false` sea lo que sea `B`, así que `B` nunca se evalúa.
 - `A || B` — si `A` es `true`, el resultado es `true` sea lo que sea `B`, así que `B` nunca se evalúa.
+
+La tabla de los cuatro casos posibles; la última columna dice si `B` llega a evaluarse:
+
+| `A` | `B` | `A && B` | `A \|\| B` | ¿se evalúa `B`? |
+|---|---|---|---|---|
+| `false` | `false` | `false` | `false` | en `&&` no; en `\|\|` sí |
+| `false` | `true` | `false` | `true` | en `&&` no; en `\|\|` sí |
+| `true` | `false` | `false` | `true` | en `&&` sí; en `\|\|` no |
+| `true` | `true` | `true` | `true` | en `&&` sí; en `\|\|` no |
 
 Eso es **short-circuiting**, y no es una optimización que puede o no darse: es una garantía escrita en el lenguaje, y código real se construye sobre ella. El patrón que vas a escribir cien veces es una comprobación de null haciendo guardia delante de la llamada que fallaría:
 
