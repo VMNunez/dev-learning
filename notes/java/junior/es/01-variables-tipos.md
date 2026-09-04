@@ -260,7 +260,7 @@ Léelo así: "si `hours` comparado con 0.5 da negativo (es decir, `hours` es men
 
 > 📖 Docs: [Java SE 25 API — `java.math.BigDecimal`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html) → leer: la descripción de la clase ("immutable, arbitrary-precision signed decimal numbers") y las entradas de `divide` y `setScale`.
 
-`BigDecimal` es **inmutable**: una vez creado el objeto, el número que guarda dentro ya no se puede cambiar. Ningún método lo modifica — `add`, `subtract`, `multiply` y `divide` calculan el resultado, lo envuelven en un `BigDecimal` _nuevo_ y te devuelven ese objeto nuevo, dejando el original exactamente como estaba. De ahí sale el error más común con esta clase: llamar al método y no guardar en ninguna parte lo que devuelve. Y no salta ningún aviso — el código compila, se ejecuta y sigue imprimiendo el número viejo, así que el fallo solo se ve mirando el resultado:
+`BigDecimal` es **inmutable**: una vez creado el objeto, el número que guarda dentro ya no se puede cambiar. Ningún método lo modifica — `add`, `subtract`, `multiply` y `divide` calculan el resultado, lo envuelven en un `BigDecimal` _nuevo_ y te devuelven ese objeto nuevo, dejando el original exactamente como estaba. De ahí sale el error más común al usar esta clase: llamar al método y no guardar en ninguna parte lo que devuelve. Y no salta ningún aviso — el código compila, se ejecuta y sigue imprimiendo el número viejo, así que el fallo solo se ve mirando el resultado:
 
 ```java
 BigDecimal total = new BigDecimal("10.00");
@@ -271,17 +271,18 @@ total = total.add(new BigDecimal("5.00"));  // BIEN — reasigna para conservar 
 System.out.println(total);                  // 15.00
 ```
 
-No hay error de compilación, porque la primera llamada es una expresión legal cuyo valor decidiste ignorar — exactamente igual que escribir `list.size();` en una línea suelta. El mecanismo merece decirse sin rodeos: `add` no tiene forma de cambiar `total`, porque el objeto al que apunta `total` no expone nada que altere sus dígitos; todo lo que `add` puede hacer es calcular la suma, envolverla en un objeto nuevo, y entregarte la dirección de ese objeto nuevo. Si nadie guarda esa dirección, es basura un instante después.
+No hay error de compilación, porque `total.add(...)` es una expresión legal: calcula un valor, y tú decidiste no hacer nada con él. El mecanismo, paso a paso: `total` no guarda el número, guarda la dirección del objeto que lo contiene, y ese objeto no ofrece ningún método capaz de cambiar sus dígitos. Así que `add` hace lo único que puede hacer — suma, construye un objeto nuevo con el resultado y devuelve la dirección de ese objeto nuevo. Si no asignas esa dirección a ninguna variable, nadie sabe dónde está el objeto nuevo y se descarta, mientras `total` sigue apuntando al mismo `10.00` de antes.
 
-Las cuatro operaciones son métodos con nombre, por la misma razón que dio la sección de `compareTo`: Java no tiene sobrecarga de operadores, así que una clase nunca puede enseñarle a `+` a funcionar sobre ella.
+Las cuatro operaciones aritméticas de `BigDecimal` son métodos con nombre — `add`, `subtract`, `multiply` y `divide` —, por la misma razón que dio la sección de `compareTo`: Java no tiene sobrecarga de operadores, así que una clase nunca puede enseñarle a `+` a funcionar sobre ella.
 
 ```java
 BigDecimal net  = new BigDecimal("100.00");
 BigDecimal rate = new BigDecimal("0.21");
 
-BigDecimal vat   = net.multiply(rate);   // 21.0000   ← cuatro decimales, no dos
-BigDecimal gross = net.add(vat);         // 121.0000
-BigDecimal diff  = gross.subtract(net);  // 21.0000
+BigDecimal vat   = net.multiply(rate);                                  // 21.0000   ← cuatro decimales, no dos
+BigDecimal gross = net.add(vat);                                        // 121.0000
+BigDecimal diff  = gross.subtract(net);                                 // 21.0000
+BigDecimal half  = gross.divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);  // 60.50  ← divide es la única que exige escala y redondeo
 ```
 
 **La escala es el número de dígitos que se conservan tras el punto decimal, y es parte del objeto, no un ajuste de presentación.** `multiply` suma las dos escalas — dos decimales por dos decimales da cuatro — y por eso sale `21.0000` donde esperabas `21.00`. Lo corriges cuando estás listo para guardar o mostrar el valor, con `setScale`, que recibe la escala que quieres más un `RoundingMode` que dice qué hacer con los dígitos que descarta:
