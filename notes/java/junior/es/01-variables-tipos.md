@@ -390,7 +390,7 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 
 > 📖 Docs: [Oracle Docs — Primitive Data Types](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) → leer: "Default Values" — qué contiene un campo antes de que le asignes nada, y por qué una variable local es distinta.
 
-Una variable es un espacio con nombre en memoria donde guardas un dato — una de las cajas del diagrama del principio de este archivo. En Java siempre escribes el tipo antes del nombre, porque el compilador necesita saber cuán grande es esa caja y qué puede entrar legalmente en ella antes de que el programa se ejecute siquiera. Puedes declarar y asignar en la misma línea, o declarar primero y asignar después:
+Una variable es un espacio con nombre en memoria donde guardas un dato. En Java siempre escribes el tipo antes del nombre, porque el compilador necesita saber cuánto espacio ocupa ese dato en memoria y qué valores pueden entrar legalmente en él antes de que el programa se ejecute. Puedes declarar y asignar en la misma línea, o declarar primero y asignar después:
 
 ```java
 int age = 31;           // declaración + asignación en una línea
@@ -400,7 +400,7 @@ count = 0;              // asignación — ahora sí contiene algo
 
 ### El compilador no te deja leer una variable local que nunca asignaste
 
-Separar la declaración de la asignación es legal, pero lleva una regla asociada, y se verifica en tiempo de compilación en lugar de dejarla estallar en tiempo de ejecución. Todo camino posible del código tiene que asignar la variable antes de que nada la lea:
+Separar la declaración de la asignación es legal, pero lleva una regla asociada, y se verifica en tiempo de compilación en lugar de dejarla estallar en tiempo de ejecución. la variable tiene que estar inicializada antes de que la uses en ningún sitio — una operación, una llamada a un método, un `println` —, y el compilador lo exige para todos los caminos que puede tomar el código, no solo para el que tú tengas en mente:
 
 ```java
 int count;

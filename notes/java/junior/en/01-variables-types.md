@@ -416,7 +416,7 @@ The first three differ from each other only on the exact half; outside that case
 
 > 📖 Docs: [Oracle Docs — Primitive Data Types](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) → read: "Default Values" — what a field holds before you assign to it, and why a local variable is different.
 
-A variable is a named space in memory where you store a piece of data — one of the boxes from the diagram at the top of this file. In Java you always write the type before the name, because the compiler has to know how big that box is and what may legally go in it before the program ever runs. You can declare and assign in the same line, or declare first and assign later:
+A variable is a named space in memory where you store a piece of data. In Java you always write the type before the name, because the compiler has to know how much space that piece of data takes in memory and what values may legally go into it before the program ever runs. You can declare and assign in the same line, or declare first and assign later:
 
 ```java
 int age = 31;           // declaration + assignment in one line
@@ -426,7 +426,7 @@ count = 0;              // assignment — now it holds something
 
 ### The compiler will not let you read a local variable you never assigned
 
-Splitting the declaration from the assignment is legal, but there is a rule attached to it, and it is enforced at compile time rather than left to blow up at runtime. Every path through the code has to assign the variable before anything reads it:
+Splitting the declaration from the assignment is legal, but there is a rule attached to it, and it is enforced at compile time rather than left to blow up at runtime. the variable has to be initialised before you use it anywhere — an operation, a method call, a `println` — and the compiler demands it for every path the code can take, not only the one you have in mind:
 
 ```java
 int count;
