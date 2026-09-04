@@ -460,7 +460,7 @@ if (age > 18) {
 System.out.println(message);   // MAL — cannot find symbol: variable message
 ```
 
-The variable is not "empty" out here — the name does not exist at all, which is why the error is `cannot find symbol` rather than a null complaint. The practical consequence is that if you need a value after a block, you declare it *before* the block and assign inside it. This is the same block-scoping as `let` and `const` in JavaScript; Java simply has no equivalent of the old function-scoped `var`.
+The variable is not "empty" out here — the name does not exist at all, which is why the error is `cannot find symbol` rather than a null complaint. The practical consequence is that if you need a value after a block, you declare it *before* the block and assign inside it. This is the same block-scoping as `let` and `const` in JavaScript; Java has no equivalent of JavaScript's old `var`, the function-scoped one — and do not confuse it with Java's own `var`, which you will meet further down: that one infers the type and changes nothing about scope.
 
 That one rule — *a name lives inside the braces it was declared in* — is the whole of scope, and it produces the four kinds of variable you will meet, each with a different lifetime:
 
