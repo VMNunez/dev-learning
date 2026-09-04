@@ -526,7 +526,7 @@ if (name) { ... }    // MAL — error: incompatible types: String cannot be conv
 
 Two more you will read constantly: `++` and `--` add or subtract one in place (`count++`), and the three-part conditional operator `condition ? a : b` picks between two values. That last one belongs to [03-control-flow.md](03-control-flow.md), where choosing is the subject.
 
-> **`+=` hides a cast, and that is the language definition, not a quirk.** A compound assignment is not simply `a = a + b`: the specification defines `a += b` as `a = (T) (a + b)`, where `T` is the type of the left-hand side. It therefore performs, invisibly, the narrowing conversion that plain `=` would refuse to do without an explicit cast:
+> **`+=` performs a cast you never wrote.** `a += b` is not the same as `a = a + b`. The specification defines `a += b` as `a = (T) (a + b)`, where `T` is the type of the variable on the left: `a + b` is computed first under the normal rules, and then the compiler puts the cast to `T` on the result by itself. That cast you cannot see is what performs the narrowing conversion plain `=` would refuse to do unless you wrote it:
 >
 > ```java
 > int i = 5;
