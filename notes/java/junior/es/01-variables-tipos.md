@@ -222,9 +222,9 @@ a < b;              // MAL  — no compila: `<` no existe para objetos
 a.compareTo(b) < 0; // BIEN — un método de la clase, y el `<` ya compara dos int
 ```
 
-Otra opción para comparar dos `BigDecimal` suele ser pensar en usar `.equals()`, pero ahí hay una trampa: `.equals()` en `BigDecimal` también compara la **escala** (cuántos decimales tiene representados internamente el número), no solo el valor matemático. Por eso `new BigDecimal("24.0").equals(new BigDecimal("24"))` devuelve `false` — para Java, "24.0" y "24" son objetos con escalas distintas (una cifra decimal frente a ninguna), aunque matemáticamente sean el mismo número.
+Otra opción para comparar dos `BigDecimal` suele ser usar `.equals()`, pero ahí hay una trampa: `.equals()` en `BigDecimal` también compara la **escala** (cuántos decimales tiene representados internamente el número), no solo el valor matemático. Por eso `new BigDecimal("24.0").equals(new BigDecimal("24"))` devuelve `false` — para Java, "24.0" y "24" son objetos con escalas distintas (una cifra decimal frente a ninguna), aunque matemáticamente sean el mismo número.
 
-La forma correcta de comparar dos `BigDecimal` es usando `compareTo()`. `BigDecimal` implementa la interfaz `Comparable<BigDecimal>`, que aporta el método `compareTo(BigDecimal other)`. Una **interfaz** aquí es solo un contrato que una clase firma diciendo "yo ofrezco estos métodos" — qué son las interfaces y cómo escribir las tuyas propias está en [07-interfaces-abstractas.md](07-interfaces-abstractas.md), y el `<BigDecimal>` entre corchetes angulares es un _argumento de tipo genérico_, léelo por ahora como "comparable específicamente contra otros `BigDecimal`" y se cubre en detalle en [09-genericos.md](09-genericos.md). Ninguno de los dos es algo que necesites hoy; solo necesitas saber de dónde viene `compareTo`. Este método sí compara el valor matemático real de los dos `BigDecimal` que intervienen — el objeto sobre el que lo llamas (`this`) y el que le pasas como argumento (`other`) —, ignorando la escala, y devuelve un `int`:
+La forma correcta de comparar dos `BigDecimal` es usando `compareTo()`. `BigDecimal` implementa la interfaz `Comparable<BigDecimal>`, que aporta el método `compareTo(BigDecimal other)`. Una **interfaz** aquí es solo un contrato que una clase firma diciendo "yo ofrezco estos métodos" — qué son las interfaces y cómo escribir las tuyas propias está en [07-interfaces-abstractas.md](07-interfaces-abstractas.md), y el `<BigDecimal>` entre corchetes angulares es un _argumento de tipo genérico_, lee el `Comparable<BigDecimal>` por ahora como "comparable específicamente contra otros `BigDecimal`". Los genéricos se cubren en detalle en [09-genericos.md](09-genericos.md). Ninguno de los dos conceptos es algo que necesites hoy; solo necesitas saber de dónde viene `compareTo`. Este método sí compara el valor matemático real de los dos `BigDecimal` que intervienen — el objeto sobre el que lo llamas (`this`) y el que le pasas como argumento (`other`) —, ignorando la escala, y devuelve un `int`:
 
 - negativo si `this` es menor que `other`
 - `0` si son matemáticamente iguales
@@ -256,13 +256,11 @@ Léelo así: "si `hours` comparado con 0.5 da negativo (es decir, `hours` es men
 
 > **`compareTo() == 0` para igualdad, nunca `equals()` — como ya vimos antes.** Si alguna vez necesitas comprobar igualdad de valor entre dos `BigDecimal` (por ejemplo, "¿el total facturado es exactamente 100?"), usa `total.compareTo(new BigDecimal("100")) == 0`, no `total.equals(new BigDecimal("100"))` — porque si `total` llegó como `"100.00"` (con dos decimales, algo habitual cuando viene de una columna `DECIMAL(10,2)` de la base de datos), `.equals()` devolvería `false` aunque el valor sea idéntico.
 
-//TODO: MANTENEMOS ESTE TODO PORQUE HE REVISADO HASTA ESTA PARTE DEL ARCHIVO Y DEBO SEGUIR REVISANDO MAS ADELANTE
-
 ### Aritmética de `BigDecimal` — cada operación devuelve un objeto nuevo, y la división exige una escala
 
 > 📖 Docs: [Java SE 25 API — `java.math.BigDecimal`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html) → leer: la descripción de la clase ("immutable, arbitrary-precision signed decimal numbers") y las entradas de `divide` y `setScale`.
 
-`BigDecimal` es **inmutable**: ningún método sobre él cambia jamás el objeto sobre el que lo llamaste. Todo método aritmético construye y devuelve un `BigDecimal` _nuevo_ y deja el original exactamente como estaba. Ese es, con diferencia, el error más común con `BigDecimal`, y falla en silencio — el código compila, se ejecuta, y reporta el número viejo:
+`BigDecimal` es **inmutable**: una vez creado el objeto, el número que guarda dentro ya no se puede cambiar. Ningún método lo modifica — `add`, `subtract`, `multiply` y `divide` calculan el resultado, lo envuelven en un `BigDecimal` _nuevo_ y te devuelven ese objeto nuevo, dejando el original exactamente como estaba. De ahí sale el error más común con esta clase: llamar al método y no guardar en ninguna parte lo que devuelve. Y no salta ningún aviso — el código compila, se ejecuta y sigue imprimiendo el número viejo, así que el fallo solo se ve mirando el resultado:
 
 ```java
 BigDecimal total = new BigDecimal("10.00");

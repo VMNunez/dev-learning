@@ -257,7 +257,7 @@ Read it as: "if `hours` compared to 0.5 is negative (meaning `hours` is less tha
 
 > 📖 Docs: [Java SE 25 API — `java.math.BigDecimal`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html) → read: the class description ("immutable, arbitrary-precision signed decimal numbers") and the entries for `divide` and `setScale`.
 
-`BigDecimal` is **immutable**: no method on it ever changes the object you called it on. Every arithmetic method builds and returns a *new* `BigDecimal` and leaves the original exactly as it was. That is the most common `BigDecimal` mistake by a distance, and it fails silently — the code compiles, runs, and reports the old number:
+`BigDecimal` is **immutable**: once the object exists, the number stored inside it can no longer be changed. No method modifies it — `add`, `subtract`, `multiply` and `divide` compute the result, wrap it in a *new* `BigDecimal` and hand you that new object, leaving the original exactly as it was. That is where the most common mistake with this class comes from: calling the method and storing nowhere what it returns. And nothing warns you — the code compiles, runs and keeps printing the old number, so the bug only shows up in the result:
 
 ```java
 BigDecimal total = new BigDecimal("10.00");
