@@ -533,9 +533,6 @@ El compilador no te avisa de nada. Lo único que lo señala es IntelliJ, que sub
 
 `&&` y `||` no calculan primero los dos lados. Evalúan el lado **izquierdo**, y luego preguntan si el lado derecho podría todavía cambiar el resultado:
 
-- `A && B` — si `A` es `false`, el resultado es `false` sea lo que sea `B`, así que `B` nunca se evalúa.
-- `A || B` — si `A` es `true`, el resultado es `true` sea lo que sea `B`, así que `B` nunca se evalúa.
-
 La tabla de `&&`, el **AND lógico** (se lee «y»). La última columna dice si `B` llega a evaluarse: con `&&` solo se evalúa cuando `A` es `true`, y eso es exactamente el cortocircuito. Para qué se usa lo tienes en el ejemplo justo debajo de las dos tablas:
 
 | `A`     | `B`     | `A && B` | ¿se evalúa `B`? |

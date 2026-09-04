@@ -561,9 +561,6 @@ The compiler says nothing. The only thing that flags it is IntelliJ, which under
 
 `&&` and `||` do not work out both sides first. They evaluate the **left** side, and then ask whether the right side could still change the outcome:
 
-- `A && B` — if `A` is `false`, the result is `false` whatever `B` turns out to be, so `B` is never evaluated.
-- `A || B` — if `A` is `true`, the result is `true` whatever `B` turns out to be, so `B` is never evaluated.
-
 The table for `&&`, the **logical AND** (read "and"). The last column says whether `B` is evaluated at all: with `&&` it is evaluated only when `A` is `true`, and that is exactly the short-circuit. What it is for is in the example just below the two tables:
 
 | `A` | `B` | `A && B` | is `B` evaluated? |
