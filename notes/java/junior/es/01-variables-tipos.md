@@ -376,7 +376,16 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 > tree.size();   // 1 ← compareTo las ve iguales: la segunda pisa a la primera
 > ```
 >
-> El javadoc de `BigDecimal` llama a esto "inconsistent with equals": su orden natural — el que define `compareTo` — dice que `1.0` y `1.00` son iguales, mientras que su `equals` dice que son distintos, y lo normal en Java es que los dos coincidan. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
+> El javadoc de `BigDecimal` llama a esto "inconsistent with equals". Los dos son métodos de la misma clase y puedes llamarlos tú mismo sobre el mismo par de valores, así que la discrepancia se ve sin ningún mapa de por medio:
+>
+> ```java
+> BigDecimal a = new BigDecimal("1.0");
+> BigDecimal b = new BigDecimal("1.00");
+> a.compareTo(b);   // 0     ← para compareTo son iguales
+> a.equals(b);      // false ← para equals son distintos
+> ```
+>
+> Nadie compara los dos métodos en tiempo de ejecución ni salta ningún aviso: el contrato de Java es que `a.compareTo(b) == 0` y `a.equals(b)` deberían dar siempre la misma respuesta, y `BigDecimal` es una de las pocas clases que lo incumple a propósito, porque su `equals` mira la escala y su orden no. Tienes razón en que se aplican en momentos distintos, y ese es justo el problema: cada colección elige uno de los dos, así que la incoherencia solo se manifiesta cuando cambias de colección — `HashMap` guarda dos entradas y `TreeMap` una. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
 
 ---
 

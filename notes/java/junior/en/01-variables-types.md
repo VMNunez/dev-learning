@@ -390,7 +390,16 @@ The first three differ from each other only on the exact half; outside that case
 > tree.size();   // 1 ← compareTo sees them as equal: the second overwrites the first
 > ```
 >
-> `BigDecimal`'s javadoc calls this "inconsistent with equals": its natural ordering — the one `compareTo` defines — says `1.0` and `1.00` are equal, while its `equals` says they are different, and in Java the two are normally expected to agree. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
+> `BigDecimal`'s javadoc calls this "inconsistent with equals". Both are methods of the same class and you can call them yourself on the same pair of values, so the disagreement is visible with no map involved:
+>
+> ```java
+> BigDecimal a = new BigDecimal("1.0");
+> BigDecimal b = new BigDecimal("1.00");
+> a.compareTo(b);   // 0     ← to compareTo they are equal
+> a.equals(b);      // false ← to equals they are different
+> ```
+>
+> Nothing compares the two methods at runtime and no warning fires: Java's contract is that `a.compareTo(b) == 0` and `a.equals(b)` should always give the same answer, and `BigDecimal` is one of the few classes that breaks it on purpose, because its `equals` looks at the scale and its ordering does not. You are right that they are applied at different moments, and that is exactly the problem: each collection picks one of the two, so the inconsistency only shows up when you switch collections — `HashMap` stores two entries and `TreeMap` one. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
