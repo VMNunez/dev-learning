@@ -121,6 +121,9 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks ✅ 06-hr-portal
 - Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
+- Route-scoped features reach only routed surfaces — a guard, a resolver or a route parameter serves
+  what the router activates, so a form opened in a dialog forfeits all three and its equivalent
+  protection has to be rebuilt inside the dialog; choosing the surface is choosing the toolbox
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
 - Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
 - `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
