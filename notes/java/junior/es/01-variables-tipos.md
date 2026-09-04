@@ -551,13 +551,13 @@ Y la de `||`, el **OR lógico** (se lee «o»): aquí `B` solo se evalúa cuando
 | `true`  | `false` | `true`     | no              |
 | `true`  | `true`  | `true`     | no              |
 
-Eso es el **cortocircuito** (*short-circuiting*): el lenguaje garantiza que ese lado derecho no se evalúa, así que puedes escribir código que dependa de ello. El uso más habitual es comprobar que algo no es `null` en el lado izquierdo, para que el lado derecho, que fallaría con `null`, no llegue a ejecutarse:
+Eso es el **cortocircuito** (_short-circuiting_): el lenguaje garantiza que ese lado derecho no se evalúa, así que puedes escribir código que dependa de ello. El uso más habitual es comprobar que algo no es `null` en el lado izquierdo, para que el lado derecho, que fallaría con `null`, no llegue a ejecutarse:
 
 ```java
 if (user != null && user.getName().isBlank()) { ... }
 ```
 
-Cuando `user` es `null`, el lado izquierdo es `false`, el lado derecho nunca se evalúa, `user.getName()` nunca se llama, y no hay `NullPointerException`. Intercambia los dos operandos y la guarda no vale nada, porque la llamada ocurre antes que la comprobación que se suponía que la protegía:
+Cuando `user` es `null`, el lado izquierdo es `false`, el lado derecho nunca se evalúa, `user.getName()` nunca se llama, y no hay `NullPointerException`. Intercambia los dos operandos y la comprobación deja de protegerte, porque la llamada se ejecuta antes que ella:
 
 ```java
 if (user.getName().isBlank() && user != null) { ... }   // MAL — NPE cada vez que user es null

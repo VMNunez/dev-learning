@@ -585,7 +585,7 @@ That is **short-circuiting**: the language guarantees that the right side is not
 if (user != null && user.getName().isBlank()) { ... }
 ```
 
-When `user` is `null`, the left side is `false`, the right side is never evaluated, `user.getName()` is never called, and there is no `NullPointerException`. Swap the two operands and the guard is worthless, because the call happens before the check that was supposed to protect it:
+When `user` is `null`, the left side is `false`, the right side is never evaluated, `user.getName()` is never called, and there is no `NullPointerException`. Swap the two operands and the check stops protecting you, because the call runs before it does:
 
 ```java
 if (user.getName().isBlank() && user != null) { ... }   // MAL — NPE whenever user is null
