@@ -219,9 +219,10 @@ on the line can settle that; the escape's citation is proved present **and in po
 contents; and step 4's **one line plus at most one promotion** budget is *reported* as
 a character count beside the longest row, never enforced. 700 was set when it sat above the 90th
 percentile (662 characters) and below the thousand-character closures the budget was written against;
-over the 199 rows on disk today the 90th percentile is **1,848** and 48 rows are over — re-measured
-2026-09-04 against the PASS line, after `REC-209`'s own closure added the 199th — so the threshold no
-longer sits where that reasoning put it, and the
+over the 200 rows on disk today the 90th percentile is **1,848** and 49 rows are over — re-measured
+2026-09-04 against the PASS line, **counting the closure that re-measured it**, since the previous two
+readings each ran before their own row landed and were stale on arrival — so the threshold no longer sits
+where that reasoning put it, and the
 number it now reports is a file that has already grown past it rather than one about to.
 object under test and the oracle are the same machinery file.
 

@@ -1031,7 +1031,17 @@ closure whose findings are **unapplied on disk** — a defect in the fix, not in
 writes the verdict the moment the reviewer returns (`REC-195`) and step 4 admits only an approving one; the
 PASS-line count is the instrument over both, and its three uses inside four days, measured 2026-09-04 — one
 a token nobody wrote down, two a row collapsed on a standing `reject` — say those two rules are not holding,
-not that the escape works.
+not that the escape works. **Also `REC-210`, which is where the check was weaker than the contract three
+files published: a satellite field is anchored to the value it qualifies, not to the line both sit on.**
+The citation was read from the rest of the **line**, so stripping `REC-206`'s `(REC-209)` still passed on
+a row named 391 characters further on that adjudicates no verdict — `REC-157`'s anchor rule reaching the
+one field added after it. It is now read from the token's own parentheses, `unrecorded (REC-NNN)`, and
+nowhere else. **A second accepted form was the wrong repair**, and measurement is what settles that rather
+than taste: the one divergent line's real citation sat 232 characters out and the coincidental one 391, so
+no bounded distance separates them and any alternative admitting "a `REC-NNN` later on the line" *is* the
+defect — the line was retrofitted to the one form instead. What the check still cannot settle, and now says
+so: the citation is present and **in position**, never proved *adjudicating*, since that is a claim about
+another file's contents (`REC-076`).
 
 **A check over a hand-written convention settles three things before it exists — the convention's
 *forms*, the *column* the value sits in, and the *value* itself — then publishes its own reach as a
