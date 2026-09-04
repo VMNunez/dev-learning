@@ -154,4 +154,4 @@ arrival.
 | NTH-0020 | 2026-09-04 | java/junior/01 | es | enumeracion-incompleta | 1 | NOMBRAS HALF-UP Y HALF-EVEN PERO NO SE SI HAY UN HALF-DOWN O ALGO ASI … O SI NO SE USA | missing | — | open |
 | NTH-0021 | 2026-09-04 | java/junior/01 | es | lead-in-metafora | 2 | NO ENTIENDO ESTE TITULO, ES REALMENTE MALO / LA COMPARACION LA HACE INTERNAMENTE EL HASMAP USANDO INTERNAMENTE LOS METODOS EQUALS Y HASHCODE | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
 | NTH-0022 | 2026-09-04 | java/junior/01 | es | consecuencia-abstracta | 1 | PORQUE SI HAGO GET(1.0) Y GET(1.00) SON DOS CLAVES DISTINTA | unapplied | `_note-quality-standard.md` → `Anticipate-the-TODO pass` | open |
-| NTH-0023 | 2026-09-04 | java/junior/01 | es | explicacion-recargada | 1 | LO HAS VUELVO A PONER COMPLICADO | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0023 | 2026-09-04 | java/junior/01 | es | explicacion-recargada | 2 | LO HAS VUELVO A PONER COMPLICADO / PODRIAS EXPLICAR ESTE PARRAFO DE FORMA MUY SENCILLA | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |

@@ -360,7 +360,24 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 > tarifas.get(new BigDecimal("1.00"));   // null ← misma cantidad, otra escala, otra clave
 > ```
 >
-> `SortedMap` y `SortedSet` fallan por el lado contrario: ordenan las claves con `compareTo`, y usan esa misma comparación para decidir si una clave ya está — si `compareTo` devuelve `0`, para ellos es la misma clave. Y ahí está el desajuste: `1.0` y `1.00` son la misma clave para `compareTo` y dos claves distintas para `equals`. Por eso un `HashMap`, que decide con `equals`, te deja guardar las dos, mientras que un `TreeMap` (que es un `SortedMap`) se queda solo con una. El javadoc avisa de ese desajuste llamando al orden natural de `BigDecimal` "inconsistent with equals" — es una advertencia escrita en la documentación, no un error que salte al ejecutar. La regla práctica es evitar claves `BigDecimal`, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de meterla. Los mapas se ven en [10-colecciones.md](10-colecciones.md); por qué `equals` y `hashCode` deciden lo que un mapa encuentra se explica en [06-poo-clases.md](06-poo-clases.md).
+> TODO: PERO DEBES HACER UNA BREVISIMA INTRODUCCION A LO QUE ES UN HASHMAP Y TREEMAP
+> `HashMap` y `TreeMap` deciden "¿es esta clave la que ya tengo?" con dos herramientas distintas, y ahí está el lío. `HashMap` lo decide con `equals`, y para `equals` la escala cuenta: `1.0` y `1.00` son dos claves distintas. `TreeMap` (que es un `SortedMap`, un mapa que mantiene las claves ordenadas) lo decide con `compareTo`, porque es lo que usa para ordenarlas, y para `compareTo` solo cuenta la cantidad: `1.0` y `1.00` son la misma clave. Un `SortedSet` (por ejemplo `TreeSet`) hace lo mismo con sus elementos.
+>
+> Así que el mismo par de claves te da dos resultados opuestos según el mapa:
+>
+> ```java
+> Map<BigDecimal, String> hash = new HashMap<>();
+> hash.put(new BigDecimal("1.0"), "a");
+> hash.put(new BigDecimal("1.00"), "b");
+> hash.size();   // 2 ← equals las ve distintas: dos entradas
+>
+> Map<BigDecimal, String> tree = new TreeMap<>();
+> tree.put(new BigDecimal("1.0"), "a");
+> tree.put(new BigDecimal("1.00"), "b");
+> tree.size();   // 1 ← compareTo las ve iguales: la segunda pisa a la primera
+> ```
+>
+> El javadoc de `BigDecimal` llama a esto "inconsistent with equals": su orden natural y su `equals` no opinan lo mismo. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de meterla, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); por qué `equals` y `hashCode` deciden lo que un mapa encuentra se explica en [06-poo-clases.md](06-poo-clases.md).
 
 ---
 

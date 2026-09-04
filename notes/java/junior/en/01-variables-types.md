@@ -374,7 +374,23 @@ The first three differ from each other only on the exact half; outside that case
 > rates.get(new BigDecimal("1.00"));   // null ← same amount, different scale, different key
 > ```
 >
-> `SortedMap` and `SortedSet` fail from the other side: they order their keys with `compareTo`, and they use that same comparison to decide whether a key is already there — if `compareTo` returns `0`, to them it is the same key. And that is the mismatch: `1.0` and `1.00` are the same key to `compareTo` and two different keys to `equals`. That is why a `HashMap`, which decides with `equals`, lets you store both, while a `TreeMap` (which is a `SortedMap`) keeps only one. The javadoc warns about that mismatch by calling `BigDecimal`'s natural ordering "inconsistent with equals" — a warning written in the documentation, not an error thrown at runtime. The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps are covered in [10-collections.md](10-collections.md); why `equals` and `hashCode` decide what a map finds is explained in [06-oop-classes.md](06-oop-classes.md).
+> `HashMap` and `TreeMap` answer "is this key one I already have?" with two different tools, and that is where the trouble is. `HashMap` answers it with `equals`, and to `equals` the scale counts: `1.0` and `1.00` are two different keys. `TreeMap` (which is a `SortedMap`, a map that keeps its keys ordered) answers it with `compareTo`, because that is what it uses to order them, and to `compareTo` only the amount counts: `1.0` and `1.00` are the same key. A `SortedSet` (`TreeSet`, for instance) does the same with its elements.
+>
+> So the same pair of keys gives you opposite results depending on the map:
+>
+> ```java
+> Map<BigDecimal, String> hash = new HashMap<>();
+> hash.put(new BigDecimal("1.0"), "a");
+> hash.put(new BigDecimal("1.00"), "b");
+> hash.size();   // 2 ← equals sees them as different: two entries
+>
+> Map<BigDecimal, String> tree = new TreeMap<>();
+> tree.put(new BigDecimal("1.0"), "a");
+> tree.put(new BigDecimal("1.00"), "b");
+> tree.size();   // 1 ← compareTo sees them as equal: the second overwrites the first
+> ```
+>
+> `BigDecimal`'s javadoc calls this "inconsistent with equals": its natural ordering and its `equals` do not agree. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); why `equals` and `hashCode` decide what a map finds is explained in [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
