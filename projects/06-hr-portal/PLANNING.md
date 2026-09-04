@@ -62,7 +62,7 @@ src/app/
 │   │   ├── no-auth-guard.ts         ← keep an authenticated user out of /login
 │   │   └── deactivate-guard.ts      ← confirm before leaving a dirty form
 │   ├── interceptors/
-│   │   └── auth-interceptor.ts      ← attach Bearer token to every request
+│   │   └── auth-interceptor.ts      ← attach the Bearer header to every request (placeholder value, no backend issues a token)
 │   └── services/
 │       ├── auth.service.ts          ← currentUser signal + login/logout, persisted to localStorage
 │       ├── employee.service.ts      ← employees signal + CRUD, persisted to localStorage
