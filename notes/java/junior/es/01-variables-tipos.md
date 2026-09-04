@@ -350,24 +350,17 @@ new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← lo q
 
 Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese caso las tres hacen lo mismo. Y fíjate en la última columna, que es donde se ve la única distinción que suele confundir: "abajo" no significa lo mismo en `DOWN` que en `FLOOR`. `DOWN` va hacia cero, así que `-0.125` sube a `-0.12`; `FLOOR` va hacia `-∞`, así que baja a `-0.13`. Con números positivos las dos coinciden, y por eso el bug solo aparece el día que llega un importe negativo.
 
-> **Cuál usar en la práctica.** `HALF_UP` para facturación e importes que ve un cliente, `HALF_EVEN` cuando agregas muchos valores y te importa la deriva. `HALF_DOWN` existe y casi nunca se usa. `UNNECESSARY` no es una forma de redondear sino una **aserción**: le dices "aquí no debería hacer falta redondear nada", y si hace falta lanza `ArithmeticException` en vez de tragárselo — útil cuando prefieres enterarte de que un cálculo perdió precisión antes que descubrirlo en un descuadre.
+> **Cuál usar en la práctica.** `HALF_UP` para facturación e importes que ve un cliente, `HALF_EVEN` cuando agregas muchos valores y te importa la deriva. `HALF_DOWN` existe y casi nunca se usa. `UNNECESSARY` no es una forma de redondear sino una **aserción**: le dices "aquí no debería hacer falta redondear nada", y si hace falta lanza `ArithmeticException` — útil cuando prefieres enterarte de que un cálculo perdió precisión antes que descubrirlo en un descuadre.
 
-> **La división es la única operación que se niega a ejecutarse hasta que le dices cómo redondear.** `divide` con un solo argumento calcula el cociente _exacto_, y cuando el cociente exacto no termina nunca no hay ningún valor correcto que pudiera devolver — así que lanza una excepción en lugar de inventarse uno en silencio:
+> **Si guardas el dinero en un `BigDecimal` y lo comparas con `compareTo`, queda un hueco: cuando ese `BigDecimal` es la clave de un mapa, la comparación ya no la eliges tú.** Un mapa (`HashMap`) es la colección que guarda pares clave→valor, como un diccionario: `map.put(clave, valor)` archiva y `map.get(clave)` recupera. Para decidir si la clave que le pides es la que archivó, el mapa no llama a `compareTo` — llama a `equals` y a `hashCode` sobre la propia clave, y en `BigDecimal` esos dos métodos sí miran la escala. Traducido: `"1.0"` y `"1.00"` son la *misma* cantidad para `compareTo` y dos claves *distintas* para `equals`, y el mapa solo habla el segundo idioma.
 >
 > ```java
-> new BigDecimal("10").divide(new BigDecimal("3"));
-> // java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result.
+> Map<BigDecimal, String> tarifas = new HashMap<>();
+> tarifas.put(new BigDecimal("1.0"), "un euro");
+> tarifas.get(new BigDecimal("1.00"));   // null ← misma cantidad, otra escala, otra clave
 > ```
 >
-> Ningún otro tipo numérico tiene este problema, porque ningún otro tipo numérico es exacto. `10.0 / 3` en `double` devuelve `3.3333333333333335` sin protestar — una respuesta que ya es ligeramente incorrecta, que es precisamente el comportamiento que `BigDecimal` existe para rechazar. El arreglo es indicar la escala y el redondeo que aceptas, en la misma llamada:
->
-> ```java
-> new BigDecimal("10").divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP);   // 3.33
-> ```
->
-> Trata el `divide` de un solo argumento como un defecto en código de aplicación: funciona para `10 / 4` y lanza excepción para `10 / 3`, así que es un bug esperando el input adecuado — la misma forma de trampa que una comparación que solo funciona para números pequeños.
-
-> **Un `BigDecimal` usado como clave de un mapa es el único sitio donde `equals` es el método que realmente se ejecuta.** La sección de arriba te dijo que compares dinero con `compareTo`, pero un `HashMap` nunca pregunta qué comparación preferirías: llama a `equals` y a `hashCode` sobre la propia clave, y ambos incluyen la escala. Así que `map.put(new BigDecimal("1.0"), x)` seguido de `map.get(new BigDecimal("1.00"))` te da `null` — dos claves, matemáticamente idénticas, archivadas por separado. La documentación de la API avisa del mismo desajuste desde el otro lado para `SortedMap` y `SortedSet`: esos ordenan por `compareTo`, así que tratan las dos como _una sola_ clave mientras `equals` insiste en que son dos, y el javadoc llama a ese orden natural "inconsistent with equals". La regla práctica es evitar claves `BigDecimal`, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de meterla. Los mapas llegan en [10-colecciones.md](10-colecciones.md); por qué `equals` y `hashCode` los gobiernan es [06-poo-clases.md](06-poo-clases.md).
+> `SortedMap` y `SortedSet` fallan por el lado contrario: ordenan con `compareTo`, así que tratan las dos como _una sola_ clave mientras `equals` insiste en que son dos, y el javadoc llama a ese orden natural "inconsistent with equals". La regla práctica es evitar claves `BigDecimal`, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de meterla. Los mapas llegan en [10-colecciones.md](10-colecciones.md); por qué `equals` y `hashCode` los gobiernan es [06-poo-clases.md](06-poo-clases.md).
 
 ---
 

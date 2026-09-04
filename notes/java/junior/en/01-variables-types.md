@@ -366,7 +366,15 @@ The first three differ from each other only on the exact half; outside that case
 >
 > Treat one-argument `divide` as a defect in application code: it works for `10 / 4` and throws for `10 / 3`, so it is a bug waiting for the right input — the same shape of trap as a comparison that only works for small numbers.
 
-> **A `BigDecimal` used as a map key is the one place `equals` is the method that actually runs.** The section above told you to compare money with `compareTo`, but a `HashMap` never asks which comparison you would prefer: it calls `equals` and `hashCode` on the key itself, and both of those include the scale. So `map.put(new BigDecimal("1.0"), x)` followed by `map.get(new BigDecimal("1.00"))` gives you `null` — two keys, mathematically identical, filed apart. The API documentation warns about the same mismatch from the other side for `SortedMap` and `SortedSet`: those order by `compareTo`, so they treat the two as *one* key while `equals` insists they are two, and the javadoc calls that natural ordering "inconsistent with equals". The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps arrive in [10-collections.md](10-collections.md); why `equals` and `hashCode` govern them is [06-oop-classes.md](06-oop-classes.md).
+> **If you store money in a `BigDecimal` and compare it with `compareTo`, one gap remains: when that `BigDecimal` is a map key, you are no longer the one choosing the comparison.** A map (`HashMap`) is the collection that stores key→value pairs, like a dictionary: `map.put(key, value)` files an entry and `map.get(key)` retrieves it. To decide whether the key you are asking for is the one it filed, the map does not call `compareTo` — it calls `equals` and `hashCode` on the key itself, and on `BigDecimal` those two methods do look at the scale. Translated: `"1.0"` and `"1.00"` are the *same* amount to `compareTo` and two *different* keys to `equals`, and the map only speaks the second language.
+>
+> ```java
+> Map<BigDecimal, String> rates = new HashMap<>();
+> rates.put(new BigDecimal("1.0"), "one euro");
+> rates.get(new BigDecimal("1.00"));   // null ← same amount, different scale, different key
+> ```
+>
+> `SortedMap` and `SortedSet` fail from the other side: they order by `compareTo`, so they treat the two as *one* key while `equals` insists they are two, and the javadoc calls that natural ordering "inconsistent with equals". The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps arrive in [10-collections.md](10-collections.md); why `equals` and `hashCode` govern them is [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
