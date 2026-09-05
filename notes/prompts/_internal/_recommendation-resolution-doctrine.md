@@ -30,6 +30,17 @@ That budget is what keeps this file from becoming the thing it was split out of.
 The ledger's step 1 states the mandate: measure against disk, budget the sweep rather than the edit,
 and name the set you measured. Everything below is what that measurement has got wrong before.
 
+**A row cites a quoted anchor, never a line number — and step 1 re-measures every number it inherits.**
+`REC-182`, whose citations rotted in **six days**: all five of its `README.md` numbers were wrong, its
+`_system-map.md` one off by one, its `_application-standard.md` ones off by more than a hundred, its
+load-bearing `_portfolio-standard.md` l.316 off by three, and two of its ten paths named the wrong
+folder — while the real set was 27 sites in 11 files. A row's numbers are a snapshot of a file other
+rows keep editing, so they are the one part of a finding guaranteed to decay, and step 1 then
+re-measures *from a map that misdirects it*. Cite the sentence: a quoted anchor survives every edit
+that does not delete the thing being cited, and a grep for it costs one command. **Where a row
+already carries numbers, correcting them is part of step 1's measurement**, not a courtesy — and
+correcting them in the row is what step 2 means by *in writing*.
+
 **A pointer is not a read, and the family is the cheapest test.** A `## Configuration` block naming an
 authority (`TOPIC = one registered topic from _topic-ownership.md`) puts nothing in the run's hands;
 only the Required sources list does. So when a prompt demands a verdict its own sources cannot
@@ -412,6 +423,15 @@ not backfilled yet, where an unmarked bullet is a *missing marker* rather than a
 house phrasing is quoted precisely because it is already right, so the paragraphs around it are the
 ones nobody re-reads: take the qualifier that lives beside the rule, or state in writing why it
 cannot bite on the new site.
+**Also `REC-189`, which adds the clause about the rule's *unit*: a borrowed rule is total at its source
+because of what its unit is there, and the words "borrowed wholesale" do not carry that across.** Its
+per-tier stamp cited `_review-standard.md`'s three-branch rule and shipped one branch; both reviewers
+found it, because the source's unit is a **slice**, which belongs to exactly one tier, while the new
+site's is a **section**, which spans them — so "a slice was lost → qualify that tier" is well defined
+there and undefined here until someone writes the projection. Name the unit on both sides before
+claiming the borrow, implement every branch or stop calling it wholesale, and where the units differ
+say how one maps onto the other; a partial borrow that keeps the full claim is the shape a reviewer
+catches and a reader never does.
 
 **A decline is not a disposal until nobody overrides it, and applied-wrongly is still the bar
 working — provided the re-measurement is written down.** From `REC-155`, whose resolution declined its
@@ -1004,6 +1024,33 @@ said out loud while the branch that **closes** it left no trace at all — a cle
 `PROGRESS.md`. When a gate closes on an artefact, ask which run produces that artefact **on the passing
 branch**: if the answer is "the run that changes least", the gate is unfalsifiable exactly when it
 passes, and the box gets ticked from memory days later.
+
+**Also `REC-209`, which names that bounded attempt and what the name must carry.** From the closures of
+`REC-204` and `REC-206`, collapsed 2026-09-03 with a reviewer field ending on a reject token
+(`reject-with-rewrite ×5`, `reject ×2`): the rounds ran and their tightenings are on disk, and nothing the
+search below reaches records a closing round — so the field never reached an approving token and none was
+lost. `cold reviewer: unrecorded (REC-NNN)` is assigned to such a field **only after the bounded search
+that could falsify it** — the deleted `## Open` row, the fix commits and the closure commit — and it is
+written **with the round count it replaces and the words `no closing round`** (`unrecorded (REC-209) —
+reject ×2, no closing round`), because the check reads the token while a later reader reads the line, and
+that count is the only surviving record of what the gate actually did. **It annotates a closure already on
+disk and is never a route to step 4**: a resolution in flight whose reviewer returned `reject` has an
+unclosed gate rather than a lost verdict, and step 3's loop is what it owes. Reopening is reserved for a
+closure whose findings are **unapplied on disk** — a defect in the fix, not in the record. Step 3 still
+writes the verdict the moment the reviewer returns (`REC-195`) and step 4 admits only an approving one; the
+PASS-line count is the instrument over both, and its three uses inside four days, measured 2026-09-04 — one
+a token nobody wrote down, two a row collapsed on a standing `reject` — say those two rules are not holding,
+not that the escape works. **Also `REC-210`, which is where the check was weaker than the contract three
+files published: a satellite field is anchored to the value it qualifies, not to the line both sit on.**
+The citation was read from the rest of the **line**, so stripping `REC-206`'s `(REC-209)` still passed on
+a row named 391 characters further on that adjudicates no verdict — `REC-157`'s anchor rule reaching the
+one field added after it. It is now read from the token's own parentheses, `unrecorded (REC-NNN)`, and
+nowhere else. **A second accepted form was the wrong repair**, and measurement is what settles that rather
+than taste: the one divergent line's real citation sat 232 characters out and the coincidental one 391, so
+no bounded distance separates them and any alternative admitting "a `REC-NNN` later on the line" *is* the
+defect — the line was retrofitted to the one form instead. What the check still cannot settle, and now says
+so: the citation is present and **in position**, never proved *adjudicating*, since that is a claim about
+another file's contents (`REC-076`).
 
 **A check over a hand-written convention settles three things before it exists — the convention's
 *forms*, the *column* the value sits in, and the *value* itself — then publishes its own reach as a

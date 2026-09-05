@@ -144,7 +144,9 @@ cases, read the README.md to find supporting details for the 2nd and 3rd bullets
 **Re-check every sourced entry against the standard's Project-bullet spec here, and report — do not
 repair.** The eight conditions, run over the entry as it stands. Keep the bullet as it is whatever the
 result, and carry the failures to Step 6, naming the project, the conditions and the run that repairs
-them (`/portfolio-audit` on that project). An entry that is merely weak is never replaced by a
+them (`/portfolio-audit` on that project — **and, when the entry's heading carries `[refined]`, that it
+repairs nothing until Victor removes the marker**, since that run refuses to replace a frozen section). An
+entry that is merely weak is never replaced by a
 README-drafted substitute; that route exists only for a project with no entry at all.
 
 ---
@@ -301,7 +303,9 @@ Then print:
 gap to close in a project, not in the CV
 **Project bullets needing a re-run:** for each entry sourced from `notes/cv/cv-bullets.md` that fails
 the Project-bullet spec, the project, the conditions it fails, and `/portfolio-audit` on that project as
-the run that repairs it — print `none` when every sourced entry passes, since the line is the only
+the run that repairs it — **naming the marker first where the entry is `[refined]`, since that run refuses
+a frozen section and repairs nothing until Victor removes it** — print `none` when every sourced entry
+passes, since the line is the only
 route those failures have out of this run
 **Projects featured:** how many, and — when Step 1 shipped two rather than three — which project was
 left out and on which point of the heuristic it lost its slot; this line is never dropped

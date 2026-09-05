@@ -241,6 +241,8 @@ in a project — `Ninguna` if there are none; never drop the heading]
 **PROJECT BULLETS NEEDING A RE-RUN:**
 [for each entry sourced from `notes/cv/cv-bullets.md` that fails the standard's Project-bullet spec: the
 project, the conditions it fails, and `/portfolio-audit` on that project as the run that repairs it —
+naming the marker first where the entry's heading carries `[refined]`, since that run refuses a frozen
+section and repairs nothing until Victor removes it;
 `Ninguno` if every sourced entry passes; never drop the heading, since this line is the only route those
 failures have out of an output-only run]
 

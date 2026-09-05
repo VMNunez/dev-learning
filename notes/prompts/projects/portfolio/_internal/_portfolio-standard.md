@@ -19,7 +19,9 @@ of this file is the gate's contract and none of its business.
 ## What the portfolio gate is for
 
 It answers one question: **is the project at `{PROJECT_PATH}` ready to show a recruiter and reference
-in a job application right now — not "ready eventually", ready today?** It produces four things:
+in a job application right now — not "ready eventually", ready today?** It produces four things — **all
+four on a `full` run; a `backend` / `frontend` / `global` run is bank-only and produces the first alone**,
+per **Verdict logic** below:
 
 1. A bank of **project-specific interview questions**, as an `en/` + `es/` pair (saved regardless of
    the verdict — they are useful prep even for an unfinished project).
@@ -57,21 +59,55 @@ Derive the type from the project number (01–06 Angular-only, 07+ full-stack) �
 ## Bank sections → code areas (canonical table)
 
 The question bank has **five fixed sections**, each mapping to a distinct code area. This is the single
-source of that mapping — the orchestrator and both subagent prompts reference it, never their own copy:
+source of that mapping — the orchestrator and both subagent prompts reference it, never their own copy.
 
-| Section | Code area to mine / walk |
-|---|---|
-| Architecture & Patterns | structure + layered architecture; backend controllers/services, or angular routes/config/components |
-| Security & Auth | backend security folder + JWT filter; angular guards/interceptors — **skip if the project has no auth** |
-| Business Rules | service logic + validation + PLANNING.md §8 business rules |
-| Technical Decisions | tradeoffs in PLANNING.md, DTOs, HTTP status choices, config/properties |
-| Testing | the test files (`src/test/java`, `**/*.spec.ts`) — **skip if the project has none** |
+**On a full-stack project each section's code area is partitioned by tier**, and `PORTFOLIO_SCOPE`
+selects which columns a run walks. **The section stays the unit of dispatch**: a `backend` run walks
+the same five sections and reads only their backend column. The tier appears in the bank as a `###`
+sub-heading *inside* the section, never as a section of its own — promoting every cell to its own
+dispatched section would roughly triple the `full` run that closes the gate, which is the opposite of
+what the scope exists for.
+
+| Section | `backend` | `frontend` | `global` (cross-tier) |
+|---|---|---|---|
+| Architecture & Patterns | structure + layered architecture; controllers/services | angular routes/config/components | the API contract itself — the DTO ↔ interface pair, and how one request crosses the boundary |
+| Security & Auth | security folder + JWT filter — **skip if the project has no auth** | angular guards/interceptors — same skip | the auth flow end to end, as one story: login, token storage, expiry, what each side trusts |
+| Business Rules | service logic + validation | form validation, UI state rules, what the screen forbids | the PLANNING.md §8 rules **both** sides enforce, and what happens where they disagree |
+| Technical Decisions | DTOs, HTTP status choices, `application.properties` | Angular tradeoffs — state, routing strategy, change detection | PLANNING.md §20 tradeoffs that span the tiers, the shared error format, `docker-compose.yml` (deployment is configuration and a tradeoff, not application structure — placed here by ruling, and unfalsified: the only full-stack project has it planned for a later step and not yet on disk) |
+| Testing | `src/test/java` — **skip if the project has none** | `**/*.spec.ts` — same skip | — |
+
+**"None" includes a tree holding only the generated stub.** A Spring Initializr project ships
+`contextLoads()` and an Angular one ships its scaffold specs; neither tests a decision, so a section
+authored against them produces questions about code nobody wrote. Measured on `07-timetrack`
+2026-09-05: one test file, and it is that stub. Count what the tests **assert**, not the files that
+exist — this is `REC-151`'s rule arriving in the one place that sends an author to a tree.
+
+**Two absences, and a run says which one it applied.** A section is **skipped for the project** when the
+project has none of it: no auth, no tests. A sub-heading is **absent for the scope** when its cell reads
+`—`; `Cross-tier` under Testing has no surface, so a `global` run writes no Testing sub-heading and that
+is not a skip. Never invent a cell to fill the grid.
+
+**On an Angular-only project (01–06) there are no tiers and no sub-headings.** The `frontend` column is
+the whole code area, the section headings stay bare, and the only meaningful scope is `full` —
+`portfolio-audit.md`'s `▶ Run first` states why.
 
 ---
 
 ## Verdict logic
 
 Two checks, run in order. **Check 1 gates Check 2.**
+
+**Only a `full` run reaches them at all.** A run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global`
+is **bank-only**: it writes its own sub-headings and stops there — no ✅/⚠️/❌, no CV bullet, no GitHub
+description, no profile README, and `notes/cv/cv-bullets.md` is never staged. It signs off **no gate**,
+G7 included, for the same reason a ❌ never ticks that box: the verdict is what the box records, and a
+bank-only run produces none. Both checks below, and everything downstream of them, are written for the
+`full` run and are not qualified per scope anywhere else in this file.
+
+**The scope defaults to `full`, so a project's `PLANNING.md` §23 G7 row need not instantiate it.** The
+gate's own row in `_planning-standard.md` names it because that row is where the rule is stated; a plan
+that omits it is running `full` and is correct as it stands. Only a plan that means to record a
+deliberate bank-only run would write one, and no gate row does.
 
 ### Check 1 — Feature completeness (from PLANNING.md)
 Read `{PROJECT_PATH}/PLANNING.md`, find the step-by-step plan (Section 0 or the steps list). Are all
@@ -265,20 +301,44 @@ unused ID in the file. Never add a question covering the same decision or code p
 even if worded differently. **A refined question is never the one dropped**: where an appended question
 duplicates a frozen one, the appended one goes.
 
+**A partial run stays in its lane.** A run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global`
+**appends and never rewrites**: every sub-heading outside its scope is left byte-for-byte, in both
+languages, and a `##` section is created only when one of its own sub-headings needs a home. The ID
+counter is unaffected — it runs over the whole file as it always has, so a second tier continues the
+numbering rather than restarting it. The **dedupe reads the whole file** (ID uniqueness is a whole-file
+property and no single scope can answer it) but may **delete only inside its own sub-headings**; a
+duplicate whose two copies straddle the scope boundary is **reported by ID and never resolved**, the
+same disposition this file already gives two frozen duplicates, and a later `full` run is what settles
+it. Borrowed from `review-audit`'s partial-scope rule for the same reason it exists there: a run must
+never overwrite the half it did not read.
+
 **File template** (`en/`; the `es/` twin is the same file with the header translated — stage T owns it,
 and its two Spanish lines are `Preguntas específicas de las decisiones de implementación tomadas
 en este proyecto.` / ``Úsalas junto a los archivos por tema en `interview-prep/{LEVEL}/es/`.``, the H1 kept as
-`# Preguntas de entrevista — {PROJECT_NAME}` (the project name itself never translated), and the
+`# Preguntas de entrevista — {PROJECT_NAME}` (the project name itself never translated), the
 five section headings translated as `Arquitectura y patrones` · `Seguridad y autenticación` · `Reglas
-de negocio` · `Decisiones técnicas` · `Testing`):
+de negocio` · `Decisiones técnicas` · `Testing`, the tier sub-headings as `Backend` · `Frontend` ·
+`Transversal`, and the stamp lines as `**Último banco — «capa»:**` with `nunca` for an unbanked tier):
 ```markdown
 # Interview Questions — {PROJECT_NAME}
+
+**Last banked — backend:** YYYY-MM-DD
+**Last banked — frontend:** never
+**Last banked — cross-tier:** never
 
 Questions specific to the implementation decisions made in this project.
 Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `es/`.
 
 ## Architecture & Patterns
-[coordinator, smart/dumb, layered architecture, etc.]
+
+### Backend
+[layered architecture, controller → service → repository, etc.]
+
+### Frontend
+[coordinator, smart/dumb, routing and config decisions, etc.]
+
+### Cross-tier
+[the API contract, the DTO ↔ interface pair, what crosses the boundary]
 
 ## Security & Auth
 [JWT, SecurityContextHolder, BCrypt — omit this section if the project has no authentication]
@@ -293,6 +353,41 @@ Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `e
 [what is tested, why that service/edge case, what the mock does, what would break if the test were
 removed — omit if the project has no tests]
 ```
+
+**The sub-headings are full-stack only, and every section that has them carries them the same way**
+(`Architecture & Patterns` is spelled out above; `Security & Auth`, `Business Rules` and
+`Technical Decisions` take the same three, `Testing` takes `Backend` and `Frontend` only, per the
+canonical table's `—`). **On an Angular-only project (01–06) none of them appear**: the five headings
+carry their questions directly, exactly as before, and the header holds one untiered
+`**Last banked:** YYYY-MM-DD` line instead of three. A bank written before this template existed has no
+stamp at all, which reads as `never` for every tier.
+
+**One tier, four spellings, and they are fixed here so nothing has to infer them.** The scope token is
+`global`; its English sub-heading is `### Cross-tier`; its stamp line is `**Last banked — cross-tier:**`;
+its Spanish sub-heading is `Transversal`. The other two are uniform — `backend` → `### Backend` →
+`**Last banked — backend:**` → `Backend`, and `frontend` likewise. A role that needs the mapping reads it
+from this paragraph, never from the column header of the table above.
+
+**The `Last banked` lines, and what they are not.** They are stamped by the orchestrator at the end of
+Phase 1a — before stage T runs, so the Spanish header it renders is this run's and not the last one's —
+on `_review-standard.md`'s three-branch rule, borrowed from the `**Last Reviewed — «tier»:**` lines
+beside them and borrowed **in full**: a plain date only where every section of the scope completed;
+today's date plus `(incomplete — «section(s)» not banked)` where one returned `BLOCKED` or stayed below
+its questions-vs-decisions ratio — **and that qualifier reaches a tier only where the failed section had
+a cell for it**, since the unit that fails here is a section spanning tiers where the borrowed rule had
+slices belonging to one; and **no stamp at all** where none of the scope's sections completed,
+the line left exactly as it was, a header that does not exist yet being created with every line `never`. Every tier outside the scope keeps its line untouched, so a partial run
+can never make an unbanked tier look current. **They gate nothing.** No run refuses on them, no
+prerequisite reads them; they exist so a reader — and the run's own closing report — can see which half
+of the bank is older than the code it describes. They are header prose and do not enter the translator's
+parity count, which is why stage T renders them on every scope even though it writes no other
+out-of-scope byte.
+
+**Angular-only projects take one untiered line rather than `n/a — Angular-only`**, which is where this
+deliberately parts from the rule it borrows. `_review-standard.md` keeps a per-tier line and marks the
+absent tier, because its gate reads those lines and must distinguish "no such tier" from "never
+reviewed". Nothing reads these, so the same distinction buys nothing here and two dead lines on every
+Angular-only bank would cost a reader more than they tell.
 
 ---
 
@@ -316,18 +411,72 @@ project-selection heuristic and never this section. The persistent file's contra
 `notes/cv/cv-bullets.md` contains **one bullet per project**, because the apply prompts consume that
 entry as polished input rather than as a decision they are allowed to make.
 
+**Refined bullets are frozen, and this is the one prohibition on the writer.** A section heading may carry
+a `[refined]` marker, and there are two states, only ever two: **no marker** — the section is this run's to
+replace, which is every section by default and the whole behaviour above; **`[refined]`** — Victor has
+polished that bullet and it is frozen byte-for-byte.
+
+**Victor alone writes that marker and Victor alone removes it.** The run never adds it, never strips it,
+and never replaces a section carrying it. Reopening a bullet is him deleting the marker, and that is the
+entire mechanism: one signal, written by him, read by this run. A `TODO:` line under a refined bullet is a
+note to himself about what he wants changed — it licenses nothing and the run does not read it.
+
+**Read that marker from the file as it stands on disk.** A marker Victor added and has not yet committed
+is a freeze like any other, and honouring it is the entire point of the rule. The reporting check below
+reads the marker on disk **and** in `HEAD` and needs both to fire; nothing in this section ever decides
+anything from `HEAD` alone.
+
+So: **never replace a section carrying `[refined]`.** Draft the bullet as usual and verify it as usual,
+then leave the section exactly as it stands and report it under Finishing item 6 — that item declares the
+bullet is in the file, so it is the one that would otherwise state something false — naming the project and
+printing the drafted bullet that was not saved. Same shape as `_interview-prep-standard.md`'s
+content-pipeline prohibitions: a pipeline may never assign the marker and never change what carries it.
+
 - With `DRY_RUN = true`, save the bullet under a `## {PROJECT_PATH}` heading (replace the section if it
-  exists) and leave it uncommitted for Victor to read in the diff.
-- With `DRY_RUN = false`, save it under the same heading and continue toward the atomic commit. **There
+  exists **and does not carry `[refined]`**) and leave it uncommitted for Victor to read in the diff.
+- With `DRY_RUN = false`, save it under the same heading, **under the same prohibition**, and continue
+  toward the atomic commit — which `cv-bullets.md` may not enter **on either of the paths the staging rule below names**. **There
   is no choice pause on this path**; in `PROJECT_PATH = all`, commit the current project before starting
   the next target.
 
-**File-wide integrity gate before every commit that stages `cv-bullets.md`:** scan the complete file,
+**File-wide integrity gate before staging `cv-bullets.md`, and over the whole file whenever a bullet was drafted:** scan the complete file,
 not only the current project. Every `## {PROJECT_PATH}` section must contain exactly one bullet and no
-`choose one` marker. A section still carrying two options or that marker was written before the choice
+`choose one` marker, **and every project must have exactly one section** — the check the optional
+`[refined]` suffix makes necessary: a run matching the heading as an exact line concludes the section is
+missing and appends a second one for the same project, which two one-bullet sections would otherwise pass. A section still carrying two options or a `choose one` marker was written before the choice
 gate was retired: on a non-dry run **pause for Victor's selection there** — the run drafts one bullet, it does not
 retro-choose between two he was owed — and clean the section before staging the file. On a dry run, the
 handoff tells Victor to satisfy this same whole-file gate before running the printed manual commit.
+
+**And one check that scan cannot make, because it is about the change and not the file.** *"Every section
+has one bullet"* is a property of the text as it stands; *"a frozen bullet is still the one Victor froze"*
+needs a baseline. So, before staging: `git diff HEAD -- notes/cv/cv-bullets.md`, with the `HEAD` side read from
+`git show HEAD:notes/cv/cv-bullets.md` — live `HEAD`, **not `{BASELINE}`**, which in `PROJECT_PATH = all` is several commits behind by the second iteration.
+
+**A section carrying `[refined]` both on disk and in `HEAD`, whose bullet differs between the two, is
+reported and nothing else.** Name it under Finishing item 6, leave `cv-bullets.md` **unstaged**, and say
+the file needs Victor's own commit. **This check never restores, never edits, never stages** — which is
+the design and not a limitation:
+
+- The prohibition above already stops the run from writing a marked section, so a marked section that
+  changed is, on any correct run, **Victor's own edit**. A check that undid it could only ever fire on him.
+- Restoring from `HEAD` puts back a whole heading, marker included. Deleting the marker is how he reopens
+  a bullet, so a restore would silently revert a reopening — and make the run write the very marker it is
+  forbidden to write.
+- A section whose marker is on disk but **not** in `HEAD` is outside this check: that is Victor freezing a
+  bullet he just polished, and there is no frozen baseline to compare it against.
+
+**On those two paths, the staging half is the same rule for the same reason.** `git add` takes the whole file, so staging it
+would carry his hand-authored bullet into a `docs: portfolio-audit …` commit, under an authorization that
+covers this run's **outputs** and nothing else — the ruling `_interview-prep-standard.md` already makes
+for an uncommitted insertion swept into a later audit's commit, and the one this prompt's `TODO-STOPPED`
+disposition makes for the `es/` twin. **That precedent has two halves and both apply here:** leave the
+file unstaged, *and* say plainly that any bullet this run wrote is sitting in the working tree and that
+`cv-bullets.md` must be committed by hand before the next run — otherwise the next run inherits the same
+unstaged state and never commits it either. Label the commit `cv-bullets not staged — <reason>`: it is not
+"untouched" when this run wrote another project's bullet into it.
+
+A dry run prints the same report, unchanged, because the check acts on nothing either way.
 
 If the file does not exist, create it with the header:
 ```markdown
@@ -344,6 +493,11 @@ Entry format — the same on every path, because only one bullet is ever drafted
 
 - [Bullet]
 ```
+A heading may also read `## {PROJECT_PATH} [refined]`. **A run never writes that suffix** — it is Victor's,
+it means the section is frozen, and the format above is what a run produces every time. **The suffix is not
+part of the project path**, so a section carrying it is that project's section: locate a project's section
+by its `{PROJECT_PATH}` with the suffix optional, never by an exact-line match, or the run will decide the
+section is missing and write a duplicate.
 
 ---
 

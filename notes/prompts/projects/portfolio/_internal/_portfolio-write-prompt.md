@@ -19,8 +19,15 @@ commit — the orchestrator owns those.
 PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | ... — the project folder path]
 SECTION      = [all | Architecture & Patterns | Security & Auth | Business Rules | Technical Decisions | Testing]
                → the audit orchestrator passes ONE section; "all" is for a standalone run only.
+SCOPE        = [full | backend | frontend | global]
+               → which column of this section's canonical-table row you read, and which `###` tier
+               sub-heading you write under. Default `full`: read every column and file each question
+               under the sub-heading its code area belongs to. Never write outside the sub-headings
+               SCOPE names — the other tiers stay byte-for-byte. Angular-only projects have no
+               sub-headings and no tiers, so every value behaves as `full` there.
 
-Use PROJECT_PATH and SECTION wherever the prompt refers to {PROJECT_PATH} and {SECTION}. Derive
+Use PROJECT_PATH, SECTION and SCOPE wherever the prompt refers to {PROJECT_PATH}, {SECTION} and
+{SCOPE} (default `full` if left blank). Derive
 {PROJECT_NAME} as the last path segment (e.g. `07-timetrack`) and the project type from the number
 (01–06 Angular-only, 07+ full-stack).
 
@@ -46,6 +53,17 @@ the whole job, and it must be exhaustive for that area. Do not write questions f
 you notice a decision that belongs in another section, mention it in the report, do not write it. The
 section → code-area mapping is the standard's **"Bank sections → code areas (canonical table)"** — use
 that, never a local copy.
+
+**`{SCOPE}` narrows it once more, to a column of that row and a `###` sub-heading inside that section.**
+On a full-stack project the canonical table gives each section a `backend`, a `frontend` and a `global`
+column; you read **only the columns `{SCOPE}` names** and write **only under that scope's sub-heading**
+(`backend` → `### Backend`, `frontend` → `### Frontend`, `global` → `### Cross-tier`), creating it if
+absent. `full` reads every column and files each question under the sub-heading its code area belongs
+to. **Every other sub-heading in the file is left byte-for-byte** — including ones inside your own
+section that an earlier run wrote for another tier. A cell reading `—` means this section has no surface
+for this scope: report that and write nothing, which is not the same as a section the project lacks.
+Angular-only projects (01–06) have no tiers and no sub-headings; there every scope behaves as `full` and
+the questions sit directly under the `##` heading.
 
 (`SECTION = all` on a standalone run means author every section — then still work one section fully
 before the next, and read each section's area as above.)
@@ -77,7 +95,7 @@ lands in `en/` and stage T brings the twin into line.
 **When `{SECTION}` ≠ all (the normal orchestrated run), your reading list is small and fixed:**
 `{PROJECT_PATH}/PLANNING.md`, `notes/prompts/_internal/_shared-context.md` (the target companies and
 the interview context — the source for both, per the standard's quality bar), and **only your
-section's code area** from the standard's canonical table, **and the bank file
+section's code area, in the columns `{SCOPE}` names,** from the standard's canonical table, **and the bank file
 `notes/interview-prep/projects/en/{PROJECT_NAME}.md` itself** — nothing else. Do not read the other
 READMEs, the other layers, or files outside your area: the per-section split exists precisely so each
 subagent's context stays on one area. The bank file is named here because two of your rules need it and
@@ -85,7 +103,11 @@ neither is satisfiable from your section alone: the ID counter runs over the who
 append/dedupe rule is a claim about what the file already contains. Read before writing anything.
 
 **Only when `SECTION = all` (standalone run)**, read the full per-type list below on top of PLANNING.md
-and `_shared-context.md`:
+and `_shared-context.md` — **narrowed by `{SCOPE}` exactly as the per-section list above is**: on a
+full-stack project a `backend` run reads the `backend/…` entries and skips the `frontend/…` ones, a
+`frontend` run the reverse, and `global` reads what sits between them (the READMEs, `docker-compose.yml`,
+and both sides of whatever contract it is judging). Only `full` reads the whole list. The list below is
+written for `full`; it does not repeat the narrowing.
 
 **For ANGULAR projects:**
 - `{PROJECT_PATH}/PLANNING.md`, `{PROJECT_PATH}/README.md`
@@ -118,11 +140,15 @@ Examples of the shape (adapt to the actual code):
 - "What happens in your JWT filter if the token is expired? Where exactly does the request stop?"
 
 Apply the standard's **exhaustiveness rule** within your section: as many questions as there are real
-decisions and patterns to defend in this area — do not cap at 5. Save them under the `{SECTION}` heading
+decisions and patterns to defend in this area — do not cap at 5. Save them **under the `###` sub-heading
+`{SCOPE}` names, inside the `{SECTION}` heading** (on an Angular-only project, directly under
+`{SECTION}` — there are no sub-headings there)
 in `notes/interview-prep/projects/en/{PROJECT_NAME}.md` using the standard's file template and its
 per-question format — `**[{PROJECT_NAME}-NNN] Question?**`, the ID first inside the bold text — creating
-the heading if the file/section does not exist yet; if questions for this section already exist, append
-only what is not already there and never duplicate a decision or code path already covered.
+the heading and the sub-heading if they do not exist yet; if questions for this sub-heading already
+exist, append only what is not already there and never duplicate a decision or code path already
+covered. **Never write, reword or delete a line under another sub-heading**, even one inside your own
+section: a tier you were not asked to read is a tier you may not touch.
 
 These questions are saved **regardless of the eventual verdict** — they are useful prep even for an
 unfinished project.
@@ -132,8 +158,9 @@ unfinished project.
 ## Output — report (no commit)
 
 Do not commit. Leave the question file in the working tree. Report:
-- The project type detected and the files you read for `{SECTION}`.
-- How many questions you wrote for this section (and how many were appended vs already there).
+- The project type detected, the columns `{SCOPE}` resolved to, and the files you read for `{SECTION}`.
+- **The `###` sub-heading you wrote under**, or `no surface for this scope` where the cell read `—`.
+- How many questions you wrote under it (and how many were appended vs already there).
 - **The ID range you allocated** (e.g. `01-todo-list-042` … `-057`) and the highest ID that existed in
   the file before you started. The next section's author allocates from the file, so a run that cannot
   say what it took is a run nothing can check for a collision.
