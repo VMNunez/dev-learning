@@ -9,7 +9,7 @@ Preguntas específicas de las decisiones de implementación tomadas en este proy
 
 **[01-todo-list-012] Tu app tiene tres componentes y un servicio. Explícame quién es dueño de la lista de tareas y quién puede modificarla.** ⭐⭐⭐
 
-`TaskService` guarda el estado: un `signal<Task[]>` que almacena la lista de tareas, y es el único que escribe sobre él — `addTask`, `toggleTask` y `deleteTask` viven ahí. Elegí un flujo de datos unidireccional para que la lista tenga una única fuente de verdad: `TaskList` lee el signal y deriva de él, `TaskForm` solo llama a `addTask`, y `TaskItem` nunca toca el estado. Cualquier componente que necesite la lista inyecta el servicio en vez de recibir una copia que podría divergir.
+`TaskService` guarda el estado en un `signal<Task[]>` que almacena la lista de tareas, y es el único que la modifica, porque `addTask`, `toggleTask` y `deleteTask` están en el servicio. Elegí un flujo de datos unidireccional para que todos los componentes lean esa misma lista y no cada uno la suya: `TaskList` lee la señal y calcula a partir de ella la lista filtrada que pinta, `TaskForm` solo llama a `addTask` para añadir tareas, y `TaskItem` es la hoja presentacional — recibe una tarea por `input` y emite su id cuando se pulsa marcar o borrar, sin tocar el estado. Cualquier componente que necesite la lista de tareas inyecta el servicio y lee esa misma señal, en vez de ir pasándose la lista de componente en componente por inputs.
 
 **[01-todo-list-013] ¿Por qué pusiste el estado en un servicio en vez de en `TodoPage`, el componente de página?** ⭐⭐⭐
 
