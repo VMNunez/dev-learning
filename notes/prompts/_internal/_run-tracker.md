@@ -155,7 +155,12 @@ PROGRESS evidence is surfaced by `simulation-block-open` and adjudicated by the 
 Read left to right: the brief chose the project → the plan built it → review, README and portfolio
 closed it. **The `review-audit` cell is an execution record, not review state**: whether a tier holds
 unreviewed code is answered by `{project}/PROJECT-BACKLOG.md`'s per-tier `Last Reviewed` lines, which the
-unreviewed-code gate reads and this column never is. The seven 2026-07 cells were backfilled on
+unreviewed-code gate reads and this column never is. **The `portfolio-audit` cell is an execution record
+too, and since 2026-09-05 (`REC-189`) it can hold a bank-only run** — `2026-09-05 (backend only, …)` —
+which computes no verdict and closes no gate. Because a cell records the *last* run and not a history,
+such a run **overwrites** the cell that held the last full gate result: the verdict itself lives in the
+project's own `PLANNING.md` §23 G7 box, and the bank's per-tier freshness in its `**Last banked — «tier»:**`
+header. Neither is this column, and neither is lost when it moves. The seven 2026-07 cells were backfilled on
 2026-08-06 from
 each backlog's own `Last Reviewed` lines — until then the column was empty although every project had
 been reviewed, because the prompt's own Step 6 never mentioned this file (REC-043). **`project-brief` is the one column whose row may not exist yet**: it decides the *next*

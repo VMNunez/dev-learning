@@ -9,7 +9,8 @@ Run this **inside the supported agent runtime**. It is the only portfolio prompt
 go/no-go gate** on a finished project — is it ready to show a recruiter and reference in a job
 application **today**? It runs hands-off on every normal path; the only thing that stops it is a
 `cv-bullets.md` section left with two options by a pre-2026-08-31 run, whose choice was owed to Victor
-(Finishing item 6). It produces four things (see `_portfolio-standard.md`):
+(Finishing item 6). It produces four things (see `_portfolio-standard.md`) — **all four on a `full` run;
+a `backend` / `frontend` / `global` run is bank-only and produces the first alone**:
 
 1. An **exhaustive bank of project-specific interview questions, in English and Spanish** — the
    English built **one bank section at a time**, each authored then cold-reviewed by its own pair of
@@ -46,6 +47,19 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > PLANNING.md's Section 0 or its steps list, not a `§15` heading every plan has. All ✅ owes the whole
 > chain unqualified, and a project whose steps cannot be read there is not exempt — run the chain. In
 > `PROJECT_PATH = all` this binds per project, never per run.
+>
+> **A bank-only run owes none of the three either, and that exemption is its own path and no wider.** A
+> run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global` writes questions and stops: it never opens
+> `PROJECT-BACKLOG.md`, never reads a README, prints no verdict and drafts no CV bullet — so nothing the
+> chain exists to make accurate is anything it reads. It signs off **no gate**, G7 included, for the
+> same reason a ❌ cannot tick that box: the box records a verdict and this run produces none. A
+> project's tiers may therefore be banked in any order, across any number of sessions, long before the
+> chain is due — which is the point, since a tier finished months before its project is what this
+> scope exists to capture. `full` owes the whole chain unqualified.
+>
+> **On an Angular-only project (01–06), run `full`.** There is no backend tier and no cross-tier seam
+> there, so `frontend` walks exactly the code `full` walks and differs only in printing no verdict —
+> leaving G7 open with nothing on screen saying why.
 
 > **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
@@ -82,7 +96,18 @@ DRY_RUN      = false
 ```
 (An unfinished project simply gets a ❌ Not ready verdict — that is expected, not an error.)
 
+**C · Bank one tier only** (a full-stack project whose tiers finish months apart)
+```
+PROJECT_PATH     = projects/07-timetrack
+PORTFOLIO_SCOPE  = backend
+DRY_RUN          = false
+```
+(Bank-only: questions for that tier and nothing else — no verdict, no CV bullet, no gate signed.)
+
 **Rules of thumb:**
+- `PORTFOLIO_SCOPE` defaults to `full`. Use `backend` / `frontend` / `global` to bank a full-stack
+  project one tier at a time — including while the other tier is still being built. It buys a session
+  boundary, not tokens: each scope still walks all five sections, only with a narrower code area.
 - Fill in **only** the config block. Everything below it is machinery — never edit it.
 - The verdict is honest: ❌ means the questions were still saved (they are useful prep) but no CV
   bullet or GitHub description was produced.
@@ -92,14 +117,30 @@ DRY_RUN      = false
 ````
 ## Configuration — edit only this block
 
-PROJECT_PATH = [projects/06-hr-portal | projects/07-timetrack | all]
-DRY_RUN      = [false | true]
+PROJECT_PATH    = [projects/06-hr-portal | projects/07-timetrack | all]
+PORTFOLIO_SCOPE = [full | backend | frontend | global]
+DRY_RUN         = [false | true]
 
 ## PROJECT_PATH = all runs the gate on every project in turn — see notes/prompts/_internal/_batch-mode.md.
 ## Order: projects/01-todo-list, 02-weather-app, 03-expense-tracker, 04-meal-finder, 05-task-manager,
 ## 06-hr-portal, 07-timetrack. The project type is derived from the number (01–06 Angular-only, 07+ full-stack).
+##
+## PORTFOLIO_SCOPE banks a full-stack project one tier at a time instead of in one long run. Default =
+## full. `backend`, `frontend` and `global` are BANK-ONLY: Phase 1a with that tier's code area, Phase 1b
+## for that tier's sub-headings, and nothing else — no verdict, no CV bullet, no GitHub description, no
+## profile README, cv-bullets.md never staged, no gate signed. `full` runs every phase and is the only
+## scope that closes G7. `global` is the seam between the tiers — the API contract, the shared error
+## format, docker-compose, the auth flow end to end — and it is a scope, never a section.
+## What it buys is a SESSION BOUNDARY, not tokens: every scope still dispatches all five sections, each
+## with a narrower code area, so the three partials cost more in total than one full run and are worth
+## it only because they fit in a day and can run before the project is finished.
+## Angular-only projects (01–06) have no tiers: run them `full` (see the ▶ Run first block).
+## In PROJECT_PATH = all the scope BINDS PER PROJECT and is a no-op where the tier does not exist — it
+## is not one of the second fields _batch-mode.md declares ignored in `all` mode, and this line is what
+## says so for this prompt.
 
-Use PROJECT_PATH and DRY_RUN wherever the prompt refers to {PROJECT_PATH} and {DRY_RUN}.
+Use PROJECT_PATH, PORTFOLIO_SCOPE and DRY_RUN wherever the prompt refers to {PROJECT_PATH},
+{PORTFOLIO_SCOPE} and {DRY_RUN} (default {PORTFOLIO_SCOPE} to `full` if left blank).
 
 ---
 
@@ -131,6 +172,13 @@ question bank in your own context.
 The verdict + CV bullet + GitHub description are short and deterministic, so you do those yourself.
 
 ## If PROJECT_PATH = all
+**`{PORTFOLIO_SCOPE}` binds per project here, and is not derived per target.** `_batch-mode.md` declares
+a second field *tied to the target* ignored in `all` mode; this one is not tied to the target, it is a
+choice about how much of each project to bank, so it applies to every project in turn — and is simply a
+**no-op** where that project has no such tier, exactly as `review-audit`'s scope is on 01–06. A
+`backend` batch therefore banks 07's backend and does nothing at all on 01–06, which is a legitimate
+run and not an error; say so per project rather than skipping the row.
+
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next: with
 `{DRY_RUN} = false`, commit that project; with `{DRY_RUN} = true`, finish its explicit no-commit handoff
@@ -140,7 +188,10 @@ overlap, since their subagents edit shared files and parallel commits race the g
 Put each project's report under a `### [project]` heading, and after the last print the `_batch-mode.md`
 summary table (`Project | Verdict | Questions`), whose Questions cell carries **both counts** —
 `en/N · es/N`, or `en/N · es/—` where the twin was not produced, so a batch cannot report a bank as done
-while half of it is missing. **Context guard for batch runs:** with ~7 projects × (up
+while half of it is missing. **On a partial scope the Verdict cell holds no verdict, because none was
+computed**: write `bank-only — «scope»` for a project that has that tier, and `n/a — no «scope» tier` for
+one that does not (every Angular-only project on a `backend` or `global` batch). Leaving the cell empty
+would read as a run that failed to reach a verdict rather than one that was never asked for one. **Context guard for batch runs:** with ~7 projects × (up
 to 5 sections × 2 subagents, plus one translator), full decision-by-decision traces returned to you
 would saturate your own
 context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
@@ -170,11 +221,27 @@ First decide which sections are **present** (does the project have auth? tests?)
 ones. Then process the present sections **one at a time, sequentially** — they all edit the same
 question file, so never overlap. For each section, run author then reviewer; neither commits.
 
+**Then resolve `{PORTFOLIO_SCOPE}` into a code area and a sub-heading per section — the section list
+itself does not shrink.** On a full-stack project each present section is dispatched once, reading only
+the column `{PORTFOLIO_SCOPE}` names in the canonical table, and writing only under that scope's `###`
+sub-heading. A cell reading `—` means that section has no surface for this scope — `Cross-tier` under
+Testing — so the section is not dispatched **for this scope**, which the report distinguishes from a
+section the project does not have. `full` dispatches each present section once and lets it read every
+column, writing each question under the sub-heading its code area belongs to. **On an Angular-only
+project there are no sub-headings**: every scope resolves to the same bare sections, which is why the
+`▶ Run first` block says to run those `full`.
+
 **Subagent A — author (this section).** Launch a `role-appropriate` subagent, `reasoning tier: deep`,
 `execution: foreground` (judging which code decisions are interview-worthy is the whole task):
 
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-write-prompt.md` and execute it for
-> `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. **Read only this section's code area**
+> `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`, `SCOPE = {PORTFOLIO_SCOPE}`. **Read only
+> the columns of this section's canonical-table row that `SCOPE` names**, and write your questions
+> **only under that scope's `###` sub-heading** inside the section, creating it if absent. On `full`,
+> read every column and file each question under the sub-heading its code area belongs to. **Every
+> other sub-heading in the file is left byte-for-byte** — you never edit a tier you were not asked to
+> read. On an Angular-only project there are no sub-headings and the section holds its questions
+> directly. **Read only this section's code area**
 > (the standard's canonical table) plus PLANNING.md — **and the bank file itself, whose bold lines you
 > need for the ID counter and the dedupe rule** — and write **only this section's** questions to
 > `notes/interview-prep/projects/en/«name».md` per the standard — each with the next unused
@@ -208,7 +275,11 @@ decisions the author missed — same judgment as authoring; this is the portfoli
 the wrong place to save):
 
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-review-prompt.md` and execute it for
-> `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`. Audit **only this section** hard against
+> `PROJECT_PATH = {PROJECT_PATH}`, `SECTION = «this section»`, `SCOPE = {PORTFOLIO_SCOPE}`. Audit
+> **only this section, and within it only the sub-headings `SCOPE` names** — walk the same columns the
+> author was given, and count decisions-found vs questions over that code area alone, so the ratio
+> measures what this run was asked to cover. **Never edit a sub-heading outside the scope**, even to
+> improve it; report a defect you see there instead. Audit **only this section** hard against
 > the standard: walk its code area, count decisions-found vs questions, add every missing one, fix
 > thin/weak/duplicate questions directly — **except inside a `[refined]` block, which you judge, count
 > and report but never repair**. Check every question carries a well-formed, unique `«name»-NNN` ID,
@@ -250,6 +321,14 @@ over the finished bank (the same decision or code path landing in two sections �
 where an interviewer is likeliest to ask it, remove the other). Fix a stray duplicate directly — this
 needs the whole-file view, so it belongs here, not in a per-section subagent. Then continue to Phase 1b.
 
+**On a partial scope the scan reads everything and deletes only in its lane.** ID uniqueness is a
+whole-file property, so you read the whole bank as always — but a duplicate you may **remove** is one
+whose surviving and dropped copies both sit under sub-headings `{PORTFOLIO_SCOPE}` covers. A duplicate
+**straddling the boundary** — this run's backend question against a frontend one an earlier run wrote —
+is **reported by ID and left standing**, the same disposition two frozen duplicates already get, and a
+later `full` run is what settles it. Removing it here would delete a tier nobody re-read this session,
+which is the one way a partial run can corrupt the bank.
+
 **Two constraints on that scan, both from the standard's identity section.** A question carrying
 `[refined]` is **never the one you delete**: where a frozen question and an unrefined one duplicate, the
 unrefined one goes, and where two frozen ones do, you delete neither and report the pair by ID. And the
@@ -267,6 +346,32 @@ returned `BLOCKED` never got a reviewer, and a bank written before this rule exi
 report says so by section. Do not backfill them yourself: allocating IDs across a bank is per-section
 work, and the section that was blocked is the one nobody finished.
 
+**Stamp the bank's header now — after the dedupe, before Phase 1b.** It goes here and not in Finishing
+for two reasons: Phase 1a is where the run learns which sections completed, and stage T must translate a
+header that is already current rather than the previous run's dates. **Three branches, and they are
+`_review-standard.md`'s, which this borrows in full rather than in part:**
+
+1. **Every section of this scope completed** → set `**Last banked — «tier»:**` to today for each tier in
+   `{PORTFOLIO_SCOPE}`.
+2. **A section of this scope did not** — it returned `BLOCKED`, or its questions-vs-decisions ratio was
+   still below 1 after its one retry → today's date **plus** `(incomplete — «section(s)» not banked)`,
+   naming every such section. A plain date claims the whole tier was mined, and the next reader has no
+   other way to learn otherwise. **The qualifier attaches to a tier only where that section had a cell
+   for it**: the unit that fails here is a *section*, which spans tiers, while the rule this borrows had
+   slices that each belonged to one tier. So a blocked `Testing` section on a `full` run qualifies
+   `backend` and `frontend` and leaves `cross-tier` a plain date, because the canonical table gives
+   Testing no cross-tier cell and cross-tier lost nothing.
+3. **Every section of this scope failed that way** → **stamp nothing**; leave the line exactly as it was.
+   A date on a tier this run did not actually bank is worse than the `never` it replaces.
+
+**Every other tier's line is left exactly as it was**, a date or `never` — that is the whole point of the
+borrowed rule, and it is what keeps a partial run from making an unbanked tier look current. On an
+Angular-only project the same three branches apply to the single untiered `**Last banked:**` line. A bank
+with no header gains one now — **including under branch 3**, where the header is created with every line
+reading `never`, since "leave the line as it was" cannot mean anything when there is no line yet, and an
+absent header is indistinguishable from a bank written before this rule existed. **The stamp gates nothing**: no run refuses on it, and Finishing item 1 is
+what puts it in front of Victor.
+
 **Do the dedupe before Phase 1b, never after.** A duplicate removed from the English after the twin
 exists leaves an orphan question in the Spanish that no parity count catches until the next run — the
 `es/` would simply have one section one question longer, which reads as a translator error rather than
@@ -280,7 +385,12 @@ The English bank is now finished and deduped, so it is a stable source. **Subage
 substitution):
 
 > Read `notes/prompts/projects/portfolio/_internal/_portfolio-translate-prompt.md` and execute it for
-> `PROJECT_PATH = {PROJECT_PATH}`. Translate the finished
+> `PROJECT_PATH = {PROJECT_PATH}`, `SCOPE = {PORTFOLIO_SCOPE}`. **Read the whole English file** —
+> parity and verbatim ID copying are whole-file properties — but **write only the sub-headings `SCOPE`
+> names**, leaving every other Spanish byte exactly as it stands, `[refined]` or not. Re-rendering a
+> tier this run did not author would put you through Spanish that is already someone's. Report, without
+> touching, any out-of-scope sub-heading whose Spanish count no longer matches its English: that half is
+> simply older than its source. Translate the finished
 > `notes/interview-prep/projects/en/«name».md` into its twin
 > `notes/interview-prep/projects/es/«name».md`. **Do NOT commit.** «If any section was left
 > half-written, name it here so it is skipped rather than half-translated.» Copy every question ID
@@ -294,8 +404,11 @@ It runs **once per project, not once per section**: the whole point of the stage
 stable, reviewed source, and five per-section translators would each re-derive the register from
 scratch and produce a twin that changes voice at every heading.
 
-**Parity gate — act on T's counts, don't just record them.** If any section's Spanish count differs
-from its English count, or a section is missing that was not named as skipped, the twin is not done:
+**Parity gate — act on T's counts, don't just record them.** **It runs over the sub-headings
+`{PORTFOLIO_SCOPE}` covers, and only those** — an out-of-scope half that no longer matches its English
+is reported as behind, never retried and never repaired here, because this run did not write it and a
+retry would only send T back into Spanish it may not touch. Within the scope: if any Spanish count differs
+from its English count, or a sub-heading is missing that was not named as skipped, the twin is not done:
 re-dispatch T **once**, naming the exact sections that disagree. One retry maximum; if parity still
 fails, **this content acceptance gate has failed** — name the mismatched sections in the final report
 and record this project `blocked` in `_run-tracker.md`, on the dry branch too, exactly as a below-1
@@ -319,6 +432,12 @@ below: the verdict is the go/no-go on the **project**, and no part of it reads t
 either language.
 
 ### Phase 2 — Verdict (orchestrator)
+
+**Skip Phases 2 and 3 entirely when `{PORTFOLIO_SCOPE}` is not `full`.** A bank-only run computes no
+verdict, drafts no CV bullet and no GitHub description, never touches the profile README, and never
+stages `notes/cv/cv-bullets.md`. It signs off no gate. Go straight to Finishing, whose bank-only branch
+says what to print and what to commit — and do not print a ✅/⚠️/❌, not even a provisional one: a
+verdict is what G7's box records, and nothing here computed one.
 
 Compute the verdict yourself per the standard's **verdict logic**: Check 1 (feature completeness from
 `{PROJECT_PATH}/PLANNING.md`) gates Check 2 (code quality from `{PROJECT_PATH}/PROJECT-BACKLOG.md`).
@@ -370,6 +489,21 @@ inside the learning flow: after editing, print the commit + push commands for th
 
 ## Finishing
 
+**The header stamp was written at the end of Phase 1a** (see there), so by now it is already on disk and
+the translator has rendered its Spanish. Print it in item 1; do not re-stamp it here.
+
+**If `{PORTFOLIO_SCOPE}` is not `full`** — a bank-only run — print item 1 and nothing after it, plus one
+line naming the scope, the sub-headings written, the tiers still reading `never`, and the fact that no
+verdict was computed and **G7 is not signed**. There is no item 2 through 6: no verdict, no CV bullet,
+no GitHub description, no profile README, and `notes/cv/cv-bullets.md` is **never staged** on this path,
+so the integrity gate and the `git diff` baseline check below do not run either. With `{DRY_RUN}` =
+false commit the bank with the ❌ branch's `git add` below (questions are saved regardless of any
+outcome), labelling the commit `bank-only — «scope»`; with `{DRY_RUN}` = true commit none of it and
+print the sequence instead. Record the project in `_run-tracker.md` with the scope in the parenthetical
+the shared close-out contract already defines — `2026-09-05 (backend only, completed — …)` — and
+`completed` only if this scope's own gates passed, `blocked` otherwise, exactly as on any other run.
+Then the self-report.
+
 **If Check 2 stopped the gate** (no backlog · no `Last Reviewed` header · a tier reading `never` or
 carrying `(incomplete — …)`), the list below does not apply: print item 1, then the stop and the exact
 `review-audit` run owed, and nothing else — no verdict, no CV bullet, no GitHub description, no profile
@@ -384,7 +518,9 @@ Otherwise print, in this order:
    why — a pair reported as one number is the one thing a later reader cannot check. Add the **ID range
    this run allocated**, and, on its own line, **every defect a subagent reported inside a `[refined]`
    block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
-   role from repairing them, and Victor is the only reader who can reopen one.
+   role from repairing them, and Victor is the only reader who can reopen one. **On a full-stack
+   project also print the three `Last banked` lines as they now stand**, so a tier still reading `never`
+   is visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
 3. CV bullet (one) — **omit if ❌**. On its own line under it, **every Project-bullet spec condition
    the saved bullet does not satisfy** — or, where the section was frozen and nothing was saved, the
@@ -462,8 +598,10 @@ paths were intended, and on this branch the `es/` path *looks* intended.
 commit message body with its shape (`blocked — partial` restored / `blocked — partial` left in the tree
 / `uncovered decisions` / `parity failed (es/)` / `blocked — partial (es/)`). Its outcome is not decided here — Phase 1a's two-shapes rule and Phase 1b's parity and
 `TODO-STOPPED` branches already fixed it as `blocked`, on the dry branch too. The label is not ceremony: this bank has no machine-readable
-freshness marker of its own — no fingerprint, and `/simulator` reads the folder ungated — so that label
-and the tracker cell are the only marks either shape leaves on disk.
+freshness marker of its own — no fingerprint, and `/simulator` reads the folder ungated — so that label,
+the tracker cell and the header's `**Last banked — «tier»:**` line are the only marks either shape leaves
+on disk. The stamp is the one a later reader meets first, which is why its `(incomplete — …)` branch
+exists: a blocked section that stamped a plain date would be the one mark that lies.
 
 **Neither shape moves the Phase 2 verdict.** That verdict is the go/no-go on the **project**, and
 `_portfolio-standard.md`'s verdict logic owns it: PLANNING.md, then the backlog, then its two sanity
@@ -491,6 +629,14 @@ the diff.
   `HEAD` whose bullet changed is named in Finishing item 6 and `cv-bullets.md` is left unstaged — nothing
   is restored, on either `{DRY_RUN}` value, because the change can only be Victor's own.
 - **Questions are saved regardless of the verdict** — a ❌ still commits the question file.
+- **A partial `{PORTFOLIO_SCOPE}` run stays in its lane.** `backend` / `frontend` / `global` read the
+  whole bank but write only their own `###` sub-headings, in both languages; every other sub-heading is
+  left byte-for-byte, the cross-section scan reports a boundary-straddling duplicate instead of removing
+  it, and the header stamp moves only for the tiers actually banked. A run must never overwrite the half
+  it did not read.
+- **Only `full` computes a verdict, and only a verdict signs G7.** A bank-only run prints no ✅/⚠️/❌,
+  drafts no CV bullet or GitHub description, never touches the profile README, and never stages
+  `notes/cv/cv-bullets.md`. It needs none of §23's chain, and it closes no gate.
 - **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
   orchestrator commits once, after every section's author→reviewer pair **and the project's translator**
   are done; neither the section subagents nor the translator commits.
