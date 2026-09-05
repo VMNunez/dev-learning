@@ -107,6 +107,12 @@ source and hand you back findings tables — you map the slices and merge. You n
 yourself.
 
 ## If PROJECT_PATH = all
+**`{REVIEW_SCOPE}` binds per project here, and is not derived per target.** It is `_batch-mode.md`'s
+third disposition — a choice about how much of each project to review, not about which project to
+review — so it applies to every project in turn and is simply a **no-op** where that project has no such
+tier. A `backend` batch therefore reviews 07's backend and does nothing at all on the Angular-only
+01–06, which is a legitimate run and not an error; say so per project rather than skipping the row.
+
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
 each project's report under a `### [project]` heading, and after the last print this pipeline's own

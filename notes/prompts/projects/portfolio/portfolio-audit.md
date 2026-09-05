@@ -135,9 +135,8 @@ DRY_RUN         = [false | true]
 ## with a narrower code area, so the three partials cost more in total than one full run and are worth
 ## it only because they fit in a day and can run before the project is finished.
 ## Angular-only projects (01–06) have no tiers: run them `full` (see the ▶ Run first block).
-## In PROJECT_PATH = all the scope BINDS PER PROJECT and is a no-op where the tier does not exist — it
-## is not one of the second fields _batch-mode.md declares ignored in `all` mode, and this line is what
-## says so for this prompt.
+## In PROJECT_PATH = all the scope BINDS PER PROJECT and is a no-op where the tier does not exist —
+## _batch-mode.md's third disposition, which names this field as one of its two precedents.
 
 Use PROJECT_PATH, PORTFOLIO_SCOPE and DRY_RUN wherever the prompt refers to {PROJECT_PATH},
 {PORTFOLIO_SCOPE} and {DRY_RUN} (default {PORTFOLIO_SCOPE} to `full` if left blank).
@@ -172,9 +171,9 @@ question bank in your own context.
 The verdict + CV bullet + GitHub description are short and deterministic, so you do those yourself.
 
 ## If PROJECT_PATH = all
-**`{PORTFOLIO_SCOPE}` binds per project here, and is not derived per target.** `_batch-mode.md` declares
-a second field *tied to the target* ignored in `all` mode; this one is not tied to the target, it is a
-choice about how much of each project to bank, so it applies to every project in turn — and is simply a
+**`{PORTFOLIO_SCOPE}` binds per project here, and is not derived per target.** It is `_batch-mode.md`'s
+third disposition — a choice about how much of each project to bank, not about which project to bank —
+so it applies to every project in turn, and is simply a
 **no-op** where that project has no such tier, exactly as `review-audit`'s scope is on 01–06. A
 `backend` batch therefore banks 07's backend and does nothing at all on 01–06, which is a legitimate
 run and not an error; say so per project rather than skipping the row.

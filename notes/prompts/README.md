@@ -970,12 +970,14 @@ processes every target in order, one commit per target. Full rules: `notes/promp
 - **Supports `all`:** `interview-prep-audit` (`FILE = all`); `readme-audit`, `review-audit`,
   `portfolio-audit` (`PROJECT_PATH = all`); `plan-audit` (`PROJECT = all`, **review mode only**);
   `sql-exercises` (`TOPIC = all`, **practice mode only**), `/code-review-practice` (`TYPE = all`).
-  `portfolio-audit`'s `PORTFOLIO_SCOPE` is **not** among the second fields `_batch-mode.md` declares
-  ignored in `all` mode: it says how much of each project to do, not which target to do, so it binds per
-  project and is a no-op where the tier is absent — and it states that in its own `all` block.
-  `review-audit`'s `REVIEW_SCOPE` only **presupposes** the same reading, in a config comment, while its
-  own `all` block says nothing; which of the two is the defect there is open in `REC-211` and is not
-  settled here.
+  A second field tied to the target takes one of **three** dispositions there, and each prompt's own
+  `all` block states which one (`REC-211`, 2026-09-05): **derived per target** — `sql-exercises`'s
+  `COUNT`, `FILE` and resolved `FOCUS`, read from each topic's own route step; **forced to a fixed value** —
+  `interview-prep-audit`'s `SECTION`, always `all`, and `/code-review-practice`'s `FOCUS`, always blank;
+  and **bound per target unchanged** — `portfolio-audit`'s `PORTFOLIO_SCOPE` and `review-audit`'s
+  `REVIEW_SCOPE`, which say how much of each project to do rather than which target to do, so they apply
+  per project and are a no-op where the tier is absent. `_batch-mode.md` owns the three, and its old
+  single answer named two example fields that no batchable prompt has.
 - **One target only:** `coverage-prompt`, `coverage-verify`, `notes-plan-prompt`, `notes-audit`,
   `interview-prep-route`,
   `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run).
