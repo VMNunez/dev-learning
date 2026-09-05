@@ -66,6 +66,16 @@ role on *nobody asks this*, grep the existing roles' own checklists for the ques
 ask it, found the addition on what changes about **how** it is asked. That is also the only thing
 separating it from `REC-042`'s illegitimate second computation, which the same row invoked to refuse its
 other half.
+**Also `REC-180`'s `es`-review half, the same test run in the opposite direction — a row proposing to
+*avoid* a new role by widening an existing one, which reads as the cheap shape and is priced from the
+role's subject alone.** That row asked for "a clause in `_portfolio-review-prompt.md` widening it to a
+second, `en/`-blind pass, **not a sixth prompt**"; that reviewer is dispatched **per section, before the
+artefact it would audit exists**, and its fence is the **mirror image** of the one the new check needs —
+it must read the `en/` and may not open the `es/`. So measure the host's **unit of dispatch, its position
+in the run, and the direction of its fence** before adopting a widening: a role cannot carry a
+prohibition it also violates depending on which invocation is reading it, and a per-item role cannot
+produce a whole-artefact judgement. Where all three collide, the sixth file is the cheap shape and the
+clause is the expensive one.
 
 **An isolation clause fences *content*, and a proof demanded of a fenced role must take a form the
 fence permits.** `REC-112` found the `en/`-blind Spanish reviewer told to "read only" its Spanish
