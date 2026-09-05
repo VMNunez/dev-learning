@@ -14,8 +14,8 @@ a `backend` / `frontend` / `global` run is bank-only and produces the first alon
 
 1. An **exhaustive bank of project-specific interview questions, in English and Spanish** — the
    English built **one bank section at a time**, each authored then cold-reviewed by its own pair of
-   subagents (so no section gets skimmed), then translated once per project into its `es/` twin. Saved
-   regardless of the verdict.
+   subagents (so no section gets skimmed), then translated once per project into its `es/` twin and
+   audited once more by a Spanish reviewer that never sees the English. Saved regardless of the verdict.
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
 3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub description**.
 4. If ✅ Ready — a **direct update of Victor's GitHub profile README** (`dev/portfolio/VMNunez`, a
@@ -66,7 +66,7 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 **Internal pieces this orchestrates** (you never launch these directly):
 `_portfolio-standard.md` (the bar) · `_portfolio-write-prompt.md` (question author) ·
 `_portfolio-review-prompt.md` (question reviewer) · `_portfolio-translate-prompt.md` (the `es/`
-translator, stage T).
+translator, stage T) · `_portfolio-review-es-prompt.md` (the `en/`-blind Spanish reviewer, stage C).
 
 > **First run, use `DRY_RUN = true`.** It writes and reviews everything but commits **none of the audit
 > outputs**, so you can read the diff first. (`DRY_RUN` governs the audit outputs only — the pipeline
@@ -191,13 +191,15 @@ while half of it is missing. **On a partial scope the Verdict cell holds no verd
 computed**: write `bank-only — «scope»` for a project that has that tier, and `n/a — no «scope» tier` for
 one that does not (every Angular-only project on a `backend` or `global` batch). Leaving the cell empty
 would read as a run that failed to reach a verdict rather than one that was never asked for one. **Context guard for batch runs:** with ~7 projects × (up
-to 5 sections × 2 subagents, plus one translator), full decision-by-decision traces returned to you
+to 5 sections × 2 subagents, plus one translator and one Spanish reviewer), full decision-by-decision traces returned to you
 would saturate your own
 context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
 author to its **question count, its allocated ID range and any decision it could not cover**, the
 reviewer to its **question count, its questions-vs-decisions ratio, the IDs it allocated or repaired,
 and the uncovered decisions if that ratio is below 1**, the
-translator to its **verdict, its per-section counts including the frozen-kept ones, and its total** —
+translator to its **verdict, its per-section counts including the frozen-kept ones, and its total**, and
+the Spanish reviewer to its **verdict, its frozen defects and its suspected translation errors, both by
+ID** —
 not the full trace (the trace still drives their own work; it just stays in their context).
 **Every defect a subagent found inside a `[refined]` block returns in `all` mode too, verbatim and by
 ID.** That is not trace and it is not summarisable: the freeze stopped every role from repairing it, the
@@ -430,6 +432,67 @@ Declare it `blocked — partial (es/)`, and the project records `blocked`.
 below: the verdict is the go/no-go on the **project**, and no part of it reads the question bank in
 either language.
 
+### Phase 1c — Spanish review (one cold `en/`-blind reviewer per PROJECT, after the twin exists)
+
+**Run this only when T returned `TRANSLATED` or `RE-SYNCED`**, and only after the parity gate above has
+passed. On `TODO-STOPPED` the twin is Victor's and this run wrote none of it; on `BLOCKED` it is
+half-written and there is nothing finished to audit; and a **parity gate that failed after its one
+retry** is a twin whose structure does not match its source, which a prose pass cannot repair and would
+only obscure. In all three cases skip Phase 1c, say so in the final report, and go to Phase 2 — a
+project already recording `blocked` does not gain a second one for a stage that was correctly not run.
+
+**Why the twin needs a pass of its own, and why it cannot be T's.** Stage T holds the English by
+construction, which makes it structurally unable to judge whether its own Spanish reads as Spanish —
+with the English beside you, any calque still parses. Victor answers these questions **out loud, in
+Spanish**, so the twin is the file that matters at the moment of use, and the only faithful test is a
+reader who takes it cold, exactly as he does. This is the notes family's stage C
+(`_notes-review-es-prompt.md`), which states the same rule for the same reason.
+
+**Subagent C — Spanish reviewer (whole twin).** Launch one `role-appropriate` subagent,
+`reasoning tier: deep`, `execution: foreground` (judging whether an interview answer sounds like Victor
+saying it in a room is the same judgment T makes, one pass later and without the crutch):
+
+> Read `notes/prompts/projects/portfolio/_internal/_portfolio-review-es-prompt.md` and execute it for
+> `PROJECT_PATH = {PROJECT_PATH}`, `SCOPE = {PORTFOLIO_SCOPE}`, `SKIPPED = «the sections you named to T
+> as left half-written in Phase 1b, or none»`. Audit **only**
+> `notes/interview-prep/projects/es/«name».md`, in full — **never
+> open the `en/` bank**, which is the whole point of this stage. Fix Spanish wording, register, voice
+> and calque **directly**, inside the sub-headings `SCOPE` covers; change no question, no ID, no
+> `[refined]` marker, no code block and no header line, and never add, remove or reorder a question —
+> parity is stage T's and the gate has already checked it. Report, never repair, a defect inside a
+> `[refined]` block and anything you suspect is a translation error rather than a wording one. **Do NOT
+> commit.** Return `PASS`/`FIXED`/`BLOCKED`, the `N lines, read to EOF` line, the question-by-question
+> trace, every frozen defect quoted by ID, and every suspected translation error by ID. Write your
+> findings and verdict to «scratch path for this project» as you reach them, before returning.
+
+Pass C a real scratch path — `_agent-runtime-standard.md` requires it on every `reviewer` dispatch, and
+requires the orchestrator to read it when the reviewer dies.
+
+**It runs once per project, not once per section**, for the same reason T does: register consistency is a
+whole-file property, and it is the only role that reads the finished twin end to end.
+
+**No retry gate, and that is deliberate — and this is not the death ladder.** A C that *dies* takes
+`_agent-runtime-standard.md`'s ladder like any other role: read its scratch path, else resume, else
+re-dispatch once. What has no gate is C's *verdict*: B and T are re-dispatched on a *number* — a ratio
+below 1, a parity count that disagrees — and C produces neither: its verdict is a judgement about prose, so a
+second dispatch on the same file would only re-ask the same reader the same question. What it returns
+instead goes to Victor in the final report.
+
+**If C returns `BLOCKED`** — a half-reviewed twin — take the **leave-and-declare** side, never the
+restore side, exactly as Phase 1b does and for the same reason: the `es/` is created by this pipeline, a
+first run has nothing at `{BASELINE}` to restore to, and a later one would throw away a twin more current
+than the committed one. Declare it `blocked — partial (es/ review)`, and the project records `blocked` in
+`_run-tracker.md`, on the dry branch too. **Where C's return names no section it had already rewritten**
+— its `BLOCKED — TODO markers present` stop, which changes nothing — label it
+`blocked — es/ review not run` instead: nothing is partial, and a label claiming a half-reviewed twin is
+worse than one claiming an unaudited one. (That stop should be unreachable, since T meets the same
+markers first and returns `TODO-STOPPED`, which skips this phase — but C's own text provides for it, so
+this one does too.)
+
+**Neither C's verdict nor its findings move the Phase 2 verdict.** They are about the Spanish of the
+bank, and the verdict is the go/no-go on the **project** — the same rule the thin-bank paragraph below
+already states.
+
 ### Phase 2 — Verdict (orchestrator)
 
 **Skip Phases 2 and 3 entirely when `{PORTFOLIO_SCOPE}` is not `full`.** A bank-only run computes no
@@ -517,7 +580,10 @@ Otherwise print, in this order:
    why — a pair reported as one number is the one thing a later reader cannot check. Add the **ID range
    this run allocated**, and, on its own line, **every defect a subagent reported inside a `[refined]`
    block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
-   role from repairing them, and Victor is the only reader who can reopen one. **On a full-stack
+   role from repairing them, and Victor is the only reader who can reopen one. On its own line too,
+   **stage C's verdict on the twin and every suspected translation error it returned, by ID** — or the
+   reason Phase 1c did not run. A twin nobody audited and a twin that passed look identical on disk, so
+   this line is the only place the difference is stated. **On a full-stack
    project also print the three `Last banked` lines as they now stand**, so a tier still reading `never`
    is visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
@@ -595,7 +661,8 @@ paths were intended, and on this branch the `es/` path *looks* intended.
 
 **A project with a not-complete section still commits — but labelled.** Name every such section in the
 commit message body with its shape (`blocked — partial` restored / `blocked — partial` left in the tree
-/ `uncovered decisions` / `parity failed (es/)` / `blocked — partial (es/)`). Its outcome is not decided here — Phase 1a's two-shapes rule and Phase 1b's parity and
+/ `uncovered decisions` / `parity failed (es/)` / `blocked — partial (es/)` /
+`blocked — partial (es/ review)` / `blocked — es/ review not run`). Its outcome is not decided here — Phase 1a's two-shapes rule and Phase 1b's parity and
 `TODO-STOPPED` branches already fixed it as `blocked`, on the dry branch too. The label is not ceremony: this bank has no machine-readable
 freshness marker of its own — no fingerprint, and `/simulator` reads the folder ungated — so that label,
 the tracker cell and the header's `**Last banked — «tier»:**` line are the only marks either shape leaves
@@ -637,31 +704,39 @@ the diff.
   drafts no CV bullet or GitHub description, never touches the profile README, and never stages
   `notes/cv/cv-bullets.md`. It needs none of §23's chain, and it closes no gate.
 - **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
-  orchestrator commits once, after every section's author→reviewer pair **and the project's translator**
-  are done; neither the section subagents nor the translator commits.
+  orchestrator commits once, after every section's author→reviewer pair **and the project's translator
+  and Spanish reviewer** are done; none of the section subagents, the translator or the Spanish reviewer
+  commits.
 - **One SECTION per subagent — never the whole bank.** Authoring and review run one cold subagent per
   bank section, in sequence, each mining only that section's code area and returning a
   decision-by-decision trace. A subagent handed the whole project would skim the last sections (thin
   Testing/Business-Rules is exactly that failure). Whole-bank work is limited to the light cross-section
-  dedupe the orchestrator does at the end **and to the translator**, which is whole-bank on purpose:
-  its job is one consistent Spanish voice across the file, and a per-section split would re-derive that
-  voice five times. It is also the one whole-bank role that cannot skim, because its own parity counts
-  are checked section by section.
-- **Author then reviewer per section, sequentially, then one translator for the project.** Never
-  overlap a section's two subagents or two sections — the reviewer must see a finished section, and
+  dedupe the orchestrator does at the end **and to the two Spanish stages**, which are whole-bank on
+  purpose: their subject is one consistent Spanish voice across the file, and a per-section split would
+  re-derive that voice five times. Neither can skim either — the translator's parity counts are checked
+  section by section, and the Spanish reviewer's trace names every question by ID.
+- **Author then reviewer per section, sequentially, then one translator and one Spanish reviewer for the
+  project.** Never overlap a section's two subagents or two sections — the reviewer must see a finished section, and
   they edit the same file. Never skip the reviewer pass, and never run the translator before the last
-  section's reviewer and the cross-section dedupe have finished.
+  section's reviewer and the cross-section dedupe have finished. Stage C runs after the translator and
+  never beside it: they write the same file, and C audits what T produced.
 - **A `[refined]` question is Victor's, and no role of this run may write, alter or delete one.** The
-  standard's freeze binds the author, the reviewer, the translator and your own cross-section dedupe;
+  standard's freeze binds the author, the reviewer, the translator, the Spanish reviewer and your own
+  cross-section dedupe;
   the marker is written by Victor alone and reopened by him alone, by his word or by a `TODO:`. Every
   defect a subagent finds inside a frozen block reaches him through the final report and nowhere else,
   so print those lines rather than folding them into a count. `[studied]` is **not** admitted in this
   bank at all — its three rulings are open in `REC-180` — so a run that finds one reports it as
   malformed and changes nothing.
 - **The English is authored and the Spanish is rendered — never the other way round, and never both at
-  once.** The author and the reviewer write only `en/`; the translator writes only `es/` and changes no
-  English. A run that lets one role do both produces a Spanish file written before the English was
-  audited, which is the re-sync this stage exists to avoid.
+  once.** The author and the reviewer write only `en/`; the translator and the Spanish reviewer write
+  only `es/` and change no English. A run that lets one role do both produces a Spanish file written
+  before the English was audited, which is the re-sync this stage exists to avoid.
+- **The Spanish is audited without the English in the room.** Stage C never opens the `en/` bank: with
+  the English beside you, any calque still parses, so the only faithful test of the twin is a reader who
+  takes it cold, exactly as Victor does. It fixes prose and nothing else — a question, an ID, a
+  `[refined]` marker, a code block and the header are all outside its hand, and a suspected translation
+  error is reported for a later stage T rather than guessed at from a file it may not read.
 
 ### Final step — pipeline self-report
 

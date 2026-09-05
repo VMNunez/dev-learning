@@ -63,7 +63,10 @@ one, and `[refined]` is a marker you never write in either language.
 check on English. `notes/interview-prep/projects/es/{PROJECT_NAME}.md` is written by stage **T**
 (`_portfolio-translate-prompt.md`) from the file you are about to finish, so it does not yet reflect
 your fixes and comparing the two here would only measure that lag. Do not open it, do not repair it and
-do not report it as drifted.
+do not report it as drifted. **The twin has its own auditor** — stage **C**
+(`_portfolio-review-es-prompt.md`), which runs after T and reads the Spanish without ever opening the
+English, because that is the only way to tell a calque from Spanish. Leaving the twin alone here is not
+leaving it unchecked.
 
 Before starting, read:
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the question quality bar, in full.

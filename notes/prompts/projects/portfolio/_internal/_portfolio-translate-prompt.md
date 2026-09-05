@@ -1,10 +1,13 @@
 # Portfolio translate prompt — the question-bank TRANSLATOR (en/ → es/)
 
 **Internal component.** This is stage **T** of the portfolio question bank: author (A) → cold reviewer
-(B), once per section, then **translator (T)**, once per project. `portfolio-audit.md` dispatches it in
+(B), once per section, then **translator (T)**, once per project, then the `en/`-blind Spanish reviewer
+(C, `_portfolio-review-es-prompt.md`), which audits what you produce on its own terms and fixes its
+prose. `portfolio-audit.md` dispatches it in
 Phase 1b; you normally don't launch it, though you can run it standalone to (re-)build one project's
 Spanish twin. It does **not** compute the verdict, write the CV bullet, or commit — the orchestrator
-owns those.
+owns those. **C following you is not a reason to render loosely**: it cannot see the English, so
+anything you leave that only the English would reveal is a defect nobody downstream can catch.
 
 **What it does.** Reads the finished English bank
 `notes/interview-prep/projects/en/{PROJECT_NAME}.md` and produces (or re-syncs) its Spanish twin

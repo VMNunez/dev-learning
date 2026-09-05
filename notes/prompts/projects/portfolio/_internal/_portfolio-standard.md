@@ -2,12 +2,16 @@
 
 **Internal component. Not runnable.** This is the single source of truth for the **portfolio gate**:
 the final go/no-go check on a project before it goes on the CV, LinkedIn, or into a job application.
-All four pieces of the portfolio pipeline read it:
+All five pieces of the portfolio pipeline read it:
 
 - `_portfolio-write-prompt.md` (the **author**) reads it for the interview-question quality bar.
 - `_portfolio-review-prompt.md` (the **reviewer**) reads it to audit the question bank against that bar.
 - `_portfolio-translate-prompt.md` (the **translator**) reads it for the file template and the bank's
   section list; the Spanish rules themselves are not here, they are in that prompt.
+- `_portfolio-review-es-prompt.md` (the **Spanish reviewer**, stage C) reads it for the Spanish section
+  and sub-heading names, the per-question format, and the identity/freeze section that makes an ID and a
+  `[refined]` marker untouchable in its hands. It never opens the `en/` bank; the template's English
+  headings are format metadata, not that bank's prose.
 - `portfolio-audit.md` (the **orchestrator**) reads it for the verdict logic and the CV / GitHub formats.
 
 **One reader from outside the pipeline**, listed here rather than left as an unnamed exception — exactly
@@ -179,7 +183,8 @@ it is never translated, exactly as the levelled banks keep `angular.md` in `en/`
 complements the levelled topic-based files in `interview-prep/{LEVEL}/en/`
 and `es/` — these are **project-specific**, about the actual implementation decisions made here.
 
-**`en/` is authored and audited; `es/` is produced from it and no *pipeline role* writes it by hand.**
+**`en/` is authored and audited; `es/` is rendered from it, and the only Spanish a pipeline role writes
+by hand is stage C's prose repair — never a question, an ID or a structure.**
 The quality bar, the exhaustiveness rule, the format and the append/dedupe rule are rules about `en/`,
 and the author and the reviewer are never dispatched at the Spanish file. **Two things below are not
 rules about `en/` and must not be read as though they were**: the `[refined]` freeze binds both
@@ -191,6 +196,16 @@ owed by `_portfolio-translate-prompt.md` (stage **T**), which runs once per proj
 is finished and carries the whole Spanish contract: natural Spanish, structural parity, and which side
 a `TODO:` marker is repaired on. A run that stops before stage T leaves the pair half-built, and the
 orchestrator declares that rather than hiding it.
+
+**The twin is produced by stage T and *audited* by stage C, and those are two roles on purpose.**
+`_portfolio-review-es-prompt.md` runs once per project after T, reads the `es/` file and **never the
+`en/` one**, and fixes register, voice and calque directly — prose only, inside the structure T
+guaranteed. It exists because T holds the English by construction and a role holding the English cannot
+judge whether its own Spanish reads as Spanish: with the English beside you, any calque still parses.
+Victor answers out loud in Spanish, so the twin's own readability is a requirement in its own right and
+not a by-product of translation — the notes family's stage C states the same rule for the same reason.
+Its hand stops where the pipeline's always does: it never writes a question, an ID, a `[refined]` marker
+or a header line, and a defect inside a frozen block is reported like any other.
 
 **Why the bank is authored in English and studied in Spanish.** Victor answers out loud in Spanish, so
 `es/` is the file that matters at the moment of use; `en/` is authored first because the code, the
@@ -255,7 +270,8 @@ next unused number **in the file**; never recycle one after a deletion and never
   the answer, the code and the translation are to his taste. From that moment the complete bilingual
   block is frozen byte-for-byte **in both languages against every role in this pipeline**: the author
   does not rewrite it, the reviewer reports its defects instead of fixing them, the translator leaves its
-  Spanish exactly as it stands, and the orchestrator's cross-section dedupe never deletes it.
+  Spanish exactly as it stands, the Spanish reviewer judges that Spanish and reports it rather than
+  repairing one word of it, and the orchestrator's cross-section dedupe never deletes it.
 
 The freeze is what makes this gate safely **re-runnable**. Without it, every later run of
 `portfolio-audit` on a project hands Victor's polished answers to a cold reviewer whose mandate is to
