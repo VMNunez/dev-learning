@@ -9,7 +9,7 @@ Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `e
 
 **[01-todo-list-012] Your app has three components and one service. Walk me through who owns the task list and who is allowed to change it.** ⭐⭐⭐
 
-`TaskService` owns the only writable copy — a `signal<Task[]>` — and it is the only writer: `addTask`, `toggleTask` and `deleteTask` all live there. I chose one-way data flow so the list has a single source of truth: `TaskList` reads the signal and derives from it, `TaskForm` only calls `addTask`, and `TaskItem` never touches state at all. Any component that needs the list injects the service instead of receiving a copy it could diverge from.
+`TaskService` holds the state: a `signal<Task[]>` storing the task list, and it is the only one that writes to it — `addTask`, `toggleTask` and `deleteTask` all live there. I chose one-way data flow so the list has a single source of truth: `TaskList` reads the signal and derives from it, `TaskForm` only calls `addTask`, and `TaskItem` never touches state at all. Any component that needs the list injects the service instead of receiving a copy it could diverge from.
 
 **[01-todo-list-013] Why did you put the state in a service instead of in `TodoPage`, the page component?** ⭐⭐⭐
 

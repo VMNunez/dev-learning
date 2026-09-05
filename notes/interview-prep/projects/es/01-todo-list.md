@@ -9,7 +9,7 @@ Preguntas específicas de las decisiones de implementación tomadas en este proy
 
 **[01-todo-list-012] Tu app tiene tres componentes y un servicio. Explícame quién es dueño de la lista de tareas y quién puede modificarla.** ⭐⭐⭐
 
-`TaskService` es dueño de la única copia modificable — un `signal<Task[]>` — y es el único que escribe: `addTask`, `toggleTask` y `deleteTask` viven ahí. Elegí un flujo de datos unidireccional para que la lista tenga una única fuente de verdad: `TaskList` lee el signal y deriva de él, `TaskForm` solo llama a `addTask`, y `TaskItem` nunca toca el estado. Cualquier componente que necesite la lista inyecta el servicio en vez de recibir una copia que podría divergir.
+`TaskService` guarda el estado: un `signal<Task[]>` que almacena la lista de tareas, y es el único que escribe sobre él — `addTask`, `toggleTask` y `deleteTask` viven ahí. Elegí un flujo de datos unidireccional para que la lista tenga una única fuente de verdad: `TaskList` lee el signal y deriva de él, `TaskForm` solo llama a `addTask`, y `TaskItem` nunca toca el estado. Cualquier componente que necesite la lista inyecta el servicio en vez de recibir una copia que podría divergir.
 
 **[01-todo-list-013] ¿Por qué pusiste el estado en un servicio en vez de en `TodoPage`, el componente de página?** ⭐⭐⭐
 
@@ -19,7 +19,7 @@ Decidí que el estado debía sobrevivir al árbol de componentes que lo muestra:
 
 No al nivel al que aplica. Si `TodoPage` pasara la lista hacia abajo, el shell tendría que declarar un input y reemitir tres eventos para datos que no le interesan, y cambiar cada vez que cambia la forma de `Task`. Elegí inyectar en el punto de uso para que `TodoPage` se quede como una preocupación puramente de layout y ambos componentes de feature puedan colocarse en cualquier página futura sin cambios; el contrato data-down/events-up se mantiene donde realmente aporta algo — entre `TaskList` y su hoja repetida.
 
-**[01-todo-list-015] Entonces, ¿por qué `TaskItem` es el único componente que *no* inyecta el servicio?** ⭐⭐
+**[01-todo-list-015] Entonces, ¿por qué `TaskItem` es el único componente que _no_ inyecta el servicio?** ⭐⭐
 
 Porque es la hoja repetida, se renderiza una vez por tarea, así que hay que decirle qué tarea es — `input.required<Task>()`. Hacerlo presentacional significa que se puede razonar sobre él y testearlo solo a partir de sus inputs, sin saber de dónde vinieron los datos, y `TaskList`, que ya es dueño de la lectura, es el lugar natural donde deben caer las escrituras.
 
@@ -137,7 +137,7 @@ Elegí archivos separados porque incluso a este tamaño los templates y las hoja
 
 **[01-todo-list-001] Tienes dos shells — `App` y `TodoPage` — y ninguno de los dos guarda estado. ¿No es uno de los dos redundante?** ⭐⭐
 
-Están vacíos por razones distintas. `App` es el anfitrión del router: su template es `<router-outlet />` y nada más, así que lo que pusiera ahí — una barra de navegación, un footer — persistiría en cada ruta que la app llegara a tener. `TodoPage` es el shell de *una* ruta: es dueño del layout `.container` y del `<h1>My To-Do List</h1>`, que pertenecen a esta página y no a la aplicación. Elegí mantener los dos porque colapsarlos movería el título propio de la página al componente raíz, y esa es la línea que tendría que deshacer el día que exista una segunda ruta.
+Están vacíos por razones distintas. `App` es el anfitrión del router: su template es `<router-outlet />` y nada más, así que lo que pusiera ahí — una barra de navegación, un footer — persistiría en cada ruta que la app llegara a tener. `TodoPage` es el shell de _una_ ruta: es dueño del layout `.container` y del `<h1>My To-Do List</h1>`, que pertenecen a esta página y no a la aplicación. Elegí mantener los dos porque colapsarlos movería el título propio de la página al componente raíz, y esa es la línea que tendría que deshacer el día que exista una segunda ruta.
 
 **[01-todo-list-002] Tu array `routes` tiene una única entrada `''` y ningún wildcard. ¿Qué ve un usuario en `/anything-else`?** ⭐⭐
 
@@ -177,11 +177,11 @@ Una página en blanco. `bootstrapApplication` devuelve una promise, así que un 
 
 **[01-todo-list-011] El template de `TodoPage` hardcodea `<app-task-form />` y `<app-task-list />`. ¿Por qué no es un shell de proyección con `<ng-content>`?** ⭐
 
-Porque la página tiene exactamente una composición y quien la llama es el router, no un componente padre que pudiera pasarle hijos — `ng-content` es para un componente cuyo *usuario* decide el contenido, una card o un modal, y aquí no hay usuario. Elegí hardcodear el par para que `TodoPage` declare la estructura de esta página en un template legible. Si el aspecto del contenedor se reutilizara entre páginas, extraería eso en su lugar: un componente de layout con un slot de proyección, dejando que la página componga sus propias features.
+Porque la página tiene exactamente una composición y quien la llama es el router, no un componente padre que pudiera pasarle hijos — `ng-content` es para un componente cuyo _usuario_ decide el contenido, una card o un modal, y aquí no hay usuario. Elegí hardcodear el par para que `TodoPage` declare la estructura de esta página en un template legible. Si el aspecto del contenedor se reutilizara entre páginas, extraería eso en su lugar: un componente de layout con un slot de proyección, dejando que la página componga sus propias features.
 
 **[01-todo-list-044] Tu PLANNING.md dice que esto "no es MVC clásico — no hay controller". Si el servicio es el modelo y el template es la vista, ¿qué hace aquí de controller?** ⭐⭐
 
-Nada, y decidí que esa era la descripción honesta en vez de forzar la app a encajar en MVC. El signal *es* el modelo, el template se vuelve a renderizar porque leyó ese signal, y el único trabajo de "controller" que queda son los tres métodos del servicio que lo escriben — no hay ningún objeto sentado entre vista y modelo traduciendo uno al otro. Lo que lo reemplaza es el grafo reactivo: `TaskList` declara `filteredTasks` como un `computed()` de `tasks()` y `currentFilter()` en vez de un controller recalculando un modelo de vista y empujándolo al template.
+Nada, y decidí que esa era la descripción honesta en vez de forzar la app a encajar en MVC. El signal _es_ el modelo, el template se vuelve a renderizar porque leyó ese signal, y el único trabajo de "controller" que queda son los tres métodos del servicio que lo escriben — no hay ningún objeto sentado entre vista y modelo traduciendo uno al otro. Lo que lo reemplaza es el grafo reactivo: `TaskList` declara `filteredTasks` como un `computed()` de `tasks()` y `currentFilter()` en vez de un controller recalculando un modelo de vista y empujándolo al template.
 
 **[01-todo-list-045] `TaskService` escribe con `tasks.update(...)` mientras que los botones de filtro de `TaskList` escriben con `currentFilter.set(...)`. ¿Cuándo usas cada uno?** ⭐⭐
 
@@ -227,7 +227,7 @@ Fue una decisión: `addTask` no hace ninguna búsqueda antes de añadir, así qu
 
 **[01-todo-list-064] `toggleTask` invierte `!task.completed` en vez de recibir el valor objetivo. ¿Cuál es el tradeoff?** ⭐⭐
 
-Invertir significa que quien llama no necesita saber el estado actual — `TaskItem` solo emite un id — pero también hace que la operación no sea idempotente: llamarla dos veces vuelve al estado original, así que un doble clic o una petición reintentada se deshace a sí misma. Elegí invertir porque aquí no hay red y el clic *es* la intención de invertir. Con un backend enviaría el valor deseado, porque un reintento por cable no debe invertir dos veces.
+Invertir significa que quien llama no necesita saber el estado actual — `TaskItem` solo emite un id — pero también hace que la operación no sea idempotente: llamarla dos veces vuelve al estado original, así que un doble clic o una petición reintentada se deshace a sí misma. Elegí invertir porque aquí no hay red y el clic _es_ la intención de invertir. Con un backend enviaría el valor deseado, porque un reintento por cable no debe invertir dos veces.
 
 **[01-todo-list-065] ¿Qué pasa si se llama a `toggleTask(99)` o `deleteTask(99)` con un id que no existe?** ⭐⭐
 
@@ -263,7 +263,7 @@ No, y esa es la regla buscada: crear siempre significa "trabajo nuevo por hacer"
 
 **[01-todo-list-073] Si borro la tarea 3 y luego añado una tarea, ¿la nueva recibe el id 3?** ⭐⭐
 
-No — `nextId` solo incrementa, así que los ids nunca se reutilizan. Eso importa porque `track task.id` asocia nodos del DOM con ids: reciclar un id dejaría que Angular asociara una tarea completamente nueva con el nodo de la borrada. Refleja cómo se comporta una secuencia de base de datos, y por eso `nextId` es un campo privado del servicio en vez de derivarse de `tasks().length`, que *sí* colisionaría después de un borrado.
+No — `nextId` solo incrementa, así que los ids nunca se reutilizan. Eso importa porque `track task.id` asocia nodos del DOM con ids: reciclar un id dejaría que Angular asociara una tarea completamente nueva con el nodo de la borrada. Refleja cómo se comporta una secuencia de base de datos, y por eso `nextId` es un campo privado del servicio en vez de derivarse de `tasks().length`, que _sí_ colisionaría después de un borrado.
 
 **[01-todo-list-074] El título de una tarea nunca se puede cambiar una vez creada. ¿Renombrar se dejó fuera o se descartó?** ⭐⭐
 
