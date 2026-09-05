@@ -423,6 +423,15 @@ not backfilled yet, where an unmarked bullet is a *missing marker* rather than a
 house phrasing is quoted precisely because it is already right, so the paragraphs around it are the
 ones nobody re-reads: take the qualifier that lives beside the rule, or state in writing why it
 cannot bite on the new site.
+**Also `REC-189`, which adds the clause about the rule's *unit*: a borrowed rule is total at its source
+because of what its unit is there, and the words "borrowed wholesale" do not carry that across.** Its
+per-tier stamp cited `_review-standard.md`'s three-branch rule and shipped one branch; both reviewers
+found it, because the source's unit is a **slice**, which belongs to exactly one tier, while the new
+site's is a **section**, which spans them — so "a slice was lost → qualify that tier" is well defined
+there and undefined here until someone writes the projection. Name the unit on both sides before
+claiming the borrow, implement every branch or stop calling it wholesale, and where the units differ
+say how one maps onto the other; a partial borrow that keeps the full claim is the shape a reviewer
+catches and a reader never does.
 
 **A decline is not a disposal until nobody overrides it, and applied-wrongly is still the bar
 working — provided the re-measurement is written down.** From `REC-155`, whose resolution declined its
