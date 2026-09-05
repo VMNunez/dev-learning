@@ -194,8 +194,10 @@ would read as a run that failed to reach a verdict rather than one that was neve
 to 5 sections × 2 subagents, plus one translator and one Spanish reviewer), full decision-by-decision traces returned to you
 would saturate your own
 context. In `all` mode, hold each subagent to its own return contract below and nothing more — the
-author to its **question count, its allocated ID range and any decision it could not cover**, the
-reviewer to its **question count, its questions-vs-decisions ratio, the IDs it allocated or repaired,
+author to its **question count, its allocated ID range, its marker split and any decision it could not
+cover**, the
+reviewer to its **question count, its questions-vs-decisions ratio, its marker split and the markers it
+added or downgraded, the IDs it allocated or repaired,
 and the uncovered decisions if that ratio is below 1**, the
 translator to its **verdict, its per-section counts including the frozen-kept ones, and its total**, and
 the Spanish reviewer to its **verdict, its frozen defects and its suspected translation errors, both by
@@ -246,11 +248,12 @@ project there are no sub-headings**: every scope resolves to the same bare secti
 > (the standard's canonical table) plus PLANNING.md — **and the bank file itself, whose bold lines you
 > need for the ID counter and the dedupe rule** — and write **only this section's** questions to
 > `notes/interview-prep/projects/en/«name».md` per the standard — each with the next unused
-> `«name»-NNN` ID **allocated over the whole file**, and never touching a block that carries `[refined]`.
+> `«name»-NNN` ID **allocated over the whole file** and its **priority marker** (`⭐⭐⭐`/`⭐⭐`/`⭐`, the
+> standard's "Priority markers"), and never touching a block that carries `[refined]`.
 > **Do NOT commit.** Build a
 > decision-by-decision trace in your own context to drive exhaustiveness, but return only the
-> **question count, the ID range you allocated, any defect you found in a refined block, and any
-> decision you could not cover** — the reviewer re-walks the code itself.
+> **question count, the ID range you allocated, your `⭐⭐⭐`/`⭐⭐`/`⭐` split, any defect you found in a
+> refined block, and any decision you could not cover** — the reviewer re-walks the code itself.
 
 Wait for A. **If A returns `BLOCKED`** — it could not complete the section — that section gets no
 reviewer: note it and move to the next. Skipping B is not the whole disposition, because A has already
@@ -286,9 +289,12 @@ the wrong place to save):
 > and report but never repair**. Check every question carries a well-formed, unique `«name»-NNN` ID,
 > reading the whole bank file's **bold lines only** for it — uniqueness is a whole-file property and your
 > section cannot answer it alone. Report a collision with a question outside your section rather than
-> renumbering it; the cross-section renumber is mine.
+> renumbering it; the cross-section renumber is mine. Check every question in your lane carries a
+> well-formed **priority marker** and add or downgrade one **inside your lane only** — the whole-file
+> proportion is mine, not yours, and a section cannot see its own denominator.
 > **Do NOT commit.** Return your verdict (PASS/FIXED), the
-> **questions-vs-decisions ratio for this section**, the IDs you allocated or repaired, every defect you
+> **questions-vs-decisions ratio for this section**, your final `⭐⭐⭐`/`⭐⭐`/`⭐` split and how many
+> markers you added or downgraded, the IDs you allocated or repaired, every defect you
 > left standing inside a refined block, and — only if that ratio is still below 1 — the
 > **list of decisions you left uncovered**, which is what the acceptance gate below re-dispatches on.
 > Write your findings and verdict to «scratch path for this section» as you reach them, before
@@ -338,6 +344,29 @@ and repairs what it can see, but each allocated from its own read of the file, s
 sections is one only a whole-file pass is guaranteed to catch. Renumber the later of
 the two to the next unused number in the file, never a frozen one (its ID is part of what is frozen —
 report that pair instead), and never renumber to close a gap a deletion left.
+
+**Own the whole-file priority proportion — no per-section role can.** Read the bank's bold lines you are
+already reading for the dedupe and count its `⭐⭐⭐` / `⭐⭐` / `⭐`. The standard's **"Priority markers"**
+sets the band over the **file**: `⭐⭐⭐` about a fifth to a quarter, `⭐⭐` the largest group, `⭐` the
+remainder. **The denominator is the marked questions**, never the file's total — the frozen-unmarked ones
+excluded below are out of both halves of the fraction, or a bank carrying ten of them reads as one with
+ten fewer stars and the ceiling under-fires on exactly the bank the exclusion was written for — and two of those fail a bank rather than describe one, **more than a third at `⭐⭐⭐`** and
+**no `⭐⭐⭐` at all**. Where the ceiling fails, **downgrade the excess to `⭐⭐`** — the weakest `⭐⭐⭐` first,
+keeping the marker for the decisions the project is *for* — one token on a bold line, the same register
+as the renumber above and bounded the same way: **never on a `[refined]` block** (its marker is frozen
+with the rest of it — report the pressure instead) and, on a partial scope, **never outside the
+sub-headings `{PORTFOLIO_SCOPE}` covers** (report the imbalance and leave it to a later `full` run, which
+has read both tiers). Where the floor fails, you may not invent a `⭐⭐⭐`: report it, because promoting one
+is a judgement about code you did not read.
+
+**Run that test only over a fully marked bank.** Count the questions carrying **no marker** first and
+report the number by section — **excluding the unmarked ones that carry `[refined]`**, which no role of
+this pipeline may mark and which would otherwise disable this test on that bank permanently; list those
+by ID instead, as Victor's to mark or reopen: a bank written before this rule (`01-todo-list`, 79 questions) carries none
+until its first run under it, and a proportion computed over a fraction of a file is a number that reads
+as a verdict. Where that count is not zero, say so in place of the test — the marked questions are the
+sections this run touched and the debt is what the report carries — and do not backfill the rest by hand:
+marking a question is the author's and the reviewer's work, over the code area it was written against.
 
 **Count the questions carrying no ID at all, and report the number.** Each section's reviewer allocates
 the missing IDs in its own section, so on a healthy run this is zero — but a section whose author
@@ -578,7 +607,11 @@ Otherwise print, in this order:
 1. "Saved X questions to notes/interview-prep/projects/en/«name».md, and X to its `es/` twin" (do not
    reprint the questions). If the two numbers differ, or the twin is missing, say which sections and
    why — a pair reported as one number is the one thing a later reader cannot check. Add the **ID range
-   this run allocated**, and, on its own line, **every defect a subagent reported inside a `[refined]`
+   this run allocated**, the bank's **`⭐⭐⭐`/`⭐⭐`/`⭐` split with the proportion verdict** — or the count
+   of unmarked questions by section and the fact that the test therefore did not run — **plus, on either
+   branch, the IDs of any frozen-unmarked question the scan excluded**, which are Victor's to mark or
+   reopen and reach him nowhere else. — and, on its own
+   line, **every defect a subagent reported inside a `[refined]`
    block, quoted and by ID**. That line is the only route those defects have: the freeze stopped every
    role from repairing them, and Victor is the only reader who can reopen one. On its own line too,
    **stage C's verdict on the twin and every suspected translation error it returned, by ID** — or the

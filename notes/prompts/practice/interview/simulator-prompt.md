@@ -155,7 +155,13 @@ Order rules — apply in sequence:
 1. Questions whose concept maps unambiguously to an Open `simulator` row for this level come first.
    Within this retry group, order by ⭐⭐⭐/⭐⭐/⭐ and then previous Débil First Rating. If an
    Open row maps to no source question, report it as unconsumed instead of silently dropping it.
-2. For all remaining questions: ⭐⭐⭐ first, then ⭐⭐, then ⭐.
+2. For all remaining questions: ⭐⭐⭐ first, then ⭐⭐, then ⭐. **A question carrying no priority marker
+   ranks as ⭐⭐ wherever these rules read a star** — rule 1's retry group, this rule, and the
+   adaptive-difficulty checkpoint below, which removes ⭐⭐ and ⭐ by name.
+   Ranking it anywhere else is worse in both directions: unranked it is invisible to this rule, and
+   untouched by that prune it would outlive the marked questions it is no more important than. In
+   practice these are project-bank questions written before `portfolio-audit` began marking them — its
+   next run over that project marks them.
 3. Within each remaining tier: questions with a previous Débil First Rating (from Step 1) come first.
 4. Within the same tier and group: randomise to avoid repeating the same order across sessions.
 

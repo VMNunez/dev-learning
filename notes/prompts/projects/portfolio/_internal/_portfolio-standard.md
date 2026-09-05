@@ -253,7 +253,7 @@ reaching across chains is what he did not.
 **Every question carries a stable identifier**, first inside the bold text, immutable and identical in
 `en/` and `es/`:
 
-**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** [refined]
+**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** ⭐⭐ [refined]
 
 Format `{PROJECT_NAME}-{NNN}`: the project folder name — which takes the slot a topic prefix takes in the
 levelled bank, since a project has neither topic nor level — and a zero-padded counter from `001`. **The
@@ -295,22 +295,24 @@ run started for another reason; the translator stops outright rather than overwr
 TODO is resolved in a daily session by `study-content-writer`, which reads this section for a
 project-bank pair, and the reopening is its write.
 
-**Priority markers are not part of this bank yet.** `REC-180` still owes them, together with the
-proportion calibration five fixed project sections need and the levelled bank's 8–12-question topic
-section does not. The bold line therefore carries no `⭐`, and the consequence is real rather than
-cosmetic: `/simulator` ranks its plan `⭐⭐⭐ → ⭐⭐ → ⭐`, so a woven project question enters that sequence
-unranked. Do not invent a marker to close the gap.
+**A priority marker is not a state marker, and the freeze covers it.** Every question this pipeline has
+written since 2026-09-05 also carries `⭐⭐⭐`, `⭐⭐` or `⭐` ahead of its state marker — an older bank
+carries none until its next run, and neither you nor a TODO adds one — the rule and its calibration are "Priority markers"
+below. That marker is part of a frozen block exactly as the ID is: no role of this pipeline downgrades
+one, and **reopening a question removes `[refined]` and never the `⭐`**. A `TODO:` about voice or
+phrasing is about the answer, not about how often the question is asked.
 
 ---
 
 **Format per question:**
 ```
-**[{PROJECT_NAME}-NNN] Question as an interviewer would ask it?** [refined]
+**[{PROJECT_NAME}-NNN] Question as an interviewer would ask it?** ⭐⭐ [refined]
 
 [Model answer — 2–4 sentences, references the real code, uses "I chose"/"I decided".]
 ```
-The `[refined]` marker is present only on a question Victor has frozen; a question this pipeline writes
-is born without it and no role of the pipeline may add it.
+The priority marker is on **every** question, written before the state marker. The `[refined]` marker is
+present only on a question Victor has frozen; a question this pipeline writes is born without it and no
+role of the pipeline may add it.
 
 **Append + dedupe:** if the file exists, append only questions not already there — each with the next
 unused ID in the file. Never add a question covering the same decision or code path as an existing one,
@@ -404,6 +406,69 @@ deliberately parts from the rule it borrows. `_review-standard.md` keeps a per-t
 absent tier, because its gate reads those lines and must distinguish "no such tier" from "never
 reviewed". Nothing reads these, so the same distinction buys nothing here and two dead lines on every
 Angular-only bank would cost a reader more than they tell.
+
+---
+
+### Priority markers
+
+Every question carries one marker for how surely an interviewer **looking at this project** asks it, at
+the end of the bold line, after the question mark and **before** any state marker:
+
+**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** ⭐⭐ [refined]
+
+- **⭐⭐⭐** — a decision the project is *for*: what an interviewer reading its README or its CV bullet
+  opens with, and what a candidate who cannot defend it fails the project on.
+- **⭐⭐** — asked once the interviewer is past those. A real choice of this implementation: survivable
+  in a first screen, a weak impression in a full technical round.
+- **⭐** — a niche detail or edge case only the most thorough interviewer probes.
+
+**The proportion is a whole-file property, and that is where the levelled bank's calibration does not
+transfer.** `_interview-prep-standard.md` checks it per section over an 8–12 question topic section; the
+sections here are the code areas of **one** project, some projects lack two of the five, and the
+cross-section dedupe moves a question between headings — the same three reasons the ID counter already
+runs over the file and not the section. Measured 2026-09-05, `01-todo-list`'s three sections hold **32,
+29 and 18** questions, so "~3–4 ⭐⭐⭐ per section" would mark a tenth of one and the "more than half a
+section" ceiling could never fire.
+
+**Over the whole bank**, `⭐⭐⭐` is about **a fifth to a quarter** of its questions, `⭐⭐` is the
+**largest** group, and `⭐` is the remainder. Two of those are tests a bank fails on rather than
+descriptions of a healthy one: **more than a third of the file at `⭐⭐⭐`** — downgrade the excess,
+keeping the marker for the decisions the project is *for* — and **no `⭐⭐⭐` at all**, which no project
+worth a portfolio gate is. Applied by hand to the eleven files of `notes/interview-prep/junior/en/`
+— 669 questions, the levelled bank the scale is borrowed from, and a different unit; its `es/` twins
+carry the same markers — whole-file `⭐⭐⭐` shares run
+9–50% with a median of 23%: **the ceiling passes nine of the eleven and fails `security.md` (50%) and
+`spring-boot.md` (34%)**, both governed by the per-section rule this one replaces. The band itself is
+where a finished bank sits, not a second gate — only one of those eleven is inside it, which is why the
+two failing conditions and not the band are what a reviewer acts on.
+
+**The per-section check is not reintroduced here, including as a narrower test over a `###` tier
+sub-heading.** A tier holds whatever its code area holds; one rule that both a three-question
+`### Cross-tier` and a thirty-question `## Architecture & Patterns` must satisfy is unfailable on the
+first or unmeetable on the second.
+
+**Questions are never reordered by marker.** The levelled bank orders `⭐⭐⭐ → ⭐⭐ → ⭐` inside each
+section. Here the append rule appends, a partial run may not move an out-of-scope byte, and a frozen
+block stays where it stands — three rules that would have to yield for a sort the one consumer already
+performs, since `/simulator` ranks its own plan `⭐⭐⭐ → ⭐⭐ → ⭐` after reading the file. The marker ranks
+the question; the file's order carries no meaning.
+
+**Who writes it.** The author marks every question it writes. The section reviewer checks that each
+question in its lane carries a well-formed marker and adds a missing one **there** — it cannot judge a
+whole-file proportion from one section, and is not asked to. The orchestrator's cross-section scan owns
+that proportion, for the same reason it owns the duplicate-ID renumber. Victor may change any marker at
+any time; a marker he set is his, and this pipeline treats a `[refined]` block's marker as frozen with
+the rest of the block.
+
+**A bank written before this rule carries no marker, and that is declared debt rather than hand work.**
+The author and the reviewer mark what they touch on the next run over that project, exactly as the IDs
+are backfilled. So the orchestrator counts the unmarked questions, reports the number by section, and
+**runs the proportion test only when that count is zero**, saying which it did. **A question Victor froze
+before this rule existed is the one exception, and it is his**: every role of this pipeline is fenced out
+of a `[refined]` block, so an unmarked frozen question can be marked by nobody — left inside the count it
+would disable the test on that bank for ever. It is excluded from the count, listed by ID in the report,
+and marked when Victor writes the marker himself or reopens the block. Until a bank is fully
+marked, `/simulator` reads unmarked questions and its own Step 3 says how it ranks them.
 
 ---
 

@@ -110,6 +110,13 @@ Before starting, read:
   read, your fixes stay inside your lane, and the orchestrator's cross-section scan owns that
   renumber. Renumbering "the later of the two" across that boundary would rewrite an out-of-scope byte
   under the guise of a repair, which is the one thing this fence exists to stop.
+- **Priority.** Every question in this section carries a well-formed priority marker — `⭐⭐⭐`, `⭐⭐` or
+  `⭐`, after the question mark and before any state marker — per the standard's **"Priority markers"**.
+  Add a missing one, and downgrade one this section's own code area does not support (`⭐⭐⭐` is a decision
+  the project is *for*, not every decision worth a question). **The whole-file proportion is not yours**:
+  it is a property of the bank, the orchestrator's cross-section scan owns it, and a section judging it
+  from its own share would downgrade against a denominator it cannot see. Report your final split.
+  A `[refined]` block's marker is frozen with the rest of it.
 - **No duplication within the section.** No two questions in `{SECTION}` cover the same decision or code
   path.
 
@@ -129,7 +136,7 @@ gives that straddle to a later `full` run, which has read both tiers.
 
 **The one exception is the freeze above**, and it inverts this instruction rather than qualifying it: on
 a `[refined]` block you report and do not fix. A question you add to close a gap is born unrefined and
-carries the next unused ID in the file.
+carries the next unused ID in the file **and its own priority marker**.
 
 ## Finish — no commit
 
@@ -142,6 +149,10 @@ working tree. Report your **verdict** for `{SECTION}`:
 - **Only if that ratio is still below 1:** the list of decisions you found but left uncovered. The
   orchestrator's acceptance gate re-dispatches you once with exactly that list, so a ratio below 1
   reported without it makes the gate unenforceable.
+- **This section's marker split** (`⭐⭐⭐` / `⭐⭐` / `⭐`) and how many markers you added or downgraded,
+  plus any question you had to leave unmarked because it sits outside your lane. The scan that owns the
+  whole-file proportion counts the finished file itself; your split is what lets it see which section a
+  correction came from without re-reading your work.
 - **The IDs you allocated or repaired**, and every defect you found inside a `[refined]` block — quoted,
   and stated as left untouched. That line is the only route a frozen question's defect has: nothing else
   in this pipeline may open one, and Victor is the only reader who can.

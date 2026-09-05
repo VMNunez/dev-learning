@@ -93,8 +93,10 @@ is the one outcome where the twin exists, is correct, and must be left out of th
 > that role. What this clause does is refuse to destroy a Spanish edit while its repair is owed
 > elsewhere; a whole-file stop is deliberate and is not softened by the channel existing. Report any
 > other place the `es/` differs from a faithful rendering of the `en/` in a way a hand edit would
-> explain, rather than silently overwriting it. (Priority markers are the one half of that row still
-> open, so neither file carries a `⭐` and you never add one.)
+> explain, rather than silently overwriting it. (A priority marker is copied, never authored: `⭐⭐⭐`,
+> `⭐⭐` and `⭐` are language-neutral, so the twin carries the `en/` question's marker verbatim and you
+> never add, drop or change one — including on a question that reaches you unmarked, since a bank
+> written before that rule is backfilled by the author and the reviewer on the English side.)
 
 **Stop if the `en/` bank does not exist.** There is nothing to mirror, and creating an `es/` file from
 nothing is how a twin with no source ends up on disk. Report `BLOCKED — <reason>`.
@@ -149,11 +151,14 @@ standard's freeze binds you as it binds the author and the reviewer. Concretely,
 On a **first translation** the twin has no counterpart to keep, so a frozen English question is rendered
 like any other and reported by ID — a freeze cannot be honoured by preserving bytes that never existed.
 
-**Two things you do write on a frozen question:** its **ID**, verbatim (identity is mastered in `en/` and
-carrying it across is the whole reason it exists), and the **`[refined]` marker** onto the Spanish bold
-line where the twin lacks it. Mirroring an existing marker is not assigning one — you are the pair's
-parity role, and a twin whose questions are unmarked while the English is frozen is a pair no later
-reader can trust. You never write that marker on a question the `en/` does not already carry it on.
+**Three things you do write on a frozen question:** its **ID**, verbatim (identity is mastered in `en/`
+and carrying it across is the whole reason it exists), its **priority marker**, verbatim for the same
+reason — `⭐⭐⭐`, `⭐⭐` and `⭐` are language-neutral and are copied, never re-judged — and the
+**`[refined]` marker** onto the Spanish bold line where the twin lacks it. Mirroring an existing marker
+is not assigning one — you are the pair's parity role, and a twin whose questions are unmarked while the
+English is frozen is a pair no later reader can trust. You never write any of the three on a question the
+`en/` does not already carry it on, and an unmarked English question stays unmarked in Spanish: the
+backfill is the author's and the reviewer's, on their side of the pair.
 
 ---
 
@@ -165,9 +170,11 @@ Spanish.
 
 - **Structural parity is exact — over the rows you wrote.** Every section and `###` sub-heading the
   `en/` carries **within `{SCOPE}`** exists in the `es/`, translated per the standard's Spanish names.
-  Every question there has exactly one counterpart, in the same position under the same heading. Do not
-  add a question, do not drop one, do not reorder — this is a mirror, and parity is the only property a
-  later reader can check cheaply. **Outside `{SCOPE}` parity is a measurement, not an obligation**: on a
+  Every question there has exactly one counterpart, in the same position under the same heading, **with
+  the same ID and the same priority marker** — both are copied, not judged, and `/simulator` ranks an
+  `es` session off the Spanish bytes, so a marker lost in translation silently re-ranks that session. Do
+  not add a question, do not drop one, do not reorder — this is a mirror, and parity is the only
+  property a later reader can check cheaply. **Outside `{SCOPE}` parity is a measurement, not an obligation**: on a
   partial run the `es/` legitimately lacks the tiers nobody has translated yet, and reporting that is
   correct rather than a defect. A `full` run is what makes the whole file a mirror again.
 - **The header is translated too**, per the standard's file template — on every scope, including the

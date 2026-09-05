@@ -6,10 +6,10 @@ it. It exists because the target spans four rows and lived only in one conversat
 `REC-183`, `REC-184` and `REC-171` (g) each carry one slice of it, and a row is forbidden from
 restating its neighbours, so the shape none of them can hold had nowhere to be written down.
 **Loop A is now largely built and Loop B is not.** `REC-183` closed 2026-08-29 (step 4, both banks);
-`REC-180`'s two halves landed 2026-08-31 and gave the **project** bank steps 1–5 except the priority
-marker — the `es/` twin, stable IDs, the freeze and the TODO channel — and its third slice landed
-2026-09-05, the `en/`-blind Spanish reviewer that audits the twin step 2 produces. What remains a pure
-target is the priority marker in step 1, step
+`REC-180`'s two halves landed 2026-08-31 and gave the **project** bank steps 1–5 all but the priority
+marker — the `es/` twin, stable IDs, the freeze and the TODO channel — and two more slices landed
+2026-09-05: the `en/`-blind Spanish reviewer that audits the twin step 2 produces, and that marker,
+completing step 1 and calibrated over the whole file rather than per section. What remains a pure target is step
 6 for that bank (three open rulings) and the whole of Loop B, steps 7–10.
 
 **No run obeys this file.** It is not a standard and grants no authority: it is read at step 1 of
@@ -71,13 +71,18 @@ voice before he ever reads them.
 
 1. **Generation.** `/portfolio-audit` writes the project bank from that project's code; the levelled
    bank is written by `/interview-prep-audit` from a topic. Each question is born with a **stable ID**
-   and a **priority marker** (`⭐⭐⭐`/`⭐⭐`/`⭐`), ordered `⭐⭐⭐ → ⭐⭐ → ⭐` within its section.
+   and a **priority marker** (`⭐⭐⭐`/`⭐⭐`/`⭐`). The levelled bank also orders its questions
+   `⭐⭐⭐ → ⭐⭐ → ⭐` inside each section; the project bank deliberately does not, since `/simulator`
+   ranks its own plan and that bank's append and freeze rules forbid moving a block.
    *Project bank: the **ID landed 2026-08-31** (`REC-180`, identity half) as `{PROJECT_NAME}-{NNN}` — the
    project folder in the slot a topic prefix takes, since a project bank has neither topic nor level —
    allocated over the whole file by the author, checked for collisions by the reviewer and the
-   orchestrator's cross-section scan, and copied verbatim by stage T. **Priority markers are still
-   owed**, and the consequence is live: `/simulator` ranks its plan by stars, so a woven project question
-   enters that sequence unranked.*
+   orchestrator's cross-section scan, and copied verbatim by stage T. The **priority marker landed
+   2026-09-05**, written by the author and the section reviewer, copied verbatim by stage T, frozen with
+   a `[refined]` block, and calibrated over the whole file by the cross-section scan — which is where the
+   levelled bank's per-section proportion check does not transfer, its sections being topic sections of
+   8–12 and these the code areas of one project. A bank written earlier stays unmarked until that gate's
+   next run over its project, and `/simulator` ranks an unmarked question as `⭐⭐`.*
 2. **Translation.** The English file gets its `es/` twin — natural Spanish, never a calque, same
    question in the same position. *Built for the **project** bank 2026-08-31 (`REC-180`, bilingual
    half): `_portfolio-translate-prompt.md` is stage T of `portfolio-audit`, dispatched once per project
@@ -273,7 +278,7 @@ updated in the same commit if one lands.
 
 | Step | File | Written by today | Read by today | What the target adds | Row |
 |---|---|---|---|---|---|
-| 1–2 | `notes/interview-prep/projects/en\|es/*.md` | `/portfolio-audit` — `en/` by its author + reviewer, `es/` by its translator (stage T, 2026-08-31) and its `en/`-blind Spanish reviewer (stage C, 2026-09-05) · `study-content-writer`, on a `TODO:` alone (2026-08-31) · Victor, who alone writes and reopens `[refined]` | `/simulator`, at its own `LANGUAGE` only — plus, inside the writing gate itself, the translator reading `en/` as its source | **landed: the `es/` twin (2026-08-31), then stable IDs, the `[refined]` freeze and the TODO channel (2026-08-31, identity half), then the `es`-review owner (2026-09-05).** Still owed: priority markers, the three `[studied]` rulings — and readers: the route, the recall block, both recounts | `REC-180` |
+| 1–2 | `notes/interview-prep/projects/en\|es/*.md` | `/portfolio-audit` — `en/` by its author + reviewer, `es/` by its translator (stage T, 2026-08-31) and its `en/`-blind Spanish reviewer (stage C, 2026-09-05) · `study-content-writer`, on a `TODO:` alone (2026-08-31) · Victor, who alone writes and reopens `[refined]` | `/simulator`, at its own `LANGUAGE` only — plus, inside the writing gate itself, the translator reading `en/` as its source | **landed: the `es/` twin (2026-08-31), then stable IDs, the `[refined]` freeze and the TODO channel (2026-08-31, identity half), then the `es`-review owner and the priority marker (2026-09-05).** Still owed: the three `[studied]` rulings — and readers: the route, the recall block, both recounts | `REC-180` |
 | 3–4 | `notes/interview-prep/{LEVEL}/en\|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` · `study-block-close` | route, block-open, `/simulator`, both recounts | **nothing — landed 2026-08-29.** The symmetric repair-direction rule is in `_interview-prep-standard.md`, the write prompt's Steps 1–2 and its output contract, the audit orchestrator's author dispatch, the review prompt's bilingual-integrity check, `study-content-writer` and `_session-rules.md`; (a)'s reviewer was ruled unnecessary and replaced by two checks — the Q&A route's written report and an `en/`-side back-translation clause | `REC-183` (closed) |
 | 5 | same | Victor alone writes `[refined]` | — | nothing — already the contract | — |
 | 6 | `notes/interview-prep/routes/{LEVEL}.md` · `PROGRESS.md` `## Study progress` | `/interview-prep-route` only · the closing rituals | block-open, `study-block-close`, `authoring-progress-recount` | whether project questions enter the route, the block and the count at all | `REC-180` |
@@ -340,8 +345,8 @@ clause in an existing row, or a row of its own, before anything is built.
 ## Sequencing
 
 `REC-183` (repair direction) → `REC-180` (the `es` twin, then **IDs, the freeze and the TODO channel,
-both halves landed 2026-08-31**, then **the `es`-review owner, 2026-09-05**; still priority markers and
-the four readers the
+both halves landed 2026-08-31**, then **the `es`-review owner and the priority marker, 2026-09-05**;
+still the four readers the
 project bank needs) → `REC-184` (the voice sink and its consumer), whose **Phase 0 is no longer blocked**
 and which should not precede
 `REC-171` (g)'s first harvest: building a second extraction mechanism while the first has never run

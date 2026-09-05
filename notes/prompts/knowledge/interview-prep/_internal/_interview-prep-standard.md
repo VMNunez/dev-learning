@@ -43,8 +43,10 @@ one standard reaching across two disjoint chains is what `REC-180` ruled against
 `{PROJECT_NAME}-{NNN}`, not the `{TOPIC}-{LEVEL}-{NNN}` below. Since 2026-09-05 it also has an
 `es`-review owner this family still has no equivalent of — that second reader, an `en/`-blind pass over
 the twin — which is why that bank's Spanish is checked on its own terms while this one's is checked by a
-reviewer holding both languages. What that row still owes it is priority markers with a calibration for
-five fixed sections, and the three `[studied]` rulings. Nothing here binds either of them except the
+reviewer holding both languages. It also has priority markers since 2026-09-05, on the same three-star
+scale as this file's but calibrated **over the whole bank file** rather than per section, which is why
+that rule too is written there and not borrowed from here. What that row still owes it is the three
+`[studied]` rulings. Nothing here binds either of them except the
 bilingual section, and both are listed under the open-list rule above rather than left as the unnamed
 exceptions they would otherwise be. The rest of that bank's contract is `_portfolio-standard.md`'s.
 

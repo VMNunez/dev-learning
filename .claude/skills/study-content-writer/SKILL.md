@@ -48,7 +48,7 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
   read `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` → **"Question identity, the
   refined freeze and the TODO channel"**, and nothing else in that file — the rest is `/portfolio-audit`'s
   gate contract. **That bank has its own standard and the levelled one does not govern it** (it says so
-  in its own reader list): no level, no coverage fingerprint, no priority markers, no `[studied]` state,
+  in its own reader list): no level, no coverage fingerprint, no `[studied]` state, a priority marker calibrated over the whole file instead of per section,
   and an ID keyed to the project folder rather than to a topic. Loading the wrong standard here is the
   failure this branch exists to prevent — it would have you allocate a `{TOPIC}-{L}-NNN` ID and verify a
   fingerprint the file has never carried.
@@ -222,6 +222,13 @@ re-walks section by section. Your one write is the repair his marker asks for �
 - **A TODO about voice or phrasing is a first-class reopen.** He answers these out loud, in Spanish, in
   a room; an answer that is correct and does not sound like him is a defect of this bank. Never argue
   that the answer was already right, and never narrow the repair to the words he did not name.
+- **The priority marker survives the reopening.** ⭐⭐⭐ / ⭐⭐ / ⭐ says how often an interviewer asks the
+  question; `[refined]` says whether the answer is his. Removing the freeze never removes the star, a
+  rewritten answer keeps the marker it had, and you never write, change or delete one — the standard's
+  "Priority markers" gives it to `/portfolio-audit`'s author, reviewer and cross-section scan. **A TODO
+  asking for a different star is the one you hand back**: say so in your report and leave the marker —
+  he is not fenced out of it and writes it himself, and the alternative is you ranking a question you
+  were told not to author.
 - **The bound is the question block**, exactly as the marked passage bounds a frozen note. A TODO asking
   for a question the bank does not have, or for a section reorganised, is reported and handed back to
   `/portfolio-audit` — that is its gate's work, not yours.

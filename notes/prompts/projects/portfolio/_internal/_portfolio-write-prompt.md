@@ -75,6 +75,14 @@ are writing — where your new question duplicates a frozen one, **yours** is th
 written. If you believe a frozen question is wrong, say so in your report and leave it byte-for-byte as
 it stands. Only Victor reopens one.
 
+**Every question you write carries a priority marker** — `⭐⭐⭐`, `⭐⭐` or `⭐`, after the question mark on
+the bold line — under the standard's **"Priority markers"**: `⭐⭐⭐` for a decision this project is *for*,
+`⭐⭐` for a real choice past those, `⭐` for a niche detail. The proportion the standard states is a
+**whole-file** property and nobody expects you to hit it from one section: mark each question on its own
+merits and let the orchestrator's cross-section scan downgrade an over-starred bank. **You never change
+the marker on a question you did not write**, and a `[refined]` block's marker is frozen with the rest of
+it.
+
 **Every question you write is born unrefined and carries a stable ID.** Read the whole file before
 allocating: the format is `{PROJECT_NAME}-{NNN}` and the counter runs over the **file**, not your
 section, so the next unused number is the highest one present anywhere in the bank plus one. Never
@@ -144,7 +152,8 @@ decisions and patterns to defend in this area — do not cap at 5. Save them **u
 `{SCOPE}` names, inside the `{SECTION}` heading** (on an Angular-only project, directly under
 `{SECTION}` — there are no sub-headings there)
 in `notes/interview-prep/projects/en/{PROJECT_NAME}.md` using the standard's file template and its
-per-question format — `**[{PROJECT_NAME}-NNN] Question?**`, the ID first inside the bold text — creating
+per-question format — `**[{PROJECT_NAME}-NNN] Question?** ⭐⭐`, the ID first inside the bold text and the
+priority marker after it — creating
 the heading and the sub-heading if they do not exist yet; if questions for this sub-heading already
 exist, append only what is not already there and never duplicate a decision or code path already
 covered. **Never write, reword or delete a line under another sub-heading**, even one inside your own
@@ -164,6 +173,9 @@ Do not commit. Leave the question file in the working tree. Report:
 - **The ID range you allocated** (e.g. `01-todo-list-042` … `-057`) and the highest ID that existed in
   the file before you started. The next section's author allocates from the file, so a run that cannot
   say what it took is a run nothing can check for a collision.
+- **Your section's marker split** — how many `⭐⭐⭐`, `⭐⭐` and `⭐` you wrote. The scan that owns the
+  whole-file proportion counts the finished file itself; your split is what lets it see which section a
+  correction came from without re-reading your work.
 - Any **refined** question in your section you believe is wrong — which you did not change.
 - Any decision you found but could not cover with a question (with why).
 
