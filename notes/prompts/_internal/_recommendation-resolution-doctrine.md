@@ -1169,6 +1169,18 @@ defines it** — here the prompts naming `_single-shot-self-report.md`, a set th
 asserts the size of — **and then classify each member by reading it**. Grepping for the defect's
 wording measures the wording, not the population.
 
+**A shared rule's own examples are a population claim, and a void one is the cheapest evidence the rule
+was never measured.** From `REC-211`. `_batch-mode.md` governed "any second field tied to the target" in
+`all` mode and illustrated it with `NOTES_PATH` and `PROJECT_TYPE`: the second exists in no prompt in
+the repository, and the first belongs to `coverage-prompt`, which states under its own
+`## Configuration` that `TOPIC = all` is *intentionally unsupported* — so neither example could ever
+reach the rule, and the same file's trigger list carried the false bullet that had made the first one
+look reachable. The row was raised as a binary over two prompts; the measured population was five,
+carrying three dispositions that were already live and invisible to each other. So **grep every example
+a shared rule cites before ruling on its wording**: an example is the one part of a contract that names
+its population by hand, it costs a command each, and where an example is void the enumeration behind
+the rule was never done — what the fix owes is the population, not the sentence.
+
 ### Evidence — what is a row at all
 
 **An unrun prompt is tracker state, never a recommendation.** From `REC-046`. A row whose content is
