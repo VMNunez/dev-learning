@@ -180,8 +180,9 @@ consumer reads freshness from the file itself.
 
 ## Single-shot prompt executions
 
-One latest-run row per prompt: every single-shot prompt, plus `interview-prep-route`, the one
-orchestrator the tables above hold no execution cell for. Target/mode contains the configuration that
+One latest-run row per prompt: every single-shot prompt, plus the two route orchestrators
+(`interview-prep-route` and, since 2026-09-06, `interview-prep-route-projects`), the two the tables
+above hold no execution cell for. Target/mode contains the configuration that
 identifies the work; prompts with no target use `global`. A row here records the **run**; where a prompt
 also has a progress cell above (`sql-exercises`, `simulation-review`), the two are written together and
 neither replaces the other.
@@ -194,6 +195,7 @@ neither replaces the other.
 | evidence-intake-prompt | | | pending | |
 | hr-screen-prompt | | | pending | |
 | interview-prep-route-prompt | | | pending | |
+| interview-prep-route-projects-prompt | | | pending | |
 | linkedin-prompt | | | pending | |
 | profile-readme-prompt | | | pending | |
 | simulation-generator-prompt | | | pending | |

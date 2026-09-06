@@ -232,11 +232,12 @@ re-walks section by section. Your one write is the repair his marker asks for �
 - **The bound is the question block**, exactly as the marked passage bounds a frozen note. A TODO asking
   for a question the bank does not have, or for a section reorganised, is reported and handed back to
   `/portfolio-audit` — that is its gate's work, not yours.
-- **`[studied]` is not admitted in this bank at all** (`REC-180`'s three rulings are open), so you never
+- **`[studied]` is not admitted in this bank at all** (`REC-180`'s remaining rulings are open — the marker
+  has no writer that may reach this bank and no counter that reads it), so you never
   write it here and you report one you find as malformed.
 - **A question with no ID yet is still repaired, and named by its quoted bold line instead.** The banks
   written before the identity rules landed (2026-08-31) carry none until their next `/portfolio-audit`
-  run allocates them — `01-todo-list`'s 79 questions are all of them today. Never allocate one yourself
+  run allocates them — `01-todo-list`'s 118 questions all carry one since 2026-09-05. Never allocate one yourself
   to have something to cite: an ID handed out here would collide with the one that run assigns. Say in
   the report that the bank owes its IDs and to which run.
 - **No harvest row.** The note-TODO sink is scoped to note prose, and the Q&A voice sink is `REC-184`'s

@@ -798,8 +798,9 @@ freeze and the TODO channel". They match this section's shape deliberately — s
 is a first-class reopen there — with three differences that matter: the ID is `{PROJECT_NAME}-{NNN}` (no
 topic, no level); the priority marker is calibrated over the **whole file** rather than per section, is
 placed and frozen as it is here, and never orders the questions inside a section, which that bank's
-append and freeze rules forbid; and there is **no `[studied]` state at all**, since no route,
-recall block or recount reaches it (`REC-180` owes that last one). Do not add a question to one by hand; that is the gate's work.
+append and freeze rules forbid; and there is **no `[studied]` state at all** — since 2026-09-06 a route
+and the recall block do reach this bank (`routes/projects.md`, served on request), but the marker still
+has no writer that may enter it and no recount that reads it, which is what `REC-180` still owes. Do not add a question to one by hand; that is the gate's work.
 
 - **A `TODO:` is resolved in the language of the file that carries it** (2026-08-29) — the same rule
   the bilingual notes section states, now written into `_interview-prep-standard.md` for the Q&A

@@ -3,9 +3,10 @@ name: interview-prep-block-open
 description: >
   Open and conduct the active-recall interview-prep block whenever Victor starts interview questions
   ("vamos con interview prep", "hazme preguntas de entrevista", "abro el bloque de preguntas") or
-  continues an already open question. Resolve the selected-level CORE route, ask one refined question
-  at a time without revealing its answer, accept either voice-dictation transcripts or typed answers,
-  and grade PASS / BORDERLINE / FAIL. Read-only: study-block-close owns every `[studied]` write.
+  continues an already open question. Resolve the selected-level CORE route — or, when he asks for
+  project questions, the cross-project route — ask one refined question at a time without revealing its
+  answer, accept either voice-dictation transcripts or typed answers, and grade PASS / BORDERLINE /
+  FAIL. Read-only: study-block-close owns every `[studied]` write.
 ---
 
 # Open the interview-prep active-recall block
@@ -18,7 +19,12 @@ Write nothing.
 
 ## 1 — Resolve the route
 
-Resolve `LEVEL` from Victor's message, otherwise from `PROGRESS.md`'s active professional level. Read:
+**Two routes exist and the CORE one is the default.** Take the project route only when Victor asks for
+it — "preguntas del 07", "las de mi proyecto", "project questions" — since which of his two kinds of
+recall he wants is his call and not this skill's.
+
+**CORE route (default).** Resolve `LEVEL` from Victor's message, otherwise from `PROGRESS.md`'s active
+professional level. Read:
 
 1. `notes/interview-prep/routes/{LEVEL}.md`;
 2. `_interview-prep-standard.md` lifecycle and answer-quality sections;
@@ -30,18 +36,45 @@ question lines under the route prompt's algorithm, unique resolvable IDs, curren
 fingerprints, and exact EN/ES ID/state parity. If any gate fails, name it and hand off to
 `/interview-prep-route LEVEL={LEVEL} MODE=update`; never improvise a question outside the route.
 
+**Project route (on request).** Read:
+
+1. `notes/interview-prep/routes/projects.md`;
+2. `_portfolio-standard.md` → "Question identity, the refined freeze and the TODO channel" and
+   "Priority markers" — that file governs this bank, and the levelled Q&A standard does not;
+3. the bilingual project pair for the next route candidates;
+4. `PROGRESS.md` `## Study progress` for orientation.
+
+Require `Route status: current`, a question-inventory fingerprint matching the current English banks
+under `interview-prep-route-projects-prompt.md`'s algorithm, unique resolvable IDs, and exact EN/ES
+ID/state parity. **Require no coverage fingerprint**: a project bank has none by design, so the pair
+parity and the route fingerprint are the whole freshness test here. Name the failing gate and hand off
+to the run that owns it — `/interview-prep-route-projects MODE=update` for a stale or missing route, but
+`/portfolio-audit PROJECT_PATH=projects/«name»` when the defect is in the **bank** (a missing `es/` twin,
+an ID-less or unmarked question), which no route run can repair.
+
+**When the default resolves to nothing.** A missing or stale CORE route is a failed gate like any other
+— but say so and then **offer the project route** when that one exists and is current, rather than
+ending the block. A default that points at a file no run has written yet is not a reason to study
+nothing; the handoff to `/interview-prep-route` still gets printed, and Victor decides.
+
 ## 2 — Select the next question
 
-Walk CORE order and choose the first question that is:
+Walk the resolved route in its own order and choose the first question that is:
 
 - `[refined]` in both languages;
 - not `[studied]` in either language;
 - not already attempted in this open block.
 
-Skip unrefined route entries but count them as refinement debt. If no eligible CORE question remains,
-report whether CORE is fully studied or blocked entirely on refinement; do not fall through to ⭐⭐/⭐.
+**On the project route the second clause has no counterpart to read**: `[studied]` is not admitted in
+that bank while `REC-180`'s remaining rulings are open — that marker has no writer able to reach it and
+no counter that reads it — so every refined question stays eligible and one carrying the marker is
+**malformed**; report it and select the next.
 
-Show only the Spanish question text, its topic and ID. Do not show its stored answer, tip, code block,
+Skip unrefined route entries but count them as refinement debt. If no eligible question remains on the
+resolved route, report whether it is fully studied or blocked entirely on refinement; do not fall
+through to ⭐⭐/⭐, and do not silently switch to the other route.
+
+Show only the Spanish question text, its topic — or its project, on the project route — and its ID. Do not show its stored answer, tip, code block,
 red flag or priority explanation before Victor answers. State once per block: `Puedes responder por
 dictado o por escrito; se evalúan igual.`
 
@@ -80,3 +113,8 @@ never edit it or pass the question on a defective reference.
 Keep the per-ID verdicts in conversation state. When Victor closes the block, `study-block-close` marks
 only IDs with a final PASS as `[studied]`, mirrors both languages, and recounts `PROGRESS.md`. This skill
 never edits, commits, or marks state.
+
+**A project question's PASS cannot be marked yet, and the report says so rather than implying it was.**
+`study-block-close` has no route into that bank until `REC-180`'s remaining rulings land, so a final PASS
+on a project question is reported to Victor as recorded in this block alone. Saying nothing would leave
+him believing a marker exists that no file carries.

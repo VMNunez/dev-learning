@@ -22,7 +22,7 @@ canonical machinery; the catalogue is derived and never overrides the prompt it 
 > orientation gate.
 
 > **Prompts *and* skills in one wiring diagram → `_internal/_system-map.md`.** This README owns the
-> per-prompt facts for the 31 runnable prompts. The system map owns the per-skill facts for the
+> per-prompt facts for the 32 runnable prompts. The system map owns the per-skill facts for the
 > in-session rituals (`step-complete`, `coverage-mark`,
 > `study-block-close`, `sql-grade`…), the per-file writer registry, `PROGRESS.md` section by section, the debts and
 > observable skill failures a run leaves behind, and the improvement loop itself — why machinery is
@@ -71,7 +71,7 @@ since two later paragraphs cite invariants 8 and 9 by number. The bare words `Ba
 `Write`, `Edit` and `Glob` stay uncovered on purpose — "Git Bash", "Grep all three files" are legitimate
 prose, and a check that cries wolf gets disabled.
 
-Both launcher catalogs contain exactly 31 files and must reference the same 31 canonical entry points.
+Both launcher catalogs contain exactly 32 files and must reference the same 32 canonical entry points.
 **A launcher's `Rules` may point at a prompt's commit or gate rule and may never restate one** — the test
 and its worked exemptions are in `_internal/_session-rules.md` → "A launcher points at a commit or gate
 rule"; the validator does not check this, so it is caught by reading.
@@ -253,12 +253,12 @@ the filenames anyway, so a file keeps its marking if it is ever moved or quoted 
 
 **Inside a supported agent runtime you do not need the rule at all: type `/` and the list is the answer.** Every
 runnable prompt has a slash command and no internal file can have one, so the menu *is* the runnable
-set — 31 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
+set — 32 launchers in each of `.claude/commands/` and `.codex/commands/`, one per prompt, kept at parity (completed 2026-07-22; before
 that only the 11 orchestrators had one, which made the menu look like the whole system when it was
 under half of it). **Adding a runnable prompt means adding its command in the same commit.**
 
 - **Runnable — you launch these.** Fill in the config block at the top, paste it into a fresh
-  conversation, or just use its slash command. **31 files, listed below.**
+  conversation, or just use its slash command. **32 files, listed below.**
 - **Internal — a runnable prompt reads and executes these as its own step**; none of them is part of
   your normal "paste into a new chat" workflow. Two kinds, both `_`-prefixed: **standards**
   (`_note-quality-standard.md`, `_review-standard.md`) — the shared rulebook a family of prompts reads
@@ -270,13 +270,13 @@ under half of it). **Adding a runnable prompt means adding its command in the sa
 *(Made true on 2026-07-22: seventeen subagent steps were missing the prefix, so a folder like
 `knowledge/notes/` looked like seven runnable prompts when only `notes-audit.md` is one.)*
 
-### The 31 runnable prompts — each with its own slash command
+### The 32 runnable prompts — each with its own slash command
 
 **The command is the prompt's filename minus the `-prompt` suffix** — `coverage-prompt` → `/coverage`,
-`progress-update-prompt` → `/progress-update`. Twenty-three of the 31 work that way; seven files carry no
+`progress-update-prompt` → `/progress-update`. Twenty-four of the 32 work that way; seven files carry no
 `-prompt` suffix at all — the `*-audit.md` orchestrators — so their command *is* the filename
 (`/review-audit`). That is a *filename* glob and not a command one: `/coverage-audit` also ends in
-`-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other twenty-two. **One
+`-audit` and its file is `coverage-audit-prompt.md`, a suffix-drop like the other twenty-three. **One
 deliberate exception, and it must not be "repaired":** `code-review-prompt` launches as
 **`/code-review-practice`**, because `/code-review` is the host agent's own built-in diff review —
 renaming it back re-collides with that command, and both launcher files state the reason in their own
@@ -301,17 +301,18 @@ defect — so read every hit before calling it a defect.
 
 | Group | Prompts |
 |---|---|
-| Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `interview-prep-route-prompt` |
+| Knowledge | `coverage-prompt`, `coverage-verify-prompt`, `coverage-audit-prompt`, `evidence-intake-prompt`, `notes-plan-prompt`, `notes-audit`, `interview-prep-audit`, `interview-prep-route-prompt`, `interview-prep-route-projects-prompt` |
 | Projects | `project-brief-prompt`, `plan-audit`, `readme-audit`, `review-audit`, `portfolio-audit` |
 | Practice | `sql-plan-prompt`, `sql-plan-audit`, `sql-exercises-prompt`, `simulation-plan-prompt`, `simulation-generator-prompt`, `simulation-review-prompt`, `code-review-prompt`, `simulator-prompt`, `hr-screen-prompt` |
 | Strategy | `progress-update-prompt`, `roadmap-review-prompt`, `cv-prompt`, `linkedin-prompt`, `cover-letter-prompt`, `profile-readme-prompt`, `tracker-prompt` |
 | System | `system-check-prompt`, `system-gaps-prompt` |
 
-Two flavors among these 31, both launched the same way (paste config into a new chat):
+Two flavors among these 32, both launched the same way (paste config into a new chat):
 - **Hands-off orchestrators** — `notes-audit`, `interview-prep-audit`, `project-brief-prompt`,
   `plan-audit`, `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update-prompt`, `roadmap-review-prompt`,
-  `coverage-audit-prompt`, `interview-prep-route-prompt`, plus `coverage-prompt`,
+  `coverage-audit-prompt`, `interview-prep-route-prompt`, `interview-prep-route-projects-prompt`,
+  plus `coverage-prompt`,
   `coverage-verify-prompt`, `notes-plan-prompt`, `sql-plan-prompt`, `sql-plan-audit`, `simulation-plan-prompt`, and
   the two system prompts `system-check-prompt` and `system-gaps-prompt` (they run the orchestrator contract
   even when the target is singular) — run entirely inside a supported agent runtime and hand you a
@@ -320,8 +321,8 @@ Two flavors among these 31, both launched the same way (paste config into a new 
   now being written to `_application-standard.md`'s checkable Project-bullet spec, and the only thing
   that still stops that prompt is a `cv-bullets.md` section a pre-retirement run left holding two
   options. A section you have marked `[refined]` is not a gate either: that prompt reports it and moves
-  on, never asking. **Nineteen prompts**, and
-  the set is defined by which self-report they run: these nineteen execute `_pipeline-self-report.md`.
+  on, never asking. **Twenty prompts**, and
+  the set is defined by which self-report they run: these twenty execute `_pipeline-self-report.md`.
 - **Single-shot prompts** — the other twelve, which execute `_single-shot-self-report.md` — do one job
   in one pass; some need you to paste something mid-conversation (your code into
   `simulation-review-prompt`, a job offer into `cover-letter-prompt`, etc.).
@@ -369,6 +370,7 @@ licences: this fence reaches three parts of one column and makes no claim about 
 | `/notes-audit` → `notes-audit` | `TOPIC`, `LEVEL`, `NOTE` | O, four cold stages · agent | requires a current plan; exactly one planned EN/ES pair, never an arbitrary path or `all` |
 | `/interview-prep-audit` → `interview-prep-audit` | `LEVEL`, `FILE=topic\|all`, `SECTION`, `MODE=full\|correct`, `DRY_RUN` | O, market/gap/author/reviewer roles · agent | current coverage+plan, and on the `angular` run the Angular Material plan at this level too, because both topics share `angular.md`; never edits a refined block |
 | `/interview-prep-route` → `interview-prep-route-prompt` | `LEVEL`, `MODE=update\|dry-run` | O, one cold route reviewer · agent | every required bank must be current; stores IDs/order, never answers |
+| `/interview-prep-route-projects` → `interview-prep-route-projects-prompt` | `MODE=update\|dry-run` | O, one cold route reviewer · agent | after `portfolio-audit` on each project it carries; selects the `⭐⭐⭐` of every project whose gate closed `✅ Ready`, read from `PLANNING.md` §23's G7 box (Angular-only projects have no §23, so those fall back to the `portfolio-audit` tracker cell, which a bank-only run leaves holding no verdict); stores IDs/order, never answers |
 | `/project-brief` → `project-brief-prompt` | optional `NUMBER` (blank derives next), `CANDIDATE=blank\|name` | O, cold second opinion · agent | after clean progress audit; decides scope, never writes the plan |
 | `/plan-audit` → `plan-audit` | `MODE=new\|review`, `PROJECT=blank\|path\|all` | O, author/advisor/reviewers · agent | new mode only: `progress-update`, then the brief it consumes/dispatches; review `all` only; no `DRY_RUN` |
 | `/review-audit` → `review-audit` | `PROJECT_PATH=path\|all`, `REVIEW_SCOPE=full\|backend\|frontend` | O, cold per-slice roles · agent | run-first nothing; as project gates **G3/G4** it reads `PLANNING.md` and the source, never the README; writes/commits backlog only, never project code |
@@ -552,6 +554,7 @@ than background to all of them.
 | `knowledge/notes/_internal/_notes-review-es-prompt.md` | *Internal (stage C — Spanish reviewer, `en/`-blind).* The planned `es/` file is the only **note** it opens — the standard, the calibration reference and the plan are required support reads, and in append-only mode the English half of its freeze proof is `--numstat` counts, never a textual diff. Fixes calque/flow, marks that persistent-plan entry complete, resets its studied state after changed prose — or, in append-only mode, preserves the date and records the appended headings under `Pending study` — and commits the pair plus plan. | `_note-quality-standard.md`, one `es/` file, `notes/java/junior/es/11-excepciones.md` §1 (the finished-Spanish calibration reference, named in the description cell and omitted here until 2026-09-05), persistent plan, `LINK_TARGETS` (filenames plus each entry's title and `Audit note` — plan metadata, never the English prose; the internal-link check runs against it, a declared-but-unwritten target is a correct forward link, and a claim contradicting the plan's assignment is reported, not rewritten) | the `es/*.md`, plan concept/status/studied metadata, one atomic commit |
 | `knowledge/interview-prep/interview-prep-audit.md` | Level-aware market-selected Q&A audit, including standalone Spring. Uses current coverage as the level boundary rather than a one-question-per-bullet checklist; live web/evidence analysis selects realistic questions, stable IDs preserve identity, and every new or rewritten question remains unrefined until Victor accepts it. Pending junior notes are allowed once the selected notes plan is current; earlier-level progression gates still protect middle/senior. | its internal pieces, selected topic coverage + current notes plan, `_job-market-evidence.md`, selected-level interview-prep en/es | selected-level interview-prep en/es, one atomic commit per topic |
 | `knowledge/interview-prep/interview-prep-route-prompt.md` | Builds one cross-topic CORE study order for a selected level after every required bank is current. Selects a globally weighted subset of ⭐⭐⭐ questions, stores stable IDs and navigation labels only, and fingerprints the state-stripped question inventory so refining/studying does not stale the route. | all selected-level EN/ES banks, `_interview-prep-standard.md`, `_shared-context.md`, `_job-market-evidence.md`, `ROADMAP.md` | `notes/interview-prep/routes/{LEVEL}.md` |
+| `knowledge/interview-prep/interview-prep-route-projects-prompt.md` | The same job for the **project** banks, and a separate prompt rather than a mode because the level route's `▶ Run first` and its coverage-fingerprint guard are prohibitions a project bank breaks rather than substitutes, and because both would share one `_last-run-report` and one tracker row (`REC-180`, 2026-09-06). Eligibility is measured, never configured: the `✅ Ready` verdict, read from `PLANNING.md` §23's G7 box where it lives — the `portfolio-audit` tracker cell is an execution record a bank-only run overwrites, so it serves only as the Angular-only fallback, with that column's own no-verdict branch. Selects `⭐⭐⭐` only, dedupes across projects, orders newest project first, and deliberately does **not** dedupe against the levelled CORE route — the same decision asked from the topic side and the project side is two rehearsals. Its digest algorithm is the level route's, by pointer, never restated. | every eligible project's EN/ES bank, each candidate's `PLANNING.md` §23, `_portfolio-standard.md`, `_run-tracker.md`, `_shared-context.md` | `notes/interview-prep/routes/projects.md` |
 | `knowledge/interview-prep/_internal/_interview-prep-standard.md` | *Internal.* Shared Q&A standard, with five reader groups its own header scopes — the audit pipeline, the route prompt, the two practice prompts, the in-session skills, and, from outside the family, `_portfolio-translate-prompt.md` **plus `_portfolio-review-es-prompt.md`** (both fenced to the bilingual contract alone): coverage-bounded market selection, fingerprints, stable bilingual IDs, question types/priorities, realistic answers in Victor's voice, and the three-state lifecycle (unrefined → `[refined]` frozen → `[refined] [studied]`). Its "Adding questions from outside the audit" section is where `/simulation-review` and `/code-review-practice` enter, and it plus the sections it invokes is their contract: born-unrefined questions, a section they may reorder but no refined content or state marker they may touch, and the route-stale handoff each insertion owes. The fingerprint *check* runs in the two prompts; the contract it checks against is here. Not runnable. | — | — |
 | `knowledge/interview-prep/_internal/_interview-prep-write-prompt.md` | *Internal (author).* Audits one selected-level section, scoped by `MODE`: `full` does en/es sync, TODO/reopen handling, coverage traceability, stable IDs, priorities and market question quality; `correct` does sync, TODOs, priority and format only, skips the coverage check, adds no questions and **reports** weak answers instead of rewriting them. Never edits a refined block — **except on a `TODO:` Victor wrote inside one, which is his reopening**: both state markers come off both languages, the repair runs on the side carrying the marker and the twin is re-translated from it (the direction rule, `REC-183`, 2026-08-29). | `_interview-prep-standard.md`, selected coverage, interview-prep en/es, the project or practice source a cited snippet comes from (its "Sourcing real code" table) | interview-prep en/es working tree |
 | `knowledge/interview-prep/_internal/_interview-prep-review-prompt.md` | *Internal (reviewer).* Independent second pass on one selected-level section, run under the **same `MODE` as the author**: `full` fixes every failed check; `correct` fixes only the mechanical/parity half (markers, format, type label, stable IDs, bilingual integrity) plus a false code citation or project anchor, and **reports** the quality bar, the ratio floor and a missing snippet — so the pass Victor asked to correct his own words does not rewrite them. Rewrites unrefined questions only, reports defects in frozen ones — a `TODO:` of Victor's inside one is not a defect it reports but his reopening — and keeps IDs/state bilingual, testing bilingual integrity in **both** directions since repair runs in either. Under the orchestrator it never commits. | `_interview-prep-standard.md`, selected-level interview-prep en/es, the cited project or practice source when a citation or anchor looks doubtful (spot-check, via the write prompt's "Sourcing real code" table) | the audited selected-level pair in the working tree |
@@ -714,14 +717,20 @@ Each generated file, with who writes it and who depends on it:
   (`junior/es/architecture.md`) as a Spanish-register reference and write nothing here.
 - **`interview-prep/routes/{LEVEL}.md`** — written only by `interview-prep-route` → read by
   `interview-prep-block-open`, `study-block-close`, `authoring-progress-recount`, and `progress-update`.
+- **`interview-prep/routes/projects.md`** — written only by `interview-prep-route-projects` → read by
+  `interview-prep-block-open` **on request only**, the CORE route staying its default. No recount reads
+  it: both count over levelled populations — one `{LEVEL}` route, and every required current bank at that
+  level — and a project bank is outside both until `REC-180`'s `[studied]` writer and counter land.
 - **`interview-prep/projects/en/*.md`** — written by `portfolio-audit`'s author + reviewer — which is
   also where the `⭐` priority marker is authored, the Spanish side only ever copying it — and by
-  `study-content-writer` on an `en/`-side `TODO:` → read by `simulator` (only when `LANGUAGE = en`) and
-  by the translator below.
+  `study-content-writer` on an `en/`-side `TODO:` → read by `simulator` (only when `LANGUAGE = en`),
+  by the translator below, and — since 2026-09-06 — by `interview-prep-route-projects` (every EN bank, to
+  EOF) and by `interview-prep-block-open` when Victor asks for project questions.
 - **`interview-prep/projects/es/*.md`** — written by `portfolio-audit`'s translator, from the `en/`
   twin, **then by its `en/`-blind Spanish reviewer** (stage C, Phase 1c, prose only), and by
   `study-content-writer` on a `TODO:` Victor wrote there → read by `simulator` (only when
-  `LANGUAGE = es`). Never *authored* by hand. Since 2026-08-31 the pair carries `{PROJECT_NAME}-{NNN}`
+  `LANGUAGE = es`), and — since 2026-09-06 — structurally by `interview-prep-route-projects` for parity
+  and by `interview-prep-block-open`, which shows Victor the Spanish side of a project question. Never *authored* by hand. Since 2026-08-31 the pair carries `{PROJECT_NAME}-{NNN}`
   IDs, the `[refined]` freeze (Victor alone writes and reopens it; a TODO about **voice or phrasing** is
   a first-class reopen) and its own TODO channel — all in `_portfolio-standard.md`, not in the levelled
   Q&A standard. The **`es`-review owner** landed 2026-09-05 (`REC-180`): stage T reads the English by
@@ -731,7 +740,8 @@ Each generated file, with who writes it and who depends on it:
   translator, frozen with a `[refined]` block, and calibrated **over the whole file** rather than per
   section — the orchestrator's cross-section scan owns that proportion and downgrades an over-starred
   bank. A bank written earlier carries none until that gate's next run over its project; `/simulator`
-  ranks an unmarked question as `⭐⭐`. That row still owes the three `[studied]` rulings.
+  ranks an unmarked question as `⭐⭐`. That row still owes the `[studied]` marker's writer and counters;
+   its route half landed 2026-09-06.
 - **`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `sql-plan-prompt`, audited and extended by
   `sql-plan-audit`, and advanced by `sql-grade`'s subagent (§1 counts, §3 statuses, §2 `[x]` bullets)
   → read by `sql-exercises` (every run takes its topic, count and focus from the
@@ -795,6 +805,8 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
                         │     readme-audit     review-audit   portfolio-audit
                         │     README(s)         PROJECT-BACKLOG  ─► cv-bullets ─► cv-prompt
                         │                                          └► interview-prep/projects/en+es ┘
+                        │                                             └► interview-prep-route-projects ─► routes/projects.md
+                        │                                                (read by interview-prep-block-open, on request)
                         └─ roadmap-review ─► ROADMAP.md
 
 Practice (its own loop, fed by coverage):
@@ -991,7 +1003,9 @@ processes every target in order, one commit per target. Full rules: `notes/promp
   `interview-prep-route`,
   `simulation-plan`, `simulation-generator`, and `project-brief` (one decision/route step per run).
 - **Already global (no `all` needed):** `coverage-audit`, `roadmap-review`, `system-check`, `system-gaps`, `cv`,
-  `linkedin`, and `simulator` full mode — these cover everything in one run by design.
+  `linkedin`, `interview-prep-route-projects` (one run builds the whole route; which projects it carries
+  is measured from eligibility, never configured), and `simulator` full mode — these cover everything in
+  one run by design.
   `progress-update` defaults to `MODE = active` (only the in-progress project); set `MODE = all`
   for the full global pass.
 - **Single-shot (not batchable):** `simulation-review` and `hr-screen` — each needs your pasted code

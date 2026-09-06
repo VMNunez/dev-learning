@@ -45,7 +45,7 @@ one standard reaching across two disjoint chains is what `REC-180` ruled against
 the twin — which is why that bank's Spanish is checked on its own terms while this one's is checked by a
 reviewer holding both languages. It also has priority markers since 2026-09-05, on the same three-star
 scale as this file's but calibrated **over the whole bank file** rather than per section, which is why
-that rule too is written there and not borrowed from here. What that row still owes it is the three
+that rule too is written there and not borrowed from here. What that row still owes it is the remaining
 `[studied]` rulings. Nothing here binds either of them except the
 bilingual section, and both are listed under the open-list rule above rather than left as the unnamed
 exceptions they would otherwise be. The rest of that bank's contract is `_portfolio-standard.md`'s.

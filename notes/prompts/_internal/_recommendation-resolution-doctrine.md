@@ -631,11 +631,11 @@ clause written in the same breath is a **blend** of the two — false on day one
 before or after, and invisible to `git log -S` because nothing ever edited it. That is `REC-139`'s
 silence reached from a third cause, after `REC-141`'s merge: when the birth commit is a **rename**,
 read what it renamed *from* as well as *to*, because a blend matches neither and answers no pickaxe.
-Then the branch's own population: all nineteen orchestrators have a cell or row, so `otherwise` had
+Then the branch's own population: all twenty orchestrators have a cell or row, so `otherwise` had
 **zero members** and the fix was to delete it rather than repoint it. **Count who takes a fallback
 branch before repairing what it says** — an escape hatch nobody reaches is deleted, and the boundary it
 owed is stated in its place. Where the consumers disagree about whether to state a coordinate at all,
-the family decides: three of nineteen quoted a `##` heading and the one that rotted is the one whose
+the family decides: three of them quoted a `##` heading and the one that rotted is the one whose
 heading never existed, so the contract now names none and defers to the file that owns them.
 
 **When one copy of a duplication is damaging and its siblings are not, the discriminator is which

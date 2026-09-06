@@ -362,16 +362,18 @@ is a judgement about code you did not read.
 **Run that test only over a fully marked bank.** Count the questions carrying **no marker** first and
 report the number by section — **excluding the unmarked ones that carry `[refined]`**, which no role of
 this pipeline may mark and which would otherwise disable this test on that bank permanently; list those
-by ID instead, as Victor's to mark or reopen: a bank written before this rule (`01-todo-list`, 79 questions) carries none
-until its first run under it, and a proportion computed over a fraction of a file is a number that reads
+by ID instead, as Victor's to mark or reopen: a bank written before this rule carries none until its
+first run under it — `01-todo-list` was that bank and is no longer, its 118 questions having been marked
+in full on 2026-09-05 — and a proportion computed over a fraction of a file is a number that reads
 as a verdict. Where that count is not zero, say so in place of the test — the marked questions are the
 sections this run touched and the debt is what the report carries — and do not backfill the rest by hand:
 marking a question is the author's and the reviewer's work, over the code area it was written against.
 
 **Count the questions carrying no ID at all, and report the number.** Each section's reviewer allocates
 the missing IDs in its own section, so on a healthy run this is zero — but a section whose author
-returned `BLOCKED` never got a reviewer, and a bank written before this rule existed (`01-todo-list`,
-79 questions) carries none until its first run under it. A question with no ID cannot be named by a
+returned `BLOCKED` never got a reviewer, and a bank written before this rule existed carries none until
+its first run under it — `01-todo-list`'s 118 questions all carry one since 2026-09-05, so no bank on
+disk is in that state today. A question with no ID cannot be named by a
 `TODO:` or frozen with `[refined]`, so a non-zero count is a debt this run leaves behind and the final
 report says so by section. Do not backfill them yourself: allocating IDs across a bank is per-section
 work, and the section that was blocked is the one nobody finished.
@@ -697,7 +699,8 @@ commit message body with its shape (`blocked — partial` restored / `blocked �
 / `uncovered decisions` / `parity failed (es/)` / `blocked — partial (es/)` /
 `blocked — partial (es/ review)` / `blocked — es/ review not run`). Its outcome is not decided here — Phase 1a's two-shapes rule and Phase 1b's parity and
 `TODO-STOPPED` branches already fixed it as `blocked`, on the dry branch too. The label is not ceremony: this bank has no machine-readable
-freshness marker of its own — no fingerprint, and `/simulator` reads the folder ungated — so that label,
+freshness marker of its own — no coverage fingerprint, and `/simulator` reads the folder ungated, though
+since 2026-09-06 `routes/projects.md` carries an inventory digest `interview-prep-block-open` checks — so that label,
 the tracker cell and the header's `**Last banked — «tier»:**` line are the only marks either shape leaves
 on disk. The stamp is the one a later reader meets first, which is why its `(incomplete — …)` branch
 exists: a blocked section that stamped a plain date would be the one mark that lies.
@@ -759,7 +762,8 @@ the diff.
   the marker is written by Victor alone and reopened by him alone, by his word or by a `TODO:`. Every
   defect a subagent finds inside a frozen block reaches him through the final report and nowhere else,
   so print those lines rather than folding them into a count. `[studied]` is **not** admitted in this
-  bank at all — its three rulings are open in `REC-180` — so a run that finds one reports it as
+  bank at all — its remaining rulings are open in `REC-180`, the marker having no writer that reaches this
+  bank and no counter that reads it — so a run that finds one reports it as
   malformed and changes nothing.
 - **The English is authored and the Spanish is rendered — never the other way round, and never both at
   once.** The author and the reviewer write only `en/`; the translator and the Spanish reviewer write

@@ -235,12 +235,29 @@ interviewer will find.*
 **Scope extension ruled by Victor 2026-08-29** (`REC-180`): the two Q&A banks **behave practically
 identically** — only the source (a project's own code, not a topic) and the question type differ — so
 every rule of `_interview-prep-standard.md` transfers here unless it is structurally impossible. What is
-structurally impossible is everything keyed to a `{LEVEL}` route: the CORE route,
-`interview-prep-block-open`, `study-block-close`'s recount, the coverage fingerprint. A project bank has
-no level and sits on no study route, so **`[studied]` is not admitted here.** That marker's three
-rulings — whether the route lists project questions at all, whether `study-block-close` may write into a
-file this standard governs and its own does not, and whether `PROGRESS.md`'s `## Study progress` rows
-count them — are open in `REC-180`, and a marker nobody recounts is a state that lies.
+structurally impossible is everything keyed to a **`{LEVEL}`** route: the levelled CORE route, its
+per-level budget, the coverage fingerprint, and the `{TOPIC}-{LEVEL}-{NNN}` identity — a project bank has
+no level, and no run can invent one for it.
+
+**Sitting on no study route was in that list until 2026-09-06, and is not any more.** Victor ruled the
+first of the three `[studied]` questions that day: project questions **do** enter a study route, in a
+file of their own — `notes/interview-prep/routes/projects.md`, built by
+`interview-prep-route-projects-prompt.md`, which owns the eligibility test and is where it is stated —
+and
+`interview-prep-block-open` serves them on request. The route is its own file rather than a block inside
+`routes/{LEVEL}.md` precisely because the level is the part that cannot transfer; what could not be
+reached was the *route*, never the questions.
+
+**`[studied]` is still not admitted here, and now for a reason that is about writers rather than
+reachability.** The marker has no hand that may write it into this bank and no counter that reads it:
+`study-block-close` is its sole writer and is fenced to the levelled pair, and every denominator its
+`## Study progress` rows count over is a **levelled** population — the CORE row's is one `{LEVEL}` route,
+and the bank row's is *every required current bank*, which is the registered topic list at that level and
+its coverage fingerprints. A project bank is outside both, not merely off the route. Both are `REC-180`'s
+remaining work.
+So a question this bank serves to the daily block earns a verdict that is reported and not recorded, and
+until that lands **a `[studied]` marker found here is malformed** — a marker nobody recounts is a state
+that lies, which is exactly why the third state waits for its writer instead of arriving ahead of it.
 
 **Transfer decided where the rule came from; it did not decide where the text lives.** The paragraph
 above says the levelled standard's rules *apply* here; this one says they are **written here**, and the

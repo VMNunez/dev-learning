@@ -10,7 +10,8 @@ restating its neighbours, so the shape none of them can hold had nowhere to be w
 marker — the `es/` twin, stable IDs, the freeze and the TODO channel — and two more slices landed
 2026-09-05: the `en/`-blind Spanish reviewer that audits the twin step 2 produces, and that marker,
 completing step 1 and calibrated over the whole file rather than per section. What remains a pure target is step
-6 for that bank (three open rulings) and the whole of Loop B, steps 7–10.
+6 for that bank (**two** open rulings since 2026-09-06, the route half having landed) and the whole of
+Loop B, steps 7–10.
 
 **No run obeys this file.** It is not a standard and grants no authority: it is read at step 1 of
 resolving any row that cites it, so the resolution can see the whole loop before editing its own
@@ -45,12 +46,14 @@ Two things about that placement are load-bearing and neither is visible from the
   reviewer), `study-content-writer` on a `TODO:` alone, and Victor for the markers — and still
   **one external** reader, `/simulator`. That is the point: identity, the freeze, the TODO channel and
   the Spanish review are
-  all **Chain B**, and none of them is a study hop. Re-measured 2026-09-05: the string `projects` still
-  does not appear in `interview-prep-route-prompt.md`, `interview-prep-block-open/SKILL.md`,
-  `study-block-close/SKILL.md` or `authoring-progress-recount/SKILL.md`. So what is left of `REC-180`'s
-  step-6 half is **admitting the project bank into Chain A's study branch**, which those four readers
-  would have to be widened for. A file no route lists cannot be reached by the block that would study
-  it, so step 6 below still cannot fire for it at any cost.
+  all **Chain B**, and none of them is a study hop. Re-measured 2026-09-05: the string `projects` did not
+  appear in `interview-prep-route-prompt.md`, `interview-prep-block-open/SKILL.md`,
+  `study-block-close/SKILL.md` or `authoring-progress-recount/SKILL.md`. **Two of those four moved on
+  2026-09-06**: the bank now has a route of its own, `notes/interview-prep/routes/projects.md`, written
+  by a sibling prompt rather than by widening the level route, and `interview-prep-block-open` opens it
+  on request. What is left of `REC-180`'s step-6 half is therefore the **marker and its counters** —
+  `study-block-close` and `authoring-progress-recount` are still fenced to a `{LEVEL}` route — so a
+  project question can now be *asked* by the daily block and still cannot be *recorded* by it.
 - **Loop B is in no chain of the diagram.** It is a second loop of the kind §12 describes — machinery
   reopened from evidence — but with a sink of its own rather than a `_last-run-report*.md`, and its
   closest built relative is `REC-171`'s `_note-todo-harvest.md`, one folder away in Chain A.
@@ -127,14 +130,18 @@ voice before he ever reads them.
    reviewer, the translator (whose normal operation is to re-render the whole twin), the Spanish reviewer
    (2026-09-05) and the
    orchestrator's cross-section dedupe (whose normal operation is to delete a duplicate). Its ladder has
-   **two** states, not three — `[studied]` is not admitted there while step 6's three rulings are open.*
+    **two** states, not three — `[studied]` is not admitted there while step 6's remaining rulings are
+   open.*
 6. **Studied.** `[studied]` is written by `study-block-close` when he answers it correctly in an
-   active-recall block. *For the project bank this is not one open decision but three, and `REC-180`
-   owns all of them: whether `/interview-prep-route` lists project questions at all, since a question
-   off the route is unreachable by `interview-prep-block-open`; whether `study-block-close` may write
-   the marker into a file `_interview-prep-standard.md` does not govern; and whether `PROGRESS.md`'s
-   `## Study progress` rows count them, through `authoring-progress-recount`. A marker nobody recounts
-   is a state that lies, and a marker nothing can ever write is worse.*
+   active-recall block. *For the project bank this was three open decisions and is now two. The first
+   landed 2026-09-06: Victor ruled that project questions do enter a study route, and they got a file of
+   their own (`routes/projects.md`, `/interview-prep-route-projects`) rather than a slot in the level
+   route, because the level is the only part that could not transfer — `interview-prep-block-open` now
+   serves them on request. Still open, and `REC-180` owns both: whether `study-block-close` may write the
+   marker into a file `_interview-prep-standard.md` does not govern, and whether `PROGRESS.md`'s
+   `## Study progress` rows count them, through `authoring-progress-recount`. A marker nobody recounts is
+   a state that lies, and a marker nothing can ever write is worse — which is why the route came first
+   and the marker waits for its writer.*
 
 ## Loop B — the system learns his voice
 
@@ -278,10 +285,10 @@ updated in the same commit if one lands.
 
 | Step | File | Written by today | Read by today | What the target adds | Row |
 |---|---|---|---|---|---|
-| 1–2 | `notes/interview-prep/projects/en\|es/*.md` | `/portfolio-audit` — `en/` by its author + reviewer, `es/` by its translator (stage T, 2026-08-31) and its `en/`-blind Spanish reviewer (stage C, 2026-09-05) · `study-content-writer`, on a `TODO:` alone (2026-08-31) · Victor, who alone writes and reopens `[refined]` | `/simulator`, at its own `LANGUAGE` only — plus, inside the writing gate itself, the translator reading `en/` as its source | **landed: the `es/` twin (2026-08-31), then stable IDs, the `[refined]` freeze and the TODO channel (2026-08-31, identity half), then the `es`-review owner and the priority marker (2026-09-05).** Still owed: the three `[studied]` rulings — and readers: the route, the recall block, both recounts | `REC-180` |
+| 1–2 | `notes/interview-prep/projects/en\|es/*.md` | `/portfolio-audit` — `en/` by its author + reviewer, `es/` by its translator (stage T, 2026-08-31) and its `en/`-blind Spanish reviewer (stage C, 2026-09-05) · `study-content-writer`, on a `TODO:` alone (2026-08-31) · Victor, who alone writes and reopens `[refined]` | `/simulator`, at its own `LANGUAGE` only — plus, inside the writing gate itself, the translator reading `en/` as its source — and, since 2026-09-06, `/interview-prep-route-projects` and `interview-prep-block-open` on the study side | **landed: the `es/` twin (2026-08-31), then stable IDs, the `[refined]` freeze and the TODO channel (2026-08-31, identity half), then the `es`-review owner and the priority marker (2026-09-05).** Still owed: the `[studied]` **writer and counters** — the route (2026-09-06) and the recall block now reach it, both recounts do not | `REC-180` |
 | 3–4 | `notes/interview-prep/{LEVEL}/en\|es/*.md` | `/interview-prep-audit` · `/simulation-review` · `/code-review-practice` · `study-content-writer` · `study-block-close` | route, block-open, `/simulator`, both recounts | **nothing — landed 2026-08-29.** The symmetric repair-direction rule is in `_interview-prep-standard.md`, the write prompt's Steps 1–2 and its output contract, the audit orchestrator's author dispatch, the review prompt's bilingual-integrity check, `study-content-writer` and `_session-rules.md`; (a)'s reviewer was ruled unnecessary and replaced by two checks — the Q&A route's written report and an `en/`-side back-translation clause | `REC-183` (closed) |
 | 5 | same | Victor alone writes `[refined]` | — | nothing — already the contract | — |
-| 6 | `notes/interview-prep/routes/{LEVEL}.md` · `PROGRESS.md` `## Study progress` | `/interview-prep-route` only · the closing rituals | block-open, `study-block-close`, `authoring-progress-recount` | whether project questions enter the route, the block and the count at all | `REC-180` |
+| 6 | `notes/interview-prep/routes/{LEVEL}.md` · **`routes/projects.md`** · `PROGRESS.md` `## Study progress` | `/interview-prep-route` · **`/interview-prep-route-projects`** (2026-09-06) · the closing rituals | block-open (both routes, the project one on request), `study-block-close`, `authoring-progress-recount` | **the route and the block: landed.** Still owed: the marker's writer and the count | `REC-180` |
 | 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` — **unblocked 2026-08-31**, since a row can now store a question ID | — | — | one **episode** per question: `v0`, a round per TODO (verbatim + its version, rejected once superseded), the `[refined]` text, rounds-to-freeze, `Disposition`. Two writes, not one — appended by `study-content-writer`, closed by the freeze. The `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined, and an episode stores more of it than a row | `REC-184` |
 | 8 | the same sink | — | its consumer | the across-questions threshold, and where the count is printed — `REC-171`'s equivalent is a close-out's `cosecha:` line | `REC-184` |
 | 9 | `_interview-prep-standard.md` **and** `_portfolio-standard.md` | **by hand only** — the standards fence, owned by `_session-rules.md` | their two disjoint chains | the approval gate, and a landing that reaches both chains | `REC-184` |
@@ -346,7 +353,7 @@ clause in an existing row, or a row of its own, before anything is built.
 
 `REC-183` (repair direction) → `REC-180` (the `es` twin, then **IDs, the freeze and the TODO channel,
 both halves landed 2026-08-31**, then **the `es`-review owner and the priority marker, 2026-09-05**;
-still the four readers the
+still the two recount-side readers the
 project bank needs) → `REC-184` (the voice sink and its consumer), whose **Phase 0 is no longer blocked**
 and which should not precede
 `REC-171` (g)'s first harvest: building a second extraction mechanism while the first has never run
