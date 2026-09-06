@@ -1544,6 +1544,19 @@ is worse than the fork it replaced: the fork at least said what it meant.
 states the wrong half.** Also `REC-136`, where the tightening reached the rule (D5) and the report
 step (E) and missed the dispatch note (Step A) still telling the orchestrator that return "is a drift
 row" — one file, three sites, and the missed one is the instruction read first.
+**Where the branched thing is a *product* rather than a return, the site set leaves the prompt family
+entirely, and one test sorts it.** From `REC-215`, which conditioned `portfolio-audit`'s GitHub
+description on the project having a repo of its own: the row priced the fix at two clauses and the
+measured set was **eight sites in five files**, the three it had not counted being the derived map's
+catalogue cell and **both launcher `Rules` bullets**, each carrying the flat claim *"plus the GitHub
+description"*. A product claim propagates to every file that advertises the run, so the sweep is
+`README.md` and both adapter catalogues before it is the prompt's own siblings. The test that sorted the
+remaining sites in one pass, and it cuts the sweep in half: **a branch saying the artefact is _not_
+produced survives the conditioning; a branch that _prints_ it does not.** Eight "no GitHub description"
+clauses — the ❌ path, the bank-only scope, the Check-2 stop, the hard rule — stayed true untouched,
+while the one Finishing item that printed it had to gain the `n/a` line, because an item printing
+nothing is indistinguishable from a run that skipped it. And a launcher survives such a fix only as a
+**pointer**: "which the standard conditions on X" points, "only where X" restates.
 
 **A step is ordered by where a sequential reader reaches it, never by the number in its title.** From
 `REC-121`, where eight prompts labelled a blockquote `step 0` and placed it in their final section,
