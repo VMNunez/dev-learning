@@ -46,8 +46,10 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
   read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` in full.
 - Resolving a TODO in a **project question bank** (`notes/interview-prep/projects/en|es/*.md`) →
   read `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` → **"Question identity, the
-  refined freeze and the TODO channel"**, and nothing else in that file — the rest is `/portfolio-audit`'s
-  gate contract. **That bank has its own standard and the levelled one does not govern it** (it says so
+  refined freeze and the TODO channel"**, and nothing else in that file — the rest, **"Priority markers"
+  included**, is `/portfolio-audit`'s gate contract. That section is cited below as the ⭐'s owner, which
+  is provenance and not a read: the standard's reader list deliberately leaves you out of it, and the one
+  prohibition you need from it is restated where you need it. **That bank has its own standard and the levelled one does not govern it** (it says so
   in its own reader list): no level and no coverage fingerprint, a priority marker calibrated over the
   whole file instead of per section, and an ID keyed to the project folder rather than to a topic. Its
   three-state ladder is the same as the levelled bank's, but it is that file's own text and is read there. Loading the wrong standard here is the

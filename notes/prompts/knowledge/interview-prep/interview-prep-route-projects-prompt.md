@@ -39,7 +39,9 @@ Read:
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` for the question format, the
   `{PROJECT_NAME}-{NNN}` identity, the `[refined]` freeze and **"Priority markers"** — that file governs
   this bank, and `_interview-prep-standard.md` explicitly does not;
-- `notes/prompts/_internal/_run-tracker.md` → `## Per-project prompts`, for eligibility;
+- each candidate project's `{PROJECT_PATH}/PLANNING.md` §23 — the G7 box is where the verdict lives, so
+  it is eligibility's **owner** — and `notes/prompts/_internal/_run-tracker.md` →
+  `## Per-project prompts`, its Angular-only fallback;
 - every eligible project's `notes/interview-prep/projects/en/«name».md` and its `es/` twin;
 - the **existing** `notes/interview-prep/routes/projects.md`, where one is already on disk — guard 5 owes
   a list of the `[studied]` questions this run drops, and a **downgrade** is only visible against the

@@ -199,11 +199,13 @@ voice before he ever reads them.
    `_portfolio-review-prompt.md` never read the interview-prep standard; two of its pieces do —
    `_portfolio-translate-prompt.md` (2026-08-31) and `_portfolio-review-es-prompt.md` (2026-09-05) —
    each reading exactly one section of it, "The bilingual en/es contract", and nothing else in that
-   family. **Re-measured 2026-09-06: there are now five crossings, three of them
-   skills and two of them prompts** — `interview-prep-block-open` and `study-block-close` joined
-   `study-content-writer`, each reading the levelled standard for a `{LEVEL}` pair and
-   `_portfolio-standard.md` for a project one, and `interview-prep-route-projects-prompt.md` reads that
-   standard from the interview-prep chain's own side.
+   family. **Re-measured 2026-09-06: there are now six crossings, three
+   skills and three prompts** — the two counted above (`_portfolio-translate-prompt.md` and
+   `_portfolio-review-es-prompt.md`, reading the levelled standard from the portfolio side),
+   `interview-prep-route-projects-prompt.md` reading `_portfolio-standard.md` from the interview-prep
+   side, and the three skills: `study-content-writer`, `interview-prep-block-open` and
+   `study-block-close`, each reading the levelled standard for a `{LEVEL}` pair and
+   `_portfolio-standard.md` for a project one.
    `study-content-writer` is a declared reader of *both* standards — the levelled one for a
    `{LEVEL}` pair, and `_portfolio-standard.md` → "Question identity, the refined freeze and the TODO
    channel" for a project pair — so the chains are no longer disjoint at the skill layer. It changes

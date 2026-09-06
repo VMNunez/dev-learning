@@ -718,8 +718,9 @@ Each generated file, with who writes it and who depends on it:
 - **`interview-prep/routes/{LEVEL}.md`** — written only by `interview-prep-route` → read by
   `interview-prep-block-open`, `study-block-close`, `authoring-progress-recount`, and `progress-update`.
 - **`interview-prep/routes/projects.md`** — written only by `interview-prep-route-projects` → read by
-  `interview-prep-block-open` **on request only**, the CORE route staying its default, and by
-  `study-block-close` and `progress-update` (D9), for the denominator of the per-project studied row
+  that prompt itself, which needs the route its previous run built to list the `[studied]` questions a
+  rebuild drops, by `interview-prep-block-open` **on request only**, the CORE route staying its default,
+  and by `study-block-close` and `progress-update` (D9), for the denominator of the per-project studied row
   (2026-09-06). `authoring-progress-recount` and D10 do **not** read it: that twin row counts each
   project's whole bank, since refining an answer does not depend on any route carrying the question.
 - **`interview-prep/projects/en/*.md`** — written by `portfolio-audit`'s author + reviewer — which is
