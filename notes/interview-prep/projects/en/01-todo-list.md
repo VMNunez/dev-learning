@@ -7,11 +7,11 @@ Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `e
 
 ## Architecture & Patterns
 
-**[01-todo-list-012] Your app has three components and one service. Walk me through who owns the task list and who is allowed to change it.** ⭐⭐⭐
+**[01-todo-list-012] Your app has three components and one service. Walk me through who owns the task list and who is allowed to change it.** ⭐⭐⭐ [refined]
 
 The owner is `TaskService`: it keeps the task list in a `signal<Task[]>` and it is also the only place in the application that should modify that state, because the methods that make those changes — `addTask`, `toggleTask` and `deleteTask` — are in the service itself, so the state and the methods that modify it live in a single place. I decided to do it that way because a service with the `@Injectable({ providedIn: 'root' })` decorator has a single instance for the whole application (a singleton), that is, the task list does not die when the component that renders it dies, and any component that needs to reach the state or the methods to modify it can do so by injecting the service.
 
-I chose this data flow because that way no separate states live across components that could drift out of sync; besides, if a bug shows up in some state there is only one place to look, because every modification of the state is in the service, and thanks to this flow there are components with no state of their own, which only receive something through an input and emit through an output, and that is what makes them reusable. For example, `TaskForm` only calls `addTask` to add tasks, `TaskList` reads the state and computes from it the filtered task list, and `TaskItem` receives one task from its parent component, `TaskList`, to display it, and emits the task id up to `TaskList`, which calls `toggleTask` to mark it done or `deleteTask` to remove it, without touching the state itself.
+I chose this data flow because that way no separate states live across components that could drift out of sync; besides, if a bug shows up in some state there is only one place to look, because every modification of the state is in the service. For example, `TaskForm` only calls `addTask` to add tasks, `TaskList` reads the state and computes from it the filtered task list, and `TaskItem` receives one task from its parent component, `TaskList`, to display it, and emits the task id up to `TaskList`, which calls `toggleTask` to mark it done or `deleteTask` to remove it, without touching the state itself.
 
 **[01-todo-list-013] Why did you put the state in a service instead of in `TodoPage`, the page component?** ⭐⭐⭐
 

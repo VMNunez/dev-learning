@@ -7,11 +7,11 @@ Preguntas específicas de las decisiones de implementación tomadas en este proy
 
 ## Arquitectura y patrones
 
-**[01-todo-list-012] Tu app tiene tres componentes y un servicio. Explícame quién es dueño de la lista de tareas y quién puede modificarla.** ⭐⭐⭐
+**[01-todo-list-012] Tu app tiene tres componentes y un servicio. Explícame quién es dueño de la lista de tareas y quién puede modificarla.** ⭐⭐⭐ [refined]
 
 El dueño es `TaskService`: guarda la lista de tareas en un `signal<Task[]>` y además es el único sitio de la aplicación que debe modificar ese estado, porque los métodos que hacen esos cambios — `addTask`, `toggleTask` y `deleteTask` — están en el propio servicio, por lo que el estado y los métodos que lo modifican viven en un solo lugar. Decidí hacerlo así porque un servicio con el decorador `@Injectable({ providedIn: 'root' })` tiene una única instancia en toda la aplicación (un singleton), es decir, la lista de tareas no muere cuando muere el componente que la renderiza y cualquier componente que necesite acceder al estado o los métodos para modificarlo puede hacerlo inyectando el servicio.
 
-Elegí este flujo de datos porque así no viven distintos estados entre componentes que puedan llegar a desincronizarse, además, si se detecta un error en un estado, solamente hay un sitio donde mirar porque toda modificación del estado se encuentra en el servicio, y gracias a este flujo hay componentes que no tienen estado, que solo reciben algo por un input y emiten con un output, y por eso se vuelven reutilizables. Por ejemplo, `TaskForm` solo llama a `addTask` para añadir tareas, `TaskList` lee el estado y calcula a partir de él la lista de tareas filtradas, y `TaskItem` recibe una tarea de su componente padre, `TaskList`, para mostrarla, y emite el id de la tarea a `TaskList`, que llama a `toggleTask` para marcarla como hecha o a `deleteTask` para borrarla, sin tocar él mismo el estado.
+Elegí este flujo de datos porque así no viven distintos estados entre componentes que puedan llegar a desincronizarse, además, si se detecta un error en un estado, solamente hay un sitio donde mirar porque toda modificación del estado se encuentra en el servicio. Por ejemplo, `TaskForm` solo llama a `addTask` para añadir tareas, `TaskList` lee el estado y calcula a partir de él la lista de tareas filtradas, y `TaskItem` recibe una tarea de su componente padre, `TaskList`, para mostrarla, y emite el id de la tarea a `TaskList`, que llama a `toggleTask` para marcarla como hecha o a `deleteTask` para borrarla, sin tocar él mismo el estado.
 
 **[01-todo-list-013] ¿Por qué pusiste el estado en un servicio en vez de en `TodoPage`, el componente de página?** ⭐⭐⭐
 
