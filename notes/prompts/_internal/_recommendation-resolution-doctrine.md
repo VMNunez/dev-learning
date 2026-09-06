@@ -426,6 +426,23 @@ enforces the opposite). So after every repair round, grep the phrase you just re
 just edited — and re-read any sentence the repair wrote to explain *why*, since a fix draws its reason
 from the context that made it necessary and that context is exactly what a cold reader does not share.
 
+**Also `REC-180`, which names the one third round that is neither a repair nor a re-scope, and the gap
+it closes: a `verification` round.** Two `reject` rounds whose every finding is applied leave a fix that
+is finished and a row that **cannot legally close** — step 4 admits only `approve` or
+`approve-with-tightening`, invariant 9 of `validate-prompt-system.ps1` enforces it, and the loop that
+produces those tokens is over. The `unrecorded` escape does not reach it either:
+`_recommendation-ledger-closed.md`'s header fences that value to *annotating a closure already on disk*,
+never to routing a live resolution to step 4. What is missing is not another round of repair but the
+photograph taken **after** the repairs. So the third dispatch asks one narrowed question — *does any
+finding remain that changes what the machinery does?* — is handed both earlier rounds'
+`considered and not opened` lists as binding, and is told what each token means on this path: a sentence
+a pedant would extend is a **tightening**, and `reject` is reserved for something that would make a
+**named run, on a named input, do the wrong thing**. Without that calibration a deep reviewer over
+twenty-odd files returns `reject` for ever, because a third sweep can always surface one more restated
+sentence — the treadmill the two-round cap exists to stop, arriving at the closure instead of at the
+fix. It costs what a review costs: it is owed only where both rounds rejected and every finding is on
+disk, and never as a way to re-open an `approve-with-tightening` the loop has already given.
+
 **A fix that adopts a sibling's house phrasing inherits its live exceptions, not only its rules.**
 From `REC-154`, whose reviewer found the repair had copied `roadmap-review`'s four marker-reading
 rules and dropped the **dated exception** printed immediately under them — the tier whose markers are
