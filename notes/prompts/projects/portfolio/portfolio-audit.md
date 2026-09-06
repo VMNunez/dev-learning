@@ -36,7 +36,13 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > it, so a tier whose `**Last Reviewed — «tier»:**` line reads `never` or carries an
 > `(incomplete — …)` qualifier leaves G3/G4 unsigned under §23 and this gate computing a verdict over
 > findings nobody made. Neither review condition is about the run having happened, and neither is G6's:
-> that one closes on a **clean drift report**. The READMEs must be correct and PROGRESS.md accurate.
+> that one closes on a **clean drift report**, and since `REC-214` this gate **tests it** rather than
+> assuming it — Phase 2's Check 3 reads
+> `notes/prompts/strategy/tracking/_internal/_last-drift-report.md` and stops on four states the
+> standard's Verdict logic owns. **On any project that is not the in-progress one, that means a
+> `progress-update MODE = all` run**: `MODE = active` audits the active project alone, so its scope line
+> can never name a completed one and can never close its G6 — which is the normal case under recipe B.
+> The READMEs must be correct and PROGRESS.md accurate.
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 >
@@ -536,13 +542,27 @@ says what to print and what to commit — and do not print a ✅/⚠️/❌, not
 verdict is what G7's box records, and nothing here computed one.
 
 Compute the verdict yourself per the standard's **verdict logic**: Check 1 (feature completeness from
-`{PROJECT_PATH}/PLANNING.md`) gates Check 2 (code quality from `{PROJECT_PATH}/PROJECT-BACKLOG.md`).
+`{PROJECT_PATH}/PLANNING.md`) gates Check 2 (code quality from `{PROJECT_PATH}/PROJECT-BACKLOG.md`),
+and both gate Check 3 (PROGRESS accuracy, below).
 Produce ✅ Ready / ⚠️ Almost / ❌ Not ready, listing incomplete steps or open High/Medium tasks as
 checkboxes. If the backlog file is missing, carries no `**Last Reviewed — «tier»:**` header, or a
 tier's line reads `never` or carries an `(incomplete — …)` qualifier — stop and report which
 `review-audit` run is owed; the standard's Check 2 owns those four states, the exact wording, and what
 a stop does to Phase 3, the tracker cell and the batch summary row — a stop is not a verdict, so do not
 print one.
+
+**Then Check 3, before you print anything — unless what you computed is ❌ Not ready**, which already
+says what the project owes and is a verdict this gate should keep. Otherwise run the standard's third
+check, which tests the G6 prerequisite this prompt's `▶ Run first` declares. Read
+`notes/prompts/strategy/tracking/_internal/_last-drift-report.md` and run
+`git log -1 --format=%cd --date=short {BASELINE} -- PROGRESS.md` — **`{BASELINE}`, the step-0 commit, not
+live `HEAD`**: under `PROJECT_PATH = all` each project's own `authoring-progress-recount` commits
+`PROGRESS.md`, so a live comparison would fail every project after the first on a commit this run made.
+Stop the gate on any of the standard's four states — no usable report · `Scope:` not naming
+`{PROJECT_PATH}` · `Verdict:` not `no drift` · that baseline commit date later than the report's `Date:`
+— quoting the header line and naming the `progress-update` run owed (`MODE = all` for any project that
+is not the in-progress one). The standard owns the four states, their exact wording and the three limits
+of the date test; a Check 3 stop is a Check 2 stop in every respect, so print no verdict.
 
 **Two quick sanity scans before you finalize the verdict** (report each as a one-line note, do not
 auto-fix):
@@ -555,7 +575,8 @@ auto-fix):
 
 ### Phase 3 — CV bullet + GitHub description (orchestrator)
 
-**Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 2 stopped the gate**, where
+**Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 2 or Check 3 stopped the
+gate**, where
 there is no verdict at all: a stop writes no CV bullet, so nothing may reach `notes/cv/cv-bullets.md` on
 that path. Otherwise, per the standard: draft **one** Spanish
 CV bullet (read `_application-standard.md` first) and save it to `notes/cv/cv-bullets.md`; then the
@@ -610,9 +631,11 @@ the shared close-out contract already defines — `2026-09-05 (backend only, com
 `completed` only if this scope's own gates passed, `blocked` otherwise, exactly as on any other run.
 Then the authoring recount and the self-report.
 
-**If Check 2 stopped the gate** (no backlog · no `Last Reviewed` header · a tier reading `never` or
-carrying `(incomplete — …)`), the list below does not apply: print item 1, then the stop and the exact
-`review-audit` run owed, and nothing else — no verdict, no CV bullet, no GitHub description, no profile
+**If Check 2 or Check 3 stopped the gate** — Check 2 on no backlog · no `Last Reviewed` header · a tier
+reading `never` or carrying `(incomplete — …)`; Check 3 on no drift report · a `Scope:` that does not
+name this project · a `Verdict:` that is not `no drift` · a `PROGRESS.md` commit later than the report's
+`Date:` — the list below does not apply: print item 1, then the stop and the exact
+`review-audit` or `progress-update` run owed, and nothing else — no verdict, no CV bullet, no GitHub description, no profile
 README. With `{DRY_RUN}` = false, commit the question bank on the ❌ branch's `git add` below, because
 questions are saved regardless of the outcome; with `{DRY_RUN}` = true commit none of it and print that
 sequence instead, exactly as on any other verdict. Either way, record this project `blocked` in
@@ -806,7 +829,7 @@ was — each project owns its own row, so `PROJECT_PATH = all` invokes it once i
 and never once for the batch — and pass the project's folder name, whether this run left a tier
 `blocked` — its gate refuses a pair that failed parity — and **this run's own verdict, where it computed
 one, since that is what settles the skill's eligibility test here**. A run that computes no verdict — a
-bank-only scope, or a Check 2 stop — passes none, and the skill resolves that project from the ladder as
+bank-only scope, or a Check 2 / Check 3 stop — passes none, and the skill resolves that project from the ladder as
 it does every other. That matters on exactly the run it matters most: the skill's project list is
 `interview-prep-route-projects-prompt.md`'s eligibility ladder, whose Angular-only fallback reads the
 `portfolio-audit` cell of `_run-tracker.md` — and that cell is written by the self-report **after** this

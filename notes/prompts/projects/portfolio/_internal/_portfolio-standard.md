@@ -56,8 +56,9 @@ every trigger: `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. That is, `
 fixes, then `readme-audit`, then a clean `progress-update`, then this gate, then `roadmap-review`.
 **That places
 the gate; it is not the prerequisite a given run owes** — `portfolio-audit.md`'s `▶ Run first` states
-that, with the scope that qualifies it. And G3/G4 is not decoration in this file: Check 2 below stops
-the gate outright on a tier no reviewer finished.
+that, with the scope that qualifies it. And neither G3/G4 nor G6 is decoration in this file: Check 2
+below stops the gate outright on a tier no reviewer finished, and Check 3 on a drift report that does
+not name this project, does not read `no drift`, or predates `PROGRESS.md`'s own last commit.
 
 ---
 
@@ -111,13 +112,14 @@ the whole code area, the section headings stay bare, and the only meaningful sco
 
 ## Verdict logic
 
-Two checks, run in order. **Check 1 gates Check 2.**
+Three checks, run in order. **Check 1 gates Check 2, and both gate Check 3** — a project stopped at
+Check 1 owes none of §23's chain, so it is never measured against a prerequisite it does not owe.
 
 **Only a `full` run reaches them at all.** A run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global`
 is **bank-only**: it writes its own sub-headings and stops there — no ✅/⚠️/❌, no CV bullet, no GitHub
 description, no profile README, and `notes/cv/cv-bullets.md` is never staged. It signs off **no gate**,
 G7 included, for the same reason a ❌ never ticks that box: the verdict is what the box records, and a
-bank-only run produces none. Both checks below, and everything downstream of them, are written for the
+bank-only run produces none. All three checks below, and everything downstream of them, are written for the
 `full` run and are not qualified per scope anywhere else in this file.
 
 **The scope defaults to `full`, so a project's `PLANNING.md` §23 G7 row need not instantiate it.** The
@@ -177,6 +179,66 @@ Otherwise apply:
 
 > Unchecked tasks count as open even if the code is already fixed — the verdict reads the backlog
 > directly. Before running the gate, tasks already fixed should be checked off (✅) in the backlog.
+
+### Check 3 — PROGRESS accuracy (from the drift report)
+Only if Checks 1 and 2 both passed without stopping **and the verdict Check 2 computed is not ❌ Not
+ready**, and then before that verdict is printed. A ❌ already names what the project owes; replacing it
+with a no-verdict stop about a prerequisite an unfinished project does not owe would lose the useful
+answer and tell Victor to run the chain the `▶ Run first` block exempts it from. G6 is a
+prerequisite this gate declared for months and had no instrument to test, so a run proceeded on whatever
+`progress-update` last happened to write — a report eleven days old and about another project, on the
+occasion that opened `REC-214`. The instrument was always on disk: read
+`notes/prompts/strategy/tracking/_internal/_last-drift-report.md` and its three header fields, whose
+schema and meaning are `progress-update-prompt.md` Step E's — quoted from there, never re-derived here,
+the same discipline Check 2 applies to the unreviewed-code gate. That prompt states the reason itself:
+*"The scope line is what makes a gate tick falsifiable"*, and a clean verdict is evidence for the project
+its scope names **and for no other's**.
+
+Stop the gate on any of these four states, quoting the header line in each of the last three:
+
+- **No report, or a header missing any of the three fields** — absence means `progress-update` has
+  never run under the current contract; a report whose header cannot be parsed proves nothing either,
+  and passing it would be the one state that certifies a gate on an unreadable file. "no usable drift
+  report — run `progress-update` first (G6)".
+- **`Scope:` does not name `{PROJECT_PATH}`** — the clean verdict belongs to another project's gate.
+  "the last drift report is scoped «scope» — G6 is not closed for this project; run
+  `progress-update MODE = all`".
+- **`Verdict:` is not `no drift`** — "the drift report names «N» drift rows — G6 stays open until the
+  owner each row names has repaired it".
+- **`PROGRESS.md` had already moved when this run started** — the newest commit date of `PROGRESS.md`
+  **as of the run's own baseline**
+  (`git log -1 --format=%cd --date=short {BASELINE} -- PROGRESS.md`) is **strictly later** than the
+  report's `Date:`. The report certified agreement with a file that has since changed. "the drift report
+  is dated «date» and `PROGRESS.md` was committed on «date» — re-run `progress-update`".
+  **The baseline is not a refinement, it is what makes the test survive its own batch.** Live `HEAD`
+  would be wrong under `PROJECT_PATH = all`: every project's pass ends by invoking
+  `authoring-progress-recount`, which commits `PROGRESS.md` itself, so on any batch running later than
+  the report the first project would pass and every project after it would fail state 4 on a commit
+  **this run made** — and the re-run it printed would be invalidated again by the next project's recount.
+  Pinning the comparison to the commit recorded at step 0 measures the state the gate actually inherited.
+
+**`MODE = active` cannot close G6 for a completed project, and that is the trap this check exists to
+catch.** That mode audits only the in-progress project, so its scope line can never name any other one —
+which makes the prerequisite unsatisfiable as written for every project but the active one, and those
+are the normal target of a `PROJECT_PATH = all` batch. `progress-update-prompt.md`'s own `## Configuration`
+block already says what to run instead: `all` is the mode for "periodically, or **before a portfolio
+gate**, to catch anything missed in completed projects". `_planning-standard.md` §23's G6 row names
+`MODE = active` because it sequences a project's *own* closure, where the project is the active one; this
+check instantiates the same gate for a run that arrives later.
+
+**Three limits, named rather than assumed.** The date test cannot see a *source* that moved while
+`PROGRESS.md` stayed still — a coverage marker added and never recounted is real drift and is invisible
+here. `Date:` is a **day**, so an edit made the same day as the report passes — which is not incidental:
+Step F commits the report "alone and first" and the matrix commit follows it the same day, so an
+equal-date pass is what stops the producing run from failing its own artefact. And the report's `Branch:`
+field is **not** read, though `PROGRESS.md` follows the active branch, so a report written on another
+branch can pass a comparison made on this one. None of the three weakens the four states above; all
+three are what a fresh G6 run is for, and none is a reason to widen this check into a second audit of
+`PROGRESS.md`, which is `progress-update`'s work and never this gate's.
+
+**A stop here is Check 2's stop, in every respect** — no ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, the
+question bank still committed, `blocked` in the project's `_run-tracker.md` cell, and in
+`PROJECT_PATH = all` the summary row carries the stop and the batch continues.
 
 ### Verdict definitions
 - **✅ Ready** — all steps complete, no open High or Medium. Include it in the CV and LinkedIn now.

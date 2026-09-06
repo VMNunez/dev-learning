@@ -967,12 +967,26 @@ everything commits on the branch you're on — is simpler to remember than a spl
 - **Say when it is due — do not wait to be asked.** Its scheduled points are gate **G6** of every
   project's `PLANNING.md` §23 (after G5 `readme-audit`, before G7 `portfolio-audit`) and gate **G3** of
   `practice/sql/PLANNING.md` §9 (after Step 13 closes), plus the `▶ Run first` of `cv-prompt`,
-  `linkedin-prompt`, `cover-letter-prompt`, `project-brief`, `plan-audit MODE = new` and `roadmap-review`.
-  **All eight of those points close on an empty drift report**, not on the run having happened — the
+  `linkedin-prompt`, `cover-letter-prompt`, `project-brief`, `plan-audit MODE = new`, `roadmap-review`
+  and `simulation-plan`.
+  **All nine of those points close on an empty drift report**, not on the run having happened — the
   two gates and each `▶ Run first` alike: whatever the report names is repaired by the owner it names,
   and only then does the gate sign off or the prerequisite count as met. A prompt that proceeds on a
   report naming drift is reading a section its own auditor has already declared stale, and no gate
   downstream of it can tell.
+- **Empty is not enough for the two *gates*, which also read the report's scope line.** A `▶ Run first`
+  reader consumes `PROGRESS.md` whole and takes the verdict as the whole file's, which is why none of the
+  seven is asked for a scope — though `MODE = active` genuinely narrows what a clean verdict proves to
+  two of them (`project-brief` reads which projects are done, `linkedin` reads their status), so run
+  `MODE = all` before either when a completed project's row matters. A gate cannot take that view at all:
+  G6 is a gate on **one project** and SQL G3 on the SQL track, and the report's header answers both —
+  `Scope:` names the project paths that run audited, `SQL:` says whether the SQL half was audited or
+  aborted by Step B's guard. `progress-update` writes that line for exactly this reason: *"a clean verdict
+  is evidence for that project's gate and for no other's"*. So G6 closes only on a report whose `Scope:`
+  names that project and whose `Date:` is not older than `PROGRESS.md`'s own last commit. The consequence
+  is the one that bites: `MODE = active` audits the in-progress project alone, so it can never close G6
+  for a **completed** project, and a portfolio gate arriving months later owes a `MODE = all` run.
+  `portfolio-audit` tests all of it as its Check 3 (`REC-214`); SQL G3 is still ticked by hand.
 
 ## Angular CLI conventions
 
