@@ -36,8 +36,9 @@ it, the two readers from outside this family and the narrowest — both scoped t
 contract" alone**. The first renders a *project* question bank
 (`notes/interview-prep/projects/en|es/*.md`) into Spanish and the second audits that Spanish
 `en/`-blind, and that bank is **not governed by this
-standard**: it has no level, no coverage fingerprint and no `[studied]` state. It **does** carry stable
-IDs and the `[refined]` freeze since 2026-08-31, and a `TODO:` reopen channel of its own — but they are
+standard**: it has no level and no coverage fingerprint. It **does** carry stable
+IDs and the `[refined]` freeze since 2026-08-31, the `[studied]` state since 2026-09-06, and a `TODO:`
+reopen channel of its own — but they are
 `_portfolio-standard.md`'s own rules, written there deliberately rather than borrowed from here, because
 one standard reaching across two disjoint chains is what `REC-180` ruled against. Its ID is
 `{PROJECT_NAME}-{NNN}`, not the `{TOPIC}-{LEVEL}-{NNN}` below. Since 2026-09-05 it also has an
@@ -45,15 +46,17 @@ one standard reaching across two disjoint chains is what `REC-180` ruled against
 the twin — which is why that bank's Spanish is checked on its own terms while this one's is checked by a
 reviewer holding both languages. It also has priority markers since 2026-09-05, on the same three-star
 scale as this file's but calibrated **over the whole bank file** rather than per section, which is why
-that rule too is written there and not borrowed from here. What that row still owes it is the remaining
-`[studied]` rulings. Nothing here binds either of them except the
+that rule too is written there and not borrowed from here. Nothing here binds either of them except the
 bilingual section, and both are listed under the open-list rule above rather than left as the unnamed
 exceptions they would otherwise be. The rest of that bank's contract is `_portfolio-standard.md`'s.
 
 **The in-session skills**, each scoped by its own `SKILL.md`: `study-content-writer` (unrefined,
 reopened or refining content), `interview-prep-block-open` (the lifecycle and answer-quality sections,
 read-only) and `study-block-close`, whose only write **in a Q&A file** is `[studied]`, though it reads
-the fingerprint and bilingual-parity contracts to decide whether it may make it.
+the fingerprint and bilingual-parity contracts to decide whether it may make it. Since 2026-09-06 that
+skill writes the same marker into the **project** banks as well, under `_portfolio-standard.md` and not
+under this file: the two banks are governed separately and this one's fingerprint gate is not the gate
+that gets applied there.
 
 These rules used to live in each reader's own copy; keeping them here once means the readers can never
 drift. Each adds only its own *flow* (author vs cold review vs route selection vs practice insertion)

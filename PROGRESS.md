@@ -113,6 +113,18 @@ denominator that can only grow makes the fraction an honest floor.
 `—` means the level has no denominator at all: no notes plan exists for it, or the question bank has no
 stable IDs yet. It never means `0%`; an honest zero over a real denominator is printed as `0/N (0%)`.
 
+**Project banks — refined, one row per project.** The three cells above are levelled populations and the
+per-project question banks are in none of them, so they are counted here instead of inside a level column
+(`REC-180`, 2026-09-06). The numerator is that project's questions carrying `[refined]` in both languages
+and the denominator is its **whole bank**, since refining an answer does not depend on any route carrying
+the question. `authoring-progress-recount` writes this table; the projects it lists are the ones whose
+portfolio gate closed `✅ Ready`, resolved by `interview-prep-route-projects-prompt.md`'s eligibility
+test.
+
+| Project | Questions refined |
+|---|---|
+| 01-todo-list | 1/118 (1%) |
+
 ---
 
 ## Study progress
@@ -131,6 +143,23 @@ dates, the current CORE route, and exact bilingual `[refined] [studied]` questio
 `—` means the level has no complete, current denominator yet: at least one required notes plan, Q&A
 bank or CORE route is missing, stale, or has not passed bilingual ID/state parity. It never means `0%`;
 once the relevant denominator is current, an honest zero is printed as `0/N (0%)`.
+
+**Project banks — studied, one row per project.** The twin of the table under `## Authoring progress`,
+and the reason it is separate is the same: the three cells above count levelled populations
+(`REC-180`, 2026-09-06). Here the denominator is that project's questions **on**
+`notes/interview-prep/routes/projects.md` rather than its whole bank — the daily block may not serve an
+off-route question, so a whole-bank denominator is one no amount of studying could close — and the
+numerator is those carrying `[refined] [studied]` in both languages. `study-block-close` writes this
+table, over the same project list as its twin. A studied question that later leaves the route —
+downgraded out of `⭐⭐⭐`, or deduplicated against another project's — leaves both halves of its
+fraction, keeps its marker, and is named in that ritual's report.
+
+| Project | Questions studied |
+|---|---|
+| 01-todo-list | — |
+
+`—` here is the missing route: `notes/interview-prep/routes/projects.md` has never been built, so no
+project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
 
 ---
 

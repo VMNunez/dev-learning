@@ -87,8 +87,9 @@ it.
 allocating: the format is `{PROJECT_NAME}-{NNN}` and the counter runs over the **file**, not your
 section, so the next unused number is the highest one present anywhere in the bank plus one. Never
 recycle an ID a deleted question used and never renumber existing questions to close a gap — other
-sections, the Spanish twin and Victor's own TODOs address questions by that number. You never write
-`[refined]` yourself, in either language, for any reason.
+sections, the Spanish twin and Victor's own TODOs address questions by that number. You never write a
+state marker yourself, in either language, for any reason: `[refined]` is Victor's and the ` [studied]`
+that may follow it is `study-block-close`'s.
 
 **You write English, and only into `en/`.** The bank is a bilingual pair and the Spanish twin at
 `notes/interview-prep/projects/es/{PROJECT_NAME}.md` belongs to stage **T**

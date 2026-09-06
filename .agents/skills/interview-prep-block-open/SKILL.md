@@ -65,10 +65,9 @@ Walk the resolved route in its own order and choose the first question that is:
 - not `[studied]` in either language;
 - not already attempted in this open block.
 
-**On the project route the second clause has no counterpart to read**: `[studied]` is not admitted in
-that bank while `REC-180`'s remaining rulings are open — that marker has no writer able to reach it and
-no counter that reads it — so every refined question stays eligible and one carrying the marker is
-**malformed**; report it and select the next.
+**All three clauses read the same on both routes since 2026-09-06.** The project bank carries the
+`[studied]` marker too, written by `study-block-close` after a pass in this block, so a studied project
+question is skipped exactly as a studied CORE one is.
 
 Skip unrefined route entries but count them as refinement debt. If no eligible question remains on the
 resolved route, report whether it is fully studied or blocked entirely on refinement; do not fall
@@ -114,7 +113,7 @@ Keep the per-ID verdicts in conversation state. When Victor closes the block, `s
 only IDs with a final PASS as `[studied]`, mirrors both languages, and recounts `PROGRESS.md`. This skill
 never edits, commits, or marks state.
 
-**A project question's PASS cannot be marked yet, and the report says so rather than implying it was.**
-`study-block-close` has no route into that bank until `REC-180`'s remaining rulings land, so a final PASS
-on a project question is reported to Victor as recorded in this block alone. Saying nothing would leave
-him believing a marker exists that no file carries.
+**A project question's PASS is marked like any other since 2026-09-06.** `study-block-close` writes
+`[studied]` into that bank as well and recounts its per-project row of `PROGRESS.md`
+`## Study progress`, so a block that mixed both routes hands over both sets of IDs — say which bank each
+came from, since the two are recorded under different contracts and in different rows.

@@ -60,7 +60,8 @@ behaves as `full`.
   and a change of *meaning* is precisely what you report to stage T instead of making.
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — for the Spanish section and
   sub-heading names, the per-question format, and **"Question identity, the refined freeze and the TODO
-  channel"**, which is what makes an ID and a `[refined]` marker untouchable here. Its **"Priority
+  channel"**, which is what makes an ID and a state marker — `[refined]`, and the ` [studied]` that may
+  follow it — untouchable here. Its **"Priority
   markers"** section says the same of the `⭐` you will find on the bold line.
 - `notes/interview-prep/junior/es/architecture.md` — the reference for what finished, native Spanish Q&A
   reads like. It is a levelled bank, not a project one; read it for the register, not the content.
@@ -94,7 +95,9 @@ the wording:
   or remove a section or sub-heading.
 - **Never touch a question ID.** `[01-todo-list-004]` is what ties a Spanish block to its English twin
   once a rewrite has changed every word around it.
-- **Never write, remove or move a `[refined]` marker**, in either language, for any reason.
+- **Never write, remove or move a state marker** — `[refined]`, or the ` [studied]` that may follow it
+  since 2026-09-06 — in either language, for any reason. Both are written outside this pipeline, by
+  Victor and by `study-block-close`.
 - **Never touch a priority marker.** `⭐⭐⭐` / `⭐⭐` / `⭐` say how often an interviewer asks the question,
   which is a judgement about the English source's code and not about its Spanish; stage T copied it and
   a question that reaches you unmarked stays unmarked.

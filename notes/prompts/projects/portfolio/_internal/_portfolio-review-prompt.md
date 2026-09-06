@@ -57,7 +57,8 @@ already defends is not a gap — but you may not **repair** one: not the wording
 code block, not its position, and never by deleting it as a duplicate. Where a frozen question and an
 unrefined one cover the same decision, the **unrefined** one is the one you cut. A defect you find inside
 a frozen block is reported in your finish, quoted, and left byte-for-byte on disk. Only Victor reopens
-one, and `[refined]` is a marker you never write in either language.
+one, and a state marker — `[refined]`, or the ` [studied]` `study-block-close` may have appended after it
+— is something you never write in either language.
 
 **Your file is the `en/` one, and the Spanish twin is not yours to judge.** Every check below is a
 check on English. `notes/interview-prep/projects/es/{PROJECT_NAME}.md` is written by stage **T**
@@ -116,7 +117,8 @@ Before starting, read:
   the project is *for*, not every decision worth a question). **The whole-file proportion is not yours**:
   it is a property of the bank, the orchestrator's cross-section scan owns it, and a section judging it
   from its own share would downgrade against a denominator it cannot see. Report your final split.
-  A `[refined]` block's marker is frozen with the rest of it.
+  A frozen block's markers — the `⭐`, the `[refined]` and any ` [studied]` after it — are frozen with
+  the rest of it.
 - **No duplication within the section.** No two questions in `{SECTION}` cover the same decision or code
   path.
 

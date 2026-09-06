@@ -40,7 +40,10 @@ Read:
   `{PROJECT_NAME}-{NNN}` identity, the `[refined]` freeze and **"Priority markers"** — that file governs
   this bank, and `_interview-prep-standard.md` explicitly does not;
 - `notes/prompts/_internal/_run-tracker.md` → `## Per-project prompts`, for eligibility;
-- every eligible project's `notes/interview-prep/projects/en/«name».md` and its `es/` twin.
+- every eligible project's `notes/interview-prep/projects/en/«name».md` and its `es/` twin;
+- the **existing** `notes/interview-prep/routes/projects.md`, where one is already on disk — guard 5 owes
+  a list of the `[studied]` questions this run drops, and a **downgrade** is only visible against the
+  route the previous run built. A first run has none, and owes no such list.
 
 Write only `notes/interview-prep/routes/projects.md`.
 
@@ -88,9 +91,13 @@ and which `portfolio-audit` run would settle it. A route with no source is not b
    stop here would make the route unbuildable for exactly the banks that rule was written for. An
    unmarked question is simply not a `⭐⭐⭐` candidate: exclude it, count it, and list the frozen ones by
    ID as Victor's to mark, the same disposition every other consumer of this bank already gives them.
-5. **A `[studied]` marker in this bank is malformed** — that state is not admitted here while
-   `REC-180`'s remaining rulings are open: the marker has no writer that may reach this bank and no
-   counter that reads it. Report it and change nothing.
+5. **`[studied]` is a valid state in this bank since 2026-09-06**, written by `study-block-close` alone
+   after a recall pass, and it is inert for selection: this route selects on `⭐⭐⭐`, never on state, and
+   you neither write nor remove one. **What it does change is what you report.** A question you drop
+   from the route — deduplicated, or downgraded out of `⭐⭐⭐` — that carries `[studied]` leaves the
+   study denominator it was counted in, so name every such ID: `_portfolio-standard.md` keeps its marker
+   deliberately (the block is frozen, and the pass really happened) and `study-block-close` reports it
+   thereafter, but only this run knows the moment it fell off.
 6. Preserve unrelated working-tree changes.
 
 ## Inventory fingerprint
@@ -115,8 +122,9 @@ What stales this route is whatever that algorithm hashes, and nothing here chang
 rewording, **reprioritising** or reordering a question stales the route; refining one does not. The
 priority marker being inside the digest is not peculiar to this bank — the sibling keeps it there for the
 same reason — and it matters here only because a downgrade is how a question **leaves** this route's pool.
-`[studied]` sits in that algorithm's strip list and is inert here for a second reason on top of it: guard
-5 refuses the marker in this bank outright.
+`[studied]` sits in that algorithm's strip list, so marking a question studied never stales this route —
+which is what makes the two rituals independent: the daily block writes markers into a bank all day
+without obliging a rebuild.
 
 ## Selection algorithm
 
@@ -190,5 +198,6 @@ Then execute `notes/prompts/_internal/_pipeline-self-report.md` in full: write
 own row under `## Single-shot prompt executions` — **that table holds the run record of both route
 prompts, which are the two orchestrators the per-project and per-topic tables have no cell for** — and
 commit the report plus `_run-tracker.md` separately. Report the eligible and ineligible projects with their reason, the inventory fingerprint,
-the candidate count, the selected count and its per-project split, the reviewer verdict, the route commit
+the candidate count, the selected count and its per-project split, **every `[studied]` question this run
+dropped from the route, by ID** (guard 5), the reviewer verdict, the route commit
 and the self-report commit.

@@ -160,6 +160,12 @@ English is frozen is a pair no later reader can trust. You never write any of th
 `en/` does not already carry it on, and an unmarked English question stays unmarked in Spanish: the
 backfill is the author's and the reviewer's, on their side of the pair.
 
+**`[studied]` is the one marker you never mirror, and it is never yours to repair.** Since 2026-09-06 a
+frozen bold line may carry ` [studied]` after `[refined]`, written by `study-block-close` — which writes
+it into **both** languages in the same act, so a twin lacking it is not a parity gap you close but a
+defect you report by ID. Copy it where you keep a frozen block byte-for-byte, which is everywhere; write
+it nowhere else.
+
 ---
 
 ## What you produce

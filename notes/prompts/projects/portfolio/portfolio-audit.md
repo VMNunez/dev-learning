@@ -595,7 +595,7 @@ outcome), labelling the commit `bank-only — «scope»`; with `{DRY_RUN}` = tru
 print the sequence instead. Record the project in `_run-tracker.md` with the scope in the parenthetical
 the shared close-out contract already defines — `2026-09-05 (backend only, completed — …)` — and
 `completed` only if this scope's own gates passed, `blocked` otherwise, exactly as on any other run.
-Then the self-report.
+Then the authoring recount and the self-report.
 
 **If Check 2 stopped the gate** (no backlog · no `Last Reviewed` header · a tier reading `never` or
 carrying `(incomplete — …)`), the list below does not apply: print item 1, then the stop and the exact
@@ -603,7 +603,7 @@ carrying `(incomplete — …)`), the list below does not apply: print item 1, t
 README. With `{DRY_RUN}` = false, commit the question bank on the ❌ branch's `git add` below, because
 questions are saved regardless of the outcome; with `{DRY_RUN}` = true commit none of it and print that
 sequence instead, exactly as on any other verdict. Either way, record this project `blocked` in
-`_run-tracker.md`. Then the self-report.
+`_run-tracker.md`. Then the authoring recount and the self-report.
 
 Otherwise print, in this order:
 1. "Saved X questions to notes/interview-prep/projects/en/«name».md, and X to its `es/` twin" (do not
@@ -761,10 +761,10 @@ the diff.
   cross-section dedupe;
   the marker is written by Victor alone and reopened by him alone, by his word or by a `TODO:`. Every
   defect a subagent finds inside a frozen block reaches him through the final report and nowhere else,
-  so print those lines rather than folding them into a count. `[studied]` is **not** admitted in this
-  bank at all — its remaining rulings are open in `REC-180`, the marker having no writer that reaches this
-  bank and no counter that reads it — so a run that finds one reports it as
-  malformed and changes nothing.
+  so print those lines rather than folding them into a count. Since 2026-09-06 a frozen block may also
+  carry `[studied]`, written by `study-block-close` after Victor answered it out loud in a recall block.
+  **It binds this run exactly as `[refined]` does and no role here writes, moves or removes one** — the
+  freeze already covered it, since it sits on the same bold line.
 - **The English is authored and the Spanish is rendered — never the other way round, and never both at
   once.** The author and the reviewer write only `en/`; the translator and the Spanish reviewer write
   only `es/` and change no English. A run that lets one role do both produces a Spanish file written
@@ -774,6 +774,32 @@ the diff.
   takes it cold, exactly as Victor does. It fixes prose and nothing else — a question, an ID, a
   `[refined]` marker, a code block and the header are all outside its hand, and a suspected translation
   error is reported for a later stage T rather than guessed at from a file it may not read.
+
+### Recount this project's authoring row
+
+After the bank and its twin have committed, **invoke the `authoring-progress-recount` skill**, passing
+the **project** rather than a level — a project bank has none, which is why it is counted in a
+per-project table of its own under `## Authoring progress` (`REC-180`, 2026-09-06). This run never writes
+a `[refined]` marker, so its numerator does not move here; what moves is the **denominator**, since every
+question this run appends enlarges the bank the row counts over. That is exactly the drift the skill
+exists to prevent, and it is the reason this handoff is not optional on a run that appended nothing but
+still ran the dedupe. It owns that row end to end and commits `PROGRESS.md` itself: do not reproduce its
+counting and do not edit the row yourself. Invoke it **once per project**, whatever `PORTFOLIO_SCOPE`
+was — each project owns its own row, so `PROJECT_PATH = all` invokes it once inside each project's pass
+and never once for the batch — and pass the project's folder name, whether this run left a tier
+`blocked` — its gate refuses a pair that failed parity — and **this run's own verdict, where it computed
+one, since that is what settles the skill's eligibility test here**. A run that computes no verdict — a
+bank-only scope, or a Check 2 stop — passes none, and the skill resolves that project from the ladder as
+it does every other. That matters on exactly the run it matters most: the skill's project list is
+`interview-prep-route-projects-prompt.md`'s eligibility ladder, whose Angular-only fallback reads the
+`portfolio-audit` cell of `_run-tracker.md` — and that cell is written by the self-report **after** this
+step. On the first `full` run over an Angular-only project the skill would therefore find the project
+ineligible on the very run that created its bank. You computed the verdict; hand it over rather than
+making the skill read a cell that does not exist yet. **Skip it entirely when `DRY_RUN = true`.** Not
+because the row would be unchanged — the bank is written to the working tree either way, so the count
+really has moved — but because the skill's whole output is a commit of `PROGRESS.md`, and a dry run
+commits none of this run's outputs. Print the recount it would have made instead. Fold its report row into the final
+report and do not re-stage `PROGRESS.md` here.
 
 ### Final step — pipeline self-report
 

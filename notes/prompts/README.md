@@ -456,11 +456,11 @@ closed `REC-NNN` promoted, plus the row-shape pricing table — read only by a s
 row, at its steps 1 and 3),
 `_recommendation-ledger-closed.md` (the ledger's resolved half: one line per closed `REC-NNN`, ordered
 by ID — read to deduplicate a candidate against work already ruled on, including rejected rows),
-`_interview-voice-spec.md` (the one target flow four open rows are slices of — the interview-answer
+`_interview-voice-spec.md` (the one target flow four rows are slices of, two of them still open — the interview-answer
 voice pipeline, Loop A generation → translation → TODO → symmetric repair → `[refined]`, and Loop B
 collection → maturity → drafted rule → approval. **A target, not a description of what runs**: it
 grants no authority, no run obeys it, a standard beats it wherever they disagree, and every step names the
-row that owns it — read at step 1 by a session resolving `REC-180`, `REC-184` **or
+row that owns it — read at step 1 by a session resolving `REC-184` **or
 `REC-171` (g)/(h)**, that last one because `REC-184` binds its approval gate to be ruled with the notes
 harvest's or the two mechanisms diverge. `REC-183`, its step 4, closed 2026-08-29 and is the one slice
 already built),
@@ -580,7 +580,7 @@ than background to all of them.
 | `projects/review/_internal/_review-flow-prompt.md` | *Internal (per-slice functional reviewer).* Reviews **one vertical slice** — a backend resource's `model→repository→service→controller→DTO→tests` flow, a frontend feature, or a cross-cutting area (`persistence-config` / `frontend-infra`) — running quality + correctness + test lenses on it; returns a findings table + trace. Does not edit or commit. | `_review-standard.md`, `{project}/PLANNING.md`, that slice's source | findings table (returned to the orchestrator) |
 | `projects/review/_internal/_review-security-prompt.md` | *Internal (per-slice security reviewer, full-stack only).* Attacker-hat pass on **one slice** — a backend resource's endpoints (authz/ownership/injection/data-exposure), or cross-cutting `security-infra` (SecurityConfig, JWT, CORS, hashing, secrets) — against `notes/security/coverage/junior.md`; returns a findings table graded by the standard's *confirmed* test (a confirmed finding becomes a High backlog task; one resting only on a silent plan is the Medium "decide and document"), plus a trace. Does not edit or commit. | `_review-standard.md`, `notes/security/coverage/junior.md`, `{project}/PLANNING.md`, that slice's `backend` source | findings table (returned to the orchestrator) |
 | `projects/portfolio/portfolio-audit.md` | **THE entry point — the only portfolio prompt you launch.** Runs **inside a supported agent runtime**. The final go/no-go gate per project (last link in the per-project chain): an author + cold-reviewer subagent pair build the project-specific interview-question bank in `en/`, a translator subagent then renders the whole finished bank into its `es/` twin (Phase 1b, once per project), an `en/`-blind Spanish reviewer audits that twin on its own terms (Phase 1c, once per project, skipped whenever there is no finished twin to audit — a `TODO-STOPPED`, a half-written `BLOCKED` one, or a parity gate that failed after its retry), and the orchestrator computes the verdict and (if not ❌) drafts **one** CV bullet — verified against the application standard's Project-bullet spec before saving, with any condition it cannot satisfy printed — plus one GitHub description. A ✅/⚠️ non-dry run commits with **no choice pause** (retired 2026-08-31); if ✅ Ready it also updates the GitHub profile README (`dev/portfolio/VMNunez`, separate repo — commit/push printed for Victor). The author+reviewer pair runs **once per bank section**, never on the whole bank; the translator is whole-bank by design and gated on per-section English/Spanish question counts, and the Spanish reviewer is whole-bank for the same reason and gated on nothing — its verdict is a judgement about prose, so it is never re-dispatched. **`PORTFOLIO_SCOPE` (2026-09-05, `REC-189`) banks a full-stack project one tier at a time**: on such a project every section carries `### Backend` / `### Frontend` / `### Cross-tier` sub-headings, a `backend`/`frontend`/`global` run walks the same five sections with only that tier's code area, writes only its own sub-headings and leaves the rest byte-for-byte in both languages, stamps only its own `**Last banked — «tier»:**` header line, and stops there — bank-only, no verdict, no CV bullet, no gate. It buys a session boundary rather than tokens, and it may run before §23's chain. Angular-only projects have no tiers and run `full`. `DRY_RUN = true` leaves the **audit outputs** in the working tree — the pipeline self-report is machinery and commits itself either way. | its five internal pieces (below), `_application-standard.md` for the CV bullet | `interview-prep/projects/en/{project}.md` **and** `interview-prep/projects/es/{project}.md` (both staged in the one atomic commit), `notes/cv/cv-bullets.md` (one spec-verified bullet per committed project — **except a section marked `[refined]`, which it reports and leaves untouched**), `dev/portfolio/VMNunez/README.md` (✅ only), `projects/portfolio/_internal/_last-run-report.md`, one atomic commit per project |
-| `projects/portfolio/_internal/_portfolio-standard.md` | *Internal.* The **shared portfolio-gate contract** all five pieces read (what the gate is for, the two-check verdict logic — reached only by a `full` run — the interview-question quality bar + file template, the `en/`+`es/` pair layout and who owns each half, the CV-bullet and GitHub-description formats, the two project formats, **the canonical table's per-tier partition of every section's code area, the lane rule a partial-scope run obeys, and the per-tier `Last banked` header stamp**) — plus **"Question identity, the refined freeze and the TODO channel"**, which owns the bank's `{PROJECT_NAME}-{NNN}` IDs, its two-state `[refined]` ladder and its TODO reopen channel — and **"Priority markers"**, which owns the `⭐` scale and calibrates it over the whole file rather than per section — and is the one section a **sixth, outside** reader takes (it also carries a **second** freeze, on the CV bullet, deliberately mechanised differently: no TODO channel, reopened by deleting the marker, and a `git diff` check that only ever reports): `study-content-writer`, when it resolves a `TODO:` Victor wrote in a project pair. Not runnable. | — | — |
+| `projects/portfolio/_internal/_portfolio-standard.md` | *Internal.* The **shared portfolio-gate contract** all five pieces read (what the gate is for, the two-check verdict logic — reached only by a `full` run — the interview-question quality bar + file template, the `en/`+`es/` pair layout and who owns each half, the CV-bullet and GitHub-description formats, the two project formats, **the canonical table's per-tier partition of every section's code area, the lane rule a partial-scope run obeys, and the per-tier `Last banked` header stamp**) — plus **"Question identity, the refined freeze and the TODO channel"**, which owns the bank's `{PROJECT_NAME}-{NNN}` IDs, its three-state `[refined]` / `[studied]` ladder and its TODO reopen channel — and **"Priority markers"**, which owns the `⭐` scale and calibrates it over the whole file rather than per section — and are the sections its **four outside** readers take — the identity section binding all four, "Priority markers" only the two that rank or serve questions (the file also carries a **second** freeze, on the CV bullet, deliberately mechanised differently: no TODO channel, reopened by deleting the marker, and a `git diff` check that only ever reports): `study-content-writer` resolving a `TODO:` Victor wrote in a project pair, `interview-prep-route-projects` and `interview-prep-block-open` since 2026-09-06, and `study-block-close`, the one hand that may write ` [studied]` there. Not runnable. | — | — |
 | `projects/portfolio/_internal/_portfolio-write-prompt.md` | *Internal (author).* Dispatched **once per bank section**, with `SECTION` **and `SCOPE`**: reads only that section's code area — and within it only the columns `SCOPE` names (the standard's canonical table) — plus PLANNING.md, and writes that section's exhaustive questions to the standard, each born unrefined with the next unused `{PROJECT_NAME}-{NNN}` ID allocated over the whole file and its `⭐⭐⭐`/`⭐⭐`/`⭐` priority marker. On a full-stack project it writes **only under that scope's `###` sub-heading** (`Backend` / `Frontend` / `Cross-tier`) and leaves every other sub-heading byte-for-byte, its own section's included; Angular-only projects have neither. Writes English only — fenced out of the `es/` twin, and out of any block carrying `[refined]`. Does not compute the verdict or commit. | `_portfolio-standard.md`, `{project}/PLANNING.md`, `_shared-context.md` (target companies + interview context), that section's code area in the columns `SCOPE` names | that scope's sub-heading of that section, in `interview-prep/projects/en/{project}.md` (working tree) |
 | `projects/portfolio/_internal/_portfolio-translate-prompt.md` | *Internal (translator, stage T).* Dispatched **once per project** in Phase 1b, with `SCOPE`, after every section's author→reviewer pair, the cross-section dedupe and the header stamp: renders the finished English bank into natural Spanish at the same headings and positions, copying every question ID and priority marker verbatim and keeping a `[refined]` question's existing Spanish byte-for-byte. It **reads the whole English file** — parity and ID copying are whole-file properties — but **writes only the `###` sub-headings `SCOPE` names**, plus the header on every scope (the `**Último banco — «capa»:**` lines have no other writer); an out-of-scope half whose counts no longer match is reported as behind its source, never re-rendered. Structural parity is an obligation inside the scope and a measurement outside it. Reads one section of `_interview-prep-standard.md` (the bilingual contract) — the single crossing between the two otherwise disjoint standards. Stops rather than overwriting an `es/` carrying Victor's `TODO:` markers; skips a section left half-written upstream. Changes no English and does not commit. | `_portfolio-standard.md` (template + section names), `_interview-prep-standard.md` → "The bilingual en/es contract", `interview-prep/junior/es/architecture.md` (Spanish-register reference, read-only), the finished `en/` bank | `interview-prep/projects/es/{project}.md` (working tree), with per-section parity counts |
 | `projects/portfolio/_internal/_portfolio-review-prompt.md` | *Internal (reviewer).* Dispatched **once per bank section**, with `SECTION` **and `SCOPE`**, right after that section's author: an independent second pass over that section — and within it only the sub-headings `SCOPE` covers — hunting thin/weak/duplicate questions against the real code and fixing them directly, **except inside a `[refined]` block, and except under another tier's sub-heading, both of which it judges, counts and reports but never repairs**; also checks every question's ID is well formed and unique, and every question in its lane carries a well-formed priority marker (the whole-file proportion is the orchestrator's, not its). Returns its questions-vs-decisions ratio — **both sides counted over the scope's columns and sub-headings**, so another run's tier cannot inflate it — and the uncovered decisions when that ratio is below 1, which is what the orchestrator's one-retry acceptance gate re-dispatches on. Audits English only — fenced out of the `es/` twin, which does not exist yet when it runs. Does not commit (the orchestrator bundles the commit). | `_portfolio-standard.md`, the question bank, the project source | the audited `interview-prep/projects/en/{project}.md` |
@@ -678,7 +678,7 @@ Each generated file, with who writes it and who depends on it:
   consulted only when a bar is questioned. *The third of the evidence family, scoped to one project's
   README — added 2026-09-01 (`REC-193`), and its finding on section sizes is a measured absence.*
 - **`PROGRESS.md`** — written **per section by the closing rituals** in the daily session, each owning its
-  own cell (`study-block-close` owns `Study progress`, `authoring-progress-recount` owns `Authoring progress`); `progress-update` writes only `Professional level by topic` and *audits* the rest, reporting
+  own cell (`study-block-close` owns `Study progress`, `authoring-progress-recount` owns `Authoring progress`, and each owns the per-project question-bank table inside its own section since 2026-09-06); `progress-update` writes only `Professional level by topic` and *audits* the rest, reporting
   drift with the owner to re-run (demoted 2026-08-05, REC-039) → read by `plan-audit`, `roadmap-review`,
   `project-brief`, `review-audit`, `cv`, `linkedin`, `sql-exercises`. *Stale PROGRESS = the wrong next
   project in `project-brief` and a wrong gap analysis in `roadmap-review`.*
@@ -718,19 +718,27 @@ Each generated file, with who writes it and who depends on it:
 - **`interview-prep/routes/{LEVEL}.md`** — written only by `interview-prep-route` → read by
   `interview-prep-block-open`, `study-block-close`, `authoring-progress-recount`, and `progress-update`.
 - **`interview-prep/routes/projects.md`** — written only by `interview-prep-route-projects` → read by
-  `interview-prep-block-open` **on request only**, the CORE route staying its default. No recount reads
-  it: both count over levelled populations — one `{LEVEL}` route, and every required current bank at that
-  level — and a project bank is outside both until `REC-180`'s `[studied]` writer and counter land.
+  `interview-prep-block-open` **on request only**, the CORE route staying its default, and by
+  `study-block-close` and `progress-update` (D9), for the denominator of the per-project studied row
+  (2026-09-06). `authoring-progress-recount` and D10 do **not** read it: that twin row counts each
+  project's whole bank, since refining an answer does not depend on any route carrying the question.
 - **`interview-prep/projects/en/*.md`** — written by `portfolio-audit`'s author + reviewer — which is
   also where the `⭐` priority marker is authored, the Spanish side only ever copying it — and by
-  `study-content-writer` on an `en/`-side `TODO:` → read by `simulator` (only when `LANGUAGE = en`),
+  `study-content-writer` on an `en/`-side `TODO:`, and by `study-block-close`, whose only write here is
+  ` [studied]` after a final PASS in the daily block (2026-09-06) → read by `simulator` (only when
+  `LANGUAGE = en`),
   by the translator below, and — since 2026-09-06 — by `interview-prep-route-projects` (every EN bank, to
-  EOF) and by `interview-prep-block-open` when Victor asks for project questions.
+  EOF), by `interview-prep-block-open` when Victor asks for project questions, and by the two counters —
+  `authoring-progress-recount` for its per-project refined row and `progress-update` measuring both
+  project rows as D9/D10.
 - **`interview-prep/projects/es/*.md`** — written by `portfolio-audit`'s translator, from the `en/`
   twin, **then by its `en/`-blind Spanish reviewer** (stage C, Phase 1c, prose only), and by
-  `study-content-writer` on a `TODO:` Victor wrote there → read by `simulator` (only when
+  `study-content-writer` on a `TODO:` Victor wrote there, and by `study-block-close` for ` [studied]`
+  alone → read by `simulator` (only when
   `LANGUAGE = es`), and — since 2026-09-06 — structurally by `interview-prep-route-projects` for parity
-  and by `interview-prep-block-open`, which shows Victor the Spanish side of a project question. Never *authored* by hand. Since 2026-08-31 the pair carries `{PROJECT_NAME}-{NNN}`
+  by `interview-prep-block-open`, which shows Victor the Spanish side of a project question, and by
+  `authoring-progress-recount` and `progress-update`, which require both languages before either project
+  row is counted. Never *authored* by hand. Since 2026-08-31 the pair carries `{PROJECT_NAME}-{NNN}`
   IDs, the `[refined]` freeze (Victor alone writes and reopens it; a TODO about **voice or phrasing** is
   a first-class reopen) and its own TODO channel — all in `_portfolio-standard.md`, not in the levelled
   Q&A standard. The **`es`-review owner** landed 2026-09-05 (`REC-180`): stage T reads the English by
@@ -740,8 +748,10 @@ Each generated file, with who writes it and who depends on it:
   translator, frozen with a `[refined]` block, and calibrated **over the whole file** rather than per
   section — the orchestrator's cross-section scan owns that proportion and downgrades an over-starred
   bank. A bank written earlier carries none until that gate's next run over its project; `/simulator`
-  ranks an unmarked question as `⭐⭐`. That row still owes the `[studied]` marker's writer and counters;
-   its route half landed 2026-09-06.
+  ranks an unmarked question as `⭐⭐`. **That row closed 2026-09-06**, its whole step-6 half landing at
+  once: the route, the recall block, `study-block-close` as the marker's sole writer, and a per-project
+  row under each of `PROGRESS.md`'s two progress sections — studied counted over the route, refined over
+  the whole bank.
 - **`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `sql-plan-prompt`, audited and extended by
   `sql-plan-audit`, and advanced by `sql-grade`'s subagent (§1 counts, §3 statuses, §2 `[x]` bullets)
   → read by `sql-exercises` (every run takes its topic, count and focus from the
@@ -795,7 +805,7 @@ coverage-prompt / coverage-audit ─► notes/coverage/{junior|middle|senior}.md
         │                                                             │
         │                                      interview-prep-block-open ─► study-block-close
         │                                                             │
-        │            notes-audit / interview-prep-audit / study-content-writer
+        │            notes-audit / interview-prep-audit / portfolio-audit / study-content-writer
         │                        └─► authoring-progress-recount ─► PROGRESS.md
         ▼                                                             ▼
 progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.md   simulator
@@ -806,7 +816,7 @@ progress-update ─► PROGRESS.md ─► plan-audit ─► {project}/PLANNING.m
                         │     README(s)         PROJECT-BACKLOG  ─► cv-bullets ─► cv-prompt
                         │                                          └► interview-prep/projects/en+es ┘
                         │                                             └► interview-prep-route-projects ─► routes/projects.md
-                        │                                                (read by interview-prep-block-open, on request)
+                        │                                                (block-open on request ─► study-block-close ─► PROGRESS.md)
                         └─ roadmap-review ─► ROADMAP.md
 
 Practice (its own loop, fed by coverage):
@@ -880,8 +890,9 @@ Practice (its own loop, fed by coverage):
    `PROGRESS.md`'s `Authoring progress` rows the moment it does — as it does for a note declared refined
 8. After every required topic bank for the level is current, run `interview-prep-route` to build the
    globally weighted CORE order
-9. `interview-prep-block-open` asks one refined CORE question at a time; `study-block-close` writes
-   `[studied]` only after a final PASS
+9. `interview-prep-block-open` asks one refined CORE question at a time — or, on request, one from
+   `routes/projects.md`, the project banks' own route; `study-block-close` writes `[studied]` only after a
+   final PASS, into whichever of the two banks the question came from
 10. After all topics have that level, run `coverage-audit`, then `roadmap-review`
 
 The unit changes at each stage: coverage and planning process one **topic + level**; `notes-audit`

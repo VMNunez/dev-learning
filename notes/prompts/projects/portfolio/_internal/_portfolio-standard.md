@@ -10,15 +10,24 @@ All five pieces of the portfolio pipeline read it:
   section list; the Spanish rules themselves are not here, they are in that prompt.
 - `_portfolio-review-es-prompt.md` (the **Spanish reviewer**, stage C) reads it for the Spanish section
   and sub-heading names, the per-question format, and the identity/freeze section that makes an ID and a
-  `[refined]` marker untouchable in its hands. It never opens the `en/` bank; the template's English
+  state marker untouchable in its hands. It never opens the `en/` bank; the template's English
   headings are format metadata, not that bank's prose.
 - `portfolio-audit.md` (the **orchestrator**) reads it for the verdict logic and the CV / GitHub formats.
 
-**One reader from outside the pipeline**, listed here rather than left as an unnamed exception — exactly
-as `_interview-prep-standard.md` lists this family's translator as its own: `study-content-writer`, the
-in-session skill, reads **"Question identity, the refined freeze and the TODO channel"** when it resolves
-a `TODO:` Victor wrote in a project-bank pair. That section is the whole of what binds it here; the rest
-of this file is the gate's contract and none of its business.
+**Four readers from outside the pipeline**, listed here rather than left as unnamed exceptions — exactly
+as `_interview-prep-standard.md` lists this family's translator as its own. All four are bound by
+**"Question identity, the refined freeze and the TODO channel"**; the two that rank or serve questions
+take **"Priority markers"** as well, and each bullet says so. Nothing else in this file binds any of
+them — the rest is the gate's contract and none of their business.
+
+- `study-content-writer`, the in-session skill, when it resolves a `TODO:` Victor wrote in a
+  project-bank pair — the one outside reader that **writes** the pair.
+- `interview-prep-route-projects-prompt.md` (2026-09-06), which also takes **"Priority markers"**: it
+  selects this bank's `⭐⭐⭐` questions into `notes/interview-prep/routes/projects.md`.
+- `interview-prep-block-open` (2026-09-06), same two sections, read-only, when Victor asks the daily
+  block for project questions.
+- `study-block-close` (2026-09-06), which writes the `[studied]` marker of the ladder below and reads
+  this section for what a frozen block is and where a marker may go on its bold line.
 
 ## What the portfolio gate is for
 
@@ -248,16 +257,15 @@ and
 `routes/{LEVEL}.md` precisely because the level is the part that cannot transfer; what could not be
 reached was the *route*, never the questions.
 
-**`[studied]` is still not admitted here, and now for a reason that is about writers rather than
-reachability.** The marker has no hand that may write it into this bank and no counter that reads it:
-`study-block-close` is its sole writer and is fenced to the levelled pair, and every denominator its
-`## Study progress` rows count over is a **levelled** population — the CORE row's is one `{LEVEL}` route,
-and the bank row's is *every required current bank*, which is the registered topic list at that level and
-its coverage fingerprints. A project bank is outside both, not merely off the route. Both are `REC-180`'s
-remaining work.
-So a question this bank serves to the daily block earns a verdict that is reported and not recorded, and
-until that lands **a `[studied]` marker found here is malformed** — a marker nobody recounts is a state
-that lies, which is exactly why the third state waits for its writer instead of arriving ahead of it.
+**`[studied]` was not admitted here until 2026-09-06, and now it is.** It was withheld for a reason about
+writers rather than reachability — the marker had no hand that could write it into this bank and no
+counter that read it, `study-block-close` being fenced to the levelled pair and every denominator of its
+`## Study progress` rows being a **levelled** population. Victor ruled both remaining questions that day:
+`study-block-close` **writes the marker here and stays its sole writer**, and `PROGRESS.md` counts this
+bank in a **per-project row of its own** under each of its two progress sections rather than by widening a
+levelled cell. So the ladder here is three states, exactly as the levelled bank's is, and the reason it is
+written out below in this file's own words rather than cited is the same reason the rest of this section
+is: two standards stating the same rule about two banks is the shape Victor ruled for.
 
 **Transfer decided where the rule came from; it did not decide where the text lives.** The paragraph
 above says the levelled standard's rules *apply* here; this one says they are **written here**, and the
@@ -280,7 +288,7 @@ question between headings, so a per-section counter collides the first time eith
 next unused number **in the file**; never recycle one after a deletion and never renumber to close a gap
 — the gap is what proves the ID was not reused.
 
-**Question state has exactly two valid forms here**, one fewer than the levelled bank:
+**Question state has exactly three valid forms here**, the same three the levelled bank has:
 
 - **Unrefined** — no state marker. Every role in this pipeline may rewrite any part of the block.
 - **Refined** — `[refined]`, at the end of the bold line. **Victor alone writes it**, once the question,
@@ -289,13 +297,36 @@ next unused number **in the file**; never recycle one after a deletion and never
   does not rewrite it, the reviewer reports its defects instead of fixing them, the translator leaves its
   Spanish exactly as it stands, the Spanish reviewer judges that Spanish and reports it rather than
   repairing one word of it, and the orchestrator's cross-section dedupe never deletes it.
+- **Studied** — ` [studied]` appended after `[refined]`, in both languages. **`study-block-close` alone
+  writes it**, and only for a question that carried a final `PASS` in a daily recall block: the marker
+  records that Victor answered it out loud and correctly, never that the answer exists or reads well.
+  Every role of this pipeline treats it exactly as it treats `[refined]` — it is part of a frozen block,
+  and no author, reviewer, translator, Spanish reviewer or dedupe writes, moves or removes one.
+
+**Three things about the third state that this bank does not inherit from anywhere, because its route
+and its freshness test are its own.**
+
+1. **Only a question this bank's route carries can be studied.** The daily block serves
+   `notes/interview-prep/routes/projects.md`, which carries `⭐⭐⭐` questions only, so a `⭐⭐` or `⭐`
+   question is never marked — not because the marker would be wrong, but because nothing ever asked it.
+2. **The freshness gate is the pair and the route, never a coverage fingerprint.** This bank has none by
+   design. What stands in its place is what the recall block already requires: exact EN/ES parity for
+   the whole question block, `Route status: current`, and the route's `Question inventory SHA-256`
+   matching the banks it was built over.
+3. **A studied question that later leaves the route keeps its marker and leaves the count.** Two things
+   drop one: a downgrade out of `⭐⭐⭐`, and the route's cross-project dedupe preferring another
+   project's question about the same decision. Either way it leaves the studied denominator; the marker
+   itself stays, because it records a pass that really happened and because the block it sits on is
+   frozen against every hand that could clean it. That state is **reported**, never treated as
+   malformed.
 
 The freeze is what makes this gate safely **re-runnable**. Without it, every later run of
 `portfolio-audit` on a project hands Victor's polished answers to a cold reviewer whose mandate is to
 improve them, and the improvement is a loss.
 
 **Only Victor reopens a refined question** — by saying so, or by writing a `TODO:` on it. Reopening
-removes `[refined]` from **both** languages before any edit, and the repair runs **in the direction of
+removes **both state markers** from **both** languages before any edit — `[studied]` with `[refined]`,
+since a recall pass is a pass over the answer that is being replaced — and the repair runs **in the direction of
 the file carrying the marker** (the bilingual contract stage T already reads): a marker in `es/` is
 answered in Spanish, in his words, and the `en/` twin is re-translated from that; a marker in `en/` runs
 the other way. The twin's re-translation belongs to the same reopening, so no writer leaves it stale on
@@ -316,7 +347,7 @@ project-bank pair, and the reopening is its write.
 written since 2026-09-05 also carries `⭐⭐⭐`, `⭐⭐` or `⭐` ahead of its state marker — an older bank
 carries none until its next run, and neither you nor a TODO adds one — the rule and its calibration are "Priority markers"
 below. That marker is part of a frozen block exactly as the ID is: no role of this pipeline downgrades
-one, and **reopening a question removes `[refined]` and never the `⭐`**. A `TODO:` about voice or
+one, and **reopening a question removes its state markers and never the `⭐`**. A `TODO:` about voice or
 phrasing is about the answer, not about how often the question is asked.
 
 ---
@@ -328,8 +359,9 @@ phrasing is about the answer, not about how often the question is asked.
 [Model answer — 2–4 sentences, references the real code, uses "I chose"/"I decided".]
 ```
 The priority marker is on **every** question, written before the state marker. The `[refined]` marker is
-present only on a question Victor has frozen; a question this pipeline writes is born without it and no
-role of the pipeline may add it.
+present only on a question Victor has frozen, and ` [studied]` only after it, on a frozen question
+`study-block-close` recorded a recall pass for; a question this pipeline writes is born with neither and
+no role of the pipeline may add either.
 
 **Append + dedupe:** if the file exists, append only questions not already there — each with the next
 unused ID in the file. Never add a question covering the same decision or code path as an existing one,
