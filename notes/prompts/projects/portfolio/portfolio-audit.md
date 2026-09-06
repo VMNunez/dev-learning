@@ -17,7 +17,10 @@ a `backend` / `frontend` / `global` run is bank-only and produces the first alon
    subagents (so no section gets skimmed), then translated once per project into its `es/` twin and
    audited once more by a Spanish reviewer that never sees the English. Saved regardless of the verdict.
 2. A **verdict** — ✅ Ready / ⚠️ Almost / ❌ Not ready.
-3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub description**.
+3. If not ❌ — a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and, **only for a project that has a
+   repo of its own**, a **GitHub description**. Every project under `projects/` is a folder in the
+   monorepo, so that one resolves to `n/a` on all of them — the standard's "GitHub repo description
+   format" owns the condition, its test and the line printed instead (`REC-215`).
 4. If ✅ Ready — a **direct update of Victor's GitHub profile README** (`dev/portfolio/VMNunez`, a
    separate repo) to feature the project.
 
@@ -555,8 +558,18 @@ auto-fix):
 **Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 2 stopped the gate**, where
 there is no verdict at all: a stop writes no CV bullet, so nothing may reach `notes/cv/cv-bullets.md` on
 that path. Otherwise, per the standard: draft **one** Spanish
-CV bullet (read `_application-standard.md` first) and save it to `notes/cv/cv-bullets.md`; draft
-one English GitHub description (output only — Victor sets it in the repo settings manually).
+CV bullet (read `_application-standard.md` first) and save it to `notes/cv/cv-bullets.md`; then the
+GitHub description, **only where the project has a repo of its own**.
+
+**Test `{PROJECT_PATH}` for a `.git` entry that resolves to a repository of its own** — a `.git`
+directory, or the `.git` file a submodule leaves — and never a lookup against GitHub, which a project
+folder has no remote of its own to answer. A **linked worktree**'s `.git` file points back into this same
+repository and is not a repo of its own, so it takes the absent branch.
+**Present** → draft one English description per the standard's "GitHub repo description format" (output
+only — Victor sets it in the repo settings manually). **Absent** → draft nothing; the standard's
+`n/a — project lives in the monorepo, no repo of its own to describe` is what Finishing item 4 prints in
+its place. Every project under `projects/` is in that state, so the absent branch is the normal one and
+not a failure: it moves no verdict, signs off nothing, and stages nothing.
 
 **A section whose heading carries `[refined]` is frozen and this run does not touch it.** Victor alone
 writes that marker and alone removes it; deleting it is how he reopens a bullet. Draft and verify the
@@ -626,7 +639,11 @@ Otherwise print, in this order:
    the saved bullet does not satisfy** — or, where the section was frozen and nothing was saved, the
    conditions the **drafted** bullet item 6 reports does not satisfy — quoted with its reason; print `spec: all conditions satisfied`
    when there are none, so a silent run is distinguishable from a compliant one.
-4. GitHub description (one option) — **omit if ❌**.
+4. GitHub description (one option) — or, where the project has no `.git` of its own, the standard's
+   `n/a — project lives in the monorepo, no repo of its own to describe` **printed in its place**, which
+   is the branch every project takes today. **The item is omitted entirely only if ❌**; on any other
+   path it prints one line or the other, never nothing — a silent item 4 is indistinguishable from a run
+   that skipped it.
 5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
    commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
 6. If ✅/⚠️, the one drafted bullet is in `notes/cv/cv-bullets.md` — **unless that project's section

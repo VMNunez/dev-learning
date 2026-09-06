@@ -39,8 +39,11 @@ per **Verdict logic** below:
 1. A bank of **project-specific interview questions**, as an `en/` + `es/` pair (saved regardless of
    the verdict — they are useful prep even for an unfinished project).
 2. A **go/no-go verdict** (✅ Ready / ⚠️ Almost / ❌ Not ready).
-3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub repo
-   description** (English).
+3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and — **only for a
+   project that has a repo of its own** — a **GitHub repo description** (English). Every project under
+   `projects/` is a folder in the monorepo today, so that second artefact resolves to `n/a` on every one
+   of them; the condition, its test and the line printed in its place are in **"GitHub repo description
+   format"** below.
 4. If the verdict is ✅ Ready: a **direct update of Victor's GitHub profile README**
    (`dev/portfolio/VMNunez`, a separate repo). Format: match that README's existing style and sections
    exactly; add or refresh the project's entry (name, one-line pitch, stack, links). Never committed
@@ -632,6 +635,35 @@ section is missing and write a duplicate.
 ---
 
 ## GitHub repo description format
+
+**The artefact exists only for a project that has a repo of its own, and today no project does.** Every
+project under `projects/` is a folder inside the one `dev-learning` repository — measured 2026-09-05 and
+re-measured 2026-09-06: `git remote -v` returns a single origin, no `projects/*/.git` exists, there is no
+`.gitmodules` and no linked worktree — so the only `About` field on GitHub belongs to the monorepo, and
+one project's pitch written into it would misdescribe the repository. Victor ruled it 2026-09-05
+(`REC-215`): the step is **conditioned, not deleted**, so the decision is recorded once here instead of
+being re-discovered by every run that drafts a line with nowhere to send it.
+
+**The test is a `.git` entry at `{PROJECT_PATH}` that resolves to a repository of its own** — a `.git`
+directory, or the `.git` file a **submodule** leaves there — and never a lookup against GitHub: a project
+folder has no remote of its own to query, so the absence of the entry is the only thing this repository
+can actually observe. **A linked worktree is the one shape that reads present and is not one**: its
+`.git` file points back into this same repository, so it shares this repo's remote and its single
+`About` field, and it takes the absent branch. Where the entry is **absent**, draft nothing and print, in
+its place, `n/a — project lives in the monorepo, no repo of its own to describe`. That is the normal
+branch for every project the gate admits today, and it is a report rather than a failure: no verdict
+moves, no gate is affected, nothing is staged.
+
+**The one thing the test cannot see**, published rather than left to be discovered: a project mirrored to
+its own GitHub repository by a subtree push or by CI carries no `.git` at `{PROJECT_PATH}` and takes the
+absent branch even though an `About` field of its own exists. That is the honest cost of testing what
+this repository can observe instead of querying GitHub, and the fix for such a project is to say so in
+the run rather than to weaken the test.
+
+Where the entry is **present** — a project kept as its own repository rather than as a folder here — the
+format below is what the run drafts. **No project reaches that branch today**, and not only for want of a
+`.git`: Check 1 reads `{PROJECT_PATH}/PLANNING.md` and Check 2 stops on a missing `PROJECT-BACKLOG.md`,
+so a repository that is not a planned, reviewed project of this roadmap never gets as far as Phase 3.
 
 Stays in **English** (GitHub's audience is wider than the Spanish screen; English is the convention
 there). One line, 160 characters max, no markdown. Draft **one** option.

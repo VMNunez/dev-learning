@@ -8,7 +8,7 @@ Read `notes/prompts/projects/portfolio/portfolio-audit.md` and execute it in ful
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- The prompt's own config block and instructions are authoritative — execute them exactly (author + cold reviewer build the project-specific question bank in `en/`, then one translator per project renders its `es/` twin and one `en/`-blind Spanish reviewer audits it; the orchestrator computes the verdict and, if not ❌, writes the CV bullet — unless that section is frozen with [refined], which it reports and leaves — plus the GitHub description).
+- The prompt's own config block and instructions are authoritative — execute them exactly (author + cold reviewer build the project-specific question bank in `en/`, then one translator per project renders its `es/` twin and one `en/`-blind Spanish reviewer audits it; the orchestrator computes the verdict and, if not ❌, writes the CV bullet — unless that section is frozen with [refined], which it reports and leaves — plus the GitHub description, which the standard conditions on the project having a repo of its own).
 - If the configuration is empty or incomplete, ask for the missing config-block values before launching any subagent.
 - If DRY_RUN was not given, default it to `true`.
 - If PORTFOLIO_SCOPE was not given, default it to `full`.
