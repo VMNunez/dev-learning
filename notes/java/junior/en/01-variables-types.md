@@ -962,7 +962,24 @@ Read the right-hand column as "the code you would have had to type by hand befor
 > because the return value of "java.util.Map.get(Object)" is null
 > ```
 >
-> The fix is to receive it as the wrapper — `Integer score = scores.get("missing");` — and check for `null` before using it, or to ask for a fallback with `scores.getOrDefault("missing", 0)`. The general rule: any assignment from a wrapper to a primitive is a hidden `NullPointerException` waiting for a `null`, and that includes fields, method arguments and `return` statements, not just local variables.
+> There are two fixes, and both of them avoid the unboxing. The first is to receive the value as the wrapper and decide yourself what to do when it is `null`:
+>
+> ```java
+> Integer score = scores.get("missing");   // no unboxing: score may be null
+> if (score != null) {
+>     System.out.println(score + 10);
+> }
+> ```
+>
+> The second is to ask the map for a fallback value, so it never returns `null`:
+>
+> ```java
+> int score = scores.getOrDefault("missing", 0);   // returns 0 when the key is absent
+> ```
+>
+> `getOrDefault` is a `Map` method: it looks the key up and, when it is not there, returns the second argument instead of `null`. With no `null` in play, unboxing to `int` is safe.
+>
+> The general rule: any unboxing will throw that exception the moment a `null` reaches it, and that includes fields, method arguments and `return` statements, not just local variables.
 
 ### Wrapper `==` — the one comparison this chapter refuses to explain
 
