@@ -1,3 +1,39 @@
+## Index of this note
+
+- [Variables and Types](#variables-and-types)
+- [Primitive types](#primitive-types)
+  - [Reference variables and `null` — enough to read the rest of this page](#reference-variables-and-null--enough-to-read-the-rest-of-this-page)
+  - [Types by category](#types-by-category)
+  - [`int` or `long` — how to choose, and when the literal needs the `L`](#int-or-long--how-to-choose-and-when-the-literal-needs-the-l)
+  - [Building a `BigDecimal` — never `new BigDecimal(0.1)`](#building-a-bigdecimal--never-new-bigdecimal01)
+  - [Comparing `BigDecimal` — `compareTo()` instead of `<`, `>`, or `equals()`](#comparing-bigdecimal--compareto-instead-of---or-equals)
+  - [`BigDecimal` arithmetic — every operation returns a new object, and division demands a scale](#bigdecimal-arithmetic--every-operation-returns-a-new-object-and-division-demands-a-scale)
+- [Variables](#variables)
+  - [The compiler will not let you read a local variable you never assigned](#the-compiler-will-not-let-you-read-a-local-variable-you-never-assigned)
+  - [Scope — where the name is visible](#scope--where-the-name-is-visible)
+  - [Naming conventions](#naming-conventions)
+  - [`final`](#final)
+- [Operators — the four groups, and the two that can skip their right operand](#operators--the-four-groups-and-the-two-that-can-skip-their-right-operand)
+  - [`=` where you meant `==`](#where-you-meant)
+  - [Short-circuit evaluation — why `&&` and `||` sometimes never evaluate their right-hand side](#short-circuit-evaluation--why--and--sometimes-never-evaluate-their-right-hand-side)
+- [Type casting](#type-casting)
+  - [Widening (automatic)](#widening-automatic)
+  - [Narrowing (manual)](#narrowing-manual)
+- [Integer arithmetic — two silent traps](#integer-arithmetic--two-silent-traps)
+  - [Integer division truncates — it does not round](#integer-division-truncates--it-does-not-round)
+  - [Overflow is silent, and it bites when values are multiplied](#overflow-is-silent-and-it-bites-when-values-are-multiplied)
+- [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-one)
+  - [`NaN` — the value that is not equal to itself](#nan--the-value-that-is-not-equal-to-itself)
+  - [Comparing two `double`s — a tolerance, or the right type](#comparing-two-doubles--a-tolerance-or-the-right-type)
+- [Division by zero — the same expression either crashes or quietly returns `Infinity`](#division-by-zero--the-same-expression-either-crashes-or-quietly-returns-infinity)
+- [Wrapper classes — objects for primitives](#wrapper-classes--objects-for-primitives)
+  - [When to use each — the practical rule](#when-to-use-each--the-practical-rule)
+  - [Autoboxing and unboxing](#autoboxing-and-unboxing)
+  - [Wrapper `==` — the one comparison this chapter refuses to explain](#wrapper---the-one-comparison-this-chapter-refuses-to-explain)
+  - [Useful wrapper methods](#useful-wrapper-methods)
+- [Text values — `String` has a chapter of its own](#text-values--string-has-a-chapter-of-its-own)
+- [`var` — local type inference (Java 10+)](#var--local-type-inference-java-10)
+
 # Variables and Types
 
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → read: "Overview" and "Primitive Data Types"
@@ -632,7 +668,7 @@ Java allows this silently because the destination type's range fully contains th
 
 ### Narrowing (manual)
 
-When you convert a larger type to a smaller one, there can be data loss — Java forces you to say so explicitly by writing the target type in parentheses before the value:
+When you convert a type whose set of values is wider into a narrower one — from a bigger **range** to a smaller range, not from more bytes to fewer bytes — there can be data loss — Java forces you to say so explicitly by writing the target type in parentheses before the value:
 
 ```java
 double price = 19.99;
@@ -644,21 +680,29 @@ int smaller = (int) bigNumber;  // 1912276171 — not "roughly 1234567890123", a
 
 The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss.
 
-That second result deserves unpacking, because "may overflow" hides how violent the outcome is. A `long` is 64 bits and an `int` is 32, so the cast keeps the **low 32 bits and throws the high 32 away** — no rounding, no clamping to `Integer.MAX_VALUE`, no exception. It is a pair of scissors, not a conversion:
+> **Bytes decide nothing; the set of values does.** Almost always the two line up (`long` at 64 bits → `int` at 32 bits is narrowing and does occupy less), which is exactly why the wrong rule is easy to keep. The case that breaks it is `float` → `int`: both occupy exactly 32 bits and the compiler still demands the cast, because an `int` cannot represent `3.5`, nor the billions that fit comfortably in a `float`. The other way round, `int` → `float` is widening at the same 32 bits. The question that always decides is "can the target type represent **every** value of the source?": if yes, it is widening and Java does it for you; if no, it is narrowing and you have to write the cast.
+
+That second result deserves unpacking, because saying "may overflow" does not show how completely unrelated the number that comes out is to the one that went in. A `long` is 64 bits and an `int` is 32, so the cast **keeps the 32 bits on the right and throws away every bit on the left** — no rounding, no clamping to `Integer.MAX_VALUE`, no exception.
+
+> **"Low bits" and "high bits" are not "the first ones" and "the next ones".** A binary number is written like a decimal one: the digit on the right is worth the least and the digit on the left the most. In `1985`, the `5` is the low digit (worth 5) and the `1` the high one (worth 1000). Binary works the same way: the **low bits** are the 32 on the **right**, the ones representing the small quantities, and the **high bits** are the ones on the **left**, the ones supplying the number's large magnitude. The cast to `int` keeps the 32 on the right and discards everything to their left; that is why what gets lost is precisely what made the value huge.
+
+With that, the arithmetic in the example follows on its own: `1234567890123L` needs 41 bits to be written in binary. An `int` only has room for 32, so `41 − 32 = 9` bits are left over on the left, and those nine are the ones that fall off. The 32 on the right survive intact and are read back as if they had always been an `int`:
 
 ```
 1234567890123L in binary (41 bits):
 
   100011111 01110001111110110000010011001011
   └───────┘ └──────────────────────────────┘
-   high 9      the low 32 bits that survive
-   bits —
+   high 9         the low 32 bits
+   bits           (the ones on the right)
+   (the ones      that survive
+   on the left) —
    DISCARDED
 
   the surviving 32 bits, read back as an int  →  1912276171
 ```
 
-Nine bits fall off the front and the remainder is reinterpreted as a fresh `int`. The result, 1912276171, has no useful relationship to the original 1234567890123 — it is not "approximately right", it is a different number entirely. And because the discarded bits included everything that made the value large, a number that was too big can just as easily come back **negative**: if the surviving 32nd bit happens to be a 1, that bit is the sign bit in an `int`, and the result is negative. This is the same odometer effect described next, seen from the bit level.
+Those nine high bits fall off and the remainder is reinterpreted as a fresh `int`. The result, 1912276171, has no useful relationship to the original 1234567890123 — it is not "approximately right", it is a different number entirely. And because the discarded bits included everything that made the value large, a number that was too big can just as easily come back **negative**: if the surviving 32nd bit happens to be a 1, that bit is the sign bit in an `int`, and the result is negative. This is the same odometer effect described next, seen from the bit level.
 
 > **Silent wraparound:** when a number does not fit in the destination type, Java does not throw an error — it simply "rolls over". Picture a car odometer that reaches 999,999 and flips back to 000,000: exactly that happens with integers. `int`'s maximum value is 2,147,483,647; add 1 to it and you get −2,147,483,648, the minimum. The counter runs off the top end and reappears at the bottom. That is why narrowing (and integer overflow in general) can produce wrong results silently, with no exception to warn you.
 

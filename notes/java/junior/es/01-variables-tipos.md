@@ -1,4 +1,38 @@
-//TODO: FALTA EL INDICE DE ESTA NOTA
+## Índice de esta nota
+
+- [Variables y tipos](#variables-y-tipos)
+- [Tipos primitivos](#tipos-primitivos)
+  - [Variables de referencia y `null`](#variables-de-referencia-y-null)
+  - [Tipos por categoría](#tipos-por-categoría)
+  - [`int` o `long` — cómo elegir, y cuándo el literal necesita la `L`](#int-o-long--cómo-elegir-y-cuándo-el-literal-necesita-la-l)
+  - [Construyendo un `BigDecimal` — nunca `new BigDecimal(0.1)`](#construyendo-un-bigdecimal--nunca-new-bigdecimal01)
+  - [Comparando `BigDecimal` — `compareTo()` en vez de `<`, `>` o `equals()`](#comparando-bigdecimal--compareto-en-vez-de---o-equals)
+  - [Aritmética de `BigDecimal` — cada operación devuelve un objeto nuevo, y la división exige una escala](#aritmética-de-bigdecimal--cada-operación-devuelve-un-objeto-nuevo-y-la-división-exige-una-escala)
+- [Variables](#variables)
+  - [El compilador no te deja leer una variable local que nunca asignaste](#el-compilador-no-te-deja-leer-una-variable-local-que-nunca-asignaste)
+  - [Scope — dónde es visible el nombre](#scope--dónde-es-visible-el-nombre)
+  - [Convenciones de nombres](#convenciones-de-nombres)
+  - [`final`](#final)
+- [Operadores — los cuatro grupos, y los dos que pueden saltarse su operando derecho](#operadores--los-cuatro-grupos-y-los-dos-que-pueden-saltarse-su-operando-derecho)
+  - [`=` cuando querías decir `==`](#cuando-querías-decir)
+  - [Evaluación short-circuit — por qué `&&` y `||` a veces no llegan a evaluar su lado derecho](#evaluación-short-circuit--por-qué--y--a-veces-no-llegan-a-evaluar-su-lado-derecho)
+- [Conversión de tipos (casting)](#conversión-de-tipos-casting)
+  - [Widening (automático)](#widening-automático)
+  - [Narrowing (manual)](#narrowing-manual)
+- [Aritmética de enteros — dos trampas silenciosas](#aritmética-de-enteros--dos-trampas-silenciosas)
+  - [La división entera trunca — no redondea](#la-división-entera-trunca--no-redondea)
+  - [El overflow es silencioso, y muerde cuando se multiplican valores](#el-overflow-es-silencioso-y-muerde-cuando-se-multiplican-valores)
+- [Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre uno](#coma-flotante--por-qué-un-double-no-puede-contener-01-y-por-qué-no-puedes-fiarte-de--sobre-uno)
+  - [`NaN` — el valor que no es igual a sí mismo](#nan--el-valor-que-no-es-igual-a-sí-mismo)
+  - [Comparar dos `double` — una tolerancia, o el tipo correcto](#comparar-dos-double--una-tolerancia-o-el-tipo-correcto)
+- [División por cero — la misma expresión, o revienta o devuelve `Infinity` en silencio](#división-por-cero--la-misma-expresión-o-revienta-o-devuelve-infinity-en-silencio)
+- [Clases wrapper — objetos para primitivos](#clases-wrapper--objetos-para-primitivos)
+  - [Cuándo usar cada uno — la regla práctica](#cuándo-usar-cada-uno--la-regla-práctica)
+  - [Autoboxing y unboxing](#autoboxing-y-unboxing)
+  - [`==` entre wrappers — la única comparación que este capítulo se niega a explicar](#entre-wrappers--la-única-comparación-que-este-capítulo-se-niega-a-explicar)
+  - [Métodos útiles de wrapper](#métodos-útiles-de-wrapper)
+- [Valores de texto — `String` tiene su propio capítulo](#valores-de-texto--string-tiene-su-propio-capítulo)
+- [`var` — inferencia de tipo local (Java 10+)](#var--inferencia-de-tipo-local-java-10)
 
 # Variables y tipos
 
@@ -606,8 +640,7 @@ Java permite esto en silencio porque el rango del tipo destino contiene por comp
 
 ### Narrowing (manual)
 
-//TODO: HE REVISADO HASTA AQUI
-Cuando conviertes un tipo más grande a uno más pequeño, puede haber pérdida de datos — Java te obliga a decirlo explícitamente escribiendo el tipo destino entre paréntesis antes del valor:
+Cuando conviertes un tipo cuyo conjunto de valores es más amplio a uno más estrecho — de **rango** mayor a rango menor, no de más bytes a menos bytes — puede haber pérdida de datos — Java te obliga a decirlo explícitamente escribiendo el tipo destino entre paréntesis antes del valor:
 
 ```java
 double price = 19.99;
@@ -619,21 +652,29 @@ int smaller = (int) bigNumber;  // 1912276171 — no "aproximadamente 1234567890
 
 El `(int)` antes de la variable es el cast. Java no lo hace automáticamente porque podrías perder datos — tienes que escribirlo explícitamente para señalar que aceptas esa posible pérdida.
 
-Ese segundo resultado merece desmenuzarse, porque "puede desbordarse" esconde lo violento que es realmente el resultado. Un `long` tiene 64 bits y un `int` 32, así que el cast conserva los **32 bits bajos y descarta los 32 bits altos** — sin redondeo, sin recortar al `Integer.MAX_VALUE`, sin excepción. Es un par de tijeras, no una conversión:
+> **Los bytes no deciden nada; el conjunto de valores sí.** Casi siempre las dos cosas coinciden (`long` de 64 bits → `int` de 32 bits es narrowing y además ocupa menos), y por eso es fácil quedarse con la regla equivocada. El caso que la rompe es `float` → `int`: los dos ocupan exactamente 32 bits y aun así el compilador exige el cast, porque un `int` no puede representar `3.5` ni los miles de millones que sí caben en un `float`. Al revés, `int` → `float` es widening con los mismos 32 bits. La pregunta que decide siempre es "¿el tipo destino puede representar **todos** los valores del origen?": si la respuesta es sí, es widening y Java lo hace solo; si es no, es narrowing y tienes que escribir el cast.
+
+Ese segundo resultado merece desmenuzarse, porque decir "puede desbordarse" no deja ver hasta qué punto el número que sale no tiene nada que ver con el que entró. Un `long` tiene 64 bits y un `int` 32, así que el cast **se queda con los 32 bits de la derecha y tira todos los de la izquierda** — sin redondeo, sin recortar al `Integer.MAX_VALUE`, sin excepción.
+
+> **"Bits bajos" y "bits altos" no son "los primeros" y "los siguientes".** Un número binario se escribe como uno decimal: la cifra de la derecha es la que menos vale y la de la izquierda la que más. En `1985`, el `5` es la cifra baja (vale 5) y el `1` la alta (vale 1000). Igual en binario: los **bits bajos** son los 32 de la **derecha**, los que representan las cantidades pequeñas, y los **bits altos** son los de la **izquierda**, los que aportan la magnitud grande del número. El cast a `int` conserva los 32 de la derecha y descarta todo lo que quede a su izquierda; por eso lo que se pierde es justamente lo que hacía enorme al valor.
+
+Con eso, la cuenta del ejemplo sale sola: `1234567890123L` necesita 41 bits para escribirse en binario. Un `int` solo tiene sitio para 32, así que sobran `41 − 32 = 9` bits por la izquierda, y son esos nueve los que se caen. Los 32 de la derecha sobreviven intactos y se releen como si siempre hubieran sido un `int`:
 
 ```
 1234567890123L en binario (41 bits):
 
   100011111 01110001111110110000010011001011
   └───────┘ └──────────────────────────────┘
-   9 bits      los 32 bits bajos que sobreviven
-   altos —
+   9 bits         los 32 bits bajos
+   altos          (los de la derecha)
+   (los de la     que sobreviven
+   izquierda) —
    DESCARTADOS
 
   los 32 bits que sobreviven, leídos como int  →  1912276171
 ```
 
-Nueve bits se caen por delante y el resto se reinterpreta como un `int` nuevo. El resultado, 1912276171, no guarda ninguna relación útil con el original 1234567890123 — no es "aproximadamente correcto", es un número completamente distinto. Y como los bits descartados incluían todo lo que hacía grande al valor, un número que era demasiado grande puede muy bien volver **negativo**: si el bit 32 que sobrevive resulta ser un 1, ese bit es el bit de signo en un `int`, y el resultado es negativo. Es el mismo efecto cuentakilómetros descrito a continuación, visto a nivel de bit.
+Esos nueve bits altos se caen y el resto se reinterpreta como un `int` nuevo. El resultado, 1912276171, no guarda ninguna relación útil con el original 1234567890123 — no es "aproximadamente correcto", es un número completamente distinto. Y como los bits descartados incluían todo lo que hacía grande al valor, un número que era demasiado grande puede muy bien volver **negativo**: si el bit 32 que sobrevive resulta ser un 1, ese bit es el bit de signo en un `int`, y el resultado es negativo. Es el mismo efecto cuentakilómetros descrito a continuación, visto a nivel de bit.
 
 > **Wraparound silencioso:** cuando un número no cabe en el tipo destino, Java no lanza un error — simplemente "da la vuelta". Imagina un cuentakilómetros que llega a 999,999 y vuelve a 000,000: exactamente eso pasa con los enteros. El valor máximo de `int` es 2,147,483,647; súmale 1 y obtienes −2,147,483,648, el mínimo. El contador se sale por el extremo superior y reaparece por abajo. Por eso el narrowing (y el overflow de enteros en general) puede producir resultados incorrectos en silencio, sin ninguna excepción que te avise.
 
