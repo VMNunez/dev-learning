@@ -983,7 +983,7 @@ Read the right-hand column as "the code you would have had to type by hand befor
 
 ### Wrapper `==` — the one comparison this chapter refuses to explain
 
-Autoboxing makes `Integer` and `int` look interchangeable, and there is exactly one place where that illusion turns dangerous: comparison. `==` between two `Integer` variables does not compare the two numbers. It compares the two *addresses* from the diagram at the top of this file — it asks "are these two variables pointing at the same object?" — and that is a different question, one that gives the right answer just often enough to survive your testing:
+Autoboxing makes `Integer` and `int` look interchangeable, and there is exactly one place where that illusion turns dangerous: comparison. `==` between two `Integer` variables does not compare the two numbers. It compares the two addresses in memory — it asks "are these two variables pointing at the same object?" — and that is a different question, one that gives the right answer just often enough to survive your testing:
 
 ```java
 Integer a = 127, b = 127;
@@ -993,7 +993,7 @@ Integer c = 128, d = 128;
 c == d            // false   ← the same code, one number higher
 ```
 
-Nothing about 127 and 128 differs as a *value*. The rule you need today is short: **never compare wrappers with `==`.** Use `a.equals(b)`, or unbox both sides to primitives first (`a.intValue() == b.intValue()`), where `==` compares values and is correct by definition. Between two primitives — `int == int` — `==` is always right and always what you meant.
+Nothing about 127 and 128 differs as a *value*, and the cause of one giving `true` and the other `false` lies in how Java creates those `Integer` objects — which is exactly what the callout below defers to [06-oop-classes.md](06-oop-classes.md). The rule you need today is short: **never compare wrappers with `==`.** Use `a.equals(b)`, or unbox both sides to primitives first (`a.intValue() == b.intValue()`), where `==` compares values and is correct by definition. Between two primitives — `int == int` — `==` is always right and always what you meant.
 
 > **Why the explanation waits for [06-oop-classes.md](06-oop-classes.md), and why `String` comparison waits with it.** The result above has a specific cause, and comparing two `String`s with `==` has another one, but they are not two facts to memorise separately — they are the *same* question wearing two costumes: when do two references identify one object, and what does it mean for two objects to be equal rather than identical. Answering that needs the object model itself — what `equals` is, that every class inherits a default version of it which compares addresses, and how a class overrides it to compare content. None of that exists yet. Entry 06 builds classes first, then defines identity versus value equality, and settles wrapper `==`, `String ==` and `Objects.equals` in one place where they explain each other. Learning the caching ranges here, before you know what an object is, would leave you holding a rule with nothing underneath it — exactly the kind of knowledge that collapses at the first interview follow-up question.
 

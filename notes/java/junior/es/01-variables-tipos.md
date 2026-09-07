@@ -950,7 +950,7 @@ Lee la columna de la derecha como "el código que habrías tenido que escribir a
 
 ### `==` entre wrappers — la única comparación que este capítulo se niega a explicar
 
-El autoboxing hace que `Integer` e `int` parezcan intercambiables, y hay exactamente un sitio donde esa ilusión se vuelve peligrosa: la comparación. `==` entre dos variables `Integer` no compara los dos números. Compara las dos _direcciones_ del diagrama del principio de este archivo — pregunta "¿estas dos variables apuntan al mismo objeto?" — y esa es una pregunta distinta, una que da la respuesta correcta justo las veces suficientes como para sobrevivir a tus pruebas:
+El autoboxing hace que `Integer` e `int` parezcan intercambiables, y hay exactamente un sitio donde esa ilusión se vuelve peligrosa: la comparación. `==` entre dos variables `Integer` no compara los dos números. Compara las dos direcciones en la memoria — pregunta "¿estas dos variables apuntan al mismo objeto?"
 
 ```java
 Integer a = 127, b = 127;
@@ -960,7 +960,7 @@ Integer c = 128, d = 128;
 c == d            // false   ← el mismo código, un número más alto
 ```
 
-Nada distingue a 127 de 128 como _valor_. La regla que necesitas hoy es corta: **nunca compares wrappers con `==`.** Usa `a.equals(b)`, o desenvuelve los dos lados a primitivos primero (`a.intValue() == b.intValue()`), donde `==` compara valores y es correcto por definición. Entre dos primitivos — `int == int` — `==` siempre es correcto y siempre es lo que querías decir.
+Nada distingue a 127 de 128 como _valor_, y la causa de que uno dé `true` y el otro `false` está en cómo Java crea esos objetos `Integer` — que es exactamente lo que el aviso de abajo aplaza hasta [06-poo-clases.md](06-poo-clases.md). La regla que necesitas hoy es: **nunca compares wrappers con `==`.** Usa `a.equals(b)`, o desenvuelve los dos lados a primitivos primero (`a.intValue() == b.intValue()`), donde `==` compara valores y es correcto por definición. Entre dos primitivos — `int == int` — `==` siempre es correcto y siempre es lo que querías decir.
 
 > **Por qué la explicación espera a [06-poo-clases.md](06-poo-clases.md), y por qué la comparación de `String` espera con ella.** El resultado de arriba tiene una causa concreta, y comparar dos `String` con `==` tiene otra, pero no son dos hechos que memorizar por separado — son la _misma_ pregunta con dos disfraces: cuándo dos referencias identifican a un solo objeto, y qué significa que dos objetos sean iguales en vez de idénticos. Responder eso necesita el propio modelo de objetos — qué es `equals`, que toda clase hereda una versión por defecto que compara direcciones, y cómo una clase la sobreescribe para comparar contenido. Nada de eso existe todavía. La entrada 06 construye las clases primero, luego define identidad frente a igualdad de valor, y resuelve `==` entre wrappers, `==` entre `String` y `Objects.equals` en un solo sitio donde se explican unos a otros. Aprender aquí los rangos de la caché, antes de saber qué es un objeto, te dejaría con una regla sin nada debajo — exactamente el tipo de conocimiento que se derrumba en la primera pregunta de seguimiento de una entrevista.
 
