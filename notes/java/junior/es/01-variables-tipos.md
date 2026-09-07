@@ -804,7 +804,7 @@ Por ejemplo, si comparas una ratio calculada, las diferencias reales son minúsc
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → leer: la frase "1.0/0.0 has the value positive infinity" y el párrafo alrededor sobre infinity y NaN.
 
-Ya se mencionó en una línea en la división entera, pero merece su propia sección, porque es el ejemplo más claro de la página de la idea que se repite en todo el capítulo — _los tipos de los operandos deciden lo que el operador realmente hace_. Dividir por cero no es un solo comportamiento en Java. Son dos comportamientos distintos, y cuál de los dos ocurre lo deciden los tipos de los operandos, que no se ven en la línea donde escribes la división:
+Ya se mencionó en una línea en la división entera, pero merece su propia sección, porque es el ejemplo más claro de la página de la idea que se repite en todo el capítulo — _los tipos de los operandos deciden lo que el operador realmente hace_. Dividir por cero no es un solo comportamiento en Java. Son dos comportamientos distintos, y cuál de los dos ocurre lo deciden los tipos de los operandos:
 
 ```java
 int a = 7, b = 0;
@@ -815,7 +815,7 @@ x / y;          // Infinity — sin excepción, la ejecución continúa
 0.0 / 0.0;      // NaN      — sin excepción, la ejecución continúa
 ```
 
-La división viene de lo que cada tipo tiene sitio para decir. Un `int` son 32 bits, y cada uno de esos 4.3 mil millones de patrones de bits ya está reservado para un número entero normal — no queda ningún patrón libre para significar "infinito", así que lo único honesto que puede hacer la JVM es negarse, y lanza una excepción. Un `double` reserva patrones exactamente para este caso: `Infinity`, `-Infinity` y `NaN` son valores `double` legales con una representación definida, así que la operación tiene algo verdadero que devolver y lo devuelve. (`%` sigue a `/` en ambas direcciones: `7 % 0` lanza la misma `ArithmeticException`, y `7.0 % 0.0` es `NaN`.)
+La diferencia viene de lo que cada tipo puede representar. Un `int` son 32 bits, y con 32 bits hay 4.294.967.296 combinaciones distintas de ceros y unos; cada una de esas combinaciones ya está asignada a un número entero concreto — no sobra ninguna para significar "infinito", así que lo único honesto que puede hacer la JVM es negarse, y lanza una excepción. Un `double` reserva patrones exactamente para este caso: `Infinity`, `-Infinity` y `NaN` son valores `double` legales con una representación definida, así que la operación tiene algo verdadero que devolver y lo devuelve. (`%` sigue a `/` en ambas direcciones: `7 % 0` lanza la misma `ArithmeticException`, y `7.0 % 0.0` es `NaN`.)
 
 Cuál de los dos es más peligroso no es el que la gente asume:
 
