@@ -781,7 +781,7 @@ Double.isNaN(nan)     // true   ← la comprobación correcta
 
 ### Comparar dos `double` — un margen de error, o el tipo correcto
 
-Cuando los valores tienen que ser `double`, compáralos con un **margen de error** — el nombre que se le da en código es _epsilon_, y en la documentación lo verás como _tolerancia_. La idea es la que has descrito: decides de antemano cuánta diferencia estás dispuesto a aceptar, y si la distancia entre el valor que tienes y el que esperabas es menor que ese margen, los das por iguales; en vez de exigir que los bits sean idénticos, compruebas el tamaño de la diferencia.
+Cuando los valores tienen que ser `double`, compáralos con un **margen de error** — el nombre que se le da en código es _epsilon_, y en la documentación lo verás como _tolerancia_. La idea es: decides de antemano cuánta diferencia estás dispuesto a aceptar, y si la distancia entre el valor que tienes y el que esperabas es menor que ese margen, los das por iguales.
 
 ```java
 // MAL — pregunta si dos aproximaciones cayeron en los mismos bits
@@ -792,7 +792,7 @@ double epsilon = 1e-9;
 if (Math.abs(measured - expected) < epsilon) { ... }
 ```
 
-`Math.abs` da la distancia entre los dos valores sin importarle cuál es mayor, así que una sola comprobación cubre las dos direcciones. `1e-9` es la notación científica de Java para 0.000000001 — mucho mayor que el error de representación y mucho menor que cualquier diferencia que importe. Elige la tolerancia según el dominio, no por costumbre: nueve decimales para una ratio calculada, dos para cualquier cosa que una persona lea en pantalla.
+`Math.abs` devuelve el **valor absoluto** de lo que le pases, es decir el número sin signo. Aquí recibe `measured - expected`, una resta que sale negativa cuando el segundo valor es el mayor; el valor absoluto la convierte en positiva, así que lo que queda es la distancia entre los dos y una sola comprobación cubre las dos direcciones. `1e-9` es la notación científica de Java para 0.000000001 — mucho mayor que el error de representación y mucho menor que cualquier diferencia que importe. Elige la tolerancia según el dominio, no por costumbre: nueve decimales para una ratio calculada, dos para cualquier cosa que una persona lea en pantalla.
 
 > **El arreglo de verdad suele ser el tipo, no la tolerancia.** Recurres a una tolerancia cuando _heredas_ un `double` — una lectura de un sensor, un campo de una API de terceros, una columna heredada de base de datos. Cuando la decisión es tuya, pregúntate qué es el número. Dinero, o cualquier cantidad que tenga que cuadrar exactamente: `BigDecimal`. Un valor con una escala fija pequeña que tú controlas, como horas con dos decimales: `BigDecimal` de nuevo, que es exactamente por qué `TimeEntry.hours` es uno. Una medición que ya es una aproximación en el mundo real antes de llegar siquiera a Java: `double`, comparado con una tolerancia. En ninguno de los tres casos `==` entre dos `double` calculados es la comprobación correcta.
 
