@@ -39,7 +39,9 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > that one closes on a **clean drift report**, and since `REC-214` this gate **tests it** rather than
 > assuming it — Phase 2's Check 3 reads
 > `notes/prompts/strategy/tracking/_internal/_last-drift-report.md` and stops on four states the
-> standard's Verdict logic owns. **On any project that is not the in-progress one, that means a
+> standard's Verdict logic owns. **The run's step-0 gate preflight announces that stop before it
+> dispatches anything** (`REC-218`), so a missing prerequisite surfaces in the first minute instead of
+> after the whole question bank has been paid for. **On any project that is not the in-progress one, that means a
 > `progress-update MODE = all` run**: `MODE = active` audits the active project alone, so its scope line
 > can never name a completed one and can never close its G6 — which is the normal case under recipe B.
 > The READMEs must be correct and PROGRESS.md accurate.
@@ -183,6 +185,75 @@ bar, and the CV / GitHub formats. Then run the procedure below. You stay light o
 dispatch the question subagents and the translator and wait — you never author or translate the
 question bank in your own context.
 The verdict + CV bullet + GitHub description are short and deterministic, so you do those yourself.
+
+## Gate preflight (step 0) — announce the three checks before anything is dispatched
+
+**Run this before the batch expansion below and before any dispatch, and act on nothing it finds.**
+Phase 2's three checks are step-0 tests executed in Phase 2: Check 1 reads `{PROJECT_PATH}/PLANNING.md`
+(and, on its markerless branch, `PROGRESS.md`'s `## Projects` table), Check 2's four stop states read
+`PROJECT-BACKLOG.md` and its `**Last Reviewed — «tier»:**` header, and Check 3 reads
+`_last-drift-report.md`'s three header fields against a `git log -1` **already pinned to `{BASELINE}`**,
+which the block above just recorded. Not one of them reads anything a subagent produces — yet a run that
+owes a `progress-update` learns it only after paying for the whole bank. Measured on the `02-weather-app` run that opened
+`REC-218`: 8 dispatches, then a Check 3 stop on a report scoped to another project and older than
+`PROGRESS.md`'s last commit — both knowable before the first of those dispatches.
+
+**This is not a fourth check — it is the standard's own three, executed once earlier, printed and left
+alone.** Read the standard's **Verdict logic** for the states and for the exact wording; never restate a
+test or paraphrase one of its strings here. Surfacing the stop is the whole job: this block stops no run,
+skips no phase, writes no tracker cell and computes no verdict, and Phase 2 below disposes exactly as it
+does today.
+
+Run them **in the standard's order, and let its gating hold here exactly as it does there — Check 1 gates
+Check 2, and both gate Check 3** — so a project that owes none of §23's chain is never announced against a
+prerequisite it does not owe. That gating is the reason Check 1 is in this block at all: the condition
+travels with the check that produces it, rather than being restated loose.
+
+- **Check 1, whole**, including its markerless-plan branch. The standard is explicit that this check pins
+  no second baseline, so a step-0 read and a Phase-2 read are the same read. A Check 1 that resolves
+  **❌ Not ready** is a verdict and not a stop, and such a project owes none of the chain (see `▶ Run
+  first`): gate Checks 2 and 3 off it and print `preflight: nothing owed`. Only its markerless-branch
+  stop is announced.
+- **Check 2's four stop states only.** Its verdict is a verdict, which this block never prints, and its
+  two sanity scans read the project's code and its global README. Neither is this block's job.
+- **Check 3, whole.** Its date test is `{BASELINE}`-pinned already, so moving it earlier changes nothing
+  about what it measures.
+
+**Print stops, never a verdict.** No ✅ / ⚠️ / ❌ appears in this block's output, not even a provisional
+one — a verdict is what G7's box records, it is Phase 2's to compute, and it rests on the two things this
+block deliberately did not read. Per target, print either `preflight: nothing owed — the verdict is
+computed in Phase 2`, or the stop in the standard's own words, naming what it owes — the `review-audit`
+or `progress-update` run for Checks 2 and 3, and for Check 1's stop *"mark the plan's steps or add the
+projects-table row"*, which is not a pipeline run at all, for the reason Finishing gives — and adding:
+*the question bank is written either way, and this run will stop at that same check.* Then say what
+continuing costs, in the bounded form and never as a count — up to five sections × two subagents, plus
+one translator and one Spanish reviewer — since the count is what the stop makes expensive and a number
+written here would go stale.
+
+**Under `PROJECT_PATH = all`, resolve the ordered list from the config block above** — the batch section
+below expands it again for its own run — **and print one table for the whole ladder**, not a line per
+project as its turn comes. Print the cost line once, under the table, as the per-project figure. Check
+3's input is a single global file, so one `progress-update MODE = all` clears it for every project at
+once; announcing per project would repeat one stop seven times and reach the seventh only after its
+dispatches were spent. Where Check 3 is what stops them, add that one-line
+footer under the table.
+
+**Skip the block entirely on a bank-only scope** (`backend`, `frontend`, `global`): those runs never reach
+the checks at all, so there is nothing to announce. Print one line saying that, because a silent absence
+here would read as a pass. `{DRY_RUN}` does not qualify any of this — the block writes no file.
+
+**The announcement cannot contradict the Phase-2 stop, and the reason is narrower than "this run writes
+none of these files" — which is false.** `PROGRESS.md` is written by a step of this run: the authoring
+recount below commits it, which is exactly why Check 3's date test is pinned to `{BASELINE}`. The claim
+that holds is per-cell. `PLANNING.md` and `PROJECT-BACKLOG.md` are read live and no step of this run
+writes either — Phase 2's sanity scans report and never repair. Two inputs are read live on a file this
+run does commit or could see move: Check 1's `## Projects` row, which the recount never touches (it owns
+the `## Authoring progress` rows and the per-project table and nothing else), and `_last-drift-report.md`,
+which only `progress-update` writes and which a hands-off run cannot re-run mid-flight. Both hold
+per cell, not per file, so **widening the recount's cells is what would break this block**, and the date
+test is pinned rather than trusted precisely because its file is not safe that way. If the two executions
+ever disagree, Phase 2 disposes and the disagreement is a defect for the self-report, not a second
+verdict.
 
 ## If PROJECT_PATH = all
 **`{PORTFOLIO_SCOPE}` binds per project here, and is not derived per target.** It is `_batch-mode.md`'s
@@ -546,6 +617,11 @@ stages `notes/cv/cv-bullets.md`. It signs off no gate. Go straight to Finishing,
 says what to print and what to commit — and do not print a ✅/⚠️/❌, not even a provisional one: a
 verdict is what G7's box records, and nothing here computed one.
 
+**Run all three here in full, even where the step-0 preflight already announced their outcome.** That
+block prints; this one disposes, and it is the only one of the two that computes a verdict, runs Check 2's
+task count and its two sanity scans, skips Phase 3, writes the tracker cell and fills the batch summary
+row. A preflight that announced `nothing owed` licenses no shortcut either: it never read the code.
+
 Compute the verdict yourself per the standard's **verdict logic**: Check 1 (feature completeness from
 `{PROJECT_PATH}/PLANNING.md`) gates Check 2 (code quality from `{PROJECT_PATH}/PROJECT-BACKLOG.md`),
 and both gate Check 3 (PROGRESS accuracy, below).
@@ -688,6 +764,9 @@ README. With `{DRY_RUN}` = false, commit the question bank on the ❌ branch's `
 questions are saved regardless of the outcome; with `{DRY_RUN}` = true commit none of it and print that
 sequence instead, exactly as on any other verdict. Either way, record this project `blocked` in
 `_run-tracker.md`. Then the authoring recount and the self-report.
+**The gate preflight announced this stop at step 0**, so print it as the stop arriving where the run said
+it would, not as news — and if what it announced and what stopped the gate are not the same thing, that
+disagreement is the self-report's, and the stop above still stands as computed here.
 
 Otherwise print, in this order:
 1. "Saved X questions to notes/interview-prep/projects/en/«name».md, and X to its `es/` twin" (do not
@@ -839,6 +918,12 @@ the diff.
 - **Only `full` computes a verdict, and only a verdict signs G7.** A bank-only run prints no ✅/⚠️/❌,
   drafts no CV bullet or GitHub description, never touches the profile README, and never stages
   `notes/cv/cv-bullets.md`. It needs none of §23's chain, and it closes no gate.
+- **The step-0 preflight announces; Phase 2 disposes.** The same three checks run twice on purpose. The
+  early one prints a stop the run is heading for and does nothing else — it never stops the run, never
+  skips a phase, never writes a tracker cell and never prints a ✅/⚠️/❌. The late one is unchanged and
+  unconditional: it runs in full even where the preflight already announced its outcome, because only it
+  may print a verdict, and only it reads the code and the global README Check 2's sanity scans need. Collapsing the two, in either direction, is the
+  defect `REC-218` was opened over.
 - **One atomic commit per project, in this repo.** In `all` mode, one commit per project, never batched.
   The ✅-Ready profile-README commit is not an exception to it and never joins it: it lands in a
   **different repository**, so the two indexes never meet (`REC-220`). The
