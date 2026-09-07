@@ -21,7 +21,7 @@
   - [Narrowing (manual)](#narrowing-manual)
 - [Aritmética de enteros — trampas silenciosas](#aritmética-de-enteros--trampas-silenciosas)
   - [La división entera trunca — no redondea](#la-división-entera-trunca--no-redondea)
-  - [El overflow es silencioso, y muerde cuando se multiplican valores](#el-overflow-es-silencioso-y-muerde-cuando-se-multiplican-valores)
+  - [El overflow es silencioso, y aparece cuando se multiplican valores](#el-overflow-es-silencioso-y-aparece-cuando-se-multiplican-valores)
 - [Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre uno](#coma-flotante--por-qué-un-double-no-puede-contener-01-y-por-qué-no-puedes-fiarte-de--sobre-uno)
   - [`NaN` — el valor que no es igual a sí mismo](#nan--el-valor-que-no-es-igual-a-sí-mismo)
   - [Comparar dos `double` — una tolerancia, o el tipo correcto](#comparar-dos-double--una-tolerancia-o-el-tipo-correcto)
@@ -707,22 +707,23 @@ double average = totalHours / entries;
 double average = (double) totalHours / entries;   // 3.5
 ```
 
-La razón por la que la primera línea falla merece rastrearse, porque parece que debería funcionar: el `double` de la izquierda no tiene ninguna influencia sobre la división. Java evalúa primero el lado derecho, por completo bajo sus propios términos — dos `int`, así que división entera, así que `3`. Solo _después_ ensancha ese `3` a `3.0` y lo guarda. El `double` llega un paso demasiado tarde; la información ya se había perdido. El cast de la versión corregida funciona porque cambia un operando _antes_ de que se ejecute el `/`, lo cual convierte toda la expresión en división de coma flotante.
+La razón por la que la primera línea falla merece estudiarse, porque parece que debería funcionar: el `double` de la izquierda no tiene ninguna influencia sobre la división. Java evalúa primero el lado derecho, por completo bajo sus propios términos — dos `int`, así que lo trata como una división entre números enteros, dando como resultado `3`. Solo _después_ ensancha ese `3` a `3.0` y lo guarda. El `double` llega demasiado tarde; la información ya se había perdido. El cast de la versión corregida funciona porque cambia un operando _antes_ de que se ejecute el `/`, lo cual convierte toda la expresión en división de coma flotante.
 
-> **El `(double)` va sobre uno de los operandos, no sobre el resultado.** `(double) (totalHours / entries)` sigue siendo incorrecto — los paréntesis hacen que la división entera ocurra primero y luego ensanchan el `3` ya truncado. Solo necesitas convertir uno de los dos operandos; Java entonces ensancha automáticamente al otro para que coincida, y la división se hace en `double`. Esta es la forma más común de "arreglar" este bug sin arreglarlo en realidad.
+> **El `(double)` va sobre uno de los operandos, no sobre el resultado.** `(double) (totalHours / entries)` sigue siendo incorrecto — los paréntesis hacen que la división entera ocurra primero y luego ensanchan el `3` ya truncado. Solo necesitas convertir uno de los dos operandos; Java entonces ensancha automáticamente al otro para que coincida, y la división se hace en `double`. Esta es la forma más común de "arreglar" este bug.
 
-Y hay un operando que no tolerará: `7 / 0` con enteros lanza `ArithmeticException: / by zero`. La coma flotante no — `7.0 / 0` produce `Infinity` y `0.0 / 0.0` produce `NaN`, sin ninguna excepción. Así que la misma división, con la misma pinta, o bien revienta o bien devuelve un valor sin sentido según los tipos de los operandos.
+Hay un operando que no tolerará: `7 / 0` con enteros lanza `ArithmeticException: / by zero`. La coma flotante no — `7.0 / 0` produce `Infinity` y `0.0 / 0.0` produce `NaN`, sin ninguna excepción. Así que la misma división, con la misma pinta, o bien revienta o bien devuelve un valor sin sentido según los tipos de los operandos.
 
-### El overflow es silencioso, y muerde cuando se multiplican valores
+### El overflow es silencioso, y aparece cuando se multiplican valores
 
 El aviso del cuentakilómetros usó `Integer.MAX_VALUE + 1` como ejemplo, lo cual suena a caso límite artificial. En la práctica te topas con el overflow a través de la multiplicación, donde tres números perfectamente normales se combinan en algo que ya no cabe:
 
 ```java
 // MAL — ¿cuántos milisegundos hay en 30 días?
-int ms = 1000 * 60 * 60 * 24 * 30;    // -1702967296   ← milisegundos negativos
+int ms = 1000 * 60 * 60 * 24 * 30;    // -1702967296   ← milisegundos negativos:
+                                      // se ha pasado el rango de int y se ha desbordado
 ```
 
-Cada uno de esos literales es un `int` pequeño y sensato. Pero `int * int` produce un `int` en Java — el tipo de una expresión aritmética lo deciden sus operandos, nunca a dónde va a parar el resultado — y la respuesta real, 2,592,000,000, está por encima de `Integer.MAX_VALUE` (2,147,483,647). Da la vuelta hacia territorio negativo, y el programa sigue adelante tan tranquilo con una duración negativa. Declarar la variable como `long` tampoco te salva, exactamente por la misma razón por la que la división entera ignoró al `double`: la multiplicación ya se realizó en `int` antes de que se considere siquiera la asignación.
+Cada uno de esos literales es un `int` pequeño. Pero `int * int` produce un `int` en Java — el tipo de una expresión aritmética lo deciden sus operandos, nunca a dónde va a parar el resultado — y la respuesta real, 2,592,000,000, está por encima de `Integer.MAX_VALUE` (2,147,483,647). Se produce el wraparound silencioso: el valor da la vuelta y cae en territorio negativo, y el programa sigue adelante tan tranquilo con una duración negativa. Declarar la variable como `long` tampoco te salva, exactamente por la misma razón por la que la división entera ignoró al `double`: la multiplicación ya se realizó en `int` antes de que se considere siquiera la asignación. La solución es la misma idea que en la división: cambiar el tipo de un operando **antes** de que se ejecute la operación — aquí, convertir el primer operando en `long`.
 
 ```java
 // BIEN — haz que el PRIMER operando sea long, para que toda la cadena se calcule en long

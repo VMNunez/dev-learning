@@ -21,7 +21,7 @@
   - [Narrowing (manual)](#narrowing-manual)
 - [Integer arithmetic — silent traps](#integer-arithmetic--silent-traps)
   - [Integer division truncates — it does not round](#integer-division-truncates--it-does-not-round)
-  - [Overflow is silent, and it bites when values are multiplied](#overflow-is-silent-and-it-bites-when-values-are-multiplied)
+  - [Overflow is silent, and it shows up when values are multiplied](#overflow-is-silent-and-it-shows-up-when-values-are-multiplied)
 - [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-one)
   - [`NaN` — the value that is not equal to itself](#nan--the-value-that-is-not-equal-to-itself)
   - [Comparing two `double`s — a tolerance, or the right type](#comparing-two-doubles--a-tolerance-or-the-right-type)
@@ -735,22 +735,23 @@ double average = totalHours / entries;
 double average = (double) totalHours / entries;   // 3.5
 ```
 
-The reason the first line fails is worth tracing, because it looks like it should work: the `double` on the left has no influence on the division at all. Java evaluates the right-hand side first, entirely on its own terms — two `int`s, so integer division, so `3`. Only *then* does it widen that `3` to `3.0` and store it. The `double` arrives one step too late; the information was already gone. The cast in the corrected version works because it changes an operand *before* the `/` runs, which makes the whole expression floating-point division.
+The reason the first line fails is worth studying, because it looks like it should work: the `double` on the left has no influence on the division at all. Java evaluates the right-hand side first, entirely on its own terms — two `int`s, so integer division, so `3`. Only *then* does it widen that `3` to `3.0` and store it. The `double` arrives one step too late; the information was already gone. The cast in the corrected version works because it changes an operand *before* the `/` runs, which makes the whole expression floating-point division.
 
-> **The `(double)` goes on either operand, not on the result.** `(double) (totalHours / entries)` is still wrong — the parentheses make the integer division happen first and then widen the already-truncated `3`. You only need to convert one of the two operands; Java then widens the other one automatically to match, and the division is done in `double`. This is the single most common way this bug is "fixed" without actually being fixed.
+> **The `(double)` goes on either operand, not on the result.** `(double) (totalHours / entries)` is still wrong — the parentheses make the integer division happen first and then widen the already-truncated `3`. You only need to convert one of the two operands; Java then widens the other one automatically to match, and the division is done in `double`. This is the single most common way this bug is "fixed".
 
-And one operand it will not tolerate: `7 / 0` on integers throws `ArithmeticException: / by zero`. Floating point does not — `7.0 / 0` yields `Infinity` and `0.0 / 0.0` yields `NaN`, no exception at all. So the same-looking division either crashes or returns a nonsense value depending on the operand types.
+One operand it will not tolerate: `7 / 0` on integers throws `ArithmeticException: / by zero`. Floating point does not — `7.0 / 0` yields `Infinity` and `0.0 / 0.0` yields `NaN`, no exception at all. So the same-looking division either crashes or returns a nonsense value depending on the operand types.
 
-### Overflow is silent, and it bites when values are multiplied
+### Overflow is silent, and it shows up when values are multiplied
 
 The odometer note used `Integer.MAX_VALUE + 1` as its example, which reads like a contrived edge case. In practice you meet overflow through multiplication, where three perfectly ordinary numbers combine into something that no longer fits:
 
 ```java
 // MAL — how many milliseconds in 30 days?
-int ms = 1000 * 60 * 60 * 24 * 30;    // -1702967296   ← negative milliseconds
+int ms = 1000 * 60 * 60 * 24 * 30;    // -1702967296   ← negative milliseconds:
+                                      // int's range was exceeded and the value overflowed
 ```
 
-Every one of those literals is a small, sane `int`. But `int * int` produces an `int` in Java — the type of an arithmetic expression is decided by its operands, never by where the result is going — and the true answer, 2,592,000,000, is past `Integer.MAX_VALUE` (2,147,483,647). It wraps around into negative territory, and the program carries on cheerfully with a negative duration. Declaring the variable as `long` does not save you either, for exactly the reason integer division ignored the `double`: the multiplication has already been carried out in `int` before the assignment is considered.
+Every one of those literals is a small `int`. But `int * int` produces an `int` in Java — the type of an arithmetic expression is decided by its operands, never by where the result is going — and the true answer, 2,592,000,000, is past `Integer.MAX_VALUE` (2,147,483,647). Silent wraparound happens: the value rolls over and lands in negative territory, and the program carries on cheerfully with a negative duration. Declaring the variable as `long` does not save you either, for exactly the reason integer division ignored the `double`: the multiplication has already been carried out in `int` before the assignment is considered. The fix is the same idea as in the division case: change the type of one operand **before** the operation runs — here, by making the first operand a `long`.
 
 ```java
 // BIEN — make the FIRST operand a long, so the whole chain is computed in long
