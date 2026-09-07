@@ -1012,7 +1012,7 @@ Integer.MIN_VALUE;          // -2147483648
 
 (To go the other way, `String.valueOf(42)` turns an `int` into a `"42"` — note that one is a method on `String`, not on `Integer`, so it is covered with the rest of text handling in [02-strings.md](02-strings.md).)
 
-**`parseInt` vs `valueOf` — the confusable pair.** They take the same argument and look interchangeable, and the difference is only in the return type: `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` object. `valueOf` is in fact implemented by calling `parseInt` and then boxing the result — which is why comparing two of its results with `==` walks straight into the trap the previous section refused to explain — compare them with `.equals()` there too. Pick by what you need next: `parseInt` when the value goes straight into arithmetic or an `int` variable, `valueOf` when it goes into a collection or a field that may be `null`. Reaching for the wrong one is harmless — autoboxing converts it — but naming the difference is a standard junior interview question.
+**`parseInt` vs `valueOf` — the confusable pair.** They take the same argument and look interchangeable, and the difference is only in the return type: `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` object. `valueOf` is in fact implemented by calling `parseInt` and then boxing the result — which is why comparing two of its results with `==` walks into the trap named earlier — compare them with `.equals()` there too. Pick by what you need next: `parseInt` when the value goes straight into arithmetic or an `int` variable, `valueOf` when it goes into a collection or a field that may be `null`. Reaching for the wrong one is harmless — autoboxing converts it — but naming the difference is a standard junior interview question.
 
 > **Both throw when the text is not a number, and the message names the culprit.** This is the failure path you hit the first time a user types something unexpected into a form:
 >
@@ -1021,7 +1021,7 @@ Integer.MIN_VALUE;          // -2147483648
 > // java.lang.NumberFormatException: For input string: "abc"
 > ```
 >
-> `NumberFormatException` is **unchecked**, so the compiler does not force you to handle it — nothing in your IDE will remind you this line can blow up. Note what counts as "not a number": `"42 "` with a trailing space fails too (unlike `Double.parseDouble`, `parseInt` does no trimming), as does `""` and `null`. Any time the string comes from outside your program — a form field, a URL path variable, a CSV row — this call needs either a `try/catch` or validation in front of it. Exception handling is covered in [11-exceptions.md](11-exceptions.md); for now, just register that this specific method is a common source of 500 errors.
+> `NumberFormatException` is **unchecked**: the compiler does not force you to catch it, so nothing warns you that this line can fail. It is worth knowing which inputs trigger it: `"abc"`, `""` and `null` all fail, and so does `"42 "` with a trailing space, because `parseInt` does no trimming (`Double.parseDouble` does). Any time the string comes from outside your program — a form field, a URL path variable, a CSV row — this call needs either a `try/catch` or validation in front of it. Exception handling is covered in [11-exceptions.md](11-exceptions.md); for now, just register that this specific method is a common source of 500 errors.
 
 ---
 

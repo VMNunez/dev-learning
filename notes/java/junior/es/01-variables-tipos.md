@@ -962,13 +962,11 @@ c == d            // false   ← el mismo código, un número más alto
 
 Nada distingue a 127 de 128 como _valor_, y la causa de que uno dé `true` y el otro `false` está en cómo Java crea esos objetos `Integer`, y se explica en [06-poo-clases.md](06-poo-clases.md). La regla que necesitas hoy es: **nunca compares wrappers con `==`.** Usa `a.equals(b)`, o desenvuelve los dos lados a primitivos primero (`a.intValue() == b.intValue()`), donde `==` compara valores y es correcto por definición. Entre dos primitivos — `int == int` — `==` siempre es correcto y siempre es lo que querías decir.
 
-> **Por qué la explicación espera a [06-poo-clases.md](06-poo-clases.md), y por qué la comparación de `String` espera con ella.** El resultado de arriba tiene una causa concreta, y comparar dos `String` con `==` tiene otra, pero no son dos hechos que memorizar por separado — son la _misma_ pregunta con dos disfraces: cuándo dos referencias identifican a un solo objeto, y qué significa que dos objetos sean iguales en vez de idénticos. Responder eso necesita el propio modelo de objetos — qué es `equals`, que toda clase hereda una versión por defecto que compara direcciones, y cómo una clase la sobreescribe para comparar contenido. Nada de eso existe todavía. La entrada 06 construye las clases primero, luego define identidad frente a igualdad de valor, y resuelve `==` entre wrappers, `==` entre `String` y `Objects.equals` en un solo sitio donde se explican unos a otros. Aprender aquí los rangos de la caché, antes de saber qué es un objeto, te dejaría con una regla sin nada debajo — exactamente el tipo de conocimiento que se derrumba en la primera pregunta de seguimiento de una entrevista.
-
 ### Métodos útiles de wrapper
 
 Los **métodos estáticos** pertenecen a la clase en sí, no a ningún objeto concreto — por eso los llamas sobre el nombre de la clase (`Integer.parseInt("42")`) sin crear un objeto con `new`. Los métodos estáticos se cubren en detalle en [04-metodos.md](04-metodos.md).
 
-Estos métodos estáticos son genuinamente útiles en el código del día a día:
+Estos métodos estáticos son útiles en el código del día a día:
 
 ```java
 Integer.parseInt("42");     // String → int (primitivo)
@@ -979,16 +977,16 @@ Integer.MIN_VALUE;          // -2147483648
 
 (Para ir en el otro sentido, `String.valueOf(42)` convierte un `int` en `"42"` — fíjate en que ese es un método de `String`, no de `Integer`, así que se cubre junto con el resto del manejo de texto en [02-cadenas-de-texto.md](02-cadenas-de-texto.md).)
 
-**`parseInt` frente a `valueOf` — el par confundible.** Reciben el mismo argumento y parecen intercambiables, y la diferencia está solo en el tipo de retorno: `parseInt` devuelve un `int` primitivo, `valueOf` devuelve un objeto `Integer`. De hecho `valueOf` está implementado llamando a `parseInt` y luego haciendo boxing del resultado — lo que significa que comparar dos de sus resultados con `==` cae directo en la trampa que la sección anterior se negó a explicar — compáralos también ahí con `.equals()`. Elige según lo que necesites a continuación: `parseInt` cuando el valor va directo a una operación aritmética o a una variable `int`, `valueOf` cuando va a una colección o a un campo que puede ser `null`. Elegir el equivocado es inofensivo — el autoboxing lo convierte —, pero saber nombrar la diferencia es una pregunta estándar de entrevista junior.
+**`parseInt` frente a `valueOf` — el par confundible.** Reciben el mismo argumento y parecen intercambiables, y la diferencia está solo en el tipo de retorno: `parseInt` devuelve un `int` primitivo, `valueOf` devuelve un objeto `Integer`. De hecho `valueOf` está implementado llamando a `parseInt` y luego haciendo boxing del resultado — lo que significa que comparar dos de sus resultados con `==` cae en la trampa que se nombró anteriormente — compáralos también con `.equals()`. Elige según lo que necesites: `parseInt` cuando el valor va directo a una operación aritmética o a una variable `int`, `valueOf` cuando va a una colección o a un campo que puede ser `null`. Elegir el equivocado es inofensivo — el autoboxing lo convierte —, pero saber nombrar la diferencia es una pregunta estándar de entrevista junior.
 
-> **Los dos lanzan excepción cuando el texto no es un número, y el mensaje nombra al culpable.** Este es el camino de fallo que te vas a encontrar la primera vez que un usuario escriba algo inesperado en un formulario:
+> **Los dos lanzan excepción cuando el texto no es un número, y el mensaje nombra al culpable.** Este es el fallo que te vas a encontrar la primera vez que un usuario escriba algo inesperado en un formulario:
 >
 > ```java
 > Integer.parseInt("abc");
 > // java.lang.NumberFormatException: For input string: "abc"
 > ```
 >
-> `NumberFormatException` es **unchecked**, así que el compilador no te obliga a manejarla — nada en tu IDE te va a recordar que esta línea puede estallar. Fíjate en qué cuenta como "no es un número": `"42 "` con un espacio al final también falla (a diferencia de `Double.parseDouble`, `parseInt` no recorta espacios), igual que `""` y `null`. Cualquier vez que el string venga de fuera de tu programa — un campo de formulario, una variable de ruta de una URL, una fila de un CSV — esta llamada necesita o un `try/catch` o validación por delante. El manejo de excepciones se cubre en [11-excepciones.md](11-excepciones.md); de momento, solo registra que este método concreto es una fuente habitual de errores 500.
+> `NumberFormatException` es **unchecked**: el compilador no te obliga a capturarla, así que nada te avisa de que esta línea puede fallar. Conviene saber qué entradas la provocan: fallan `"abc"`, `""` y `null`, y también `"42 "` con un espacio al final, porque `parseInt` no recorta espacios (`Double.parseDouble` sí lo hace). Cada vez que el string venga de fuera de tu programa — un campo de formulario, una variable de ruta de una URL, una fila de un CSV — esta llamada necesita o un `try/catch` o validación por delante. El manejo de excepciones se cubre en [11-excepciones.md](11-excepciones.md); de momento, solo registra que este método concreto es una fuente habitual de errores 500.
 
 ---
 
