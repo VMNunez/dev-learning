@@ -1,59 +1,61 @@
 # portfolio-audit — last run report
 
 **Date:** 2026-09-07
-**Target:** `PROJECT_PATH = projects/02-weather-app`, `PORTFOLIO_SCOPE = full`, `DRY_RUN = true`
+**Target:** `PROJECT_PATH = projects/02-weather-app`, `PORTFOLIO_SCOPE = full`, `DRY_RUN = false`
 **Status:** open
 
 ## 1. Close-out check against disk
-Declared files, from `README.md`'s row: `notes/interview-prep/projects/en/02-weather-app.md` (**created
-this run**, 71 questions), `notes/interview-prep/projects/es/02-weather-app.md` (**created this run**,
-71), `notes/cv/cv-bullets.md` (**not written and not staged** — the gate stopped at Check 3, which skips
-Phase 3 exactly as ❌ does), `dev/portfolio/VMNunez` (✅-only step — **not reached**, no verdict was
-computed, so the external-path preflight was never executed), this report and `_run-tracker.md`. Both
-bank files are untracked in the working tree: `DRY_RUN = true` commits none of the audit outputs, so
-`git status` and not `git log` is the probe for them, and both appear there. `PROJECT-BACKLOG.md` carries
-one appended Low task (an incidental finding, below) and is likewise uncommitted.
+Declared files, from `README.md`'s row: `notes/interview-prep/projects/en/02-weather-app.md` (71 → 109
+questions), `notes/interview-prep/projects/es/02-weather-app.md` (71 → 109), `notes/cv/cv-bullets.md`
+(second section written), `dev/portfolio/VMNunez` (✅-only step — reached; preflight passed and is
+recorded below), plus this report and `_run-tracker.md`. The first three appear in
+`git log --name-only` at `3534580c`; `PROGRESS.md` at `f81e738b` (the recount's own commit); the profile
+README is a working-tree change in a **separate repo**, uncommitted by design.
 
-**Tracker outcome:** `02-weather-app` · `portfolio-audit` → `2026-09-07 (dry-run — blocked at Check 3; …)`.
-A Check 3 stop records `blocked` on the dry branch too, per the standard.
+**External-path preflight (Phase 3):** resolved `C:/Users/Victor/Documents/main/dev/portfolio/VMNunez`
+— input readable, output parent writable, own `.git`, on branch `main`. It already carried uncommitted
+`CLAUDE.md` and `README.md` changes on arrival, which this run did not make and did not touch.
+
+**Tracker outcome:** `02-weather-app` · `portfolio-audit` → `2026-09-07 (completed — ✅ Ready; G7 signed…)`.
 
 ## 2. Declared dispatches
 Required: one author + one reviewer per present section, then one translator and one `en/`-blind Spanish
-reviewer. Sections present: 3 of 5 — `Security & Auth` skipped (no auth anywhere in the project) and
-`Testing` skipped under the standard's stub rule (five `.spec.ts`, every one a generated
-`should create` assertion). Required 8, dispatched **8**, none re-dispatched. Every acceptance gate
-passed on the first pass after each reviewer's own additions: ratios 1.00 / 1.00 / 1.00, and parity
-71/71 re-verified by the orchestrator against both files per section (29 · 15 · 27) rather than taken
-from the translator's return.
+reviewer. Sections present 3 of 5 — `Security & Auth` and `Testing` skipped on the same two grounds the
+last run measured, re-verified. Required 8, dispatched **8**, none re-dispatched, no acceptance gate
+consumed its retry. Ratios 1.24 / 1.00 / 1.05 — each **after** the section reviewer added its own gaps;
+two of the three sections arrived thin from the author (0.91 and 0.89) and were repaired in the pass
+that measures them, which is the split working rather than failing.
 
 ## 3. Failures & retries
-None. No subagent returned `BLOCKED`, none died, no acceptance gate consumed its retry, and the
-restore-or-declare branch was never entered. The step-0 baseline check recorded what it exists to
-record: the `en/` bank did not exist at `{BASELINE}`, so `git status --porcelain` printed nothing and
-the restore branch was **unavailable for the whole run** — the first-run state that paragraph was
-written for.
+None. No `BLOCKED` return, no role died, the restore-or-declare branch was never entered. The step-0
+baseline was **available** this run — both bank files were tracked and clean at `{BASELINE}` — which is
+the first run on this project where it was, the pair having been committed since.
 
 ## 4. Machinery findings
-1. **Check 1 cannot be executed as written on four of the six closed Angular-only plans.** It asks
-   whether the steps are *marked* complete; `02-weather-app`'s `## Learning steps` is a bare numbered
-   list with no `✅` and no done conditions, as are 03, 04 and 05, while 01 and 06 carry them. Read
-   literally the check returns ❌ Not ready for a finished, reviewed, deployed project; this run passed
-   it on `PROGRESS.md`'s `Done ✓` row and the built artefact of every step on disk, and said so. That
-   is a judgement the standard does not authorize or forbid. Routed to `_recommendation-ledger.md` as
-   **`REC-217`**, `open` — the defect is in `_portfolio-standard.md`'s Check 1, which is shared scope,
-   so no edit to this prompt's own text was drafted and no cold reviewer was dispatched.
-2. **No breach log exists for this prompt and none was opened**: no mandatory step was skipped or
-   shortcut, and no step-0 guard was passed over.
-3. Prompt length **851 lines**, up 71 from the 780 the last run measured and well over the ~500-line
-   budget. Largest section is still `## Single-project procedure`; Phase 1a alone is ~185 lines. Under
-   the health budget the length is the weaker of the two signals and this run skipped nothing, so it is
-   recorded and not acted on — but two consecutive reports have now named the same growth without a
-   skip, which is the shape that eventually earns an extraction pass rather than a refinement.
+1. **`REC-217` reproduced exactly.** Check 1 is again inexecutable as written on `02-weather-app`'s bare
+   `## Learning steps` list, and this run again passed it on evidence the standard does not name. The
+   ledger row already holds the measurement and the two candidate shapes; scope is `shared`, so no edit
+   to this prompt was drafted and no cold reviewer dispatched. A second run reaching the same judgement
+   on the same file is what the row's `open` state is for.
+2. **`REC-218` did not fire.** Check 2 and Check 3 both passed, so the 8 dispatches were not spent ahead
+   of a stop. The run that opened it remains its only evidence.
+3. **The cross-section dedupe earned its place, and this is the one finding not from a green trace.**
+   Both section reviewers passed `039` and `107` — each correct within its own lane — and only the
+   orchestrator's whole-file scan could see they asked the same question of `weather[0]`. That is the
+   step this contract's bullet 1 asks for: a defect caught *after* every slice went green.
+4. **A marker divergence the parity gate cannot see, and it did not cost anything.** Stage T found `052`
+   carrying `⭐⭐⭐` in `es/` against `⭐⭐` in `en/` — this run's own Technical Decisions reviewer had
+   downgraded it — and re-synced it under the copy-the-markers rule. The parity gate counts questions,
+   not markers, so nothing mandated the catch; T's own contract did. **Rejected as a prompt change on
+   condition 3**: the output was correct either way, so a marker-parity gate would have changed the cost
+   and not the result.
+5. **No breach log exists for this prompt and none was opened.** No mandatory step was skipped, no step-0
+   guard passed over; the run-start check fired and surfaced `REC-217` in one line before Phase 1a.
+6. Prompt length **851 lines**, unchanged from the last run. Three consecutive reports have now recorded
+   growth-or-length over the ~500-line budget with no skip attributable to it.
 
 ## 5. Verdict
-Change worth considering: **`REC-217`**, opened this run against `_portfolio-standard.md`. **No edit to
-this prompt's own text is drafted** — nothing in it was ambiguous or inexecutable this run, the finding
-is `shared` scope and belongs to the ledger, and no candidate cleared the bar for an in-prompt fix.
-`REC-214`'s Check 3 fired for the first time on a real target and behaved exactly as specified: it
-caught a drift report scoped to another project *and* older than `PROGRESS.md`'s own last commit, which
-is the pair of states the pre-`REC-214` gate would have proceeded straight through.
+Change worth considering: none new. **`REC-217` stays open and was reproduced**, which is why this
+report is `open` rather than `clean` — the finding is live, unapplied and belongs to
+`_portfolio-standard.md`, not to this prompt. Candidate 4 was rejected on condition 3 and is named here
+so it is not re-proposed. Nothing in this prompt's own text was ambiguous or inexecutable this run.
