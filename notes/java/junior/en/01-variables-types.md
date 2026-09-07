@@ -781,7 +781,7 @@ System.out.println(0.1 + 0.2);          // 0.30000000000000004
 System.out.println(0.1 + 0.2 == 0.3);   // false
 ```
 
-The mechanism is a base problem, not a Java problem. A `double` stores a number as a sum of powers of two — 1/2, 1/4, 1/8, 1/16 and so on. Ask it for `0.5` and the answer is exact, because 0.5 *is* 1/2. Ask it for `0.1` and no finite set of those fractions adds up to it, so the hardware keeps the closest 64-bit approximation it can build and carries on. It is the same limitation decimal notation has with one third: writing `0.3333` with as many threes as you have paper for never lands exactly on 1/3. Every language that uses IEEE 754 floating point behaves identically — `0.1 + 0.2` prints those same digits in JavaScript — so this is one place your existing instincts transfer without adjustment.
+The mechanism is a base problem, not a Java problem. A `double` stores a number as a sum of powers of base two — 1/2, 1/4, 1/8, 1/16 and so on. Ask it for `0.5` and the answer is exact, because 0.5 *is* 1/2. Ask it for `0.1` and no finite set of those fractions adds up to it, so the hardware keeps the closest 64-bit approximation it can build and carries on. It is the same limitation decimal notation has with one third: writing `0.3333` with as many threes as you have paper for never lands exactly on 1/3. That approximation is not Java's invention: it is defined by **IEEE 754**, the standard that says how a decimal number is stored in binary, and it is implemented by the processor itself. That is why any language using that standard makes exactly the same approximation — in JavaScript, `0.1 + 0.2` prints those same digits.
 
 Two things follow, and it is the second that bites.
 

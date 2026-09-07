@@ -746,14 +746,14 @@ Con una sola `L` en el primer literal basta. Java evalúa la cadena de izquierda
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → leer: los párrafos sobre infinity y sobre NaN — de ahí sale "`x != x` es `true` si y solo si `x` es NaN".
 
-El aviso sobre el dinero, cerca del principio de este archivo, lo dijo de pasada: un `double` no puede representar `0.1` exactamente. Es otro tipo de fallo de representación: en la aritmética de enteros los bits se agotaban, y aquí no se desborda nada ni falta ningún dígito a la vista, pero el número que se guarda no es el que escribiste. Míralo en el programa más corto que puede enseñarlo:
+El aviso sobre el dinero, cerca del principio de este archivo, lo dijo de pasada: un `double` no puede representar `0.1` exactamente. Es otro tipo de fallo de representación: en la aritmética de enteros los bits se agotaban, y aquí no se desborda nada ni falta ningún dígito a simple vista, pero el número que se guarda no es el que escribiste.
 
 ```java
 System.out.println(0.1 + 0.2);          // 0.30000000000000004
 System.out.println(0.1 + 0.2 == 0.3);   // false
 ```
 
-El mecanismo es un problema de base numérica, no un problema de Java. Un `double` guarda un número como una suma de potencias de dos — 1/2, 1/4, 1/8, 1/16 y así sucesivamente. Pídele `0.5` y la respuesta es exacta, porque 0.5 _es_ 1/2. Pídele `0.1` y ningún conjunto finito de esas fracciones suma exactamente eso, así que el hardware guarda la aproximación de 64 bits más cercana que puede construir y sigue adelante. Es la misma limitación que tiene la notación decimal con un tercio: escribir `0.3333` con tantos treses como papel tengas nunca cae exactamente en 1/3. Todo lenguaje que use coma flotante IEEE 754 se comporta igual — `0.1 + 0.2` imprime esas mismas cifras en JavaScript — así que este es uno de los pocos sitios donde tus instintos actuales se trasladan sin ajuste.
+El mecanismo es un problema de base numérica, no un problema de Java. Un `double` guarda un número como una suma de potencias de base dos — 1/2, 1/4, 1/8, 1/16 y así sucesivamente. Pídele `0.5` y la respuesta es exacta, porque 0.5 _es_ 1/2. Pídele `0.1` y ningún conjunto finito de esas fracciones suma exactamente eso, así que el hardware guarda la aproximación de 64 bits más cercana que puede construir y sigue adelante. Es la misma limitación que tiene la notación decimal con un tercio: escribir `0.3333` con tantos treses como papel tengas nunca cae exactamente en 1/3. Esa aproximación no la inventa Java: la define **IEEE 754**, el estándar que dice cómo se guarda un número decimal en binario y que implementa directamente el procesador. Por eso cualquier lenguaje que use ese estándar hace exactamente la misma aproximación — en JavaScript, `0.1 + 0.2` imprime esas mismas cifras.
 
 De ahí se siguen dos cosas, y es la segunda la que muerde.
 
