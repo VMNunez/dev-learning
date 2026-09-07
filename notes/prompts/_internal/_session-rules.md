@@ -655,6 +655,7 @@ Tests are introduced in project 07 and stay in every project from that point on.
 - Always explain what the test is checking and why that matters
 - Tests go in the same project folder, next to the file they test
 - From project 07: every service must have at least one unit test. From project 08: every component must have at least one TestBed test. Never let a project finish without tests
+- **Below that line — projects 01–06, and components in 07 — the absence of tests is never a finding.** **Missing tests, empty specs and weak assertions there are the expected state**, so no pass raises one as a task: write "tests — out of scope for this project" instead. This is a property of the **project**, not of one pipeline, so it binds every writer of a `PROJECT-BACKLOG.md`. `review-audit` and `_review-standard.md` restate it because their cold subagents never load this file; the in-session backlog rituals inherit it from here. **It covers those three things and nothing else, and the boundary is what a project already holds, never what it was scaffolded with**: a spec that is *broken* — it fails to compile, or asserts an element the template no longer has — and a test **command** that does not work are both outside the exclusion and are judged on their own evidence, under the rule those rituals carry (`REC-185`)
 - Add one interview question to `notes/interview-prep/` for each new testing concept learned
 
 ## Java / Spring Boot
