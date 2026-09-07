@@ -764,7 +764,7 @@ Por eso `==` no sirve para comparar dos `double`. Y es otra razón más para no 
 
 ### `NaN` — el valor que no es igual a sí mismo
 
-Algunas operaciones de coma flotante no tienen ninguna respuesta numérica: `0.0 / 0.0`, la raíz cuadrada de un número negativo, `Infinity - Infinity`. En vez de lanzar una excepción, producen **`NaN`** — "not a number", un valor `double` legal que significa "este cálculo no tiene un resultado con sentido". Después se propaga, porque cualquier operación aritmética que involucre `NaN` produce `NaN`: un paso malo al principio de un pipeline envenena todos los números que vienen después, y te encuentras un `NaN` impreso al final de un informe sin nada que señale por dónde entró.
+Algunas operaciones de coma flotante no tienen ninguna respuesta numérica: `0.0 / 0.0`, la raíz cuadrada de un número negativo, `Infinity - Infinity`. En vez de lanzar una excepción, producen **`NaN`** — "not a number", un valor `double` legal que significa "este cálculo no tiene un resultado con sentido". Después se propaga, porque cualquier operación aritmética que involucre `NaN` produce `NaN`: un paso malo al principio de un cálculo afecta a todos los números que vienen después, y te encuentras un `NaN` impreso al final de un informe sin nada que señale por dónde entró.
 
 `NaN` tiene una propiedad que sorprende a todo el mundo, y es deliberada:
 

@@ -792,7 +792,7 @@ That is why `==` is no use for comparing two `double`s. And it is one more reaso
 
 ### `NaN` — the value that is not equal to itself
 
-Some floating-point operations have no numeric answer at all: `0.0 / 0.0`, the square root of a negative number, `Infinity - Infinity`. Instead of throwing, they produce **`NaN`** — "not a number", a legal `double` value meaning "this computation has no meaningful result". It then spreads, because any arithmetic involving `NaN` produces `NaN`: one bad step at the start of a pipeline poisons every number downstream, and you find a `NaN` printed at the end of a report with nothing pointing at where it entered.
+Some floating-point operations have no numeric answer at all: `0.0 / 0.0`, the square root of a negative number, `Infinity - Infinity`. Instead of throwing, they produce **`NaN`** — "not a number", a legal `double` value meaning "this computation has no meaningful result". It then spreads, because any arithmetic involving `NaN` produces `NaN`: one bad step at the start of a calculation affects every number that comes after it, and you find a `NaN` printed at the end of a report with nothing pointing at where it entered.
 
 `NaN` has one property that surprises everybody, and it is deliberate:
 
