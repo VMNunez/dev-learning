@@ -114,8 +114,11 @@ the whole code area, the section headings stay bare, and the only meaningful sco
 
 ## Verdict logic
 
-Three checks, run in order. **Check 1 gates Check 2, and both gate Check 3** — a project stopped at
-Check 1 owes none of §23's chain, so it is never measured against a prerequisite it does not owe.
+Three checks, run in order. **Check 1 gates Check 2, and both gate Check 3** — a project Check 1 does
+not resolve as complete owes none of §23's chain, so it is never measured against a prerequisite it does
+not owe. **Check 1 has two ways of not resolving one**, and they are not the same disposition: a
+❌ Not ready, which is a verdict and names what the project owes, and — on the markerless branch below
+alone — a **stop**, which is no verdict at all and is Check 2's stop in every respect.
 
 **Only a `full` run reaches them at all.** A run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global`
 is **bank-only**: it writes its own sub-headings and stops there — no ✅/⚠️/❌, no CV bullet, no GitHub
@@ -134,6 +137,63 @@ Read `{PROJECT_PATH}/PLANNING.md`, find the step-by-step plan (Section 0 or the 
 steps marked complete?
 - **Any step incomplete → ❌ Not ready.** List the incomplete steps and stop — do **not** check the
   backlog. A partially built project is not portfolio-ready regardless of code quality.
+
+**The markers are the source wherever the plan carries any, and a plan carrying none is not a plan with
+nothing done.** Measured 2026-09-07: `01-todo-list` marks each of its 8 steps `✅` with a `*Done:*` line
+and `06-hr-portal` each of its 14, while `02-weather-app`, `03-expense-tracker`, `04-meal-finder` and
+`05-task-manager` hold a bare numbered `## Learning steps` list with **zero** markers — written before
+the convention existed, and all four finished, reviewed and live-deployed. Read without the branch below
+this check answers *no step is marked complete* and hands ❌ Not ready — a skipped Phase 3 and no CV
+bullet — to four projects `PROGRESS.md` records as `Done ✓`; the runs that opened `REC-217` passed them
+instead on evidence this file never named, which is the judgement call the branch removes. So, **only where the steps
+list exists, holds at least one step, and no step in it carries a marker**, resolve completeness from
+`PROGRESS.md`'s `## Projects` table — the row whose `#` cell matches the numeric prefix of `{PROJECT_PATH}`'s last segment. **Find that
+row inside the `## Projects` section and never by a scan of the file**: measured 2026-09-07, the
+`## Practice completed` tables below it open their rows with a bare number too — the SQL route's `Step`
+column, running past `10` — so a file-wide match on a two-digit first cell will collide the moment a
+project reaches those numbers.
+
+- **Its `Status` cell reads `Done ✓`** → Check 1 **passes**, and the report says on what: "Check 1 —
+  PLANNING.md carries no step markers; completeness read from `PROGRESS.md`'s projects table
+  (`Done ✓`)". A pass on a source the plan does not carry is only honest if the run names the source.
+- **Any other status** → **❌ Not ready**, quoting the cell (`In progress ⏳ — …`). The fallback answers
+  in both directions or it is not a test — a plan written today, before its first step is done, carries
+  no marker either.
+- **No row for this project, or a table that cannot be read** → **stop the gate**, in Check 2's stop
+  shape below: no ✅/⚠️/❌, Phase 3 skipped, the question bank still committed, `blocked` in the
+  project's `_run-tracker.md` cell, and in `PROJECT_PATH = all` the summary row carries the stop and the
+  batch continues. Nothing on disk can answer Check 1 there, and answering anyway is what this branch
+  exists to stop. Report: "PLANNING.md carries no step markers and `PROGRESS.md`'s projects table has no
+  row for «path» — mark the plan's steps or add the row".
+
+**Why `PROGRESS.md` and not the plan's own format**, since the sibling that already faced this chose the
+other way. `_concept-extraction-standard.md` Step 2 settles it for `progress-update` by fiat — *"every
+project handed to you in Format A is already Done ✓"* — which reads completeness off a plan's **shape**,
+so it can only ever be true of the projects that existed when it was written. That same file forbids the
+substitution made here — *"never substitute a step count from another source"*, because *"the
+orchestrator compares what you return against the projects table"* — and the prohibition does not reach
+this check: there `PROGRESS.md` is the artefact under audit and a comparison with itself would prove
+nothing, here it is not audited but read.
+
+**What the fallback rests on — the same ritual's record, and its one blind spot named rather than
+argued away.** The `Status` cell is not a summary somebody derived from the plan: `_system-map.md` §8
+gives it a single writer, **`step-complete`** — the same ritual that writes the plan's own `✅`, in the
+same session, under one mandate to update both — and `/plan-audit MODE = new` creates the row. So on a
+markerless plan the cell is the surviving record of the hand that would have written the marker, and this
+branch trusts it exactly as the marker branch trusts the `✅`: neither is re-derived from the code.
+**What it is not is independently re-verified by Check 3**, and claiming otherwise would be the
+comfortable reading. `progress-update`'s `D5 · Projects` row does compare each plan against its
+projects-table row, but over this very population it compares by **format**: `_concept-extraction-standard.md`
+Step 2 returns `Done ✓` for every **Format A** plan by definition — *"every project handed to you in
+Format A is already Done ✓"*, Format A being Angular projects 01–06, which is all four markerless ones —
+so a wrong `Done ✓` would agree with a drift report reading `no drift` and Check 3 would pass it. Check 3
+still catches the four states it was built for — a missing or unparseable report, one scoped to another
+project, one naming drift rows, one older than `PROGRESS.md`'s last commit — and it does not catch this
+one; its own limits paragraph carries the same statement so a reader arriving there is not told
+otherwise. Finally, the `Status`
+cell is written by no step of *this* run (`authoring-progress-recount` writes the `## Authoring progress`
+rows and nothing else), so reading it live and reading it at `{BASELINE}` are the same read: this check
+pins no second baseline.
 
 ### Check 2 — Code quality (from PROJECT-BACKLOG.md)
 Only if all steps are complete. Read `{PROJECT_PATH}/PROJECT-BACKLOG.md` (full-stack keeps its own
@@ -228,21 +288,28 @@ gate**, to catch anything missed in completed projects". `_planning-standard.md`
 `MODE = active` because it sequences a project's *own* closure, where the project is the active one; this
 check instantiates the same gate for a run that arrives later.
 
-**Three limits, named rather than assumed.** The date test cannot see a *source* that moved while
+**Four limits, named rather than assumed.** The date test cannot see a *source* that moved while
 `PROGRESS.md` stayed still — a coverage marker added and never recounted is real drift and is invisible
 here. `Date:` is a **day**, so an edit made the same day as the report passes — which is not incidental:
 Step F commits the report "alone and first" and the matrix commit follows it the same day, so an
 equal-date pass is what stops the producing run from failing its own artefact. And the report's `Branch:`
 field is **not** read, though `PROGRESS.md` follows the active branch, so a report written on another
-branch can pass a comparison made on this one. None of the three weakens the four states above; all
-three are what a fresh G6 run is for, and none is a reason to widen this check into a second audit of
-`PROGRESS.md`, which is `progress-update`'s work and never this gate's.
+branch can pass a comparison made on this one. And the fourth, which is Check 1's rather than this
+check's: where Check 1 resolved on its markerless-plan branch it read `PROGRESS.md`'s `## Projects` row,
+and nothing here can falsify that cell — `progress-update`'s `D5 · Projects` returns `Done ✓` for a
+**Format A** plan by definition, so a wrong cell and a `no drift` report agree. It is stated in full at
+Check 1 and repeated here because a reader who opens this check alone would otherwise take its limits as
+closed. None of the four weakens the four states above; all four are what a fresh G6 run is for, and none
+is a reason to widen this check into a second audit of `PROGRESS.md`, which is `progress-update`'s work
+and never this gate's.
 
 **A stop here is Check 2's stop, in every respect** — no ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, the
 question bank still committed, `blocked` in the project's `_run-tracker.md` cell, and in
 `PROJECT_PATH = all` the summary row carries the stop and the batch continues.
 
 ### Verdict definitions
+**"All steps complete" means whatever Check 1 resolved**, by the plan's markers or, on a markerless
+plan, by the projects-table row — never a second reading of `PLANNING.md` taken here.
 - **✅ Ready** — all steps complete, no open High or Medium. Include it in the CV and LinkedIn now.
 - **⚠️ Almost ready** — all steps complete, open Medium tasks remain. List them as checkboxes.
 - **❌ Not ready** — incomplete steps or open High tasks. List them as checkboxes. Skip the CV bullet

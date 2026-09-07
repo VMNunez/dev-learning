@@ -29,7 +29,7 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 (`roadmap-review` / G8 follows). The gate order and every trigger are owned by `_planning-standard.md`
 §23; where this prompt and §23 disagree, **§23 wins**.
 
-> **▶ Run first — for a project whose plan steps are all ✅:** `review-audit` (G3/G4), `readme-audit`
+> **▶ Run first — for a project Check 1 resolves as complete:** `review-audit` (G3/G4), `readme-audit`
 > (G5) **and** `progress-update` (G6) — §23's full prerequisite chain, not a subset of it. This gate
 > assumes the code has been reviewed **in full**:
 > the verdict reads `PROJECT-BACKLOG.md`, whose task list is only as complete as the review that wrote
@@ -46,16 +46,20 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
 > tasks as open even if the code is done.
 >
-> **A project with an incomplete step owes none of the three.** Check 1 stops it at ❌ Not ready
+> **A project with an incomplete step owes none of the three.** Check 1 returns ❌ Not ready
 > without reading `PROJECT-BACKLOG.md` at all; the CV bullet G6 underwrites is never drafted, because
 > Phase 3 is skipped on ❌; and the one scan that still opens a README only downgrades a ✅, which a ❌
 > cannot be. Running the chain first buys such a run nothing, which is why recipe B
 > (`PROJECT_PATH = all`) admits every project and calls that verdict expected rather than an error.
 > Nor does it fork §23: a ❌ can never tick G7's box, so the exempt run signs off no gate.
-> **The exemption is that path and no wider**, and the steps are read where Check 1 reads them —
-> PLANNING.md's Section 0 or its steps list, not a `§15` heading every plan has. All ✅ owes the whole
-> chain unqualified, and a project whose steps cannot be read there is not exempt — run the chain. In
-> `PROJECT_PATH = all` this binds per project, never per run.
+> **The exemption is that path and no wider**, and *complete* is whatever **Check 1** resolves, read
+> where that check reads it — PLANNING.md's Section 0 or its steps list, not a `§15` heading every plan
+> has. The standard owns how it resolves, including the branch for a plan whose steps carry **no marker
+> at all**, which answers from `PROGRESS.md`'s projects table and lands on either side; do not re-derive
+> that here. A project it resolves as complete owes the whole chain unqualified. A project it stops —
+> nothing on disk can answer — is exempt for the same reason a ❌ is: Phase 3 is skipped, no CV bullet is
+> drafted, and no gate is signed. A project whose steps cannot be read at all is not exempt — run the
+> chain. In `PROJECT_PATH = all` this binds per project, never per run.
 >
 > **A bank-only run owes none of the three either, and that exemption is its own path and no wider.** A
 > run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global` writes questions and stops: it never opens
@@ -545,6 +549,11 @@ verdict is what G7's box records, and nothing here computed one.
 Compute the verdict yourself per the standard's **verdict logic**: Check 1 (feature completeness from
 `{PROJECT_PATH}/PLANNING.md`) gates Check 2 (code quality from `{PROJECT_PATH}/PROJECT-BACKLOG.md`),
 and both gate Check 3 (PROGRESS accuracy, below).
+Check 1 has a branch the other two checks have no equivalent of — a plan whose steps carry no marker at
+all — and the standard owns it entirely, including which sources it reads and which of its outcomes is a
+stop. **What is yours is saying so**: where Check 1 resolved on that branch, the source line it mandates
+goes in Finishing item 2, beside the verdict. A pass on evidence the plan does not carry, printed as
+though the plan carried it, is what `REC-217` was opened over.
 Produce ✅ Ready / ⚠️ Almost / ❌ Not ready, listing incomplete steps or open High/Medium tasks as
 checkboxes. If the backlog file is missing, carries no `**Last Reviewed — «tier»:**` header, or a
 tier's line reads `never` or carries an `(incomplete — …)` qualifier — stop and report which
@@ -576,8 +585,8 @@ auto-fix):
 
 ### Phase 3 — CV bullet + GitHub description (orchestrator)
 
-**Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 2 or Check 3 stopped the
-gate**, where
+**Skip Phase 3 entirely if the verdict is ❌ Not ready — and equally if Check 1, Check 2 or Check 3
+stopped the gate**, where
 there is no verdict at all: a stop writes no CV bullet, so nothing may reach `notes/cv/cv-bullets.md` on
 that path. Otherwise, per the standard: draft **one** Spanish
 CV bullet (read `_application-standard.md` first) and save it to `notes/cv/cv-bullets.md`; then the
@@ -668,11 +677,13 @@ the shared close-out contract already defines — `2026-09-05 (backend only, com
 `completed` only if this scope's own gates passed, `blocked` otherwise, exactly as on any other run.
 Then the authoring recount and the self-report.
 
-**If Check 2 or Check 3 stopped the gate** — Check 2 on no backlog · no `Last Reviewed` header · a tier
-reading `never` or carrying `(incomplete — …)`; Check 3 on no drift report · a `Scope:` that does not
+**If Check 1, Check 2 or Check 3 stopped the gate** — Check 1 on a plan with no step marker whose
+project has no `## Projects` row in `PROGRESS.md`; Check 2 on no backlog · no `Last Reviewed` header · a
+tier reading `never` or carrying `(incomplete — …)`; Check 3 on no drift report · a `Scope:` that does not
 name this project · a `Verdict:` that is not `no drift` · a `PROGRESS.md` commit later than the report's
-`Date:` — the list below does not apply: print item 1, then the stop and the exact
-`review-audit` or `progress-update` run owed, and nothing else — no verdict, no CV bullet, no GitHub description, no profile
+`Date:` — the list below does not apply: print item 1, then the stop and the exact thing owed — for
+Check 1 that is *"mark the plan's steps or add the projects-table row"* and not a pipeline run, since no
+prompt writes either — and nothing else — no verdict, no CV bullet, no GitHub description, no profile
 README. With `{DRY_RUN}` = false, commit the question bank on the ❌ branch's `git add` below, because
 questions are saved regardless of the outcome; with `{DRY_RUN}` = true commit none of it and print that
 sequence instead, exactly as on any other verdict. Either way, record this project `blocked` in
@@ -694,7 +705,11 @@ Otherwise print, in this order:
    this line is the only place the difference is stated. **On a full-stack
    project also print the three `Last banked` lines as they now stand**, so a tier still reading `never`
    is visible at the moment the run ends rather than only inside the file.
-2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌).
+2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where
+   Check 1 resolved on its markerless-plan branch, the line the standard mandates goes here**, under the
+   verdict — "PLANNING.md carries no step markers; completeness read from `PROGRESS.md`'s projects table
+   (`Done ✓`)". This item is where the run states the verdict, so a source named in Phase 2 and nowhere
+   here reaches nobody.
 3. CV bullet (one) — **omit if ❌**. On its own line under it, **every Project-bullet spec condition
    the saved bullet does not satisfy** — or, where the section was frozen and nothing was saved, the
    conditions the **drafted** bullet item 6 reports does not satisfy — quoted with its reason; print `spec: all conditions satisfied`
@@ -876,7 +891,7 @@ was — each project owns its own row, so `PROJECT_PATH = all` invokes it once i
 and never once for the batch — and pass the project's folder name, whether this run left a tier
 `blocked` — its gate refuses a pair that failed parity — and **this run's own verdict, where it computed
 one, since that is what settles the skill's eligibility test here**. A run that computes no verdict — a
-bank-only scope, or a Check 2 / Check 3 stop — passes none, and the skill resolves that project from the ladder as
+bank-only scope, or a Check 1 / Check 2 / Check 3 stop — passes none, and the skill resolves that project from the ladder as
 it does every other. That matters on exactly the run it matters most: the skill's project list is
 `interview-prep-route-projects-prompt.md`'s eligibility ladder, whose Angular-only fallback reads the
 `portfolio-audit` cell of `_run-tracker.md` — and that cell is written by the self-report **after** this
