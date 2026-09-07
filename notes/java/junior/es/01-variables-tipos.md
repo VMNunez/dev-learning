@@ -815,7 +815,7 @@ x / y;          // Infinity — sin excepción, la ejecución continúa
 0.0 / 0.0;      // NaN      — sin excepción, la ejecución continúa
 ```
 
-La diferencia viene de lo que cada tipo puede representar. Un `int` son 32 bits, y con 32 bits hay 4.294.967.296 combinaciones distintas de ceros y unos; cada una de esas combinaciones ya está asignada a un número entero concreto — no sobra ninguna para significar "infinito", así que lo único honesto que puede hacer la JVM es negarse, y lanza una excepción. Un `double` reserva patrones exactamente para este caso: `Infinity`, `-Infinity` y `NaN` son valores `double` legales con una representación definida, así que la operación tiene algo verdadero que devolver y lo devuelve. (`%` sigue a `/` en ambas direcciones: `7 % 0` lanza la misma `ArithmeticException`, y `7.0 % 0.0` es `NaN`.)
+La diferencia viene de lo que cada tipo puede representar. Un `int` son 32 bits, y con 32 bits hay 4.294.967.296 combinaciones distintas de ceros y unos; cada una de esas combinaciones ya está asignada a un número entero concreto — no sobra ninguna para significar "infinito", así que lo único honesto que puede hacer la JVM es negarse, y lanza una excepción. Un `double` reserva patrones exactamente para este caso: `Infinity`, `-Infinity` y `NaN` son valores `double` legales, así que la operación tiene algo verdadero que devolver y lo devuelve. Dicho de otra forma: con `double` una división por cero nunca lanza una excepción — devuelve `Infinity`, `-Infinity` o `NaN`, y el programa sigue adelante con ese valor dentro. (`%` sigue a `/` en ambas direcciones: `7 % 0` lanza la misma `ArithmeticException`, y `7.0 % 0.0` es `NaN`.)
 
 Cuál de los dos es más peligroso no es el que la gente asume:
 
