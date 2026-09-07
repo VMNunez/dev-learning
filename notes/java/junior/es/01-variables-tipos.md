@@ -990,7 +990,7 @@ Integer.MIN_VALUE;          // -2147483648
 
 ---
 
-## Valores de texto — `String` tiene su propio capítulo
+## Valores de texto — `String` tiene su propio capítulo // TODO: REVISADO HASTA AQUI
 
 El texto no se deriva de nada de esta página. Un `String` es un objeto, y además inmutable, así que toda pregunta sobre él — el catálogo de métodos, `strip()` frente a `trim()`, los text blocks, construir texto en un bucle con `StringBuilder`, y por qué `==` es la forma equivocada de comparar dos de ellos — depende de hechos sobre objetos y no sobre representación numérica. Todo eso está en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), el siguiente archivo de este tema. Lo único que necesitas mientras lees esta página es lo que el diagrama del principio ya te enseñó: una variable `String` contiene una dirección, no los caracteres.
 
