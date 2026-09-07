@@ -864,8 +864,6 @@ error: unexpected type
 | `boolean` | `Boolean`   |
 | `char`    | `Character` |
 
-Lee cada fila como una pareja: la columna izquierda es el primitivo que usas cuando el valor siempre está presente, la columna derecha es la forma objeto a la que cambias cuando necesitas `null` o una colección. El nombre no es arbitrario — el wrapper es la palabra completa en mayúscula inicial (`int` → `Integer`, `char` → `Character`), que además es cómo identificas de un vistazo cuál de los dos está usando un campo.
-
 Los _genéricos_ están explicados en detalle en [09-genericos.md](09-genericos.md); las colecciones que los usan están en [10-colecciones.md](10-colecciones.md). De momento, quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto.
 
 **Otro caso:** las clases wrapper pueden ser `null`. Un `int` primitivo no puede ser null, pero `Integer` sí. En Spring Boot, los IDs de base de datos se suelen declarar como `Long` (no `long`) porque Hibernate los establece a `null` hasta que la entidad se guarda por primera vez.
@@ -876,7 +874,7 @@ Los _genéricos_ están explicados en detalle en [09-genericos.md](09-genericos.
 
 Usa el **wrapper** en dos situaciones: (1) cuando `null` es un valor con significado — el ID de una entidad JPA es `null` hasta que se guarda por primera vez, así que el campo va como `Long`, no como `long`; (2) cuando usas colecciones, porque `List<int>` no existe en Java y debes escribir `List<Integer>`. En cualquier otro caso, usa el **primitivo** — el valor siempre está presente y nunca es null.
 
-Las dos mitades de esta decisión están presentes en el backend de TimeTrack:
+Los dos casos de esta regla están implementados en el backend de TimeTrack:
 
 ```java
 // Long (wrapper) — porque el id no existe hasta que JPA guarda la entidad

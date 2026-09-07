@@ -904,7 +904,7 @@ Generics are explained in full in [09-generics.md](09-generics.md); the collecti
 
 Use the **wrapper** in two situations: (1) when `null` is a meaningful value — a JPA entity ID is `null` until it is saved for the first time, so the field goes as `Long`, not `long`; (2) when using collections, because `List<int>` does not exist in Java and you must write `List<Integer>`. In any other case, use the **primitive** — the value is always present and never null.
 
-Both halves of this decision are live in the TimeTrack backend:
+Both cases of this rule are implemented in the TimeTrack backend:
 
 ```java
 // Long (wrapper) — because the id does not exist until JPA saves the entity
