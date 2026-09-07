@@ -852,9 +852,9 @@ Which of the two is more dangerous is not the one people assume:
    double  7.0 / 0  →  Infinity             →  quiet, keeps going, poisons everything downstream
 ```
 
-The exception is the *helpful* case. It ends the request, produces a stack trace pointing at the exact line, and you fix it in ten minutes. The `Infinity` flows onward into the next multiplication, the next average, the JSON response and the report a client reads — and by the time somebody notices `Infinity` where an average hourly rate should be, the line that divided by zero is nowhere in the evidence.
+The exception is the *helpful* case. It ends the request, produces a stack trace pointing at the exact line, and you fix it in ten minutes. The `Infinity` flows onward into the next multiplication, the next average, the JSON response and the report a client reads — and by the time somebody notices `Infinity` where an average hourly rate should be, the problem is far harder to identify: what you are looking at is a long way from the line that divided by zero.
 
-> **The guard is the same in both cases, and it is not a `try/catch`.** Check the divisor before you divide:
+> **The check is the same in both cases, and it is not a `try/catch`.** Check the divisor before you divide:
 >
 > ```java
 > // MAL — leans on the exception, and does nothing at all in the double case
@@ -874,7 +874,7 @@ The exception is the *helpful* case. It ends the request, produces a stack trace
 
 Each primitive type has a corresponding wrapper class. You use wrapper classes when a method requires an **object** instead of a primitive.
 
-**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. `List<int>` does not compile, and the compiler is blunt about why:
+**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. `List<int>` does not compile while `List<Integer>` is fine, and the compiler is blunt about why:
 
 ```
 error: unexpected type
@@ -882,7 +882,7 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" is the word from the diagram at the top of this file — a type whose variable holds an address. A generic type argument must always be one, because a collection stores addresses in its slots; there is nowhere in it to put a raw 32-bit value. So you use `List<Integer>` instead. The rule itself — that a type written between angle brackets must always be a reference type, and why the language was built that way — is *generics*, explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
+"Reference" is the word from the diagram at the top of this file: it means a reference to an object — a type whose variable holds the address where that object lives. A generic type argument must always be one of those, because a collection stores references to objects, never the values themselves; there is no room inside it for a primitive value. So you use `List<Integer>` instead. The rule is that a type written between angle brackets must always be a reference type — and for numbers, that reference type is its wrapper class. Generics are explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 

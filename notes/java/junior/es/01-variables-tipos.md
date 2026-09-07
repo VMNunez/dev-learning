@@ -824,9 +824,9 @@ Cuál de los dos es más peligroso no es el que la gente asume:
    double  7.0 / 0  →  Infinity             →  silencioso, sigue adelante, envenena todo río abajo
 ```
 
-La excepción es el caso _útil_. Termina la petición, produce un stack trace que apunta a la línea exacta, y lo arreglas en diez minutos. El `Infinity` fluye hacia la siguiente multiplicación, el siguiente promedio, la respuesta JSON y el informe que lee un cliente — y para cuando alguien nota un `Infinity` donde debería haber una tarifa horaria media, la línea que dividió por cero ya no aparece por ningún lado en la evidencia.
+La excepción es el caso _útil_. Termina la petición, produce un stack trace que apunta a la línea exacta, y lo arreglas en diez minutos. El `Infinity` fluye hacia la siguiente multiplicación, el siguiente promedio, la respuesta JSON y el informe que lee un cliente — y para cuando alguien nota un `Infinity` donde debería haber otro valor, el problema es mucho más difícil de identificar: lo que ves está muy lejos de la línea que dividió por cero.
 
-> **La guarda es la misma en los dos casos, y no es un `try/catch`.** Comprueba el divisor antes de dividir:
+> **La comprobación es la misma en los dos casos, y no es un `try/catch`.** Comprueba el divisor antes de dividir:
 >
 > ```java
 > // MAL — se apoya en la excepción, y no hace nada en absoluto en el caso double
@@ -836,7 +836,7 @@ La excepción es el caso _útil_. Termina la petición, produce un stack trace q
 > double average = entryCount == 0 ? 0.0 : (double) totalHours / entryCount;
 > ```
 >
-> Un divisor de cero casi siempre significa "la colección estaba vacía", que es un estado normal del mundo y no un error: un usuario sin entradas de tiempo este mes, un proyecto sin tareas. Decidir cuál _es_ la respuesta en ese caso — cero, `null`, "sin datos" — es una decisión de negocio, y tomarla en la propia división cuesta menos que capturar una excepción más tarde o explicarle un `Infinity` a un cliente. (`?:` es el operador condicional nombrado en la sección de operadores; [03-flujo-de-control.md](03-flujo-de-control.md) lo cubre bien.)
+> Un divisor de cero casi siempre significa "la colección estaba vacía", que es un estado normal y no un error: un usuario sin entradas de tiempo este mes, un proyecto sin tareas. Decidir cuál _es_ la respuesta en ese caso — cero, `null`, "sin datos" — es una decisión de negocio, y tomarla en la propia división cuesta menos que capturar una excepción más tarde o explicarle un `Infinity` a un cliente. (`?:` es el operador condicional nombrado en la sección de operadores; [03-flujo-de-control.md](03-flujo-de-control.md) lo cubre bien.)
 
 ---
 
@@ -846,7 +846,7 @@ La excepción es el caso _útil_. Termina la petición, produce un stack trace q
 
 Cada tipo primitivo tiene una clase wrapper correspondiente. Usas clases wrapper cuando un método requiere un **objeto** en lugar de un primitivo.
 
-**El caso más común:** las colecciones de Java (`List`, `Map`, `Set`) solo funcionan con objetos, no con primitivos. `List<int>` no compila, y el compilador es directo sobre por qué:
+**El caso más común:** las colecciones de Java (`List`, `Map`, `Set`) solo funcionan con objetos, no con primitivos. `List<int>` no compila mientras que `List<Integer>` sí es correcto, y el compilador es directo sobre por qué:
 
 ```
 error: unexpected type
@@ -854,7 +854,7 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" es la palabra del diagrama del principio de este archivo — un tipo cuya variable contiene una dirección. Un argumento de tipo genérico siempre tiene que serlo, porque una colección guarda direcciones en sus ranuras; no hay sitio dentro de ella para meter un valor crudo de 32 bits. Así que usas `List<Integer>` en su lugar. La regla en sí misma — que un tipo escrito entre corchetes angulares siempre tiene que ser un tipo de referencia, y por qué el lenguaje se construyó así — son los _genéricos_, explicados en detalle en [09-genericos.md](09-genericos.md); las colecciones que los usan están en [10-colecciones.md](10-colecciones.md). De momento, quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto.
+"Reference" es la palabra del diagrama del principio de este archivo: significa una referencia a un objeto, es decir un tipo cuya variable guarda la dirección donde vive ese objeto. Un argumento de tipo genérico siempre tiene que ser uno de esos, porque una colección guarda referencias a objetos, nunca los valores en sí; dentro de ella no hay sitio para un valor primitivo. Así que usas `List<Integer>` en su lugar. La regla es que un tipo escrito entre corchetes angulares siempre tiene que ser un tipo de referencia — y para los números, ese tipo de referencia es su clase wrapper. Los _genéricos_ están explicados en detalle en [09-genericos.md](09-genericos.md); las colecciones que los usan están en [10-colecciones.md](10-colecciones.md). De momento, quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto.
 
 **Otro caso:** las clases wrapper pueden ser `null`. Un `int` primitivo no puede ser null, pero `Integer` sí. En Spring Boot, los IDs de base de datos se suelen declarar como `Long` (no `long`) porque Hibernate los establece a `null` hasta que la entidad se guarda por primera vez.
 
