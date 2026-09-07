@@ -929,7 +929,7 @@ Lee la columna de la derecha como "el código que habrías tenido que escribir a
 > because the return value of "java.util.Map.get(Object)" is null
 > ```
 >
-> Hay dos arreglos, y los dos evitan el unboxing. El primero es recibir el valor como el wrapper y decidir tú qué hacer cuando es `null`:
+> Hay dos arreglos, y los dos evitan cometer el fallo al hacer unboxing. El primero es recibir el valor como el wrapper y decidir tú qué hacer cuando es `null`:
 >
 > ```java
 > Integer score = scores.get("missing");   // no hay unboxing: score puede ser null
@@ -938,7 +938,7 @@ Lee la columna de la derecha como "el código que habrías tenido que escribir a
 > }
 > ```
 >
-> El segundo es pedirle al mapa un valor de respaldo, para que nunca devuelva `null`:
+> El segundo es indicarle al mapa qué valor debe devolver cuando la clave no existe, para que nunca devuelva `null`:
 >
 > ```java
 > int score = scores.getOrDefault("missing", 0);   // devuelve 0 si la clave no está

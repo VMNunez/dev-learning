@@ -962,7 +962,7 @@ Read the right-hand column as "the code you would have had to type by hand befor
 > because the return value of "java.util.Map.get(Object)" is null
 > ```
 >
-> There are two fixes, and both of them avoid the unboxing. The first is to receive the value as the wrapper and decide yourself what to do when it is `null`:
+> There are two fixes, and both of them avoid making the mistake when unboxing. The first is to receive the value as the wrapper and decide yourself what to do when it is `null`:
 >
 > ```java
 > Integer score = scores.get("missing");   // no unboxing: score may be null
@@ -971,7 +971,7 @@ Read the right-hand column as "the code you would have had to type by hand befor
 > }
 > ```
 >
-> The second is to ask the map for a fallback value, so it never returns `null`:
+> The second is to tell the map which value to return when the key is absent, so it never returns `null`:
 >
 > ```java
 > int score = scores.getOrDefault("missing", 0);   // returns 0 when the key is absent
