@@ -24,7 +24,7 @@
   - [El overflow es silencioso, y aparece cuando se multiplican valores](#el-overflow-es-silencioso-y-aparece-cuando-se-multiplican-valores)
 - [Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre un `double`](#coma-flotante--por-qué-un-double-no-puede-contener-01-y-por-qué-no-puedes-fiarte-de--sobre-un-double)
   - [`NaN` — el valor que no es igual a sí mismo](#nan--el-valor-que-no-es-igual-a-sí-mismo)
-  - [Comparar dos `double` — una tolerancia, o el tipo correcto](#comparar-dos-double--una-tolerancia-o-el-tipo-correcto)
+  - [Comparar dos `double` — un margen de error, o el tipo correcto](#comparar-dos-double--un-margen-de-error-o-el-tipo-correcto)
 - [División por cero — la misma expresión, o revienta o devuelve `Infinity` en silencio](#división-por-cero--la-misma-expresión-o-revienta-o-devuelve-infinity-en-silencio)
 - [Clases wrapper — objetos para primitivos](#clases-wrapper--objetos-para-primitivos)
   - [Cuándo usar cada uno — la regla práctica](#cuándo-usar-cada-uno--la-regla-práctica)
@@ -777,11 +777,11 @@ Double.isNaN(nan)     // true   ← la comprobación correcta
 
 `NaN` significa "ningún valor con sentido", y dos resultados sin sentido no son el _mismo_ resultado, así que IEEE 754 define `==`, `<`, `>`, `<=` y `>=` como `false` siempre que cualquiera de los dos lados sea `NaN` — `nan == nan` incluido. `!=` es la única excepción, y no es una inconsistencia: `!=` se define como "los operandos no son iguales", y como `NaN` no es igual a absolutamente nada, eso es `true`. `x != x` es `true` si y solo si `x` es `NaN`. La consecuencia para tu código es que nunca puedes detectar un `NaN` comparando, y tienes que llamar a `Double.isNaN(value)` (o `Float.isNaN`).
 
-> **Con `NaN`, `Double.equals` y `Double.compare` sí dan `true`; el operador `==` no.** Los dos métodos del wrapper tratan `NaN` como igual a sí mismo, deliberadamente, para que el ordenamiento y las colecciones se sigan comportando con sensatez cuando un `NaN` se cuela en una `List<Double>`. Así que `Double.valueOf(nan).equals(nan)` da `true` mientras que `nan == nan` da `false` — los mismos dos valores, dos respuestas distintas, según le preguntes al objeto o al primitivo. No lo leas como "el wrapper lo arregló": solo significa que una colección no se va a comportar mal.
+> **Con `NaN`, `Double.equals` y `Double.compare` sí dan `true`; el operador `==` no.** Los dos métodos del wrapper tratan `NaN` como igual a sí mismo, deliberadamente, para que el ordenamiento y las colecciones se sigan comportando con sensatez cuando un `NaN` se cuela en una `List<Double>`. Así que `Double.valueOf(nan).equals(nan)` da `true` mientras que `nan == nan` da `false` — los mismos dos valores, dos respuestas distintas, según le preguntes al objeto o al primitivo.
 
-### Comparar dos `double` — una tolerancia, o el tipo correcto
+### Comparar dos `double` — un margen de error, o el tipo correcto
 
-Cuando los valores genuinamente tienen que ser `double`, compáralos con una **tolerancia**: decide cuánta cercanía cuenta como igualdad, y comprueba el tamaño de la diferencia en vez de exigir identidad.
+Cuando los valores tienen que ser `double`, compáralos con un **margen de error** — el nombre que se le da en código es _epsilon_, y en la documentación lo verás como _tolerancia_. La idea es la que has descrito: decides de antemano cuánta diferencia estás dispuesto a aceptar, y si la distancia entre el valor que tienes y el que esperabas es menor que ese margen, los das por iguales; en vez de exigir que los bits sean idénticos, compruebas el tamaño de la diferencia.
 
 ```java
 // MAL — pregunta si dos aproximaciones cayeron en los mismos bits

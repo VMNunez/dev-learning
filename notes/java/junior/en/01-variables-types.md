@@ -24,7 +24,7 @@
   - [Overflow is silent, and it shows up when values are multiplied](#overflow-is-silent-and-it-shows-up-when-values-are-multiplied)
 - [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on a `double`](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-a-double)
   - [`NaN` — the value that is not equal to itself](#nan--the-value-that-is-not-equal-to-itself)
-  - [Comparing two `double`s — a tolerance, or the right type](#comparing-two-doubles--a-tolerance-or-the-right-type)
+  - [Comparing two `double`s — a margin of error, or the right type](#comparing-two-doubles--a-margin-of-error-or-the-right-type)
 - [Division by zero — the same expression either crashes or quietly returns `Infinity`](#division-by-zero--the-same-expression-either-crashes-or-quietly-returns-infinity)
 - [Wrapper classes — objects for primitives](#wrapper-classes--objects-for-primitives)
   - [When to use each — the practical rule](#when-to-use-each--the-practical-rule)
@@ -807,9 +807,9 @@ Double.isNaN(nan)     // true   ← the correct test
 
 > **With `NaN`, `Double.equals` and `Double.compare` do return `true`; the `==` operator does not.** Both wrapper methods treat `NaN` as equal to itself, on purpose, so that sorting and collections keep behaving sanely when a `NaN` finds its way into a `List<Double>`. So `Double.valueOf(nan).equals(nan)` is `true` while `nan == nan` is `false` — the same two values, two different answers, depending on whether you asked the object or the primitive. Do not read that as "the wrapper fixed it": it only means a collection will not misbehave. Your own arithmetic still produces `NaN` silently and still cannot detect it with `==`, so test with `Double.isNaN` at the point where the value is produced, not far downstream where it has already spread.
 
-### Comparing two `double`s — a tolerance, or the right type
+### Comparing two `double`s — a margin of error, or the right type
 
-When the values genuinely have to be `double`, compare them with a **tolerance**: decide how close counts as equal, and test the size of the difference instead of demanding identity.
+When the values genuinely have to be `double`, compare them with a **margin of error** — the name it goes by in code is _epsilon_, and the documentation calls it a _tolerance_. You decide up front how much difference you are willing to accept, and if the distance between the value you have and the one you expected is smaller than that margin, you treat them as equal; instead of demanding identical bits, you test the size of the difference.
 
 ```java
 // MAL — asks whether two approximations landed on the same bits
