@@ -22,7 +22,7 @@
 - [Aritmética de enteros — trampas silenciosas](#aritmética-de-enteros--trampas-silenciosas)
   - [La división entera trunca — no redondea](#la-división-entera-trunca--no-redondea)
   - [El overflow es silencioso, y aparece cuando se multiplican valores](#el-overflow-es-silencioso-y-aparece-cuando-se-multiplican-valores)
-- [Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre uno](#coma-flotante--por-qué-un-double-no-puede-contener-01-y-por-qué-no-puedes-fiarte-de--sobre-uno)
+- [Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre un `double`](#coma-flotante--por-qué-un-double-no-puede-contener-01-y-por-qué-no-puedes-fiarte-de--sobre-un-double)
   - [`NaN` — el valor que no es igual a sí mismo](#nan--el-valor-que-no-es-igual-a-sí-mismo)
   - [Comparar dos `double` — una tolerancia, o el tipo correcto](#comparar-dos-double--una-tolerancia-o-el-tipo-correcto)
 - [División por cero — la misma expresión, o revienta o devuelve `Infinity` en silencio](#división-por-cero--la-misma-expresión-o-revienta-o-devuelve-infinity-en-silencio)
@@ -730,7 +730,7 @@ Cada uno de esos literales es un `int` pequeño. Pero `int * int` produce un `in
 long ms = 1000L * 60 * 60 * 24 * 30;   // 2592000000
 ```
 
-Con una sola `L` en el primer literal basta. Java evalúa la cadena de izquierda a derecha, y en cuanto uno de los operandos es `long`, el otro se ensancha a `long` y el resultado se mantiene `long` durante el resto de la cadena — así que el valor nunca pasa por una caja de 32 bits en su camino.
+Con una sola `L` en el primer literal basta. Java evalúa la cadena de izquierda a derecha, y en cuanto uno de los operandos es `long`, el otro se ensancha a `long` y el resultado se mantiene `long` durante el resto de la cadena.
 
 > **Cuando necesitas que te _avisen_ de un overflow, pídelo.** Java 8 añadió la familia `Math.*Exact` — `addExact`, `multiplyExact`, `subtractExact` — que hacen la misma aritmética pero lanzan una excepción en vez de dar la vuelta:
 >
@@ -738,15 +738,15 @@ Con una sola `L` en el primer literal basta. Java evalúa la cadena de izquierda
 > Math.addExact(Integer.MAX_VALUE, 1);   // lanza ArithmeticException: integer overflow
 > ```
 >
-> Úsalas donde un número equivocado sea peor que un crash: totales de una factura, cantidades en un sistema de inventario, cualquier cosa sobre la que una persona vaya a actuar. Para un contador de bucle, el `+` normal está bien. Saber nombrar esta familia en una entrevista es una forma barata de demostrar que sabes que el overflow es silencioso por defecto, en lugar de simplemente haberlo oído mencionar.
+> Úsalas donde un número equivocado sea peor que un crash: totales de una factura, cantidades en un sistema de inventario, cualquier cosa sobre la que una persona vaya a actuar. Para un contador de bucle, el `+` normal está bien.
 
 ---
 
-## Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre uno
+## Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre un `double`
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → leer: los párrafos sobre infinity y sobre NaN — de ahí sale "`x != x` es `true` si y solo si `x` es NaN".
 
-El aviso sobre el dinero, cerca del principio de este archivo, lo dijo de pasada: un `double` no puede representar `0.1` exactamente. La aritmética de enteros ya te enseñó un tipo de fallo de representación — un número fijo de bits que se agota — y este es el otro tipo, el más insidioso, porque nada se desborda y no falta ningún dígito de forma visible. Aquí está haciendo daño en el programa más corto que puede:
+El aviso sobre el dinero, cerca del principio de este archivo, lo dijo de pasada: un `double` no puede representar `0.1` exactamente. Es otro tipo de fallo de representación: en la aritmética de enteros los bits se agotaban, y aquí no se desborda nada ni falta ningún dígito a la vista, pero el número que se guarda no es el que escribiste. Míralo en el programa más corto que puede enseñarlo:
 
 ```java
 System.out.println(0.1 + 0.2);          // 0.30000000000000004

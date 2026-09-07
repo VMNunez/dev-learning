@@ -22,7 +22,7 @@
 - [Integer arithmetic — silent traps](#integer-arithmetic--silent-traps)
   - [Integer division truncates — it does not round](#integer-division-truncates--it-does-not-round)
   - [Overflow is silent, and it shows up when values are multiplied](#overflow-is-silent-and-it-shows-up-when-values-are-multiplied)
-- [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-one)
+- [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on a `double`](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-a-double)
   - [`NaN` — the value that is not equal to itself](#nan--the-value-that-is-not-equal-to-itself)
   - [Comparing two `double`s — a tolerance, or the right type](#comparing-two-doubles--a-tolerance-or-the-right-type)
 - [Division by zero — the same expression either crashes or quietly returns `Infinity`](#division-by-zero--the-same-expression-either-crashes-or-quietly-returns-infinity)
@@ -758,7 +758,7 @@ Every one of those literals is a small `int`. But `int * int` produces an `int` 
 long ms = 1000L * 60 * 60 * 24 * 30;   // 2592000000
 ```
 
-One `L` on the first literal is enough. Java evaluates the chain left to right, and as soon as one operand is a `long`, the other is widened to `long` and the result stays `long` for the rest of the chain — so the value never passes through a 32-bit box on its way.
+One `L` on the first literal is enough. Java evaluates the chain left to right, and as soon as one operand is a `long`, the other is widened to `long` and the result stays `long` for the rest of the chain.
 
 > **When you need to be *told* about an overflow, ask for it.** Java 8 added the `Math.*Exact` family — `addExact`, `multiplyExact`, `subtractExact` — which do the same arithmetic but throw instead of wrapping:
 >
@@ -766,15 +766,15 @@ One `L` on the first literal is enough. Java evaluates the chain left to right, 
 > Math.addExact(Integer.MAX_VALUE, 1);   // throws ArithmeticException: integer overflow
 > ```
 >
-> Use them where a wrong number is worse than a crash: totals on an invoice, quantities in a stock system, anything a person will act on. For a loop counter, plain `+` is fine. Being able to name this family in an interview is a cheap way to show you know overflow is silent by default rather than having merely heard of it.
+> Use them where a wrong number is worse than a crash: totals on an invoice, quantities in a stock system, anything a person will act on. For a loop counter, plain `+` is fine.
 
 ---
 
-## Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one
+## Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on a `double`
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the paragraphs on infinity and on NaN — this is the source for "`x != x` is `true` if and only if `x` is NaN".
 
-The note on money, near the top of this file, stated the fact in passing: a `double` cannot represent `0.1` exactly. Integer arithmetic has just shown you one kind of representation failure — a fixed number of bits that runs out — and this is the other kind, and the more insidious one, because nothing overflows and no digit is visibly missing. Here it is doing damage in the shortest program that can:
+The note on money, near the top of this file, stated the fact in passing: a `double` cannot represent `0.1` exactly. This is another kind of representation failure: in integer arithmetic the bits ran out, and here nothing overflows and no digit is visibly missing, yet the number that gets stored is not the one you wrote. See it in the shortest program that can show it:
 
 ```java
 System.out.println(0.1 + 0.2);          // 0.30000000000000004
