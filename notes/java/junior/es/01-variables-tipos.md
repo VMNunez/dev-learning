@@ -854,7 +854,19 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" es la palabra que significa una referencia a un objeto, es decir un tipo cuya variable guarda la dirección donde vive ese objeto. Un argumento de tipo genérico siempre tiene que ser un tipo de referencia, porque una colección guarda referencias a objetos, nunca los valores en sí; dentro de ella no hay sitio para un valor primitivo. Así que usas `List<Integer>` en su lugar. La regla es que un tipo escrito entre corchetes angulares siempre tiene que ser un tipo de referencia — y para los primitivos, ese tipo de referencia es su clase wrapper: `int` → `Integer`, `long` → `Long`, `double` → `Double`, `boolean` → `Boolean`, `char` → `Character`. La tabla completa con las cinco parejas está unas líneas más abajo, en la regla práctica. Los _genéricos_ están explicados en detalle en [09-genericos.md](09-genericos.md); las colecciones que los usan están en [10-colecciones.md](10-colecciones.md). De momento, quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto.
+"Reference" es la palabra que significa una referencia a un objeto, es decir un tipo cuya variable guarda la dirección donde vive ese objeto. Un argumento de tipo genérico siempre tiene que ser un tipo de referencia, porque una colección guarda referencias a objetos, nunca los valores en sí; dentro de ella no hay sitio para un valor primitivo. Así que usas `List<Integer>` en su lugar. La regla es que un tipo escrito entre corchetes angulares siempre tiene que ser un tipo de referencia — y para los primitivos, ese tipo de referencia es su clase wrapper:
+
+| Primitivo | Wrapper     |
+| --------- | ----------- |
+| `int`     | `Integer`   |
+| `long`    | `Long`      |
+| `double`  | `Double`    |
+| `boolean` | `Boolean`   |
+| `char`    | `Character` |
+
+Lee cada fila como una pareja: la columna izquierda es el primitivo que usas cuando el valor siempre está presente, la columna derecha es la forma objeto a la que cambias cuando necesitas `null` o una colección. El nombre no es arbitrario — el wrapper es la palabra completa en mayúscula inicial (`int` → `Integer`, `char` → `Character`), que además es cómo identificas de un vistazo cuál de los dos está usando un campo.
+
+Los _genéricos_ están explicados en detalle en [09-genericos.md](09-genericos.md); las colecciones que los usan están en [10-colecciones.md](10-colecciones.md). De momento, quédate con que son las estructuras de datos principales de Java y todas exigen tipos objeto.
 
 **Otro caso:** las clases wrapper pueden ser `null`. Un `int` primitivo no puede ser null, pero `Integer` sí. En Spring Boot, los IDs de base de datos se suelen declarar como `Long` (no `long`) porque Hibernate los establece a `null` hasta que la entidad se guarda por primera vez.
 
@@ -878,18 +890,6 @@ private Long id;
 @Value("${app.jwt.expiration}")
 private long expiration;
 ```
-
-(Rutas completas: `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/model/User.java` y `.../com/victor/timetrack/security/JwtUtil.java`.)
-
-| Primitivo | Wrapper     |
-| --------- | ----------- |
-| `int`     | `Integer`   |
-| `long`    | `Long`      |
-| `double`  | `Double`    |
-| `boolean` | `Boolean`   |
-| `char`    | `Character` |
-
-Lee cada fila como una pareja: la columna izquierda es el primitivo que usas cuando el valor siempre está presente, la columna derecha es la forma objeto a la que cambias cuando necesitas `null` o una colección. El nombre no es arbitrario — el wrapper es la palabra completa en mayúscula inicial (`int` → `Integer`, `char` → `Character`), que además es cómo identificas de un vistazo cuál de los dos está usando un campo.
 
 ### Autoboxing y unboxing
 

@@ -882,7 +882,19 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" is the word that means a reference to an object — a type whose variable holds the address where that object lives. A generic type argument must always be a reference type, because a collection stores references to objects, never the values themselves; there is no room inside it for a primitive value. So you use `List<Integer>` instead. The rule is that a type written between angle brackets must always be a reference type — and for primitives, that reference type is its wrapper class: `int` → `Integer`, `long` → `Long`, `double` → `Double`, `boolean` → `Boolean`, `char` → `Character`. The full table of all five pairs is a few lines further down, in the practical rule. Generics are explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
+"Reference" is the word that means a reference to an object — a type whose variable holds the address where that object lives. A generic type argument must always be a reference type, because a collection stores references to objects, never the values themselves; there is no room inside it for a primitive value. So you use `List<Integer>` instead. The rule is that a type written between angle brackets must always be a reference type — and for primitives, that reference type is its wrapper class:
+
+| Primitive | Wrapper     |
+| --------- | ----------- |
+| `int`     | `Integer`   |
+| `long`    | `Long`      |
+| `double`  | `Double`    |
+| `boolean` | `Boolean`   |
+| `char`    | `Character` |
+
+Read each row as a pair: the left column is the primitive you use when the value is always present, the right column is the object form you switch to when you need `null` or a collection. The name is not arbitrary — the wrapper is the capitalised full word (`int` → `Integer`, `char` → `Character`), which is also how you spot at a glance which of the two a field is using.
+
+Generics are explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
@@ -909,15 +921,6 @@ private long expiration;
 
 (Full paths: `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/model/User.java` and `.../com/victor/timetrack/security/JwtUtil.java`.)
 
-| Primitive | Wrapper     |
-| --------- | ----------- |
-| `int`     | `Integer`   |
-| `long`    | `Long`      |
-| `double`  | `Double`    |
-| `boolean` | `Boolean`   |
-| `char`    | `Character` |
-
-Read each row as a pair: the left column is the primitive you use when the value is always present, the right column is the object form you switch to when you need `null` or a collection. The name is not arbitrary — the wrapper is the capitalised full word (`int` → `Integer`, `char` → `Character`), which is also how you spot at a glance which of the two a field is using.
 
 ### Autoboxing and unboxing
 
