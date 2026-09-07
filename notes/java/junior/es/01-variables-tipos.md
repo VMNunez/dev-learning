@@ -19,7 +19,7 @@
 - [Conversión de tipos (casting)](#conversión-de-tipos-casting)
   - [Widening (automático)](#widening-automático)
   - [Narrowing (manual)](#narrowing-manual)
-- [Aritmética de enteros — dos trampas silenciosas](#aritmética-de-enteros--dos-trampas-silenciosas)
+- [Aritmética de enteros — trampas silenciosas](#aritmética-de-enteros--trampas-silenciosas)
   - [La división entera trunca — no redondea](#la-división-entera-trunca--no-redondea)
   - [El overflow es silencioso, y muerde cuando se multiplican valores](#el-overflow-es-silencioso-y-muerde-cuando-se-multiplican-valores)
 - [Coma flotante — por qué un `double` no puede contener `0.1`, y por qué no puedes fiarte de `==` sobre uno](#coma-flotante--por-qué-un-double-no-puede-contener-01-y-por-qué-no-puedes-fiarte-de--sobre-uno)
@@ -678,15 +678,15 @@ El resultado, 1912276171, no guarda ninguna relación útil con el original 1234
 
 ---
 
-## Aritmética de enteros — dos trampas silenciosas
+## Aritmética de enteros — trampas silenciosas
 
 > 📖 Docs: [Baeldung — Overflow and Underflow in Java](https://www.baeldung.com/java-overflow-underflow) → leer: "Overflow and Underflow" y "Handling Underflow and Overflow of Integer Data Types" — incluida la familia `Math.addExact`.
 
-Más arriba, el aviso destacado sobre el wraparound describió qué pasa cuando un valor no cabe. El cast no es la única forma de llegar ahí: `+` y `*` normales sobre `int` alcanzan el mismo precipicio, y `/` también, aunque de otra manera. Estas dos trampas son la razón por la que un informe puede mostrar en silencio el total equivocado en producción, sin nada en los logs.
+Más arriba, el wraparound describió qué pasa cuando un valor no cabe en el tipo de destino. El cast no es la única forma de llegar ahí: `+` y `*` normales sobre `int` alcanzan el mismo precipicio, y `/` también, aunque de otra manera. Estas trampas son la razón por la que un informe puede mostrar en silencio el total equivocado en producción, sin nada en los logs.
 
 ### La división entera trunca — no redondea
 
-Cuando **ambos** operandos son de tipo entero, `/` realiza división entera: descarta la parte fraccionaria en lugar de redondearla. Esto sorprende porque el resultado parece redondeado, y la mitad de las veces la respuesta redondeada coincide por casualidad:
+Cuando **ambos** operandos son de tipo entero, `/` realiza división entera: descarta la parte fraccionaria en lugar de redondearla. Esto sorprende porque el resultado parece redondeado, y a veces la respuesta redondeada coincide por casualidad:
 
 ```java
 7 / 2      // 3    — no 3.5, y tampoco 4. El .5 se descarta.
@@ -694,7 +694,7 @@ Cuando **ambos** operandos son de tipo entero, `/` realiza división entera: des
 7 % 2      // 1    — el resto que se desechó
 ```
 
-La trampa es que nada en la expresión te dice qué tipo de división vas a obtener — depende por completo de los _tipos de los operandos_, que pueden estar a varias llamadas a método de distancia:
+La trampa es que nada en la expresión te dice qué tipo de división vas a obtener — depende por completo de los _tipos de los operandos_, y esos tipos no se ven en la línea que estás leyendo: están donde se declaró cada variable, o en el tipo de retorno del método que devolvió el valor.
 
 ```java
 int totalHours = 7;

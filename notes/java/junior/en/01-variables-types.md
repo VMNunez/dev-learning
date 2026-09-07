@@ -19,7 +19,7 @@
 - [Type casting](#type-casting)
   - [Widening (automatic)](#widening-automatic)
   - [Narrowing (manual)](#narrowing-manual)
-- [Integer arithmetic — two silent traps](#integer-arithmetic--two-silent-traps)
+- [Integer arithmetic — silent traps](#integer-arithmetic--silent-traps)
   - [Integer division truncates — it does not round](#integer-division-truncates--it-does-not-round)
   - [Overflow is silent, and it bites when values are multiplied](#overflow-is-silent-and-it-bites-when-values-are-multiplied)
 - [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-one)
@@ -706,15 +706,15 @@ The result, 1912276171, has no useful relationship to the original 1234567890123
 
 ---
 
-## Integer arithmetic — two silent traps
+## Integer arithmetic — silent traps
 
 > 📖 Docs: [Baeldung — Overflow and Underflow in Java](https://www.baeldung.com/java-overflow-underflow) → read: "Overflow and Underflow" and "Handling Underflow and Overflow of Integer Data Types" — including the `Math.addExact` family.
 
-Further up, the highlighted note on wraparound described what happens when a value does not fit. Casting is not the only way to get there: ordinary `+` and `*` on `int`s reach the same cliff, and so does `/`, in a different way. These two traps are the reason a report can quietly show the wrong total in production, with nothing in the logs.
+Further up, wraparound described what happens when a value does not fit in the destination type. Casting is not the only way to get there: ordinary `+` and `*` on `int`s reach the same cliff, and so does `/`, in a different way. These traps are the reason a report can quietly show the wrong total in production, with nothing in the logs.
 
 ### Integer division truncates — it does not round
 
-When **both** operands are integer types, `/` performs integer division: it discards the fractional part rather than rounding it. This surprises people because the result looks like it was rounded, and half the time the rounded answer happens to be the same:
+When **both** operands are integer types, `/` performs integer division: it discards the fractional part rather than rounding it. This surprises people because the result looks like it was rounded, and sometimes the rounded answer happens to be the same:
 
 ```java
 7 / 2      // 3    — not 3.5, and not 4 either. The .5 is dropped.
@@ -722,7 +722,7 @@ When **both** operands are integer types, `/` performs integer division: it disc
 7 % 2      // 1    — the remainder that got thrown away
 ```
 
-The trap is that nothing about the expression tells you which kind of division you are getting — it depends entirely on the *types of the operands*, which may be several method calls away:
+The trap is that nothing about the expression tells you which kind of division you are getting — it depends entirely on the *types of the operands*, and those types are not visible on the line you are reading: they are wherever each variable was declared, or in the return type of the method that produced the value.
 
 ```java
 int totalHours = 7;
