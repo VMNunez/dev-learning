@@ -46,9 +46,11 @@ per **Verdict logic** below:
    format"** below.
 4. If the verdict is ✅ Ready: a **direct update of Victor's GitHub profile README**
    (`dev/portfolio/VMNunez`, a separate repo). Format: match that README's existing style and sections
-   exactly; add or refresh the project's entry (name, one-line pitch, stack, links). Never committed
-   from the learning flow — the orchestrator prints the commit + push commands for that repo
-   (procedure: `portfolio-audit.md`, Phase 3).
+   exactly; add or refresh the project's entry (name, one-line pitch, stack, links). **Committed by the
+   orchestrator, from that repo** (`git -C`), on a non-dry run — it is pipeline output, and the separate
+   repo governs *where the commit runs*, not who runs it (`REC-220`); it is never staged into this repo's
+   index. **The push stays Victor's**, and the orchestrator prints it (procedure: `portfolio-audit.md`,
+   Phase 3, which also owns what a dirty profile repo does).
 
 This is the closing project gate, **G7**, and the last one that reads the project itself. Its place is
 `_planning-standard.md` §23's prerequisite chain, quoted from the file that owns the gate order and

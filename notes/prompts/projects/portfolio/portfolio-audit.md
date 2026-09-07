@@ -82,8 +82,9 @@ translator, stage T) · `_portfolio-review-es-prompt.md` (the `en/`-blind Spanis
 > self-report is prompt-system machinery and commits itself either way; see the final step.) Once you
 > trust it, `DRY_RUN = false` commits those outputs for you, with no pause on any verdict — the one
 > exception being a `cv-bullets.md` section a pre-retirement run left holding two options, which stops a
-> non-dry run for the choice that was owed to Victor. Pushing the profile README from its own repo
-> remains a hand step by design.
+> non-dry run for the choice that was owed to Victor. **Those outputs include the profile README, which a
+> non-dry run commits in its own repo** (`REC-220`); **pushing** it from that repo remains a hand step by
+> design.
 
 ---
 
@@ -610,9 +611,45 @@ GitHub profile README directly**. It lives at `dev/portfolio/VMNunez` — his Gi
 this repo** (`dev/portfolio/VMNunez/README.md`, or the profile file that repo uses). You are the one
 responsible for keeping it current: read the existing README first to match its exact style and sections,
 then add or refresh this project's entry (name, one-line pitch, stack, links) in that same style — never
-paste a raw block for Victor to place by hand. Because it is a **separate git repo**, do not commit it
-inside the learning flow: after editing, print the commit + push commands for that repo (run from
-`dev/portfolio/VMNunez`) for Victor to run there. Only touch `dev/portfolio/` for this ✅-Ready step.
+paste a raw block for Victor to place by hand. Only touch `dev/portfolio/` for this ✅-Ready step.
+
+**Then commit it, from that repo, on `{DRY_RUN}` = false** (`REC-220`). It is a **separate git repo**, and
+that is the whole of what the boundary means here: every git command below runs with
+`-C {PROFILE_REPO}`, never from the learning repo's index, and the commit is never folded into this run's
+own `docs: portfolio-audit …` commit. **`{PROFILE_REPO}` is the absolute path the external-path preflight
+at the top of this file already resolved** — step 1 of `_external-path-preflight.md` mandates exactly
+that, and it is *not* `dev/portfolio/VMNunez` from this repo's root: `dev/portfolio/` is a sibling of
+`learning/`, not a folder inside it, so the repo-relative label every file uses to *name* this README is
+not a path any command can run from. Use the resolved path, and print it in the commands you hand back so
+Victor can run them verbatim. What it is **not** is a reason to hand the commit back — that README is this prompt's **output**,
+written to a checkable style, the same class as `cv-bullets.md`, which this run already commits, and the
+commit boundary in `_agent-runtime-standard.md` fences *Victor's* artefacts, not files outside this repo.
+Measured 2026-09-07: the step had run twice and committed neither time, so the profile a recruiter reads
+was two runs stale and nothing in the system could see it — nothing reads that repo's git state, so a run
+cannot tell an unpushed profile from a current one, and a handoff nothing reads back is not a gate.
+
+Three things this step settles, so that no run re-derives them:
+
+- **The push stays Victor's, and stays a hand step.** Publishing to a public GitHub profile is
+  outward-facing in a way the commit is not. Print `git -C {PROFILE_REPO} push` for him and stop
+  there.
+- **A repo dirty with something else is committed *around*, never *with*.** Run
+  `git -C {PROFILE_REPO} status` immediately before staging and again before committing, and stage
+  `README.md` by path and nothing else — the `cv-bullets.md` staging ruling, applied to a second repo.
+  Name every other dirty path in Finishing item 5 and leave it in that tree. **One of them has an owner,
+  and item 5 says whose:** that repo's platform adapter / gap list is written and committed by
+  `profile-readme-prompt`, never here, so a dirty adapter is reported as `owed to /profile-readme` rather
+  than as an anonymous dirty path — otherwise this run strands, every time, the one file it can identify.
+- **An earlier run's uncommitted output *in that README* is committed with this one, and labelled.**
+  `git add` is whole-file, so the choice does not exist, and what is in that file is pipeline output
+  either way. Say so in item 5 — `profile README: also carried an earlier run's uncommitted entry` — so
+  the history reads honestly.
+
+With `{DRY_RUN}` = true, edit the README as always and commit nothing: print the `git -C` add + commit
+pair, together with the push, one command per code block. **Say plainly, in item 5, that the edit is
+sitting uncommitted in a repo nothing else reads** — the launcher defaults `DRY_RUN` to `true`, so this is
+the path that produced the measured dirt in the first place, and a dry run that stays silent about it
+reproduces the defect exactly once per run.
 
 ## Finishing
 
@@ -667,8 +704,13 @@ Otherwise print, in this order:
    is the branch every project takes today. **The item is omitted entirely only if ❌**; on any other
    path it prints one line or the other, never nothing — a silent item 4 is indistinguishable from a run
    that skipped it.
-5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then the commit + push
-   commands to run **from that repo** (`dev/portfolio/VMNunez`). Omit if ⚠️/❌.
+5. If ✅ Ready: "Updated the GitHub profile README at `dev/portfolio/VMNunez`", then **what this run did
+   with it** — on `{DRY_RUN}` = false, the commit it made in that repo and its hash; on `{DRY_RUN}` = true,
+   the `git -C` add + commit pair it did not run. Either way, **the push command, which is always
+   Victor's** (`git -C {PROFILE_REPO} push`). Plus the two facts Phase 3 requires named here:
+   every other dirty path in that repo, left untouched, and — where the README already held an earlier
+   run's uncommitted entry — `profile README: also carried an earlier run's uncommitted entry`.
+   Omit if ⚠️/❌.
 6. If ✅/⚠️, the one drafted bullet is in `notes/cv/cv-bullets.md` — **unless that project's section
    carries `[refined]`**, in which case say so here instead, name the project, and print the drafted
    bullet that was not saved. A frozen section is left byte-for-byte as it stands. **There is no choice pause.** Run the standard's integrity gate over the
@@ -762,7 +804,10 @@ the diff.
 - **Auto-commit is authorized for this flow only, and only when `DRY_RUN = false`.** Victor's global
   rule is "never auto-commit"; he lifted it for the audit orchestrators. It never authorizes committing
   a section holding more than one bullet — on a ✅/⚠️ verdict the authorization begins once the
-  whole-file integrity gate below passes. It applies nowhere else.
+  whole-file integrity gate below passes. It applies nowhere else. **It reaches one path outside this
+  repo** — `dev/portfolio/VMNunez/README.md`, committed from that repo with `git -C` on the ✅-Ready step
+  (`REC-220`), never staged into this repo's index and never into this run's own commit. The push is
+  Victor's on every path.
 - **`cv-bullets.md` is staged only after its whole-file integrity gate passes.** Every project section
   has exactly one bullet and no choice marker; validating only the section written this run is not enough.
 - **A section carrying `[refined]` is never replaced, and the marker is never written by this run.** It is
@@ -779,7 +824,9 @@ the diff.
 - **Only `full` computes a verdict, and only a verdict signs G7.** A bank-only run prints no ✅/⚠️/❌,
   drafts no CV bullet or GitHub description, never touches the profile README, and never stages
   `notes/cv/cv-bullets.md`. It needs none of §23's chain, and it closes no gate.
-- **One atomic commit per project.** In `all` mode, one commit per project, never batched. The
+- **One atomic commit per project, in this repo.** In `all` mode, one commit per project, never batched.
+  The ✅-Ready profile-README commit is not an exception to it and never joins it: it lands in a
+  **different repository**, so the two indexes never meet (`REC-220`). The
   orchestrator commits once, after every section's author→reviewer pair **and the project's translator
   and Spanish reviewer** are done; none of the section subagents, the translator or the Spanish reviewer
   commits.

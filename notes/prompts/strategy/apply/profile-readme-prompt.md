@@ -85,9 +85,19 @@ Spanish consultancies):
 
 - Edit `dev/portfolio/VMNunez/README.md` (and the external profile repo adapter's gap list) directly — Víctor does not want to
   paste blocks by hand.
-- **Never commit or push `dev/portfolio/VMNunez`** — it is a separate repo from `learning`. Print the
-  commit + push commands to run **from that repo**, with a commit message you give him, one command per
-  code block.
+- **Commit `dev/portfolio/VMNunez` yourself, from that repo; never push it** (`REC-220`). That README has
+  two writers — this prompt and `portfolio-audit`'s ✅-Ready step — so the rule belongs to the **file**,
+  and a rule that held for one door only would leave the same output accumulating uncommitted behind the
+  other. It is a separate repo from `learning`: every git command runs with `-C {PROFILE_REPO}` — the
+  absolute path the external-path preflight at the top of this file resolved, **not**
+  `dev/portfolio/VMNunez`, which is the label this file uses to name the README and is a sibling of
+  `learning/`, not a path inside it — and nothing from that repo is ever staged into this one's index.
+  Run `git -C {PROFILE_REPO} status` immediately before staging and again before committing, stage
+  `README.md` **and the adapter's gap list whenever this run edited it** — the two files this prompt
+  writes, and the pair `portfolio-audit` leaves alone because it writes only the first — **by path and
+  nothing else**, and name every other dirty path in the summary rather than committing it. Then print
+  `git -C {PROFILE_REPO} push` in its own code block, with the resolved path spelled out so Víctor can run
+  it verbatim — **publishing to a public profile stays Víctor's**.
 - If this project run originated from a `portfolio-audit` ✅ Ready verdict, say so explicitly in the
   summary, so Víctor can tie the two together.
 
