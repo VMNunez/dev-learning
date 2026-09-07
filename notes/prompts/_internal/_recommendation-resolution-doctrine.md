@@ -1579,6 +1579,23 @@ checked against the branch table it claims to gate**: this one said a "stop or r
 late, and the run-start table has no stop or rerun branch at all — it prints one line and is forbidden
 to apply it. The real damage was elsewhere and worse than the row's, which is step 2 doing its job.
 
+**A cheap test that runs after the expensive phase is fixed by adding an earlier execution, not by moving
+the one that exists — and the choice between announcing and stopping is made by what the expensive phase
+produces.** From `REC-218`, where `portfolio-audit`'s three gate checks read nothing but files already on
+disk and still ran after the eight dispatches that build a project's question bank, so a run owing a
+`progress-update` paid for the bank before being told it would stop. Two shapes were available and they
+are not interchangeable. A preflight that **stops** is cheapest and is right where the expensive phase's
+only product is the verdict; one that **announces** — the same tests, printed early, disposing nothing —
+is right where that phase produces something the verdict does not gate. **The discriminator is blast
+radius, not the token saving**: there the bank is written on a ❌ and is the entire output of a bank-only
+scope, and the failing check's input is a single *global* file, so a stopping preflight would have turned
+one stale report into a batch run that produced nothing at all for every project in it. The saving is not
+lost by choosing to announce — it moves to the human, who can interrupt a run that has just said where it
+is heading. Two things travel with the earlier execution: the **gating** that ordered the checks, since
+announcing a gated check without the one that gates it starts reporting debts to targets the chain
+exempts, and an explicit statement that the later execution is **unconditional**, or the two collapse
+into one and the cheap copy inherits a disposition it was never given.
+
 **When a fix invents a new form of a persistent name, every reader of the old form is now wrong.** Also
 `REC-140`, and the write-side twin of the branched-return rule above: admitting a second application
 under `<empresa>-<puesto>-<YYYY-MM-DD>` left that dated folder **write-only**, because the mode that
