@@ -54,6 +54,14 @@ overridable*; l.148-155 is the symmetric TODO-direction rule it was asking for, 
 across five files. **Quote the text of every line a row cites before building on it.** A citation by
 description is the one form of evidence that can hand you the answer as though it were the precedent,
 and checking it is what collapsed a two-family sweep to one.
+**Also `REC-185`, one register out and about the *instance* rather than the citation: where a row says
+a filter is missing at a door, read the artefact that came through that door — it may quote the
+filter.** The task that row was opened over said *"Tests are out of scope for this project, but a test
+command that silently runs nothing is not"*, so restating the exclusion at that door would have changed
+nothing, and the real defect was the **evidence** the finding rested on. A causal claim of the form *X
+was not stated here, so Y got through* is checked against Y's own text before it is priced; where Y
+cites X, what survives is at most an ownership defect, and pricing it as the cause buys a sweep that
+catches nothing.
 **Also `REC-197`, one register up, where what the row says nobody asks is already asked by the very roles
 it is adding a third to — and the *fix* is what asserts the absence.** That row proposed a reader-effect
 judge because `readme-audit`'s two subagents "cold-review for conformance and nothing reads the README for
