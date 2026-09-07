@@ -915,14 +915,14 @@ int first = ids.get(0);   // unboxing — Java lo desenvuelve de vuelta a int
 
 Lee la columna de la derecha como "el código que habrías tenido que escribir a mano antes de Java 5". Nada más cambia — las mismas llamadas a método, los mismos objetos, el mismo coste. Merece la pena saberlo por dos razones: explica por qué el boxing tiene un coste de rendimiento real en un bucle exigente (cada `valueOf` puede reservar un objeto), y explica la trampa de abajo, que si no sería inexplicable.
 
-> **Hacer unboxing de `null` lanza un `NullPointerException` en una línea sin ninguna llamada a método visible.** Este es el único comportamiento del autoboxing que genuinamente te va a confundir, y el mecanismo de arriba es toda la explicación:
+> **Hacer unboxing de `null` lanza un `NullPointerException` en una línea sin ninguna llamada a método visible.** Este es el único comportamiento del autoboxing que genuinamente te va a confundir:
 >
 > ```java
 > Map<String, Integer> scores = new HashMap<>();
 > int score = scores.get("missing");   // NullPointerException — ¿pero dónde?
 > ```
 >
-> `get()` devuelve `null` para una clave que no existe, lo cual es un `Integer` legal. El problema está en la asignación a `int`: un `int` no tiene dónde meter `null`, así que el compilador ha añadido en silencio un `.intValue()`, y estás llamando a un método sobre `null`. El mensaje de Java desde la versión 14 lo explica exactamente así, nombrando un método que tú nunca escribiste:
+> `get()` devuelve `null` para una clave que no existe, lo cual es un `Integer` legal. El problema está en la asignación a `int`: un `int` no tiene dónde meter `null`, así que el compilador ha añadido en silencio un `.intValue()`, y estás llamando a un método sobre `null`. Es decir: el fallo viene de guardar el resultado en un `int` en vez de en un `Integer` — con `Integer score = scores.get("missing");` no hay unboxing, `score` se queda a `null` y no hay excepción. El mensaje de Java desde la versión 14 lo explica exactamente así, nombrando un método que tú nunca escribiste:
 >
 > ```
 > java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()"
