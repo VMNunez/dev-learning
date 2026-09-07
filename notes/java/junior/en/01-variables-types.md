@@ -192,7 +192,7 @@ The table gives you the exact ranges, but you do not need to memorise them: to d
 > long bigId   = 1234567890123L;  // the L is required here
 > ```
 >
-> The first line is fine because `5` is a perfectly legal `int` literal and `int` → `long` is a widening conversion, which Java performs silently (the *Widening* section below). The second needs the suffix because the literal itself does not fit in 32 bits, and the compiler judges the literal before it ever looks at the variable — the callout above traces that exact error. So the rule is: **suffix the literal only when the literal alone is too big for an `int`**. Writing `5L` is not wrong, just noise.
+> The first line is fine because `5` is a perfectly legal `int` literal and `int` → `long` is a widening conversion, which Java performs silently (the *Widening* section below). The second needs the suffix because the literal itself does not fit in 32 bits, and the compiler judges the literal before it ever looks at the variable — the highlighted note above traces that exact error. So the rule is: **suffix the literal only when the literal alone is too big for an `int`**. Writing `5L` is not wrong, just noise.
 
 There is a third place the `L` decides the outcome, and it has nothing to do with the declared type of the variable: arithmetic. `1000 * 60 * 60 * 24 * 30` overflows even when you store the result in a `long`, because the multiplication is carried out in `int` before the assignment is considered. That last part is the piece worth getting right, because it is counter-intuitive: the compiler resolves the right-hand expression **whole and on its own**, without once looking at which variable it is going into. And the type of an arithmetic operation is decided by its operands, never by its destination: `int * int` gives `int`, always. The trace is this:
 
@@ -710,7 +710,7 @@ The result, 1912276171, has no useful relationship to the original 1234567890123
 
 > 📖 Docs: [Baeldung — Overflow and Underflow in Java](https://www.baeldung.com/java-overflow-underflow) → read: "Overflow and Underflow" and "Handling Underflow and Overflow of Integer Data Types" — including the `Math.addExact` family.
 
-The wraparound callout above described what happens when a value does not fit. Casting is not the only way to get there: ordinary `+` and `*` on `int`s reach the same cliff, and so does `/`, in a different way. These two traps are the reason a report can quietly show the wrong total in production, with nothing in the logs.
+Further up, the highlighted note on wraparound described what happens when a value does not fit. Casting is not the only way to get there: ordinary `+` and `*` on `int`s reach the same cliff, and so does `/`, in a different way. These two traps are the reason a report can quietly show the wrong total in production, with nothing in the logs.
 
 ### Integer division truncates — it does not round
 
@@ -743,7 +743,7 @@ And one operand it will not tolerate: `7 / 0` on integers throws `ArithmeticExce
 
 ### Overflow is silent, and it bites when values are multiplied
 
-The odometer callout used `Integer.MAX_VALUE + 1` as its example, which reads like a contrived edge case. In practice you meet overflow through multiplication, where three perfectly ordinary numbers combine into something that no longer fits:
+The odometer note used `Integer.MAX_VALUE + 1` as its example, which reads like a contrived edge case. In practice you meet overflow through multiplication, where three perfectly ordinary numbers combine into something that no longer fits:
 
 ```java
 // MAL — how many milliseconds in 30 days?
@@ -773,7 +773,7 @@ One `L` on the first literal is enough. Java evaluates the chain left to right, 
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the paragraphs on infinity and on NaN — this is the source for "`x != x` is `true` if and only if `x` is NaN".
 
-The money callout near the top of this file stated the fact in passing: a `double` cannot represent `0.1` exactly. Integer arithmetic has just shown you one kind of representation failure — a fixed number of bits that runs out — and this is the other kind, and the more insidious one, because nothing overflows and no digit is visibly missing. Here it is doing damage in the shortest program that can:
+The note on money, near the top of this file, stated the fact in passing: a `double` cannot represent `0.1` exactly. Integer arithmetic has just shown you one kind of representation failure — a fixed number of bits that runs out — and this is the other kind, and the more insidious one, because nothing overflows and no digit is visibly missing. Here it is doing damage in the shortest program that can:
 
 ```java
 System.out.println(0.1 + 0.2);          // 0.30000000000000004

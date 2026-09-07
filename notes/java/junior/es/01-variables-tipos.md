@@ -682,7 +682,7 @@ El resultado, 1912276171, no guarda ninguna relación útil con el original 1234
 
 > 📖 Docs: [Baeldung — Overflow and Underflow in Java](https://www.baeldung.com/java-overflow-underflow) → leer: "Overflow and Underflow" y "Handling Underflow and Overflow of Integer Data Types" — incluida la familia `Math.addExact`.
 
-El callout del wraparound de arriba describió qué pasa cuando un valor no cabe. El cast no es la única forma de llegar ahí: `+` y `*` normales sobre `int` alcanzan el mismo precipicio, y `/` también, aunque de otra manera. Estas dos trampas son la razón por la que un informe puede mostrar en silencio el total equivocado en producción, sin nada en los logs.
+Más arriba, el aviso destacado sobre el wraparound describió qué pasa cuando un valor no cabe. El cast no es la única forma de llegar ahí: `+` y `*` normales sobre `int` alcanzan el mismo precipicio, y `/` también, aunque de otra manera. Estas dos trampas son la razón por la que un informe puede mostrar en silencio el total equivocado en producción, sin nada en los logs.
 
 ### La división entera trunca — no redondea
 
@@ -715,7 +715,7 @@ Y hay un operando que no tolerará: `7 / 0` con enteros lanza `ArithmeticExcepti
 
 ### El overflow es silencioso, y muerde cuando se multiplican valores
 
-El callout del cuentakilómetros usó `Integer.MAX_VALUE + 1` como ejemplo, lo cual suena a caso límite artificial. En la práctica te topas con el overflow a través de la multiplicación, donde tres números perfectamente normales se combinan en algo que ya no cabe:
+El aviso del cuentakilómetros usó `Integer.MAX_VALUE + 1` como ejemplo, lo cual suena a caso límite artificial. En la práctica te topas con el overflow a través de la multiplicación, donde tres números perfectamente normales se combinan en algo que ya no cabe:
 
 ```java
 // MAL — ¿cuántos milisegundos hay en 30 días?
@@ -745,7 +745,7 @@ Con una sola `L` en el primer literal basta. Java evalúa la cadena de izquierda
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → leer: los párrafos sobre infinity y sobre NaN — de ahí sale "`x != x` es `true` si y solo si `x` es NaN".
 
-El callout del dinero cerca del principio de este archivo lo dijo de pasada: un `double` no puede representar `0.1` exactamente. La aritmética de enteros ya te enseñó un tipo de fallo de representación — un número fijo de bits que se agota — y este es el otro tipo, el más insidioso, porque nada se desborda y no falta ningún dígito de forma visible. Aquí está haciendo daño en el programa más corto que puede:
+El aviso sobre el dinero, cerca del principio de este archivo, lo dijo de pasada: un `double` no puede representar `0.1` exactamente. La aritmética de enteros ya te enseñó un tipo de fallo de representación — un número fijo de bits que se agota — y este es el otro tipo, el más insidioso, porque nada se desborda y no falta ningún dígito de forma visible. Aquí está haciendo daño en el programa más corto que puede:
 
 ```java
 System.out.println(0.1 + 0.2);          // 0.30000000000000004
