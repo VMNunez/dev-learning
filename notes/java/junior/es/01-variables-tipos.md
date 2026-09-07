@@ -804,7 +804,7 @@ Por ejemplo, si comparas una ratio calculada, las diferencias reales son minúsc
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → leer: la frase "1.0/0.0 has the value positive infinity" y el párrafo alrededor sobre infinity y NaN.
 
-La sección de división entera ya lo mencionó en una línea, pero merece su propia sección, porque es el ejemplo más claro de la página de la idea que se repite en todo el capítulo — _los tipos de los operandos deciden lo que el operador realmente hace_. Dividir por cero no es un solo comportamiento en Java. Son dos, y cuál te toca no depende de nada que puedas ver en el punto de la llamada:
+Ya se mencionó en una línea en la división entera, pero merece su propia sección, porque es el ejemplo más claro de la página de la idea que se repite en todo el capítulo — _los tipos de los operandos deciden lo que el operador realmente hace_. Dividir por cero no es un solo comportamiento en Java. Son dos comportamientos distintos, y cuál de los dos ocurre lo deciden los tipos de los operandos, que no se ven en la línea donde escribes la división:
 
 ```java
 int a = 7, b = 0;

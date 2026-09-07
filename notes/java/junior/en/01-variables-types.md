@@ -832,7 +832,7 @@ That second limit depends on what you are comparing, which is why the margin is 
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the sentence "1.0/0.0 has the value positive infinity" and the surrounding paragraph on infinity and NaN.
 
-The integer-division section mentioned this in one line, but it deserves a section of its own, because it is the clearest example on the page of the idea that repeats throughout the chapter — *the types of the operands decide what the operator really does*. Dividing by zero is not one behaviour in Java. It is two, and which one you get depends on nothing you can see at the call site:
+This was mentioned in one line back in integer division, but it deserves a section of its own, because it is the clearest example on the page of the idea that repeats throughout the chapter — *the types of the operands decide what the operator really does*. Dividing by zero is not one behaviour in Java. It is two different behaviours, and which of them happens is decided by the operand types, which are not visible on the line where you write the division:
 
 ```java
 int a = 7, b = 0;
