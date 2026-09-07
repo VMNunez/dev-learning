@@ -79,8 +79,8 @@ level in the table above.
 yet (no run recorded in `notes/prompts/_internal/_run-tracker.md`), so its total will move.
 
 `—` means the level has no coverage file at all, so there is no denominator to divide by. It never
-means `0%`: HTML was admitted as a topic on 2026-08-30 and its first `/coverage` run, which owes a
-boundary migration from `css`, `angular`, `angular-material` and `general`, has not happened yet.
+means `0%`, which is what a real count over a real denominator reads as — HTML's junior cell was the
+example until its first `/coverage` run landed on 2026-09-04 and turned it into `0/81 (0%)`.
 
 The `✅ NN-slug` marker went live on 2026-07-30 (its `— {evidence}` clause was added to the format on
 2026-08-01 and is not backfilled, so older markers are bare), so these cells are still filling in: projects 01, 02, 03,
