@@ -255,7 +255,7 @@ These are all the cases where `substring` throws that exception, on the same 6-c
 | `substring(-1)` / `substring(-1, 3)` | 💥 | negative `begin`: there is no position before 0 |
 | `substring(7)` / `substring(0, 7)` | 💥 | the index goes past `length()`, which is the maximum allowed |
 | `substring(3, 1)` | 💥 | `end` sits behind `begin`, so the length would come out negative |
-| `substring(6)` / `substring(3, 3)` | `""` | does not throw: the range is empty, which is not the same as being out of bounds |
+| `substring(6)` / `substring(3, 3)` | `""` | allowed, and throws nothing: it returns an empty string, because the range is empty, which is not the same as being out of bounds |
 
 The first three rows throw `StringIndexOutOfBoundsException`; the last one is in the table for contrast, because it is the one that looks like an error and is not. The only thing to remember about the three is that none of them fixes itself: if the index falls outside `0..length()`, or the range runs backwards, the call blows up at runtime.
 

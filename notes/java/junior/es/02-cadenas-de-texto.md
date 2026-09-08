@@ -250,12 +250,12 @@ java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for lengt
 
 Estos son todos los casos en los que `substring` lanza esa excepción, sobre el mismo `"Victor"` de 6 caracteres:
 
-| Llamada | Resultado | Por qué |
-|---|---|---|
-| `substring(-1)` / `substring(-1, 3)` | 💥 | `begin` negativo: no hay ninguna posición antes de la 0 |
-| `substring(7)` / `substring(0, 7)` | 💥 | el índice se pasa de `length()`, que es el máximo permitido |
-| `substring(3, 1)` | 💥 | `end` queda por detrás de `begin`, así que la longitud saldría negativa |
-| `substring(6)` / `substring(3, 3)` | `""` | no lanza: el rango está vacío, que no es lo mismo que estar fuera |
+| Llamada                              | Resultado | Por qué                                                                                                                                    |
+| ------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `substring(-1)` / `substring(-1, 3)` | 💥        | `begin` negativo: no hay ninguna posición antes de la 0                                                                                    |
+| `substring(7)` / `substring(0, 7)`   | 💥        | el índice se pasa de `length()`, que es el máximo permitido                                                                                |
+| `substring(3, 1)`                    | 💥        | `end` queda por detrás de `begin`, así que la longitud saldría negativa                                                                    |
+| `substring(6)` / `substring(3, 3)`   | `""`      | está permitido y no lanza excepción: devuelve un string vacío, porque el rango está vacío, que no es lo mismo que estar fuera |
 
 Las tres primeras filas lanzan `StringIndexOutOfBoundsException`; la última está en la tabla para el contraste, porque es la que parece un error y no lo es. Lo único que hay que recordar de las tres es que ninguna se corrige sola: si el índice sale de `0..length()`, o el rango va hacia atrás, la llamada revienta en tiempo de ejecución.
 
