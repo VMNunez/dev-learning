@@ -241,7 +241,7 @@ name.substring(3, 1)     // 💥 throws — end sits behind begin
 name.substring(0, 10)    // 💥 throws — end goes past the end of the text
 ```
 
-That last line does not return an empty string or a truncated one: it throws an exception. In JavaScript this does not happen. There, if the end index falls outside the text, `slice` and `substring` ignore it and cut as far as the text goes: `"Victor".slice(0, 10)` returns `"Victor"`. Java does not do that: an index that is not valid is rejected, not adjusted. This is the exception it throws, and its message tells you two things: the range you asked for and the length the text actually had.
+That last line does not return an empty string or a truncated one: it throws an exception. In JavaScript this does not happen. There, if `end` goes past the length of the text, `slice` and `substring` simply cut up to the end: `"Victor".slice(0, 10)` returns `"Victor"`. Java does not do that: an index that is not valid is rejected, not adjusted. This is the exception it throws, and its message tells you two things: the range you asked for and the length the text actually had, which is also the largest value you could have passed as `end`.
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
