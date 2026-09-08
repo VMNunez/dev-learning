@@ -156,22 +156,29 @@ Now each method on its own, so you can come back to this as a reference. Three t
 - **`contains(...)`** → `boolean`. Answers whether that sequence appears anywhere inside the text, telling upper and lower case apart: it looks for the sequence exactly as you pass it. It does not tell you where, only whether. Used for simple searches and filters.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.contains("DEVELOPER")  // true
   record.contains("MANAGER")    // false
   record.contains("developer")  // false → the text holds it in upper case; to ignore case, put both sides in the same one with toLowerCase()
   ```
 
-- **`startsWith(...)`** → `boolean`. Used to find out whether a `String` begins exactly with the sequence you pass it. **`endsWith(...)`** → `boolean` does the symmetric thing: whether a `String` finishes exactly with that sequence. The important word in both is *exactly*: every character counts, spaces included.
+- **`startsWith(...)`** → `boolean`. Used to find out whether a `String` begins exactly with the sequence you pass it. **`endsWith(...)`** → `boolean` is used to find out whether a `String` finishes exactly with that sequence. The important word in both is *exactly*: they count every character, spaces included, and they tell upper and lower case apart just like `contains`.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.startsWith("  Ana")  // true  → the text begins with two spaces and then "Ana"
   record.startsWith("Ana")    // false → it begins with a space, not with the 'A'
+  record.startsWith("  ana")  // false → case counts too
   "report.pdf".endsWith(".pdf")  // true → this is how you check a file extension
   ```
 
 - **`indexOf(...)`** → `int`. Gives back the position of the first place the sequence appears, counting from 0, or `-1` when it does not appear anywhere. That `-1` is the "not found" signal, and you have to check for it before using that number to cut the text with `substring`.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.indexOf(",")   // 10 → the first comma sits at position 10
   record.indexOf(";")   // -1 → there is no semicolon in the text
   ```
@@ -186,18 +193,24 @@ Now each method on its own, so you can come back to this as a reference. Three t
 - **`replace(a, b)`** → `String`. Gives back a copy with **every** occurrence of `a` swapped for `b`, not just the first. It treats what you pass as literal text, with no patterns.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → both commas change, not only the first
   ```
 
 - **`substring(begin, end)`** → `String`. Gives back the slice of text between those two positions. It is the trickiest method in the catalogue and it gets its own sub-section just below.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.strip().substring(0, 8)  // "Ana Ruiz" → from position 0 up to 7
   ```
 
 - **`split(separator)`** → `String[]`. Cuts the text by the separator and gives back an array of the pieces. It is the normal way to turn a CSV line into its fields, and it also gets its own sub-section, because the separator is not what it looks like.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.strip().split(",")  // ["Ana Ruiz", "DEVELOPER", "38.5"] → the record's three fields
   ```
 

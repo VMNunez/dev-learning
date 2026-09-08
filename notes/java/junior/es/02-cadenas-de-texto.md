@@ -156,22 +156,29 @@ Ahora cada método por separado, para tenerlo como referencia. De cada uno impor
 - **`contains(...)`** → `boolean`. Responde si esa secuencia aparece en algún sitio dentro del texto, distinguiendo mayúsculas de minúsculas: busca la secuencia tal cual se la pasas. No te dice dónde, solo si está. Se usa para búsquedas y filtros simples.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.contains("DEVELOPER")  // true
   record.contains("MANAGER")    // false
   record.contains("developer")  // false → el texto lo lleva en mayúsculas; si quieres ignorar la caja, pasa los dos a la misma con toLowerCase()
   ```
 
-- **`startsWith(...)`** → `boolean`. Se usa para saber si un `String` empieza exactamente con la secuencia que le pasas. **`endsWith(...)`** → `boolean` hace lo simétrico: saber si un `String` acaba exactamente con esa secuencia. La palabra importante en los dos es _exactamente_: cuenta cada carácter, espacios incluidos.
+- **`startsWith(...)`** → `boolean`. Se usa para saber si un `String` empieza exactamente con la secuencia que le pasas. **`endsWith(...)`** → `boolean` se usa para saber si un `String` acaba exactamente con esa secuencia. La palabra importante en los dos es _exactamente_: cuentan cada carácter, los espacios incluidos, y distinguen mayúsculas de minúsculas igual que `contains`.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.startsWith("  Ana")  // true  → el texto empieza por dos espacios y luego "Ana"
   record.startsWith("Ana")    // false → empieza por un espacio, no por la 'A'
+  record.startsWith("  ana")  // false → la caja también cuenta
   "informe.pdf".endsWith(".pdf")  // true → así se comprueba la extensión de un fichero
   ```
 
 - **`indexOf(...)`** → `int`. Devuelve la posición del primer sitio donde aparece la secuencia, contando desde 0, o `-1` si no aparece en ninguna parte. Ese `-1` es la señal de "no encontrado", y hay que comprobarla antes de usar ese número para cortar el texto con `substring`.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.indexOf(",")   // 10 → la primera coma está en la posición 10
   record.indexOf(";")   // -1 → no hay ningún punto y coma en el texto
   ```
@@ -186,18 +193,24 @@ Ahora cada método por separado, para tenerlo como referencia. De cada uno impor
 - **`replace(a, b)`** → `String`. Devuelve una copia con **todas** las apariciones de `a` cambiadas por `b`, no solo la primera. Trata lo que le pasas como texto literal, sin patrones.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → cambia las dos comas, no solo la primera
   ```
 
 - **`substring(inicio, fin)`** → `String`. Devuelve el trozo de texto que hay entre esas dos posiciones. Es el método con más trampa del catálogo y tiene su propia subsección aquí abajo.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.strip().substring(0, 8)  // "Ana Ruiz" → desde la posición 0 hasta la 7
   ```
 
 - **`split(separador)`** → `String[]`. Parte el texto por el separador y devuelve un array con los trozos. Es la forma normal de convertir una línea de CSV en sus campos, y también tiene su propia subsección, porque el separador no es lo que parece.
 
   ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
   record.strip().split(",")  // ["Ana Ruiz", "DEVELOPER", "38.5"] → los tres campos del registro
   ```
 
