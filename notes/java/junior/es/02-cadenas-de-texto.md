@@ -261,7 +261,7 @@ Las tres primeras filas lanzan `StringIndexOutOfBoundsException`. La cuarta no l
 
 ### `split` — el separador que le pasas es una expresión regular
 
-`split` es el método del catálogo cuya firma más confunde, y puede llegar a mentirte. Parece que recibe un carácter que se va a usar para separar el `String`, pero en realidad recibe una **expresión regular**: un carácter, o un conjunto de caracteres, con un significado concreto dentro de un patrón de búsqueda. El que hay que vigilar es el punto: dentro de una expresión regular `.` significa "cualquier carácter, el que sea". Para partir por un punto de verdad hay que escaparlo, y en el código Java se escribe con dos barras invertidas, `"\\."`, porque la primera barra es el escape del propio `String` y al motor de expresiones regulares le llega una sola, `\.`.
+`split` es el método del catálogo cuya firma más confunde, y puede llegar a mentirte. Parece que recibe un carácter que se va a usar para separar el `String`, pero en realidad recibe una **expresión regular**: un carácter, o un conjunto de caracteres, con un significado concreto, que Java lee como un patrón y no como texto literal. El que hay que vigilar es el punto: dentro de una expresión regular `.` significa "cualquier carácter, el que sea". Para partir por un punto de verdad hay que escaparlo, y en el código Java se escribe con dos barras invertidas, `"\\."`, porque la primera barra es el escape del propio `String` y al motor de expresiones regulares le llega una sola, `\.`.
 
 ```java
 "38.5".split(",")     // ["38.5"]  → no se encontró ninguna coma, así que te devuelve el string entero en un array de 1 elemento
