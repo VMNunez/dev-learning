@@ -259,9 +259,9 @@ These are all the cases where `substring` throws that exception, on the same 6-c
 
 The first three rows throw `StringIndexOutOfBoundsException`. The fourth throws nothing, and it is in the table because it is the one most often mistaken for an error: asking for an empty range is legal. About the three that do fail, the only thing to remember is that none of them fixes itself: if the index falls outside `0..length()`, or the range runs backwards, the call blows up at runtime.
 
-### `split` — it takes a regular expression, not a plain separator
+### `split` — the separator you pass it is a regular expression
 
-`split` is the one method in the catalogue whose signature lies to you. It looks like it takes a separator character; it takes a **regular expression** — a small pattern language where certain characters carry a special meaning instead of standing for themselves. `.` is the loudest of them: in a regex it means "any single character".
+`split` is the method in the catalogue whose signature confuses people most, and it can end up lying to you. It looks like it takes a character that will be used to separate, but what it really takes is a **regular expression**: a text in which certain characters do not stand for themselves, but carry a special meaning inside a pattern language. The one to be most careful with is the dot: in a regular expression `.` means "any character at all", so to split on a real dot you have to escape it and write it `"\."`.
 
 ```java
 "38.5".split(",")     // ["38.5"]  → no comma found, so you get the whole string back in a 1-element array

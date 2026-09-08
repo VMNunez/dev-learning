@@ -259,9 +259,9 @@ Estos son todos los casos en los que `substring` lanza esa excepción, sobre el 
 
 Las tres primeras filas lanzan `StringIndexOutOfBoundsException`. La cuarta no lanza nada, y está en la tabla porque es la que más se confunde con un error: pedir un rango vacío es legal. De las tres que sí fallan, lo único que hay que recordar es que ninguna se corrige sola: si el índice sale de `0..length()`, o el rango va hacia atrás, la llamada revienta en tiempo de ejecución.
 
-### `split` — recibe una expresión regular, no un separador plano
+### `split` — el separador que le pasas es una expresión regular
 
-`split` es el único método del catálogo cuya firma te miente. Parece que recibe un carácter separador; recibe una **expresión regular** — un pequeño lenguaje de patrones donde ciertos caracteres tienen un significado especial en lugar de representarse a sí mismos. `.` es el más ruidoso de todos: en una regex significa "cualquier carácter, el que sea".
+`split` es el método del catálogo cuya firma más confunde, y puede llegar a mentirte. Parece que recibe un carácter que se va a usar para separar, pero en realidad recibe una **expresión regular**: un texto en el que ciertos caracteres no se representan a sí mismos, sino que tienen un significado especial dentro de un lenguaje de patrones. Con el que hay que tener más cuidado es el punto: en una expresión regular `.` significa "cualquier carácter, el que sea", así que para partir por un punto de verdad hay que escaparlo escribiéndolo `"\."`.
 
 ```java
 "38.5".split(",")     // ["38.5"]  → no se encontró ninguna coma, así que te devuelve el string entero en un array de 1 elemento
