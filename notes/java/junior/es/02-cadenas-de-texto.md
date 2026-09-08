@@ -227,7 +227,7 @@ El tipo que devuelve cada uno es lo que conviene memorizar, porque es lo que dec
 
 ### `substring` — el segundo índice queda excluido, y pasarte del final lanza excepción
 
-`substring(begin, end)` toma los caracteres desde `begin` hasta `end`, **sin incluir** `end`. Por eso la longitud del substring que se genera siempre es `end - begin`. Los índices válidos son `0 <= begin <= end <= length()`: `end` puede llegar hasta la longitud del texto, no hasta la última posición, precisamente porque queda excluido — `end = length()` es la forma de decir "hasta el final". Con `"Victor"`, que tiene 6 caracteres, el corte más largo posible es `substring(0, 6)`, y `substring(0, 7)` ya lanza excepción.
+`substring(begin, end)` toma los caracteres desde `begin` hasta `end`, **sin incluir** `end`. Por eso la longitud del substring que se genera siempre es `end - begin`. La clave para entender hasta dónde puede llegar `end` es que `end` no es una posición que se vaya a leer, sino el punto donde el recorte se detiene: `substring` copia los caracteres desde `begin` y para justo antes de `end`, así que el carácter que haya en `end` no se toca nunca. Por eso `end` puede valer 6 en `"Victor"`, que tiene 6 caracteres y cuyos índices van del 0 al 5, sin que exista ningún carácter en la posición 6: `substring(0, 6)` significa "para al llegar al final del texto", no "lee el carácter 6". Lo que sí falla es `substring(0, 7)`, porque ahí le pides que pare más allá del final, y esa es exactamente la comprobación que `substring` hace antes de copiar nada. `begin`, en cambio, sí es una posición que se lee — salvo cuando vale lo mismo que `end`, porque entonces no hay nada que copiar y el resultado es el string vacío `""`.
 
 ```java
 String name = "Victor";
