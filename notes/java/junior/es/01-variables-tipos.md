@@ -1027,7 +1027,7 @@ Solo funciona para variables locales (dentro de métodos). No se puede usar para
 >                  //         (variable initializer is 'null')
 > ```
 >
-> La segunda línea, entre paréntesis, es el compilador diciéndote _cuál_ de los dos casos te ha tocado. El primero es la declaración separada que viste en la sección Variables — perfectamente legal con un tipo explícito (`int count;`), imposible con `var`, porque no hay nada de lo que leer el tipo. El segundo falla porque `null` es un valor legal de _todo_ tipo de referencia, así que no restringe nada; si de verdad quieres una variable inicializada a null tienes que nombrar tú mismo el tipo (`String y = null;`).
+> La segunda línea, entre paréntesis, es el compilador diciéndote cuál de los dos casos está fallando. El primer fallo es declarar la variable sin inicializarla — perfectamente legal con un tipo explícito (`int count;`), imposible con `var`, porque no hay nada de lo que leer el tipo. El segundo falla porque `null` puede ser el valor de cualquier tipo de referencia, así que no le dice nada al compilador: si quieres una variable inicializada a `null`, no puede ser `var`, tienes que escribir tú el tipo (`String y = null;`).
 >
 > Esta es también la razón por la que `var` no se puede usar en un campo o un parámetro de método: el valor de un parámetro solo llega cuando se llama al método, mucho después de que el compilador necesitara fijar el tipo.
 

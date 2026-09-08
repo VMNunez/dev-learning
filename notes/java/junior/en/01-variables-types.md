@@ -1062,7 +1062,7 @@ Only works for local variables (inside methods). Cannot be used for fields, meth
 >                  //         (variable initializer is 'null')
 > ```
 >
-> The parenthesised second line is the compiler telling you *which* of the two cases you hit. The first is the split declaration you saw in the Variables section — perfectly legal with an explicit type (`int count;`), impossible with `var`, because there is nothing to read the type off. The second fails because `null` is a legal value of *every* reference type, so it narrows nothing; if you genuinely want a null-initialised variable you must name the type yourself (`String y = null;`).
+> The parenthesised second line is the compiler telling you which of the two cases is failing. The first failure is declaring the variable without initialising it — perfectly legal with an explicit type (`int count;`), impossible with `var`, because there is nothing to read the type off. The second fails because `null` can be the value of any reference type, so it tells the compiler nothing: if you want a null-initialised variable it cannot be `var`, you have to write the type yourself (`String y = null;`).
 >
 > This is also why `var` cannot be used on a field or a method parameter: a parameter's value only arrives when the method is called, long after the compiler needed to fix the type.
 
