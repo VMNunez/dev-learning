@@ -234,6 +234,7 @@ String name = "Victor";
 
 name.substring(0, 3)     // "Vic"    — índices 0, 1, 2. Tres caracteres: 3 - 0.
 name.substring(3)        // "tor"    — un solo argumento significa "desde aquí hasta el final"
+name.substring(6)        // ""       — empezar justo en length() también es legal: no queda texto detrás
 name.substring(3, name.length())  // "tor" — lo mismo escrito entero: length() es el valor máximo que puede tomar end
 name.substring(0, 6)     // "Victor" — un índice final igual a length() es legal
 name.substring(3, 3)     // ""       — begin y end iguales: no hay nada que copiar, sale el string vacío
