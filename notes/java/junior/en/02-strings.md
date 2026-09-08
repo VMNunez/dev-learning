@@ -66,7 +66,7 @@ You have seen this pattern once already. In [01-variables-types.md](01-variables
 
 ### What actually happens in memory
 
-The diagram from [01-variables-types.md](01-variables-types.md) is the one to hold on to: a `String` variable does not contain the characters, it contains an **address** — an arrow pointing at an object that lives elsewhere in memory. Reassigning the variable moves the arrow; it never edits what the arrow used to point at.
+The diagram from [01-variables-types.md](01-variables-types.md) is the one to keep in mind: a `String` variable does not contain the text itself, it contains an **address in memory** pointing at an object that lives elsewhere, on the heap (the area of memory where all objects live). Reassigning the variable changes the address it points at, but it does not modify the object it was pointing at before.
 
 Trace `name = name.toUpperCase()` step by step:
 
