@@ -1234,12 +1234,25 @@ test gets read: *would produce the right output* is measured from the owning pla
 bullets, never from the topic's coverage as a whole.** That row deferred two stale note files to
 `/notes-audit` on a single reading of their topic coverage. The reading held for the Angular note, whose
 entry 15 is Vitest-first bullet by bullet; it was false for the General one, whose entry 10 assigns six
-tool-agnostic concepts and **not one that owns the per-layer tool table that was wrong**, so no
-coverage-driven run is obliged to touch it. Both files looked identical from the topic level and had
+tool-agnostic concepts and **not one that owns the per-layer tool table that was wrong**, so on the
+bullets alone no coverage-driven run was obliged to touch it. Both files looked identical from the topic level and had
 opposite answers one level down. So read the entry's `Coverage concepts` list and ask which bullet would
 *make* the run fix this; where none does, the deferral is silence rather than routing, and the item is
 still owed a row (here `REC-228`). The cold reviewer found it, not the sweep — a deferral is the one
 disposition that leaves nothing on disk to falsify it later.
+**And `REC-228`'s own resolution completed the test from the other side: the bullet list is the
+instrument, but it is not the only one, because a pipeline also carries duties that are file-wide.**
+Measured against disk, entry 10's bullets were not what held that table in place at all: the entry is
+`Status: pending` + `Action: audit`, so `notes-audit.md` hands the author `REWRITE_MODE = standard`,
+under which existing prose was final and the run was **forbidden** to touch those lines — bullets or no
+bullets — while the reviewer that may fix existing prose had no factual check on its list. Once that
+row gave the author a false-fact duty and the reviewer a factual-accuracy point, both scoped to the
+**file** rather than to the assigned concepts, a run became obliged to fix exactly what no bullet owns.
+So the test has two questions and the second is not optional: which assigned bullet would *make* the run
+fix this, **and** does any file-wide duty of that pipeline's stages already reach it. Where either
+answers yes it is a cell; where both answer no, ask which of the two is missing before writing the row,
+because the fix is usually the duty and not the bullet — a bullet added to force one correction buys one
+correction, and the duty catches the class.
 
 **An incidental finding is evidence, not automatically a row.** A cold reviewer dispatched on one row
 routinely finds defects elsewhere, and filing each of them as `open` is how the ledger came to refill
