@@ -227,7 +227,7 @@ El tipo que devuelve cada uno es lo que conviene memorizar, porque es lo que dec
 
 ### `substring` — el segundo índice queda excluido, y pasarte del final lanza excepción
 
-`substring(begin, end)` toma los caracteres desde `begin` hasta `end`, **sin incluir** `end`. Por eso la aritmética sale sola: la longitud del substring que se genera siempre es `end - begin`.
+`substring(begin, end)` toma los caracteres desde `begin` hasta `end`, **sin incluir** `end`. Por eso la longitud del substring que se genera siempre es `end - begin`.TODO: ADEMAS END TIENE QUE SER MENOR O IGUAL QUE LA LONGITUD DEL STRING-1??
 
 ```java
 String name = "Victor";
@@ -238,7 +238,7 @@ name.substring(0, 6)     // "Victor" — un índice final igual a length() es le
 name.substring(0, 10)    // 💥 lanza excepción
 ```
 
-Esa última línea no devuelve un string vacío ni uno truncado, que es justo lo que esperarías viniendo de JavaScript: allí `"Victor".slice(0, 10)` devuelve `"Victor"` sin protestar, porque `slice` y `substring` recortan por su cuenta el índice hasta la longitud real del texto. En Java pasarte no está permitido: la llamada falla en tiempo de ejecución con un mensaje que te da los dos números:
+Esa última línea no devuelve un string vacío ni uno truncado. Si vienes de JavaScript esperarías justo eso: allí `"Victor".slice(0, 10)` devuelve `"Victor"` sin protestar, porque `slice` y `substring` recortan ellos mismos el índice hasta la longitud real del texto. Java no recorta nada. La llamada falla en tiempo de ejecución con este mensaje, que te da los dos números:
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6

@@ -238,7 +238,7 @@ name.substring(0, 6)     // "Victor" — an end index of exactly length() is leg
 name.substring(0, 10)    // 💥 throws
 ```
 
-That last line does not return an empty string or a truncated one, which is exactly what you would expect coming from JavaScript: there `"Victor".slice(0, 10)` gives you back `"Victor"` without complaining, because `slice` and `substring` clamp the index down to the real length of the text themselves. In Java going past the end is not allowed: the call fails at runtime with a message that tells you both numbers:
+That last line does not return an empty string or a truncated one. Coming from JavaScript you would expect exactly that: there `"Victor".slice(0, 10)` gives you back `"Victor"` without complaining, because `slice` and `substring` clamp the index down to the real length of the text themselves. Java clamps nothing. The call fails at runtime with this message, which tells you both numbers:
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
