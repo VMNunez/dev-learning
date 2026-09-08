@@ -729,19 +729,19 @@ El módulo de testing de Angular — levanta un entorno Angular en miniatura par
 **¿Por qué tu proyecto usa Vitest y no Jasmine y Karma?** ⭐⭐
 
 Lo que realmente quieren saber: ¿elegiste tus herramientas, o aceptaste lo que había?
-R: Porque es lo que produce `ng new` desde Angular 21 — Karma está deprecado y su builder tiene anunciada la retirada, así que elegir Jasmine y Karma para un proyecto nuevo significa configurar en contra del valor por defecto del CLI para construir sobre algo que se va. Aun así leo una suite de Jasmine sin problema: la API de spec es el mismo `describe` / `it` / `expect`, `TestBed` es idéntico, y lo único que cambia es el spy.
+R: Porque es lo que produce `ng new` desde Angular 21 — Karma está deprecado y su builder tiene la retirada anunciada, así que elegir Jasmine y Karma para un proyecto nuevo significa configurar en contra del valor por defecto del CLI para construir sobre algo que se va. Aun así leo una suite de Jasmine sin problema: la API de spec es el mismo `describe` / `it` / `expect`, `TestBed` es idéntico, y lo único que cambia es el spy.
 
 Respuesta mala: "Vitest es más rápido." — La velocidad no es la razón por la que se movió el valor por defecto, y es lo que responde quien no lo eligió. El motivo es que Karma está deprecado y Vitest es lo que el CLI genera ahora.
 
 **¿Cómo testeas un servicio que hace llamadas HTTP?** ⭐⭐
 
-Pongo `provideHttpClient()` y `provideHttpClientTesting()` en el módulo de test, llamo al método del servicio, y después verifico la petición con `HttpTestingController.expectOne(url)` y envío una respuesta falsa con `req.flush(mockData)`. En suites antiguas ese mismo trabajo lo hace `HttpClientTestingModule`, que Angular 20 deprecó en favor de esos dos providers — conviene reconocerlo, no escribirlo.
+Pones `provideHttpClient()` y `provideHttpClientTesting()` en el módulo de test, y luego verificas la petición con `HttpTestingController.expectOne(url)` y devuelves una respuesta falsa con `req.flush(mockData)` — el mismo montaje de `TestBed` que los tests de componente que sí he escrito, con la red sustituida por un controlador que puedo inspeccionar. Los míos llegan en el Step 9 del proyecto que tengo ahora; en suites antiguas verás `HttpClientTestingModule` haciendo ese trabajo, deprecado en Angular 20 en favor de esos dos providers.
 
 **¿Qué es un spy y cuándo usas uno?** ⭐⭐
 
-Un falso que sustituye a una función real para poder controlar lo que devuelve y comprobar cómo se llamó. En `05-task-manager` el `close` del diálogo es un `vi.fn()` y el test verifica que se llamó con `true`; una suite de Jasmine escribe exactamente lo mismo como `spyOn()` o `jasmine.createSpyObj()`.
+Un doble que sustituye a una función real para poder controlar lo que devuelve y comprobar cómo se llamó. En `05-task-manager` el `close` del diálogo es un `vi.fn()` y el test verifica que se llamó con `true`; una suite de Jasmine escribe exactamente lo mismo como `spyOn()` o `jasmine.createSpyObj()`.
 
-```ts
+```typescript
 // projects/05-task-manager · confirm-dialog.spec.ts
 const dialogRef = { close: vi.fn() };
 // providers: [{ provide: MatDialogRef, useValue: dialogRef }]

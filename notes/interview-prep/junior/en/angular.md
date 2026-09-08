@@ -735,13 +735,13 @@ Red flag answer: "Vitest is faster." — Speed is not why the default moved, and
 
 **How do you test a service that makes HTTP calls?** ⭐⭐
 
-I put `provideHttpClient()` and `provideHttpClientTesting()` in the test module, call the service method, then assert the request with `HttpTestingController.expectOne(url)` and send a fake response with `req.flush(mockData)`. In older suites the same job is done by `HttpClientTestingModule`, which Angular 20 deprecated in favour of those two providers — worth recognising, not worth writing.
+You put `provideHttpClient()` and `provideHttpClientTesting()` in the test module, then assert the request with `HttpTestingController.expectOne(url)` and flush a fake response with `req.flush(mockData)` — the same `TestBed` setup as the component tests I have written, with the network swapped for a controller I can inspect. Mine land at Step 9 of my current project; in older suites you will see `HttpClientTestingModule` doing that job, deprecated in Angular 20 in favour of those two providers.
 
 **What is a spy and when do you use one?** ⭐⭐
 
 A fake that stands in for a real function so I can control what it returns and check how it was called. In `05-task-manager` the dialog's `close` is a `vi.fn()` and the test asserts it was called with `true`; a Jasmine suite writes the same thing as `spyOn()` or `jasmine.createSpyObj()`.
 
-```ts
+```typescript
 // projects/05-task-manager · confirm-dialog.spec.ts
 const dialogRef = { close: vi.fn() };
 // providers: [{ provide: MatDialogRef, useValue: dialogRef }]
