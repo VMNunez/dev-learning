@@ -162,22 +162,22 @@ Aquí tienes cada método por separado, para tenerlo como referencia. De cada un
   record.indexOf(";")   // -1 → no hay ningún punto y coma en el texto
   ```
 
-- **`toUpperCase()`** → `String`. Devuelve un `String` nuevo con todas las letras en mayúscula; **`toLowerCase()`** hace lo mismo con las minúsculas. El texto original no cambia, como todo en esta clase. Se usa sobre todo para normalizar antes de comparar o de guardar.
+- **`toUpperCase()`** → `String`. Devuelve un `String` nuevo con todas las letras en mayúscula; **`toLowerCase()`** hace lo mismo, pero devuelve el texto en minúsculas. El texto original no cambia, como todo en esta clase. Se usa sobre todo para normalizar antes de comparar o de guardar.
 
   ```java
   "Ana Ruiz".toUpperCase()  // "ANA RUIZ"
   "Ana Ruiz".toLowerCase()  // "ana ruiz"
   ```
 
-- **`replace(a, b)`** → `String`. Devuelve una copia con **todas** las apariciones de `a` cambiadas por `b`, no solo la primera. Trata lo que le pasas como texto literal, sin patrones.
+- **`replace(a, b)`** → `String`. Devuelve una copia con **todas** las apariciones de `a` cambiadas por `b`, no solo la primera.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
 
-  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → cambia las dos comas, no solo la primera
+  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → cambia las dos comas por " | ", no solo la primera
   ```
 
-- **`substring(inicio, fin)`** → `String`. Devuelve el trozo de texto que hay entre esas dos posiciones. Es el método con más trampa del catálogo y tiene su propia subsección aquí abajo.
+- **`substring(inicio, fin)`** → `String`. Devuelve el trozo de texto que hay entre esas dos posiciones. Es el método con más trampa de todos y tiene su propia subsección aquí abajo para explicarlo.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -185,7 +185,7 @@ Aquí tienes cada método por separado, para tenerlo como referencia. De cada un
   record.strip().substring(0, 8)  // "Ana Ruiz" → desde la posición 0 hasta la 7
   ```
 
-- **`split(separador)`** → `String[]`. Parte el texto por el separador y devuelve un array con los trozos. Es la forma normal de convertir una línea de CSV en sus campos, y también tiene su propia subsección, porque el separador no es lo que parece.
+- **`split(separador)`** → `String[]`. Parte el texto por el separador y devuelve un array con los trozos. Es lo que usas para partir una línea de un CSV. Un **CSV** (_comma-separated values_) es un fichero de texto donde cada línea es un registro y los valores van separados por comas, exactamente como el `record` del ejemplo: `split(",")` te devuelve esos valores sueltos, uno en cada posición del array, para que puedas trabajar con ellos por separado. También tiene su propia subsección aquí abajo, porque el separador no es lo que parece.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -200,17 +200,17 @@ Aquí tienes cada método por separado, para tenerlo como referencia. De cada un
   "Ana".equals("ana")  // false → la 'A' mayúscula y la 'a' minúscula son caracteres distintos
   ```
 
-- **`equalsIgnoreCase(...)`** → `boolean`. Lo mismo, pero tratando `A` y `a` como iguales. Es el de los emails y los nombres de usuario, donde nadie escribe las mayúsculas de forma consistente.
+- **`equalsIgnoreCase(...)`** → `boolean`. Lo mismo, pero tratando `A` y `a` como iguales, es decir, sin diferenciar mayúsculas de minúsculas. Lo usamos para comprobar emails, nombres de usuario y cualquier otro dato donde nadie escribe las mayúsculas de forma consistente.
 
   ```java
   "Ana@Mail.com".equalsIgnoreCase("ana@mail.com")  // true
   ```
 
-- **`String.join(separador, ...)`** → `String`. Pega varios textos con el separador que le digas. Es la operación contraria a `split`: uno parte una línea en campos, el otro monta la línea a partir de los campos. Fíjate en que se llama sobre `String` y no sobre una variable, porque no opera sobre un texto concreto: los recibe todos como argumentos.
+- **`String.join(separador, ...)`** → `String`. Pega varios textos con el separador que le digas. Es la operación contraria a `split`: uno parte una línea en campos, el otro forma el `String` a partir de los textos que le pasemos. Fíjate en que el método se llama sobre la clase `String` y no sobre una variable, porque no opera sobre un texto concreto: los recibe todos como argumentos. Puedes pasarle los que quieras, no solo dos.
 
   ```java
   String.join(" - ", "Ana", "Ruiz")             // "Ana - Ruiz"
-  String.join(",", "Ana Ruiz", "DEVELOPER")     // "Ana Ruiz,DEVELOPER" → así se vuelve a montar una línea de CSV
+  String.join(",", "Ana Ruiz", "DEVELOPER", "38.5")  // "Ana Ruiz,DEVELOPER,38.5" → tres textos, y así se vuelve a montar la línea de CSV entera
   ```
 
 - **`repeat(n)`** → `String`. Devuelve el texto repetido `n` veces. Sirve sobre todo para pintar separadores en consola sin escribir veinte guiones a mano.

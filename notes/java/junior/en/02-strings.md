@@ -162,22 +162,22 @@ Here is each method on its own, so you can come back to this as a reference. Thr
   record.indexOf(";")   // -1 → there is no semicolon in the text
   ```
 
-- **`toUpperCase()`** → `String`. Gives back a new `String` with every letter in upper case; **`toLowerCase()`** does the same with lower case. The original text does not change, as with everything in this class. Mostly used to normalise before comparing or storing.
+- **`toUpperCase()`** → `String`. Gives back a new `String` with every letter in upper case; **`toLowerCase()`** does the same, but gives the text back in lower case. The original text does not change, as with everything in this class. Mostly used to normalise before comparing or storing.
 
   ```java
   "Ana Ruiz".toUpperCase()  // "ANA RUIZ"
   "Ana Ruiz".toLowerCase()  // "ana ruiz"
   ```
 
-- **`replace(a, b)`** → `String`. Gives back a copy with **every** occurrence of `a` swapped for `b`, not just the first. It treats what you pass as literal text, with no patterns.
+- **`replace(a, b)`** → `String`. Gives back a copy with **every** occurrence of `a` swapped for `b`, not just the first.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
 
-  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → both commas change, not only the first
+  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → both commas become " | ", not only the first
   ```
 
-- **`substring(begin, end)`** → `String`. Gives back the slice of text between those two positions. It is the trickiest method in the catalogue and it gets its own sub-section just below.
+- **`substring(begin, end)`** → `String`. Gives back the slice of text between those two positions. It is the trickiest method of them all and it gets its own sub-section just below to explain it.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -185,7 +185,7 @@ Here is each method on its own, so you can come back to this as a reference. Thr
   record.strip().substring(0, 8)  // "Ana Ruiz" → from position 0 up to 7
   ```
 
-- **`split(separator)`** → `String[]`. Cuts the text by the separator and gives back an array of the pieces. It is the normal way to turn a CSV line into its fields, and it also gets its own sub-section, because the separator is not what it looks like.
+- **`split(separator)`** → `String[]`. Cuts the text by the separator and gives back an array of the pieces. It is what you use to cut up a line of a CSV. A **CSV** (_comma-separated values_) is a text file where each line is one record and the values are separated by commas, exactly like the `record` in the example: `split(",")` hands those values back separately, one per position of the array, so you can work with them one at a time. It also gets its own sub-section just below, because the separator is not what it looks like.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -200,17 +200,17 @@ Here is each method on its own, so you can come back to this as a reference. Thr
   "Ana".equals("ana")  // false → upper-case 'A' and lower-case 'a' are different characters
   ```
 
-- **`equalsIgnoreCase(...)`** → `boolean`. The same, but treating `A` and `a` as equal. It is the one for emails and usernames, where nobody types the case consistently.
+- **`equalsIgnoreCase(...)`** → `boolean`. The same, but treating `A` and `a` as equal — that is, without telling upper and lower case apart. We use it to check emails, usernames and any other data where nobody types the case consistently.
 
   ```java
   "Ana@Mail.com".equalsIgnoreCase("ana@mail.com")  // true
   ```
 
-- **`String.join(separator, ...)`** → `String`. Glues several texts together with the separator you give it. It is the opposite operation to `split`: one cuts a line into fields, the other builds the line back out of the fields. Notice it is called on `String` and not on a variable, because it does not operate on one particular text: it receives them all as arguments.
+- **`String.join(separator, ...)`** → `String`. Glues several texts together with the separator you give it. It is the opposite operation to `split`: one cuts a line into fields, the other builds the `String` out of the texts we pass it. Notice the method is called on the `String` class and not on a variable, because it does not operate on one particular text: it receives them all as arguments. You can pass it as many as you like, not just two.
 
   ```java
   String.join(" - ", "Ana", "Ruiz")             // "Ana - Ruiz"
-  String.join(",", "Ana Ruiz", "DEVELOPER")     // "Ana Ruiz,DEVELOPER" → this is how a CSV line is built back up
+  String.join(",", "Ana Ruiz", "DEVELOPER", "38.5")  // "Ana Ruiz,DEVELOPER,38.5" → three texts, and this is how the whole CSV line is built back up
   ```
 
 - **`repeat(n)`** → `String`. Gives back the text repeated `n` times. Mostly for drawing console separators without typing twenty dashes by hand.
