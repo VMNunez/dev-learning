@@ -223,11 +223,11 @@ El tipo que devuelve cada uno es lo que conviene memorizar, porque es lo que dec
 
 > **`length()` cuenta unidades de código, no los caracteres que ve una persona.** Para cada nombre, email y rol que vayas a manejar, el número de unidades de código y el número de caracteres coinciden, así que puedes leer `length()` como "cuántos caracteres tiene el texto" y seguir adelante. La excepción es la misma que [01-variables-tipos.md](01-variables-tipos.md) ya te mostró con `char`: un emoji ocupa dos unidades de código, así que `"😀".length()` es `2`. Es el mismo hecho llegándote a través de `String` en vez de a través de `char`, y también es por lo que `substring` puede cortar un emoji por la mitad.
 
-> **Nueve de estos métodos leen el `String` sin producir uno nuevo.** `length()`, `indexOf()` y las siete comprobaciones booleanas — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` y `equalsIgnoreCase()` — solo consultan el objeto que ya existe: recorren sus caracteres para responder una pregunta y devuelven un número o un `true`/`false`, sin reservar memoria para ningún objeto. Todos los métodos restantes — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — construyen un objeto `String` nuevo, exactamente como describió la sección anterior. Esa es la razón de que las llamadas se escriban encadenadas: cada eslabón de la cadena trabaja sobre el objeto nuevo que devolvió el eslabón anterior.
+> **Nueve de estos métodos leen el `String` sin producir uno nuevo.** `length()`, `indexOf()` y las siete comprobaciones booleanas — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` y `equalsIgnoreCase()` — solo consultan el objeto que ya existe: recorren sus caracteres para responder una pregunta y devuelven un número o un `true`/`false`, sin reservar memoria para ningún objeto nuevo. Todos los métodos restantes — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — construyen un objeto `String` nuevo, exactamente como describió la sección anterior. Esa es la razón de que las llamadas se escriban encadenadas: cada eslabón de la cadena trabaja sobre el objeto nuevo que devolvió el eslabón anterior.
 
 ### `substring` — el segundo índice queda excluido, y pasarte del final lanza excepción
 
-`substring(begin, end)` toma los caracteres desde `begin` hasta **sin incluir** `end`. Así que la aritmética es más amigable de lo que parece: la longitud del resultado siempre es `end - begin`.
+`substring(begin, end)` toma los caracteres desde `begin` hasta `end`, **sin incluir** `end`. Por eso la aritmética sale sola: la longitud del substring que se genera siempre es `end - begin`.
 
 ```java
 String name = "Victor";
@@ -238,7 +238,7 @@ name.substring(0, 6)     // "Victor" — un índice final igual a length() es le
 name.substring(0, 10)    // 💥 lanza excepción
 ```
 
-Esa última línea no devuelve un string vacío ni uno truncado. Falla en tiempo de ejecución con un mensaje que te da los dos números:
+Esa última línea no devuelve un string vacío ni uno truncado, que es justo lo que esperarías viniendo de JavaScript: allí `"Victor".slice(0, 10)` devuelve `"Victor"` sin protestar, porque `slice` y `substring` recortan por su cuenta el índice hasta la longitud real del texto. En Java pasarte no está permitido: la llamada falla en tiempo de ejecución con un mensaje que te da los dos números:
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6

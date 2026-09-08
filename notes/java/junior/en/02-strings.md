@@ -227,7 +227,7 @@ The type each one returns is what is worth memorising, because it is what decide
 
 ### `substring` — the second index is excluded, and going past the end throws
 
-`substring(begin, end)` takes the characters from `begin` up to **but not including** `end`. So the arithmetic is friendlier than it looks: the length of the result is always `end - begin`.
+`substring(begin, end)` takes the characters from `begin` up to `end`, **not including** `end`. That is why the arithmetic works out on its own: the length of the substring it produces is always `end - begin`.
 
 ```java
 String name = "Victor";
@@ -238,7 +238,7 @@ name.substring(0, 6)     // "Victor" — an end index of exactly length() is leg
 name.substring(0, 10)    // 💥 throws
 ```
 
-That last line does not return an empty string or a truncated one. It fails at runtime with a message that tells you both numbers:
+That last line does not return an empty string or a truncated one, which is exactly what you would expect coming from JavaScript: there `"Victor".slice(0, 10)` gives you back `"Victor"` without complaining, because `slice` and `substring` clamp the index down to the real length of the text themselves. In Java going past the end is not allowed: the call fails at runtime with a message that tells you both numbers:
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
