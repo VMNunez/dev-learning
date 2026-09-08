@@ -235,7 +235,9 @@ String name = "Victor";
 name.substring(0, 3)     // "Vic"    — índices 0, 1, 2. Tres caracteres: 3 - 0.
 name.substring(3)        // "tor"    — un solo argumento significa "desde aquí hasta el final"
 name.substring(0, 6)     // "Victor" — un índice final igual a length() es legal
-name.substring(0, 10)    // 💥 lanza excepción
+name.substring(3, 3)     // ""       — begin y end iguales: no hay nada que copiar, sale el string vacío
+name.substring(3, 1)     // 💥 lanza excepción — end queda por detrás de begin
+name.substring(0, 10)    // 💥 lanza excepción — end se pasa del final del texto
 ```
 
 Esa última línea no devuelve un string vacío ni uno truncado. Si vienes de JavaScript esperarías justo eso: allí `"Victor".slice(0, 10)` devuelve `"Victor"` sin protestar, porque `slice` y `substring` recortan ellos mismos el índice hasta la longitud real del texto. Java no recorta nada. La llamada falla en tiempo de ejecución con este mensaje, que te da los dos números:

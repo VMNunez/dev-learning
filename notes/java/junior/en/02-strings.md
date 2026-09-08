@@ -235,7 +235,9 @@ String name = "Victor";
 name.substring(0, 3)     // "Vic"    — indexes 0, 1, 2. Three characters: 3 - 0.
 name.substring(3)        // "tor"    — one argument means "from here to the end"
 name.substring(0, 6)     // "Victor" — an end index of exactly length() is legal
-name.substring(0, 10)    // 💥 throws
+name.substring(3, 3)     // ""       — begin and end are equal: nothing to copy, you get the empty string
+name.substring(3, 1)     // 💥 throws — end sits behind begin
+name.substring(0, 10)    // 💥 throws — end goes past the end of the text
 ```
 
 That last line does not return an empty string or a truncated one. Coming from JavaScript you would expect exactly that: there `"Victor".slice(0, 10)` gives you back `"Victor"` without complaining, because `slice` and `substring` clamp the index down to the real length of the text themselves. Java clamps nothing. The call fails at runtime with this message, which tells you both numbers:
