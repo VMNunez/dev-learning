@@ -227,7 +227,7 @@ The type each one returns is what is worth memorising, because it is what decide
 
 ### `substring` — the second index is excluded, and going past the end throws
 
-`substring(begin, end)` takes the characters from `begin` up to `end`, **not including** `end`. That is why the arithmetic works out on its own: the length of the substring it produces is always `end - begin`.
+`substring(begin, end)` takes the characters from `begin` up to `end`, **not including** `end`. That is why the length of the substring it produces is always `end - begin`. The valid indices are `0 <= begin <= end <= length()`: `end` may reach the length of the text, not the last position, precisely because it is excluded — `end = length()` is how you say "up to the end". With `"Victor"`, which has 6 characters, the longest possible cut is `substring(0, 6)`, and `substring(0, 7)` already throws.
 
 ```java
 String name = "Victor";
