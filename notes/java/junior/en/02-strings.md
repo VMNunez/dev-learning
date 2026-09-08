@@ -234,6 +234,7 @@ String name = "Victor";
 
 name.substring(0, 3)     // "Vic"    — indexes 0, 1, 2. Three characters: 3 - 0.
 name.substring(3)        // "tor"    — one argument means "from here to the end"
+name.substring(3, name.length())  // "tor" — the same thing spelled out: length() is the largest value end can take
 name.substring(0, 6)     // "Victor" — an end index of exactly length() is legal
 name.substring(3, 3)     // ""       — begin and end are equal: nothing to copy, you get the empty string
 name.substring(3, 1)     // 💥 throws — end sits behind begin
