@@ -97,7 +97,7 @@ The `"ana"` object was never touched. What happened goes in three steps: first t
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basic Manipulations" — the same methods with a runnable example each.
 
-These are the calls you need to *read* ordinary Java, which is most of what you do at first: you open a file in a real project and every third line does something to a `String`. The example is one employee record arriving as a line of text.
+These are the methods you need in order to read Java code correctly, which is most of what you do at first: you open a file in a real project and you find `String` operations everywhere. In the example, one employee record arrives as a single line of text.
 
 ```java
 String record = "  Ana Ruiz,DEVELOPER,38.5  ";

@@ -97,7 +97,7 @@ El objeto `"ana"` nunca se tocó. Lo que ocurrió va en tres pasos: primero se r
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → leer: "String Basic Manipulations" — los mismos métodos con un ejemplo ejecutable cada uno.
 
-Estas son las llamadas que necesitas para _leer_ Java normal, que es la mayor parte de lo que haces al principio: abres un archivo de un proyecto real y cada tercera línea le hace algo a un `String`. El ejemplo es el registro de un empleado llegando como una línea de texto.
+Estos son los métodos que necesitas para leer código Java correctamente, que es la mayor parte de lo que haces al principio: abres un archivo de un proyecto real y te encuentras operaciones sobre `String` por todas partes. En el ejemplo, el registro de un empleado llega como una única línea de texto.
 
 ```java
 String record = "  Ana Ruiz,DEVELOPER,38.5  ";
