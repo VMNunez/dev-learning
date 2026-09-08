@@ -365,6 +365,15 @@ An answer is interview-ready only when all of these hold:
   named project really uses the pattern (verify in the source before claiming it). An invented anchor
   is worse than none — it is a false anecdote about Victor's own code that one follow-up question
   exposes.
+- **Where the honest answer is "not yet", the answer teaches the concept with an example.** An
+  experience question — *"have you written X?"*, *"have you used X?"* — is never answered by claiming a
+  practice no project demonstrates, and a promise about a future project is not an answer on its own.
+  Say what he has actually done, then show the concept working on a concrete case, and name when the
+  missing half lands where it is planned. The anchor rule above forbids the false claim; this one says
+  what takes its place, which is the half an answer left to itself gets wrong — it pads, or it
+  substitutes the plan for the knowledge. Stated by Victor 2026-09-08, after the Angular junior testing
+  section had him answer "I test services with Jasmine and TestBed": a tool he had never run, and a
+  practice none of his projects demonstrated.
 - **Every word defensible.** Apply the test: *"could Victor explain every word of this answer if the
   interviewer pressed on it?"* If not, the answer is padded or memorised — it is weak.
 
