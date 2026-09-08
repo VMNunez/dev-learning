@@ -40,7 +40,7 @@ This file opens by explaining **immutability**, because every later section is a
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basics" — and note the word *immutable* in the first paragraph; the rest of this section is what that word actually costs you.
 
-Start with the code that catches everyone at least once. You have a name in lowercase and you want it uppercase:
+Start with a mistake almost everyone makes at least once. You have a name in lowercase and you want it uppercase:
 
 ```java
 String name = "ana";
@@ -48,9 +48,9 @@ name.toUpperCase();
 System.out.println(name);   // prints: ana
 ```
 
-Nothing happened. There is no error, no warning, no red squiggle in IntelliJ — the line ran, did its work, and the work went nowhere. That is not a bug in Java, it is the definition of the type: **a `String` object can never be modified after it is created.** `toUpperCase()` did not edit `name`; it built a *second* `String` containing `"ANA"` and returned it, and because nobody caught the return value, that second object was created and immediately thrown away.
+The name is still in lowercase. There is no error, no warning, no red squiggle in IntelliJ — the line ran, did its work, and the work went nowhere. That is not a bug in Java, it is how `String` works by design: **a `String` object can never be modified after it is created.** `toUpperCase()` did not edit `name`; it built a second `String` object containing `"ANA"` and returned it, and because that object was not stored in any variable, it was created and immediately thrown away.
 
-The fix is to catch what the method hands back:
+The fix is to store what the method hands back in a variable:
 
 ```java
 String name = "ana";

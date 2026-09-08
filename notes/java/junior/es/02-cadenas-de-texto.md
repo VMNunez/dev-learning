@@ -32,7 +32,7 @@ La respuesta es completamente distinta a la que viste para los primitivos en [01
 
 Este archivo empieza por explicar la **inmutabilidad**, porque cada sección posterior es una consecuencia de ella. A continuación se ve el **catálogo de métodos del día a día**, el conjunto de llamadas que vas a usar constantemente, para que puedas leer código Java correctamente. Tras ello se ven los dos lugares donde esos métodos te engañan: la diferencia entre **vacío y en blanco** (_empty_ y _blank_), y la diferencia entre `trim()` y `strip()`. Después se ven las dos formas posibles de introducir valores dentro de un texto: concatenar con `+`, o usar el método `.formatted()`. Le sigue la única forma de **acumular** texto —ir añadiendo trozos dentro de un bucle— sin dejar por el camino un montón de objetos que ya no usa nadie: `StringBuilder`. Más adelante se ven los **bloques de texto** (_text blocks_), la forma moderna de escribir un trozo de JSON o de SQL dentro del propio código fuente Java. Ya al final se ven las conversiones de **texto a número y de número a texto**, que es donde nacen la mayoría de los errores 500 en una API REST junior. Y cierra con la comparación de dos Strings, la única operación que este capítulo no explica: su explicación completa se ve en [06-poo-clases.md](06-poo-clases.md).
 
-**Se usa un mismo ejemplo para todo el archivo.** En el ejemplo se construye una línea de un informe de horas: un `Employee` tiene un `name`, un `role`, y un número de `hours` registradas esta semana. A partir de ahí se recorren dos direcciones. La de ida convierte los datos de un empleado que ya tienes en memoria —normalmente porque los acabas de leer de la base de datos— en una línea de texto legible, que es lo que acaba impreso en el informe. La de vuelta hace lo contrario: recibe los datos de un CSV que te pasan o de un formulario que alguien rellena, y hay que recuperar el `name`, el `role` y las `hours`, a partir de las cuales podremos hacer cálculos. `Employee` es el mismo ejemplo que se usa en [03-flujo-de-control.md](03-flujo-de-control.md), [06-poo-clases.md](06-poo-clases.md) y [10-colecciones.md](10-colecciones.md), así que no tienes que aprender un ejemplo distinto en cada archivo: solo lo que cada archivo añade de nuevo.
+**Se usa un mismo ejemplo para todo el archivo.** En el ejemplo se construye una línea de un informe de horas: un `Employee` tiene un `name`, un `role`, y un número de `hours` registradas esta semana. A partir de ahí se recorren dos direcciones. La de ida convierte los datos de un empleado que ya tienes en memoria —normalmente porque los acabas de leer de la base de datos— en una línea de texto legible, que es lo que acaba impreso en el informe. La de vuelta hace lo contrario: recibe los datos de un CSV que te pasan o de un formulario que alguien rellena, y hay que recuperar el `name`, el `role` y las `hours`, a partir de las cuales podremos hacer cálculos. `Employee` es el mismo ejemplo que se usa en [03-flujo-de-control.md](03-flujo-de-control.md), [06-poo-clases.md](06-poo-clases.md) y [10-colecciones.md](10-colecciones.md), así que no tienes que aprender un ejemplo distinto en cada archivo: solo lo que cada archivo añade nuevo.
 
 ---
 
@@ -40,7 +40,7 @@ Este archivo empieza por explicar la **inmutabilidad**, porque cada sección pos
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → leer: "String Basics" — y fíjate en la palabra _immutable_ en el primer párrafo; el resto de esta sección es lo que esa palabra realmente te cuesta.
 
-Empieza por el código que pilla a todo el mundo al menos una vez. Tienes un nombre en minúsculas y quieres pasarlo a mayúsculas:
+Empieza por un fallo que casi todo el mundo comete al menos una vez. Tienes un nombre en minúsculas y quieres pasarlo a mayúsculas:
 
 ```java
 String name = "ana";
@@ -48,9 +48,9 @@ name.toUpperCase();
 System.out.println(name);   // imprime: ana
 ```
 
-No pasó nada. No hay error, no hay warning, ningún subrayado rojo en IntelliJ — la línea se ejecutó, hizo su trabajo, y el trabajo no fue a ninguna parte. Eso no es un bug de Java, es la definición del tipo: **un objeto `String` nunca puede modificarse después de creado.** `toUpperCase()` no editó `name`; construyó un _segundo_ `String` que contenía `"ANA"` y lo devolvió, y como nadie recogió el valor de retorno, ese segundo objeto se creó y se descartó inmediatamente.
+El nombre sigue en minúsculas. No hay error, no hay warning, ningún subrayado rojo en IntelliJ — la línea se ejecutó, hizo su trabajo, y el trabajo no fue a ninguna parte. Eso no es un bug de Java, sino cómo funciona `String` por diseño: **un objeto `String` nunca puede modificarse después de ser creado.** `toUpperCase()` no editó `name`; construyó un segundo objeto `String` que contenía `"ANA"` y lo devolvió, y como ese objeto no se almacenó en ninguna variable, se creó y se descartó inmediatamente.
 
-El arreglo es recoger lo que el método devuelve:
+El arreglo es guardar en una variable lo que el método devuelve:
 
 ```java
 String name = "ana";
