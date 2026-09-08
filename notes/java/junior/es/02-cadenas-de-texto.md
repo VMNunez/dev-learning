@@ -241,7 +241,7 @@ name.substring(3, 1)     // 💥 lanza excepción — end queda por detrás de b
 name.substring(0, 10)    // 💥 lanza excepción — end se pasa del final del texto
 ```
 
-Esa última línea no devuelve un string vacío ni uno truncado: lanza una excepción. Si vienes de JavaScript esperarías que `"Victor".slice(0, 10)` te devolviera `"Victor"`, porque en JavaScript, cuando el índice se pasa del final del texto, `slice` y `substring` lo bajan ellos solos hasta la longitud real y te entregan lo que hay. Java no hace esa corrección: un índice que no es válido se rechaza, no se ajusta. Esta es la excepción que lanza, y su mensaje te da los dos números:
+Esa última línea no devuelve un string vacío ni uno truncado: lanza una excepción. Si vienes de JavaScript esperarías que `"Victor".slice(0, 10)` te devolviera `"Victor"`, porque en JavaScript, cuando el índice se pasa del final del texto, `slice` y `substring` usan la longitud del texto en lugar del índice que les pasaste, y te entregan lo que hay. Java no hace esa sustitución: un índice que no es válido se rechaza, no se ajusta. Esta es la excepción que lanza, y su mensaje te dice dos cosas: el rango que pediste y la longitud que el texto tenía en realidad.
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
