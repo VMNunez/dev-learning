@@ -122,21 +122,110 @@ String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, lo opuesto de spl
 
 Ahora cada método por separado, para tenerlo como referencia. De cada uno importan tres cosas: qué hace, para qué lo usas de verdad, y qué tipo devuelve. Ese tipo es el que decide si puedes encadenar otra llamada al final: si el método devuelve `String`, sí se puede encadenar; si devuelve `int` o `boolean`, no se puede encadenar y ahí se acaba la cadena.
 
-- **`length()`** → `int`. Cuántos caracteres tiene el texto, espacios incluidos. Lo usas para validar longitudes (¿el código postal tiene 5?) y para calcular índices antes de cortar.
-- **`strip()`** → `String`. Devuelve el texto sin espacios en blanco al principio ni al final; el de en medio no lo toca. Es la primera llamada que haces sobre cualquier texto que venga de un formulario o de un fichero, porque casi siempre trae espacios que nadie escribió a propósito.
-- **`isEmpty()`** → `boolean`. `true` solo cuando el texto no tiene ningún carácter, es decir `""`. Un texto con un espacio ya no está vacío.
-- **`isBlank()`** → `boolean`. `true` para `""` y también para cualquier texto hecho solo de espacios, tabuladores o saltos de línea. Es el que quieres al validar un campo de formulario; la sección siguiente explica por qué.
-- **`contains(...)`** → `boolean`. ¿Aparece esa secuencia en algún sitio dentro del texto? No te dice dónde, solo si está. Para búsquedas y filtros simples.
-- **`startsWith(...)` / `endsWith(...)`** → `boolean`. La misma pregunta anclada a un extremo: ¿empieza (o acaba) por esta secuencia **exacta**? Por eso `record.startsWith("  Ana")` es `true` con los dos espacios delante y `record.startsWith("Ana")` es `false`: el texto original empieza por espacio, no por `A`. Los usas para prefijos y extensiones (`ruta.endsWith(".pdf")`).
-- **`indexOf(...)`** → `int`. La posición del primer sitio donde aparece la secuencia, contando desde 0, o `-1` si no aparece. Ese `-1` es la señal de "no encontrado" y hay que comprobarla antes de usar el número como índice de un corte.
-- **`toUpperCase()`** (y su gemelo `toLowerCase()`) → `String`. Devuelve una copia del texto entero con las letras cambiadas de caja. Se usa sobre todo para normalizar antes de comparar o de guardar.
+- **`length()`** → `int`. Devuelve cuántos caracteres tiene el texto, contando también los espacios.
+
+  ```java
+  "Ana Ruiz".length()     // 8  → la 'A', las siete siguientes… y el espacio del medio también cuenta
+  "28001".length() == 5   // true → así compruebas que un código postal tiene los cinco dígitos
+  ```
+
+- **`strip()`** → `String`. Devuelve el texto sin espacios en blanco al principio ni al final. Si tiene espacios en blanco en medio, no los toca. Es el primer método que aplicas sobre cualquier texto que venga de un formulario o de un fichero, porque casi siempre trae espacios que nadie escribió a propósito.
+
+  ```java
+  "  Ana Ruiz  ".strip()   // "Ana Ruiz"     → se van los dos de delante y los dos de detrás
+  "  Ana  Ruiz  ".strip()  // "Ana  Ruiz"    → los dos espacios de en medio siguen ahí
+  ```
+
+- **`isEmpty()`** → `boolean`. Devuelve `true` solo cuando el texto no tiene ningún carácter, es decir `""`. Un texto con un espacio ya no está vacío, y por tanto daría `false`.
+
+  ```java
+  "".isEmpty()     // true
+  " ".isEmpty()    // false → tiene un carácter, el espacio
+  "Ana".isEmpty()  // false
+  ```
+
+- **`isBlank()`** → `boolean`. Devuelve `true` para `""` y también para cualquier texto hecho solo de espacios, tabuladores o saltos de línea — por ejemplo `" "`.
+
+  ```java
+  "".isBlank()      // true
+  " ".isBlank()     // true → solo tiene espacios
+  "	
+".isBlank()  // true → un tabulador y un salto de línea también son espacio en blanco
+  "Ana".isBlank()   // false
+  ```
+
+- **`contains(...)`** → `boolean`. Responde si esa secuencia aparece en algún sitio dentro del texto. No te dice dónde, solo si está. Se usa para búsquedas y filtros simples.
+
+  ```java
+  record.contains("DEVELOPER")  // true
+  record.contains("MANAGER")    // false
+  ```
+
+- **`startsWith(...)`** → `boolean`. Se usa para saber si un `String` empieza exactamente con la secuencia que le pasas. **`endsWith(...)`** → `boolean` hace lo simétrico: saber si un `String` acaba exactamente con esa secuencia. La palabra importante en los dos es _exactamente_: cuenta cada carácter, espacios incluidos.
+
+  ```java
+  record.startsWith("  Ana")  // true  → el texto empieza por dos espacios y luego "Ana"
+  record.startsWith("Ana")    // false → empieza por un espacio, no por la 'A'
+  "informe.pdf".endsWith(".pdf")  // true → así se comprueba la extensión de un fichero
+  ```
+
+- **`indexOf(...)`** → `int`. Devuelve la posición del primer sitio donde aparece la secuencia, contando desde 0, o `-1` si no aparece en ninguna parte. Ese `-1` es la señal de "no encontrado", y hay que comprobarla antes de usar ese número para cortar el texto con `substring`.
+
+  ```java
+  record.indexOf(",")   // 10 → la primera coma está en la posición 10
+  record.indexOf(";")   // -1 → no hay ningún punto y coma en el texto
+  ```
+
+- **`toUpperCase()`** → `String`. Devuelve un `String` nuevo con todas las letras en mayúscula; **`toLowerCase()`** hace lo mismo con las minúsculas. El texto original no cambia, como todo en esta clase. Se usa sobre todo para normalizar antes de comparar o de guardar.
+
+  ```java
+  "Ana Ruiz".toUpperCase()  // "ANA RUIZ"
+  "Ana Ruiz".toLowerCase()  // "ana ruiz"
+  ```
+
 - **`replace(a, b)`** → `String`. Devuelve una copia con **todas** las apariciones de `a` cambiadas por `b`, no solo la primera. Trata lo que le pasas como texto literal, sin patrones.
-- **`substring(inicio, fin)`** → `String`. El trozo de texto entre esas dos posiciones. Es el método con más trampa del catálogo y tiene su propia subsección aquí abajo.
-- **`split(separador)`** → `String[]`. Parte el texto por el separador y te devuelve un array con los trozos. Es la forma normal de convertir una línea de CSV en sus campos — y también tiene su propia subsección, porque el separador no es lo que parece.
+
+  ```java
+  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → cambia las dos comas, no solo la primera
+  ```
+
+- **`substring(inicio, fin)`** → `String`. Devuelve el trozo de texto que hay entre esas dos posiciones. Es el método con más trampa del catálogo y tiene su propia subsección aquí abajo.
+
+  ```java
+  record.strip().substring(0, 8)  // "Ana Ruiz" → desde la posición 0 hasta la 7
+  ```
+
+- **`split(separador)`** → `String[]`. Parte el texto por el separador y devuelve un array con los trozos. Es la forma normal de convertir una línea de CSV en sus campos, y también tiene su propia subsección, porque el separador no es lo que parece.
+
+  ```java
+  record.strip().split(",")  // ["Ana Ruiz", "DEVELOPER", "38.5"] → los tres campos del registro
+  ```
+
 - **`equals(...)`** → `boolean`. Compara el **contenido** de dos textos, carácter a carácter y distinguiendo mayúsculas de minúsculas. Este es el que se usa para comparar textos en Java, siempre.
-- **`equalsIgnoreCase(...)`** → `boolean`. Lo mismo, pero tratando `A` y `a` como iguales. Es el de los emails y los nombres de usuario, donde nadie escribe la caja de forma consistente.
+
+  ```java
+  "Ana".equals("Ana")  // true
+  "Ana".equals("ana")  // false → la 'A' mayúscula y la 'a' minúscula son caracteres distintos
+  ```
+
+- **`equalsIgnoreCase(...)`** → `boolean`. Lo mismo, pero tratando `A` y `a` como iguales. Es el de los emails y los nombres de usuario, donde nadie escribe las mayúsculas de forma consistente.
+
+  ```java
+  "Ana@Mail.com".equalsIgnoreCase("ana@mail.com")  // true
+  ```
+
 - **`String.join(separador, ...)`** → `String`. Pega varios textos con el separador que le digas. Es la operación contraria a `split`: uno parte una línea en campos, el otro monta la línea a partir de los campos. Fíjate en que se llama sobre `String` y no sobre una variable, porque no opera sobre un texto concreto: los recibe todos como argumentos.
+
+  ```java
+  String.join(" - ", "Ana", "Ruiz")             // "Ana - Ruiz"
+  String.join(",", "Ana Ruiz", "DEVELOPER")     // "Ana Ruiz,DEVELOPER" → así se vuelve a montar una línea de CSV
+  ```
+
 - **`repeat(n)`** → `String`. Devuelve el texto repetido `n` veces. Sirve sobre todo para pintar separadores en consola sin escribir veinte guiones a mano.
+
+  ```java
+  "-".repeat(20)  // "--------------------"
+  ```
 
 Esa columna del tipo devuelto es la que conviene memorizar. Todo lo que devuelve `String` se puede encadenar (`record.strip().toUpperCase().substring(0, 3)`); `length()` e `indexOf()` devuelven un `int` y ahí termina la cadena; los que devuelven `boolean` son exactamente los que pones dentro de un `if (...)`, porque es el tipo que una condición necesita.
 

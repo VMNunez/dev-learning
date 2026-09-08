@@ -122,21 +122,110 @@ String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, the opposite of s
 
 Now each method on its own, so you can come back to this as a reference. Three things matter about each one: what it does, what you actually reach for it for, and what type it hands back. That type is what decides whether you can chain another call onto the end: if the method returns `String`, you can chain; if it returns `int` or `boolean`, you cannot chain and the chain stops there.
 
-- **`length()`** → `int`. How many characters the text has, spaces included. You use it to validate lengths (is the postcode 5 long?) and to work out indices before cutting.
-- **`strip()`** → `String`. Returns the text without leading or trailing whitespace; the whitespace in the middle is untouched. It is the first call you make on any text coming from a form or a file, because it almost always carries spaces nobody typed on purpose.
-- **`isEmpty()`** → `boolean`. `true` only when the text has no characters at all, i.e. `""`. A text holding one space is no longer empty.
-- **`isBlank()`** → `boolean`. `true` for `""` and also for any text made only of spaces, tabs or newlines. It is the one you want when validating a form field, and the next section explains why.
-- **`contains(...)`** → `boolean`. Does that sequence appear anywhere inside the text? It does not tell you where, only whether. For simple searches and filters.
-- **`startsWith(...)` / `endsWith(...)`** → `boolean`. The same question anchored to one end: does it begin (or finish) with this **exact** sequence? That is why `record.startsWith("  Ana")` is `true` with the two leading spaces and `record.startsWith("Ana")` is `false`: the original text begins with a space, not with `A`. You use them for prefixes and extensions (`path.endsWith(".pdf")`).
-- **`indexOf(...)`** → `int`. The position of the first place the sequence appears, counting from 0, or `-1` when it does not appear at all. That `-1` is the "not found" signal and you have to check for it before using the number as a cutting index.
-- **`toUpperCase()`** (and its twin `toLowerCase()`) → `String`. Returns a copy of the whole text with its letters case-shifted. Mostly used to normalise before comparing or storing.
-- **`replace(a, b)`** → `String`. Returns a copy with **every** occurrence of `a` swapped for `b`, not just the first. It treats what you pass as literal text, with no patterns.
-- **`substring(begin, end)`** → `String`. The slice of text between those two positions. It is the trickiest method in the catalogue and it gets its own sub-section just below.
-- **`split(separator)`** → `String[]`. Cuts the text by the separator and hands you an array of the pieces. It is the normal way to turn a CSV line into its fields — and it also gets its own sub-section, because the separator is not what it looks like.
+- **`length()`** → `int`. Gives back how many characters the text has, spaces included.
+
+  ```java
+  "Ana Ruiz".length()     // 8  → the 'A', the seven that follow… and the space in the middle counts too
+  "28001".length() == 5   // true → this is how you check a postcode has its five digits
+  ```
+
+- **`strip()`** → `String`. Gives back the text without leading or trailing whitespace. If it has whitespace in the middle, that is left alone. It is the first method you apply to any text coming from a form or a file, because it almost always carries spaces nobody typed on purpose.
+
+  ```java
+  "  Ana Ruiz  ".strip()   // "Ana Ruiz"     → the two in front and the two behind are gone
+  "  Ana  Ruiz  ".strip()  // "Ana  Ruiz"    → the two spaces in the middle are still there
+  ```
+
+- **`isEmpty()`** → `boolean`. Gives back `true` only when the text has no characters at all, i.e. `""`. A text holding one space is no longer empty, and therefore gives `false`.
+
+  ```java
+  "".isEmpty()     // true
+  " ".isEmpty()    // false → it has one character, the space
+  "Ana".isEmpty()  // false
+  ```
+
+- **`isBlank()`** → `boolean`. Gives back `true` for `""` and also for any text made only of spaces, tabs or newlines — for example `" "`.
+
+  ```java
+  "".isBlank()      // true
+  " ".isBlank()     // true → spaces only
+  "	
+".isBlank()  // true → a tab and a newline are whitespace too
+  "Ana".isBlank()   // false
+  ```
+
+- **`contains(...)`** → `boolean`. Answers whether that sequence appears anywhere inside the text. It does not tell you where, only whether. Used for simple searches and filters.
+
+  ```java
+  record.contains("DEVELOPER")  // true
+  record.contains("MANAGER")    // false
+  ```
+
+- **`startsWith(...)`** → `boolean`. Used to find out whether a `String` begins exactly with the sequence you pass it. **`endsWith(...)`** → `boolean` does the symmetric thing: whether a `String` finishes exactly with that sequence. The important word in both is *exactly*: every character counts, spaces included.
+
+  ```java
+  record.startsWith("  Ana")  // true  → the text begins with two spaces and then "Ana"
+  record.startsWith("Ana")    // false → it begins with a space, not with the 'A'
+  "report.pdf".endsWith(".pdf")  // true → this is how you check a file extension
+  ```
+
+- **`indexOf(...)`** → `int`. Gives back the position of the first place the sequence appears, counting from 0, or `-1` when it does not appear anywhere. That `-1` is the "not found" signal, and you have to check for it before using that number to cut the text with `substring`.
+
+  ```java
+  record.indexOf(",")   // 10 → the first comma sits at position 10
+  record.indexOf(";")   // -1 → there is no semicolon in the text
+  ```
+
+- **`toUpperCase()`** → `String`. Gives back a new `String` with every letter in upper case; **`toLowerCase()`** does the same with lower case. The original text does not change, as with everything in this class. Mostly used to normalise before comparing or storing.
+
+  ```java
+  "Ana Ruiz".toUpperCase()  // "ANA RUIZ"
+  "Ana Ruiz".toLowerCase()  // "ana ruiz"
+  ```
+
+- **`replace(a, b)`** → `String`. Gives back a copy with **every** occurrence of `a` swapped for `b`, not just the first. It treats what you pass as literal text, with no patterns.
+
+  ```java
+  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → both commas change, not only the first
+  ```
+
+- **`substring(begin, end)`** → `String`. Gives back the slice of text between those two positions. It is the trickiest method in the catalogue and it gets its own sub-section just below.
+
+  ```java
+  record.strip().substring(0, 8)  // "Ana Ruiz" → from position 0 up to 7
+  ```
+
+- **`split(separator)`** → `String[]`. Cuts the text by the separator and gives back an array of the pieces. It is the normal way to turn a CSV line into its fields, and it also gets its own sub-section, because the separator is not what it looks like.
+
+  ```java
+  record.strip().split(",")  // ["Ana Ruiz", "DEVELOPER", "38.5"] → the record's three fields
+  ```
+
 - **`equals(...)`** → `boolean`. Compares the **content** of two texts, character by character, telling upper and lower case apart. This is the one you use to compare text in Java, always.
+
+  ```java
+  "Ana".equals("Ana")  // true
+  "Ana".equals("ana")  // false → upper-case 'A' and lower-case 'a' are different characters
+  ```
+
 - **`equalsIgnoreCase(...)`** → `boolean`. The same, but treating `A` and `a` as equal. It is the one for emails and usernames, where nobody types the case consistently.
+
+  ```java
+  "Ana@Mail.com".equalsIgnoreCase("ana@mail.com")  // true
+  ```
+
 - **`String.join(separator, ...)`** → `String`. Glues several texts together with the separator you give it. It is the opposite operation to `split`: one cuts a line into fields, the other builds the line back out of the fields. Notice it is called on `String` and not on a variable, because it does not operate on one particular text: it receives them all as arguments.
-- **`repeat(n)`** → `String`. Returns the text repeated `n` times. Mostly for drawing console separators without typing twenty dashes by hand.
+
+  ```java
+  String.join(" - ", "Ana", "Ruiz")             // "Ana - Ruiz"
+  String.join(",", "Ana Ruiz", "DEVELOPER")     // "Ana Ruiz,DEVELOPER" → this is how a CSV line is built back up
+  ```
+
+- **`repeat(n)`** → `String`. Gives back the text repeated `n` times. Mostly for drawing console separators without typing twenty dashes by hand.
+
+  ```java
+  "-".repeat(20)  // "--------------------"
+  ```
 
 That return-type column is the one worth memorising. Anything returning `String` can be chained (`record.strip().toUpperCase().substring(0, 3)`); `length()` and `indexOf()` return an `int` and the chain ends there; the ones returning `boolean` are exactly what you put inside an `if (...)`, because that is the type a condition needs.
 
