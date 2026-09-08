@@ -1217,6 +1217,21 @@ a shared rule cites before ruling on its wording**: an example is the one part o
 its population by hand, it costs a command each, and where an example is void the enumeration behind
 the rule was never done — what the fix owes is the population, not the sentence.
 
+**A lookup keyed on a *name* cannot carry a rule that discriminates between two tools, when the
+instrument's own items name both.** From `REC-226`. `_application-standard.md`'s Defensibility rule reads
+its evidence as a **spot lookup per keyword** over the coverage mirror, and the fix's new spend condition
+was first written as *the struck tool earns a marker of its own* — but the marked bullet that evidences
+the replacement (`Spies and test doubles … `vi.spyOn()` in Vitest or `spyOn()` in Jasmine` `✅
+05-task-manager`) **contains the struck tool's name**, so the lookup returns a marker for `Jasmine` and
+the condition spends itself on the one instance it was written for. Coverage bullets are concept-shaped
+by their own standard, so a bullet naming two implementations of one concept is the normal case, not an
+anomaly. **So where a condition is read off an evidence instrument keyed by name, state it over the
+marker's *evidence clause* — the falsifiable half, which names what a project actually did — and say
+explicitly that an item naming both members satisfies it for neither.** The test is one grep of the
+instrument for the struck name before the condition is written; a condition that cannot fail on the
+instance that motivated it is `REC-191`'s test-that-rejects-nothing, arriving through the lookup rather
+than through the wording.
+
 ### Evidence — what is a row at all
 
 **An unrun prompt is tracker state, never a recommendation.** From `REC-046`. A row whose content is
