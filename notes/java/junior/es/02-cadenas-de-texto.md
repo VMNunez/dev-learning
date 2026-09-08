@@ -120,7 +120,7 @@ String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, lo opuesto de spl
 "-".repeat(20)                     // "--------------------" → String, útil para separadores de consola
 ```
 
-Ahora cada método por separado, para tenerlo como referencia. De cada uno importan tres cosas: qué hace, para qué lo usas de verdad, y qué tipo devuelve — porque el tipo que devuelve decide si puedes encadenar otra llamada al final (`String` sí) o si ahí se acaba la cadena (`int` y `boolean` no).
+Ahora cada método por separado, para tenerlo como referencia. De cada uno importan tres cosas: qué hace, para qué lo usas de verdad, y qué tipo devuelve. Ese tipo es el que decide si puedes encadenar otra llamada al final: si el método devuelve `String`, sí se puede encadenar; si devuelve `int` o `boolean`, no se puede encadenar y ahí se acaba la cadena.
 
 - **`length()`** → `int`. Cuántos caracteres tiene el texto, espacios incluidos. Lo usas para validar longitudes (¿el código postal tiene 5?) y para calcular índices antes de cortar.
 - **`strip()`** → `String`. Devuelve el texto sin espacios en blanco al principio ni al final; el de en medio no lo toca. Es la primera llamada que haces sobre cualquier texto que venga de un formulario o de un fichero, porque casi siempre trae espacios que nadie escribió a propósito.

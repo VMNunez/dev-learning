@@ -120,7 +120,7 @@ String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, the opposite of s
 "-".repeat(20)                     // "--------------------" → String, handy for console separators
 ```
 
-Now each method on its own, so you can come back to this as a reference. Three things matter about each one: what it does, what you actually reach for it for, and what type it hands back — because the return type is what decides whether you can chain another call onto the end (`String` can) or whether the chain stops there (`int` and `boolean` cannot).
+Now each method on its own, so you can come back to this as a reference. Three things matter about each one: what it does, what you actually reach for it for, and what type it hands back. That type is what decides whether you can chain another call onto the end: if the method returns `String`, you can chain; if it returns `int` or `boolean`, you cannot chain and the chain stops there.
 
 - **`length()`** → `int`. How many characters the text has, spaces included. You use it to validate lengths (is the postcode 5 long?) and to work out indices before cutting.
 - **`strip()`** → `String`. Returns the text without leading or trailing whitespace; the whitespace in the middle is untouched. It is the first call you make on any text coming from a form or a file, because it almost always carries spaces nobody typed on purpose.
