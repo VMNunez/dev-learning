@@ -963,7 +963,10 @@ everything commits on the branch you're on — is simpler to remember than a spl
   `Practical evidence`, is written by the closing rituals above, and the audit may only **add** to it —
   never rewrite or drop an entry it did not write (`progress-update-prompt` D7). It *measures* every other section against its
   primary sources, reporting drift and
-  naming the ritual that owns the repair. It complements the per-step tracking above and never replaces
+  naming the ritual that owns the repair — **except a section's legend prose, which has no automatic
+  writer and is repaired by Victor by hand**; D11 measures the one class of it that can rot, a legend
+  sentence citing a named cell as its example, and routes it to him rather than to a recount pipeline
+  that would run in full and leave it untouched (`REC-219`). It complements the per-step tracking above and never replaces
   it: what it catches is a ritual that skipped a cell, not a cell nobody wrote.
 - **Say when it is due — do not wait to be asked.** Its scheduled points are gate **G6** of every
   project's `PLANNING.md` §23 (after G5 `readme-audit`, before G7 `portfolio-audit`) and gate **G3** of
@@ -972,7 +975,10 @@ everything commits on the branch you're on — is simpler to remember than a spl
   and `simulation-plan`.
   **All nine of those points close on an empty drift report**, not on the run having happened — the
   two gates and each `▶ Run first` alike: whatever the report names is repaired by the owner it names,
-  and only then does the gate sign off or the prerequisite count as met. A prompt that proceeds on a
+  and only then does the gate sign off or the prerequisite count as met. **A D11 prose row is no
+  exception, and that is deliberate**: it names Victor rather than a pipeline, so it is the one row a
+  gate can hold open until *he* edits one sentence — cheaper than the alternative, which is a legend
+  that lies for months because nothing was mandated to touch it. A prompt that proceeds on a
   report naming drift is reading a section its own auditor has already declared stale, and no gate
   downstream of it can tell.
 - **Empty is not enough for the two *gates*, which also read the report's scope line.** A `▶ Run first`

@@ -4,7 +4,8 @@
 > incrementally by the closing rituals (`step-complete`, `backlog-task-close`, `coverage-mark`,
 > `coverage-bullet-add`, `study-block-close`, `sql-grade`, `simulation-review`), each writing the cell it owns in the session
 > that produced it. So this prompt **audits**: it measures every section against its real sources and
-> **reports the drift**, naming the writer that owns the repair. It edits exactly one section itself —
+> **reports the drift**, naming the writer that owns the repair — or Victor, where the drift is in a
+> section's legend prose, which has no automatic writer at all (D11). It edits exactly one section itself —
 > `Professional level by topic`, whose `Current tracked level`, `Knowledge consolidation` and
 > `Next gate` cells need all 13 topics at once and no ritual can compute. Its fourth cell,
 > `Practical evidence`, is the one cell of the matrix this prompt **shares**: the closing rituals
@@ -87,6 +88,7 @@ contract each project subagent follows and the shape of what it returns.
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
 | `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
 | `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |
+| The **legend prose** of any section — its `—` / `*` legends and the sentences stating a table's counting rule | nobody automatic — **Victor, by hand** | measures one class of it and reports it to him (D11) |
 | `Useful resources`, the header prose | nobody automatic — Victor edits them by hand | untouched |
 
 **Owning a format is not owning the write.** D8 below remains the authority on the coverage table's
@@ -443,6 +445,35 @@ append — and check it against the `Pending additions` lists rather than report
 the result with `PROGRESS.md` and emit one drift row per mismatched cell, naming
 `authoring-progress-recount` as the repair.
 
+### D11 — The explanatory prose that cites a cell
+
+**A section's prose has no automatic writer, so this is the one class of it that can be measured.**
+Every writer in the ownership contract is mandated to recount *cells* — `_system-map.md` §8 states that
+partition — and nothing in any of those mandates reaches the paragraphs beside the table. Most of that
+prose is doctrine and cannot rot: it explains what a denominator is, why two figures are never summed,
+why `—` is not `0%`. **What rots is a sentence that names a specific cell as its example**, because the
+cell it names is free to move under it and no pipeline that moves it is told the sentence exists.
+
+Measured 2026-09-07: the `Coverage demonstrated` `—` legend still offered HTML as its example of a level
+with no coverage file three days after HTML junior became a real `0/81 (0%)`, and the drift report routed
+the repair to `/coverage-audit junior` — a pipeline that can run in full, correctly, and leave the
+sentence untouched.
+
+**The check.** For each section, read its explanatory prose — its `—` / `*` legend and its intro
+paragraphs alike — for a sentence that cites a **named topic, level, project or figure** as an
+illustration. For each one, compare what it asserts with **what this run measured**: the D8, D9 or D10
+recount, or the primary source the sentence itself names. **Never with the cell as printed** — that is
+the comparison D6 forbids, and it is also the wrong comparand for a sentence whose example is a file
+rather than a figure. A sentence whose example no longer holds is a drift row. Prose that names no cell
+is never a row, however old it is — this check has no opinion on wording, tone or length.
+
+**The owner is Victor, and naming a pipeline here is the defect this exists for.** Write `Victor — by
+hand` in the `Owner to re-run` column — **the one row of the report whose owner is a person and whose
+repair is not a run** and quote both halves in `What PROGRESS.md says` / `What the
+sources say`, so the repair is one sentence he can apply without reading the section. Never edit it
+here: this prompt writes `Professional level by topic` and nothing else, and Step E's diff check would
+revert the hunk anyway.
+
 ---
 
 ## Step E — Write the matrix, then print the drift report
@@ -463,7 +494,7 @@ Then print two things.
 
 One row per edited cell; `—` and one line saying so if the matrix was already accurate.
 
-**2 — Drift report** — every mismatch D3, D4, D5, D8, D9 and D10 found:
+**2 — Drift report** — every mismatch D3, D4, D5, D8, D9, D10 and D11 found:
 
 | Section | What PROGRESS.md says | What the sources say | Owner to re-run |
 |---|---|---|---|

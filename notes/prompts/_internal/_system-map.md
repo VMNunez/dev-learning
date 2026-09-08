@@ -311,7 +311,8 @@ files: the system that describes and checks the system, which has writers like e
 This is the file you asked about, and the one where "who writes it" is least obvious. The rule since
 2026-08-05: **`/progress-update` is an auditor, not this file's writer.** It writes three of the four
 cells of one table — the first row below states that partition, and the fourth cell is shared — and
-*measures* the rest, reporting drift and naming the ritual that owns the repair.
+*measures* the rest, reporting drift and naming the ritual that owns the repair — **except a section's
+explanatory prose, whose owner is Victor by hand**, stated under the table.
 
 | Section | Its writer | Notes |
 |---|---|---|
@@ -323,6 +324,15 @@ cells of one table — the first row below states that partition, and the fourth
 | `## Practice completed → Exercise route` | **`/sql-plan` (seeds/re-syncs the projection) · `sql-grade`'s cold subagent (moves the counts)** | `sql-step-close` re-checks that the `Total` rows still add up. The `Corrected` total cell stays blank by design |
 | `→ Timed simulations` | **`/simulation-review`** | counted by explicit level + track from `practice/simulations/TRACKER.md`; `/progress-update` audits it |
 | `→ LeetCode` | nothing yet — gated behind the ROADMAP gates | |
+
+**Every writer above owns cells, not prose.** Each mandate says *recount the affected cells and the
+`Total` row*, and none of them reaches the paragraphs beside the table — the `—` and `*` legends, the
+counting rules, the reasons two figures are never summed. That prose has **no automatic writer and is
+not getting one**: giving a recount pipeline licence to rewrite prose is the second-writer problem this
+section has excluded since 2026-08-05. **Victor repairs it by hand**, and the one class of it that can
+rot — a legend sentence citing a named cell as its example, which the pipeline moving that cell is
+never told about — is measured by `/progress-update` D11 and routed to him by name, never to a writer
+above (`REC-219`, 2026-09-08).
 
 **No concept lists.** The per-technology concept sections were deleted on 2026-08-03 because they were
 an evidence-free second copy of the coverage files. A concept goes to `notes/{topic}/coverage/{level}.md`
@@ -529,7 +539,7 @@ The things a run leaves behind that are easy to miss.
 | a plan entry is studied but holds an open `Pending study` | it is a studied note owing one section, counted studied on purpose — study those sections and `study-block-close` clears the lines, moving the date once the list empties |
 | a level's topics are all defined but never converged | `/coverage-audit {level}`, then `/roadmap-review` |
 | `/coverage-verify` returned `gaps` | `/coverage {topic} {level}` in update mode |
-| `PROGRESS.md` looks wrong before a gate | `/progress-update`, then repair with the ritual its drift report names |
+| `PROGRESS.md` looks wrong before a gate | `/progress-update`, then repair with the ritual its drift report names — or by hand, where the row is a D11 legend-prose row and names Victor |
 | `ROADMAP.md` has dates, or a stale gap table | `/roadmap-review` |
 | the SQL route ran out of steps | `/sql-plan-audit` (extends), or `/sql-plan {next level}` |
 | simulations have no level route, the route is stale, or the current spec has free-form scope | `/simulation-plan {level}`; then `/simulation-generator` only for its current missing spec |
