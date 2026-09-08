@@ -81,11 +81,11 @@ BEFORE                              AFTER
                                          │        └── nothing points here any more
                                          ▼
                                     ┌───────┐
-                                    │ "ANA" │  ← a brand-new object
+                                    │ "ANA" │  ← a new object
                                     └───────┘
 ```
 
-The `"ana"` object was never touched. A second object was allocated, filled with the uppercased characters, and the variable was re-aimed at it. The first object is now **unreachable** — no variable holds its address — which in Java means it is garbage, and the runtime will reclaim its memory at some point without you asking. That reclaiming process is garbage collection, and it is the subject of [05-memory-model.md](05-memory-model.md); here you only need to know that discarded Strings are not free, because that cost is the entire argument for `StringBuilder` further down.
+The `"ana"` object was never touched. What happened goes in three steps: first the memory for a second object was allocated on the heap, then it was filled with the uppercased characters, and finally the variable came to point at it. The first object is now **unreachable**: no variable points at it any more, none holds its address. In Java that means it is garbage, and at run time the JVM will reclaim its memory at some point without you asking. That memory-reclaiming process is garbage collection, and it is the subject of [05-memory-model.md](05-memory-model.md). What matters here is that every discarded `String` cost memory to allocate and will cost work to free, and that cost is the reason `StringBuilder` is needed further down.
 
 > **Why would a language designer do this on purpose?** Immutability sounds like pure inconvenience until you look at what it buys. Three things. First, **safe sharing**: if you pass a `String` into a method, you know with certainty that the method cannot alter your copy, because nothing can alter any `String` — so no defensive copying, ever. Second, **safe reuse**: because two identical literals can never diverge, Java is free to store one shared copy of `"ANA"` and hand it to everyone who writes that literal, which saves a great deal of memory in a real application. Third, **a stable hash code**: a `String` is the most common key type in a `HashMap`, and a key whose contents could change after insertion would be lost inside the map ([10-collections.md](10-collections.md) explains why). None of the three survives a mutable `String`. The cost is exactly one thing — every edit allocates — and the rest of this file is about knowing when that cost matters.
 
