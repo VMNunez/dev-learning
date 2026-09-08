@@ -277,6 +277,8 @@ La línea del medio es la trampa: no lanza excepción, devuelve un array vacío,
 
 ---
 
+//TODO: HE REVISADO HASTA AQUI
+
 ## Vacío, en blanco, y el espacio en blanco que no puedes ver
 
 > 📖 Docs: [Baeldung — Java Strip Methods](https://www.baeldung.com/java-string-strip-methods) → leer: "Comparing the Strip Methods vs the trim() Method" — y su subsección "The strip() Method vs the trim() Method".
