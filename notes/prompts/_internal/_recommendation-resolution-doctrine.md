@@ -1229,6 +1229,17 @@ prompt that would produce the right output if someone ran it is a cell. Two coro
 owns what it has a **row** for, so check that the row exists before deleting a ledger item onto it —
 `interview-prep-route-prompt` declared a single-shot row the table did not have. And a row deleted this
 way must carry any **ruling** buried in it into the file that owns the rule, or the deletion loses it.
+**Also `REC-224`, which names the instrument that answers the test — and it sits one level below where the
+test gets read: *would produce the right output* is measured from the owning plan entry's own assigned
+bullets, never from the topic's coverage as a whole.** That row deferred two stale note files to
+`/notes-audit` on a single reading of their topic coverage. The reading held for the Angular note, whose
+entry 15 is Vitest-first bullet by bullet; it was false for the General one, whose entry 10 assigns six
+tool-agnostic concepts and **not one that owns the per-layer tool table that was wrong**, so no
+coverage-driven run is obliged to touch it. Both files looked identical from the topic level and had
+opposite answers one level down. So read the entry's `Coverage concepts` list and ask which bullet would
+*make* the run fix this; where none does, the deferral is silence rather than routing, and the item is
+still owed a row (here `REC-228`). The cold reviewer found it, not the sweep — a deferral is the one
+disposition that leaves nothing on disk to falsify it later.
 
 **An incidental finding is evidence, not automatically a row.** A cold reviewer dispatched on one row
 routinely finds defects elsewhere, and filing each of them as `open` is how the ledger came to refill
