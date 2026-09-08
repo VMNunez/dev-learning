@@ -92,8 +92,10 @@ curriculum.
 **The commit boundary is authorship, not folder.** Machinery the agent writes commits itself
 (`notes/`, `notes/prompts/`, skills and commands, **the session-rule files themselves**, `PROGRESS.md`,
 any `PLANNING.md` / `README.md` / `PROJECT-BACKLOG.md`, `projects/briefs/`, `practice/sql/MISTAKES.md`
-and the SQL plan files, and `ROADMAP.md` — that last one by `roadmap-review` alone and only on a clean
-run). **Anything Victor produces himself** — project code, SQL answers, timed-simulation solutions, and
+and the SQL plan files, and `ROADMAP.md` — that last one broadened 2026-09-08 from `roadmap-review`
+alone to **any flow**, since the file is machinery the prompts write and never Victor; `roadmap-review`'s
+own conditional survives for that pipeline, which commits only on a clean run and prints the command
+otherwise). **Anything Victor produces himself** — project code, SQL answers, timed-simulation solutions, and
 leetcode solutions — is never auto-committed; the agent only prints the commands. The SQL and simulation
 plans, mistake logs, tracker, and generated test specs also live under `practice/`, but are the system's,
 not his. Full rule in `_session-rules.md`.
