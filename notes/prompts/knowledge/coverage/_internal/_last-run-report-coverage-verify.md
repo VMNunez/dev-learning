@@ -2,12 +2,12 @@
 
 Date: 2026-09-08
 Target: HTML / junior / update
-Status: open
+Status: applied in 9de99b71
+cold reviewer: approve-with-tightening
 
 Ledger reconciliation: `_skill-friction.md` holds no `FRIC` rows, so nothing was adjudicated. This run
-names one prompt-change candidate (the unstated `MODE` default); it is drafted and submitted to the cold
-reviewer in the refinement step below, and the ledger is touched only if that gate rejects it and it has
-to be parked.
+produced one prompt-change candidate (the unstated `MODE` default); the cold reviewer approved it with
+tightening and it landed in `9de99b71`, so it never became a ledger row.
 
 1. **Plan vs reality** — Guards, mirror-parity comparison, the digest, the required 1/1 cold completeness
    reviewer, orchestrator verification, the findings write, the inbox routing, and the two separate
@@ -33,4 +33,11 @@ to be parked.
    disk rather than a different cost. That is the candidate drafted below. First occurrence, so no
    breach-log row is owed — this is a prompt gap, not a rule the run broke.
 5. **Verdict** — change worth considering: state in `Configuration` that an omitted `MODE` resolves to
-   `update`.
+   `update`. Applied in `9de99b71` as a tightening of the `MODE` line plus one clause, not the three-line
+   paragraph first drafted: the cold reviewer rejected the draft's claim that a dry run "writes nothing"
+   (Step 4 has it write and commit its self-report and a `dry-run` tracker outcome) and pointed at
+   `simulation-plan-prompt.md` for the `-> default: update` shape the repo already uses. Prompt health:
+   276 lines, well under budget, largest section Step 1 at 57 lines; maps unaffected; map: verified — the
+   `/coverage-verify` launcher row, its detail row, and the four `_system-map.md` rows (artifact owner,
+   inbox writer/never-consumer, `_topic-ownership.md` reader, `gaps` next-command) all match the file as
+   read.
