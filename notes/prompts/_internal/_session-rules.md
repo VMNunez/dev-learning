@@ -644,18 +644,32 @@ rather than at the G4 review — three steps too late to be cheap.
 
 Tests are introduced in project 07 and stay in every project from that point on. No project is finished without tests.
 
-| What                  | Tool              | When               |
-| --------------------- | ----------------- | ------------------ |
-| Services (pure logic) | Jasmine + TestBed | Project 07 onwards |
-| Spring Boot services  | JUnit 5 + Mockito | Project 07 onwards |
-| Components (basic)    | Jasmine + TestBed | Project 08 onwards |
+| What                     | Tool              | When               |
+| ------------------------ | ----------------- | ------------------ |
+| Angular services (logic) | Vitest + TestBed  | Project 07 onwards |
+| Spring Boot services     | JUnit 5 + Mockito | Project 07 onwards |
+| Angular components       | Vitest + TestBed  | Project 08 onwards |
+
+**Why Vitest and not Jasmine, and what Victor still owes Jasmine** (ruled 2026-09-08). Karma is
+deprecated, Vitest is the Angular CLI's default runner from **Angular 21**, and **Angular 22 removes
+the Karma builder entirely** — so Jasmine + Karma in a new project means configuring against the CLI
+default to build on something being deleted. Projects 01–06 already run Vitest 4 because that is what
+`ng new` produced. **`TestBed` is the invariant** across Karma, Jest and Vitest, and it is where the
+depth belongs: `configureTestingModule`, `ComponentFixture`, `fakeAsync`/`tick`, HTTP mocking with
+`provideHttpClient()` + `provideHttpClientTesting()` (**not** the deprecated `HttpClientTestingModule`).
+Only the spy changes between runners — `spyOn` / `jasmine.createSpyObj` → `vi.spyOn` / `vi.fn`, and
+Vitest's API is Jest-compatible. **Spanish postings still name Jasmine/Karma** (maintained Angular
+v12–v18) **and Jest + Cypress** in the more modern ones, so reading a Jasmine/Karma suite stays a
+required competence — `notes/angular/coverage/junior.md` already carries it. **Write Vitest; read
+Jasmine.** E2E is not part of this table: it is asked from mid level onward, and when it enters the
+roadmap the tool is Playwright, not Cypress.
 
 - Introduce testing the same way as any other concept — explain first, let Victor write the test himself
 - Start with the simplest case: one service, one method, one test
 - Always explain what the test is checking and why that matters
 - Tests go in the same project folder, next to the file they test
 - From project 07: every service must have at least one unit test. From project 08: every component must have at least one TestBed test. Never let a project finish without tests
-- **Below that line — projects 01–06, and components in 07 — the absence of tests is never a finding.** **Missing tests, empty specs and weak assertions there are the expected state**, so no pass raises one as a task: write "tests — out of scope for this project" instead. This is a property of the **project**, not of one pipeline, so it binds every writer of a `PROJECT-BACKLOG.md`. `review-audit` and `_review-standard.md` restate it because their cold subagents never load this file; the in-session backlog rituals inherit it from here. **It covers those three things and nothing else, and the boundary is what a project already holds, never what it was scaffolded with**: a spec that is *broken* — it fails to compile, or asserts an element the template no longer has — and a test **command** that does not work are both outside the exclusion and are judged on their own evidence, under the rule those rituals carry (`REC-185`)
+- **Below that line — projects 01–06, and components in 07 — the absence of tests is never a finding.** **Missing tests, empty specs and weak assertions there are never raised** — whatever those projects happen to hold, including hand-authored tests from closed backlog tasks, is accepted maintenance debt below the roadmap line — so no pass raises one as a task: write "tests — out of scope for this project" instead. This is a property of the **project**, not of one pipeline, so it binds every writer of a `PROJECT-BACKLOG.md`. `review-audit` and `_review-standard.md` restate it because their cold subagents never load this file; the in-session backlog rituals inherit it from here. **It covers those three things and nothing else, and the boundary is what a project already holds, never what it was scaffolded with**: a spec that is *broken* — it fails to compile, or asserts an element the template no longer has — and a test **command** that does not work are both outside the exclusion and are judged on their own evidence, under the rule those rituals carry (`REC-185`)
 - Add one interview question to `notes/interview-prep/` for each new testing concept learned
 
 ## Java / Spring Boot
