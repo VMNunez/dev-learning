@@ -164,3 +164,4 @@ arrival.
 | NTH-0030 | 2026-09-08 | java/junior/02 | es | afirmacion-absoluta-imprecisa | 2 | AL SUPERAR EL VALOR MAXIMO (sobre "por eso se desborda") / ALMACENA UN NUMERO DECIMAL DE 64 BITS (sobre "almacena una fracción binaria") | missing | — | open |
 | NTH-0031 | 2026-09-08 | java/junior/02 | es | repeticion-de-lo-ya-dicho | 1 | NO PONGAS LO DE "por eso no puede contener `0.1`" | missing | — | open |
 | NTH-0032 | 2026-09-08 | java/junior/02 | es | referencia-ambigua | 5 | UN STRING COMO UN NOMBRE DE USUARIO...ETC / UN JSON O EL BODY DE UN JSON / UNA URL, NO ME GUSTA "una ruta de URL" / UN LOG PARA DEPURAR ERRORES / A LO QUE VIMOS PARA LOS NÚMEROS O PARA LOS PRIMITIVOS O EN EL 01-VARIABLES-TIPOS | missing | — | open |
+| NTH-0033 | 2026-09-08 | java/junior/02 | es | consecuencia-abstracta | 1 | Y ESO EXPLICA PARTE DE SU COMPORTAMIENTO COMO .... (sobre "un `double` almacena un número decimal de 64 bits") | missing | — | open |
