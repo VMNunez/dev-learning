@@ -99,28 +99,7 @@ El objeto `"ana"` nunca se tocó. Lo que ocurrió va en tres pasos: primero se r
 
 Estos son los métodos que necesitas para leer código Java correctamente, que es la mayor parte de lo que haces al principio: abres un archivo de un proyecto real y te encuentras operaciones sobre `String` por todas partes. En el ejemplo, la **ficha** de un empleado — sus datos de alta: nombre, rol y horas semanales — llega como una única línea de texto. A una línea así se le llama _registro_ (en inglés _record_): una fila de datos sobre una misma cosa, con los campos separados por comas, tal y como sale de un CSV o de un fichero exportado.
 
-```java
-String record = "  Ana Ruiz,DEVELOPER,38.5  ";
-
-record.length()                    // 27  → int, el número de caracteres (contando los espacios)
-record.strip()                     // "Ana Ruiz,DEVELOPER,38.5" → String, sin espacios al principio/final
-record.isEmpty()                   // false → boolean, true solo para exactamente ""
-record.isBlank()                   // false → boolean, true para "" y para texto solo de espacios en blanco
-record.contains("DEVELOPER")       // true  → boolean, ¿está esta secuencia en algún sitio dentro?
-record.startsWith("  Ana")         // true  → boolean, ¿empieza el texto por esta secuencia exacta? (los dos espacios cuentan)
-record.endsWith("38.5  ")          // true  → boolean, la misma pregunta por el otro extremo (también con sus dos espacios)
-record.indexOf(",")                // 10    → int, posición de la primera coincidencia, o -1 si no hay ninguna
-record.toUpperCase()               // "  ANA RUIZ,DEVELOPER,38.5  " → String
-record.replace(",", " | ")         // "  Ana Ruiz | DEVELOPER | 38.5  " → String, sustituye TODAS las ocurrencias
-record.strip().substring(0, 8)     // "Ana Ruiz" → String, caracteres 0 a 7
-record.strip().split(",")          // ["Ana Ruiz", "DEVELOPER", "38.5"] → String[], un array
-"Ana".equals("ana")                // false → boolean, comparación exacta de contenido
-"Ana".equalsIgnoreCase("ana")      // true  → boolean, comparación de contenido ignorando mayúsculas/minúsculas
-String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, lo opuesto de split
-"-".repeat(20)                     // "--------------------" → String, útil para separadores de consola
-```
-
-Ahora cada método por separado, para tenerlo como referencia. De cada uno importan tres cosas: qué hace, para qué lo usas de verdad, y qué tipo devuelve. Ese tipo es el que decide si puedes encadenar otra llamada al final: si el método devuelve `String`, sí se puede encadenar; si devuelve `int` o `boolean`, no se puede encadenar y ahí se acaba la cadena.
+Aquí tienes cada método por separado, para tenerlo como referencia. De cada uno importan tres cosas: qué hace, para qué lo usas de verdad, y qué tipo devuelve. Ese tipo es el que decide si puedes encadenar otra llamada al final: si el método devuelve `String`, sí se puede encadenar; si devuelve `int` o `boolean`, no se puede encadenar y ahí se acaba la cadena.
 
 - **`length()`** → `int`. Devuelve cuántos caracteres tiene el texto, contando también los espacios.
 
@@ -160,7 +139,7 @@ Ahora cada método por separado, para tenerlo como referencia. De cada uno impor
 
   record.contains("DEVELOPER")  // true
   record.contains("MANAGER")    // false
-  record.contains("developer")  // false → el texto lo lleva en mayúsculas; si quieres ignorar la caja, pasa los dos a la misma con toLowerCase()
+  record.contains("developer")  // false → el texto lo lleva en mayúsculas
   ```
 
 - **`startsWith(...)`** → `boolean`. Se usa para saber si un `String` empieza exactamente con la secuencia que le pasas. **`endsWith(...)`** → `boolean` se usa para saber si un `String` acaba exactamente con esa secuencia. La palabra importante en los dos es _exactamente_: cuentan cada carácter, los espacios incluidos, y distinguen mayúsculas de minúsculas igual que `contains`.
@@ -174,7 +153,7 @@ Ahora cada método por separado, para tenerlo como referencia. De cada uno impor
   "informe.pdf".endsWith(".pdf")  // true → así se comprueba la extensión de un fichero
   ```
 
-- **`indexOf(...)`** → `int`. Devuelve la posición del primer sitio donde aparece la secuencia, contando desde 0, o `-1` si no aparece en ninguna parte. Ese `-1` es la señal de "no encontrado", y hay que comprobarla antes de usar ese número para cortar el texto con `substring`.
+- **`indexOf(...)`** → `int`. Devuelve la posición del primer sitio donde aparece la secuencia, contando desde 0, o `-1` si no aparece en ninguna parte. Ese `-1` es la señal de "no encontrado", y hay que comprobarla antes de usar ese número, sea para lo que sea: cortar el texto, salir de un bucle o cualquier otra cosa.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -240,7 +219,7 @@ Ahora cada método por separado, para tenerlo como referencia. De cada uno impor
   "-".repeat(20)  // "--------------------"
   ```
 
-Esa columna del tipo devuelto es la que conviene memorizar. Todo lo que devuelve `String` se puede encadenar (`record.strip().toUpperCase().substring(0, 3)`); `length()` e `indexOf()` devuelven un `int` y ahí termina la cadena; los que devuelven `boolean` son exactamente los que pones dentro de un `if (...)`, porque es el tipo que una condición necesita.
+El tipo que devuelve cada uno es lo que conviene memorizar. Todo lo que devuelve `String` se puede encadenar (`record.strip().toUpperCase().substring(0, 3)`); `length()` e `indexOf()` devuelven un `int` y ahí termina la cadena; los que devuelven `boolean` son exactamente los que pones dentro de un `if (...)`, porque es el tipo que una condición necesita.
 
 > **`length()` cuenta unidades de código, no los caracteres que ve una persona.** Para cada nombre, email y rol que vayas a manejar, los dos números coinciden, así que léelo como "cuántos caracteres" y sigue adelante. La excepción es la misma que [01-variables-tipos.md](01-variables-tipos.md) ya te mostró con `char`: un emoji ocupa dos unidades de código, así que `"😀".length()` es `2`. Es el mismo hecho llegándote a través de `String` en vez de a través de `char`, y también es por lo que `substring` puede cortar un emoji por la mitad.
 

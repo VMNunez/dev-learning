@@ -99,28 +99,7 @@ The `"ana"` object was never touched. What happened goes in three steps: first t
 
 These are the methods you need in order to read Java code correctly, which is most of what you do at first: you open a file in a real project and you find `String` operations everywhere. In the example, one employee's **record** — their sign-up data: name, role and weekly hours — arrives as a single line of text. A line like that is called a _record_: one row of data about a single thing, with the fields separated by commas, exactly as it comes out of a CSV or an exported file.
 
-```java
-String record = "  Ana Ruiz,DEVELOPER,38.5  ";
-
-record.length()                    // 27  → int, the number of characters (counting the spaces)
-record.strip()                     // "Ana Ruiz,DEVELOPER,38.5" → String, no leading/trailing whitespace
-record.isEmpty()                   // false → boolean, true only for exactly ""
-record.isBlank()                   // false → boolean, true for "" and for whitespace-only text
-record.contains("DEVELOPER")       // true  → boolean, is this sequence anywhere inside?
-record.startsWith("  Ana")         // true  → boolean, does the text begin with this exact sequence? (the two spaces count)
-record.endsWith("38.5  ")          // true  → boolean, the same question at the other end (its two spaces included)
-record.indexOf(",")                // 10    → int, position of the first match, or -1 if there is none
-record.toUpperCase()               // "  ANA RUIZ,DEVELOPER,38.5  " → String
-record.replace(",", " | ")         // "  Ana Ruiz | DEVELOPER | 38.5  " → String, replaces ALL occurrences
-record.strip().substring(0, 8)     // "Ana Ruiz" → String, characters 0 to 7
-record.strip().split(",")          // ["Ana Ruiz", "DEVELOPER", "38.5"] → String[], an array
-"Ana".equals("ana")                // false → boolean, exact content comparison
-"Ana".equalsIgnoreCase("ana")      // true  → boolean, content comparison ignoring case
-String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, the opposite of split
-"-".repeat(20)                     // "--------------------" → String, handy for console separators
-```
-
-Now each method on its own, so you can come back to this as a reference. Three things matter about each one: what it does, what you actually reach for it for, and what type it hands back. That type is what decides whether you can chain another call onto the end: if the method returns `String`, you can chain; if it returns `int` or `boolean`, you cannot chain and the chain stops there.
+Here is each method on its own, so you can come back to this as a reference. Three things matter about each one: what it does, what you actually reach for it for, and what type it hands back. That type is what decides whether you can chain another call onto the end: if the method returns `String`, you can chain; if it returns `int` or `boolean`, you cannot chain and the chain stops there.
 
 - **`length()`** → `int`. Gives back how many characters the text has, spaces included.
 
@@ -160,7 +139,7 @@ Now each method on its own, so you can come back to this as a reference. Three t
 
   record.contains("DEVELOPER")  // true
   record.contains("MANAGER")    // false
-  record.contains("developer")  // false → the text holds it in upper case; to ignore case, put both sides in the same one with toLowerCase()
+  record.contains("developer")  // false → the text holds it in upper case
   ```
 
 - **`startsWith(...)`** → `boolean`. Used to find out whether a `String` begins exactly with the sequence you pass it. **`endsWith(...)`** → `boolean` is used to find out whether a `String` finishes exactly with that sequence. The important word in both is *exactly*: they count every character, spaces included, and they tell upper and lower case apart just like `contains`.
@@ -174,7 +153,7 @@ Now each method on its own, so you can come back to this as a reference. Three t
   "report.pdf".endsWith(".pdf")  // true → this is how you check a file extension
   ```
 
-- **`indexOf(...)`** → `int`. Gives back the position of the first place the sequence appears, counting from 0, or `-1` when it does not appear anywhere. That `-1` is the "not found" signal, and you have to check for it before using that number to cut the text with `substring`.
+- **`indexOf(...)`** → `int`. Gives back the position of the first place the sequence appears, counting from 0, or `-1` when it does not appear anywhere. That `-1` is the "not found" signal, and you have to check for it before using that number at all, whatever you use it for: cutting the text, breaking out of a loop, anything else.
 
   ```java
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -240,7 +219,7 @@ Now each method on its own, so you can come back to this as a reference. Three t
   "-".repeat(20)  // "--------------------"
   ```
 
-That return-type column is the one worth memorising. Anything returning `String` can be chained (`record.strip().toUpperCase().substring(0, 3)`); `length()` and `indexOf()` return an `int` and the chain ends there; the ones returning `boolean` are exactly what you put inside an `if (...)`, because that is the type a condition needs.
+The type each one returns is what is worth memorising. Anything returning `String` can be chained (`record.strip().toUpperCase().substring(0, 3)`); `length()` and `indexOf()` return an `int` and the chain ends there; the ones returning `boolean` are exactly what you put inside an `if (...)`, because that is the type a condition needs.
 
 > **`length()` counts code units, not the characters a human sees.** For every name, email and role you will ever handle the two are the same number, so read it as "how many characters" and move on. The exception is the one [01-variables-types.md](01-variables-types.md) already showed you with `char`: an emoji occupies two code units, so `"😀".length()` is `2`. That is the same fact reaching you through `String` instead of through `char`, and it is also why `substring` can cut an emoji in half.
 
