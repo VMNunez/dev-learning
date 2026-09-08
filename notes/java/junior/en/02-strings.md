@@ -68,7 +68,7 @@ You have seen this pattern once already. In [01-variables-types.md](01-variables
 
 The diagram from [01-variables-types.md](01-variables-types.md) is the one to keep in mind: a `String` variable does not contain the text itself, it contains an **address in memory** pointing at an object that lives elsewhere, on the heap (the area of memory where all objects live). Reassigning the variable changes the address it points at, but it does not modify the object it was pointing at before.
 
-Trace `name = name.toUpperCase()` step by step:
+The diagram below shows the state of memory before and after `name = name.toUpperCase()` runs:
 
 ```
 BEFORE                              AFTER
