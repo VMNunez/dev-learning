@@ -159,3 +159,8 @@ arrival.
 | NTH-0025 | 2026-09-08 | java/junior/01 | es | redaccion-propia-a-validar | 3 | ESTA BIEN EXPRESADO MODELO DE VALORES? O HAY QUE DECIR TIPOS? / HE MODIFICADO EL TITULO A MANO Y CREO QUE ME GUSTA, PERO NO SE SI ES CORRECTO LO QUE HE ESCRITO / ES BUENA FRASE "un argumento de tipo genérico siempre tiene que ser una referencia"? | missing | — | open |
 | NTH-0026 | 2026-09-04 | java/junior/01 | es | traduccion-forzada | 1 | VERBOSO ES QUE HAY QUE ESCRIBIR MUCHO, PERO NO CREO QUE SEA UNA BUENA TRADUCCION | missing | — | open |
 | NTH-0027 | 2026-09-07 | java/junior/01 | es | indice-ausente | 1 | FALTA EL INDICE DE ESTA NOTA | missing | — | open |
+| NTH-0028 | 2026-09-08 | java/junior/02 | es | indice-ausente | 1 | COMIENZA CON EL INDICE DE LA NOTA COMO EL 01-VARIABLES-TIPOS.MD | missing | — | open |
+| NTH-0029 | 2026-09-08 | java/junior/02 | es | frase-sobrecargada | 1 | NO ME GUSTA TU FORMA DE EXPRESAR "le hizo la misma pregunta a cada valor: ¿cómo está representado, y qué obliga esa representación?" | unapplied | `_note-quality-standard.md` → `Sentence-level register` | open |
+| NTH-0030 | 2026-09-08 | java/junior/02 | es | afirmacion-absoluta-imprecisa | 2 | AL SUPERAR EL VALOR MAXIMO (sobre "por eso se desborda") / ALMACENA UN NUMERO DECIMAL DE 64 BITS (sobre "almacena una fracción binaria") | missing | — | open |
+| NTH-0031 | 2026-09-08 | java/junior/02 | es | repeticion-de-lo-ya-dicho | 1 | NO PONGAS LO DE "por eso no puede contener `0.1`" | missing | — | open |
+| NTH-0032 | 2026-09-08 | java/junior/02 | es | referencia-ambigua | 4 | UN STRING COMO UN NOMBRE DE USUARIO...ETC / UN JSON O EL BODY DE UN JSON / UNA URL, NO ME GUSTA "una ruta de URL" / UN LOG PARA DEPURAR ERRORES | missing | — | open |

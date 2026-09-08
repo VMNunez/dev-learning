@@ -1,9 +1,32 @@
+## Index of this note
+
+- [Strings and text](#strings-and-text)
+- [Immutability — the fact everything else on this page comes from](#immutability--the-fact-everything-else-on-this-page-comes-from)
+  - [What actually happens in memory](#what-actually-happens-in-memory)
+- [The everyday method catalogue — and what each call gives back](#the-everyday-method-catalogue--and-what-each-call-gives-back)
+  - [`substring` — the second index is excluded, and going past the end throws](#substring--the-second-index-is-excluded-and-going-past-the-end-throws)
+  - [`split` — it takes a regular expression, not a plain separator](#split--it-takes-a-regular-expression-not-a-plain-separator)
+- [Empty, blank, and the whitespace you cannot see](#empty-blank-and-the-whitespace-you-cannot-see)
+  - [`strip()` vs `trim()` — use `strip()`](#strip-vs-trim--use-strip)
+- [Putting values into text — `+` and `.formatted()`](#putting-values-into-text---and-formatted)
+  - [Why a broken format string still compiles](#why-a-broken-format-string-still-compiles)
+- [Accumulating text — when `+` becomes the wrong tool](#accumulating-text--when--becomes-the-wrong-tool)
+  - [The rule, stated so you can apply it](#the-rule-stated-so-you-can-apply-it)
+  - [`String`, `StringBuilder`, `StringBuffer`](#string-stringbuilder-stringbuffer)
+- [Text blocks — multi-line text without the escaping](#text-blocks--multi-line-text-without-the-escaping)
+- [Between text and numbers](#between-text-and-numbers)
+  - [Text → number](#text--number)
+  - [`NumberFormatException` is *unchecked* — and what that means today](#numberformatexception-is-unchecked--and-what-that-means-today)
+  - [Number → text](#number--text)
+- [Comparing two Strings — and the one question this chapter refuses to answer](#comparing-two-strings--and-the-one-question-this-chapter-refuses-to-answer)
+- [What this unlocks](#what-this-unlocks)
+
 # Strings and text
 
 > 📖 [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basics" and "String Basic Manipulations" for the method catalogue
 > 📖 [Oracle Docs — `java.lang.String`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html) → the complete method list, for when you need the exact signature
 
-[01-variables-types.md](01-variables-types.md) asked one question of every value: *how is this represented, and what does that representation force?* For numbers the answer was about bits — an `int` holds 32 of them, which is why it overflows, and a `double` stores a binary fraction, which is why it cannot hold `0.1`. Now the same question goes to the value type you touch on literally every request that reaches a web application: a username, a JSON body, a URL path, a log line, a SQL query. All of it is text, and in Java all of it is `String`.
+[01-variables-types.md](01-variables-types.md) explained every value through how Java stores it in memory, because the way it is stored decides what you can do with it. For numbers the answer was in the bits: an `int` holds 32 of them, which is why it overflows once it goes past its maximum value; a `double` stores a 64-bit decimal number. Now the same question goes to a different kind of value: the `String`. A `String` is a username, a JSON or the body of a JSON, a URL, a log line you read to debug an error, a SQL query. All of it is text, and in Java all text is a `String`.
 
 The answer has a completely different shape. A `String` is not a primitive and it is not a bit pattern you can reason about — it is an **object**, and an object that **cannot be changed after it is created**. That single fact is the whole chapter. It explains why `name.toUpperCase()` looks like it does nothing, why gluing text together inside a loop is the classic junior performance mistake, why a class called `StringBuilder` has to exist at all, and — later, in [06-oop-classes.md](06-oop-classes.md) — why `==` turns out to compare the wrong thing entirely.
 
