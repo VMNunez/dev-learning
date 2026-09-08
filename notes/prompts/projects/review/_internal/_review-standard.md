@@ -355,7 +355,7 @@ unlikely combination is Low.
 
 ## Test-quality scope — the test review
 
-> **Projects 01–06 are below the testing roadmap — never judge what their specs do or do not hold.**
+> **Projects 01–06 are below the testing roadmap — this lens never judges what their specs do or do not hold.**
 > Per the shared session rules ("Testing rules"), testing enters the roadmap at project **07**
 > (services) and project **08** (components). The exclusion rests on the **project's position in the
 > roadmap**, never on a claim about how its specs were generated: several of 01–06 hold real
@@ -389,9 +389,11 @@ tests — it hides regressions. Check:
   repository, not the class under test); no over-mocking that ends up testing the mock.
 - **Structure & readability** — clear arrange/act/assert; test names say what they check
   (`create_throwsWhenProjectInactive`, not `test1`); no logic inside tests.
-- **Angular** — services use `HttpClientTestingModule` and assert the request (URL, method) + the mapped
-  response; component tests (from 08) assert rendered state and emitted events, not just that the
-  component was created.
+- **Angular** — services configure the test module with `provideHttpClient()` + `provideHttpClientTesting()`
+  (**not** the deprecated `HttpClientTestingModule`) and assert the request (URL, method) + the mapped
+  response through `HttpTestingController`; component tests (from 08) assert rendered state and emitted
+  events, not just that the component was created. The runner is **Vitest**, so spies are `vi.fn()` /
+  `vi.spyOn()` — a `jasmine.createSpy` in new code is itself the finding.
 
 Priorities: a missing planned test or an untested §8 business rule is **High**; a weak assertion or a
 missing edge case is Medium; naming / structure polish is Low.

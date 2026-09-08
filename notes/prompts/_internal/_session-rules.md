@@ -651,18 +651,20 @@ Tests are introduced in project 07 and stay in every project from that point on.
 | Angular components       | Vitest + TestBed  | Project 08 onwards |
 
 **Why Vitest and not Jasmine, and what Victor still owes Jasmine** (ruled 2026-09-08). Karma is
-deprecated, Vitest is the Angular CLI's default runner from **Angular 21**, and **Angular 22 removes
-the Karma builder entirely** — so Jasmine + Karma in a new project means configuring against the CLI
-default to build on something being deleted. Projects 01–06 already run Vitest 4 because that is what
+deprecated — it accepts no new features and no general bug fixes — and Vitest is the Angular CLI's
+default runner from **Angular 21**, with the Karma builder announced for removal; so Jasmine + Karma in
+a new project means configuring against the CLI default to build on something on its way out. Projects
+01–06 already run Vitest 4 (measured 2026-09-08, `@angular/core ^21.2.0`) because that is what
 `ng new` produced. **`TestBed` is the invariant** across Karma, Jest and Vitest, and it is where the
 depth belongs: `configureTestingModule`, `ComponentFixture`, `fakeAsync`/`tick`, HTTP mocking with
 `provideHttpClient()` + `provideHttpClientTesting()` (**not** the deprecated `HttpClientTestingModule`).
 Only the spy changes between runners — `spyOn` / `jasmine.createSpyObj` → `vi.spyOn` / `vi.fn`, and
 Vitest's API is Jest-compatible. **Spanish postings still name Jasmine/Karma** (maintained Angular
-v12–v18) **and Jest + Cypress** in the more modern ones, so reading a Jasmine/Karma suite stays a
-required competence — `notes/angular/coverage/junior.md` already carries it. **Write Vitest; read
-Jasmine.** E2E is not part of this table: it is asked from mid level onward, and when it enters the
-roadmap the tool is Playwright, not Cypress.
+v12–v18), and `_job-market-evidence.md` records **Jest** alongside them, so reading a Jasmine/Karma
+suite stays a required competence — `notes/angular/coverage/junior.md` already carries it. **Write
+Vitest; read Jasmine.** E2E is not part of this table: `_job-market-evidence.md` places it from mid
+level onward, and which tool it takes when it enters the roadmap is `REC-225`'s to rule, not this
+table's.
 
 - Introduce testing the same way as any other concept — explain first, let Victor write the test himself
 - Start with the simplest case: one service, one method, one test

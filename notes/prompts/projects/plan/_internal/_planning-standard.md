@@ -284,9 +284,10 @@ rule in §8 has a test that proves it is enforced.**
 custom queries, one `@DataJpaTest` (the query returns what it should against a real embedded DB). Name
 the controller/repository and what each asserts. If the project introduces neither yet, say so
 explicitly — do not pad.
-**Angular services (Jasmine + TestBed + `HttpClientTestingModule`):** which services, what each test
-verifies (the request URL/method, the mapped response, error handling).
-**Angular components (Jasmine + TestBed, from project 08):** which components, what each verifies
+**Angular services (Vitest + TestBed + `provideHttpClient()` / `provideHttpClientTesting()` — never the
+deprecated `HttpClientTestingModule`):** which services, what each test verifies (the request URL/method,
+the mapped response, error handling).
+**Angular components (Vitest + TestBed, from project 08):** which components, what each verifies
 (renders the right state, emits on action, shows empty/error state).
 **Assertion quality (every level):** each test asserts real behaviour — the returned value or the saved
 object's state — never only `verify(...)` that a method was called. No trivial "it exists" tests.
@@ -429,7 +430,7 @@ PLANNING.md.
 11. **Backend tests** — JUnit 5 + Mockito unit tests, one step per service class (happy path + edge
     cases), plus the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`),
     if any.
-12. **Angular tests** — services first (`HttpClientTestingModule`); components if project 08+.
+12. **Angular tests** — services first (Vitest + TestBed, `provideHttpClientTesting()`); components if project 08+.
 13. **SQL complement** — write by hand in `practice/sql/` the SQL Hibernate generates for the main queries.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by
     design — Docker wraps a working app, not a work in progress.

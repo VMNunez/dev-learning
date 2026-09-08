@@ -179,7 +179,9 @@ Per the shared session rules ("Testing rules"), testing enters the roadmap at **
 - **Projects 01–06:** tests are **out of scope entirely** — because those projects **predate the
   testing roadmap**, not because their specs are empty. Several of them hold real hand-authored tests
   from closed backlog tasks; what those suites carry is accepted maintenance debt, deliberately not
-  raised to the standard that begins at 07. Judge none of it.
+  raised to the standard that begins at 07. Judge none of it **under the test-quality lens** — a spec
+  that is *broken* and a test *command* that does not work stay reportable, as the verbatim line below
+  states.
 - **Project 07:** service tests are in scope; **component** tests are not.
 - **Projects 08+:** both are in scope.
 
@@ -195,7 +197,8 @@ This exclusion **cannot** be derived from the ✅ marks: projects 01–06 use th
 has no §0 and no ✅ step marks, so the step-based rule above silently fires on nothing. On the 2026-07-14
 run of `01-todo-list` both frontend reviewers read the empty scaffold specs as missing coverage and raised
 three High "no tests" tasks — which went into the backlog and Victor had to catch. Every project from 01
-to 06 will reproduce those three false Highs unless this line is passed down.
+to 06 will reproduce that class of false High unless this line is passed down; on 04, 05 and 06, whose
+suites now hold hand-authored tests, it arrives as a weak-assertion finding rather than a "no tests" one.
 
 **Angular 01–06** are **frontend-only**, not informational: map **frontend feature slices +
 `frontend-infra`**, skip Steps 1–2 (there is no backend, so no backend flow and **no security pass**),
