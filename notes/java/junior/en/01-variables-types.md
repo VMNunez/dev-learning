@@ -1027,7 +1027,11 @@ Integer.MIN_VALUE;          // -2147483648
 
 ## Text values — `String` has a chapter of its own
 
-Text does not follow from anything on this page. A `String` is an object, and an unchangeable one, so every question about it — the method catalogue, `strip()` versus `trim()`, text blocks, building text in a loop with `StringBuilder`, and why `==` is the wrong way to compare two of them — turns on facts about objects rather than on numeric representation. All of it is in [02-strings.md](02-strings.md), the next file in this topic. The only thing you need while reading this page is what the diagram at the top already showed you: a `String` variable holds an address, not the characters.
+Everything you have read so far is about numbers and `boolean` values: how many bits they take, what happens when you convert them, and why the result is sometimes surprising. Text does not work that way, and that is why this page does not explain it. A `String` is not a primitive: it is an object, and an unchangeable one, so once it is created its contents never change.
+
+That difference is what sends text to a chapter of its own. The usual questions about `String` — which methods it has, `strip()` versus `trim()`, text blocks, building text inside a loop with `StringBuilder`, or why `==` is the wrong way to compare two strings — are all answered by talking about objects, references and equality. None of them is answered by talking about bits or numeric ranges. You will learn all of it in [02-strings.md](02-strings.md), the next file in this topic.
+
+The only thing you need while reading this page is what the diagram at the top already showed you: a `String` variable does not hold the characters, it holds a memory address that points to the object where those characters live.
 
 ---
 

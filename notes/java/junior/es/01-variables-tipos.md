@@ -992,7 +992,11 @@ Integer.MIN_VALUE;          // -2147483648
 
 ## Valores de texto — `String` tiene su propio capítulo // TODO: REVISADO HASTA AQUI
 
-El texto no se deriva de nada de esta página. Un `String` es un objeto, y además inmutable, así que toda pregunta sobre él — el catálogo de métodos, `strip()` frente a `trim()`, los text blocks, construir texto en un bucle con `StringBuilder`, y por qué `==` es la forma equivocada de comparar dos de ellos — depende de hechos sobre objetos y no sobre representación numérica. Todo eso está en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), el siguiente archivo de este tema. Lo único que necesitas mientras lees esta página es lo que el diagrama del principio ya te enseñó: una variable `String` contiene una dirección, no los caracteres.
+Todo lo que has leído hasta aquí trata de números y de `boolean`: cuántos bits ocupan, qué pasa al convertirlos y por qué a veces el resultado sorprende. El texto no funciona así, y por eso no se explica en esta página. Un `String` no es un primitivo: es un objeto, y además inmutable, así que una vez creado su contenido no cambia nunca.
+
+Esa diferencia es la que manda el texto a otro capítulo. Las preguntas típicas sobre `String` — qué métodos tiene, `strip()` frente a `trim()`, los text blocks, montar texto dentro de un bucle con `StringBuilder`, o por qué `==` es la forma equivocada de comparar dos cadenas — se responden hablando de objetos, de referencias y de igualdad. Ninguna se responde hablando de bits ni de rangos numéricos. Todo eso lo aprenderás en [02-cadenas-de-texto.md](02-cadenas-de-texto.md), el siguiente archivo de este tema.
+
+Lo único que necesitas mientras lees esta página es lo que ya te enseñó el diagrama del principio: una variable `String` no guarda las letras, guarda una dirección de memoria que apunta al objeto donde viven esas letras.
 
 ---
 
