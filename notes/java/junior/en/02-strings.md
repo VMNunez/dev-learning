@@ -257,7 +257,7 @@ These are all the cases where `substring` throws that exception, on the same 6-c
 | `substring(3, 1)` | 💥 | `end` sits behind `begin`, so the length would come out negative |
 | `substring(6)` / `substring(3, 3)` | `""` | allowed, and throws nothing: it returns an empty string, because the range is empty, which is not the same as being out of bounds |
 
-The first three rows throw `StringIndexOutOfBoundsException`; the last one is in the table for contrast, because it is the one that looks like an error and is not. The only thing to remember about the three is that none of them fixes itself: if the index falls outside `0..length()`, or the range runs backwards, the call blows up at runtime.
+The first three rows throw `StringIndexOutOfBoundsException`. The fourth throws nothing, and it is in the table because it is the one most often mistaken for an error: asking for an empty range is legal. About the three that do fail, the only thing to remember is that none of them fixes itself: if the index falls outside `0..length()`, or the range runs backwards, the call blows up at runtime.
 
 ### `split` — it takes a regular expression, not a plain separator
 
