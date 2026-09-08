@@ -97,7 +97,7 @@ El objeto `"ana"` nunca se tocó. Lo que ocurrió va en tres pasos: primero se r
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → leer: "String Basic Manipulations" — los mismos métodos con un ejemplo ejecutable cada uno.
 
-Estos son los métodos que necesitas para leer código Java correctamente, que es la mayor parte de lo que haces al principio: abres un archivo de un proyecto real y te encuentras operaciones sobre `String` por todas partes. En el ejemplo, el registro de un empleado llega como una única línea de texto.
+Estos son los métodos que necesitas para leer código Java correctamente, que es la mayor parte de lo que haces al principio: abres un archivo de un proyecto real y te encuentras operaciones sobre `String` por todas partes. En el ejemplo, la **ficha** de un empleado — sus datos de alta: nombre, rol y horas semanales — llega como una única línea de texto. A una línea así se le llama _registro_ (en inglés _record_): una fila de datos sobre una misma cosa, con los campos separados por comas, tal y como sale de un CSV o de un fichero exportado.
 
 ```java
 String record = "  Ana Ruiz,DEVELOPER,38.5  ";
@@ -107,10 +107,11 @@ record.strip()                     // "Ana Ruiz,DEVELOPER,38.5" → String, sin 
 record.isEmpty()                   // false → boolean, true solo para exactamente ""
 record.isBlank()                   // false → boolean, true para "" y para texto solo de espacios en blanco
 record.contains("DEVELOPER")       // true  → boolean, ¿está esta secuencia en algún sitio dentro?
-record.startsWith("  Ana")         // true  → boolean, y endsWith() pregunta lo mismo por el otro extremo
+record.startsWith("  Ana")         // true  → boolean, ¿empieza el texto por esta secuencia exacta? (los dos espacios cuentan)
+record.endsWith("38.5  ")          // true  → boolean, la misma pregunta por el otro extremo (también con sus dos espacios)
 record.indexOf(",")                // 10    → int, posición de la primera coincidencia, o -1 si no hay ninguna
 record.toUpperCase()               // "  ANA RUIZ,DEVELOPER,38.5  " → String
-record.replace(",", " | ")         // "  Ana Ruiz | DEVELOPER | 38.5  " → String, TODAS las ocurrencias
+record.replace(",", " | ")         // "  Ana Ruiz | DEVELOPER | 38.5  " → String, sustituye TODAS las ocurrencias
 record.strip().substring(0, 8)     // "Ana Ruiz" → String, caracteres 0 a 7
 record.strip().split(",")          // ["Ana Ruiz", "DEVELOPER", "38.5"] → String[], un array
 "Ana".equals("ana")                // false → boolean, comparación exacta de contenido
@@ -119,7 +120,25 @@ String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, lo opuesto de spl
 "-".repeat(20)                     // "--------------------" → String, útil para separadores de consola
 ```
 
-Lee la `→` de cada comentario como "el tipo que devuelve esta llamada". Esa columna es lo que hay que memorizar, porque decide si puedes o no encadenar otra llamada al final. Todo lo que devuelve `String` se puede encadenar (`record.strip().toUpperCase().substring(0, 3)`); `length()` e `indexOf()` devuelven un `int` y terminan la cadena; `contains()`, `startsWith()`, `isBlank()` y `equals()` devuelven un `boolean`, que es exactamente el tipo que necesita un `if (...)`, así que son los que pones dentro de una condición.
+Ahora cada método por separado, para tenerlo como referencia. De cada uno importan tres cosas: qué hace, para qué lo usas de verdad, y qué tipo devuelve — porque el tipo que devuelve decide si puedes encadenar otra llamada al final (`String` sí) o si ahí se acaba la cadena (`int` y `boolean` no).
+
+- **`length()`** → `int`. Cuántos caracteres tiene el texto, espacios incluidos. Lo usas para validar longitudes (¿el código postal tiene 5?) y para calcular índices antes de cortar.
+- **`strip()`** → `String`. Devuelve el texto sin espacios en blanco al principio ni al final; el de en medio no lo toca. Es la primera llamada que haces sobre cualquier texto que venga de un formulario o de un fichero, porque casi siempre trae espacios que nadie escribió a propósito.
+- **`isEmpty()`** → `boolean`. `true` solo cuando el texto no tiene ningún carácter, es decir `""`. Un texto con un espacio ya no está vacío.
+- **`isBlank()`** → `boolean`. `true` para `""` y también para cualquier texto hecho solo de espacios, tabuladores o saltos de línea. Es el que quieres al validar un campo de formulario; la sección siguiente explica por qué.
+- **`contains(...)`** → `boolean`. ¿Aparece esa secuencia en algún sitio dentro del texto? No te dice dónde, solo si está. Para búsquedas y filtros simples.
+- **`startsWith(...)` / `endsWith(...)`** → `boolean`. La misma pregunta anclada a un extremo: ¿empieza (o acaba) por esta secuencia **exacta**? Por eso `record.startsWith("  Ana")` es `true` con los dos espacios delante y `record.startsWith("Ana")` es `false`: el texto original empieza por espacio, no por `A`. Los usas para prefijos y extensiones (`ruta.endsWith(".pdf")`).
+- **`indexOf(...)`** → `int`. La posición del primer sitio donde aparece la secuencia, contando desde 0, o `-1` si no aparece. Ese `-1` es la señal de "no encontrado" y hay que comprobarla antes de usar el número como índice de un corte.
+- **`toUpperCase()`** (y su gemelo `toLowerCase()`) → `String`. Devuelve una copia del texto entero con las letras cambiadas de caja. Se usa sobre todo para normalizar antes de comparar o de guardar.
+- **`replace(a, b)`** → `String`. Devuelve una copia con **todas** las apariciones de `a` cambiadas por `b`, no solo la primera. Trata lo que le pasas como texto literal, sin patrones.
+- **`substring(inicio, fin)`** → `String`. El trozo de texto entre esas dos posiciones. Es el método con más trampa del catálogo y tiene su propia subsección aquí abajo.
+- **`split(separador)`** → `String[]`. Parte el texto por el separador y te devuelve un array con los trozos. Es la forma normal de convertir una línea de CSV en sus campos — y también tiene su propia subsección, porque el separador no es lo que parece.
+- **`equals(...)`** → `boolean`. Compara el **contenido** de dos textos, carácter a carácter y distinguiendo mayúsculas de minúsculas. Este es el que se usa para comparar textos en Java, siempre.
+- **`equalsIgnoreCase(...)`** → `boolean`. Lo mismo, pero tratando `A` y `a` como iguales. Es el de los emails y los nombres de usuario, donde nadie escribe la caja de forma consistente.
+- **`String.join(separador, ...)`** → `String`. Pega varios textos con el separador que le digas. Es la operación contraria a `split`: uno parte una línea en campos, el otro monta la línea a partir de los campos. Fíjate en que se llama sobre `String` y no sobre una variable, porque no opera sobre un texto concreto: los recibe todos como argumentos.
+- **`repeat(n)`** → `String`. Devuelve el texto repetido `n` veces. Sirve sobre todo para pintar separadores en consola sin escribir veinte guiones a mano.
+
+Esa columna del tipo devuelto es la que conviene memorizar. Todo lo que devuelve `String` se puede encadenar (`record.strip().toUpperCase().substring(0, 3)`); `length()` e `indexOf()` devuelven un `int` y ahí termina la cadena; los que devuelven `boolean` son exactamente los que pones dentro de un `if (...)`, porque es el tipo que una condición necesita.
 
 > **`length()` cuenta unidades de código, no los caracteres que ve una persona.** Para cada nombre, email y rol que vayas a manejar, los dos números coinciden, así que léelo como "cuántos caracteres" y sigue adelante. La excepción es la misma que [01-variables-tipos.md](01-variables-tipos.md) ya te mostró con `char`: un emoji ocupa dos unidades de código, así que `"😀".length()` es `2`. Es el mismo hecho llegándote a través de `String` en vez de a través de `char`, y también es por lo que `substring` puede cortar un emoji por la mitad.
 
