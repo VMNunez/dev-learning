@@ -59,11 +59,12 @@ LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with it
         written yet, and the authority on what each one teaches]
 
 REWRITE_MODE = [standard | first-pass | append-only]
-       → standard (default): existing prose is final unless marked with a TODO or unless TASK
-         explicitly asks to rewrite a named section. Do not reword, restructure, or "improve" text
-         that is already written. Report other quality issues in the summary — Victor adds a TODO if
-         he wants a fix. (Adding NEW sections and NEW files is always allowed and is not "existing
-         text".)
+       → standard (default): existing prose is final unless marked with a TODO, unless TASK
+         explicitly asks to rewrite a named section, or unless it states something **false** — the
+         one modification of existing text the Action rules in Step 2 mandate, on the narrow bar
+         defined there. Do not reword, restructure, or "improve" text that is already written.
+         Report other quality issues in the summary — Victor adds a TODO if he wants a fix. (Adding
+         NEW sections and NEW files is always allowed and is not "existing text".)
        → append-only: the file is FROZEN. Victor has refined it and declared the prose final. Every
          existing byte is immutable — no rewording, restructuring, reordering, renumbering, link or
          heading fix inside existing text, and no TODO resolution (a TODO inside frozen prose is
@@ -247,6 +248,27 @@ add nothing outside your new sections; they apply normally *within* the sections
   of the exact URL/sub-section, write `Docs: TODO — add link` — never guess.
 - **Forward references / cross-topic references** without a note or preview callout → **add the
   note/callout directly** — it is new content, not a modification.
+- **A false statement of fact in existing prose** → **correct it directly, in every mode except
+  `append-only`.** `standard` protects the *quality* of prose Victor accepted — his wording, his
+  emphasis, his structure — and it was never a licence to leave a falsehood standing. The
+  `## Fact-check gate` section scopes itself to what you *put in* `{FILE}`; **Step 4 restates it over
+  the whole file** — "every code fragment, class/config name, dependency, version-specific API,
+  `File:` path and `Docs:` link **in the file** was verified against the live source" — and that
+  wider half is the one this bullet needs, because it is the half that reaches prose already there
+  when you arrived. Until now it had no remedy in `standard` mode at all: the gate found the error and
+  the Action rules sent it to the report. The bar is a source that can be *checked*, and there are exactly two —
+  **the live source** that same gate names (a `Docs:` URL, a class, config or API name, a
+  version-specific signature, a code fragment), and **a rule owned by a machinery file**
+  (`_session-rules.md`, a `_*-standard.md`, a coverage file) that the prose restates and contradicts —
+  this second limb founded not on the gate but on `_note-quality-standard.md` → "Which project applied
+  a concept", which is where a note's right to restate a rule at all is ruled on.
+  Nothing else qualifies: a claim you find doubtful, dated, or worse than the way you would put it is
+  not false, and goes to the report like any other quality miss. Fix with the **minimum edit that
+  makes the statement true** — the wrong token, the wrong table row, the wrong link — never the
+  paragraph around it and never the section's shape. Report every one with the old text, the new
+  text, and the source that falsified it, quoted.
+  In `append-only` mode you report and never fix: a frozen pair is Victor's decision and outranks this
+  bullet exactly as it outranks everything else in these rules.
 - **All other violations in existing prose** (wrong voice, wrong format mode, missing WHY, missing
   patterns):
   - `standard` mode → report in the summary only. Do not change the text (unless TASK explicitly
@@ -342,6 +364,9 @@ the Step 1 exception — and report:
   marker **seen** in the frozen prose, with its heading, its language and **its text quoted verbatim**.
   That quote is the whole payload the harvest cannot reconstruct from anywhere else, so a marker
   reported without it is a partial report.
+- Every **false-fact correction** you made in existing prose: the old text, the new text, and the
+  source that falsified it, quoted. This is the one edit you make to prose Victor already accepted,
+  and `notes-audit.md`'s Final report is required to carry it — a diff is not the channel.
 - The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
   you wrote to a target that is declared but not yet written.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;

@@ -322,7 +322,12 @@ the sibling-admissibility resolution — how many entries were admitted as `READ
 against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` —
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
-verdict, concept checkbox transitions, status transition, studied-state transition, and commit. In append-only mode, also report the consumed bullets, the
+verdict, concept checkbox transitions, status transition, studied-state transition, and commit.
+**Report every false-fact correction stage A made in existing prose** — the old text, the new text and
+the source that falsified it, in the form `_notes-write-prompt.md`'s Action rules already make it
+return them. That is the one class of edit a stage makes to prose Victor already had in front of him,
+so it is the one a report may not leave to the diff. Stage B's own corrections arrive in its ordinary
+`FIXED` list, which this clause does not re-specify. In append-only mode, also report the consumed bullets, the
 appended headings in both languages, the additions-only diff proof for each file, any quality issue
 observed in existing prose and deliberately left untouched, any TODO marker seen in the frozen prose
 with the inline route named **and the `NTH-NNNN` row each one was appended to or incremented, or the
