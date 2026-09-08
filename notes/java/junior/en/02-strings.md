@@ -234,7 +234,7 @@ String name = "Victor";
 
 name.substring(0, 3)     // "Vic"    — indexes 0, 1, 2. Three characters: 3 - 0.
 name.substring(3)        // "tor"    — one argument means "from here to the end"
-name.substring(6)        // ""       — starting exactly at length() is legal too: there is no text left behind it
+name.substring(6)        // ""       — starting exactly at length() is legal: there is no text left behind it, so the result is an empty substring
 name.substring(3, name.length())  // "tor" — the same thing spelled out: length() is the largest value end can take
 name.substring(0, 6)     // "Victor" — an end index of exactly length() is legal
 name.substring(3, 3)     // ""       — begin and end are equal: nothing to copy, you get the empty string
@@ -242,13 +242,22 @@ name.substring(3, 1)     // 💥 throws — end sits behind begin
 name.substring(0, 10)    // 💥 throws — end goes past the end of the text
 ```
 
-That last line does not return an empty string or a truncated one: it throws an exception. In JavaScript this does not happen. There, if `end` goes past the length of the text, `slice` and `substring` simply cut up to the end: `"Victor".slice(0, 10)` returns `"Victor"`. Java does not do that: an index that is not valid is rejected, not adjusted. This is the exception it throws, and its message tells you two things: the range you asked for and the length the text actually had, which is also the largest value you could have passed as `end`.
+That last line does not return an empty string or a truncated one: it throws an exception. In JavaScript this does not happen, because there, if `end` goes past the length of the text, `slice` and `substring` throw nothing: they simply cut up to the end. `"Victor".slice(0, 10)` returns `"Victor"`. Java does not do that: an index that is not valid is rejected, not adjusted. This is the exception it throws, and its message tells you two things: the range you asked for and the length the text actually had, which is also the largest value you could have passed as `end`.
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
 ```
 
-Read the notation literally — `[0, 10)` is exactly the "start included, end excluded" rule written in maths, and `length 6` is the string you actually had. This is the error you get whenever you slice text whose length you assumed rather than checked: a code that is normally 8 characters arriving as 6, a name field someone left short. Anywhere you `substring` input that came from outside your program, the length is a thing to verify, not to trust.
+These are all the cases where `substring` throws that exception, on the same 6-character `"Victor"`:
+
+| Call | Result | Why |
+|---|---|---|
+| `substring(-1)` / `substring(-1, 3)` | 💥 | negative `begin`: there is no position before 0 |
+| `substring(7)` / `substring(0, 7)` | 💥 | the index goes past `length()`, which is the maximum allowed |
+| `substring(3, 1)` | 💥 | `end` sits behind `begin`, so the length would come out negative |
+| `substring(6)` / `substring(3, 3)` | `""` | does not throw: the range is empty, which is not the same as being out of bounds |
+
+The first three rows throw `StringIndexOutOfBoundsException`; the last one is in the table for contrast, because it is the one that looks like an error and is not. The only thing to remember about the three is that none of them fixes itself: if the index falls outside `0..length()`, or the range runs backwards, the call blows up at runtime.
 
 ### `split` — it takes a regular expression, not a plain separator
 

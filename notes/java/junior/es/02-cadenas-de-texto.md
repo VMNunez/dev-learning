@@ -234,7 +234,7 @@ String name = "Victor";
 
 name.substring(0, 3)     // "Vic"    — índices 0, 1, 2. Tres caracteres: 3 - 0.
 name.substring(3)        // "tor"    — un solo argumento significa "desde aquí hasta el final"
-name.substring(6)        // ""       — empezar justo en length() también es legal: no queda texto detrás
+name.substring(6)        // ""       — empezar justo en length() es legal: no queda texto detrás, así que el resultado es un substring vacío
 name.substring(3, name.length())  // "tor" — lo mismo escrito entero: length() es el valor máximo que puede tomar end
 name.substring(0, 6)     // "Victor" — un índice final igual a length() es legal
 name.substring(3, 3)     // ""       — begin y end iguales: no hay nada que copiar, sale el string vacío
@@ -242,13 +242,22 @@ name.substring(3, 1)     // 💥 lanza excepción — end queda por detrás de b
 name.substring(0, 10)    // 💥 lanza excepción — end se pasa del final del texto
 ```
 
-Esa última línea no devuelve un string vacío ni uno truncado: lanza una excepción. En JavaScript esto no pasa. Allí, si `end` supera la longitud del texto, `slice` y `substring` simplemente cortan hasta el final: `"Victor".slice(0, 10)` devuelve `"Victor"`. Java no hace eso: un índice que no es válido se rechaza, no se ajusta. Esta es la excepción que lanza, y su mensaje te dice dos cosas: el rango que pediste y la longitud que el texto tenía en realidad, que es además el valor máximo que podrías haberle pasado a `end`.
+Esa última línea no devuelve un string vacío ni uno truncado: lanza una excepción. En JavaScript esto no pasa, porque allí, si `end` supera la longitud del texto, `slice` y `substring` no lanzan nada: simplemente cortan hasta el final. `"Victor".slice(0, 10)` devuelve `"Victor"`. Java no hace eso: un índice que no es válido se rechaza, no se ajusta. Esta es la excepción que lanza, y su mensaje te dice dos cosas: el rango que pediste y la longitud que el texto tenía en realidad, que es además el valor máximo que podrías haberle pasado a `end`.
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
 ```
 
-Lee la notación literalmente — `[0, 10)` es exactamente la regla "inicio incluido, final excluido" escrita en notación matemática, y `length 6` es el string que realmente tenías. Este es el error que obtienes siempre que cortas texto cuya longitud diste por hecha en vez de comprobarla: un código que normalmente tiene 8 caracteres llegando con 6, un campo de nombre que alguien dejó corto. En cualquier sitio donde hagas `substring` sobre un input que vino de fuera de tu programa, la longitud es algo que hay que verificar, no dar por bueno.
+Estos son todos los casos en los que `substring` lanza esa excepción, sobre el mismo `"Victor"` de 6 caracteres:
+
+| Llamada | Resultado | Por qué |
+|---|---|---|
+| `substring(-1)` / `substring(-1, 3)` | 💥 | `begin` negativo: no hay ninguna posición antes de la 0 |
+| `substring(7)` / `substring(0, 7)` | 💥 | el índice se pasa de `length()`, que es el máximo permitido |
+| `substring(3, 1)` | 💥 | `end` queda por detrás de `begin`, así que la longitud saldría negativa |
+| `substring(6)` / `substring(3, 3)` | `""` | no lanza: el rango está vacío, que no es lo mismo que estar fuera |
+
+Las tres primeras filas lanzan `StringIndexOutOfBoundsException`; la última está en la tabla para el contraste, porque es la que parece un error y no lo es. Lo único que hay que recordar de las tres es que ninguna se corrige sola: si el índice sale de `0..length()`, o el rango va hacia atrás, la llamada revienta en tiempo de ejecución.
 
 ### `split` — recibe una expresión regular, no un separador plano
 
