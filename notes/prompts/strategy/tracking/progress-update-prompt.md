@@ -307,10 +307,11 @@ re-create one, and do not look for one.
 - **A section you cannot measure is a finding, not a silence.** A missing `## Practice completed`, an
   absent TRACKER.md, a level with no route file: report the structural gap.
 - **Never invent or recreate a concept section.** PROGRESS.md's declared status sections are the level
-  matrix, `Coverage demonstrated`, `Study progress`, `Projects`, `Practice completed`, and
-  `Useful resources`. A new section is legitimate only when its source, unit, writer, reader and audit
-  rule are added to the ownership contract in the same machinery change. Per-technology concept lists
-  remain forbidden: coverage owns concepts; PROGRESS records only their effects and track progress.
+  matrix, `Coverage demonstrated`, `Authoring progress`, `Study progress`, `Projects`,
+  `Practice completed`, and `Useful resources`. A new section is legitimate only when its source,
+  unit, writer, reader and audit rule are added to the ownership contract in the same machinery
+  change. Per-technology concept lists remain forbidden: coverage owns concepts; PROGRESS records
+  only their effects and track progress.
 
 ### D7 — `Professional level by topic` — **the one section this prompt writes**
 
