@@ -261,7 +261,7 @@ The first three rows throw `StringIndexOutOfBoundsException`. The fourth throws 
 
 ### `split` — the separator you pass it is a regular expression
 
-`split` is the method in the catalogue whose signature confuses people most, and it can end up lying to you. It looks like it takes a character that will be used to separate, but what it really takes is a **regular expression**: a text in which certain characters do not stand for themselves, but carry a special meaning inside a pattern language. The one to be most careful with is the dot: in a regular expression `.` means "any character at all", so to split on a real dot you have to escape it and write it `"\."`.
+`split` is the method in the catalogue whose signature confuses people most, and it can end up lying to you. It looks like it takes a character that will be used to separate the `String`, but what it really takes is a **regular expression**: a pattern, that is, a text in which some characters do not mean the character you see, but something else. The one to watch is the dot: inside a regular expression `.` means "any character at all". To split on a real dot you have to escape it, and in Java source you write it with two backslashes, `"\\."`, because the first one is the `String`'s own escape and what reaches the regex engine is a single `\.`.
 
 ```java
 "38.5".split(",")     // ["38.5"]  → no comma found, so you get the whole string back in a 1-element array
