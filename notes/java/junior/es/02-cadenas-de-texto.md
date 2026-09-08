@@ -68,7 +68,7 @@ Este patrón ya lo viste una vez. En [01-variables-tipos.md](01-variables-tipos.
 
 El diagrama de [01-variables-tipos.md](01-variables-tipos.md) es el que hay que tener presente: una variable `String` no contiene el texto en sí, contiene una **dirección en la memoria** que apunta a un objeto que vive en otro sitio, en el heap (la zona de memoria donde viven todos los objetos). Reasignar la variable cambia la dirección a la que apunta, pero no modifica el objeto al que estaba apuntando antes.
 
-Sigue `name = name.toUpperCase()` paso a paso:
+El diagrama de abajo muestra el estado de la memoria antes y después de ejecutar `name = name.toUpperCase()`:
 
 ```
 ANTES                                DESPUÉS
