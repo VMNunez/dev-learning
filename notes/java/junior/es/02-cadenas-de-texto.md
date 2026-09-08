@@ -206,7 +206,7 @@ Aquí tienes cada método por separado, para tenerlo como referencia. De cada un
   "Ana@Mail.com".equalsIgnoreCase("ana@mail.com")  // true
   ```
 
-- **`String.join(separador, ...)`** → `String`. Pega varios textos con el separador que le digas. Es la operación contraria a `split`: uno parte una línea en campos, el otro forma el `String` a partir de los textos que le pasemos. Fíjate en que el método se llama sobre la clase `String` y no sobre una variable, porque no opera sobre un texto concreto: los recibe todos como argumentos. Puedes pasarle los que quieras, no solo dos.
+- **`String.join(separador, ...)`** → `String`. Pega varios textos con el separador que le digas. Es la operación contraria a `split`: uno parte una línea en campos, el otro forma el `String` a partir de los textos que le pasemos. Fíjate en que el método se llama sobre la clase `String` y no sobre una variable, porque no opera sobre un texto concreto: los recibe todos como argumentos. Puedes pasarle los argumentos que quieras, no solo dos.
 
   ```java
   String.join(" - ", "Ana", "Ruiz")             // "Ana - Ruiz"
@@ -219,7 +219,7 @@ Aquí tienes cada método por separado, para tenerlo como referencia. De cada un
   "-".repeat(20)  // "--------------------"
   ```
 
-El tipo que devuelve cada uno es lo que conviene memorizar. Todo lo que devuelve `String` se puede encadenar (`record.strip().toUpperCase().substring(0, 3)`); `length()` e `indexOf()` devuelven un `int` y ahí termina la cadena; los que devuelven `boolean` son exactamente los que pones dentro de un `if (...)`, porque es el tipo que una condición necesita.
+El tipo que devuelve cada uno es lo que conviene memorizar, porque es lo que decide qué puedes hacer con el resultado. Devuelven `String` — y por eso se pueden encadenar, porque cada llamada entrega otro texto sobre el que volver a llamar — `strip()`, `toUpperCase()`, `toLowerCase()`, `replace()`, `substring()`, `repeat()` y `join()`: de ahí que puedas escribir `record.strip().toUpperCase().substring(0, 3)`. Devuelven `int` `length()` e `indexOf()`, y ahí termina la cadena: el resultado es un número, y un número no tiene detrás ningún método de `String` al que llamar. Devuelven `boolean` `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` y `equalsIgnoreCase()`, que son los que sueles poner dentro de un condicional, porque `if (...)` necesita exactamente ese tipo. Y `split()` es el único que se sale de los tres: devuelve un array (`String[]`), así que lo que encadenes detrás ya son operaciones de array, no de texto.
 
 > **`length()` cuenta unidades de código, no los caracteres que ve una persona.** Para cada nombre, email y rol que vayas a manejar, los dos números coinciden, así que léelo como "cuántos caracteres" y sigue adelante. La excepción es la misma que [01-variables-tipos.md](01-variables-tipos.md) ya te mostró con `char`: un emoji ocupa dos unidades de código, así que `"😀".length()` es `2`. Es el mismo hecho llegándote a través de `String` en vez de a través de `char`, y también es por lo que `substring` puede cortar un emoji por la mitad.
 
