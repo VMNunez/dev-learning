@@ -149,16 +149,16 @@ Ahora cada método por separado, para tenerlo como referencia. De cada uno impor
   ```java
   "".isBlank()      // true
   " ".isBlank()     // true → solo tiene espacios
-  "	
-".isBlank()  // true → un tabulador y un salto de línea también son espacio en blanco
+  "\t\n".isBlank()  // true → un tabulador y un salto de línea también son espacio en blanco
   "Ana".isBlank()   // false
   ```
 
-- **`contains(...)`** → `boolean`. Responde si esa secuencia aparece en algún sitio dentro del texto. No te dice dónde, solo si está. Se usa para búsquedas y filtros simples.
+- **`contains(...)`** → `boolean`. Responde si esa secuencia aparece en algún sitio dentro del texto, distinguiendo mayúsculas de minúsculas: busca la secuencia tal cual se la pasas. No te dice dónde, solo si está. Se usa para búsquedas y filtros simples.
 
   ```java
   record.contains("DEVELOPER")  // true
   record.contains("MANAGER")    // false
+  record.contains("developer")  // false → el texto lo lleva en mayúsculas; si quieres ignorar la caja, pasa los dos a la misma con toLowerCase()
   ```
 
 - **`startsWith(...)`** → `boolean`. Se usa para saber si un `String` empieza exactamente con la secuencia que le pasas. **`endsWith(...)`** → `boolean` hace lo simétrico: saber si un `String` acaba exactamente con esa secuencia. La palabra importante en los dos es _exactamente_: cuenta cada carácter, espacios incluidos.

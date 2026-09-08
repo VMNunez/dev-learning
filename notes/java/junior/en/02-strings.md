@@ -149,16 +149,16 @@ Now each method on its own, so you can come back to this as a reference. Three t
   ```java
   "".isBlank()      // true
   " ".isBlank()     // true → spaces only
-  "	
-".isBlank()  // true → a tab and a newline are whitespace too
+  "\t\n".isBlank()  // true → a tab and a newline are whitespace too
   "Ana".isBlank()   // false
   ```
 
-- **`contains(...)`** → `boolean`. Answers whether that sequence appears anywhere inside the text. It does not tell you where, only whether. Used for simple searches and filters.
+- **`contains(...)`** → `boolean`. Answers whether that sequence appears anywhere inside the text, telling upper and lower case apart: it looks for the sequence exactly as you pass it. It does not tell you where, only whether. Used for simple searches and filters.
 
   ```java
   record.contains("DEVELOPER")  // true
   record.contains("MANAGER")    // false
+  record.contains("developer")  // false → the text holds it in upper case; to ignore case, put both sides in the same one with toLowerCase()
   ```
 
 - **`startsWith(...)`** → `boolean`. Used to find out whether a `String` begins exactly with the sequence you pass it. **`endsWith(...)`** → `boolean` does the symmetric thing: whether a `String` finishes exactly with that sequence. The important word in both is *exactly*: every character counts, spaces included.
