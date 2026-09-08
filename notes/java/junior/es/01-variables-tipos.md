@@ -1018,7 +1018,7 @@ Dos conceptos ayudan aquí: **compile time** (tiempo de compilación) es cuando 
 
 Solo funciona para variables locales (dentro de métodos). No se puede usar para campos, parámetros de métodos ni tipos de retorno.
 
-> **`var` necesita algo de lo que inferir, y lo dice claramente cuando no hay nada.** El tipo viene por completo del lado derecho, así que las dos formas de dejar ese lado sin información son ambas errores de compilación:
+> **`var` necesita algo de lo que inferir, y lo dice claramente cuando no hay nada.** El tipo sale entero del valor que escribes a la derecha del `=`. Hay dos formas de que ahí no haya nada que leer, y las dos son errores de compilación:
 >
 > ```java
 > var x;           // MAL — error: cannot infer type for local variable x

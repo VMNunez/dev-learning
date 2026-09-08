@@ -1053,7 +1053,7 @@ Two concepts help here: **compile time** is when Java translates your source cod
 
 Only works for local variables (inside methods). Cannot be used for fields, method parameters, or return types.
 
-> **`var` needs something to infer *from*, and says so plainly when there is nothing.** The type comes entirely from the right-hand side, so the two ways of leaving that side uninformative are both compile errors:
+> **`var` needs something to infer *from*, and says so plainly when there is nothing.** The type comes entirely from the value you write on the right of the `=`. There are two ways to leave nothing there to read, and both are compile errors:
 >
 > ```java
 > var x;           // MAL — error: cannot infer type for local variable x
