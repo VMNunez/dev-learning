@@ -12,7 +12,13 @@ description: >
   README or in a section that file's contract does not have — "What I learned" invented inside a backend
   README, recruiter-facing prose buried in a tier file — which `readme-audit` then has to undo. It also clears the
   `*(Step N — coming soon)*` markers whose step PLANNING §15 already shows as `✅`, so a finished section
-  stops advertising itself as unbuilt between one `readme-audit` gate and the next. Do NOT use it to
+  stops advertising itself as unbuilt between one `readme-audit` gate and the next.
+  **It also fires on its own, mid-step:** a `§15` step spans days and several
+  conversations, and a concept recorded only when the step *closes* lives until then in the agent's
+  conversation memory alone, where a new session cannot reach it (`REC-230`). So it runs the moment a
+  **verifiable piece** of an open step is finished (the term's test is `coverage-mark` §1) — and a step
+  normally has several.
+  Do NOT use it to
   restructure a README, fix a stale section's content, add screenshots, clear a marker whose step is not
   yet `✅`, or work inside the `readme-audit` / `portfolio-audit` pipelines — those own the whole file and must not be second-guessed bullet by bullet.
 ---
@@ -62,7 +68,9 @@ invisible to it. The coverage side has swept its diff since `coverage-mark` §2b
 checklist can be **ahead** of the README on the same commit.
 
 So before routing anything, read the diff the caller's work produced — whether it is already committed or
-still sitting in the working tree — and widen the set.
+still sitting in the working tree — and widen the set. **On the mid-step path that diff is the piece's, not
+the step's**: the earlier pieces of the same step ran this sweep already, and re-reading their hunks is how
+one decision gets routed, checked and reported three times in one step.
 
 - **The bar is a decision, not a pattern.** Ask of the diff one thing: *does this take a choice a competent
   developer could have taken differently?* The rejected alternative is what separates a decision from an
@@ -225,6 +233,10 @@ docs(readme): <what the entries name>
 
 A run that wrote nothing commits nothing — clearing a stale marker in step 3b is itself a write, and it
 travels in this same commit.
+
+**On the mid-step path the commit is made in the same turn as the piece**, and stays separate from
+Victor's commit for the piece's code — the README is yours, the code is his, and one `git add` cannot
+hold both.
 
 ## Report
 
