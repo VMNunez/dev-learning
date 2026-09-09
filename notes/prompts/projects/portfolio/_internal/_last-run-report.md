@@ -8,18 +8,27 @@
 Declared files, from `README.md`'s row: `notes/interview-prep/projects/en/03-expense-tracker.md`
 (created, 122 questions), `notes/interview-prep/projects/es/03-expense-tracker.md` (created, 122),
 `notes/cv/cv-bullets.md` (third section written), `dev/portfolio/VMNunez/README.md` (✅-only step —
-reached; preflight passed, recorded below), plus this report and `_run-tracker.md`. **`DRY_RUN = true`,
-so the first four are working-tree changes and appear in no commit** — `git status` is the probe here,
-not `git log`; only this report and the tracker are committed. `PROGRESS.md` was **not** written: the
-authoring recount is skipped on a dry run by the prompt's own rule, and the row it would have added
-(`| 03-expense-tracker | 0/122 (0%) |`) is printed in chat instead.
+reached; preflight passed, recorded below), plus this report and `_run-tracker.md`.
+
+**The dry branch executed as written, and then Victor directed the commits.** `DRY_RUN = true`, so the
+run committed none of its own outputs and printed the sequence; on his explicit instruction in the same
+session they were then committed for him — `b3be786f` (bank + twin + `cv-bullets.md`), `5c687091`
+(`PROGRESS.md`), and `d857cbe0` in the **profile repo**. All appear in `git log --name-only`. **The push
+was not run and remains his**, which is the one thing the instruction did not reach: it is stated in
+three places as outward-facing and is not a commit. `PROGRESS.md` moved because the recount's own
+precondition changed — it is skipped on a dry run *because the skill's whole output is a commit of
+that file*, and once the outputs were committed that reason no longer held, so
+`authoring-progress-recount` was invoked and wrote `| 03-expense-tracker | 0/122 (0%) |` after checking
+its gates (parity 122/122, 122 unique well-formed IDs, no duplicate, zero `[refined]` in either
+language).
 
 **External-path preflight (Phase 3):** resolved `C:/Users/Victor/Documents/main/dev/portfolio/VMNunez`
 — input readable, output parent writable, own `.git`, branch `main`. It already carried an uncommitted
 `CLAUDE.md` change on arrival, which this run did not make and did not touch (`owed to /profile-readme`).
 
-**Tracker outcome:** `03-expense-tracker` · `portfolio-audit` → `2026-09-09 (dry-run — ✅ Ready computed,
-G7 not signed until the printed commit runs)`.
+**Tracker outcome:** `03-expense-tracker` · `portfolio-audit` → `2026-09-09 (completed — ✅ Ready;
+G7 signed)`, with the cell stating plainly that the dry branch ran as written and the outputs landed on
+an explicit instruction afterwards — so no later reader takes it as a dry run that committed.
 
 ## 2. Declared dispatches
 Required: one author + one reviewer per present section, then one translator and one `en/`-blind
