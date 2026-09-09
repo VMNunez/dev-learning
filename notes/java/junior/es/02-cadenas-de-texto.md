@@ -11,7 +11,7 @@
 - [Metiendo valores dentro de texto — `+` y `.formatted()`](#metiendo-valores-dentro-de-texto---y-formatted)
   - [Por qué una cadena de formato rota sigue compilando](#por-qué-una-cadena-de-formato-rota-sigue-compilando)
 - [Acumulando texto — cuándo `+` se convierte en la herramienta equivocada](#acumulando-texto--cuándo--se-convierte-en-la-herramienta-equivocada)
-  - [La regla, dicha para que la puedas aplicar](#la-regla-dicha-para-que-la-puedas-aplicar)
+  - [Regla de cuándo usar `+` y cuándo `StringBuilder`](#regla-de-cuándo-usar--y-cuándo-stringbuilder)
   - [`String`, `StringBuilder`, `StringBuffer`](#string-stringbuilder-stringbuffer)
 - [Bloques de texto — texto multilínea sin el escapado](#bloques-de-texto--texto-multilínea-sin-el-escapado)
 - [Entre texto y números](#entre-texto-y-números)
@@ -450,9 +450,9 @@ for (Employee e : employees) {
 String report = sb.toString();             // exactamente un String creado, al final
 ```
 
-> **El buffer tiene un tamaño fijo, y cuando se llena hay que reservar otro más grande.** Al crear un `StringBuilder`, Java reserva un sitio en la memoria con capacidad para un número fijo de caracteres. Cuando le añades más de los que caben ahí, reserva un sitio nuevo más grande y copia dentro el contenido que ya tenía. Así que copias hay: no son literalmente cero. La diferencia con `+=` está en cuántas veces pasa: cada buffer nuevo tiene aproximadamente el doble de capacidad que el anterior, así que mil `append` provocan unos pocos cambios de buffer en lugar de mil copias. Si sabes de antemano cuántos caracteres va a tener el texto final puedes evitar la creación de esos buffers intermedios pasándole ese número como argumento al crearlo. Ese argumento se llama **capacidad inicial** y se cuenta en caracteres, no en bytes: `new StringBuilder(4096)` reserva de golpe sitio para 4096 caracteres. No es un límite — si te pasas, el buffer crece igual que antes —, solo evita los cambios de buffer del camino. No se suele aplicar.
+> **El buffer tiene un tamaño fijo, y cuando se llena hay que reservar otro más grande.** Al crear un `StringBuilder`, Java reserva un sitio en la memoria con capacidad para un número fijo de caracteres. Cuando le añades más de los que caben ahí, reserva un sitio nuevo más grande y copia dentro el contenido que ya tenía. Así que copias hay: no son literalmente cero. La diferencia con `+=` está en cuántas veces pasa: cada buffer nuevo tiene aproximadamente el doble de capacidad que el anterior, así que mil `append` provocan unos pocos cambios de buffer en lugar de mil copias. Si sabes de antemano cuántos caracteres va a tener el texto final puedes evitar la creación de esos buffers intermedios pasándole ese número como argumento al crearlo. Ese argumento se llama **capacidad inicial** y se cuenta en caracteres, no en bytes: `new StringBuilder(4096)` reserva de golpe sitio para 4096 caracteres. No es un límite — si te pasas, el buffer crece igual que antes —, solo evita los buffers intermedios. No se suele aplicar.
 
-### La regla, dicha para que la puedas aplicar
+### Regla de cuándo usar `+` y cuándo `StringBuilder`
 
 **Usa `+` para una expresión única. Usa `StringBuilder` cuando la acumulación se repite.** Son situaciones genuinamente distintas y el compilador las trata de forma distinta:
 
