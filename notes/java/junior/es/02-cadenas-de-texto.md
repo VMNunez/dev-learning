@@ -404,7 +404,7 @@ Los dos son erratas que un compilador podría en principio detectar — y no lo 
 
 > **Los tres fragmentos de código que se muestran en los ejemplos de abajo pertenecen a archivos posteriores.** `for (Employee e : employees)` es un **bucle**: ejecuta el bloque una vez por cada elemento de `employees`, con `e` guardando el actual — se explica en detalle en [03-flujo-de-control.md](03-flujo-de-control.md). `List<Employee>` es una **lista de empleados**, la forma normal en la que Java guarda muchos valores de un tipo, y los corchetes angulares dicen qué tipo hay dentro — [09-genericos.md](09-genericos.md) explica los corchetes y [10-colecciones.md](10-colecciones.md) la lista. Y `e.getName()` es una **llamada a un método sobre un objeto**: le pide a ese empleado concreto su nombre, que es [06-poo-clases.md](06-poo-clases.md). Ninguno de estos tres conceptos es objeto de estudio en esta sección, pero los necesitas para entender el problema que plantea la inmutabilidad al ir creando Strings dentro de un bucle.
 
-Tienes una lista de empleados y quieres una línea por empleado. El primer intento natural:
+Tienes una lista de empleados y quieres un `String` que muestre cada empleado en una línea. El primer intento natural:
 
 ```java
 // MAL — un objeto String nuevo por cada iteración

@@ -404,7 +404,7 @@ Both are typos a compiler could in principle catch — and does not, for the sam
 
 > **The three pieces of code shown in the examples below belong to later files.** `for (Employee e : employees)` is a **loop**: it runs the block once for each element of `employees`, with `e` holding the current one — written in full in [03-control-flow.md](03-control-flow.md). `List<Employee>` is a **list of employees**, the ordinary way Java holds many values of one type, and the angle brackets say which type is inside — [09-generics.md](09-generics.md) explains the brackets and [10-collections.md](10-collections.md) the list. And `e.getName()` is a **method call on an object**: it asks that one employee for its name, which is [06-oop-classes.md](06-oop-classes.md). None of these three concepts is what this section studies, but you need them to understand the problem immutability creates when you build Strings up inside a loop.
 
-You have a list of employees and you want one line per employee. The natural first attempt:
+You have a list of employees and you want a `String` showing each employee on its own line. The natural first attempt:
 
 ```java
 // MAL — one new String object per iteration
