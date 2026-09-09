@@ -317,9 +317,9 @@ em.trim().length()   // 5  ← MAL: trim lo dejó tal cual, porque U+2003 > U+00
 em.strip().length()  // 3  ← BIEN: strip sabe que U+2003 es espacio en blanco
 ```
 
-ASCII es el grupo de caracteres más básico que existe: las letras del alfabeto inglés sin acentos, los dígitos(TODO: LOS NUMEROS) y los signos de puntuación corrientes. Ocupan los primeros 128 números de Unicode, y ahí dentro está el espacio normal. Mientras el texto solo lleve caracteres de ese grupo, los dos métodos hacen exactamente lo mismo: `"   Ana   "` vuelve como `"Ana"` con cualquiera de ellos. La diferencia solo aparece con texto que vino de algún sitio real: un documento de Word, un PDF, un copia-pega sacado de una página web, un formulario rellenado desde el móvil. Ese texto suele traer espacios que no son el `U+0020` y que en pantalla se ven igual que uno normal:
+ASCII es el grupo de caracteres más básico que existe: las letras del alfabeto inglés sin acentos, los números y los signos de puntuación corrientes. Ocupan los primeros 128 números de Unicode, y ahí dentro está el espacio normal. Mientras el texto solo lleve caracteres de ese grupo, los dos métodos hacen exactamente lo mismo: `"   Ana   "` vuelve como `"Ana"` con cualquiera de ellos. La diferencia solo aparece con texto que vino de algún sitio real: un documento de Word, un PDF, un copia-pega sacado de una página web, un formulario rellenado desde el móvil. Ese texto suele traer espacios que no son el `U+0020` y que en pantalla se ven igual que uno normal:
 
-- el **espacio em** (`U+2003`), el espacio ancho que usan Word y los PDF, y el mismo que aparece en el ejemplo de arriba;
+- el **espacio em** (`U+2003`), un espacio que ocupa más ancho que el normal — tanto como la letra M, de ahí el nombre — y que usan Word y los PDF; es el mismo del ejemplo de arriba;
 - el **espacio ideográfico** (`U+3000`), el que se usa al escribir en chino o japonés;
 - el **espacio de no separación** (`U+00A0`), el que mete una página web entre dos palabras cuando no quiere que se partan en dos líneas distintas.
 

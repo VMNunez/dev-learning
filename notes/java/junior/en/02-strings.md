@@ -317,9 +317,9 @@ em.trim().length()   // 5  ← MAL: trim left it alone, because U+2003 > U+0020
 em.strip().length()  // 3  ← BIEN: strip knows U+2003 is whitespace
 ```
 
-ASCII is the most basic group of characters there is: the unaccented letters of the English alphabet, the digits and the ordinary punctuation marks. They occupy the first 128 numbers of Unicode, and the ordinary space is one of them. As long as the text only carries characters from that group, the two methods do exactly the same thing: `"   Ana   "` comes back as `"Ana"` from either of them. The difference only shows up with text that came from somewhere real: a Word document, a PDF, a copy-paste out of a web page, a form filled in on a phone. Such text routinely carries spaces that are not `U+0020` and that look exactly like an ordinary one on screen:
+ASCII is the most basic group of characters there is: the unaccented letters of the English alphabet, the numbers and the ordinary punctuation marks. They occupy the first 128 numbers of Unicode, and the ordinary space is one of them. As long as the text only carries characters from that group, the two methods do exactly the same thing: `"   Ana   "` comes back as `"Ana"` from either of them. The difference only shows up with text that came from somewhere real: a Word document, a PDF, a copy-paste out of a web page, a form filled in on a phone. Such text routinely carries spaces that are not `U+0020` and that look exactly like an ordinary one on screen:
 
-- the **em space** (`U+2003`), the wide space Word and PDFs use, the same one in the example above;
+- the **em space** (`U+2003`), a space wider than the normal one — as wide as the letter M, which is where the name comes from — used by Word and PDFs; it is the same one from the example above;
 - the **ideographic space** (`U+3000`), the space used when writing Chinese or Japanese;
 - the **non-breaking space** (`U+00A0`), the one a web page puts between two words when it does not want them split across two lines.
 
