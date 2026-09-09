@@ -305,7 +305,9 @@ The most common case you will meet is a form field. A user who leaves a field un
 
 Among the methods above is `strip()`, but in tutorials and in older code you will see `trim()` doing the same thing, so you will meet both. They do the same job — remove leading and trailing whitespace — and they differ in what they count as *whitespace*, because the two definitions come from different eras.
 
-`trim()` predates Unicode support in Java: it removes every character whose code point is less than or equal to `U+0020` (the ordinary space). That is a crude numeric rule — it happens to catch spaces, tabs and newlines, and it also catches some control characters that are not whitespace at all. `strip()`, added in Java 11, asks `Character.isWhitespace()` instead, which consults the actual Unicode tables:
+`trim()` comes from the earliest versions of Java, from before the language understood Unicode. Unicode is the table that gives every character that exists — letters, symbols, emojis — a unique number. That number is the character's **code point**, written in hexadecimal with a `U+` prefix; the ordinary space, the one on the space bar, is `U+0020`.
+
+The rule `trim()` follows is purely numeric: it removes from the start and the end every character whose number is less than or equal to `U+0020`. Tabs and newlines have lower numbers, so it removes them — but below `U+0020` there are also control characters that are not whitespace at all, and it takes those too. And the other way round: any space whose number is higher than `U+0020` it leaves alone, even though on screen it looks exactly like a space. `strip()`, added in Java 11, asks `Character.isWhitespace()` instead, which consults the actual Unicode tables:
 
 ```java
 String em = " Ana ";      // U+2003 EM SPACE — real Unicode whitespace

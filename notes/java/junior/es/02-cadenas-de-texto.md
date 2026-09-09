@@ -305,7 +305,9 @@ El caso más habitual lo vas a ver en los campos de un formulario. Un usuario qu
 
 Entre los métodos de arriba se encuentra `strip()`, pero en tutoriales y en código antiguo vas a ver `trim()` haciendo lo mismo, así que te vas a encontrar los dos. Hacen el mismo trabajo — quitar espacios en blanco al principio y al final — y se diferencian en qué consideran _un espacio en blanco_, porque las dos definiciones vienen de épocas distintas.
 
-`trim()` es anterior al soporte de Unicode en Java: elimina todo carácter cuyo code point sea menor o igual que `U+0020` (el espacio normal). Es una regla numérica cruda — resulta que atrapa espacios, tabuladores y saltos de línea, y también atrapa algunos caracteres de control que no son espacios en blanco en absoluto. `strip()`, añadido en Java 11, pregunta en cambio a `Character.isWhitespace()`, que consulta las tablas reales de Unicode:
+`trim()` viene de las primeras versiones de Java, de antes de que el lenguaje entendiera Unicode. Unicode es la tabla que le da un número único a cada carácter que existe: letras, símbolos, emojis. Ese número es el **code point** del carácter, y se escribe en hexadecimal con el prefijo `U+`; el espacio normal, el de la barra espaciadora, es el `U+0020`.
+
+La regla de `trim()` es puramente numérica: quita del principio y del final todo carácter cuyo número sea menor o igual que `U+0020`. El tabulador y el salto de línea tienen números más bajos, así que los quita — pero por debajo de `U+0020` también hay caracteres de control que no son espacios en blanco, y esos también se los lleva. Y al revés: cualquier espacio cuyo número sea más alto que `U+0020` no lo toca, aunque en pantalla se vea exactamente igual que un espacio. `strip()`, añadido en Java 11, pregunta en cambio a `Character.isWhitespace()`, que consulta las tablas reales de Unicode:
 
 ```java
 String em = " Ana ";      // U+2003 EM SPACE — espacio en blanco Unicode de verdad
