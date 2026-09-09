@@ -454,15 +454,15 @@ String report = sb.toString();             // exactamente un String creado, al f
 
 ### Regla de cuándo usar `+` y cuándo `StringBuilder`
 
-**Usa `+` para una expresión única. Usa `StringBuilder` cuando la acumulación se repite.** Son situaciones genuinamente distintas y el compilador las trata de forma distinta:
+**Usa `+` para una expresión única. Usa `StringBuilder` cuando la acumulación se repite.** La diferencia entre las dos no es de estilo: en una el compilador optimiza el trabajo por ti y en la otra no puede:
 
 ```java
 String label = name + " (" + role + ")";   // BIEN — una expresión, una sentencia, usa +
 ```
 
-Para esa línea el propio compilador construye el resultado de forma eficiente en un solo paso; escribir un `StringBuilder` a mano para esto sería más largo, más feo y no más rápido. En el momento en que la acumulación se reparte a lo largo de **iteraciones de un bucle**, el compilador ya no puede ayudarte — no puede ver que las mil sentencias separadas son una sola operación lógica — y la elección pasa a ser tuya.
+Para esa línea el propio compilador construye el resultado de forma eficiente en un solo paso; escribir un `StringBuilder` para esto sería más largo, más feo y no más rápido. En el momento en que la acumulación se reparte a lo largo de **iteraciones de un bucle**, el compilador ya no puede ayudarte — no puede ver que las mil sentencias separadas son una sola operación lógica — y la elección pasa a ser tuya.
 
-> **No salgas a buscar `+` para reemplazar.** Esta optimización importa en bucles sobre colecciones que pueden crecer. Pegar tres campos en un `toString()`, o construir un mensaje de log de dos piezas, reserva un objeto extra y no merece ni notarse. Recurrir a `StringBuilder` en todas partes hace el código más difícil de leer a cambio de nada, lo cual es un intercambio peor que el que intentabas evitar. Y cuando lo que estás uniendo es una colección con un separador entre los elementos, hay una herramienta más legible que las dos: `String.join(", ", names)` para una colección ya construida, y `Collectors.joining(", ")` para un stream — la versión de stream está en [12-streams-lambdas.md](12-streams-lambdas.md).
+> **No vayas a cambiar todos los `+` que ya tengas escritos.** Esta optimización importa en bucles sobre colecciones que pueden crecer. Pegar tres campos en un `toString()`, o construir un mensaje de log de dos piezas, reserva un objeto extra, no afecta al rendimiento y no lo vas a notar. Recurrir a `StringBuilder` en todas partes hace el código más difícil de leer a cambio de nada. Y cuando lo que estás uniendo es un conjunto de elementos con un separador entre ellos, hay una herramienta más legible que las dos: `String.join(", ", names)` cuando ya tienes la colección creada — una `List`, un `Set` —, y `Collectors.joining(", ")` para un stream — la versión de stream está en [12-streams-lambdas.md](12-streams-lambdas.md).
 
 ### `String`, `StringBuilder`, `StringBuffer`
 

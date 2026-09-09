@@ -455,7 +455,7 @@ String report = sb.toString();             // exactly one String created, at the
 
 ### The rule for when to use `+` and when `StringBuilder`
 
-**Use `+` for a single expression. Use `StringBuilder` when the accumulation is repeated.** Those are genuinely different situations and the compiler treats them differently:
+**Use `+` for a single expression. Use `StringBuilder` when the accumulation is repeated.** The difference between the two is not a matter of style: in one the compiler optimises the work for you, and in the other it cannot:
 
 ```java
 String label = name + " (" + role + ")";   // BIEN — one expression, one statement, use +
@@ -463,7 +463,7 @@ String label = name + " (" + role + ")";   // BIEN — one expression, one state
 
 For that line the compiler itself builds the result efficiently in one pass; writing a `StringBuilder` by hand for it would be longer, uglier and no faster. The moment the accumulation is spread across **iterations of a loop**, the compiler can no longer help — it cannot see that the thousand separate statements are one logical operation — and the choice becomes yours.
 
-> **Do not go looking for `+` to replace.** This optimisation matters for loops over collections that can grow. Gluing three fields together in a `toString()`, or building a two-piece log message, allocates one extra object and is beneath noticing. Reaching for `StringBuilder` everywhere makes code harder to read in exchange for nothing, which is a worse trade than the one you were trying to avoid. And when the thing you are joining is a collection with a separator between the items, there is a more readable tool than either: `String.join(", ", names)` for a ready-made collection, and `Collectors.joining(", ")` for a stream — the stream version is in [12-streams-lambdas.md](12-streams-lambdas.md).
+> **Do not go changing every `+` you have already written.** This optimisation matters for loops over collections that can grow. Gluing three fields together in a `toString()`, or building a two-piece log message, allocates one extra object, does not affect performance and you will not notice it. Reaching for `StringBuilder` everywhere makes code harder to read in exchange for nothing, which is a worse trade than the one you were trying to avoid. And when the thing you are joining is a set of items with a separator between them, there is a more readable tool than either: `String.join(", ", names)` when you already have the collection — a `List`, a `Set` —, and `Collectors.joining(", ")` for a stream — the stream version is in [12-streams-lambdas.md](12-streams-lambdas.md).
 
 ### `String`, `StringBuilder`, `StringBuffer`
 
