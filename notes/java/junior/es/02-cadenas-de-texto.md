@@ -450,9 +450,9 @@ for (Employee e : employees) {
 String report = sb.toString();             // exactamente un String creado, al final
 ```
 
-> **¿Por qué el salto de línea también con `append`, y no `sb.append(e.getName() + "
-")`?** Las dos formas compilan y producen el mismo texto, así que no es una cuestión de estilo sino de objetos. `e.getName() + "
-"` construye un `String` intermedio en cada vuelta del bucle — exactamente el objeto desechable que esta sección quiere evitar — y solo después copia ese resultado dentro del buffer. Encadenando dos `append` no se crea nada intermedio: la primera llamada escribe el nombre directamente en el buffer y la segunda escribe el salto de línea detrás. Y se pueden encadenar porque `append` devuelve el propio builder, como dice el comentario del código.
+> **¿Por qué el salto de línea también con `append`, y no `sb.append(e.getName() + "\n")`?** No estaría mal: las dos formas compilan y producen exactamente el mismo texto. Pero crea un objeto de más. `e.getName() + "\n"` es una concatenación de dos Strings, y como los `String` son inmutables esa suma construye un `String` intermedio nuevo en cada vuelta del bucle — el nombre con el salto ya pegado —, que se copia dentro del buffer y se tira acto seguido. Encadenando dos `append` ese intermedio no llega a existir: la primera llamada escribe el nombre directamente en el buffer y la segunda escribe el salto detrás. Y se pueden encadenar porque `append` devuelve el propio builder, como dice el comentario del código.
+>
+> Ojo con la escala del desperdicio: ese intermedio mide lo que mide un nombre, no el informe entero acumulado, así que no crece con las iteraciones. No es el problema cuadrático de `report += ...`, solo un objeto pequeño de más por vuelta. Por eso no está mal escrito, simplemente es la forma menos limpia.
 
 > **Cuando el buffer se llena, crece — y eso sigue siendo barato.** Un `StringBuilder` empieza con sitio para un número fijo de caracteres y, cuando le añades más allá de eso, reserva un buffer más grande y copia el contenido dentro. Así que no son literalmente cero copias. La diferencia está en _con qué frecuencia_: el buffer más o menos se duplica cada vez, así que mil `append` disparan un puñado de realojos en vez de mil. Si por casualidad conoces el tamaño final de antemano puedes evitar incluso esos con `new StringBuilder(4096)`, que está bien saberlo pero casi nunca merece la pena hacerlo.
 

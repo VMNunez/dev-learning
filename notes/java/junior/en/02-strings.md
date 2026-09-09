@@ -450,9 +450,9 @@ for (Employee e : employees) {
 String report = sb.toString();             // exactly one String created, at the end
 ```
 
-> **Why is the newline appended too, instead of `sb.append(e.getName() + "
-")`?** Both forms compile and produce the same text, so this is not a question of style but of objects. `e.getName() + "
-"` builds an intermediate `String` on every turn of the loop — exactly the throwaway object this section is trying to avoid — and only then copies that result into the buffer. Chaining two `append` calls creates nothing intermediate: the first writes the name straight into the buffer and the second writes the newline after it. And they chain because `append` returns the builder itself, as the comment in the code says.
+> **Why is the newline appended too, instead of `sb.append(e.getName() + "\n")`?** It would not be wrong: both forms compile and produce exactly the same text. But it creates one object more. `e.getName() + "\n"` is a concatenation of two Strings, and because `String` is immutable that sum builds a fresh intermediate `String` on every turn of the loop — the name with the newline already attached — which is copied into the buffer and thrown away right after. Chaining two `append` calls means that intermediate never exists: the first writes the name straight into the buffer and the second writes the newline after it. And they chain because `append` returns the builder itself, as the comment in the code says.
+>
+> Note the scale of the waste: that intermediate is the size of one name, not of the whole accumulated report, so it does not grow with the iterations. This is not the quadratic problem of `report += ...`, just one small object more per turn. That is why it is not badly written, merely the less clean way.
 
 > **When the buffer fills up, it grows — and that is still cheap.** A `StringBuilder` starts with room for a fixed number of characters and, when you append past it, allocates a bigger buffer and copies the contents across. So it is not literally zero copies. The difference is *how often*: the buffer roughly doubles each time, so a thousand appends trigger a handful of reallocations rather than a thousand. If you happen to know the final size in advance you can skip even those with `new StringBuilder(4096)`, which is a nice thing to know and almost never worth doing.
 
