@@ -475,7 +475,11 @@ There is a third type in this family, `StringBuffer`, and you will meet it in ol
 | `StringBuilder` | Yes         | No           | Building text in a loop (the fast choice) |
 | `StringBuffer`  | Yes         | Yes          | Multi-threaded building (rare)            |
 
-`String` is thread-safe *because* it is immutable — there is nothing to corrupt if nothing can change. `StringBuffer` is the older, thread-safe builder; it pays for that safety with locking on every call, and since the overwhelmingly common case is a builder created and finished inside a single method, `StringBuilder` (Java 5) exists as the same class without the locks. **Write `StringBuilder`; recognise `StringBuffer` when you see it in code from 2004.**
+`String` is thread-safe *because* it is immutable: there is nothing to corrupt if nothing can change.
+
+`StringBuffer` is the older builder, and it is thread-safe because it protects itself with **locking**: on every `append` call it locks the object, makes the change and unlocks it again, so that while one thread is writing no other can touch it. That is exactly what stops two threads writing at once and leaving the buffer half-written — but the lock is paid for on **every** call, including when there is no other thread at all.
+
+`StringBuilder` (Java 5) is that same class without the locks: that is why it is faster, and why it is not thread-safe. And it is the one you want, because the normal case is a builder created and finished inside one method, where only one thread touches it. **Write `StringBuilder`; recognise `StringBuffer` when you see it in older code.**
 
 > **What "thread-safe" means, and why it matters in a Spring Boot API.** A **thread** is a task running in parallel with others inside the same program. A REST API handles each incoming HTTP request on its own thread — that is how it serves several users at once instead of queueing them. **Thread-safe** means several threads can use the same object simultaneously without corrupting each other's work. The practical rule that follows: a `StringBuilder` declared as a **local variable inside a method** is created fresh on every call, so it belongs to exactly one thread and the question never arises. A `StringBuilder` stored as a **field on a shared object** is a real bug waiting for your second concurrent user.
 

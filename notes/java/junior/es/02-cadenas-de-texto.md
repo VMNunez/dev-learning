@@ -474,7 +474,11 @@ Hay un tercer tipo en esta familia, `StringBuffer`, y te lo vas a encontrar en c
 | `StringBuilder` | Sí            | No            | Construir texto en un bucle (la opción rápida)  |
 | `StringBuffer`  | Sí            | Sí            | Construcción multihilo (raro)                   |
 
-`String` es thread-safe _porque_ es inmutable — no hay nada que corromper si nada puede cambiar. `StringBuffer` es el builder más antiguo y thread-safe; paga esa seguridad con bloqueo (_locking_) en cada llamada, y como el caso abrumadoramente habitual es un builder creado y terminado dentro de un único método, `StringBuilder` (Java 5) existe como la misma clase sin los bloqueos. **Escribe `StringBuilder`; reconoce `StringBuffer` cuando lo veas en código de 2004.**
+`String` es thread-safe _porque_ es inmutable: no hay nada que corromper si nada puede cambiar.
+
+`StringBuffer` es el builder antiguo, y es thread-safe porque se protege con **bloqueos** (_locking_): en cada llamada a `append` bloquea el objeto, hace el cambio y lo vuelve a desbloquear, de forma que mientras un hilo está escribiendo ningún otro puede tocarlo. Eso es justo lo que impide que dos hilos escriban a la vez y dejen el buffer a medias — pero el bloqueo se paga en **todas** las llamadas, también cuando no hay ningún otro hilo.
+
+`StringBuilder` (Java 5) es esa misma clase sin los bloqueos: por eso es más rápido, y por eso no es thread-safe. Y es el que quieres, porque el caso normal es un builder creado y terminado dentro de un mismo método, donde solo un hilo lo toca. **Escribe `StringBuilder`; reconoce `StringBuffer` cuando lo veas en código antiguo.**
 
 > **Qué significa "thread-safe", y por qué importa en una API de Spring Boot.** Un **hilo** (_thread_) es una tarea que se ejecuta en paralelo con otras dentro del mismo programa. Una API REST atiende cada petición HTTP entrante en su propio hilo — así es como sirve a varios usuarios a la vez en lugar de ponerlos en cola. La regla práctica que sigue de esto: un `StringBuilder` declarado como **variable local dentro de un método** se crea de cero en cada llamada, así que pertenece exactamente a un hilo y la pregunta ni siquiera se plantea. Un `StringBuilder` guardado como **campo de un objeto compartido** es un bug real esperando a tu segundo usuario concurrente.
 
