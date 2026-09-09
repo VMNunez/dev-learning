@@ -426,7 +426,7 @@ iteration 1000: the only one you keep
 
 This example shows both problems. The first is the creation of **999 throwaway objects**, each of which the garbage collector has to reclaim.
 
-The second is the **copying**, and it is the one people miss. Remember what each iteration actually does: it does not add the new line to the object that already exists — it cannot, the object is immutable — it allocates a new object and writes **all the characters that were already there** into it, then the characters of the new line. So iteration 500 does not copy one name: it copies the 499 lines accumulated so far and then adds the 500th. Iteration 501 copies 500 lines. Iteration 502 copies 501.
+The second is **copying the contents of the previous object into the new one**, and it is the one people miss. Remember what each iteration actually does: it does not add the new line to the object that already exists — it cannot, the object is immutable — it allocates a new object and writes **all the characters that were already there** into it, then the characters of the new line. So iteration 500 does not copy one name: it copies the 499 lines accumulated so far and then adds the 500th. Iteration 501 copies 500 lines. Iteration 502 copies 501.
 
 ```
 iteration    2 → copies   1 line

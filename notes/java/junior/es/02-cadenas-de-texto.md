@@ -426,7 +426,7 @@ iteración 1000: el único que te quedas
 
 En este ejemplo se ven los dos problemas. El primero es la creación de **999 objetos desechables**, cada uno de los cuales el recolector de basura tiene que reclamar.
 
-El segundo es la **copia**, y es el que se pasa por alto. Recuerda qué hace exactamente cada iteración: no añade la línea nueva al objeto que ya existe — no puede, es inmutable —, sino que reserva un objeto nuevo y escribe dentro **todos los caracteres que ya había**, y detrás los de la línea nueva. Así que la iteración 500 no copia un nombre: copia las 499 líneas ya acumuladas y luego añade la 500. La 501 copia 500 líneas. La 502 copia 501.
+El segundo es la **copia del contenido del objeto anterior dentro del nuevo**, y es el que se pasa por alto. Recuerda qué hace exactamente cada iteración: no añade la línea nueva al objeto que ya existe — no puede, es inmutable —, sino que reserva un objeto nuevo y escribe dentro **todos los caracteres que ya había**, y detrás los de la línea nueva. Así que la iteración 500 no copia un nombre: copia las 499 líneas ya acumuladas y luego añade la 500. La 501 copia 500 líneas. La 502 copia 501.
 
 ```
 iteración   2 → copia    1 línea
