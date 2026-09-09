@@ -400,7 +400,7 @@ Both are typos a compiler could in principle catch — and does not, for the sam
 > 📖 Docs: [Baeldung — StringBuilder and StringBuffer in Java](https://www.baeldung.com/java-string-builder-string-buffer) → read: "Similarities" and "Differences" (with its "Performance" sub-section)
 > 📖 [Oracle Docs — `java.lang.StringBuilder`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuilder.html) → read the class description: "no guarantee of synchronization"
 
-`a + b` on two Strings is fine. What is not fine is `+=` inside a loop, and the reason is immutability, now with a cost attached.
+`a + b` on two Strings is fine. What is not fine is `+=` inside a loop, and the reason is immutability: since a `String` cannot be modified, every turn of the loop builds a brand new `String` object instead of extending the one you already had.
 
 > **Three pieces of syntax in the examples below are borrowed from later files.** Read them, do not study them. `for (Employee e : employees)` is a **loop**: it runs the block once for each element of `employees`, with `e` holding the current one — written in full in [03-control-flow.md](03-control-flow.md). `List<Employee>` is a **list of employees**, the ordinary way Java holds many values of one type, and the angle brackets say which type is inside — [09-generics.md](09-generics.md) explains the brackets and [10-collections.md](10-collections.md) the list. And `e.getName()` is a **method call on an object**: it asks that one employee for its name, which is [06-oop-classes.md](06-oop-classes.md). None of the three is what this section is teaching; they are only the shortest way to write "a thousand names, one after another", which is the situation the section is about.
 
