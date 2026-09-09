@@ -335,7 +335,7 @@ Sobre ninguno de los tres actúa `trim()`, porque los tres tienen un número má
 
 > 📖 Docs: [Oracle Docs — `java.util.Formatter`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Formatter.html) → leer: "Format String Syntax" y la tabla "Conversions" — la lista completa de qué puede ir después de un `%`.
 
-Tienes un `Employee` con un campo `name` y otro `hours`, y quieres formar a partir de ahí una frase legible. La forma obvia es `+`, que pega texto y, cuando un lado no es texto, lo convierte primero:
+Tienes un `Employee` con un campo `name` y otro `hours`, y quieres formar a partir de ahí una frase legible. La forma obvia es `+`, que pega texto y, cuando un lado no es texto, lo convierte :
 
 ```java
 String name = "Ana";
@@ -344,7 +344,7 @@ int hours = 38;
 String line = name + " logged " + hours + " hours";   // "Ana logged 38 hours"
 ```
 
-Eso funciona y es perfectamente idiomático para una expresión corta como esta. Deja de ser agradable en cuanto la frase tiene cuatro o cinco huecos, porque las comillas y los signos `+` empiezan a superar en número a las palabras de verdad. `.formatted()` es la alternativa: escribes la frase de una vez, de una sola pieza, con **marcadores de posición** señalando dónde van los valores, y entregas los valores después.
+Eso funciona y es lo normal para una expresión corta como esta. Deja de ser recomendable en cuanto la frase tiene cuatro o cinco huecos, porque las comillas y los signos `+` acaban superando al número de palabras que lleva la frase. `.formatted()` es la alternativa: escribes la frase de una vez, de una sola pieza, con **marcadores de posición** señalando dónde van los valores, y entregas los valores después.
 
 ```java
 String line = "%s logged %d hours".formatted(name, hours);   // "Ana logged 38 hours"
@@ -354,9 +354,9 @@ Un marcador de posición es un `%` seguido de una letra que dice _qué tipo de v
 
 - **`%s`** — aquí va un string. Acepta literalmente cualquier cosa, porque todo lo que hace es llamar a `toString()` sobre el valor, y todo objeto en Java tiene un `toString()` ([06-poo-clases.md](06-poo-clases.md) es donde escribes el tuyo propio).
 - **`%d`** — aquí va un número entero (`int`, `long`, y sus tipos wrapper). Rechaza cualquier otra cosa.
-- **`%f`** — aquí va un número decimal, y casi siempre quieres decir cuántos decimales: `%.2f` significa dos. `"Total: %.2f h".formatted(38.5)` da `"Total: 38,50 h"` o `"Total: 38.50 h"` según la configuración regional de la máquina, un detalle que merece la pena saber que existe pero no perseguir a este nivel.
+- **`%f`** — aquí va un número decimal, y casi siempre quieres decir cuántos decimales: `%.2f` significa dos. `"Total: %.2f h".formatted(38.5)` da `"Total: 38,50 h"` o `"Total: 38.50 h"` según la configuración regional del ordenador.
 
-**Los valores se emparejan con los marcadores de izquierda a derecha, por posición — nada se empareja por nombre.** Ese es todo el mecanismo, y también es todo el problema, porque nada comprueba que hayas puesto el orden correcto.
+**Los marcadores se asignan por posición: el primer valor va al primer marcador, el segundo al segundo, y así de izquierda a derecha. Ninguno se asigna por nombre.** Ese es todo el mecanismo, y también es todo el problema, porque nada comprueba que hayas puesto el orden correcto.
 
 > **`.formatted()` es lo más parecido que tiene Java a un template literal de JavaScript.** `` `${name} logged ${hours} hours` `` y `"%s logged %d hours".formatted(name, hours)` hacen el mismo trabajo. La única diferencia real es que JS pone la variable _dentro_ del texto y Java pone un marcador ahí y las variables después — que es exactamente por qué la versión JS no puede equivocarse de orden y la versión Java sí.
 

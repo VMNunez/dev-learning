@@ -344,7 +344,7 @@ int hours = 38;
 String line = name + " logged " + hours + " hours";   // "Ana logged 38 hours"
 ```
 
-That works and is perfectly idiomatic for a short expression like this one. It stops being pleasant the moment the sentence has four or five holes in it, because the quotes and the `+` signs start outnumbering the actual words. `.formatted()` is the alternative: you write the sentence once, in one piece, with **placeholders** marking where values go, and hand the values in afterwards.
+That works and is the normal thing to write for a short expression like this one. It stops being the right choice the moment the sentence has four or five holes in it, because the quotes and the `+` signs end up outnumbering the words the sentence actually has. `.formatted()` is the alternative: you write the sentence once, in one piece, with **placeholders** marking where values go, and hand the values in afterwards.
 
 ```java
 String line = "%s logged %d hours".formatted(name, hours);   // "Ana logged 38 hours"
@@ -354,9 +354,9 @@ A placeholder is a `%` followed by a letter that says *what kind of value goes h
 
 - **`%s`** — a string goes here. It accepts literally anything, because all it does is call `toString()` on the value, and every object in Java has a `toString()` ([06-oop-classes.md](06-oop-classes.md) is where you write your own).
 - **`%d`** — a whole number goes here (`int`, `long`, and their wrapper types). It refuses anything else.
-- **`%f`** — a decimal number goes here, and you almost always want to say how many decimal places: `%.2f` means two. `"Total: %.2f h".formatted(38.5)` gives `"Total: 38,50 h"` or `"Total: 38.50 h"` depending on the machine's regional settings, which is a detail worth knowing exists but not worth chasing at this level.
+- **`%f`** — a decimal number goes here, and you almost always want to say how many decimal places: `%.2f` means two. `"Total: %.2f h".formatted(38.5)` gives `"Total: 38,50 h"` or `"Total: 38.50 h"` depending on the computer's regional settings.
 
-**The values are matched to the placeholders left to right, by position — nothing is matched by name.** That is the whole mechanism, and it is also the whole problem, because nothing checks that you got the order right.
+**The placeholders are filled by position: the first value goes to the first placeholder, the second to the second, and so on from left to right. None of them is matched by name.** That is the whole mechanism, and it is also the whole problem, because nothing checks that you got the order right.
 
 > **`.formatted()` really is the closest thing Java has to a JavaScript template literal.** `` `${name} logged ${hours} hours` `` and `"%s logged %d hours".formatted(name, hours)` do the same job. The one real difference is that JS puts the variable *inside* the text and Java puts a marker there and the variables after — which is why the JS version cannot get the order wrong and the Java version can.
 
