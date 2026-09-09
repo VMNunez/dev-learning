@@ -303,7 +303,7 @@ The most common case you will meet is a form field. A user who leaves a field un
 
 ### `strip()` vs `trim()` — use `strip()`
 
-The catalogue lists `strip()`, but every tutorial written before 2018 teaches `trim()`, so you will meet both. They do the same job — remove leading and trailing whitespace — and they disagree about what whitespace *is*, because the two definitions come from different eras.
+Among the methods above is `strip()`, but in tutorials and in older code you will see `trim()` doing the same thing, so you will meet both. They do the same job — remove leading and trailing whitespace — and they differ in what they count as *whitespace*, because the two definitions come from different eras.
 
 `trim()` predates Unicode support in Java: it removes every character whose code point is less than or equal to `U+0020` (the ordinary space). That is a crude numeric rule — it happens to catch spaces, tabs and newlines, and it also catches some control characters that are not whitespace at all. `strip()`, added in Java 11, asks `Character.isWhitespace()` instead, which consults the actual Unicode tables:
 

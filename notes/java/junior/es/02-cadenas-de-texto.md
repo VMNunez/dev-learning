@@ -301,9 +301,9 @@ El caso más habitual lo vas a ver en los campos de un formulario. Un usuario qu
 
 > **Adelanto — Spring Boot:** vas a encontrarte este mismo par otra vez, como anotaciones en lugar de llamadas a método. `@NotEmpty` sobre un campo de un request rechaza `""` y deja pasar `"  "`; `@NotBlank` rechaza los dos. Son las mismas dos reglas con los mismos nombres, aplicadas automáticamente por Spring en cuanto llega la petición, sin que tú escribas ningún `if`. Qué anotación va en qué campo es una pregunta que se responde en las notas de Spring Boot.
 
-### `strip()` frente a `trim()` — usa `strip()`
+### `strip()` frente a `trim()`
 
-El catálogo lista `strip()`, pero todo tutorial escrito antes de 2018 enseña `trim()`, así que te vas a encontrar los dos. Hacen el mismo trabajo — quitar espacios en blanco al principio y al final — y discrepan sobre qué _es_ un espacio en blanco, porque las dos definiciones vienen de épocas distintas.
+Entre los métodos de arriba se encuentra `strip()`, pero en tutoriales y en código antiguo vas a ver `trim()` haciendo lo mismo, así que te vas a encontrar los dos. Hacen el mismo trabajo — quitar espacios en blanco al principio y al final — y se diferencian en qué consideran _un espacio en blanco_, porque las dos definiciones vienen de épocas distintas.
 
 `trim()` es anterior al soporte de Unicode en Java: elimina todo carácter cuyo code point sea menor o igual que `U+0020` (el espacio normal). Es una regla numérica cruda — resulta que atrapa espacios, tabuladores y saltos de línea, y también atrapa algunos caracteres de control que no son espacios en blanco en absoluto. `strip()`, añadido en Java 11, pregunta en cambio a `Character.isWhitespace()`, que consulta las tablas reales de Unicode:
 
