@@ -1040,10 +1040,13 @@ and interceptor, and 2026-09-01 in `projects/04-meal-finder` for service. Both c
 Victor after a wrong command was given — when guiding a step that creates a file by CLI, give the
 full command from this table rather than reconstructing it.
 
-A copy of this table lives in each Angular project's generated
-`frontend/<app>/.claude/CLAUDE.md`, under a `## Repository additions` heading, because that is the
-file read when guiding frontend work. **This section is the authority**; the CLI can regenerate that
-one at any time, so restore it from here if it disappears.
+**This section is the only home for the table.** It was briefly copied into
+`projects/07-timetrack/frontend/timetrack/.claude/CLAUDE.md` on 2026-09-09 and reverted the same day:
+the generated Angular guides are the CLI's file, and "Generated Angular guide files inside a frontend"
+below states plainly that they are not edited by hand and are not a place to record session policy.
+The pull to copy it there is real — that guide is what gets read when guiding frontend work — and it
+is exactly what the rule forbids, because the copy dies on the next `ng update` with nothing
+announcing it.
 
 ---
 
