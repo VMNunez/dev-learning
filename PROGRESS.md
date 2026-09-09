@@ -125,6 +125,7 @@ test.
 |---|---|
 | 01-todo-list | 1/118 (1%) |
 | 02-weather-app | 0/109 (0%) |
+| 03-expense-tracker | 0/122 (0%) |
 
 ---
 
