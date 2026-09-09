@@ -6,7 +6,7 @@
 - [El catálogo de métodos del día a día — y qué devuelve cada llamada](#el-catálogo-de-métodos-del-día-a-día--y-qué-devuelve-cada-llamada)
   - [`substring` — el segundo índice queda excluido, y pasarte del final lanza excepción](#substring--el-segundo-índice-queda-excluido-y-pasarte-del-final-lanza-excepción)
   - [`split` — recibe una expresión regular, no un separador plano](#split--recibe-una-expresión-regular-no-un-separador-plano)
-- [Vacío, en blanco, y el espacio en blanco que no puedes ver](#vacío-en-blanco-y-el-espacio-en-blanco-que-no-puedes-ver)
+- [`isEmpty()` e `isBlank()` — vacío y en blanco](#isempty-e-isblank--vacío-y-en-blanco)
   - [`strip()` frente a `trim()` — usa `strip()`](#strip-frente-a-trim--usa-strip)
 - [Metiendo valores dentro de texto — `+` y `.formatted()`](#metiendo-valores-dentro-de-texto---y-formatted)
   - [Por qué una cadena de formato rota sigue compilando](#por-qué-una-cadena-de-formato-rota-sigue-compilando)
@@ -277,13 +277,15 @@ La línea del medio es la trampa: no lanza excepción, devuelve un array vacío,
 
 ---
 
-## Vacío, en blanco, y el espacio en blanco que no puedes ver
+## `isEmpty()` e `isBlank()` — vacío y en blanco
 
 > 📖 Docs: [Baeldung — Java Strip Methods](https://www.baeldung.com/java-string-strip-methods) → leer: "Comparing the Strip Methods vs the trim() Method" — y su subsección "The strip() Method vs the trim() Method".
 
 Dos de los métodos que has visto arriba parecen intercambiables y no lo son: elegir uno u otro cambia **qué** estás validando. Con uno rechazas solo el campo que llega totalmente vacío; con el otro rechazas además el que llega con espacios. Son dos validaciones distintas, no dos formas de escribir la misma.
 
-**`isEmpty()` es true para exactamente un valor: `""`, un String de longitud cero — una cadena de texto vacía, sin ningún carácter dentro, ni siquiera un espacio.** Nada más. **`isBlank()` es true para `""` _y_ para cualquier string hecho solo de espacios en blanco, como por ejemplo `"   "`** — espacios, tabuladores, saltos de línea.
+**`isEmpty()` es true para exactamente un valor: `""`, un String de longitud cero — una cadena de texto vacía, sin ningún carácter dentro, ni siquiera un espacio.**
+
+**`isBlank()` es true para `""` _y_ para cualquier string hecho solo de espacios en blanco, como por ejemplo `"   "`** — espacios, tabuladores, saltos de línea.
 
 ```java
 "".isEmpty()      // true       ""     está vacío
@@ -295,7 +297,7 @@ Dos de los métodos que has visto arriba parecen intercambiables y no lo son: el
 "Ana".isBlank()   // false
 ```
 
-El caso más habitual lo vas a ver en los campos de un formulario. Un usuario que deja un campo sin tocar envía `""` — vacío, y `isEmpty()` lo detecta. Un usuario que toca el campo, pulsa la barra espaciadora dos veces y sigue adelante envía `"  "`, y lo mismo hace cualquiera que pegue un valor con un tabulador perdido, o cuyo teclado del móvil añada un espacio tras el autocompletado. Ese valor tiene longitud 2, así que `isEmpty()` devuelve `false` y tu validación lo deja pasar — y acabas de guardar un empleado cuyo nombre son dos espacios. Resumido en una frase: si el campo llega vacío del todo, `isEmpty()` lo detecta; si llega con espacios que el usuario dejó sin querer, `isEmpty()` **no** lo detecta y el que hay que usar es `isBlank()`. **En código de validación, recurre a `isBlank()`; `isEmpty()` es para el caso concreto en el que te importa específicamente que la longitud sea cero**, como comprobar si un string construido a partir de una lista produjo contenido en absoluto.
+El caso más habitual lo vas a ver en los campos de un formulario. Un usuario que deja un campo sin tocar envía `""` — vacío, y `isEmpty()` lo detecta. Un usuario que toca el campo, pulsa la barra espaciadora dos veces y sigue adelante envía `"  "`, y lo mismo hace cualquiera que pegue un valor con un tabulador perdido, o cuyo teclado del móvil añada un espacio tras el autocompletado. Ese valor tiene longitud 2 — o la longitud que sea, según cuántos espacios haya; lo que importa es que su longitud **no es cero** —, así que `isEmpty()` devuelve `false` y tu validación lo deja pasar — y acabas de guardar un empleado cuyo nombre son dos espacios. Resumido en una frase: si el campo llega vacío del todo, `isEmpty()` lo detecta; si llega con espacios que el usuario dejó sin querer, `isEmpty()` **no** lo detecta y el que hay que usar es `isBlank()`. **En código de validación, recurre a `isBlank()`; `isEmpty()` es para el caso concreto en el que te importa específicamente que la longitud sea cero**, como comprobar si un string construido a partir de una lista produjo contenido en absoluto.
 
 > **Adelanto — Spring Boot:** vas a encontrarte este mismo par otra vez, como anotaciones en lugar de llamadas a método. `@NotEmpty` sobre un campo de un request rechaza `""` y deja pasar `"  "`; `@NotBlank` rechaza los dos. Son las mismas dos reglas con los mismos nombres, aplicadas automáticamente en el borde de tu API en lugar de a mano dentro de un método. Qué anotación va en qué campo es una pregunta de las notas de Spring Boot — lo que se traslada desde aquí es _por qué_ existen las dos y cuál es la opción segura por defecto.
 

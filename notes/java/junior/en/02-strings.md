@@ -6,7 +6,7 @@
 - [The everyday method catalogue — and what each call gives back](#the-everyday-method-catalogue--and-what-each-call-gives-back)
   - [`substring` — the second index is excluded, and going past the end throws](#substring--the-second-index-is-excluded-and-going-past-the-end-throws)
   - [`split` — it takes a regular expression, not a plain separator](#split--it-takes-a-regular-expression-not-a-plain-separator)
-- [Empty, blank, and the whitespace you cannot see](#empty-blank-and-the-whitespace-you-cannot-see)
+- [`isEmpty()` and `isBlank()` — empty and blank](#isempty-and-isblank--empty-and-blank)
   - [`strip()` vs `trim()` — use `strip()`](#strip-vs-trim--use-strip)
 - [Putting values into text — `+` and `.formatted()`](#putting-values-into-text---and-formatted)
   - [Why a broken format string still compiles](#why-a-broken-format-string-still-compiles)
@@ -277,7 +277,7 @@ The middle line is the trap: it does not throw, it returns an empty array, of **
 
 ---
 
-## Empty, blank, and the whitespace you cannot see
+## `isEmpty()` and `isBlank()` — empty and blank
 
 > 📖 Docs: [Baeldung — Java Strip Methods](https://www.baeldung.com/java-string-strip-methods) → read: "Comparing the Strip Methods vs the trim() Method" — and its sub-section "The strip() Method vs the trim() Method".
 
@@ -297,7 +297,7 @@ Two of the methods you saw above look interchangeable and are not: picking one o
 
 The relationship is one-directional and worth stating plainly: **every empty string is blank, and most blank strings are not empty.** So `isBlank()` is the wider check, and it is nearly always the one you meant.
 
-The most common case you will meet is a form field. A user who leaves a field untouched submits `""` — empty, and `isEmpty()` catches it. A user who taps the field, hits the space bar twice and moves on submits `"  "`, and so does anyone who pastes a value with a stray tab, or whose phone keyboard adds a space after autocomplete. That value has length 2, so `isEmpty()` returns `false` and your validation waves it through — and you have just stored an employee whose name is two spaces. Put in one sentence: if the field arrives completely empty, `isEmpty()` catches it; if it arrives with spaces the user left behind by accident, `isEmpty()` does **not** catch it and the one to use is `isBlank()`. **In validation code, reach for `isBlank()`; `isEmpty()` is for the narrow case where you specifically care that the length is zero**, such as checking whether a list-turned-string produced any content at all.
+The most common case you will meet is a form field. A user who leaves a field untouched submits `""` — empty, and `isEmpty()` catches it. A user who taps the field, hits the space bar twice and moves on submits `"  "`, and so does anyone who pastes a value with a stray tab, or whose phone keyboard adds a space after autocomplete. That value has length 2 — or whatever length the number of spaces gives it; what matters is that its length is **not zero** —, so `isEmpty()` returns `false` and your validation waves it through — and you have just stored an employee whose name is two spaces. Put in one sentence: if the field arrives completely empty, `isEmpty()` catches it; if it arrives with spaces the user left behind by accident, `isEmpty()` does **not** catch it and the one to use is `isBlank()`. **In validation code, reach for `isBlank()`; `isEmpty()` is for the narrow case where you specifically care that the length is zero**, such as checking whether a list-turned-string produced any content at all.
 
 > **Preview — Spring Boot:** you will meet this exact pair again as annotations rather than method calls. `@NotEmpty` on a request field rejects `""` and lets `"  "` through; `@NotBlank` rejects both. They are the same two rules with the same names, applied automatically at the edge of your API instead of by hand inside a method. Which annotation goes on which field is a Spring Boot notes question — what carries over from here is *why* the two exist and which one is the safe default.
 
