@@ -56,7 +56,7 @@ Handoff: Once Victor knows what kind of language Java is and how it runs, entry 
 
 ## 01 — Values, types, conversion, and arithmetic
 
-Status: complete
+Status: refined
 
 Studied: pending
 

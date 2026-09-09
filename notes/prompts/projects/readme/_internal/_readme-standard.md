@@ -431,7 +431,7 @@ structure → Backend and frontend details.**
 5. **Tradeoffs** — format `[X] over [Y] — [reason]`. Must include: Signals over NgRx (or why NgRx if used).
 6. **How to run alone** — `ng serve` with the API URL pointing to the backend; include the step to set
    an env var if the API base URL needs one.
-7. **Tests** — services with unit tests, one bullet per class. Tool: Jasmine + TestBed. If none yet,
+7. **Tests** — services with unit tests, one bullet per class. Tool: Vitest + TestBed. If none yet,
    mark `*(planned)*` — never omit.
 
 ---

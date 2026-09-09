@@ -86,7 +86,7 @@ In order of impact:
 
 1. **Complete, explainable full-stack projects** — starting with project 07 TimeTrack, then project 08, and more if time allows. All live in `projects/`. Spring Boot + Angular + PostgreSQL + Docker + JWT + tests. You must be able to explain every line, every decision, every tradeoff in each one. Every extra project separates you further from other junior candidates.
 
-2. **Tests in the project** — almost no junior candidate has tests. Having JUnit 5 + Mockito on the backend and Jasmine + TestBed on the frontend makes you immediately more credible. It shows you understand production code, not just working code.
+2. **Tests in the project** — almost no junior candidate has tests. Having JUnit 5 + Mockito on the backend and Vitest + TestBed on the frontend makes you immediately more credible. It shows you understand production code, not just working code.
 
 3. **A README with architecture decisions** — not a list of technologies. Decisions: _why JWT over sessions, why soft delete, why DTOs instead of exposing entities, why coordinator pattern_. One candidate who explains decisions is worth more than five who just list features. The README format and quality standard is defined in `notes/prompts/projects/readme/_internal/_readme-standard.md`.
 
@@ -151,7 +151,7 @@ The hiring process above defines urgency: the real filter is a **technical test 
 notes, no AI** — so fluency without Claude outranks adding more artifacts. In order:
 
 1. **Project 07 Angular frontend (Steps 7a–7d)** — the CV gate depends on it; nothing is applyable without it.
-2. **Project 07 tests (JUnit 5 + Mockito, Jasmine services)** — the #2 differentiator in this file, and interview material in themselves. Part of finishing, not a phase after.
+2. **Project 07 tests (JUnit 5 + Mockito, Vitest + TestBed services)** — the #2 differentiator in this file, and interview material in themselves. Part of finishing, not a phase after.
 3. **Consolidation (Phase 3c)** — rebuild key slices of 07 solo (a CRUD endpoint from scratch, a reactive form + service) under the same conditions as a real test. This is what the technical test measures; Claude-guided building does not train it.
 4. **Simulations + interview prep (es/)** — the 15-simulation target and fluent answers with project examples.
 5. **Docker + SQL complement (Steps 10–11)** — CV keyword, 1–2 days of work, never probed deeply at junior level. Deliberately after consolidation, not before.
@@ -184,7 +184,7 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 
 **Backend gate (Phase 3a — closed):** Login endpoint returns a valid JWT; protected endpoints reject requests without a token — confirmed in Postman. See `projects/07-timetrack/PLANNING.md` for the full step history.
 
-**Covers:** REST API, JWT auth, role-based authorization, JPA + Hibernate, TimeEntry workflow (DRAFT → SUBMITTED → APPROVED / REJECTED), reports, Angular frontend, JUnit 5 + Mockito, Jasmine + TestBed, Docker Compose, architecture README.
+**Covers:** REST API, JWT auth, role-based authorization, JPA + Hibernate, TimeEntry workflow (DRAFT → SUBMITTED → APPROVED / REJECTED), reports, Angular frontend, JUnit 5 + Mockito, Vitest + TestBed, Docker Compose, architecture README.
 
 **Demonstrable gate (Phase 3b):** Angular frontend live (Steps 7a–7d), all services have at least one unit test, README includes at least one architecture decision with a real tradeoff — and every line is explainable out loud in an interview. This is what unlocks the CV update and consolidation.
 
@@ -197,8 +197,8 @@ _This schedule is fixed for the full-time study window only — June 2 → Septe
 | What                 | Tool              | From       |
 | -------------------- | ----------------- | ---------- |
 | Spring Boot services | JUnit 5 + Mockito | Project 07 |
-| Angular services     | Jasmine + TestBed | Project 07 |
-| Angular components   | Jasmine + TestBed | Project 08 |
+| Angular services     | Vitest + TestBed  | Project 07 |
+| Angular components   | Vitest + TestBed  | Project 08 |
 
 No project is finished without tests. Tests are not a step — they are part of finishing a feature. From project 07, tests are written at the level a senior developer would write them: edge cases covered, meaningful assertions, no trivial "it exists" tests.
 
@@ -215,7 +215,7 @@ Planned in two runs, both inside Claude Code once project 07 is complete. `proje
   Closes: Flyway / schema evolution, server-side file validation and safe storage/serving,
   `@Transactional` propagation, and transaction limits around files or outbound calls.
 - **Library Catalog** — books, authors, members, loans. Covers: many-to-many, complex queries, component tests.
-  Closes: Jasmine + TestBed **component** behaviour through `ComponentFixture` (project-08 rule),
+  Closes: Vitest + TestBed **component** behaviour through `ComponentFixture` (project-08 rule),
   `@DataJpaTest` repository tests, many-to-many ownership, and report-total verification.
 - **Support Desk** — tickets with comments, search, and dynamic forms. Covers: typeahead search,
   dynamic form sections, status workflow with an audit trail.
@@ -287,7 +287,7 @@ To do a simulation: open the spec file, set a timer, and build. No notes, no AI.
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | SQL all topics solid (JOINs, GROUP BY, subqueries, CTEs, window functions) | SQL is more likely to appear in tests than algorithms                                                                                                                                                                                                                                        |
 | Project 07 live, documented, and explainable line by line                  | This is the main differentiator — it must be solid first                                                                                                                                                                                                                                     |
-| Project 07 has tests (JUnit 5 + Mockito + Jasmine)                         | Tests are a stronger signal than LeetCode for consultancies                                                                                                                                                                                                                                  |
+| Project 07 has tests (JUnit 5 + Mockito + Vitest)                          | Tests are a stronger signal than LeetCode for consultancies                                                                                                                                                                                                                                  |
 | Notes complete for Angular, Spring Boot, Java, Architecture, Security      | Interview prep gaps matter more than algorithm practice                                                                                                                                                                                                                                      |
 | Interview prep (es/) solid for the main topics                             | Active recall ready before adding a new track                                                                                                                                                                                                                                                |
 

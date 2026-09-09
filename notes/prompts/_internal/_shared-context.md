@@ -63,7 +63,7 @@ to the bar. It is not a pep talk — it is the real picture.
   different framework. Frame it as transferable, not as "wrong stack".
 - **A deliberate market bet,** not a default. Choosing Angular + Spring Boot is a strategic
   decision I can defend — it shows I researched where the demand is.
-- **I build the things that filter juniors out.** Tests (JUnit 5 + Mockito, Jasmine + TestBed
+- **I build the things that filter juniors out.** Tests (JUnit 5 + Mockito, Vitest + TestBed
   from project 07 onward), explicit architecture decisions, and the habit of explaining every
   line. These are rare at junior level in 2026 and are exactly what passes the hardest stage —
   the live code review.

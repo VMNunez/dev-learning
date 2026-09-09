@@ -4,7 +4,8 @@
 > incrementally by the closing rituals (`step-complete`, `backlog-task-close`, `coverage-mark`,
 > `coverage-bullet-add`, `study-block-close`, `sql-grade`, `simulation-review`), each writing the cell it owns in the session
 > that produced it. So this prompt **audits**: it measures every section against its real sources and
-> **reports the drift**, naming the writer that owns the repair. It edits exactly one section itself —
+> **reports the drift**, naming the writer that owns the repair — or Victor, where the drift is in a
+> section's legend prose, which has no automatic writer at all (D11). It edits exactly one section itself —
 > `Professional level by topic`, whose `Current tracked level`, `Knowledge consolidation` and
 > `Next gate` cells need all 13 topics at once and no ritual can compute. Its fourth cell,
 > `Practical evidence`, is the one cell of the matrix this prompt **shares**: the closing rituals
@@ -82,11 +83,12 @@ contract each project subagent follows and the shape of what it returns.
 |---|---|---|
 | `Professional level by topic` | **this prompt** — `Current tracked level`, `Knowledge consolidation`, `Next gate` · `step-complete` and `backlog-task-close` — `Practical evidence`, in session | **writes** — and on `Practical evidence` it may only **add**; rewriting or dropping an entry it did not write is forbidden there, whatever the rest of the row says. D7 holds that rule |
 | `Coverage demonstrated` | `coverage-mark` + `coverage-bullet-add` (the cells they touch, plus `Total`) · `coverage-prompt` (one topic+level) · `coverage-audit` (a whole level) | measures and reports (D8) |
-| `Authoring progress` | `authoring-progress-recount` (all three rows, recounted whenever a note or question reaches an authored state) | measures and reports (D10) |
-| `Study progress` | `study-block-close` (all three rows, recounted at the end of the 13:30 block) | measures and reports (D9) |
+| `Authoring progress` | `authoring-progress-recount` (all three levelled rows plus the per-project table, recounted whenever a note or question reaches an authored state) | measures and reports (D10) |
+| `Study progress` | `study-block-close` (all three levelled rows plus the per-project table, recounted at the end of the 13:30 block) | measures and reports (D9) |
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
 | `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
 | `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |
+| The **legend prose** of any section — its `—` / `*` legends and the sentences stating a table's counting rule | nobody automatic — **Victor, by hand** | measures one class of it and reports it to him (D11) |
 | `Useful resources`, the header prose | nobody automatic — Victor edits them by hand | untouched |
 
 **Owning a format is not owning the write.** D8 below remains the authority on the coverage table's
@@ -305,10 +307,11 @@ re-create one, and do not look for one.
 - **A section you cannot measure is a finding, not a silence.** A missing `## Practice completed`, an
   absent TRACKER.md, a level with no route file: report the structural gap.
 - **Never invent or recreate a concept section.** PROGRESS.md's declared status sections are the level
-  matrix, `Coverage demonstrated`, `Study progress`, `Projects`, `Practice completed`, and
-  `Useful resources`. A new section is legitimate only when its source, unit, writer, reader and audit
-  rule are added to the ownership contract in the same machinery change. Per-technology concept lists
-  remain forbidden: coverage owns concepts; PROGRESS records only their effects and track progress.
+  matrix, `Coverage demonstrated`, `Authoring progress`, `Study progress`, `Projects`,
+  `Practice completed`, and `Useful resources`. A new section is legitimate only when its source,
+  unit, writer, reader and audit rule are added to the ownership contract in the same machinery
+  change. Per-technology concept lists remain forbidden: coverage owns concepts; PROGRESS records
+  only their effects and track progress.
 
 ### D7 — `Professional level by topic` — **the one section this prompt writes**
 
@@ -389,7 +392,8 @@ the two read together.
 
 ### D9 — `Study progress` — measured, never written here
 
-**Owner: `study-block-close`.** Recompute the three rows with the same contract the ritual uses:
+**Owner: `study-block-close`.** Recompute the three levelled rows and the per-project table with the
+same contract the ritual uses:
 
 - Notes, per level: dated `Studied:` entries over all numbered entries, but only when every required
   registered-topic plan exists, is `current`, and its coverage fingerprint matches. A missing legacy
@@ -403,12 +407,21 @@ the two read together.
   exists, both languages carry current coverage fingerprints, stable-ID parity passes, and no duplicate
   ID exists. Angular Material shares Angular's bank; all other registered topics own their file.
 
+- Project banks, one row per project: stable question IDs carrying both `[refined]` and `[studied]` in
+  both languages over that project's IDs **on `notes/interview-prep/routes/projects.md`** — its route,
+  not its whole bank, since the daily block may not serve an off-route question. The project list is the
+  one `interview-prep-route-projects-prompt.md` → "Eligibility" resolves, and the gates are that route's:
+  `Route status: current`, a matching inventory fingerprint, and EN/ES parity. **There is no coverage
+  fingerprint to require** — that bank has none by design. A `[studied]` question the route no longer
+  carries is in neither half of the fraction; it is named, never counted and never a drift row.
+
 Compare the result with `PROGRESS.md` and emit one drift row per mismatched cell. `—` is required when
 the denominator gate is not met; never sum only the current subset and present it as a level total.
 
 ### D10 — `Authoring progress` — measured, never written here
 
-**Owner: `authoring-progress-recount`.** Recompute the three rows with the same contract the skill uses:
+**Owner: `authoring-progress-recount`.** Recompute the three levelled rows and the per-project table
+with the same contract the skill uses:
 
 - Notes authored, per level: entries whose `Status:` is `complete`, plus `refined` entries owing no
   unconsumed `Pending additions` — an absent field owes nothing — over all numbered entries across the
@@ -420,6 +433,11 @@ the denominator gate is not met; never sum only the current subset and present i
 - Interview CORE refined and Interview bank refined, per level: D9's denominators and gates exactly,
   with `[refined]` alone as the numerator instead of `[refined] [studied]`. Both are `—` until the
   banks carry stable IDs, which is the correct reading and never a drift row on its own.
+- Project banks refined, one row per project: D9's project list and its parity/ID gates, but the
+  denominator is **the whole bank** rather than the route, and the numerator is `[refined]` alone. That
+  row therefore has a real denominator even where D9's twin is `—`, because refining an answer does not
+  depend on any route carrying the question. Name `authoring-progress-recount` as the repair, passing the
+  project rather than a level.
 
 The two sections are **not** ordered: an entry that was studied and has since been assigned a new
 coverage bullet keeps its `Studied` date while dropping out of the authored numerator, so studied may
@@ -427,6 +445,35 @@ legitimately exceed authored. Read a level where it does as the signal it is —
 append — and check it against the `Pending additions` lists rather than reporting it as drift. Compare
 the result with `PROGRESS.md` and emit one drift row per mismatched cell, naming
 `authoring-progress-recount` as the repair.
+
+### D11 — The explanatory prose that cites a cell
+
+**A section's prose has no automatic writer, so this is the one class of it that can be measured.**
+Every writer in the ownership contract is mandated to recount *cells* — `_system-map.md` §8 states that
+partition — and nothing in any of those mandates reaches the paragraphs beside the table. Most of that
+prose is doctrine and cannot rot: it explains what a denominator is, why two figures are never summed,
+why `—` is not `0%`. **What rots is a sentence that names a specific cell as its example**, because the
+cell it names is free to move under it and no pipeline that moves it is told the sentence exists.
+
+Measured 2026-09-07: the `Coverage demonstrated` `—` legend still offered HTML as its example of a level
+with no coverage file three days after HTML junior became a real `0/81 (0%)`, and the drift report routed
+the repair to `/coverage-audit junior` — a pipeline that can run in full, correctly, and leave the
+sentence untouched.
+
+**The check.** For each section, read its explanatory prose — its `—` / `*` legend and its intro
+paragraphs alike — for a sentence that cites a **named topic, level, project or figure** as an
+illustration. For each one, compare what it asserts with **what this run measured**: the D8, D9 or D10
+recount, or the primary source the sentence itself names. **Never with the cell as printed** — that is
+the comparison D6 forbids, and it is also the wrong comparand for a sentence whose example is a file
+rather than a figure. A sentence whose example no longer holds is a drift row. Prose that names no cell
+is never a row, however old it is — this check has no opinion on wording, tone or length.
+
+**The owner is Victor, and naming a pipeline here is the defect this exists for.** Write `Victor — by
+hand` in the `Owner to re-run` column — **the one row of the report whose owner is a person and whose
+repair is not a run** and quote both halves in `What PROGRESS.md says` / `What the
+sources say`, so the repair is one sentence he can apply without reading the section. Never edit it
+here: this prompt writes `Professional level by topic` and nothing else, and Step E's diff check would
+revert the hunk anyway.
 
 ---
 
@@ -448,7 +495,7 @@ Then print two things.
 
 One row per edited cell; `—` and one line saying so if the matrix was already accurate.
 
-**2 — Drift report** — every mismatch D3, D4, D5, D8, D9 and D10 found:
+**2 — Drift report** — every mismatch D3, D4, D5, D8, D9, D10 and D11 found:
 
 | Section | What PROGRESS.md says | What the sources say | Owner to re-run |
 |---|---|---|---|

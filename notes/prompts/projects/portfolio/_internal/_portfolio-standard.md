@@ -2,19 +2,32 @@
 
 **Internal component. Not runnable.** This is the single source of truth for the **portfolio gate**:
 the final go/no-go check on a project before it goes on the CV, LinkedIn, or into a job application.
-All four pieces of the portfolio pipeline read it:
+All five pieces of the portfolio pipeline read it:
 
 - `_portfolio-write-prompt.md` (the **author**) reads it for the interview-question quality bar.
 - `_portfolio-review-prompt.md` (the **reviewer**) reads it to audit the question bank against that bar.
 - `_portfolio-translate-prompt.md` (the **translator**) reads it for the file template and the bank's
   section list; the Spanish rules themselves are not here, they are in that prompt.
+- `_portfolio-review-es-prompt.md` (the **Spanish reviewer**, stage C) reads it for the Spanish section
+  and sub-heading names, the per-question format, and the identity/freeze section that makes an ID and a
+  state marker untouchable in its hands. It never opens the `en/` bank; the template's English
+  headings are format metadata, not that bank's prose.
 - `portfolio-audit.md` (the **orchestrator**) reads it for the verdict logic and the CV / GitHub formats.
 
-**One reader from outside the pipeline**, listed here rather than left as an unnamed exception — exactly
-as `_interview-prep-standard.md` lists this family's translator as its own: `study-content-writer`, the
-in-session skill, reads **"Question identity, the refined freeze and the TODO channel"** when it resolves
-a `TODO:` Victor wrote in a project-bank pair. That section is the whole of what binds it here; the rest
-of this file is the gate's contract and none of its business.
+**Four readers from outside the pipeline**, listed here rather than left as unnamed exceptions — exactly
+as `_interview-prep-standard.md` lists this family's translator as its own. All four are bound by
+**"Question identity, the refined freeze and the TODO channel"**; the two that rank or serve questions
+take **"Priority markers"** as well, and each bullet says so. Nothing else in this file binds any of
+them — the rest is the gate's contract and none of their business.
+
+- `study-content-writer`, the in-session skill, when it resolves a `TODO:` Victor wrote in a
+  project-bank pair — the one outside reader that **writes** the pair.
+- `interview-prep-route-projects-prompt.md` (2026-09-06), which also takes **"Priority markers"**: it
+  selects this bank's `⭐⭐⭐` questions into `notes/interview-prep/routes/projects.md`.
+- `interview-prep-block-open` (2026-09-06), same two sections, read-only, when Victor asks the daily
+  block for project questions.
+- `study-block-close` (2026-09-06), which writes the `[studied]` marker of the ladder below and reads
+  this section for what a frozen block is and where a marker may go on its bold line.
 
 ## What the portfolio gate is for
 
@@ -26,13 +39,18 @@ per **Verdict logic** below:
 1. A bank of **project-specific interview questions**, as an `en/` + `es/` pair (saved regardless of
    the verdict — they are useful prep even for an unfinished project).
 2. A **go/no-go verdict** (✅ Ready / ⚠️ Almost / ❌ Not ready).
-3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and a **GitHub repo
-   description** (English).
+3. If the verdict is not ❌: a **CV bullet** (Spanish, reused as-is by `cv-prompt`) and — **only for a
+   project that has a repo of its own** — a **GitHub repo description** (English). Every project under
+   `projects/` is a folder in the monorepo today, so that second artefact resolves to `n/a` on every one
+   of them; the condition, its test and the line printed in its place are in **"GitHub repo description
+   format"** below.
 4. If the verdict is ✅ Ready: a **direct update of Victor's GitHub profile README**
    (`dev/portfolio/VMNunez`, a separate repo). Format: match that README's existing style and sections
-   exactly; add or refresh the project's entry (name, one-line pitch, stack, links). Never committed
-   from the learning flow — the orchestrator prints the commit + push commands for that repo
-   (procedure: `portfolio-audit.md`, Phase 3).
+   exactly; add or refresh the project's entry (name, one-line pitch, stack, links). **Committed by the
+   orchestrator, from that repo** (`git -C`), on a non-dry run — it is pipeline output, and the separate
+   repo governs *where the commit runs*, not who runs it (`REC-220`); it is never staged into this repo's
+   index. **The push stays Victor's**, and the orchestrator prints it (procedure: `portfolio-audit.md`,
+   Phase 3, which also owns what a dirty profile repo does).
 
 This is the closing project gate, **G7**, and the last one that reads the project itself. Its place is
 `_planning-standard.md` §23's prerequisite chain, quoted from the file that owns the gate order and
@@ -40,8 +58,9 @@ every trigger: `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. That is, `
 fixes, then `readme-audit`, then a clean `progress-update`, then this gate, then `roadmap-review`.
 **That places
 the gate; it is not the prerequisite a given run owes** — `portfolio-audit.md`'s `▶ Run first` states
-that, with the scope that qualifies it. And G3/G4 is not decoration in this file: Check 2 below stops
-the gate outright on a tier no reviewer finished.
+that, with the scope that qualifies it. And neither G3/G4 nor G6 is decoration in this file: Check 2
+below stops the gate outright on a tier no reviewer finished, and Check 3 on a drift report that does
+not name this project, does not read `no drift`, or predates `PROGRESS.md`'s own last commit.
 
 ---
 
@@ -95,13 +114,17 @@ the whole code area, the section headings stay bare, and the only meaningful sco
 
 ## Verdict logic
 
-Two checks, run in order. **Check 1 gates Check 2.**
+Three checks, run in order. **Check 1 gates Check 2, and both gate Check 3** — a project Check 1 does
+not resolve as complete owes none of §23's chain, so it is never measured against a prerequisite it does
+not owe. **Check 1 has two ways of not resolving one**, and they are not the same disposition: a
+❌ Not ready, which is a verdict and names what the project owes, and — on the markerless branch below
+alone — a **stop**, which is no verdict at all and is Check 2's stop in every respect.
 
 **Only a `full` run reaches them at all.** A run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global`
 is **bank-only**: it writes its own sub-headings and stops there — no ✅/⚠️/❌, no CV bullet, no GitHub
 description, no profile README, and `notes/cv/cv-bullets.md` is never staged. It signs off **no gate**,
 G7 included, for the same reason a ❌ never ticks that box: the verdict is what the box records, and a
-bank-only run produces none. Both checks below, and everything downstream of them, are written for the
+bank-only run produces none. All three checks below, and everything downstream of them, are written for the
 `full` run and are not qualified per scope anywhere else in this file.
 
 **The scope defaults to `full`, so a project's `PLANNING.md` §23 G7 row need not instantiate it.** The
@@ -114,6 +137,63 @@ Read `{PROJECT_PATH}/PLANNING.md`, find the step-by-step plan (Section 0 or the 
 steps marked complete?
 - **Any step incomplete → ❌ Not ready.** List the incomplete steps and stop — do **not** check the
   backlog. A partially built project is not portfolio-ready regardless of code quality.
+
+**The markers are the source wherever the plan carries any, and a plan carrying none is not a plan with
+nothing done.** Measured 2026-09-07: `01-todo-list` marks each of its 8 steps `✅` with a `*Done:*` line
+and `06-hr-portal` each of its 14, while `02-weather-app`, `03-expense-tracker`, `04-meal-finder` and
+`05-task-manager` hold a bare numbered `## Learning steps` list with **zero** markers — written before
+the convention existed, and all four finished, reviewed and live-deployed. Read without the branch below
+this check answers *no step is marked complete* and hands ❌ Not ready — a skipped Phase 3 and no CV
+bullet — to four projects `PROGRESS.md` records as `Done ✓`; the runs that opened `REC-217` passed them
+instead on evidence this file never named, which is the judgement call the branch removes. So, **only where the steps
+list exists, holds at least one step, and no step in it carries a marker**, resolve completeness from
+`PROGRESS.md`'s `## Projects` table — the row whose `#` cell matches the numeric prefix of `{PROJECT_PATH}`'s last segment. **Find that
+row inside the `## Projects` section and never by a scan of the file**: measured 2026-09-07, the
+`## Practice completed` tables below it open their rows with a bare number too — the SQL route's `Step`
+column, running past `10` — so a file-wide match on a two-digit first cell will collide the moment a
+project reaches those numbers.
+
+- **Its `Status` cell reads `Done ✓`** → Check 1 **passes**, and the report says on what: "Check 1 —
+  PLANNING.md carries no step markers; completeness read from `PROGRESS.md`'s projects table
+  (`Done ✓`)". A pass on a source the plan does not carry is only honest if the run names the source.
+- **Any other status** → **❌ Not ready**, quoting the cell (`In progress ⏳ — …`). The fallback answers
+  in both directions or it is not a test — a plan written today, before its first step is done, carries
+  no marker either.
+- **No row for this project, or a table that cannot be read** → **stop the gate**, in Check 2's stop
+  shape below: no ✅/⚠️/❌, Phase 3 skipped, the question bank still committed, `blocked` in the
+  project's `_run-tracker.md` cell, and in `PROJECT_PATH = all` the summary row carries the stop and the
+  batch continues. Nothing on disk can answer Check 1 there, and answering anyway is what this branch
+  exists to stop. Report: "PLANNING.md carries no step markers and `PROGRESS.md`'s projects table has no
+  row for «path» — mark the plan's steps or add the row".
+
+**Why `PROGRESS.md` and not the plan's own format**, since the sibling that already faced this chose the
+other way. `_concept-extraction-standard.md` Step 2 settles it for `progress-update` by fiat — *"every
+project handed to you in Format A is already Done ✓"* — which reads completeness off a plan's **shape**,
+so it can only ever be true of the projects that existed when it was written. That same file forbids the
+substitution made here — *"never substitute a step count from another source"*, because *"the
+orchestrator compares what you return against the projects table"* — and the prohibition does not reach
+this check: there `PROGRESS.md` is the artefact under audit and a comparison with itself would prove
+nothing, here it is not audited but read.
+
+**What the fallback rests on — the same ritual's record, and its one blind spot named rather than
+argued away.** The `Status` cell is not a summary somebody derived from the plan: `_system-map.md` §8
+gives it a single writer, **`step-complete`** — the same ritual that writes the plan's own `✅`, in the
+same session, under one mandate to update both — and `/plan-audit MODE = new` creates the row. So on a
+markerless plan the cell is the surviving record of the hand that would have written the marker, and this
+branch trusts it exactly as the marker branch trusts the `✅`: neither is re-derived from the code.
+**What it is not is independently re-verified by Check 3**, and claiming otherwise would be the
+comfortable reading. `progress-update`'s `D5 · Projects` row does compare each plan against its
+projects-table row, but over this very population it compares by **format**: `_concept-extraction-standard.md`
+Step 2 returns `Done ✓` for every **Format A** plan by definition — *"every project handed to you in
+Format A is already Done ✓"*, Format A being Angular projects 01–06, which is all four markerless ones —
+so a wrong `Done ✓` would agree with a drift report reading `no drift` and Check 3 would pass it. Check 3
+still catches the four states it was built for — a missing or unparseable report, one scoped to another
+project, one naming drift rows, one older than `PROGRESS.md`'s last commit — and it does not catch this
+one; its own limits paragraph carries the same statement so a reader arriving there is not told
+otherwise. Finally, the `Status`
+cell is written by no step of *this* run (`authoring-progress-recount` writes the `## Authoring progress`
+rows and nothing else), so reading it live and reading it at `{BASELINE}` are the same read: this check
+pins no second baseline.
 
 ### Check 2 — Code quality (from PROJECT-BACKLOG.md)
 Only if all steps are complete. Read `{PROJECT_PATH}/PROJECT-BACKLOG.md` (full-stack keeps its own
@@ -162,7 +242,74 @@ Otherwise apply:
 > Unchecked tasks count as open even if the code is already fixed — the verdict reads the backlog
 > directly. Before running the gate, tasks already fixed should be checked off (✅) in the backlog.
 
+### Check 3 — PROGRESS accuracy (from the drift report)
+Only if Checks 1 and 2 both passed without stopping **and the verdict Check 2 computed is not ❌ Not
+ready**, and then before that verdict is printed. A ❌ already names what the project owes; replacing it
+with a no-verdict stop about a prerequisite an unfinished project does not owe would lose the useful
+answer and tell Victor to run the chain the `▶ Run first` block exempts it from. G6 is a
+prerequisite this gate declared for months and had no instrument to test, so a run proceeded on whatever
+`progress-update` last happened to write — a report eleven days old and about another project, on the
+occasion that opened `REC-214`. The instrument was always on disk: read
+`notes/prompts/strategy/tracking/_internal/_last-drift-report.md` and its three header fields, whose
+schema and meaning are `progress-update-prompt.md` Step E's — quoted from there, never re-derived here,
+the same discipline Check 2 applies to the unreviewed-code gate. That prompt states the reason itself:
+*"The scope line is what makes a gate tick falsifiable"*, and a clean verdict is evidence for the project
+its scope names **and for no other's**.
+
+Stop the gate on any of these four states, quoting the header line in each of the last three:
+
+- **No report, or a header missing any of the three fields** — absence means `progress-update` has
+  never run under the current contract; a report whose header cannot be parsed proves nothing either,
+  and passing it would be the one state that certifies a gate on an unreadable file. "no usable drift
+  report — run `progress-update` first (G6)".
+- **`Scope:` does not name `{PROJECT_PATH}`** — the clean verdict belongs to another project's gate.
+  "the last drift report is scoped «scope» — G6 is not closed for this project; run
+  `progress-update MODE = all`".
+- **`Verdict:` is not `no drift`** — "the drift report names «N» drift rows — G6 stays open until the
+  owner each row names has repaired it".
+- **`PROGRESS.md` had already moved when this run started** — the newest commit date of `PROGRESS.md`
+  **as of the run's own baseline**
+  (`git log -1 --format=%cd --date=short {BASELINE} -- PROGRESS.md`) is **strictly later** than the
+  report's `Date:`. The report certified agreement with a file that has since changed. "the drift report
+  is dated «date» and `PROGRESS.md` was committed on «date» — re-run `progress-update`".
+  **The baseline is not a refinement, it is what makes the test survive its own batch.** Live `HEAD`
+  would be wrong under `PROJECT_PATH = all`: every project's pass ends by invoking
+  `authoring-progress-recount`, which commits `PROGRESS.md` itself, so on any batch running later than
+  the report the first project would pass and every project after it would fail state 4 on a commit
+  **this run made** — and the re-run it printed would be invalidated again by the next project's recount.
+  Pinning the comparison to the commit recorded at step 0 measures the state the gate actually inherited.
+
+**`MODE = active` cannot close G6 for a completed project, and that is the trap this check exists to
+catch.** That mode audits only the in-progress project, so its scope line can never name any other one —
+which makes the prerequisite unsatisfiable as written for every project but the active one, and those
+are the normal target of a `PROJECT_PATH = all` batch. `progress-update-prompt.md`'s own `## Configuration`
+block already says what to run instead: `all` is the mode for "periodically, or **before a portfolio
+gate**, to catch anything missed in completed projects". `_planning-standard.md` §23's G6 row names
+`MODE = active` because it sequences a project's *own* closure, where the project is the active one; this
+check instantiates the same gate for a run that arrives later.
+
+**Four limits, named rather than assumed.** The date test cannot see a *source* that moved while
+`PROGRESS.md` stayed still — a coverage marker added and never recounted is real drift and is invisible
+here. `Date:` is a **day**, so an edit made the same day as the report passes — which is not incidental:
+Step F commits the report "alone and first" and the matrix commit follows it the same day, so an
+equal-date pass is what stops the producing run from failing its own artefact. And the report's `Branch:`
+field is **not** read, though `PROGRESS.md` follows the active branch, so a report written on another
+branch can pass a comparison made on this one. And the fourth, which is Check 1's rather than this
+check's: where Check 1 resolved on its markerless-plan branch it read `PROGRESS.md`'s `## Projects` row,
+and nothing here can falsify that cell — `progress-update`'s `D5 · Projects` returns `Done ✓` for a
+**Format A** plan by definition, so a wrong cell and a `no drift` report agree. It is stated in full at
+Check 1 and repeated here because a reader who opens this check alone would otherwise take its limits as
+closed. None of the four weakens the four states above; all four are what a fresh G6 run is for, and none
+is a reason to widen this check into a second audit of `PROGRESS.md`, which is `progress-update`'s work
+and never this gate's.
+
+**A stop here is Check 2's stop, in every respect** — no ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, the
+question bank still committed, `blocked` in the project's `_run-tracker.md` cell, and in
+`PROJECT_PATH = all` the summary row carries the stop and the batch continues.
+
 ### Verdict definitions
+**"All steps complete" means whatever Check 1 resolved**, by the plan's markers or, on a markerless
+plan, by the projects-table row — never a second reading of `PLANNING.md` taken here.
 - **✅ Ready** — all steps complete, no open High or Medium. Include it in the CV and LinkedIn now.
 - **⚠️ Almost ready** — all steps complete, open Medium tasks remain. List them as checkboxes.
 - **❌ Not ready** — incomplete steps or open High tasks. List them as checkboxes. Skip the CV bullet
@@ -179,7 +326,8 @@ it is never translated, exactly as the levelled banks keep `angular.md` in `en/`
 complements the levelled topic-based files in `interview-prep/{LEVEL}/en/`
 and `es/` — these are **project-specific**, about the actual implementation decisions made here.
 
-**`en/` is authored and audited; `es/` is produced from it and no *pipeline role* writes it by hand.**
+**`en/` is authored and audited; `es/` is rendered from it, and the only Spanish a pipeline role writes
+by hand is stage C's prose repair — never a question, an ID or a structure.**
 The quality bar, the exhaustiveness rule, the format and the append/dedupe rule are rules about `en/`,
 and the author and the reviewer are never dispatched at the Spanish file. **Two things below are not
 rules about `en/` and must not be read as though they were**: the `[refined]` freeze binds both
@@ -191,6 +339,16 @@ owed by `_portfolio-translate-prompt.md` (stage **T**), which runs once per proj
 is finished and carries the whole Spanish contract: natural Spanish, structural parity, and which side
 a `TODO:` marker is repaired on. A run that stops before stage T leaves the pair half-built, and the
 orchestrator declares that rather than hiding it.
+
+**The twin is produced by stage T and *audited* by stage C, and those are two roles on purpose.**
+`_portfolio-review-es-prompt.md` runs once per project after T, reads the `es/` file and **never the
+`en/` one**, and fixes register, voice and calque directly — prose only, inside the structure T
+guaranteed. It exists because T holds the English by construction and a role holding the English cannot
+judge whether its own Spanish reads as Spanish: with the English beside you, any calque still parses.
+Victor answers out loud in Spanish, so the twin's own readability is a requirement in its own right and
+not a by-product of translation — the notes family's stage C states the same rule for the same reason.
+Its hand stops where the pipeline's always does: it never writes a question, an ID, a `[refined]` marker
+or a header line, and a defect inside a frozen block is reported like any other.
 
 **Why the bank is authored in English and studied in Spanish.** Victor answers out loud in Spanish, so
 `es/` is the file that matters at the moment of use; `en/` is authored first because the code, the
@@ -220,12 +378,28 @@ interviewer will find.*
 **Scope extension ruled by Victor 2026-08-29** (`REC-180`): the two Q&A banks **behave practically
 identically** — only the source (a project's own code, not a topic) and the question type differ — so
 every rule of `_interview-prep-standard.md` transfers here unless it is structurally impossible. What is
-structurally impossible is everything keyed to a `{LEVEL}` route: the CORE route,
-`interview-prep-block-open`, `study-block-close`'s recount, the coverage fingerprint. A project bank has
-no level and sits on no study route, so **`[studied]` is not admitted here.** That marker's three
-rulings — whether the route lists project questions at all, whether `study-block-close` may write into a
-file this standard governs and its own does not, and whether `PROGRESS.md`'s `## Study progress` rows
-count them — are open in `REC-180`, and a marker nobody recounts is a state that lies.
+structurally impossible is everything keyed to a **`{LEVEL}`** route: the levelled CORE route, its
+per-level budget, the coverage fingerprint, and the `{TOPIC}-{LEVEL}-{NNN}` identity — a project bank has
+no level, and no run can invent one for it.
+
+**Sitting on no study route was in that list until 2026-09-06, and is not any more.** Victor ruled the
+first of the three `[studied]` questions that day: project questions **do** enter a study route, in a
+file of their own — `notes/interview-prep/routes/projects.md`, built by
+`interview-prep-route-projects-prompt.md`, which owns the eligibility test and is where it is stated —
+and
+`interview-prep-block-open` serves them on request. The route is its own file rather than a block inside
+`routes/{LEVEL}.md` precisely because the level is the part that cannot transfer; what could not be
+reached was the *route*, never the questions.
+
+**`[studied]` was not admitted here until 2026-09-06, and now it is.** It was withheld for a reason about
+writers rather than reachability — the marker had no hand that could write it into this bank and no
+counter that read it, `study-block-close` being fenced to the levelled pair and every denominator of its
+`## Study progress` rows being a **levelled** population. Victor ruled both remaining questions that day:
+`study-block-close` **writes the marker here and stays its sole writer**, and `PROGRESS.md` counts this
+bank in a **per-project row of its own** under each of its two progress sections rather than by widening a
+levelled cell. So the ladder here is three states, exactly as the levelled bank's is, and the reason it is
+written out below in this file's own words rather than cited is the same reason the rest of this section
+is: two standards stating the same rule about two banks is the shape Victor ruled for.
 
 **Transfer decided where the rule came from; it did not decide where the text lives.** The paragraph
 above says the levelled standard's rules *apply* here; this one says they are **written here**, and the
@@ -238,7 +412,7 @@ reaching across chains is what he did not.
 **Every question carries a stable identifier**, first inside the bold text, immutable and identical in
 `en/` and `es/`:
 
-**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** [refined]
+**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** ⭐⭐ [refined]
 
 Format `{PROJECT_NAME}-{NNN}`: the project folder name — which takes the slot a topic prefix takes in the
 levelled bank, since a project has neither topic nor level — and a zero-padded counter from `001`. **The
@@ -248,21 +422,45 @@ question between headings, so a per-section counter collides the first time eith
 next unused number **in the file**; never recycle one after a deletion and never renumber to close a gap
 — the gap is what proves the ID was not reused.
 
-**Question state has exactly two valid forms here**, one fewer than the levelled bank:
+**Question state has exactly three valid forms here**, the same three the levelled bank has:
 
 - **Unrefined** — no state marker. Every role in this pipeline may rewrite any part of the block.
 - **Refined** — `[refined]`, at the end of the bold line. **Victor alone writes it**, once the question,
   the answer, the code and the translation are to his taste. From that moment the complete bilingual
   block is frozen byte-for-byte **in both languages against every role in this pipeline**: the author
   does not rewrite it, the reviewer reports its defects instead of fixing them, the translator leaves its
-  Spanish exactly as it stands, and the orchestrator's cross-section dedupe never deletes it.
+  Spanish exactly as it stands, the Spanish reviewer judges that Spanish and reports it rather than
+  repairing one word of it, and the orchestrator's cross-section dedupe never deletes it.
+- **Studied** — ` [studied]` appended after `[refined]`, in both languages. **`study-block-close` alone
+  writes it**, and only for a question that carried a final `PASS` in a daily recall block: the marker
+  records that Victor answered it out loud and correctly, never that the answer exists or reads well.
+  Every role of this pipeline treats it exactly as it treats `[refined]` — it is part of a frozen block,
+  and no author, reviewer, translator, Spanish reviewer or dedupe writes, moves or removes one.
+
+**Three things about the third state that this bank does not inherit from anywhere, because its route
+and its freshness test are its own.**
+
+1. **Only a question this bank's route carries can be studied.** The daily block serves
+   `notes/interview-prep/routes/projects.md`, which carries `⭐⭐⭐` questions only, so a `⭐⭐` or `⭐`
+   question is never marked — not because the marker would be wrong, but because nothing ever asked it.
+2. **The freshness gate is the pair and the route, never a coverage fingerprint.** This bank has none by
+   design. What stands in its place is what the recall block already requires: exact EN/ES parity for
+   the whole question block, `Route status: current`, and the route's `Question inventory SHA-256`
+   matching the banks it was built over.
+3. **A studied question that later leaves the route keeps its marker and leaves the count.** Two things
+   drop one: a downgrade out of `⭐⭐⭐`, and the route's cross-project dedupe preferring another
+   project's question about the same decision. Either way it leaves the studied denominator; the marker
+   itself stays, because it records a pass that really happened and because the block it sits on is
+   frozen against every hand that could clean it. That state is **reported**, never treated as
+   malformed.
 
 The freeze is what makes this gate safely **re-runnable**. Without it, every later run of
 `portfolio-audit` on a project hands Victor's polished answers to a cold reviewer whose mandate is to
 improve them, and the improvement is a loss.
 
 **Only Victor reopens a refined question** — by saying so, or by writing a `TODO:` on it. Reopening
-removes `[refined]` from **both** languages before any edit, and the repair runs **in the direction of
+removes **both state markers** from **both** languages before any edit — `[studied]` with `[refined]`,
+since a recall pass is a pass over the answer that is being replaced — and the repair runs **in the direction of
 the file carrying the marker** (the bilingual contract stage T already reads): a marker in `es/` is
 answered in Spanish, in his words, and the `en/` twin is re-translated from that; a marker in `en/` runs
 the other way. The twin's re-translation belongs to the same reopening, so no writer leaves it stale on
@@ -279,22 +477,25 @@ run started for another reason; the translator stops outright rather than overwr
 TODO is resolved in a daily session by `study-content-writer`, which reads this section for a
 project-bank pair, and the reopening is its write.
 
-**Priority markers are not part of this bank yet.** `REC-180` still owes them, together with the
-proportion calibration five fixed project sections need and the levelled bank's 8–12-question topic
-section does not. The bold line therefore carries no `⭐`, and the consequence is real rather than
-cosmetic: `/simulator` ranks its plan `⭐⭐⭐ → ⭐⭐ → ⭐`, so a woven project question enters that sequence
-unranked. Do not invent a marker to close the gap.
+**A priority marker is not a state marker, and the freeze covers it.** Every question this pipeline has
+written since 2026-09-05 also carries `⭐⭐⭐`, `⭐⭐` or `⭐` ahead of its state marker — an older bank
+carries none until its next run, and neither you nor a TODO adds one — the rule and its calibration are "Priority markers"
+below. That marker is part of a frozen block exactly as the ID is: no role of this pipeline downgrades
+one, and **reopening a question removes its state markers and never the `⭐`**. A `TODO:` about voice or
+phrasing is about the answer, not about how often the question is asked.
 
 ---
 
 **Format per question:**
 ```
-**[{PROJECT_NAME}-NNN] Question as an interviewer would ask it?** [refined]
+**[{PROJECT_NAME}-NNN] Question as an interviewer would ask it?** ⭐⭐ [refined]
 
 [Model answer — 2–4 sentences, references the real code, uses "I chose"/"I decided".]
 ```
-The `[refined]` marker is present only on a question Victor has frozen; a question this pipeline writes
-is born without it and no role of the pipeline may add it.
+The priority marker is on **every** question, written before the state marker. The `[refined]` marker is
+present only on a question Victor has frozen, and ` [studied]` only after it, on a frozen question
+`study-block-close` recorded a recall pass for; a question this pipeline writes is born with neither and
+no role of the pipeline may add either.
 
 **Append + dedupe:** if the file exists, append only questions not already there — each with the next
 unused ID in the file. Never add a question covering the same decision or code path as an existing one,
@@ -388,6 +589,69 @@ deliberately parts from the rule it borrows. `_review-standard.md` keeps a per-t
 absent tier, because its gate reads those lines and must distinguish "no such tier" from "never
 reviewed". Nothing reads these, so the same distinction buys nothing here and two dead lines on every
 Angular-only bank would cost a reader more than they tell.
+
+---
+
+### Priority markers
+
+Every question carries one marker for how surely an interviewer **looking at this project** asks it, at
+the end of the bold line, after the question mark and **before** any state marker:
+
+**[01-todo-list-004] Why did you put the state in a service instead of in the page component?** ⭐⭐ [refined]
+
+- **⭐⭐⭐** — a decision the project is *for*: what an interviewer reading its README or its CV bullet
+  opens with, and what a candidate who cannot defend it fails the project on.
+- **⭐⭐** — asked once the interviewer is past those. A real choice of this implementation: survivable
+  in a first screen, a weak impression in a full technical round.
+- **⭐** — a niche detail or edge case only the most thorough interviewer probes.
+
+**The proportion is a whole-file property, and that is where the levelled bank's calibration does not
+transfer.** `_interview-prep-standard.md` checks it per section over an 8–12 question topic section; the
+sections here are the code areas of **one** project, some projects lack two of the five, and the
+cross-section dedupe moves a question between headings — the same three reasons the ID counter already
+runs over the file and not the section. Measured 2026-09-05, `01-todo-list`'s three sections hold **32,
+29 and 18** questions, so "~3–4 ⭐⭐⭐ per section" would mark a tenth of one and the "more than half a
+section" ceiling could never fire.
+
+**Over the whole bank**, `⭐⭐⭐` is about **a fifth to a quarter** of its questions, `⭐⭐` is the
+**largest** group, and `⭐` is the remainder. Two of those are tests a bank fails on rather than
+descriptions of a healthy one: **more than a third of the file at `⭐⭐⭐`** — downgrade the excess,
+keeping the marker for the decisions the project is *for* — and **no `⭐⭐⭐` at all**, which no project
+worth a portfolio gate is. Applied by hand to the eleven files of `notes/interview-prep/junior/en/`
+— 669 questions, the levelled bank the scale is borrowed from, and a different unit; its `es/` twins
+carry the same markers — whole-file `⭐⭐⭐` shares run
+9–50% with a median of 23%: **the ceiling passes nine of the eleven and fails `security.md` (50%) and
+`spring-boot.md` (34%)**, both governed by the per-section rule this one replaces. The band itself is
+where a finished bank sits, not a second gate — only one of those eleven is inside it, which is why the
+two failing conditions and not the band are what a reviewer acts on.
+
+**The per-section check is not reintroduced here, including as a narrower test over a `###` tier
+sub-heading.** A tier holds whatever its code area holds; one rule that both a three-question
+`### Cross-tier` and a thirty-question `## Architecture & Patterns` must satisfy is unfailable on the
+first or unmeetable on the second.
+
+**Questions are never reordered by marker.** The levelled bank orders `⭐⭐⭐ → ⭐⭐ → ⭐` inside each
+section. Here the append rule appends, a partial run may not move an out-of-scope byte, and a frozen
+block stays where it stands — three rules that would have to yield for a sort the one consumer already
+performs, since `/simulator` ranks its own plan `⭐⭐⭐ → ⭐⭐ → ⭐` after reading the file. The marker ranks
+the question; the file's order carries no meaning.
+
+**Who writes it.** The author marks every question it writes. The section reviewer checks that each
+question in its lane carries a well-formed marker and adds a missing one **there** — it cannot judge a
+whole-file proportion from one section, and is not asked to. The orchestrator's cross-section scan owns
+that proportion, for the same reason it owns the duplicate-ID renumber. Victor may change any marker at
+any time; a marker he set is his, and this pipeline treats a `[refined]` block's marker as frozen with
+the rest of the block.
+
+**A bank written before this rule carries no marker, and that is declared debt rather than hand work.**
+The author and the reviewer mark what they touch on the next run over that project, exactly as the IDs
+are backfilled. So the orchestrator counts the unmarked questions, reports the number by section, and
+**runs the proportion test only when that count is zero**, saying which it did. **A question Victor froze
+before this rule existed is the one exception, and it is his**: every role of this pipeline is fenced out
+of a `[refined]` block, so an unmarked frozen question can be marked by nobody — left inside the count it
+would disable the test on that bank for ever. It is excluded from the count, listed by ID in the report,
+and marked when Victor writes the marker himself or reopens the block. Until a bank is fully
+marked, `/simulator` reads unmarked questions and its own Step 3 says how it ranks them.
 
 ---
 
@@ -502,6 +766,35 @@ section is missing and write a duplicate.
 ---
 
 ## GitHub repo description format
+
+**The artefact exists only for a project that has a repo of its own, and today no project does.** Every
+project under `projects/` is a folder inside the one `dev-learning` repository — measured 2026-09-05 and
+re-measured 2026-09-06: `git remote -v` returns a single origin, no `projects/*/.git` exists, there is no
+`.gitmodules` and no linked worktree — so the only `About` field on GitHub belongs to the monorepo, and
+one project's pitch written into it would misdescribe the repository. Victor ruled it 2026-09-05
+(`REC-215`): the step is **conditioned, not deleted**, so the decision is recorded once here instead of
+being re-discovered by every run that drafts a line with nowhere to send it.
+
+**The test is a `.git` entry at `{PROJECT_PATH}` that resolves to a repository of its own** — a `.git`
+directory, or the `.git` file a **submodule** leaves there — and never a lookup against GitHub: a project
+folder has no remote of its own to query, so the absence of the entry is the only thing this repository
+can actually observe. **A linked worktree is the one shape that reads present and is not one**: its
+`.git` file points back into this same repository, so it shares this repo's remote and its single
+`About` field, and it takes the absent branch. Where the entry is **absent**, draft nothing and print, in
+its place, `n/a — project lives in the monorepo, no repo of its own to describe`. That is the normal
+branch for every project the gate admits today, and it is a report rather than a failure: no verdict
+moves, no gate is affected, nothing is staged.
+
+**The one thing the test cannot see**, published rather than left to be discovered: a project mirrored to
+its own GitHub repository by a subtree push or by CI carries no `.git` at `{PROJECT_PATH}` and takes the
+absent branch even though an `About` field of its own exists. That is the honest cost of testing what
+this repository can observe instead of querying GitHub, and the fix for such a project is to say so in
+the run rather than to weaken the test.
+
+Where the entry is **present** — a project kept as its own repository rather than as a folder here — the
+format below is what the run drafts. **No project reaches that branch today**, and not only for want of a
+`.git`: Check 1 reads `{PROJECT_PATH}/PLANNING.md` and Check 2 stops on a missing `PROJECT-BACKLOG.md`,
+so a repository that is not a planned, reviewed project of this roadmap never gets as far as Phase 3.
 
 Stays in **English** (GitHub's audience is wider than the Spanish screen; English is the convention
 there). One line, 160 characters max, no markdown. Draft **one** option.

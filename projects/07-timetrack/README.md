@@ -144,7 +144,7 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 | ORM | Spring Data JPA + Hibernate |
 | Frontend | Angular + Angular Material |
 | Local setup | Docker + docker-compose |
-| Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) |
+| Tests | JUnit 5 + Mockito (backend), Vitest + TestBed (frontend) |
 
 ---
 
