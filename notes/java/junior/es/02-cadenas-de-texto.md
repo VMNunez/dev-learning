@@ -379,7 +379,7 @@ java.util.IllegalFormatConversionException: d != java.lang.String
 
 Léelo como "a `%d` le entregaron un `java.lang.String`". Fíjate en _qué_ marcador se quejó: `%s` se tragó el número `38` sin rechistar, porque `%s` solo llama a `toString()`, y un `Integer` tiene uno: si a un `%s` le llega un número, la conversión de número a texto se hace con ese `toString()` y por eso no falla nunca. El que da problemas es `%d`, porque tendría que hacer la conversión contraria — convertir en dígitos lo que le llega — y la conversión de un `String` a números no es posible. Así que un par intercambiado siempre revienta en el marcador _numérico_. El intercambio sí afecta a los dos marcadores — al `%s` le llegó el nombre cambiado por el número y al `%d` al revés —, pero solo uno de los dos protesta: `%s` acepta cualquier cosa en silencio, así que el mensaje de error te señala únicamente el `%d`.
 
-Ese mismo comportamiento — que el fallo no aparezca hasta la ejecución — se repite con un especificador que directamente no existe, y con un valor de menos:
+Ese mismo comportamiento — que el fallo no aparezca hasta la ejecución — se repite con un especificador que directamente no existe, y cuando le pasas a `formatted()` un argumento menos de los que pide la cadena:
 
 ```java
 "Total: %z".formatted(5);
