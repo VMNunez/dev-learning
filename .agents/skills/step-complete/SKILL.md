@@ -6,10 +6,12 @@ description: >
   committed (or he says the step is done: "step X terminado", "hemos acabado el step", "mark the
   step complete", "ya está el step"). The shared session rules mandate updating three places after every
   completed step, and the real failure mode is doing it partially — updating PROGRESS.md but forgetting the
-  ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all three, plus the step's coverage
-  work — authoring the bullet for a concept the checklist is missing, and marking what the code
-  demonstrated — plus the check nothing else in the system performs: that the step's **done
-  condition** actually passed (that is gate G1's real trigger, not "it feels finished"). It also repoints
+  ✅ in PLANNING.md or the README. This skill makes the ritual atomic: all three, plus the check
+  nothing else in the system performs: that the step's **done condition** actually passed (that is gate
+  G1's real trigger, not "it feels finished"). Since `REC-230` its coverage and README steps **verify
+  rather than discover**: each verifiable piece of the step already recorded its own bullet, marker and
+  README entry as it landed, so this ritual reads the step's whole diff, confirms every piece left that
+  record, and reports one that did not as a process failure — authoring what is genuinely missing. It also repoints
   PLANNING **§0** at the next step so the following session opens on a true pointer — or flags why not —
   a table it shares with `backlog-task-close` under a stated cell partition.
   Interview-prep is NOT part of this ritual (dropped 2026-07-13 — Victor adds those separately,
@@ -36,16 +38,27 @@ breach log"; do not restate or widen that trigger here.
 A learning-plan step just finished. The shared session rules ("After every learning plan step is
 completed") require three updates — PLANNING.md, PROGRESS.md, the README — and this ritual adds three
 more: a **check that the step really passed** (step 0, gate G1's actual trigger), **coverage** (step 3),
-which both *authors* the bullet for a concept the checklist is missing and *marks* what the step
-demonstrated, and the **§0 repoint** (step 5) that leaves the plan pointing at the next step rather than
+which since `REC-230` *verifies* that every piece of the step left its bullet and its marker and authors
+only what they missed, and the **§0 repoint** (step 5) that leaves the plan pointing at the next step rather than
 the finished one. So the step's concepts end up recorded as part of the curriculum and as *demonstrated*,
 not merely as done, and the next session opens on a true pointer. Walk all six in order, without being
 asked. If one genuinely does not apply, say so explicitly instead of silently skipping it.
 
+**Steps 3 and 4 changed hands on 2026-09-09 (`REC-230`).** A `§15` step spans days and several
+conversations, and a concept is applied the moment the code using it exists — not when the step closes.
+So coverage and README now run **per verifiable piece**, invoked by the three sub-skills' own triggers as
+each piece lands, and what remains here is the **verification** that every piece did it. The other four
+steps do not move and could not: step 0 checks a done condition a piece does not have, step 1 would write
+a `✅` on an unfinished step, step 2's `Status` cell is a per-step status, and step 5 would repoint §0 at a
+step still open. This ritual loses no step; steps 3 and 4 lose a *duty*. It is the same discover/verify
+partition as the `sql-grade` / `sql-step-close` split.
+
 This is the step-level twin of `backlog-task-close`. That one fires on a **backlog task** — a concept that
 came out of a review and was never planned — and additionally reconciles PLANNING.md and the backlog's
 Closed ledger. This one fires on a **planned step**, so PLANNING.md only needs its ✅ and there is no ledger
-to collapse. Both share the same coverage contract, through the same two skills.
+to collapse. Both call the same two skills, but under different duties since `REC-230`: a task closes in the same turn
+as its fix, so that close still *discovers*; a step spans days and several conversations, so this one
+*verifies*.
 
 Interview-prep questions are **not** part of this ritual — Victor asked (2026-07-13) to stop adding
 them automatically on step completion. Only add interview-prep questions when he asks for them
@@ -112,7 +125,8 @@ evidence). In PROGRESS.md this ritual updates exactly two things:
 (denominator) and `coverage-mark` (numerator), which recount it from the files and rewrite their own
 cells plus the `**Total**` row in step 3 below. Editing it here as well means two writers on one table,
 and the ritual's copy is the one derived from memory rather than from a recount. Read the number back
-from their report for your final table instead.
+from their report for your final table instead — **and on the verify path, where neither skill ran, read
+it from the `PROGRESS.md` cell itself**, which the pieces already recounted.
 
 Never re-create a `## Angular`-style list of concepts in PROGRESS.md. The concepts land on the
 coverage checklist in step 3 and nowhere else; a concept already covered there is not repeated —
@@ -124,8 +138,54 @@ from the repo root.
 
 ## 3 — Coverage: land the step's concepts on the checklist
 
-The step's concepts were just written in code, so both halves of the coverage contract apply. Run them in
-this order, for each concept from step 2:
+**Verify first; author only what the pieces missed.** Since `REC-230` each verifiable piece of the step
+invoked `coverage-bullet-add` and `coverage-mark` as it landed, so by the time you reach this step the
+checklist normally already carries the step's concepts and there is nothing here to write.
+
+Read the **whole step's diff**, resolved mechanically rather than from memory: the step began at the
+commit that last repointed §0, so
+`git log -1 --format=%H -G'Current step' -- {PROJECT_PATH}/PLANNING.md` gives that SHA and
+`git diff <sha>..HEAD -- {PROJECT_PATH}` gives the range — **scoped to the project path**, which also
+keeps the pieces' own `notes/` commits out of it.
+
+**`-G`, never `-S`.** A repoint rewrites the cell's *value*; the label `Current step` still appears
+exactly once before and after, so the occurrence count never changes and `-S` cannot see the commit at
+all — it silently returns the commit that *created* §0 months earlier, and the verification then reads a
+quarter of the project's history as "the step's diff" without erroring. **Sanity-check the SHA against
+the branch point: if it is older, the derivation missed and the branch point is the range.** If §0 was
+never repointed on this branch, say so and use the branch point. Then ask of every concept
+step 2 extracted, and of every one the diff shows that step 2 did not: **is there a bullet, and does it
+carry a `✅ NN-slug` naming this project?** The diff is the source, deliberately: a piece that recorded
+nothing because it had no coverage-worthy concept and a piece that skipped its recording emit the same
+silence, so nothing is asked of the pieces and no per-piece declaration is required — this check is what
+makes that silence safe.
+
+- **Every concept accounted for** — the expected path. Say so with the count, and skip 3a/3b: the writes
+  already happened, under this same contract, in the turns that earned them.
+- **A concept with no bullet, or a bullet with no marker for this project** — run 3a/3b on that concept
+  now, and report it as a **process failure of the piece that should have recorded it**, naming that
+  piece. It is not a discovery: that row is the whole instrument `REC-230` bought, and folding it in
+  silently hides the fact that the per-piece trigger is not firing. **Write it as a `FRIC-NNNN` row in
+  `notes/prompts/_internal/_skill-friction.md`**, because a row printed only in this report dies with
+  the conversation — the failure `REC-230` was filed against in the first place. Not
+  `_ritual-friction.md`: that one records a ritual that ran and was not worth its cost, and is written
+  from Victor's own complaint, never from a detection.
+
+  **The row is filed against this ritual, not against the sub-skill that never fired**, and its shape is
+  fixed here so two closes cannot file two shapes: `Skill` = `step-complete`, `Target` = the piece and
+  its concept, `Failed step` = `3 — verification: no record existed to verify`, `Evidence` = the
+  concept, the coverage file greped, and the commit the piece landed in. That keeps the write inside the
+  sink's declared trigger — a declared step of an invoked ritual that could not complete — rather than
+  widening it to cover a run that never happened, which that file forbids being done from here.
+- **A step whose pieces all predate this rule** — nothing was recorded per piece, so 3a/3b run on the
+  full list exactly as they always did.
+- **A step that straddles 2026-09-09** — the expected case for the step open the day this landed. Verify
+  the pieces that came after it; run 3a/3b on the earlier ones and open **no** friction row for them,
+  since no trigger existed to fire. Say which pieces fell on each side.
+
+Say which of the four cases this run is in.
+
+When 3a/3b do run, run them in this order, for each concept:
 
 **3a — Author the bullet if it is missing.** **Invoke the `coverage-bullet-add` skill** with the concept and
 the level Victor is working at. It routes the concept to its owning `notes/` topic by altitude, searches the
@@ -150,6 +210,12 @@ leave no trace.
 
 **3c — Carry the owed work.** If `coverage-bullet-add` reports `/notes-plan {topic} {LEVEL}` owed, put it in
 the report table and keep it for the **end of the session**, batched: one run per affected topic+level, never
+one per bullet.
+
+**On the verify path no adder ran, and the debt is still real** — an earlier piece created it and flagged
+it. Read the `Plan J|M|S` cells of the step's topics in `_run-tracker.md`, and report every `⚠ stale`
+flag you find there as owed, batched the same way. A close that reports nothing because it authored
+nothing is how the flag outlives the session but the run never happens. The batching rule is unchanged: one run per affected topic+level, never
 one per bullet. Never write `notes-plan-{LEVEL}.md` or its `Coverage SHA-256` by hand — the stale hash is the
 correct signal that a remap is due.
 
@@ -157,7 +223,29 @@ Fold both skills' report rows into this ritual's final table.
 
 ## 4 — Project README: land the step's concepts
 
-**Invoke the `readme-concept-add` skill** with the step's concepts. It owns this decision end to end:
+**Verify through the skill, never instead of it.** The pieces invoked `readme-concept-add` as they
+landed, so the README normally already names what the step decided — but unlike step 3, this ritual does
+**not** grep the file to confirm it, and this step is therefore invoked on every close. Two reasons, both
+load-bearing:
+
+- **The representation test is the skill's, not a grep's.** Its rule-9 exception searches `What I
+  learned` alone, because a whole-file grep finds the concept upstairs in `Architecture decisions` and
+  suppresses the recall line that section is owed. A ritual-level grep cannot apply that exception — it
+  has not routed the concept yet — so it would reinstate the pre-filter `REC-200` records as this
+  skill's own fixed defect.
+- **Its §3b marker reconciliation can only run now.** The `*(Step N — coming soon)*` markers become
+  false the moment **step 1 of this ritual** writes the `✅`; at per-piece time keeping them was correct.
+  A close that skips the invocation leaves the finished step advertising itself as unbuilt until the
+  next `readme-audit` gate.
+
+So read the verification **out of the skill's report**: a row reading *already represented* is a piece
+that did its job, and a row reading *added* for a concept the pieces should have recorded is a piece
+that did not — reported as its process failure and written as a `FRIC-NNNN` row, on step 3's terms.
+
+**Invoke the `readme-concept-add` skill** with the step's concepts. Its step-0 sweep will re-read hunks
+the pieces already swept, so **expect `"swept, all already represented"`** — a fresh `*(swept)*` row here
+is itself a piece's process failure, on the same terms as above. It owns this
+decision end to end:
 sweeping the step's own diff for decisions this ritual never named (its step 0), deriving which READMEs
 exist from the project number, routing each concept by **audience** to the global / backend / frontend
 file, checking whether it is already represented, and writing it in that section's own format under the
@@ -293,10 +381,12 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Done condition | all 3 clauses verified (`mvn` boot, `GET /api/entries` 200, Postman reject → DRAFT) |
 | PLANNING.md ✅ | `### Step 5 — TimeEntry workflow ✅` (or: `#### Step 7a ✅`; parent Step 7 still open, 7b–7d pending) |
 | PROGRESS.md | status only — `Steps 1–5 done, Step 6 next`; coverage table left to the coverage skills |
-| Coverage bullet | added "declarative transaction boundaries" to `spring-boot`/junior + mirror, 141/141 match |
-| Topic chosen | `spring-boot` — the framework mechanism, not the neutral boundary rule |
-| Evidence marker | marked `✅ 07-timetrack` — 24/139 junior bullets demonstrated |
-| `/notes-plan` owed | yes — `/notes-plan spring-boot junior`, run once at end of session |
+| Coverage verification | case 1 of 4 — all 6 concepts carry a bullet and a `✅ 07-timetrack`, verified against `git diff a1b2c3d..HEAD -- projects/07-timetrack`; `spring-boot`/junior reads 24/139 (17%) in PROGRESS.md |
+| Process failures | none (or: the JWT-interceptor piece left `CanActivateFn` unmarked — authored and marked here, `FRIC-0002` opened) |
+| Coverage bullet | *(exception path only)* added "declarative transaction boundaries" to `spring-boot`/junior + mirror, 141/141 match |
+| Topic chosen | *(exception path only)* `spring-boot` — the framework mechanism, not the neutral boundary rule |
+| Evidence marker | *(exception path only)* marked `✅ 07-timetrack` — 24/139 junior bullets demonstrated |
+| `/notes-plan` owed | yes — `/notes-plan spring-boot junior`, run once at end of session (on the verify path, read from `_run-tracker.md`'s `⚠ stale` flags, not from an adder's report) |
 | README | `backend` / Key patterns — 2 entries added; 1 concept already represented; *(swept)* id tie-breaker on a paged sort — added, not named by this step |
 | PLANNING §0 | repointed to Step 6 — branch `feat/reports`, done condition copied verbatim, phase unchanged, dated today · `Next gate` re-derived as G3, keeping this morning's close qualifier "signable, last High merged" (or: qualifier **dropped** — the re-derivation names G4, which the close's fact does not describe) |
 | Gate due | none yet (or: G3 backend review is now due — `review-audit REVIEW_SCOPE = backend`) |
