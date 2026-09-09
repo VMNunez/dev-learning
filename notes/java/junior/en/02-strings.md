@@ -281,9 +281,9 @@ The middle line is the trap: it does not throw, it returns an empty array, of **
 
 > 📖 Docs: [Baeldung — Java Strip Methods](https://www.baeldung.com/java-string-strip-methods) → read: "Comparing the Strip Methods vs the trim() Method" — and its sub-section "The strip() Method vs the trim() Method".
 
-Two of the calls in the catalogue above look interchangeable and are not, and the difference decides whether your validation actually validates anything.
+Two of the methods you saw above look interchangeable and are not: picking one over the other changes **what** you are validating. With one you reject only the field that arrives completely empty; with the other you also reject the one that arrives full of spaces. Those are two different validations, not two ways of writing the same one.
 
-**`isEmpty()` is true for exactly one value: `""`, a String of length zero.** Nothing else. **`isBlank()` is true for `""` *and* for any string made only of whitespace** — spaces, tabs, newlines. The whole distinction:
+**`isEmpty()` is true for exactly one value: `""`, a String of length zero — an empty piece of text with no character inside it at all, not even a space.** Nothing else. **`isBlank()` is true for `""` *and* for any string made only of whitespace, such as `"   "`** — spaces, tabs, newlines. The whole distinction:
 
 ```java
 "".isEmpty()      // true       ""     is empty
@@ -297,7 +297,7 @@ Two of the calls in the catalogue above look interchangeable and are not, and th
 
 The relationship is one-directional and worth stating plainly: **every empty string is blank, and most blank strings are not empty.** So `isBlank()` is the wider check, and it is nearly always the one you meant.
 
-Which one a form field produces is the whole practical point. A user who leaves a field untouched submits `""` — empty, and `isEmpty()` catches it. A user who taps the field, hits the space bar twice and moves on submits `"  "`, and so does anyone who pastes a value with a stray tab, or whose phone keyboard adds a space after autocomplete. That value has length 2, so `isEmpty()` returns `false` and your validation waves it through — and you have just stored an employee whose name is two spaces. **In validation code, reach for `isBlank()`; `isEmpty()` is for the narrow case where you specifically care that the length is zero**, such as checking whether a list-turned-string produced any content at all.
+The most common case you will meet is a form field. A user who leaves a field untouched submits `""` — empty, and `isEmpty()` catches it. A user who taps the field, hits the space bar twice and moves on submits `"  "`, and so does anyone who pastes a value with a stray tab, or whose phone keyboard adds a space after autocomplete. That value has length 2, so `isEmpty()` returns `false` and your validation waves it through — and you have just stored an employee whose name is two spaces. Put in one sentence: if the field arrives completely empty, `isEmpty()` catches it; if it arrives with spaces the user left behind by accident, `isEmpty()` does **not** catch it and the one to use is `isBlank()`. **In validation code, reach for `isBlank()`; `isEmpty()` is for the narrow case where you specifically care that the length is zero**, such as checking whether a list-turned-string produced any content at all.
 
 > **Preview — Spring Boot:** you will meet this exact pair again as annotations rather than method calls. `@NotEmpty` on a request field rejects `""` and lets `"  "` through; `@NotBlank` rejects both. They are the same two rules with the same names, applied automatically at the edge of your API instead of by hand inside a method. Which annotation goes on which field is a Spring Boot notes question — what carries over from here is *why* the two exist and which one is the safe default.
 
