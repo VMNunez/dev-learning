@@ -163,7 +163,7 @@ already something to add.
 ## The breach log
 
 **This section is the single owner of the breach log**, for the twelve prompts running
-`_single-shot-self-report.md` as much as for the nineteen running this file; that contract points here
+`_single-shot-self-report.md` as much as for the twenty running this file; that contract points here
 and does not restate it.
 
 `_last-run-report*.md` is **overwritten** every run, so a breach confessed in bullet 4 survives exactly

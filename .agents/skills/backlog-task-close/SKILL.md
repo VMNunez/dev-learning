@@ -424,6 +424,18 @@ new task here — `backlog-task-open` owns that, when Victor picks it up — and
 means seen in the code this close was already reading; a suspicion and a style preference are not
 findings, and no pass is ever started to go and look.
 
+**A finding resting on what a command did *not* find — an absence, a count, a runner's summary line — is
+not raised unless that command ran to completion and the task line records what proves it: the exit code,
+or, where Victor pasted the output himself, that the run was his.** An aborted run is byte-identical to a
+clean empty one, and that record is the only thing separating them; a quoted **hit** is self-evidencing and
+owes nothing here — step 2b's `grep -rn` sweep is exactly that case. It licenses no run of its own: the
+rule above still holds. (2026-08-30, project 02: a shell cut a 71-second test-environment setup short, its
+`Tests 0 passed` was written up as a completed empty run, and the task cost a full triage cycle before
+closing as a false positive — `REC-185`.) And the **testing scope is not this close's to re-derive**:
+`notes/prompts/_internal/_session-rules.md` → "Testing rules" owns it — in 01–06, and for components in
+07, missing tests, empty specs and weak assertions are never a finding, while a broken spec and a broken
+test command are.
+
 This is its own logical change, so it takes its own commit, separate from step 5's collapse:
 `docs(backlog): raise <finding> found while closing <task>`.
 

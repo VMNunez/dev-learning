@@ -717,37 +717,58 @@ Red flag answer: "I use ViewEncapsulation.None when my CSS does not work." — T
 
 **Have you written unit tests in Angular?** ⭐⭐⭐
 
-Yes — I test services with Jasmine and TestBed. The pattern is: configure a test module in `beforeEach`, inject the service with `TestBed.inject()`, and write each assertion in its own `it` block. For services that make HTTP calls I use `HttpClientTestingModule` so no real network requests are made.
+Yes — component tests, with Vitest and TestBed, which is what Angular 21 scaffolds by default. In `05-task-manager` I mount the confirm dialog with a fake `MatDialogRef`, call `confirm()` and assert it closed with `true`; service tests are Step 9 of the project I am building now.
+
+> **Junior tip:** Name the kind of test you have written instead of answering yes or no — and where one kind is still missing, say when it lands and show you know how it works. That reads as someone who knows his own codebase; "yes, I write tests" invites the follow-up you cannot answer.
+> **Consejo de entrevista:** Di qué tipo de test has escrito en vez de contestar sí o no — y donde te falte uno, di cuándo llega y demuestra que sabes cómo funciona. Eso suena a alguien que conoce su propio código; "sí, escribo tests" invita a la repregunta que no puedes responder.
 
 **What is TestBed?** ⭐⭐⭐
 
-Angular's testing module — it creates a mini Angular environment for a test. You configure it with the same providers and imports you would use in the real app. Without TestBed, Angular's dependency injection does not work in tests.
+Angular's testing module — it builds a miniature Angular environment for the test, configured with the same providers and imports the real app uses. It is the same API whatever the runner is, so a Karma project and a Vitest project configure it identically; without it, Angular's dependency injection does not work in a test.
 
-**What is `HttpClientTestingModule` and why do you use it?** ⭐⭐
+**Why does your project run Vitest instead of Jasmine and Karma?** ⭐⭐
 
-A testing replacement for `HttpClientModule` that intercepts HTTP calls instead of making real network requests. In a test, you call the service method, then use `HttpTestingController.expectOne(url)` to assert the request was made, and `req.flush(mockData)` to send a fake response. This makes tests fast, predictable, and independent of the network.
+What they really want to know: Did you choose your tooling, or did you accept whatever was there?
+A: Because it is what `ng new` produces from Angular 21 — Karma is deprecated and its builder is announced for removal, so picking Jasmine and Karma for a new project means configuring against the CLI default in order to build on something on its way out. I can still read a Jasmine suite: the spec API is the same `describe` / `it` / `expect`, `TestBed` is identical, and only the spy changes.
 
-**What is `spyOn` and when do you use it?** ⭐⭐
+Red flag answer: "Vitest is faster." — Speed is not why the default moved, and it is what someone says who did not choose it. The reason is that Karma is deprecated and Vitest is what the CLI now scaffolds.
 
-A Jasmine function that replaces a method with a fake you can control and inspect. I use it to check that a method was called with the right argument, or to prevent real logic from running in a dependency. `expect(spy).toHaveBeenCalledWith(id)` reads clearly and makes the test intention obvious.
+**How do you test a service that makes HTTP calls?** ⭐⭐
+
+You put `provideHttpClient()` and `provideHttpClientTesting()` in the test module, then assert the request with `HttpTestingController.expectOne(url)` and flush a fake response with `req.flush(mockData)` — the same `TestBed` setup as the component tests I have written, with the network swapped for a controller I can inspect. Mine land at Step 9 of my current project; in older suites you will see `HttpClientTestingModule` doing that job, deprecated in Angular 20 in favour of those two providers.
+
+**What is a spy and when do you use one?** ⭐⭐
+
+A fake that stands in for a real function so I can control what it returns and check how it was called. In `05-task-manager` the dialog's `close` is a `vi.fn()` and the test asserts it was called with `true`; a Jasmine suite writes the same thing as `spyOn()` or `jasmine.createSpyObj()`.
+
+```typescript
+// projects/05-task-manager · confirm-dialog.spec.ts
+const dialogRef = { close: vi.fn() };
+// providers: [{ provide: MatDialogRef, useValue: dialogRef }]
+
+it('should close with true when confirmed', () => {
+  component.confirm();
+  expect(dialogRef.close).toHaveBeenCalledWith(true);
+});
+```
+
+**Why use `provideHttpClientTesting()` instead of spying on the HttpClient methods directly?** ⭐⭐
+
+What they really want to know: Do you understand what you are actually testing and what you are bypassing?
+A: Spying on HttpClient methods mocks the entire HTTP layer before it reaches your service — you would be testing that a method calls the spy, not that it builds the correct URL, uses the right HTTP verb, or maps the response correctly. `provideHttpClientTesting()` lets the real service code run but intercepts at the network level. In an employee service test, expectOne('/api/employees') verifies the exact URL was requested, req.request.method verifies it is a GET, and flush(mockData) tests how the service handles the response. All the real logic runs — only the network is replaced.
+
+Red flag answer: "It is the Angular way." — That is a convention, not a reason. Show that you understand what you are actually testing.
+
+**What is a component test and how is it different from a service test?** ⭐⭐
+
+A service test calls methods and asserts results; a component test needs the template rendered, so I build it with `TestBed.createComponent()`, await `fixture.whenStable()`, and then read the DOM through `fixture.nativeElement`. In `04-meal-finder` I push a new `selected` input with `componentRef.setInput()` and assert which button comes back carrying `aria-pressed="true"`.
+
+> **Junior tip:** If the interviewer asks which tests you have written, say component tests and describe one — mine mount a component with fake dependencies and assert what the user would actually see. Service tests arrive with my backend project, and saying that is stronger than claiming both.
+> **Consejo de entrevista:** Si el entrevistador pregunta qué tests has escrito, di tests de componente y describe uno — los míos montan un componente con dependencias falsas y verifican lo que el usuario vería. Los tests de servicio llegan con mi proyecto de backend, y decirlo es más fuerte que afirmar los dos.
 
 **What is `afterEach(() => httpMock.verify())` for?** ⭐
 
 It checks that no unexpected HTTP requests were made during the test. If a method fires a request you did not account for in your test, `verify()` fails the test — this prevents silent bugs where extra requests go unnoticed.
-
-**Why use HttpClientTestingModule instead of spying on the HttpClient methods directly?** ⭐⭐
-
-What they really want to know: Do you understand what you are actually testing and what you are bypassing?
-A: Spying on HttpClient methods mocks the entire HTTP layer before it reaches your service — you would be testing that a method calls the spy, not that it builds the correct URL, uses the right HTTP verb, or maps the response correctly. HttpClientTestingModule lets the real service code run but intercepts at the network level. In an employee service test, expectOne('/api/employees') verifies the exact URL was requested, req.request.method verifies it is a GET, and flush(mockData) tests how the service handles the response. All the real logic runs — only the network is replaced.
-
-Red flag answer: "HttpClientTestingModule is the Angular way." — That is a convention, not a reason. Show that you understand what you are actually testing.
-
-**What is a component test and how is it different from a service test?** ⭐⭐
-
-A service test checks pure logic — you call methods and assert results. A component test needs a rendered template. In TestBed you use `fixture = TestBed.createComponent(MyComponent)` and `fixture.detectChanges()` to trigger rendering. Then you can query the DOM with `fixture.nativeElement.querySelector()` and assert that the correct HTML appears. Component tests are more complex — you need to stub or mock every dependency the component injects.
-
-> **Junior tip:** If the interviewer asks "have you tested components?", be honest. Say: "I have tested services. I know component tests use TestBed.createComponent() and fixture.detectChanges() — I plan to add them starting from project 07." Showing you know the API even without deep practice is better than saying "I don't know".
-> **Consejo de entrevista:** Si el entrevistador pregunta "¿has testeado componentes?", sé honesto. Di: "He testeado servicios. Sé que los tests de componentes usan TestBed.createComponent() y fixture.detectChanges() — planeo añadirlos desde el proyecto 07."
 
 ---
 

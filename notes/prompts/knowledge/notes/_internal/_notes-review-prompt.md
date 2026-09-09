@@ -135,6 +135,14 @@ For each section of the file, check:
 - **Docs links** — file-level link present; each section links an exact sub-section (not a homepage);
   correct priority (Baeldung for Spring/Java, MDN for CSS/JS, angular.dev for Angular, jjwt for JWT);
   no guessed URLs (a guess must be `Docs: TODO — add link`).
+- **Factual accuracy** — every `Docs:` URL, class, config or API name, version-specific signature
+  and code fragment resolves against the live source, and no statement contradicts a rule a machinery
+  file owns (`_session-rules.md`, a `_*-standard.md`, a coverage file). Stage A's own fact-check gate
+  covers the same ground and you are its backstop — but the ground includes prose **already written
+  when the author arrived**, which is where this check earns its place: a fact that was true the day
+  it was written and is false today passes every other point on this list in silence, because none of
+  them reads for truth. Where a section states a rule another file owns, the standard's
+  no-restatement rule under "Which project applied a concept" decides what happens to it.
 - **References** — forward references within the topic marked; cross-topic references opened with a
   preview callout; links to sibling notes carry a one-sentence reminder; every same-topic internal link
   resolves to a `{LINK_TARGETS}` row, and no claim about a sibling's content rests on a file outside

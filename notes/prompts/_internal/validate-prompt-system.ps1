@@ -9,7 +9,7 @@ if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
     $RepositoryRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 
-$expectedRunnableCount = 31
+$expectedRunnableCount = 32
 $promptRoot = Join-Path $RepositoryRoot 'notes\prompts'
 $claudeRoot = Join-Path $RepositoryRoot '.claude\commands'
 $codexRoot = Join-Path $RepositoryRoot '.codex\commands'
@@ -318,6 +318,7 @@ $pipelinePromptPaths = @(
     'knowledge\coverage\coverage-verify-prompt.md',
     'knowledge\interview-prep\interview-prep-audit.md',
     'knowledge\interview-prep\interview-prep-route-prompt.md',
+    'knowledge\interview-prep\interview-prep-route-projects-prompt.md',
     'knowledge\notes\notes-audit.md',
     'knowledge\notes\notes-plan-prompt.md',
     'practice\sql\sql-plan-audit.md',
@@ -334,8 +335,8 @@ $pipelinePromptPaths = @(
     'system\system-gaps-prompt.md'
 )
 
-if ($pipelinePromptPaths.Count -ne 19) {
-    Add-ValidationError "Expected 19 pipeline prompts; found $($pipelinePromptPaths.Count)."
+if ($pipelinePromptPaths.Count -ne 20) {
+    Add-ValidationError "Expected 20 pipeline prompts; found $($pipelinePromptPaths.Count)."
 }
 
 foreach ($prompt in $runnable) {
@@ -410,6 +411,7 @@ $declaredOutputPatterns = @(
     '^notes/cv/cv-bullets\.md$'                       # portfolio-audit
     '^notes/interview-prep/(hr-screen|SESSION-LOG)\.md$'  # hr-screen, simulator
     '^notes/interview-prep/routes/(junior|middle|senior)\.md$' # interview-prep-route
+    '^notes/interview-prep/routes/projects\.md$'                # interview-prep-route-projects
     # Both bounded to the real filename shape: an unbounded `.+` swallowed a typo or a rename in the
     # very file names the SQL track resolves "the current exercise file" by.
     '^practice/sql/(junior|middle|senior)/([0-9]{2}|R[1-9])-[a-z0-9-]+\.sql$'  # sql-exercises
@@ -1293,7 +1295,7 @@ if (-not $skillSection.Success) {
 # The slash command is the launcher's own filename, never the prompt name minus its
 # suffix. Guessing it is wrong for `code-review-prompt`, which launches deliberately as
 # `/code-review-practice` because the host agent's own diff review already owns
-# `/code-review` - true of both adapters, see README.md "The 31 runnable prompts".
+# `/code-review` - true of both adapters, see README.md "The 32 runnable prompts".
 $launcherCommands = @{}
 foreach ($claudeLauncher in $claudeLaunchers) {
     $launcherTarget = [regex]::Match(

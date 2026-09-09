@@ -284,9 +284,10 @@ rule in §8 has a test that proves it is enforced.**
 custom queries, one `@DataJpaTest` (the query returns what it should against a real embedded DB). Name
 the controller/repository and what each asserts. If the project introduces neither yet, say so
 explicitly — do not pad.
-**Angular services (Jasmine + TestBed + `HttpClientTestingModule`):** which services, what each test
-verifies (the request URL/method, the mapped response, error handling).
-**Angular components (Jasmine + TestBed, from project 08):** which components, what each verifies
+**Angular services (Vitest + TestBed + `provideHttpClient()` / `provideHttpClientTesting()` — never the
+deprecated `HttpClientTestingModule`):** which services, what each test verifies (the request URL/method,
+the mapped response, error handling).
+**Angular components (Vitest + TestBed, from project 08):** which components, what each verifies
 (renders the right state, emits on action, shows empty/error state).
 **Assertion quality (every level):** each test asserts real behaviour — the returned value or the saved
 object's state — never only `verify(...)` that a method was called. No trivial "it exists" tests.
@@ -429,7 +430,7 @@ PLANNING.md.
 11. **Backend tests** — JUnit 5 + Mockito unit tests, one step per service class (happy path + edge
     cases), plus the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`),
     if any.
-12. **Angular tests** — services first (`HttpClientTestingModule`); components if project 08+.
+12. **Angular tests** — services first (Vitest + TestBed, `provideHttpClientTesting()`); components if project 08+.
 13. **SQL complement** — write by hand in `practice/sql/` the SQL Hibernate generates for the main queries.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by
     design — Docker wraps a working app, not a work in progress.
@@ -499,7 +500,7 @@ do not drop a gate or invent extra ones.
 | **G3 — Backend review** | The last backend branch's PR merges — backend complete, **before frontend work starts** | `review-audit` · `PROJECT_PATH = {project}` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. Fix the High tasks it writes to `PROJECT-BACKLOG.md` before moving on. |
 | **G4 — Frontend review** | The frontend branch's PR merges — frontend complete | `review-audit` · `PROJECT_PATH = {project}` · `REVIEW_SCOPE = frontend` | Each surface is reviewed once (see the rules above this table): G3 has already read the backend, so a `full` run here would re-read reviewed code. Scope follows what changed, never how old the backend's date is — a frontend phase is not expected to add backend code, and if this project's did, the answer is to **re-run G3 scoped `backend`**, never to widen G4 to `full` (a fix campaign G3 itself ordered is inside its sign-off, not after it). |
 | **G5 — READMEs** | Every **High** task from G3/G4 is fixed and committed | `readme-audit` · `PROJECT_PATH = {project}` | Hard prerequisite of G7: `portfolio-audit` reads the READMEs, so running it first would judge a document that is about to change. |
-| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | `cv-prompt`, `project-brief` and `review-audit` all read `PROGRESS.md`; a stale one builds the CV bullet, the next project's choice and the reviewer's level calibration on a wrong picture. **The gate closes on a clean drift report, not on the run happening**: since 2026-08-05 the prompt writes only `Professional level by topic` and *reports* every other section, so a run that names drift leaves G6 open until the owner it names has repaired it. |
+| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | `cv-prompt`, `project-brief` and `review-audit` all read `PROGRESS.md`; a stale one builds the CV bullet, the next project's choice and the reviewer's level calibration on a wrong picture. **The gate closes on a clean drift report, not on the run happening**: since 2026-08-05 the prompt writes only `Professional level by topic` and *reports* every other section, so a run that names drift leaves G6 open until the owner it names has repaired it. **`MODE = active` is the config for closing this gate *in sequence*, while the project is still the in-progress one — that mode audits only that project, so it can never close G6 for a project finished earlier, and a G7 arriving later (a `PROJECT_PATH = all` batch over closed projects, say) owes `MODE = all` instead.** `portfolio-audit`'s Check 3 tests the resulting drift report's `Scope:`, `Verdict:` and `Date:` (`REC-214`). |
 | **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = {project}` · `PORTFOLIO_SCOPE = full` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. **Only a `full` run signs this box**: `backend` / `frontend` / `global` are bank-only, compute no verdict and owe none of the chain, so they may bank a tier long before the gate is due and leave it exactly as unsigned as they found it. **The scope defaults to `full`, so a plan's own copy of this row need not instantiate it** — it is named here because this is where the rule is stated, and a plan that omits it is running `full` and is correct as it stands. |
 | **G8 — Roadmap resync** | After G7 returns ✅ Ready | `roadmap-review-prompt` | The project sequence just changed. This is what keeps `ROADMAP.md` from drifting into a stale plan. |
 

@@ -16,17 +16,39 @@ the list is required. Expand from that ordered list, never from the target field
 In the configuration block, set the target field to `all` instead of a single value. The exact field
 name depends on the prompt (it is the field the prompt's own target list is stated under):
 
-- coverage / notes → `TOPIC = all`
 - interview-prep audit → `FILE = all`
 - readme-audit / review-audit / portfolio-audit → `PROJECT_PATH = all`
 - plan-audit (review mode only) → `PROJECT = all` (**review mode only** — new mode plans a single next project, so it stays one at a time)
 - sql-exercises → `TOPIC = all` (**practice mode only** — review mode needs a pasted file, so it stays one at a time)
 - code-review → `TYPE = all` (`simulation-generator` takes no target field: its config is `LEVEL` +
   `STEP` and the route owns the order, so it is one at a time — `README.md` → "Batch mode" lists it
-  under *One target only*)
+  under *One target only*. The coverage and notes prompts are that same case and are **not** on this
+  list: `coverage-prompt`, `coverage-verify` and `notes-plan` each state in their own configuration that
+  `TOPIC = all` is unsupported, and `notes-audit` takes one planned pair)
 
-Any second field tied to the target (e.g. `NOTES_PATH`, `PROJECT_TYPE`) is **ignored in `all` mode** —
-derive it automatically per target from that list. Do not ask.
+Any second field **tied to the target** — one whose meaning or effect depends on *which* target is
+current, so that it can resolve differently, or to nothing at all, from one target to the next — takes
+one of **three** dispositions in `all` mode, and the prompt's own `all` block states which one. A field
+that applies identically to every target is **not** tied to it and this clause says nothing about it:
+`code-review`'s `DIFFICULTY` and `ISSUE_COUNT`, `interview-prep-audit`'s `MODE`, any `DRY_RUN`. It is a
+property of the field, decided here and there — never a question to ask:
+
+- **Derived per target** — ignored as given and recomputed from each target's own source:
+  `sql-exercises`'s `COUNT` and the `{FOCUS}` it resolves rather than accepts (its five keys are `MODE`,
+  `TOPIC`, `LEVEL`, `COUNT`, `FILE` — `FOCUS` is a value this disposition governs, not a field the
+  operator sets), both read from each topic's route §2 step, and its `{FILE}`, read from that route's
+  **§1** row. `FILE` is the one of the three that a typed value still overrides — its own resolution
+  takes "the `FILE` key if Victor set it" first — and that prompt's `all` line states no disposition for
+  it, which is this clause's own defect standing in the file it is named from.
+- **Forced to a fixed value** — it cannot mean anything across targets, so the batch pins it:
+  `interview-prep-audit`'s `SECTION`, which a `FILE = all` run always sets to `all`, and
+  `code-review`'s `FOCUS`, which a `TYPE = all` run always leaves blank.
+- **Bound per target unchanged** — it says how much of *each* target to do rather than which target to
+  do, so it applies to every one in turn and is a no-op where that target has nothing to match:
+  `portfolio-audit`'s `PORTFOLIO_SCOPE` and `review-audit`'s `REVIEW_SCOPE`.
+
+An `all` block stating none of the three is the defect this clause exists to name: the reader falls back
+to whichever disposition the wording suggests, and two of the three are wrong for any given field.
 
 ---
 
