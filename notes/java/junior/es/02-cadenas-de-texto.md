@@ -377,7 +377,7 @@ Así que la comprobación pasa a tiempo de ejecución, y la segunda línea falla
 java.util.IllegalFormatConversionException: d != java.lang.String
 ```
 
-Léelo como "a `%d` le entregaron un `java.lang.String`". Fíjate en _qué_ marcador se quejó: `%s` se tragó el número `38` sin rechistar, porque `%s` solo llama a `toString()` y un `Integer` tiene uno. Solo `%d` es quisquilloso, porque tiene que producir dígitos. Así que un par intercambiado siempre falla en el marcador _numérico_ — el error apunta a la segunda mitad de tu cadena de formato mientras el error está en la primera mitad.
+Léelo como "a `%d` le entregaron un `java.lang.String`". Fíjate en _qué_ marcador se quejó: `%s` se tragó el número `38` sin rechistar, porque `%s` solo llama a `toString()`, y un `Integer` tiene uno: si a un `%s` le llega un número, la conversión de número a texto se hace con ese `toString()` y por eso no falla nunca. El que da problemas es `%d`, porque tendría que hacer la conversión contraria — convertir en dígitos lo que le llega — y un `String` no se convierte en dígitos. Así que un par intercambiado siempre revienta en el marcador _numérico_: el mensaje te señala el segundo marcador de tu cadena de formato, aunque el intercambio afecta igualmente al primero.
 
 Ese mismo retraso se aplica a un especificador que directamente no existe, y a un valor de menos:
 
