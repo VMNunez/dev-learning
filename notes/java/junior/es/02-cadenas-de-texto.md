@@ -482,7 +482,7 @@ Hay un tercer tipo en esta familia, `StringBuffer`, y te lo vas a encontrar en c
 
 > **Qué significa "thread-safe", y por qué importa en una API de Spring Boot.** Un **hilo** (_thread_) es una tarea que se ejecuta en paralelo a otras dentro del mismo programa. Una API REST atiende cada petición HTTP entrante en su propio hilo — por eso pueden usarla varios usuarios a la vez, en lugar de tener que ponerlos en cola. La regla es: un `StringBuilder` declarado como **variable local dentro de un método** se crea de cero en cada llamada, así que pertenece exactamente a un hilo, y no hace falta pensar en bloqueos porque existe dentro de un único hilo. Un `StringBuilder` guardado como **campo de un objeto compartido** sí es un problema: en cuanto lleguen dos peticiones a la vez, los dos hilos escribirán sobre el mismo buffer y el texto saldrá mezclado.
 
-> **Adelanto — Spring Boot:** el fragmento de abajo está anotado con `@Service`, que todavía no has estudiado. Marca una clase como un servicio que Spring crea **una sola vez** al arrancar y deja disponible para cualquier parte de la aplicación donde se necesite — un _singleton_, una instancia compartida para toda la aplicación. Esa única palabra es lo que hace peligroso el ejemplo: un objeto, y cada hilo de cada petición escribiendo en él. Vas a implementar `@Service` en las notas de Spring Boot; aquí solo prepara el terreno.
+> **Adelanto — Spring Boot:** el fragmento de abajo está anotado con `@Service`, que todavía no has estudiado. Marca una clase como un servicio que Spring crea **una sola vez** al arrancar y deja disponible para cualquier parte de la aplicación donde se necesite — un _singleton_, una instancia compartida para toda la aplicación. Eso hace peligroso el ejemplo: existe un solo objeto, y cada hilo de cada petición escribe en él. Vas a implementar `@Service` en las notas de Spring Boot; aquí solo prepara el terreno.
 
 ```java
 // MAL — un builder compartido por cada hilo de petición
@@ -501,7 +501,7 @@ public String buildReport(List<Employee> employees) {
 }
 ```
 
-La versión `MAL` no falla en pruebas. Con un solo usuario a la vez se comporta perfectamente; solo produce basura entrelazada bajo tráfico concurrente real, que es el peor calendario de fallo posible. El hábito que lo evita del todo: **un builder es una variable local, siempre.**
+La versión `MAL` se comporta bien con un solo usuario, así que no falla en pruebas: solo produce texto entrelazado cuando llegan peticiones a la vez, es decir, en producción. El hábito que lo evita del todo: **un builder es una variable local, siempre.**
 
 > **La mitad de la historia sobre la recolección de basura llega más tarde.** [05-modelo-de-memoria.md](05-modelo-de-memoria.md) retoma este mismo bucle una vez que el heap y el recolector de basura están sobre la mesa, y muestra en detalle qué le cuesta al runtime "999 objetos abandonados". Todo lo que necesitas para tomar la decisión correcta está en esta página; ese archivo explica qué hace la máquina con la decisión equivocada.
 

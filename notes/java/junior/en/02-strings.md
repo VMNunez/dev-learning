@@ -483,7 +483,7 @@ There is a third type in this family, `StringBuffer`, and you will meet it in ol
 
 > **What "thread-safe" means, and why it matters in a Spring Boot API.** A **thread** is a task running in parallel with others inside the same program. A REST API handles each incoming HTTP request on its own thread — that is why several users can use it at once, instead of having to be queued. **Thread-safe** means several threads can use the same object simultaneously without corrupting each other's work. The practical rule that follows: a `StringBuilder` declared as a **local variable inside a method** is created fresh on every call, so it belongs to exactly one thread, and there is no need to think about locking because that buffer lives inside a single thread. A `StringBuilder` stored as a **field on a shared object** is a genuine problem: the moment two requests arrive at once, both threads write into the same buffer and the text comes out mixed together.
 
-> **Preview — Spring Boot:** the snippet below is annotated `@Service`, which you have not studied yet. It marks a class as a service Spring creates **once** at startup and then makes available to any part of the application that needs it — a *singleton*, one shared instance for the whole application. That single word is what makes the example dangerous: one object, every request thread writing into it. You will implement `@Service` in the Spring Boot notes; here it only sets the scene.
+> **Preview — Spring Boot:** the snippet below is annotated `@Service`, which you have not studied yet. It marks a class as a service Spring creates **once** at startup and then makes available to any part of the application that needs it — a *singleton*, one shared instance for the whole application. That is what makes the example dangerous: there is a single object, and every request thread writes into it. You will implement `@Service` in the Spring Boot notes; here it only sets the scene.
 
 ```java
 // MAL — one builder shared by every request thread
@@ -502,7 +502,7 @@ public String buildReport(List<Employee> employees) {
 }
 ```
 
-The `MAL` version does not fail in testing. With one user at a time it behaves perfectly; it produces interleaved nonsense only under real concurrent traffic, which is the worst possible failure schedule. The habit that avoids it entirely: **a builder is a local variable, always.**
+The `MAL` version behaves correctly with a single user, so it does not fail in testing: it only produces interleaved text when requests arrive at the same time — that is, in production. The habit that avoids it entirely: **a builder is a local variable, always.**
 
 > **The garbage-collection half of this story comes later.** [05-memory-model.md](05-memory-model.md) revisits this exact loop once the heap and the garbage collector are on the table, and shows what "999 abandoned objects" costs the runtime in detail. Everything you need to make the right choice is on this page; that file explains what the machine does with the wrong one.
 
