@@ -450,7 +450,9 @@ for (Employee e : employees) {
 String report = sb.toString();             // exactly one String created, at the end
 ```
 
-> **Why `.append()` and not `+=`?** Because `StringBuilder` is mutable, and Java does not let a class define what `+=` means. That is the **no operator overloading** rule [01-variables-types.md](01-variables-types.md) already named when `BigDecimal` turned out to need `add()` rather than `+`: a class can never teach an operator to work on it. `+` on Strings is the single exception, baked into the language itself and not available to anyone else — which is why `String` gets an operator and `StringBuilder` gets a method. So `StringBuilder` exposes `append()` instead, and the method name is doing you a favour: `append` reads as "modify this object", where `+=` reads as "compute a new value". The difference between the two is the entire point of the section.
+> **Why is the newline appended too, instead of `sb.append(e.getName() + "
+")`?** Both forms compile and produce the same text, so this is not a question of style but of objects. `e.getName() + "
+"` builds an intermediate `String` on every turn of the loop — exactly the throwaway object this section is trying to avoid — and only then copies that result into the buffer. Chaining two `append` calls creates nothing intermediate: the first writes the name straight into the buffer and the second writes the newline after it. And they chain because `append` returns the builder itself, as the comment in the code says.
 
 > **When the buffer fills up, it grows — and that is still cheap.** A `StringBuilder` starts with room for a fixed number of characters and, when you append past it, allocates a bigger buffer and copies the contents across. So it is not literally zero copies. The difference is *how often*: the buffer roughly doubles each time, so a thousand appends trigger a handful of reallocations rather than a thousand. If you happen to know the final size in advance you can skip even those with `new StringBuilder(4096)`, which is a nice thing to know and almost never worth doing.
 

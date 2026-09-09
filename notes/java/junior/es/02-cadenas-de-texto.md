@@ -439,7 +439,7 @@ iteración 1000 → copia 999 líneas
 
 Ese total crece con el _cuadrado_ del número de elementos sobre los que iteras: si duplicas los empleados, el trabajo de copia se multiplica por cuatro. Con diez elementos no se nota nada; con diez mil tienes un endpoint visiblemente lento.
 
-`StringBuilder` es la respuesta: un objeto que sí se puede modificar, sobre el que vas añadiendo texto sin crear un objeto nuevo en cada vuelta. Guarda un **buffer mutable** — un bloque de memoria que tienes permiso de modificar en el sitio — y `.append()` escribe dentro de él. Funciona como una pizarra sobre la que sigues escribiendo, en lugar de una hoja nueva copiada desde cero por cada palabra. Cuando terminas, `.toString()` produce el `String` final de una vez.
+`StringBuilder` es la respuesta: un objeto que sí se puede modificar, sobre el que vas añadiendo texto sin crear un objeto nuevo en cada vuelta. Guarda un **buffer mutable** — un bloque de memoria que tienes permiso de modificar — y `.append()` escribe dentro de él. Funciona como una pizarra sobre la que sigues escribiendo, en lugar de una hoja nueva copiada desde cero por cada palabra. Cuando terminas, `.toString()` produce el `String` final.
 
 ```java
 // BIEN — un solo objeto, se va añadiendo en el sitio
@@ -450,7 +450,9 @@ for (Employee e : employees) {
 String report = sb.toString();             // exactamente un String creado, al final
 ```
 
-> **¿Por qué `.append()` y no `+=`?** Porque `StringBuilder` es mutable, y Java no deja que una clase defina qué significa `+=`. Esa es la regla de **no hay sobrecarga de operadores** que [01-variables-tipos.md](01-variables-tipos.md) ya nombró cuando resultó que `BigDecimal` necesitaba `add()` en lugar de `+`: una clase nunca puede enseñarle a un operador a funcionar sobre ella. `+` sobre Strings es la única excepción, incorporada al propio lenguaje y no disponible para nadie más — por eso `String` tiene un operador y `StringBuilder` tiene un método. Así que `StringBuilder` expone `append()` en su lugar, y el nombre del método te hace un favor: `append` se lee como "modifica este objeto", donde `+=` se lee como "calcula un valor nuevo". La diferencia entre los dos es todo el punto de la sección.
+> **¿Por qué el salto de línea también con `append`, y no `sb.append(e.getName() + "
+")`?** Las dos formas compilan y producen el mismo texto, así que no es una cuestión de estilo sino de objetos. `e.getName() + "
+"` construye un `String` intermedio en cada vuelta del bucle — exactamente el objeto desechable que esta sección quiere evitar — y solo después copia ese resultado dentro del buffer. Encadenando dos `append` no se crea nada intermedio: la primera llamada escribe el nombre directamente en el buffer y la segunda escribe el salto de línea detrás. Y se pueden encadenar porque `append` devuelve el propio builder, como dice el comentario del código.
 
 > **Cuando el buffer se llena, crece — y eso sigue siendo barato.** Un `StringBuilder` empieza con sitio para un número fijo de caracteres y, cuando le añades más allá de eso, reserva un buffer más grande y copia el contenido dentro. Así que no son literalmente cero copias. La diferencia está en _con qué frecuencia_: el buffer más o menos se duplica cada vez, así que mil `append` disparan un puñado de realojos en vez de mil. Si por casualidad conoces el tamaño final de antemano puedes evitar incluso esos con `new StringBuilder(4096)`, que está bien saberlo pero casi nunca merece la pena hacerlo.
 
