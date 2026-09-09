@@ -424,7 +424,20 @@ iteración 3:   "Ana\nBeto\nCarla\n"           ← abandonado tras la iteración
 iteración 1000: el único que te quedas
 ```
 
-De ese cuadro salen dos costes, y el segundo es el que la gente pasa por alto. El primero son **999 objetos desechables**, cada uno de los cuales el recolector de basura tiene que reclamar. El segundo es la **copia**: la iteración 500 no copia un nombre, copia el informe entero de 499 líneas construido hasta el momento, y luego la iteración 501 copia 500 líneas, y así sucesivamente. El trabajo total crece con el _cuadrado_ del número de líneas — duplica los empleados y cuadriplicas la copia. Eso es lo que convierte una ineficiencia invisible con diez elementos en un endpoint visiblemente lento con diez mil.
+En este ejemplo se ven los dos problemas. El primero es la creación de **999 objetos desechables**, cada uno de los cuales el recolector de basura tiene que reclamar.
+
+El segundo es la **copia**, y es el que se pasa por alto. Recuerda qué hace exactamente cada iteración: no añade la línea nueva al objeto que ya existe — no puede, es inmutable —, sino que reserva un objeto nuevo y escribe dentro **todos los caracteres que ya había**, y detrás los de la línea nueva. Así que la iteración 500 no copia un nombre: copia las 499 líneas ya acumuladas y luego añade la 500. La 501 copia 500 líneas. La 502 copia 501.
+
+```
+iteración   2 → copia    1 línea
+iteración   3 → copia    2 líneas
+iteración 500 → copia  499 líneas
+iteración 1000 → copia 999 líneas
+                 ───────────────────
+     total       ≈ 500.000 líneas copiadas para producir 1.000
+```
+
+Ese total crece con el _cuadrado_ del número de líneas: si duplicas los empleados, el trabajo de copia se multiplica por cuatro. Con diez elementos no se nota nada; con diez mil tienes un endpoint visiblemente lento.
 
 `StringBuilder` es la respuesta, y su modelo mental es una pizarra: una única superficie sobre la que sigues escribiendo, en lugar de una hoja nueva copiada desde cero por cada palabra. Guarda un **buffer mutable** — un bloque de memoria que tienes permiso de modificar en el sitio — y `.append()` escribe dentro de él. Cuando terminas, `.toString()` produce el `String` final de una vez.
 

@@ -424,7 +424,20 @@ iteration 3:   "Ana\nBeto\nCarla\n"           ← abandoned after iteration 4
 iteration 1000: the only one you keep
 ```
 
-Two costs come out of that picture, and the second is the one people miss. The first is **999 throwaway objects**, each of which the garbage collector has to reclaim. The second is the **copying**: iteration 500 does not copy one name, it copies the entire 499-line report built so far, and then iteration 501 copies 500 lines, and so on. The total work grows with the *square* of the number of lines — double the employees and you quadruple the copying. That is what turns an invisible inefficiency at ten items into a visibly slow endpoint at ten thousand.
+This example shows both problems. The first is the creation of **999 throwaway objects**, each of which the garbage collector has to reclaim.
+
+The second is the **copying**, and it is the one people miss. Remember what each iteration actually does: it does not add the new line to the object that already exists — it cannot, the object is immutable — it allocates a new object and writes **all the characters that were already there** into it, then the characters of the new line. So iteration 500 does not copy one name: it copies the 499 lines accumulated so far and then adds the 500th. Iteration 501 copies 500 lines. Iteration 502 copies 501.
+
+```
+iteration    2 → copies   1 line
+iteration    3 → copies   2 lines
+iteration  500 → copies 499 lines
+iteration 1000 → copies 999 lines
+                 ───────────────────
+     total       ≈ 500,000 lines copied to produce 1,000
+```
+
+That total grows with the *square* of the number of lines: double the employees and the copying work is multiplied by four. At ten items you notice nothing; at ten thousand you have a visibly slow endpoint.
 
 `StringBuilder` is the answer, and its mental model is a whiteboard: one surface you keep writing on, rather than a fresh sheet of paper copied out from scratch for every word. It holds a **mutable buffer** — a block of memory you are allowed to modify in place — and `.append()` writes into it. When you are done, `.toString()` produces the finished `String` once.
 
