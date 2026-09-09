@@ -31,19 +31,20 @@ exercises, simulations, and unaided explanation demonstrate it.
 
 | Topic | Current tracked level | Knowledge consolidation | Practical evidence | Next gate |
 |---|---|---|---|---|
-| Angular | Junior — building | Notes plan stale (0/17 complete); junior Q&A pending full audit | Projects 01–06, including a detail page driven by a route-param signal and an `effect()` whose cleanup cancels the in-flight request when the router reuses the component instance, and an application shell whose nav sits outside the `router-outlet` and derives its live count with `computed()` from the service signal, and a search page whose term lives in the URL as `?q=` so results survive navigation, and a presentational meal card that injects no service and is driven by two different pages through `input.required()` and `output()`, and icon-only favourite toggles whose accessible name is derived with `computed()` and bound with `[attr.aria-label]`, and a single `computed()` `Set` of favourite ids in the service that the three pages query instead of each re-scanning the array, and a `MealService` that translates every transport failure once with `catchError` and rethrows a domain `Error` so no page reinvents it; project 07 frontend pending | Refresh the junior notes plan |
-| Angular Material | Junior — building | Notes 0/16; shares Angular junior Q&A | Projects 05–06 | Complete junior notes and the Material sections of Angular Q&A |
-| Spring | Junior — building | Notes 0/12; junior Q&A pending full audit | Core mechanisms already used inside project 07; evidence migration pending | Complete junior notes/Q&A and explain the core mechanisms unaided |
-| Spring Boot | Junior — building | Notes plan stale (0/16 complete); junior Q&A pending full audit | Project 07 backend | Refresh the junior notes plan |
-| Java | Junior — building | Notes plan current, fingerprint matches (1/17 authored, 0 studied); junior Q&A pending full audit | Applied in project 07 | Author the remaining 16 junior notes |
-| Architecture | Junior — building | Notes plan stale (0/18 complete); junior Q&A pending full audit | Layered and coordinator patterns across projects | Refresh the junior notes plan |
-| Security | Junior — building | Notes plan stale (0/13 complete); junior Q&A pending full audit | Guards/interceptors in project 06; JWT/RBAC, query-input allow-listing, login throttling, a token identity bound to the immutable user id, and a password change that refuses an unchanged credential in project 07 | Refresh the junior notes plan |
-| TypeScript | Junior — building | Notes plan stale (0/15 complete); junior Q&A pending full audit | Projects 01–07, including a project 03 reactive form whose control types match the model so the submitted value needs no `as` assertion, and a project 04 API model that types `MealResponse.meals` as `Meal[] | null` because the endpoint returns `null` on no match | Refresh the junior notes plan |
-| SQL | Junior — building | Notes plan stale (0/17 complete); junior Q&A pending full audit | PostgreSQL project work, including a least-privilege application role in project 07; exercises in progress | Refresh the junior notes plan |
-| JavaScript | Junior — building | Notes plan stale (0/22 complete); junior Q&A pending full audit | Applied throughout Angular projects, including a localStorage read in project 03 that survives both a corrupt stored value and a well-formed one of the wrong shape, a default form date built from the local clock rather than `toISOString()`, and entity ids generated with `crypto.randomUUID()` instead of `Date.now()` | Refresh the junior notes plan |
-| CSS | Junior — building | Notes plan stale (0/16 complete); junior Q&A pending full audit | Projects 01–06, including a `prefers-reduced-motion` guard that drops the decorative hover and slows the loading spinner in project 02, and a project 04 `.visually-hidden` utility that takes the search label out of the flex row with `position: absolute` while keeping it in the accessibility tree, and a keyboard-only focus ring raised with `:focus-visible` and lifted to the whole card with `:has()`, and a text-styled `<button>` whose user-agent background, border, padding, font and cursor are reset explicitly | Refresh the junior notes plan |
-| Git | Junior — building | Notes plan stale (0/8 complete); junior Q&A pending full audit | Daily feature-branch workflow | Refresh the junior notes plan |
-| General | Junior — building | Notes plan stale (0/21 complete); junior Q&A pending full audit | HTTP, testing, debugging, configuration across projects | Refresh the junior notes plan |
+| Angular | Junior — building | Notes plan stale (0/18 authored, 0 studied); junior Q&A bank carries no stable IDs and no CORE route exists | Projects 01–06, including a detail page driven by a route-param signal and an `effect()` whose cleanup cancels the in-flight request when the router reuses the component instance, and an application shell whose nav sits outside the `router-outlet` and derives its live count with `computed()` from the service signal, and a search page whose term lives in the URL as `?q=` so results survive navigation, and a presentational meal card that injects no service and is driven by two different pages through `input.required()` and `output()`, and icon-only favourite toggles whose accessible name is derived with `computed()` and bound with `[attr.aria-label]`, and a single `computed()` `Set` of favourite ids in the service that the three pages query instead of each re-scanning the array, and a `MealService` that translates every transport failure once with `catchError` and rethrows a domain `Error` so no page reinvents it, and dialog specs that supply `MatDialogRef` and `MAT_DIALOG_DATA` as `useValue` doubles so the unit is tested without `MatDialog.open()`, and a project 06 root `AuthService` whose session is re-read through a shape check, so a corrupt `localStorage` entry cannot throw out of a field initializer and blank the app, and a project 06 filter child whose `input()`/`output()` are typed to the status union so the value the page validated at the query-param read cannot re-widen at the component boundary, and a dashboard split into three presentational children whose panel shell receives its rows through `ng-content` instead of one configuration input per entity shape, and a project 06 spec suite that runs green because each unit's spec declares the injector the unit actually needs — `provideRouter([])` for the routed pages, `MatDialogRef`/`MAT_DIALOG_DATA` doubles for the dialogs and `provideNativeDateAdapter()` for the one that renders a datepicker; project 07 frontend pending | Refresh the junior notes plan |
+| Angular Material | Junior — building | Notes plan stale (0/16 authored, 0 studied); shares Angular's junior Q&A, which carries no stable IDs | Projects 05–06 | Refresh the junior notes plan, then author its 16 notes |
+| Spring | Junior — building | Notes plan current (0/12 authored, 0 studied); no junior Q&A bank | Core mechanisms already used inside project 07; evidence migration pending | Author the 12 junior notes and explain the core mechanisms unaided |
+| Spring Boot | Junior — building | Notes plan current but owed a remap (tracker flags +1 bullet); 0/16 authored, 0 studied; junior Q&A bank carries no stable IDs | Project 07 backend | Consume the plan's stale flag, then author the 16 junior notes |
+| Java | Junior — building | Notes plan current but owed a remap (tracker flags +1 bullet); 5/18 authored, 0 studied; junior Q&A bank carries no stable IDs | Applied in project 07 | Consume the plan's stale flag, then author the remaining 13 junior notes |
+| Architecture | Junior — building | Plan declares itself current but the tracker flags +7 unmapped bullets; 0/20 authored, 0 studied; junior Q&A bank carries no stable IDs | Layered and coordinator patterns across projects; workflow invariants enforced in the state's owner (06) | Refresh the junior notes plan |
+| Security | Junior — building | Notes plan current (0/14 authored, 0 studied); junior Q&A bank carries no stable IDs | Guards/interceptors in project 06, plus a persisted session shape there that carries email and role only, sanitised on read so an entry written before the fix drops its password; JWT/RBAC, query-input allow-listing, login throttling, a token identity bound to the immutable user id, and a password change that refuses an unchanged credential in project 07 | Refresh the junior notes plan |
+| TypeScript | Junior — building | Notes plan stale, +4 unmapped bullets (0/15 authored, 0 studied); junior Q&A bank carries no stable IDs | Projects 01–07, including a project 03 reactive form whose control types match the model so the submitted value needs no `as` assertion, a project 04 API model that types `MealResponse.meals` as `Meal[] | null` because the endpoint returns `null` on no match, and a project 05 `Task.id` widened from `number` to `string` where the compiler enumerated every signature naming it, and a project 06 query-param read where a `value is T` predicate over an `as const` list replaced the `as` cast that let `?status=foo` through, and a project 06 dialog contract named at both ends — `open<T, D, R>` at every call site and `MatDialogRef<T, R>` on the dialog — so `afterClosed()` is checked instead of yielding `any` | Refresh the junior notes plan |
+| SQL | Junior — building | Notes plan current (0/17 authored, 0 studied); junior Q&A bank carries no stable IDs | PostgreSQL project work, including a least-privilege application role in project 07; exercises in progress | Refresh the junior notes plan |
+| JavaScript | Junior — building | Notes plan stale, +3 unmapped bullets (0/22 authored, 0 studied); junior Q&A bank carries no stable IDs | Applied throughout Angular projects, including a localStorage read in project 03 that survives both a corrupt stored value and a well-formed one of the wrong shape, a default form date built from the local clock rather than `toISOString()`, and entity ids generated with `crypto.randomUUID()` instead of `Date.now()` | Refresh the junior notes plan |
+| HTML | Junior — building | Coverage generated 2026-09-04 (81 junior bullets, boundary migration consumed); no notes plan yet; no Q&A bank | Markup across projects 01–06, including a nav list whose landmark and accessible name are declared on the element rather than implied, and icon-only controls whose accessible name is bound with `[attr.aria-label]` | Run the first `/notes-plan html junior` |
+| CSS | Junior — building | Notes plan stale, +2 unmapped bullets and no run recorded in the tracker (0/16 authored, 0 studied); junior Q&A bank carries no stable IDs | Projects 01–06, including a `prefers-reduced-motion` guard that drops the decorative hover and slows the loading spinner in project 02, and a project 04 `.visually-hidden` utility that takes the search label out of the flex row with `position: absolute` while keeping it in the accessibility tree, and a keyboard-only focus ring raised with `:focus-visible` and lifted to the whole card with `:has()`, and a text-styled `<button>` whose user-agent background, border, padding, font and cursor are reset explicitly | Refresh the junior notes plan |
+| Git | Junior — building | Notes plan stale and never run through the plan pipeline (0/8 authored, 0 studied); junior Q&A bank carries no stable IDs | Daily feature-branch workflow | Refresh the junior notes plan |
+| General | Junior — building | Notes plan stale, +4 unmapped bullets (0/21 authored, 0 studied); junior Q&A bank carries no stable IDs | HTTP, testing, debugging, configuration across projects, including a project 06 hand-written test double whose surface was widened to every member the unit reaches once a partial one threw at construction, and a scaffolded assertion left permanently red against a template that no longer contained it | Refresh the junior notes plan |
 
 Promotion is evidence-based. Completing files alone never changes `building` to `demonstrated`;
 practical evidence alone also does not bypass incomplete or stale knowledge artifacts.
@@ -58,23 +59,28 @@ level in the table above.
 
 | Topic | Junior | Middle | Senior |
 |---|---|---|---|
-| Angular | 85/140 (61%) | 0/12 (0%)* | 0/6 (0%)* |
-| Angular Material | 46/76 (61%) | 3/13 (23%)* | 0/3 (0%)* |
+| Angular | 97/149 (65%) | 0/12 (0%)* | 0/6 (0%)* |
+| Angular Material | 48/77 (62%) | 3/13 (23%)* | 0/2 (0%)* |
 | Spring | 8/58 (14%) | 0/25 (0%)* | 0/7 (0%)* |
 | Spring Boot | 89/137 (65%) | 1/14 (7%)* | 0/5 (0%)* |
 | Java | 54/131 (41%) | 3/14 (21%)* | 0/5 (0%)* |
-| Architecture | 41/74 (55%) | 0/17 (0%)* | 0/5 (0%)* |
-| Security | 50/104 (48%) | 1/10 (10%)* | 0/5 (0%)* |
-| TypeScript | 28/81 (35%) | 0/15 (0%)* | 0/4 (0%)* |
+| Architecture | 47/79 (59%) | 0/17 (0%)* | 0/5 (0%)* |
+| Security | 53/107 (50%) | 1/10 (10%)* | 0/5 (0%)* |
+| TypeScript | 36/83 (43%) | 0/15 (0%)* | 0/4 (0%)* |
 | SQL | 26/151 (17%) | 0/16 (0%)* | 0/5 (0%)* |
-| JavaScript | 37/130 (28%) | 0/13 (0%)* | 0/4 (0%)* |
-| CSS | 53/114 (46%) | 1/10 (10%)* | 0/4 (0%)* |
+| JavaScript | 39/131 (30%) | 0/13 (0%)* | 0/4 (0%)* |
+| HTML | 0/81 (0%) | 0/15 (0%)* | 0/7 (0%)* |
+| CSS | 54/114 (47%) | 1/10 (10%)* | 0/4 (0%)* |
 | Git | 26/92 (28%) | 0/4 (0%)* | 0/4 (0%)* |
-| General | 30/117 (26%) | 0/13 (0%)* | 0/5 (0%)* |
-| **Total** | **573/1405 (41%)** | **9/176 (5%)** | **0/62 (0%)** |
+| General | 32/120 (27%) | 0/13 (0%)* | 0/5 (0%)* |
+| **Total** | **609/1510 (40%)** | **9/191 (5%)** | **0/68 (0%)** |
 
 `*` provisional denominator — that level's coverage has not been generated by the coverage pipeline
 yet (no run recorded in `notes/prompts/_internal/_run-tracker.md`), so its total will move.
+
+`—` means the level has no coverage file at all, so there is no denominator to divide by. It never
+means `0%`, which is what a real count over a real denominator reads as — HTML's junior cell was the
+example until its first `/coverage` run landed on 2026-09-04 and turned it into `0/81 (0%)`.
 
 The `✅ NN-slug` marker went live on 2026-07-30 (its `— {evidence}` clause was added to the format on
 2026-08-01 and is not backfilled, so older markers are bare), so these cells are still filling in: projects 01, 02, 03,
@@ -94,7 +100,7 @@ cells from the notes plans' `Status:` fields and the exact bilingual `[refined]`
 
 | Track | Junior | Middle | Senior |
 |---|---|---|---|
-| Notes authored | 5/211* (2%) | — | — |
+| Notes authored | 5/213* (2%) | — | — |
 | Interview CORE refined | — | — | — |
 | Interview bank refined | — | — | — |
 
@@ -106,6 +112,19 @@ denominator that can only grow makes the fraction an honest floor.
 
 `—` means the level has no denominator at all: no notes plan exists for it, or the question bank has no
 stable IDs yet. It never means `0%`; an honest zero over a real denominator is printed as `0/N (0%)`.
+
+**Project banks — refined, one row per project.** The three cells above are levelled populations and the
+per-project question banks are in none of them, so they are counted here instead of inside a level column
+(`REC-180`, 2026-09-06). The numerator is that project's questions carrying `[refined]` in both languages
+and the denominator is its **whole bank**, since refining an answer does not depend on any route carrying
+the question. `authoring-progress-recount` writes this table; the projects it lists are the ones whose
+portfolio gate closed `✅ Ready`, resolved by `interview-prep-route-projects-prompt.md`'s eligibility
+test.
+
+| Project | Questions refined |
+|---|---|
+| 01-todo-list | 1/118 (1%) |
+| 02-weather-app | 0/109 (0%) |
 
 ---
 
@@ -125,6 +144,23 @@ dates, the current CORE route, and exact bilingual `[refined] [studied]` questio
 `—` means the level has no complete, current denominator yet: at least one required notes plan, Q&A
 bank or CORE route is missing, stale, or has not passed bilingual ID/state parity. It never means `0%`;
 once the relevant denominator is current, an honest zero is printed as `0/N (0%)`.
+
+**Project banks — studied, one row per project.** The twin of the table under `## Authoring progress`,
+and the reason it is separate is the same: the three cells above count levelled populations
+(`REC-180`, 2026-09-06). Here the denominator is that project's questions **on**
+`notes/interview-prep/routes/projects.md` rather than its whole bank — the daily block may not serve an
+off-route question, so a whole-bank denominator is one no amount of studying could close — and the
+numerator is those carrying `[refined] [studied]` in both languages. `study-block-close` writes this
+table, over the same project list as its twin. A studied question that later leaves the route —
+downgraded out of `⭐⭐⭐`, or deduplicated against another project's — leaves both halves of its
+fraction, keeps its marker, and is named in that ritual's report.
+
+| Project | Questions studied |
+|---|---|
+| 01-todo-list | — |
+
+`—` here is the missing route: `notes/interview-prep/routes/projects.md` has never been built, so no
+project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
 
 ---
 

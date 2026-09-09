@@ -46,10 +46,13 @@ hit the exact same quality bar the pipeline would, so daily-session notes are ne
   read `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md` in full.
 - Resolving a TODO in a **project question bank** (`notes/interview-prep/projects/en|es/*.md`) →
   read `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` → **"Question identity, the
-  refined freeze and the TODO channel"**, and nothing else in that file — the rest is `/portfolio-audit`'s
-  gate contract. **That bank has its own standard and the levelled one does not govern it** (it says so
-  in its own reader list): no level, no coverage fingerprint, no priority markers, no `[studied]` state,
-  and an ID keyed to the project folder rather than to a topic. Loading the wrong standard here is the
+  refined freeze and the TODO channel"**, and nothing else in that file — the rest, **"Priority markers"
+  included**, is `/portfolio-audit`'s gate contract. That section is cited below as the ⭐'s owner, which
+  is provenance and not a read: the standard's reader list deliberately leaves you out of it, and the one
+  prohibition you need from it is restated where you need it. **That bank has its own standard and the levelled one does not govern it** (it says so
+  in its own reader list): no level and no coverage fingerprint, a priority marker calibrated over the
+  whole file instead of per section, and an ID keyed to the project folder rather than to a topic. Its
+  three-state ladder is the same as the levelled bank's, but it is that file's own text and is read there. Loading the wrong standard here is the
   failure this branch exists to prevent — it would have you allocate a `{TOPIC}-{L}-NNN` ID and verify a
   fingerprint the file has never carried.
 - If the task touches both, read both.
@@ -212,24 +215,34 @@ ritual, not this writer, owns `[studied]` after a final active-recall PASS.
 resolve TODOs there and author nothing.** Those questions are written by `/portfolio-audit` from a
 project's own code, and allocating an ID or adding a question here would put content in a bank that gate
 re-walks section by section. Your one write is the repair his marker asks for — and, where the block was frozen, the removal of
-`[refined]` that reopening it requires. You never write that marker back on. Under
+the state markers that reopening it requires. You never write either of them back on. Under
 `_portfolio-standard.md`'s identity section:
 
-- **The TODO is the reopening.** If the block carries `[refined]`, remove that marker from **both**
-  languages before touching a word, then repair in the direction of the file carrying the marker — an
+- **The TODO is the reopening.** If the block carries `[refined]`, remove it — and `[studied]` with it,
+  where the block carries that too — from **both** languages before touching a word, then repair in the direction of the file carrying the marker — an
   `es/` TODO answered in Spanish, in his wording, and the `en/` twin re-translated from that — and leave
   it unrefined. Only Victor writes `[refined]` back, when the block is his again.
 - **A TODO about voice or phrasing is a first-class reopen.** He answers these out loud, in Spanish, in
   a room; an answer that is correct and does not sound like him is a defect of this bank. Never argue
   that the answer was already right, and never narrow the repair to the words he did not name.
+- **The priority marker survives the reopening.** ⭐⭐⭐ / ⭐⭐ / ⭐ says how often an interviewer asks the
+  question; `[refined]` says whether the answer is his. Removing the freeze never removes the star, a
+  rewritten answer keeps the marker it had, and you never write, change or delete one — the standard's
+  "Priority markers" gives it to `/portfolio-audit`'s author, reviewer and cross-section scan. **A TODO
+  asking for a different star is the one you hand back**: say so in your report and leave the marker —
+  he is not fenced out of it and writes it himself, and the alternative is you ranking a question you
+  were told not to author.
 - **The bound is the question block**, exactly as the marked passage bounds a frozen note. A TODO asking
   for a question the bank does not have, or for a section reorganised, is reported and handed back to
   `/portfolio-audit` — that is its gate's work, not yours.
-- **`[studied]` is not admitted in this bank at all** (`REC-180`'s three rulings are open), so you never
-  write it here and you report one you find as malformed.
+- **`[studied]` comes off with `[refined]`, and you never write either.** Since 2026-09-06 this bank
+  carries the third state too, written by `study-block-close` alone. A reopening removes **both** markers
+  from **both** languages before you touch a word: the recall pass was a pass over the answer you are
+  about to replace, so leaving it would claim Victor has rehearsed text that does not exist yet. Say in
+  your report which of the two you removed.
 - **A question with no ID yet is still repaired, and named by its quoted bold line instead.** The banks
   written before the identity rules landed (2026-08-31) carry none until their next `/portfolio-audit`
-  run allocates them — `01-todo-list`'s 79 questions are all of them today. Never allocate one yourself
+  run allocates them — `01-todo-list`'s 118 questions all carry one since 2026-09-05. Never allocate one yourself
   to have something to cite: an ID handed out here would collide with the one that run assigns. Say in
   the report that the bank owes its IDs and to which run.
 - **No harvest row.** The note-TODO sink is scoped to note prose, and the Q&A voice sink is `REC-184`'s
@@ -239,22 +252,26 @@ re-walks section by section. Your one write is the repair his marker asks for �
 **This route owes the same report the frozen-note route owes, and for the same reason: it has no cold
 reviewer and no diff gate.** Quote the instruction you acted on (the `TODO:` text, or Victor's words in
 chat), name the question ID and the side you repaired, state that the twin was re-translated from that
-side and not from the stale English, and — where the block was `[refined]` — that both markers came off
-both languages first. Write it even when the fix was one word.
-Once you have appended `[refined]` to a question in both languages, **invoke the
-`authoring-progress-recount` skill** with that bank's level. **That is the levelled banks only**: a
-project bank has no level to pass, no row in `PROGRESS.md` counting it, and you never write `[refined]`
-there in the first place — so the project route above invokes nothing. It owns the two interview rows end to end,
+side and not from the stale English, and — where the block was `[refined]` — that every state marker it
+carried came off both languages first. Write it even when the fix was one word.
+Whenever a question's `[refined]` state changed in both languages, **invoke the
+`authoring-progress-recount` skill** — with that bank's **level** on a levelled pair, and with the
+**project** on a project-bank pair, which since 2026-09-06 has a row of its own in `PROGRESS.md`
+`## Authoring progress`. **A reopening counts as a change**: the project route above never writes
+`[refined]`, but it removes one, and a removal moves that row down exactly as Victor's write moves it
+up. It owns the interview rows and the project table end to end,
 it commits `PROGRESS.md`, and you neither count nor edit them here. Do not reproduce its counting. One
 thing to pass it explicitly, because it is this route's context and not the skill's: the exact question
-IDs that became `[refined]` in this session, so it can say whether its gate or your write is the reason
-a cell did not move. Both rows read `—` until the first `interview-prep-audit` migration gives the banks
-stable IDs, so expect a reported no-op rather than a moved cell. Fold its report row into your own
+IDs whose `[refined]` state changed in this session and in which direction, so it can say whether its
+gate or your write is the reason a cell did not move. The two **levelled** rows read `—` until the first
+`interview-prep-audit` migration gives those banks stable IDs, so expect a reported no-op rather than a
+moved cell there; the project table has real denominators from its first run. Fold its report row into your own
 report.
 
 ## What this skill does NOT do
 
-It does not write `PROGRESS.md`. Its two refining routes hand the `## Authoring progress` rows to
+It does not write `PROGRESS.md`. Its refining routes hand the `## Authoring progress` rows and the
+project table to
 `authoring-progress-recount`, which owns and commits them — which is why this skill's trigger still
 excludes that file even though refining a pair now moves it.
 It does not write `_note-quality-standard.md`. It is the harvest's primary writer and its counter, and

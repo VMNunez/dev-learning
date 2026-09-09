@@ -25,7 +25,7 @@ export class EmployeeTable implements AfterViewInit {
   employees = input<Employee[]>([]);
   hasActiveFilters = input<boolean>(false);
   datasource = new MatTableDataSource<Employee>([]);
-  employeeId = output<number>();
+  employeeId = output<string>();
   updatedEmployee = output<Employee>();
 
   displayedColumns = [
@@ -53,7 +53,7 @@ export class EmployeeTable implements AfterViewInit {
     this.datasource.paginator = this.paginator;
   }
 
-  deleteEmployee(id: number) {
+  deleteEmployee(id: string) {
     this.employeeId.emit(id);
   }
 

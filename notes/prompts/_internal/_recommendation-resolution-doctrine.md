@@ -30,6 +30,17 @@ That budget is what keeps this file from becoming the thing it was split out of.
 The ledger's step 1 states the mandate: measure against disk, budget the sweep rather than the edit,
 and name the set you measured. Everything below is what that measurement has got wrong before.
 
+**A row cites a quoted anchor, never a line number — and step 1 re-measures every number it inherits.**
+`REC-182`, whose citations rotted in **six days**: all five of its `README.md` numbers were wrong, its
+`_system-map.md` one off by one, its `_application-standard.md` ones off by more than a hundred, its
+load-bearing `_portfolio-standard.md` l.316 off by three, and two of its ten paths named the wrong
+folder — while the real set was 27 sites in 11 files. A row's numbers are a snapshot of a file other
+rows keep editing, so they are the one part of a finding guaranteed to decay, and step 1 then
+re-measures *from a map that misdirects it*. Cite the sentence: a quoted anchor survives every edit
+that does not delete the thing being cited, and a grep for it costs one command. **Where a row
+already carries numbers, correcting them is part of step 1's measurement**, not a courtesy — and
+correcting them in the row is what step 2 means by *in writing*.
+
 **A pointer is not a read, and the family is the cheapest test.** A `## Configuration` block naming an
 authority (`TOPIC = one registered topic from _topic-ownership.md`) puts nothing in the run's hands;
 only the Required sources list does. So when a prompt demands a verdict its own sources cannot
@@ -43,6 +54,14 @@ overridable*; l.148-155 is the symmetric TODO-direction rule it was asking for, 
 across five files. **Quote the text of every line a row cites before building on it.** A citation by
 description is the one form of evidence that can hand you the answer as though it were the precedent,
 and checking it is what collapsed a two-family sweep to one.
+**Also `REC-185`, one register out and about the *instance* rather than the citation: where a row says
+a filter is missing at a door, read the artefact that came through that door — it may quote the
+filter.** The task that row was opened over said *"Tests are out of scope for this project, but a test
+command that silently runs nothing is not"*, so restating the exclusion at that door would have changed
+nothing, and the real defect was the **evidence** the finding rested on. A causal claim of the form *X
+was not stated here, so Y got through* is checked against Y's own text before it is priced; where Y
+cites X, what survives is at most an ownership defect, and pricing it as the cause buys a sweep that
+catches nothing.
 **Also `REC-197`, one register up, where what the row says nobody asks is already asked by the very roles
 it is adding a third to — and the *fix* is what asserts the absence.** That row proposed a reader-effect
 judge because `readme-audit`'s two subagents "cold-review for conformance and nothing reads the README for
@@ -55,6 +74,16 @@ role on *nobody asks this*, grep the existing roles' own checklists for the ques
 ask it, found the addition on what changes about **how** it is asked. That is also the only thing
 separating it from `REC-042`'s illegitimate second computation, which the same row invoked to refuse its
 other half.
+**Also `REC-180`'s `es`-review half, the same test run in the opposite direction — a row proposing to
+*avoid* a new role by widening an existing one, which reads as the cheap shape and is priced from the
+role's subject alone.** That row asked for "a clause in `_portfolio-review-prompt.md` widening it to a
+second, `en/`-blind pass, **not a sixth prompt**"; that reviewer is dispatched **per section, before the
+artefact it would audit exists**, and its fence is the **mirror image** of the one the new check needs —
+it must read the `en/` and may not open the `es/`. So measure the host's **unit of dispatch, its position
+in the run, and the direction of its fence** before adopting a widening: a role cannot carry a
+prohibition it also violates depending on which invocation is reading it, and a per-item role cannot
+produce a whole-artefact judgement. Where all three collide, the sixth file is the cheap shape and the
+clause is the expensive one.
 
 **An isolation clause fences *content*, and a proof demanded of a fenced role must take a form the
 fence permits.** `REC-112` found the `en/`-blind Spanish reviewer told to "read only" its Spanish
@@ -266,6 +295,7 @@ weeks and still let `REC-190` land with two fields and its verdict missing, beca
 *writes* the line it reads, collapsing a row, was not in its trigger list. So when a check exists and
 the defect it checks for shipped anyway, measure the **trigger**, not the check: name the act that
 produces the artefact and put it in that list, before rewriting a rule that was already correct.
+**Also `REC-214`, the fourth form and the only one that is false the day it is written: a mandate whose own *mode* cannot reach the target it is stated over.** §23 instantiated G6 as `progress-update MODE = active`; that mode audits the in-progress project alone, so the drift report it produces can never name a **completed** project — and `portfolio-audit`'s normal path is a `PROJECT_PATH = all` batch over exactly those. The rule ran, the artefact existed, the marker was there to count, and the prerequisite was still unsatisfiable for six of seven targets, which is why neither `grep -c` nor an empty tracker column would have found it. **So where a prerequisite names a *mode*, a *scope* or any other configuration, read that setting's own population before pricing the consumer** — the producer's `## Configuration` block usually states it, and here it already did (`all` is for "before a portfolio gate, to catch anything missed in completed projects"). The cheap test is one question: *can the config as written ever produce evidence about this target?*
 
 **A rule stated against an artefact's *source* is not a rule about the artefact anyone sees, and where
 the deliverable is rendered, the reviewer inherits that blindness.** From `REC-192`.
@@ -281,6 +311,18 @@ positional rules rather than the visual sections — and state the correction **
 the defect lives in, rather than repeating the mechanism at every site: both rounds of this row's own
 review returned a false universal about rendering that the *repair* had written, which is `REC-126`'s
 *a repair states no new fact* arriving on ground where the fact is a spec nobody had opened.
+**Also `REC-199`, one register up and about the grammar of a *gate* rather than of a rule: a standard
+whose sections are written as **inclusion** tests cannot be policed by a veto worded as a **prohibition**
+check.** `readme-audit` let its reader-effect judge delete anything the applier could not "name the rule
+it would break" against; `_readme-standard.md` forbids almost nothing and *includes* almost everything —
+eight of its sections are worded that way — so the applier had nothing nameable when the judge cut two
+`Future improvements` bullets rule 8 positively includes, and applied the cut correctly per the text it
+was given. The two grammars are invisible to each other: every clause read fine in isolation. **So when a
+gate delegates a veto, count how the owning standard's sections are *worded* before trusting the veto's
+verb** — `grep -c` for the inclusion form is the whole measurement — and where they include rather than
+forbid, the veto must say *breaks **or contradicts**, including a rule that positively includes what the
+item removes*. The fix is one clause at the applier and never a checklist at the proposer: constraining
+the proposer re-imports the rule set that step exists to escape.
 
 **Deleting a number deletes a gate, so a de-numbering fix is priced as *writing a test*, never as a
 deletion.** From `REC-191`, which replaced six fixed section sizes in `_readme-standard.md` because
@@ -311,6 +353,21 @@ different shape: the detail that tempted it **merges into the surviving item** i
 second one. And the instrument that caught it is `REC-191`'s, applied to the *second* draft as well as the
 first: re-apply the test by hand to an artefact it previously cut, and count. A round that only re-reads
 the wording will not see a clause that is false only in aggregate.
+**Also `REC-200`, which adds the mirror half and the reason to run the instrument *before* the reviewer:
+a test can also reject the artefact the rule is calibrated against, and that failure is invisible to
+every reading of the wording.** Two of its tests failed that way in one day — a placement test whose only
+worked cut (`03-expense-tracker`'s `effect()` pair) was the same shape as a bullet in the approved
+`04-meal-finder`, and a form test whose "one concept per bullet" clause rejected
+`` `signal()` and `computed()` — reactive state and derived values `` in both the approved file and the
+one the section's voice is calibrated against. Neither is arguable once counted and neither is visible
+until you count: so **name the calibration artefact, apply the draft test to it by hand, and report the
+count in the dispatch** — `REC-191`'s instrument is a step-2 obligation, not a reviewer's job, and a
+round-1 `reject` is what it costs to skip it. The cheapest form of the count is often a single
+measurement of the artefact's own shape (here, a longest-bullet length of 124 and 129 characters against
+the 214-319 the unaudited project carries), which sizes a bound and falsifies a bad one in one command.
+**And a test retired this way is retired by name in the standard**, with the reintroduction it must
+refuse — "including as a narrower test over X" — because the next reader's instinct is to rescope rather
+than to drop, and the rescoping is what already failed.
 
 **A topic whose source is in another language is routed, not exempt.** Also `REC-151`. The row argued
 `javascript` had no project behind it "since the stack is TypeScript"; its coverage file carries 33
@@ -378,6 +435,23 @@ enforces the opposite). So after every repair round, grep the phrase you just re
 just edited — and re-read any sentence the repair wrote to explain *why*, since a fix draws its reason
 from the context that made it necessary and that context is exactly what a cold reader does not share.
 
+**Also `REC-180`, which names the one third round that is neither a repair nor a re-scope, and the gap
+it closes: a `verification` round.** Two `reject` rounds whose every finding is applied leave a fix that
+is finished and a row that **cannot legally close** — step 4 admits only `approve` or
+`approve-with-tightening`, invariant 9 of `validate-prompt-system.ps1` enforces it, and the loop that
+produces those tokens is over. The `unrecorded` escape does not reach it either:
+`_recommendation-ledger-closed.md`'s header fences that value to *annotating a closure already on disk*,
+never to routing a live resolution to step 4. What is missing is not another round of repair but the
+photograph taken **after** the repairs. So the third dispatch asks one narrowed question — *does any
+finding remain that changes what the machinery does?* — is handed both earlier rounds'
+`considered and not opened` lists as binding, and is told what each token means on this path: a sentence
+a pedant would extend is a **tightening**, and `reject` is reserved for something that would make a
+**named run, on a named input, do the wrong thing**. Without that calibration a deep reviewer over
+twenty-odd files returns `reject` for ever, because a third sweep can always surface one more restated
+sentence — the treadmill the two-round cap exists to stop, arriving at the closure instead of at the
+fix. It costs what a review costs: it is owed only where both rounds rejected and every finding is on
+disk, and never as a way to re-open an `approve-with-tightening` the loop has already given.
+
 **A fix that adopts a sibling's house phrasing inherits its live exceptions, not only its rules.**
 From `REC-154`, whose reviewer found the repair had copied `roadmap-review`'s four marker-reading
 rules and dropped the **dated exception** printed immediately under them — the tier whose markers are
@@ -385,6 +459,15 @@ not backfilled yet, where an unmarked bullet is a *missing marker* rather than a
 house phrasing is quoted precisely because it is already right, so the paragraphs around it are the
 ones nobody re-reads: take the qualifier that lives beside the rule, or state in writing why it
 cannot bite on the new site.
+**Also `REC-189`, which adds the clause about the rule's *unit*: a borrowed rule is total at its source
+because of what its unit is there, and the words "borrowed wholesale" do not carry that across.** Its
+per-tier stamp cited `_review-standard.md`'s three-branch rule and shipped one branch; both reviewers
+found it, because the source's unit is a **slice**, which belongs to exactly one tier, while the new
+site's is a **section**, which spans them — so "a slice was lost → qualify that tier" is well defined
+there and undefined here until someone writes the projection. Name the unit on both sides before
+claiming the borrow, implement every branch or stop calling it wholesale, and where the units differ
+say how one maps onto the other; a partial borrow that keeps the full claim is the shape a reviewer
+catches and a reader never does.
 
 **A decline is not a disposal until nobody overrides it, and applied-wrongly is still the bar
 working — provided the re-measurement is written down.** From `REC-155`, whose resolution declined its
@@ -488,14 +571,35 @@ line-oriented grep for that phrase could ever return it; a cold reviewer reading
 and the next pass found the same block calling a file "not in **this table**" — a deictic whose
 referent had been deleted, matching no search for the claim's words at all. **Search multiline
 (`rg -U`), and sweep for the claim's *referent* as well as its wording**: a measurement run line by
-line over prose that wraps measures the margin, not the claim. **`REC-165` is the rule's converse, and it
+line over prose that wraps measures the margin, not the claim. **`REC-198` is its fifth instance, and
+there the fork was in the *framing* rather than in any word.** `readme-audit.md`'s close-out named its
+own seven bullets and called them "this pipeline's tailored version" of `_pipeline-self-report.md`,
+where the other eighteen orchestrators open theirs with an executing verb — so nothing in the file said
+the contract's refinement gate, close-out check, skill-friction and ledger steps applied at all, and
+runs reached them only through a run-start pointer written for another purpose. **A derived section
+says it executes its source before it says what it puts in it**: the tailored part is content *inside* a
+contract, never a version *of* one. And the sentence that imports the source — "all apply here
+unchanged" — is itself a falsifiable claim, so check it item by item before writing it. This one
+restated the contract's five bullets as seven, and the cold reviewer found bullet 4's breach half with
+no home among them, which made "unchanged" false for the single item the restatement had actually
+changed. **`REC-165` is the rule's converse, and it
 rots the same way: a rule stated *only* in the ritual that executes it is unavailable to every path that
 ritual is excluded from.** The two-map change test's row walk lived in `map-sync` §1 alone, and that
 skill never fires inside a prompt pipeline run — so a self-report's at-end refinement, which edits the
 machinery and cannot fire it, ran the test with the which-map table and no walk at all. Where an
 executor holds the only statement of a rule, read its **own exclusions** as the list of readers it
 silently fails, and move the rule to the owner those paths already point at — the executor keeps the
-mandate's heading and points for its content.
+mandate's heading and points for its content. **`REC-203` is its sixth instance, and it reaches the one
+party the rule never bound: the *owner*.** *Diff it against the source before committing* is addressed to
+whoever writes the copy, so nothing fires for the person editing the rule that copies restate —
+`_planning-standard.md` §18's completeness promise over `_readme-standard.md`'s rules 6-8 was true only
+for as long as the last reader of both files. **Where a restatement carries a completeness promise, the
+enumeration belongs at the definer, naming every copy**, which is what `REC-074` had already built in
+`_simulation-plan-standard.md` §4 and this row instantiated rather than inventing a checker for one pair.
+Its own second lesson is that such an enumeration **is** the thing it guards: the first draft said "both
+consumers" where four plan prompts read the copy and one of the two it named reads the produced file
+instead, and two rounds took the copy count from one to five — enumerate from what *defines* the
+population, never from the copies the defect brought to mind.
 
 **A possessive is an ownership claim, and it survives the sweep that deletes the explicit one.** From
 `REC-119`, where the false universal — "**this prompt is its only writer**" — had a twin one sentence
@@ -553,11 +657,11 @@ clause written in the same breath is a **blend** of the two — false on day one
 before or after, and invisible to `git log -S` because nothing ever edited it. That is `REC-139`'s
 silence reached from a third cause, after `REC-141`'s merge: when the birth commit is a **rename**,
 read what it renamed *from* as well as *to*, because a blend matches neither and answers no pickaxe.
-Then the branch's own population: all nineteen orchestrators have a cell or row, so `otherwise` had
+Then the branch's own population: all twenty orchestrators have a cell or row, so `otherwise` had
 **zero members** and the fix was to delete it rather than repoint it. **Count who takes a fallback
 branch before repairing what it says** — an escape hatch nobody reaches is deleted, and the boundary it
 owed is stated in its place. Where the consumers disagree about whether to state a coordinate at all,
-the family decides: three of nineteen quoted a `##` heading and the one that rotted is the one whose
+the family decides: three of them quoted a `##` heading and the one that rotted is the one whose
 heading never existed, so the contract now names none and defers to the file that owns them.
 
 **When one copy of a duplication is damaging and its siblings are not, the discriminator is which
@@ -957,6 +1061,33 @@ said out loud while the branch that **closes** it left no trace at all — a cle
 branch**: if the answer is "the run that changes least", the gate is unfalsifiable exactly when it
 passes, and the box gets ticked from memory days later.
 
+**Also `REC-209`, which names that bounded attempt and what the name must carry.** From the closures of
+`REC-204` and `REC-206`, collapsed 2026-09-03 with a reviewer field ending on a reject token
+(`reject-with-rewrite ×5`, `reject ×2`): the rounds ran and their tightenings are on disk, and nothing the
+search below reaches records a closing round — so the field never reached an approving token and none was
+lost. `cold reviewer: unrecorded (REC-NNN)` is assigned to such a field **only after the bounded search
+that could falsify it** — the deleted `## Open` row, the fix commits and the closure commit — and it is
+written **with the round count it replaces and the words `no closing round`** (`unrecorded (REC-209) —
+reject ×2, no closing round`), because the check reads the token while a later reader reads the line, and
+that count is the only surviving record of what the gate actually did. **It annotates a closure already on
+disk and is never a route to step 4**: a resolution in flight whose reviewer returned `reject` has an
+unclosed gate rather than a lost verdict, and step 3's loop is what it owes. Reopening is reserved for a
+closure whose findings are **unapplied on disk** — a defect in the fix, not in the record. Step 3 still
+writes the verdict the moment the reviewer returns (`REC-195`) and step 4 admits only an approving one; the
+PASS-line count is the instrument over both, and its three uses inside four days, measured 2026-09-04 — one
+a token nobody wrote down, two a row collapsed on a standing `reject` — say those two rules are not holding,
+not that the escape works. **Also `REC-210`, which is where the check was weaker than the contract three
+files published: a satellite field is anchored to the value it qualifies, not to the line both sit on.**
+The citation was read from the rest of the **line**, so stripping `REC-206`'s `(REC-209)` still passed on
+a row named 391 characters further on that adjudicates no verdict — `REC-157`'s anchor rule reaching the
+one field added after it. It is now read from the token's own parentheses, `unrecorded (REC-NNN)`, and
+nowhere else. **A second accepted form was the wrong repair**, and measurement is what settles that rather
+than taste: the one divergent line's real citation sat 232 characters out and the coincidental one 391, so
+no bounded distance separates them and any alternative admitting "a `REC-NNN` later on the line" *is* the
+defect — the line was retrofitted to the one form instead. What the check still cannot settle, and now says
+so: the citation is present and **in position**, never proved *adjudicating*, since that is a claim about
+another file's contents (`REC-076`).
+
 **A check over a hand-written convention settles three things before it exists — the convention's
 *forms*, the *column* the value sits in, and the *value* itself — then publishes its own reach as a
 number, and reads the text as written rather than flattening it to match.** From `REC-067`, `REC-084`
@@ -1074,6 +1205,33 @@ defines it** — here the prompts naming `_single-shot-self-report.md`, a set th
 asserts the size of — **and then classify each member by reading it**. Grepping for the defect's
 wording measures the wording, not the population.
 
+**A shared rule's own examples are a population claim, and a void one is the cheapest evidence the rule
+was never measured.** From `REC-211`. `_batch-mode.md` governed "any second field tied to the target" in
+`all` mode and illustrated it with `NOTES_PATH` and `PROJECT_TYPE`: the second exists in no prompt in
+the repository, and the first belongs to `coverage-prompt`, which states under its own
+`## Configuration` that `TOPIC = all` is *intentionally unsupported* — so neither example could ever
+reach the rule, and the same file's trigger list carried the false bullet that had made the first one
+look reachable. The row was raised as a binary over two prompts; the measured population was five,
+carrying three dispositions that were already live and invisible to each other. So **grep every example
+a shared rule cites before ruling on its wording**: an example is the one part of a contract that names
+its population by hand, it costs a command each, and where an example is void the enumeration behind
+the rule was never done — what the fix owes is the population, not the sentence.
+
+**A lookup keyed on a *name* cannot carry a rule that discriminates between two tools, when the
+instrument's own items name both.** From `REC-226`. `_application-standard.md`'s Defensibility rule reads
+its evidence as a **spot lookup per keyword** over the coverage mirror, and the fix's new spend condition
+was first written as *the struck tool earns a marker of its own* — but the marked bullet that evidences
+the replacement (`Spies and test doubles … `vi.spyOn()` in Vitest or `spyOn()` in Jasmine` `✅
+05-task-manager`) **contains the struck tool's name**, so the lookup returns a marker for `Jasmine` and
+the condition spends itself on the one instance it was written for. Coverage bullets are concept-shaped
+by their own standard, so a bullet naming two implementations of one concept is the normal case, not an
+anomaly. **So where a condition is read off an evidence instrument keyed by name, state it over the
+marker's *evidence clause* — the falsifiable half, which names what a project actually did — and say
+explicitly that an item naming both members satisfies it for neither.** The test is one grep of the
+instrument for the struck name before the condition is written; a condition that cannot fail on the
+instance that motivated it is `REC-191`'s test-that-rejects-nothing, arriving through the lookup rather
+than through the wording.
+
 ### Evidence — what is a row at all
 
 **An unrun prompt is tracker state, never a recommendation.** From `REC-046`. A row whose content is
@@ -1086,6 +1244,30 @@ prompt that would produce the right output if someone ran it is a cell. Two coro
 owns what it has a **row** for, so check that the row exists before deleting a ledger item onto it —
 `interview-prep-route-prompt` declared a single-shot row the table did not have. And a row deleted this
 way must carry any **ruling** buried in it into the file that owns the rule, or the deletion loses it.
+**Also `REC-224`, which names the instrument that answers the test — and it sits one level below where the
+test gets read: *would produce the right output* is measured from the owning plan entry's own assigned
+bullets, never from the topic's coverage as a whole.** That row deferred two stale note files to
+`/notes-audit` on a single reading of their topic coverage. The reading held for the Angular note, whose
+entry 15 is Vitest-first bullet by bullet; it was false for the General one, whose entry 10 assigns six
+tool-agnostic concepts and **not one that owns the per-layer tool table that was wrong**, so on the
+bullets alone no coverage-driven run was obliged to touch it. Both files looked identical from the topic level and had
+opposite answers one level down. So read the entry's `Coverage concepts` list and ask which bullet would
+*make* the run fix this; where none does, the deferral is silence rather than routing, and the item is
+still owed a row (here `REC-228`). The cold reviewer found it, not the sweep — a deferral is the one
+disposition that leaves nothing on disk to falsify it later.
+**And `REC-228`'s own resolution completed the test from the other side: the bullet list is the
+instrument, but it is not the only one, because a pipeline also carries duties that are file-wide.**
+Measured against disk, entry 10's bullets were not what held that table in place at all: the entry is
+`Status: pending` + `Action: audit`, so `notes-audit.md` hands the author `REWRITE_MODE = standard`,
+under which existing prose was final and the run was **forbidden** to touch those lines — bullets or no
+bullets — while the reviewer that may fix existing prose had no factual check on its list. Once that
+row gave the author a false-fact duty and the reviewer a factual-accuracy point, both scoped to the
+**file** rather than to the assigned concepts, a run became obliged to fix exactly what no bullet owns.
+So the test has two questions and the second is not optional: which assigned bullet would *make* the run
+fix this, **and** does any file-wide duty of that pipeline's stages already reach it. Where either
+answers yes it is a cell; where both answer no, ask which of the two is missing before writing the row,
+because the fix is usually the duty and not the bullet — a bullet added to force one correction buys one
+correction, and the duty catches the class.
 
 **An incidental finding is evidence, not automatically a row.** A cold reviewer dispatched on one row
 routinely finds defects elsewhere, and filing each of them as `open` is how the ledger came to refill
@@ -1105,6 +1287,8 @@ four-condition bar and locate the real owner before creating or updating a `REC-
 expected paths write no friction. The loop deliberately cannot detect a skill that completes silently
 with the wrong result, so its evidence is narrower than a prompt self-report — which is the general
 point: **every intake admits less than its name suggests, and none of them admits a row.**
+
+**Machinery may not outrun the declared target.** From `REC-208`, rejected in one question on the day it was opened. A row whose value rests on a fact about Victor's **goals** — the language he applies in, the roles he targets, the date he applies by — is workable only once `_shared-context.md` declares that fact, and the declaration is **his**, never a resolution's to infer from the wording of a row. `REC-208` was sequenced for two sessions plus a 27-site sweep on the premise that he *"intends to apply in both languages"*; §Profile had said B1 and *tie-breaker* the whole time, and the one question that premise deserved cost four words and cut both sessions. So a prerequisite phrased as *"X must land before the machinery names X"* is a **falsifiable test on disk, not a sequencing note**: step 1 runs it against the declaring file before pricing anything, and where the fact is absent the row is **rejected with its re-open trigger named** — the fact arriving in §Profile — rather than carried `open` against a day that may never come, which is the `REC-077` / `REC-078` / `REC-081` failure the paragraph above already names. What such a rejection must still carry is any question it settled on the way: `REC-208`'s per-file `[refined]` ruling is in its closed line precisely so a re-raise resumes instead of re-deciding.
 
 **Practice feedback is evidence, not coverage authorship.** From `REC-052` / `REC-059`. Each practice
 track keeps a durable weakness sink that its own next run actually consumes: SQL and timed simulations
@@ -1408,6 +1592,19 @@ is worse than the fork it replaced: the fork at least said what it meant.
 states the wrong half.** Also `REC-136`, where the tightening reached the rule (D5) and the report
 step (E) and missed the dispatch note (Step A) still telling the orchestrator that return "is a drift
 row" — one file, three sites, and the missed one is the instruction read first.
+**Where the branched thing is a *product* rather than a return, the site set leaves the prompt family
+entirely, and one test sorts it.** From `REC-215`, which conditioned `portfolio-audit`'s GitHub
+description on the project having a repo of its own: the row priced the fix at two clauses and the
+measured set was **eight sites in five files**, the three it had not counted being the derived map's
+catalogue cell and **both launcher `Rules` bullets**, each carrying the flat claim *"plus the GitHub
+description"*. A product claim propagates to every file that advertises the run, so the sweep is
+`README.md` and both adapter catalogues before it is the prompt's own siblings. The test that sorted the
+remaining sites in one pass, and it cuts the sweep in half: **a branch saying the artefact is _not_
+produced survives the conditioning; a branch that _prints_ it does not.** Eight "no GitHub description"
+clauses — the ❌ path, the bank-only scope, the Check-2 stop, the hard rule — stayed true untouched,
+while the one Finishing item that printed it had to gain the `n/a` line, because an item printing
+nothing is indistinguishable from a run that skipped it. And a launcher survives such a fix only as a
+**pointer**: "which the standard conditions on X" points, "only where X" restates.
 
 **A step is ordered by where a sequential reader reaches it, never by the number in its title.** From
 `REC-121`, where eight prompts labelled a blockquote `step 0` and placed it in their final section,
@@ -1420,6 +1617,23 @@ so look for the overwrite before ruling a misplaced label harmless. And **a row'
 checked against the branch table it claims to gate**: this one said a "stop or rerun decision" arrived
 late, and the run-start table has no stop or rerun branch at all — it prints one line and is forbidden
 to apply it. The real damage was elsewhere and worse than the row's, which is step 2 doing its job.
+
+**A cheap test that runs after the expensive phase is fixed by adding an earlier execution, not by moving
+the one that exists — and the choice between announcing and stopping is made by what the expensive phase
+produces.** From `REC-218`, where `portfolio-audit`'s three gate checks read nothing but files already on
+disk and still ran after the eight dispatches that build a project's question bank, so a run owing a
+`progress-update` paid for the bank before being told it would stop. Two shapes were available and they
+are not interchangeable. A preflight that **stops** is cheapest and is right where the expensive phase's
+only product is the verdict; one that **announces** — the same tests, printed early, disposing nothing —
+is right where that phase produces something the verdict does not gate. **The discriminator is blast
+radius, not the token saving**: there the bank is written on a ❌ and is the entire output of a bank-only
+scope, and the failing check's input is a single *global* file, so a stopping preflight would have turned
+one stale report into a batch run that produced nothing at all for every project in it. The saving is not
+lost by choosing to announce — it moves to the human, who can interrupt a run that has just said where it
+is heading. Two things travel with the earlier execution: the **gating** that ordered the checks, since
+announcing a gated check without the one that gates it starts reporting debts to targets the chain
+exempts, and an explicit statement that the later execution is **unconditional**, or the two collapse
+into one and the cheap copy inherits a disposition it was never given.
 
 **When a fix invents a new form of a persistent name, every reader of the old form is now wrong.** Also
 `REC-140`, and the write-side twin of the branched-return rule above: admitting a second application

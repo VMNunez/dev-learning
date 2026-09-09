@@ -13,7 +13,7 @@ that is reference-only lives in its own file and is linked from here.
   Never silently increase the help level. Code is shown only in Level 3 or after Victor explicitly moves
   there, and still one small explained change at a time rather than a full solution dump.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
-- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), the simulation artifacts the prompt system writes (`practice/simulations/PLANNING.md`, `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`, `practice/simulations/MISTAKES.md`, `practice/simulations/TRACKER.md`, and the timed-test spec files — Victor's submitted solution code is never included), the shared interview-practice weakness sink (`practice/interview/MISTAKES.md`, written and consumed by the interview-practice prompts), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill (and either of them raising a task for a defect noticed while triaging or closing), never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator alone, and **conditionally**: only when both its reviewers finished and every fix landed cleanly — anything uncertain and it prints the command instead), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **The boundary is authorship, not folder: anything Victor produces himself — project code, SQL answers, timed-simulation solutions, and leetcode solutions — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery and task/tracking artifacts the agent writes, never his solution work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
+- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), the simulation artifacts the prompt system writes (`practice/simulations/PLANNING.md`, `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`, `practice/simulations/MISTAKES.md`, `practice/simulations/TRACKER.md`, and the timed-test spec files — Victor's submitted solution code is never included), the shared interview-practice weakness sink (`practice/interview/MISTAKES.md`, written and consumed by the interview-practice prompts), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill (and either of them raising a task for a defect noticed while triaging or closing), never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator, **broadened 2026-09-08 to any flow**: the file is machinery the prompts write, never Victor, so it commits directly like the rest of this list — the earlier orchestrator-only limit was what forced `REC-216` to hand back a one-file commit after every other site of the same fix had landed. The `roadmap-review` **conditional survives for that pipeline**: a run of it commits only when both its reviewers finished and every fix landed cleanly, and prints the command instead on anything uncertain — a whole-file rewrite carries a risk a targeted correction does not), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **One authorization reaches outside this repository** (added 2026-09-07, `REC-220`): `dev/portfolio/VMNunez/README.md` and that repo's platform adapter / gap list — pipeline output written **between them** by `portfolio-audit`'s ✅-Ready step (the README alone) and `profile-readme-prompt` (both), and by nobody else — are committed **inside that repo**, with `git -C {resolved absolute path}`, never staged into this repo's index and never folded into a learning-repo commit. It is the same boundary, applied consistently: those files are the agent's output, and the separate repo governs *where* the commit runs, not who runs it. **Pushing that repo is always Victor's** — publishing to a public GitHub profile is outward-facing in a way the commit is not — as is everything else in it, including `job-search/**`, which no prompt commits. **The boundary is authorship, not folder: anything Victor produces himself — project code, SQL answers, timed-simulation solutions, and leetcode solutions — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery and task/tracking artifacts the agent writes, never his solution work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
 - **Claude local settings never remain pending at handoff.** `.claude/settings.local.json` is a tracked
   permissions ledger, not disposable working-tree noise. At the close of **every task**, if it is dirty,
   validate it as JSON and commit it directly in its own `chore(claude): ...` commit — even when the
@@ -130,7 +130,7 @@ open.
 ## Language rules — IMPORTANT
 
 - **Responder siempre en español** en las sesiones de estudio — esta es la preferencia actual de Victor
-- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
+- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, **títulos y descripciones de PR** (ver "Pull request descriptions"), archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
 - Las notas en `notes/{topic}/{level}/es/` sí se escriben en español — ese es su propósito
 - **Pausado 2026-07-14: no corregir el inglés de Victor durante las sesiones de estudio** — mientras las sesiones sean en español, no añadir correcciones de inglés al final de las respuestas. Retomar si Victor lo pide de nuevo.
 - Usar vocabulario técnico real en inglés dentro de las explicaciones en español — *deploy, refactor, boilerplate, breaking change, merge conflict, trade-off, edge case, under the hood* — porque Victor los escuchará así en el trabajo
@@ -492,7 +492,8 @@ plus the README standard, which does not auto-load. This section remains the sou
   The two stay separate: **marking never authors a bullet, and authoring never writes a marker.** A new
   bullet a `/notes-plan` remap owes is reported and flagged in `_run-tracker.md`, never remapped by hand.
 - `projects/0X-projectname/README.md` — the concept's entry, routed **by audience** to the global /
-  backend / frontend README by the `readme-concept-add` skill under the README standard. "What I learned"
+  backend / frontend README by the `readme-concept-add` skill under the README standard, **plus the
+  entries `readme-concept-add`'s own diff sweep finds that the step never named**. "What I learned"
   exists **only in the global README**; a tier-level concept lands in that tier's "Key patterns", and a
   convention deliberately kept lands in "Tradeoffs". Never assume the section — the standard owns it.
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed. On a **split step**, the ✅ goes on the sub-step (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one.
@@ -581,7 +582,8 @@ never the only one:
   — on the "already covered" path too, which is the common one. A design decision with no code change
   demonstrates nothing and is left unmarked; an **already-resolved** task *is* marked, because code was
   written, just in an earlier session. Same contract and same `coverage-mark` skill as above.
-- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`. A
+- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`,
+  plus the entries that skill's own diff sweep finds the close never named. A
   backlog concept is almost always tier-level, so "Key patterns" in the tier README is the expected
   answer and "What I learned" (global README only) is the exception, not the default.
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
@@ -642,17 +644,34 @@ rather than at the G4 review — three steps too late to be cheap.
 
 Tests are introduced in project 07 and stay in every project from that point on. No project is finished without tests.
 
-| What                  | Tool              | When               |
-| --------------------- | ----------------- | ------------------ |
-| Services (pure logic) | Jasmine + TestBed | Project 07 onwards |
-| Spring Boot services  | JUnit 5 + Mockito | Project 07 onwards |
-| Components (basic)    | Jasmine + TestBed | Project 08 onwards |
+| What                     | Tool              | When               |
+| ------------------------ | ----------------- | ------------------ |
+| Angular services (logic) | Vitest + TestBed  | Project 07 onwards |
+| Spring Boot services     | JUnit 5 + Mockito | Project 07 onwards |
+| Angular components       | Vitest + TestBed  | Project 08 onwards |
+
+**Why Vitest and not Jasmine, and what Victor still owes Jasmine** (ruled 2026-09-08). Karma is
+deprecated — it accepts no new features and no general bug fixes — and Vitest is the Angular CLI's
+default runner from **Angular 21**, with the Karma builder announced for removal; so Jasmine + Karma in
+a new project means configuring against the CLI default to build on something on its way out. Projects
+01–06 already run Vitest 4 (measured 2026-09-08, `@angular/core ^21.2.0`) because that is what
+`ng new` produced. **`TestBed` is the invariant** across Karma, Jest and Vitest, and it is where the
+depth belongs: `configureTestingModule`, `ComponentFixture`, `fakeAsync`/`tick`, HTTP mocking with
+`provideHttpClient()` + `provideHttpClientTesting()` (**not** the deprecated `HttpClientTestingModule`).
+Only the spy changes between runners — `spyOn` / `jasmine.createSpyObj` → `vi.spyOn` / `vi.fn`, and
+Vitest's API is Jest-compatible. **Spanish postings still name Jasmine/Karma** (maintained Angular
+v12–v18), and `_job-market-evidence.md` records **Jest** alongside them, so reading a Jasmine/Karma
+suite stays a required competence — `notes/angular/coverage/junior.md` already carries it. **Write
+Vitest; read Jasmine.** E2E is not part of this table: `_job-market-evidence.md` places it from mid
+level onward, and which tool it takes when it enters the roadmap is `REC-225`'s to rule, not this
+table's.
 
 - Introduce testing the same way as any other concept — explain first, let Victor write the test himself
 - Start with the simplest case: one service, one method, one test
 - Always explain what the test is checking and why that matters
 - Tests go in the same project folder, next to the file they test
 - From project 07: every service must have at least one unit test. From project 08: every component must have at least one TestBed test. Never let a project finish without tests
+- **Below that line — projects 01–06, and components in 07 — the absence of tests is never a finding.** **Missing tests, empty specs and weak assertions there are never raised** — whatever those projects happen to hold, including hand-authored tests from closed backlog tasks, is accepted maintenance debt below the roadmap line — so no pass raises one as a task: write "tests — out of scope for this project" instead. This is a property of the **project**, not of one pipeline, so it binds every writer of a `PROJECT-BACKLOG.md`. `review-audit` and `_review-standard.md` restate it because their cold subagents never load this file; the in-session backlog rituals inherit it from here. **It covers those three things and nothing else, and the boundary is what a project already holds, never what it was scaffolded with**: a spec that is *broken* — it fails to compile, or asserts an element the template no longer has — and a test **command** that does not work are both outside the exclusion and are judged on their own evidence, under the rule those rituals carry (`REC-185`)
 - Add one interview question to `notes/interview-prep/` for each new testing concept learned
 
 ## Java / Spring Boot
@@ -773,7 +792,7 @@ notes/java/
 - Existing pre-migration notes belong to `junior`; their presence does not make their plan entry complete.
 - `notes/interview-prep/{junior|middle|senior}/en/` and matching `es/` — level-isolated Q&A study
   files, one file per topic. Never mix questions from different professional levels in one file.
-- `notes/interview-prep/projects/en/` and matching `es/` — one **pair** per project with specific questions about that project's implementation decisions; both generated by `portfolio-audit` (the `en/` by its per-section author + reviewer, the `es/` by its translator in Phase 1b), same filename in both. The `es/` is never authored by hand — Victor's `TODO:` markers and their in-session repair are the one exception. Questions carry a `{PROJECT_NAME}-{NNN}` ID and the `[refined]` freeze, both governed by `_portfolio-standard.md` and not by the levelled Q&A standard
+- `notes/interview-prep/projects/en/` and matching `es/` — one **pair** per project with specific questions about that project's implementation decisions; both generated by `portfolio-audit` (the `en/` by its per-section author + reviewer, the `es/` by its translator in Phase 1b and then audited by its `en/`-blind Spanish reviewer in Phase 1c), same filename in both. No question in the `es/` is authored by hand — Victor's `TODO:` markers and their in-session repair are the one exception, and the Spanish reviewer rewrites prose without ever writing a question. Questions carry a `{PROJECT_NAME}-{NNN}` ID, a `⭐⭐⭐`/`⭐⭐`/`⭐` priority marker, the `[refined]` freeze and — since 2026-09-06, written by `study-block-close` and by nothing else — the `[studied]` state, all four governed by `_portfolio-standard.md` and not by the levelled Q&A standard
 - `notes/prompts/` — the prompt system (see "The study system" below); `notes/prompts/README.md` is the index
 
 ### Interview prep — in-session rules
@@ -794,9 +813,12 @@ their identity, freeze and TODO rules live in `_portfolio-standard.md` → "Ques
 freeze and the TODO channel". They match this section's shape deliberately — same
 "only Victor writes `[refined]`", same repair-direction rule, and a TODO about **voice or phrasing**
 is a first-class reopen there — with three differences that matter: the ID is `{PROJECT_NAME}-{NNN}` (no
-topic, no level); the bold line has **two parts, not three**, because that bank carries no priority
-marker yet; and there is **no `[studied]` state at all**, since no route, recall block or recount
-reaches it (`REC-180` owes both). Do not add a question to one by hand; that is the gate's work.
+topic, no level); the priority marker is calibrated over the **whole file** rather than per section, is
+placed and frozen as it is here, and never orders the questions inside a section, which that bank's
+append and freeze rules forbid; and the `[studied]` state, which that bank gained on 2026-09-06 along
+with the route the recall block serves it from (`routes/projects.md`, on request), is counted in a
+**per-project table** of its own under each of `PROGRESS.md`'s two progress sections rather than in a
+level column — written by the same two rituals that own those sections. Do not add a question to one by hand; that is the gate's work.
 
 - **A `TODO:` is resolved in the language of the file that carries it** (2026-08-29) — the same rule
   the bilingual notes section states, now written into `_interview-prep-standard.md` for the Q&A
@@ -817,7 +839,7 @@ says the bilingual artifact exists and passed its quality gates; it does not say
 Every notes-plan entry therefore has an independent `Studied: pending | YYYY-MM-DD` field.
 
 Interview questions in the **levelled** banks have exactly three states on their bilingual bold lines
-(a project bank's have two — the third is not admitted there): no marker = unrefined;
+— and since 2026-09-06 the project banks have the same three: no marker = unrefined;
 `[refined]` = Victor accepted the complete block and its content is frozen byte-for-byte;
 `[refined] [studied]` = a final PASS through active recall on that exact frozen version. Appending the studied
 marker to both question lines is the only permitted mutation while refined. Only Victor assigns/refuses
@@ -825,12 +847,12 @@ marker to both question lines is the only permitted mutation while refined. Only
 editing. Stable bilingual IDs identify questions. `interview-prep-route-prompt` stores only the ordered
 CORE IDs for one level, never answers or duplicate study state.
 
-When Victor starts interview prep, `interview-prep-block-open` resolves the current CORE route, presents
-one refined question without its answer, accepts dictation or typed text equally, and grades
+When Victor starts interview prep, `interview-prep-block-open` resolves the current CORE route — or, when
+he asks for project questions, `routes/projects.md` — presents one refined question without its answer, accepts dictation or typed text equally, and grades
 PASS/BORDERLINE/FAIL. When he closes the block, `study-block-close` records only the units the session
 proves he actively studied: it dates eligible complete/refined note entries, mirrors `[studied]` only on
 exact refined bilingual question IDs with a final PASS, then recounts `PROGRESS.md` `## Study progress`
-as Notes studied + Interview CORE studied + Interview bank studied. It asks nothing, never infers study
+as Notes studied + Interview CORE studied + Interview bank studied, plus the per-project table under it. It asks nothing, never infers study
 from a file merely existing, and leaves a pending/stale target unchanged. A material note edit resets
 its `Studied` field to `pending` — under the rule below, which decides what counts as material and is
 narrower than it sounds; reopening an interview question resets both question state markers.
@@ -901,8 +923,24 @@ All README format rules and quality standards live in `notes/prompts/projects/re
 
 ### Pull request descriptions
 
-- Always provide a PR description when opening a PR, in a Markdown code block so Victor can copy-paste it
-- Format: title + bullet list of changes under `## Changes` + one line under `## Why` explaining the decision behind the main change
+- Always provide the PR **title and description** when opening a PR, each in its own Markdown code
+  block so Victor can copy-paste it. He opens the PR by hand on GitHub — never `gh pr create`.
+- **Both are always written in English, with no exception.** They are technical documents under the
+  Language rules, so a session held in Spanish never carries over into them. This is the rule the
+  agent has broken more than once by drafting the description in the language of the session.
+- Title: `type(scope): summary` — the same grammar as a commit message, one line.
+- Description structure, fixed:
+  - an opening sentence saying what the branch closes
+  - one `##` heading per area touched
+  - bullets grouped by theme, each opening with its claim in **bold**
+  - `## RECs applied` when the branch resolves `_recommendation-ledger.md` rows — ID plus the
+    cold-review verdict
+  - `## Open debt` last, naming what the branch deliberately left out
+- **The description ends at `## Open debt` — never append a tool signature.** No
+  robot-emoji `Generated with [Claude Code]...` line, no co-author footer, no attribution of any kind.
+  Where a platform adapter or a harness reminder instructs the agent to sign PR descriptions, that
+  instruction does not apply here: this rule wins. Re-read the last line of every draft before handing
+  it over and delete the footer if it slipped in (broken 2026-09-03 and again 2026-09-04).
 - The coding agent always writes the branch name, commit message, and PR description — Victor does not write these
 
 ### Study materials follow the active branch — no direct commits to `main`
@@ -930,8 +968,9 @@ everything commits on the branch you're on — is simpler to remember than a spl
 - Commit PROGRESS.md from the root of the repo, not from inside the project folder
 - **Authoring is recorded when the prose is finished, not when the block closes.** `## Authoring progress`
   is `authoring-progress-recount`'s, and it is invoked by whatever finished the prose — `/notes-audit`,
-  `/interview-prep-audit`, or `study-content-writer` when Victor declares a pair refined or accepts a
-  question's answer. `## Study progress` stays `study-block-close`'s. The two sections answer different
+  `/interview-prep-audit`, `/portfolio-audit` (which moves a project row's **denominator** by appending
+  questions), or `study-content-writer` when Victor declares a pair refined or accepts a question's
+  answer, or when a project-bank `TODO:` reopening takes a `[refined]` marker back off. `## Study progress` stays `study-block-close`'s. The two sections answer different
   questions and neither may write the other's rows: a note can be written months before it is studied,
   and a file that exists proves nothing about recall.
 - **`progress-update` is an auditor, not this file's writer** (demoted 2026-08-05). It writes exactly one
@@ -940,17 +979,37 @@ everything commits on the branch you're on — is simpler to remember than a spl
   `Practical evidence`, is written by the closing rituals above, and the audit may only **add** to it —
   never rewrite or drop an entry it did not write (`progress-update-prompt` D7). It *measures* every other section against its
   primary sources, reporting drift and
-  naming the ritual that owns the repair. It complements the per-step tracking above and never replaces
+  naming the ritual that owns the repair — **except a section's legend prose, which has no automatic
+  writer and is repaired by Victor by hand**; D11 measures the one class of it that can rot, a legend
+  sentence citing a named cell as its example, and routes it to him rather than to a recount pipeline
+  that would run in full and leave it untouched (`REC-219`). It complements the per-step tracking above and never replaces
   it: what it catches is a ritual that skipped a cell, not a cell nobody wrote.
 - **Say when it is due — do not wait to be asked.** Its scheduled points are gate **G6** of every
   project's `PLANNING.md` §23 (after G5 `readme-audit`, before G7 `portfolio-audit`) and gate **G3** of
   `practice/sql/PLANNING.md` §9 (after Step 13 closes), plus the `▶ Run first` of `cv-prompt`,
-  `linkedin-prompt`, `cover-letter-prompt`, `project-brief`, `plan-audit MODE = new` and `roadmap-review`.
-  **All eight of those points close on an empty drift report**, not on the run having happened — the
+  `linkedin-prompt`, `cover-letter-prompt`, `project-brief`, `plan-audit MODE = new`, `roadmap-review`
+  and `simulation-plan`.
+  **All nine of those points close on an empty drift report**, not on the run having happened — the
   two gates and each `▶ Run first` alike: whatever the report names is repaired by the owner it names,
-  and only then does the gate sign off or the prerequisite count as met. A prompt that proceeds on a
+  and only then does the gate sign off or the prerequisite count as met. **A D11 prose row is no
+  exception, and that is deliberate**: it names Victor rather than a pipeline, so it is the one row a
+  gate can hold open until *he* edits one sentence — cheaper than the alternative, which is a legend
+  that lies for months because nothing was mandated to touch it. A prompt that proceeds on a
   report naming drift is reading a section its own auditor has already declared stale, and no gate
   downstream of it can tell.
+- **Empty is not enough for the two *gates*, which also read the report's scope line.** A `▶ Run first`
+  reader consumes `PROGRESS.md` whole and takes the verdict as the whole file's, which is why none of the
+  seven is asked for a scope — though `MODE = active` genuinely narrows what a clean verdict proves to
+  two of them (`project-brief` reads which projects are done, `linkedin` reads their status), so run
+  `MODE = all` before either when a completed project's row matters. A gate cannot take that view at all:
+  G6 is a gate on **one project** and SQL G3 on the SQL track, and the report's header answers both —
+  `Scope:` names the project paths that run audited, `SQL:` says whether the SQL half was audited or
+  aborted by Step B's guard. `progress-update` writes that line for exactly this reason: *"a clean verdict
+  is evidence for that project's gate and for no other's"*. So G6 closes only on a report whose `Scope:`
+  names that project and whose `Date:` is not older than `PROGRESS.md`'s own last commit. The consequence
+  is the one that bites: `MODE = active` audits the in-progress project alone, so it can never close G6
+  for a **completed** project, and a portfolio gate arriving months later owes a `MODE = all` run.
+  `portfolio-audit` tests all of it as its Check 3 (`REC-214`); SQL G3 is still ticked by hand.
 
 ## Angular CLI conventions
 
@@ -999,8 +1058,9 @@ skills rule above), so every such clause is two separate sites. Write the pointe
 prompt's file **and the section inside it**, then stop.
 
 What the test lets stand, as examples and not as an exemption list: a rule these session rules own rather
-than a prompt (`sql-exercises` — the `.sql` answers are Victor's and are never staged; `cv`, `tracker`,
-`profile-readme` — the output lives outside this repo), and a rail on the executor's own conduct inside
+than a prompt (`sql-exercises` — the `.sql` answers are Victor's and are never staged; `cv`, `tracker` —
+the output lives outside this repo and no prompt commits it — `profile-readme` left this list in 2026-09
+once its own prompt owned the sentence), and a rail on the executor's own conduct inside
 the launcher (`coverage-verify`, `system-check` — do not chain another workflow, do not publish a partial
 verdict). Naming that a pipeline *has* a commit step is description; naming **who runs** it is a
 restatement.

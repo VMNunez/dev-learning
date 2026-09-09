@@ -20,7 +20,7 @@ sorting, pagination, and delete confirmation. Built with Angular Material.
 - Delete a task with a confirmation dialog
 - Filter tasks by status and priority
 - Live stat cards showing counts per status
-- Custom purple theme via `mat.theme()`
+- Custom blue theme via `mat.theme()`
 
 ---
 
@@ -36,20 +36,19 @@ sorting, pagination, and delete confirmation. Built with Angular Material.
 
 ```
 app/
-├── app.component                      ← root with toolbar
-├── pages/
-│   └── tasks-page/
-│       ├── tasks-page.component       ← coordinator: owns all state and events
-│       ├── task-filters/
-│       │   └── task-filters.component ← dumb, receives filter values, emits changes
-│       ├── task-table/
-│       │   └── task-table.component   ← dumb, receives tasks, emits edit/delete
-│       ├── task-dialog/
-│       │   └── task-dialog.component  ← dialog form, handles add and edit mode
-│       └── confirm-dialog/
-│           └── confirm-dialog.component ← reusable confirmation dialog
-└── services/
-    └── task.service.ts                ← signal<Task[]>, CRUD methods
+├── app.ts                             ← root shell, renders `<router-outlet />` only
+├── models/
+│   └── task.model.ts                  ← `Task` interface and its union types
+└── pages/
+    └── task-page/
+        ├── task-page.ts               ← coordinator: owns all state and events
+        ├── components/
+        │   ├── task-filters/          ← dumb, receives filter values, emits changes
+        │   ├── task-table/            ← dumb, receives tasks, emits edit/delete
+        │   ├── task-dialog/           ← dialog form, handles add and edit mode
+        │   └── confirm-dialog/        ← reusable confirmation dialog
+        └── services/
+            └── task.service.ts        ← signal<Task[]>, CRUD methods
 ```
 
 ---
@@ -60,7 +59,7 @@ app/
 - `computed()` for filtered list and stat card counts
 - `MatTableDataSource` for sorting and pagination
 - `MatDialog` service to open dialogs; `afterClosed()` to receive results
-- Coordinator pattern — tasks-page owns all signals and handles all events from children
+- Coordinator pattern — task-page owns all signals and handles all events from children
 
 ---
 
@@ -69,7 +68,7 @@ app/
 | Pattern | Where used |
 |---|---|
 | `mat.theme()` | Global and scoped Material theming |
-| `mat.$violet-palette` | Replace default palette without CSS overrides |
+| `mat.$blue-palette` | Replace the default palette without CSS overrides |
 | `--mat-sys-*` CSS variables | Material design tokens (color, surface, typography) |
 | `MatTableModule` | `mat-table`, `matColumnDef`, `*matCellDef`, `*matHeaderCellDef` |
 | `MatTableDataSource` | Handles sorting, filtering, pagination automatically |
@@ -90,13 +89,14 @@ app/
 | `table-layout: fixed` | Equal-width columns in the Material table |
 | `grid-column: 1 / -1` | Span a form field across all grid columns |
 | Context-specific theme | Scope `mat.theme()` to a CSS class for the delete button |
+| Guarded `localStorage` load | Parse stored text in `try`/`catch` and validate its shape before it reaches the signal |
 
 ---
 
 ## Learning steps
 
 1. Set up Angular Material with `ng add @angular/material`
-2. Create `material-theme.scss` with `mat.theme()` and the violet palette
+2. Create `material-theme.scss` with `mat.theme()` and the blue palette
 3. Define the `Task` interface and build `TaskService` with a signal
 4. Build the coordinator page with `MatTableDataSource`, sort, and paginator
 5. Build `task-table` as a dumb component — column definitions, sort headers, action buttons

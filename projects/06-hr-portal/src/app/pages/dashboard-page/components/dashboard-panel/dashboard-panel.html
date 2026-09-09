@@ -1,0 +1,11 @@
+<mat-card appearance="outlined">
+  <mat-card-header class="panel-header">
+    <mat-card-title>{{ title() }}</mat-card-title>
+    <a [routerLink]="link()" [queryParams]="queryParams()" class="panel-header-link">View all</a>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="panel-list">
+      <ng-content />
+    </div>
+  </mat-card-content>
+</mat-card>

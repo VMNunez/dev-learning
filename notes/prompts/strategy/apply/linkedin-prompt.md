@@ -158,7 +158,15 @@ the top 3 most prominently, so ordering is what matters here:
 PostgreSQL, TypeScript, SQL, Docker, REST APIs, Git, Maven
 
 **Also add:**
-JUnit, Jasmine, Angular Material, RxJS, HTML, CSS, Spring Security, Hibernate
+JUnit, Vitest, TestBed, Angular Material, RxJS, HTML, CSS, Spring Security, Hibernate
+
+`Vitest` and `TestBed` stand where the pool lists `Jasmine`: the standard's **replacement clause** strikes
+a required keyword no project runs and puts the superseding tool in its list position, so the Skills
+section never advertises a runner Victor has not used. The pool keeps `Jasmine` for the CV's ATS matching,
+which is a market list and not a claim about him. **Report it, do not just apply it**: every replacement
+this run makes is printed on the `SKILLS LEFT OUT` line below as `struck X — named Y instead`, and the
+lists above are re-derived under the clause rather than copied — a replacement that has since spent
+itself puts the struck skill back.
 
 Apply the standard's **defensibility rule**: **do NOT add skills you cannot defend in an interview.**
 It binds the three lists above too, not only the extras below — under the standard's precedence rule a
@@ -235,12 +243,16 @@ Print each section in this order, ready to copy directly into LinkedIn:
 
 **SKILLS LEFT OUT — not defensible:**
 [required-pool skills omitted under the standard's precedence rule, and what each one leaves to close
-in a project — `Ninguna` if there are none; never drop the heading]
+in a project — `Ninguna` if there are none; never drop the heading. A skill omitted under the standard's
+**replacement clause** is listed here as `struck X — named Y instead`, which closes nothing in a project
+and is not a gap]
 
 ---
 **PROJECT BULLETS NEEDING A RE-RUN:**
 [for each entry sourced from `notes/cv/cv-bullets.md` that fails the standard's Project-bullet spec: the
 project, the conditions it fails, and `/portfolio-audit` on that project as the run that repairs it —
+naming the marker first where the entry's heading carries `[refined]`, since that run refuses a frozen
+section and repairs nothing until Victor removes it;
 `Ninguno` if every sourced entry passes; never drop the heading, since this line is the only route those
 failures have out of an output-only run]
 

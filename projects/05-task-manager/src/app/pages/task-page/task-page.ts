@@ -66,7 +66,7 @@ export class TaskPage {
     }
   }
 
-  onDeleteTask(id: number) {
+  onDeleteTask(id: string) {
     this.taskService.deleteTask(id);
   }
 

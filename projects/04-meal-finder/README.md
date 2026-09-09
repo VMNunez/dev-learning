@@ -37,9 +37,12 @@ https://04mealfinder.netlify.app/
 - Search meals by name and browse the results as a grid of cards
 - Click a meal to see the full recipe on a detail page
 - Save and remove favourite meals
+- The Favourites link in the navigation bar carries a live count that changes the moment a meal is saved or removed
 - Filter favourites by category
 - Persistent favourites across page refreshes
+- The search term stays in the address bar, so opening a recipe and coming back keeps the results and a search can be shared as a link
 - A spinner while a search runs, a "no meals found" message when nothing matches and an error message when the request fails — never a blank screen
+- The meal grid and the recipe layout adapt from a single column on mobile to a multi-column grid on desktop
 - Fully usable with a keyboard alone, with every control's state and name announced to screen readers
 
 ---
@@ -65,6 +68,7 @@ https://04mealfinder.netlify.app/
 - TheMealDB over a keyed recipe API — no secret to manage in a public repo and a one-command clone-and-run, giving up server-side filtering and a dataset I could extend
 - `subscribe` inside an `effect()` over the `async` pipe — the component owns the loading, empty, not-found and error states explicitly, at the cost of wiring the teardown by hand in the effect's cleanup callback
 - Favourites in `localStorage` over a backend — persistence with no server to build, so favourites live in one browser and are lost when its storage is cleared
+- CLI-generated specs over an authored test suite — authoring tests broadly starts at project 07, so coverage here is the compiling baseline plus one accessibility assertion each on `meal-card` and `category-filter`
 
 ---
 
@@ -88,7 +92,9 @@ https://04mealfinder.netlify.app/
 - `toSignal()` — read `paramMap` and `queryParamMap` as signals instead of subscribing
 - `input.required()` and `output()` — presentational components take data in and emit intent out
 - `loadComponent()` — lazy route, one chunk per page instead of one bundle
+- `**` wildcard route — an unmatched URL renders the not-found page; declared last, since matching is first-wins
 - `routerLinkActive` — mark the current nav link; the brand link needs `{ exact: true }`
+- `@if` / `@else if` / `@for` — built-in control flow renders one remote state at a time, no `*ngIf` import
 - `Location.back()` — browser history is not application history, so a direct URL needs a fallback
 - `[attr.x]` binding — ARIA attributes have no DOM property behind them, so `[attr.aria-pressed]`, not `[ariaPressed]`
 - Narrowing beats asserting — read a `string | null` route id into a local and return early, never `as string`

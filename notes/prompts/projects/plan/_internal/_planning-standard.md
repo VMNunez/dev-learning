@@ -284,9 +284,10 @@ rule in §8 has a test that proves it is enforced.**
 custom queries, one `@DataJpaTest` (the query returns what it should against a real embedded DB). Name
 the controller/repository and what each asserts. If the project introduces neither yet, say so
 explicitly — do not pad.
-**Angular services (Jasmine + TestBed + `HttpClientTestingModule`):** which services, what each test
-verifies (the request URL/method, the mapped response, error handling).
-**Angular components (Jasmine + TestBed, from project 08):** which components, what each verifies
+**Angular services (Vitest + TestBed + `provideHttpClient()` / `provideHttpClientTesting()` — never the
+deprecated `HttpClientTestingModule`):** which services, what each test verifies (the request URL/method,
+the mapped response, error handling).
+**Angular components (Vitest + TestBed, from project 08):** which components, what each verifies
 (renders the right state, emits on action, shows empty/error state).
 **Assertion quality (every level):** each test asserts real behaviour — the returned value or the saved
 object's state — never only `verify(...)` that a method was called. No trivial "it exists" tests.
@@ -308,6 +309,14 @@ not the backend rules of the same numbers — the standard those sections are la
 exactly what `6–8` against `3 to 8` was until 2026-09-01. The tests themselves are restated below, so a
 plan review never has to open that file; only the sizes are dereferenced.
 
+**§19-§21 are that restatement and not a second owner.** A test or a format string is never changed here
+alone: the change belongs in `_readme-standard.md`'s rules 6, 7 and 8 and reaches §19-§21 in the same
+commit — and `_plan-architecture-prompt.md`'s §20 check with them, which carries rule 7's format string a
+second time on this side of the pair. That is the duty stated from the other side at the head of that
+file's rule block. `REC-201` found three of those tests missing here and two nominal, and nothing
+announced it — this copy stays internally coherent, and every prompt that reads §19-§21 is a plan prompt
+that never opens the owner.
+
 **A plan written before 2026-09-01 still carries the deleted caps** (`07-timetrack` §19 "6-8 maximum",
 §21 "max 3 bullets"), and `_readme-write-prompt.md` reads `PLANNING.md` on every run — so the dead cap
 reaches the README author through the plan. **Strike that clause from §19-§21 on the next `plan-audit`
@@ -315,17 +324,25 @@ of any project whose plan states one**; it is a deletion, not a rewrite, and nee
 
 ### 19. Architecture decisions to document in the global README
 One-line decisions. Format: `[what you did] to [why it matters]`. As many as pass the **interview test**
-(the reason already answers "why?" — the same test design check 5 applies to §6 and §20) and are
-**distinct** (no two naming the same choice); no fixed number, and never padded to reach one.
+(the reason already answers "why?" — the same test design check 5 applies to §6 and §20), are
+**distinct** (no two naming the same choice), and stay **one line carrying a reason and not a mechanism**
+(a walkthrough of how the thing works belongs in the README's `What I learned` recall line, not here);
+no fixed number, never padded to reach one, and never cut a line that passes all three tests to
+reach one.
 
 ### 20. Tradeoffs to document in the global README
 One-line tradeoffs. Format: `[option chosen] over [option rejected] — [reason]`. As many as name a real
-rejected option with something actually given up; design check 5 applies to every reason here. No fixed
-number.
+rejected option that was available in this project, with something actually given up; design check 5
+applies to every reason here, and "because it is simpler" is not a reason. A bullet with no rejected
+option, or whose rejected option was never an option here, is not a tradeoff: rewrite it, or move it
+to §19. No fixed number.
 
 ### 21. Future improvements
-Domain-realistic only — no AI, no microservices. Each an improvement a user would notice, never a
-developer learning goal. No fixed number.
+Domain-realistic only — no AI, no microservices, no blockchain. Each an improvement a user would
+notice, never a developer learning goal. **And a reader of *this* README would miss it** — the
+improvement's absence is something the app as described visibly lacks; an item that would be a fine
+idea for any app of any kind is not specific to this one and is cut, which is the clause that bounds
+an otherwise unbounded list of good ideas. No fixed number.
 
 ### 22. Git branch strategy
 The branch plan as a table: **Branch · Covers (steps) · Opens · Closes**. Then one line naming the
@@ -413,7 +430,7 @@ PLANNING.md.
 11. **Backend tests** — JUnit 5 + Mockito unit tests, one step per service class (happy path + edge
     cases), plus the one slice test type this project introduces (`@WebMvcTest` and/or `@DataJpaTest`),
     if any.
-12. **Angular tests** — services first (`HttpClientTestingModule`); components if project 08+.
+12. **Angular tests** — services first (Vitest + TestBed, `provideHttpClientTesting()`); components if project 08+.
 13. **SQL complement** — write by hand in `practice/sql/` the SQL Hibernate generates for the main queries.
 14. **Docker** — `docker-compose.yml` with the database service; app image if time allows. Late by
     design — Docker wraps a working app, not a work in progress.
@@ -483,8 +500,8 @@ do not drop a gate or invent extra ones.
 | **G3 — Backend review** | The last backend branch's PR merges — backend complete, **before frontend work starts** | `review-audit` · `PROJECT_PATH = {project}` · `REVIEW_SCOPE = backend` | Correctness + security on the API **before** the frontend is built against it. Fix the High tasks it writes to `PROJECT-BACKLOG.md` before moving on. |
 | **G4 — Frontend review** | The frontend branch's PR merges — frontend complete | `review-audit` · `PROJECT_PATH = {project}` · `REVIEW_SCOPE = frontend` | Each surface is reviewed once (see the rules above this table): G3 has already read the backend, so a `full` run here would re-read reviewed code. Scope follows what changed, never how old the backend's date is — a frontend phase is not expected to add backend code, and if this project's did, the answer is to **re-run G3 scoped `backend`**, never to widen G4 to `full` (a fix campaign G3 itself ordered is inside its sign-off, not after it). |
 | **G5 — READMEs** | Every **High** task from G3/G4 is fixed and committed | `readme-audit` · `PROJECT_PATH = {project}` | Hard prerequisite of G7: `portfolio-audit` reads the READMEs, so running it first would judge a document that is about to change. |
-| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | `cv-prompt`, `project-brief` and `review-audit` all read `PROGRESS.md`; a stale one builds the CV bullet, the next project's choice and the reviewer's level calibration on a wrong picture. **The gate closes on a clean drift report, not on the run happening**: since 2026-08-05 the prompt writes only `Professional level by topic` and *reports* every other section, so a run that names drift leaves G6 open until the owner it names has repaired it. |
-| **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = {project}` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. |
+| **G6 — PROGRESS accurate** | After G5, before the portfolio gate | `progress-update-prompt` · `MODE = active` | `cv-prompt`, `project-brief` and `review-audit` all read `PROGRESS.md`; a stale one builds the CV bullet, the next project's choice and the reviewer's level calibration on a wrong picture. **The gate closes on a clean drift report, not on the run happening**: since 2026-08-05 the prompt writes only `Professional level by topic` and *reports* every other section, so a run that names drift leaves G6 open until the owner it names has repaired it. **`MODE = active` is the config for closing this gate *in sequence*, while the project is still the in-progress one — that mode audits only that project, so it can never close G6 for a project finished earlier, and a G7 arriving later (a `PROJECT_PATH = all` batch over closed projects, say) owes `MODE = all` instead.** `portfolio-audit`'s Check 3 tests the resulting drift report's `Scope:`, `Verdict:` and `Date:` (`REC-214`). |
+| **G7 — Portfolio go/no-go** | After G5 **and** G6 | `portfolio-audit` · `PROJECT_PATH = {project}` · `PORTFOLIO_SCOPE = full` | The closing gate. Reads `PROJECT-BACKLOG.md` — an unfixed High/Medium from G3/G4 blocks the ✅ Ready verdict. Produces the CV bullet + the project question bank. **Only a `full` run signs this box**: `backend` / `frontend` / `global` are bank-only, compute no verdict and owe none of the chain, so they may bank a tier long before the gate is due and leave it exactly as unsigned as they found it. **The scope defaults to `full`, so a plan's own copy of this row need not instantiate it** — it is named here because this is where the rule is stated, and a plan that omits it is running `full` and is correct as it stands. |
 | **G8 — Roadmap resync** | After G7 returns ✅ Ready | `roadmap-review-prompt` | The project sequence just changed. This is what keeps `ROADMAP.md` from drifting into a stale plan. |
 
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**

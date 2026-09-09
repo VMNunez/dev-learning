@@ -355,12 +355,18 @@ unlikely combination is Low.
 
 ## Test-quality scope — the test review
 
-> **Projects 01–06 have no tests, by design — never report their absence.** Per the shared session rules ("Testing
-> rules"), testing enters the roadmap at project **07** (services) and project **08** (components). In
-> 01–06 the `.spec.ts` files are untouched Angular CLI scaffold: an empty `should create` is the expected
-> state. In 07, component tests are likewise out of scope. Missing tests, empty specs and weak assertions
-> in an out-of-scope project are **not findings** — write "tests — out of scope for this project" instead.
-> This lens is skipped entirely there; the flow reviewer runs only the quality and correctness lenses.
+> **Projects 01–06 are below the testing roadmap — this lens never judges what their specs do or do not hold.**
+> Per the shared session rules ("Testing rules"), testing enters the roadmap at project **07**
+> (services) and project **08** (components). The exclusion rests on the **project's position in the
+> roadmap**, never on a claim about how its specs were generated: several of 01–06 hold real
+> hand-authored tests from closed backlog tasks, and those suites are accepted maintenance debt,
+> deliberately not raised to the standard that begins at 07. In 07, component tests are likewise out
+> of scope. Missing tests, empty specs and weak assertions in an out-of-scope project are **not
+> findings** — write "tests — out of scope for this project" instead. **The exclusion covers those
+> three things and nothing else:** a spec that is **broken** — it fails to compile, or asserts an
+> element the template no longer has — and a test **command** that does not work fall outside it and
+> are judged on their own evidence. This lens is otherwise skipped entirely there; the flow reviewer
+> runs only the quality and correctness lenses.
 
 Projects with tests (07 onward): the per-slice flow reviewer runs a **test-quality lens** on its
 slice's own tests, against the plan's §16 Testing plan and this bar. It reads the slice's test files
@@ -383,9 +389,11 @@ tests — it hides regressions. Check:
   repository, not the class under test); no over-mocking that ends up testing the mock.
 - **Structure & readability** — clear arrange/act/assert; test names say what they check
   (`create_throwsWhenProjectInactive`, not `test1`); no logic inside tests.
-- **Angular** — services use `HttpClientTestingModule` and assert the request (URL, method) + the mapped
-  response; component tests (from 08) assert rendered state and emitted events, not just that the
-  component was created.
+- **Angular** — services configure the test module with `provideHttpClient()` + `provideHttpClientTesting()`
+  (**not** the deprecated `HttpClientTestingModule`) and assert the request (URL, method) + the mapped
+  response through `HttpTestingController`; component tests (from 08) assert rendered state and emitted
+  events, not just that the component was created. The runner is **Vitest**, so spies are `vi.fn()` /
+  `vi.spyOn()` — a `jasmine.createSpy` in new code is itself the finding.
 
 Priorities: a missing planned test or an untested §8 business rule is **High**; a weak assertion or a
 missing edge case is Medium; naming / structure polish is Low.

@@ -161,7 +161,7 @@ If nothing was written — the common already-covered path — this sub-step is 
 
 ---
 
-## 2 — Project README: land the concept
+## 2 — Project README: land the concepts
 
 **Invoke the `readme-concept-add` skill** with **every concept from step 0**. It owns this decision end to end:
 deriving which READMEs exist from the project number, routing the concept by **audience** to the global /
@@ -176,8 +176,10 @@ Two things to pass it explicitly, because they are this ritual's context and not
 
 A backlog task's concept is almost always tier-level, so the common answer is a **Key patterns** entry in
 the tier README — not "What I learned", which the standard gives only to the global file. If the concept is
-already represented, the skill reports **nothing written**; that is a good outcome, and a README with one
-bullet per bug fix is a worse README. Fold its report rows into this ritual's final table.
+already represented, the skill reports **nothing written for it**; that is a good outcome, and a README
+with one bullet per bug fix is a worse README. It may still write on that path: its own step-0 sweep reads
+the fix's diff and can add a decision this close never named. Fold its report rows into this ritual's
+final table.
 
 ---
 
@@ -422,6 +424,18 @@ new task here — `backlog-task-open` owns that, when Victor picks it up — and
 means seen in the code this close was already reading; a suspicion and a style preference are not
 findings, and no pass is ever started to go and look.
 
+**A finding resting on what a command did *not* find — an absence, a count, a runner's summary line — is
+not raised unless that command ran to completion and the task line records what proves it: the exit code,
+or, where Victor pasted the output himself, that the run was his.** An aborted run is byte-identical to a
+clean empty one, and that record is the only thing separating them; a quoted **hit** is self-evidencing and
+owes nothing here — step 2b's `grep -rn` sweep is exactly that case. It licenses no run of its own: the
+rule above still holds. (2026-08-30, project 02: a shell cut a 71-second test-environment setup short, its
+`Tests 0 passed` was written up as a completed empty run, and the task cost a full triage cycle before
+closing as a false positive — `REC-185`.) And the **testing scope is not this close's to re-derive**:
+`notes/prompts/_internal/_session-rules.md` → "Testing rules" owns it — in 01–06, and for components in
+07, missing tests, empty specs and weak assertions are never a finding, while a broken spec and a broken
+test command are.
+
 This is its own logical change, so it takes its own commit, separate from step 5's collapse:
 `docs(backlog): raise <finding> found while closing <task>`.
 
@@ -451,8 +465,9 @@ Everything below lands on the **active branch** (`main` only receives merges via
 - `PLANNING.md` — authorized 2026-08-01. The ritual writes this entry itself, so the authorship boundary
   puts it on your side. Its own atomic commit, carrying both the rules-section entry (step 3) and the §0
   refresh (step 3b), which are one logical change.
-- The README — **not yours**: step 2 hands it to `readme-concept-add`, which writes the entry and commits
-  it under the same 2026-08-01 authorization, in one commit for that entry. Do not restage it here.
+- The README — **not yours**: step 2 hands it to `readme-concept-add`, which writes the entries and
+  commits them under the same 2026-08-01 authorization, in one commit for what it wrote — its step-0
+  sweep can add entries this ritual never named. Do not restage it here.
 
 **Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
 then `git commit` block), one command per block:
@@ -477,7 +492,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Evidence marker | marked `✅ 07-timetrack` on "declarative transaction boundaries" — 24/139 junior bullets demonstrated (or: n/a — DECISION, no code change) |
 | Coverage mirror | n/a — no new bullet written (or: bullet added to topic coverage + global mirror, 141 bullets match) |
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
-| README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") |
+| README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") · *(swept)* id tie-breaker on a paged sort — added, not named by this close |
 | Retired | `README.md:112` stream-`reduce` bullet rewritten; `backend/README.md:256` `Specification` scope corrected (or: nothing stale) |
 | Incidental findings | none (or: raised as `[Low]` `[backend]` — `JwtUtil` / `SecurityConfig` field injection) |
 | PLANNING.md | added to §6 engineering rules |

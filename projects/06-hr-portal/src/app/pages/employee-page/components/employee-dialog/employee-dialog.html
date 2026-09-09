@@ -27,11 +27,11 @@
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input type="email" matInput formControlName="email" />
-          @if (email?.hasError('required')) {
+          @if (email?.touched && email?.hasError('required')) {
             <mat-error>Email is required</mat-error>
-          } @else if (email?.hasError('email')) {
+          } @else if (email?.touched && email?.hasError('email')) {
             <mat-error>Invalid email address</mat-error>
-          } @else if (email?.hasError('duplicateEmail')) {
+          } @else if (email?.touched && email?.hasError('duplicateEmail')) {
             <mat-error>Email already exists</mat-error>
           }
         </mat-form-field>
@@ -83,7 +83,7 @@
     @if (stepper.selectedIndex === 0) {
       <button matButton="filled" (click)="onNext(stepper)">Next</button>
     } @else {
-      <button matButton="filled" (click)="onSubmit()">
+      <button matButton="filled" (click)="onSubmit(stepper)">
         @if (data) {
           Edit Employee
         } @else {

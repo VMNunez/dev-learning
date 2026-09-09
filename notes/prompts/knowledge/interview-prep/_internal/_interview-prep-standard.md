@@ -31,23 +31,32 @@ guards.
   it — they still deduplicate against existing questions and still report a defect they notice, which
   is the only thing they may do about one.
 
-**`_portfolio-translate-prompt.md`**, the one reader from outside this family, and the narrowest —
-scoped to **"The bilingual en/es contract" alone**. It renders a *project* question bank
-(`notes/interview-prep/projects/en|es/*.md`) into Spanish, and that bank is **not governed by this
-standard**: it has no level, no coverage fingerprint and no `[studied]` state. It **does** carry stable
-IDs and the `[refined]` freeze since 2026-08-31, and a `TODO:` reopen channel of its own — but they are
+**`_portfolio-translate-prompt.md`**, and since 2026-09-05 **`_portfolio-review-es-prompt.md`** beside
+it, the two readers from outside this family and the narrowest — both scoped to **"The bilingual en/es
+contract" alone**. The first renders a *project* question bank
+(`notes/interview-prep/projects/en|es/*.md`) into Spanish and the second audits that Spanish
+`en/`-blind, and that bank is **not governed by this
+standard**: it has no level and no coverage fingerprint. It **does** carry stable
+IDs and the `[refined]` freeze since 2026-08-31, the `[studied]` state since 2026-09-06, and a `TODO:`
+reopen channel of its own — but they are
 `_portfolio-standard.md`'s own rules, written there deliberately rather than borrowed from here, because
 one standard reaching across two disjoint chains is what `REC-180` ruled against. Its ID is
-`{PROJECT_NAME}-{NNN}`, not the `{TOPIC}-{LEVEL}-{NNN}` below. What that row still owes it is priority
-markers with a calibration for five fixed sections, an `es`-review owner this family has no equivalent
-of either, and the three `[studied]` rulings. Nothing here binds it except the
-bilingual section, and it is listed under the open-list rule above rather than left as the unnamed
-exception it would otherwise be. The rest of its contract is `_portfolio-standard.md`'s.
+`{PROJECT_NAME}-{NNN}`, not the `{TOPIC}-{LEVEL}-{NNN}` below. Since 2026-09-05 it also has an
+`es`-review owner this family still has no equivalent of — that second reader, an `en/`-blind pass over
+the twin — which is why that bank's Spanish is checked on its own terms while this one's is checked by a
+reviewer holding both languages. It also has priority markers since 2026-09-05, on the same three-star
+scale as this file's but calibrated **over the whole bank file** rather than per section, which is why
+that rule too is written there and not borrowed from here. Nothing here binds either of them except the
+bilingual section, and both are listed under the open-list rule above rather than left as the unnamed
+exceptions they would otherwise be. The rest of that bank's contract is `_portfolio-standard.md`'s.
 
 **The in-session skills**, each scoped by its own `SKILL.md`: `study-content-writer` (unrefined,
 reopened or refining content), `interview-prep-block-open` (the lifecycle and answer-quality sections,
 read-only) and `study-block-close`, whose only write **in a Q&A file** is `[studied]`, though it reads
-the fingerprint and bilingual-parity contracts to decide whether it may make it.
+the fingerprint and bilingual-parity contracts to decide whether it may make it. Since 2026-09-06 that
+skill writes the same marker into the **project** banks as well, under `_portfolio-standard.md` and not
+under this file: the two banks are governed separately and this one's fingerprint gate is not the gate
+that gets applied there.
 
 These rules used to live in each reader's own copy; keeping them here once means the readers can never
 drift. Each adds only its own *flow* (author vs cold review vs route selection vs practice insertion)
@@ -356,6 +365,15 @@ An answer is interview-ready only when all of these hold:
   named project really uses the pattern (verify in the source before claiming it). An invented anchor
   is worse than none — it is a false anecdote about Victor's own code that one follow-up question
   exposes.
+- **Where the honest answer is "not yet", the answer teaches the concept with an example.** An
+  experience question — *"have you written X?"*, *"have you used X?"* — is never answered by claiming a
+  practice no project demonstrates, and a promise about a future project is not an answer on its own.
+  Say what he has actually done, then show the concept working on a concrete case, and name when the
+  missing half lands where it is planned. The anchor rule above forbids the false claim; this one says
+  what takes its place, which is the half an answer left to itself gets wrong — it pads, or it
+  substitutes the plan for the knowledge. Stated by Victor 2026-09-08, after the Angular junior testing
+  section had him answer "I test services with Jasmine and TestBed": a tool he had never run, and a
+  practice none of his projects demonstrated.
 - **Every word defensible.** Apply the test: *"could Victor explain every word of this answer if the
   interviewer pressed on it?"* If not, the answer is padded or memorised — it is weak.
 

@@ -113,7 +113,7 @@ DTO boundary.
 | ORM | Spring Data JPA + Hibernate | `JpaRepository` + derived queries; JPQL for reports |
 | Frontend | Angular + Angular Material | Teal M3 theme, compact density (§14); Core/Feature/Shared structure |
 | Local setup | Docker + docker-compose | App + Postgres in one command (Step 11) |
-| Tests | JUnit 5 + Mockito (backend), Jasmine + TestBed (frontend) | Services only — component tests start at project 08 |
+| Tests | JUnit 5 + Mockito (backend), Vitest + TestBed (frontend) | Services only — component tests start at project 08 |
 
 ---
 
@@ -958,8 +958,8 @@ day by people who want the numbers, so the app is quiet, dense and flat. It diff
 project** on four axes, each one a single theming decision:
 
 - **Palette** — a cool **teal** primary (`#00695C` intent) on a light-neutral grey surface, with the four
-  status colours as the only saturated ink on screen. Project 05 used a warm **violet** palette and project
-  06 shipped Material's **default indigo/blue**; nothing in the portfolio is teal, and the coolness is the
+  status colours as the only saturated ink on screen. Project 05 shipped Material's **blue** palette and
+  project 06 its **azure/blue** default; nothing in the portfolio is teal, and the coolness is the
   point — money and hours should not look playful.
 - **Density and rhythm** — **compact** Material density on an **8px** grid. Projects 05 and 06 both ran
   Material's default (comfortable) density with generous card padding; here ten table rows must fit on a
@@ -1662,13 +1662,13 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - **Done condition:** `Terminal: mvn test passes — TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest and ReportServiceTest all green; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted`
 
 ### Step 9 — Angular tests
-- Jasmine + TestBed with `HttpClientTestingModule` — one test per service method listed in Section 16
+- Vitest + TestBed with `provideHttpClient()` + `provideHttpClientTesting()` — one test per service method listed in Section 16
 - Assert the request (URL, method, params, body) and the returned typed value; only `AuthService` asserts
   stored state, because §6's Service-boundary rule says the other services hold none
 - Cover the edge cases in Section 16, not only the happy path — the unset-filter param, the un-swallowed
   `fieldErrors` on 400, the 401 that must not half-authenticate
 - Component tests are NOT in scope — per CLAUDE.md they start at project 08; this project tests services only
-- **New concepts:** Angular service unit testing with `HttpClientTestingModule`
+- **New concepts:** Angular service unit testing with `provideHttpClientTesting()` and `HttpTestingController`
 - **Review concepts:** auth, entry, user and report services
 - **Done condition:** `Terminal: ng test passes — AuthService, EntryService, UserService and ReportService specs all green; getEntries issues a GET to /api/entries with no empty params when a filter is unset, changePassword surfaces the 400 fieldErrors without clearing the session, and a failed login leaves the token unstored`
 
@@ -1732,9 +1732,11 @@ for custom repository queries) are introduced from project 08 — do not add the
 state (status transition, hashed password, computed total) — never only `verify(...)` that a mock method
 was called. No trivial "it exists" tests.
 
-### Angular — services (Jasmine + TestBed, Step 9)
+### Angular — services (Vitest + TestBed, Step 9)
 
-Use `HttpClientTestingModule` and `HttpTestingController` to assert the request without a real backend.
+Configure the test module with `provideHttpClient()` + `provideHttpClientTesting()` — **not** the
+deprecated `HttpClientTestingModule` — and assert the request through `HttpTestingController`, without
+a real backend.
 Same bar as the backend table: name the method, the request it must issue, and the edge cases — not
 "it works". **What a service test may assert is bounded by §6's Service-boundary rule:** a
 `core/services/` service issues the call and maps the response, so the assertions are about the
@@ -1755,7 +1757,7 @@ whose test asserts a stored token or a signal.
 
 Out of scope for this project. Per CLAUDE.md "Testing rules", component (TestBed) tests are introduced in **project 08**. Project 07 tests services only.
 
-For each new testing concept (JUnit 5 + Mockito, `HttpClientTestingModule`), add one interview
+For each new testing concept (JUnit 5 + Mockito, `provideHttpClientTesting()`), add one interview
 question to `notes/interview-prep/junior/en/` and `notes/interview-prep/junior/es/` (same question,
 both files).
 

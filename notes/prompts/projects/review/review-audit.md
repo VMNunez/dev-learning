@@ -107,6 +107,12 @@ source and hand you back findings tables — you map the slices and merge. You n
 yourself.
 
 ## If PROJECT_PATH = all
+**`{REVIEW_SCOPE}` binds per project here, and is not derived per target.** It is `_batch-mode.md`'s
+third disposition — a choice about how much of each project to review, not about which project to
+review — so it applies to every project in turn and is simply a **no-op** where that project has no such
+tier. A `backend` batch therefore reviews 07's backend and does nothing at all on the Angular-only
+01–06, which is a legitimate run and not an error; say so per project rather than skipping the row.
+
 Per `notes/prompts/_internal/_batch-mode.md`, expand `all` into the ordered project list from the config block and
 run the **single-project procedure below once per project**, fully finishing one before the next. Put
 each project's report under a `### [project]` heading, and after the last print this pipeline's own
@@ -167,23 +173,32 @@ backlog. The standard's scope limit already forbids this; Step 0 is where it bec
 Step 0 is the only place that knows which steps are done.
 
 **Tests are part of that exclusion, and it is derived from the project number — not from the ✅ marks.**
-Per the shared session rules ("Testing rules"), testing enters the roadmap at **project 07** (services: JUnit/Jasmine)
-and **project 08** (components: TestBed). So:
-- **Projects 01–06:** tests are **out of scope entirely**. Their `.spec.ts` files are untouched Angular
-  CLI scaffold — empty `should create` assertions are the expected state, not a gap.
+Per the shared session rules ("Testing rules"), testing enters the roadmap at **project 07**
+(services: JUnit 5 + Mockito on the backend, Vitest + TestBed on the frontend) and **project 08**
+(components: TestBed). So:
+- **Projects 01–06:** tests are **out of scope entirely** — because those projects **predate the
+  testing roadmap**, not because their specs are empty. Several of them hold real hand-authored tests
+  from closed backlog tasks; what those suites carry is accepted maintenance debt, deliberately not
+  raised to the standard that begins at 07. Judge none of it **under the test-quality lens** — a spec
+  that is *broken* and a test *command* that does not work stay reportable, as the verbatim line below
+  states.
 - **Project 07:** service tests are in scope; **component** tests are not.
 - **Projects 08+:** both are in scope.
 
 Append the applicable line verbatim to **every** subagent prompt in Steps 1–4, e.g. for 01–06:
-*"This project predates the testing roadmap (tests start at project 07). Its `.spec.ts` files are CLI
-scaffold. Do not report missing tests, empty specs, or weak assertions as findings — write 'tests — out
-of scope for this project' instead."*
+*"This project predates the testing roadmap (tests start at project 07). Whatever `.spec.ts` files it
+holds are out of scope, hand-authored ones included: do not report missing tests, empty specs, or weak
+assertions as findings — write 'tests — out of scope for this project' instead. The exclusion covers
+those three things and nothing else. A spec that is **broken** — it fails to compile, or asserts an
+element the template no longer has — and a test **command** that does not work are outside it, and are
+judged on their own evidence."*
 
 This exclusion **cannot** be derived from the ✅ marks: projects 01–06 use the old PLANNING format, which
 has no §0 and no ✅ step marks, so the step-based rule above silently fires on nothing. On the 2026-07-14
 run of `01-todo-list` both frontend reviewers read the empty scaffold specs as missing coverage and raised
 three High "no tests" tasks — which went into the backlog and Victor had to catch. Every project from 01
-to 06 will reproduce those three false Highs unless this line is passed down.
+to 06 will reproduce that class of false High unless this line is passed down; on 04, 05 and 06, whose
+suites now hold hand-authored tests, it arrives as a weak-assertion finding rather than a "no tests" one.
 
 **Angular 01–06** are **frontend-only**, not informational: map **frontend feature slices +
 `frontend-infra`**, skip Steps 1–2 (there is no backend, so no backend flow and **no security pass**),

@@ -16,10 +16,12 @@ proposed gap turns out to belong to another topic — one routed proposal in
 ```text
 TOPIC = [one registered topic from `_internal/_topic-ownership.md`]
 LEVEL = [junior | middle | senior]
-MODE  = [update | dry-run]
+MODE  = [update | dry-run]  -> default: update
 ```
 
-One execution handles exactly one topic and one level. `TOPIC = all` is unsupported.
+One execution handles exactly one topic and one level. `TOPIC = all` is unsupported. The launcher marks
+`MODE` optional; an omitted `MODE` is `update`, because this gate's durable products — `FINDINGS` and any
+inbox routing — are what the next `coverage-prompt` run consumes, and a dry run leaves neither.
 
 ## Runtime contract
 

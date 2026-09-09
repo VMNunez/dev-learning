@@ -79,17 +79,25 @@ export class TaskDialog {
     if (this.newTaskForm.valid) {
       const formValue = this.newTaskForm.value;
       const task: Task = {
-        id: this.data ? this.data.task.id : Date.now(),
+        id: this.data ? this.data.task.id : crypto.randomUUID(),
         name: formValue.name as string,
         status: formValue.status as TaskStatus,
         priority: formValue.priority as TaskPriority,
         description: formValue.description as string,
         assignee: formValue.assignee as string,
-        createdAt: this.data ? this.data.task.createdAt : new Date().toISOString().split('T')[0],
+        createdAt: this.data ? this.data.task.createdAt : this.today(),
       };
 
       this.dialogRef.close(task);
     }
+  }
+
+  private today(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   onCancel() {

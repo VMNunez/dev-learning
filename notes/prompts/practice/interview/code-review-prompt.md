@@ -37,6 +37,8 @@ DIFFICULTY  = [intro | standard | challenge]   → default: standard
 ISSUE_COUNT = [number of issues to plant]       → default: 4
 FOCUS       = [optional — a concept to centre the snippet on, e.g. "JWT filter", "reactive forms",
               "LEFT JOIN + NULL", "@Transactional". Leave blank to mix issues across the topic.]
+              → forced blank when TYPE = all (_batch-mode.md's second disposition): a concept belongs
+                to one type, so a batch runs every type on its own open MISTAKES rows instead.
 LEVEL       = [junior | middle | senior]
 
 Validation — before anything else:

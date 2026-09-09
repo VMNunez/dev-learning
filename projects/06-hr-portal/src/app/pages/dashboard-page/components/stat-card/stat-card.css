@@ -1,0 +1,55 @@
+/* The anchor is the flex child of the parent grid, so it carries the sizing; the card fills it.
+   `cursor: pointer` is not declared — a real link already has one. */
+:host {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--mat-sys-corner-medium);
+}
+
+.stat-card-link:focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.stat-card {
+  height: 100%;
+  transition: opacity 150ms ease;
+}
+
+.stat-card-link:hover .stat-card {
+  background-color: var(--mat-sys-secondary-container);
+}
+
+.stat-card mat-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  gap: 0.5rem;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-card mat-icon {
+  color: var(--color-link);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.stat-number {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
