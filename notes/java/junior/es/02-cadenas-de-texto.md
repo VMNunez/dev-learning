@@ -466,7 +466,7 @@ Para esa línea el propio compilador construye el resultado de forma eficiente e
 
 ### `String`, `StringBuilder`, `StringBuffer`
 
-Hay un tercer tipo en esta familia, y te lo vas a encontrar en código antiguo. Lee esta tabla eligiendo tus dos restricciones — ¿necesita el objeto ser modificable?, ¿lo toca más de un hilo? — y la última columna nombra el tipo que encaja:
+Hay un tercer tipo en esta familia, `StringBuffer`, y te lo vas a encontrar en código antiguo. La tabla compara los tres con las dos preguntas que deciden cuál toca usar: si el objeto se puede modificar, y si se puede usar sin riesgo desde varios hilos a la vez — lo que se llama ser _thread-safe_, y que el aviso del final de la sección explica. La última columna dice para qué se usa cada uno:
 
 |                 | ¿Modificable? | ¿Thread-safe? | Cuándo usarlo                                   |
 | --------------- | ------------- | ------------- | ----------------------------------------------- |

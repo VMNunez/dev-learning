@@ -467,7 +467,7 @@ For that line the compiler itself builds the result efficiently in one pass; wri
 
 ### `String`, `StringBuilder`, `StringBuffer`
 
-There is a third type in this family, and you will meet it in older code. Read this table by picking your two constraints — does the object need to be modifiable, and does more than one thread touch it — and the last column names the type that fits:
+There is a third type in this family, `StringBuffer`, and you will meet it in older code. The table compares the three by the two questions that decide which one to use: whether the object can be modified, and whether it can be used safely from several threads at once — what is called being thread-safe, which the callout at the end of the section explains. The last column says what each one is used for:
 
 |                 | Modifiable? | Thread-safe? | When to use                              |
 | --------------- | ----------- | ------------ | ---------------------------------------- |
