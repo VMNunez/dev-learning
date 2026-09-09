@@ -466,6 +466,13 @@ sink, full context in git.
 (The platform's `step-complete` skill fires on this event and walks this exact checklist —
 plus the README standard, which does not auto-load. This section remains the source of truth.)
 
+**Two of these do not wait for the step (`REC-230`, 2026-09-09).** A `§15` step spans days and several
+conversations, so the coverage bullet, its evidence marker and the README entry are written as each
+**verifiable piece** of the step lands — the three sub-skills carry that trigger themselves, and their
+`SKILL.md` files own the rule. What `step-complete` then does with those two items is **verify against the
+step's whole diff** that every piece left its record, and report a piece that did not as a process failure.
+Everything else in this list is step-scoped and would be false mid-step, so it stays at the close.
+
 - **The step's `**Done condition:**` passed, clause by clause** — this is the *trigger* of the ritual
   (PLANNING §23 gate G1), not a formality: a step is complete when its stated assertions were run, never
   when the code merely compiles or feels finished. A clause that was never checked is checked now.
@@ -480,7 +487,8 @@ plus the README standard, which does not auto-load. This section remains the sou
 - `notes/{topic}/coverage/{level}.md` **+ its global mirror `notes/coverage/{level}.md`** — **both halves
   of the coverage contract, in this order** (changed 2026-07-30):
   1. **Author the missing bullet** — a concept the step taught that the checklist does not have is
-     written into it, in concept form, by the `coverage-bullet-add` skill. A step that discovers a real
+     written into it, in concept form, by the `coverage-bullet-add` skill, **per piece as the code lands
+     (see above), not at the close**. A step that discovers a real
      concept and leaves no bullet behind is the gap this closes; it supersedes the earlier rule that
      only ever *flagged* the gap and left it to a `/coverage` run.
   2. **Mark it demonstrated** — append the ` ✅ NN-slug — {evidence}` evidence marker to the bullet of
@@ -491,7 +499,8 @@ plus the README standard, which does not auto-load. This section remains the sou
 
   The two stay separate: **marking never authors a bullet, and authoring never writes a marker.** A new
   bullet a `/notes-plan` remap owes is reported and flagged in `_run-tracker.md`, never remapped by hand.
-- `projects/0X-projectname/README.md` — the concept's entry, routed **by audience** to the global /
+- `projects/0X-projectname/README.md` — the concept's entry, **written per piece as the code lands (see
+  above)**, routed **by audience** to the global /
   backend / frontend README by the `readme-concept-add` skill under the README standard, **plus the
   entries `readme-concept-add`'s own diff sweep finds that the step never named**. "What I learned"
   exists **only in the global README**; a tier-level concept lands in that tier's "Key patterns", and a
