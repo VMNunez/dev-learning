@@ -335,7 +335,7 @@ Sobre ninguno de los tres actúa `trim()`, porque los tres tienen un número má
 
 > 📖 Docs: [Oracle Docs — `java.util.Formatter`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Formatter.html) → leer: "Format String Syntax" y la tabla "Conversions" — la lista completa de qué puede ir después de un `%`.
 
-Tienes un `Employee` y quieres sacar de ahí una línea legible. La forma obvia es `+`, que pega texto y, cuando un lado no es texto, lo convierte primero:
+Tienes un `Employee` con un campo `name` y otro `hours`, y quieres formar a partir de ahí una frase legible. La forma obvia es `+`, que pega texto y, cuando un lado no es texto, lo convierte primero:
 
 ```java
 String name = "Ana";

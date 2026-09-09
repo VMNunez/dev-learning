@@ -335,7 +335,7 @@ ASCII is the most basic group of characters there is: the unaccented letters of 
 
 > 📖 Docs: [Oracle Docs — `java.util.Formatter`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Formatter.html) → read: "Format String Syntax" and the "Conversions" table — the complete list of what may follow a `%`.
 
-You have an `Employee` and you want a readable line out of it. The obvious way is `+`, which glues text together and, when one side is not text, converts it first:
+You have an `Employee` with a `name` field and an `hours` field, and you want to build a readable sentence out of them. The obvious way is `+`, which glues text together and, when one side is not text, converts it first:
 
 ```java
 String name = "Ana";
