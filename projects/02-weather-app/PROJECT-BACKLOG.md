@@ -18,7 +18,10 @@ component/service split is correct; the gaps are all in input handling at the se
 
 ## Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — `set-env.js` interpolates `process.env.API_KEY` with no guard, so an unset
+  variable writes `apiKey: 'undefined'` into `environment.ts` and the app fails at runtime as
+  "City not found" instead of at build time. Fail the script when the variable is missing.
+  *(found by portfolio-audit 2026-09-07)*
 
 ---
 

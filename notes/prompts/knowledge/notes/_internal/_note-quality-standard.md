@@ -108,6 +108,25 @@ both.
   workflow to the project that established it, so there is nothing in that project to cite.
 - **No marker → no project covers it yet.** Use a representative generic path, or omit the `File:`
   line entirely; in prose, drop the project reference rather than inventing one.
+- **Name a tool inside an example; never restate the rule that governs it.** A worked example is free
+  to say `vi.fn()`, `@SpringBootTest` or Mockito — naming the concrete thing is how a concept is
+  taught, and the ownership registry delegates the *concept*, not the vocabulary of an illustration.
+  What a note may not carry is a **rule another file owns**: which tool each layer uses, from which
+  project a practice becomes mandatory, what a gate requires. Those live in `_session-rules.md` →
+  "Testing rules" and its neighbours, they get re-ruled, and a copy pasted into a note has **no
+  writer that re-derives it** — nothing in the pipeline recomputes a table the plan never assigned.
+  `notes/general/junior/en/03-testing/10-testing-concepts.md` is the instance: a per-layer
+  `## In Victor's projects` table still naming Jasmine, and the project-07/08 test mandate copied
+  under it word for word, on the day that table was ruled to Vitest — and no stage positioned to
+  notice. State the concept; where the rule itself matters, point at the file that owns it.
+  Being correct today is not what qualifies a restatement to stay, so a *true* one is removed on the
+  same ground as a false one — ownership, not accuracy.
+  **The two remedies are ordered and belong to different stages, so neither hesitates over the
+  other's work.** The author corrects a false token under its own Action rules — a minimum edit, the
+  shape untouched — and removing the restatement is the **English reviewer's**, because deleting a
+  section is a change of shape the author's rule deliberately withholds. Both act inside the scope
+  their own run was dispatched with and this bullet does not widen it: on a frozen pair neither
+  removes anything, and the restatement is reported like every other miss.
 
 ---
 

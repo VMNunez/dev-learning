@@ -2,11 +2,13 @@
 name: authoring-progress-recount
 description: >
   Recount the `## Authoring progress` rows of PROGRESS.md WHENEVER a note or an interview question
-  reaches an authored state — called by `notes-audit` and `interview-prep-audit` as their closing
-  recount, by `study-content-writer` when Victor declares a pair refined or confirms a question
-  `[refined]`, and directly when he asks ("actualiza el progreso de las notas", "recuenta lo escrito",
-  "recount authoring"). It counts authored notes from the plans' `Status:` fields and refined questions
-  from the bilingual `[refined]` markers, then writes those three rows and nothing else. The failure
+  reaches an authored state — called by `notes-audit`, `interview-prep-audit` and `portfolio-audit` as
+  their closing recount, by `study-content-writer` when Victor declares a pair refined, confirms a
+  question `[refined]`, or reopens a project-bank question and takes that marker back off, and directly
+  when he asks ("actualiza el progreso de las notas", "recuenta lo
+  escrito", "recount authoring"). It counts authored notes from the plans' `Status:` fields and refined
+  questions from the bilingual `[refined]` markers, then writes those three levelled rows — or, for a
+  project bank, its one row of the per-project table — and nothing else. The failure
   mode this exists for is work that exists on disk and nowhere in the tracker: a note refined in the
   morning that PROGRESS.md still reports as unwritten until someone runs the whole `/progress-update`
   by hand. Authored is not studied, so it never reads or writes a `Studied:` date, a `[studied]` marker
@@ -33,7 +35,14 @@ This ritual records how much of the study route has been **written**, which is a
 from how much of it Victor has studied. The source contract is the shared session rules,
 "PROGRESS.md updates", and the section partition in `notes/prompts/_internal/_system-map.md` §8.
 
-## 0 — Resolve the level and the registered topics
+## 0 — Resolve what you were given: a level, or a project bank
+
+**Two populations reach this ritual and they are not nested.** A level resolves the three rows below; a
+**project bank** resolves one row of the per-project table in §2, and has no level to belong to. A caller
+whose event touched a project bank — `portfolio-audit` at its close-out, `study-content-writer` on a
+project-bank `TODO:` — passes the project instead of a level, and Victor asking directly may name either.
+Recount the population you were given and not the other: a level's rows do not move when a project bank
+does, and taxing every `notes-audit` close-out with a read of every project bank buys nothing.
 
 Take the level from the caller, or from the level Victor is working at when he asks directly. Read the
 registry in `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` — the topics it lists are
@@ -74,7 +83,7 @@ missing topics in the report. That is a smaller denominator than the level reall
 out loud rather than printed silently — and it is not `—`, which would throw away a count that is
 correct for every plan that exists.
 
-## 2 — Recount the two interview rows
+## 2 — Recount the interview rows
 
 - **Interview CORE refined:** denominator = unique IDs in the current `notes/interview-prep/routes/{LEVEL}.md`;
   numerator = those IDs carrying `[refined]` in the exact bilingual bank pair, whether or not they also
@@ -91,15 +100,46 @@ These two rows keep the strict `—` gate rather than step 1's `*`, because a qu
 denominator at all until its stable IDs exist: there is nothing to mark provisional. Both rows read `—`
 until the first `interview-prep-audit` migration lands, and that is the correct reading, not a defect.
 
+**The per-project table — one row per project bank.** Victor ruled 2026-09-06 that the project banks are
+counted in a table of their own rather than inside the levelled cells, so those columns keep meaning what
+they say. Its twin under `## Study progress` is `study-block-close`'s and never yours.
+
+- **The project list is the one `interview-prep-route-projects-prompt.md` → "Eligibility" resolves** —
+  **apply that section, never restate it here**, since a second copy of its ladder is a fork that stays
+  invisible until the two disagree. Never a glob of `notes/interview-prep/projects/en/`: §0's prohibition
+  holds here for the same reason it holds for topics, and a project whose portfolio gate has not closed
+  `✅ Ready` has no more place in this table than an unregistered topic has in the count above. It is
+  **not** the route file: a bank is refined whether or not any route carries its questions, which is the
+  whole difference between this table and its study twin.
+- **A caller that just computed the verdict passes it, and it settles eligibility for that project.**
+  `portfolio-audit` invokes this ritual before its own self-report writes the `_run-tracker.md` cell that
+  ladder's fallback reads, so on the first `full` run over a project with no `PLANNING.md` §23 the ladder
+  would answer *ineligible* on the very run that created the bank. The run that produced the verdict is
+  its authority; take what it hands you for that one project and resolve every other from the ladder.
+- **Refined, per project:** numerator = that project's bank IDs carrying `[refined]` in both languages,
+  whether or not they also carry `[studied]`; denominator = **its whole bank**, not its route. Refining an
+  answer does not depend on the route carrying the question, which is exactly where this row and its
+  study twin differ.
+- Print `—` for a project whose pair fails EN/ES parity or whose bank holds a missing, malformed or
+  duplicated `{PROJECT_NAME}-{NNN}` ID, and name the gate. **An unmarked question is not one of those
+  states**: `_portfolio-standard.md` designs for a bank whose `⭐` backfill is still owed, and priority has
+  nothing to do with whether an answer is refined. There is no coverage fingerprint to require here — that
+  bank has none by design.
+- **A row is born `0/N`, never `—`.** The denominator is the bank on disk, so it is real from the first
+  run, and the honest reading of a bank Victor has refined nothing in is zero over it.
+- An eligible project with **no bank at all** is a reported gap and not a row: name it and the
+  `/portfolio-audit` run that would write one, exactly as a registered topic with no plan is named above.
+
 ## 3 — Write the rows
 
 Cell format when valid: `X/Y (P%)`, whole-number percentage. Where step 1 requires the `*`, it goes
 immediately after the denominator and before the percentage — `1/208* (0%)` — so the mark sits on the
 number it qualifies. An honest zero over a real denominator is `0/N (0%)`, never `—`.
 
-Rewrite only the three rows in `## Authoring progress`. Study dates and `[studied]` markers stay under
-`## Study progress`, coverage evidence under `## Coverage demonstrated`, and no cell of
-`## Professional level by topic` is touched here — that table is `/progress-update`'s.
+Rewrite only the three levelled rows and the per-project table in `## Authoring progress`. Study dates
+and `[studied]` markers stay under `## Study progress`, coverage evidence under
+`## Coverage demonstrated`, and no cell of `## Professional level by topic` is touched here — that table
+is `/progress-update`'s.
 
 ## 4 — Commit
 
@@ -110,12 +150,14 @@ only; the plan entries, notes and Q&A pairs that caused the transition belong to
 When a caller is already committing `PROGRESS.md` as part of the same logical change, say so in the
 report and let its commit carry the rows instead of committing here.
 
-Commit message:
+Commit message, by the population you recounted — **a project bank has no level to name**, so the
+levelled subject is not merely inaccurate over one, it is unwritable:
 
-`docs(progress): recount {level} authoring progress`
+- a level — `docs(progress): recount {level} authoring progress`
+- a project bank — `docs(progress): recount {project} authoring progress`
 
 ## 5 — Report
 
-Report the three per-level counts before and after, every cell that carries a `*` and the plans that
-earned it, every row printed `—` and the gate that blanked it, and the commit. One line per row is
-enough. The ritual asks zero questions and leaves every unresolved target open.
+Report the three per-level counts before and after — or the project row before and after — every cell
+that carries a `*` and the plans that earned it, every row printed `—` and the gate that blanked it, and
+the commit. One line per row is enough. The ritual asks zero questions and leaves every unresolved target open.

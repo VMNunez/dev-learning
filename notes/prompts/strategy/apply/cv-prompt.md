@@ -189,7 +189,7 @@ which holds no technology inventory)*
 | TypeScript     | Spring Security     | SQL            | Docker         |
 | Angular Material | Spring Data JPA  | Hibernate      | Maven · Postman |
 | RxJS · Signals | JUnit 5 · Mockito  | —              | IntelliJ IDEA  |
-| HTML · CSS     | Jasmine · TestBed  | —              | —              |
+| HTML · CSS     | Vitest · TestBed   | —              | —              |
 
 Also known (previous experience): React, Node.js, Express, MySQL, Tailwind CSS
 
@@ -261,7 +261,10 @@ For each keyword: ✅ present and defensible / ⚠️ present but not defensible
 **Defensibility rule** names the evidence that decides it (source 7's project markers first, the project
 itself when a marker is absent). A ⚠️ keyword is
 struck from the CV and printed on Step 6's **ATS keywords not defensible** line, next to the missing
-keywords that fail the same test.
+keywords that fail the same test — **unless the standard's replacement clause applies**, in which case
+the superseding tool takes the struck keyword's cell and the line reads `struck X — named Y instead`.
+`Jasmine` is the live instance: struck on the projects, replaced by `Vitest · TestBed`, which is what
+the skills table above already shows.
 
 For each missing required keyword, apply the standard's **precedence rule** before proposing anything:
 if Victor can defend it in an interview, propose a natural place to add it without forcing it; if he
@@ -300,7 +303,8 @@ Then print:
 **ATS keywords present:** list of keywords found in the CV
 **ATS keywords missing:** required keywords not found but defensible (with suggested placement)
 **ATS keywords not defensible:** required keywords left out under the standard's precedence rule — the
-gap to close in a project, not in the CV
+gap to close in a project, not in the CV; where the standard's **replacement clause** applied, the entry
+reads `struck X — named Y instead` and is not a gap at all
 **Project bullets needing a re-run:** for each entry sourced from `notes/cv/cv-bullets.md` that fails
 the Project-bullet spec, the project, the conditions it fails, and `/portfolio-audit` on that project as
 the run that repairs it — **naming the marker first where the entry is `[refined]`, since that run refuses

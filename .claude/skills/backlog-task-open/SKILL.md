@@ -266,6 +266,16 @@ brevity rule governs verdicts, reports and conversation — never these two laye
   seen in the code this pass was already reading; a suspicion and a style preference are not findings,
   and no pass is ever started to go and look. The chat does not survive the session and `review-audit`
   fires a few times per project, so a finding disposed of in conversation is a finding lost.
+  **A finding resting on what a command did *not* find — an absence, a count, a runner's summary line —
+  is not raised unless that command ran to completion and the task line records what proves it: the exit
+  code, or, where Victor pasted the output himself, that the run was his.** An aborted run is byte-identical
+  to a clean empty one, and that record is the only thing separating them; a quoted **hit** is
+  self-evidencing and owes nothing here. It licenses no run of its own: the rule above still holds. (2026-08-30, project 02: a shell cut a 71-second test-environment setup
+  short, its `Tests 0 passed` was written up as a completed empty run, and the task cost a full triage
+  cycle before closing as a false positive — `REC-185`.) And the **testing scope is not this pass's to
+  re-derive**: `notes/prompts/_internal/_session-rules.md` → "Testing rules" owns it — in 01–06, and for
+  components in 07, missing tests, empty specs and weak assertions are never a finding, while a broken spec
+  and a broken test command are.
 - **Not a rubber stamp.** If every task comes back "valid as written", the pass is not being run
   honestly — this session's own history has at least one scope correction and the reviewer's PLANNING
   blindness is structural, not occasional.

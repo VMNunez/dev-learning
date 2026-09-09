@@ -1,15 +1,38 @@
+## Index of this note
+
+- [Strings and text](#strings-and-text)
+- [Immutability — the fact everything else on this page comes from](#immutability--the-fact-everything-else-on-this-page-comes-from)
+  - [What actually happens in memory](#what-actually-happens-in-memory)
+- [The everyday method catalogue — and what each call gives back](#the-everyday-method-catalogue--and-what-each-call-gives-back)
+  - [`substring` — the second index is excluded, and going past the end throws](#substring--the-second-index-is-excluded-and-going-past-the-end-throws)
+  - [`split` — it takes a regular expression, not a plain separator](#split--it-takes-a-regular-expression-not-a-plain-separator)
+- [Empty, blank, and the whitespace you cannot see](#empty-blank-and-the-whitespace-you-cannot-see)
+  - [`strip()` vs `trim()` — use `strip()`](#strip-vs-trim--use-strip)
+- [Putting values into text — `+` and `.formatted()`](#putting-values-into-text---and-formatted)
+  - [Why a broken format string still compiles](#why-a-broken-format-string-still-compiles)
+- [Accumulating text — when `+` becomes the wrong tool](#accumulating-text--when--becomes-the-wrong-tool)
+  - [The rule, stated so you can apply it](#the-rule-stated-so-you-can-apply-it)
+  - [`String`, `StringBuilder`, `StringBuffer`](#string-stringbuilder-stringbuffer)
+- [Text blocks — multi-line text without the escaping](#text-blocks--multi-line-text-without-the-escaping)
+- [Between text and numbers](#between-text-and-numbers)
+  - [Text → number](#text--number)
+  - [`NumberFormatException` is *unchecked* — and what that means today](#numberformatexception-is-unchecked--and-what-that-means-today)
+  - [Number → text](#number--text)
+- [Comparing two Strings — and the one question this chapter refuses to answer](#comparing-two-strings--and-the-one-question-this-chapter-refuses-to-answer)
+- [What this unlocks](#what-this-unlocks)
+
 # Strings and text
 
 > 📖 [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basics" and "String Basic Manipulations" for the method catalogue
 > 📖 [Oracle Docs — `java.lang.String`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html) → the complete method list, for when you need the exact signature
 
-[01-variables-types.md](01-variables-types.md) asked one question of every value: *how is this represented, and what does that representation force?* For numbers the answer was about bits — an `int` holds 32 of them, which is why it overflows, and a `double` stores a binary fraction, which is why it cannot hold `0.1`. Now the same question goes to the value type you touch on literally every request that reaches a web application: a username, a JSON body, a URL path, a log line, a SQL query. All of it is text, and in Java all of it is `String`.
+[01-variables-types.md](01-variables-types.md) explained every value through how Java stores it in memory, because the way it is stored decides what you can do with it. For numbers the answer was in the bits: an `int` holds 32 of them, which is why it overflows once it goes past its maximum value; a `double` stores a 64-bit decimal number, and that explains part of how it behaves: on that fixed budget it only has room for about 15 significant digits, so past that it stops storing digits at all. Now the same question goes to a different kind of value: the `String`. A `String` can be a username, a JSON, a URL, a log line you read to debug an error, a SQL query, and so on. All of it is text, and in Java all text is a `String`.
 
-The answer has a completely different shape. A `String` is not a primitive and it is not a bit pattern you can reason about — it is an **object**, and an object that **cannot be changed after it is created**. That single fact is the whole chapter. It explains why `name.toUpperCase()` looks like it does nothing, why gluing text together inside a loop is the classic junior performance mistake, why a class called `StringBuilder` has to exist at all, and — later, in [06-oop-classes.md](06-oop-classes.md) — why `==` turns out to compare the wrong thing entirely.
+The answer is completely different from the one you saw for primitives in [01-variables-types.md](01-variables-types.md). A `String` is not a primitive, and its value does not fit in a fixed number of bits — it is an **object**, and an object that **cannot be changed after it is created**. That single fact explains the properties of a `String` this chapter is built on: why `name.toUpperCase()` looks like it does nothing when you do not keep what it returns, since the new `String` is lost; why concatenating text inside a loop creates a new object on every pass and ends up costing performance; why a class called `StringBuilder` has to exist, and — later, in [06-oop-classes.md](06-oop-classes.md) — why `==` turns out to compare the wrong thing entirely.
 
-Here is the route this file takes. It opens with **immutability**, because every later section is a consequence of it. Then the **everyday method catalogue**, so you can read ordinary Java code, followed by the two places that catalogue quietly misleads you: **empty versus blank** input, and the difference between `trim()` and `strip()`. Then the two ways to **put values into text** — `+` and `.formatted()` — and the one way to **accumulate** it without generating garbage, `StringBuilder`. Then **text blocks**, the modern way to embed a chunk of JSON or SQL. Then the round trip **between text and numbers**, which is where most 500 errors in a junior REST API are born. And it closes on the one operation this chapter deliberately refuses to explain: comparing two Strings.
+This file opens by explaining **immutability**, because every later section is a consequence of it. Next comes the **everyday method catalogue**, the set of calls you will be using constantly, so that you can read ordinary Java code correctly. After that come the two places where those methods mislead you: the difference between **empty and blank**, and the difference between `trim()` and `strip()`. Then the two possible ways to put values inside a piece of text: concatenating with `+`, and the `.formatted()` method. Following that, the one way to **accumulate** text —adding pieces to it inside a loop— without leaving behind a pile of objects nobody uses any more: `StringBuilder`. Further on come **text blocks**, the modern way to write a chunk of JSON or SQL inside the Java source file itself. Near the end come the conversions from **text to number and from number to text**, which is where most 500 errors in a junior REST API are born. And it closes on comparing two Strings, the one operation this chapter does not explain: the full explanation is in [06-oop-classes.md](06-oop-classes.md).
 
-**One example runs through the whole file.** You are building a line for a timesheet report: an `Employee` has a `name`, a `role`, and a number of `hours` logged this week, and you want to turn that into readable text and back again. `Employee` is the same little world [03-control-flow.md](03-control-flow.md), [06-oop-classes.md](06-oop-classes.md) and [10-collections.md](10-collections.md) use, so you only ever have to notice what the *new* operation adds.
+**The same example is used for the whole file.** In it you build a line of a timesheet report: an `Employee` has a `name`, a `role`, and a number of `hours` logged this week. From there both directions get covered. The outward one turns the data of an employee you already have in memory —normally because you have just read it from the database— into a readable line of text, which is what ends up printed in the report. The return one does the opposite: it receives the data from a CSV someone hands you or from a form someone fills in, and you have to recover the `name`, the `role` and the `hours`, which are what you can then run calculations on. `Employee` is the same example used in [03-control-flow.md](03-control-flow.md), [06-oop-classes.md](06-oop-classes.md) and [10-collections.md](10-collections.md), so you never have to learn a different example in each file: only what each file adds that is new.
 
 ---
 
@@ -17,7 +40,7 @@ Here is the route this file takes. It opens with **immutability**, because every
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basics" — and note the word *immutable* in the first paragraph; the rest of this section is what that word actually costs you.
 
-Start with the code that catches everyone at least once. You have a name in lowercase and you want it uppercase:
+Start with a mistake almost everyone makes at least once. You have a name in lowercase and you want it uppercase:
 
 ```java
 String name = "ana";
@@ -25,9 +48,9 @@ name.toUpperCase();
 System.out.println(name);   // prints: ana
 ```
 
-Nothing happened. There is no error, no warning, no red squiggle in IntelliJ — the line ran, did its work, and the work went nowhere. That is not a bug in Java, it is the definition of the type: **a `String` object can never be modified after it is created.** `toUpperCase()` did not edit `name`; it built a *second* `String` containing `"ANA"` and returned it, and because nobody caught the return value, that second object was created and immediately thrown away.
+The name is still in lowercase. There is no error, no warning, no red squiggle in IntelliJ — the line ran, did its work, and the work went nowhere. That is not a bug in Java, it is how `String` works by design: **a `String` object can never be modified after it is created.** `toUpperCase()` did not edit `name`; it built a second `String` object containing `"ANA"` and returned it, and because that object was not stored in any variable, it was created and immediately thrown away.
 
-The fix is to catch what the method hands back:
+The fix is to store what the method hands back in a variable:
 
 ```java
 String name = "ana";
@@ -35,15 +58,17 @@ name = name.toUpperCase();      // BIEN — reassign the variable to the new Str
 System.out.println(name);       // prints: ANA
 ```
 
-You have met this exact shape once already. [01-variables-types.md](01-variables-types.md) showed `total.add(...)` computing a sum and throwing it away, because `BigDecimal` is immutable too and `add` can only hand you a new object. It is the same rule, and it will appear a third time in [15-dates.md](15-dates.md), where `date.plusDays(1)` returns a different date instead of moving the one you had. **Immutable class, method that looks like an edit, result you have to catch** — once you recognise the pattern you get it right in every class that follows it.
+> **The variable is not created again: what changes is the address it holds.** The variable `name` already existed, and because a `String` is an object, that variable does not hold the characters but an **address** in memory: the address of the `"ana"` object. The line `name = name.toUpperCase()` never touches that object. It builds a new one containing `"ANA"` and writes **its new address in memory** into `name`, so from that point on the variable points at the new object and the old one is left with nothing pointing at it. Reusing the same variable name is exactly what makes the line look like an edit of the previous object when it is not. The section _What actually happens in memory_, just below, draws it step by step.
 
-> **This is the rule for the entire class, not a quirk of `toUpperCase()`.** Every `String` method that appears to change something — `toUpperCase`, `toLowerCase`, `trim`, `strip`, `replace`, `substring`, `concat`, `repeat` — returns a **new** `String` and leaves the original exactly as it was. If a call's result is not assigned to something, stored somewhere, or passed on, the call did nothing you can observe. Any time a String operation "isn't working", check this first: you almost certainly forgot the `=`.
+You have seen this pattern once already. In [01-variables-types.md](01-variables-types.md), `total.add(...)` was used to compute a sum that was then lost without ever being stored, because `BigDecimal` is immutable too and `add` can only hand you a new object. It is the same rule, and it will appear a third time in [15-dates.md](15-dates.md), where `date.plusDays(1)` creates a new date object instead of modifying the previous one. The pattern is always the same: if the class is immutable, the method that looks like it edits the object returns a new one, and you have to store it in a variable. Once you recognise it, you get it right in any class that follows it.
+
+> **Immutability affects the whole `String` class, not just the `toUpperCase()` method.** Every `String` method that appears to change something — `toUpperCase`, `toLowerCase`, `trim`, `strip`, `replace`, `substring`, `concat`, `repeat` — returns a **new** `String` and leaves the original exactly as it was. If a call's result is not assigned to something, stored somewhere, or passed on, the call did nothing you can observe. Any time a String operation "isn't working", check this first: you almost certainly forgot the assignment, the `=`.
 
 ### What actually happens in memory
 
-The diagram from [01-variables-types.md](01-variables-types.md) is the one to hold on to: a `String` variable does not contain the characters, it contains an **address** — an arrow pointing at an object that lives elsewhere in memory. Reassigning the variable moves the arrow; it never edits what the arrow used to point at.
+The diagram from [01-variables-types.md](01-variables-types.md) is the one to keep in mind: a `String` variable does not contain the text itself, it contains an **address in memory** pointing at an object that lives elsewhere, on the heap (the area of memory where all objects live). Reassigning the variable changes the address it points at, but it does not modify the object it was pointing at before.
 
-Trace `name = name.toUpperCase()` step by step:
+The diagram below shows the state of memory before and after `name = name.toUpperCase()` runs:
 
 ```
 BEFORE                              AFTER
@@ -56,15 +81,15 @@ BEFORE                              AFTER
                                          │        └── nothing points here any more
                                          ▼
                                     ┌───────┐
-                                    │ "ANA" │  ← a brand-new object
+                                    │ "ANA" │  ← a new object
                                     └───────┘
 ```
 
-The `"ana"` object was never touched. A second object was allocated, filled with the uppercased characters, and the variable was re-aimed at it. The first object is now **unreachable** — no variable holds its address — which in Java means it is garbage, and the runtime will reclaim its memory at some point without you asking. That reclaiming process is garbage collection, and it is the subject of [05-memory-model.md](05-memory-model.md); here you only need to know that discarded Strings are not free, because that cost is the entire argument for `StringBuilder` further down.
+The `"ana"` object was never touched. What happened goes in three steps: first the memory for a second object was allocated on the heap, then it was filled with the uppercased characters, and finally the variable came to point at it. The first object is now **unreachable**: no variable points at it any more, none holds its address. In Java that means it is garbage, and at run time the JVM will reclaim its memory at some point without you asking. That memory-reclaiming process is garbage collection, and it is the subject of [05-memory-model.md](05-memory-model.md). What matters here is what each discarded `String` costs: it takes up room on the heap until something frees it, and freeing it costs CPU time, because the garbage collector has to run to find it and reclaim its memory. A single discarded object goes unnoticed; a thousand created inside a loop do not, and that is the reason `StringBuilder` is needed further down.
 
-> **Why would a language designer do this on purpose?** Immutability sounds like pure inconvenience until you look at what it buys. Three things. First, **safe sharing**: if you pass a `String` into a method, you know with certainty that the method cannot alter your copy, because nothing can alter any `String` — so no defensive copying, ever. Second, **safe reuse**: because two identical literals can never diverge, Java is free to store one shared copy of `"ANA"` and hand it to everyone who writes that literal, which saves a great deal of memory in a real application. Third, **a stable hash code**: a `String` is the most common key type in a `HashMap`, and a key whose contents could change after insertion would be lost inside the map ([10-collections.md](10-collections.md) explains why). None of the three survives a mutable `String`. The cost is exactly one thing — every edit allocates — and the rest of this file is about knowing when that cost matters.
+> **Why would James Gosling, the creator of Java, do this on purpose?** Immutability sounds like pure inconvenience until you see the three advantages it brings. First, **sharing a `String` safely**: if you pass a `String` into a method, you know with certainty that the method cannot alter your copy, because nothing can alter any `String` — so you never have to hand it a separate copy in case it modifies it. Second, **safe reuse**: a **String literal** is the text you write between quotes in your code, such as `"ANA"`; in practice people just say *literal*. If in two different places in your program you write `String a = "ANA";` and `String b = "ANA";`, Java does not create two objects: it creates one, and both the variable `a` and the variable `b` hold the memory address of that single object, the one containing `"ANA"`. It can afford that precisely because nobody can modify that object — if `a` could change its contents, `b` would change along with it without asking. That saves a great deal of memory in a real application, where the same literal appears hundreds of times. Third, **a stable hash code**: a `String` is the most common key type in a `HashMap`, and a key whose contents could change after insertion would stop being findable. A `HashMap` decides where it stores each entry from the key's **hash**: a number the `hashCode()` method computes from that key's contents, which the map uses to pick the position it puts the entry in. If the key's contents change, its hash changes, so `get()` goes and looks at a different position, and it does not find the key ([10-collections.md](10-collections.md) explains why). All three advantages disappear if a `String` can be modified. In exchange there is a single cost: every edit allocates memory for a new object. The rest of this file is about knowing when that cost really matters.
 
-> **"Immutable" is about the object, not about the variable.** `name` is an ordinary variable and you can reassign it as often as you like; what cannot change is the object it points at. The two ideas are independent, and Java has a separate keyword for locking the *variable*: `final`, which you met briefly in [01-variables-types.md](01-variables-types.md). `final String name = "ana";` gives you both — a variable that cannot be re-aimed, pointing at an object that cannot be edited. It also means `name = name.toUpperCase()` no longer compiles, since that line reassigns the variable.
+> **"Immutable" is about the object, not about the variable.** `name` is an ordinary variable and you can reassign it as often as you like; what cannot change is the object it points at. The two ideas are independent, and Java has a separate keyword for locking the *variable*: `final`, which you met briefly in [01-variables-types.md](01-variables-types.md). `final String name = "ana";` gives you both — a variable whose address in memory can no longer be changed, pointing at an object that cannot be edited. It also means `name = name.toUpperCase()` no longer compiles, since that line reassigns the variable.
 
 ---
 
@@ -72,58 +97,171 @@ The `"ana"` object was never touched. A second object was allocated, filled with
 
 > 📖 Docs: [Baeldung — All About String in Java](https://www.baeldung.com/java-string) → read: "String Basic Manipulations" — the same methods with a runnable example each.
 
-These are the calls you need to *read* ordinary Java, which is most of what you do at first: you open a file in a real project and every third line does something to a `String`. The example is one employee record arriving as a line of text.
+These are the methods you need in order to read Java code correctly, which is most of what you do at first: you open a file in a real project and you find `String` operations everywhere. In the example, one employee's **record** — their sign-up data: name, role and weekly hours — arrives as a single line of text. A line like that is called a _record_: one row of data about a single thing, with the fields separated by commas, exactly as it comes out of a CSV or an exported file.
 
-```java
-String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+Here is each method on its own, so you can come back to this as a reference. Three things matter about each one: what it does, what you actually reach for it for, and what type it hands back. That type is what decides whether you can chain another call onto the end: if the method returns `String`, you can chain; if it returns `int` or `boolean`, you cannot chain and the chain stops there.
 
-record.length()                    // 27  → int, the number of characters (counting the spaces)
-record.strip()                     // "Ana Ruiz,DEVELOPER,38.5" → String, no leading/trailing whitespace
-record.isEmpty()                   // false → boolean, true only for exactly ""
-record.isBlank()                   // false → boolean, true for "" and for whitespace-only text
-record.contains("DEVELOPER")       // true  → boolean, is this sequence anywhere inside?
-record.startsWith("  Ana")         // true  → boolean, and endsWith() asks the same at the other end
-record.indexOf(",")                // 10    → int, position of the first match, or -1 if there is none
-record.toUpperCase()               // "  ANA RUIZ,DEVELOPER,38.5  " → String
-record.replace(",", " | ")         // "  Ana Ruiz | DEVELOPER | 38.5  " → String, ALL occurrences
-record.strip().substring(0, 8)     // "Ana Ruiz" → String, characters 0 to 7
-record.strip().split(",")          // ["Ana Ruiz", "DEVELOPER", "38.5"] → String[], an array
-"Ana".equals("ana")                // false → boolean, exact content comparison
-"Ana".equalsIgnoreCase("ana")      // true  → boolean, content comparison ignoring case
-String.join(" - ", "Ana", "Ruiz")  // "Ana - Ruiz" → String, the opposite of split
-"-".repeat(20)                     // "--------------------" → String, handy for console separators
-```
+- **`length()`** → `int`. Gives back how many characters the text has, spaces included.
 
-Read the `→` in each comment as "the type this call hands back". That column is the thing to memorise, because it is what decides whether you can chain another call onto the end. Anything returning `String` can be chained (`record.strip().toUpperCase().substring(0, 3)`); `length()` and `indexOf()` return an `int` and end the chain; `contains()`, `startsWith()`, `isBlank()` and `equals()` return a `boolean`, which is exactly the type an `if (...)` needs, so they are what you put inside a condition.
+  ```java
+  "Ana Ruiz".length()     // 8  → the 'A', the seven that follow… and the space in the middle counts too
+  "28001".length() == 5   // true → this is how you check a postcode has its five digits
+  ```
 
-> **`length()` counts code units, not the characters a human sees.** For every name, email and role you will ever handle the two are the same number, so read it as "how many characters" and move on. The exception is the one [01-variables-types.md](01-variables-types.md) already showed you with `char`: an emoji occupies two code units, so `"😀".length()` is `2`. That is the same fact reaching you through `String` instead of through `char`, and it is also why `substring` can cut an emoji in half.
+- **`strip()`** → `String`. Gives back the text without leading or trailing whitespace. If it has whitespace in the middle, that is left alone. It is the first method you apply to any text coming from a form or a file, because it almost always carries spaces nobody typed on purpose.
 
-> **Only three of these read the string without producing a new one.** `length()`, `indexOf()` and the boolean checks *interrogate* the existing object and allocate nothing. Everything else on the list — `strip`, `replace`, `substring`, `toUpperCase`, `split`, `join`, `repeat` — builds something new, exactly as the previous section described. That is why you will see calls chained rather than repeated on the same variable: each link in the chain works on the fresh object the previous link returned.
+  ```java
+  "  Ana Ruiz  ".strip()   // "Ana Ruiz"     → the two in front and the two behind are gone
+  "  Ana  Ruiz  ".strip()  // "Ana  Ruiz"    → the two spaces in the middle are still there
+  ```
+
+- **`isEmpty()`** → `boolean`. Gives back `true` only when the text has no characters at all, i.e. `""`. A text holding one space is no longer empty, and therefore gives `false`.
+
+  ```java
+  "".isEmpty()     // true
+  " ".isEmpty()    // false → it has one character, the space
+  "Ana".isEmpty()  // false
+  ```
+
+- **`isBlank()`** → `boolean`. Gives back `true` for `""` and also for any text made only of spaces, tabs or newlines — for example `" "`.
+
+  ```java
+  "".isBlank()      // true
+  " ".isBlank()     // true → spaces only
+  "\t\n".isBlank()  // true → a tab and a newline are whitespace too
+  "Ana".isBlank()   // false
+  ```
+
+- **`contains(...)`** → `boolean`. Answers whether that sequence appears anywhere inside the text, telling upper and lower case apart: it looks for the sequence exactly as you pass it. It does not tell you where, only whether. Used for simple searches and filters.
+
+  ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
+  record.contains("DEVELOPER")  // true
+  record.contains("MANAGER")    // false
+  record.contains("developer")  // false → the text holds it in upper case
+  ```
+
+- **`startsWith(...)`** → `boolean`. Used to find out whether a `String` begins exactly with the sequence you pass it. **`endsWith(...)`** → `boolean` is used to find out whether a `String` finishes exactly with that sequence. The important word in both is *exactly*: they count every character, spaces included, and they tell upper and lower case apart just like `contains`.
+
+  ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
+  record.startsWith("  Ana")  // true  → the text begins with two spaces and then "Ana"
+  record.startsWith("Ana")    // false → it begins with a space, not with the 'A'
+  record.startsWith("  ana")  // false → case counts too
+  "report.pdf".endsWith(".pdf")  // true → this is how you check a file extension
+  ```
+
+- **`indexOf(...)`** → `int`. Gives back the position of the first place the sequence appears, counting from 0, or `-1` when it does not appear anywhere. That `-1` is the "not found" signal, and you have to check for it before using that number at all, whatever you use it for: cutting the text, breaking out of a loop, anything else.
+
+  ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
+  record.indexOf(",")   // 10 → the first comma sits at position 10
+  record.indexOf(";")   // -1 → there is no semicolon in the text
+  ```
+
+- **`toUpperCase()`** → `String`. Gives back a new `String` with every letter in upper case; **`toLowerCase()`** does the same, but gives the text back in lower case. The original text does not change, as with everything in this class. Mostly used to normalise before comparing or storing.
+
+  ```java
+  "Ana Ruiz".toUpperCase()  // "ANA RUIZ"
+  "Ana Ruiz".toLowerCase()  // "ana ruiz"
+  ```
+
+- **`replace(a, b)`** → `String`. Gives back a copy with **every** occurrence of `a` swapped for `b`, not just the first.
+
+  ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
+  record.replace(",", " | ")   // "  Ana Ruiz | DEVELOPER | 38.5  " → both commas become " | ", not only the first
+  ```
+
+- **`substring(begin, end)`** → `String`. Gives back the slice of text between those two positions. It is the trickiest method of them all and it gets its own sub-section just below to explain it.
+
+  ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
+  record.strip().substring(0, 8)  // "Ana Ruiz" → from position 0 up to 7
+  ```
+
+- **`split(separator)`** → `String[]`. Cuts the text by the separator and gives back an array of the pieces. It is what you use to cut up a line of a CSV. A **CSV** (_comma-separated values_) is a text file where each line is one record and the values are separated by commas, exactly like the `record` in the example: `split(",")` hands those values back separately, one per position of the array, so you can work with them one at a time. It also gets its own sub-section just below, because the separator is not what it looks like.
+
+  ```java
+  String record = "  Ana Ruiz,DEVELOPER,38.5  ";
+
+  record.strip().split(",")  // ["Ana Ruiz", "DEVELOPER", "38.5"] → the record's three fields
+  ```
+
+- **`equals(...)`** → `boolean`. Compares the **content** of two texts, character by character, telling upper and lower case apart. This is the one you use to compare text in Java, always.
+
+  ```java
+  "Ana".equals("Ana")  // true
+  "Ana".equals("ana")  // false → upper-case 'A' and lower-case 'a' are different characters
+  ```
+
+- **`equalsIgnoreCase(...)`** → `boolean`. The same, but treating `A` and `a` as equal — that is, without telling upper and lower case apart. We use it to check emails, usernames and any other data where nobody types the case consistently.
+
+  ```java
+  "Ana@Mail.com".equalsIgnoreCase("ana@mail.com")  // true
+  ```
+
+- **`String.join(separator, ...)`** → `String`. Glues several texts together with the separator you give it. It is the opposite operation to `split`: one cuts a line into fields, the other builds the `String` out of the texts we pass it. Notice the method is called on the `String` class and not on a variable, because it does not operate on one particular text: it receives them all as arguments. You can pass it as many as you like, not just two.
+
+  ```java
+  String.join(" - ", "Ana", "Ruiz")             // "Ana - Ruiz"
+  String.join(",", "Ana Ruiz", "DEVELOPER", "38.5")  // "Ana Ruiz,DEVELOPER,38.5" → three texts, and this is how the whole CSV line is built back up
+  ```
+
+- **`repeat(n)`** → `String`. Gives back the text repeated `n` times. Mostly for drawing console separators without typing twenty dashes by hand.
+
+  ```java
+  "-".repeat(20)  // "--------------------"
+  ```
+
+The type each one returns is what is worth memorising, because it is what decides what you can do with the result. The ones returning `String` — and therefore the ones you can chain, since every call hands back another text to call on — are `strip()`, `toUpperCase()`, `toLowerCase()`, `replace()`, `substring()`, `repeat()` and `String.join()`: that is why you can write `record.strip().toUpperCase().substring(0, 3)`. The ones returning `int` are `length()` and `indexOf()`, and the chain ends there: the result is a number, and a number has no `String` method behind it to call. The ones returning `boolean` are `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` and `equalsIgnoreCase()`, and those are the ones you normally put inside a conditional, because `if (...)` needs exactly that type. And `split()` is the only one outside the three: it returns an array (`String[]`), so whatever you chain after it is array work, not text work.
+
+> **`length()` counts code units, not the characters a human sees.** For every name, email and role you will ever handle, the number of code units and the number of characters are the same, so you can read `length()` as "how many characters the text has" and move on. The exception is the one [01-variables-types.md](01-variables-types.md) already showed you with `char`: an emoji occupies two code units, so `"😀".length()` is `2`. That is the same fact reaching you through `String` instead of through `char`, and it is also why `substring` can cut an emoji in half.
+
+> **Nine of these methods read the `String` without producing a new one.** `length()`, `indexOf()` and the seven boolean checks — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` and `equalsIgnoreCase()` — only query the object that already exists: they walk its characters to answer a question and hand back a number or a `true`/`false`, without reserving memory for any object. All the remaining methods — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — build a new `String` object, exactly as the previous section described. That is the reason calls are written chained: each link in the chain works on the new object the previous link returned.
 
 ### `substring` — the second index is excluded, and going past the end throws
 
-`substring(begin, end)` takes the characters from `begin` up to **but not including** `end`. So the arithmetic is friendlier than it looks: the length of the result is always `end - begin`.
+`substring(begin, end)` takes the characters from `begin` up to `end`, **not including** `end`. That is why the length of the substring it produces is always `end - begin`. The key to how far `end` may go is that `end` is not a position that gets read, but the point where the cut stops: `substring` copies the characters from `begin` and halts just before `end`, so whatever sits at `end` is never touched. That is why `end` may be 6 in `"Victor"`, which has 6 characters and whose indices run from 0 to 5, without any character existing at position 6: `substring(0, 6)` means "stop when you reach the end of the text", not "read character 6". What does fail is `substring(0, 7)`, because there you are asking it to stop past the end, and that is exactly the check `substring` runs before copying anything. `begin`, by contrast, is a position that does get read — except when it equals `end`, since then there is nothing to copy and the result is the empty string `""`.
 
 ```java
 String name = "Victor";
 
 name.substring(0, 3)     // "Vic"    — indexes 0, 1, 2. Three characters: 3 - 0.
 name.substring(3)        // "tor"    — one argument means "from here to the end"
+name.substring(6)        // ""       — starting exactly at length() is legal: there is no text left behind it, so the result is an empty substring
+name.substring(3, name.length())  // "tor" — the same thing spelled out: length() is the largest value end can take
 name.substring(0, 6)     // "Victor" — an end index of exactly length() is legal
-name.substring(0, 10)    // 💥 throws
+name.substring(3, 3)     // ""       — begin and end are equal: nothing to copy, you get the empty string
+name.substring(3, 1)     // 💥 throws — end sits behind begin
+name.substring(0, 10)    // 💥 throws — end goes past the end of the text
 ```
 
-That last line does not return an empty string or a truncated one. It fails at runtime with a message that tells you both numbers:
+That last line does not return an empty string or a truncated one: it throws an exception. In JavaScript this does not happen, because there, if `end` goes past the length of the text, `slice` and `substring` throw nothing: they simply cut up to the end. `"Victor".slice(0, 10)` returns `"Victor"`. Java does not do that: an index that is not valid is rejected, not adjusted. This is the exception it throws, and its message tells you two things: the range you asked for and the length the text actually had, which is also the largest value you could have passed as `end`.
 
 ```
 java.lang.StringIndexOutOfBoundsException: Range [0, 10) out of bounds for length 6
 ```
 
-Read the notation literally — `[0, 10)` is exactly the "start included, end excluded" rule written in maths, and `length 6` is the string you actually had. This is the error you get whenever you slice text whose length you assumed rather than checked: a code that is normally 8 characters arriving as 6, a name field someone left short. Anywhere you `substring` input that came from outside your program, the length is a thing to verify, not to trust.
+These are all the cases where `substring` throws that exception, on the same 6-character `"Victor"`:
 
-### `split` — it takes a regular expression, not a plain separator
+| Call | Result | Why |
+|---|---|---|
+| `substring(-1)` / `substring(-1, 3)` | 💥 | negative `begin`: there is no position before 0 |
+| `substring(7)` / `substring(0, 7)` | 💥 | the index goes past `length()`, which is the maximum allowed |
+| `substring(3, 1)` | 💥 | `end` sits behind `begin`, so the length would come out negative |
+| `substring(6)` / `substring(3, 3)` | `""` | allowed, and throws nothing: it returns an empty string, because the range is empty, which is not the same as being out of bounds |
 
-`split` is the one method in the catalogue whose signature lies to you. It looks like it takes a separator character; it takes a **regular expression** — a small pattern language where certain characters carry a special meaning instead of standing for themselves. `.` is the loudest of them: in a regex it means "any single character".
+The first three rows throw `StringIndexOutOfBoundsException`. The fourth throws nothing, and it is in the table because it is the one most often mistaken for an error: asking for an empty range is legal. About the three that do fail, the only thing to remember is that none of them fixes itself: if the index falls outside `0..length()`, or the range runs backwards, the call blows up at runtime.
+
+### `split` — the separator you pass it is a regular expression
+
+`split` is the method in the catalogue whose signature confuses people most, and it can end up lying to you. It looks like it takes a character that will be used to separate the `String`, but what it really takes is a **regular expression**: a character, or a set of characters, with a specific meaning, which Java reads as a pattern and not as literal text. The one to watch is the dot: inside a regular expression `.` means "any character at all". To split on a real dot you have to escape it, and in Java source you write it with two backslashes, `"\\."`, because the first one is the `String`'s own escape and what reaches the regex engine is a single `\.`.
 
 ```java
 "38.5".split(",")     // ["38.5"]  → no comma found, so you get the whole string back in a 1-element array
@@ -131,11 +269,11 @@ Read the notation literally — `[0, 10)` is exactly the "start included, end ex
 "a.b.c".split("\\.")  // ["a","b","c"] → BIEN: the backslash escapes it into a literal dot
 ```
 
-The middle line is the trap: it does not throw, it returns an array of **length 0**, and the loop you wrote to walk the pieces simply never runs. Nothing in the output says why. The characters that need escaping this way are `. | ( ) [ ] { } ^ $ * + ? \` — and `|` catches people almost as often as `.`, because a pipe is a natural-looking separator in a text file. The escape is written `"\\."` with two backslashes because the first one is Java's own string escape, so the regex engine receives a single `\.`.
+The middle line is the trap: it does not throw, it returns an empty array, of **length 0**. The characters that need escaping this way are `. | ( ) [ ] { } ^ $ * + ? \` — and `|` catches people almost as often as `.`, because a pipe is a natural-looking separator in a text file.
 
-> **Where regular expressions get taught properly.** They are a topic of their own and are not junior-level Java scope; what you need here is the awareness that `split` and `replaceAll` speak regex while `replace` does not. `record.replace(".", "-")` treats the dot as a literal dot and works fine; `record.replaceAll(".", "-")` replaces every character in the whole string. When in doubt use `replace`, and reach for the `All` version only when you genuinely want a pattern.
+> **Where do you learn regular expressions properly?** They are a topic of their own and are not junior-level Java scope; what you need here is to know that `split` and `replaceAll` take a regular expression as their argument, while `replace` does not. `replaceAll` is the sibling of `replace` that does interpret patterns, and that is where the difference lies: `record.replace(".", "-")` treats the dot as a literal dot and works fine; `record.replaceAll(".", "-")` replaces every character in the string, because to the regex engine the dot stands for all of them. When in doubt use `replace`, and reach for `replaceAll` only when you genuinely want a pattern.
 
-> **`split` also drops trailing empty pieces, quietly.** `"a,b,,c,,".split(",")` returns `["a", "b", "", "c"]` — the empty slot in the middle survives, both empty slots at the end do not. That is deliberate (it is what you want when parsing a CSV line with a trailing comma) and it is a real bug source when you are relying on the array's length to line up with a fixed number of columns. If you need the trailing blanks, `split(",", -1)` keeps them.
+> **`split` also drops the empty pieces left at the end, silently.** `"a,b,,c,,".split(",")` returns `["a", "b", "", "c"]`, and not `["a", "b", "", "c", "", ""]`. Splitting on each of the commas gives six pieces: `"a"`, `"b"`, `""`, `"c"`, `""` and `""` — the middle `""` is the gap left by the two consecutive commas, and the last two are the ones left by the two trailing commas: one is the gap between those two commas, and the other runs from the last comma to the end of the text, where there is nothing left. Java hands you only the first four positions: the middle gap survives and the two at the end disappear. That is deliberate, and it is what you want when parsing a CSV line with a trailing comma — parsing is reading a text that has a known structure and pulling the data out of it, and for a CSV that starts by dividing the line into fields, which are the columns that make up the file. But it is also a real source of bugs: if you expect six columns and the line ends with two empty fields, the array reaches you with four columns, and the first line of code that reads `fields[4]` blows up with `ArrayIndexOutOfBoundsException` with nothing having warned you that pieces were missing. To make the number of fields always match the number of columns you need `split(",", -1)`: that second argument is called `limit`, says how many pieces you want at most, and any negative number means "no limit, and take nothing off the end" — it does not have to be `-1`, that is just the one people write out of habit. Calling `split` with a single argument is the same as `limit = 0`, which means "no limit, but drop the trailing empties": hence the default behaviour.
 
 ---
 

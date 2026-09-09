@@ -127,8 +127,10 @@ Read notes/interview-prep/SESSION-LOG.md if it exists and has at least one previ
 
 If sessions exist:
 - Build a list of questions with one or more Débil / Weak First Rating in any previous
-  session. Match by comparing the first 80 characters of each log entry against questions
-  in the source files. This list is used in Step 3 to prioritise persistent weaknesses.
+  session. Match by comparing the first 80 characters of each log entry against the
+  **question text** in the source files — stripped as the rule below says, never the raw bold
+  line, whose leading `[ID]` shifts every one of those 80 characters. This list is used in
+  Step 3 to prioritise persistent weaknesses.
 - Calculate the recurring weak area: count Débil First Ratings by topic across all sessions
   in the log. The topic with the highest count is the recurring weak area. If two topics
   are tied, name both. If no topic has more than one Débil entry, write —.
@@ -143,6 +145,15 @@ starting question.
 ### Step 2 — Read source files
 
 Read all source files for the selected MODE.
+
+**What a bold question line carries, and what you take from it.** A question's line is
+`**[ID] Question text?** ⭐⭐ [refined]`, and only the middle part is the question: the leading
+`[{PROJECT_NAME}-NNN]` or `[{TOPIC}-{LEVEL}-NNN]` identifier, the trailing `⭐⭐⭐`/`⭐⭐`/`⭐` and any
+`[refined]` / `[studied]` marker are metadata. **Strip all three before asking a question, before
+logging it and before matching it** against SESSION-LOG. The markers are what the plan ranks by and what
+the log is keyed on, and reading them aloud turns an interview question into a file listing — which is
+what an unstripped line does the moment a bank carries identifiers, as the project banks have since
+2026-08-31 and the levelled ones will after their first `interview-prep-audit` migration.
 Before asking questions, require every selected topic file's stored coverage fingerprint(s) to match
 the current selected-level coverage. If any is missing or stale, stop and name the exact
 `interview-prep-audit LEVEL={LEVEL} FILE=<topic> MODE=full` run required.
@@ -155,7 +166,13 @@ Order rules — apply in sequence:
 1. Questions whose concept maps unambiguously to an Open `simulator` row for this level come first.
    Within this retry group, order by ⭐⭐⭐/⭐⭐/⭐ and then previous Débil First Rating. If an
    Open row maps to no source question, report it as unconsumed instead of silently dropping it.
-2. For all remaining questions: ⭐⭐⭐ first, then ⭐⭐, then ⭐.
+2. For all remaining questions: ⭐⭐⭐ first, then ⭐⭐, then ⭐. **A question carrying no priority marker
+   ranks as ⭐⭐ wherever these rules read a star** — rule 1's retry group, this rule, and the
+   adaptive-difficulty checkpoint below, which removes ⭐⭐ and ⭐ by name.
+   Ranking it anywhere else is worse in both directions: unranked it is invisible to this rule, and
+   untouched by that prune it would outlive the marked questions it is no more important than. In
+   practice these are project-bank questions written before `portfolio-audit` began marking them — its
+   next run over that project marks them.
 3. Within each remaining tier: questions with a previous Débil First Rating (from Step 1) come first.
 4. Within the same tier and group: randomise to avoid repeating the same order across sessions.
 

@@ -57,13 +57,17 @@ already defends is not a gap — but you may not **repair** one: not the wording
 code block, not its position, and never by deleting it as a duplicate. Where a frozen question and an
 unrefined one cover the same decision, the **unrefined** one is the one you cut. A defect you find inside
 a frozen block is reported in your finish, quoted, and left byte-for-byte on disk. Only Victor reopens
-one, and `[refined]` is a marker you never write in either language.
+one, and a state marker — `[refined]`, or the ` [studied]` `study-block-close` may have appended after it
+— is something you never write in either language.
 
 **Your file is the `en/` one, and the Spanish twin is not yours to judge.** Every check below is a
 check on English. `notes/interview-prep/projects/es/{PROJECT_NAME}.md` is written by stage **T**
 (`_portfolio-translate-prompt.md`) from the file you are about to finish, so it does not yet reflect
 your fixes and comparing the two here would only measure that lag. Do not open it, do not repair it and
-do not report it as drifted.
+do not report it as drifted. **The twin has its own auditor** — stage **C**
+(`_portfolio-review-es-prompt.md`), which runs after T and reads the Spanish without ever opening the
+English, because that is the only way to tell a calque from Spanish. Leaving the twin alone here is not
+leaving it unchecked.
 
 Before starting, read:
 - `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` — the question quality bar, in full.
@@ -107,6 +111,14 @@ Before starting, read:
   read, your fixes stay inside your lane, and the orchestrator's cross-section scan owns that
   renumber. Renumbering "the later of the two" across that boundary would rewrite an out-of-scope byte
   under the guise of a repair, which is the one thing this fence exists to stop.
+- **Priority.** Every question in this section carries a well-formed priority marker — `⭐⭐⭐`, `⭐⭐` or
+  `⭐`, after the question mark and before any state marker — per the standard's **"Priority markers"**.
+  Add a missing one, and downgrade one this section's own code area does not support (`⭐⭐⭐` is a decision
+  the project is *for*, not every decision worth a question). **The whole-file proportion is not yours**:
+  it is a property of the bank, the orchestrator's cross-section scan owns it, and a section judging it
+  from its own share would downgrade against a denominator it cannot see. Report your final split.
+  A frozen block's markers — the `⭐`, the `[refined]` and any ` [studied]` after it — are frozen with
+  the rest of it.
 - **No duplication within the section.** No two questions in `{SECTION}` cover the same decision or code
   path.
 
@@ -126,7 +138,7 @@ gives that straddle to a later `full` run, which has read both tiers.
 
 **The one exception is the freeze above**, and it inverts this instruction rather than qualifying it: on
 a `[refined]` block you report and do not fix. A question you add to close a gap is born unrefined and
-carries the next unused ID in the file.
+carries the next unused ID in the file **and its own priority marker**.
 
 ## Finish — no commit
 
@@ -139,6 +151,10 @@ working tree. Report your **verdict** for `{SECTION}`:
 - **Only if that ratio is still below 1:** the list of decisions you found but left uncovered. The
   orchestrator's acceptance gate re-dispatches you once with exactly that list, so a ratio below 1
   reported without it makes the gate unenforceable.
+- **This section's marker split** (`⭐⭐⭐` / `⭐⭐` / `⭐`) and how many markers you added or downgraded,
+  plus any question you had to leave unmarked because it sits outside your lane. The scan that owns the
+  whole-file proportion counts the finished file itself; your split is what lets it see which section a
+  correction came from without re-reading your work.
 - **The IDs you allocated or repaired**, and every defect you found inside a `[refined]` block — quoted,
   and stated as left untouched. That line is the only route a frozen question's defect has: nothing else
   in this pipeline may open one, and Victor is the only reader who can.

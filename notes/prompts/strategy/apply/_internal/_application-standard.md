@@ -149,6 +149,24 @@ unbackfilled — so an unmarked keyword is judged instead from the projects the 
 `README.md`s, per the project-selection heuristic below), and only a keyword neither of those two
 supports is left out and reported as a gap under the Precedence rule above.
 
+**Where a struck keyword has a superseding tool, the document names the tool rather than the gap.** The
+pool is a floor on the *market*, never a ceiling on the *document*: a technology no posting names is
+still named in the CV and the Skills section when source 7 marks it, and where it **supersedes** a
+required keyword that Defensibility just struck, it takes that keyword's cell or list position and the
+gap line reads `struck X — named Y instead` rather than reporting a hole. Live as of 2026-09-08:
+`Jasmine` is struck — zero `jasmine.*` references in any project — and **`Vitest` · `TestBed`**
+replaces it, on source 7's `✅ 04-meal-finder` against `TestBed` (l.179) and `✅ 05-task-manager` against
+`vi.fn()` test doubles (l.182). The pool keeps `Jasmine` because
+`_job-market-evidence.md` measures it at ~3/14 postings and the Required list is a market property;
+`_session-rules.md`'s **write Vitest, read Jasmine** is the same asymmetry one register down. The clause
+is tool-generic — it governs `Cypress` → `Playwright` unchanged if an E2E keyword ever enters the pool
+(`REC-225`) — and it is spent only when the struck tool earns a marker whose **evidence clause names that
+tool's own API** — `spyOn` / `jasmine.createSpyObj` for `Jasmine`, `cy.` for `Cypress` — at which point
+Defensibility re-admits it with no further rule. **A bullet naming both runners does not spend it**:
+source 7's marked spies bullet contains the words "`spyOn()` in Jasmine" and carries `✅ 05-task-manager`,
+so a spot lookup on the keyword alone returns a marker for the very tool this clause strikes, and reading
+that as the spend condition would stop the clause ever firing on the one instance it names.
+
 ---
 
 ## Project-bullet spec — the persisted `cv-bullets.md` entry
