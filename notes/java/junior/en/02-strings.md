@@ -439,7 +439,7 @@ iteration 1000 → copies 999 lines
 
 That total grows with the *square* of the number of elements you iterate over: double the employees and the copying work is multiplied by four. At ten items you notice nothing; at ten thousand you have a visibly slow endpoint.
 
-`StringBuilder` is the answer, and its mental model is a whiteboard: one surface you keep writing on, rather than a fresh sheet of paper copied out from scratch for every word. It holds a **mutable buffer** — a block of memory you are allowed to modify in place — and `.append()` writes into it. When you are done, `.toString()` produces the finished `String` once.
+`StringBuilder` is the answer: an object that can be modified, one you keep adding text to without creating a new object on every turn. It holds a **mutable buffer** — a block of memory you are allowed to modify in place — and `.append()` writes into it. It works like a whiteboard you keep writing on, rather than a fresh sheet of paper copied out from scratch for every word. When you are done, `.toString()` produces the finished `String` once.
 
 ```java
 // BIEN — one object, appended in place

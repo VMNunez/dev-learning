@@ -439,7 +439,7 @@ iteración 1000 → copia 999 líneas
 
 Ese total crece con el _cuadrado_ del número de elementos sobre los que iteras: si duplicas los empleados, el trabajo de copia se multiplica por cuatro. Con diez elementos no se nota nada; con diez mil tienes un endpoint visiblemente lento.
 
-`StringBuilder` es la respuesta, y su modelo mental es una pizarra: una única superficie sobre la que sigues escribiendo, en lugar de una hoja nueva copiada desde cero por cada palabra. Guarda un **buffer mutable** — un bloque de memoria que tienes permiso de modificar en el sitio — y `.append()` escribe dentro de él. Cuando terminas, `.toString()` produce el `String` final de una vez.
+`StringBuilder` es la respuesta: un objeto que sí se puede modificar, sobre el que vas añadiendo texto sin crear un objeto nuevo en cada vuelta. Guarda un **buffer mutable** — un bloque de memoria que tienes permiso de modificar en el sitio — y `.append()` escribe dentro de él. Funciona como una pizarra sobre la que sigues escribiendo, en lugar de una hoja nueva copiada desde cero por cada palabra. Cuando terminas, `.toString()` produce el `String` final de una vez.
 
 ```java
 // BIEN — un solo objeto, se va añadiendo en el sitio
