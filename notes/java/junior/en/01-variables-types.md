@@ -1,17 +1,53 @@
+## Index of this note
+
+- [Variables and Types](#variables-and-types)
+- [Primitive types](#primitive-types)
+  - [Reference variables and `null`](#reference-variables-and-null)
+  - [Types by category](#types-by-category)
+  - [`int` or `long` — how to choose, and when the literal needs the `L`](#int-or-long--how-to-choose-and-when-the-literal-needs-the-l)
+  - [Building a `BigDecimal` — never `new BigDecimal(0.1)`](#building-a-bigdecimal--never-new-bigdecimal01)
+  - [Comparing `BigDecimal` — `compareTo()` instead of `<`, `>`, or `equals()`](#comparing-bigdecimal--compareto-instead-of---or-equals)
+  - [`BigDecimal` arithmetic — every operation returns a new object, and division demands a scale](#bigdecimal-arithmetic--every-operation-returns-a-new-object-and-division-demands-a-scale)
+- [Variables](#variables)
+  - [The compiler will not let you read a local variable you never assigned](#the-compiler-will-not-let-you-read-a-local-variable-you-never-assigned)
+  - [Scope — where the name is visible](#scope--where-the-name-is-visible)
+  - [Naming conventions](#naming-conventions)
+  - [`final`](#final)
+- [Operators — the four groups, and the two that can skip their right operand](#operators--the-four-groups-and-the-two-that-can-skip-their-right-operand)
+  - [`=` where you meant `==`](#where-you-meant)
+  - [Short-circuit evaluation — why `&&` and `||` sometimes never evaluate their right-hand side](#short-circuit-evaluation--why--and--sometimes-never-evaluate-their-right-hand-side)
+- [Type casting](#type-casting)
+  - [Widening (automatic)](#widening-automatic)
+  - [Narrowing (manual)](#narrowing-manual)
+- [Integer arithmetic — silent traps](#integer-arithmetic--silent-traps)
+  - [Integer division truncates — it does not round](#integer-division-truncates--it-does-not-round)
+  - [Overflow is silent, and it shows up when values are multiplied](#overflow-is-silent-and-it-shows-up-when-values-are-multiplied)
+- [Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on a `double`](#floating-point--why-a-double-cannot-hold-01-and-why--cannot-be-trusted-on-a-double)
+  - [`NaN` — the value that is not equal to itself](#nan--the-value-that-is-not-equal-to-itself)
+  - [Comparing two `double`s — a margin of error, or the right type](#comparing-two-doubles--a-margin-of-error-or-the-right-type)
+- [Division by zero — the same expression either crashes or quietly returns `Infinity`](#division-by-zero--the-same-expression-either-crashes-or-quietly-returns-infinity)
+- [Wrapper classes — objects for primitives](#wrapper-classes--objects-for-primitives)
+  - [When to use each — the practical rule](#when-to-use-each--the-practical-rule)
+  - [Autoboxing and unboxing](#autoboxing-and-unboxing)
+  - [Wrapper `==` — the one comparison this chapter refuses to explain](#wrapper---the-one-comparison-this-chapter-refuses-to-explain)
+  - [Useful wrapper methods](#useful-wrapper-methods)
+- [Text values — `String` has a chapter of its own](#text-values--string-has-a-chapter-of-its-own)
+- [`var` — local type inference (Java 10+)](#var--local-type-inference-java-10)
+
 # Variables and Types
 
 > 📖 [Baeldung — Java primitives](https://www.baeldung.com/java-primitives) → read: "Overview" and "Primitive Data Types"
 > 📖 [Oracle Docs — Primitive types and variables](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
 
-The [intro](00-intro-java.md) left you with the big idea that Java is **statically typed**: every variable has a type fixed at compile time, and that type never changes. That raises the obvious next question — *what are those types?* This file answers it. Before you can write a single class, a loop, or a method, you need the raw materials: the exact set of types Java gives you to hold a number, a flag, a piece of text, and how they behave in memory. Everything from here on — every field in every Spring Boot entity, every method parameter — is built out of the types on this page.
+The [intro](00-intro-java.md) left you with the big idea that Java is **statically typed**: every variable has a type fixed at compile time, and that type never changes. That raises the obvious next question — *what are those types?* This file answers it. Before you can write a single class, a loop, or a method, you need the raw materials: the exact set of types Java gives you to hold a number, a true/false value, a piece of text, and how they behave in memory. Everything from here on — every field in every Spring Boot entity, every method parameter — is built out of the types on this page.
 
 ## Primitive types
 
 > 📖 Docs: [Baeldung — Introduction to Java Primitives](https://www.baeldung.com/java-primitives) → read: "Primitive Data Types" — the eight types with their exact ranges, one sub-section each, plus "Overflow".
 
-In Java there are two ways to store data in memory. The first is to store the **value directly** — the number 42 or the boolean `true` is stored exactly where the variable lives. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `User`, or any class) use the second.
+In Java there are two ways to store data in memory. The first is to store the **value directly**: the data itself lives inside the variable, in the memory slot that variable occupies. The second is to store a **reference** — instead of the data itself, the variable holds a memory address that points to where the real object is, like a link. **Primitive types** use the first form: they store the value directly, no references. **Objects** (like `String`, `User`, or any class) use the second.
 
-This is the single most structural idea on the page, so it is worth drawing. Two declarations that look almost identical produce two completely different memory layouts:
+This distinction — storing the value or storing an address — is the basis of almost everything you will see in the rest of the page, so it is worth drawing. The two declarations below are written almost the same way, but they leave memory in two different shapes: one holds the value, the other holds an address.
 
 ```java
 int number = 42;
@@ -32,58 +68,88 @@ String name = "Victor";
                                        the value lives HERE
 ```
 
-Everything surprising later on this page comes out of that picture. `==` on two `String`s compares the two addresses in the left-hand boxes, not the text in the right-hand box — which is why text is compared with `equals()` instead ([02-strings.md](02-strings.md) shows the calls, and [06-oop-classes.md](06-oop-classes.md) explains what `equals()` is really asking). An `int` can never be `null` because there is no address to leave empty; an `Integer` can, because the address slot can hold "points to nothing". And where those boxes physically live — the stack for the variable, the heap for the object — is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
+Everything that looks contradictory later on this page comes out of the diagram above — that is, out of how each piece of data is stored in memory. For example: `==` on two `String`s compares the two memory addresses the variables hold, not the text those addresses point to. That is why text is compared with `equals()` instead; the methods that actually do compare a `String` — `equals()`, `equalsIgnoreCase()`, `compareTo()` — are in [02-strings.md](02-strings.md), and what `equals()` is really asking is explained in [06-oop-classes.md](06-oop-classes.md).
 
-Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
+Another quirk that comes out of the same thing: an `int` can never be `null`, because its memory slot only fits a number and there is no number that means "empty". An `Integer` can be, because its slot holds an address rather than a number, and an address does admit the special value "I point to no object" — which is exactly what `null` means.
 
-| Type      | Size   | Approximate range                          | Example                  |
-| --------- | ------ | ------------------------------------------ | ------------------------ |
-| `byte`    | 8 bit  | ±1.27 × 10²                                | `byte level = 5;`        |
-| `short`   | 16 bit | ±3.27 × 10⁴                                | `short year = 2025;`     |
-| `int`     | 32 bit | ±2.14 × 10⁹                                | `int age = 31;`          |
-| `long`    | 64 bit | ±9.2 × 10¹⁸                                | `long id = 1234567890L;` |
-| `float`   | 32 bit | ±3.4 × 10³⁸ (~7 significant digits)        | `float tax = 0.21f;`     |
-| `double`  | 64 bit | ±1.7 × 10³⁰⁸ (~15 significant digits)      | `double price = 19.99;`  |
-| `boolean` | 1 bit of information | `true` or `false`              | `boolean active = true;` |
-| `char`    | 16 bit | One UTF-16 code unit (0 to 65,535)         | `char grade = 'A';`      |
+What the drawing does not yet tell you is *where* those two slots sit inside the program's memory: the variable lives in one area (the stack) and the object it points to lives in another (the heap). Put in terms of the two cases in the drawing: when you declare a primitive, the variable and its value are not two things kept in two places — the variable **is** the slot reserved on the stack, and the value is written directly inside that slot; when you declare an object, the stack holds only the variable, and what is written inside it is not the object but the heap address where that object lives; the whole object sits on the heap. The rule is: **every local variable lives on the stack and every object lives on the heap** — and an object's fields are not local variables, so they travel inside their object, on the heap. That second half of the picture is the subject of [05-memory-model.md](05-memory-model.md), which picks this diagram back up in detail.
 
-Read the `Size` column as "how much information the type can hold", not always as "how many bits the JVM hands it". For the seven numeric types the two are the same. `boolean` is the exception: it carries exactly one bit of *meaning*, but the JVM specification does not define a one-bit storage form — a `boolean` local or field occupies a full slot (in practice the space of an `int`), and only inside a `boolean[]` is it packed down to a byte each. So the row tells you the type has two possible values; it does not tell you it costs one bit of RAM.
+Java has 8 primitive types. Each has a fixed size and a range of possible values. The ranges are useful to know when you need to switch types: for example, if a counter can exceed 2.1 billion, `int` is too small and you need `long`.
+
+| Type      | Size   | Approximate range                          | Typical use | Example                  |
+| --------- | ------ | ------------------------------------------ | ------------------------------------------------------------------------------------- | ------------------------ |
+| `byte`    | 8 bit  | ±1.27 × 10²                                | Almost never on its own: shows up as `byte[]` when reading a file or a request body     | `byte level = 5;`        |
+| `short`   | 16 bit | ±3.27 × 10⁴                                | Practically never in backend code; only to save memory in very large arrays             | `short year = 2025;`     |
+| `int`     | 32 bit | ±2.14 × 10⁹                                | The default integer: counters, loop indexes, ages, quantities                           | `int age = 31;`          |
+| `long`    | 64 bit | ±9.2 × 10¹⁸                                | Database ids and millisecond timestamps (`System.currentTimeMillis()`)                  | `long id = 1234567890L;` |
+| `float`   | 32 bit | ±3.4 × 10³⁸ (~7 significant digits)        | Almost never: graphics or scientific data where precision is spare and memory is not    | `float tax = 0.21f;`     |
+| `double`  | 64 bit | ±1.7 × 10³⁰⁸ (~15 significant digits)      | Measurements and scientific maths (weights, distances, percentages). **Never money** — use `BigDecimal` | `double price = 19.99;`  |
+| `boolean` | 1 bit of information | `true` or `false`              | Yes/no state and the result of a condition: `isActive`, `hasPermission`                 | `boolean active = true;` |
+| `char`    | 16 bit | One UTF-16 code unit (0 to 65,535)         | A single standalone character: an initial, a separator, an exam grade                   | `char grade = 'A';`      |
+
+The `Typical use` column is the one that answers "so which do I pick?": day to day you will write `int`, `long`, `boolean` and `double`, and the other four you will **read** in other people's code far more often than you will write them.
+
+The `Size` column deserves a closer reading, because it actually answers two different questions that almost always give the same number:
+
+- **How much information fits in the type** — how many different values it can represent.
+- **How many bits of memory the JVM hands it** — what it really costs in RAM.
+
+For the seven numeric types the two answers coincide: an `int` holds 32 bits of information and occupies 32 bits. That is why you can read the column without thinking about it.
+
+`boolean` is the only row where they come apart. In information it carries exactly one bit: it has just two possible values, `true` and `false`, and one bit is enough to tell two values apart. In memory it costs far more, because the JVM specification defines no way to store a lone bit — a `boolean` local or field takes a full slot, in practice the space of an `int`. The one exception is when they sit in a row inside a `boolean[]`: there they are packed down, one byte each.
+
+> **What the `1 bit` in that row is actually telling you.** It tells you the type has two possible values, not that it costs you one bit of RAM. That is the difference between "this piece of data only needs one bit to express itself" and "this piece of data occupies one bit in memory" — the first is true, the second is not. In practice this changes not a line of the code you write; it is here so the row does not leave you with a false idea of what a `boolean` costs.
 
 A **Unicode character** is any symbol from any writing system in the world: Latin letters, Chinese, Arabic, emojis, mathematical symbols. The Unicode standard assigns a unique number (a *code point*) to every symbol — and `char` stores one 16-bit slice of that numbering, from 0 to 65,535.
 
-> **Exact scope: a `char` does not hold "any Unicode character".** It holds one **UTF-16 code unit**, which covers code points up to U+FFFF. Everything above that — emoji, many historical scripts, most mathematical alphanumerics — is stored as **two** `char`s (a *surrogate pair*), so it does not fit in a single `char` at all. Try it and the compiler stops you before the program ever runs:
+> **Exact scope: a `char` does not hold "any Unicode character".** What a `char` holds is a 16-bit number, from 0 to 65,535, and that number is the symbol's code point: its position in the Unicode table. The catch is that the table holds far more than 65,536 symbols — it runs up to position 1,114,111 — so a `char` only reaches the symbols that fall inside its first 65,536 positions. That is what "up to U+FFFF" means: `U+FFFF` is the usual way of writing the number 65,535 in hexadecimal, and it marks the last symbol a `char` reaches. Latin letters, Greek, Cyrillic, Arabic and most of Chinese fit inside it. Everything above that number — emoji, many historical scripts, most mathematical alphanumerics — does not fit in 16 bits, and Java stores it split across **two** `char`s that only mean anything together (a *surrogate pair*). That is why no `char` can hold "😀": it is not that it barely misses, it is that two are needed. Try it and the compiler stops you before the program ever runs:
 >
 > ```java
-> char c = '😀';   // MAL — error: unclosed character literal
+> char c = '😀';   // MAL — error: character literal contains more than one UTF-16 code unit
 > ```
 >
-> The message reads oddly until you know the mechanism: the compiler consumes the first of the two code units, expects the closing `'` immediately after it, finds the second code unit instead, and reports the literal as unclosed. It is not a badly worded "too many characters" error — from the compiler's point of view a `char` literal holds exactly one code unit and the emoji simply is not one.
->
-> The same split leaks into `String`, which is just a sequence of `char`s: `"😀".length()` returns **2**, not 1, because it counts code units and the emoji occupies two of them. If you ever need the human count, `"😀".codePointCount(0, 2)` returns 1. This is the mechanism behind every "my substring cut an emoji in half" bug. In web development you rarely touch `char` directly — full text goes in `String` — but the length surprise reaches you through `String`.
+> That split into one or two `char`s does not stay inside the `char` type: `String` drags it along too, since a `String` is just a sequence of `char`s. That is why `"😀".length()` returns **2**, not 1: `length()` does not count symbols, it counts how many `char`s the `String` holds, and the emoji takes two of them. If what you want is to count symbols the way a person reading them sees them — the emoji counts as one, even though it takes two `char`s internally — that count is what `"😀".codePointCount(0, 2)` gives you, and it returns **1**. This is the mechanism behind every "my substring cut an emoji in half" bug. In web development you rarely touch `char` directly — full text goes in `String` — but the length surprise reaches you through `String`.
 
 In practice you use `int`, `long`, `double`, and `boolean` for almost everything. `float` and `byte` are rarely needed.
 
-### Reference variables and `null` — enough to read the rest of this page
+### Reference variables and `null`
 
-The right-hand box in that diagram raises a question the left-hand one cannot: what is in `name` *before* you point it at anything? A primitive box always holds a number — an `int` field you never touched holds `0`, and there is no way to make it hold "nothing", because the box is 32 bits of number and every arrangement of those bits already means some number. A reference box holds an address, and an address slot has one extra state available to it: **`null`**, the address that points at no object.
+```java
+int number;      // declared, not assigned yet
+String name;     // declared, not assigned yet
+```
+
+In the code above, `name` raises a question `number` cannot raise: both are declared and neither has been assigned anything yet, so what is written inside `name`?
+
+`number` is a 32-bit slot with a number always written in it. An `int` field of a class you declare and never assign starts out as `0` — yes, exactly that: declared with no value, and it begins at `0`, because Java fills those 32 bits with zeros when the object is created. (A local variable is the exception: there Java fills in nothing, and the compiler forces you to assign it before you read it.) And there is no way to leave that slot "empty": the 32 positions are always occupied by zeros and ones, and every possible arrangement of those bits is already taken — each one means some specific number. None is left over to be given the meaning "nothing here".
+
+`name` does not hold the text: it holds the memory address where the `String` object lives. With addresses there is room left over, because some values do not correspond to any real object. Java sets one of those values aside — not an object and not a bit, but one of the bit patterns that fit in the address slot and correspond to the location of no real object — and gives it a single meaning — "this variable points at no object" — and that value is **`null`**. That is why `name` can answer the question above and `number` cannot: `null` is just another of the addresses that fit in the slot, and it exists precisely to say there is nothing there.
 
 ```java
 String name = null;      // BIEN — the box exists and holds "points to nothing"
 int number = null;       // MAL — error: incompatible types: <null> cannot be converted to int
 ```
 
-That is the whole of the primitive-versus-reference split you need for this page: a primitive variable *is* its value, while a reference variable *identifies* an object and may identify none. Three consequences of it show up further down — an `Integer` can be `null` where an `int` cannot, a generic type such as `List<Integer>` only accepts reference types, and unboxing a `null` wrapper fails at runtime.
+That is the whole of the primitive-versus-reference split you need for this page: a primitive variable points at its value — or more exactly, *is* its value — while a reference variable points at an object and may point at none.
 
-> **Why almost everything else about references lives in another file.** `null` is the doorway to three separate mechanisms, and each one belongs to the chapter that has the vocabulary for it. What a reference physically holds, where the object it points at actually lives, and why the failure surfaces on the exact line that follows the address is [05-memory-model.md](05-memory-model.md) — it needs the stack-versus-heap split first. Where you *check* for `null` — the guard clause at the entrance of a method, so a bad value never travels deeper into your code — is [04-methods.md](04-methods.md), which needs parameters and return values first. And what an object is at all, plus how two of them are compared, is [06-oop-classes.md](06-oop-classes.md). Being able to read `null` in the examples below is everything this file asks of you.
+> **What is still missing about `null`, and which file each part is in.** Being able to read `null` in the examples still to come in this same file — the `user != null` check in the operators section, the `Long id` that starts out `null`, the `null` a map returns for a key that is not there — is everything this file asks of you. Three questions stay open, and none of them can be answered here because each one needs something you have not studied yet.
+>
+> The first: what exactly is written inside a reference variable, and why the program blows up on the line where you use a reference holding `null` and not before. That is in [05-memory-model.md](05-memory-model.md).
+>
+> The second: at which point in the code you check whether a value is `null`. The usual place is the first line of the method that receives it: if the incoming value is `null`, the method stops right there and never starts working with it, so a useless value never reaches the lines below or the methods those lines call. That first-line check is called a _guard clause_. Writing one means knowing what a parameter and a return value are first, so it is in [04-methods.md](04-methods.md).
+>
+> The third: what an object is — the thing the reference points at when it is not `null` — and how one object is compared with another. That is in [06-oop-classes.md](06-oop-classes.md).
 
 ### Types by category
+
+The table above gave you all 8 primitives, with their size and their range. This section regroups them by what they are for, and stops only on the ones you will actually write day to day, along with the traps they bring with them.
 
 **Integer numbers** — for counting, IDs, ages, quantities:
 - `byte` and `short` — whole numbers just like `int` and `long`, only with a much smaller range. They cannot hold decimals. In practice you will see them in old code or when working with binary data.
 - `int` — your everyday whole number. Use this by default.
 - `long` — when `int` is not big enough. Database IDs are often `Long` because they grow very large. Notice the `L` suffix: `1234567890L`.
 
-> **Why the `L` suffix is not optional.** A bare numeric literal in Java source is an `int`, always — the compiler decides the literal's type *before* it looks at the variable you are assigning it to. So in `long id = 1234567890123;` the compiler reads `1234567890123` as an `int` literal, finds it does not fit in 32 bits, and stops right there:
+> **Why the `L` suffix is not optional.** A **literal** is a value written out as-is in the source code: the `1234567890123` in the example below, or the `0.21` you will meet in the next bullet — the number itself, not the variable holding it nor the result of an operation. And a bare **integer** literal in Java source is an `int`, always — the integer one only: a literal with a decimal part such as `0.21` is a `double` by default, never a `float`, and that is what the `f` suffix in the next bullet is about. The compiler decides the literal's type *before* it looks at the variable you are assigning it to. So in `long id = 1234567890123;` the compiler reads `1234567890123` as an `int` literal, finds it does not fit in 32 bits, and stops right there:
 >
 > ```java
 > long id = 1234567890123;    // MAL — error: integer number too large
@@ -105,9 +171,9 @@ That is the whole of the primitive-versus-reference split you need for this page
   > Read the message literally: *possible* lossy, not *definitely* lossy. The compiler is not claiming this particular number would lose precision; it refuses the whole `double` → `float` direction on principle, because it cannot prove in general that it is safe. That word "possible" is the compiler's signature for every narrowing it blocks, and you will meet it again in the *Narrowing* section below.
 - `double` — the default choice for decimals. Higher precision: up to ~15 significant digits. `3.141592653589793`, for example, fits comfortably in a `double`.
 
-> **Money in Spring Boot:** never use `double` or `float` for financial values. Use `BigDecimal` — it is a plain Java class (`java.math` package, not Spring Boot) that does exact arithmetic. `double` cannot represent 0.1 exactly in binary because computers express numbers as sums of powers of 2 (1/2, 1/4, 1/8…), and 0.1 cannot be expressed as a finite sum of those powers — just like 1/3 cannot be written exactly in decimal (0.333…). The processor stores the closest approximation it can, and that small error accumulates across operations until you get `0.09999999...` instead of `0.1`. `BigDecimal` avoids this by operating on the actual digits, without the representation error.
+> **Money — never `double` or `float`.** For financial values use `BigDecimal`: a plain Java class, from the `java.math` package, that does exact arithmetic. `double` cannot represent 0.1 exactly in binary because computers express numbers as sums of powers of 2 (1/2, 1/4, 1/8…), and 0.1 cannot be expressed as a finite sum of those powers — just like 1/3 cannot be written exactly in decimal (0.333…). The processor stores the closest approximation it can, and that small error accumulates across operations until you get `0.09999999...` instead of `0.1`. `BigDecimal` avoids this by operating on the actual digits, without the representation error.
 
-**Boolean** — for flags and conditions:
+**Boolean** — for flags and conditions. A *flag* is a variable whose only job is to answer yes or no to a question about the state of something: `isActive` ("is this account still active?"), `hasRole` ("does this user have this role?"), `emailVerified` ("has the address been confirmed?"). It does not hold a piece of domain data, it holds a decision already made, so the code that comes after can ask about it with an `if` instead of recomputing it:
 - `boolean` — holds only `true` or `false`. Used for `isActive`, `hasRole`, `isEmpty`.
 
 **Character** — for single characters:
@@ -115,24 +181,34 @@ That is the whole of the primitive-versus-reference split you need for this page
 
 ### `int` or `long` — how to choose, and when the literal needs the `L`
 
-The table gives you the ranges; the decision rule is simpler than the numbers. **Default to `int`, and reach for `long` only when the value can plausibly pass about 2.1 billion.** In backend work that is a short and predictable list: database identifiers (a table rarely holds two billion rows, but ids come from a sequence that never reuses a number, so they outrun the row count), timestamps in milliseconds since 1970 (`System.currentTimeMillis()` returns a `long`, and milliseconds passed the `int` range about 25 days into 1970), byte counts of anything file-sized, and running totals that accumulate for years. Ages, list sizes, page numbers, HTTP status codes and loop counters stay `int` forever.
+The table gives you the exact ranges, but you do not need to memorise them: to decide between `int` and `long` a single reference number is enough, the 2.1 billion ceiling of `int`. **Default to `int`, and reach for `long` only when the value can plausibly pass about 2.1 billion.** In backend work that is a short and predictable list: database identifiers (a table rarely holds two billion rows, but ids come from a sequence that never reuses a number, so they outrun the row count), timestamps in milliseconds since 1970 (`System.currentTimeMillis()` returns a `long`, and milliseconds passed the `int` range about 25 days into 1970), and time measured in nanoseconds (`System.nanoTime()`, used to time how long a method takes: an `int` of nanoseconds runs out after 2.1 seconds). Ages, list sizes, page numbers, HTTP status codes and loop counters stay `int` forever.
 
-> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one:
+> **Choosing the type and writing the suffix are two separate decisions.** The `L` belongs to the *literal*, not to the variable, so a `long` variable does not automatically need one. What makes the first line below work is that there is an `int` literal being stored in a `long`, and that direction — from a smaller type to a wider one — is precisely the one Java allows without asking you for anything: it has a name of its own, **widening**, and Java performs it silently. The opposite, putting a large value into a smaller type, is **narrowing**, and that one it makes you request in writing. Both have their own section further down; for now, hold on to this: the suffix has nothing to do with the variable's type, only with whether the literal fits in an `int`:
 >
 > ```java
 > long smallId = 5;               // BIEN — no suffix needed
 > long bigId   = 1234567890123L;  // the L is required here
 > ```
 >
-> The first line is fine because `5` is a perfectly legal `int` literal and `int` → `long` is a widening conversion, which Java performs silently (the *Widening* section below). The second needs the suffix because the literal itself does not fit in 32 bits, and the compiler judges the literal before it ever looks at the variable — the callout above traces that exact error. So the rule is: **suffix the literal only when the literal alone is too big for an `int`**. Writing `5L` is not wrong, just noise.
+> The first line is fine because `5` is a perfectly legal `int` literal and `int` → `long` is a widening conversion, which Java performs silently. The second needs the suffix because the literal itself does not fit in 32 bits, and the compiler judges the literal before it ever looks at the variable. So the rule is: **suffix the literal only when the literal alone is too big for an `int`**. Writing `5L` is not wrong, just noise.
 
-There is a third place the `L` decides the outcome, and it has nothing to do with the declared type of the variable: arithmetic. `1000 * 60 * 60 * 24 * 30` overflows even when you store the result in a `long`, because the multiplication is carried out in `int` before the assignment is considered. That is the *Overflow* section further down — and it is the case where a missing `L` produces a wrong number instead of a compile error.
+There is a third place the `L` decides the outcome, and it has nothing to do with the declared type of the variable: arithmetic. `1000 * 60 * 60 * 24 * 30` overflows even when you store the result in a `long`, because the multiplication is carried out in `int` before the assignment is considered. That last part is the piece worth getting right, because it is counter-intuitive: the compiler resolves the right-hand expression **whole and on its own**, without once looking at which variable it is going into. And the type of an arithmetic operation is decided by its operands, never by its destination: `int * int` gives `int`, always. The trace is this:
+
+> 1. `1000 * 60` → both operands are `int` literals, so the result is an `int`: `60000`.
+> 2. `60000 * 60` → still `int * int`: `3600000`.
+> 3. `3600000 * 24` → `int`: `86400000`.
+> 4. `86400000 * 30` → `int` again, but the true result, 2,592,000,000, does not fit in an `int`. It overflows **here**, at step 4, and what is left is a negative number.
+> 5. **Only now** does the assignment come into play: that already-broken `int` is taken and converted to `long` (widening). The conversion works perfectly — it is converting the garbage with complete fidelity.
+>
+> Declaring the variable as `long` arrives too late: the damage is done at step 4. What fixes the calculation is forcing the arithmetic itself to be `long`, by putting the `L` on the first literal (`1000L * 60 * 60 * 24 * 30`): from there on every step is `long * int`, Java promotes the `int` to `long`, and the whole chain is computed in 64 bits.
+
+That is the *Overflow* section further down — and it is the case where a missing `L` produces a wrong number instead of a compile error.
 
 ### Building a `BigDecimal` — never `new BigDecimal(0.1)`
 
 > 📖 Docs: [Baeldung — BigDecimal and BigInteger in Java](https://www.baeldung.com/java-bigdecimal-biginteger) → read: "BigDecimal" — the constructors and why the `String` one is the safe default.
 
-The callout above told you to reach for `BigDecimal` instead of `double` for money. There is a trap one step later: `BigDecimal` has a constructor that takes a `double`, and using it hands the `double` problem straight back to you, only now frozen into an object that claims to be exact.
+The section above told you to reach for `BigDecimal` instead of `double` for money. There is a trap one step later: `BigDecimal` has a constructor that takes a `double`, and using it hands the `double` problem straight back to you, only now frozen into an object that claims to be exact.
 
 Look at what each of the three ways to build "0.1" actually produces. This is real output, not an illustration:
 
@@ -142,14 +218,14 @@ BigDecimal.valueOf(0.1)    // 0.1                                               
 new BigDecimal("0.1")      // 0.1                                                          ← BIEN
 ```
 
-The mechanism is the one the money callout described, caught in the act. By the time `new BigDecimal(0.1)` runs, the literal `0.1` has *already* been converted to a `double`, and a `double` cannot hold 0.1 — it holds the nearest binary value it can build out of halves, quarters and eighths, which is that 55-digit number. `BigDecimal` then does its job perfectly: it faithfully records the exact value it was handed. The error was not introduced by `BigDecimal`; it was baked into the argument before the constructor was even called, and `BigDecimal` is simply the first tool precise enough to show it to you.
+The mechanism is the one the _Types by category_ section, earlier in this file, already described in its **Money — never `double` or `float`** note — caught in the act. By the time `new BigDecimal(0.1)` runs, the literal `0.1` has *already* been converted to a `double`, and a `double` cannot hold 0.1 — it holds the nearest binary value it can build out of halves, quarters and eighths, which is that 55-digit number. `BigDecimal` then does its job perfectly: it faithfully records the exact value it was handed. The error was not introduced by `BigDecimal`; it was baked into the argument before the constructor was even called, and `BigDecimal` is simply the first tool precise enough to show it to you.
 
 The two safe forms both avoid ever letting the value exist as a `double`:
 
 - **`new BigDecimal("0.1")`** — the `String` constructor reads the digits you literally wrote, one character at a time. No binary approximation happens because no `double` is ever involved. Reach for this when the value comes from a config file, a JSON body, or a literal you typed.
 - **`BigDecimal.valueOf(0.1)`** — takes a `double`, but internally runs it through `Double.toString()` first and then parses *that* text. `Double.toString()` prints the shortest decimal that round-trips back to the same `double`, which for `0.1` is the string `"0.1"` — so you land on exactly the value the `String` constructor would have given you. Reach for this when the value is already sitting in a `double` variable and you cannot go back and change where it came from.
 
-> **Then why does the `double` constructor exist at all?** Because it is the only one that tells the truth about a `double`. If you are debugging *why* a computation drifted, `new BigDecimal(someDouble)` is the tool that shows you the actual stored value rather than the friendly rounded print-out. It is a diagnostic instrument, not a way to create money. In application code, treat `new BigDecimal(` applied to a `double` or `float` as a bug — this is exactly what a reviewer flags in a pull request. (Passing an `int` or a `long` is harmless, since those hold their values exactly; it is only the floating-point types that arrive already wrong.)
+> **Then why does the `double` constructor exist at all?** Because it is the only one that tells the truth about a `double`. If you are debugging *why* a computation drifted, `new BigDecimal(someDouble)` is the tool that shows you the actual stored value rather than the rounded, friendly number. It is a diagnostic instrument, not a way to create values that hold money. In code that ships to production, treat `new BigDecimal(` applied to a `double` or `float` as a bug — this is exactly what a reviewer flags in a pull request. (Passing an `int` or a `long` is harmless, since those hold their values exactly; it is only the floating-point types that arrive already wrong.)
 
 In the TimeTrack backend, `TimeEntry.hours` is declared `private BigDecimal hours;` for this reason (`projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/model/TimeEntry.java`) — hours get summed into reports, and a `double` would drift by a fraction of an hour once enough entries were added up.
 
@@ -157,7 +233,7 @@ In the TimeTrack backend, `TimeEntry.hours` is declared `private BigDecimal hour
 
 > 📖 Docs: [Baeldung — BigDecimal and BigInteger in Java](https://www.baeldung.com/java-bigdecimal-biginteger) → read: "Operations on BigDecimal" — `compareTo()` and why it is not `equals()`.
 
-Imagine a service needs to validate that hours worked fall between 0.5 and 24 (exactly the case for `TimeEntry.hours` in a timesheet). If `hours` is `BigDecimal`, writing `hours < new BigDecimal("24")` does not even compile:
+Imagine a service needs to validate that hours worked fall between 0.5 and 24 (exactly the case for `TimeEntry.hours`). If `hours` is `BigDecimal`, writing `hours < new BigDecimal("24")` does not even compile:
 
 ```
 error: bad operand types for binary operator '<'
@@ -165,15 +241,35 @@ error: bad operand types for binary operator '<'
   second type: BigDecimal
 ```
 
-Read the two extra lines as the compiler showing its work: it names what it found on each side of the operator, so you can see that neither of them is a number it knows how to compare. `<` and `>` are built into the language for primitives only — they compile down to a single CPU instruction on a numeric value — and `BigDecimal` is an object, so there is nothing for that instruction to act on. Java has no operator overloading, so a class can never teach `<` to work on it; a class can only offer a *method*.
+The first line of the error names the failure — `bad operand types for binary operator '<'`, meaning the operands you handed to `<` are not of a type that operator accepts. The two extra lines are the compiler telling you what it found on each side of the operator, so you can see that neither of them is a number it knows how to compare. `<` and `>` are built into the language for primitives only — they compile down to a single CPU instruction on a numeric value — and `BigDecimal` is an object, so there is nothing for that instruction to act on. Java has no **operator overloading**: it does not let you redefine what `+`, `<` or `==` mean when applied to your own classes. The meaning of each symbol is fixed inside the language and no class can change it. (Other languages do allow it — in C++ or Python a class can declare what `<` does on its objects — which is why it is worth knowing Java chose the opposite.)
 
-The next instinct is usually `.equals()`, but there is a trap: `.equals()` on `BigDecimal` also compares the **scale** (how many decimal places the number is internally represented with), not just the mathematical value. That is why `new BigDecimal("24.0").equals(new BigDecimal("24"))` returns `false` — to Java, "24.0" and "24" are objects with different scales (one decimal digit versus none), even though they are mathematically the same number.
+That is the sentence worth taking apart. When you write `a < b`, the compiler does not go looking inside `a`'s class for anything: `<` is a language instruction that only knows how to operate on primitive numbers, so if the operands are not primitives there is nothing to execute and the error lands at compile time. The `BigDecimal` class has no way to say "when someone writes `<` on me, do this". What a class can offer you are **methods** — names you call explicitly with a dot — and that is exactly what `BigDecimal` does: instead of a symbol the language reserves, it offers you `compareTo()`.
 
-`BigDecimal` implements the `Comparable<BigDecimal>` interface, which provides the `compareTo(BigDecimal other)` method. An **interface** here is just a contract a class signs saying "I provide these methods" — what interfaces are and how you write your own is [07-interfaces-abstract.md](07-interfaces-abstract.md), and the `<BigDecimal>` in angle brackets is a *generic type argument*, read for now as "comparable specifically against other `BigDecimal`s" and covered in full in [09-generics.md](09-generics.md). Neither is something you need today; you only need to know where `compareTo` comes from. This method does compare the actual mathematical value, ignoring scale, and returns an `int`:
+```java
+BigDecimal a = new BigDecimal("0.5");
+BigDecimal b = new BigDecimal("24");
+
+a < b;              // WRONG — does not compile: `<` does not exist for objects
+a.compareTo(b) < 0; // RIGHT — a method on the class, and the `<` now compares two ints
+```
+
+Another option for comparing two `BigDecimal`s is usually to think of `.equals()`, but there is a trap: `.equals()` on `BigDecimal` also compares the **scale** (how many decimal places the number is internally represented with), not just the mathematical value. That is why `new BigDecimal("24.0").equals(new BigDecimal("24"))` returns `false` — to Java, "24.0" and "24" are objects with different scales (one decimal digit versus none), even though they are mathematically the same number.
+
+The correct way to compare two `BigDecimal`s is with `compareTo()`. `BigDecimal` implements the `Comparable<BigDecimal>` interface, which provides the `compareTo(BigDecimal other)` method. An **interface** here is just a contract a class signs saying "I provide these methods" — what interfaces are and how you write your own is [07-interfaces-abstract.md](07-interfaces-abstract.md), and the `<BigDecimal>` in angle brackets is a *generic type argument*, read for now as "comparable specifically against other `BigDecimal`s" and covered in full in [09-generics.md](09-generics.md). Neither is something you need today; you only need to know where `compareTo` comes from. This method does compare the actual mathematical value of the two `BigDecimal`s involved — the object you call it on (`this`) and the one you pass as the argument (`other`) — ignoring scale, and returns an `int`:
 
 - negative if `this` is less than `other`
 - `0` if they are mathematically equal
 - positive if `this` is greater than `other`
+
+`this` is the `BigDecimal` on the left of the dot, and `other` is the one inside the parentheses:
+
+```java
+new BigDecimal("10").compareTo(new BigDecimal("24"));   // negative → this (10) is less than other (24)
+new BigDecimal("24").compareTo(new BigDecimal("24.0")); // 0        → same mathematical value, different scales
+new BigDecimal("30").compareTo(new BigDecimal("24"));   // positive → this (30) is greater than other (24)
+```
+
+> **Look at the sign only, never at the exact number.** The javadoc for `compareTo` promises a negative, zero or positive `int` and nothing more: it does not guarantee `-1` or `1`. That is why the correct pattern is always `... compareTo(...) < 0`, never `... compareTo(...) == -1`.
 
 The pattern is always the same: call `compareTo()`, then compare the resulting `int` against `0` with the normal operators (`<`, `>`, `==`) — because now you are comparing two primitive `int`s, not two `BigDecimal` objects.
 
@@ -185,17 +281,17 @@ if (hours.compareTo(new BigDecimal("0.5")) < 0 || hours.compareTo(new BigDecimal
 }
 ```
 
-(`throw new RuntimeException(...)` is how a method aborts with an error instead of returning a value — read it here as "stop and report"; how throwing and catching actually work is [11-exceptions.md](11-exceptions.md).)
+(`throw new RuntimeException(...)` is **throwing an exception**: the method stops on that line and, instead of returning a value, hands an error object back to whoever called it. Who picks that error up afterwards, and how it is handled, is [11-exceptions.md](11-exceptions.md).)
 
 Read it as: "if `hours` compared to 0.5 is negative (meaning `hours` is less than 0.5) OR `hours` compared to 24 is positive (`hours` is greater than 24), throw the exception".
 
-> **`compareTo() == 0` for equality, never `equals()`.** If you ever need to check value equality between two `BigDecimal`s (e.g. "is the total billed exactly 100?"), use `total.compareTo(new BigDecimal("100")) == 0`, not `total.equals(new BigDecimal("100"))` — because if `total` arrived as `"100.00"` (with two decimal places, common when it comes from a `DECIMAL(10,2)` database column), `.equals()` would return `false` even though the value is identical.
+> **`compareTo() == 0` for equality, never `equals()` — as we saw above.** If you ever need to check value equality between two `BigDecimal`s (e.g. "is the total billed exactly 100?"), use `total.compareTo(new BigDecimal("100")) == 0`, not `total.equals(new BigDecimal("100"))` — because if `total` arrived as `"100.00"` (with two decimal places, common when it comes from a `DECIMAL(10,2)` database column), `.equals()` would return `false` even though the value is identical.
 
 ### `BigDecimal` arithmetic — every operation returns a new object, and division demands a scale
 
 > 📖 Docs: [Java SE 25 API — `java.math.BigDecimal`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html) → read: the class description ("immutable, arbitrary-precision signed decimal numbers") and the entries for `divide` and `setScale`.
 
-`BigDecimal` is **immutable**: no method on it ever changes the object you called it on. Every arithmetic method builds and returns a *new* `BigDecimal` and leaves the original exactly as it was. That is the most common `BigDecimal` mistake by a distance, and it fails silently — the code compiles, runs, and reports the old number:
+`BigDecimal` is **immutable**: once the object exists, the number stored inside it can no longer be changed. No method modifies it — `add`, `subtract`, `multiply` and `divide` compute the result, wrap it in a *new* `BigDecimal` and hand you that new object, leaving the original exactly as it was. That is where the most common mistake when using this class comes from: calling the method and storing nowhere what it returns. And nothing warns you — the code compiles, runs and keeps printing the old number, so the bug only shows up in the result:
 
 ```java
 BigDecimal total = new BigDecimal("10.00");
@@ -206,43 +302,118 @@ total = total.add(new BigDecimal("5.00"));  // BIEN — reassign to keep the res
 System.out.println(total);                  // 15.00
 ```
 
-There is no compiler error, because the first call is a legal expression whose value you chose to ignore — exactly like writing `list.size();` on a line of its own. The mechanism is worth stating plainly: `add` has no way to change `total`, because the object `total` points at exposes nothing that alters its digits; all `add` can do is compute the sum, wrap it in a new object, and hand you the address of that new object. If nobody stores that address, it is garbage a moment later.
+There is no compiler error, because `total.add(...)` is a legal expression: it computes a value, and you chose to do nothing with it. The mechanism, step by step: `total` does not hold the number, it holds the address of the object that contains it, and that object offers no method able to change its digits. So `add` does the only thing it can — it adds, builds a new object with the result, and returns the address in memory of that new object. If you assign that address to no variable, nobody knows where the new object is and it is discarded, while `total` still points at the same `10.00` as before.
 
-The four operations are named methods, for the reason the `compareTo` section gave: Java has no operator overloading, so a class can never teach `+` to work on it.
+The four arithmetic operations `BigDecimal` offers are the methods `add`, `subtract`, `multiply` and `divide`. You cannot write `+`, `-`, `<`, `>` or `==` on two `BigDecimal`s: those operators only act on primitives, and a `BigDecimal` is an object.
 
 ```java
 BigDecimal net  = new BigDecimal("100.00");
 BigDecimal rate = new BigDecimal("0.21");
 
-BigDecimal vat   = net.multiply(rate);   // 21.0000   ← four decimal places, not two
-BigDecimal gross = net.add(vat);         // 121.0000
-BigDecimal diff  = gross.subtract(net);  // 21.0000
+BigDecimal vat   = net.multiply(rate);                                  // 21.0000   ← four decimal places, not two
+BigDecimal gross = net.add(vat);                                        // 121.0000
+BigDecimal diff  = gross.subtract(net);                                 // 21.0000
+BigDecimal half  = gross.divide(new BigDecimal("2"), 2, RoundingMode.HALF_UP);  // 60.50  ← divide is the only one that demands a scale and a rounding mode
 ```
 
-**Scale is the number of digits kept after the decimal point, and it is part of the object rather than a display setting.** `multiply` adds the two scales together — two decimals times two decimals gives four — which is why `21.0000` comes out where you were expecting `21.00`. You correct it when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops:
+**Scale is the number of digits kept after the decimal point, and it is part of the object**: `21.00` has scale 2 and `21.0000` has scale 4, even though the value is the same. Each operation works out its result's scale from a fixed rule that does not depend on what you want — only on the scales the operands arrive with. Read the table as "if I go in with these two scales, I come out with this one":
+
+| Operation | Result's scale | Example |
+|---|---|---|
+| `add`, `subtract` | the **larger** of the two | scale 2 with scale 4 → 4 |
+| `multiply` | the **sum** of the two | scale 2 times scale 2 → 4 |
+| `divide` | the one **you** pass | mandatory: there is no automatic rule |
+
+Follow the chain in the example above step by step, because that is exactly where the scale of 4 appears and never leaves again:
+
+1. `net` and `rate` are built from `"100.00"` and `"0.21"` → **scale 2** both.
+2. `vat = net.multiply(rate)` → `multiply` adds the scales: 2 + 2 = **scale 4**. `vat` is `21.0000`.
+3. `gross = net.add(vat)` → `add` takes the larger: `net` brings 2, but **`vat` already brings 4** → **scale 4**. `gross` is `121.0000`.
+4. `diff = gross.subtract(net)` → the larger of 4 and 2 → **scale 4**. `diff` is `21.0000`.
+
+You do not tell `add`, `subtract` or `multiply` how to round or what scale to use, and that is not an oversight in the API: **they do not need it**. The sum, the difference and the product of two finite decimals are always another finite decimal, so the table's rule is enough to represent the _exact_ result — no digit is dropped, and where nothing is dropped there is nothing to round. That is why these three methods take a single argument, the other operand, while `divide` takes three:
+
+```java
+BigDecimal multiply(BigDecimal multiplicand);                                  // 1 argument: there is no decision to make
+BigDecimal divide(BigDecimal divisor, int scale, RoundingMode roundingMode);   // 3: how many decimals to keep and what to do with the rest
+```
+
+`divide` is the only operation whose result can have infinitely many digits — `10 / 3` is `3.333...` and never terminates — and there no automatic rule helps: you have to say how many decimals to keep and what to do with the ones that go. Hence the three arguments.
+
+So if you want to impose a scale and a rounding mode on the result of `add`, `subtract` or `multiply`, where do you choose them? In a separate step, when you are ready to store or show the value, with `setScale`, which takes the scale you want plus a `RoundingMode` saying what to do with the digits it drops. Neither `multiply`, nor `add`, nor `subtract` has an overload that takes a scale and a rounding mode, so here it is always two steps: the operation first, then `setScale`. That does not mean two lines: you can chain them into one, `net.multiply(rate).setScale(2, RoundingMode.HALF_UP)`, because `multiply` hands you back a `BigDecimal` you can already call `setScale` on:
 
 ```java
 BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 ```
 
-`RoundingMode.HALF_UP` is the rounding rule taught at school — a half rounds away from zero, so `0.125` becomes `0.13` — and it is normally what invoicing wants. `HALF_EVEN` (banker's rounding) is the other one you will meet in financial code: it sends a half to the nearest *even* digit, so a long series of roundings does not drift upward.
+`RoundingMode.HALF_UP` is the rule you already know: if what gets dropped is `.5` or more, the last digit you keep goes up; if it is less than `.5`, it stays as it is. That is why `0.125` at scale 2 becomes `0.13`, and `0.124` stays at `0.12`. On negatives, "up" means away from zero, so `-0.125` becomes `-0.13`. It is normally what invoicing wants.
 
-> **Division is the one operation that refuses to run until you say how to round.** `divide` with a single argument computes the *exact* quotient, and when the exact quotient never ends there is no correct value it could return — so it throws rather than silently inventing one:
+`HALF_EVEN` (banker's rounding) is the other one you will meet in financial code, and the first thing it asks is whether what it is about to drop is **exactly half** — that is, whether the first leftover digit is a `5` with nothing behind it:
+
+- **If it is not an exact half** — `0.1253` at scale 2, where a `3` still follows the `5` — it behaves **just like `HALF_UP`**: what is left over (`53`) is past halfway, so it goes up, and the result is `0.13`. With `0.1243` the leftover `43` does not reach halfway, so it goes down to `0.12`. In this case both rules always agree.
+- **If it is an exact half** — `0.125` at scale 2 — is where they part. `HALF_UP` always goes up; `HALF_EVEN` leaves the result on the **nearest even number**, and that can round upwards or downwards.
+
+```java
+new BigDecimal("0.125").setScale(2, RoundingMode.HALF_UP);     // 0.13  ← exact half: always up
+new BigDecimal("0.135").setScale(2, RoundingMode.HALF_UP);     // 0.14  ← exact half: always up
+
+new BigDecimal("0.125").setScale(2, RoundingMode.HALF_EVEN);   // 0.12  ← exact half and the 2 is already even → stays
+new BigDecimal("0.135").setScale(2, RoundingMode.HALF_EVEN);   // 0.14  ← exact half and the 3 is odd → up to 4
+new BigDecimal("0.126").setScale(2, RoundingMode.HALF_EVEN);   // 0.13  ← not an exact half, the 6 decides: same as HALF_UP
+new BigDecimal("0.1253").setScale(2, RoundingMode.HALF_EVEN);  // 0.13  ← a 3 follows the 5: no longer an exact half, goes up
+new BigDecimal("0.1243").setScale(2, RoundingMode.HALF_EVEN);  // 0.12  ← the leftover does not reach halfway: goes down
+```
+
+> **Why a bank cares.** With `HALF_UP` every exact half goes up, always. Round a million amounts that land on `.5` and you have added a little too much a million times and never too little: the accumulated total drifts upward. `HALF_EVEN` splits those ties — some go up and some go down, depending on whether the preceding digit is odd or even — so the errors cancel each other out and the total stays pinned to the real value. With a handful of amounts it makes no difference; with millions it does.
+
+`RoundingMode` is an `enum` with eight constants in total, and `HALF_UP` and `HALF_EVEN` are only two of them. What it offers is exactly the table below, there are no others; read it as "if I drop this, which way does the last digit I keep go?":
+
+| Constant | What it does | `0.125` at scale 2 | `-0.125` at scale 2 |
+|---|---|---|---|
+| `HALF_UP` | exact half → away from zero | `0.13` | `-0.13` |
+| `HALF_DOWN` | exact half → towards zero | `0.12` | `-0.12` |
+| `HALF_EVEN` | exact half → to the nearest even digit | `0.12` | `-0.12` |
+| `UP` | always away from zero, even for a leftover `1` | `0.13` | `-0.13` |
+| `DOWN` | always towards zero (truncates) | `0.12` | `-0.12` |
+| `CEILING` | always up the number line (`+∞`) | `0.13` | `-0.12` |
+| `FLOOR` | always down the number line (`-∞`) | `0.12` | `-0.13` |
+| `UNNECESSARY` | you assert no rounding will be needed | `ArithmeticException` | `ArithmeticException` |
+
+The first three differ from each other only on the exact half; outside that case all three do the same thing. And look at the last column, where the one distinction that usually catches people shows up: "down" does not mean the same in `DOWN` as in `FLOOR`. `DOWN` goes towards zero, so `-0.125` rises to `-0.12`; `FLOOR` goes towards `-∞`, so it drops to `-0.13`. On positive numbers the two agree, which is why the bug only appears the day a negative amount arrives.
+
+> **Which to use in practice.** `HALF_UP` for invoicing and amounts a customer sees, `HALF_EVEN` when you aggregate many values and the drift matters. `HALF_DOWN` exists and is almost never used. `UNNECESSARY` is not a way of rounding but an **assertion**: you are saying "no rounding should be needed here", and if it is needed it throws `ArithmeticException` — useful when you would rather find out a computation lost precision than discover it in a mismatched total.
+
+> **If you store money in a `BigDecimal` and compare it with `compareTo`, one gap remains: when that `BigDecimal` is a map key, the comparison is made internally by the `HashMap` using `equals` and `hashCode`.** A map (`HashMap`) is a collection that stores key→value pairs, like a dictionary: `map.put(key, value)` stores a key-value pair in the map and `map.get(key)` retrieves a pair's value by looking it up by its key. So if you store key-value pairs and use a `BigDecimal` as the key, it affects the behaviour you would expect when using `get`: if you call `get(new BigDecimal("1.0"))` and `get(new BigDecimal("1.00"))` you are asking for two different keys, because internally it uses `equals` and `hashCode` to perform the key lookup, and using those methods means the scale is taken into account. It also affects the behaviour of `put`, which for the same reason files `"1.0"` and `"1.00"` in two different places.
 >
 > ```java
-> new BigDecimal("10").divide(new BigDecimal("3"));
-> // java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result.
+> Map<BigDecimal, String> rates = new HashMap<>();
+> rates.put(new BigDecimal("1.0"), "one euro");
+> rates.get(new BigDecimal("1.00"));   // null ← same amount, different scale, different key
 > ```
 >
-> No other numeric type has this problem, because no other numeric type is exact. `10.0 / 3` in `double` returns `3.3333333333333335` without complaint — an answer that is already slightly wrong, which is precisely the behaviour `BigDecimal` exists to refuse. The fix is to state the scale and the rounding you accept, in the same call:
+> `HashMap` and `TreeMap` are two structures that store key→value pairs, and they are the two most used map implementations in Java — `HashMap` is the default choice and `TreeMap` the one you reach for when you need the keys ordered. Both use the same methods (`put`, `get`); the difference is that `TreeMap` keeps those pairs ordered by their key and `HashMap` keeps no order at all. On a `get` or a `size`, each one uses a different method internally to decide whether two keys are the same: `HashMap` uses `equals`, and to `equals` the scale counts, so `1.0` and `1.00` are two different keys; `TreeMap` uses `compareTo`, which is what it orders with, and `compareTo` does not care about the scale: it only looks at the amount, so `1.0` and `1.00` are the same key.
+>
+> So the same pair of keys gives you opposite results depending on the map:
 >
 > ```java
-> new BigDecimal("10").divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP);   // 3.33
+> Map<BigDecimal, String> rates = new TreeMap<>();
+> rates.put(new BigDecimal("1.0"), "base rate");
+> rates.put(new BigDecimal("1.00"), "night rate");   // replaces the previous value: TreeMap uses compareTo
+> rates.size();                        // 1             ← you thought you had two rates
+> rates.get(new BigDecimal("1.0"));    // "night rate"   ← the base one is gone
+>
+> Map<BigDecimal, String> ratesHash = new HashMap<>();
+> ratesHash.put(new BigDecimal("1.0"), "base rate");
+> ratesHash.put(new BigDecimal("1.00"), "night rate");   // adds a new entry: HashMap uses equals
+> ratesHash.size();                        // 2             ← both rates are still there
+> ratesHash.get(new BigDecimal("1.0"));    // "base rate"    ← the base one is untouched
 > ```
 >
-> Treat one-argument `divide` as a defect in application code: it works for `10 / 4` and throws for `10 / 3`, so it is a bug waiting for the right input — the same shape of trap as a comparison that only works for small numbers.
+> `BigDecimal`'s javadoc calls this "inconsistent with equals". Both are methods of the same class and you can call them yourself on the same pair of values.
 
-> **A `BigDecimal` used as a map key is the one place `equals` is the method that actually runs.** The section above told you to compare money with `compareTo`, but a `HashMap` never asks which comparison you would prefer: it calls `equals` and `hashCode` on the key itself, and both of those include the scale. So `map.put(new BigDecimal("1.0"), x)` followed by `map.get(new BigDecimal("1.00"))` gives you `null` — two keys, mathematically identical, filed apart. The API documentation warns about the same mismatch from the other side for `SortedMap` and `SortedSet`: those order by `compareTo`, so they treat the two as *one* key while `equals` insists they are two, and the javadoc calls that natural ordering "inconsistent with equals". The practical rule is to avoid `BigDecimal` keys, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before it goes in. Maps arrive in [10-collections.md](10-collections.md); why `equals` and `hashCode` govern them is [06-oop-classes.md](06-oop-classes.md).
+> Nothing compares the two methods at runtime and no warning fires: Java's contract is that `a.compareTo(b) == 0` and `a.equals(b)` should always give the same answer, and `BigDecimal` is one of the few classes that breaks it, because its `equals` looks at the scale and its `compareTo` does not. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry in the `TreeMap`
+
+> The second `put` throws nothing, returns no error and prints no warning: to the `TreeMap` that key was already there, and a `put` on a key that already exists adds nothing, it replaces the value that was there with the one from the new `put`. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
 
 ---
 
@@ -250,7 +421,7 @@ BigDecimal vatToStore = vat.setScale(2, RoundingMode.HALF_UP);   // 21.00
 
 > 📖 Docs: [Oracle Docs — Primitive Data Types](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html) → read: "Default Values" — what a field holds before you assign to it, and why a local variable is different.
 
-A variable is a named space in memory where you store a piece of data — one of the boxes from the diagram at the top of this file. In Java you always write the type before the name, because the compiler has to know how big that box is and what may legally go in it before the program ever runs. You can declare and assign in the same line, or declare first and assign later:
+A variable is a named space in memory where you store a piece of data. In Java you always write the type before the name, because the compiler has to know how much space that piece of data takes in memory and what values may legally go into it before the program ever runs. You can declare and assign in the same line, or declare first and assign later:
 
 ```java
 int age = 31;           // declaration + assignment in one line
@@ -260,7 +431,7 @@ count = 0;              // assignment — now it holds something
 
 ### The compiler will not let you read a local variable you never assigned
 
-Splitting the declaration from the assignment is legal, but there is a rule attached to it, and it is enforced at compile time rather than left to blow up at runtime. Every path through the code has to assign the variable before anything reads it:
+Splitting the declaration from the assignment is legal, but there is a rule attached to it, and it is enforced at compile time rather than left to blow up at runtime. the variable has to be initialised before you use it anywhere — an operation, a method call, a `println` — and the compiler demands it for every path the code can take, not only the one you have in mind:
 
 ```java
 int count;
@@ -269,7 +440,7 @@ System.out.println(count);   // MAL — error: variable count might not have bee
 
 The compiler runs an analysis called **definite assignment**: it walks every possible route the execution could take from the declaration to this line and asks "is there a route that reaches here without passing through an assignment?" If even one such route exists, it refuses to compile. That is why the message says "*might* not have been initialized" rather than "was not" — the compiler is not claiming this particular run would fail; it is saying it cannot prove the opposite for every run.
 
-> **Then why does this compile for a field?** Because the rule applies to **local variables** only — variables declared inside a method. A **field** (declared directly in the class body, outside any method) is not covered by definite assignment: the JVM gives every field an automatic default value when the object is created. Numeric fields start at `0` (`0.0` for `double`/`float`), `boolean` fields at `false`, and every object-typed field — `String`, `Integer`, `User` — at `null`.
+> **Then why does this compile for a field (a variable declared inside the class, outside any method)?** Because the rule applies to **local variables** only — variables declared inside a method. A **field** (declared directly in the class body, outside any method) is not covered by definite assignment: the JVM gives every field an automatic default value when the object is created. Numeric fields start at `0` (`0.0` for `double`/`float`), `boolean` fields at `false`, and every object-typed field — `String`, `Integer`, `User` — at `null`.
 >
 > ```java
 > public class User {
@@ -279,9 +450,7 @@ The compiler runs an analysis called **definite assignment**: it walks every pos
 > }
 > ```
 >
-> The reason for the split is where each one lives. A field belongs to an object on the heap, and the JVM zeroes that whole block of memory as it allocates it, so a default is free. A local variable lives on the method's stack frame, which is reused memory from whatever call ran there before — so an unassigned local would hold leftover garbage, and rather than zero every frame the language simply forbids reading one. This is a direct consequence of the stack/heap split covered in [05-memory-model.md](05-memory-model.md).
->
-> This is also the mechanism behind something you already met: a JPA entity's `Long id` is `null` before the row is saved, and that is not Hibernate setting it to `null` — it is the field's default, which nothing has overwritten yet.
+> The reason for the split is the area of memory that holds a field and the area that holds a local variable. And one widely repeated idea is worth making precise: what decides where it lives is not the variable's type but where it is declared. “Primitives go on the stack and objects on the heap” holds for **local variables** only. A field gets no slot of its own on the stack even when it is primitive: the `boolean active` above is not a separate slot of memory the object points at, it is bytes written **inside** the block of memory the JVM reserves for that `User` on the heap. That block **is** the object: the JVM works out its size by adding up its fields and reserves the whole thing at once, and each field is a stretch of bytes with a fixed place inside it — one for `name`, one for `active`, one for `id`. With one nuance you already know: a primitive field's stretch holds the value itself, while an object-typed field's holds an address: in `name`'s stretch, that of the `String` living separately on the heap. That is why a field belongs to its object — it lives inside it, wherever the object travels. Now, those bytes are not new memory. The heap is a single block of limited size the JVM asks the operating system for at startup, and every object you create takes a stretch of it; when an object stops being used, its stretch goes back on the list of available places and the JVM hands it to the next `new` instead of asking the system for more. That is what reusing the heap means. That is the job of the **garbage collector**: a process inside the JVM itself that wakes up every so often, looks at which heap objects no live variable points at any more, and frees their stretches. And when it frees an object it **erases nothing**: it only marks that stretch as available, with the dead object's values still written inside. The block the JVM reserves for your `User` may be exactly that stretch, in which case its fields would start out holding the values the previous object had stored there. That is why the wipe happens on creation and not on freeing: the garbage collector does not do it, the JVM does, as it reserves the block for the new object. Before handing you the new object you have just created — here, your `User` —, the JVM walks the whole block and writes a `0` into every one of those bytes. The good part is that those zeros already **are** the default values, with nothing assigning them afterwards: 32 zero bits read as an `int` are `0`, a zero byte read as a `boolean` is `false`, and a reference holding address `0` is exactly `null`. A local variable, by contrast, lives on the method's **stack frame**: every time you call a method, the JVM pushes onto the stack a block with room for its parameters and its local variables — that block is its stack frame — and when the method returns it pops that block, leaving the space free for the next call. So it too is reused memory from whatever call ran there before — so an unassigned local would hold leftover garbage, and rather than zero every frame the language simply forbids reading one. This is a direct consequence of the stack/heap split covered in [05-memory-model.md](05-memory-model.md).
 
 ### Scope — where the name is visible
 
@@ -294,7 +463,7 @@ if (age > 18) {
 System.out.println(message);   // MAL — cannot find symbol: variable message
 ```
 
-The variable is not "empty" out here — the name does not exist at all, which is why the error is `cannot find symbol` rather than a null complaint. The practical consequence is that if you need a value after a block, you declare it *before* the block and assign inside it. This is the same block-scoping as `let` and `const` in JavaScript; Java simply has no equivalent of the old function-scoped `var`.
+The variable is not "empty" out here — the name does not exist at all, which is why the error is `cannot find symbol` rather than a null complaint. The practical consequence is that if you need a value after a block, you declare it *before* the block and assign inside it. This is the same block-scoping as `let` and `const` in JavaScript; Java has no equivalent of JavaScript's old `var`, the function-scoped one — and do not confuse it with Java's own `var`, which you will meet further down: that one infers the type and changes nothing about scope.
 
 That one rule — *a name lives inside the braces it was declared in* — is the whole of scope, and it produces the four kinds of variable you will meet, each with a different lifetime:
 
@@ -304,7 +473,7 @@ class TimeEntry {                       ┐
                                         │  class, lives as long as the object does
     void validate(int maxHours) {       ┤
                                         │  PARAMETER — a local variable the caller
-        int extra = 0;                  │  fills in; visible in this method only,
+        int extra = 0;                  │  fills in; visible here only,
                                         │  gone when the method returns
         if (maxHours > 8) {             ┤
             String warning = "long";    │  LOCAL — visible from its declaration to
@@ -314,20 +483,30 @@ class TimeEntry {                       ┐
                                         ┘  of the if, three lines before `extra` does
 ```
 
-Read it as one nesting: the field's braces are the class, so it outlives every call; the parameter's and the locals' braces are the method, so they are created fresh on each call and discarded when it returns; and a variable declared inside an inner `{ }` is discarded at that inner brace. A **parameter** is not a special category — it is a local variable whose initial assignment is performed by the caller, which is why it is always definitely assigned and never needs the rule in the previous section. Fields, and where the object holding them lives, are [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters as a mechanism — how the caller's value gets in — are [04-methods.md](04-methods.md). Here you only need to be able to say where each name is visible.
+Of the four, all you need here is to be able to say where each name is visible. The rest comes later: fields and where the object holding them lives, in [06-oop-classes.md](06-oop-classes.md) and [05-memory-model.md](05-memory-model.md); parameters and how a value is passed into them when the method is called, in [04-methods.md](04-methods.md).
 
 ### Naming conventions
 
-These are not enforced by the compiler, but every Java codebase and every reviewer expects them, and Spring itself depends on the third one:
+These are not enforced by the compiler, but every Java codebase and every reviewer expects them:
 
 - **`camelCase` for variables, fields and methods** — `totalHours`, `isActive`, `findByEmail`. First word lowercase, each following word capitalised.
 - **`UPPER_SNAKE_CASE` for constants** — `MAX_HOURS`, `DEFAULT_ROLE`. Reserved for `static final` values; seeing it tells a reader "this never changes" before they read the modifiers.
 - **`PascalCase` for class names** — `TimeEntry`, `UserRepository`. Notice this is how you tell `Integer` (a class) from `int` (a primitive) at a glance.
-- Names are written in full, not abbreviated. `numberOfEmployees`, not `numEmp`. Java code is verbose by culture and a consultancy code review will pick at short names.
+- Names are written in full, not abbreviated. `numberOfEmployees`, not `numEmp`. Java names are written long by culture: if someone on your team reviews your code before it is merged, they will ask you to turn `numEmp` into `numberOfEmployees`.
 
-### `final` — the one line you need here
+### `final`
 
-`final` on a variable means it may be assigned exactly once; a later assignment is a compile error (`cannot assign a value to final variable MAX_HOURS`). That is enough to read the `static final` constants named above and the `private final` fields that appear in every Spring service class. What `final` does *not* do — freeze the object a reference points at — is a statement about objects rather than about values, so it is answered in [06-oop-classes.md](06-oop-classes.md), alongside immutability, records, and the difference between freezing a name and freezing what it names.
+`final` on a variable means it may be assigned exactly once; a later assignment is a compile error (`cannot assign a value to final variable MAX_HOURS`). That is enough to read the `static final` constants named above and the `private final` fields a Spring service class holds the dependencies it receives through its constructor in.
+
+What `final` does **not** do is freeze the object: it protects the name, not the contents. The variable can never point at anything else, but the object it points at can still change inside.
+
+```java
+final List<String> names = new ArrayList<>();
+names.add("Ana");            // fine: the object changes, the variable does not
+names = new ArrayList<>();   // compile error: cannot assign a value to final variable names
+```
+
+How you get an object that really does not change — immutability, records, and the difference between freezing a name and freezing what it names — is covered in [06-oop-classes.md](06-oop-classes.md), once you know what an object is.
 
 ---
 
@@ -337,12 +516,12 @@ These are not enforced by the compiler, but every Java codebase and every review
 
 Everything so far has been about what a variable *holds*. Operators are how you combine what two variables hold into a new value, and Java's everyday set is small enough to lay out in one place. Four groups cover essentially all backend code:
 
-- **Arithmetic** — `+` `-` `*` `/` `%` — take numbers, produce a number. `%` is the remainder: `7 % 2` is `1`.
+- **Arithmetic** — `+` `-` `*` `/` `%` — take two numbers, and the result is another number. `%` is the remainder: `7 % 2` is `1`.
 - **Comparison** (relational `<` `>` `<=` `>=` and equality `==` `!=`) — take two values, produce a `boolean`.
 - **Logical** — `&&` (and), `||` (or), `!` (not) — take booleans, produce a `boolean`.
 - **Assignment** — `=` plus the compound forms `+=` `-=` `*=` `/=` `%=` — store a value in a variable, and the expression itself produces the value that was stored.
 
-What each group *produces* is what decides where it may appear, and that is the part JavaScript habits get wrong. An `if (...)` needs a `boolean`, so only comparison and logical expressions may sit directly inside one; an arithmetic expression has to be compared against something first. Java has no truthy values at all — no non-empty string and no non-zero number counts as "true" — so `if (name)` and `if (count)` do not compile, and the compiler says so in exactly those terms:
+What each group *produces* is what decides where it may appear, and that is the part JavaScript habits get wrong. An `if (...)` needs a `boolean`, so only comparison and logical expressions may sit directly inside one; an arithmetic expression has to be compared against something first. Java has no truthy or falsy values (what in JavaScript makes a non-boolean value count as true or as false inside an `if`): no non-empty string counts as "true", and no `0` or empty string counts as "false", so `if (name)` and `if (count)` do not compile, and the compiler says so in exactly those terms:
 
 ```java
 if (name) { ... }    // MAL — error: incompatible types: String cannot be converted to boolean
@@ -350,19 +529,21 @@ if (name) { ... }    // MAL — error: incompatible types: String cannot be conv
 
 Two more you will read constantly: `++` and `--` add or subtract one in place (`count++`), and the three-part conditional operator `condition ? a : b` picks between two values. That last one belongs to [03-control-flow.md](03-control-flow.md), where choosing is the subject.
 
-> **`+=` hides a cast, and that is the language definition, not a quirk.** A compound assignment is not simply `a = a + b`: the specification defines `a += b` as `a = (T) (a + b)`, where `T` is the type of the left-hand side. It therefore performs, invisibly, the narrowing conversion that plain `=` would refuse to do without an explicit cast:
+> **`+=` performs a cast you never wrote.** `+=` and its siblings `-=` `*=` `/=` `%=` are called **compound assignments**, and `a += b` is not the same as `a = a + b`. The specification defines `a += b` as `a = (T) (a + b)`, where `T` is the type of the variable on the left: `a + b` is computed first under the normal rules, and then the compiler puts the cast to `T` on the result by itself. That cast you cannot see is what performs the narrowing conversion plain `=` would refuse to do unless you wrote it:
 >
 > ```java
 > int i = 5;
-> i = i + 3.5;    // MAL — error: incompatible types: possible lossy conversion from double to int
-> i += 3.5;       // ✅ compiles — and i is 8, because 8.5 was truncated back to int
+> i = i + 3.5;          // MAL — error: incompatible types: possible lossy conversion from double to int
+> i = (int) i + 3.5;    // MAL — the cast only applies to i, and the sum is a double again: same error
+> i = (int) (i + 3.5);  // ✅ the cast written by hand, over the whole sum
+> i += 3.5;             // ✅ compiles — and i is 8, because 8.5 was truncated back to int
 > ```
 >
 > Nothing here needs fixing in your own arithmetic. The point is to recognise `+=` as the one place a narrowing conversion happens with no visible cast, so a compound assignment that compiles is never proof that the two types actually match.
 
 ### `=` where you meant `==`
 
-Typing one equals sign instead of two is the classic C-family slip, and Java catches it — because of the type rule above, not because it guessed your intention. `if (count = 5)` assigns `5` to `count` and then hands the *assigned value*, an `int`, to the `if`, which needs a `boolean`:
+Typing one equals sign instead of two is a classic mistake, and Java catches it because of the type rule above and not because it guessed your intention. `if (count = 5)` assigns `5` to `count` and then hands the *assigned value*, an `int`, to the `if`, which needs a `boolean`, so it fails at compile time:
 
 ```java
 if (count = 5) { ... }   // MAL — error: incompatible types: int cannot be converted to boolean
@@ -377,32 +558,50 @@ if (active = true) {     // ✅ compiles — assigns true, then always enters th
 }
 ```
 
-Nothing warns you at compile time; IntelliJ flags it as an inspection, and that squiggle is the only thing between you and a branch that runs unconditionally. It is also the reason a boolean condition is written `if (active)` and never `if (active == true)` — the short form has no `=` to lose.
+The compiler says nothing. The only thing that flags it is IntelliJ, which underlines the line with an **inspection** — a warning from the IDE itself, not a Java error — and that squiggle is all there is between you and a branch that always runs: `active = true` sets `active` back to `true` every time round and hands that `true` to the `if`, so the condition can never be false. That is why a boolean condition is written `if (active)` and never `if (active == true)`: where you write no `==`, there is no `==` that can end up as a single `=` and create the bug. That is the practical rule: with a `boolean` variable, keep the equality operator out of the condition and write the variable on its own.
 
-### Short-circuit evaluation — why `&&` and `||` may never look at their right operand
+### Short-circuit evaluation — why `&&` and `||` sometimes never evaluate their right-hand side
 
-`&&` and `||` do not evaluate both sides and then combine the two answers. They evaluate the **left** side, and then ask whether the right side could still change the outcome:
+`&&` and `||` do not work out both sides first. They evaluate the **left** side, and then ask whether the right side could still change the outcome:
 
-- `A && B` — if `A` is `false`, the result is `false` whatever `B` turns out to be, so `B` is never evaluated.
-- `A || B` — if `A` is `true`, the result is `true` whatever `B` turns out to be, so `B` is never evaluated.
+The table for `&&`, the **logical AND** (read "and"). The last column says whether `B` is evaluated at all: with `&&` it is evaluated only when `A` is `true`, and that is exactly the short-circuit. What it is for is in the example just below the two tables:
 
-That is **short-circuiting**, and it is not an optimisation you may or may not get: it is a guarantee written into the language, and real code is built on it. The pattern you will write a hundred times is a null check standing guard in front of the call that would fail:
+| `A` | `B` | `A && B` | is `B` evaluated? |
+|---|---|---|---|
+| `false` | `false` | `false` | no |
+| `false` | `true` | `false` | no |
+| `true` | `false` | `false` | yes |
+| `true` | `true` | `true` | yes |
+
+And the one for `||`, the **logical OR** (read "or"), read the same way: here `B` is evaluated only when `A` is `false`, because a true `A` already decides the result.
+
+| `A` | `B` | `A \|\| B` | is `B` evaluated? |
+|---|---|---|---|
+| `false` | `false` | `false` | yes |
+| `false` | `true` | `true` | yes |
+| `true` | `false` | `true` | no |
+| `true` | `true` | `true` | no |
+
+That is **short-circuiting**: the language guarantees that the right side is not evaluated, so you can write code that relies on it. The commonest use is checking that something is not `null` on the left side, so that the right side, which would fail on `null`, never runs:
 
 ```java
 if (user != null && user.getName().isBlank()) { ... }
 ```
 
-When `user` is `null`, the left side is `false`, the right side is never evaluated, `user.getName()` is never called, and there is no `NullPointerException`. Swap the two operands and the guard is worthless, because the call happens before the check that was supposed to protect it:
+When `user` is `null`, the left side is `false`, the right side is never evaluated, `user.getName()` is never called, and there is no `NullPointerException`. Swap the two operands and the check stops protecting you, because the call runs before it does:
 
 ```java
-if (user.getName().isBlank() && user != null) { ... }   // MAL — NPE whenever user is null
+if (user.getName().isBlank() && user != null) { ... }   // MAL — blows up whenever user is null
+
+// Exception in thread "main" java.lang.NullPointerException:
+//     Cannot invoke "User.getName()" because "user" is null
 ```
 
-The order of the operands is doing real work here. That is unusual — `a + b` and `b + a` are the same expression — and it is the most important practical consequence of short-circuiting.
+The order of the operands changes the result. That is unusual — `a + b` and `b + a` are the same expression — and it is the most important practical consequence of short-circuiting.
 
-> **"Never evaluated" means never started, not undone.** The compiled code tests the left operand and jumps straight past the bytecode for the right one, so any method call, any increment and any exception that lived in there simply does not happen. This is why putting work with side effects inside the right operand is a reliable source of "why did this line never run?" bugs: `if (isValid() && log(request))` will not log a single invalid request.
+> **"Never evaluated" means never started, not undone.** The compiled code tests the left operand and jumps straight past the bytecode for the right one, so any method call, any increment and any exception that lived in there simply does not happen. The trouble starts when that right-hand call, besides returning a boolean, **does something** — writes to the log, saves to the database, increments a counter. In `if (isValid() && log(request))` the request is only logged when `isValid()` is `true`: no invalid request is ever logged, which is exactly what you wanted in the log.
 
-> **Java also has `&` and `|`, which do not short-circuit.** On two booleans they produce the same answer as `&&` and `||`, but they always evaluate both sides — so the guarded null check above would throw. There is one honest reason to want that: when the right operand has a side effect that must happen regardless, such as `if (checkA() & checkB())` where both checks have to record their result. It is rare enough that a reviewer will read a lone `&` between booleans as a typo for `&&`, so write `&&` and `||` unless you can explain why not. (Between two integers the same two symbols mean something else entirely — bitwise AND and OR, working bit by bit — which you will not need in backend web code.)
+> **Java also has `&` and `|`, which do not short-circuit.** On two booleans they produce the same answer as `&&` and `||`, but they always evaluate both sides — so the guarded null check above would throw. There is one honest reason to want that: when the right operand has a side effect that must happen regardless, such as `if (checkA() & checkB())` where both checks have to record their result. It is used so rarely that the general rule is to write `&&` and `||` unless you can explain why not. (Between two integers, `&` and `|` mean something else: they compare the two numbers bit by bit — `6 & 3` lines up the bits of `110` and `011` one by one and gives `2`, which is `010` — and that does not come up in backend web code.)
 
 ---
 
@@ -416,25 +615,27 @@ When you convert a smaller type to a larger one, the value always fits, so Java 
 
 ```java
 int x = 42;
-long y = x;        // int → long — automatic
-double z = x;      // int → double — automatic
+long y = x;        // int (32 bits) → long (64 bits) — automatic
+double z = x;      // int (32 bits) → double (64 bits) — automatic
 ```
 
 Java allows this silently because the destination type's range fully contains the source type's range — there is no value of `int` that a `long` cannot represent, so nothing can go wrong.
 
-> **Exact scope: "widening" does not always mean "no data loss".** Two of the widening conversions are lossy, and Java performs them automatically anyway. `int` → `float` and `long` → `double` both move to a *wider* type that nevertheless has *fewer* significant digits, because a floating-point type spends part of its bits on the exponent instead of on the digits. A `float` has 32 bits like an `int`, but only about 24 of them carry digits:
+> **Exact scope: "widening" does not always mean "no data loss".** Two of the widening conversions are lossy, and Java performs them automatically anyway. `int` (32-bit integer) → `float` (32-bit decimal) and `long` (64-bit integer) → `double` (64-bit decimal) lose data even though the target takes the same number of bits, because it has *fewer* significant digits: a floating-point type spends part of its bits on the exponent instead of on the digits. A `float` has 32 bits like an `int`, but only about 24 of them carry digits. The other direction, `float` → `int` or `double` → `long`, is not safe either: that is narrowing rather than widening, it throws the decimal part away and demands an explicit cast, which is the next section. And it is narrowing even though the bit count is the same, because the two words are not about the size in bits but about the **set of values**: widening means moving to a type whose set fully contains the source's. A `float` sits in the ±3.4 × 10³⁸ range, so it cannot represent an `int`: an `int` stores no decimals and reaches at most 2,147,483,647 (about ±2.1 × 10⁹). So going from `float` to `int` cuts that set down even though both take 32 bits.
 >
 > ```java
-> int precise = 16777217;      // 2^24 + 1
-> float widened = precise;     // automatic — no cast, no warning
-> System.out.println(widened); // 1.6777216E7  ← 16777216, not 16777217. The 1 is gone.
+> int precise = 16777217;      // int (32 bits)
+> float widened = precise;     // float (32 bits) — automatic, no cast and no warning
+> System.out.println(widened); // 1.6777216E7  ← 16777216, not 16777217
+> // the final 7 has become a 6: 16777217 needs 25 bits of digits and a float
+> // has only 24, so the nearest representable value, 16777216, is stored
 > ```
 >
-> The same happens for `long` → `double` past 2⁵³. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data". For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these two lossy widenings are the dangerous ones: they are the losses nobody is watching.
+> The same happens for `long` → `double`. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data": it never overflows because the compiler only allows widening into a type whose range contains the source's, so the value always fits; what can be lost on the way are digits of the number, not its magnitude. For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these two lossy widenings are the dangerous ones: they are the losses nobody is watching.
 
 ### Narrowing (manual)
 
-When you convert a larger type to a smaller one, there can be data loss — Java forces you to say so explicitly by writing the target type in parentheses before the value:
+When you convert a type whose set of values is wider into a narrower one — from a bigger **range** to a smaller range, not from more bytes to fewer bytes — there can be data loss — Java forces you to say so explicitly by writing the target type in parentheses before the value:
 
 ```java
 double price = 19.99;
@@ -446,35 +647,41 @@ int smaller = (int) bigNumber;  // 1912276171 — not "roughly 1234567890123", a
 
 The `(int)` before the variable is the cast. Java does not do this automatically because you might lose data — you have to write it explicitly to signal that you accept the possible loss.
 
-That second result deserves unpacking, because "may overflow" hides how violent the outcome is. A `long` is 64 bits and an `int` is 32, so the cast keeps the **low 32 bits and throws the high 32 away** — no rounding, no clamping to `Integer.MAX_VALUE`, no exception. It is a pair of scissors, not a conversion:
+This result deserves unpacking, because saying "may overflow" does not show how completely unrelated the number that comes out is to the one that went in. A `long` is 64 bits and an `int` is 32, so the cast **keeps the 32 bits on the right and throws away every bit on the left** — no rounding, no clamping to `Integer.MAX_VALUE`, no exception.
+
+> **"Low bits" and "high bits" are not "the first ones" and "the next ones".** A binary number is written like a decimal one: the digit on the right is worth the least and the digit on the left the most. In `1985`, the `5` is the low digit (worth 5) and the `1` the high one (worth 1000). Binary works the same way: the **low bits** are the 32 on the **right**, the ones representing the small quantities, and the **high bits** are the ones on the **left**, the ones supplying the number's large magnitude. The cast to `int` keeps the 32 on the right and discards everything to their left; that is why what gets lost is precisely what made the value huge.
+
+With that, the arithmetic in the example follows on its own: `1234567890123L` needs 41 bits to be written in binary. An `int` only has room for 32, so `41 − 32 = 9` bits are left over on the left, and those nine are the ones that fall off. The 32 on the right survive intact and are read back as if they had always been an `int`:
 
 ```
 1234567890123L in binary (41 bits):
 
   100011111 01110001111110110000010011001011
   └───────┘ └──────────────────────────────┘
-   high 9      the low 32 bits that survive
-   bits —
+   high 9         the low 32 bits
+   bits           (the ones on the right)
+   (the ones      that survive
+   on the left) —
    DISCARDED
 
   the surviving 32 bits, read back as an int  →  1912276171
 ```
 
-Nine bits fall off the front and the remainder is reinterpreted as a fresh `int`. The result, 1912276171, has no useful relationship to the original 1234567890123 — it is not "approximately right", it is a different number entirely. And because the discarded bits included everything that made the value large, a number that was too big can just as easily come back **negative**: if the surviving 32nd bit happens to be a 1, that bit is the sign bit in an `int`, and the result is negative. This is the same odometer effect described next, seen from the bit level.
+The result, 1912276171, has no useful relationship to the original 1234567890123 — it is not "approximately right", it is a different number entirely. And because the discarded bits included everything that made the value large, a large positive `long` can come out as a **negative** `int`: if the surviving 32nd bit happens to be a 1, that bit is the sign bit in an `int`, and the result is negative. This is the same odometer effect described next, seen from the bit level.
 
 > **Silent wraparound:** when a number does not fit in the destination type, Java does not throw an error — it simply "rolls over". Picture a car odometer that reaches 999,999 and flips back to 000,000: exactly that happens with integers. `int`'s maximum value is 2,147,483,647; add 1 to it and you get −2,147,483,648, the minimum. The counter runs off the top end and reappears at the bottom. That is why narrowing (and integer overflow in general) can produce wrong results silently, with no exception to warn you.
 
 ---
 
-## Integer arithmetic — two silent traps
+## Integer arithmetic — silent traps
 
 > 📖 Docs: [Baeldung — Overflow and Underflow in Java](https://www.baeldung.com/java-overflow-underflow) → read: "Overflow and Underflow" and "Handling Underflow and Overflow of Integer Data Types" — including the `Math.addExact` family.
 
-The wraparound callout above described what happens when a value does not fit. Casting is not the only way to get there: ordinary `+` and `*` on `int`s reach the same cliff, and so does `/`, in a different way. These two traps are the reason a report can quietly show the wrong total in production, with nothing in the logs.
+Further up, wraparound described what happens when a value does not fit in the destination type. Casting is not the only way to get there: ordinary `+` and `*` on `int`s reach the same cliff, and so does `/`, in a different way. These traps are the reason a report can quietly show the wrong total in production, with nothing in the logs.
 
 ### Integer division truncates — it does not round
 
-When **both** operands are integer types, `/` performs integer division: it discards the fractional part rather than rounding it. This surprises people because the result looks like it was rounded, and half the time the rounded answer happens to be the same:
+When **both** operands are integer types, `/` performs integer division: it discards the fractional part rather than rounding it. This surprises people because the result looks like it was rounded, and sometimes the rounded answer happens to be the same:
 
 ```java
 7 / 2      // 3    — not 3.5, and not 4 either. The .5 is dropped.
@@ -482,7 +689,7 @@ When **both** operands are integer types, `/` performs integer division: it disc
 7 % 2      // 1    — the remainder that got thrown away
 ```
 
-The trap is that nothing about the expression tells you which kind of division you are getting — it depends entirely on the *types of the operands*, which may be several method calls away:
+The trap is that nothing about the expression tells you which kind of division you are getting — it depends entirely on the *types of the operands*, and those types are not visible on the line you are reading: they are wherever each variable was declared, or in the return type of the method that produced the value.
 
 ```java
 int totalHours = 7;
@@ -495,29 +702,30 @@ double average = totalHours / entries;
 double average = (double) totalHours / entries;   // 3.5
 ```
 
-The reason the first line fails is worth tracing, because it looks like it should work: the `double` on the left has no influence on the division at all. Java evaluates the right-hand side first, entirely on its own terms — two `int`s, so integer division, so `3`. Only *then* does it widen that `3` to `3.0` and store it. The `double` arrives one step too late; the information was already gone. The cast in the corrected version works because it changes an operand *before* the `/` runs, which makes the whole expression floating-point division.
+The reason the first line fails is worth studying, because it looks like it should work: the `double` on the left has no influence on the division at all. Java evaluates the right-hand side first, entirely on its own terms — two `int`s, so integer division, so `3`. Only *then* does it widen that `3` to `3.0` and store it. The `double` arrives one step too late; the information was already gone. The cast in the corrected version works because it changes an operand *before* the `/` runs, which makes the whole expression floating-point division.
 
-> **The `(double)` goes on either operand, not on the result.** `(double) (totalHours / entries)` is still wrong — the parentheses make the integer division happen first and then widen the already-truncated `3`. You only need to convert one of the two operands; Java then widens the other one automatically to match, and the division is done in `double`. This is the single most common way this bug is "fixed" without actually being fixed.
+> **The `(double)` goes on either operand, not on the result.** `(double) (totalHours / entries)` is still wrong — the parentheses make the integer division happen first and then widen the already-truncated `3`. You only need to convert one of the two operands; Java then widens the other one automatically to match, and the division is done in `double`. This is the single most common way this bug is "fixed".
 
-And one operand it will not tolerate: `7 / 0` on integers throws `ArithmeticException: / by zero`. Floating point does not — `7.0 / 0` yields `Infinity` and `0.0 / 0.0` yields `NaN`, no exception at all. So the same-looking division either crashes or returns a nonsense value depending on the operand types.
+One operand it will not tolerate: `7 / 0` on integers throws `ArithmeticException: / by zero`. Floating point does not — `7.0 / 0` yields `Infinity` and `0.0 / 0.0` yields `NaN`, no exception at all. So the same-looking division either crashes or returns a nonsense value depending on the operand types.
 
-### Overflow is silent, and it bites when values are multiplied
+### Overflow is silent, and it shows up when values are multiplied
 
-The odometer callout used `Integer.MAX_VALUE + 1` as its example, which reads like a contrived edge case. In practice you meet overflow through multiplication, where three perfectly ordinary numbers combine into something that no longer fits:
+The odometer note used `Integer.MAX_VALUE + 1` as its example, which reads like a contrived edge case. In practice you meet overflow through multiplication, where three perfectly ordinary numbers combine into something that no longer fits:
 
 ```java
 // MAL — how many milliseconds in 30 days?
-int ms = 1000 * 60 * 60 * 24 * 30;    // -1702967296   ← negative milliseconds
+int ms = 1000 * 60 * 60 * 24 * 30;    // -1702967296   ← negative milliseconds:
+                                      // int's range was exceeded and the value overflowed
 ```
 
-Every one of those literals is a small, sane `int`. But `int * int` produces an `int` in Java — the type of an arithmetic expression is decided by its operands, never by where the result is going — and the true answer, 2,592,000,000, is past `Integer.MAX_VALUE` (2,147,483,647). It wraps around into negative territory, and the program carries on cheerfully with a negative duration. Declaring the variable as `long` does not save you either, for exactly the reason integer division ignored the `double`: the multiplication has already been carried out in `int` before the assignment is considered.
+Every one of those literals is a small `int`. But `int * int` produces an `int` in Java — the type of an arithmetic expression is decided by its operands, never by where the result is going — and the true answer, 2,592,000,000, is past `Integer.MAX_VALUE` (2,147,483,647). Silent wraparound happens: the value rolls over and lands in negative territory, and the program carries on cheerfully with a negative duration. Declaring the variable as `long` does not save you either, for exactly the reason integer division ignored the `double`: the multiplication has already been carried out in `int` before the assignment is considered. The fix is the same idea as in the division case: change the type of one operand **before** the operation runs — here, by making the first operand a `long`.
 
 ```java
 // BIEN — make the FIRST operand a long, so the whole chain is computed in long
 long ms = 1000L * 60 * 60 * 24 * 30;   // 2592000000
 ```
 
-One `L` on the first literal is enough. Java evaluates the chain left to right, and as soon as one operand is a `long`, the other is widened to `long` and the result stays `long` for the rest of the chain — so the value never passes through a 32-bit box on its way.
+One `L` on the first literal is enough. Java evaluates the chain left to right, and as soon as one operand is a `long`, the other is widened to `long` and the result stays `long` for the rest of the chain.
 
 > **When you need to be *told* about an overflow, ask for it.** Java 8 added the `Math.*Exact` family — `addExact`, `multiplyExact`, `subtractExact` — which do the same arithmetic but throw instead of wrapping:
 >
@@ -525,33 +733,33 @@ One `L` on the first literal is enough. Java evaluates the chain left to right, 
 > Math.addExact(Integer.MAX_VALUE, 1);   // throws ArithmeticException: integer overflow
 > ```
 >
-> Use them where a wrong number is worse than a crash: totals on an invoice, quantities in a stock system, anything a person will act on. For a loop counter, plain `+` is fine. Being able to name this family in an interview is a cheap way to show you know overflow is silent by default rather than having merely heard of it.
+> Use them where a wrong number is worse than a crash: totals on an invoice, quantities in a stock system, anything a person will act on. For a loop counter, plain `+` is fine.
 
 ---
 
-## Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on one
+## Floating point — why a `double` cannot hold `0.1`, and why `==` cannot be trusted on a `double`
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the paragraphs on infinity and on NaN — this is the source for "`x != x` is `true` if and only if `x` is NaN".
 
-The money callout near the top of this file stated the fact in passing: a `double` cannot represent `0.1` exactly. Integer arithmetic has just shown you one kind of representation failure — a fixed number of bits that runs out — and this is the other kind, and the more insidious one, because nothing overflows and no digit is visibly missing. Here it is doing damage in the shortest program that can:
+The note on money, near the top of this file, stated the fact in passing: a `double` cannot represent `0.1` exactly. This is another kind of representation failure: in integer arithmetic the bits ran out, and here nothing overflows and no digit is visibly missing, yet the number that gets stored is not the one you wrote.
 
 ```java
 System.out.println(0.1 + 0.2);          // 0.30000000000000004
 System.out.println(0.1 + 0.2 == 0.3);   // false
 ```
 
-The mechanism is a base problem, not a Java problem. A `double` stores a number as a sum of powers of two — 1/2, 1/4, 1/8, 1/16 and so on. Ask it for `0.5` and the answer is exact, because 0.5 *is* 1/2. Ask it for `0.1` and no finite set of those fractions adds up to it, so the hardware keeps the closest 64-bit approximation it can build and carries on. It is the same limitation decimal notation has with one third: writing `0.3333` with as many threes as you have paper for never lands exactly on 1/3. Every language that uses IEEE 754 floating point behaves identically — `0.1 + 0.2` prints those same digits in JavaScript — so this is one place your existing instincts transfer without adjustment.
+The error comes from a problem with the number base used, not from Java. A `double` stores a number as a sum of powers of base two — 1/2, 1/4, 1/8, 1/16 and so on. Ask it for `0.5` and the answer is exact, because 0.5 *is* 1/2. Ask it for `0.1` and no finite set of those fractions adds up to it, so the hardware keeps the closest 64-bit approximation it can build and carries on. That is the rule: if the decimal number can be written as a finite sum of powers of two, it is stored exactly; if it cannot, the closest approximation is stored. That approximation is not Java's invention: it is defined by **IEEE 754**, the standard that says how a decimal number is stored in binary, and it is implemented by the processor itself. That is why any language using that standard makes exactly the same approximation — in JavaScript, `0.1 + 0.2` prints those same digits.
 
-Two things follow, and it is the second that bites.
+Two things follow, and it is the second that causes bugs.
 
 - **The error is tiny.** It sits around the seventeenth significant digit. For a temperature, a percentage, a ratio or a physics calculation it is irrelevant.
-- **The error is not stable.** Two calculations that are mathematically identical can land on two *different* approximations, because they rounded at different intermediate steps. `0.1 + 0.2` and `0.3` are simply two different `double` values. So `==` between two computed `double`s is asking whether two approximations happened to end on the same bit pattern — a question about rounding history, not about the numbers you meant.
+- **The error is not stable.** Two calculations that are mathematically identical can land on two *different* approximations, because they rounded at different intermediate steps. `0.1 + 0.2` and `0.3` are simply two different `double` values. So when you compare two `double`s that came from different calculations with `==`, Java is not comparing the numbers you had in mind: it compares the bits each one ended up storing. And since each calculation rounded on its own, those bits match only if the two approximations landed in the same place. That is exactly what happens with `0.1 + 0.2` and `0.3`: the difference shows up around the seventeenth significant digit but the stored bits are not the same, so `==` answers `false`.
 
-That is the whole case against `==` on floating point: it does not answer the question you were asking. It is also the second half of the case against `double` for money — the drift is meaningless on a temperature and unacceptable on an invoice, where the same total has to come out identical every single time it is computed. `BigDecimal` (the sections at the top of this file) is the fix when exactness is required; the two sections below are what to do when you are stuck with a `double` anyway.
+That is why `==` is no use for comparing two `double`s. And it is one more reason not to use `double` for money — the drift is meaningless on a temperature and unacceptable on an invoice, where the same total has to come out identical every single time it is computed. `BigDecimal` (the sections at the top of this file) is the fix when exactness is required; the two sections below guide you through what to do when the values you are working with are already `double`s.
 
 ### `NaN` — the value that is not equal to itself
 
-Some floating-point operations have no numeric answer at all: `0.0 / 0.0`, the square root of a negative number, `Infinity - Infinity`. Instead of throwing, they produce **`NaN`** — "not a number", a legal `double` value meaning "this computation has no meaningful result". It then spreads, because any arithmetic involving `NaN` produces `NaN`: one bad step at the start of a pipeline poisons every number downstream, and you find a `NaN` printed at the end of a report with nothing pointing at where it entered.
+Some floating-point operations have no numeric answer at all: `0.0 / 0.0`, the square root of a negative number, `Infinity - Infinity`. Instead of throwing, they produce **`NaN`** — "not a number", a legal `double` value meaning "this computation has no meaningful result". It then spreads, because any arithmetic involving `NaN` produces `NaN`: one bad step at the start of a calculation affects every number that comes after it, and you find a `NaN` printed at the end of a report with nothing pointing at where it entered.
 
 `NaN` has one property that surprises everybody, and it is deliberate:
 
@@ -562,13 +770,13 @@ nan == nan            // false  ← the same variable, compared against itself
 Double.isNaN(nan)     // true   ← the correct test
 ```
 
-`NaN` means "no meaningful value", and two meaningless results are not the *same* meaningless result, so IEEE 754 defines `==`, `<`, `>`, `<=` and `>=` as `false` whenever either side is `NaN` — `nan == nan` included. `!=` is the single exception, and it is not an inconsistency: `!=` is defined as "the operands are not equal", and since `NaN` is equal to nothing at all, that is `true`. The specification states the rule from that side, which is the version worth keeping: `x != x` is `true` if and only if `x` is `NaN`. The consequence for your code is that you can never detect a `NaN` by comparing, and must call `Double.isNaN(value)` (or `Float.isNaN`).
+`NaN` means "no meaningful value", and two meaningless results are not the *same* result, so IEEE 754 defines `==`, `<`, `>`, `<=` and `>=` as `false` whenever either side is `NaN` — `nan == nan` included. `!=` is the single exception, and it is not an inconsistency: `!=` is defined as "the operands are not equal", and since `NaN` is equal to nothing at all, that is `true`. `x != x` is `true` if and only if `x` is `NaN`. The consequence for your code is that you can never detect a `NaN` by comparing, and must call `Double.isNaN(value)` (or `Float.isNaN`).
 
-> **The wrapper deliberately disagrees with the operator.** `Double.equals` and `Double.compare` treat `NaN` as equal to itself, on purpose, so that sorting and collections keep behaving sanely when a `NaN` finds its way into a `List<Double>`. So `Double.valueOf(nan).equals(nan)` is `true` while `nan == nan` is `false` — the same two values, two different answers, depending on whether you asked the object or the primitive. Do not read that as "the wrapper fixed it": it only means a collection will not misbehave. Your own arithmetic still produces `NaN` silently and still cannot detect it with `==`, so test with `Double.isNaN` at the point where the value is produced, not far downstream where it has already spread.
+> **With `NaN`, `Double.equals` and `Double.compare` do return `true`; the `==` operator does not.** Both wrapper methods treat `NaN` as equal to itself, on purpose, so that sorting and collections keep behaving sanely when a `NaN` finds its way into a `List<Double>`. So `Double.valueOf(nan).equals(nan)` is `true` while `nan == nan` is `false` — the same two values, two different answers, depending on whether you asked the object or the primitive.
 
-### Comparing two `double`s — a tolerance, or the right type
+### Comparing two `double`s — a margin of error, or the right type
 
-When the values genuinely have to be `double`, compare them with a **tolerance**: decide how close counts as equal, and test the size of the difference instead of demanding identity.
+When the values genuinely have to be `double`, compare them with a **margin of error** — the name it goes by in code is _epsilon_, and the documentation calls it a _tolerance_. You decide up front how much difference you are willing to accept, and if the distance between the value you have and the one you expected is smaller than that margin, you treat them as equal.
 
 ```java
 // MAL — asks whether two approximations landed on the same bits
@@ -579,9 +787,11 @@ double epsilon = 1e-9;
 if (Math.abs(measured - expected) < epsilon) { ... }
 ```
 
-`Math.abs` gives the distance between the two values without caring which is larger, so one test covers both directions. `1e-9` is Java's scientific notation for 0.000000001 — far larger than the representation error and far smaller than any difference that would matter. Pick the tolerance from the domain, not from habit: nine decimal places for a computed ratio, two for anything a person reads on a screen.
+`Math.abs` returns the **absolute value** of whatever you pass it — the number without its sign. Here it receives `measured - expected`, a subtraction that comes out negative when the second value is the larger one; the absolute value turns it positive, so what is left is the distance between the two and one test covers both directions. `1e-9` is Java's scientific notation for 0.000000001, and that value is chosen between two limits. It has to be **larger than the representation error** — the drift the `double` itself introduces when storing the number, which shows up around the seventeenth digit — that is, a `double`'s approximate precision is `1e-16`, and the epsilon has to stay above that figure: if the margin were smaller than that drift, two values differing only in the approximation would still come out unequal and you would have fixed nothing. And it has to be **smaller than any difference that does matter to you**, or you would end up treating two genuinely different numbers as equal. In short: above the `double`'s own imprecision, and small enough not to erase real differences.
 
-> **The real fix is usually the type, not the tolerance.** A tolerance is what you reach for when you *inherited* a `double` — a reading from a sensor, a field from a third-party API, a legacy database column. When the decision is yours, ask what the number is. Money, or any quantity that has to reconcile exactly: `BigDecimal`. A value with a small fixed scale that you control, such as hours to two decimal places: `BigDecimal` again, which is exactly why `TimeEntry.hours` is one. A measurement that is an approximation in the real world before it ever reaches Java: `double`, compared with a tolerance. In none of the three cases is `==` between two computed `double`s the right test.
+For example, comparing a computed ratio, the real differences are tiny and `1e-9` works. Comparing an amount a person sees on screen with two decimals, the smallest difference that means anything is one cent, so the sensible margin is `0.01`: any difference below that is noise from the calculation, not a different amount.
+
+> **The real fix is usually the type, not the tolerance.** A tolerance is what you reach for when you *inherited* a `double` — a reading from a sensor, a field from a third-party API, a legacy database column. When the decision is yours, ask what the number is. Money, or any quantity that has to reconcile exactly: `BigDecimal`.
 
 ---
 
@@ -589,7 +799,7 @@ if (Math.abs(measured - expected) < epsilon) { ... }
 
 > 📖 Docs: [Java Language Specification (SE 25) — §4.2.3 Floating-Point Types, Formats, and Values](https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3) → read: the sentence "1.0/0.0 has the value positive infinity" and the surrounding paragraph on infinity and NaN.
 
-One line about this went past in the integer-division section; it earns a place of its own, because it is the sharpest example on the page of the idea the whole chapter keeps circling — *the types of the operands decide what the operator really does*. Dividing by zero is not one behaviour in Java. It is two, and which one you get depends on nothing you can see at the call site:
+This was mentioned in one line back in integer division, but it deserves a section of its own, because it is the clearest example on the page of the idea that repeats throughout the chapter — *the types of the operands decide what the operator really does*. Dividing by zero is not one behaviour in Java. It is two different behaviours, and which of them happens is decided by the operand types, which are not visible on the line where you write the division:
 
 ```java
 int a = 7, b = 0;
@@ -600,7 +810,7 @@ x / y;          // Infinity — no exception, execution continues
 0.0 / 0.0;      // NaN      — no exception, execution continues
 ```
 
-The split comes from what each type has room to say. An `int` is 32 bits, and every one of those 4.3 billion bit patterns is already spoken for by an ordinary whole number — there is no pattern left over to mean "infinity", so the only honest thing the JVM can do is refuse, and it throws. A `double` reserves patterns for exactly this case: `Infinity`, `-Infinity` and `NaN` are legal `double` values with a defined representation, so the operation has something true to return and returns it. (`%` follows `/` in both directions: `7 % 0` throws the same `ArithmeticException`, and `7.0 % 0.0` is `NaN`.)
+The difference comes from what each type can represent. An `int` is 32 bits, and 32 bits give 4,294,967,296 distinct combinations of zeros and ones; every one of those combinations is already assigned to a specific whole number — none is left over to mean "infinity", so the only honest thing the JVM can do is refuse, and it throws. A `double` reserves patterns for exactly this case: `Infinity`, `-Infinity` and `NaN` are legal `double` values, so the operation has something true to return and returns it. Put another way: with `double`, dividing by zero never throws — it returns `Infinity`, `-Infinity` or `NaN`, and the program carries on with that value inside it. (`%` follows `/` in both directions: `7 % 0` throws the same `ArithmeticException`, and `7.0 % 0.0` is `NaN`.)
 
 Which of the two is more dangerous is not the one people assume:
 
@@ -609,9 +819,9 @@ Which of the two is more dangerous is not the one people assume:
    double  7.0 / 0  →  Infinity             →  quiet, keeps going, poisons everything downstream
 ```
 
-The exception is the *helpful* case. It ends the request, produces a stack trace pointing at the exact line, and you fix it in ten minutes. The `Infinity` flows onward into the next multiplication, the next average, the JSON response and the report a client reads — and by the time somebody notices `Infinity` where an average hourly rate should be, the line that divided by zero is nowhere in the evidence.
+The exception is the *helpful* case. It ends the request, produces a stack trace pointing at the exact line, and you fix it in ten minutes. The `Infinity` flows onward into the next multiplication, the next average, the JSON response and the report a client reads — and by the time somebody notices `Infinity` where an average hourly rate should be, the problem is far harder to identify: what you are looking at is a long way from the line that divided by zero.
 
-> **The guard is the same in both cases, and it is not a `try/catch`.** Check the divisor before you divide:
+> **The check is the same in both cases, and it is not a `try/catch`.** Check the divisor before you divide:
 >
 > ```java
 > // MAL — leans on the exception, and does nothing at all in the double case
@@ -631,7 +841,7 @@ The exception is the *helpful* case. It ends the request, produces a stack trace
 
 Each primitive type has a corresponding wrapper class. You use wrapper classes when a method requires an **object** instead of a primitive.
 
-**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. `List<int>` does not compile, and the compiler is blunt about why:
+**The most common case:** Java collections (`List`, `Map`, `Set`) only work with objects, not primitives. `List<int>` does not compile while `List<Integer>` is fine, and the compiler is blunt about why:
 
 ```
 error: unexpected type
@@ -639,7 +849,17 @@ error: unexpected type
   found:    int
 ```
 
-"Reference" is the word from the diagram at the top of this file — a type whose variable holds an address. A generic type argument must always be one, because a collection stores addresses in its slots; there is nowhere in it to put a raw 32-bit value. So you use `List<Integer>` instead. The rule itself — that a type written between angle brackets must always be a reference type, and why the language was built that way — is *generics*, explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
+"Reference" is the word that means a reference to an object — a type whose variable holds the address where that object lives. A generic type argument must always be a reference type, because a collection stores references to objects, never the values themselves; there is no room inside it for a primitive value. So you use `List<Integer>` instead. The rule is that a type written between angle brackets must always be a reference type — and for primitives, that reference type is its wrapper class:
+
+| Primitive | Wrapper     |
+| --------- | ----------- |
+| `int`     | `Integer`   |
+| `long`    | `Long`      |
+| `double`  | `Double`    |
+| `boolean` | `Boolean`   |
+| `char`    | `Character` |
+
+Generics are explained in full in [09-generics.md](09-generics.md); the collections that use it are [10-collections.md](10-collections.md). For now, just know they are Java's main data structures and they all require object types.
 
 **Another case:** wrapper classes can be `null`. A primitive `int` cannot be null, but `Integer` can. In Spring Boot, database IDs are often typed as `Long` (not `long`) because Hibernate sets them to `null` until the entity is saved for the first time.
 
@@ -649,7 +869,7 @@ error: unexpected type
 
 Use the **wrapper** in two situations: (1) when `null` is a meaningful value — a JPA entity ID is `null` until it is saved for the first time, so the field goes as `Long`, not `long`; (2) when using collections, because `List<int>` does not exist in Java and you must write `List<Integer>`. In any other case, use the **primitive** — the value is always present and never null.
 
-Both halves of this decision are live in the TimeTrack backend:
+Both cases of this rule are implemented in the TimeTrack backend:
 
 ```java
 // Long (wrapper) — because the id does not exist until JPA saves the entity
@@ -663,18 +883,6 @@ private Long id;
 @Value("${app.jwt.expiration}")
 private long expiration;
 ```
-
-(Full paths: `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/model/User.java` and `.../com/victor/timetrack/security/JwtUtil.java`.)
-
-| Primitive | Wrapper     |
-| --------- | ----------- |
-| `int`     | `Integer`   |
-| `long`    | `Long`      |
-| `double`  | `Double`    |
-| `boolean` | `Boolean`   |
-| `char`    | `Character` |
-
-Read each row as a pair: the left column is the primitive you use when the value is always present, the right column is the object form you switch to when you need `null` or a collection. The name is not arbitrary — the wrapper is the capitalised full word (`int` → `Integer`, `char` → `Character`), which is also how you spot at a glance which of the two a field is using.
 
 ### Autoboxing and unboxing
 
@@ -709,18 +917,35 @@ Read the right-hand column as "the code you would have had to type by hand befor
 > int score = scores.get("missing");   // NullPointerException — but where?
 > ```
 >
-> `get()` returns `null` for a key that is not there, which is a legal `Integer`. The problem is the assignment to `int`: an `int` has nowhere to put `null`, so the compiler has quietly appended `.intValue()`, and you are calling a method on `null`. Java's message since version 14 spells out exactly that, naming a method you never typed:
+> `get()` returns `null` for a key that is not there, which is a legal `Integer`. The problem is the assignment to `int`: an `int` has nowhere to put `null`, so the compiler has quietly appended `.intValue()`, and you are calling a method on `null`. In other words: the failure comes from storing the result in an `int` rather than an `Integer` — with `Integer score = scores.get("missing");` there is no unboxing, `score` simply stays `null`, and nothing throws. Java's message since version 14 spells out exactly that, naming a method you never typed:
 >
 > ```
 > java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()"
 > because the return value of "java.util.Map.get(Object)" is null
 > ```
 >
-> The fix is to receive it as the wrapper — `Integer score = scores.get("missing");` — and check for `null` before using it, or to ask for a fallback with `scores.getOrDefault("missing", 0)`. The general rule: any assignment from a wrapper to a primitive is a hidden `NullPointerException` waiting for a `null`, and that includes fields, method arguments and `return` statements, not just local variables.
+> There are two fixes, and both of them avoid making the mistake when unboxing. The first is to receive the value as the wrapper and decide yourself what to do when it is `null`:
+>
+> ```java
+> Integer score = scores.get("missing");   // no unboxing: score may be null
+> if (score != null) {
+>     System.out.println(score + 10);
+> }
+> ```
+>
+> The second is to tell the map which value to return when the key is absent, so it never returns `null`:
+>
+> ```java
+> int score = scores.getOrDefault("missing", 0);   // returns 0 when the key is absent
+> ```
+>
+> `getOrDefault` is a `Map` method: it looks the key up and, when it is not there, returns the second argument instead of `null`. With no `null` in play, unboxing to `int` is safe.
+>
+> The general rule: any unboxing will throw that exception the moment a `null` reaches it, and that includes fields, method arguments and `return` statements, not just local variables.
 
 ### Wrapper `==` — the one comparison this chapter refuses to explain
 
-Autoboxing makes `Integer` and `int` look interchangeable, and there is exactly one place where that illusion turns dangerous: comparison. `==` between two `Integer` variables does not compare the two numbers. It compares the two *addresses* from the diagram at the top of this file — it asks "are these two variables pointing at the same object?" — and that is a different question, one that gives the right answer just often enough to survive your testing:
+Autoboxing makes `Integer` and `int` look interchangeable, and there is exactly one place where that illusion turns dangerous: comparison. `==` between two `Integer` variables does not compare the two numbers. It compares the two addresses in memory — it asks "are these two variables pointing at the same object?"
 
 ```java
 Integer a = 127, b = 127;
@@ -730,9 +955,7 @@ Integer c = 128, d = 128;
 c == d            // false   ← the same code, one number higher
 ```
 
-Nothing about 127 and 128 differs as a *value*. The rule you need today is short: **never compare wrappers with `==`.** Use `a.equals(b)`, or unbox both sides to primitives first (`a.intValue() == b.intValue()`), where `==` compares values and is correct by definition. Between two primitives — `int == int` — `==` is always right and always what you meant.
-
-> **Why the explanation waits for [06-oop-classes.md](06-oop-classes.md), and why `String` comparison waits with it.** The result above has a specific cause, and comparing two `String`s with `==` has another one, but they are not two facts to memorise separately — they are the *same* question wearing two costumes: when do two references identify one object, and what does it mean for two objects to be equal rather than identical. Answering that needs the object model itself — what `equals` is, that every class inherits a default version of it which compares addresses, and how a class overrides it to compare content. None of that exists yet. Entry 06 builds classes first, then defines identity versus value equality, and settles wrapper `==`, `String ==` and `Objects.equals` in one place where they explain each other. Learning the caching ranges here, before you know what an object is, would leave you holding a rule with nothing underneath it — exactly the kind of knowledge that collapses at the first interview follow-up question.
+Nothing about 127 and 128 differs as a *value*, and the cause of one giving `true` and the other `false` lies in how Java creates those `Integer` objects, and is explained in [06-oop-classes.md](06-oop-classes.md). The rule you need today is short: **never compare wrappers with `==`.** Use `a.equals(b)`, or unbox both sides to primitives first (`a.intValue() == b.intValue()`), where `==` compares values and is correct by definition. Between two primitives — `int == int` — `==` is always right and always what you meant.
 
 ### Useful wrapper methods
 
@@ -742,14 +965,14 @@ These static methods are genuinely useful in everyday code:
 
 ```java
 Integer.parseInt("42");     // String → int (primitive)
-Integer.valueOf("42");      // String → Integer (object, so it can be null or go in a collection)
+Integer.valueOf("42");      // String → Integer (object, possibly from the cache above)
 Integer.MAX_VALUE;          // 2147483647 — the largest possible int value
 Integer.MIN_VALUE;          // -2147483648
 ```
 
 (To go the other way, `String.valueOf(42)` turns an `int` into a `"42"` — note that one is a method on `String`, not on `Integer`, so it is covered with the rest of text handling in [02-strings.md](02-strings.md).)
 
-**`parseInt` vs `valueOf` — the confusable pair.** They take the same argument and look interchangeable, and the difference is only in the return type: `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` object. `valueOf` is in fact implemented by calling `parseInt` and then boxing the result — which is why comparing two of its results with `==` walks straight into the trap the previous section refused to explain — compare them with `.equals()` there too. Pick by what you need next: `parseInt` when the value goes straight into arithmetic or an `int` variable, `valueOf` when it goes into a collection or a field that may be `null`. Reaching for the wrong one is harmless — autoboxing converts it — but naming the difference is a standard junior interview question.
+**`parseInt` vs `valueOf` — the confusable pair.** They take the same argument and look interchangeable, and the difference is only in the return type: `parseInt` returns a primitive `int`, `valueOf` returns an `Integer` object. `valueOf` is in fact implemented by calling `parseInt` and then boxing the result — which is why comparing two of its results with `==` walks into the trap named earlier — compare them with `.equals()` there too. Pick by what you need next: `parseInt` when the value goes straight into arithmetic or an `int` variable, `valueOf` when it goes into a collection or a field that may be `null`. Reaching for the wrong one is harmless — autoboxing converts it — but naming the difference is a standard junior interview question.
 
 > **Both throw when the text is not a number, and the message names the culprit.** This is the failure path you hit the first time a user types something unexpected into a form:
 >
@@ -758,13 +981,17 @@ Integer.MIN_VALUE;          // -2147483648
 > // java.lang.NumberFormatException: For input string: "abc"
 > ```
 >
-> `NumberFormatException` is **unchecked**, so the compiler does not force you to handle it — nothing in your IDE will remind you this line can blow up. Note what counts as "not a number": `"42 "` with a trailing space fails too (unlike `Double.parseDouble`, `parseInt` does no trimming), as does `""` and `null`. Any time the string comes from outside your program — a form field, a URL path variable, a CSV row — this call needs either a `try/catch` or validation in front of it. Exception handling is covered in [11-exceptions.md](11-exceptions.md); for now, just register that this specific method is a common source of 500 errors.
+> `NumberFormatException` is **unchecked**: the compiler does not force you to catch it, so nothing warns you that this line can fail. It is worth knowing which inputs trigger it: `"abc"`, `""` and `null` all fail, and so does `"42 "` with a trailing space, because `parseInt` does no trimming (`Double.parseDouble` does). Any time the string comes from outside your program — a form field, a URL path variable, a CSV row — this call needs either a `try/catch` or validation in front of it. Exception handling is covered in [11-exceptions.md](11-exceptions.md); for now, just register that this specific method is a common source of 500 errors.
 
 ---
 
 ## Text values — `String` has a chapter of its own
 
-Text does not follow from anything on this page. A `String` is an object, and an unchangeable one, so every question about it — the method catalogue, `strip()` versus `trim()`, text blocks, building text in a loop with `StringBuilder`, and why `==` is the wrong way to compare two of them — turns on facts about objects rather than on numeric representation. All of it is in [02-strings.md](02-strings.md), the next file in this topic. The only thing you need while reading this page is what the diagram at the top already showed you: a `String` variable holds an address, not the characters.
+Everything you have read so far is about numbers and `boolean` values: how many bits they take, what happens when you convert them, and why the result is sometimes surprising. Text does not work that way, and that is why this page does not explain it. A `String` is not a primitive: it is an object, and an unchangeable one, so once it is created its contents never change.
+
+That difference is why `String` gets a chapter of its own. The usual questions about `String` — which methods it has, `strip()` versus `trim()`, text blocks, building text inside a loop with `StringBuilder`, or why `==` is the wrong way to compare two strings — are all answered by talking about objects, references and equality. None of them is answered by talking about bits or numeric ranges. You will learn all of it in [02-strings.md](02-strings.md), the next file in this topic.
+
+The only thing you need while reading this page is what the diagram at the top already showed you: a `String` variable does not hold the characters, it holds a memory address that points to the object where those characters live.
 
 ---
 
@@ -786,7 +1013,7 @@ Two concepts help here: **compile time** is when Java translates your source cod
 
 Only works for local variables (inside methods). Cannot be used for fields, method parameters, or return types.
 
-> **`var` needs something to infer *from*, and says so plainly when there is nothing.** The type comes entirely from the right-hand side, so the two ways of leaving that side uninformative are both compile errors:
+> **`var` needs something to infer *from*, and says so plainly when there is nothing.** The type comes entirely from the value you write on the right of the `=`. There are two ways to leave nothing there to read, and both are compile errors:
 >
 > ```java
 > var x;           // MAL — error: cannot infer type for local variable x
@@ -795,7 +1022,7 @@ Only works for local variables (inside methods). Cannot be used for fields, meth
 >                  //         (variable initializer is 'null')
 > ```
 >
-> The parenthesised second line is the compiler telling you *which* of the two cases you hit. The first is the split declaration you saw in the Variables section — perfectly legal with an explicit type (`int count;`), impossible with `var`, because there is nothing to read the type off. The second fails because `null` is a legal value of *every* reference type, so it narrows nothing; if you genuinely want a null-initialised variable you must name the type yourself (`String y = null;`).
+> The parenthesised second line is the compiler telling you which of the two cases is failing. The first failure is declaring the variable without initialising it — perfectly legal with an explicit type (`int count;`), impossible with `var`, because there is nothing to read the type off. The second fails because `null` can be the value of any reference type, so it tells the compiler nothing: if you want a null-initialised variable it cannot be `var`, you have to write the type yourself (`String y = null;`).
 >
 > This is also why `var` cannot be used on a field or a method parameter: a parameter's value only arrives when the method is called, long after the compiler needed to fix the type.
 
@@ -803,10 +1030,10 @@ Useful when the type is long and obvious from the right side: `var employees = e
 
 ---
 
-You now have Java's value model end to end: the eight primitives and the wrapper objects beside them, the conversions the compiler performs for you and the ones it makes you write out, `BigDecimal` for values that have to be exact, the operators that combine all of them, and `var`, which changes how you *write* a type and never what the type *is*.
+You have now seen Java's type system in full, and how its values are represented: the eight primitives and the wrapper objects beside them, the conversions the compiler performs for you and the ones it makes you write out, `BigDecimal` for values that have to be exact, the operators you use for the different operations, and `var`, which changes how you *write* the type but not the type the variable ends up with.
 
-One idea runs through the whole page. **A value's representation decides what the operators really do to it.** Thirty-two bits with no spare patterns is why an `int` overflows into a negative number and why `7 / 0` has no choice but to throw. Sums of powers of two is why `0.1 + 0.2` misses `0.3`, why `NaN` is not equal to itself, and why `7.0 / 0` can afford to hand back `Infinity` instead of failing. A stored scale is why `1.10` and `1.1` are one number under `compareTo` and two under `equals`. And the type on the left of the `=` never rescues an expression that was already computed in the wrong representation — integer division assigned to a `double`, an overflowing multiplication assigned to a `long`, and `new BigDecimal(0.1)` are three faces of that one sentence.
+One idea runs through the whole page. **A value's representation decides what the operators really do to it.** An `int` taking 32 bits and using every one of them is why it overflows into a negative number when the result goes past its maximum, and why `7 / 0` has no choice but to throw. Sums of powers of two is why `0.1 + 0.2` is not exactly equal to `0.3`, why `NaN` is not equal to itself, and why `7.0 / 0` can afford to hand back `Infinity` instead of failing. A `BigDecimal` storing its scale alongside the number is why `1.10` and `1.1` are one number under `compareTo` and two under `equals`. And once an expression has been computed in the wrong representation, the type you put on the left of the `=` does not fix the result: the calculation already happened — integer division assigned to a `double`, an overflowing multiplication assigned to a `long`, and `new BigDecimal(0.1)` are three faces of that one idea.
 
-A second thread is about Java rather than about numbers: **it fails at two different moments.** Some mistakes the compiler refuses outright — `integer number too large`, `possible lossy conversion`, `int cannot be converted to boolean`, `cannot infer type`. Others it waves through to fail at runtime, either loudly (`ArithmeticException: / by zero`, a `NullPointerException` from unboxing a `null`) or silently (overflow, truncated division, an `Infinity` sitting in a report). Learning which is which is most of what makes reading Java code fast.
+The second thread is about how Java is compiled and run: **it fails at two different moments.** Some mistakes the compiler refuses outright — `integer number too large`, `possible lossy conversion`, `int cannot be converted to boolean`, `cannot infer type`. Others it waves through to fail at runtime, either loudly (`ArithmeticException: / by zero`, a `NullPointerException` from unboxing a `null`) or silently (overflow, truncated division, an `Infinity` sitting in a report). Learning to tell whether a mistake is a compile-time or a runtime one is what makes reading Java code fast.
 
-What you still cannot do is anything with text — and every line of a web application handles text: a request body, a username, a JSON field, a log message. [02-strings.md](02-strings.md) takes the question this chapter has been asking — how is this value represented, and what does that force? — and puts it to `String`. The answer has a different shape: text in Java is an object, and an unchangeable one, so every operation that looks like it edits a `String` quietly builds a new one instead.
+What you still cannot do is anything with text — and every line of a web application handles text: a request body, a username, a JSON field, a log message. [02-strings.md](02-strings.md) takes the question this chapter asks — how is a value represented, and what does that representation force? The answer has a different shape: text in Java is an object, and an unchangeable one, so every operation that looks like it edits a `String` quietly builds a new object instead.
