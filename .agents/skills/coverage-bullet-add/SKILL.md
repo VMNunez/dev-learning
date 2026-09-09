@@ -10,7 +10,13 @@ description: >
   flagging that debt in `_run-tracker.md` so it outlives the session. The
   failure mode this exists for is a concept a project taught that never enters the curriculum: the code
   ships, the checklist still says "never studied", and the coverage file slowly stops describing what
-  Victor actually knows. Do NOT use it to append the `✅ NN-slug — {evidence}` evidence marker (that is `coverage-mark`), to
+  Victor actually knows.
+  **It also fires on its own, mid-step:** a `§15` step spans days and several
+  conversations, and a concept recorded only when the step *closes* lives until then in the agent's
+  conversation memory alone, where a new session cannot reach it (`REC-230`). So it runs the moment a
+  **verifiable piece** of an open step is finished (the term's test is `coverage-mark` §1) — and a step
+  normally has several.
+  Do NOT use it to append the `✅ NN-slug — {evidence}` evidence marker (that is `coverage-mark`), to
   add scope for something merely studied in notes, to write `notes-plan-{LEVEL}.md` or touch its
   `Coverage SHA-256`, or inside the `coverage` / `coverage-audit` / `coverage-verify` pipelines — those
   own bulk authoring and must not be second-guessed bullet by bullet.
@@ -263,6 +269,12 @@ lands and its table edit waits on Victor.
 separate change, and splitting them lets a crash between the two commits leave a bullet on file with its
 debt unrecorded — the exact failure step 7 exists to prevent. It lives under `notes/prompts/`, so it is
 covered by the same standing authorization.
+
+**On a mid-step piece there is no ritual to fold them, so you do not commit at all, and the template
+above is not yours** — the §2b precedent exactly. Stage nothing; `coverage-mark` carries your bullet,
+both mirrors, `_run-tracker.md` and `PROGRESS.md` in the piece's one coverage commit, made in the same
+turn as the piece and never staged into Victor's commit for its code. Two skills each believing they own
+the fold is two commits or a race.
 
 ## Report
 

@@ -13,6 +13,10 @@ description: >
   checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06". It therefore
   also sweeps the caller's diff for the language and standard-library bullets the task itself was not
   about — a `record`, a `Map`, a concurrent collection — which nothing else in the system ever marks.
+  **It also fires on its own, mid-step:** a `§15` step spans days and several
+  conversations, and a concept recorded only when the step *closes* lives until then in the agent's
+  conversation memory alone, where a new session cannot reach it (`REC-230`). So it runs the moment a
+  **verifiable piece** of an open step is finished (§1 defines the term) — and a step normally has several.
   Do NOT use it to add new bullets (that is `coverage-bullet-add`, or `/coverage`), to
   mark something merely studied in notes, or inside the `coverage` / `coverage-audit` pipelines — those
   passes preserve markers, they never author them.
@@ -61,13 +65,23 @@ of these are *not* demonstrations, and each must be reported as skipped rather t
 
 A backlog-task fix *is* code Victor wrote, so it does earn the marker.
 
+**What counts as a "verifiable piece", on the mid-step path.** The three skills' triggers name it; this
+is its test, and the other two point here rather than restating it. A piece is finished when **Victor has
+run something and seen it behave** — the same bar this section already sets for *demonstrated*, applied
+to the slice instead of the concept. If nothing can be exercised yet, it is not a piece and the trigger
+has not fired; if two slices were only verifiable together and he checked them in one run, they are one
+piece. A file saved, a class that compiles, and a commit are none of them pieces.
+
 ## 2 — Find the bullet, in the right topic and level
 
 Route the concept to its owning `notes/` topic with **`_topic-ownership.md`**. The test is **altitude, not subject
 matter** — the same rule `coverage-bullet-add` applies.
 
 **When a ritual called you — `backlog-task-close` or `step-complete`, either one — reuse the topic that
-`coverage-bullet-add` reported in the same run rather than re-deriving it.** The bullet was authored
+`coverage-bullet-add` reported in the same run rather than re-deriving it.** **A mid-step piece counts as a
+ritual caller here, not as the direct path**: the piece runs the adder and this skill back to back in one
+turn, exactly as a close does, so the same reuse applies and so does the "no match" branch below — the
+adder ran on that concept minutes ago and its decision stands. The bullet was authored
 under that topic; re-deriving here is how a marker goes looking for a bullet in a topic that never
 received it, and reports "no bullet exists" for one written minutes earlier.
 
@@ -112,7 +126,10 @@ The failure mode is a checklist that slowly records **what the session talked ab
 the project contains. It is invisible per close and compounding across dozens.
 
 So before reporting, read the diff the caller's work produced and ask of every language construct and
-standard-library type it uses: **is there a bullet for this, and is it still unmarked?**
+standard-library type it uses: **is there a bullet for this, and is it still unmarked?** **On the mid-step
+path that diff is the piece's, not the step's** — the earlier pieces of the same step swept their own
+hunks already, and re-reading them is how one `record` gets swept, drafted and reported three times in
+one step.
 
 - **Scope it to the diff.** The files the change touched, and the constructs those files actually use.
   This is not a project-wide backfill — that stays a deliberate run Victor asks for.
@@ -248,6 +265,14 @@ The commit boundary depends on what this run wrote:
   does not commit on this path. Stage its bullet in both copies, `_run-tracker.md` and `PROGRESS.md`
   alongside your marker — under a calling ritual that is the run's one coverage commit; on the direct
   path you make it yourself.
+- **A mid-step piece** — one coverage commit for the piece, made by you, in the **same turn** as the
+  piece's work, exactly as on the §2b path: `coverage-bullet-add` does not commit here either, so stage
+  its bullet in both copies, `_run-tracker.md` and `PROGRESS.md` alongside your marker. **If the adder
+  wrote and you mark nothing** — an inbox proposal, its scaffolding stop, the "no match" branch — you
+  still make that commit: a write nobody commits is a `notes/` edit left loose in Victor's tree, waiting
+  to be swept into his next `git add`. It is never folded into his commit for the piece: that one carries
+  project code and is his to make, and staging a `notes/` file into it crosses the authorship boundary.
+  Same turn is the property `REC-230` needs; same commit was never available.
 
 ```
 docs(coverage): mark <concept> as demonstrated in project NN
