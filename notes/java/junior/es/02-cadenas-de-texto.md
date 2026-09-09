@@ -391,7 +391,7 @@ Ese mismo comportamiento — que el fallo no aparezca hasta la ejecución — se
 
 Los dos son erratas que un compilador podría en principio detectar — y no lo hace, por la misma razón: la cadena de formato es un dato, y solo se examina cuando la línea se ejecuta. El compilador ve un `String` y una llamada a un método que acepta argumentos, comprueba que eso es legal, y no mira nada más: no entra a leer qué pone dentro de las comillas. Por eso el fallo aparece más tarde. Esa es la lección general, y no se aplica solo a `formatted()`. **Si una regla la comprueba el compilador, el error salta al compilar, siempre, antes de que publiques nada. Si la regla se comprueba en tiempo de ejecución, el error solo salta el día en que el programa pasa por esa línea.**
 
-> **Por eso `%s` es la opción segura por defecto.** Acepta cualquier cosa, así que nunca puede producir un `IllegalFormatConversionException`. Usa `%d` y `%f` cuando de verdad necesites el comportamiento numérico — separadores de miles, un número fijo de decimales — y `%s` en todo lo demás. Y mantén las cadenas de formato cortas: cuanto más larga sea la frase, más marcadores hay que contar, y contar marcadores a ojo es exactamente la tarea que este fallo castiga.
+> **Por eso `%s` es la opción segura por defecto.** Acepta cualquier cosa, así que nunca puede producir un `IllegalFormatConversionException`. Usa `%d` y `%f` cuando de verdad necesites el comportamiento numérico y `%s` en todo lo demás. Y mantén las cadenas de formato cortas: cuanto más larga sea la frase, más marcadores hay que contar, y contar marcadores a ojo aumenta las probabilidades de equivocarte.
 
 ---
 

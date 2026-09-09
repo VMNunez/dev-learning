@@ -391,7 +391,7 @@ The same behaviour — the failure not showing up until the program runs — rep
 
 Both are typos a compiler could in principle catch — and does not, for the same reason: the format string is data, and it is only examined when the line executes. The compiler sees a `String` and a call to a method that accepts arguments, checks that this is legal, and looks no further: it never reads what is inside the quotes. That is why the failure turns up later. That is the general lesson, and it does not apply to `formatted()` alone. **If a rule is checked by the compiler, the error shows up at compile time, every time, before you ship anything. If the rule is checked at runtime, the error only shows up the day the program goes through that line.**
 
-> **This is why `%s` is the safe default.** It accepts everything, so it can never produce an `IllegalFormatConversionException`. Use `%d` and `%f` when you actually need the numeric behaviour — thousands separators, a fixed number of decimals — and `%s` everywhere else. And keep format strings short: the longer the sentence, the more placeholders there are to count, and counting placeholders by eye is exactly the task this failure mode punishes.
+> **This is why `%s` is the safe default.** It accepts everything, so it can never produce an `IllegalFormatConversionException`. Use `%d` and `%f` when you actually need the numeric behaviour — thousands separators, a fixed number of decimals — and `%s` everywhere else. And keep format strings short: the longer the sentence, the more placeholders there are to count, and counting placeholders by eye makes a mistake more likely.
 
 ---
 
