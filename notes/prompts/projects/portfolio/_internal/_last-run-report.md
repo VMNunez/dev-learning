@@ -79,7 +79,22 @@ so both files were untracked at `{BASELINE}` and the prompt's own three-conditio
    them). Largest section `## Single-project procedure`, 441 lines.
 
 ## 5. Verdict
-Change worth considering: **an English-side factual defect found by stage C has no route back into the
-English.** Drafted, cold-reviewed and dispositioned below; scope `own`, so it belongs to this prompt.
+Change worth considering: **a factual error stage C finds in the *English* has no route back into the
+English.** An edit was drafted and **rejected** — `cold reviewer: reject`, on **bar condition 4**:
+`_portfolio-review-es-prompt.md` already defines the class ("a question you believe is factually wrong is
+**reported, never rewritten**"), so the missing piece is not a rule for C but a print slot and a
+disposition downstream of it. The draft also contradicted four settled rules — the closed whole-bank
+list, "the orchestrator never authors or audits a section itself", T running "once per project, not once
+per section", and "Stage C runs after the translator and never beside it", which its ladder would have
+left re-translated Spanish un-audited by. **No edit applied; the tie goes to `open`.** The finding is
+filed as **`REC-231`**, scoped to the three downstream lists rather than to this prompt alone, carrying
+the cheap shape the reviewer named. It is not re-proposed as a prompt edit here.
+
+`maps unaffected` — no edit landed. `map: verified` — the whole-file read of this prompt fired
+the read trigger; every row either map claims about it was checked (`README.md` public-interface row and
+catalogue row; `_system-map.md` §7 rows for the two bank files, `cv-bullets.md`, the profile README,
+`PROGRESS.md`, `{project}/PLANNING.md`, `PROJECT-BACKLOG.md` and `_last-drift-report.md`, plus §8's
+authoring-progress row and the G7 line in the gate chain) and all are true as written.
+
 Findings 2-5 are the machinery working. Finding 6 is a `shared` breach and stays `open` in the breach
 log — one row is not the two the threshold needs, and the step is not this prompt's to edit.
