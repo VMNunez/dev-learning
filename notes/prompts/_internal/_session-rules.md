@@ -1022,9 +1022,28 @@ everything commits on the branch you're on — is simpler to remember than a spl
 
 ## Angular CLI conventions
 
-- Generate a service: `ng generate service path/name.service`
-  - Example: `ng generate service pages/todo-page/services/task.service` → creates `task.service.ts` with class `TaskService`
-- Generate a component: `ng generate component path/name` → creates the 4 files with the correct structure
+### File naming with `ng generate` (CLI v20+)
+
+The v20 naming change did **not** apply uniformly, so whether the suffix is typed depends on the
+schematic. Getting it wrong is silent: it produces `auth-guard-guard.ts` or a bare `auth.ts`.
+
+| Schematic | Command | File produced | Suffix |
+|---|---|---|---|
+| component | `ng g c pages/todo-page` | `todo-page.ts` | typed by hand if wanted |
+| service | `ng g s core/services/auth.service` | `auth.service.ts` | **typed by hand** |
+| guard | `ng g guard core/guards/auth` | `auth-guard.ts` | **CLI appends it** |
+| interceptor | `ng g interceptor core/interceptors/auth` | `auth-interceptor.ts` | **CLI appends it** |
+| resolver | `ng g resolver core/resolvers/project` | `project-resolver.ts` | CLI appends it — *inferred by analogy, not yet verified* |
+
+Verified 2026-09-09 in `projects/07-timetrack/frontend/timetrack` (`@angular/cli` ^21.2.4) for guard
+and interceptor, and 2026-09-01 in `projects/04-meal-finder` for service. Both corrections came from
+Victor after a wrong command was given — when guiding a step that creates a file by CLI, give the
+full command from this table rather than reconstructing it.
+
+A copy of this table lives in each Angular project's generated
+`frontend/<app>/.claude/CLAUDE.md`, under a `## Repository additions` heading, because that is the
+file read when guiding frontend work. **This section is the authority**; the CLI can regenerate that
+one at any time, so restore it from here if it disappears.
 
 ---
 
