@@ -1,7 +1,7 @@
 # Interview-prep standard — what a good interview-prep file contains
 
 This is the **shared standard** for interview-prep Q&A files. It is not a runnable prompt — it holds
-no configuration and does nothing on its own. Its readers fall into four groups, and the list is
+no configuration and does nothing on its own. Its readers fall into five groups, and the list is
 open — every **writer** of a Q&A file reads this file and is listed here rather than treated as an
 exception. Read-only judges are not required to: `/simulator` grades Victor *against* the bank and
 `/progress-update` counts it, neither reads this standard, and neither appears below.
@@ -30,6 +30,19 @@ guards.
   question they did not just write, however far from this bar it sits. Judging one is not rewriting
   it — they still deduplicate against existing questions and still report a defect they notice, which
   is the only thing they may do about one.
+
+**`_portfolio-translate-prompt.md`**, the one reader from outside this family, and the narrowest —
+scoped to **"The bilingual en/es contract" alone**. It renders a *project* question bank
+(`notes/interview-prep/projects/en|es/*.md`) into Spanish, and that bank is **not governed by this
+standard**: it has no level, no coverage fingerprint and no `[studied]` state. It **does** carry stable
+IDs and the `[refined]` freeze since 2026-08-31, and a `TODO:` reopen channel of its own — but they are
+`_portfolio-standard.md`'s own rules, written there deliberately rather than borrowed from here, because
+one standard reaching across two disjoint chains is what `REC-180` ruled against. Its ID is
+`{PROJECT_NAME}-{NNN}`, not the `{TOPIC}-{LEVEL}-{NNN}` below. What that row still owes it is priority
+markers with a calibration for five fixed sections, an `es`-review owner this family has no equivalent
+of either, and the three `[studied]` rulings. Nothing here binds it except the
+bilingual section, and it is listed under the open-list rule above rather than left as the unnamed
+exception it would otherwise be. The rest of its contract is `_portfolio-standard.md`'s.
 
 **The in-session skills**, each scoped by its own `SKILL.md`: `study-content-writer` (unrefined,
 reopened or refining content), `interview-prep-block-open` (the lifecycle and answer-quality sections,
@@ -97,12 +110,25 @@ exactly this split as its Stage M (market analysis) feeding the author.
 
 Notes and Q&A both live in two languages, and the two files are **never allowed to drift**.
 
-- **`en/` is the master of record** for wording. If the same question exists in different forms in both
-  files, the `en/` version wins and `es/` is updated to match (translated).
+- **`en/` is the master of record** for identity and structure — the question's ID, its section, its
+  position, and the wording that survives a sync when the two files disagree and nothing says why. It
+  does **not** decide which side a defect is *repaired* on: that is the direction rule below, the one
+  operation this bullet does not govern.
 - **`es/` is where Victor studies and marks TODOs** — he reads from `es/`, so that is where his `TODO:`
   markers appear. Scan `es/` first for them.
+- **Resolving a TODO runs in the direction of the file that carries it** (Victor, 2026-08-29, stated
+  symmetrically — the same rule `_note-quality-standard.md` has carried for the notes family since
+  2026-08-20). A `TODO:` he writes in `es/` is resolved **in `es/`**, in Spanish, applying his
+  instruction as written, and the `en/` twin is then **re-translated from the repaired Spanish**. A
+  TODO in `en/` is resolved in `en/`, then translated into `es/`. Never route an `es/` TODO through
+  English first: his TODOs are corrections to the Spanish phrasing itself — the file he answers out
+  loud from — so rewriting the answer in English and translating it down discards the exact wording he
+  asked for, which is the whole payload of the marker. A section repaired on the `es/` side is
+  therefore **not** a drift the master-of-record bullet settles in `en/`'s favour; it is a twin that
+  owes a re-translation, and overwriting it is the one failure this rule exists to prevent.
 - **Every change is mirrored, translated.** Add a question, resolve a TODO, fix a marker order — it
-  happens in both files, same section, same position. Never touch one without the other.
+  happens in both files, same section, same position. Never touch one without the other. *Mirrored*
+  says both files end up saying the same thing; the direction rule says which side says it first.
 - Spanish prose reads as **natural Spanish**, not a word-for-word calque of the English. Same question,
   same answer, same emphasis — different words where Spanish needs them. Translate the Junior-tip label
   to `Consejo de entrevista:`; keep the technical vocabulary that Victor will hear in English on the job.
@@ -147,7 +173,10 @@ problem and leaves the block untouched.
 Only Victor can reopen a refined question, either by explicitly saying so or by adding a TODO to that
 question. Reopening removes both state markers in both languages before any edit: the previously
 studied version no longer exists, so its study evidence cannot survive. The corrected question must be
-refined and studied again. Adding a new question is always allowed; it is born unrefined.
+refined and studied again. The repair itself obeys the direction rule above, and the twin's
+re-translation is **part of the same reopening**: the markers are already gone from both languages, so
+a writer never leaves the twin stale on the grounds that the block was frozen. Adding a new question is
+always allowed; it is born unrefined.
 
 ---
 

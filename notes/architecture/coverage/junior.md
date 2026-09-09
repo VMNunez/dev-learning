@@ -94,6 +94,7 @@ apply in a small codebase, and defend with concrete trade-offs.
 - What changes when you add a field to the entity but not the DTO — nothing visible to the client; the DTO is the public contract
 - Create vs Update request DTOs — separate them when the operations have different validation,
   optionality, or evolution pressure; a shared shape is acceptable while their contracts genuinely match ✅ 07-timetrack
+- Identity is stamped by the collection's owner, not by the caller — the operation that creates a record accepts every field except the generated identifier, so there is exactly one place the identifier can come from and the signature is what says so; letting the caller supply it puts the generation rule in as many places as there are callers, and each one is free to use a different source ✅ 06-hr-portal — `DepartmentService.addDepartment` takes `Omit<Department, 'id'>` and stamps `crypto.randomUUID()` itself, so `DepartmentForm` cannot supply one, matching `addEmployee` and `addLeaveRequest`
 - Nullable field in a request versus in a response — in a partial-update request an absent value legitimately means "leave this one alone", so the field must be able to hold nothing; in a response the same shape advertises a state the model can never be in, so a value the domain always has is declared as one that cannot be absent ✅ 07-timetrack — `ProjectResponse.active` is primitive while `UpdateProjectRequest.active` stays nullable, so an omitted field and `false` never collapse
 - Backward-compatible API evolution — treat public fields and semantics as consumer contracts and
   prefer additive changes or explicit versioning when a rename, removal, or behaviour change would break clients ✅ 07-timetrack
@@ -106,14 +107,29 @@ apply in a small codebase, and defend with concrete trade-offs.
   cursor contract instead of assuming every list is safely returned at once ✅ 07-timetrack
 - Consistency boundary — one business operation may require several writes to succeed or fail as a
   unit; Architecture chooses the boundary while SQL and Spring Boot own its concrete transaction mechanics ✅ 07-timetrack
+- Generated identity — an identifier must come from a source that guarantees uniqueness by
+  construction, such as a database sequence, a counter owned by the single writer of the collection, or
+  a random identifier wide enough that collisions are negligible; a clock reading is not one, because
+  every record created inside the same tick receives the same value, and any later operation that
+  locates a record by its identifier then acts on all of them at once ✅ 01-todo-list — `TaskService` owns a private `nextId` counter and stamps each new task with `nextId++`, so `toggleTask` and `deleteTask`, which `map`/`filter` over every match, and the `@for ... track task.id` in `task-list.html` can never resolve to two rows
 
 ## Presentation boundaries
 
 - Container / presentational component pattern — a container owns feature integration while focused
   presentation components render inputs and emit user intent without fetching their own remote data ✅ 01-todo-list
+- A presentation component's emitted event is a contract, not an echo of the DOM — the raw input
+  value is normalised and checked before it crosses the boundary, so the parent and every later
+  listener receive a value already fit to use; deferring that check to the consumer makes each new
+  listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
+- A rule enforced inside a control's event handler is only as strong as the number of paths that reach
+  that control — a multi-step form whose navigation offers a second route to the same save leaves the
+  rule unchecked, so the guard belongs at the single exit where the data leaves the boundary and the
+  handler keeps only the earlier feedback ✅ 06-hr-portal — `EmployeeDialog.hasDuplicateEmail()` runs from
+  both `onNext` and `onSubmit`, because the linear stepper's step-2 header reaches the save without the
+  Next button
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
-- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level
+- When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
 
 ## Testing strategy
 
@@ -154,6 +170,9 @@ apply in a small codebase, and defend with concrete trade-offs.
   responsibility to one of them; they often work together but describe different relationships
 - Over-engineering — an abstraction is justified by a real variation or repeated pressure, not by a
   hypothetical future requirement
+- Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
+  kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
+  is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
@@ -180,6 +199,13 @@ apply in a small codebase, and defend with concrete trade-offs.
   itself becomes part of the workflow's invariants ✅ 07-timetrack — `UserService.update` refuses a
   promotion to MANAGER while the user still holds DRAFT or REJECTED entries, whose submit and reopen
   transitions are EMPLOYEE-only
+- Enforcement lives with the state's owner — a transition rule expressed only in the view that hides
+  the unavailable action is not enforced at all, because the component or service that owns the state
+  still accepts that move from any other caller and persists it; conditional rendering removes the
+  button, while a guard in the owner removes the transition ✅ 06-hr-portal — `LeaveRequestService.updateStatus` refuses any move whose current status is not `pending`, the rule the table's `@if (request.status === 'pending')` was the only thing expressing
+- A refused transition has to be observable to its caller — a guard that leaves the state unchanged and
+  says nothing lets the caller report the success it assumed, so the operation answers whether it
+  applied and the caller's feedback branches on that answer rather than on having been called ✅ 06-hr-portal — `updateStatus` returns a `boolean` and `LeaveRequestPage.onStatusChange` shows "Only a pending request can be approved or rejected" when it is `false`
 
 ## Boundary patterns in maintained code
 

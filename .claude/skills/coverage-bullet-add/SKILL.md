@@ -3,7 +3,7 @@ name: coverage-bullet-add
 description: >
   Decide whether a concept just applied in project code already exists on the coverage checklist, and
   author its bullet if it does not — called by the `step-complete` and `backlog-task-close` rituals as
-  their coverage authoring sub-step, and directly when Victor asks ("añade esto al coverage", "esto no
+  their coverage authoring sub-step, by `coverage-mark`'s §2b sweep, and directly when Victor asks ("añade esto al coverage", "esto no
   está en el coverage del junior, escríbelo", "add a coverage bullet for this"). It routes the concept to
   its owning `notes/` topic by altitude, searches the level file, writes the bullet in both the topic file
   and the global mirror when it is missing, and reports the `/notes-plan` remap the new bullet owes while
@@ -43,6 +43,16 @@ that standard, it does not restate or override it.
 This skill is the authoring half of a pair. The marking half is `coverage-mark`, which appends the
 `✅ NN-slug — {evidence}` evidence marker to a bullet that already exists. Keep them separate: **this skill never writes a
 marker, and `coverage-mark` never writes a bullet.** The calling ritual runs both.
+
+`coverage-mark` also calls this skill directly, from its step-2b sweep, for a concept the diff
+demonstrates that nobody named and that has no bullet — the ritual's authoring step has already run by
+then, so the sweep has nowhere else to send it. That concept arrives having passed the sweep's own
+drafting test, and it gets the *same* treatment as any other: step 3's `concepts, not conduct` filter
+still decides, and a sweep-originated concept that fails it is declined like any other. **When this
+skill is invoked that way, its whole report — including the owed `/notes-plan` remap — goes back through
+`coverage-mark`'s report**, which is the only route to the calling ritual and the session's end-of-day
+batch. **Invoked that way you do not commit**: `coverage-mark` stages your bullet, both mirrors,
+`_run-tracker.md` and `PROGRESS.md` with its marker in one coverage commit.
 
 ---
 

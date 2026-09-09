@@ -1,36 +1,41 @@
-import { HttpClient } from '@angular/common/http';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import type { Meal, MealResponse } from '../models/meal.model';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MealService {
   private http = inject(HttpClient);
-  favourites = signal<Meal[]>(JSON.parse(localStorage.getItem('favourites') ?? '[]'));
 
-  constructor() {
-    effect(() => {
-      localStorage.setItem('favourites', JSON.stringify(this.favourites()));
-    });
+  private readonly baseUrl = 'https://www.themealdb.com/api/json/v1/1';
+
+  searchMeals(name: string): Observable<Meal[]> {
+    const params = new HttpParams().set('s', name);
+
+    return this.http.get<MealResponse>(`${this.baseUrl}/search.php`, { params }).pipe(
+      map((response) => response.meals ?? []),
+      this.handleFailure('search meals'),
+    );
   }
 
-  searchMeals(name: string): Observable<MealResponse> {
-    const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`;
-    return this.http.get<MealResponse>(url);
+  getMealById(id: string): Observable<Meal | null> {
+    const params = new HttpParams().set('i', id);
+
+    return this.http.get<MealResponse>(`${this.baseUrl}/lookup.php`, { params }).pipe(
+      map((response) => response.meals?.[0] ?? null),
+      this.handleFailure('load the meal'),
+    );
   }
 
-  getMealById(id: string): Observable<MealResponse> {
-    const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
-    return this.http.get<MealResponse>(url);
-  }
-
-  addFavourite(meal: Meal) {
-    this.favourites.update((meals) => [...meals, meal]);
-  }
-
-  deleteFavourite(mealId: string) {
-    this.favourites.update((meals) => meals.filter((meal) => meal.idMeal !== mealId));
+  private handleFailure<T>(action: string) {
+    return (source: Observable<T>) =>
+      source.pipe(
+        catchError((error: unknown) => {
+          console.error(`MealService: could not ${action}`, error);
+          return throwError(() => new Error(`Could not ${action}.`));
+        }),
+      );
   }
 }

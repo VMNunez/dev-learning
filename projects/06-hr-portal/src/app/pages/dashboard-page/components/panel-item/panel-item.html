@@ -1,0 +1,7 @@
+<div class="panel-item-info">
+  <span class="panel-item-name">{{ name() }}</span>
+  <span class="panel-item-meta">{{ meta() }}</span>
+</div>
+@if (status(); as value) {
+  <span class="status-badge status-{{ value }}">{{ value }}</span>
+}

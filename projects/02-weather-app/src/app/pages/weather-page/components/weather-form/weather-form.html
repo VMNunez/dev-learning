@@ -1,4 +1,4 @@
 <div class="weather-form">
-  <input type="text" placeholder="Search for a city..." #city />
-  <button (click)="cityToSearch.emit(city.value)">Search</button>
+  <input type="text" placeholder="Search for a city..." #city (keyup.enter)="submit(city.value)" />
+  <button (click)="submit(city.value)">Search</button>
 </div>

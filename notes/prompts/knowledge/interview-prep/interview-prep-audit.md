@@ -298,7 +298,9 @@ never overlap a section's two subagents — they edit the same two files. Neithe
 > a **question-by-question trace for this section** (each question with PASS or the change you made) as
 > proof you read it whole, plus the weak-answer / coverage-gap / TODO-pattern notes for this section.
 > Respect the lifecycle: a `[refined]` question is frozen byte-for-byte, whether or not it also has
-> `[studied]`. Report every defect in it; rewrite only unrefined questions.
+> `[studied]`. Report every defect in it; rewrite only unrefined questions. **The one exception is a
+> `TODO:` Victor wrote on that block** — his reopening: strip both state markers from both languages,
+> repair on the side carrying the marker, re-translate the twin from it, and report it as such.
 
 Wait for A. **If A returns `BLOCKED`** — it could not complete the section (missing context, or a gate
 its own prompt stops on) — that section gets no reviewer and no further work this run: note it and move

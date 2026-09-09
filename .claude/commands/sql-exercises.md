@@ -14,5 +14,5 @@ Rules:
 - If `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` does not exist, stop and tell the user to run `/sql-plan {LEVEL}` first.
 - A `Coverage SHA-256` mismatch against the coverage file is reported in one line and does **not** stop the run — it means `/sql-plan {LEVEL}` is owed, not that the batch is invalid.
 - Read `_sql-exercises-practice.md` for `practice` or `reinforce`, and `_sql-exercises-review.md` for `review`; read only the `{TOPIC}` block of `_sql-exercise-seeds.md`.
-- The exercise files are Victor's work: in `practice`/`reinforce` append exercises, never rewrite his answers; in `review` write correction markers and `MISTAKES.md`, and give him the commit command rather than committing.
+- The exercise files are Victor's work: in `practice`/`reinforce` append exercises, never rewrite his answers; in `review` write correction markers and `MISTAKES.md`. Who commits what after a `review` run is the prompt's rule; read it there.
 - **Grading has its own door now: the `sql-grade` skill** (say "corrige el 02"), which runs the review branch in a cold subagent and hands off to `sql-step-close`. `MODE = review` here is the legacy path — it grades correctly but closes nothing. If the user passes it, run it and say so in one line.

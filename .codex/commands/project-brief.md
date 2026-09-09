@@ -14,6 +14,6 @@ Rules:
   the prompt resolves the number from `projects/` itself.
 - It writes exactly one file, `projects/briefs/project-brief-{NUMBER}.md`. It never edits `ROADMAP.md`,
   `PROGRESS.md`, or any `PLANNING.md` — the plan registers the choice when it is written.
-- The cold second opinion is mandatory. A `wrong project` verdict, or a missing one, blocks the commit:
-  print both cases and let Victor settle it.
+- The cold second opinion is mandatory, and the prompt owns what its verdict gates and how each case is
+  reported. Do not take a gate rule from this launcher.
 - Run it before `plan-audit` `MODE = new`, or let that prompt dispatch it as its Phase 0.

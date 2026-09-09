@@ -25,8 +25,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## Cascade and inheritance
 - Cascade decision order — resolve ordinary author declarations through importance, specificity, and source order rather than assuming the last rule always wins
 - Cascade origins — distinguish user-agent, user, and author declarations and know that origin and importance are resolved before specificity, so a more specific selector does not always win
-- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately
-- Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier
+- Inheritance — distinguish inherited properties such as `color` and `font-family` from non-inherited layout properties, and use `inherit`, `initial`, `unset`, or `revert` deliberately ✅ 04-meal-finder — `.meal-link` takes `color: inherit` to undo the user-agent link colour the card must not show
+- Styling a native control against its user-agent defaults — form controls arrive with their own background, border, padding, and `cursor`, and unlike ordinary elements they do not inherit `font` from their ancestors, so making one match the surrounding text means explicitly resetting those declarations instead of only adding the intended ones ✅ 04-meal-finder — the detail page's `.back-link` button is reset with `background: none; border: none; padding: 0; font: inherit; cursor: pointer` so it reads as the plain text link it replaced
+- Shorthand vs longhand declarations — understand that shorthands such as `margin`, `background`, and `border` set several longhands and can reset values that were declared earlier ✅ 02-weather-app — `animation-duration: 2.4s` overrides only the duration longhand of `animation: spin 0.8s linear infinite`, leaving the keyframes name and `infinite` intact
 
 ## Selectors and specificity
 
@@ -35,9 +36,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Combinators: descendant (space), child `>`, adjacent sibling `+`, general sibling `~` — target elements through exact ancestry and sibling relationships ✅ 01-todo-list
 - Attribute selectors — target attribute presence or values without adding presentation-only classes, while avoiding selectors that accidentally match unrelated elements
 - Interaction pseudo-classes — style `:hover`, `:focus`, `:active`, and `:disabled` as user-interface states without relying on hover alone ✅ 01-todo-list
-- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()`
+- Structural and functional pseudo-classes — select relationships with `:first-child`, `:last-child`, and `:nth-child()` and filter matches with functions such as `:not()` ✅ 05-task-manager — `task-dialog.css:12` targets `mat-form-field:nth-child(5)` by position instead of adding a class
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
-- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation
+- `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
 - Specificity scoring — compare inline styles, IDs, classes/attributes/pseudo-classes, and elements/pseudo-elements as separate columns; source order decides only after the relevant cascade criteria and specificity tie
 - `!important` — raises a declaration into the important cascade, after which origin, layer, and
@@ -51,8 +52,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Flex sizing — explain how `flex-basis`, `flex-grow`, and `flex-shrink` negotiate an item's size and read the `flex` shorthand without assuming `flex: 1` means only “take remaining space” ✅ 01-todo-list
 - Per-item alignment — override the container's cross-axis alignment for one item with `align-self`
 - `align-items` vs `align-content` — `align-items` positions items within a flex line, while `align-content` distributes multiple wrapped lines and has no visible effect when there is only one line
+- Container properties vs item properties — `justify-content`, `align-items`, `gap` and `flex-wrap` are read only by an element whose own `display` is `flex` or `grid`, while `align-self`, `order` and the `flex` shorthand belong to its children; an alignment property declared on any other element is parsed into the computed style and then silently ignored, so a dead rule produces no error and is only caught by reading that element's `display` ✅ 01-todo-list — in `task-item.css` the alignment properties appear only on `.task-item`, the one rule that declares `display: flex`; the `.task-title` span carries none
 - `margin: auto` on flex items — absorb available space on the selected side to separate an item without adding a wrapper element
-- Visual order vs DOM order — flex and grid reordering can change visual placement without changing DOM, reading, or keyboard-focus order, so source order must remain meaningful
+- `order` and the reverse directions reorder visually only — flex and grid can place an item anywhere in the line without moving it in the document, so the painted arrangement and the source order are two different things
 
 ## CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
@@ -66,7 +68,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ## Position
 - `static` vs `relative` positioning — keep an element in normal flow and use relative offsets without removing its original layout space
-- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it
+- `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it ✅ 04-meal-finder — the visually hidden search label sits inside the flex `.search-container` without taking a slot in the row
 - `fixed` vs `sticky` positioning — distinguish a box normally anchored to the viewport from one that remains in flow until it reaches an inset within its scroll container
 - Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
@@ -81,7 +83,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Content-driven breakpoints — add a breakpoint where the layout or content stops working rather than memorising device widths; intrinsic Grid patterns can remove some breakpoints entirely ✅ 04-meal-finder
 - Fluid images — constrain an image to its container while preserving its intrinsic aspect ratio
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
-- `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback
+- `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback ✅ 02-weather-app — the decorative card hover is dropped under a `reduce` query while the loading spinner is only slowed from 0.8s to 2.4s
 - Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right
 - Responsive content testing — test narrow widths, zoom, long labels, translated text, and missing or oversized media because a layout is responsive only if real content can change without clipping
 
@@ -145,7 +147,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `border-radius: 9999px` — create pill ends across changing aspect ratios while reserving `50%` for shapes derived from each axis ✅ 05-task-manager
 - `background-size: cover` vs `background-size: contain` — `cover` fills the element completely and may crop the image; `contain` fits the whole image and may leave empty space; `cover` is standard for hero sections and card backgrounds
 - `object-fit: cover` — same fill-and-crop behaviour as `background-size: cover`, but applies to `<img>` elements in a fixed-size container; `background-size` is for background images, `object-fit` is for `<img>` tags — a confusable pair ✅ 04-meal-finder
-- `outline` vs `border` — `outline` sits outside the border and does not take up layout space; never remove the browser's default focus outline without adding a visible custom replacement; `button:focus-visible` is the accessible way to style it ✅ 01-todo-list
+- `outline` vs `border` — `outline` sits outside the border and does not take up layout space, which is what makes it the property a focus ring is drawn with; style it through `button:focus-visible` instead of substituting a `border`, which would shift the layout every time an element is focused ✅ 01-todo-list
 - `aspect-ratio` — preserve a width-to-height ratio when one dimension is resolved and reserve predictable media space before content loads
 
 ## Overflow

@@ -13,4 +13,4 @@ Rules:
 - The prompt's own config block and instructions are authoritative — do not summarize it, execute it (author → architecture advisor → reviewer subagents, commit rules, batch mode, etc.).
 - In `new` mode `PROJECT` must be blank because Phase 0 reads the brief; in `review` mode `PROJECT` is required as a project folder path or `all`.
 - If the user left the configuration empty or incomplete, ask for the missing config-block values before launching any subagent.
-- The orchestrator takes no `DRY_RUN` — it was retired 2026-07-16. If Victor passes one, say it no longer exists and proceed; the flow always makes its single plan commit unless one of its own gates fails.
+- The orchestrator takes no `DRY_RUN` — it was retired 2026-07-16. If Victor passes one, say it no longer exists and proceed; the prompt owns its own commit and gate rules.

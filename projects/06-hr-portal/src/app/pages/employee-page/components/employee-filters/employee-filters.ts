@@ -4,6 +4,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Department } from '../../../../models/department.model';
+import type { EmployeeStatusFilter } from '../../../../models/employee.model';
 
 @Component({
   selector: 'app-employee-filters',
@@ -15,13 +16,13 @@ export class EmployeeFilters {
   departments = input<Department[]>([]);
   searchTerm = input<string>('');
   selectedDepartment = input<string>('');
-  selectedStatus = input<string>('');
+  selectedStatus = input<EmployeeStatusFilter>('');
   hasActiveFilters = input<boolean>(false);
   totalEmployees = input<number>(0);
   totalFilteredEmployees = input<number>(0);
   searchChange = output<string>();
   departmentChange = output<string>();
-  statusChange = output<string>();
+  statusChange = output<EmployeeStatusFilter>();
   clearAll = output<void>();
 
   clearFilters() {

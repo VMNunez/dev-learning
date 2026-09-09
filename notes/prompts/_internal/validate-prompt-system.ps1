@@ -176,7 +176,37 @@ foreach ($claudeLauncher in $claudeLaunchers) {
 $exclusivePattern = 'Claude Code|CLAUDE\.md|model: (opus|sonnet|haiku)|general-purpose|run_in_background|/model opus|\b(Opus|Sonnet|Haiku)\b|\b(SendMessage|WebFetch|WebSearch|TodoWrite|NotebookEdit|ExitPlanMode|AskUserQuestion|TaskOutput|MultiEdit|BashOutput|SlashCommand|KillShell)\b'
 $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter '*.md' |
     Where-Object {
-        $_.Name -ne 'README.md' -and
+        # THIS SET HOLDS TWO CLASSES AND STATED ONLY ONE (REC-174, the residue of REC-172 (i)).
+        # Every entry belongs to exactly one of them, and membership is decided by what a file's own
+        # header and its `_system-map.md` section 7 writer row say PRODUCED it - never by its filename:
+        #
+        #   CLASS A - WRITTEN BY A RUN OR A HOOK. Generated reports, runtime state, transcribed
+        #     evidence sinks. The content is copied from what happened, so a line naming a tool or a
+        #     model is EVIDENCE and not an instruction any runtime could obey.
+        #   CLASS B - AUTHORED, AND THE NAME IS WHAT THE FILE IS FOR. Exempt for the opposite reason
+        #     to class A: not because nobody wrote the line, but because the file cannot do its job
+        #     without it. Two sub-cases, kept apart because they are not the same claim:
+        #       B-i  the runtime is the SUBJECT - `README.md`, `_session-rules.md` and
+        #            `_agent-runtime-standard.md`, which exist to say what an adapter is.
+        #       B-ii authored prose that QUOTES transcribed evidence - both ledgers, whose rows and
+        #            closed lines quote the tool and model names the finding was about. This one
+        #            borrows class A's reason inside a class B file, which is why it is named: filing
+        #            it under B-i without saying so is how `_recommendation-resolution-doctrine.md`
+        #            below came to sit unruled.
+        #     RULED AND LEFT SCANNED, 2026-08-29: `_recommendation-resolution-doctrine.md`, split out
+        #     of the ledger on the same date as its closed half and sharing the habit of quoting rows,
+        #     is NOT exempt. It is case law that INSTRUCTS - "a resolution must", "the reviewer reads" -
+        #     so a model or subagent name in it would be an instruction to a runtime, which is exactly
+        #     what this invariant is for. Zero pattern hits today; if a future quotation needs one, the
+        #     repair is to name the runtime neutrally, not to exempt the file.
+        #
+        # Ruled over all 108 `.md` files under `notes/prompts/` on 2026-08-29, in BOTH directions - a
+        # class-A file outside the set, and a set member that turns out to be ordinary authored prose.
+        # Six class-A files were outside it that day and are added below. Nothing here DETECTS a class:
+        # a new file of either joins its list in the commit that creates it, which is the standing cost
+        # of naming rather than deriving, and is why the census date above is stated and not implied.
+
+        # --- CLASS A: written by a run or a hook -------------------------------------------------
         $_.Name -notlike '_last-run-report*' -and
         # Generated report, same class as `_last-run-report*`: its content is copied from a run, not authored.
         $_.Name -ne '_last-drift-report.md' -and
@@ -187,9 +217,10 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         # filename shapes - which is the REC-172 (i) defect: this exemption was one glob whose
         # comment described the family the glob does not select.
         #   `_breach-log-<prompt-name>.md` - the per-prompt logs of `_pipeline-self-report.md`
-        #     -> "The breach log", each read by its own close-out. NONE EXISTS YET: that contract
-        #     says one is "created on the first breach and never before", so this glob selects an
-        #     empty set today and is here for the population it will select.
+        #     -> "The breach log", each read by its own close-out. The first one exists as of
+        #     2026-08-27 (`_breach-log-notes-plan.md`, three `BRCH` rows quoting the step each run
+        #     broke); until then this glob selected an empty set and was here for the population it
+        #     would select.
         #   `_skill-breach-log.md` - the single `SBRC-NNNN` log read by `skill-refine` alone, and
         #     the sharpest case of all: a `Scope: shared` row over `_agent-runtime-standard.md`
         #     records a model or dispatch policy the run broke, so its Evidence clause names the
@@ -207,7 +238,55 @@ $canonicalFiles = Get-ChildItem -LiteralPath $promptRoot -Recurse -File -Filter 
         # not on what it is about. Named separately for the same reason the two breach families are:
         # a glob wide enough to span all four would select any future `*harvest*` file unread.
         $_.Name -ne '_note-todo-harvest.md' -and
+        # The two audit reports, added 2026-08-29 (REC-174). Section 7 gives each ONE writer - its own
+        # audit prompt, "overwritten on each explicit run" - and both are git-tracked, which is why
+        # they read like canonical prose and sat here unexempted: a report quoting a `/system-gaps`
+        # candidate about runtime dispatch, or a `/system-check` finding about a model mapping, is the
+        # run's transcript of a defect and not a canonical instruction. Neither trips the pattern
+        # today; latent is how REC-172 (i) sat for months.
+        $_.Name -notin @('_system-check-report.md', '_system-gaps-report.md') -and
+        # `_skill-runs.md`, added with them, is the only member written by NO agent at all: the
+        # `PostToolUse` hook appends a row straight from raw tool-call input, so its `Args` column can
+        # hold whatever was typed. It is also the only member git ignores - which is not a reason to
+        # skip it, because this scan walks the DISK.
+        $_.Name -ne '_skill-runs.md' -and
+        # The three runtime/evidence-state files, added with them and found by the same cross-check:
+        # `system-check-prompt.md`'s inventory exclusion already grouped them as "runtime/evidence
+        # state" and this list did not. Their writers, per section 7 and each file's own header:
+        #   `_run-tracker.md` - every prompt's close-out, plus `coverage-bullet-add`; "Victor never
+        #     fills it by hand (though he may correct it)".
+        #   `_cross-topic-inbox.md` - FIVE writers and its header calls the list exhaustive: the three
+        #     coverage prompts, the `coverage-bullet-add` skill, AND a BY-HAND entry on a boundary
+        #     change, which `_topic-ownership.md` mandates. So "written by runs" is false of it, and
+        #     the class-A verdict survives anyway: a hand-filed routing row is still a transcript of a
+        #     gap some run found, not an instruction to a runtime. Stated rather than smoothed over,
+        #     because the definer is the writer and this one has a writer that is a person.
+        #   `_job-market-evidence.md` - `/evidence-intake` and `/cv tailor`, out of real postings:
+        #     transcription from OUTSIDE the system and the least controllable text in the tree.
+        #   `_application-evidence.md` - added 2026-08-31 (`REC-187`), the presentation sibling of the
+        #     row above and the same class for the same reason: quoted text fetched from career and ATS
+        #     articles, so the least controllable text in the tree now has two files, not one. Written
+        #     by hand in the session that needs it - no prompt owns it, which changes its writer but
+        #     not its class, exactly as `_cross-topic-inbox.md`'s by-hand entry did not change that
+        #     file's. Exempted BEFORE it ever trips the scan: nothing in the first fill hits the
+        #     pattern, and a later quote naming a tool or a model would be transcribed evidence.
+        # All four carry an authored header above transcribed rows, and that mixture is class A
+        # whole: the pattern scans the file, not the section, and the friction sinks - the same shape -
+        # settled it that way.
+        $_.Name -notin @('_run-tracker.md', '_cross-topic-inbox.md', '_job-market-evidence.md', '_application-evidence.md') -and
+
+        # --- CLASS B: authored, and the runtime is the subject ------------------------------------
         $_.Name -notin @(
+            # The hub: its "Platform adapters" section names Claude Code and Codex to say what an
+            # adapter IS. FOUR pattern hits today, measured, not assumed: `CLAUDE.md` (l.32) in the
+            # shared-runtime-context block ABOVE that section, which starts at l.38; `Claude Code`
+            # (l.45) in the section itself; and `general-purpose` plus `run_in_background` (l.54) in
+            # the passage that publishes this very exemption, added 2026-08-29. All four correct. The
+            # first draft of this comment said "two, both that section" without counting, which is
+            # REC-174's own failure mode committed inside its own repair. It was the first line of
+            # this filter and carried no reason at all until 2026-08-29 - the other-direction finding
+            # of REC-174: an exemption whose class nobody could read is one nobody can audit.
+            'README.md',
             '_session-rules.md',
             '_agent-runtime-standard.md',
             '_recommendation-ledger.md',
@@ -368,6 +447,12 @@ $historicalReferences = @{
     'practice\sql\_internal\_last-run-report-sql-exercises.md'   = @('practice/sql/01-basics.sql')
     'strategy\tracking\_internal\_last-run-report.md'            = @('practice/sql/02-joins.sql')
     'strategy\tracking\_internal\_last-drift-report.md'          = @('practice/sql/02-joins.sql')
+    # The project question bank became an `en/`+`es/` pair on 2026-08-31 (REC-180, bilingual half), so
+    # the 2026-08-29 portfolio run's declared output moved under `en/`. A self-report records what a
+    # run did on the day it ran, and per this map's own registry row a self-report is written by its
+    # prompt's close-out alone and OVERWRITTEN, never hand-appended - so neither rewriting the path nor
+    # annotating the file was available. The tombstone is the whole disposition.
+    'projects\portfolio\_internal\_last-run-report.md'           = @('notes/interview-prep/projects/01-todo-list.md')
 }
 # A path a LEDGER ROW PROPOSES: machinery the row is arguing should exist, which by construction
 # does not (REC-172 (iii)). `$declaredOutputPatterns` cannot cover it - no prompt is told to write
@@ -705,6 +790,7 @@ $closedBudget = 700
 $closedRowsScanned = 0
 $closedLongest = 0
 $closedOverBudget = 0
+$closedUnrecorded = 0
 # $emDash is built from its code point by invariant 8 above: this file carries no UTF-8 BOM, so a
 # literal one arrives as two characters under PowerShell 5.1 and matches nothing, in silence.
 $closedRowPattern = '^- `REC-(?<id>[0-9]{3})`(?<residue> residue)? ' + $emDash + ' '
@@ -761,12 +847,62 @@ if ($closedSplit.Count -ne 2) {
         $implemented = $tail.Success -and $tail.Value -cne ('`' + $emDash + '`')
         if ($id -ge 107 -and $implemented) {
             $verdictAt = $line.IndexOf('cold reviewer:')
+            # The escape, and why it is not a loophole (`REC-195`). A verdict the collapse never
+            # wrote cannot be recovered afterwards: `REC-190` was closed on 2026-09-01 with no
+            # token, and neither the deleted row, the commit message nor any report holds it.
+            # `REC-209` admitted a SECOND case this check cannot tell from the first - a field whose
+            # rounds ran and never reached a closing one - and the round count plus the words
+            # `no closing round` that separate them are prose the archive header requires and no
+            # test here can see.
+            # Silence and an invented `approve` are the two wrong answers - the first is
+            # indistinguishable from a skipped gate, the second IS the self-approval this invariant
+            # exists to expose. So an explicit `unrecorded` is accepted under three conditions that
+            # keep it a record rather than a way out: it opens the field it is read from, it names a
+            # `REC-NNN` row accounting for it, and every use is COUNTED ON THE PASS LINE, so the
+            # escape cannot accumulate unseen. It is deliberately not offered to invariant 8's
+            # self-reports: that report is written by the run that held the gate, so there a verdict
+            # is never lost, only omitted.
+            #
+            # ORDER AND POSITION, from this fix's own two cold-review rounds and `REC-210`. The
+            # approve test runs FIRST and keeps its original reach - the tail from the FIRST
+            # occurrence, scanned forward - so a row whose prose *quotes* the escape ahead of its
+            # real field still passes on the real one; the draft tested `unrecorded` first, from that
+            # same first occurrence, and would have read the quotation as the verdict and never
+            # checked the field at all (round 1's `reject`). The escape is then tested against EVERY
+            # occurrence rather than one chosen position: reading only the last failed a real cited
+            # field that its own line echoed afterwards, and reading only the first is the rejected
+            # draft. No line on disk exercises that today - all three rows reaching this branch carry
+            # one occurrence each, and the two that quote the formula in prose pass on the approve
+            # test above and never arrive here - so it is the shape the position choice guards
+            # against, not a live row. `REC-210` then bound the CITATION to the occurrence that needs
+            # it - `unrecorded (REC-NNN)`, the token's own parentheses - because scanning the rest of
+            # the LINE for any `REC-NNN` let `REC-206` pass with its citation stripped, satisfied by
+            # a row named 391 characters after the token that adjudicates no verdict (measured
+            # 2026-09-04 on the real line). That is `REC-157`'s anchor rule, which every other test in this
+            # invariant already obeys: inside a single line the field position is the column. One
+            # form, the one the doctrine publishes; `REC-190` was retrofitted to it rather than a
+            # second form being admitted to spare one line.
+            #
+            # WHAT IT STILL CANNOT SETTLE, published rather than assumed. A line that quotes
+            # `cold reviewer: unrecorded (REC-NNN)` in prose and carries no real verdict field is
+            # admitted as unrecorded rather than failing. It is not silent - it needs the citation
+            # and it moves the PASS-line count - and no reading of the characters on disk can
+            # separate that line from one meaning it. And the citation is proved PRESENT AND IN
+            # POSITION, never *adjudicating*: whether the cited row rules on this verdict is a claim
+            # about another file's contents, which this check does not make (`REC-076` - what a check
+            # cannot settle needs a name, or it silently becomes a pass).
             if ($verdictAt -lt 0) {
                 Add-ValidationError "REC-$rowId applied an edit and carries no 'cold reviewer:' field; on disk that is indistinguishable from a row that skipped the gate."
-            } elseif ($line.Substring($verdictAt) -cnotmatch '(?<![A-Za-z0-9-])approve(?:-with-tightening)?(?![A-Za-z0-9-])') {
+            } elseif ($line.Substring($verdictAt) -cmatch '(?<![A-Za-z0-9-])approve(?:-with-tightening)?(?![A-Za-z0-9-])') {
                 # Bounded on BOTH sides (`REC-065`) so `disapprove` cannot satisfy it, and searched
                 # only from the field onwards, so the word appearing in the row's prose cannot. The
                 # historical `reject, then approve-with-tightening` shape still passes, as it must.
+            } elseif ($line -cmatch 'cold reviewer:[ ]*unrecorded(?![A-Za-z0-9-])') {
+                $closedUnrecorded++
+                if ($line -cnotmatch 'cold reviewer:[ ]*unrecorded[ ]*\(REC-[0-9]{3}\)') {
+                    Add-ValidationError "REC-$rowId writes 'cold reviewer: unrecorded' and carries no '(REC-NNN)' in the token's own parentheses; a verdict that was lost, or one whose rounds never reached a closing one, is admitted by naming the row that adjudicates it where the token is read, never by the word alone and never by a row the rest of the line happens to mention."
+                }
+            } else {
                 Add-ValidationError "REC-$rowId carries a 'cold reviewer:' field that never reaches an approving verdict; only approve or approve-with-tightening may reach step 4."
             }
         }
@@ -1471,9 +1607,11 @@ if ($selfReportReports.Count -gt 0) {
     $selfReportReports | ForEach-Object { Write-Output "  - $_" }
 }
 # Outside -MachineryOnly for invariant 8's reason: the ledger archive is machinery and so is the
-# ledger that indexes it. Three numbers, and the last two are the budget proxy, never a gate - a
-# closure that restates its whole resolution moves them before the file is visibly growing again.
-Write-Output "PASS: closed ledger lines carry their closure schema ($closedRowsScanned rows, longest $closedLongest chars, $closedOverBudget over the $closedBudget-char one-line budget)"
+# ledger that indexes it. Four numbers. The middle two are the budget proxy, never a gate - a
+# closure that restates its whole resolution moves them before the file is visibly growing again -
+# and the fourth is `REC-195`'s escape, printed for exactly the same reason: an unrecorded verdict
+# that nobody counts is one nobody notices accumulating.
+Write-Output "PASS: closed ledger lines carry their closure schema ($closedRowsScanned rows, longest $closedLongest chars, $closedOverBudget over the $closedBudget-char one-line budget, $closedUnrecorded with an unrecorded verdict)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 if ($MachineryOnly) {
     Write-Output 'SKIP: live coverage, notes-plan, SQL-route (including declared exercise names), and simulation-route state (machinery-only mode)'

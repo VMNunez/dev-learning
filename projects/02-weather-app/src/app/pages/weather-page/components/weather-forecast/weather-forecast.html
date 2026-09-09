@@ -7,7 +7,7 @@
           <p class="forecast-date">{{ item.dt_txt | slice: 0 : 10 }}</p>
           <p class="forecast-temp">{{ item.main.temp | number: '1.0-1' }}ºC</p>
           <p class="forecast-description">{{ item.weather[0].description }}</p>
-          <img [src]="getIconUrl(item.weather[0].icon)" />
+          <img [src]="getIconUrl(item.weather[0].icon)" alt="" />
         </div>
       }
     </div>

@@ -1,0 +1,20 @@
+@if (categories().length > 0) {
+  <button
+    class="category-btn"
+    [class.active]="selected() === ''"
+    [attr.aria-pressed]="selected() === ''"
+    (click)="categorySelected.emit('')"
+  >
+    All
+  </button>
+}
+@for (category of categories(); track category) {
+  <button
+    class="category-btn"
+    [class.active]="selected() === category"
+    [attr.aria-pressed]="selected() === category"
+    (click)="categorySelected.emit(category)"
+  >
+    {{ category }}
+  </button>
+}

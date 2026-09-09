@@ -42,9 +42,6 @@ export class TaskList {
 
       case 'completed':
         return this.tasks().filter((task) => task.completed);
-
-      default:
-        return this.tasks();
     }
   });
 }

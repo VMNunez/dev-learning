@@ -242,7 +242,8 @@ Before sending, verify all four are present:
       the step where the defect enters; 2. why it is invisible from the frame Victor would open,
       including the second-order trap; 3. the general principle in one quotable line; 4. one or two
       reasoned design/security nuances, argued, never a caveat list.
-- [ ] **The three guidance modes**, in prose, at the end.
+- [ ] **The three guidance modes**, as the closing block, in the verbatim numbered `1)` `2)` `3)`
+      Spanish wording fixed by `_session-rules.md` -> "How to guide me" -- copied exactly, never paraphrased.
 
 **Priority never scales depth.** `[Low]`, `Effort: Small` and a one-line fix earn the same full
 explanation as a `[High]`: the size of the diff says nothing about the size of the concept. The

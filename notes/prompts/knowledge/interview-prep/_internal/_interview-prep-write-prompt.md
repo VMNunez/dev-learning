@@ -79,6 +79,11 @@ heading** — author/audit just that section (in both `en/` and `es/`), read it 
 **question-by-question trace** (each question with PASS or the change you made) as proof you finished
 it. **Respect the lifecycle**: a question carrying `[refined]` in either language is frozen
 byte-for-byte, whether or not it also carries `[studied]`; report defects instead of rewriting it.
+**One thing is not a defect you report — a `TODO:` Victor wrote on that block.** That marker is his
+reopening (standard → *Question identity and lifecycle*): remove `[refined]` and `[studied]` from both
+languages, repair on the side carrying the marker, re-translate the twin from the repaired side, and
+say so. Refusing it as frozen is the failure this sentence exists to prevent; every defect he did
+**not** mark is still reported and left alone.
 Everything unmarked may be rewritten freely to reach the bar. A section is the deep-work unit; never take on the whole file in one pass under the orchestrator.
 (`SECTION = all` on a standalone run means the whole file — then work section by section within it.)
 
@@ -94,7 +99,9 @@ Before starting, read:
 
 `en/{FILE}.md` and its `es/{FILE}.md` twin (same filename). **`en/` is the canonical source** — author
 and correct there first, then translate into `es/` (the file Victor studies from, so the Spanish must
-read as native, never a calque). If `{FILE}` is given as a path to one language file, derive the
+read as native, never a calque). **One operation overrides that default and only one: resolving a
+`TODO:`**, which runs in the language of the file carrying the marker (standard → *The bilingual en/es
+contract*). Step 2 is where that happens; everywhere else in this run, English first. If `{FILE}` is given as a path to one language file, derive the
 topic and audit both twins — never just the one handed to you.
 
 If `{SECTION}` is not "all", operate only on that heading's content. If the section is missing in one
@@ -150,12 +157,26 @@ one file but not the other, or the same count hides different questions. For eac
 missing content — translated into `es/`, in English into `en/`; where the same question differs, keep
 the `en/` version and update `es/` (per the bilingual contract in the standard). Only then continue.
 
+**One question is out of this step's reach, and it is the direction rule** (standard → *The
+bilingual en/es contract*). A question whose `es/` carries an unresolved `TODO:` is **not** synced
+here: Step 2 owns it, and re-syncing it from `en/` first would overwrite the Spanish phrasing the
+marker is about. That marker is the whole test — it is the one condition this step can actually
+evaluate, and it is the same guard `_notes-translate-prompt.md` uses one folder over. Everything else
+is settled in `en/`'s favour as above: an `es/`-side repair leaves no trace once its marker is cleared,
+so a run cannot tell one from ordinary drift, and the place that failure is prevented is Step 2, which
+re-translates the twin before the marker goes.
+
 ## Step 2 — Resolve TODOs
 
 Scan `{SECTION}` in `es/{FILE}.md` first, then `en/{FILE}.md`. Markers: `TODO:`, `<!-- TODO: -->`, or
-`// TODO`. For each: identify what Victor wants, apply the fix where it was found, mirror the equivalent
-fix (translated) to the other file at the matching position, remove the marker in both, and report the
-change.
+`// TODO`. For each: identify what Victor wants, apply the fix **in the language of the file carrying
+the marker** — an `es/` marker is resolved in Spanish, in his words, never drafted in English first —
+then bring the twin into line by **re-translating it from the repaired side**, at the matching
+position, remove the marker in both, and report the change **naming which side was repaired**. This is
+the standard's direction rule, and it is the one operation that overrides `en/` as master of record.
+Where the question carries `[refined]`, the marker is Victor's reopening: remove both state markers
+from both languages first, per the standard's lifecycle, and the re-translation is part of that same
+reopening.
 
 **Pattern detection** — after resolving all TODOs, if 2+ reflect the same kind of correction (e.g.
 always rewriting a passive answer to "I used", always adding a project reference), report it in the
@@ -239,6 +260,8 @@ Then report:
 - The coverage status for `{SECTION}` (or per section, if `all`): ✅ Complete / 🔧 Fixed / ➕ Added.
 - **Weak answers found** (from 6.2) — question + what is missing.
 - **Coverage gaps found** — concepts added that are not in coverage/{LEVEL}.md.
+- **TODOs resolved** — each one with the side it was repaired on and the twin re-translated from it,
+  plus any `[refined]` block a marker of his reopened.
 - **TODO patterns detected** — recommended one-sentence rule additions for the standard.
 - The one-line commit message you would use (the orchestrator — or the reviewer on a standalone run — will run it):
   `docs: audit {FILE} interview prep — <one-line summary of main fixes>`.

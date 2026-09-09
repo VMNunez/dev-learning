@@ -8,9 +8,9 @@ Read `notes/prompts/knowledge/coverage/coverage-verify-prompt.md` and execute it
 Configuration from the user: $ARGUMENTS
 
 Rules:
-- Read-only over coverage: this gate never edits a coverage file. It writes its findings file, self-report and tracker, plus one `_cross-topic-inbox.md` proposal — in its own commit — for each gap it rejects on ownership alone; the inbox is a handoff file, not coverage.
+- Read-only over coverage: this gate never edits a coverage file. It writes its findings file, self-report and tracker, plus one `_cross-topic-inbox.md` proposal for each gap it rejects on ownership alone; the inbox is a handoff file, not coverage.
 - Execute the cold completeness reviewer through the runtime mapping; do not pass it size or freshness priors.
-- A `gaps` verdict does not block notes-plan. **Do not invoke `coverage-prompt`, `notes-plan`, or any
+- What a `gaps` verdict does or does not block is the prompt's rule; read it there. **Do not invoke `coverage-prompt`, `notes-plan`, or any
   other runnable workflow from this command.** Finish `coverage-verify` after its findings, any inbox
   routing, self-report, and tracker update, then report the suggested next command for Victor to launch
   manually. Re-verification is optional and must also be launched manually.

@@ -40,26 +40,31 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `VERIFY = notes/{topic}/coverage/verify-{LEVEL}.md`
 - `PREREQUISITES = none for junior; junior for middle; junior and middle for senior`
 - `PLAN = notes/{topic}/coverage/notes-plan-{LEVEL}.md`
+- `PLANS = the three levels' notes-plan files, where they exist` — the ownership source every
+  classification is taken from; a level with no plan on disk owns nothing
 - `EN_DIR = notes/{topic}/{LEVEL}/en/`
 - `ES_DIR = notes/{topic}/{LEVEL}/es/`
 - `GLOBAL_MIRROR = notes/coverage/{LEVEL}.md`
 
 The plan is a committed source of truth. It is not a temporary worklist.
 
-The topic's three level directories and three coverage files are all classification inputs. `LEVEL`
-selects the plan being produced; it does not mean existing files in that directory are assumed to
-belong there.
+The topic's three level directories, three coverage files and three plans are all classification
+inputs. `LEVEL` selects the plan being produced; it does not mean existing files in that directory are
+assumed to belong there.
 
 ## Guards
 
 1. Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, and all three topic
    coverage files.
-2. Inventory every English and Spanish note in all three level directories. Read every English note
-   end-to-end before classifying it; `en/` is canonical. Verify whether its Spanish counterpart exists
-   and, when present, has matching substantive headings before relocating either file. A legacy note
-   that exists only in English may still be renumbered inside the same level under Planning algorithm
-   step 6; it may not be relocated across levels without its Spanish counterpart. Follow the
-   repository's line-count and read-to-EOF rule.
+2. Inventory every English and Spanish note in all three level directories, and read `PLANS`. A note
+   some plan entry commissioned is classified from that entry; **the notes that owe an end-to-end read
+   are the ones no entry owns** — the files listed under `## Unassigned existing notes` in any of the
+   three plans, plus any file on disk no plan names. Read that population in full before classifying
+   it; `en/` is canonical. Verify whether a Spanish counterpart exists and, when present,
+   has matching substantive headings before relocating either file. A legacy note that exists only in
+   English may still be renumbered inside the same level under Planning algorithm step 6; it may not be
+   relocated across levels without its Spanish counterpart. Follow the repository's line-count and
+   read-to-EOF rule for every file this guard reads.
 3. Stop on `main`.
 4. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's
    `_internal/_last-run-report-notes-plan.md` if it exists. Never restate the shared `Status:` meanings
@@ -84,9 +89,19 @@ belong there.
 Run this stage before building the selected-level entries. It exists because pre-plan notes may all
 sit under `junior/` even when their actual content belongs to middle or senior.
 
-1. Compare every substantive section of every existing English note with all three coverage files.
-   Classify from the mechanism and responsibility being taught, not from the current folder, numeric
-   prefix, title, project chronology, length, or words such as "production" in isolation.
+1. Classify by ownership, and read prose only where nothing owns the note.
+   - **Owned by a plan entry** — the level is stated, not judged: that entry's assigned bullets, or the
+     introduction contract of a junior `00` entry that carries none, already fix it, so the verdict is
+     `keep` and prose cannot overturn it. A note whose material outgrew its level is a wrong-level
+     **bullet**, which `/coverage-audit` owns, not this stage. An entry that loses its whole bullet set
+     in this reconciliation stops being plan-owned and is classified through the branch below in this
+     same run — otherwise step 9 parks a mis-levelled pair under `## Unassigned existing notes`, which
+     is exactly what rule 8 forbids.
+   - **Owned by no entry** — the Guard 2 read population. Compare every substantive section with all
+     three coverage files, and classify from the mechanism and responsibility being taught, not from the
+     current folder, numeric prefix, title, project chronology, length, or words such as "production" in
+     isolation. Re-examine that list on every run: a coverage bullet added since the last one can claim
+     a parked note and turn it into `keep` or `requires split`.
 2. Keep a note at its current level when its central learning unit belongs there. Extra examples or
    brief forward references to a later level do not promote the whole note.
 3. Relocate a complete English/Spanish pair when all substantive sections form one coherent unit
@@ -109,7 +124,8 @@ sit under `junior/` even when their actual content belongs to middle or senior.
 
 Before planning continues, report the classification decision for every pre-existing pair or
 English-only note as `keep`, `move <current level> -> <correct level>`, `renumber NN -> MM`
-(`English-only` when applicable), `unassigned`, or `requires split`.
+(`English-only` when applicable), `unassigned`, or `requires split`. Mark every verdict `(plan-owned)`
+or `(read)` for the route that produced it, and state how many notes this run read end-to-end.
 
 ## Coverage fingerprint
 
@@ -233,9 +249,8 @@ After drafting or reconciling the complete plan, dispatch **one cold reviewer**,
 headings, the proposed plan, and this prompt's **"Required plan format"** section. That last input is
 not background: it is the contract the reviewer's own prerequisite-order verdict is measured against.
 `Prerequisites` there accepts `none` or earlier entry numbers only, so a reviewer that cannot see the
-restriction proposes the cross-topic dependencies the field cannot carry — which cost a round trip on
-the 2026-08-27 run, the second consecutive run to lose one to a rule the reviewer could not see. It is
-handed as a **field contract, never as a conformance checklist**: field presence and field shape are the
+restriction proposes the cross-topic dependencies the field cannot carry. It is handed as a **field
+contract, never as a conformance checklist**: field presence and field shape are the
 orchestrator's check and the validator's, not the reviewer's.
 
 The plan's freshness header is out of the reviewer's scope, `Coverage SHA-256` above all. Its byte

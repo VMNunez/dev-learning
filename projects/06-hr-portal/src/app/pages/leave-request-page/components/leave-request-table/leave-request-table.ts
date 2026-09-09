@@ -34,7 +34,7 @@ export class LeaveRequestTable implements AfterViewInit {
   requests = input<LeaveRequest[]>([]);
   role = input<Role | undefined>(undefined);
   datasource = new MatTableDataSource<LeaveRequest>([]);
-  statusChange = output<{ id: number; status: LeaveRequestStatus }>();
+  statusChange = output<{ id: string; status: LeaveRequestStatus }>();
 
   displayColumns = computed(() => {
     const cols = ['reason', 'startDate', 'endDate', 'status'];
@@ -56,7 +56,7 @@ export class LeaveRequestTable implements AfterViewInit {
     this.datasource.paginator = this.paginator;
   }
 
-  onStatusChange(id: number, status: LeaveRequestStatus) {
+  onStatusChange(id: string, status: LeaveRequestStatus) {
     this.statusChange.emit({ id, status });
   }
 }

@@ -248,8 +248,8 @@ planned but not completed.
 ## How to commit it
 
 Both files are prompt-system machinery under `notes/prompts/`, so **commit them directly** (the
-notes/prompts exception — this applies even in pipelines whose main output is never auto-committed,
-like `readme-audit`): `git status` → stage **only** the report file, `_run-tracker.md`, and this
+notes/prompts exception — this applies even in a pipeline whose main output is not auto-committed, whichever
+those are: the report is machinery either way): `git status` → stage **only** the report file, `_run-tracker.md`, and this
 prompt's `_breach-log-<prompt-name>.md` when this run wrote a row or moved a disposition in it →
 `git status` again → commit
 `docs: pipeline self-report for <orchestrator> run on <target>`. Never bundle them into the

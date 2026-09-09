@@ -1,0 +1,29 @@
+:host {
+  flex: 1;
+  display: block;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  box-shadow: 0px 4px 12px var(--shadow);
+}
+
+.label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.amount {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.amount.income {
+  color: var(--income);
+}
+
+.amount.expense {
+  color: var(--expense);
+}

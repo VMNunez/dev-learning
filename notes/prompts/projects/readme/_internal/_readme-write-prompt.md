@@ -7,7 +7,7 @@ at it; you can also run it standalone to fix one README.
 
 **What it does.** Writes and fixes **one** README (the `TARGET`) to the contract in `_readme-standard.md`
 — it reads only that target's rules, so its whole attention budget stays on one audience. It edits the
-file directly and does **not** commit (the reviewer runs next; the orchestrator hands Victor the commit).
+file directly and does **not** commit (the reviewer runs next; the orchestrator commits at the end).
 
 **Why one README at a time.** The rule set is long and each README serves a different audience (recruiter
 vs backend interviewer vs Angular interviewer). Writing all three in one pass is exactly where the rules
@@ -27,8 +27,8 @@ type from the path prefix.
 ---
 
 You write **one** README: the `{TARGET}` one for `{PROJECT_PATH}`. **Do NOT commit** — leave your edits
-in the working tree; the reviewer runs next and the orchestrator **hands Victor** the commit. Nothing in
-this pipeline commits a README: `_readme-standard.md` → "Summary + commit rule" owns why.
+in the working tree; the reviewer runs next and the **orchestrator** makes the project's single commit at
+the end: `_readme-standard.md` → "Summary + commit rule" owns who commits and at what granularity.
 
 Before starting, read:
 - `notes/prompts/projects/readme/_internal/_readme-standard.md` — the bar. Focus on the **universal rules** and
@@ -57,6 +57,15 @@ Check this README's sections against the standard's rules for your `{TARGET}`, i
 - Move any out-of-order section to its correct position.
 - Apply the **quality filter** (recruiter + interviewer lens) to each section — cut or rewrite noise.
 - Do **not** rewrite sections that are already correct — only touch what misses the bar.
+- **`What I learned` is the exception to the line above**, because its defect is invisible section by
+  section: every bullet can be well formed while the section as a whole fails. Run rule 9's three tests
+  here, **in the order that rule states — one-bullet-per-concept, behaviour, then form, and form only
+  over what survived the first two**; shaping a bullet the next filter will delete is wasted work. Cut
+  what they cut. Without this the author adds on every pass what the reviewer then removes. Then apply
+  rule 9's **ordering** and **structure** clauses — what the project exists to teach first, HTML/CSS/a11y
+  last, and the `### Backend` / `### Frontend` subsections on a full-stack project whose tiers are built.
+  **A concept named in Architecture decisions or Tradeoffs is not thereby barred from this section** —
+  rule 9 says so outright, and a run that cuts a recall line for repeating a decision has misread it.
 - For visual sections (`global` only), output the **Visual brief** and add placeholders as the standard
   specifies — never skip silently.
 

@@ -69,7 +69,7 @@ app/
 | `takeUntilDestroyed` + `DestroyRef` | Safe subscription management |
 | `number` pipe with format | Display temperature with one decimal |
 | `SlicePipe` | Limit forecast list in the template |
-| Environment files | Store the API key safely |
+| Environment files | Keep the API key out of the repository — not out of the bundle |
 | `@keyframes` + `animation` | CSS loading spinner |
 | `transition` + `transform: scale()` | Hover effects |
 

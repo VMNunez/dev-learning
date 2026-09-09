@@ -8,4 +8,11 @@ import { Component, output } from '@angular/core';
 })
 export class WeatherForm {
   cityToSearch = output<string>();
+
+  submit(value: string) {
+    const city = value.trim();
+    if (!city) return;
+
+    this.cityToSearch.emit(city);
+  }
 }

@@ -4,13 +4,13 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Type-system foundations
 
-- TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation
+- TypeScript's compile-time boundary — type annotations are checked before execution and erased from emitted JavaScript, so typed external data still needs runtime validation ✅ 04-meal-finder — `http.get<MealResponse>()` validates nothing, so the model declares `meals: Meal[] | null` and both subscribers normalise the value the endpoint really sends
 - Type inference and explicit annotations — rely on clear local inference while annotating parameters, public contracts, and deliberately constrained return values ✅ 01-todo-list
 - Primitive value types — use `string`, `number`, and `boolean` without confusing primitive annotations with boxed object types ✅ 01-todo-list
 - `null` vs `undefined` — distinguish explicit nullish absence from a missing or uninitialised value under strict checking ✅ 06-hr-portal
 - `void` vs `never` — distinguish a function result callers ignore from a control-flow path that cannot produce any value
 - `object` vs `Object` vs `{}` — avoid broad object-like types whose assignability differs from the specific property shape an application contract needs
-- `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type
+- `any` vs `unknown` — `any` disables checking while `unknown` requires narrowing before use, making `unknown` the safer boundary type ✅ 04-meal-finder — the `catchError` callback in `MealService` types the caught value `unknown` and only logs it, so nothing reads a property off it unnarrowed
 - Structural typing — compatibility depends on required members rather than declared names, which explains both convenient object assignment and accidental shape compatibility
 - Union types — model a value that may have one of several types and narrow it before using member-specific operations ✅ 01-todo-list
 - Intersection types — require a value to satisfy all combined object contracts without confusing an intersection with a runtime merge
@@ -21,8 +21,9 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Object contracts
 
 - `interface` vs `type` — choose either for ordinary object shapes while recognising that aliases also express unions and intersections and interfaces support declaration merging ✅ 01-todo-list
+- A shared model type as the single source of truth — changing a field's type in the model turns every signature that names it into a compilation error, so a contract change is enumerated by the compiler rather than hunted by hand ✅ 05-task-manager — widening `Task.id` from `number` to `string` failed compilation at every signature naming it, so `output<string>()` in `task-table`, `TaskService.deleteTask(taskId: string)` and `TaskPage.onDeleteTask(id: string)` were enumerated by `tsc` rather than found by grep
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
-- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime
+- `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature
@@ -43,38 +44,38 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Rest parameters — type a variadic remainder as an array without confusing it with a spread argument at the call site
 - Function overloads — read multiple public call signatures with one compatible implementation and avoid using overloads where a union is clearer
 - Generic containers — read `Array<T>`, `Promise<T>`, `Observable<T>`, and similar signatures as preserving the contained value type ✅ 01-todo-list
-- Generic functions and interfaces — relate input and output types without replacing that relationship with `any`
+- Generic functions and interfaces — relate input and output types without replacing that relationship with `any` ✅ 06-hr-portal — `readStoredArray<T>(key): T[]` is the one guarded `localStorage` read the three domain services share, each supplying its own entity type at the call site instead of the helper returning `any[]`
 - Generic inference at call sites — let arguments determine a type parameter when possible and provide an explicit type argument when inference cannot express the intended contract ✅ 02-weather-app
 - Generic constraints — restrict a type parameter to the capabilities the implementation actually uses
 - `keyof` — derive a union of valid property names from an existing object contract
-- Indexed access types — obtain a property's value type from an existing object contract without duplicating it
+- Indexed access types — obtain a property's value type from an existing object contract without duplicating it ✅ 06-hr-portal — `LeaveRequestStatus` is declared as `(typeof LEAVE_REQUEST_STATUSES)[number]`, so the union is read off the array rather than restated beside it
 - Async function typing — recognise that an `async` function returns `Promise<T>` and that the annotation does not prevent runtime rejection
 
 ## Narrowing and safe control flow
 
-- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point
+- Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
-- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value
+- Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
-- Equality narrowing — use equality with a literal or another typed value to refine compatible union members
-- Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid
+- Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
+- Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid ✅ 06-hr-portal — `DepartmentForm.onSubmit` tests `editId !== null` rather than `if (this.editId())`, so an identifier that is a `string` cannot read as "not editing"
 - Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
-- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows
-- Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows
+- User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows ✅ 06-hr-portal — `isLeaveRequestFilter(value): value is LeaveRequestFilter` is the one check the leave-request page narrows through, so the query-param read needs no `as` assertion
+- Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
 
 ## Null safety and assertions
 
-- `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use
+- `strictNullChecks` — treat `null` and `undefined` as distinct types that must be handled before use ✅ 04-meal-finder — the nullable `MealResponse.meals` stops compiling at every consumer until each one handles the absent case
 - Non-null assertions — remove `null` and `undefined` only from the static type without adding a runtime check, so misuse can still crash ✅ 02-weather-app
-- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 03-expense-tracker
+- Type assertions — override the compiler's interpretation without converting or validating the runtime value ✅ 05-task-manager
 - Double assertions — recognise `as unknown as T` as an unsafe escape hatch that usually hides a broken boundary or conversion ✅ 06-hr-portal
 - Definite-assignment assertions — understand that a property-level `!` suppresses initialization checking rather than proving a value will exist ✅ 05-task-manager
 
 ## Utility and derived types
 
-- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch
+- `Partial<T>` vs `Required<T>` — make every property optional or required without assuming `Partial<T>` validates a correct domain patch ✅ 06-hr-portal — `isStoredSession` narrows the parsed value through `Partial<SessionUser>`, so each field is read as possibly absent and checked instead of asserted present
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
@@ -83,9 +84,10 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 
 ## Literal preservation and contract checking
 
-- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing
+- `as const` — preserve literal values and apply readonly treatment without using it as runtime freezing ✅ 06-hr-portal — `LEAVE_REQUEST_STATUSES` and `LEAVE_REQUEST_FILTERS` are declared `as const`, so their members stay literal types instead of widening to `string[]`
+- A literal union derived from an `as const` list — declare the permitted values once as a readonly array and derive the type from it with an indexed access over `number`, so the allow-list a runtime check reads and the union a signature declares are the same declaration and cannot drift apart when a member is added or removed ✅ 06-hr-portal — `LEAVE_REQUEST_FILTERS` is both the array the guard's `includes` reads and the source of the `LeaveRequestFilter` type, and the filter dropdown renders its options from that same constant
 - `satisfies` — check that an expression conforms to a contract while retaining useful inferred literal and property information
-- Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof
+- Annotation vs `satisfies` vs assertion — distinguish assigning a declared contract, checking conformance while preserving inference, and overriding the compiler without proof ✅ 03-expense-tracker — the transaction form declares each control's own type instead of asserting `form.value as NewTransaction` at the emit
 - `typeof` in type positions — derive a type from an existing value without confusing it with the runtime `typeof` operator
 - Enum runtime behaviour — recognise that regular TypeScript enums emit runtime objects rather than existing only in the type system
 - String enums vs literal unions — choose between a runtime enum object and an erased union of allowed values based on actual runtime needs

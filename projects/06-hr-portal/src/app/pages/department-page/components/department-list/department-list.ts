@@ -24,7 +24,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 export class DepartmentList implements AfterViewInit {
   departments = input<Department[]>([]);
   datasource = new MatTableDataSource<Department>([]);
-  delete = output<number>();
+  delete = output<string>();
   displayedColumns = ['name', 'description', 'actions'];
 
   constructor() {
@@ -43,7 +43,7 @@ export class DepartmentList implements AfterViewInit {
     this.datasource.paginator = this.paginator;
   }
 
-  onDelete(id: number) {
+  onDelete(id: string) {
     this.delete.emit(id);
   }
 }

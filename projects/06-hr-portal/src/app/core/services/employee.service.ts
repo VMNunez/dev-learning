@@ -1,11 +1,12 @@
 import { effect, Injectable, signal } from '@angular/core';
 import type { Employee } from '../../models/employee.model';
+import { readStoredArray } from '../../shared/utils/storage.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeService {
-  employees = signal<Employee[]>(JSON.parse(localStorage.getItem('employees') ?? '[]'));
+  employees = signal<Employee[]>(readStoredArray<Employee>('employees'));
 
   constructor() {
     effect(() => {
@@ -16,13 +17,13 @@ export class EmployeeService {
   addEmployee(employee: Omit<Employee, 'id'>) {
     const newEmployee = {
       ...employee,
-      id: Date.now(),
+      id: crypto.randomUUID(),
     };
 
     this.employees.update((employees) => [...employees, newEmployee]);
   }
 
-  deleteEmployee(employeeId: number) {
+  deleteEmployee(employeeId: string) {
     this.employees.update((employees) =>
       employees.filter((employee) => employee.id !== employeeId),
     );
@@ -36,7 +37,7 @@ export class EmployeeService {
     );
   }
 
-  emailExists(email: string, excludeId?: number) {
+  emailExists(email: string, excludeId?: string) {
     return this.employees().some(
       (employee) =>
         employee.id !== excludeId &&

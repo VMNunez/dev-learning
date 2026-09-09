@@ -11,10 +11,32 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../../../../models/employee.model';
-import { ConfirmDialog } from '../../../../shared/components/confirm-dialog/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogData,
+} from '../../../../shared/components/confirm-dialog/confirm-dialog';
 import { DepartmentService } from '../../../../core/services/department.service';
 import { EmployeeService } from '../../../../core/services/employee.service';
 import { MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { toLocalDateString } from '../../../../shared/utils/date.util';
+
+/**
+ * What the dialog is opened with. Present in edit mode, absent in create mode —
+ * the `undefined` half is what `MAT_DIALOG_DATA` yields when no `data` is passed.
+ */
+export interface EmployeeDialogData {
+  employee: Employee;
+}
+
+/**
+ * What the dialog closes with. Derived from the domain model rather than restated,
+ * so a new field on `Employee` cannot silently bypass this form.
+ *
+ * `id` is the row's, not the form's: create mode has none yet and edit mode already
+ * has it at the call site, so both modes close with the same shape and the page
+ * stamps the id back on.
+ */
+export type EmployeeFormResult = Omit<Employee, 'id'>;
 
 @Component({
   selector: 'app-employee-dialog',
@@ -33,11 +55,11 @@ import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 export class EmployeeDialog {
   private departmentService = inject(DepartmentService);
   private employeeService = inject(EmployeeService);
-  private dialogRef = inject(MatDialogRef);
+  private dialogRef = inject(MatDialogRef<EmployeeDialog, EmployeeFormResult>);
   private dialog = inject(MatDialog);
   private formBuilder = inject(FormBuilder);
   isLinear = true;
-  data = inject<{ employee: Employee } | undefined>(MAT_DIALOG_DATA);
+  data = inject<EmployeeDialogData | undefined>(MAT_DIALOG_DATA);
   departments = this.departmentService.departments;
 
   firstFormGroup = this.formBuilder.group({
@@ -90,9 +112,14 @@ export class EmployeeDialog {
     return this.secondFormGroup.get('status');
   }
 
-  onSubmit() {
+  onSubmit(stepper: MatStepper) {
     this.firstFormGroup.markAllAsTouched();
     this.secondFormGroup.markAllAsTouched();
+
+    if (this.hasDuplicateEmail()) {
+      stepper.selectedIndex = 0;
+      return;
+    }
 
     if (this.firstFormGroup.valid && this.secondFormGroup.valid) {
       const firstFormValue = this.firstFormGroup.value;
@@ -109,13 +136,12 @@ export class EmployeeDialog {
       if (this.data) {
         this.dialogRef.close({
           ...newEmployee,
-          id: this.data.employee.id,
           startDate: this.data.employee.startDate,
         });
       } else {
         this.dialogRef.close({
           ...newEmployee,
-          startDate: new Date().toISOString().split('T')[0],
+          startDate: toLocalDateString(new Date()),
         });
       }
     }
@@ -123,7 +149,7 @@ export class EmployeeDialog {
 
   onCancel() {
     if (this.firstFormGroup.dirty || this.secondFormGroup.dirty) {
-      const dialogRef = this.dialog.open(ConfirmDialog, {
+      const dialogRef = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         width: '500px',
         autoFocus: false,
         data: {
@@ -148,17 +174,29 @@ export class EmployeeDialog {
   onNext(stepper: MatStepper) {
     this.firstFormGroup.markAllAsTouched();
     if (this.firstFormGroup.valid) {
-      const firstFormValue = this.firstFormGroup.value;
-      const isDuplicate = this.employeeService.emailExists(
-        firstFormValue.email as string,
-        this.data?.employee.id,
-      );
-
-      if (isDuplicate) {
-        this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
+      if (this.hasDuplicateEmail()) {
         return;
       }
       stepper.next();
     }
+  }
+
+  /**
+   * Checks the unique-email rule and flags the control when it fails.
+   * Both exits of the dialog go through it: the linear stepper lets the user
+   * reach step 2 by clicking its header, which never runs `onNext()`.
+   */
+  private hasDuplicateEmail(): boolean {
+    const email = this.firstFormGroup.value.email;
+    if (!email) {
+      return false;
+    }
+
+    const isDuplicate = this.employeeService.emailExists(email, this.data?.employee.id);
+    if (isDuplicate) {
+      this.firstFormGroup.controls.email.setErrors({ duplicateEmail: true });
+    }
+
+    return isDuplicate;
   }
 }

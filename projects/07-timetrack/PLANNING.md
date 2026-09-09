@@ -958,8 +958,8 @@ day by people who want the numbers, so the app is quiet, dense and flat. It diff
 project** on four axes, each one a single theming decision:
 
 - **Palette** — a cool **teal** primary (`#00695C` intent) on a light-neutral grey surface, with the four
-  status colours as the only saturated ink on screen. Project 05 used a warm **violet** palette and project
-  06 shipped Material's **default indigo/blue**; nothing in the portfolio is teal, and the coolness is the
+  status colours as the only saturated ink on screen. Project 05 shipped Material's **blue** palette and
+  project 06 its **azure/blue** default; nothing in the portfolio is teal, and the coolness is the
   point — money and hours should not look playful.
 - **Density and rhythm** — **compact** Material density on an **8px** grid. Projects 05 and 06 both ran
   Material's default (comfortable) density with generous card padding; here ten table rows must fit on a

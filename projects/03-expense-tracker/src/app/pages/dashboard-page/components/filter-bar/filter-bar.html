@@ -1,0 +1,17 @@
+<button class="filter-btn" [class.active]="current() === 'all'" (click)="filterChange.emit('all')">
+  All
+</button>
+<button
+  class="filter-btn"
+  [class.active]="current() === 'income'"
+  (click)="filterChange.emit('income')"
+>
+  Income
+</button>
+<button
+  class="filter-btn"
+  [class.active]="current() === 'expense'"
+  (click)="filterChange.emit('expense')"
+>
+  Expense
+</button>

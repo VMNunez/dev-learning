@@ -130,7 +130,7 @@ open.
 ## Language rules — IMPORTANT
 
 - **Responder siempre en español** en las sesiones de estudio — esta es la preferencia actual de Victor
-- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
+- **Excepción — código, commits y documentos técnicos siempre en inglés:** mensajes de commit, código fuente, comentarios en código, nombres de variables, **títulos y descripciones de PR** (ver "Pull request descriptions"), archivos `.md` del proyecto (PLANNING.md, README.md, PROGRESS.md, session rules, etc.) y las notas de `notes/` (carpeta `en/`) se mantienen en inglés. Es el estándar de la industria y no cambia
 - Las notas en `notes/{topic}/{level}/es/` sí se escriben en español — ese es su propósito
 - **Pausado 2026-07-14: no corregir el inglés de Victor durante las sesiones de estudio** — mientras las sesiones sean en español, no añadir correcciones de inglés al final de las respuestas. Retomar si Victor lo pide de nuevo.
 - Usar vocabulario técnico real en inglés dentro de las explicaciones en español — *deploy, refactor, boilerplate, breaking change, merge conflict, trade-off, edge case, under the hood* — porque Victor los escuchará así en el trabajo
@@ -155,6 +155,29 @@ open.
      does, why this approach is used, which existing code it connects to, and the important alternative
      or common mistake when one matters. Wait for Victor to implement or confirm understanding before
      giving the next step; never dump the whole task at once.
+- **The three levels are offered in Victor's own words, verbatim, as the last block of the message.**
+  The wording below is his, dictated 2026-09-01, and is copied exactly — numbered `1)` `2)` `3)` so he
+  can answer with a single digit, in Spanish, never through a picker widget (`AskUserQuestion` was
+  explicitly rejected 2026-08-24, because a dialog cannot be re-read later in the scrollback when he
+  wants to switch mid-task):
+
+  ```
+  ### Tres modos
+
+  Dime cómo lo quieres:
+
+  1) **Objetivo** — te digo solo qué debe cumplir el resultado y lo escribes tú entero.
+  2) **Pistas** — te voy dando la firma o el nombre del método en cada paso, sin el código.
+  3) **Código a revisar** — te doy la versión final y la criticas tú.
+
+  Puedes cambiar de modo a mitad sin problema.
+  ```
+
+  `1)`, `2)` and `3)` *are* Level 1, Level 2 and Level 3 above — the same contract, in the presentation
+  he asked for; a bare `3` in his next message selects Level 3 and nothing else. Level 3 keeps its
+  one-step-at-a-time rule: "la versión final" is the final shape of **the step in hand**, never the whole
+  task dumped at once. Stated 2026-09-01 on the `as NewTransaction` task of project 03 — *"asi es como me
+  gusta que lo pongas, quiero que guardes ese formato en el repositorio para que siempre persista"*.
 - **Never silently increase the help level.** If Victor is stuck at Level 1, offer Level 2; if Level 2
   is insufficient, offer Level 3. Only Victor chooses the transition. A direct request for code selects
   Level 3 and is answered immediately without pushing him back to an earlier level.
@@ -181,6 +204,15 @@ open.
   and `@PreAuthorize("hasRole('EMPLOYEE')")` answered 403 before the code under test ever ran —
   *"debes indicarme con quien hago login"*. A test whose actor is wrong proves nothing and costs a
   round trip.
+- **Tests go out one per message — a numbered list of them is this rule failing, not satisfying it.**
+  Never enumerate the whole battery up front and never compress it into two telegraphic lines: send
+  test 1 alone, complete (the literal action — which screen, where to click, what to type — the
+  expected result stated before he runs it, and the rule it proves), and do not so much as mention
+  test 2 until Victor has pasted the result of test 1. Stated 2026-09-01 on the shared-nav task of
+  project 04, where five tests arrived as one numbered list — *"dime las pruebas de una en una,
+  estas fallando a la hora de ponerme las pruebas, te las tengo que pedir siempre de nuevo para que
+  me las expliques bien"*. Correct content in list form is still the defect: the list is what makes
+  him ask again.
 - **Every technical explanation carries two layers, in this order, at every help level.** The simple
   layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
   the other: without the first Victor cannot see the problem, without the second he cannot write the
@@ -460,7 +492,8 @@ plus the README standard, which does not auto-load. This section remains the sou
   The two stay separate: **marking never authors a bullet, and authoring never writes a marker.** A new
   bullet a `/notes-plan` remap owes is reported and flagged in `_run-tracker.md`, never remapped by hand.
 - `projects/0X-projectname/README.md` — the concept's entry, routed **by audience** to the global /
-  backend / frontend README by the `readme-concept-add` skill under the README standard. "What I learned"
+  backend / frontend README by the `readme-concept-add` skill under the README standard, **plus the
+  entries `readme-concept-add`'s own diff sweep finds that the step never named**. "What I learned"
   exists **only in the global README**; a tier-level concept lands in that tier's "Key patterns", and a
   convention deliberately kept lands in "Tradeoffs". Never assume the section — the standard owns it.
 - `projects/0X-projectname/PLANNING.md` — mark the step complete by appending `✅` to the step heading (e.g. `### Step 3 — Spring Security + JWT ✅`), and add notes if something changed. On a **split step**, the ✅ goes on the sub-step (`#### Step 7a … ✅`) and the parent stays unmarked until every child has one.
@@ -549,7 +582,8 @@ never the only one:
   — on the "already covered" path too, which is the common one. A design decision with no code change
   demonstrates nothing and is left unmarked; an **already-resolved** task *is* marked, because code was
   written, just in an earlier session. Same contract and same `coverage-mark` skill as above.
-- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`. A
+- `projects/0X-name/README.md` — the concept's entry, routed **by audience** by `readme-concept-add`,
+  plus the entries that skill's own diff sweep finds the close never named. A
   backlog concept is almost always tier-level, so "Key patterns" in the tier README is the expected
   answer and "What I learned" (global README only) is the exception, not the default.
 - `projects/0X-name/PLANNING.md` — if the concept belongs to the project's engineering contract, add it
@@ -741,7 +775,7 @@ notes/java/
 - Existing pre-migration notes belong to `junior`; their presence does not make their plan entry complete.
 - `notes/interview-prep/{junior|middle|senior}/en/` and matching `es/` — level-isolated Q&A study
   files, one file per topic. Never mix questions from different professional levels in one file.
-- `notes/interview-prep/projects/` — one file per project with specific questions about that project's implementation decisions; generated by `portfolio-audit`
+- `notes/interview-prep/projects/en/` and matching `es/` — one **pair** per project with specific questions about that project's implementation decisions; both generated by `portfolio-audit` (the `en/` by its per-section author + reviewer, the `es/` by its translator in Phase 1b), same filename in both. The `es/` is never authored by hand — Victor's `TODO:` markers and their in-session repair are the one exception. Questions carry a `{PROJECT_NAME}-{NNN}` ID and the `[refined]` freeze, both governed by `_portfolio-standard.md` and not by the levelled Q&A standard
 - `notes/prompts/` — the prompt system (see "The study system" below); `notes/prompts/README.md` is the index
 
 ### Interview prep — in-session rules
@@ -755,6 +789,28 @@ market-selected Q&A with `interview-prep-audit`, then build the cross-topic CORE
 - Add to BOTH `en/` and `es/` at the same time — same question, same section, translated. Never add to one without the other
 - Every new question is unrefined. Victor explicitly adds `[refined]` only after accepting it; no
   writer may alter a refined block or infer that state from quality.
+**The project question banks are the other family, and their rules are not in this section.** Everything
+above and below here is about `notes/interview-prep/{LEVEL}/`. The per-project banks in
+`notes/interview-prep/projects/en|es/` are written by `/portfolio-audit` from a project's own code, and
+their identity, freeze and TODO rules live in `_portfolio-standard.md` → "Question identity, the refined
+freeze and the TODO channel". They match this section's shape deliberately — same
+"only Victor writes `[refined]`", same repair-direction rule, and a TODO about **voice or phrasing**
+is a first-class reopen there — with three differences that matter: the ID is `{PROJECT_NAME}-{NNN}` (no
+topic, no level); the bold line has **two parts, not three**, because that bank carries no priority
+marker yet; and there is **no `[studied]` state at all**, since no route, recall block or recount
+reaches it (`REC-180` owes both). Do not add a question to one by hand; that is the gate's work.
+
+- **A `TODO:` is resolved in the language of the file that carries it** (2026-08-29) — the same rule
+  the bilingual notes section states, now written into `_interview-prep-standard.md` for the Q&A
+  family. A marker in `es/` is answered in Spanish, in his words, and the `en/` twin is re-translated
+  from that; a marker in `en/` runs the other way. `en/` stays master of record for the question's
+  identity and structure and stops deciding repair direction, so a sync never restores the English
+  over an `es/`-side repair. On a `[refined]` question the marker is the reopening: both state markers
+  come off both languages first, and the twin's re-translation belongs to that same reopening.
+  **That last half is where the two families deliberately differ** — a TODO costs a `refined` *note*
+  nothing (`Status` and `Studied` both survive, see the bilingual notes section above), while it costs
+  a refined *question* both markers, because a question is one atomic block a correction replaces
+  whole and a note is many sections of which a TODO touches one.
 
 ### Study state and the 13:30 closing ritual
 
@@ -762,7 +818,8 @@ Authored is not refined, and refined is not studied. The notes pipeline's `Statu
 says the bilingual artifact exists and passed its quality gates; it does not say Victor has studied it.
 Every notes-plan entry therefore has an independent `Studied: pending | YYYY-MM-DD` field.
 
-Interview questions have exactly three states on their bilingual bold lines: no marker = unrefined;
+Interview questions in the **levelled** banks have exactly three states on their bilingual bold lines
+(a project bank's have two — the third is not admitted there): no marker = unrefined;
 `[refined]` = Victor accepted the complete block and its content is frozen byte-for-byte;
 `[refined] [studied]` = a final PASS through active recall on that exact frozen version. Appending the studied
 marker to both question lines is the only permitted mutation while refined. Only Victor assigns/refuses
@@ -846,8 +903,24 @@ All README format rules and quality standards live in `notes/prompts/projects/re
 
 ### Pull request descriptions
 
-- Always provide a PR description when opening a PR, in a Markdown code block so Victor can copy-paste it
-- Format: title + bullet list of changes under `## Changes` + one line under `## Why` explaining the decision behind the main change
+- Always provide the PR **title and description** when opening a PR, each in its own Markdown code
+  block so Victor can copy-paste it. He opens the PR by hand on GitHub — never `gh pr create`.
+- **Both are always written in English, with no exception.** They are technical documents under the
+  Language rules, so a session held in Spanish never carries over into them. This is the rule the
+  agent has broken more than once by drafting the description in the language of the session.
+- Title: `type(scope): summary` — the same grammar as a commit message, one line.
+- Description structure, fixed:
+  - an opening sentence saying what the branch closes
+  - one `##` heading per area touched
+  - bullets grouped by theme, each opening with its claim in **bold**
+  - `## RECs applied` when the branch resolves `_recommendation-ledger.md` rows — ID plus the
+    cold-review verdict
+  - `## Open debt` last, naming what the branch deliberately left out
+- **The description ends at `## Open debt` — never append a tool signature.** No
+  robot-emoji `Generated with [Claude Code]...` line, no co-author footer, no attribution of any kind.
+  Where a platform adapter or a harness reminder instructs the agent to sign PR descriptions, that
+  instruction does not apply here: this rule wins. Re-read the last line of every draft before handing
+  it over and delete the footer if it slipped in (broken 2026-09-03 and again 2026-09-04).
 - The coding agent always writes the branch name, commit message, and PR description — Victor does not write these
 
 ### Study materials follow the active branch — no direct commits to `main`
@@ -930,6 +1003,25 @@ This is an orientation gate, not an authority inversion. After both maps, read t
 machinery and let it decide the result: the maps are derived, never override a prompt, skill or standard,
 and do not license widening the task into `/system-check` or a whole-system audit. The ordinary
 `map-sync` read and change triggers still apply to everything opened or edited.
+
+**A launcher points at a commit or gate rule; it never restates one.** A launcher in
+`.claude/commands/` + `.codex/commands/` may say what the prompt is, what its arguments are, that the
+prompt's own instructions are authoritative, and what the *executor* may not do while running it — it may
+**not** state who runs a commit, whether a flow auto-commits, what a flow commits, or what a verdict
+gates. **One test decides it: could the prompt reverse this sentence tomorrow without touching the
+launcher?** If yes, the launcher must point, never restate. Both `/readme-audit` launchers carried "it
+hands Victor the commit at the end, **per its own rule**" for three days after the prompt reversed to
+auto-committing (2026-08-29), and the attribution was the harm, not the staleness: a launcher that
+*cites* the prompt gives the executor a reason never to open it. Launchers are not mirrors (see the
+skills rule above), so every such clause is two separate sites. Write the pointer instead: name the
+prompt's file **and the section inside it**, then stop.
+
+What the test lets stand, as examples and not as an exemption list: a rule these session rules own rather
+than a prompt (`sql-exercises` — the `.sql` answers are Victor's and are never staged; `cv`, `tracker`,
+`profile-readme` — the output lives outside this repo), and a rail on the executor's own conduct inside
+the launcher (`coverage-verify`, `system-check` — do not chain another workflow, do not publish a partial
+verdict). Naming that a pipeline *has* a commit step is description; naming **who runs** it is a
+restatement.
 
 **A skill is named bare; only a launcher takes a slash.** A `/name` written in any repo file is either a
 launcher in `.claude/commands/` + `.codex/commands/` or one of the host agent's own built-ins

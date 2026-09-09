@@ -1,0 +1,4 @@
+<p class="label">{{ label() }}</p>
+<p class="amount" [class.income]="tone() === 'income'" [class.expense]="tone() === 'expense'">
+  {{ prefix() }}{{ amount() | number: '1.0-2' }}€
+</p>

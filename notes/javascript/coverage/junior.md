@@ -43,7 +43,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Lexical scope and shadowing — resolve a name from its nearest enclosing scope and avoid hiding an outer binding accidentally
 - Hoisting — predict the different pre-declaration behaviour of function declarations, `var`, and lexical declarations
 - Temporal Dead Zone — recognise why reading a `let` or `const` binding before its declaration throws
-- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow
+- Conditionals and early returns — express branching clearly and reduce nesting when an early exit makes control flow easier to follow ✅ 01-todo-list — `TaskForm.submit()` returns early on an empty trimmed title instead of nesting the service call in an `if`
 - `switch` semantics — use explicit cases and breaks while recognising fall-through when reading existing code ✅ 01-todo-list
 - Classic `for` loop — use explicit initialisation, condition, and update when index or irregular stepping control is required
 - `while` vs `do...while` — choose whether the condition must be checked before the first iteration or after one guaranteed execution
@@ -83,7 +83,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
-- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing
+- `JSON.stringify` and `JSON.parse` boundaries — account for unsupported values during serialization and invalid text throwing during parsing ✅ 03-expense-tracker — `TransactionService.loadTransactions()` treats the stored string as untrusted text and survives a `SyntaxError` from `JSON.parse`
 
 ## Arrays and iteration
 
@@ -94,8 +94,8 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `map` — transform each present element into a result array without using it merely for side effects ✅ 01-todo-list
 - `filter` — retain all matching elements and always return an array ✅ 01-todo-list
 - `find` vs `filter` — choose one matching value or every matching value ✅ 06-hr-portal
-- `some` vs `every` — express existential or universal checks with short-circuiting ✅ 04-meal-finder
-- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup
+- `some` vs `every` — express existential or universal checks with short-circuiting ✅ 06-hr-portal — `employee.service.ts` and `department.service.ts` short-circuit their uniqueness checks with `some`
+- `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup ✅ 06-hr-portal — the status guards ask `EMPLOYEE_STATUS_FILTERS.includes(value)` for plain membership rather than an index they would then compare to `-1`
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
 - Array sorting — provide an appropriate comparator and account for `sort` mutating the array
@@ -138,19 +138,21 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
 - Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs ✅ 05-task-manager
 - Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
-- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions ✅ 04-meal-finder
+- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
-- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant
+- Fixed-width numeric formatting — pad numeric components to a constant width when composing a sortable string, because lexicographic order only matches numeric order while every field has the same number of digits ✅ 03-expense-tracker — the transaction form's `today()` pads month and day with `String(...).padStart(2, '0')`, so the stored `YYYY-MM-DD` strings compare as text in the same order as the dates they name
+- Date parsing and time-zone hazards — avoid assuming ambiguous date strings or local/UTC conversions mean the same instant ✅ 03-expense-tracker — the transaction form's private `today()` builds the default date from `getFullYear`/`getMonth`/`getDate`, so a submit after local midnight is not dated to the previous UTC day
 - Web Storage persistence — read and write `localStorage` or `sessionStorage` as a synchronous string-only client store, serializing structured values on the way in and revalidating them on the way out because the stored text outlives the code and the user can edit it ✅ 03-expense-tracker
+- Unique identifier generation — obtain identity from a dedicated generator such as `crypto.randomUUID`, in the secure context it requires, rather than deriving it from a clock reading, because timestamps collide whenever two values are created inside the same resolution step ✅ 03-expense-tracker — `TransactionService.addTransaction()` builds `id` with `crypto.randomUUID()` and `Transaction.id` is a `string`, so two submits inside the same millisecond no longer collide in `deleteTransaction`
 
 ## Errors and runtime boundaries
 
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
 - Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
-- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently
+- `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently ✅ 03-expense-tracker — the localStorage read resolves the parse failure at its own boundary and logs the original error instead of swallowing it
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
 - Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
 - Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime

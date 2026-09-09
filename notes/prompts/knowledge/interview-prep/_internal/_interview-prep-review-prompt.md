@@ -115,7 +115,11 @@ file worth studying:
   exactly what an interviewer's follow-up exposes. Fix a false anchor by pointing it at where the
   pattern really lives (or dropping the anchor), never by leaving it plausible-but-unverified.
 - **Bilingual integrity** — `en/` and `es/` have the same sections, same questions, same order; `es/`
-  reads as native Spanish, not a calque; the Junior-tip label is `Consejo de entrevista:`.
+  reads as native Spanish, not a calque; the Junior-tip label is `Consejo de entrevista:`. **The test
+  runs in both directions**, because repair does (standard → *The bilingual en/es contract*): where a
+  TODO was resolved in `es/`, the `en/` twin is a re-translation, so read it as English — an answer
+  that reads as a back-translation of Spanish (Spanish word order, calqued connectors, an idiom carried
+  across intact) fails this check exactly as a calqued `es/` does.
 
 ## The adversary gap list (who gets it)
 
@@ -143,7 +147,11 @@ reported even on a check the mode lets you fix. Taking the lifecycle bound as th
 
 On the lifecycle: any question carrying `[refined]`
 in either file is frozen byte-for-byte, whether or not it also carries `[studied]`. Mirror a missing
-state marker only; otherwise **report** anything below bar and do not edit that block. Every unrefined
+state marker only; otherwise **report** anything below bar and do not edit that block. **A `TODO:`
+Victor wrote inside a refined block is not a defect you report — it is his reopening** (standard →
+*Question identity and lifecycle*), and the author's 6.2 carve-out above already treats a marked
+answer as a rewrite he asked for: both state markers come off both languages, the repair runs on the
+side carrying the marker, and the twin is re-translated from it. Every unrefined
 question is fair game: rewording an unrealistic question, tightening an answer into Victor's voice,
 assigning its stable ID and reclassifying a type are all your job. Never assign `[refined]` or
 `[studied]`; only Victor and the study closing ritual own those transitions. Preserve every question that is already at bar; only

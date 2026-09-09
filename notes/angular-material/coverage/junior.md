@@ -16,13 +16,13 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once ✅ 05-task-manager
 - `mat.theme()` — apply a supported Material 3 theme without depending on the generated component DOM ✅ 05-task-manager
 - Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases
+- System colour roles over ad-hoc custom properties — express a role the theme already defines (surface, outline, secondary text) with its `--mat-sys-*` token so one theme change moves every use of that role at once ✅ 05-task-manager — every secondary-text rule (`.filter-text`, `.stat-label`, the table's meta cells) reads `--mat-sys-on-surface-variant`, and `styles.css` keeps custom properties only for roles Material has no token for
 - Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals ✅ 05-task-manager
 - Overlay styling boundary — recognise that dialogs, menus, selects, tooltips, and snack bars render in an overlay container outside the opener's component subtree ✅ 05-task-manager
 
 ## Buttons, icons, menus, and tooltips
 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
-- Icon buttons and accessible names — pair `matIconButton` actions with an `aria-label` or equivalent name because an icon or tooltip alone is not a reliable accessible label
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
@@ -104,3 +104,4 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Responsive Material composition — adapt sidenav mode, dialog dimensions, action density, and wide-table presentation because Material components do not make a page responsive automatically
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
+- Application-wide Material dependencies under test — a component configured once for the whole application, such as a date-entry control and the adapter that decides its value representation, has none of that configuration in a bare test environment and must be given it again wherever it is mounted alone ✅ 06-hr-portal — `leave-request-dialog.spec.ts` repeats `provideNativeDateAdapter()` that `app.config.ts` supplies once for the running app
