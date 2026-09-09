@@ -1226,7 +1226,8 @@ learning/
 ├── projects/              ← every project, chronological (01–06 Angular-only, 07+ full-stack); see projects/README.md
 │   ├── 06-hr-portal/      ← last Angular-only project
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
-│       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
+│       ├── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
+│       └── frontend/timetrack/CLAUDE.md · AGENTS.md ← Angular's own generated guides (see below)
 ├── practice/              ← exercises, not portfolio
 │   ├── sql/               ← SQL exercises, one directory per level (junior/01-basics.sql, …);
 │   │                        PLANNING.md (doctrine) + MISTAKES.md stay at the root
@@ -1234,3 +1235,24 @@ learning/
 │   └── leetcode/          ← algorithm exercises for interviews (gated — see ROADMAP.md)
 └── notes/                 ← study guide + prompt system (see notes/ folder and notes/prompts/README.md)
 ```
+
+### Generated Angular guide files inside a frontend
+
+From project 07 onward, every Angular app is scaffolded with the CLI's *"configure AI tools with Angular
+best practices"* option answered **Claude + Agents.md**. The CLI writes a `CLAUDE.md` and an `AGENTS.md`
+into the Angular project root (`projects/NN-*/frontend/<app>/`). They are **not** adapters and **not**
+part of this contract — they are Angular's own official guidance for the CLI version that generated them
+(signals, standalone components, `inject()`, `@if`/`@for`).
+
+Keep the two kinds strictly apart:
+
+| File | Author | What it governs | Precedence |
+|---|---|---|---|
+| Root `CLAUDE.md` / `AGENTS.md` | this repo | which platform adapter is active | points at these shared rules |
+| `_session-rules.md` (this file) | this repo | how a session behaves — authorship, commits, rituals, gates | **authoritative; wins over everything** |
+| `frontend/<app>/CLAUDE.md` · `AGENTS.md` | Angular CLI | Angular technique inside that app only | additive; never overrides a session rule |
+
+**Read the frontend's generated guide before teaching or reviewing Angular code in that project.** It is
+scoped to the app's real CLI version, which is what keeps guidance off deprecated patterns (`*ngIf`,
+`NgModule`, constructor injection) that a model may reproduce from memory. Do not edit these files by
+hand and do not treat them as a place to record session policy — refresh them with `ng update`.
