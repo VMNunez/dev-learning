@@ -511,7 +511,7 @@ La versión `MAL` se comporta bien con un solo usuario, así que no falla en pru
 
 > 📖 Docs: [Baeldung — Java Text Blocks](https://www.baeldung.com/java-text-blocks) → leer: "Usage" para la sintaxis y "Indentation" para la regla del espacio en blanco incidental.
 
-Incrustar un trozo de JSON o SQL en código fuente Java solía ser genuinamente doloroso, porque cada comilla dentro del contenido había que escaparla con una barra invertida y cada salto de línea había que escribirlo como `\n`:
+Incrustar un trozo de JSON o SQL en código fuente Java solía ser doloroso, porque cada comilla dentro del contenido había que escaparla con una barra invertida y cada salto de línea había que escribirlo como `\n`:
 
 ```java
 // MAL — esto es lo que escribías antes de Java 15
@@ -529,7 +529,7 @@ String json = """
         }""";
 ```
 
-Dos reglas de sintaxis que impone el compilador. El `"""` de apertura tiene que ir seguido de un **salto de línea** — el contenido no puede empezar en la misma línea — y probarlo te da un mensaje que nombra la regla directamente:
+Dos reglas de sintaxis que impone el compilador. El `"""` de apertura tiene que ir seguido de un **salto de línea** — el contenido no puede empezar en la misma línea — y si haces la prueba te sale este error, que nombra la regla directamente:
 
 ```java
 String s = """hello""";   // MAL — error: illegal text block open delimiter sequence, missing line terminator

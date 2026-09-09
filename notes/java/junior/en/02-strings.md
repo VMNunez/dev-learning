@@ -530,7 +530,7 @@ String json = """
         }""";
 ```
 
-Two syntax rules the compiler enforces. The opening `"""` must be followed by a **line break** — content cannot begin on the same line — and trying it gives you a message that names the rule directly:
+Two syntax rules the compiler enforces. The opening `"""` must be followed by a **line break** — content cannot begin on the same line — and if you try it you get this error, which names the rule directly:
 
 ```java
 String s = """hello""";   // MAL — error: illegal text block open delimiter sequence, missing line terminator
