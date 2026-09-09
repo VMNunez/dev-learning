@@ -377,7 +377,7 @@ So the check happens at runtime, and the second line fails with:
 java.util.IllegalFormatConversionException: d != java.lang.String
 ```
 
-Read it as "`%d` was handed a `java.lang.String`". Note *which* placeholder complained: `%s` swallowed the number `38` without a murmur, because `%s` just calls `toString()`, and an `Integer` has one: when a number reaches a `%s`, the number-to-text conversion goes through that `toString()`, which is why it never fails. The one that gives trouble is `%d`, because it would have to do the opposite conversion — turn what it receives into digits — and a `String` does not turn into digits. So a swapped pair always blows up at the *numeric* placeholder: the message points you at the second placeholder of your format string, even though the swap affects the first one just as much.
+Read it as "`%d` was handed a `java.lang.String`". Note *which* placeholder complained: `%s` swallowed the number `38` without a murmur, because `%s` just calls `toString()`, and an `Integer` has one: when a number reaches a `%s`, the number-to-text conversion goes through that `toString()`, which is why it never fails. The one that gives trouble is `%d`, because it would have to do the opposite conversion — turn what it receives into digits — and converting a `String` into a number is not possible. So a swapped pair always blows up at the *numeric* placeholder. The swap does affect both placeholders — `%s` got the number instead of the name and `%d` the other way round — but only one of them complains: `%s` accepts anything silently, so the error message points only at the `%d`.
 
 The same behaviour — the failure not showing up until the program runs — repeats with a specifier that is not a real one at all, and with one value too few:
 
