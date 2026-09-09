@@ -358,7 +358,7 @@ Un marcador de posición es un `%` seguido de una letra que dice _qué tipo de v
 
 **Los marcadores se asignan por posición: el primer valor va al primer marcador, el segundo al segundo, y así de izquierda a derecha. Ninguno se asigna por nombre.** Ese es todo el mecanismo, y también es todo el problema, porque nada comprueba que hayas puesto el orden correcto.
 
-> **`.formatted()` es lo más parecido que tiene Java a un template literal de JavaScript.** `` `${name} logged ${hours} hours` `` y `"%s logged %d hours".formatted(name, hours)` hacen el mismo trabajo. La única diferencia real es que JS pone la variable _dentro_ del texto y Java pone un marcador ahí y las variables después — que es exactamente por qué la versión JS no puede equivocarse de orden y la versión Java sí.
+> **`.formatted()` es lo más parecido que tiene Java a un template literal de JavaScript.** `` `${name} logged ${hours} hours` `` y `"%s logged %d hours".formatted(name, hours)` hacen el mismo trabajo. La única diferencia real es que JS pone la variable _dentro_ del texto y Java pone un marcador ahí y las variables después.
 
 ### Por qué una cadena de formato rota sigue compilando
 
@@ -369,7 +369,7 @@ Intercambia los dos argumentos y el compilador no dice absolutamente nada:
 "%s logged %d hours".formatted(hours, name);    // MAL  — compila, y luego explota en tiempo de ejecución
 ```
 
-La razón está en la firma del método. `formatted` está declarado como `formatted(Object... args)` — acepta **cualquier número de argumentos de cualquier tipo**. Desde el punto de vista del compilador, las dos líneas de arriba son la misma llamada legal: un String, sobre el que invocas un método que recibe una lista de objetos, pasándole dos objetos. No tiene ningún motivo para objetar, porque la cadena de formato `"%s logged %d hours"` es, para el compilador, solo un trozo de texto como cualquier otro. Nada lee lo que hay dentro hasta que el programa se ejecuta y el valor realmente se necesita.
+La razón está en la firma del método. `formatted` está declarado como `formatted(Object... args)` — acepta **cualquier número de argumentos de cualquier tipo**. Desde el punto de vista del compilador, las dos líneas de arriba son la misma llamada legal: un String, sobre el que invocas un método que recibe una lista de objetos, pasándole dos objetos. No tiene ningún motivo para objetar, porque la cadena de formato `"%s logged %d hours"` es, para el compilador, solo un trozo de texto como cualquier otro. Nada lee lo que hay dentro hasta que el programa se ejecuta: es ahí donde el formateador recorre la cadena, se encuentra el `%d`, coge el valor real que le pasaste en esa posición y descubre que no es un número.
 
 Así que la comprobación pasa a tiempo de ejecución, y la segunda línea falla con:
 

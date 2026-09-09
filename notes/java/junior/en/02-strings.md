@@ -369,7 +369,7 @@ Swap the two arguments and the compiler says nothing at all:
 "%s logged %d hours".formatted(hours, name);    // MAL  — compiles, then explodes at runtime
 ```
 
-The reason is in the method's signature. `formatted` is declared as `formatted(Object... args)` — it accepts **any number of arguments of any type**. From the compiler's point of view, both lines above are the same legal call: a String, on which you invoke a method that takes a list of objects, passing it two objects. It has no reason to object, because the format string `"%s logged %d hours"` is, to the compiler, just a piece of text like any other. Nothing reads what is inside it until the program runs and the value is actually needed.
+The reason is in the method's signature. `formatted` is declared as `formatted(Object... args)` — it accepts **any number of arguments of any type**. From the compiler's point of view, both lines above are the same legal call: a String, on which you invoke a method that takes a list of objects, passing it two objects. It has no reason to object, because the format string `"%s logged %d hours"` is, to the compiler, just a piece of text like any other. Nothing reads what is inside it until the program runs: that is where the formatter walks the string, meets the `%d`, takes the real value you passed in that position and finds out it is not a number.
 
 So the check happens at runtime, and the second line fails with:
 
