@@ -535,6 +535,7 @@ Dos reglas de sintaxis que impone el compilador. El `"""` de apertura tiene que 
 String s = """hello""";   // MAL — error: illegal text block open delimiter sequence, missing line terminator
 ```
 
+//TODO: HE REVISADO HASTA AQUI
 El `"""` de cierre es más libre: puede ir al final de la última línea de contenido (como en el JSON de arriba) o en una línea propia. Esa elección no es cosmética — mira el callout.
 
 > **¿Dónde se fue la indentación?** El bloque de arriba está indentado ocho espacios para alinearse con el código que lo rodea, y aun así el string resultante empieza en la columna cero. El compilador elimina lo que la especificación llama **espacio en blanco incidental**: mira cada línea no vacía _más la línea que contiene el `"""` de cierre_, encuentra la indentación más pequeña entre todas ellas, y quita exactamente esa cantidad de cada línea. Así que la indentación que añadiste para mantener el código fuente legible no cuesta nada, y la indentación que añadiste _a propósito_ — los dos espacios antes de `"name"` — sobrevive, porque es mayor que el mínimo.
