@@ -407,6 +407,10 @@ Report:
   set to `Plan status: stale`, the stale flag written on each `Plan` cell with its running `+N`, and
   `notes-plan-prompt` named as the next step without sending the workflow back to `coverage-verify`;
 - files and commits;
+- evidence clauses this run believes false — the bullet, the marker, and why — named as
+  `coverage-mark` repoints owed, or `none`. This pass preserves them verbatim and never repoints
+  (see "When the marked project's code changes" in the standard); reporting them is the whole of
+  its duty, and silence is what leaves a false clause standing.
 - unresolved risks or `none`.
 
 Do not finish while a plan item remains incomplete.

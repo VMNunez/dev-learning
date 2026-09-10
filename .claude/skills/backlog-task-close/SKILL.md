@@ -500,6 +500,7 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | `/notes-plan` owed | n/a (or: yes — `/notes-plan spring-boot junior`, run once at end of session) |
 | README | `backend` / Key patterns — entry added (or: n/a — already represented in "Auth flow") · *(swept)* id tie-breaker on a paged sort — added, not named by this close |
 | Retired | `README.md:112` stream-`reduce` bullet rewritten; `backend/README.md:256` `Specification` scope corrected (or: nothing stale) |
+| Coverage falsified | *(§3c)* none — the fix removed no code (or: 1 clause repointed — the `emitEvent` marker removed) |
 | Incidental findings | none (or: raised as `[Low]` `[backend]` — `JwtUtil` / `SecurityConfig` field injection) |
 | PLANNING.md | added to §6 engineering rules |
 | PLANNING §0 | `Last updated` → today; no other cell moved (or: last open High cleared — `Next gate` now says G3 signable) |

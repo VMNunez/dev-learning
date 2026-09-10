@@ -9,15 +9,13 @@ description: >
   sub-step, and directly when Victor asks ("marca esto como visto en el coverage", "esto ya lo hemos
   aplicado en el 07", "mark this bullet as covered", "esa evidencia ya no es cierta"). It writes
   `✅ NN-slug — {evidence}` on the matching bullet in both the topic coverage file and the global mirror —
-  the project that proves it, and the one falsifiable clause saying what in that project proves it — so the
-  level file doubles as a progress instrument: how much of the junior floor Victor can prove with something
-  he built. The two failure modes it exists for are a concept applied in a project that leaves no trace on
-  the checklist, and a clause left asserting something a reader can open the project and refute. It also
-  sweeps the caller's diff for the language and standard-library bullets the task itself was not about — a
-  `record`, a `Map`, a concurrent collection — which nothing else in the system ever marks. **It fires
-  mid-step, not only at a close** (`REC-230`): a `§15` step spans days, and a concept recorded only when the
-  step closes lives until then in conversation memory alone, where a new session cannot reach it. So it runs
-  the moment a **verifiable piece** of an open step is finished (§1 defines the term). Do NOT use it to add
+  the project that proves it, and the one falsifiable clause saying what in it proves it. The two failure
+  modes it exists for are a concept applied in a project that leaves no trace on the checklist, and a clause
+  left asserting something a reader can open the project and refute. It also sweeps the caller's diff for
+  the language and standard-library bullets the task was not about, which nothing else ever marks. **It
+  fires mid-step, not only at a close** (`REC-230`): it runs the moment a **verifiable piece** of an open
+  step is finished, §1 owning that term's test, because a concept recorded only at the close lives until
+  then in conversation memory alone, where a new session cannot reach it. Do NOT use it to add
   new bullets (that is `coverage-bullet-add`, or `/coverage`), to mark something merely studied in notes, or
   inside the `coverage` / `coverage-audit` pipelines — those passes preserve markers, they never author them.
 ---
@@ -41,8 +39,9 @@ A concept was just **applied in project code**. This skill records that on the c
 keeps the clauses it wrote earlier true as the project moves under them.
 
 **On a `§3c`-only run there is no concept.** The change deleted or rewrote code and demonstrates nothing
-new. State the project and what the change removed instead of a concept, go straight to §3c, and skip
-§§1–3b entirely — including §2's scaffolding stop, which has no topic to select.
+new. State the project and what the change removed instead of a concept, then go to §3c, skipping §§1, 2,
+2b and 3b — including §2's scaffolding stop, which has no topic to select. **Read §3 even so**: a repoint
+writes a clause, and §3's rules are what it writes it under.
 
 **Read `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, section "Evidence markers",
 and `_topic-ownership.md` before editing anything.** They own the marker's format, preservation
@@ -221,8 +220,8 @@ touching anything.** It owns the rule; what this step owns is finding the candid
 them safely. It sits after §3b because it *writes clauses*: it needs §3's rules in hand before it acts.
 
 **This step runs even when there is nothing to mark** — a change that only removes code never reaches
-§2b's question, and that is precisely the change that falsifies clauses. On that path §1 named the project
-and the change instead of a concept, and §§2–3b were skipped.
+§2b's question, and that is precisely the change that falsifies clauses. On that path the preamble named the
+project and the change instead of a concept, and §§1, 2, 2b and 3b were skipped — §3 was not.
 
 - **Scope: this project's markers only** — `✅ NN-slug` for the project whose code the change touched.
   Nothing in another project moved.
@@ -250,9 +249,12 @@ grep -nE ' ✅ 07-timetrack — ' notes/*/coverage/junior.md | grep -iE 'disable
   what demonstrates it now; leave ` ✅ NN-slug` itself untouched.
 - **Not demonstrated anywhere in this project any more → remove the marker and its clause**, leaving the
   concept sentence exactly as it was and the bullet in place.
-- **You cannot tell without searching the whole project → leave the marker and report it unresolved**, by
-  name. That search is the backfill this skill refuses to start mid-ritual, and a candidate reported by
-  name survives the session while a wrong removal does not.
+- **You cannot tell without searching the whole project → leave the marker and raise it**, by name, as a
+  `[Low]` task in `## Tasks` of the project's `PROJECT-BACKLOG.md`, **in the same turn**, in the standard
+  task format with a provenance note. That search is the backfill this skill refuses to start mid-ritual,
+  and the report row alone would not survive the session — the failure `REC-230` was filed against, and the
+  same channel `backlog-task-close` opens for its own incidental findings. Leaving the marker is the safe
+  half; a wrong removal cannot be undone from a chat row either.
 - **Never substitute a later project's marker** for one you removed. Another project earns it through §2,
   as the first that demonstrates it now — and if it is already built, nothing will bring it back through
   this skill, so name it as a backfill candidate.
@@ -312,7 +314,7 @@ One row per concept, inside the calling ritual's report table when there is one:
 | *(falsified)* disabled controls and `getRawValue()` | `angular` / junior | clause repointed — `disable()` is gone from `Login`, but the entry form still reads a disabled control with `getRawValue()`; marker ✅ 07-timetrack kept |
 | *(falsified)* `emitEvent: false` | `angular` / junior | marker removed — nothing in 07 uses the flag any more; bullet kept, unmarked |
 | *(falsified)* componentless parent routes | `angular` / junior | opened and still true — the clause names the route config the change did not touch |
-| *(falsified)* constructor injection | `spring-boot` / junior | unresolved — the new `@Autowired` field falsifies "no field anywhere", and deciding it needs a project-wide search; marker left, named here |
+| *(falsified)* constructor injection | `spring-boot` / junior | unresolved — the new `@Autowired` field falsifies "no field anywhere", and deciding it needs a project-wide search; marker left, raised as `[Low]` in `PROJECT-BACKLOG.md` |
 
 Rows the step-2b sweep found carry a `*(swept)*` marker so the caller can see what it did not pass in;
 when the sweep found nothing, say so in a row of its own. Rows §3c opened carry `*(falsified)*` and are
@@ -350,6 +352,10 @@ The commit boundary depends on what this run wrote:
 
 - **A §3c repoint or removal** — same coverage commit as the run's other coverage writes when there are
   any; its own commit when the change demonstrated nothing and §3c is the only reason this skill ran.
+- **A §3c unresolved candidate** — the `PROJECT-BACKLOG.md` task is the one project doc this skill writes,
+  and it rides in the same commit; the standing authorization already covers that file (`review-audit` has
+  committed it since 2026-07-14). Under a calling ritual, hand the row over instead: that ritual is already
+  editing the backlog and folds the task into its own write.
 
 ```
 docs(coverage): mark <concept> as demonstrated in project NN

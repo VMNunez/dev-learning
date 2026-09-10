@@ -263,8 +263,8 @@ Rules:
   its purpose is to date the first demonstration. This governs *other* projects arriving at the concept.
   It says nothing about the marked project losing it, which is the case below.
 - **The marker is state, not scope.** It is written by the `coverage-mark` skill from a step, a verifiable
-  piece of one, a closed backlog task, or a change that falsified a clause it had written — never by a
-  coverage authoring or audit pass, and never by hand while writing bullets. Both mirrors of a bullet carry the same marker (see below).
+  piece of one, a closed backlog task, a change that removed or rewrote the code a clause names, or Victor
+  asking directly — never by a coverage authoring or audit pass, and never by hand while writing bullets. Both mirrors of a bullet carry the same marker (see below).
 - **Preserve it verbatim when rewording.** A converging or reformulating pass may rewrite a bullet's
   concept sentence freely, but must carry the existing marker onto the rewritten bullet unchanged. A
   bullet whose concept survives in different words has not lost its demonstration. Dropping a marker
@@ -283,9 +283,10 @@ The clause's bar is falsifiability, so a clause that has become false on disk is
 format cannot tolerate. Since marking moved *inside* an open step (`REC-230`), a later step routinely
 deletes or rewrites the code an earlier one was marked for, which makes this ordinary rather than rare.
 
-**The trigger is a change that falsifies a clause in a project that already carries markers** — usually
-a deletion or a rewrite, including one that demonstrates nothing new and would otherwise never reach
-this file. The work is `coverage-mark`'s, the same skill that wrote the marker, and this is the only
+**The trigger is a change that removes or rewrites code in a project that already carries markers** —
+including one that demonstrates nothing new and would otherwise never reach this file. Whether it actually
+falsified a clause is what the step decides, never what selects it: a reader who skips the step because it
+believes nothing broke is exactly how the three instances that opened `REC-233` survived. The work is `coverage-mark`'s, the same skill that wrote the marker, and this is the only
 licence any skill has to edit or delete an existing clause.
 
 **Scope: markers naming the project whose code the change touched, and no others.** A change in 07
@@ -298,8 +299,10 @@ topic file and the global mirror identically:**
 - **The project still demonstrates the bullet, elsewhere or differently → repoint.** Rewrite the clause
   to name the code that demonstrates it *now*, under the clause rules above; the marker itself is
   untouched. The demonstration did not stop — only the sentence pointing at it went stale.
-- **Nothing in that project demonstrates it any more → remove the marker and its clause**, leaving the
-  concept sentence and the bullet in place. It returns to *not yet demonstrated*, which is the truth.
+- **Nothing in that project demonstrates it any more → remove the marker and its clause** — **including the
+  space before the `✅`**, since the digest strips ` ✅ …` with its leading space and a stray one would change
+  the scope bytes and forge a remap signal — leaving the concept sentence and the bullet in place. It
+  returns to *not yet demonstrated*, which is the truth.
 - **It cannot be told without a project-wide search → leave the marker and report it unresolved**, by
   name. That search is the backfill, and a candidate reported by name survives the session while a
   wrong removal does not.
@@ -329,8 +332,9 @@ repoint moves no count at all. Neither disposition owes a `/notes-plan` remap: m
 scope bytes, so neither changes a coverage digest.
 
 **A coverage authoring or audit pass still preserves a clause verbatim, even one it believes false** —
-the action fence stands — **but it reports it, as a `coverage-mark` repoint owed.** Preservation is the
-action; silence is not.
+the action fence stands — **but it reports it in its final report, as a `coverage-mark` repoint owed.**
+Preservation is the action; silence is not. A notes plan that stores its own copy of a marker is
+informational: it is refreshed by that plan's next `/notes-plan` run, and neither disposition owes one.
 
 **A bare pre-2026-08-01 marker has no clause to falsify**, and is neither repointed nor removed for
 lacking evidence. **This section is the project marker's alone**: the drill marker's field is an
