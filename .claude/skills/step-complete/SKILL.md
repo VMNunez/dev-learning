@@ -160,8 +160,15 @@ nothing because it had no coverage-worthy concept and a piece that skipped its r
 silence, so nothing is asked of the pieces and no per-piece declaration is required — this check is what
 makes that silence safe.
 
-- **Every concept accounted for** — the expected path. Say so with the count, and skip 3a/3b: the writes
-  already happened, under this same contract, in the turns that earned them.
+- **Every concept accounted for** — the expected path. Say so with the count, and skip 3a: the writes
+  already happened, under this same contract, in the turns that earned them. **Not 3b** — see the
+  removal branch below, which this path does not discharge.
+- **The step's diff removed or rewrote code** — invoke `coverage-mark` for its `§3c` even when every
+  concept is accounted for and there is nothing whatever to mark. This is the one branch that fires on a
+  step that demonstrated nothing new: a later piece routinely deletes the code an earlier piece was
+  marked for, leaving the clause false on disk (`REC-233`), and this ritual holds the only whole-step
+  diff anything ever reads. Skipping it because nothing needs marking is exactly how the three instances
+  that opened that row survived until Victor noticed them by hand.
 - **A concept with no bullet, or a bullet with no marker for this project** — run 3a/3b on that concept
   now, and report it as a **process failure of the piece that should have recorded it**, naming that
   piece. It is not a discovery: that row is the whole instrument `REC-230` bought, and folding it in

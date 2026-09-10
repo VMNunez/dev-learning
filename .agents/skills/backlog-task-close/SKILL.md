@@ -144,7 +144,13 @@ Fold its report rows into this ritual's final table.
 **Marker preservation is a close blocker.** If ownership moved a previously marked bullet from an
 adjacent topic, the entire `✅ NN-slug — {evidence}` suffix must exist verbatim on the surviving bullet
 in its new topic and in the matching global mirror. Do not remove/recreate it or mark it as a new
-demonstration. A mismatch stops the close before the backlog entry reaches the ledger.
+demonstration. A mismatch stops the close before the backlog entry reaches the ledger. **A `§3c` repoint
+or removal is not that mismatch**: the skill changed the clause on purpose because the fix falsified it,
+and reported it as such — a close never stops on one.
+
+**The fix's own diff gets `§3c` too.** A backlog fix that deletes or rewrites code can falsify a clause
+an earlier piece of this project wrote, so invoke `coverage-mark` even when the task marked nothing —
+the "already covered" path above does not discharge it.
 
 ### 1b — Carry the skill's owed work into the session
 

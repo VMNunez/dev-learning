@@ -1,25 +1,25 @@
 ---
 name: coverage-mark
 description: >
-  Mark a coverage bullet as demonstrated in project code, with the project's folder name, WHENEVER a concept
-  has just been applied in a project — called by the `step-complete` and `backlog-task-close` rituals as
-  their coverage sub-step, and directly when Victor asks ("marca esto como visto en el coverage", "esto
-  ya lo hemos aplicado en el 07", "mark this bullet as covered"). It appends the
-  `✅ NN-slug — {evidence}` marker to the matching bullet in both the topic coverage file and the global
-  mirror — the project that proves it, and the one falsifiable clause saying what in that project proves
-  it — so the level file doubles
-  as a progress instrument: how much of the junior floor Victor can prove with something he built. The
-  failure mode this exists for is a concept applied in a project that leaves no trace on the coverage
-  checklist, so months later the file cannot distinguish "never studied" from "shipped it in project 06". It therefore
-  also sweeps the caller's diff for the language and standard-library bullets the task itself was not
-  about — a `record`, a `Map`, a concurrent collection — which nothing else in the system ever marks.
-  **It also fires on its own, mid-step:** a `§15` step spans days and several
-  conversations, and a concept recorded only when the step *closes* lives until then in the agent's
-  conversation memory alone, where a new session cannot reach it (`REC-230`). So it runs the moment a
-  **verifiable piece** of an open step is finished (§1 defines the term) — and a step normally has several.
-  Do NOT use it to add new bullets (that is `coverage-bullet-add`, or `/coverage`), to
-  mark something merely studied in notes, or inside the `coverage` / `coverage-audit` pipelines — those
-  passes preserve markers, they never author them.
+  Keep the coverage checklist true about what project code proves, in both directions. **Mark** a bullet as
+  demonstrated WHENEVER a concept has just been applied in a project, and **repoint or remove a marker whose
+  cited code a later change deleted** (`REC-233`) — that second half fires on a change that removes or
+  rewrites code in a project already carrying markers, even when it demonstrates nothing new and there is
+  nothing at all to mark. Called by the `step-complete` and `backlog-task-close` rituals as their coverage
+  sub-step, and directly when Victor asks ("marca esto como visto en el coverage", "esto ya lo hemos
+  aplicado en el 07", "mark this bullet as covered", "esa evidencia ya no es cierta"). It writes
+  `✅ NN-slug — {evidence}` on the matching bullet in both the topic coverage file and the global mirror —
+  the project that proves it, and the one falsifiable clause saying what in that project proves it — so the
+  level file doubles as a progress instrument: how much of the junior floor Victor can prove with something
+  he built. The two failure modes it exists for are a concept applied in a project that leaves no trace on
+  the checklist, and a clause left asserting something a reader can open the project and refute. It also
+  sweeps the caller's diff for the language and standard-library bullets the task itself was not about — a
+  `record`, a `Map`, a concurrent collection — which nothing else in the system ever marks. **It fires
+  mid-step, not only at a close** (`REC-230`): a `§15` step spans days, and a concept recorded only when the
+  step closes lives until then in conversation memory alone, where a new session cannot reach it. So it runs
+  the moment a **verifiable piece** of an open step is finished (§1 defines the term). Do NOT use it to add
+  new bullets (that is `coverage-bullet-add`, or `/coverage`), to mark something merely studied in notes, or
+  inside the `coverage` / `coverage-audit` pipelines — those passes preserve markers, they never author them.
 ---
 
 # Coverage evidence marking
@@ -37,14 +37,21 @@ trigger declared resolved, or write outside its declared writer set, follow
 breach log"; do not restate or widen that trigger here.
 
 
-A concept was just **applied in project code**. This skill records that on the coverage checklist.
+A concept was just **applied in project code**. This skill records that on the coverage checklist — and
+keeps the clauses it wrote earlier true as the project moves under them.
+
+**On a `§3c`-only run there is no concept.** The change deleted or rewrote code and demonstrates nothing
+new. State the project and what the change removed instead of a concept, go straight to §3c, and skip
+§§1–3b entirely — including §2's scaffolding stop, which has no topic to select.
 
 **Read `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, section "Evidence markers",
 and `_topic-ownership.md` before editing anything.** They own the marker's format, preservation
 contract, and topic boundary.
 
-This skill only ever *appends a marker to an existing bullet*. It never writes, rewords, or deletes a
-bullet — authoring belongs to `coverage-bullet-add` (or `/coverage`), and nothing below changes that. A
+This skill only ever *appends a marker to an existing bullet* — and, on the §3c path alone, repoints or
+removes a marker of its own that the same project's code has since falsified. It never writes, rewords, or
+deletes a **bullet** — authoring belongs to `coverage-bullet-add` (or `/coverage`), and nothing below
+changes that; §3c touches the marker and its clause, never the concept sentence. A
 concept the **caller passed** with no bullet is that skill's decision, taken minutes ago: name it and
 stop. One the **§2b sweep** found was never seen by it, and §2b routes it there rather than reporting it
 into a session that ends.
@@ -104,10 +111,13 @@ concept's key symbol, not the wording of the step or task. Then:
   boundaries; it does not demonstrate proxy-based annotation behaviour just because the same proxy is
   involved. When two bullets are genuinely both demonstrated, mark both and say so.
 - **Already marked** — leave it alone and report the existing marker. First project wins; a later project
-  reusing the concept never overwrites it, and this is the expected outcome for common concepts.
+  reusing the concept never overwrites it, and this is the expected outcome for common concepts. **Unless
+  the same change falsified its clause** — that is §3c's, not this branch's, and this branch must not
+  dispose of the bullet before §3c sees it.
 
 If the matching bullet was moved between topics or levels, the complete existing marker must already
-have moved verbatim with it. Never remove and recreate the marker; report any mismatch as blocking drift.
+have moved verbatim with it. Never remove and recreate the marker **on this path**; report any mismatch as
+blocking drift. A §3c repoint is not that mismatch — it rewrites the clause deliberately, and says so.
 
 Cross-level check: if the bullet lives at a level **above** the one Victor is working at, mark it there
 anyway and say so — demonstrating a middle-level concept in a junior project is real evidence, and one of
@@ -162,7 +172,8 @@ that has already closed, and the chat does not survive the session — the same 
   in a row of its own. A ritual that never passed the concept in has no other way to learn it exists.
 
 If the sweep finds nothing, say **"nothing further in the diff"** rather than staying silent — an
-unstated sweep is indistinguishable from a skipped one.
+unstated sweep is indistinguishable from a skipped one. What the diff *took away* is §3c, after the
+write rules.
 
 ## 3 — Write the evidence clause
 
@@ -199,6 +210,61 @@ Then verify, because a marker landing in one file and not the other is the drift
 otherwise introduce into a diff-verified pair: grep `✅` in the topic file and in the mirror's
 `## {TOPIC}` section and confirm the two sets of marked bullets are identical. Report both counts.
 
+## 3c — Repoint or remove what the change falsified
+
+§2b asked what the diff **added**. This asks what it **took away**. A marker written for an earlier piece
+of the same step names code a later piece may have just deleted, and the clause then asserts something a
+reader can open the project and refute.
+
+**Read `_coverage-standard.md` → "When the marked project's code changes — repoint or remove" before
+touching anything.** It owns the rule; what this step owns is finding the candidates cheaply and writing
+them safely. It sits after §3b because it *writes clauses*: it needs §3's rules in hand before it acts.
+
+**This step runs even when there is nothing to mark** — a change that only removes code never reaches
+§2b's question, and that is precisely the change that falsifies clauses. On that path §1 named the project
+and the change instead of a concept, and §§2–3b were skipped.
+
+- **Scope: this project's markers only** — `✅ NN-slug` for the project whose code the change touched.
+  Nothing in another project moved.
+- **Anchor the candidates to what the change removed, across every topic file at the level.** A deletion
+  is not confined to the topic that named it: one deleted Java class can falsify clauses in `java`,
+  `architecture`, `general` and `security` at once, and project 07 alone carries markers in twelve junior
+  topic files. Grep by **bare identifiers**, never by clause punctuation:
+
+```bash
+grep -nE ' ✅ 07-timetrack — ' notes/*/coverage/junior.md | grep -iE 'disable|getRawValue|emitEvent'
+```
+
+  The ` — ` in the first pattern excludes bare pre-2026-08-01 markers, which have no clause and are out of
+  scope here. Add any level above the one Victor is on where the project has markers. Two or three
+  candidates is the normal result and zero is common.
+
+- **Two things this fence misses, and the report must not hide.** A clause written in prose shares no
+  token with the diff, so a clean grep means *no candidate in this diff*, never *nothing false*. And a
+  clause quantified over the project — "every service…", "no `@Autowired` field anywhere" — is falsified
+  by an **addition**: when the change adds a member of the set it quantifies over, that clause is a
+  candidate too. Roughly a third of project 07's clauses are quantified this way.
+- **Check each candidate against disk, not against memory of the session.** Open the file the clause
+  names. It is false only if the code it points at is gone or no longer does what it says.
+- **Still demonstrated in this project, elsewhere → repoint.** Rewrite the clause under §3's rules to name
+  what demonstrates it now; leave ` ✅ NN-slug` itself untouched.
+- **Not demonstrated anywhere in this project any more → remove the marker and its clause**, leaving the
+  concept sentence exactly as it was and the bullet in place.
+- **You cannot tell without searching the whole project → leave the marker and report it unresolved**, by
+  name. That search is the backfill this skill refuses to start mid-ritual, and a candidate reported by
+  name survives the session while a wrong removal does not.
+- **Never substitute a later project's marker** for one you removed. Another project earns it through §2,
+  as the first that demonstrates it now — and if it is already built, nothing will bring it back through
+  this skill, so name it as a backfill candidate.
+- **Verify every line you edited by comparing the two copies character for character**, not by counting
+  markers. §3b's count check is blind here: a repoint that lands different wording in the topic file and
+  the mirror leaves both counts identical and both bullets still "marked".
+- **Report every candidate you opened, including the ones that survived** — "checked three, all still
+  true" is the useful result.
+
+If the change removed no code and added nothing to a quantified set, say **"nothing falsified in the
+diff"** and move on.
+
 ## 4 — Update the PROGRESS.md coverage table
 
 The `## Coverage demonstrated` table in `PROGRESS.md` is the instrument this marker feeds. A marker
@@ -209,8 +275,9 @@ written without refreshing it leaves the table reading lower than reality until 
 provisional mark. Read D8 and follow it; never restate or re-derive its arithmetic here.** Your job is
 narrower: refresh only the cells you just changed.
 
-For each topic+level you marked, **recount — never increment**. Arithmetic on the old cell silently
-inherits any error already in it:
+For each topic+level you marked **or changed under §3c**, **recount — never increment**. Arithmetic on the
+old cell silently inherits any error already in it, and a §3c removal makes the numerator **fall**, which
+only a recount produces correctly:
 
 ```bash
 grep -cE '^- ' notes/{topic}/coverage/{LEVEL}.md
@@ -242,13 +309,20 @@ One row per concept, inside the calling ritual's report table when there is one:
 | *(swept)* `Records` | `java` / junior | marked ✅ 07-timetrack — the private `Attempts(int, Instant)` carrier — found by the step-2b sweep, not passed in |
 | *(swept)* fixed-width numeric formatting | `javascript` / junior | bullet authored via `coverage-bullet-add`, then marked ✅ 03-expense-tracker — `padStart(2, '0')` on the amount fields — already known to be the first project to do it, so the marker is 03's and not this close's |
 | *(swept)* `Optional.ofNullable` | `java` / junior | drafted and dropped — the sentence came out as an API name, not a concept |
+| *(falsified)* disabled controls and `getRawValue()` | `angular` / junior | clause repointed — `disable()` is gone from `Login`, but the entry form still reads a disabled control with `getRawValue()`; marker ✅ 07-timetrack kept |
+| *(falsified)* `emitEvent: false` | `angular` / junior | marker removed — nothing in 07 uses the flag any more; bullet kept, unmarked |
+| *(falsified)* componentless parent routes | `angular` / junior | opened and still true — the clause names the route config the change did not touch |
+| *(falsified)* constructor injection | `spring-boot` / junior | unresolved — the new `@Autowired` field falsifies "no field anywhere", and deciding it needs a project-wide search; marker left, named here |
 
 Rows the step-2b sweep found carry a `*(swept)*` marker so the caller can see what it did not pass in;
-when the sweep found nothing, say so in a row of its own.
+when the sweep found nothing, say so in a row of its own. Rows §3c opened carry `*(falsified)*` and are
+reported whatever the outcome.
 
 Include the marked/total count for the level file you touched, and state the PROGRESS.md cell as it
 now reads (`spring-boot / junior: 24/139 (17%)`). That number is the point of the whole mechanism, so
-it belongs in every report.
+it belongs in every report. **When §3c made it fall, say so and why** — a numerator dropping without a
+stated cause reads as a bug in the count rather than as the file telling the truth, and every consumer of
+a marker delta reads an unexplained move as new demonstrations.
 
 ## Commits
 
@@ -274,8 +348,19 @@ The commit boundary depends on what this run wrote:
   project code and is his to make, and staging a `notes/` file into it crosses the authorship boundary.
   Same turn is the property `REC-230` needs; same commit was never available.
 
+- **A §3c repoint or removal** — same coverage commit as the run's other coverage writes when there are
+  any; its own commit when the change demonstrated nothing and §3c is the only reason this skill ran.
+
 ```
 docs(coverage): mark <concept> as demonstrated in project NN
+```
+
+```
+docs(coverage): repoint the project-NN markers whose cited code the change removed
+```
+
+```
+docs(coverage): remove the project-NN markers whose cited code no longer exists
 ```
 
 `PROGRESS.md` goes **in that same commit** — the table edit is the same logical change as the marker,
