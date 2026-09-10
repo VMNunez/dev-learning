@@ -22,7 +22,22 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
-*No open High tasks.*
+- [ ] **security / junior** `[backend]` — `AuthService.login` builds the brute-force key with
+  `request.getEmail().toLowerCase()` (l.35) instead of `EmailNormalizer.normalize()`, the class written
+  for exactly this and used by `UserService` (l.59, l.95), `UserDetailsServiceImpl` (l.25) and
+  `DataInitializer` (l.36). Two defects follow, and the first is the reason this is High. **(a) The
+  lockout is bypassable.** `EmailNormalizer` trims; this does not. Authentication itself still succeeds
+  for `" VICTOR@X.COM "` because `UserDetailsServiceImpl` normalizes the lookup — so the same account is
+  reachable under keys that `LoginAttemptService` counts **separately**, and an attacker resets the
+  per-email counter by prepending a space. The per-IP counter still applies, so this weakens the
+  protection rather than removing it. **(b) `toLowerCase()` takes no `Locale`**, so it follows the JVM
+  default; `EmailNormalizer` passes `Locale.ROOT` precisely to avoid the Turkish dotless-i mapping
+  turning `I` into `ı`. Found 2026-09-10 from Victor's question about whether the frontend should
+  lowercase the email before sending — it should not, and this is why the rule must have exactly one
+  home. Fix: call `EmailNormalizer.normalize(request.getEmail())` for the key, and decide in the same
+  pass whether the value handed to `UsernamePasswordAuthenticationToken` should be the normalized one
+  too rather than the raw request field. Add a test that a leading space does not open a fresh attempt
+  budget *(effort: S)*
 
 #### Medium
 
