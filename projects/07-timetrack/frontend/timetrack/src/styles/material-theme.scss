@@ -21,15 +21,19 @@ html {
     $overrides: (corner-small: 4px, corner-medium: 4px, corner-large: 4px, corner-extra-large: 4px)
   );
 
-  // Buttons read `corner-full`, which none of the shape tokens above reach, so a
-  // filled button renders as a pill against the flat identity PLANNING section 14
-  // asks for. Squared here in the theme, never per component stylesheet.
   @include mat.button-overrides(
     (
       filled-container-shape: 4px,
       outlined-container-shape: 4px,
       protected-container-shape: 4px,
       text-container-shape: 4px,
+    )
+  );
+
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-primary),
+      container-text-color: var(--mat-sys-on-primary),
     )
   );
 }
