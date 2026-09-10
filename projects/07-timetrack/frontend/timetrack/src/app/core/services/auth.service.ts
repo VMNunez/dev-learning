@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, isRole, LoginRequest } from '../../shared/models/auth.models';
 import { Observable, tap } from 'rxjs';
@@ -12,8 +12,8 @@ const SESSION_KEY = 'timetrack_session';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly authUrl = `${environment.apiUrl}/auth`;
-
   readonly session = signal<AuthResponse | null>(this.readStoredSession());
+  readonly isLoggedIn = computed(() => !!this.session());
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http
