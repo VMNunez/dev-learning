@@ -104,6 +104,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 ## Accessibility, responsiveness, and testing
 
 - Built-in accessibility vs application responsibility — rely on supported Material semantics and keyboard behaviour while still providing labels, logical focus order, and meaningful state communication ✅ 05-task-manager
+- Disabled controls cannot hold focus — expressing a loading state by disabling the control the user has just activated moves focus to the document body and leaves a keyboard user with no anchor to continue from; `disabledInteractive` keeps a Material button focusable and announces its state through `aria-disabled` instead of the native attribute, which in exchange makes preventing the action the code's job rather than the browser's ✅ 07-timetrack — the login submit button carries `disabledInteractive`, so a failed attempt leaves focus on the button instead of the document body
 - Responsive Material composition — adapt sidenav mode, dialog dimensions, action density, and wide-table presentation because Material components do not make a page responsive automatically
 - Material component harnesses — test supported user-visible behaviour through stable harness APIs instead of querying private DOM structure or CSS classes
 - Harness interaction tests — use component-specific harness methods to verify critical validation feedback, dialog results, and table interactions rather than snapshotting generated markup
