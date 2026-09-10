@@ -32,7 +32,10 @@ export class Login {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
-    password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
   });
 
   onSubmit() {

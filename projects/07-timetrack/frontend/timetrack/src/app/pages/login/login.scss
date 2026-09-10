@@ -1,26 +1,41 @@
+@use '@angular/material' as mat;
+
 .login-layout {
   display: grid;
   grid-template-columns: 2fr 3fr;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .login-branding {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
-  padding: 48px 32px;
+  gap: 16px;
+  padding: 32px;
   background: var(--mat-sys-primary);
   color: var(--mat-sys-on-primary);
 
+  .login-lockup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .login-logo {
+    width: 48px;
+    height: 48px;
+    flex: none;
+  }
+
   h1 {
     margin: 0;
-    font: var(--mat-sys-display-small);
+    font: var(--mat-sys-display-medium);
+    font-weight: 700;
   }
 
   p {
     margin: 0;
-    font: var(--mat-sys-title-medium);
+    font: var(--mat-sys-body-large);
   }
 }
 
@@ -35,26 +50,36 @@
 .login-card {
   width: 100%;
   max-width: 400px;
+
+  @include mat.card-overrides(
+    (
+      title-text-size: var(--mat-sys-headline-small-size),
+      title-text-line-height: var(--mat-sys-headline-small-line-height),
+      title-text-weight: var(--mat-sys-headline-small-weight),
+      title-text-tracking: var(--mat-sys-headline-small-tracking),
+    )
+  );
 }
 
-mat-card-header {
-  margin-bottom: 20px;
-}
-
-mat-card-content {
-  padding-bottom: 8px;
-}
-
-form {
+.login-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+  padding-block-start: 16px;
+}
+
+.login-submit {
+  align-self: stretch;
 }
 
 .login-error {
   margin: 0;
   color: var(--mat-sys-error);
-  font: var(--mat-sys-body-medium);
+  font: var(--mat-sys-body-small);
+}
+
+.login-app-name {
+  display: none;
 }
 
 @media (max-width: 767px) {
@@ -64,5 +89,9 @@ form {
 
   .login-branding {
     display: none;
+  }
+
+  .login-app-name {
+    display: block;
   }
 }
