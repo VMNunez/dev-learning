@@ -92,6 +92,18 @@ That ledger is append-only and authoritative — a review never re-raises what i
   CLI does it. Note this is only safe alongside the signals-everywhere rule the same guide sets — `Login`
   already holds its state in signals *(effort: S)*
 
+- [ ] **angular-material / junior** `[frontend]` — `mat.button-overrides` in
+  `frontend/timetrack/src/styles/material-theme.scss` squares four of the five button variants and
+  misses `tonal`. Verified 2026-09-10 against `node_modules/@angular/material/button/_m3-button.scss`,
+  where `button-tonal-container-shape` reads `map.get($system, corner-full)` exactly like the four that
+  are overridden, so a `matButton="tonal"` renders as a pill against the flat 4px identity §14 fixes for
+  every surface. Latent today: the only button in the app is the Login page's `matButton="filled"`, so
+  nothing shows it yet — it fires silently the first time a later page reaches for the tonal variant,
+  which §14's "Material components used" makes likely for a secondary action beside a filled primary.
+  Fix: add `tonal-container-shape: 4px` to the existing map — one line, no new block. Raised while
+  explaining the button block during Step 7a rather than by a review pass; the frontend tier has never
+  been reviewed *(raised 2026-09-10; effort: S)*
+
 ## Beyond the current gate
 
 <!-- Findings the level-fit pass judged real but early: above the open gate and not strictly necessary
