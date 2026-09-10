@@ -85,7 +85,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Fluid images — constrain an image to its container while preserving its intrinsic aspect ratio
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
 - `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback ✅ 02-weather-app — the decorative card hover is dropped under a `reduce` query while the loading spinner is only slowed from 0.8s to 2.4s
-- Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right
+- Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right ✅ 07-timetrack — the shell's nav list is inset with `padding-inline` and the login form's gap with `padding-block-start`, no left/right rules
 - Responsive content testing — test narrow widths, zoom, long labels, translated text, and missing or oversized media because a layout is responsive only if real content can change without clipping
 
 ## Units
