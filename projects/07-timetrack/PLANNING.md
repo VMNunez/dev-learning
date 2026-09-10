@@ -1137,7 +1137,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 
 | Page | Loading | Error | Empty |
 |---|---|---|---|
-| Login | Spinner inside the "Log in" button, form disabled | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up | n/a — no data load |
+| Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up | n/a — no data load |
 | Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
 | Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
 | Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
@@ -1147,6 +1147,29 @@ repeated in each wireframe. A page that renders only its success table is incomp
 | Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
 | Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
 | Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `mat-error` at the dialog foot, dialog stays open | n/a — a form dialog always opens with its fields |
+
+> **Reversal, 2026-09-10 — `disabled` is a visual and interaction state, not a business rule.** The Login
+> row originally said *form disabled while saving*. Removing `form.disable()/enable()` was decided while
+> building Step 7a, on this argument: the invariant being protected is "one login in flight at a time",
+> and that invariant already lived in TypeScript — `onSubmit()` opens with
+> `if (this.form.invalid || this.loading()) return;`, which is the real defence against a double submit.
+> The `disable()` protected nothing and cost two things that were measured: it repainted both
+> `mat-form-field` outlines grey for ~50 ms against a localhost backend, and it **dropped focus to
+> `document.body`**, because a disabled control cannot hold focus and nothing restored it on re-enable —
+> so a keyboard user lost their place after every failed login (WCAG 2.4.3). The `{ emitEvent: false }`
+> flags went with it: they existed only so that `disable()` would not fire the `valueChanges` that clears
+> the error message, a hidden coupling that no longer needs explaining. The same reasoning put
+> `disabledInteractive` on the button — a native `<button disabled>` cannot hold focus either, so Material
+> marks it `aria-disabled` and keeps it focusable instead. The accepted trade is that the button still
+> receives clicks, which Material's own input documentation warns about; the TypeScript guard is what
+> makes that safe, so **that line must not be removed**. A third option — delaying the disable ~150 ms so
+> fast responses never paint it — was rejected: it buys a flicker that only exists at localhost latency in
+> exchange for a second signal, a manual timer and an uncovered teardown path.
+>
+> **The dialog rows above still say "fields disabled while saving" and have not been reversed** — they are
+> unbuilt, and the case differs: a dialog's fields can be edited while its request is in flight and the
+> user then sees stale values against a saved record. Decide it per dialog when Step 7b builds the first
+> one, with this note as the precedent, rather than copying either answer by reflex.
 
 ---
 
@@ -1617,8 +1640,9 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   fields disabled while saving, and the `400` `fieldErrors.currentPassword` / `fieldErrors.newPassword`
   messages under their own inputs with the dialog staying open (a wrong current password must not log
   the user out)
-- The Login page ships its declared §14 states from the start: spinner inside the "Log in" button with the
-  form disabled while the call is in flight, and a `mat-error` under the form on `401` (§6's Async-states
+- The Login page ships its declared §14 states from the start: spinner inside the "Log in" button while
+  the call is in flight — the inputs are **not** disabled, per the 2026-09-10 reversal recorded under
+  §14's async-states table — and a `mat-error` under the form on `401` (§6's Async-states
   rule; Login has no empty state — it loads no data)
 - **New concepts:** Angular consuming a real REST API end to end
 - **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
