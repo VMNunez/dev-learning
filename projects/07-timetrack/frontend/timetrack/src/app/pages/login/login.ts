@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { afterNextRender, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +31,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
   private readonly authService = inject(AuthService);
@@ -52,8 +61,6 @@ export class Login {
     if (this.form.invalid || this.loading()) return;
 
     this.loading.set(true);
-    this.error.set(null);
-    this.form.disable({ emitEvent: false });
 
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => this.router.navigate(['/dashboard']),
@@ -64,7 +71,6 @@ export class Login {
 
         this.error.set(message);
         this.loading.set(false);
-        this.form.enable({ emitEvent: false });
       },
     });
   }

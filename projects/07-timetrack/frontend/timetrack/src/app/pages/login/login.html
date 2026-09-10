@@ -60,6 +60,7 @@
             class="login-submit"
             matButton="filled"
             type="submit"
+            disabledInteractive
             [attr.aria-busy]="loading()"
             [attr.aria-label]="loading() ? 'Logging in' : 'Log in'"
             [disabled]="loading()"
