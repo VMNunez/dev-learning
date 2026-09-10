@@ -2,7 +2,23 @@
   <span>TimeTrack</span>
 </mat-toolbar>
 <mat-sidenav-container>
-  <mat-sidenav mode="side" opened>Side content</mat-sidenav>
+  <mat-sidenav mode="side" opened>
+    <mat-nav-list>
+      <a
+        mat-list-item
+        routerLink="/dashboard"
+        routerLinkActive
+        #dashboardLink="routerLinkActive"
+        [activated]="dashboardLink.isActive"
+        >Dashboard</a
+      >
+      <a mat-list-item disabled>Entries</a>
+      <a mat-list-item disabled>Projects</a>
+      <a mat-list-item disabled>Approvals</a>
+      <a mat-list-item disabled>Team</a>
+      <a mat-list-item disabled>Reports</a>
+    </mat-nav-list>
+  </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet />
   </mat-sidenav-content>

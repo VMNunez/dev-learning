@@ -36,4 +36,16 @@ html {
       container-text-color: var(--mat-sys-on-primary),
     )
   );
+
+  @include mat.sidenav-overrides(
+    (
+      container-divider-color: var(--mat-sys-outline-variant),
+    )
+  );
+
+  @include mat.list-overrides(
+    (
+      active-indicator-shape: 4px,
+    )
+  );
 }
