@@ -56,6 +56,18 @@ That ledger is append-only and authoritative — a review never re-raises what i
   leave the page restores `loading` and re-enables the form. Deliberately not fixed the day it was
   found: with no `/dashboard` route yet there was no way to verify the fix *(effort: S)*
 
+- [ ] **angular / junior** `[frontend]` — no component sets
+  `changeDetection: ChangeDetectionStrategy.OnPush`, which the frontend's own Angular guide
+  (`frontend/timetrack/.claude/CLAUDE.md`, "Components") states as a rule. Verified on 2026-09-10 against
+  the three components that exist: `App`, `Login` and the freshly generated `Dashboard` — none declares it.
+  The Angular CLI 21 `component` schematic defaults `changeDetection` to `Default`, so every component
+  generated from here on starts non-compliant unless the flag is passed or the line added by hand. It
+  costs nothing today (no page renders a list yet) and everything at Step 7d, when eight pages with
+  MatTables re-run change detection on every browser event. Fix: add the strategy to every component and
+  pass `--change-detection OnPush` when generating, or set the schematic default in `angular.json` so the
+  CLI does it. Note this is only safe alongside the signals-everywhere rule the same guide sets — `Login`
+  already holds its state in signals *(effort: S)*
+
 ## Beyond the current gate
 
 <!-- Findings the level-fit pass judged real but early: above the open gate and not strictly necessary
