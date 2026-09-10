@@ -74,6 +74,7 @@
 
 .login-error {
   margin: 0;
+  min-height: var(--mat-sys-body-small-line-height);
   color: var(--mat-sys-error);
   font: var(--mat-sys-body-small);
 }
