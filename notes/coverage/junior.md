@@ -131,6 +131,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL ✅ 06-hr-portal
 - `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect ✅ 06-hr-portal
 - Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks ✅ 06-hr-portal
+- Componentless parent routes — group a branch of routes under a pathless parent that carries the shared `canActivate`, so every child inherits the check and a new page is protected by being added to `children` rather than by repeating the guard on each entry ✅ 07-timetrack — the `path: ''` parent carries `canActivate: [authGuard]` and every authenticated page hangs from its `children`
 - Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
 - Route-scoped features reach only routed surfaces — a guard, a resolver or a route parameter serves
