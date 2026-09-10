@@ -44,7 +44,17 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **angular / junior** `[frontend]` — `Login.onSubmit()` leaves `loading` at `true` forever when the
+  navigation it fires never completes. `router.navigate(['/dashboard'])` returns a `Promise<boolean>`
+  that resolves `false` when a guard cancels the navigation, and the `next` callback ignores it: the
+  spinner keeps turning, the form stays disabled and the user has no way out but a reload. Observed for
+  real on 2026-09-10 while verifying the login page, where `/dashboard` did not exist yet and the `**`
+  wildcard bounced the navigation back to the route already showing — the router reused the component
+  instance rather than recreating it, so nothing reset the signal. That particular trigger disappears
+  once Step 7a ships the shell, but the guard-cancellation path survives it and is not currently
+  handled. Fix: act on the resolved boolean (or `finalize`-equivalent) so a navigation that does not
+  leave the page restores `loading` and re-enables the form. Deliberately not fixed the day it was
+  found: with no `/dashboard` route yet there was no way to verify the fix *(effort: S)*
 
 ## Beyond the current gate
 
