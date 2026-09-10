@@ -874,12 +874,15 @@ src/main/java/com/victor/timetrack/
 
 ```
 src/app/
+├── layout/
+│   └── shell/                     ← MatSidenav + toolbar around a nested <router-outlet />; the component of the guarded parent route, so /login never renders inside it
 ├── core/
 │   ├── guards/
-│   │   ├── auth.guard.ts         ← blocks any route without a stored token
-│   │   └── manager.guard.ts      ← blocks manager-only routes for an EMPLOYEE
+│   │   ├── auth-guard.ts         ← blocks any route without a stored token
+│   │   ├── no-auth-guard.ts      ← the mirror: keeps an authenticated user off /login, sending them to /dashboard
+│   │   └── manager-guard.ts      ← blocks manager-only routes for an EMPLOYEE
 │   ├── interceptors/
-│   │   └── auth.interceptor.ts   ← attaches the Bearer token; on 401 clears the session → /login
+│   │   └── auth-interceptor.ts   ← attaches the Bearer token; on 401 clears the session → /login
 │   └── services/
 │       ├── auth.service.ts       ← login, logout, current user + role
 │       ├── entry.service.ts      ← /api/entries CRUD + the workflow PATCH calls
