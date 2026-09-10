@@ -61,9 +61,18 @@ That ledger is append-only and authoritative — a review never re-raises what i
   (`frontend/timetrack/.claude/CLAUDE.md`, "Components") states as a rule. Verified on 2026-09-10 against
   the three components that exist: `App`, `Login` and the freshly generated `Dashboard` — none declares it.
   The Angular CLI 21 `component` schematic defaults `changeDetection` to `Default`, so every component
-  generated from here on starts non-compliant unless the flag is passed or the line added by hand. It
-  costs nothing today (no page renders a list yet) and everything at Step 7d, when eight pages with
-  MatTables re-run change detection on every browser event. Fix: add the strategy to every component and
+  generated from here on starts non-compliant unless the flag is passed or the line added by hand.
+  **The cost was overstated when this task was written on 2026-09-10 and is corrected here**: the first
+  wording said eight pages with MatTables would "re-run change detection on every browser event", which
+  is true of a ZoneJS application and this one is not. Verified the same day against `package.json`,
+  `angular.json` and `app.config.ts` — no `zone.js` dependency, no change-detection provider — and
+  against angular.dev v21 *Performance → Runtime performance*, which states zoneless is the **default
+  in Angular v21+** and "triggers change detection only when signals or events indicate a change". The
+  coarse win is therefore already there by default, and `OnPush` is the finer filter on top: without it
+  a component is checked whenever its branch is refreshed, even when nothing of its own changed. The
+  real argument is compliance and habit, not a rescue from a per-event full sweep — the frontend's own
+  guide states the rule, `review-audit`'s G4 frontend pass will raise it once per component, and a
+  component written without it is one written without asking where its state comes from. Fix: add the strategy to every component and
   pass `--change-detection OnPush` when generating, or set the schematic default in `angular.json` so the
   CLI does it. Note this is only safe alongside the signals-everywhere rule the same guide sets — `Login`
   already holds its state in signals *(effort: S)*
