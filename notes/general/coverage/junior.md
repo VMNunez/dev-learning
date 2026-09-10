@@ -43,7 +43,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - JSON value model — recognise objects, arrays, strings, numbers, booleans, and `null`, with double-quoted object keys and no trailing commas
 - JSON object vs array — distinguish a named property collection from an ordered value collection when reading or designing a payload
 - Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent ✅ 07-timetrack
-- JSON limitations — recognise that JSON has no native date, `undefined`, binary, or distinct integer type, so an API must define representations for them
+- JSON limitations — recognise that JSON has no native date, `undefined`, binary, or distinct integer type, so an API must define representations for them ✅ 07-timetrack — `ApiError.timestamp` is typed `string` because the backend's `Instant` reaches the client as ISO text
 - Serialization vs deserialization — distinguish converting an in-memory value to a transport representation from reconstructing a value from that representation ✅ 07-timetrack
 - Contract naming and type mismatches — diagnose failures caused by different property names, nesting, nullability, or expected value types across a boundary
 - Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing ✅ 07-timetrack

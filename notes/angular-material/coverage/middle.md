@@ -5,7 +5,7 @@ Concepts expected when a developer can adapt Angular Material to a production de
 ## Theming and custom controls
 
 - Custom theme palettes — define product palettes and semantic colours instead of relying only on prebuilt themes
-- Component and theme token overrides — customise a narrow visual contract without depending on brittle internal selectors
+- Component and theme token overrides — customise a narrow visual contract without depending on brittle internal selectors ✅ 07-timetrack — `mat.button-overrides` squares the four button variants and `mat.card-overrides`, scoped to `.login-card`, retypes its title
 - Selective theme emission — choose all-component or per-component base, colour, typography, and density mixins while preventing duplicated CSS output
 - Runtime dark mode — switch complete theme token sets while preserving contrast and user preference
 - Material custom form controls — integrate a `ControlValueAccessor` with `mat-form-field`, validation, focus, and error state

@@ -54,7 +54,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Narrowing and safe control flow
 
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
-- `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
+- `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"` ✅ 07-timetrack — `isApiError` tests `value === null` explicitly, because `typeof null` would let a null body through
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
@@ -79,7 +79,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
-- Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists
+- Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists ✅ 07-timetrack — `ApiError.fieldErrors` is a `Record<string, string[]>`, the open-key shape the backend's `Map<String, List<String>>` serialises to
 - `NonNullable<T>` — remove `null` and `undefined` from a union only after program logic guarantees their absence
 
 ## Literal preservation and contract checking

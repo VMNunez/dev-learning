@@ -60,6 +60,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
+- `afterNextRender` — schedule work that needs the painted DOM, such as measuring an element or placing initial focus, so it runs after the next render and only in a browser, where a lifecycle hook would also run during server-side rendering with no DOM to read ✅ 07-timetrack — the login page focuses its email input from `afterNextRender`, where the `viewChild.required` node already exists
 - Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
 ### Signals and local state
@@ -137,7 +138,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
   protection has to be rebuilt inside the dialog; choosing the surface is choosing the toolbox ✅ 06-hr-portal — `app.routes.ts:113-114` hangs `deactivateGuard` on the two department-form routes, while the employee and leave-request dialogs have no route to hang one on
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
 - Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
-- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
+- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure ✅ 07-timetrack — the login error callback narrows `err.error` through `isApiError` and falls back when no `ErrorResponse` was parsed
 
 ### Reactive forms and template transformation
 
@@ -150,7 +151,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
 - `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms ✅ 05-task-manager
-- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
+- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it ✅ 07-timetrack — `Login.onSubmit` disables the form before reading `getRawValue()`, so the submitted credentials survive the disable
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
@@ -158,7 +159,8 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
-- Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers
+- Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers ✅ 07-timetrack — one `valueChanges` subscription clears the login's server error instead of an input handler on each control
+- `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event ✅ 07-timetrack — `disable({ emitEvent: false })` and its `enable` pair stop the login submit from erasing the error it just set
 
 ### Change detection
 
@@ -1312,7 +1314,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### Narrowing and safe control flow
 
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
-- `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
+- `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"` ✅ 07-timetrack — `isApiError` tests `value === null` explicitly, because `typeof null` would let a null body through
 - `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
@@ -1337,7 +1339,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
-- Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists
+- Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists ✅ 07-timetrack — `ApiError.fieldErrors` is a `Record<string, string[]>`, the open-key shape the backend's `Map<String, List<String>>` serialises to
 - `NonNullable<T>` — remove `null` and `undefined` from a union only after program logic guarantees their absence
 
 ### Literal preservation and contract checking
@@ -1610,7 +1612,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `disabled` vs `readonly` — a disabled control is skipped by the keyboard and not submitted, while a readonly control is focusable, copyable and still submitted; choosing the wrong one silently drops a field from the payload
 - Native validation attributes — `required`, `min`/`max`, `step` and `pattern` make the browser block submission and show its own message before any script runs, while `maxlength` works differently by preventing the keystroke rather than failing the submit, and `novalidate` on the form turns the whole native gate off
 - Client validation is never the server's guarantee — every native constraint is a user-experience affordance a user can bypass with devtools or by posting directly, so the same rule exists again on the server
-- `autocomplete` tokens — `email`, `name`, `current-password` and `one-time-code` let the browser and password manager fill the field correctly, which is a few characters of markup and a measurable difference on a real form
+- `autocomplete` tokens — `email`, `name`, `current-password` and `one-time-code` let the browser and password manager fill the field correctly, which is a few characters of markup and a measurable difference on a real form ✅ 07-timetrack — the login fields declare `email` and `current-password`, so a manager fills the pair in one action
 - `inputmode` — selects the mobile keyboard layout independently of `type`, for the cases where the value is digits but not a number the browser should parse
 - Error messaging tied to its field — an invalid control carries `aria-invalid` and points at its message with `aria-describedby`, so the error is announced with the field; a red border and red text alone reach only the eye
 - A form that would still submit without JavaScript — an `action`, a `method` and a real `<button type="submit">` mean the browser can post the form on its own, which is what makes intercepting the submit event a decision rather than the only thing holding the form together
@@ -1621,14 +1623,15 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Implicit roles — every native element already carries a role (`<button>` is `button`, `<a href>` is `link`, `<nav>` is `navigation`), which is the whole reason choosing the right element removes work rather than adding it
 - ARIA's first rule — use a native element instead of an ARIA attribute wherever one exists, because ARIA changes only what is announced and never what the browser does; ARIA is for the cases the platform has no element for
 - ARIA that contradicts its element — an author role that fights the tag it sits on is at best ignored and at worst believed: `role="presentation"` on a focusable control is discarded by the browser under the conflict-resolution rules, while `role="button"` on a link is honoured and leaves the announced semantics disagreeing with what Enter and Space actually do
-- Accessible-name precedence — the name is computed from an ordered set of sources, with `aria-labelledby` above `aria-label`, above the control's own label or content, above the `title` and `placeholder` fallbacks, so adding `aria-label` silently replaces the visible text a sighted user reads
+- Accessible-name precedence — the name is computed from an ordered set of sources, with `aria-labelledby` above `aria-label`, above the control's own label or content, above the `title` and `placeholder` fallbacks, so adding `aria-label` silently replaces the visible text a sighted user reads ✅ 07-timetrack — the login submit's `aria-label` replaces its content as the name, so the idle state repeats `Log in` deliberately
+- Label in Name — the accessible name of a control that shows visible text must contain that text, because speech input matches the spoken command against the name in the tree, so an `aria-label` worded differently from the label on screen leaves the control unreachable by voice while a screen reader still announces it correctly ✅ 07-timetrack — the submit button's `aria-label` differs from `Log in` only while the label itself is a spinner
 - `title` vs `aria-label` — the `title` attribute is a last-resort name source that appears as a mouse tooltip, is unreachable by touch and inconsistently announced, so it is a supplement and never the way a control gets its name
 - Accessible name of an icon-only control — a control whose only content is a glyph or an icon font computes to an unusable accessible name or none at all, so it needs an explicit `aria-label` naming the action it performs
 - Pressed state of a toggle control — a button that turns a setting on and off carries `aria-pressed`, which is what puts the on/off state in the accessibility tree; the control therefore states its state twice, once for the eye through a class and once for the tree through the attribute, because a colour or a filled-versus-outlined shape reaches only the eye
 - Expanded state of a disclosure — a trigger that shows and hides a panel, menu or submenu carries `aria-expanded` and points at what it controls with `aria-controls`, which is what a rotated chevron does not express; it is the state most often missing from a hand-built dropdown
 - Current item in a set — `aria-current` marks the active navigation link, step or page as the current one, which a background colour or a heavier weight cannot express
-- Live regions — an asynchronous change is announced only from inside a region marked `aria-live`, `role="status"` or `role="alert"`, so a result count, a save confirmation or a validation summary that simply appears is read only if the user happens to move there; `polite` waits for a pause and `assertive`, which `role="alert"` implies, interrupts, which is why it is reserved for errors
-- Hiding from the layout, from the tree, or from both — the `hidden` attribute and `display: none` remove an element from both, `visibility: hidden` also removes it from both while keeping its space, and `aria-hidden="true"` removes it only from the tree while leaving it visible and focusable; hiding a focusable control with `aria-hidden` produces a control the keyboard reaches and the screen reader cannot announce
+- Live regions — an asynchronous change is announced only from inside a region marked `aria-live`, `role="status"` or `role="alert"`, so a result count, a save confirmation or a validation summary that simply appears is read only if the user happens to move there; `polite` waits for a pause and `assertive`, which `role="alert"` implies, interrupts, which is why it is reserved for errors ✅ 07-timetrack — the login's error paragraph is `role="alert"`, so a rejected sign-in is announced without moving focus
+- Hiding from the layout, from the tree, or from both — the `hidden` attribute and `display: none` remove an element from both, `visibility: hidden` also removes it from both while keeping its space, and `aria-hidden="true"` removes it only from the tree while leaving it visible and focusable; hiding a focusable control with `aria-hidden` produces a control the keyboard reaches and the screen reader cannot announce ✅ 07-timetrack — the decorative clock SVG is `aria-hidden` yet fully visible, its name supplied by the `<h1>` beside it
 - Visually hidden but announced — the opposite case: text meant only for assistive technology has to leave the visual layout while staying in the accessibility tree, which none of the properties above can do because each removes it from both; the pattern is a positioned one-pixel box that is clipped rather than sized to zero
 
 ### Focus and keyboard operability
@@ -1665,7 +1668,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### Sizing
 - `width`, `min-width`, and `max-width` — combine a preferred size with lower and upper bounds so a component can shrink and grow without becoming unusable
 - `height`, `min-height`, and `max-height` — prefer content-driven height and add constraints only when the interface has a real scrolling or viewport requirement
-- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen
+- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen ✅ 07-timetrack — `.login-layout` fills the screen with `min-height: 100dvh` instead of a chain of percentage heights
+- Reserving space for content that toggles — an element added to or removed from normal flow displaces everything after it, so a message that appears in response to an action moves the controls beneath it out from under the pointer; sizing its container to the space it will occupy keeps the layout still whether the content is present or not ✅ 07-timetrack — `.login-error` holds one `--mat-sys-body-small-line-height` while empty, so the submit button never shifts
 - Automatic minimum size in flex and grid — use `min-width: 0` or `min-height: 0` when a flex or grid child must be allowed to shrink instead of overflowing
 
 ### Cascade and inheritance
@@ -1782,7 +1786,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `opacity` vs alpha-channel colour — fade the whole rendered element subtree or only the colour of one painted property
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
-- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
+- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the login logo strokes in `currentColor` and inherits `--mat-sys-on-primary` from the branding panel
 - Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 
@@ -2232,7 +2236,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - JSON value model — recognise objects, arrays, strings, numbers, booleans, and `null`, with double-quoted object keys and no trailing commas
 - JSON object vs array — distinguish a named property collection from an ordered value collection when reading or designing a payload
 - Missing field vs explicit `null` — treat absence and an explicit null value as separate contract states unless the API defines them as equivalent ✅ 07-timetrack
-- JSON limitations — recognise that JSON has no native date, `undefined`, binary, or distinct integer type, so an API must define representations for them
+- JSON limitations — recognise that JSON has no native date, `undefined`, binary, or distinct integer type, so an API must define representations for them ✅ 07-timetrack — `ApiError.timestamp` is typed `string` because the backend's `Instant` reaches the client as ISO text
 - Serialization vs deserialization — distinguish converting an in-memory value to a transport representation from reconstructing a value from that representation ✅ 07-timetrack
 - Contract naming and type mismatches — diagnose failures caused by different property names, nesting, nullability, or expected value types across a boundary
 - Date and time representation — agree an explicit interoperable string format and time-zone meaning instead of relying on environment-specific parsing ✅ 07-timetrack

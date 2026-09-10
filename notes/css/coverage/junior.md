@@ -19,7 +19,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## Sizing
 - `width`, `min-width`, and `max-width` — combine a preferred size with lower and upper bounds so a component can shrink and grow without becoming unusable
 - `height`, `min-height`, and `max-height` — prefer content-driven height and add constraints only when the interface has a real scrolling or viewport requirement
-- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen
+- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen ✅ 07-timetrack — `.login-layout` fills the screen with `min-height: 100dvh` instead of a chain of percentage heights
+- Reserving space for content that toggles — an element added to or removed from normal flow displaces everything after it, so a message that appears in response to an action moves the controls beneath it out from under the pointer; sizing its container to the space it will occupy keeps the layout still whether the content is present or not ✅ 07-timetrack — `.login-error` holds one `--mat-sys-body-small-line-height` while empty, so the submit button never shifts
 - Automatic minimum size in flex and grid — use `min-width: 0` or `min-height: 0` when a flex or grid child must be allowed to shrink instead of overflowing
 
 ## Cascade and inheritance
@@ -136,7 +137,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `opacity` vs alpha-channel colour — fade the whole rendered element subtree or only the colour of one painted property
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
-- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
+- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the login logo strokes in `currentColor` and inherits `--mat-sys-on-primary` from the branding panel
 - Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 

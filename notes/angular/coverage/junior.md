@@ -55,6 +55,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
+- `afterNextRender` — schedule work that needs the painted DOM, such as measuring an element or placing initial focus, so it runs after the next render and only in a browser, where a lifecycle hook would also run during server-side rendering with no DOM to read ✅ 07-timetrack — the login page focuses its email input from `afterNextRender`, where the `viewChild.required` node already exists
 - Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
 ## Signals and local state
@@ -132,7 +133,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
   protection has to be rebuilt inside the dialog; choosing the surface is choosing the toolbox ✅ 06-hr-portal — `app.routes.ts:113-114` hangs `deactivateGuard` on the two department-form routes, while the employee and leave-request dialogs have no route to hang one on
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
 - Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
-- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure
+- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure ✅ 07-timetrack — the login error callback narrows `err.error` through `isApiError` and falls back when no `ErrorResponse` was parsed
 
 ## Reactive forms and template transformation
 
@@ -145,7 +146,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
 - `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms ✅ 05-task-manager
-- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
+- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it ✅ 07-timetrack — `Login.onSubmit` disables the form before reading `getRawValue()`, so the submitted credentials survive the disable
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
@@ -153,7 +154,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
-- Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers
+- Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers ✅ 07-timetrack — one `valueChanges` subscription clears the login's server error instead of an input handler on each control
+- `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event ✅ 07-timetrack — `disable({ emitEvent: false })` and its `enable` pair stop the login submit from erasing the error it just set
 
 ## Change detection
 
