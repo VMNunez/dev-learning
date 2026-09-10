@@ -1033,12 +1033,50 @@ schematic. Getting it wrong is silent: it produces `auth-guard-guard.ts` or a ba
 | service | `ng g s core/services/auth.service` | `auth.service.ts` | **typed by hand** |
 | guard | `ng g guard core/guards/auth` | `auth-guard.ts` | **CLI appends it** |
 | interceptor | `ng g interceptor core/interceptors/auth` | `auth-interceptor.ts` | **CLI appends it** |
-| resolver | `ng g resolver core/resolvers/project` | `project-resolver.ts` | CLI appends it — *inferred by analogy, not yet verified* |
+| resolver | `ng g resolver core/resolvers/project` | `project-resolver.ts` | **CLI appends it** |
 
 Verified 2026-09-09 in `projects/07-timetrack/frontend/timetrack` (`@angular/cli` ^21.2.4) for guard
-and interceptor, and 2026-09-01 in `projects/04-meal-finder` for service. Both corrections came from
+and interceptor, and 2026-09-01 in `projects/04-meal-finder` for service. The guard, interceptor and
+resolver rows were re-verified 2026-09-10 **against the schematics themselves** rather than by running
+them — `node_modules/@schematics/angular/{guard,interceptor,resolver}/schema.json` each declare
+`typeSeparator` with `"default": "-"`, while `component/schema.json` and `service/schema.json` declare
+`type` with **no default at all**, which is the whole rule in one sentence and the cheapest way to
+check a schematic nobody has run yet. Both corrections came from
 Victor after a wrong command was given — when guiding a step that creates a file by CLI, give the
 full command from this table rather than reconstructing it.
+
+### The Angular CLI MCP server
+
+The repository registers it in `.mcp.json` at the root, so it is available in **every** session here,
+not only in a frontend one — Angular claims are made while writing `notes/angular/`, while planning a
+project and while grading an interview answer, and all three are wrong in the same way when they are
+made from memory.
+
+- **What it is.** A local process (`ng mcp`), part of the `@angular/cli` package already installed — no
+  account, no key, no cost. Registered `--read-only`, so it exposes consultation tools only and cannot
+  run a build, a test or a dev server: Victor runs his own work, and that rule does not bend because a
+  tool makes it convenient.
+- **The tools that matter.** `get_best_practices` returns Angular's current practices **for the
+  installed version**; `search_documentation` returns the real text of angular.dev; `list_projects`
+  reads `angular.json`. `find_examples` requires Node 22.16 and is skipped on Victor's Node 20.20 —
+  its absence in the tool list is expected, not a broken install.
+- **When it is not optional.** Any claim about what current Angular *recommends* — naming, folder
+  layout, forms strategy, testing, a deprecated API — that is load-bearing for a note, a coverage
+  bullet, a plan section, an interview answer or a correction to Victor's code. Guidance changed
+  sharply at v20 (naming, standalone-by-default, control flow) and again at v22 (signal forms), so a
+  remembered convention is a plausible-sounding wrong answer, which is the expensive kind.
+- **Version pinning is deliberate.** The config points at the CLI inside the **active** Angular
+  project's `node_modules`, not at `npx @angular/cli@latest`, so the practices returned match the
+  version Victor is actually writing against (v21.2.23 as of 2026-09-10). When a later project moves
+  to a newer Angular, repoint the path in `.mcp.json` — that is the maintenance this choice costs, and
+  it is cheaper than teaching v22 conventions into a v21 project.
+- **A tool call is not a source.** Quote what it returned and say so, the same as any other verified
+  claim; "the MCP says" without the returned text is the same unfounded assertion in a new costume.
+
+Registered 2026-09-10 (`43cdb6a7`), after a session in which the folder-taxonomy question was answered
+from memory and only checked against angular.dev because Victor asked. `REC-231` holds the related
+finding — that `_planning-standard.md` §13 hard-codes one taxonomy — and the open question of how the
+prompt pipeline consumes these tools inside its subagents.
 
 **This section is the only home for the table.** It was briefly copied into
 `projects/07-timetrack/frontend/timetrack/.claude/CLAUDE.md` on 2026-09-09 and reverted the same day:
