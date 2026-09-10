@@ -147,7 +147,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
 - `setValue()` vs `patchValue()` — choose strict full-shape assignment or deliberate partial updates when prefilling edit forms ✅ 05-task-manager
-- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it ✅ 07-timetrack — `Login.onSubmit` disables the form before reading `getRawValue()`, so the submitted credentials survive the disable
+- Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
@@ -156,7 +156,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
 - Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers ✅ 07-timetrack — one `valueChanges` subscription clears the login's server error instead of an input handler on each control
-- `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event ✅ 07-timetrack — `disable({ emitEvent: false })` and its `enable` pair stop the login submit from erasing the error it just set
+- `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event
 
 ## Change detection
 
