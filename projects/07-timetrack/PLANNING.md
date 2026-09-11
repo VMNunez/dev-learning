@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off. `PROJECT-BACKLOG.md` was empty at every priority when this step opened; since 2026-09-10 it holds one **backend High** (the unnormalised email key in the login throttle) and three frontend **Lows** (the stuck login spinner, the missing `OnPush`, the unsquared `tonal` button variant), none of which gates this step — the High is server-side and the two Lows are inside 7a's own surface. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
+| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off. `PROJECT-BACKLOG.md` was empty at every priority when this step opened; since 2026-09-10 it holds one **backend High** (the unnormalised email key in the login throttle) and two frontend **Lows** (the stuck login spinner, the unsquared `tonal` button variant), none of which gates this step — the High is server-side and the two Lows are inside 7a's own surface; the `OnPush` Low closed on 2026-09-11, resolved in `b23a7dcb`. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
 | **Current branch** | `feat/angular-shell-auth`, cut from `projects/07-timetrack` after the 2026-08-29 merge. `fix/backend-backlog` met its §22 closing condition and is done — do not commit to it again. Per §22 this branch PRs back into `projects/07-timetrack` when Step 7a's done condition passes |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G4 — frontend review — **blocked, no frontend code exists yet**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7a–7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
-| **Last updated** | 2026-08-29 |
+| **Last updated** | 2026-09-11 |
 
 ---
 
@@ -1979,9 +1979,9 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds no open task at any priority in either tier**, so **G7's
-stricter bar — no open High *or* Medium — is satisfied months before the closing gate reads it.** The
-earlier plan for this branch anticipated leaving those tasks open for G7; that is no longer the state.
+currently holds one open backend High and two frontend Lows** (raised from 2026-09-10 on, during Step 7a),
+so **G7's stricter bar — no open High *or* Medium — is not met until that High closes.** The
+earlier plan for this branch anticipated leaving tasks open for G7; the High is the one that now does.
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
 Remaining sequence, with no backlog work left in it at any priority: `fix/backend-backlog` merged into
