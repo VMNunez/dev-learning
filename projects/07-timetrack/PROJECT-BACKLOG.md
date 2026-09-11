@@ -22,22 +22,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
-- [ ] **security / junior** `[backend]` — `AuthService.login` builds the brute-force key with
-  `request.getEmail().toLowerCase()` (l.35) instead of `EmailNormalizer.normalize()`, the class written
-  for exactly this and used by `UserService` (l.59, l.95), `UserDetailsServiceImpl` (l.25) and
-  `DataInitializer` (l.36). Two defects follow, and the first is the reason this is High. **(a) The
-  lockout is bypassable.** `EmailNormalizer` trims; this does not. Authentication itself still succeeds
-  for `" VICTOR@X.COM "` because `UserDetailsServiceImpl` normalizes the lookup — so the same account is
-  reachable under keys that `LoginAttemptService` counts **separately**, and an attacker resets the
-  per-email counter by prepending a space. The per-IP counter still applies, so this weakens the
-  protection rather than removing it. **(b) `toLowerCase()` takes no `Locale`**, so it follows the JVM
-  default; `EmailNormalizer` passes `Locale.ROOT` precisely to avoid the Turkish dotless-i mapping
-  turning `I` into `ı`. Found 2026-09-10 from Victor's question about whether the frontend should
-  lowercase the email before sending — it should not, and this is why the rule must have exactly one
-  home. Fix: call `EmailNormalizer.normalize(request.getEmail())` for the key, and decide in the same
-  pass whether the value handed to `UsernamePasswordAuthenticationToken` should be the normalized one
-  too rather than the raw request field. Add a test that a leading space does not open a fresh attempt
-  budget *(effort: S)*
+*No open High tasks.*
 
 #### Medium
 
@@ -106,6 +91,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
+- 2026-09-11 · **[High]** `[backend]` — login-throttle key built by `EmailNormalizer` (`Locale.ROOT`) and passed to the token, not a locale-less `toLowerCase()` (`2fd8891e`); the leading-space bypass the task named was unreachable, since `@Valid` + `@Email` answer `400` before `AuthService` — the real defect was the default-locale mapping and the duplicated rule → coverage: new `java/junior` bullet "Locale-sensitive case conversion" (authored + marked ✅ 07-timetrack), `architecture/junior` identifier canonicalisation and `security/junior` brute-force defence already marked; backend README Key patterns throttle-key wording corrected; PLANNING §16 `AuthService.login` row gains the letter-case case (test deferred to Step 8) + §0/§22 counts; PROGRESS n/a. Verified in Postman: upper-case login `200`, a shared per-email budget answering `429` after an IP-resetting login on another account, a leading space `400` `fieldErrors.email`. `/notes-plan java junior` owed
 - 2026-08-23 · **[High]** `[backend]` — run contract documented: the three defaultless placeholders and the mandatory `dev` profile → coverage general/junior (new bullet + ✅ 07-timetrack), backend README Key patterns + How to run alone, global README How to run, PLANNING §18/§0
 - 2026-08-23 · **[High]** `[backend]` — `JwtFilter` catch widened to `IllegalArgumentException`; a blank bearer token answers 401, not 500 → coverage spring-boot/junior, backend README Key patterns, PLANNING §0
 - 2026-08-23 · **[High]** `[backend]` — datasource password and seed BCrypt hash published in `origin/main` rotated; history rewrite rejected — DECISION, no code change → PLANNING §9, backend README Tradeoffs, coverage security/junior
