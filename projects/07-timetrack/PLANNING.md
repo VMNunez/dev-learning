@@ -884,11 +884,11 @@ src/app/
 │   ├── interceptors/
 │   │   └── auth-interceptor.ts   ← attaches the Bearer token; on 401 clears the session → /login
 │   └── services/
-│       ├── auth.service.ts       ← login, logout, current user + role
-│       ├── entry.service.ts      ← /api/entries CRUD + the workflow PATCH calls
-│       ├── project.service.ts    ← /api/projects
-│       ├── user.service.ts       ← /api/users (Team page, manager dashboard card, Approvals employee filter) + changePassword() → PATCH /api/users/me/password
-│       └── report.service.ts     ← /api/reports (the three monthly reports)
+│       ├── auth-service.ts       ← login, logout, current user + role
+│       ├── entry-service.ts      ← /api/entries CRUD + the workflow PATCH calls
+│       ├── project-service.ts    ← /api/projects
+│       ├── user-service.ts       ← /api/users (Team page, manager dashboard card, Approvals employee filter) + changePassword() → PATCH /api/users/me/password
+│       └── report-service.ts     ← /api/reports (the three monthly reports)
 ├── pages/
 │   ├── login/                    ← email + password form, both roles
 │   ├── dashboard/                ← role-aware summary (employee vs manager variant)
@@ -907,11 +907,20 @@ src/app/
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
     │   └── status-badge/      ← coloured badge, used in Entries, Approvals, Dashboard
     └── models/                    ← interfaces mirroring the backend response DTOs
-        ├── user.model.ts          ← User + Role
-        ├── project.model.ts       ← Project
-        ├── time-entry.model.ts    ← TimeEntry + EntryStatus
-        └── report.model.ts        ← the three report shapes
+        ├── auth.ts                ← LoginRequest, AuthResponse, Role + isRole
+        ├── api-error.ts           ← ApiError + its runtime type guard
+        ├── user.ts                ← User
+        ├── project.ts             ← Project
+        ├── time-entry.ts          ← TimeEntry + EntryStatus
+        └── report.ts              ← the three report shapes
 ```
+
+**File naming — the 2025 Angular style guide, applied to every file in `src/app/`** (ruled 2026-09-11).
+A file is named after the primary identifier it holds, in kebab-case, with **no type suffix**: `AuthService`
+→ `auth-service.ts`, `authGuard` → `auth-guard.ts`, a `Login` component → `login.ts`. A file holding several
+identifiers takes the name of their common theme (`auth.ts` for the auth DTOs), never a generic `utils.ts`.
+A spec is its file's name plus `.spec.ts`. The `.service.ts` / `.model.ts` suffixes are the 2016 guide the
+CLI stopped generating in v20; the class keeps its descriptive name (`AuthService`, not the CLI's bare `Auth`).
 
 ### Angular routes
 ```
