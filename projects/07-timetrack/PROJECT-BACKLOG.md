@@ -44,17 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular-material / junior** `[frontend]` — `mat.button-overrides` in
-  `frontend/timetrack/src/styles/material-theme.scss` squares four of the five button variants and
-  misses `tonal`. Verified 2026-09-10 against `node_modules/@angular/material/button/_m3-button.scss`,
-  where `button-tonal-container-shape` reads `map.get($system, corner-full)` exactly like the four that
-  are overridden, so a `matButton="tonal"` renders as a pill against the flat 4px identity §14 fixes for
-  every surface. Latent today: the only button in the app is the Login page's `matButton="filled"`, so
-  nothing shows it yet — it fires silently the first time a later page reaches for the tonal variant,
-  which §14's "Material components used" makes likely for a secondary action beside a filled primary.
-  Fix: add `tonal-container-shape: 4px` to the existing map — one line, no new block. Raised while
-  explaining the button block during Step 7a rather than by a review pass; the frontend tier has never
-  been reviewed *(raised 2026-09-10; effort: S)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -217,5 +207,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-11 · **[Low]** `[frontend]` — `tonal-container-shape: 4px` added so all five button variants share the 4px shape → coverage angular-material/middle (marker clause repointed), frontend README already names token overrides
 - 2026-09-11 · **[Low]** `[frontend]` — post-login `navigate()` promise handled: `false` releases the form, a failed chunk load shows an error → coverage angular/junior (`Router.navigate()` outcome, new + marked)
 - 2026-09-11 · **[Low]** `[frontend]` — `OnPush` on every component, already resolved in `b23a7dcb`; `angular.json` schematic default deliberately not set, `OnPush` written by hand per component — DECISION, no code change → coverage angular/junior (signals with `OnPush`), frontend README Key patterns
