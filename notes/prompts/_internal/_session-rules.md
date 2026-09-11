@@ -639,6 +639,15 @@ rather than at the G4 review — three steps too late to be cheap.
   filters and row actions), a throwaway HTML mock rendered before writing Angular lets Victor judge
   hierarchy and spacing while it is still free to change. Offer it; never impose it, and never let it
   become the deliverable — the Angular implementation is the work.
+- **Angular file names follow the current official style guide, never the plan's memory of an older
+  one.** Projects 07 onward use the 2025 Angular style guide (angular.dev/style-guide, the CLI default
+  since v20): a file is named after the primary identifier it holds, in kebab-case, with **no type
+  suffix** — `AuthService` → `auth-service.ts`, `authGuard` → `auth-guard.ts`, a group of related types →
+  their common theme (`auth.ts`), never `utils.ts`; specs append `.spec.ts`. Before guiding any new file,
+  name it by this rule, and when a `PLANNING.md` tree still shows `.service.ts` / `.model.ts`, follow the
+  guide and correct the tree. Verify through the Angular CLI MCP (`search_documentation`) rather than from
+  memory when in doubt. Stated 2026-09-11 on project 07, where `models/` held three conventions at once
+  — *"como lo nombre según lo que realmente se usa, mira el mcp"*.
 - **The rules apply to review too.** When showing the key diff at the end of a feature (see
   Complementary skills), ask Victor which §6 rule each change respects — the same way the backend's
   layer boundaries get checked.
