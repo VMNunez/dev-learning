@@ -44,18 +44,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular / junior** `[frontend]` — `Login.onSubmit()` leaves `loading` at `true` forever when the
-  navigation it fires never completes. `router.navigate(['/dashboard'])` returns a `Promise<boolean>`
-  that resolves `false` when a guard cancels the navigation, and the `next` callback ignores it: the
-  spinner keeps turning, the form stays disabled and the user has no way out but a reload. Observed for
-  real on 2026-09-10 while verifying the login page, where `/dashboard` did not exist yet and the `**`
-  wildcard bounced the navigation back to the route already showing — the router reused the component
-  instance rather than recreating it, so nothing reset the signal. That particular trigger disappears
-  once Step 7a ships the shell, but the guard-cancellation path survives it and is not currently
-  handled. Fix: act on the resolved boolean (or `finalize`-equivalent) so a navigation that does not
-  leave the page restores `loading` and re-enables the form. Deliberately not fixed the day it was
-  found: with no `/dashboard` route yet there was no way to verify the fix *(effort: S)*
-
 - [ ] **angular-material / junior** `[frontend]` — `mat.button-overrides` in
   `frontend/timetrack/src/styles/material-theme.scss` squares four of the five button variants and
   misses `tonal`. Verified 2026-09-10 against `node_modules/@angular/material/button/_m3-button.scss`,
@@ -229,4 +217,5 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-11 · **[Low]** `[frontend]` — post-login `navigate()` promise handled: `false` releases the form, a failed chunk load shows an error → coverage angular/junior (`Router.navigate()` outcome, new + marked)
 - 2026-09-11 · **[Low]** `[frontend]` — `OnPush` on every component, already resolved in `b23a7dcb`; `angular.json` schematic default deliberately not set, `OnPush` written by hand per component — DECISION, no code change → coverage angular/junior (signals with `OnPush`), frontend README Key patterns
