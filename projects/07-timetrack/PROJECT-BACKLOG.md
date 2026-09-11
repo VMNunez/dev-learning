@@ -71,27 +71,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
   leave the page restores `loading` and re-enables the form. Deliberately not fixed the day it was
   found: with no `/dashboard` route yet there was no way to verify the fix *(effort: S)*
 
-- [ ] **angular / junior** `[frontend]` — no component sets
-  `changeDetection: ChangeDetectionStrategy.OnPush`, which the frontend's own Angular guide
-  (`frontend/timetrack/.claude/CLAUDE.md`, "Components") states as a rule. Verified on 2026-09-10 against
-  the three components that exist: `App`, `Login` and the freshly generated `Dashboard` — none declares it.
-  The Angular CLI 21 `component` schematic defaults `changeDetection` to `Default`, so every component
-  generated from here on starts non-compliant unless the flag is passed or the line added by hand.
-  **The cost was overstated when this task was written on 2026-09-10 and is corrected here**: the first
-  wording said eight pages with MatTables would "re-run change detection on every browser event", which
-  is true of a ZoneJS application and this one is not. Verified the same day against `package.json`,
-  `angular.json` and `app.config.ts` — no `zone.js` dependency, no change-detection provider — and
-  against angular.dev v21 *Performance → Runtime performance*, which states zoneless is the **default
-  in Angular v21+** and "triggers change detection only when signals or events indicate a change". The
-  coarse win is therefore already there by default, and `OnPush` is the finer filter on top: without it
-  a component is checked whenever its branch is refreshed, even when nothing of its own changed. The
-  real argument is compliance and habit, not a rescue from a per-event full sweep — the frontend's own
-  guide states the rule, `review-audit`'s G4 frontend pass will raise it once per component, and a
-  component written without it is one written without asking where its state comes from. Fix: add the strategy to every component and
-  pass `--change-detection OnPush` when generating, or set the schematic default in `angular.json` so the
-  CLI does it. Note this is only safe alongside the signals-everywhere rule the same guide sets — `Login`
-  already holds its state in signals *(effort: S)*
-
 - [ ] **angular-material / junior** `[frontend]` — `mat.button-overrides` in
   `frontend/timetrack/src/styles/material-theme.scss` squares four of the five button variants and
   misses `tonal`. Verified 2026-09-10 against `node_modules/@angular/material/button/_m3-button.scss`,
@@ -254,4 +233,14 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 ### Frontend
 
-*No frontend tasks closed yet — Step 7a (Angular) has not started.*
+#### High
+
+*No High tasks closed yet.*
+
+#### Medium
+
+*No Medium tasks closed yet.*
+
+#### Low
+
+- 2026-09-11 · **[Low]** `[frontend]` — `OnPush` on every component, already resolved in `b23a7dcb`; `angular.json` schematic default deliberately not set, `OnPush` written by hand per component — DECISION, no code change → coverage angular/junior (signals with `OnPush`), frontend README Key patterns
