@@ -1,5 +1,21 @@
 <mat-toolbar>
   <span>TimeTrack</span>
+  <span class="spacer"></span>
+  <div>
+    <button matIconButton [matMenuTriggerFor]="menu" aria-label="Account menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>lock_reset</mat-icon>
+        <span>Change password</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Log out</span>
+      </button>
+    </mat-menu>
+  </div>
 </mat-toolbar>
 <mat-sidenav-container>
   <mat-sidenav mode="side" opened>

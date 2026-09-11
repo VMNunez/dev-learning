@@ -2,9 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { Role } from '../../shared/models/auth.models';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 
 interface NavLink {
   label: string;
@@ -31,6 +34,9 @@ const NAV_LINKS: readonly NavLink[] = [
     MatListModule,
     RouterLink,
     RouterLinkActive,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
@@ -38,9 +44,15 @@ const NAV_LINKS: readonly NavLink[] = [
 })
 export class Shell {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly links = computed(() => {
     const role = this.authService.session()?.role;
     return role ? NAV_LINKS.filter((link) => link.roles.includes(role)) : [];
   });
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }
