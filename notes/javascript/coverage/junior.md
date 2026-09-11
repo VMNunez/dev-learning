@@ -59,7 +59,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - First-class and higher-order functions — pass, store, return, and compose functions as ordinary values ✅ 01-todo-list
 - Callbacks — follow control flow when another function decides when and with which arguments a callback runs ✅ 01-todo-list
 - Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
-- Regular-function `this` — determine `this` from the call site rather than the function's definition location
+- Regular-function `this` — determine `this` from the call site rather than the function's definition location ✅ 07-timetrack — `Shell.logout()` calls `this.authService.logout()` through its receiver, instead of storing the method as a detached property that runs with `this` undefined
 - Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
 - Lost method context — diagnose a method extracted or passed as a callback whose original receiver is no longer present
 - `bind` vs `call` vs `apply` — recognise creating a bound function versus invoking immediately with an explicit receiver

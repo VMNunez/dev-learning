@@ -28,7 +28,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
-- `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
+- `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `account_circle` icon button opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
 

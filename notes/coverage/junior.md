@@ -236,7 +236,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
-- `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline
+- `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `account_circle` icon button opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
 
@@ -1436,7 +1436,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - First-class and higher-order functions — pass, store, return, and compose functions as ordinary values ✅ 01-todo-list
 - Callbacks — follow control flow when another function decides when and with which arguments a callback runs ✅ 01-todo-list
 - Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
-- Regular-function `this` — determine `this` from the call site rather than the function's definition location
+- Regular-function `this` — determine `this` from the call site rather than the function's definition location ✅ 07-timetrack — `Shell.logout()` calls `this.authService.logout()` through its receiver, instead of storing the method as a detached property that runs with `this` undefined
 - Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
 - Lost method context — diagnose a method extracted or passed as a callback whose original receiver is no longer present
 - `bind` vs `call` vs `apply` — recognise creating a bound function versus invoking immediately with an explicit receiver
