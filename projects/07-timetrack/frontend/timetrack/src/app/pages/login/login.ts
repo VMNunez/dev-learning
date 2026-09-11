@@ -63,7 +63,16 @@ export class Login {
     this.loading.set(true);
 
     this.authService.login(this.form.getRawValue()).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () =>
+        this.router
+          .navigate(['/dashboard'])
+          .then((navigated) => {
+            if (!navigated) this.loading.set(false);
+          })
+          .catch(() => {
+            this.error.set('Could not load the app — refresh the page and try again');
+            this.loading.set(false);
+          }),
       error: (err: HttpErrorResponse) => {
         const message = isApiError(err.error)
           ? err.error.message
