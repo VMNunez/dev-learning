@@ -51,6 +51,7 @@ src/app/
 - `forkJoin` — parallel API calls on dashboard load for stat cards
 - Material theming through token overrides — `mat.theme()` for the palette, density and shape, and `mat.button-overrides` / `mat.card-overrides` for what it does not reach, because Material's internal CSS classes are private and change between releases
 - Typed `ApiError` + a runtime type guard — the backend's error shape is narrowed before it is read, so a failure with no `ErrorResponse` body falls back to a connection message instead of rendering `undefined`
+- `OnPush` on every component, state in signals — a view is re-checked only when a signal it reads changes, so the shell's role-filtered nav re-renders on login/logout from a `computed()` with no manual `markForCheck()`
 
 ---
 
@@ -68,6 +69,7 @@ src/app/
 
 - Signals over NgRx — app complexity did not justify a full state management library
 - Angular Material over custom CSS — enterprise UI library, matches what consultancies use in production
+- `disabledInteractive` on the login button over disabling the form during the call — focus stays on the button after a failed attempt instead of dropping to the page body; in exchange the component blocks a double submit itself with its `loading()` guard
 
 ---
 
