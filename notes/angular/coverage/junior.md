@@ -143,7 +143,8 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states ✅ 03-expense-tracker
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
-- Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule
+- Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule ✅ 07-timetrack — `passwordsMatch` returns `{ passwordMismatch: true }` or `null` for the change-password dialog
+- Cross-field validators — attach the rule to the `FormGroup` rather than to a control, because a validator only ever receives the control it is declared on, and recognise that the resulting error lands in the group's own `errors` rather than on either of the compared fields ✅ 07-timetrack — the change-password dialog hangs `passwordsMatch` on the `FormGroup` and reads it with `form.hasError('passwordMismatch')`
 - `setErrors()` for rules a validator cannot express — attach a keyed error to a control from code when the check needs data a validator function cannot reach, such as a uniqueness lookup, recognising that the next validator run clears it again ✅ 06-hr-portal
 - Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction ✅ 03-expense-tracker
 - `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid ✅ 03-expense-tracker
