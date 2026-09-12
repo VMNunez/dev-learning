@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { AuthResponse, isRole, LoginRequest } from '../../shared/models/auth.models';
+import { AuthResponse, isRole, LoginRequest } from '../../shared/models/auth';
 import { Observable, tap } from 'rxjs';
 
 const SESSION_KEY = 'timetrack_session';

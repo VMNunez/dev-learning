@@ -3,11 +3,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
-import { Role } from '../../shared/models/auth.models';
+import { AuthService } from '../../core/services/auth-service';
+import { Role } from '../../shared/models/auth';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { ChangePasswordDialog } from '../../shared/components/change-password-dialog/change-password-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 interface NavLink {
   label: string;
@@ -45,6 +47,7 @@ const NAV_LINKS: readonly NavLink[] = [
 export class Shell {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  readonly dialog = inject(MatDialog);
 
   readonly links = computed(() => {
     const role = this.authService.session()?.role;
@@ -54,5 +57,11 @@ export class Shell {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ChangePasswordDialog, {
+      width: '500px',
+    });
   }
 }
