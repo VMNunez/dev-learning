@@ -16,3 +16,7 @@ Used by `cv-prompt` when drafting the Projects section of your CV.
 ## projects/03-expense-tracker
 
 - Desarrollé una aplicación de control de gastos en Angular y TypeScript, validando la entrada con Reactive Forms y declarando la persistencia en localStorage una sola vez con effect().
+
+## projects/04-meal-finder
+
+- Desarrollé un buscador de recetas en Angular y TypeScript sobre una REST API, guardando la búsqueda en la URL para conservar los resultados al navegar y poder compartirlos.
