@@ -65,8 +65,8 @@ First read `notes/prompts/strategy/tracking/_internal/_roadmap-standard.md` — 
 prompt is built on. Every "per `_roadmap-standard.md`" reference below points there.
 
 Then read `notes/prompts/_internal/_shared-context.md` (my profile, target job, and the market). You are the
-orchestrator, and the platform adapter binds you to read the shared session rules (daily schedule, study
-order) before you change any file — so by the time you reach this step you hold them; do not re-read them. **That holds for you and for no subagent below**: a
+orchestrator, and your run-start check read the shared session rules (daily schedule, study order) to
+EOF before any file changed — so by the time you reach this step you hold them; do not re-read them. **That holds for you and for no subagent below**: a
 cold role is handed only its target, its sources and its standard, so where one of them needs a rule from
 that file, its own instruction names the section it reads (Reviewer 1, invariant 2).
 

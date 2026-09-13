@@ -186,7 +186,11 @@ in and one naming what came out.
 
 ## Step 5 — Run-start check (this prompt's step 0, not its last)
 
-Every prompt using this file opens by reading its own `_last-run-report-<prompt-name>.md`. **It invokes
+Every prompt using this file opens by reading `notes/prompts/_internal/_session-rules.md` to EOF, before
+its first write, dispatch or commit (a run a guard stopped before this step makes it before Step 3's
+commit) — the rule and its reason are `_pipeline-self-report.md` → "Run-start check — surface
+anything the last run left open", first bullet, and apply here unchanged — and then its own
+`_last-run-report-<prompt-name>.md`. **It invokes
 this step before any content work — guards and configuration resolution may precede it, Step 2 may not —
 and a final-step "execute this file in full" therefore means Steps 1–4**: Step 2 overwrites the report
 this step reads, so a Step 5 reached at the end reads the run's own fresh report and the earlier `open`

@@ -30,8 +30,10 @@ canonical machinery; the catalogue is derived and never overrides the prompt it 
 > Start there when the question is *"who writes this file?"* rather than *"what does this prompt do?"*.
 
 > **Shared runtime context.** Every session starts from its thin platform adapter (`CLAUDE.md` or
-> `AGENTS.md`), which delegates to `_internal/_session-rules.md`. Runnable prompts also read
-> `_internal/_agent-runtime-standard.md`; almost all read `_internal/_shared-context.md`.
+> `AGENTS.md`), which delegates to `_internal/_session-rules.md`. A runnable prompt's run-start check
+> reads that file to EOF before its first write (`_internal/_pipeline-self-report.md` → "Run-start
+> check"); runnable prompts also read `_internal/_agent-runtime-standard.md`; almost all read
+> `_internal/_shared-context.md`.
 
 ---
 
