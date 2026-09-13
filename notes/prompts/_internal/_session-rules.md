@@ -1084,8 +1084,8 @@ made from memory.
 
 Registered 2026-09-10 (`43cdb6a7`), after a session in which the folder-taxonomy question was answered
 from memory and only checked against angular.dev because Victor asked. `REC-231` holds the related
-finding — that `_planning-standard.md` §13 hard-codes one taxonomy — and the open question of how the
-prompt pipeline consumes these tools inside its subagents.
+finding — that `_planning-standard.md` §13 hard-codes one taxonomy — and `REC-238` the open question of
+how the prompt pipeline consumes these tools inside its subagents.
 
 **This section is the only home for the table.** It was briefly copied into
 `projects/07-timetrack/frontend/timetrack/.claude/CLAUDE.md` on 2026-09-09 and reverted the same day:
