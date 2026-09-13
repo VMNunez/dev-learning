@@ -107,8 +107,8 @@ project has none of it: no auth, no tests. A sub-heading is **absent for the sco
 is not a skip. Never invent a cell to fill the grid.
 
 **On an Angular-only project (01–06) there are no tiers and no sub-headings.** The `frontend` column is
-the whole code area, the section headings stay bare, and the only meaningful scope is `full` —
-`portfolio-audit.md`'s `▶ Run first` states why.
+the whole code area, the section headings stay bare, and `full` is the scope to run — the only one
+that computes a verdict; `portfolio-audit.md`'s `▶ Run first` states why, and its one exception.
 
 ---
 

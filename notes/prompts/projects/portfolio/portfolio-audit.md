@@ -76,9 +76,10 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 >
 > **On an Angular-only project (01–06), run `full`.** There is no backend tier and no cross-tier seam
 > there, so `frontend` walks exactly the code `full` walks and differs only in printing no verdict —
-> leaving G7 open with nothing on screen saying why. **The one exception is a run that wants the bank and
-> not the verdict** — a bank repair a daily ritual hands here, or a step-0 stop naming a prerequisite the
-> bank does not owe: `frontend` is exactly that run, and it skips the gate preflight.
+> leaving G7 open with nothing on screen saying why. **The one exception is a run a step-0 stop has just
+> halted, when what was wanted is the bank and not the verdict**: re-run it at `frontend`, which skips the
+> gate preflight. It records no verdict, so its tracker cell is not a `✅ Ready` until the next `full` run
+> (`interview-prep-route-projects` → "Eligibility") — a cell the halted run had already left `blocked`.
 
 > **Run-start check (step 0):** before anything else, execute the decision table in `notes/prompts/_internal/_pipeline-self-report.md` against this prompt's own `_last-run-report`; never restate the shared `Status:` meanings here.
 
@@ -760,8 +761,8 @@ reproduces the defect exactly once per run.
 project, and the only condition of this branch — nothing below applies, because Phase 1a never ran:
 there is no bank, no header stamp, no twin and no verdict. Print the stop in the standard's words, the
 exact thing owed, and *no question dispatched, nothing written — if the bank rather than the verdict
-was wanted, re-run with `PORTFOLIO_SCOPE` naming the tier(s) owed (`frontend` on an Angular-only
-project), which skips the gate preflight and owes none of the chain*. Commit no audit output — there is none,
+was wanted, re-run once per tier owed, with `PORTFOLIO_SCOPE` naming it (`frontend` alone on an
+Angular-only project), which skips the gate preflight and owes none of the chain*. Commit no audit output — there is none,
 on either `{DRY_RUN}` value — stage no `cv-bullets.md`, and **skip the authoring recount**, since no bank
 moved its denominator. Record the project `blocked` in `_run-tracker.md`, naming the check that stopped
 it at step 0, and run the self-report, which commits itself as on every run.
