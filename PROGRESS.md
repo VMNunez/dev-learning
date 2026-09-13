@@ -37,9 +37,9 @@ exercises, simulations, and unaided explanation demonstrate it.
 | Spring Boot | Junior — building | Notes plan current but owed a remap (tracker flags +1 bullet); 0/16 authored, 0 studied; junior Q&A bank carries no stable IDs | Project 07 backend | Consume the plan's stale flag, then author the 16 junior notes |
 | Java | Junior — building | Notes plan current but owed a remap (tracker flags +1 bullet); 5/18 authored, 0 studied; junior Q&A bank carries no stable IDs | Applied in project 07 | Consume the plan's stale flag, then author the remaining 13 junior notes |
 | Architecture | Junior — building | Plan declares itself current but the tracker flags +7 unmapped bullets; 0/20 authored, 0 studied; junior Q&A bank carries no stable IDs | Layered and coordinator patterns across projects; workflow invariants enforced in the state's owner (06) | Refresh the junior notes plan |
-| Security | Junior — building | Notes plan current (0/14 authored, 0 studied); junior Q&A bank carries no stable IDs | Guards/interceptors in project 06, plus a persisted session shape there that carries email and role only, sanitised on read so an entry written before the fix drops its password; JWT/RBAC, query-input allow-listing, login throttling, a token identity bound to the immutable user id, and a password change that refuses an unchanged credential in project 07 | Refresh the junior notes plan |
+| Security | Junior — building | Notes plan current (0/14 authored, 0 studied); junior Q&A bank carries no stable IDs | Guards/interceptors in project 06, plus a persisted session shape there that carries email and role only, sanitised on read so an entry written before the fix drops its password; JWT/RBAC, query-input allow-listing, login throttling, a token identity bound to the immutable user id, and a password change that refuses an unchanged credential in project 07 | Author the 14 junior notes |
 | TypeScript | Junior — building | Notes plan stale, +4 unmapped bullets (0/15 authored, 0 studied); junior Q&A bank carries no stable IDs | Projects 01–07, including a project 03 reactive form whose control types match the model so the submitted value needs no `as` assertion, a project 04 API model that types `MealResponse.meals` as `Meal[] | null` because the endpoint returns `null` on no match, and a project 05 `Task.id` widened from `number` to `string` where the compiler enumerated every signature naming it, and a project 06 query-param read where a `value is T` predicate over an `as const` list replaced the `as` cast that let `?status=foo` through, and a project 06 dialog contract named at both ends — `open<T, D, R>` at every call site and `MatDialogRef<T, R>` on the dialog — so `afterClosed()` is checked instead of yielding `any` | Refresh the junior notes plan |
-| SQL | Junior — building | Notes plan current (0/17 authored, 0 studied); junior Q&A bank carries no stable IDs | PostgreSQL project work, including a least-privilege application role in project 07; exercises in progress | Refresh the junior notes plan |
+| SQL | Junior — building | Notes plan current (0/17 authored, 0 studied); junior Q&A bank carries no stable IDs | PostgreSQL project work, including a least-privilege application role in project 07; exercises in progress | Author the 17 junior notes |
 | JavaScript | Junior — building | Notes plan stale, +3 unmapped bullets (0/22 authored, 0 studied); junior Q&A bank carries no stable IDs | Applied throughout Angular projects, including a localStorage read in project 03 that survives both a corrupt stored value and a well-formed one of the wrong shape, a default form date built from the local clock rather than `toISOString()`, and entity ids generated with `crypto.randomUUID()` instead of `Date.now()` | Refresh the junior notes plan |
 | HTML | Junior — building | Coverage generated 2026-09-04 (81 junior bullets, boundary migration consumed); no notes plan yet; no Q&A bank | Markup across projects 01–06, including a nav list whose landmark and accessible name are declared on the element rather than implied, and icon-only controls whose accessible name is bound with `[attr.aria-label]` | Run the first `/notes-plan html junior` |
 | CSS | Junior — building | Notes plan stale, +2 unmapped bullets and no run recorded in the tracker (0/16 authored, 0 studied); junior Q&A bank carries no stable IDs | Projects 01–06, including a `prefers-reduced-motion` guard that drops the decorative hover and slows the loading spinner in project 02, and a project 04 `.visually-hidden` utility that takes the search label out of the flex row with `position: absolute` while keeping it in the accessibility tree, and a keyboard-only focus ring raised with `:focus-visible` and lifted to the whole card with `:has()`, and a text-styled `<button>` whose user-agent background, border, padding, font and cursor are reset explicitly | Refresh the junior notes plan |
@@ -125,6 +125,8 @@ test.
 |---|---|
 | 01-todo-list | 1/118 (1%) |
 | 02-weather-app | 0/109 (0%) |
+| 03-expense-tracker | 0/122 (0%) |
+| 04-meal-finder | 0/177 (0%) |
 
 ---
 
@@ -158,6 +160,8 @@ fraction, keeps its marker, and is named in that ritual's report.
 | Project | Questions studied |
 |---|---|
 | 01-todo-list | — |
+| 02-weather-app | — |
+| 03-expense-tracker | — |
 
 `—` here is the missing route: `notes/interview-prep/routes/projects.md` has never been built, so no
 project has a study denominator yet. `/interview-prep-route-projects MODE = update` is what creates it.
