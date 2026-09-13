@@ -1,6 +1,6 @@
 # Progress-update drift report
 
-Date: 2026-09-07 · MODE = all · Branch: prompts/portfolio-audit-ledger
+Date: 2026-09-13 · MODE = all · Branch: chore/portfolio-audit-04
 Scope: projects/01-todo-list, projects/02-weather-app, projects/03-expense-tracker, projects/04-meal-finder, projects/05-task-manager, projects/06-hr-portal, projects/07-timetrack · SQL: audited
 Verdict: no drift
 
@@ -8,21 +8,24 @@ Verdict: no drift
 
 | Topic | Field | Was | Now | Why |
 |---|---|---|---|---|
-| — | — | — | — | The matrix was already accurate: every `Current tracked level`, `Knowledge consolidation` and `Next gate` cell matches its sources (plan `Status:` fields, `_run-tracker.md` stale flags, bank ID/route state), and no evidence this run verified was absent from `Practical evidence`. No edit, so no matrix commit. |
+| — | — | — | — | — |
+
+The matrix was already accurate; no cell moved. Every `Knowledge consolidation` cell re-measured against the 13 junior notes plans (`Plan status:` line, entry `Status:` and `Studied:` fields, `Pending additions`) and the `Plan J` tracker cells: 5/213 authored — Java's 2 `refined` entries owing no additions plus 3 `complete` — and zero dated `Studied:` fields anywhere. Every `Next gate` still names the first unmet condition: no plan, coverage file or levelled bank has been committed since the 2026-09-12 run, HTML's open verify gaps are advisory under `notes-plan-prompt.md` step 6 so its first gate stays the plan, and Spring and HTML really have no junior Q&A bank. `Current tracked level` stays `Junior — building` for all 14 topics — nothing is promotable without a studied note, a stable-ID bank and a recorded unaided check. `Practical evidence` was preserved untouched: no project, exercise or simulation commit has landed since the last run, so there was nothing verified to append.
 
 ## 2 — Drift report
 
-| Section | What PROGRESS.md says | What the sources say | Owner to re-run |
-|---|---|---|---|
-| — | — | — | — |
+**Empty.** Every section measured clean, so this report closes gate G6 for each project named in `Scope:` and SQL G3, subject to their own `Date:` rule.
 
-**No drift.** Every audited section measured equal to its primary sources:
+### Sections measured clean
 
-- **D3 · Exercise route** — `PLANNING-junior.md` §1 sums to 209 first-pass across 15 files; Step B counted 40 exercise headers in `practice/sql/junior/01-basics.sql` (identical on `HEAD` and `main`). File rows, `Corrected` 40/40, `Route progress` 20/209 (10%) and `Steps closed` 0/14 all agree; Step 0 is still ⏳ (20/30).
-- **D4 · Timed simulations** — `practice/simulations/TRACKER.md` holds 15 rows, all Junior, all ⏳ Pending: 0/15 completed, 0/5 per track. Matches both tables.
-- **D5 · Projects** — projects 01–06 returned Format A / all steps complete against six `Done ✓` rows; 07 returned `Steps 1–6 done, Steps 7–11 not marked (from ✅ markers)` against `Steps 1–6 done, backend backlog fully closed, Step 7a next`. Plan and row agree.
-- **D8 · Coverage demonstrated** — all 42 cells recounted from the per-topic files; every numerator, denominator and percentage matches, and the recomputed totals are 609/1510 (40%), 9/191 (5%), 0/68 (0%). Every `*` is justified: no topic has a `Coverage M` or `Coverage S` record in `_run-tracker.md`, and every junior cell has one.
-- **D9 · Study progress** — no notes plan carries a dated `Studied:` entry and several junior plans are `Plan status: stale`, so the levelled rows are correctly `—`; the junior CORE banks carry no stable IDs and `notes/interview-prep/routes/` does not exist, so `Interview CORE studied`, `Interview bank studied` and the project row are `—`.
-- **D10 · Authoring progress** — 213 numbered entries across the 13 junior plans on disk; 4 `complete` plus 1 `refined` owing no `Pending additions` (all in Java) gives 5/213 (2%), with the `*` justified by six stale plans. Interview rows `—` for want of stable IDs. Project bank: `01-todo-list` is the only project whose portfolio gate closed `✅ Ready` (02's 2026-09-07 run was a blocked dry-run), and its bank holds 118 stable IDs with 1 `[refined]` in both languages — 1/118 (1%).
+- **Coverage demonstrated (D8)** — all 42 cells recounted from the topic files with the two canonical `grep -c`s; every one matches, and the three `Total` rows (609/1510, 9/191, 0/68) re-sum from their columns. Every middle and senior `*` is justified — all 14 `Coverage M` / `Coverage S` tracker cells are empty — and no junior cell carries one.
+- **Authoring progress (D10)** — `Notes authored` junior 5/213 recounts exactly; its `*` is justified by 7 plans reading `Plan status: stale` plus tracker stale flags on Spring Boot, Java and Architecture. `Interview CORE refined` and `Interview bank refined` are correctly `—`: no levelled bank carries a stable ID. Project rows 01 1/118, 02 0/109, 03 0/122 verified against 118/109/122 IDs with EN/ES parity and matching `[refined]` counts on both sides.
+- **Study progress (D9)** — the three levelled rows are correctly `—` (no dated `Studied:` field, HTML has no plan, no CORE route). The per-project table now lists all three eligible projects, each `—` because `notes/interview-prep/routes/projects.md` still does not exist. **Yesterday's only drift row is repaired** — `study-block-close` added the 02 and 03 rows in `b1a90f99`. 04-meal-finder is correctly absent from both project tables: its last `portfolio-audit` cell reads `blocked`, and its bank files exist only uncommitted in the working tree.
+- **Projects (D5)** — seven subagent reports, each with its read verification. 01–06 returned Format A / all steps complete against six `Done ✓` rows. 07 returned Format B, 2005 lines to EOF, `Steps 1–6 done, Step 7a onward not yet started (from ✅ markers)` against `Steps 1–6 done, backend backlog fully closed, Step 7a next` — the two agree.
+- **Practice completed · Exercise route (D3)** — measured against `practice/sql/junior/PLANNING-junior.md` §1: the 15 `First-pass target` values re-sum to 209; `Corrected` 40/40 matches the 40 committed headers in `01-basics.sql` (one `.sql` file, identical on `HEAD` and `main`); every §1 file has its row with its target; both `Total` rows sum their columns. Middle and senior correctly blank — neither directory exists.
+- **Practice completed · Timed simulations (D4)** — `TRACKER.md`: 15 rows, all `Level: Junior`, all `⏳ Pending` in the `Status` column, 5 per track — 0/15 and 0/5 ×3 as printed. Middle and senior correctly `—`.
+- **Legend prose (D11)** — every sentence citing a named topic, level, project or figure checked against this run's measurement: HTML junior is really `0/81 (0%)`; only 07's Angular tier is unbackfilled (its frontend is uncommitted); Git's markers remain project-attributed; `routes/projects.md` has never been built; the project tables list exactly the projects closed `✅ Ready`; the SQL route really spans 15 files over 14 steps; `practice/leetcode/` and `practice/sql/middle|senior/` really do not exist. No prose row.
 
-An empty drift report is the good outcome: **gate G6 and SQL G3 may be ticked on this run**, for the seven projects named in the scope line plus the SQL track.
+### One consequence worth naming
+
+`projects/04-meal-finder`'s portfolio gate stopped on 2026-09-12 at Check 3. This report is `MODE = all`, its `Scope:` names 04, its `Verdict:` is `no drift`, and its date is not older than `PROGRESS.md`'s last commit (`b1a90f99`, 2026-09-13) — all three halves of Check 3 now hold, provided nothing commits to `PROGRESS.md` before that gate re-runs.
