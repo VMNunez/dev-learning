@@ -34,7 +34,7 @@ them — the rest is the gate's contract and none of their business.
 It answers one question: **is the project at `{PROJECT_PATH}` ready to show a recruiter and reference
 in a job application right now — not "ready eventually", ready today?** It produces four things — **all
 four on a `full` run; a `backend` / `frontend` / `global` run is bank-only and produces the first alone**,
-per **Verdict logic** below:
+per **Verdict logic** below, **and a run that stops before its first dispatch produces none**:
 
 1. A bank of **project-specific interview questions**, as an `en/` + `es/` pair (saved regardless of
    the verdict — they are useful prep even for an unfinished project).
@@ -160,7 +160,7 @@ project reaches those numbers.
   in both directions or it is not a test — a plan written today, before its first step is done, carries
   no marker either.
 - **No row for this project, or a table that cannot be read** → **stop the gate**, in Check 2's stop
-  shape below: no ✅/⚠️/❌, Phase 3 skipped, the question bank still committed, `blocked` in the
+  shape below: no ✅/⚠️/❌, Phase 3 skipped, any question bank the run wrote still committed, `blocked` in the
   project's `_run-tracker.md` cell, and in `PROJECT_PATH = all` the summary row carries the stop and the
   batch continues. Nothing on disk can answer Check 1 there, and answering anyway is what this branch
   exists to stop. Report: "PLANNING.md carries no step markers and `PROGRESS.md`'s projects table has no
@@ -210,8 +210,9 @@ owed: "no PROJECT-BACKLOG.md — run `review-audit` first" · "PROJECT-BACKLOG.m
 the three that has one. `n/a — Angular-only` is not one of the four — it is a tier the project does not
 have.
 
-**A stop is not a verdict.** No ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, the question bank still
-committed (questions are saved regardless of the outcome), and the project's `_run-tracker.md` cell
+**A stop is not a verdict.** No ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, any question bank the run
+wrote still committed (questions a run wrote are saved regardless of the outcome; a run that stops
+before its first dispatch wrote none), and the project's `_run-tracker.md` cell
 records `blocked`. In `PROJECT_PATH = all` the summary row carries the stop in its Verdict cell and the
 batch continues.
 
@@ -303,8 +304,8 @@ closed. None of the four weakens the four states above; all four are what a fres
 is a reason to widen this check into a second audit of `PROGRESS.md`, which is `progress-update`'s work
 and never this gate's.
 
-**A stop here is Check 2's stop, in every respect** — no ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, the
-question bank still committed, `blocked` in the project's `_run-tracker.md` cell, and in
+**A stop here is Check 2's stop, in every respect** — no ✅/⚠️/❌, Phase 3 skipped exactly as on ❌, any
+question bank the run wrote still committed, `blocked` in the project's `_run-tracker.md` cell, and in
 `PROJECT_PATH = all` the summary row carries the stop and the batch continues.
 
 ### Verdict definitions
