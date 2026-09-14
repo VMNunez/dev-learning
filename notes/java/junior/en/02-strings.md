@@ -680,9 +680,9 @@ Integer.parseInt("38 ".strip());  // 38
 
 ### The compiler does not force you to handle `NumberFormatException`
 
-`NumberFormatException` is an **unchecked** exception, and the consequence is that **the compiler does not force you to handle it**. Handling an exception means writing the code that decides what to do when it happens: wrapping the call in a `try/catch` or, instead, adding `throws NumberFormatException` to the method's signature so the caller deals with it. With an unchecked exception you do not have to do either. The line `Integer.parseInt(input)` compiles on its own, with no `try`, no warning, and nothing in IntelliJ suggesting it can fail.
+`NumberFormatException` is an **unchecked** exception, and the consequence is that **the compiler does not force you to handle it**. Handling an exception means writing the code that decides what to do when it happens: wrapping the call in a `try/catch` or, instead, adding `throws NumberFormatException` to the method's signature so the caller deals with it. With an unchecked exception you do not have to do either. The line `Integer.parseInt(input)` compiles on its own, with no `try/catch`, no warning, and nothing in IntelliJ suggesting it can fail.
 
-With **checked** exceptions it is the other way round. For example, `Files.readString(path)` reads a file and can throw `IOException`, which is checked: if you neither wrap it in `try/catch` nor add `throws IOException` to the method, the code does not compile. You saw that contrast in [00-intro-java.md](00-intro-java.md).
+With **checked** exceptions it is the other way round. For example, `Files.readString(path)` reads a file and can throw `IOException`, which is checked: if you neither wrap it in `try/catch` nor add `throws IOException` to the method, the code does not compile. You saw this same example, with `Files.readString`, in [00-intro-java.md](00-intro-java.md).
 
 So the responsibility is entirely yours. Whenever the text comes from outside your program, this call needs either a `try/catch` around it or validation in front of it. Without one, a user typing `id=abc` into a URL turns into an uncaught exception and a 500 response — which is the single most common way a junior REST endpoint breaks.
 

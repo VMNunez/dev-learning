@@ -679,9 +679,9 @@ Integer.parseInt("38 ".strip());  // 38
 
 ### El compilador no te obliga a manejar `NumberFormatException`
 
-`NumberFormatException` es una excepción **unchecked**, y la consecuencia es que **el compilador no te obliga a manejarla**. Manejar una excepción significa escribir el código que decide qué hacer cuando ocurre: rodear la llamada con un `try/catch` o, en su lugar, añadir `throws NumberFormatException` a la firma del método para que se ocupe quien lo llama. Con una excepción unchecked no tienes que hacer ninguna de las dos cosas. La línea `Integer.parseInt(input)` compila por sí sola, sin `try`, sin warning, y sin nada en IntelliJ que sugiera que puede fallar.
+`NumberFormatException` es una excepción **unchecked**, y la consecuencia es que **el compilador no te obliga a manejarla**. Manejar una excepción significa escribir el código que decide qué hacer cuando ocurre: rodear la llamada con un `try/catch` o, en su lugar, añadir `throws NumberFormatException` a la firma del método para que se ocupe quien lo llama. Con una excepción unchecked no tienes que hacer ninguna de las dos cosas. La línea `Integer.parseInt(input)` compila por sí sola, sin `try/catch`, sin warning, y sin nada en IntelliJ que sugiera que puede fallar.
 
-Con las excepciones **checked** pasa lo contrario. Por ejemplo, `Files.readString(path)` lee un archivo y puede lanzar `IOException`, que es checked: si no la rodeas con `try/catch` ni añades `throws IOException` al método, el código no compila. Viste ese contraste en [00-intro-java.md](00-intro-java.md).
+Con las excepciones **checked** pasa lo contrario. Por ejemplo, `Files.readString(path)` lee un archivo y puede lanzar `IOException`, que es checked: si no la rodeas con `try/catch` ni añades `throws IOException` al método, el código no compila. Viste ese mismo ejemplo, con `Files.readString`, en [00-intro-java.md](00-intro-java.md).
 
 Así que la responsabilidad es enteramente tuya. Siempre que el texto venga de fuera de tu programa, esta llamada necesita o un `try/catch` alrededor o validación por delante. Sin eso, un usuario escribiendo `id=abc` en una URL se convierte en una excepción no capturada y una respuesta 500 — que es la forma más habitual con diferencia en la que se rompe un endpoint REST junior.
 
