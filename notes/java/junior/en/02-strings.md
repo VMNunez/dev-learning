@@ -671,7 +671,12 @@ Integer.parseInt("38 ");
 // java.lang.NumberFormatException: For input string: "38 "
 ```
 
-Which closes the loop with the previous section: any user-supplied number should be `strip()`ped before it is parsed, because the space a phone keyboard added is invisible in the log and fatal to the parse.
+That is why any number that comes from the user must have its spaces removed with `strip()` before you convert it to a number. One extra space (for example, the one a phone keyboard adds) is invisible when you read the log, but it is enough for `parseInt` to throw the exception:
+
+```java
+Integer.parseInt("38 ");          // NumberFormatException
+Integer.parseInt("38 ".strip());  // 38
+```
 
 ### `NumberFormatException` is *unchecked* — and what that means today
 
