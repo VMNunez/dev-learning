@@ -58,7 +58,21 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **angular / junior** `[frontend]` — Two HTTP calls are consumed with a bare `.subscribe()` and no
+  teardown, which §6 "Subscription lifetime" names a defect outright ("A bare `.subscribe()` with no
+  teardown is a defect, including in a dialog"): `this.authService.login(...).subscribe({...})` in
+  `frontend/timetrack/src/app/pages/login/login.ts:65` and
+  `this.userService.changePassword(...).subscribe({...})` in
+  `frontend/timetrack/src/app/shared/components/change-password-dialog/change-password-dialog.ts:92`. The
+  same `login.ts` already wraps its `valueChanges` subscription in `takeUntilDestroyed()` (line 55), so the
+  two HTTP calls are the outliers inside one file. Impact today is small, which is why Low: an
+  `HttpClient` observable completes after one response, so nothing leaks — what escapes is the callback,
+  which still runs against a component already destroyed (the dialog closed with `Escape` while its
+  request is in flight still calls `snackBar.open`, `dialogRef.close` and `form.enable`). The fix is the
+  rule's own: `takeUntilDestroyed(this.destroyRef)`, since both calls sit in a method rather than an
+  injection context. Raised while answering whether a documented `afterClosed().subscribe()` pattern
+  would pass §6 during the dialog-focus task; the frontend tier has never been reviewed
+  *(raised 2026-09-14; effort: S)*
 
 ## Beyond the current gate
 
