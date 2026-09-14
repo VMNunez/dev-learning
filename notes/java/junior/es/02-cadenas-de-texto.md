@@ -604,7 +604,7 @@ Dónde recurres realmente a uno: el JSON de ejemplo que un test envía como body
 List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
 ```
 
-> **Adelanto — Spring Boot:** `@Query` y `@Param` pertenecen a Spring Data JPA y se cubren en las notas de Spring Boot. Aquí lo único que hacen es entregar ese texto a la capa de base de datos. La intención del fragmento es ver el uso de un bloque de texto como literal: el texto de la consulta es un `String` normal, escrito a lo largo de cinco líneas sin ningún `\n` ni comillas escapadas. Escrita a la manera pre-Java-15, esa consulta sería una única línea ilegible de barras invertidas
+> **Adelanto — Spring Boot:** `@Query` y `@Param` pertenecen a Spring Data JPA y se cubren en las notas de Spring Boot. Aquí lo único que hacen es entregar ese texto a la capa de base de datos. La intención del fragmento es ver el uso de un bloque de texto como literal: el texto de la consulta es un `String` normal, escrito a lo largo de cinco líneas sin ningún `\n` ni comillas escapadas. Escrita a la manera pre-Java-15, esa consulta sería una única línea ilegible, repleta de barras invertidas
 
 ---
 
