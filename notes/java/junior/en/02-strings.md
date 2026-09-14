@@ -655,7 +655,7 @@ Double rateW   = Double.valueOf("38.5");      // 38.5 → Double
 
 ```
 
-The difference between `parseInt` and `valueOf` is only the return type — primitive versus wrapper object — which is the distinction [01-variables-types.md](01-variables-types.md) drew: a primitive holds the value directly and can never be `null`, a wrapper is an object and therefore can be `null` and can go inside a `List` or a `Map`. Reach for `parseInt` when you want a number to compute with, and `valueOf` when the value has to be able to be `null` or live in a collection.
+The difference between `parseInt` and `valueOf` is only the return type — primitive versus wrapper object — which is the distinction [01-variables-types.md](01-variables-types.md) drew: a primitive holds the value directly and can never be `null`, a wrapper is an object and therefore can be `null` and can go inside a `List` or a `Map`. Reach for `parseInt` when you want a number to compute with, and `valueOf` when the value can be `null` or live in a collection.
 
 Both throw the same thing when the text is not a number:
 
@@ -664,7 +664,7 @@ Integer.parseInt("abc");
 // java.lang.NumberFormatException: For input string: "abc"
 ```
 
-What counts as "not a number" is stricter than you would guess. `"abc"` obviously. But also `""`, also `null`, also `"38.5"` (that is a decimal, not an `int`), and also **`"38 "` with a trailing— `parseInt` does not remove spaces at the start or the end, so one extra space is enough to make it fail:atsoever:
+What counts as "not a number" is stricter than you would guess. `"abc"` is obviously not a number. But also `""`, `null`, `"38.5"` (that is a decimal, not an `int`), and **`"38 "` with a trailing space** — `parseInt` does not remove spaces at the start or the end, so one extra space is enough to make it fail:
 
 ```java
 Integer.parseInt("38 ");
