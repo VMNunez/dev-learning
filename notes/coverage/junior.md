@@ -60,6 +60,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
+- Query `read` option — a query's locator decides both which element matches and which value comes back, so a template reference on a component host returns the component instance; `read: ElementRef` retrieves that element's DOM node instead, and `read: TemplateRef` or `read: ViewContainerRef` other values from the same element ✅ 07-timetrack — `Shell` reads `#accountButton` with `viewChild.required(..., { read: ElementRef })`, since the ref on the `matIconButton` host would otherwise return the `MatIconButton` instance
 - `afterNextRender` — schedule work that needs the painted DOM, such as measuring an element or placing initial focus, so it runs after the next render and only in a browser, where a lifecycle hook would also run during server-side rendering with no DOM to read ✅ 07-timetrack — the login page focuses its email input from `afterNextRender`, where the `viewChild.required` node already exists
 - Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
@@ -291,6 +292,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Dialog content structure — keep title, content, and actions as sibling regions so layout, scrolling, labelling, and action placement remain correct ✅ 05-task-manager
 - Declarative vs programmatic closing — use `mat-dialog-close` for simple results and a handler when validation, unsaved changes, or asynchronous work must run before closing ✅ 05-task-manager
 - Dialog focus management — preserve an accessible name, focus trap, sensible initial focus, focus restoration, and Escape behaviour unless a justified accessible alternative exists
+- Focus restoration needs a target that still exists — the dialog records the element focused when it opens and focuses it again on close, so a dialog launched from a menu item restores into a node the closing menu has already removed and focus falls to the document body; `restoreFocus` also accepts an element or a selector, which lets the caller name a persistent target such as the menu trigger ✅ 07-timetrack — `Shell.openDialog()` passes the toolbar's `#accountButton` element as `restoreFocus`, since the `mat-menu-item` that opens the dialog is gone by the time it closes
 - Dialog viewport constraints — use width and maximum-size configuration so overlay content remains usable without overflowing small viewports
 
 ### Feedback, loading, and progress

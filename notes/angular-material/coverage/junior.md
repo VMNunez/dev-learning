@@ -82,6 +82,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Dialog content structure — keep title, content, and actions as sibling regions so layout, scrolling, labelling, and action placement remain correct ✅ 05-task-manager
 - Declarative vs programmatic closing — use `mat-dialog-close` for simple results and a handler when validation, unsaved changes, or asynchronous work must run before closing ✅ 05-task-manager
 - Dialog focus management — preserve an accessible name, focus trap, sensible initial focus, focus restoration, and Escape behaviour unless a justified accessible alternative exists
+- Focus restoration needs a target that still exists — the dialog records the element focused when it opens and focuses it again on close, so a dialog launched from a menu item restores into a node the closing menu has already removed and focus falls to the document body; `restoreFocus` also accepts an element or a selector, which lets the caller name a persistent target such as the menu trigger ✅ 07-timetrack — `Shell.openDialog()` passes the toolbar's `#accountButton` element as `restoreFocus`, since the `mat-menu-item` that opens the dialog is gone by the time it closes
 - Dialog viewport constraints — use width and maximum-size configuration so overlay content remains usable without overflowing small viewports
 
 ## Feedback, loading, and progress
