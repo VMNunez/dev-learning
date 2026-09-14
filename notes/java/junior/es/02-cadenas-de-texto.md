@@ -614,7 +614,7 @@ List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate sta
 
 Todo dato que tu programa no escribe él mismo, sino que recibe de otro sitio (el navegador, un archivo, la terminal, otro servidor), llega como texto. Estos son los casos que te vas a encontrar:
 
-- **Una variable de ruta de URL** (_path variable_): el trozo variable de la dirección de una petición. En `GET /projects/42`, el `42` es una variable de ruta, y llega a tu controlador como el texto `"42"`.
+- **Una variable de ruta de URL** (_path variable_): la parte de la URL que cambia de una petición a otra para identificar un recurso concreto. En `GET /projects/42`, el `42` es una variable de ruta, y llega a tu controlador como el texto `"42"`.
 - **Un campo de un formulario**: lo que el usuario escribe en un `<input>`, aunque sea su edad.
 - **Una columna de un CSV**: cada valor de un archivo de texto separado por comas, como `Ana,38.5`.
 - **Un argumento de línea de comandos**: lo que escribes detrás del nombre del programa al lanzarlo desde la terminal. En `java Main 10`, el `10` le llega a `main(String[] args)` como `args[0]`, que es el texto `"10"`.

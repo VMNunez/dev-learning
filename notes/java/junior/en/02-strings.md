@@ -615,7 +615,7 @@ List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate sta
 
 Any data your program does not write itself, but receives from somewhere else (the browser, a file, the terminal, another server), arrives as text. These are the cases you will meet:
 
-- **A URL path variable**: the variable part of a request's address. In `GET /projects/42`, the `42` is a path variable, and it reaches your controller as the text `"42"`.
+- **A URL path variable**: the part of the URL that changes from one request to the next to identify a specific resource. In `GET /projects/42`, the `42` is a path variable, and it reaches your controller as the text `"42"`.
 - **A form field**: whatever the user types into an `<input>`, even their age.
 - **A CSV column**: each value in a comma-separated text file, such as `Ana,38.5`.
 - **A command-line argument**: whatever you type after the program's name when you launch it from the terminal. In `java Main 10`, the `10` reaches `main(String[] args)` as `args[0]`, which is the text `"10"`.
