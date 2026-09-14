@@ -625,7 +625,7 @@ All of them are `String`, even when the content looks like a number. So converti
 
 ### Text → number
 
-You met these two calls once already, in [01-variables-types.md](01-variables-types.md), from the other side of the boundary: there the question was *which type comes out*, primitive or wrapper. Here the question is *what goes in* — text you did not write, arriving from somewhere you do not control — and that changes which details matter.
+You have already met this conversion in [01-variables-types.md](01-variables-types.md), with `Integer.parseInt` and `Integer.valueOf`. There, what mattered was the type each method returns: a primitive `int` or an `Integer` object. Here, what matters is the text you pass them. You did not write that text: it arrives from a request, a form or a file, so it may come empty, with spaces or with letters. That is why this section focuses on what happens when the text is not a valid number.
 
 ```java
 int hours   = Integer.parseInt("38");     // 38  → an int, the primitive

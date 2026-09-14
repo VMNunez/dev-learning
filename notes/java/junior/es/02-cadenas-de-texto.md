@@ -624,7 +624,7 @@ Todos son `String`, incluso cuando el contenido parece ser un número. Así que 
 
 ### Texto → número
 
-Ya te has encontrado estas dos llamadas una vez, en [01-variables-tipos.md](01-variables-tipos.md), desde el otro lado de la frontera: ahí la pregunta era _qué tipo sale_, primitivo o wrapper. Aquí la pregunta es _qué entra_ — texto que no escribiste tú, llegando de algún sitio que no controlas — y eso cambia qué detalles importan.
+Ya te has encontrado con esta conversión en [01-variables-tipos.md](01-variables-tipos.md), con `Integer.parseInt` y `Integer.valueOf`. Ahí lo que importaba era el tipo que devuelve cada método: un `int` primitivo o un objeto `Integer`. Aquí lo que importa es el texto que les pasas. Ese texto no lo has escrito tú: llega de una petición, un formulario o un archivo, así que puede venir vacío, con espacios o con letras. Por eso esta sección se centra en qué pasa cuando el texto no es un número válido.
 
 ```java
 int hours   = Integer.parseInt("38");     // 38  → un int, el primitivo
