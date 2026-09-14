@@ -683,7 +683,26 @@ Integer.parseInt("38 ".strip());  // 38
 
 Con las excepciones **checked** pasa lo contrario. Por ejemplo, `Files.readString(path)` lee un archivo y puede lanzar `IOException`, que es checked: si no la rodeas con `try/catch` ni añades `throws IOException` al método, el código no compila. Viste ese mismo ejemplo, con `Files.readString`, en [00-intro-java.md](00-intro-java.md).
 
-Así que la responsabilidad es enteramente tuya. Siempre que el texto venga de fuera de tu programa, esta llamada necesita o un `try/catch` alrededor o validación por delante. Sin eso, un usuario escribiendo `id=abc` en una URL se convierte en una excepción no capturada y una respuesta 500 — que es la forma más habitual con diferencia en la que se rompe un endpoint REST junior.
+Así que la responsabilidad es tuya. Siempre que el texto venga de fuera de tu programa, tienes dos formas de protegerte: rodear la llamada con un `try/catch`, o validar el texto antes de convertirlo, es decir, comprobar primero que contiene solo dígitos y llamar a `parseInt` solo si es así:
+
+```java
+// Opción 1 — try/catch: intentas convertir y decides qué hacer si falla
+try {
+    int id = Integer.parseInt(input.strip());
+} catch (NumberFormatException e) {
+    // responder "el id debe ser un número"
+}
+
+// Opción 2 — validar antes: solo conviertes si el texto son dígitos
+String clean = input.strip();
+if (clean.matches("\\d+")) {          // \d+ = uno o más dígitos
+    int id = Integer.parseInt(clean);
+} else {
+    // responder "el id debe ser un número"
+}
+```
+
+Sin ninguna de las dos, si un usuario escribe `id=abc` en una URL, la excepción no se captura y la API responde con un error 500. Es uno de los errores más habituales al programar una API REST.
 
 > **Por qué el modelo completo espera a [11-excepciones.md](11-excepciones.md).** "Unchecked" es una mitad de una regla sobre _dos_ tipos de excepción, y la regla solo tiene sentido una vez que sabes cómo viaja una excepción, dónde se puede capturar, y qué pinta tiene la jerarquía de clases debajo de `Exception` — porque checked frente a unchecked es literalmente una pregunta de en qué rama de esa jerarquía se sienta una clase. La entrada 11 construye todo eso y luego resuelve el par en un solo sitio. Lo que necesitas aquí es el hecho operativo: nada te va a recordar que `parseInt` puede fallar, así que tienes que recordarlo tú.
 

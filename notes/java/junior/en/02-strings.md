@@ -684,7 +684,26 @@ Integer.parseInt("38 ".strip());  // 38
 
 With **checked** exceptions it is the other way round. For example, `Files.readString(path)` reads a file and can throw `IOException`, which is checked: if you neither wrap it in `try/catch` nor add `throws IOException` to the method, the code does not compile. You saw this same example, with `Files.readString`, in [00-intro-java.md](00-intro-java.md).
 
-So the responsibility is entirely yours. Whenever the text comes from outside your program, this call needs either a `try/catch` around it or validation in front of it. Without one, a user typing `id=abc` into a URL turns into an uncaught exception and a 500 response — which is the single most common way a junior REST endpoint breaks.
+So the responsibility is yours. Whenever the text comes from outside your program, you have two ways to protect yourself: wrap the call in a `try/catch`, or validate the text before converting it, that is, check first that it contains only digits and call `parseInt` only if it does:
+
+```java
+// Option 1 — try/catch: you try to convert and decide what to do if it fails
+try {
+    int id = Integer.parseInt(input.strip());
+} catch (NumberFormatException e) {
+    // respond "the id must be a number"
+}
+
+// Option 2 — validate first: you only convert if the text is digits
+String clean = input.strip();
+if (clean.matches("\\d+")) {          // \d+ = one or more digits
+    int id = Integer.parseInt(clean);
+} else {
+    // respond "the id must be a number"
+}
+```
+
+Without either, if a user types `id=abc` into a URL, the exception is not caught and the API responds with a 500 error. It is one of the most common mistakes when building a REST API.
 
 > **Why the full model waits for [11-exceptions.md](11-exceptions.md).** "Unchecked" is one half of a rule about *two* kinds of exception, and the rule only makes sense once you know how an exception travels, where it can be caught, and what the class hierarchy underneath `Exception` looks like — because checked versus unchecked is literally a question of which branch of that hierarchy a class sits on. Entry 11 builds all of it and then settles the pair in one place. What you need here is the operational fact: nothing will remind you that `parseInt` can fail, so you have to remember it yourself.
 
