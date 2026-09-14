@@ -1988,11 +1988,12 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds one frontend Low** (raised on 2026-09-10, during Step 7a; its sibling, the stuck login
-spinner, closed on 2026-09-11) and nothing at High or Medium —
-the backend High raised the same day closed on 2026-09-11 in `2fd8891e` — so **G7's stricter bar — no open
-High *or* Medium — is met by the backlog as it stands.** The earlier plan for this branch anticipated
-leaving tasks open for G7; none at High or Medium now does.
+currently holds one frontend Medium** (raised on 2026-09-14, during Step 7a: closing the change-password
+dialog drops keyboard focus to `<body>`) and nothing at High or Low — the three frontend Lows raised on
+2026-09-10 (the stuck login spinner, the missing `OnPush`, the unsquared `tonal` variant) all closed on
+2026-09-11, and the backend High raised the same day closed on 2026-09-11 in `2fd8891e` — so **G7's stricter
+bar — no open High *or* Medium — is not met while that Medium stays open.** It sits inside Step 7a's own
+surface, so it is expected to close long before G7; until it does, it is the one task that bar would hold.
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
 Remaining sequence, with no backlog work left in it at any priority: `fix/backend-backlog` merged into
