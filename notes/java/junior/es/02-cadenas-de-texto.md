@@ -14,7 +14,7 @@
   - [Regla de cuándo usar `+` y cuándo `StringBuilder`](#regla-de-cuándo-usar--y-cuándo-stringbuilder)
   - [`String`, `StringBuilder`, `StringBuffer`](#string-stringbuilder-stringbuffer)
 - [Bloques de texto — texto multilínea sin el escapado](#bloques-de-texto--texto-multilínea-sin-el-escapado)
-- [Entre texto y números](#entre-texto-y-números)
+- [Conversión de texto a número y de número a texto](#conversión-de-texto-a-número-y-de-número-a-texto)
   - [Texto → número](#texto--número)
   - [`NumberFormatException` es _unchecked_ — y qué significa eso hoy](#numberformatexception-es-unchecked--y-qué-significa-eso-hoy)
   - [Número → texto](#número--texto)
@@ -608,11 +608,19 @@ List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate sta
 
 ---
 
-## Entre texto y números
+## Conversión de texto a número y de número a texto
 
 > 📖 Docs: [Oracle Docs — Converting Between Numbers and Strings](https://docs.oracle.com/javase/tutorial/java/data/converting.html) → leer las dos mitades: "Converting Strings to Numbers" y "Converting Numbers to Strings".
 
-Todo lo que llega desde fuera de tu programa es texto. Una variable de ruta de URL, un campo de formulario, una columna de un CSV, un argumento de línea de comandos, un claim de un JWT — todo `String`, incluso cuando el contenido es obviamente un número. Así que las dos direcciones de esta conversión pasan constantemente.
+Todo dato que tu programa no escribe él mismo, sino que recibe de otro sitio (el navegador, un archivo, la terminal, otro servidor), llega como texto. Estos son los casos que te vas a encontrar:
+
+- **Una variable de ruta de URL** (_path variable_): el trozo variable de la dirección de una petición. En `GET /projects/42`, el `42` es una variable de ruta, y llega a tu controlador como el texto `"42"`.
+- **Un campo de un formulario**: lo que el usuario escribe en un `<input>`, aunque sea su edad.
+- **Una columna de un CSV**: cada valor de un archivo de texto separado por comas, como `Ana,38.5`.
+- **Un argumento de línea de comandos**: lo que escribes detrás del nombre del programa al lanzarlo desde la terminal. En `java Main 10`, el `10` le llega a `main(String[] args)` como `args[0]`, que es el texto `"10"`.
+- **Un claim de un JWT**: cada dato que viaja dentro del token de autenticación, como el id del usuario o su rol. El token es texto, así que sus claims también lo son.
+
+Todos son `String`, incluso cuando el contenido parece ser un número. Así que la conversión de texto a número y de número a texto ocurre con mucha frecuencia.
 
 ### Texto → número
 

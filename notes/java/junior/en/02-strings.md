@@ -14,7 +14,7 @@
   - [The rule for when to use `+` and when `StringBuilder`](#the-rule-for-when-to-use--and-when-stringbuilder)
   - [`String`, `StringBuilder`, `StringBuffer`](#string-stringbuilder-stringbuffer)
 - [Text blocks — multi-line text without the escaping](#text-blocks--multi-line-text-without-the-escaping)
-- [Between text and numbers](#between-text-and-numbers)
+- [Converting text to numbers and numbers to text](#converting-text-to-numbers-and-numbers-to-text)
   - [Text → number](#text--number)
   - [`NumberFormatException` is *unchecked* — and what that means today](#numberformatexception-is-unchecked--and-what-that-means-today)
   - [Number → text](#number--text)
@@ -609,11 +609,19 @@ List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate sta
 
 ---
 
-## Between text and numbers
+## Converting text to numbers and numbers to text
 
 > 📖 Docs: [Oracle Docs — Converting Between Numbers and Strings](https://docs.oracle.com/javase/tutorial/java/data/converting.html) → read both halves: "Converting Strings to Numbers" and "Converting Numbers to Strings".
 
-Everything arriving from outside your program is text. A URL path variable, a form field, a CSV column, a command-line argument, a JWT claim — all `String`, even when the content is obviously a number. So both directions of this conversion happen constantly.
+Any data your program does not write itself, but receives from somewhere else (the browser, a file, the terminal, another server), arrives as text. These are the cases you will meet:
+
+- **A URL path variable**: the variable part of a request's address. In `GET /projects/42`, the `42` is a path variable, and it reaches your controller as the text `"42"`.
+- **A form field**: whatever the user types into an `<input>`, even their age.
+- **A CSV column**: each value in a comma-separated text file, such as `Ana,38.5`.
+- **A command-line argument**: whatever you type after the program's name when you launch it from the terminal. In `java Main 10`, the `10` reaches `main(String[] args)` as `args[0]`, which is the text `"10"`.
+- **A JWT claim**: each piece of data travelling inside the authentication token, such as the user's id or role. The token is text, so its claims are too.
+
+All of them are `String`, even when the content looks like a number. So converting text to numbers and numbers to text happens very often.
 
 ### Text → number
 
