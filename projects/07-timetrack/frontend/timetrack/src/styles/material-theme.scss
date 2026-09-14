@@ -38,6 +38,12 @@ html {
     )
   );
 
+  @include mat.card-overrides(
+    (
+      outlined-container-color: var(--mat-sys-surface-container-lowest),
+    )
+  );
+
   @include mat.sidenav-overrides(
     (
       container-divider-color: var(--mat-sys-outline-variant),
