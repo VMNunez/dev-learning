@@ -626,6 +626,11 @@ Todos son `String`, incluso cuando el contenido parece ser un número. Así que 
 
 Ya te has encontrado con esta conversión en [01-variables-tipos.md](01-variables-tipos.md), con `Integer.parseInt` y `Integer.valueOf`. Ahí lo que importaba era el tipo que devuelve cada método: un `int` primitivo o un objeto `Integer`. Aquí lo que importa es el texto que les pasas. Ese texto no lo has escrito tú: llega de una petición, un formulario o un archivo, así que puede venir vacío, con espacios o con letras. Por eso esta sección se centra en qué pasa cuando el texto no es un número válido.
 
+Cada tipo numérico tiene su clase wrapper, y esa clase ofrece dos métodos estáticos para pasar de texto a número:
+
+- **`parseXxx(String)`** — devuelve el primitivo: `Integer.parseInt`, `Long.parseLong`, `Double.parseDouble`.
+- **`valueOf(String)`** — devuelve el objeto wrapper: `Integer.valueOf`, `Long.valueOf`, `Double.valueOf`.
+
 ```java
 int hours   = Integer.parseInt("38");     // 38  → un int, el primitivo
 Integer h2  = Integer.valueOf("38");      // 38  → un Integer, el objeto
