@@ -40,21 +40,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **angular-material / junior** `[frontend]` — Closing the change-password dialog drops keyboard focus
-  to `<body>` instead of returning it to the toolbar's account-menu trigger. The dialog is opened from a
-  `mat-menu-item` in `frontend/timetrack/src/app/layout/shell/shell.html`, so when the CDK dialog
-  container attaches it records that menu item as `document.activeElement` — its `restoreFocus` target.
-  The menu then closes and destroys the item, and on close `_restoreFocus()`
-  (`node_modules/@angular/cdk/fesm2022/dialog.mjs`) calls `focus()` on a detached node, which leaves focus
-  on the body. Verified 2026-09-14 in the browser with a `document.activeElement` live expression:
-  keyboard-only open → `Escape` → `body`. A single `Tab` then lands on the account button, because it is
-  the first focusable element on the page, which is why the defect passes for a working restore at a
-  glance. A keyboard user loses their place after every close (WCAG 2.4.3), the same cost §14's Login
-  reversal note measured for `form.disable()`. Pre-existing: the `MAT_DIALOG_DEFAULT_OPTIONS` width
-  default added the same day keeps `restoreFocus: true`, so it neither causes nor fixes this. The same
-  shape will recur for any later dialog opened from a menu item. Raised while reviewing the dialog layout
-  during Step 7a rather than by a review pass; the frontend tier has never been reviewed
-  *(raised 2026-09-14; effort: S)*
+*No open Medium tasks.*
 
 #### Low
 
@@ -231,7 +217,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-*No Medium tasks closed yet.*
+- 2026-09-14 · **[Medium]** `[frontend]` — the change-password dialog hands `MatDialog.open()` the toolbar's account button as `restoreFocus`, so closing it returns keyboard focus to the trigger instead of `<body>` (`1d4bf603`) → coverage: new `angular-material/junior` bullet "Focus restoration needs a target that still exists" and new `angular/junior` bullet "Query `read` option" (both authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 Accessibility floor rule + §0 and §22 counts; PROGRESS Angular Material evidence cell. `/notes-plan angular junior` and `/notes-plan angular-material junior` owed
 
 #### Low
 
