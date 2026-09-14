@@ -31,6 +31,8 @@
 
       <mat-card-content>
         <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <p class="login-error" role="alert">{{ error() }}</p>
+
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
             <input #emailInput matInput type="email" formControlName="email" autocomplete="email" />
@@ -53,8 +55,6 @@
               <mat-error>Password is required</mat-error>
             }
           </mat-form-field>
-
-          <p class="login-error" role="alert">{{ error() }}</p>
 
           <button
             class="login-submit"

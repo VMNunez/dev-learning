@@ -7,23 +7,22 @@
 }
 
 .login-branding {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 16px;
-  padding: 32px;
+  display: grid;
+  place-content: center;
+  gap: 1rem;
+  padding: 2rem;
   background: var(--mat-sys-primary);
   color: var(--mat-sys-on-primary);
 
   .login-lockup {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 1rem;
   }
 
   .login-logo {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     flex: none;
   }
 
@@ -35,7 +34,7 @@
 
   p {
     margin: 0;
-    font: var(--mat-sys-body-large);
+    font: var(--mat-sys-title-large);
   }
 }
 
@@ -43,13 +42,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 1.5rem;
   background: var(--mat-sys-surface);
 }
 
 .login-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 25rem;
 
   @include mat.card-overrides(
     (
@@ -64,8 +63,8 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-block-start: 16px;
+  gap: 1rem;
+  padding-block-start: 0.5rem;
 }
 
 .login-submit {
@@ -73,7 +72,7 @@
 }
 
 .login-error {
-  margin: 0;
+  margin-block: 0 0.5rem;
   min-height: var(--mat-sys-body-small-line-height);
   color: var(--mat-sys-error);
   font: var(--mat-sys-body-small);
