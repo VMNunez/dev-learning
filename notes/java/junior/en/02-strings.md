@@ -627,9 +627,9 @@ All of them are `String`, even when the content looks like a number. So converti
 
 You have already met this conversion in [01-variables-types.md](01-variables-types.md), with `Integer.parseInt` and `Integer.valueOf`. There, what mattered was the type each method returns: a primitive `int` or an `Integer` object. Here, what matters is the text you pass them. You did not write that text: it arrives from a request, a form or a file, so it may come empty, with spaces or with letters. That is why this section focuses on what happens when the text is not a valid number.
 
-Every primitive type has its wrapper class (`int` → `Integer`, `long` → `Long`, `double` → `Double`, `boolean` → `Boolean`), and that class offers two methods to go from text to number. Both are **static**: you call them on the class (`Integer.parseInt(...)`), not on an object, because you do not have a number yet, only the text.
+Every numeric primitive type has its wrapper class (`int` → `Integer`, `long` → `Long` and `double` → `Double`), and that class offers two methods to go from text to number. Both are **static**: you call them on the class (`Integer.parseInt(...)`), not on an object, because you do not have a number yet, only the text.
 
-- **`parseXxx(String)`** returns the **primitive**. `Xxx` is the type's name: `Integer.parseInt` returns an `int`, `Long.parseLong` a `long`, `Double.parseDouble` a `double` and `Boolean.parseBoolean` a `boolean`.
+- **`parseXxx(String)`** returns the **primitive**. `Xxx` is the type's name: `Integer.parseInt` returns an `int`, `Long.parseLong` a `long` and `Double.parseDouble` a `double`.
 - **`valueOf(String)`** returns the **wrapper object**. It has the same name in every class: `Integer.valueOf` returns an `Integer`, `Long.valueOf` a `Long`, `Double.valueOf` a `Double`.
 
 Both read the text the same way; the only difference is what they give back. This table sums up the most common pairs:
@@ -639,9 +639,6 @@ Both read the text the same way; the only difference is what they give back. Thi
 | `int` | `Integer.parseInt("38")` → `38` (`int`) | `Integer.valueOf("38")` → `38` (`Integer`) |
 | `long` | `Long.parseLong("1042")` → `1042` (`long`) | `Long.valueOf("1042")` → `1042` (`Long`) |
 | `double` | `Double.parseDouble("38.5")` → `38.5` (`double`) | `Double.valueOf("38.5")` → `38.5` (`Double`) |
-| `boolean` | `Boolean.parseBoolean("true")` → `true` (`boolean`) | `Boolean.valueOf("true")` → `true` (`Boolean`) |
-
-Each row is one type; both columns do the same conversion and differ only in whether the result is a primitive or an object.
 
 ```java
 // int: the same text, two kinds of result
@@ -656,9 +653,6 @@ Long userIdW   = Long.valueOf("1042");        // 1042 → Long
 double rate    = Double.parseDouble("38.5");  // 38.5 → double
 Double rateW   = Double.valueOf("38.5");      // 38.5 → Double
 
-// boolean: "true" in any letter case; any other text gives false
-boolean active = Boolean.parseBoolean("TRUE"); // true
-boolean other  = Boolean.parseBoolean("yes");  // false
 ```
 
 The difference between `parseInt` and `valueOf` is only the return type — primitive versus wrapper object — which is the distinction [01-variables-types.md](01-variables-types.md) drew: a primitive holds the value directly and can never be `null`, a wrapper is an object and therefore can be `null` and can go inside a `List` or a `Map`. Reach for `parseInt` when you want a number to compute with, and `valueOf` when the value has to be nullable or live in a collection.
