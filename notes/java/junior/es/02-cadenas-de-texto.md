@@ -16,7 +16,7 @@
 - [Bloques de texto — texto multilínea sin el escapado](#bloques-de-texto--texto-multilínea-sin-el-escapado)
 - [Conversión de texto a número y de número a texto](#conversión-de-texto-a-número-y-de-número-a-texto)
   - [Texto → número](#texto--número)
-  - [`NumberFormatException` es _unchecked_ — y qué significa eso hoy](#numberformatexception-es-unchecked--y-qué-significa-eso-hoy)
+  - [El compilador no te obliga a manejar `NumberFormatException`](#el-compilador-no-te-obliga-a-manejar-numberformatexception)
   - [Número → texto](#número--texto)
 - [Comparar dos Strings — y la única pregunta que este capítulo se niega a responder](#comparar-dos-strings--y-la-única-pregunta-que-este-capítulo-se-niega-a-responder)
 - [Lo que esto desbloquea](#lo-que-esto-desbloquea)
@@ -677,7 +677,7 @@ Integer.parseInt("38 ");          // NumberFormatException
 Integer.parseInt("38 ".strip());  // 38
 ```
 
-### `NumberFormatException` es _unchecked_ — y qué significa eso hoy
+### El compilador no te obliga a manejar `NumberFormatException`
 
 `NumberFormatException` es una excepción **unchecked**, y la consecuencia práctica es corta: **el compilador no te obliga a manejarla, y no te obliga a declarar que tu método puede lanzarla.** La línea `Integer.parseInt(input)` compila limpiamente por sí sola, sin `try`, sin warning, y sin nada en IntelliJ que sugiera que puede fallar. Compáralo con leer un archivo, que Java _sí_ te obliga a manejar antes de dejarte compilar — viste ese contraste en [00-intro-java.md](00-intro-java.md).
 

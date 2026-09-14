@@ -16,7 +16,7 @@
 - [Text blocks — multi-line text without the escaping](#text-blocks--multi-line-text-without-the-escaping)
 - [Converting text to numbers and numbers to text](#converting-text-to-numbers-and-numbers-to-text)
   - [Text → number](#text--number)
-  - [`NumberFormatException` is *unchecked* — and what that means today](#numberformatexception-is-unchecked--and-what-that-means-today)
+  - [The compiler does not force you to handle `NumberFormatException`](#the-compiler-does-not-force-you-to-handle-numberformatexception)
   - [Number → text](#number--text)
 - [Comparing two Strings — and the one question this chapter refuses to answer](#comparing-two-strings--and-the-one-question-this-chapter-refuses-to-answer)
 - [What this unlocks](#what-this-unlocks)
@@ -678,7 +678,7 @@ Integer.parseInt("38 ");          // NumberFormatException
 Integer.parseInt("38 ".strip());  // 38
 ```
 
-### `NumberFormatException` is *unchecked* — and what that means today
+### The compiler does not force you to handle `NumberFormatException`
 
 `NumberFormatException` is an **unchecked** exception, and the practical consequence is short: **the compiler does not force you to handle it, and it does not force you to declare that your method might throw it.** The line `Integer.parseInt(input)` compiles cleanly on its own, with no `try`, no warning, and nothing in IntelliJ hinting that it can fail. Compare that with reading a file, which Java *does* force you to write handling for before it will compile — you saw that contrast in [00-intro-java.md](00-intro-java.md).
 
