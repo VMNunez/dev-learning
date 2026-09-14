@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -47,6 +54,11 @@ const NAV_LINKS: readonly NavLink[] = [
 export class Shell {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly accountButton = viewChild.required<string, ElementRef<HTMLButtonElement>>(
+    'accountButton',
+    { read: ElementRef },
+  );
+
   readonly dialog = inject(MatDialog);
 
   readonly links = computed(() => {
@@ -60,8 +72,8 @@ export class Shell {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(ChangePasswordDialog, {
-      width: '500px',
+    this.dialog.open(ChangePasswordDialog, {
+      restoreFocus: this.accountButton().nativeElement,
     });
   }
 }
