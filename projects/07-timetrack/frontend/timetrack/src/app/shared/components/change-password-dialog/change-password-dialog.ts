@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,6 +17,8 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ApiError } from '../../models/api-error';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -48,6 +50,7 @@ class MismatchErrorStateMatcher implements ErrorStateMatcher {
   ],
   templateUrl: './change-password-dialog.html',
   styleUrl: './change-password-dialog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePasswordDialog {
   private readonly userService = inject(UserService);
@@ -90,6 +93,23 @@ export class ChangePasswordDialog {
       next: () => {
         this.snackBar.open('Password changed', 'Close', { duration: 5000 });
         this.dialogRef.close(true);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading.set(false);
+        this.form.enable({ emitEvent: false });
+
+        const apiError = err.error as ApiError | null;
+        const fieldErrors = err.status === 400 ? apiError?.fieldErrors : undefined;
+
+        if (fieldErrors) {
+          for (const field of ['currentPassword', 'newPassword'] as const) {
+            const message = fieldErrors[field]?.[0];
+            if (message) this.form.controls[field].setErrors({ server: message });
+          }
+          return;
+        }
+
+        this.error.set('Could not change the password. Try again.');
       },
     });
   }
