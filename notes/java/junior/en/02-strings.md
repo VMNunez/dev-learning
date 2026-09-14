@@ -605,7 +605,7 @@ Where you actually reach for one: the sample JSON a test sends as a request body
 List<ProjectHoursReportResponse> getHoursByProject(@Param("start") LocalDate start, @Param("end") LocalDate end);
 ```
 
-> **Preview — Spring Boot:** `@Query` and `@Param` belong to Spring Data JPA and are covered in the Spring Boot notes. All they do here is hand that text to the database layer. Read the snippet for the *literal*: it is an ordinary `String`, written across five lines with no `\n` and no escaped quotes, which is the entire feature. Written the pre-Java-15 way, that query would be one unreadable line of backslashes — and the query is the part you need to be able to check by eye.
+> **Preview — Spring Boot:** `@Query` and `@Param` belong to Spring Data JPA and are covered in the Spring Boot notes. All they do here is hand that text to the database layer. The point of the snippet is to see a text block used as a literal: the query text is an ordinary `String`, written across five lines with no `\n` and no escaped quotes. Written the pre-Java-15 way, that query would be one unreadable line of backslashes
 
 ---
 
