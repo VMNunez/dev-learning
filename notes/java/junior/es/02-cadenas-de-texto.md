@@ -535,10 +535,9 @@ Dos reglas de sintaxis que impone el compilador. El `"""` de apertura tiene que 
 String s = """hello""";   // MAL — error: illegal text block open delimiter sequence, missing line terminator
 ```
 
-//TODO: HE REVISADO HASTA AQUI
 El `"""` de cierre admite dos posiciones: al final de la última línea de contenido, como en el JSON de Ana, o en una línea propia. La posición que elijas decide cuántos espacios de indentación acaban dentro del string, y el siguiente bloque explica por qué.
 
-> **¿Qué pasa con los espacios de indentación del código?** En el JSON de Ana, cada línea del bloque empieza con ocho espacios en el archivo `.java`: están ahí solo para que el texto quede alineado con el resto del código del método. Esos ocho espacios no llegan al string. Si imprimes `json`, la `{` sale pegada al margen izquierdo (la columna cero), no desplazada ocho posiciones:
+> **¿Qué pasa con los espacios de indentación del código?** En el JSON de Ana, cada línea del bloque empieza con ocho espacios: están ahí solo para que el texto quede alineado con el resto del código del método. Esos ocho espacios no llegan al string. Si imprimes `json`, la `{` sale pegada al margen izquierdo (la columna cero), no desplazada ocho posiciones:
 >
 > ```
 > {
@@ -547,7 +546,7 @@ El `"""` de cierre admite dos posiciones: al final de la última línea de conte
 > }
 > ```
 >
-> Ocurre porque el compilador elimina lo que la especificación llama **espacio en blanco incidental** (*incidental whitespace*), en tres pasos:
+> Ocurre porque el compilador elimina lo que la especificación llama **espacio en blanco incidental** (_incidental whitespace_), en tres pasos:
 >
 > 1. Mira cada línea no vacía del bloque _más la línea que contiene el `"""` de cierre_.
 > 2. Cuenta los espacios iniciales de cada una y se queda con el menor. Aquí `{` y `}"""` tienen ocho, y las líneas de `"name"` y `"role"` tienen diez, así que el mínimo es ocho.
@@ -555,7 +554,39 @@ El `"""` de cierre admite dos posiciones: al final de la última línea de conte
 >
 > Así, la indentación que añadiste para que el código fuente se lea bien desaparece, y la que añadiste _a propósito_ — los dos espacios extra antes de `"name"` — sobrevive, porque va más allá del mínimo.
 >
-> La consecuencia que hay que recordar: **mover el `"""` de cierre cambia el string.** Ponlo en una línea propia en la columna cero y la indentación mínima pasa a ser cero, así que los ocho espacios reaparecen de golpe dentro de tu JSON. Esa es la única sorpresa de los bloques de texto que merece la pena saber antes de que ocurra.
+> La consecuencia que hay que recordar: **mover el `"""` de cierre cambia el string.** Ponlo en una línea propia en la columna cero y la indentación mínima pasa a ser cero, así que los ocho espacios reaparecen de golpe dentro de tu JSON. Esa es la única sorpresa de los bloques de texto que merece la pena saber.
+>
+> Compara las dos versiones. Solo cambia dónde está el `"""` de cierre:
+>
+> ```java
+> // A — cierre al final de la última línea: la línea mínima tiene 8 espacios
+> String jsonA = """
+>         {
+>           "name": "Ana",
+>           "role": "DEVELOPER"
+>         }""";
+>
+> // B — cierre en una línea propia, en la columna cero: la línea mínima tiene 0 espacios
+> String jsonB = """
+>         {
+>           "name": "Ana",
+>           "role": "DEVELOPER"
+>         }
+> """;
+> ```
+>
+> Y esto es lo que guarda cada variable (los `·` marcan los espacios que quedan dentro del string):
+>
+> ```
+> jsonA:                  jsonB:
+> {                       ········{
+> ··"name": "Ana",        ··········"name": "Ana",
+> ··"role": "DEVELOPER"   ··········"role": "DEVELOPER"
+> }                       ········}
+>                         (salto de línea final)
+> ```
+>
+> En A se quitan ocho espacios de cada línea y el string termina justo en `}`. En B el mínimo es cero, así que no se quita nada: cada línea conserva sus ocho o diez espacios, y además el string termina con un salto de línea después de `}`, porque el `"""` ya no está en la misma línea que la llave.
 
 **El tipo sigue siendo `String`.** Un bloque de texto es una forma distinta de _escribir_ un literal, no un tipo de valor nuevo — así que cada método del catálogo funciona sobre él, `.formatted()` funciona sobre él, y un método que recibe un `String` no puede saber cómo se escribió el literal. Nada sobre la inmutabilidad cambia tampoco.
 

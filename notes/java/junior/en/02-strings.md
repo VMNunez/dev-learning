@@ -538,7 +538,7 @@ String s = """hello""";   // MAL — error: illegal text block open delimiter se
 
 The closing `"""` can go in two places: at the end of the last content line, as in Ana's JSON, or on a line of its own. The position you pick decides how many indentation spaces end up inside the string, and the next block explains why.
 
-> **What happens to the code's indentation spaces?** In Ana's JSON, every line of the block starts with eight spaces in the `.java` file: they are there only so the text lines up with the rest of the method's code. Those eight spaces never reach the string. If you print `json`, the `{` sits against the left margin (column zero), not shifted eight positions:
+> **What happens to the code's indentation spaces?** In Ana's JSON, every line of the block starts with eight spaces: they are there only so the text lines up with the rest of the method's code. Those eight spaces never reach the string. If you print `json`, the `{` sits against the left margin (column zero), not shifted eight positions:
 >
 > ```
 > {
@@ -555,7 +555,39 @@ The closing `"""` can go in two places: at the end of the last content line, as 
 >
 > So the indentation you added to keep the source readable disappears, and the indentation you added _on purpose_ — the two extra spaces before `"name"` — survives, because it goes past the minimum.
 >
-> The consequence to remember: **moving the closing `"""` changes the string.** Put it on its own line at column zero and the minimum indentation becomes zero, so all eight spaces suddenly reappear inside your JSON. That is the one text-block surprise worth knowing before it happens.
+> The consequence to remember: **moving the closing `"""` changes the string.** Put it on its own line at column zero and the minimum indentation becomes zero, so all eight spaces suddenly reappear inside your JSON. That is the one text-block surprise worth knowing.
+>
+> Compare the two versions. The only change is where the closing `"""` sits:
+>
+> ```java
+> // A — closing on the last content line: the smallest line has 8 spaces
+> String jsonA = """
+>         {
+>           "name": "Ana",
+>           "role": "DEVELOPER"
+>         }""";
+>
+> // B — closing on its own line, at column zero: the smallest line has 0 spaces
+> String jsonB = """
+>         {
+>           "name": "Ana",
+>           "role": "DEVELOPER"
+>         }
+> """;
+> ```
+>
+> And this is what each variable holds (each `·` marks a space that stays inside the string):
+>
+> ```
+> jsonA:                  jsonB:
+> {                       ········{
+> ··"name": "Ana",        ··········"name": "Ana",
+> ··"role": "DEVELOPER"   ··········"role": "DEVELOPER"
+> }                       ········}
+>                         (final line break)
+> ```
+>
+> In A eight spaces are removed from every line and the string ends right at `}`. In B the minimum is zero, so nothing is removed: every line keeps its eight or ten spaces, and the string also ends with a line break after `}`, because the `"""` is no longer on the same line as the brace.
 
 **The type is still `String`.** A text block is a different way to *write* a literal, not a new kind of value — so every method in the catalogue works on it, `.formatted()` works on it, and a method that takes a `String` cannot tell how the literal was written. Nothing about immutability changes either.
 
