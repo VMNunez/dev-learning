@@ -684,14 +684,15 @@ Integer.parseInt("38 ".strip());  // 38
 
 With **checked** exceptions it is the other way round. For example, `Files.readString(path)` reads a file and can throw `IOException`, which is checked: if you neither wrap it in `try/catch` nor add `throws IOException` to the method, the code does not compile. You saw this same example, with `Files.readString`, in [00-intro-java.md](00-intro-java.md).
 
-So the responsibility is yours. Whenever the text comes from outside your program, you have two ways to protect yourself: wrap the call in a `try/catch`, or validate the text before converting it, that is, check first that it contains only digits and call `parseInt` only if it does:
+So the responsibility is yours. Whenever the text comes from outside, you have two ways to protect yourself: wrap the call in a `try/catch`, or validate the text before converting it, that is, check first that it contains only digits and call `parseInt` only if it does:
 
 ```java
 // Option 1 — try/catch: you try to convert and decide what to do if it fails
 try {
     int id = Integer.parseInt(input.strip());
 } catch (NumberFormatException e) {
-    // respond "the id must be a number"
+    // rethrow an exception with a clear message and keep the original as its cause
+    throw new IllegalArgumentException("The id must be a number: " + input, e);
 }
 
 // Option 2 — validate first: you only convert if the text is digits
@@ -699,7 +700,7 @@ String clean = input.strip();
 if (clean.matches("\\d+")) {          // \d+ = one or more digits
     int id = Integer.parseInt(clean);
 } else {
-    // respond "the id must be a number"
+    throw new IllegalArgumentException("The id must be a number: " + input);
 }
 ```
 
