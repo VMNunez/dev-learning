@@ -84,6 +84,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Typed `HttpClient` requests — call REST endpoints with typed response bodies while recognising that the generic type checks TypeScript code but does not validate runtime JSON ✅ 02-weather-app
 - `HttpParams` immutability — build query parameters from returned instances; calling `set()` without reassigning silently leaves the original params unchanged ✅ 02-weather-app — `WeatherService` chains `new HttpParams().set(...)` three times and passes the result to `get()`
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
+- Cancelling an in-flight `HttpClient` request — unsubscribing aborts the browser request but never undoes a write the server already received, so a teardown or `switchMap()` that cancels a mutation leaves its outcome unknown to the client rather than reversed ✅ 07-timetrack — `ChangePasswordDialog` sets `dialogRef.disableClose` while its `PATCH /api/users/me/password` is in flight, because `takeUntilDestroyed` would abort it
 - Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
 
 ### RxJS streams and pipelines
