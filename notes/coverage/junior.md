@@ -157,7 +157,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
-- Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls
+- Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls ✅ 07-timetrack — `ChangePasswordDialog` copies each 400 `fieldErrors` entry onto its control with `setErrors({ server })` and renders it in that field's `mat-error`
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
 - Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
