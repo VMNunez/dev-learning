@@ -626,15 +626,38 @@ Todos son `String`, incluso cuando el contenido parece ser un número. Así que 
 
 Ya te has encontrado con esta conversión en [01-variables-tipos.md](01-variables-tipos.md), con `Integer.parseInt` y `Integer.valueOf`. Ahí lo que importaba era el tipo que devuelve cada método: un `int` primitivo o un objeto `Integer`. Aquí lo que importa es el texto que les pasas. Ese texto no lo has escrito tú: llega de una petición, un formulario o un archivo, así que puede venir vacío, con espacios o con letras. Por eso esta sección se centra en qué pasa cuando el texto no es un número válido.
 
-Cada tipo numérico tiene su clase wrapper, y esa clase ofrece dos métodos estáticos para pasar de texto a número:
+Cada tipo primitivo tiene su clase wrapper (`int` → `Integer`, `long` → `Long`, `double` → `Double`, `boolean` → `Boolean`), y esa clase ofrece dos métodos para pasar de texto a número. Los dos son **estáticos**: se llaman sobre la clase (`Integer.parseInt(...)`), no sobre un objeto, porque todavía no tienes ningún número, solo el texto.
 
-- **`parseXxx(String)`** — devuelve el primitivo: `Integer.parseInt`, `Long.parseLong`, `Double.parseDouble`.
-- **`valueOf(String)`** — devuelve el objeto wrapper: `Integer.valueOf`, `Long.valueOf`, `Double.valueOf`.
+- **`parseXxx(String)`** devuelve el **primitivo**. `Xxx` es el nombre del tipo: `Integer.parseInt` devuelve un `int`, `Long.parseLong` un `long`, `Double.parseDouble` un `double` y `Boolean.parseBoolean` un `boolean`.
+- **`valueOf(String)`** devuelve el **objeto wrapper**. Se llama igual en todas las clases: `Integer.valueOf` devuelve un `Integer`, `Long.valueOf` un `Long`, `Double.valueOf` un `Double`.
+
+Los dos leen el texto de la misma forma; lo único que cambia es qué te devuelven. Esta tabla resume los pares más usados:
+
+| Tipo | Devuelve el primitivo | Devuelve el wrapper |
+|---|---|---|
+| `int` | `Integer.parseInt("38")` → `38` (`int`) | `Integer.valueOf("38")` → `38` (`Integer`) |
+| `long` | `Long.parseLong("1042")` → `1042` (`long`) | `Long.valueOf("1042")` → `1042` (`Long`) |
+| `double` | `Double.parseDouble("38.5")` → `38.5` (`double`) | `Double.valueOf("38.5")` → `38.5` (`Double`) |
+| `boolean` | `Boolean.parseBoolean("true")` → `true` (`boolean`) | `Boolean.valueOf("true")` → `true` (`Boolean`) |
+
+Cada fila es un tipo; las dos columnas hacen la misma conversión y solo difieren en si el resultado es un primitivo o un objeto.
 
 ```java
-int hours   = Integer.parseInt("38");     // 38  → un int, el primitivo
-Integer h2  = Integer.valueOf("38");      // 38  → un Integer, el objeto
-long userId = Long.parseLong("1042");     // el mismo par existe para long, double, boolean...
+// int: el mismo texto, dos tipos de resultado
+int hours      = Integer.parseInt("38");      // 38 → int, el primitivo
+Integer hoursW = Integer.valueOf("38");       // 38 → Integer, el objeto
+
+// long: para ids, que pueden superar el máximo de un int
+long userId    = Long.parseLong("1042");      // 1042 → long
+Long userIdW   = Long.valueOf("1042");        // 1042 → Long
+
+// double: para texto con decimales
+double rate    = Double.parseDouble("38.5");  // 38.5 → double
+Double rateW   = Double.valueOf("38.5");      // 38.5 → Double
+
+// boolean: "true" sin importar mayúsculas; cualquier otro texto da false
+boolean active = Boolean.parseBoolean("TRUE"); // true
+boolean other  = Boolean.parseBoolean("yes");  // false
 ```
 
 La diferencia entre `parseInt` y `valueOf` es solo el tipo de retorno — primitivo frente a objeto wrapper — que es la distinción que trazó [01-variables-tipos.md](01-variables-tipos.md): un primitivo guarda el valor directamente y nunca puede ser `null`, un wrapper es un objeto y por tanto puede ser `null` y puede vivir dentro de una `List` o un `Map`. Recurre a `parseInt` cuando quieras un número con el que calcular, y a `valueOf` cuando el valor tenga que ser anulable o vivir en una colección.
