@@ -536,9 +536,24 @@ String s = """hello""";   // MAL — error: illegal text block open delimiter se
 ```
 
 //TODO: HE REVISADO HASTA AQUI
-El `"""` de cierre es más libre: puede ir al final de la última línea de contenido (como en el JSON de arriba) o en una línea propia. Esa elección no es cosmética — mira el callout.
+El `"""` de cierre admite dos posiciones: al final de la última línea de contenido, como en el JSON de Ana, o en una línea propia. La posición que elijas decide cuántos espacios de indentación acaban dentro del string, y el siguiente bloque explica por qué.
 
-> **¿Dónde se fue la indentación?** El bloque de arriba está indentado ocho espacios para alinearse con el código que lo rodea, y aun así el string resultante empieza en la columna cero. El compilador elimina lo que la especificación llama **espacio en blanco incidental**: mira cada línea no vacía _más la línea que contiene el `"""` de cierre_, encuentra la indentación más pequeña entre todas ellas, y quita exactamente esa cantidad de cada línea. Así que la indentación que añadiste para mantener el código fuente legible no cuesta nada, y la indentación que añadiste _a propósito_ — los dos espacios antes de `"name"` — sobrevive, porque es mayor que el mínimo.
+> **¿Qué pasa con los espacios de indentación del código?** En el JSON de Ana, cada línea del bloque empieza con ocho espacios en el archivo `.java`: están ahí solo para que el texto quede alineado con el resto del código del método. Esos ocho espacios no llegan al string. Si imprimes `json`, la `{` sale pegada al margen izquierdo (la columna cero), no desplazada ocho posiciones:
+>
+> ```
+> {
+>   "name": "Ana",
+>   "role": "DEVELOPER"
+> }
+> ```
+>
+> Ocurre porque el compilador elimina lo que la especificación llama **espacio en blanco incidental** (*incidental whitespace*), en tres pasos:
+>
+> 1. Mira cada línea no vacía del bloque _más la línea que contiene el `"""` de cierre_.
+> 2. Cuenta los espacios iniciales de cada una y se queda con el menor. Aquí `{` y `}"""` tienen ocho, y las líneas de `"name"` y `"role"` tienen diez, así que el mínimo es ocho.
+> 3. Quita exactamente esos ocho espacios del principio de cada línea.
+>
+> Así, la indentación que añadiste para que el código fuente se lea bien desaparece, y la que añadiste _a propósito_ — los dos espacios extra antes de `"name"` — sobrevive, porque va más allá del mínimo.
 >
 > La consecuencia que hay que recordar: **mover el `"""` de cierre cambia el string.** Ponlo en una línea propia en la columna cero y la indentación mínima pasa a ser cero, así que los ocho espacios reaparecen de golpe dentro de tu JSON. Esa es la única sorpresa de los bloques de texto que merece la pena saber antes de que ocurra.
 

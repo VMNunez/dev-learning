@@ -536,9 +536,24 @@ Two syntax rules the compiler enforces. The opening `"""` must be followed by a 
 String s = """hello""";   // MAL — error: illegal text block open delimiter sequence, missing line terminator
 ```
 
-The closing `"""` is freer: it may sit at the end of the last content line (as in the JSON above) or on a line of its own. That choice is not cosmetic — see the callout.
+The closing `"""` can go in two places: at the end of the last content line, as in Ana's JSON, or on a line of its own. The position you pick decides how many indentation spaces end up inside the string, and the next block explains why.
 
-> **Where did the indentation go?** The block above is indented eight spaces to line up with the surrounding code, yet the resulting string starts at column zero. The compiler strips what the specification calls **incidental whitespace**: it looks at every non-blank line *plus the line holding the closing `"""`*, finds the smallest indentation among them, and removes exactly that much from every line. So the indentation you added to keep the source readable costs nothing, and the indentation you added *on purpose* — the two spaces before `"name"` — survives, because it is deeper than the minimum.
+> **What happens to the code's indentation spaces?** In Ana's JSON, every line of the block starts with eight spaces in the `.java` file: they are there only so the text lines up with the rest of the method's code. Those eight spaces never reach the string. If you print `json`, the `{` sits against the left margin (column zero), not shifted eight positions:
+>
+> ```
+> {
+>   "name": "Ana",
+>   "role": "DEVELOPER"
+> }
+> ```
+>
+> This happens because the compiler strips what the specification calls **incidental whitespace**, in three steps:
+>
+> 1. It looks at every non-blank line of the block _plus the line holding the closing `"""`_.
+> 2. It counts the leading spaces of each and keeps the smallest. Here `{` and `}"""` have eight, and the `"name"` and `"role"` lines have ten, so the minimum is eight.
+> 3. It removes exactly those eight spaces from the start of every line.
+>
+> So the indentation you added to keep the source readable disappears, and the indentation you added _on purpose_ — the two extra spaces before `"name"` — survives, because it goes past the minimum.
 >
 > The consequence to remember: **moving the closing `"""` changes the string.** Put it on its own line at column zero and the minimum indentation becomes zero, so all eight spaces suddenly reappear inside your JSON. That is the one text-block surprise worth knowing before it happens.
 
