@@ -44,21 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular / junior** `[frontend]` — Two HTTP calls are consumed with a bare `.subscribe()` and no
-  teardown, which §6 "Subscription lifetime" names a defect outright ("A bare `.subscribe()` with no
-  teardown is a defect, including in a dialog"): `this.authService.login(...).subscribe({...})` in
-  `frontend/timetrack/src/app/pages/login/login.ts:65` and
-  `this.userService.changePassword(...).subscribe({...})` in
-  `frontend/timetrack/src/app/shared/components/change-password-dialog/change-password-dialog.ts:92`. The
-  same `login.ts` already wraps its `valueChanges` subscription in `takeUntilDestroyed()` (line 55), so the
-  two HTTP calls are the outliers inside one file. Impact today is small, which is why Low: an
-  `HttpClient` observable completes after one response, so nothing leaks — what escapes is the callback,
-  which still runs against a component already destroyed (the dialog closed with `Escape` while its
-  request is in flight still calls `snackBar.open`, `dialogRef.close` and `form.enable`). The fix is the
-  rule's own: `takeUntilDestroyed(this.destroyRef)`, since both calls sit in a method rather than an
-  injection context. Raised while answering whether a documented `afterClosed().subscribe()` pattern
-  would pass §6 during the dialog-focus task; the frontend tier has never been reviewed
-  *(raised 2026-09-14; effort: S)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -221,6 +207,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-14 · **[Low]** `[frontend]` — `Login` and `ChangePasswordDialog` tear their HTTP calls down with `takeUntilDestroyed(this.destroyRef)`, and the dialog holds `dialogRef.disableClose` while its `PATCH` is in flight (`c5e69b3a`); real scope was the 2 call sites **plus** that lock, because teardown alone turns an Escape mid-save into a password change the server commits with no confirmation → coverage: new `angular/junior` bullet "Cancelling an in-flight `HttpClient` request" (authored + marked ✅ 07-timetrack), `angular/junior` injection context + subscription cleanup and `angular-material/junior` dismissal bullets already covered and marked; frontend README Key patterns + Tradeoffs (Back mid-save still closes the dialog — accepted); PLANNING §6 Subscription lifetime + §14 dialog Loading + §0/§22 counts; PROGRESS Angular + Angular Material evidence cells. Verified manually across 3 tests with a backend breakpoint: dismissal refused mid-save and restored after a `400`, success still confirms and closes, Back mid-save shows `(canceled)` while the password still changed. `/notes-plan angular junior` owed
 - 2026-09-11 · **[Low]** `[frontend]` — `tonal-container-shape: 4px` added so all five button variants share the 4px shape → coverage angular-material/middle (marker clause repointed), frontend README already names token overrides
 - 2026-09-11 · **[Low]** `[frontend]` — post-login `navigate()` promise handled: `false` releases the form, a failed chunk load shows an error → coverage angular/junior (`Router.navigate()` outcome, new + marked)
 - 2026-09-11 · **[Low]** `[frontend]` — `OnPush` on every component, already resolved in `b23a7dcb`; `angular.json` schematic default deliberately not set, `OnPush` written by hand per component — DECISION, no code change → coverage angular/junior (signals with `OnPush`), frontend README Key patterns
