@@ -3,6 +3,7 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   signal,
@@ -37,6 +38,7 @@ export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly emailInput = viewChild.required<ElementRef<HTMLInputElement>>('emailInput');
+  private readonly destroyRef = inject(DestroyRef);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
@@ -62,25 +64,28 @@ export class Login {
 
     this.loading.set(true);
 
-    this.authService.login(this.form.getRawValue()).subscribe({
-      next: () =>
-        this.router
-          .navigate(['/dashboard'])
-          .then((navigated) => {
-            if (!navigated) this.loading.set(false);
-          })
-          .catch(() => {
-            this.error.set('Could not load the app — refresh the page and try again');
-            this.loading.set(false);
-          }),
-      error: (err: HttpErrorResponse) => {
-        const message = isApiError(err.error)
-          ? err.error.message
-          : 'Could not reach the server — check your connection and try again';
+    this.authService
+      .login(this.form.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () =>
+          this.router
+            .navigate(['/dashboard'])
+            .then((navigated) => {
+              if (!navigated) this.loading.set(false);
+            })
+            .catch(() => {
+              this.error.set('Could not load the app — refresh the page and try again');
+              this.loading.set(false);
+            }),
+        error: (err: HttpErrorResponse) => {
+          const message = isApiError(err.error)
+            ? err.error.message
+            : 'Could not reach the server — check your connection and try again';
 
-        this.error.set(message);
-        this.loading.set(false);
-      },
-    });
+          this.error.set(message);
+          this.loading.set(false);
+        },
+      });
   }
 }

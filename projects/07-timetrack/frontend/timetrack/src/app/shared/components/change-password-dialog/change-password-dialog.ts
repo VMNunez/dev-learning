@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -19,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from '../../models/api-error';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -54,11 +55,12 @@ class MismatchErrorStateMatcher implements ErrorStateMatcher {
 })
 export class ChangePasswordDialog {
   private readonly userService = inject(UserService);
+  private readonly dialogRef = inject(MatDialogRef<ChangePasswordDialog>);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly mismatchMatcher = new MismatchErrorStateMatcher();
-  private readonly dialogRef = inject(MatDialogRef<ChangePasswordDialog>);
-  private readonly snackBar = inject(MatSnackBar);
 
   readonly form = new FormGroup(
     {
@@ -88,29 +90,34 @@ export class ChangePasswordDialog {
 
     this.loading.set(true);
     this.form.disable({ emitEvent: false });
+    this.dialogRef.disableClose = true;
 
-    this.userService.changePassword({ currentPassword, newPassword }).subscribe({
-      next: () => {
-        this.snackBar.open('Password changed', 'Close', { duration: 5000 });
-        this.dialogRef.close(true);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.loading.set(false);
-        this.form.enable({ emitEvent: false });
+    this.userService
+      .changePassword({ currentPassword, newPassword })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Password changed', 'Close', { duration: 5000 });
+          this.dialogRef.close(true);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.loading.set(false);
+          this.form.enable({ emitEvent: false });
+          this.dialogRef.disableClose = false;
 
-        const apiError = err.error as ApiError | null;
-        const fieldErrors = err.status === 400 ? apiError?.fieldErrors : undefined;
+          const apiError = err.error as ApiError | null;
+          const fieldErrors = err.status === 400 ? apiError?.fieldErrors : undefined;
 
-        if (fieldErrors) {
-          for (const field of ['currentPassword', 'newPassword'] as const) {
-            const message = fieldErrors[field]?.[0];
-            if (message) this.form.controls[field].setErrors({ server: message });
+          if (fieldErrors) {
+            for (const field of ['currentPassword', 'newPassword'] as const) {
+              const message = fieldErrors[field]?.[0];
+              if (message) this.form.controls[field].setErrors({ server: message });
+            }
+            return;
           }
-          return;
-        }
 
-        this.error.set('Could not change the password. Try again.');
-      },
-    });
+          this.error.set('Could not change the password. Try again.');
+        },
+      });
   }
 }
