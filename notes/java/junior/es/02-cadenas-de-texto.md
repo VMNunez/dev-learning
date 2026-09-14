@@ -588,9 +588,9 @@ El `"""` de cierre admite dos posiciones: al final de la última línea de conte
 >
 > En A se quitan ocho espacios de cada línea y el string termina justo en `}`. En B el mínimo es cero, así que no se quita nada: cada línea conserva sus ocho o diez espacios, y además el string termina con un salto de línea después de `}`, porque el `"""` ya no está en la misma línea que la llave.
 
-**El tipo sigue siendo `String`.** Un bloque de texto es una forma distinta de _escribir_ un literal, no un tipo de valor nuevo — así que cada método del catálogo funciona sobre él, `.formatted()` funciona sobre él, y un método que recibe un `String` no puede saber cómo se escribió el literal. Nada sobre la inmutabilidad cambia tampoco.
+**El tipo sigue siendo `String`.** Un bloque de texto es una forma distinta de _escribir_ un literal, no un tipo de valor nuevo — así que cada método funciona sobre él. Nada sobre la inmutabilidad cambia tampoco.
 
-Dónde recurres realmente a uno: un fixture JSON en un test, una plantilla de email en HTML, y sobre todo una consulta SQL o JPQL multilínea. Esta última es código real en el proyecto 07 — `TimeEntryRepository` escribe cada consulta de informe como un bloque de texto, que es la única razón por la que un `SELECT` de cinco líneas es legible dentro de una interfaz Java:
+Dónde recurres realmente a uno: el JSON de ejemplo que un test envía como body de una petición para comprobar un endpoint, una plantilla de email en HTML, y sobre todo una consulta SQL o JPQL multilínea. Esta última es código real en el proyecto 07 — `TimeEntryRepository` escribe como bloque de texto cada consulta que genera los informes de horas, y es la única razón por la que un `SELECT` de cinco líneas es legible dentro de una interfaz Java:
 
 ```java
 // projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/repository/TimeEntryRepository.java

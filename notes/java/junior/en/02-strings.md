@@ -589,9 +589,9 @@ The closing `"""` can go in two places: at the end of the last content line, as 
 >
 > In A eight spaces are removed from every line and the string ends right at `}`. In B the minimum is zero, so nothing is removed: every line keeps its eight or ten spaces, and the string also ends with a line break after `}`, because the `"""` is no longer on the same line as the brace.
 
-**The type is still `String`.** A text block is a different way to *write* a literal, not a new kind of value — so every method in the catalogue works on it, `.formatted()` works on it, and a method that takes a `String` cannot tell how the literal was written. Nothing about immutability changes either.
+**The type is still `String`.** A text block is a different way to *write* a literal, not a new kind of value — so every method works on it. Nothing about immutability changes either.
 
-Where you actually reach for one: a JSON fixture in a test, an HTML email template, and above all a multi-line SQL or JPQL query. That last one is real code in project 07 — `TimeEntryRepository` writes each report query as a text block, which is the only reason a five-line `SELECT` is readable inside a Java interface:
+Where you actually reach for one: the sample JSON a test sends as a request body to check an endpoint, an HTML email template, and above all a multi-line SQL or JPQL query. That last one is real code in project 07 — `TimeEntryRepository` writes every query that builds the hours reports as a text block, and that is the only reason a five-line `SELECT` is readable inside a Java interface:
 
 ```java
 // projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/repository/TimeEntryRepository.java
