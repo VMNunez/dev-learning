@@ -710,7 +710,7 @@ Without either, if a user types `id=abc` into a URL, the exception is not caught
 
 ### Number → text
 
-The reverse direction has three spellings, and one of them is safer than the others:
+To go from number to text there are three ways: `String.valueOf(x)`, `Integer.toString(x)` and concatenating with an empty string (`"" + x`), with `String.valueOf(x)` being the safest of them:
 
 ```java
 int hours = 38;

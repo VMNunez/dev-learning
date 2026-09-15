@@ -709,7 +709,7 @@ Sin ninguna de las dos, si un usuario escribe `id=abc` en una URL, la excepción
 
 ### Número → texto
 
-La dirección inversa tiene tres formas de escribirse, y una de ellas es más segura que las otras:
+Para pasar de número a texto hay tres formas: `String.valueOf(x)`, `Integer.toString(x)` y concatenar con un texto vacío (`"" + x`), siendo `String.valueOf(x)` la más segura de ellas:
 
 ```java
 int hours = 38;
