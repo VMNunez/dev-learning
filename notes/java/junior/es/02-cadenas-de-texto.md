@@ -734,7 +734,7 @@ Las tres formas que se muestran en el bloque de código anterior convierten un `
 >
 > Por eso, si el número va a aparecer en un informe, no lo conviertes con estas formas, sino con `.formatted()`, que viste antes en esta nota: `"%.2f".formatted(38.0)` da `"38,00"` o `"38.00"` según la configuración regional del ordenador.
 
-Con un objeto aparece además una cuarta forma que no está en el bloque: `x.toString()`, que se llama directamente sobre la variable. No es lo mismo que `Integer.toString(hours)`: este es un método estático de la clase `Integer` al que le pasas un `int` como argumento, mientras que `x.toString()` solo se puede escribir si `x` guarda un objeto, nunca con un `int`. Y es justo la forma que falla con `null`.
+Con un objeto aparece además una cuarta forma que no está en el bloque: `x.toString()`, que se llama directamente sobre la variable. No es lo mismo que `Integer.toString(hours)`, ni que `Long.toString(x)` o `Double.toString(x)`: esos son métodos estáticos de cada wrapper a los que le pasas el número primitivo como argumento, mientras que `x.toString()` solo se puede escribir si `x` guarda un objeto, nunca con un `int`, un `long` o un `double`. Y es justo la forma que falla con `null`.
 
 `x.toString()` funciona de otra forma, porque es un método de **instancia**: no se llama sobre la clase, sino sobre un objeto concreto, el que guarda la variable `x`. Recuerda que una variable de tipo objeto no guarda el objeto en sí, sino la dirección de memoria donde vive. Cuando escribes `x.toString()`, Java va a esa dirección, encuentra el objeto y ejecuta su método `toString()`. Si `x` es `null`, la variable no guarda ninguna dirección: no hay ningún objeto sobre el que ejecutar el método, y Java lanza `NullPointerException`:
 

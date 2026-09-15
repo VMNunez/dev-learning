@@ -735,7 +735,7 @@ The three forms shown in the code block above convert an `int` into text, and an
 >
 > That is why, if the number is going to appear in a report, you do not convert it with these forms but with `.formatted()`, which you saw earlier in this note: `"%.2f".formatted(38.0)` gives `"38,00"` or `"38.00"` depending on the computer's locale settings.
 
-With an object there is also a fourth form that is not in the block: `x.toString()`, called directly on the variable. It is not the same as `Integer.toString(hours)`: that one is a static method of the `Integer` class that takes an `int` as its argument, whereas `x.toString()` can only be written when `x` holds an object, never with an `int`. And it is exactly the form that fails with `null`.
+With an object there is also a fourth form that is not in the block: `x.toString()`, called directly on the variable. It is not the same as `Integer.toString(hours)`, nor as `Long.toString(x)` or `Double.toString(x)`: those are static methods of each wrapper that take the primitive number as their argument, whereas `x.toString()` can only be written when `x` holds an object, never with an `int`, a `long` or a `double`. And it is exactly the form that fails with `null`.
 
 `x.toString()` works differently, because it is an **instance** method: it is not called on the class but on one specific object, the one the variable `x` holds. Remember that an object variable does not hold the object itself but the memory address where it lives. When you write `x.toString()`, Java goes to that address, finds the object and runs its `toString()` method. If `x` is `null`, the variable holds no address: there is no object to run the method on, and Java throws `NullPointerException`:
 
