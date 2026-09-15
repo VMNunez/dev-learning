@@ -737,7 +737,7 @@ The three forms shown in the code block above convert an `int` into text, and an
 
 With an object there is also a fourth form that is not in the previous examples: `x.toString()`, called directly on the variable. It is not the same as `Integer.toString(hours)`, nor as `Long.toString(x)` or `Double.toString(x)`: those are static methods of each wrapper that take the primitive number as their argument, whereas `x.toString()` can only be written when `x` holds an object, that is, an `Integer`, a `Long` or a `Double`, never with an `int`, a `long` or a `double`. Also, unlike `String.valueOf(x)`, this form throws an exception if `x` is `null`, as explained next.
 
-`x.toString()` works differently, because it is an **instance** method: it is not called on the class but on one specific object, the one the variable `x` holds. Remember that an object variable does not hold the object itself but the memory address where it lives. When you write `x.toString()`, Java goes to that address, finds the object and runs its `toString()` method. If `x` is `null`, the variable holds no address: there is no object to run the method on, and Java throws `NullPointerException`:
+`x.toString()` works differently from `String.valueOf(x)`, because it is an **instance** method: it is not called on the class but on one specific object, the one the variable `x` holds. Remember that an object variable does not hold the object itself but the memory address where it lives. When you write `x.toString()`, Java goes to that address, finds the object and runs its `toString()` method. If `x` is `null`, the variable holds no address: there is no object to run the method on, and Java throws `NullPointerException`:
 
 ```java
 Employee e = null;
@@ -746,7 +746,7 @@ String s1 = String.valueOf(e);   // "null" — no crash; valueOf checks for null
 String s2 = e.toString();        // 💥 NullPointerException — nothing there to call a method on
 ```
 
-That is the whole argument. When the value definitely is not null — a primitive `int` cannot be — the two are equivalent and it is a matter of taste. When it might be, `String.valueOf` degrades into readable output and `toString()` takes down the request. In a log line or an error message, where the value being null is exactly the case you are trying to diagnose, `valueOf` is the only sane choice.
+That is the reason `String.valueOf(x)` is the recommended choice. When the value definitely is not null — a primitive `int` cannot be — the two are equivalent and it is a matter of taste. When it might be, `String.valueOf` degrades into readable output and `toString()` takes down the request. In a log line or an error message, where the value being null is exactly the case you are trying to diagnose, `valueOf` is the only sane choice.
 
 > **The one place `String.valueOf` bites back.** Writing `String.valueOf(null)` with a bare literal `null` does **not** return `"null"` — it throws a `NullPointerException`. The cause is that `String.valueOf` is overloaded many times over (`Object`, `char[]`, `int`, `boolean`…), and when the argument is a bare `null` the compiler picks the most specific one that fits, which is `char[]` — and that overload immediately reads the array's length. The error message even says so: `Cannot read the array length because "value" is null`. It only ever happens with a literal `null` written in the source, never with a null *variable*, whose declared type resolves the overload correctly. If you ever genuinely need it, `String.valueOf((Object) null)` gives you `"null"`.
 
