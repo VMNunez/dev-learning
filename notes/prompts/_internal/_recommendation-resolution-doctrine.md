@@ -364,7 +364,7 @@ worked cut (`03-expense-tracker`'s `effect()` pair) was the same shape as a bull
 one the section's voice is calibrated against. Neither is arguable once counted and neither is visible
 until you count: so **name the calibration artefact, apply the draft test to it by hand, and report the
 count in the dispatch** — `REC-191`'s instrument is a step-2 obligation, not a reviewer's job, and a
-round-1 `reject` is what it costs to skip it. The cheapest form of the count is often a single
+round-1 `reject` is what it costs to skip it. **Also `REC-171`, over a harvest pass: the approved artefact is the refined file of every pair already harvested as well as the pair in hand**, since a rule derived from one pair's corrections is judged against prose Victor approved in the others — passes `00` and `01` each lost round 1 to a check rewriting approved text in another pair, and pass `02` lost it to three checks tested on its own pair alone. The repair that held was a fence naming the approved form, or the unmarked defect named as residue, never a narrower rescope. The cheapest form of the count is often a single
 measurement of the artefact's own shape (here, a longest-bullet length of 124 and 129 characters against
 the 214-319 the unaudited project carries), which sizes a bound and falsifies a bad one in one command.
 **And a test retired this way is retired by name in the standard**, with the reintroduction it must

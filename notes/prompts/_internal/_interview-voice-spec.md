@@ -333,9 +333,9 @@ every pair he refines later owes one pass of its own. **The question differs eve
 sink asks *which rule of the standard was missing or unapplied*, countable across pairs. Loop B asks
 *what is Victor's answering voice*, legible only in the before/after.
 
-Because `REC-184` and `REC-171`'s harvest must rule the approval gate together or diverge, a session
-resolving `REC-171` reads this file at its step 1 as well — the fifth reader, where
-`README.md` and `_system-map.md` §7 both list only the first three.
+`REC-184` and `REC-171`'s harvest had to rule the approval gate together or diverge, so a session
+resolving `REC-171` read this file at its step 1 as well. That row closed on 2026-09-15 with the gate
+ruled — the cold reviewer alone — and `REC-184` takes the same one.
 
 ## What no row owns yet
 

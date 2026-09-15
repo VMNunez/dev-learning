@@ -464,9 +464,8 @@ by ID — read to deduplicate a candidate against work already ruled on, includi
 voice pipeline, Loop A generation → translation → TODO → symmetric repair → `[refined]`, and Loop B
 collection → maturity → drafted rule → approval. **A target, not a description of what runs**: it
 grants no authority, no run obeys it, a standard beats it wherever they disagree, and every step names the
-row that owns it — read at step 1 by a session resolving `REC-184` **or
-`REC-171`'s harvest**, that last one because `REC-184` binds its approval gate to be ruled with the notes
-harvest's or the two mechanisms diverge. `REC-183`, its step 4, closed 2026-08-29 and is the one slice
+row that owns it — read at step 1 by a session resolving `REC-184`, and by `REC-171`'s harvest until that
+row closed on 2026-09-15, having ruled the approval gate `REC-184` now takes: the cold reviewer alone. `REC-183`, its step 4, closed 2026-08-29 and is the one slice
 already built),
 `system/_internal/_system-check-reconcile-prompt.md` (the mandate every one of `system-check`'s Step 4
 reconcilers is dispatched with: the two directions, the four claim dispositions and the return contract),

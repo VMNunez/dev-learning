@@ -6,7 +6,7 @@ were derived once, by hand, from a single pass — the mechanism family (its "An
 and the seven sentence-level register rules (its "Sentence-level register") — and neither's evidence
 survived: the TODO lines are gone from the files, and `git log -S TODO --follow` over the pair that
 produced the seven returns one added line, written by the pipeline. This file is the countable index of
-that evidence. The source contract is `_recommendation-ledger.md` → `REC-171`; this file is its event
+that evidence. The source contract is `REC-171`, closed 2026-09-15 (`_recommendation-ledger-closed.md`, its reasoning in `git log -p` on the ledger); this file is its event
 sink and the home of the harvest procedure that row's resolution fixed, and nothing else may widen it.
 
 ## Why this is not `git log -p`, and not the other three sinks
