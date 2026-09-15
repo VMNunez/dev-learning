@@ -44,7 +44,15 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **angular-material / junior** `[frontend]` — The toolbar's account-menu button icon renders dark grey
+  on the teal primary toolbar, which looks well under the WCAG AA 3:1 minimum for a non-text UI component
+  that the frontend's generated guide requires. `frontend/timetrack/src/app/layout/shell/shell.html:5-6`
+  places `<mat-icon>account_circle</mat-icon>` inside a `matIconButton` in the toolbar with no colour
+  override, so the icon button keeps its default on-surface-variant colour instead of the colour meant for
+  content on the primary container. Observed 2026-09-15 in a browser screenshot of `/dashboard`; the ratio
+  was not measured — confirm it first with DevTools' contrast picker or an axe run on the shell before
+  fixing. **Effort:** Small *(raised 2026-09-15 while verifying Step 7a's login clause; not a review
+  finding)*
 
 ## Beyond the current gate
 
