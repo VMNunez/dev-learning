@@ -288,7 +288,7 @@ one `grep -c` per file over the artefacts the standard governs, before pricing a
 is the same cost as reading the standard and it is the only thing that separates a rule from a rule
 that happened. And **a tracker column is the cheapest such instrument in the repository**: it records
 which prompts have *run*, so an empty column under a standard everyone cites dates the gap without
-opening a single artefact. **Also `REC-195`, which names the third form and it is the cheapest
+opening a single artefact. **Also `REC-170`, over a *validation* claim: whether Victor validated a file is read off the freeze marker its plan carries, never off its history** — that row read `git log` as proof he never touched `11-excepciones.md`, and his TODO commits were there under the pre-renumber name; what one grep of the plan said was the real defect, that the pair was never declared `refined`. **Also `REC-195`, which names the third form and it is the cheapest
 to miss: an invariant nobody triggers is not a gate.** Invariant 9 had checked the closure schema for
 weeks and still let `REC-190` land with two fields and its verdict missing, because
 `validate-prompt-system.ps1` has no CI and no hook — it runs when someone runs it — and the act that
