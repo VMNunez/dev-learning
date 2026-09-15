@@ -776,7 +776,7 @@ That second line can throw `NumberFormatException`, because here `Long.valueOf` 
 
 > 📖 Docs: [Oracle Docs — `java.lang.String`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html) → read: the `equals(Object)` and `equalsIgnoreCase(String)` entries in the method list — both are defined in terms of *the sequence of characters*, never of the object holding them.
 
-To compare two Strings we have the `equals()` and `equalsIgnoreCase()` methods. It can also be done with `==`, which compiles, but does not compare the text and is a mistake:
+To compare two Strings we have the `equals()` and `equalsIgnoreCase()` methods. With `==` they cannot really be compared: it compiles, but it does not compare the content of the two Strings, only the reference to the objects, and that is why it is a mistake:
 
 ```java
 name.equals("Ana")                  // BIEN — compares the actual characters
