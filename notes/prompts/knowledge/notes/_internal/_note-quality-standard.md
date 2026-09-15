@@ -413,15 +413,10 @@ Not every element fits every section, but a finished note visibly uses most of t
   notes are dense with these (five in the first `01` file alone). Every "why does it work this way?",
   "what does this word mean?", or "why not the obvious alternative?" becomes a callout. Do not ration
   them — under-using callouts is the most common way a draft falls below his bar. Resolve the doubt as
-  a statement of fact (see the question-TODO rule in `_notes-write-prompt.md`) — never phrase the
-  heading as a literal question. **That last clause is `en disputa`** (2026-09-15, `REC-171`): the
-  refined `00` has four callouts whose bold lead-in is the question the callout then answers —
-  ``**¿Por qué siempre `String[] args`?** Porque un programa se puede arrancar pasándole datos…`` —
-  and no conditional keeps both sides, because the clause was written about callouts. One supporting
-  pair against one contradicting pair is a tie, which waits for the next refined pair. Until then
-  neither form binds the writer or the reviewer on a callout's lead-in, and neither does "never leave
-  the question visible" in the Anticipate pass below or in the question-TODO rule. Section headings
-  are outside the dispute.
+  a statement of fact (see the question-TODO rule in `_notes-write-prompt.md`) — never phrase a
+  section heading as a literal question. A callout's bold lead-in may be the question the callout
+  answers: **Harvested from refined pairs** → `HR-9`, which settled on 2026-09-15 the dispute this
+  clause carried over callouts (`REC-171`).
 - **Every comparison table gets a sentence on how to read it.** After any table, add a line that
   explains what a non-obvious column or row actually means and how to use it — e.g. "The `Parent
   class` column is what determines whether the compiler treats it as checked or unchecked." A table
@@ -463,8 +458,8 @@ generating that list:
 - **Simulate his chained "why?" questions.** For each section, generate the chain of "why does this
   work?" and "does this mean that?" questions a rigorous reader would ask, and verify the prose
   already answers each one. If any is unanswered, answer it in the text (as a statement of fact —
-  never leave the question visible; whether a callout's bold lead-in may be that question is
-  `en disputa`, under **Signature elements**).
+  never leave the question visible; a callout's bold lead-in may still be the question that callout
+  answers, `HR-9`).
 - **Never mention an action in the abstract without its code.** If the text says "you can rethrow
   it", "you can wrap it", "you configure it" — the concrete code snippet must be right there. An
   abstract mention with no example is a guaranteed "quiero ver un ejemplo" TODO.
@@ -678,6 +673,85 @@ scope names one.
   On an `append-only` run over a frozen pair the index stays as it is and the entry an appended heading
   lacks is reported, since that mode's freeze outranks this rule. Scope: all topics. Judged at stage B
   on the `en/` and at stage C on the `es/` anchors.
+- **`HR-2` — A thing keeps its real name; an analogy illustrates it and never replaces it.** A thing is
+  called by its established name every time it appears — a variable is a space in memory holding a
+  value or an address, never "una caja"; what a chapter covers is the type system, not a "modelo de
+  valores" coined for the page — and an analogy comes after that name and the mechanism are stated, the
+  way the odometer follows the wraparound in `java/junior/01`. An explanation carried in the analogy's
+  own vocabulary makes the reader translate every sentence back before it teaches anything. `01`:
+  "compara las dos direcciones de las cajas de la izquierda, no el texto de la caja de la derecha" became
+  "compara las dos direcciones de memoria que guardan las variables, no el texto al que esas direcciones
+  apuntan". The refined `01` still says "la caja existe" in two code comments Victor did not mark; the
+  rule is his TODO, and those comments are residue. Scope: all topics. Judged at stage B, and at stage C
+  on the wording.
+- **`HR-3` — Name the referent the reader cannot see.** A pronoun or an elliptical noun — "uno", "cada
+  uno", "uno nuevo", "serlo" — names its noun when that noun is in neither the same nor the previous
+  sentence, or when two nouns could be meant: "construye uno nuevo" — where texto, objeto and `String`
+  could each be meant — became "construye un objeto nuevo",
+  and "siempre tiene que serlo" became "siempre tiene que ser un tipo de referencia". A reference to
+  material outside the block beside the sentence says which place it means — by heading, when more than
+  one could be meant — and never stands in for the thing it points at: "Compara las dos *direcciones* del
+  diagrama del principio de este archivo" became "Compara las dos direcciones en la memoria", and "que
+  describió el callout del dinero" became "que ya describió la sección _Tipos por categoría_, más arriba
+  en este archivo, en su aviso **Dinero — nunca `double` ni `float`**". "De arriba" and "de abajo" stay
+  for the block beside the sentence ("los ejemplos de abajo" over the three fragments that follow it, in
+  `02`), and a far reference that also says what it points at stays ("lo que ya te enseñó el diagrama
+  del principio: una variable `String` no guarda las letras…", `01`). Scope: all topics. Judged at stage
+  C on the `es/` and at stage B on the `en/`.
+- **`HR-4` — A set of options says when each is used, and whether it is whole.** When a section presents
+  members of a set the reader chooses between — types, the constants of an enum, the directions of a
+  conversion, the right and the wrong form of a line — it gives the members the reader will use, says
+  when each is used, says so when it names only some of a set he will meet in full, and sits where the
+  set is first needed. `01` gained a `Uso habitual` column on the primitive table, all eight
+  `RoundingMode` constants with the ones used in practice, the reverse direction of the lossy widenings,
+  "mientras que `List<Integer>` sí es correcto" beside `List<int>`, and the wrapper table moved up to
+  where `List<Integer>` first needs it. Scope: all topics. Judged at stage B; stage C reports a missing
+  member.
+- **`HR-5` — What a paragraph reasons about is in view, and read.** The code a paragraph talks about
+  sits directly above it, not three blocks away (`01` moved `int number; String name;` above "¿qué tiene
+  escrito `name` dentro?"). An error message whose lines say different things, or an output whose point
+  is a value that changed, gets a sentence reading it: which line names the failure, which value moved —
+  "La primera línea del error nombra el fallo", "el 7 final se ha vuelto un 6". A one-line message quoted
+  so the reader recognises it needs no reading, and neither does one message wrapped over two lines.
+  Scope: all topics. Judged at stage B.
+- **`HR-6` — Say it once in a file.** A fact, list or example already given in the same file is pointed
+  at, not restated: `01` cut the `A && B` / `A || B` bullets that repeated the truth tables, the sentence
+  retelling the discarded nine bits under the diagram that shows them, and the one-third analogy the
+  money callout had already made. A callout or sentence that restates a fact on purpose says so ("— como
+  ya vimos antes"), a far reference that says what it points at passes (`HR-3`), and a paragraph whose job is to summarise — a file's closing recap, a "regla práctica" —
+  restates by design and passes. So does a section that takes up one or more entries of a reference list
+  given earlier in the same file and restates them before developing them: `02`'s method catalogue gives
+  `isEmpty()`, `isBlank()` and `equals()` one entry each, and its sections on `isEmpty()` and `isBlank()`
+  and on comparing two Strings restate them before going further. This is the in-file half of **Living document rules** → "Never
+  duplicate examples across files" and **Narrative thread** → "Reference, don't re-teach". Scope: all
+  topics. Judged at stage B.
+- **`HR-7` — An example is marked, concrete, and matches its sentence.** It is introduced as one ("por
+  ejemplo"), uses values the reader can compute ("`0.124` se queda en `0.12`", "un `int` de
+  nanosegundos se agota a los 2.1 segundos" instead of "conteos de bytes de cualquier cosa del tamaño
+  de un archivo"), and does not contradict the sentence it illustrates — where the result surprises
+  (scale 4 from two scale-2 operands), the rule producing it is stated beside it. Scope: all topics.
+  Judged at stage B; stage C adds the "por ejemplo".
+- **`HR-8` — A section that re-covers or extends what was just read says what it adds.** A subsection
+  that re-covers or extends the material before it, the next alternative in a sequence, and a table
+  re-presenting a set the text has already named each open with one sentence saying what they add: "La
+  tabla de arriba te dio los 8 primitivos completos, con su tamaño y su rango. Esta sección los reagrupa
+  según para qué sirven", "La forma correcta de comparar dos `BigDecimal` es usando `compareTo()`". A
+  section that opens a new concept with its problem passes, and so does one whose heading already names
+  its relation to what came before ("Tabla resumen", `00`); a heading that names only its own topic
+  ("Tipos por categoría" in the `01` draft) does not. It is **Narrative thread** → "Open by picking up the thread"
+  applied inside a file. Scope: all topics. Judged at stage C, and at stage B where the sentence is
+  missing rather than badly worded.
+- **`HR-9` — A callout's bold lead-in may be a question.** It may be the question the callout's body
+  answers — ``**¿Por qué siempre `String[] args`?** Porque un programa se puede arrancar…`` (`00`),
+  ``**Entonces, ¿para qué existe el constructor con `double`?** Porque es el único que dice la verdad
+  sobre un `double`.`` (`01`, where Victor also edited a second such lead-in through a TODO and kept it a
+  question) — and a bold question standing alone as a self-check, answered by the text that follows,
+  passes too (``**¿`javac` rechazó el código fuente, o llegó una JVM a empezar a ejecutar su
+  bytecode?**``, `00`). It is an authored lead-in, not a question TODO left visible:
+  `_notes-write-prompt.md`'s question-TODO rule still weaves a TODO's answer into the prose, and a section
+  heading is still never a question. It settles the dispute **Signature elements** carried: `00` and `01`
+  against the clause's one pre-harvest pair, and the side with more supporting pairs wins
+  (`_note-todo-harvest.md` → "Disputes"). Scope: all topics. Judged at stages B and C.
 
 #### Examples
 
@@ -742,6 +816,9 @@ two versions of the pair, `[…]` marking a cut.
 
 An example and deliberately not a rule: the same refined file introduces **lista**, **excepción** and
 **regla de negocio** with no English name, so "every term in both languages" would reject what he approved.
+`java/junior/01` asked for the same twice — "el _stack_, o pila" in place of "la pila (*stack*)", and
+"_cláusula de guarda_ (en inglés, _guard clause_ — …)" — and still introduces **sobrecarga de operadores** and
+**asignaciones compuestas** with no English name, so it stays an example after two pairs.
 
 **`HE-7` — a comparison that carries its own code is a heading** · no rule · `java/junior/00`
 
@@ -753,10 +830,12 @@ An example and deliberately not a rule: the same refined file introduces **lista
 #### Reviewer checks
 
 A check is the enforcement for a rule the drafts carried and did not apply (`unapplied`), built from
-real before/after pairs. Each names the stage that runs it. Stage B's audit checklist
-(`_notes-review-prompt.md`) points at this block and at `HR-1`; stage C's (`_notes-review-es-prompt.md`)
-points only at `HR-1`'s `es/` anchors, because no stage C check exists yet. The examples quote the `es/`
-side, where Victor made the change; a stage B check runs on the English that stage reviews.
+real before/after pairs. Each names the stage that runs it. Each stage's audit checklist points at this
+block and at the rules above that it judges — stage B's in `_notes-review-prompt.md`, stage C's in
+`_notes-review-es-prompt.md` — and stage C runs its checks inside its own prose-only scope: what a check
+needs beyond wording (a code block, a table, a heading) is reported as a structural gap, never added.
+The examples quote the `es/` side, where Victor made the change; a stage B check runs on the English that
+stage reviews.
 
 - **`HC-1` — Supporting-term sweep** · stage B · enforces the Zero-assumption rule and its register
   restatement ("The zero-assumption rule covers supporting clauses") · built from `HE-1`, `HE-2`. In
@@ -791,6 +870,77 @@ side, where Victor made the change; a stage B check runs on the English that sta
   compile-time obligation of checked exceptions handed to `08`, and object equality handed to `04`. In
   the refined file the unordered set handed to `10` and every entry of the route are previews, and the
   three things type erasure stops from compiling are answered in place before the link to `09`; all pass.
+- **`HC-4` — A phrase that only works in English, or a figure that carries the claim** · stage C ·
+  enforces Bilingual notes → "The Spanish prose must read as natural Spanish" and Sentence-level
+  register → "cut the literary flourish" · built from `java/junior/01`. Read every prose sentence,
+  callout and bold lead-in — code blocks and diagram labels are outside this check — for two things.
+  **A calque**: Spanish words in the shape of an English idiom Spanish does not use — "el caso en contra
+  de" (*the case against*), "tiene sitio para decir" (*has room to say*), "se filtra hasta" (*leaks
+  into*), "el instinto siguiente" (*the next instinct*), "en código de aplicación", "camino de fallo",
+  "la que muerde" (*the one that bites*), "atrapado con un `double`" (*stuck with*). Always rewritten as
+  the plain claim. **A figure**: a word used figuratively about code or data is rewritten when it is the
+  only word saying what happens, and stays when the same or an adjacent sentence already says it
+  plainly, or when it previews a later section of the same file that says it plainly ("los dos lugares
+  donde esos métodos te engañan", in `02`'s introduction). In the `01` draft it catches, among others, "Ese es todo el caso en contra de `==` en coma
+  flotante" (→ "Por eso `==` no sirve para comparar dos `double`"), "La división viene de lo que cada
+  tipo tiene sitio para decir" (→ "…de lo que cada tipo puede representar"), "es la segunda la que
+  muerde" (→ "…la que causa bugs"), "lo violento que es realmente el resultado", "los gobiernan", "el
+  ejemplo más afilado" and "cuál te toca". In the refined file "sigue adelante tan tranquilo con una
+  duración negativa", "alcanzan el mismo precipicio" after the sentence stating it, "convirtiendo la
+  basura con total fidelidad" and "el único que dice la verdad sobre un `double`" before the sentence
+  that states it all pass.
+- **`HC-5` — A word the reader was never given** · stage C · enforces the Zero-assumption rule and
+  Sentence-level register → "Never name a command, tool or file type before saying what it is"; the
+  stage-C counterpart of `HC-1`, for the words the Spanish itself carries · built from `java/junior/01`.
+  List every word in the prose that names a part of the note itself — "el callout de arriba" — or a
+  piece of jargon: a borrowed or translated technical term, an acronym, a standard's number. Put each
+  jargon word to the reader this standard writes for, a developer with rusty JavaScript meeting this
+  technology for the first time and reading Spanish: a word any web team uses daily (JSON, endpoint,
+  stack trace, pull request) passes, so does one an earlier note of the route defined (bytecode, in
+  `00`) or this file defined above, and so does a name the section only previews or hands to a later
+  file ("los text blocks", Hibernate), as under `HC-3`. Two repairs are wording and stay inside this
+  stage: note furniture is replaced by what it points at, under `HR-3`, and an unglossed Spanish rendering
+  is replaced by the plain word the refined pairs use ("margen de error" for "tolerancia", "la
+  comprobación" for "la guarda", "referencias a objetos" for "sus ranuras"). A term that needs a
+  definition the prose does not give is **reported as a structural gap**, never defined here: the
+  definition is content the `en/` must carry too, and `HC-1` owns it at stage B. A word in a heading is
+  reported, never rewritten, because the heading is the index's anchor. In the `01` draft it replaces "el
+  callout de arriba", "la guarda", "tolerancia" and "sus ranuras", and reports "flag", "el desliz clásico
+  de la familia C", "IntelliJ lo marca como una inspección", "truthy", "IEEE 754" and "sobrecarga de
+  operadores"; in the refined file "stack", "heap", "wraparound", "epsilon" and "cortocircuito" pass,
+  each defined where it first appears, and "una ranura entera, que en la práctica es el espacio de un
+  `int`" passes, glossed in its own sentence.
+- **`HC-6` — A bold lead-in read alone** · stage C · enforces Sentence-level register → "A bold lead-in
+  is a plain statement of the fact, never a metaphor or a riddle" and → "Scope a project claim to what
+  is actually true" · built from `java/junior/01`. Cover the body and read the bold lead-in by itself.
+  It is rewritten as the body's claim, in one plain clause, when it is a figure or a riddle whose plain
+  claim it does not also state, or when it claims a scope or a fact the body does not have. A plain
+  label passes, and so does a question the callout's body answers or a bold self-check question the
+  text after it answers (`HR-9`). In the `01` draft it catches "`+=` esconde un cast, y eso es la
+  definición del lenguaje, no una rareza." (→ "`+=` hace un cast que tú no escribes."), "El wrapper
+  discrepa a propósito con el operador." (→ "Con `NaN`, `Double.equals` y `Double.compare` sí dan
+  `true`; el operador `==` no.") and "Dinero en Spring Boot:" over a callout about pure Java (→ "Dinero
+  — nunca `double` ni `float`."). In the refined file the labels "Por qué a un banco le importa." and
+  "Cuál usar en la práctica.", "El mecanismo no es magia — es el compilador escribiendo por ti el código
+  antiguo." with its plain claim after the dash, and "Entonces, ¿para qué existe el constructor con
+  `double`?" all pass.
+- **`HC-7` — A connector whose cause or effect is left abstract** · stage B · enforces Second-order
+  completeness → "Explain the mechanism, not just the usage" and Sentence-level register → "An abstract
+  consequence must be spent immediately" · built from `java/junior/01`. At every causal connector —
+  *because*, *so*, *which is why*, *that means*, *is a source of bugs* — ask whether the clause on each
+  side names a concrete step (which component does what, in what order, to which value) or a concrete
+  effect (what the program prints, throws or skips). A side that names neither is traced: a cause of
+  more than one step as numbered steps, an effect as the observable result in one sentence or in code.
+  A side that already is a concrete step passes. In the `01` draft it catches "porque la
+  multiplicación se ejecuta en `int` antes de que se considere siquiera la asignación" (→ the five-step
+  overflow trace), "`multiply` suma las dos escalas" with no rule for `add` and `subtract` (→ the scale
+  table and its four-step chain), "envía un medio al dígito *par* más cercano" (→ the exact-half test
+  with seven lines of output), "la forma corta no tiene ningún `=` que perder" (→ the assignment writes
+  `true` and hands it to the `if` on every pass) and "poner trabajo con efectos secundarios dentro del
+  operando derecho es una fuente fiable de bugs" (→ in `if (isValid() && log(request))` no invalid
+  request is ever logged). In the refined file "porque cambia un operando _antes_ de que se ejecute el
+  `/`" and "El `double` llega demasiado tarde; la información ya se había perdido", after the sentence
+  tracing the order, pass.
 
 #### Evidence
 
@@ -801,17 +951,25 @@ not listed and keeps that default.
 
 | Rule | Scope | Judged at | Supported by | Contradicted by |
 |---|---|---|---|---|
-| `HR-1` — the index above the title | all topics | B; C for the `es/` anchors | `java/junior/00` | — |
+| `HR-1` — the index above the title | all topics | B; C for the `es/` anchors | `java/junior/00` · `java/junior/01` | — |
+| `HR-2` — a thing keeps its real name; an analogy never replaces it | all topics | B; C on the wording | `java/junior/01` | — |
+| `HR-3` — name the referent the reader cannot see | all topics | C; B on the `en/` | `java/junior/01` | — |
+| `HR-4` — a set of options says when each is used, and whether it is whole | all topics | B; C reports a missing member | `java/junior/01` | — |
+| `HR-5` — what a paragraph reasons about is in view, and read | all topics | B | `java/junior/01` | — |
+| `HR-6` — say it once in a file | all topics | B | `java/junior/01` | — |
+| `HR-7` — an example is marked, concrete, and matches its sentence | all topics | B; C for the marker | `java/junior/01` | — |
+| `HR-8` — a section that re-covers or extends what was just read says what it adds | all topics | C; B where the sentence is missing | `java/junior/01` | — |
+| `HR-9` — a callout's bold lead-in may be a question | all topics | B, C | `java/junior/00` · `java/junior/01` | — |
 | Format modes → the topic introduction is always conversational mode | all topics | B | `java/junior/00`, which it was derived from | — |
 | Persistent-plan pedagogical contract → introduction invariants 6 and 7, and the mechanism the file leans on placed early | all topics | B | `java/junior/00`, which they were derived from | — |
-| Sentence-level register → the seven rules and the literary flourish | all topics | C | `java/junior/00`, which they were derived from | — |
-| Zero-assumption rule · `HC-1` | all topics | B | pre-harvest origin · `java/junior/00` | — |
-| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3` | all topics | B | pre-harvest origin · `java/junior/00` | — |
-| Anticipate-the-TODO pass · `HC-2`, `HC-3` | all topics | B | pre-harvest origin · `java/junior/00` | — |
-| Signature elements → analogies, exact error messages | all topics | B | pre-harvest origin · `java/junior/00` | — |
-| Signature elements → "never phrase the heading as a literal question", on a callout's lead-in — **`en disputa`**, a tie waiting for the next refined pair | all topics | neither, while disputed | pre-harvest origin | `java/junior/00` |
-| The rest of the writing rules → link to other note files | all topics | B | pre-harvest origin · `java/junior/00` | — |
-| Bilingual notes → the Spanish reads as native Spanish | all topics | C | pre-harvest origin · `java/junior/00` | — |
+| Sentence-level register → the seven rules and the literary flourish · `HC-4`, `HC-5`, `HC-6`; the consequence rule also `HC-7` | all topics | C; B for `HC-7` | `java/junior/00`, which they were derived from · `java/junior/01` | — |
+| Zero-assumption rule · `HC-1`, `HC-5` | all topics | B; C for `HC-5` | pre-harvest origin · `java/junior/00` · `java/junior/01` | — |
+| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3`, `HC-7` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` | — |
+| Anticipate-the-TODO pass · `HC-2`, `HC-3` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` | — |
+| Signature elements → analogies, exact error messages, a sentence reading every non-obvious table, wrong-vs-right labels | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` | — |
+| Signature elements → a section heading is never a literal question; on a callout's lead-in the clause was cut for `HR-9` on 2026-09-15 | all topics | B | pre-harvest origin | on a callout's lead-in: `java/junior/00`, `java/junior/01` — settled, 2 to 1 |
+| The rest of the writing rules → link to other note files | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` | — |
+| Bilingual notes → the Spanish reads as native Spanish · `HC-4` | all topics | C | pre-harvest origin · `java/junior/00` · `java/junior/01` | — |
 
 ---
 

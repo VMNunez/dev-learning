@@ -153,6 +153,13 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
 - **Index anchors** — every entry of the index above the title links a heading that exists in this
   `es/` file, by the slug of its Spanish text (the standard's **Harvested from refined pairs** → `HR-1`).
   An anchor still carrying the English heading is a broken link: fix the anchor, never the heading.
+- **Harvested rules and reviewer checks** — the standard's **Harvested from refined pairs**: every `HR`
+  rule it judges at stage C and every check its "Reviewer checks" block assigns to stage C, run on every
+  section as written there. The rules are what Victor's refined pairs taught the standard, and the checks
+  enforce rules earlier drafts carried and did not apply, so Spanish that passes the points above can
+  still fail one. They run inside this stage's prose-only scope: what a rule or check needs
+  beyond wording is reported as a structural gap, never added. Name the check in the trace when it
+  drives a fix.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
 - **Standalone learning outcome** — studying only the Spanish must let Victor achieve TASK's

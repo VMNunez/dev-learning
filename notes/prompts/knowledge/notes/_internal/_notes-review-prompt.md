@@ -133,10 +133,11 @@ For each section of the file, check:
   contrasted; exact scope stated; JS/TS anchored only where genuinely equivalent.
 - **Anticipate-the-TODO** — the mechanism doubts Victor would raise ("why…?", "in what order…?")
   are already answered in the prose. This is the highest-value check — most misses are here.
-- **Harvested rules and reviewer checks** — the standard's **Harvested from refined pairs**: rule
-  `HR-1` (the index above the title) and every check its "Reviewer checks" block assigns to stage B,
-  run on every section as written there. The checks enforce rules earlier drafts carried and did not
-  apply, so a section that passes the generic points above can still fail one; name the check in the
+- **Harvested rules and reviewer checks** — the standard's **Harvested from refined pairs**: every
+  `HR` rule it judges at stage B (`HR-1`, the index above the title, among them) and every check its
+  "Reviewer checks" block assigns to stage B, run on every section as written there. The rules are what
+  Victor's refined pairs taught the standard, and the checks enforce rules earlier drafts carried and did
+  not apply, so a section that passes the generic points above can still fail one; name the check in the
   trace when it drives a fix.
 - **Signature texture** — worked example carried through; ASCII diagram for anything structural;
   analogy for abstract mechanisms; abundant `> blockquote` callouts; every table has a "how to read
