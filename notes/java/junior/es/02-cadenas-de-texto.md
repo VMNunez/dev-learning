@@ -709,7 +709,7 @@ Sin ninguna de las dos, si un usuario escribe `id=abc` en una URL, la excepción
 
 ### Número → texto
 
-Para pasar de número a texto hay tres formas posibles de hacerlo, usando `String.valueOf(x)`, `Integer.toString(x)` o concatenando con un texto vacío (`"" + x`), siendo `String.valueOf(x)` la más segura de ellas:
+Para pasar un número de tipo `int` a texto hay tres formas posibles de hacerlo, usando `String.valueOf(x)`, `Integer.toString(x)` o concatenando con un texto vacío (`"" + x`), siendo `String.valueOf(x)` la más segura de ellas. Por qué es la más segura no se ve con un `int`, sino cuando el número llega como `Integer`, y se explica justo debajo del bloque:
 
 ```java
 int hours = 38;
@@ -719,7 +719,11 @@ String b = Integer.toString(hours);    // "38" — la propia conversión del nú
 String c = "" + hours;                 // "38" — funciona, pero no dice nada sobre la intención
 ```
 
-`String.valueOf(x)` es la que hay que usar por defecto, porque no falla cuando el valor es `null`. Para compararla hace falta una cuarta forma que no está en el bloque de arriba: `x.toString()`, que se llama directamente sobre la variable. No es lo mismo que `Integer.toString(hours)`: esa es un método estático de la clase `Integer` al que le pasas el número como argumento, mientras que `x.toString()` solo se puede escribir si `x` guarda un objeto (un `Integer`, un `Employee`…), nunca con un `int`. Por eso no aparecía entre las tres formas para un `int`, y es justo la que falla con `null`. `valueOf` es un método **estático** de `String`: lo llamas sobre la clase (`String.valueOf(...)`) y le pasas como argumento el valor que quieres convertir. Ese valor puede ser un `int`, pero también un `long`, un `double`, un `boolean`, un `char` o cualquier objeto, porque `String` tiene una versión de `valueOf` para cada tipo. Un `int` nunca puede ser `null`; eso solo le pasa a una variable que guarda un objeto, como un `Integer` o un `Employee`. Si el argumento es `null`, `valueOf` lo comprueba antes de hacer nada y devuelve el texto `"null"`, sin lanzar ninguna excepción.
+Las tres formas del bloque convierten un `int`, y un `int` nunca puede ser `null`: es un tipo primitivo y siempre guarda un número. El problema del `null` aparece cuando el número llega como `Integer`, el tipo objeto que envuelve a un `int`. Una variable `Integer` no guarda el número, sino la dirección de un objeto que lo contiene, y puede no guardar ninguna dirección, es decir, valer `null`. Con un `Integer`, o con cualquier otro objeto como un `Employee`, la forma que elijas sí importa, y `String.valueOf(x)` es la que hay que usar por defecto, porque no falla cuando `x` es `null`.
+
+`valueOf` es un método **estático** de `String`: lo llamas sobre la clase (`String.valueOf(...)`) y le pasas como argumento el valor que quieres convertir. Ese valor puede ser un `int`, un `long`, un `double`, un `boolean`, un `char` o cualquier objeto, porque `String` tiene una versión de `valueOf` para cada tipo. Si el argumento es `null`, `valueOf` lo comprueba antes de hacer nada y devuelve el texto `"null"`, sin lanzar ninguna excepción.
+
+Con un objeto aparece además una cuarta forma que no está en el bloque: `x.toString()`, que se llama directamente sobre la variable. No es lo mismo que `Integer.toString(hours)`: este es un método estático de la clase `Integer` al que le pasas un `int` como argumento, mientras que `x.toString()` solo se puede escribir si `x` guarda un objeto, nunca con un `int`. Y es justo la forma que falla con `null`.
 
 `x.toString()` funciona de otra forma, porque es un método de **instancia**: no se llama sobre la clase, sino sobre un objeto concreto, el que guarda la variable `x`. Recuerda que una variable de tipo objeto no guarda el objeto en sí, sino la dirección de memoria donde vive. Cuando escribes `x.toString()`, Java va a esa dirección, encuentra el objeto y ejecuta su método `toString()`. Si `x` es `null`, la variable no guarda ninguna dirección: no hay ningún objeto sobre el que ejecutar el método, y Java lanza `NullPointerException`:
 

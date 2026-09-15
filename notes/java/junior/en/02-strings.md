@@ -710,7 +710,7 @@ Without either, if a user types `id=abc` into a URL, the exception is not caught
 
 ### Number → text
 
-To go from number to text there are three possible ways to do it, using `String.valueOf(x)`, `Integer.toString(x)` or concatenating with an empty string (`"" + x`), with `String.valueOf(x)` being the safest of them:
+To turn a number of type `int` into text there are three possible ways to do it, using `String.valueOf(x)`, `Integer.toString(x)` or concatenating with an empty string (`"" + x`), with `String.valueOf(x)` being the safest of them. Why it is the safest does not show with an `int`, but when the number arrives as an `Integer`, and it is explained right below the block:
 
 ```java
 int hours = 38;
@@ -720,7 +720,11 @@ String b = Integer.toString(hours);    // "38" — the number's own conversion
 String c = "" + hours;                 // "38" — works, but says nothing about intent
 ```
 
-`String.valueOf(x)` is the one to use by default, because it does not fail when the value is `null`. To compare it you need a fourth form that is not in the block above: `x.toString()`, called directly on the variable. It is not the same as `Integer.toString(hours)`: that one is a static method of the `Integer` class that takes the number as its argument, whereas `x.toString()` can only be written when `x` holds an object (an `Integer`, an `Employee`…), never with an `int`. That is why it was not among the three forms for an `int`, and it is exactly the one that fails with `null`. `valueOf` is a **static** method of `String`: you call it on the class (`String.valueOf(...)`) and pass the value you want to convert as its argument. That value can be an `int`, but also a `long`, a `double`, a `boolean`, a `char` or any object, because `String` has a version of `valueOf` for each type. An `int` can never be `null`; that only happens to a variable holding an object, such as an `Integer` or an `Employee`. If the argument is `null`, `valueOf` checks for it before doing anything and returns the text `"null"`, without throwing any exception.
+The three forms in the block convert an `int`, and an `int` can never be `null`: it is a primitive type and always holds a number. The `null` problem appears when the number arrives as an `Integer`, the object type that wraps an `int`. An `Integer` variable does not hold the number but the address of an object that contains it, and it can hold no address at all, that is, be `null`. With an `Integer`, or with any other object such as an `Employee`, the form you choose does matter, and `String.valueOf(x)` is the one to use by default, because it does not fail when `x` is `null`.
+
+`valueOf` is a **static** method of `String`: you call it on the class (`String.valueOf(...)`) and pass the value you want to convert as its argument. That value can be an `int`, a `long`, a `double`, a `boolean`, a `char` or any object, because `String` has a version of `valueOf` for each type. If the argument is `null`, `valueOf` checks for it before doing anything and returns the text `"null"`, without throwing any exception.
+
+With an object there is also a fourth form that is not in the block: `x.toString()`, called directly on the variable. It is not the same as `Integer.toString(hours)`: that one is a static method of the `Integer` class that takes an `int` as its argument, whereas `x.toString()` can only be written when `x` holds an object, never with an `int`. And it is exactly the form that fails with `null`.
 
 `x.toString()` works differently, because it is an **instance** method: it is not called on the class but on one specific object, the one the variable `x` holds. Remember that an object variable does not hold the object itself but the memory address where it lives. When you write `x.toString()`, Java goes to that address, finds the object and runs its `toString()` method. If `x` is `null`, the variable holds no address: there is no object to run the method on, and Java throws `NullPointerException`:
 
