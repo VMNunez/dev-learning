@@ -53,6 +53,15 @@ That ledger is append-only and authoritative — a review never re-raises what i
   was not measured — confirm it first with DevTools' contrast picker or an axe run on the shell before
   fixing. **Effort:** Small *(raised 2026-09-15 while verifying Step 7a's login clause; not a review
   finding)*
+- [ ] **css / junior** `[frontend]` — The Login page's mobile layout looks unfinished. Below 768px it
+  already follows §14 → *Responsive intent* (the branding panel is hidden and only the form card remains),
+  but that rule says nothing about how the card itself should sit on a phone. Seen in Chrome's device
+  toolbar on 2026-09-15: the card is pinned to the top with the rest of the viewport left empty, and its
+  spacing and type still carry the desktop proportions. Decide the target mobile layout first (for
+  example, the card's position and side margins, and whether it keeps its border at phone width), then
+  implement it in `frontend/timetrack/src/app/pages/login/` using `rem` spacing, and check it at 375px and
+  768px. **Effort:** Small *(raised 2026-09-15 at Victor's request while verifying Step 7a's login clause
+  on a phone-width viewport; not a review finding)*
 
 ## Beyond the current gate
 
