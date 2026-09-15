@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { noAuthGuard } from './core/guards/no-auth-guard';
+import { managerGuard } from './core/guards/manager-guard';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
+      },
+      {
+        path: 'projects',
+        canActivate: [managerGuard],
+        loadComponent: () => import('./pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
       },
     ],
   },
