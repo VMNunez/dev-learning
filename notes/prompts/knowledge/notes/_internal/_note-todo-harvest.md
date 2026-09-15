@@ -116,8 +116,9 @@ ones included. That is the `desvíos:` visible-line discipline and it exists for
 that should have noticed is exactly the run that does not, and a passive "check the threshold" is obeyed
 only when it was not needed.
 
-**The first harvest is due at three refined pairs** — `_recommendation-ledger.md` → `REC-170`'s own count
-over the same evidence set, and it is sequenced behind that row. **Standing after that, a category is
+**The first harvest is due at three refined pairs** — `REC-170`'s own count over the same evidence set.
+It was sequenced behind that row, which closed on those three pairs, so it is due now and is
+`_recommendation-ledger.md` → `REC-171` (g). **Standing after that, a category is
 due when it recurs in two different pairs since the last harvest.** Cross-pair is the whole qualifier:
 five occurrences inside one pair are that note's quirk; two pairs is an invariant.
 

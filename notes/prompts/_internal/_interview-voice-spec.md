@@ -325,9 +325,10 @@ permits: the drafting is a run, the landing is a hand.
 
 `REC-171` built the same second loop for note prose and shipped (a)–(f): the sink
 `knowledge/notes/_internal/_note-todo-harvest.md`, its writers, its counter, its threshold. Only the
-first harvest, (g)+(h), is left, and it is blocked behind `REC-170` — the standard's calibration
-exemplar was never validated by Victor, so depth rules refined against it would calibrate the bar
-against the pipeline's own prose. **The question differs even though the evidence is shared**: that
+first harvest, (g)+(h), is left. It waited on `REC-170` — the standard calibrated against a pair Victor
+never declared refined, so depth rules refined against it would have calibrated the bar against the
+pipeline's own prose — and that row closed on 2026-09-15, pinning the calibration to his three refined
+pairs, so the harvest is no longer blocked. **The question differs even though the evidence is shared**: that
 sink asks *which rule of the standard was missing or unapplied*, countable across pairs. Loop B asks
 *what is Victor's answering voice*, legible only in the before/after.
 
@@ -375,7 +376,8 @@ notes harvest has run. Phase 2 is the part that must wait for `REC-171` (g), bec
 about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
 the corpus months earlier at almost no cost, which is the whole argument of that section.
 
-**The transitive consequence, stated because it is easy to miss:** `REC-171` (g) is blocked behind
-`REC-170`, so the critical path of the voice loop begins at a row about the calibration exemplar of
+**The transitive consequence, stated because it is easy to miss:** `REC-171` (g) was blocked behind
+`REC-170`, so the critical path of the voice loop began at a row about the calibration exemplar of
 `_note-quality-standard.md` — a note pair under `notes/java/junior/`, one folder away from everything
-this file describes. Nothing about interview answers can be harvested until Victor validates it.
+this file describes. That row closed on 2026-09-15, so the critical path now begins at `REC-171` (g)
+itself.

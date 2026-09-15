@@ -23,7 +23,8 @@ in your report; the English is not yours to touch.
 1. Fill in `TOPIC` and `FILE` — `FILE` is the **`en/`** path; you create/update its `es/` counterpart
    (same number prefix, Spanish filename, e.g. `en/11-exceptions.md` → `es/11-excepciones.md`) — and
    `LINK_TARGETS`, the plan's table of every sibling's English and Spanish filename, with the title
-   and any `Audit note` saying what that entry is assigned to teach.
+   and any `Audit note` saying what that entry is assigned to teach — and `CALIBRATION`, resolved by
+   `notes-audit.md` → "The calibration set".
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -39,8 +40,11 @@ SCOPE = [full | append-only — with append-only, list the exact English heading
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` — the authority on every sibling's Spanish filename, including entries whose file
         does not exist yet, and on what each one teaches]
+CALIBRATION = [the es/ paths of the standard's calibration set for this entry's kind, in order, or
+        none — you read the first one whole, for register only]
 
-Use TOPIC, LEVEL, FILE, SCOPE, and LINK_TARGETS wherever the prompt refers to their placeholders.
+Use TOPIC, LEVEL, FILE, SCOPE, LINK_TARGETS, and CALIBRATION wherever the prompt refers to their
+placeholders.
 
 > **`SCOPE = append-only`: the `es/` file is FROZEN.** Victor refined it and declared it final, and this
 > run exists only to add coverage that arrived later. Translate **only the appended English headings
@@ -88,8 +92,9 @@ every section, code block, table, and callout so the two match exactly.
 Before starting, read:
 - `{FILE}` — the canonical English source (your input, do not change it).
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
-- The first section of `notes/java/junior/es/11-excepciones.md` — the reference for what finished, native
-  Spanish notes read like.
+- The first file in `{CALIBRATION}`, whole — a pair Victor declared refined, the reference for what
+  finished, native Spanish notes read like. Read it for register, never for content. When it is `none`,
+  work from the standard alone and say so in your report.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bilingual rules and the Spanish-prose
   expectations (structural labels, calque list).
 
@@ -138,7 +143,8 @@ reached the last line instead of stopping at the middle of the file.
 cold, polishes naturalness, and owns the single atomic commit. Leave the `es/` file in the working
 tree and report:
 - `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
-- The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read).
+- The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read, and the calibration
+  file when one was passed).
 - The section-by-section trace.
 - Every internal link you rewrote, with the `{LINK_TARGETS}` row it was matched against, and any link
   whose Spanish target the plan declares but the `es/` folder does not contain yet.

@@ -56,8 +56,9 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   The reason is what a `00` is *for*: it orients Victor before he knows any of the vocabulary, so it
   has to read as continuous guidance — what this topic is, what he will meet, and in what order — and
   a per-section `Purpose:` field written for a reader who already knows the concept works against
-  that. `notes/java/junior/es/00-intro-java.md` is the calibration reference for how a finished `00`
-  *reads* — its voice, depth and orientation quality. It is **not** a structure to copy: which
+  that. `notes/java/junior/es/00-intro-java.md` — the introduction member of the calibration set under
+  **Signature elements** — is the calibration reference for how a finished `00` *reads* — its voice,
+  depth and orientation quality. It is **not** a structure to copy: which
   sections a `00` has is decided per topic, as the topic-introduction invariant below states.
 
 > **Spring Boot notes lean on Java concepts.** When writing a `notes/spring-boot/junior/en/` note, the code
@@ -366,21 +367,43 @@ any new section, and check them when auditing an existing one:
 
 ### Signature elements — the texture of a finished note (Victor's actual bar)
 
-The rules above make a note *correct*. These make it match the standard Victor has actually
-validated — the level of the early Java notes (`01-variables-tipos.md`, `08-herencia-polimorfismo.md`,
-`10-colecciones.md`) and above all **the first section of `11-excepciones.md`, which is the single
-best reference for what a finished note looks like**. Not every element fits every section, but a
-finished note visibly uses most of them:
+The rules above make a note *correct*. These make it match the bar Victor has actually validated —
+and what he has validated is a set of files, named here, never a memory of one.
+
+**The calibration set is the pairs Victor himself declared `Status: refined`, read on their `es/` side.**
+
+| Entry being written | Calibrates against, in this order |
+|---|---|
+| a chapter — any entry that is not a topic introduction | `notes/java/junior/es/02-cadenas-de-texto.md`, `notes/java/junior/es/01-variables-tipos.md` |
+| a topic introduction — the `00` test under **Format modes** | `notes/java/junior/es/00-intro-java.md` |
+
+- **Only `refined` qualifies, because only that status stops the pipeline rewriting the prose that
+  calibrates it.** A `pending` or `complete` pair is prose a later run may still rewrite, so calibrating
+  against one measures the pipeline against its own writing. `11-excepciones.md` was this standard's
+  reference until `REC-170` with exactly that flaw: Victor drove its opening passage through TODOs
+  before the freeze existed, but never declared the pair refined, so the passage every stage read as the
+  bar was one a later run was licensed to rewrite.
+- **Read it for depth and texture only** — never for a convention, a filename, a fact, or a list of
+  sections to copy. Its content belongs to another entry, and the plan contract of the entry being
+  written decides what that note holds.
+- **A member whose plan entry is no longer `refined` leaves the set, and nothing replaces it.**
+  `notes-audit` resolves the set against the plan before it dispatches a stage, and a pair Victor hands
+  back to `pending` is a draft again.
+- **The set changes by hand, through a `REC-NNN`** — the same fence as the two TODO families below. It
+  holds three pairs from one topic today (`REC-170`), which is enough that a trait they share reads as
+  how Victor writes rather than as what one note needed, and still a sample. A pair he refines later
+  joins it only through such a row, never because a run found it refined.
+
+Not every element fits every section, but a finished note visibly uses most of them:
 
 - **One worked example carried through the whole section.** Pick a single concrete example and
   follow it from start to finish, rather than scattering unrelated fragments. `Animal/Dog/Cat` runs
-  through all of the inheritance section; `main() → methodA() → methodB()` runs through the entire
-  call-stack explanation in `11-exceptions.md` §1. The reader should trace one story, not re-orient at
-  every code block.
+  through a whole inheritance section; `main() → methodA() → methodB()` runs through a whole
+  call-stack explanation. The reader should trace one story, not re-orient at every code block.
 - **ASCII diagrams for anything with spatial or structural shape.** When the concept has a shape — a
-  stack, a tree, a memory layout, a request flow — draw it. The call-stack diagram in
-  `11-exceptions.md` §1 (`[top] methodB() / methodA() / main() [bottom]`) is the model. A diagram is
-  often worth more than a paragraph for structure.
+  stack, a tree, a memory layout, a request flow — draw it. A call stack drawn as
+  `[top] methodB() / methodA() / main() [bottom]` is the model. A diagram is often worth more than a
+  paragraph for structure.
 - **Real-world analogies for abstract mechanisms.** Anchor an abstract idea to a physical one: the
   call stack as "a stack of plates", integer overflow as "an odometer rolling over", `StringBuilder`
   as "a whiteboard you write on piece by piece". One good analogy per hard concept.
@@ -437,7 +460,7 @@ generating that list:
   diagram in the same section. The "propagates up" vs a diagram drawn top-down is exactly the kind of
   contradiction he catches — resolve it before he does.
 
-**Worked exemplar — what the transformation looks like (the calibration target).**
+**Worked exemplar — what the transformation looks like (the shape of the move).**
 Study the *shape* of the move from draft to finished, not just the topic.
 
 *Poor draft (describes behaviour, no mechanism):*
@@ -460,9 +483,9 @@ Study the *shape* of the move from draft to finished, not just the topic.
 > is raised.
 
 The lesson: the draft was not *wrong*, it was *behaviour-only*. Every TODO disappeared once the
-mechanism was traced with a diagram, a worked example, and a callout for the misleading word. The
-full finished text is the first section of `notes/java/junior/es/11-excepciones.md` — read it before writing
-a new file to calibrate.
+mechanism was traced with a diagram, a worked example, and a callout for the misleading word. That
+finished passage is the record of one transformation, not a calibration target: its pair was never
+declared `refined` (`REC-170`). Calibrate against the set under **Signature elements**.
 
 ### Sentence-level register — the second family of TODOs (derived from the 00-intro-java pass, 2026-08-21)
 
@@ -527,7 +550,7 @@ padding around the explanation he was looking for.
 >
 > What stays **open** is `Purpose:` in the *non-introduction* files of a structured-mode folder. Note
 > that no `notes/java/junior/` file has ever used it — all seventeen are conversational prose, including
-> `11-excepciones.md`, which this standard cites as its own calibration reference — so the structured-mode
+> the three refined pairs this standard calibrates against — so the structured-mode
 > claim over that folder describes Spring Boot accurately and Java not at all. Do not "fix" the Java
 > files to match; the mismatch is recorded and Victor resolves it as he reviews each topic.
 
@@ -566,7 +589,7 @@ padding around the explanation he was looking for.
   > and references a real project.
 - **Calibrate depth to Victor's bar, not to the concept's difficulty.** The floor is never "how hard
   is this concept" — it is "how much does it take to *truly understand* it", the standard set by the
-  validated files (esp. `11-excepciones.md` section 1). A genuinely trivial one-liner can stay short,
+  calibration set under **Signature elements**. A genuinely trivial one-liner can stay short,
   but the default assumption is that a concept deserves the full treatment: mechanism, a worked
   example, a callout for the non-obvious part. Do not write a thin two-paragraph section just because
   the concept isn't "complex" — if the surrounding sections in the same file have diagrams, tables,

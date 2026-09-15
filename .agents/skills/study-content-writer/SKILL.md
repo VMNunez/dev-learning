@@ -71,8 +71,9 @@ These two rules come from `notes/prompts/_internal/_session-rules.md` → `notes
    "does this mean that?" questions and make the prose already answer them. Never mention an action
    in the abstract without the concrete code snippet.
 
-The gold-standard reference for texture is the first section of `notes/java/junior/es/11-excepciones.md`:
-open with the pain not the definition; one worked example carried through; ASCII diagrams for
+The reference for texture is the calibration set the standard you loaded at Step 1 names under
+"Signature elements" — pairs Victor himself declared `refined`, never a draft the pipeline may still
+rewrite: open with the pain not the definition; one worked example carried through; ASCII diagrams for
 anything structural; real-world analogies; abundant `> blockquote` callouts (~one per non-obvious
 sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN examples.
 
@@ -196,8 +197,8 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   **Stating that a category is mature is the whole of this skill's authority over it.** A mature
   category opens its own `REC-NNN` and is resolved under the ledger's four steps with the mandatory cold
   reviewer. You never edit `_note-quality-standard.md` from this line, never open the `REC` yourself,
-  and never dispatch a reviewer over it. The first harvest also waits on `REC-170`'s three refined pairs,
-  so an early `madura` is reported and goes no further.
+  and never dispatch a reviewer over it. The first harvest itself is `REC-171` (g), unblocked since
+  `REC-170` closed on three refined pairs.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.
