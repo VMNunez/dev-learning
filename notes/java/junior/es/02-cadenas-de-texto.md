@@ -795,11 +795,11 @@ name == "Ana"                       // MAL — nunca uses == para comparar texto
 
 Con este archivo y [01-variables-tipos.md](01-variables-tipos.md) ya sabes trabajar con los dos tipos de valor que aparecen en casi cualquier programa Java: los números y el texto. De los números viste que su tipo decide cómo se realizan las operaciones aritméticas con ellos; del texto, que un `String` no se puede modificar, y que esa inmutabilidad explica todo lo demás. En la práctica, ahora puedes:
 
-- Leer y usar los métodos de `String` del día a día, sabiendo que cada uno devuelve un `String` nuevo que tienes que guardar.
+- Leer y usar los métodos de `String` que aparecen con más frecuencia, sabiendo que cada uno devuelve un `String` nuevo que tienes que guardar.
 - Validar un campo que llega con espacios con `isBlank()`, y no solo uno vacío con `isEmpty()`.
 - Construir una línea de informe con `+` o `.formatted()`, y usar `StringBuilder` cuando el texto se va acumulando dentro de un bucle.
-- Escribir un JSON o una consulta SQL de varias líneas con un bloque de texto, sin escapar comillas ni saltos de línea.
+- Escribir un JSON o una consulta SQL de varias líneas con un bloque de texto, sin la necesidad de tener que escapar comillas ni saltos de línea.
 - Convertir texto en número y número en texto, sabiendo que `parseInt` lanza `NumberFormatException` si el texto no es un número válido, y que el compilador no te avisa.
 - Comparar dos Strings con `equals` o `equalsIgnoreCase`, y nunca con `==`.
 
-Lo que todavía no puedes hacer es que tu programa tome decisiones. Hasta ahora cada línea se ejecuta una sola vez, de arriba abajo y en el orden en que está escrita. Los bucles `for` que aparecieron en la sección de `StringBuilder` los usaste sin que nadie te los explicara, solo para entender el problema de acumular texto. [03-flujo-de-control.md](03-flujo-de-control.md) explica eso: `if` para decidir qué líneas se ejecutan según un valor, y `for` y `while` para repetir un bloque tantas veces como haga falta. Y lo hace con el mismo `Employee` y las mismas horas semanales de este archivo.
+Lo que todavía no puedes hacer es que tu programa tome decisiones. Hasta ahora cada línea se ejecuta una sola vez, de arriba abajo y en el orden en que está escrita. Los bucles `for` que aparecieron en la sección de `StringBuilder` los usaste sin que nadie te los explicara, solo para entender el problema de acumular texto. [03-flujo-de-control.md](03-flujo-de-control.md) explica eso: `if` para decidir qué líneas se ejecutan según un valor, y `for` y `while` para repetir un bloque tantas veces como haga falta. Y lo hace con el mismo ejemplo de `Employee` y sus horas semanales que has visto en este archivo.
