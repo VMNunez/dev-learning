@@ -24,7 +24,7 @@ https://05taskmanager.netlify.app/
 
 **Add/edit task dialog**
 
-*(screenshot — task dialog — to be added)*
+![Task dialog in edit mode](screenshots/task-dialog.png)
 
 ---
 
