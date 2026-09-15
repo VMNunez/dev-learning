@@ -20,3 +20,7 @@ Used by `cv-prompt` when drafting the Projects section of your CV.
 ## projects/04-meal-finder
 
 - Desarrollé un buscador de recetas en Angular y TypeScript sobre una REST API, guardando la búsqueda en la URL para conservar los resultados al navegar y poder compartirlos.
+
+## projects/05-task-manager
+
+- Desarrollé un gestor de tareas en Angular y TypeScript con Angular Material, reutilizando un único diálogo para crear y editar tareas sobre una tabla con ordenación y paginación.
