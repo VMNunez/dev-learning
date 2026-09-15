@@ -719,9 +719,20 @@ String b = Integer.toString(hours);    // "38" — la propia conversión del nú
 String c = "" + hours;                 // "38" — funciona, pero no dice nada sobre la intención
 ```
 
-Las tres formas que se muestran en el bloque de código anterior convierten un `int` en texto, y un `int` nunca puede ser `null`: es un tipo primitivo y siempre guarda un número. El problema del `null` aparece cuando el número llega como `Integer`, el wrapper de `int`, que, como recordarás, sí puede ser `null`. Así que, cuando lo que quieres convertir no es un primitivo sino un objeto que puede ser `null` (un `Integer`, un `Employee`…), la forma de convertirlo sí importa, y hay que usar `String.valueOf(x)`, porque no falla cuando `x` es `null`. En Java no existe `undefined`: un campo de tipo objeto al que no le has dado valor vale `null`, y una variable local sin inicializar ni siquiera compila (`variable x might not have been initialized`), así que `null` es el único caso del que tienes que protegerte.
+Las tres formas que se muestran en el bloque de código anterior convierten un `int` en texto, y un `int` nunca puede ser `null`: es un tipo primitivo y siempre guarda un número. El problema del `null` aparece cuando el número llega como `Integer`, el wrapper de `int`, que, como recordarás, sí puede ser `null`. Así que, cuando lo que quieres convertir no es un primitivo sino un objeto que puede ser `null` (como un `Integer`), la forma de convertirlo sí importa, y hay que usar `String.valueOf(x)`, porque no falla cuando `x` es `null`.
 
 `valueOf` es un método **estático** de `String`: lo llamas sobre la clase (`String.valueOf(...)`) y le pasas como argumento el valor que quieres convertir. Ese valor puede ser un `int`, un `long`, un `double`, un `boolean`, un `char` o cualquier objeto, porque `String` tiene una versión de `valueOf` para cada tipo. Si el argumento es `null`, `valueOf` lo comprueba antes de hacer nada y devuelve el texto `"null"`, sin lanzar ninguna excepción.
+
+> **¿Y con `long`, `float` o `double`?** Funciona exactamente igual. Las tres formas existen para todos los tipos numéricos: `String.valueOf(x)` acepta cualquiera de ellos, cada wrapper tiene su propio método estático (`Long.toString(x)`, `Float.toString(x)`, `Double.toString(x)`) y `"" + x` también sirve. La regla del `null` es la misma: un `double` nunca puede ser `null`, pero un `Double` sí, y ahí también hay que usar `String.valueOf(x)`. La única diferencia está en el texto que obtienes con los decimales, porque Java escribe el número tal como lo guarda:
+>
+> ```java
+> String.valueOf(38.5);        // "38.5"
+> String.valueOf(38.0);        // "38.0"  — con decimales, aunque sea un número entero
+> String.valueOf(10000000.0);  // "1.0E7" — a partir de 10 millones usa notación científica
+> String.valueOf(0.1 + 0.2);   // "0.30000000000000004" — el mismo error de redondeo que viste en 01-variables-tipos.md
+> ```
+>
+> Por eso, si el número va a aparecer en un informe, no lo conviertes con estas formas, sino con `.formatted()`, que viste antes en esta nota: `"%.2f".formatted(38.0)` da `"38,00"` o `"38.00"` según la configuración regional del ordenador.
 
 Con un objeto aparece además una cuarta forma que no está en el bloque: `x.toString()`, que se llama directamente sobre la variable. No es lo mismo que `Integer.toString(hours)`: este es un método estático de la clase `Integer` al que le pasas un `int` como argumento, mientras que `x.toString()` solo se puede escribir si `x` guarda un objeto, nunca con un `int`. Y es justo la forma que falla con `null`.
 
