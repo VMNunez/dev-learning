@@ -767,7 +767,7 @@ En el proyecto 07, la clase `JwtUtil` realiza estas conversiones en ambos sentid
 return Long.valueOf(parseClaims(token).getSubject());     // String → Long, cuando se lee el token
 ```
 
-Esa segunda línea puede lanzar `NumberFormatException`, y es a propósito: si llega un token cuyo `subject` no es un número —por ejemplo, un token antiguo de antes de que el `subject` guardara un id—, `Long.valueOf` lanza la excepción y la petición se rechaza, en lugar de seguir adelante sin saber qué usuario la ha hecho. Lo cual es el comportamiento correcto, y un buen ejemplo de una conversión que _también_ es una validación.
+Esa segunda línea puede lanzar `NumberFormatException`, porque `Long.valueOf` hace lo mismo que `Integer.parseInt`: convierte texto a número, y si el texto no es un número válido, lanza la excepción. Y aquí el texto viene de fuera, del token que envía el cliente en cada petición, así que nada garantiza que sea un número. Que pueda lanzarla es a propósito: si llega un token cuyo `subject` no es un número —por ejemplo, un token antiguo de antes de que el `subject` guardara un id—, `Long.valueOf` lanza la excepción y la petición se rechaza, en lugar de seguir adelante sin saber qué usuario la ha hecho. Lo cual es el comportamiento correcto, y un buen ejemplo de una conversión que _también_ es una validación.
 
 ---
 
