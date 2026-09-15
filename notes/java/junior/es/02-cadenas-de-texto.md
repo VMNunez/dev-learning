@@ -679,7 +679,7 @@ Integer.parseInt("38 ".strip());  // 38
 
 ### El compilador no te obliga a manejar `NumberFormatException`
 
-`NumberFormatException` es una excepción **unchecked**, y la consecuencia es que **el compilador no te obliga a manejarla**. Manejar una excepción significa escribir el código que decide qué hacer cuando ocurre: rodear la llamada con un `try/catch` o, en su lugar, añadir `throws NumberFormatException` a la firma del método para que se ocupe quien lo llama. Con una excepción unchecked no tienes que hacer ninguna de las dos cosas. La línea `Integer.parseInt(input)` compila por sí sola, sin `try/catch`, sin warning, y sin nada en IntelliJ que sugiera que puede fallar.
+`NumberFormatException` es una excepción **unchecked**, y la consecuencia es que **el compilador no te obliga a manejarla**. Manejar una excepción significa escribir el código que decide qué hacer cuando ocurre, es decir, cuando `parseInt` recibe un texto que no puede convertir en número, como `"abc"` o `"38 "`: rodear la llamada con un `try/catch` o, en su lugar, añadir `throws NumberFormatException` a la firma del método para que se ocupe quien lo llama. Con una excepción unchecked no tienes que hacer ninguna de las dos cosas. La línea `Integer.parseInt(input)` compila por sí sola, sin `try/catch`, sin warning, y sin nada en IntelliJ que sugiera que puede fallar.
 
 Con las excepciones **checked** pasa lo contrario. Por ejemplo, `Files.readString(path)` lee un archivo y puede lanzar `IOException`, que es checked: si no la rodeas con `try/catch` ni añades `throws IOException` al método, el código no compila. Viste ese mismo ejemplo, con `Files.readString`, en [00-intro-java.md](00-intro-java.md).
 
@@ -705,7 +705,7 @@ if (clean.matches("\\d+")) {          // \d+ = uno o más dígitos
 
 Sin ninguna de las dos, si un usuario escribe `id=abc` en una URL, la excepción no se captura y la API responde con un error 500. Es uno de los errores más habituales al programar una API REST.
 
-> **Por qué el modelo completo espera a [11-excepciones.md](11-excepciones.md).** "Unchecked" es una mitad de una regla sobre _dos_ tipos de excepción, y la regla solo tiene sentido una vez que sabes cómo viaja una excepción, dónde se puede capturar, y qué pinta tiene la jerarquía de clases debajo de `Exception` — porque checked frente a unchecked es literalmente una pregunta de en qué rama de esa jerarquía se sienta una clase. La entrada 11 construye todo eso y luego resuelve el par en un solo sitio. Lo que necesitas aquí es el hecho operativo: nada te va a recordar que `parseInt` puede fallar, así que tienes que recordarlo tú.
+> **¿Por qué la diferencia entre checked y unchecked se explica en [11-excepciones.md](11-excepciones.md)?** Java divide las excepciones en dos tipos, checked y unchecked, y aquí solo te has encontrado con uno de ellos. Para entender la diferencia necesitas saber antes cómo viaja una excepción, dónde se puede capturar y cómo se organizan las clases que heredan de `Exception`, porque que una excepción sea checked o unchecked depende precisamente de la clase de la que hereda. Todo eso se explica en la nota 11. Por ahora quédate con lo importante: el compilador no te avisa de que `parseInt` puede fallar, así que tienes que acordarte tú.
 
 ### Número → texto
 
