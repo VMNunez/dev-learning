@@ -45,6 +45,8 @@ reached and not breached (both `routed to REC-232`, no count moves). The harness
 a `Co-Authored-By` footer; the session rules' prohibition was applied, and no commit carries one. No new
 breach, no open `FRIC` row to consume.
 
+**Found after the run, on merging `main` into `feat/angular-shell-auth`:** this run executed `main`'s 998-line `portfolio-audit.md`, while the feature branch already carried the 1035-line version with `REC-234` applied — the machinery had diverged across branches, the same cause as the `REC-237` → `REC-246` ID collision. The step-0 preflight printed `nothing owed`, so the `REC-234` change is unlikely to have moved this result; the `BRCH-0001`/`0002` step and the health-budget count below describe the older file.
+
 ## 5. Verdict
 
 **Change worth considering: the Phase 1a acceptance gate cannot fail on decisions the reviewer did not find** — routed to `REC-246`. It clears the bar: real evidence (34 additions and four factual corrections over a bank four reviewers certified `1.00` the day before), the prompt is silent on how the ratio's denominator is checked, the committed bank was different and partly wrong, and `REC-236` covers parity, not this. Not drafted here: the fix is a design choice step 1 has to measure first (padding vs real gaps), not a one-line edit. Friction only, not routed: the death ladder's resume rung needs an agent id that a rate-limited dispatch never returned — the re-dispatch rung produced the same result.
