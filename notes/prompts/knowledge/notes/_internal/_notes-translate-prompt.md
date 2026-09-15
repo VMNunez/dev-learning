@@ -23,8 +23,7 @@ in your report; the English is not yours to touch.
 1. Fill in `TOPIC` and `FILE` — `FILE` is the **`en/`** path; you create/update its `es/` counterpart
    (same number prefix, Spanish filename, e.g. `en/11-exceptions.md` → `es/11-excepciones.md`) — and
    `LINK_TARGETS`, the plan's table of every sibling's English and Spanish filename, with the title
-   and any `Audit note` saying what that entry is assigned to teach — and `CALIBRATION`, resolved by
-   `notes-audit.md` → "The calibration set".
+   and any `Audit note` saying what that entry is assigned to teach.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -40,11 +39,8 @@ SCOPE = [full | append-only — with append-only, list the exact English heading
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` — the authority on every sibling's Spanish filename, including entries whose file
         does not exist yet, and on what each one teaches]
-CALIBRATION = [the es/ paths of the standard's calibration set for this entry's kind, in order, or
-        none — you read the first one whole, for register only]
 
-Use TOPIC, LEVEL, FILE, SCOPE, LINK_TARGETS, and CALIBRATION wherever the prompt refers to their
-placeholders.
+Use TOPIC, LEVEL, FILE, SCOPE, and LINK_TARGETS wherever the prompt refers to their placeholders.
 
 > **`SCOPE = append-only`: the `es/` file is FROZEN.** Victor refined it and declared it final, and this
 > run exists only to add coverage that arrived later. Translate **only the appended English headings
@@ -92,11 +88,11 @@ every section, code block, table, and callout so the two match exactly.
 Before starting, read:
 - `{FILE}` — the canonical English source (your input, do not change it).
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
-- The first file in `{CALIBRATION}`, whole — a pair Victor declared refined, the reference for what
-  finished, native Spanish notes read like. Read it for register, never for content. When it is `none`,
-  work from the standard alone and say so in your report.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bilingual rules and the Spanish-prose
-  expectations (structural labels, calque list).
+  expectations (structural labels, calque list), and its **Harvested from refined pairs**: every rule it
+  judges at stage C and every check its "Reviewer checks" block assigns to stage C, which you apply as
+  you write (see "Prose is native Spanish" below). No refined note is read as a model — those rules carry
+  what Victor's refined pairs show about finished Spanish.
 
 ## What you produce
 
@@ -128,6 +124,17 @@ native Spanish**, not a word-for-word calque of the English.
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
   `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,
   stack, edge case, trade-off*) stay in English inside the Spanish prose — that is correct, not calque.
+- **Apply the stage-C rules and checks as you translate.** The rules the standard's **Harvested from
+  refined pairs** judges at stage C and the wording repairs of its stage-C checks — the connector of each
+  step of a sequence, the calque and the figure that carries a claim, the note furniture and the unglossed
+  rendering, the bold lead-in read alone, the phrase that stands in for a claim — are wording, so they are
+  yours to get right and stage C's to check after you. They were placed here on 2026-09-15 (`REC-171`):
+  the register family reached two refined pairs `unapplied`, and the stage writing the Spanish was the one
+  stage never told to apply it. What one of them needs beyond wording — a definition, a heading, a code
+  block, a sentence the English does not have — you **report, never add**: the English is canonical.
+  Spelling out in full a claim the English sentence already carries is rendering — the same idea, which
+  the bullet below requires; a claim the English does not carry is content, and is reported. Name in your report each
+  check that shaped a rendering.
 - **Meaning is identical.** Same idea, same emphasis, same worked example — only the language changes.
   Do not summarise, do not expand, do not "improve" the content; render it.
 
@@ -143,8 +150,9 @@ reached the last line instead of stopping at the middle of the file.
 cold, polishes naturalness, and owns the single atomic commit. Leave the `es/` file in the working
 tree and report:
 - `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
-- The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read, and the calibration
-  file when one was passed).
+- The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read).
+- Each stage-C check of the standard's **Harvested from refined pairs** that shaped a rendering, and
+  anything one of them needed beyond wording, reported for a follow-up author run.
 - The section-by-section trace.
 - Every internal link you rewrote, with the `{LINK_TARGETS}` row it was matched against, and any link
   whose Spanish target the plan declares but the `es/` folder does not contain yet.

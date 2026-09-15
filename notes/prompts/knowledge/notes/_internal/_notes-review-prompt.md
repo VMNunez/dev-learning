@@ -14,8 +14,7 @@ upstream of you, reads it for Victor's markers. You still check nothing bilingua
 reason that holds on every path: structural parity is T's deliverable, the Spanish prose is C's, and
 under `SCOPE = append-only` the `es/` is frozen — where it diverges from the English that divergence
 is Victor's freeze, not a defect. So never open `{FILE}`'s `es/` counterpart and never judge `{FILE}`
-against it; the Spanish files you do open are the calibration set in the reading list below, read
-for depth and texture. Your whole job is: is this `en/` file at the full standard? You never
+against it. Your whole job is: is this `en/` file at the full standard? You never
 commit and never touch `es/` — you fix the English and hand off to the translator.
 
 It is normally launched by `notes-audit.md` as subagent **B**. You can also run it standalone to audit
@@ -28,8 +27,7 @@ to land the file).
 
 1. Fill in `TOPIC`, `FILE` (the exact `en/` file just authored), `TASK` (the complete selected
    persistent-plan entry), and the two plan-derived lists `READABLE_SIBLINGS` and `LINK_TARGETS`, the
-   latter carrying each entry's title and any `Audit note` — plus `CALIBRATION`, resolved by
-   `notes-audit.md` → "The calibration set".
+   latter carrying each entry's title and any `Audit note`.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -46,11 +44,9 @@ READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is c
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` it carries — the complete set of filenames this file may link, including entries
         not written yet, and the authority on what each one teaches]
-CALIBRATION = [the es/ paths of the standard's calibration set for this entry's kind, in order, or
-        none — the refined pairs you read whole for depth and texture only]
 
-Use TOPIC, FILE, TASK, SCOPE, READABLE_SIBLINGS, LINK_TARGETS, and CALIBRATION wherever the prompt
-refers to their placeholders.
+Use TOPIC, FILE, TASK, SCOPE, READABLE_SIBLINGS, and LINK_TARGETS wherever the prompt refers to their
+placeholders.
 
 > **`SCOPE = append-only` overrides every "fix it directly" instruction below for existing prose.**
 > Victor has refined this file and declared it final; the run exists only to add coverage that arrived
@@ -83,9 +79,6 @@ a review without it is not accepted.
 
 Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bar you audit against, in full.
-- Every file in `{CALIBRATION}`, whole — the pairs Victor declared refined, the calibration reference
-  for "finished" (read them for depth/texture; you audit English). When it is `none`, judge depth from
-  the standard alone and say so in your report.
 - The siblings named in `{READABLE_SIBLINGS}`, and no others — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.
 
@@ -93,9 +86,7 @@ Before starting, read:
 > before this pipeline existed, which no run has ever checked against the topic's coverage file.
 > `{READABLE_SIBLINGS}` is the subset the plan marks `complete` or `refined` — the only sibling prose
 > the system has accepted, and therefore the only prose you may open, quote, or treat as evidence. Where
-> two of them disagree on a convention, the `refined` one wins: Victor froze it himself. The one
-> exception is `{CALIBRATION}` above — refined prose that may sit in another topic's tree — readable for
-> depth and texture only. When
+> two of them disagree on a convention, the `refined` one wins: Victor froze it himself. When
 > `{READABLE_SIBLINGS}` is `none` — the topic's first entry, or a route whose siblings are all `pending`
 > — the duplication and seam checks against sibling prose simply do not run: judge the seams against the
 > plan contract you were given and report that they went unchecked.
@@ -194,7 +185,7 @@ from your finished English; the Spanish reviewer (C) then commits.
 
 Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
-- The **"N lines, read to EOF"** line for `{FILE}`, and for every file in `{CALIBRATION}`.
+- The **"N lines, read to EOF"** line for `{FILE}`.
 - The **section-by-section trace** (every heading → PASS or the fix).
 - The siblings you opened, each shown to be in `{READABLE_SIBLINGS}`, and every internal link you
   checked against `{LINK_TARGETS}` — for each, the row that justifies the sentence around it, and

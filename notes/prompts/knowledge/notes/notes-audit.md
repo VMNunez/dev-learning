@@ -44,7 +44,6 @@ Derive the topic slug by lowercasing and replacing spaces with hyphens.
 - `EN_DIR = notes/{topic}/{LEVEL}/en/`
 - `ES_DIR = notes/{topic}/{LEVEL}/es/`
 - `READABLE_SIBLINGS` and `LINK_TARGETS`, both resolved from `PLAN` — see "Sibling admissibility" below.
-- `CALIBRATION`, resolved from the standard's calibration set — see "The calibration set" below.
 
 Read the active adapter, `_session-rules.md`, `_note-quality-standard.md`, `COVERAGE`, `PLAN`, and both
 sibling-level coverage files — guard 8 below cannot clear a bullet as level-exclusive without them.
@@ -143,38 +142,18 @@ junior run approved a forward reference in a finished note by verifying it again
 l.67, a legacy file no run has ever checked against `COVERAGE`, so a claim inside a `complete` note now
 rests on prose a later `notes-audit` may rewrite or delete outright.
 
-Two things the rule deliberately does not reach:
+One thing the rule deliberately does not reach: **a file in `EN_DIR` or `ES_DIR` that no plan entry
+declares** is neither readable nor linkable. Report it; it is either an orphan the plan owes an entry or
+a leftover to delete, and both are Victor's call, not this run's.
 
-- **`CALIBRATION`**, below, which is read from another topic's tree as readily as from this one — and
-  is admissible for the same reason a `refined` sibling is, never by exemption from that reason.
-- **A file in `EN_DIR` or `ES_DIR` that no plan entry declares** is neither readable nor linkable.
-  Report it; it is either an orphan the plan owes an entry or a leftover to delete, and both are
-  Victor's call, not this run's.
+## No stage reads a refined note as a model
 
-## The calibration set — what every stage calibrates depth and texture against
-
-`_note-quality-standard.md` → "Signature elements" names the calibration set: the `es/` files of the pairs
-Victor declared `refined`, one list for a chapter and one for a topic introduction. Resolve `CALIBRATION`
-from it before dispatch and pass it to every stage:
-
-1. Take the list for this entry's kind — the introduction list when `{NOTE}` is `00` or its narrative
-   role makes it the topic introduction, the chapter list otherwise — in the order the standard gives.
-2. Drop every member whose own plan entry does not read `Status: refined` today, and drop the pair this
-   run writes. A member's plan is found from the member's own path — its topic and level, not this run's
-   — as the `notes-plan-*.md` file under that topic's `coverage/`, matched case-insensitively on the
-   level; read its `Status:` line alone.
-3. Pass what remains as paths, in order, or `none`.
-
-`none` is legitimate — an append to the only member of its list leaves nothing to calibrate against.
-Pass it and say so: the stages then calibrate from the standard alone, and an empty set is never a
-reason to fall back to another file. **Never add a file the standard does not name**, even one whose
-pair is `refined` today: the set changes only by hand, through a `REC-NNN`. A dropped member is
-reported, never replaced.
-
-Every stage reads `CALIBRATION` for depth and texture only — never for a convention, a filename, a fact,
-or a list of sections. The English stages A and B read every file in it whole, because depth is what
-they judge and a single sample cannot tell how Victor writes from what one note needed; the Spanish
-stages T and C read its first file whole, because register is visible in one finished file.
+Until 2026-09-15 this prompt resolved a `CALIBRATION` list — the `es/` files of the pairs Victor declared
+`refined` — and every stage read it whole for depth and texture. `REC-171` retired it in the commit that
+harvested the last of those pairs: what they teach now lives in `_note-quality-standard.md` → **Harvested
+from refined pairs**, which every stage already reads, and a read that grows with every refined pair is
+the cost the harvest exists to remove. Pass no such list, and never admit a refined note outside
+`READABLE_SIBLINGS` to a stage as an exemplar.
 
 ## Append-only mode
 
@@ -249,8 +228,7 @@ Dispatch `_notes-write-prompt.md` with:
   must-answer question, and handoff;
 - `REWRITE_MODE = first-pass` for `create`, `append-only` for a `refined` entry, otherwise `standard`;
 - `READABLE_SIBLINGS` and `LINK_TARGETS` as resolved above — the author reads sibling prose only from
-  the first list and links only rows of the second;
-- `CALIBRATION` as resolved above.
+  the first list and links only rows of the second.
 
 It must author or audit only the selected English file, cover every assigned concept, avoid sibling
 level scope, and report a section trace plus `N lines, read to EOF`.
@@ -261,7 +239,7 @@ If it cannot finish, stop without translation and leave the entry pending.
 
 Dispatch `_notes-review-prompt.md` for the resolved English file. Give it the complete selected plan
 entry, including the exact assigned coverage bullets and pedagogical contract, as acceptance
-criteria, plus `READABLE_SIBLINGS`, `LINK_TARGETS` and `CALIBRATION`, plus `SCOPE = append-only` with the appended
+criteria, plus `READABLE_SIBLINGS` and `LINK_TARGETS`, plus `SCOPE = append-only` with the appended
 section headings when the entry is `refined` — it checks duplication, seams and references against the
 first list alone, and never clears a forward reference by opening a file outside it.
 It must fix the file, verify every bullet is substantively covered, verify that the
@@ -272,7 +250,7 @@ section trace, pedagogical-contract trace, and EOF proof.
 ## Stage T — translator
 
 Dispatch `_notes-translate-prompt.md` for the final English file and the resolved Spanish path, with
-`CALIBRATION` and `LINK_TARGETS`: the plan's `Spanish:` column is where a sibling's Spanish filename comes from, not an
+`LINK_TARGETS`: the plan's `Spanish:` column is where a sibling's Spanish filename comes from, not an
 `ES_DIR` listing, which cannot name a file the route has not written yet. Add
 `SCOPE = append-only` with the appended English headings when the entry is `refined` — it then appends
 only their Spanish counterparts and re-syncs nothing else. In that mode its ordinary STOP on an
@@ -288,7 +266,6 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 - `PLAN`;
 - `NOTE`;
 - `LINK_TARGETS`, whose `Spanish:` column is the authority its internal-link check runs against;
-- `CALIBRATION`;
 - permission to mark every successfully incorporated assigned concept `[x]` and then change only this
   entry's `Status: pending` to `Status: complete` when no `[ ]` remains — or, in append-only mode, to
   mark only the consumed additions `[x]` and clear those same bullets from `Pending additions` while
@@ -343,8 +320,7 @@ stops the run. Never mark a partially verified or merely bullet-complete file co
 Report branch, topic, level, note, resolved paths, action, assigned-concept count, fingerprint match,
 the sibling-admissibility resolution — how many entries were admitted as `READABLE_SIBLINGS`, how many
 `LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
-against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` — the `CALIBRATION` passed and
-every member dropped from it, with the reason,
+against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` —
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
 verdict, concept checkbox transitions, status transition, studied-state transition, and commit.

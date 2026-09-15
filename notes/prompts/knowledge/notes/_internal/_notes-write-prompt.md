@@ -34,9 +34,7 @@ budget stays on writing that file well.
 3. Fill in `TASK` — the selected persistent-plan entry, including its exact assigned concepts.
 4. Fill in `READABLE_SIBLINGS` and `LINK_TARGETS` from the plan — which sibling notes may be read, and
    which filenames may be linked, each with its title and any `Audit note` saying what that entry is
-   assigned to teach. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md`. Fill in
-   `CALIBRATION` the same way — standalone, by the three steps of `notes-audit.md` → "The calibration
-   set".
+   assigned to teach. Standalone, resolve them yourself from `notes-plan-{LEVEL}.md`.
 5. Fill in `REWRITE_MODE` — `standard` (protect existing prose) or `first-pass` (allow full rewrites).
 6. Paste the entire prompt below into a new chat.
 
@@ -59,8 +57,6 @@ READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is c
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` it carries — the complete set of filenames you may link, including entries not
         written yet, and the authority on what each one teaches]
-CALIBRATION = [the es/ paths of the standard's calibration set for this entry's kind, in order, or
-        none — the refined pairs you read whole for depth and texture only; the orchestrator resolves it]
 
 REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO, unless TASK
@@ -82,7 +78,7 @@ REWRITE_MODE = [standard | first-pass | append-only]
          content Victor has not validated yet. After the run, the file is validated — use standard
          from then on.
 
-Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, CALIBRATION, and REWRITE_MODE wherever
+Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, and REWRITE_MODE wherever
 the prompt refers to their placeholders.
 
 ---
@@ -108,9 +104,7 @@ the full standard in English.
 > complete. So: never open, quote, cite, or verify anything against a **sibling** note outside
 > `{READABLE_SIBLINGS}` — `{FILE}`'s own `es/` counterpart is not a sibling, and Step 1 still reads it
 > for Victor's TODO markers. Where two admissible siblings disagree, follow the `refined` one — Victor
-> froze it himself. `{CALIBRATION}` in the reading list below is the one exception — refined prose that
-> may sit in another topic's tree — and it is for depth and texture only, never for a convention, a
-> filename, or a fact.
+> froze it himself.
 >
 > **`{READABLE_SIBLINGS}` is legitimately `none` on an early route** — this is the topic's first entry,
 > or every sibling is still `pending`. Then no sibling prose has been accepted yet: write from the
@@ -141,9 +135,13 @@ Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — THE writing standard. This is your bar. Apply
   it in full to everything you write this run: zero-assumption, second-order completeness, signature
   elements, the anticipate-the-TODO pass, format mode, Docs link priority.
-- every file in `{CALIBRATION}`, whole — the pairs Victor declared refined, which calibrate the *depth*
-  and texture you write to (read them for that, not to copy Spanish — you write English). When it is
-  `none`, calibrate from the standard alone and say so in your report.
+  Its **Harvested from refined pairs** section is part of that bar: what the pairs Victor declared
+  `refined` taught, as rules, before/after examples and reviewer checks. No refined note is read as a
+  model — the rules carry what those notes show. **Before handing the file on, run every check that
+  section assigns to stage B on your own file**, fixing only what `REWRITE_MODE` lets this run change —
+  anywhere else a failing check is a reported issue, like any other. The English reviewer still runs them
+  after you; you run them first because the mechanism and register families they enforce reached two
+  refined pairs unapplied (`REC-171`).
 
 ---
 
@@ -373,6 +371,8 @@ the Step 1 exception — and report:
 - Every **false-fact correction** you made in existing prose: the old text, the new text, and the
   source that falsified it, quoted. This is the one edit you make to prose Victor already accepted,
   and `notes-audit.md`'s Final report is required to carry it — a diff is not the channel.
+- Each stage-B check of the standard's **Harvested from refined pairs** that drove a fix, with the section
+  it fixed.
 - The siblings you actually opened, each one shown to be in `{READABLE_SIBLINGS}`, plus any internal link
   you wrote to a target that is declared but not yet written.
 - A **pedagogical-contract trace**: learning outcome; each must-answer question; prerequisites;

@@ -71,9 +71,10 @@ These two rules come from `notes/prompts/_internal/_session-rules.md` → `notes
    "does this mean that?" questions and make the prose already answer them. Never mention an action
    in the abstract without the concrete code snippet.
 
-The reference for texture is the calibration set the standard you loaded at Step 1 names under
-"Signature elements" — pairs Victor himself declared `refined`, never a draft the pipeline may still
-rewrite: open with the pain not the definition; one worked example carried through; ASCII diagrams for
+The reference for texture is the standard you loaded at Step 1 — its "Signature elements", and the rules
+its "Harvested from refined pairs" section took from the pairs Victor himself declared `refined`. No refined
+note is read as a model, and no draft the pipeline may still rewrite is a reference. The texture, in short: open with
+the pain not the definition; one worked example carried through; ASCII diagrams for
 anything structural; real-world analogies; abundant `> blockquote` callouts (~one per non-obvious
 sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN examples.
 

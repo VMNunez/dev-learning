@@ -28,8 +28,7 @@ section is missing content (not just badly worded), that is a structural gap C r
 **How to use:**
 
 1. Fill in the selected level, exact English and Spanish paths, persistent plan, note number,
-   `LINK_TARGETS` — the plan's table of sibling filenames the link check runs against — and
-   `CALIBRATION`, resolved by `notes-audit.md` → "The calibration set".
+   and `LINK_TARGETS` — the plan's table of sibling filenames the link check runs against.
 2. Paste into a fresh conversation (or let the orchestrator dispatch it).
 
 ---
@@ -48,11 +47,9 @@ SCOPE = [full | append-only — with append-only, list the exact Spanish heading
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` — the authority the internal-link check runs against, both for filenames and for
         what each entry teaches, including entries whose file does not exist yet]
-CALIBRATION = [the es/ paths of the standard's calibration set for this entry's kind, in order, or
-        none — you read the first one whole, for register only]
 
-Use these exact values wherever their placeholders appear. TASK, `{LINK_TARGETS}` and `{CALIBRATION}`
-are allowed context; the English note is not. `FILE` is a **path** you verify and commit — never a file you open,
+Use these exact values wherever their placeholders appear. TASK and `{LINK_TARGETS}` are allowed
+context; the English note is not. `FILE` is a **path** you verify and commit — never a file you open,
 and what `{LINK_TARGETS}` carries about the English side — a filename and the plan's own statement of
 what that entry teaches — is plan metadata, not the note's prose; reading it is not reading the note.
 
@@ -88,8 +85,8 @@ You are the independent **Spanish** reviewer for one file. **`{ES_FILE}` is the 
 the only note you read to judge it.** Do **not** open, read, or reference the `en/`
 version — your judgment must come from the Spanish text alone, the way Victor experiences it.
 
-**The prohibition is on the English note, not on the support files this pass needs.** The standard and
-the calibration file below, `{LINK_TARGETS}` and the `notes/{TOPIC}/{LEVEL}/es/` directory listing
+**The prohibition is on the English note, not on the support files this pass needs.** The standard,
+`{LINK_TARGETS}` and the `notes/{TOPIC}/{LEVEL}/es/` directory listing
 the link check cross-checks, and `{PLAN}` — read for the link check's claim half and again at Finish
 — are all **required** reads; `{FILE}` is a path you
 verify and commit,
@@ -107,9 +104,6 @@ do not skim, do not stop early, reach the last line.
 Before starting, read:
 - `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md` — the bar (bilingual rules, voice, signature
   texture), in full.
-- The first file in `{CALIBRATION}`, whole — a pair Victor declared refined, the calibration reference
-  for a finished Spanish note. Read it for register, never for content. When it is `none`, judge from the
-  standard alone and say so in your report.
 - **Not the `en/` file.** That is the one note you must not read.
 
 ## Audit checklist — run every point on every section (Spanish only)
@@ -159,7 +153,8 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   enforce rules earlier drafts carried and did not apply, so Spanish that passes the points above can
   still fail one. They run inside this stage's prose-only scope: what a rule or check needs
   beyond wording is reported as a structural gap, never added. Name the check in the trace when it
-  drives a fix.
+  drives a fix. The translator applied the same rules and checks as it wrote the Spanish; you run them
+  cold regardless, since a check its writer applied is exactly the one nobody else has read.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
 - **Standalone learning outcome** — studying only the Spanish must let Victor achieve TASK's
@@ -209,8 +204,7 @@ You are the last stage in the chain, so you own the single atomic commit for thi
 
 Then report your **verdict**:
 - `PASS` (no changes) or `FIXED` (bullet list of the Spanish fixes).
-- The **"N lines, read to EOF"** line for the `es/` file, and for the calibration file when one was
-  passed.
+- The **"N lines, read to EOF"** line for the `es/` file.
 - Any **structural gaps** you could not fix (for a follow-up author run).
 - The internal links you checked against `{LINK_TARGETS}`, naming any whose Spanish file the plan
   declares but the `es/` folder does not hold yet.

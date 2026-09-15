@@ -324,11 +324,12 @@ permits: the drafting is a run, the landing is a hand.
 ## The parallel in `notes/`
 
 `REC-171` built the same second loop for note prose and shipped (a)–(f): the sink
-`knowledge/notes/_internal/_note-todo-harvest.md`, its writers and its `cosecha:` line; its threshold and cap gave way on 2026-09-15 to a once-per-refined-pair harvest pass. Only the
-first pass over the three refined pairs is left. It waited on `REC-170` — the standard calibrated against a pair Victor
-never declared refined, so depth rules refined against it would have calibrated the bar against the
-pipeline's own prose — and that row closed on 2026-09-15, pinning the calibration to his three refined
-pairs, so the harvest is no longer blocked. **The question differs even though the evidence is shared**: that
+`knowledge/notes/_internal/_note-todo-harvest.md`, its writers and its `cosecha:` line; its threshold and cap gave way on 2026-09-15 to a once-per-refined-pair harvest pass. It waited on
+`REC-170` — the standard calibrated against a pair Victor never declared refined, so depth rules refined
+against it would have calibrated the bar against the pipeline's own prose — and that row closed on
+2026-09-15, pinning the calibration to his three refined pairs. The first pass over those three landed the
+same day and retired that calibration read, what the pairs teach having moved into the standard's rules;
+every pair he refines later owes one pass of its own. **The question differs even though the evidence is shared**: that
 sink asks *which rule of the standard was missing or unapplied*, countable across pairs. Loop B asks
 *what is Victor's answering voice*, legible only in the before/after.
 
@@ -364,20 +365,21 @@ clause in an existing row, or a row of its own, before anything is built.
 both halves landed 2026-08-31**, then **the `es`-review owner and the priority marker, 2026-09-05**, then
 **the whole `[studied]` half — route, marker and both counters — 2026-09-06, closing the row**)
 → `REC-184` (the voice sink and its consumer), whose **Phase 0 is no longer blocked**
-and which should not precede
-`REC-171`'s first harvest: building a second extraction mechanism while the first has never run
-once produces two untested designs.
+and which was not to precede
+`REC-171`'s first harvest — building a second extraction mechanism while the first had never run once
+would have produced two untested designs. That harvest landed 2026-09-15, so the objection no longer holds
+it back.
 
 **`REC-184` should be split along `## Staging`'s phases rather than sequenced as one row.** Phase 0 —
 the sink and its writer, nothing else — was blocked only behind `REC-180` (a row cannot store a question
 ID before question IDs exist) **and that block lifted on 2026-08-31**: the project bank has IDs, the
 freeze that closes an episode, and the channel that opens its rounds. It can start now, well before the
-notes harvest has run. Phase 2 is the part that must wait for `REC-171`'s first harvest, because the untested-design objection is
-about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
+notes harvest has run. Phase 2 was the part that had to wait for `REC-171`'s first harvest, which landed 2026-09-15, because the
+untested-design objection is about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
 the corpus months earlier at almost no cost, which is the whole argument of that section.
 
 **The transitive consequence, stated because it is easy to miss:** `REC-171`'s harvest was blocked behind
 `REC-170`, so the critical path of the voice loop began at a row about the calibration exemplar of
 `_note-quality-standard.md` — a note pair under `notes/java/junior/`, one folder away from everything
-this file describes. That row closed on 2026-09-15, so the critical path now begins at `REC-171`'s first harvest
-itself.
+this file describes. That row closed on 2026-09-15, and `REC-171`'s first harvest landed the same day, so nothing on that path
+still blocks the voice loop.
