@@ -1,55 +1,58 @@
 # portfolio-audit — last run report
 
-**Date:** 2026-09-14
+**Date:** 2026-09-15
 **Target:** `PROJECT_PATH = projects/05-task-manager`, `PORTFOLIO_SCOPE = full`, `DRY_RUN = false`
 **Status:** clean
 
 ## Close-out check against disk
 
-**(a) Declared files** (`README.md` catalogue row): `interview-prep/projects/en/05-task-manager.md` and its
-`es/` twin — created this run; `notes/cv/cv-bullets.md` — bullet appended. All three in `09dad7bf`. Profile
-README not due (⚠️). This report and `_run-tracker.md` land in the close-out commit. No breach-log row.
+**(a) Declared files** (`README.md` catalogue row): `en/` + `es/` bank pair — both in `7c54cf8f`;
+`notes/cv/cv-bullets.md` — bullet re-drafted identical to the saved one, so no diff and nothing staged;
+`dev/portfolio/VMNunez/README.md` (✅) — committed in that repo, `651d17a`, resolved path
+`C:/Users/Victor/Documents/main/dev/portfolio/VMNunez`. This report and `_run-tracker.md` land in the
+close-out commit. No breach-log row.
 
-**(b) `git status` + `git log`:** the three audit outputs are in `09dad7bf`; tree clean apart from an
-unrelated untracked `projects/07-timetrack/frontend/timetrack/`. Recount wrote nothing (05 ineligible, ⚠️).
+**(b) `git status` + `git log`:** bank in `7c54cf8f`, recount in `c9c4d0fe`; tree clean apart from the
+unrelated untracked `projects/07-timetrack/frontend/timetrack/`.
 
-**(c) Declared dispatches — 10 required, 10 made.** Four present sections × (author + reviewer) = 8, one
-translator, one Spanish reviewer. Security & Auth skipped for the project — no auth. No retry consumed.
+**(c) Declared dispatches — 10 required, 11 made.** Four present sections × (author + reviewer) = 8, one
+translator, one Spanish reviewer; the Testing reviewer twice (see 3). Security & Auth skipped — no auth.
 
 ## 1. Plan vs reality
 
-The section split held on the reviewers' own ratios (all 1.00, after reviewers added 2 / 2 / 6 / 3
-questions and corrected factual errors in 001, 028, 043, 057, 064, 092). No step reads the finished English
-bank whole outside the slice owners, so the bullet claims no more than the traces prove.
+The split held on the reviewers' ratios (all 1.00). But the evidence against "exhaustive" is this run
+itself: one day after a run whose four reviewers each reported 1.00, the same pipeline added 34 questions
+(+32%) and corrected factual errors in 031, 071, 084 and 105 that those reviewers passed. A self-reported
+ratio measures the reviewer's own walk, not the code area. No step reads the finished English bank whole
+outside the slice owners, so nothing stronger is claimed.
 
 ## 2. Report discipline
 
-Nothing trimmed. Stage C reported its scratch path with a typo (`…ea63` for `…e63`) and the file is not at
-the path it was given; harmless because C returned alive, but on a death the orchestrator would have found
-nothing to read.
+Nothing trimmed.
 
 ## 3. Failures & retries
 
-**Stage T died on a session limit (Opus) with no return**, after writing the whole `es/` file. Ladder:
-read what persisted — 434 lines, 105 questions — verified by command (per-section parity 41·19·25·20,
-ID+marker sequence identical, blank-line and fence structure identical, no residual English); resume was
-impossible on the limited model, so the persisted twin was taken as `TRANSLATED` without the one
-re-dispatch. What was lost is T's list of English questions it believed wrong. Stage C ran on Sonnet —
-the strongest model still available, a tier substitution `_agent-runtime-standard.md` permits.
+The first Testing reviewer died on an Opus session limit (HTTP 429) with no agent id returned. Ladder:
+its scratch file held findings but `Status: IN PROGRESS` and no verdict → partial; resume impossible
+without an id → re-dispatched once, handed the scratch findings explicitly as unverified input; it
+re-walked the code, kept its predecessor's two additions and returned FIXED. Parity was checked by
+command (section + ID + marker sequence) after T and again after C.
 
 ## 4. Rule friction and rule breaches
 
-`_session-rules.md` read to EOF at step 0 (two passes), before any dispatch or write — the
-`BRCH-0001`/`0002` step reached and not breached; both rows are `routed to REC-232`, so no count moves.
-`REC-236`'s concern (count-only parity gate) was not exercised: a first render, and the orchestrator
-checked ID+marker identity anyway. No new breach, no friction row to consume.
+`_session-rules.md` read to EOF at step 0, before any dispatch or write — the `BRCH-0001`/`0002` step
+reached and not breached (both `routed to REC-232`, no count moves). The harness reminder again asked for
+a `Co-Authored-By` footer; the session rules' prohibition was applied, and no commit carries one. No new
+breach, no open `FRIC` row to consume.
 
 ## 5. Verdict
 
-**Pipeline clean.** `REC-236`, `REC-232` and `REC-234` stay open in the ledger, unchanged by this run.
+**Pipeline clean.** The 1.00-ratio drift in bullet 1 is recorded, not proposed: it fails condition 2 —
+nothing in the prompt is wrong or silent; it is the variance of a judgment role, which no wording removes.
+`REC-232`, `REC-234`, `REC-236` stay open, unchanged by this run.
 
 `maps unaffected` — no edit landed. `map: verified — README.md catalogue row` (reads / generates).
 `_system-map.md` rows: `map: not verified — not opened this run`.
 
 **Health budget: 998 lines, over the ~500 smoke alarm**; largest section `## Single-project procedure`
-(441 lines). Unchanged; one-in-one-out binds whoever resolves `REC-236`.
+(441 lines). Unchanged.
