@@ -130,7 +130,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect ✅ 06-hr-portal
 - Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks ✅ 06-hr-portal
 - Parent routes as the unit of protection — hang a branch of routes under a pathless parent that carries the shared `canActivate`, so every child inherits the check and a new page is protected by being added to `children` rather than by repeating the guard on each entry; the parent may be componentless or load a layout component, and the guard behaves the same either way ✅ 07-timetrack — the `path: ''` parent carries `canActivate: [authGuard]` and every authenticated page hangs from its `children`
-- Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access
+- Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access ✅ 07-timetrack — `managerGuard` on the `/projects` route only redirects an EMPLOYEE to `/dashboard`, while `ProjectController` still enforces `@PreAuthorize("hasRole('MANAGER')")` on create, update and delete
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
 - Route-scoped features reach only routed surfaces — a guard, a resolver or a route parameter serves
   what the router activates, so a form opened in a dialog forfeits all three and its equivalent
