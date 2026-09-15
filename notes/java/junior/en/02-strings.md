@@ -794,6 +794,13 @@ name == "Ana"                       // MAL — never use == to compare text
 
 ## What this unlocks
 
-You can now handle the two things every value in a Java program is made of: numbers, whose representation decides their arithmetic, and text, whose immutability decides everything else. You can read the everyday `String` API, validate input that arrives blank rather than empty, build a report line without generating a thousand throwaway objects, embed a query without escaping it, and move a value across the text/number boundary in both directions knowing exactly where it can fail.
+With this file and [01-variables-types.md](01-variables-types.md) you can now work with the two kinds of value that show up in almost any Java program: numbers and text. For numbers, you saw that their type decides how you calculate with them; for text, that a `String` cannot be modified, and that this immutability explains everything else. In practice, you can now:
 
-What you still cannot do is decide anything for yourself. Apart from the two loops this file borrowed to make the `StringBuilder` argument — and borrowed is the right word, since nothing here explained them — every line so far runs exactly once, top to bottom, in the order it is written: a program that evaluates expressions but never *chooses* between them, and that repeats a block only where somebody handed you the loop. [03-control-flow.md](03-control-flow.md) is where that changes: `if` to pick which lines run based on a value, `for` and `while` to run a block as many times as the data demands. It picks up the same `Employee` and the same weekly hours, and starts asking questions of them.
+- Read and use the everyday `String` methods, knowing each one returns a new `String` you have to keep.
+- Validate a field that arrives with only spaces using `isBlank()`, not just an empty one with `isEmpty()`.
+- Build a report line with `+` or `.formatted()`, and use `StringBuilder` when the text accumulates inside a loop.
+- Write a multiline JSON body or SQL query with a text block, without escaping quotes or line breaks.
+- Convert text to a number and a number to text, knowing that `parseInt` throws `NumberFormatException` when the text is not a valid number, and that the compiler does not warn you.
+- Compare two Strings with `equals` or `equalsIgnoreCase`, and never with `==`.
+
+What you still cannot do is make your program take decisions. So far every line runs exactly once, top to bottom, in the order it is written. The `for` loops that appeared in the `StringBuilder` section you used without anyone explaining them, only to understand the problem of accumulating text. [03-control-flow.md](03-control-flow.md) explains that: `if` to decide which lines run based on a value, and `for` and `while` to repeat a block as many times as needed. And it does so with the same `Employee` and the same weekly hours as this file.
