@@ -720,7 +720,9 @@ String b = Integer.toString(hours);    // "38" — the number's own conversion
 String c = "" + hours;                 // "38" — works, but says nothing about intent
 ```
 
-`String.valueOf(x)` is the one to reach for by default, and the reason is `null`. `valueOf` is a **static** method on `String` — you call it on the class, and the value goes in as an argument — so a null argument is just a value it inspects, and it hands back the four-character string `"null"`. `x.toString()` is an **instance** method: calling it means asking the object *at* `x` to describe itself, and if `x` is null there is no object there to ask:
+`String.valueOf(x)` is the one to use by default, because it does not fail when the value is `null`, and `x.toString()` does. `valueOf` is a **static** method of `String`: you call it on the class (`String.valueOf(...)`) and pass the value you want to convert as its argument. That value can be an `int`, but also a `long`, a `double`, a `boolean`, a `char` or any object, because `String` has a version of `valueOf` for each type. An `int` can never be `null`; that only happens to a variable holding an object, such as an `Integer` or an `Employee`. If the argument is `null`, `valueOf` checks for it before doing anything and returns the text `"null"`, without throwing any exception.
+
+`x.toString()` works differently, because it is an **instance** method: it is not called on the class but on one specific object, the one the variable `x` holds. Remember that an object variable does not hold the object itself but the memory address where it lives. When you write `x.toString()`, Java goes to that address, finds the object and runs its `toString()` method. If `x` is `null`, the variable holds no address: there is no object to run the method on, and Java throws `NullPointerException`:
 
 ```java
 Employee e = null;

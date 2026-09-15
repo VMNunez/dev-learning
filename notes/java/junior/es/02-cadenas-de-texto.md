@@ -719,7 +719,9 @@ String b = Integer.toString(hours);    // "38" — la propia conversión del nú
 String c = "" + hours;                 // "38" — funciona, pero no dice nada sobre la intención
 ```
 
-`String.valueOf(x)` es la que hay que usar por defecto, y la razón es `null`. `valueOf` es un método **estático** de `String` — lo llamas sobre la clase, y el valor entra como argumento — así que un argumento nulo es solo un valor que inspecciona, y te devuelve el string de cuatro caracteres `"null"`. `x.toString()` es un método de **instancia**: llamarlo significa pedirle al objeto _en_ `x` que se describa a sí mismo, y si `x` es null no hay ningún objeto ahí al que preguntarle:
+`String.valueOf(x)` es la que hay que usar por defecto, porque no falla cuando el valor es `null`, y `x.toString()` sí. `valueOf` es un método **estático** de `String`: lo llamas sobre la clase (`String.valueOf(...)`) y le pasas como argumento el valor que quieres convertir. Ese valor puede ser un `int`, pero también un `long`, un `double`, un `boolean`, un `char` o cualquier objeto, porque `String` tiene una versión de `valueOf` para cada tipo. Un `int` nunca puede ser `null`; eso solo le pasa a una variable que guarda un objeto, como un `Integer` o un `Employee`. Si el argumento es `null`, `valueOf` lo comprueba antes de hacer nada y devuelve el texto `"null"`, sin lanzar ninguna excepción.
+
+`x.toString()` funciona de otra forma, porque es un método de **instancia**: no se llama sobre la clase, sino sobre un objeto concreto, el que guarda la variable `x`. Recuerda que una variable de tipo objeto no guarda el objeto en sí, sino la dirección de memoria donde vive. Cuando escribes `x.toString()`, Java va a esa dirección, encuentra el objeto y ejecuta su método `toString()`. Si `x` es `null`, la variable no guarda ninguna dirección: no hay ningún objeto sobre el que ejecutar el método, y Java lanza `NullPointerException`:
 
 ```java
 Employee e = null;
