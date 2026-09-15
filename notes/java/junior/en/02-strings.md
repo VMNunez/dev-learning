@@ -5,9 +5,9 @@
   - [What actually happens in memory](#what-actually-happens-in-memory)
 - [The everyday method catalogue — and what each call gives back](#the-everyday-method-catalogue--and-what-each-call-gives-back)
   - [`substring` — the second index is excluded, and going past the end throws](#substring--the-second-index-is-excluded-and-going-past-the-end-throws)
-  - [`split` — it takes a regular expression, not a plain separator](#split--it-takes-a-regular-expression-not-a-plain-separator)
+  - [`split` — the separator you pass it is a regular expression](#split--the-separator-you-pass-it-is-a-regular-expression)
 - [`isEmpty()` and `isBlank()` — empty and blank](#isempty-and-isblank--empty-and-blank)
-  - [`strip()` vs `trim()` — use `strip()`](#strip-vs-trim--use-strip)
+  - [`strip()` vs `trim()`](#strip-vs-trim)
 - [Putting values into text — `+` and `.formatted()`](#putting-values-into-text---and-formatted)
   - [Why a broken format string still compiles](#why-a-broken-format-string-still-compiles)
 - [Accumulating text — when `+` becomes the wrong tool](#accumulating-text--when--becomes-the-wrong-tool)
@@ -18,7 +18,7 @@
   - [Text → number](#text--number)
   - [The compiler does not force you to handle `NumberFormatException`](#the-compiler-does-not-force-you-to-handle-numberformatexception)
   - [Number → text](#number--text)
-- [Comparing two Strings — and the one question this chapter refuses to answer](#comparing-two-strings--and-the-one-question-this-chapter-refuses-to-answer)
+- [Comparing two Strings](#comparing-two-strings)
 - [What this unlocks](#what-this-unlocks)
 
 # Strings and text
@@ -148,7 +148,7 @@ Here is each method on its own, so you can come back to this as a reference. Thr
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
 
   record.startsWith("  Ana")  // true  → the text begins with two spaces and then "Ana"
-  record.startsWith("Ana")    // false → it begins with a space, not with the 'A'
+  record.startsWith("Ana")    // false → it begins with two spaces, not with the 'A'
   record.startsWith("  ana")  // false → case counts too
   "report.pdf".endsWith(".pdf")  // true → this is how you check a file extension
   ```
@@ -223,7 +223,7 @@ The type each one returns is what is worth memorising, because it is what decide
 
 > **`length()` counts code units, not the characters a human sees.** For every name, email and role you will ever handle, the number of code units and the number of characters are the same, so you can read `length()` as "how many characters the text has" and move on. The exception is the one [01-variables-types.md](01-variables-types.md) already showed you with `char`: an emoji occupies two code units, so `"😀".length()` is `2`. That is the same fact reaching you through `String` instead of through `char`, and it is also why `substring` can cut an emoji in half.
 
-> **Nine of these methods read the `String` without producing a new one.** `length()`, `indexOf()` and the seven boolean checks — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` and `equalsIgnoreCase()` — only query the object that already exists: they walk its characters to answer a question and hand back a number or a `true`/`false`, without reserving memory for any object. All the remaining methods — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — build a new `String` object, exactly as the previous section described. That is the reason calls are written chained: each link in the chain works on the new object the previous link returned.
+> **Nine of these methods read the `String` without producing a new one.** `length()`, `indexOf()` and the seven boolean checks — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` and `equalsIgnoreCase()` — only query the object that already exists: they walk its characters to answer a question and hand back a number or a `true`/`false`, without reserving memory for any object. All the remaining methods — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — build a new `String` object, exactly as the previous section described. (When there is nothing to change — `strip()` on text with no surrounding spaces, a `replace` that finds nothing — they may hand you back the same object; it makes no difference, because the rule of keeping what they return stays the same.) That is the reason calls are written chained: each link in the chain works on the new object the previous link returned.
 
 ### `substring` — the second index is excluded, and going past the end throws
 
@@ -301,11 +301,11 @@ The most common case you will meet is a form field. A user who leaves a field un
 
 > **Preview — Spring Boot:** you will meet this exact pair again as annotations rather than method calls. `@NotEmpty` on a request field rejects `""` and lets `"  "` through; `@NotBlank` rejects both. They are the same two rules with the same names, applied automatically by Spring the moment the request arrives, without you writing a single `if`. Which annotation goes on which field is a question the Spring Boot notes answer.
 
-### `strip()` vs `trim()` — use `strip()`
+### `strip()` vs `trim()`
 
 Among the methods above is `strip()`, but in tutorials and in older code you will see `trim()` doing the same thing, so you will meet both. They do the same job — remove leading and trailing whitespace — and they differ in what they count as *whitespace*, because the two definitions come from different eras.
 
-`trim()` comes from the earliest versions of Java, from when the language did not yet consult the Unicode tables to decide what counts as whitespace. Numbers it always had: every character in a `String` is stored as a number, the one Unicode assigns it — Unicode being the standard that hands every character that exists, letters, symbols and emojis, a unique number. That assignment is made in advance, not something the program looks up while running: the number **is** the character. That number is the character's **code point**, written in hexadecimal with a `U+` prefix, and the ordinary space, the one on the space bar, is `U+0020`.
+`trim()` comes from the earliest versions of Java, and it was designed with a simpler rule that does not consult the Unicode tables to decide what counts as whitespace. Numbers it always had: every character in a `String` is stored as a number, the one Unicode assigns it — Unicode being the standard that hands every character that exists, letters, symbols and emojis, a unique number. That assignment is made in advance, not something the program looks up while running: the number **is** the character. That number is the character's **code point**, written in hexadecimal with a `U+` prefix, and the ordinary space, the one on the space bar, is `U+0020`.
 
 That is exactly the difference between the two methods: `trim()` only knows how to compare that number, while `strip()` does consult the table. The rule `trim()` follows is purely numeric: it removes from the start and the end every character whose number is less than or equal to `U+0020`, without asking Unicode whether that character really is whitespace. Tabs and newlines have lower numbers, so it removes them — but below `U+0020` there are also control characters that are not whitespace at all, and it takes those too. And the other way round: any space whose number is higher than `U+0020` it leaves alone, even though on screen it looks exactly like a space. `strip()`, added in Java 11, asks `Character.isWhitespace()` instead, which consults the actual Unicode tables:
 
@@ -353,7 +353,7 @@ String line = "%s logged %d hours".formatted(name, hours);   // "Ana logged 38 h
 A placeholder is a `%` followed by a letter that says *what kind of value goes here*. The three you will use:
 
 - **`%s`** — a string goes here. It accepts literally anything, because all it does is call `toString()` on the value, and every object in Java has a `toString()` ([06-oop-classes.md](06-oop-classes.md) is where you write your own).
-- **`%d`** — a whole number goes here (`int`, `long`, and their wrapper types). It refuses anything else.
+- **`%d`** — a whole number goes here (`int`, `long`, and their wrapper types; also `byte`, `short` and `BigInteger`). It refuses decimals, text and anything else.
 - **`%f`** — a decimal number goes here, and you almost always want to say how many decimal places: `%.2f` means two. `"Total: %.2f h".formatted(38.5)` gives `"Total: 38,50 h"` or `"Total: 38.50 h"` depending on the computer's regional settings.
 
 **The placeholders are filled by position: the first value goes to the first placeholder, the second to the second, and so on from left to right. None of them is matched by name.** That is the whole mechanism, and it is also the whole problem, because nothing checks that you got the order right.
@@ -772,7 +772,7 @@ That second line can throw `NumberFormatException`, because here `Long.valueOf` 
 
 ---
 
-## Comparing two Strings — and the one question this chapter refuses to answer
+## Comparing two Strings
 
 > 📖 Docs: [Oracle Docs — `java.lang.String`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html) → read: the `equals(Object)` and `equalsIgnoreCase(String)` entries in the method list — both are defined in terms of *the sequence of characters*, never of the object holding them.
 

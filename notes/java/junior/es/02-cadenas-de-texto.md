@@ -5,9 +5,9 @@
   - [Lo que pasa realmente en memoria](#lo-que-pasa-realmente-en-memoria)
 - [El catálogo de métodos del día a día — y qué devuelve cada llamada](#el-catálogo-de-métodos-del-día-a-día--y-qué-devuelve-cada-llamada)
   - [`substring` — el segundo índice queda excluido, y pasarte del final lanza excepción](#substring--el-segundo-índice-queda-excluido-y-pasarte-del-final-lanza-excepción)
-  - [`split` — recibe una expresión regular, no un separador plano](#split--recibe-una-expresión-regular-no-un-separador-plano)
+  - [`split` — el separador que le pasas es una expresión regular](#split--el-separador-que-le-pasas-es-una-expresión-regular)
 - [`isEmpty()` e `isBlank()` — vacío y en blanco](#isempty-e-isblank--vacío-y-en-blanco)
-  - [`strip()` frente a `trim()` — usa `strip()`](#strip-frente-a-trim--usa-strip)
+  - [`strip()` frente a `trim()`](#strip-frente-a-trim)
 - [Metiendo valores dentro de texto — `+` y `.formatted()`](#metiendo-valores-dentro-de-texto---y-formatted)
   - [Por qué una cadena de formato rota sigue compilando](#por-qué-una-cadena-de-formato-rota-sigue-compilando)
 - [Acumulando texto — cuándo `+` se convierte en la herramienta equivocada](#acumulando-texto--cuándo--se-convierte-en-la-herramienta-equivocada)
@@ -18,7 +18,7 @@
   - [Texto → número](#texto--número)
   - [El compilador no te obliga a manejar `NumberFormatException`](#el-compilador-no-te-obliga-a-manejar-numberformatexception)
   - [Número → texto](#número--texto)
-- [Comparar dos Strings — y la única pregunta que este capítulo se niega a responder](#comparar-dos-strings--y-la-única-pregunta-que-este-capítulo-se-niega-a-responder)
+- [Comparar dos Strings](#comparar-dos-strings)
 - [Lo que esto desbloquea](#lo-que-esto-desbloquea)
 
 # Cadenas de texto (Strings)
@@ -148,7 +148,7 @@ Aquí tienes cada método por separado, para tenerlo como referencia. De cada un
   String record = "  Ana Ruiz,DEVELOPER,38.5  ";
 
   record.startsWith("  Ana")  // true  → el texto empieza por dos espacios y luego "Ana"
-  record.startsWith("Ana")    // false → empieza por un espacio, no por la 'A'
+  record.startsWith("Ana")    // false → empieza por dos espacios, no por la 'A'
   record.startsWith("  ana")  // false → la caja también cuenta
   "informe.pdf".endsWith(".pdf")  // true → así se comprueba la extensión de un fichero
   ```
@@ -223,7 +223,7 @@ El tipo que devuelve cada uno es lo que conviene memorizar, porque es lo que dec
 
 > **`length()` cuenta unidades de código, no los caracteres que ve una persona.** Para cada nombre, email y rol que vayas a manejar, el número de unidades de código y el número de caracteres coinciden, así que puedes leer `length()` como "cuántos caracteres tiene el texto" y seguir adelante. La excepción es la misma que [01-variables-tipos.md](01-variables-tipos.md) ya te mostró con `char`: un emoji ocupa dos unidades de código, así que `"😀".length()` es `2`. Es el mismo hecho llegándote a través de `String` en vez de a través de `char`, y también es por lo que `substring` puede cortar un emoji por la mitad.
 
-> **Nueve de estos métodos leen el `String` sin producir uno nuevo.** `length()`, `indexOf()` y las siete comprobaciones booleanas — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` y `equalsIgnoreCase()` — solo consultan el objeto que ya existe: recorren sus caracteres para responder una pregunta y devuelven un número o un `true`/`false`, sin reservar memoria para ningún objeto nuevo. Todos los métodos restantes — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — construyen un objeto `String` nuevo, exactamente como describió la sección anterior. Esa es la razón de que las llamadas se escriban encadenadas: cada eslabón de la cadena trabaja sobre el objeto nuevo que devolvió el eslabón anterior.
+> **Nueve de estos métodos leen el `String` sin producir uno nuevo.** `length()`, `indexOf()` y las siete comprobaciones booleanas — `isEmpty()`, `isBlank()`, `contains()`, `startsWith()`, `endsWith()`, `equals()` y `equalsIgnoreCase()` — solo consultan el objeto que ya existe: recorren sus caracteres para responder una pregunta y devuelven un número o un `true`/`false`, sin reservar memoria para ningún objeto nuevo. Todos los métodos restantes — `strip`, `replace`, `substring`, `toUpperCase`, `toLowerCase`, `split`, `join`, `repeat` — construyen un objeto `String` nuevo, exactamente como describió la sección anterior. (Si no hay nada que cambiar — `strip()` sobre un texto sin espacios, `replace` que no encuentra nada — pueden devolverte el mismo objeto; da igual, porque la regla de guardar lo que devuelven sigue siendo la misma.) Esa es la razón de que las llamadas se escriban encadenadas: cada eslabón de la cadena trabaja sobre el objeto nuevo que devolvió el eslabón anterior.
 
 ### `substring` — el segundo índice queda excluido, y pasarte del final lanza excepción
 
@@ -305,12 +305,12 @@ El caso más habitual lo vas a ver en los campos de un formulario. Un usuario qu
 
 Entre los métodos de arriba se encuentra `strip()`, pero en tutoriales y en código antiguo vas a ver `trim()` haciendo lo mismo, así que te vas a encontrar los dos. Hacen el mismo trabajo — quitar espacios en blanco al principio y al final — y se diferencian en qué consideran _un espacio en blanco_, porque las dos definiciones vienen de épocas distintas.
 
-`trim()` viene de las primeras versiones de Java, de cuando el lenguaje todavía no consultaba las tablas de Unicode para decidir qué cuenta como espacio en blanco. Números sí ha tenido siempre: cada carácter de un `String` se guarda como un número, el que le asigna Unicode — el estándar que asigna un número único a cada carácter que existe, letras, símbolos y emojis. Ese reparto está hecho de antemano, no es algo que el programa consulte al ejecutarse: el número **es** el carácter. Ese número es el **code point** del carácter, se escribe en hexadecimal con el prefijo `U+`, y el espacio normal, el de la barra espaciadora, es el `U+0020`.
+`trim()` viene de las primeras versiones de Java, y se diseñó con una regla más simple que no consulta las tablas de Unicode para decidir qué cuenta como espacio en blanco. Números sí ha tenido siempre: cada carácter de un `String` se guarda como un número, el que le asigna Unicode — el estándar que asigna un número único a cada carácter que existe, letras, símbolos y emojis. Ese reparto está hecho de antemano, no es algo que el programa consulte al ejecutarse: el número **es** el carácter. Ese número es el **code point** del carácter, se escribe en hexadecimal con el prefijo `U+`, y el espacio normal, el de la barra espaciadora, es el `U+0020`.
 
 Esa es justo la diferencia entre los dos métodos: `trim()` solo sabe comparar ese número, y `strip()` sí consulta la tabla. La regla de `trim()` es puramente numérica: quita del principio y del final todo carácter cuyo número sea menor o igual que `U+0020`, sin preguntarle a Unicode si ese carácter es de verdad un espacio en blanco. El tabulador y el salto de línea tienen números más bajos(QUE U+0020), así que los quita — pero por debajo de `U+0020` también hay caracteres de control que no son espacios en blanco, y esos también se los lleva. Y al revés: cualquier espacio cuyo número sea más alto que `U+0020` no lo toca, aunque en pantalla se vea exactamente igual que un espacio. `strip()`, añadido en Java 11, pregunta en cambio a `Character.isWhitespace()`, que consulta las tablas reales de Unicode:
 
 ```java
-String em = " Ana ";      // U+2003 EM SPACE — espacio en blanco Unicode de verdad
+String em = " Ana ";      // U+2003 EM SPACE — espacio en blanco Unicode de verdad
 
 em.length()          // 5
 em.trim().length()   // 5  ← MAL: trim lo dejó tal cual, porque U+2003 > U+0020
@@ -353,7 +353,7 @@ String line = "%s logged %d hours".formatted(name, hours);   // "Ana logged 38 h
 Un marcador de posición es un `%` seguido de una letra que dice _qué tipo de valor va aquí_. Los tres que vas a usar:
 
 - **`%s`** — aquí va un string. Acepta literalmente cualquier cosa, porque todo lo que hace es llamar a `toString()` sobre el valor, y todo objeto en Java tiene un `toString()` ([06-poo-clases.md](06-poo-clases.md) es donde escribes el tuyo propio).
-- **`%d`** — aquí va un número entero (`int`, `long`, y sus tipos wrapper). Rechaza cualquier otra cosa.
+- **`%d`** — aquí va un número entero (`int`, `long`, y sus tipos wrapper; también `byte`, `short` y `BigInteger`). Rechaza decimales, texto y cualquier otra cosa.
 - **`%f`** — aquí va un número decimal, y casi siempre quieres decir cuántos decimales: `%.2f` significa dos. `"Total: %.2f h".formatted(38.5)` da `"Total: 38,50 h"` o `"Total: 38.50 h"` según la configuración regional del ordenador.
 
 **Los marcadores se asignan por posición: el primer valor va al primer marcador, el segundo al segundo, y así de izquierda a derecha. Ninguno se asigna por nombre.** Ese es todo el mecanismo, y también es todo el problema, porque nada comprueba que hayas puesto el orden correcto.
