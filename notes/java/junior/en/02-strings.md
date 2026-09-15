@@ -794,7 +794,7 @@ name == "Ana"                       // MAL — never use == to compare text
 
 ## What this unlocks
 
-With this file and [01-variables-types.md](01-variables-types.md) you can now work with the two kinds of value that show up in almost any Java program: numbers and text. For numbers, you saw that their type decides how you calculate with them; for text, that a `String` cannot be modified, and that this immutability explains everything else. In practice, you can now:
+With this file and [01-variables-types.md](01-variables-types.md) you can now work with the two kinds of value that show up in almost any Java program: numbers and text. For numbers, you saw that their type decides how arithmetic operations are carried out on them; for text, that a `String` cannot be modified, and that this immutability explains everything else. In practice, you can now:
 
 - Read and use the everyday `String` methods, knowing each one returns a new `String` you have to keep.
 - Validate a field that arrives with only spaces using `isBlank()`, not just an empty one with `isEmpty()`.

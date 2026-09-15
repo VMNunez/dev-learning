@@ -793,7 +793,7 @@ name == "Ana"                       // MAL — nunca uses == para comparar texto
 
 ## Lo que esto desbloquea
 
-Con este archivo y [01-variables-tipos.md](01-variables-tipos.md) ya sabes trabajar con los dos tipos de valor que aparecen en casi cualquier programa Java: los números y el texto. De los números viste que su tipo decide cómo se calcula con ellos; del texto, que un `String` no se puede modificar, y que esa inmutabilidad explica todo lo demás. En la práctica, ahora puedes:
+Con este archivo y [01-variables-tipos.md](01-variables-tipos.md) ya sabes trabajar con los dos tipos de valor que aparecen en casi cualquier programa Java: los números y el texto. De los números viste que su tipo decide cómo se realizan las operaciones aritméticas con ellos; del texto, que un `String` no se puede modificar, y que esa inmutabilidad explica todo lo demás. En la práctica, ahora puedes:
 
 - Leer y usar los métodos de `String` del día a día, sabiendo que cada uno devuelve un `String` nuevo que tienes que guardar.
 - Validar un campo que llega con espacios con `isBlank()`, y no solo uno vacío con `isEmpty()`.
