@@ -31,7 +31,8 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
 
 ## Format modes
 
-- `notes/java/junior/en/` and `notes/spring-boot/junior/en/` — **structured mode**: the file opens with a
+- `notes/java/junior/en/` and `notes/spring-boot/junior/en/` — **structured mode**: the file opens with
+  its index (**Harvested from refined pairs** → `HR-1`), then a
   `# [Topic Name]` title followed by a general `Docs:` link to the main reference page
   for the whole topic; each section has three fields:
   `Purpose:` (one sentence — who calls it, when, and why), `File:` (real path to the project
@@ -40,8 +41,8 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   to study with a note on what to read, e.g. `https://... → read: "Declaring Transactions"`);
   per-call explanations as bold items (`**.methodName()**`); use `##` to introduce each
   concept section.
-- All other folders — **conversational mode**: the file opens with a `# [Topic Name]` title
-  followed by a general `Docs:` link to the main reference page for the whole topic; each section
+- All other folders — **conversational mode**: the file opens with its index (`HR-1`), then a
+  `# [Topic Name]` title followed by a general `Docs:` link to the main reference page for the whole topic; each section
   has a `Docs:` link that points to the exact sub-section to study and states what to read (e.g.
   `Docs: https://... → read: "Template syntax — Built-in control flow"`); no `Purpose:` or `File:`
   lines; prose explanations with code blocks — explanation comes before the code, not in dedicated
@@ -52,7 +53,8 @@ This bar is the same for **every topic** — it is NOT Java-specific. Notes in o
   has the `00` prefix or its narrative role says so — the same test the topic-introduction invariant
   uses further down. A `00` therefore carries **no `Purpose:` / `Propósito:` and no `File:` /
   `Archivo:` line anywhere in it**, not even in a folder listed as structured mode above. Its only
-  metadata is the general `Docs:` link under the title and one `Docs:` line per `##` section.
+  metadata is the general `Docs:` link under the title and one `Docs:` line per `##` section — the
+  index above the title is navigation, not a section, and carries none.
   The reason is what a `00` is *for*: it orients Victor before he knows any of the vocabulary, so it
   has to read as continuous guidance — what this topic is, what he will meet, and in what order — and
   a per-section `Purpose:` field written for a reader who already knows the concept works against
@@ -412,7 +414,14 @@ Not every element fits every section, but a finished note visibly uses most of t
   "what does this word mean?", or "why not the obvious alternative?" becomes a callout. Do not ration
   them — under-using callouts is the most common way a draft falls below his bar. Resolve the doubt as
   a statement of fact (see the question-TODO rule in `_notes-write-prompt.md`) — never phrase the
-  heading as a literal question.
+  heading as a literal question. **That last clause is `en disputa`** (2026-09-15, `REC-171`): the
+  refined `00` has four callouts whose bold lead-in is the question the callout then answers —
+  ``**¿Por qué siempre `String[] args`?** Porque un programa se puede arrancar pasándole datos…`` —
+  and no conditional keeps both sides, because the clause was written about callouts. One supporting
+  pair against one contradicting pair is a tie, which waits for the next refined pair. Until then
+  neither form binds the writer or the reviewer on a callout's lead-in, and neither does "never leave
+  the question visible" in the Anticipate pass below or in the question-TODO rule. Section headings
+  are outside the dispute.
 - **Every comparison table gets a sentence on how to read it.** After any table, add a line that
   explains what a non-obvious column or row actually means and how to use it — e.g. "The `Parent
   class` column is what determines whether the compiler treats it as checked or unchecked." A table
@@ -433,7 +442,8 @@ produced it are gone — the sink is what lets the next revision of these rules 
 data rather than from memory. It is the named source for any change here, and it is also the fence: a
 rule derived from Victor's corrections enters or leaves this section only through the sink's harvest
 pass, one per refined pair; any other change is a `REC-NNN`; both are resolved under the ledger's four
-steps with the mandatory cold reviewer, and never by a skill or a run.
+steps with the mandatory cold reviewer, and never by a skill or a run. Which refined pairs support or
+contradict each rule here is **Harvested from refined pairs** → "Evidence", below.
 
 This is the step that actually reduces how many TODOs Victor has to add. Half of his TODOs are the
 same kind of doubt: **mechanism questions** — he asks *why* something works the way it does, not what
@@ -453,7 +463,8 @@ generating that list:
 - **Simulate his chained "why?" questions.** For each section, generate the chain of "why does this
   work?" and "does this mean that?" questions a rigorous reader would ask, and verify the prose
   already answers each one. If any is unanswered, answer it in the text (as a statement of fact —
-  never leave the question visible).
+  never leave the question visible; whether a callout's bold lead-in may be that question is
+  `en disputa`, under **Signature elements**).
 - **Never mention an action in the abstract without its code.** If the text says "you can rethrow
   it", "you can wrap it", "you configure it" — the concrete code snippet must be right there. An
   abstract mention with no example is a guaranteed "quiero ver un ejemplo" TODO.
@@ -501,7 +512,8 @@ seven register slugs it seeds from these rules. Those twenty TODOs no longer exi
 one file, one derivation, and the sink is what stops that happening to the next twenty. Same fence as
 the family above: a rule derived from Victor's corrections is edited here from the harvest pass, one per
 refined pair, and any other change through a `REC-NNN`, both under the ledger's four steps with the
-mandatory cold reviewer, never by a skill or a run. **The `unapplied` column is what protects these seven specifically** — a rule already stated
+mandatory cold reviewer, never by a skill or a run. Their supporting pairs are **Harvested from refined
+pairs** → "Evidence", below. **The `unapplied` column is what protects these seven specifically** — a rule already stated
 here and breached anyway is harvested as a *breach of it*, never as a new eighth rule saying the same
 thing.
 
@@ -641,6 +653,165 @@ padding around the explanation he was looking for.
   `Docs:` — link to the exact sub-section to study with a note on what to read.
   Then explain each important call or line with a bold item — what it does and why it matters, in
   plain language. Never include an Imports section — IntelliJ handles imports automatically.
+
+### Harvested from refined pairs — rules, examples and reviewer checks
+
+**What this section is.** What Victor's refined pairs have taught the standard, one harvest pass per
+pair (`_note-todo-harvest.md` → "The harvest pass — one per refined pair"): new rules, before/after
+examples, reviewer checks for rules the drafts carried and did not apply, and the evidence behind every
+rule a pass touched. Every other section of this standard still binds; this one adds to them and never
+restates one. A harvest pass adds to it under the `REC-NNN` that pass resolves (`REC-171` for
+`java/junior/00`–`02`); any other change is a `REC-NNN` of its own, like a change anywhere else in this
+standard, and both go through the mandatory cold reviewer. A rule applies to every topic unless its
+scope names one.
+
+#### Rules
+
+- **`HR-1` — Every note opens with its index, above the title.** The first line of the file is
+  `## Índice de esta nota` (`## Index of this note` in `en/`). Its first entry links the `#` title; then
+  one entry per `##` section, in file order, with that section's `###` headings nested under it; `####`
+  headings are not listed. Every entry is a link to its heading's anchor, and an anchor is the slug of
+  the heading **in that file's own language** — so the `es/` index points at the Spanish headings and is
+  never the English anchors carried across. Numbering the `##` entries is allowed, not required. The
+  index is navigation, not a section: it carries no `Docs:` line and owes none of a section's checks,
+  and a section-by-section trace lists it without judging it.
+  On an `append-only` run over a frozen pair the index stays as it is and the entry an appended heading
+  lacks is reported, since that mode's freeze outranks this rule. Scope: all topics. Judged at stage B
+  on the `en/` and at stage C on the `es/` anchors.
+
+#### Examples
+
+At most eight, each at most ten lines; a better one replaces a worse one. Quotes are verbatim from the
+two versions of the pair, `[…]` marking a cut.
+
+**`HE-1` — a supporting term defined in its own sentence** · Zero-assumption rule, `HC-1` · `java/junior/00`
+
+> Antes: Se usa para backends web, apps Android, herramientas de escritorio y trabajos batch que mueven
+> millones de filas de base de datos durante la noche.
+>
+> Después: Se usa para crear backends web, apps Android, herramientas de escritorio y procesos batch —
+> programas sin pantalla ni nadie delante, que se lanzan solos a una hora fijada y procesan de una
+> tacada un lote entero de datos — que mueven millones de filas de un sistema a otro cada noche.
+
+**`HE-2` — an operation named, then shown on one instance** · Zero-assumption rule, `HC-1` · `java/junior/00`
+
+> Antes: […] abrir un puerto, parsear una petición HTTP, mapear una fila de base de datos a un objeto.
+>
+> Después: […] y **mapear una fila de la base de datos a un objeto**. Esto último significa coger una
+> fila de una tabla, por ejemplo la fila `(3, 'Ana', 'ana@mail.com')` de la tabla `users`, y construir
+> con ella un objeto `User` de Java cuyos campos `id`, `name` y `email` ya valgan `3`, `"Ana"` y
+> `"ana@mail.com"`.
+
+**`HE-3` — a comparison with both sides as code** · Anticipate-the-TODO, `HC-2` · `java/junior/00`
+
+> Antes: Un bucle sobre una colección se lee como un `for...of`.
+>
+> Después: Java hace exactamente lo mismo y solo cambia la puntuación: donde JavaScript escribe `of`,
+> Java escribe dos puntos, y la variable se declara con su tipo delante. — then the JavaScript loop and
+> the Java loop as two code blocks (`for (const name of names)` · `for (String name : names)`), and:
+> Los dos bucles imprimen `Ana` y después `Luis`.
+
+**`HE-4` — a signature element with its why** · Second-order completeness, `HC-3` · `java/junior/00`
+
+> Antes: `└─ los argumentos de línea de comandos, entregados como un array de texto`
+>
+> Después: `└─ los datos que se le pasan al programa al arrancarlo, en un array de texto`, then a callout:
+> **¿Por qué siempre `String[] args`?** Porque un programa se puede arrancar pasándole datos escritos
+> justo detrás del nombre de la clase: `java Hello Ana 30`. […] Y es de tipo `String` porque todo lo
+> que se teclea en una terminal es texto […] — and a second one answering why a fixed-length array
+> fits: the JVM creates it at start-up, when it already knows how many values there are.
+
+**`HE-5` — a surprising behaviour with its mechanism** · Second-order completeness, `HC-3` · `java/junior/00`
+
+> Antes: […] y por qué los literales de texto sueltos hacen que `==` *parezca* correcto justo las veces
+> suficientes como para engañarte.
+>
+> Después: […] por qué escribir dos literales de texto sueltos, como `"hola" == "hola"`, hace que `==`
+> parezca funcionar correctamente justo las veces suficientes como para engañarte: Java reutiliza el
+> mismo objeto en memoria para literales de texto idénticos, así que ese caso concreto sí apunta al
+> mismo sitio, aunque la regla general siga sin ser esa.
+
+**`HE-6` — the English name beside the Spanish one** · no rule · `java/junior/00`
+
+> Antes: […] cualquiera puede abrir la pestaña de red y llamar al endpoint directamente. / Para un
+> desglose preciso de la JVM frente al JRE y el JDK que instalaste, mira […]
+>
+> Después: […] cualquiera puede abrir la pestaña _Network_ del navegador y llamar al endpoint
+> directamente […] / El **JDK** (_Java Development Kit_, «kit de desarrollo de Java») es lo que
+> instalaste […]. El **JRE** (_Java Runtime Environment_, «entorno de ejecución de Java») es […]
+
+An example and deliberately not a rule: the same refined file introduces **lista**, **excepción** and
+**regla de negocio** with no English name, so "every term in both languages" would reject what he approved.
+
+**`HE-7` — a comparison that carries its own code is a heading** · no rule · `java/junior/00`
+
+> Antes: *`var` no es `var`.* Java tomó prestada la palabra clave y le dio casi el significado contrario.
+>
+> Después: ``#### `var` no significa lo mismo en Java que en JavaScript``, and under it: Java reutilizó
+> la palabra clave, pero le dio un significado casi opuesto.
+
+#### Reviewer checks
+
+A check is the enforcement for a rule the drafts carried and did not apply (`unapplied`), built from
+real before/after pairs. Each names the stage that runs it. Stage B's audit checklist
+(`_notes-review-prompt.md`) points at this block and at `HR-1`; stage C's (`_notes-review-es-prompt.md`)
+points only at `HR-1`'s `es/` anchors, because no stage C check exists yet. The examples quote the `es/`
+side, where Victor made the change; a stage B check runs on the English that stage reviews.
+
+- **`HC-1` — Supporting-term sweep** · stage B · enforces the Zero-assumption rule and its register
+  restatement ("The zero-assumption rule covers supporting clauses") · built from `HE-1`, `HE-2`. In
+  every paragraph, list each noun that names a tool, a file type, a kind of program, an operation or a
+  piece of jargon and is not the paragraph's own subject. Put each to the zero-assumption rule's own
+  reader — a developer who knows JavaScript and has never touched this technology. One that reader could
+  not explain is defined in its own sentence, in one clause saying what it is, plus one instance where
+  it is an operation — or it is cut. In the `00` draft it catches, among others, `trabajos batch`,
+  `.jar`, `mapear una fila a un objeto`, `transpilar` and `en el ámbito visible`; `endpoint`, `HTTP` and
+  `JSON` pass it.
+- **`HC-2` — A construct the section teaches is on the page as code** · stage B · enforces
+  Anticipate-the-TODO → "Never mention an action in the abstract without its code" · built from `HE-3`.
+  When a section teaches how to write a construct — by setting it beside another (a JavaScript habit and
+  its Java counterpart, a wrong form and the right one) or by giving the reader a form to write — every
+  side it teaches is on the page as code, with its output when the point is what it prints. A construct
+  the section only names, previews, offers as the alternative without teaching how to write it, or hands
+  to the file that teaches it is exempt, with or without a link. In the `00` draft it catches `for...of`,
+  the TypeScript interface and its Java class, `print` against `println`, the class filed in
+  `Wrong.java` and the `User` class the `cannot find symbol` example assumed. In the refined file the
+  logger that replaces `println`, the number conversion `args` leaves to the reader and the records
+  linked to `06` are all exempt.
+- **`HC-3` — A pointer to a later file does not answer a why the section makes the reader act on** ·
+  stage B · enforces Second-order completeness → "Explain the mechanism, not just the usage" and
+  Anticipate-the-TODO → "Simulate his chained 'why?' questions" · built from `HE-4`, `HE-5`. Find every
+  place the section defers something — a link to a later file, "is covered in…", "read it here as a
+  fixed formula". Where the deferred thing is something the section itself has the reader write, copy,
+  rely on or watch out for **now**, its why is answered here in one to three sentences, and the link
+  stays for the full treatment. A sentence stating what the construct does counts as its why when that
+  meaning is the reason it is required. A deferral of something the section only names or previews — a route
+  entry, a feature listed for later — stays a deferral. In the `00` draft it catches the `main` signature
+  read "as a fixed formula" (why `public`, why `String[] args`), `==` on two texts handed to `01`, the
+  compile-time obligation of checked exceptions handed to `08`, and object equality handed to `04`. In
+  the refined file the unordered set handed to `10` and every entry of the route are previews, and the
+  three things type erasure stops from compiling are answered in place before the link to `09`; all pass.
+
+#### Evidence
+
+Every rule a harvest pass has touched, with the refined pairs that support or contradict it. A pair
+**supports** a rule when its refinement applied it or it was derived from that pair. A rule written
+before 2026-09-15 counts its pre-harvest origin as one supporting pair; a rule no pass has touched is
+not listed and keeps that default.
+
+| Rule | Scope | Judged at | Supported by | Contradicted by |
+|---|---|---|---|---|
+| `HR-1` — the index above the title | all topics | B; C for the `es/` anchors | `java/junior/00` | — |
+| Format modes → the topic introduction is always conversational mode | all topics | B | `java/junior/00`, which it was derived from | — |
+| Persistent-plan pedagogical contract → introduction invariants 6 and 7, and the mechanism the file leans on placed early | all topics | B | `java/junior/00`, which they were derived from | — |
+| Sentence-level register → the seven rules and the literary flourish | all topics | C | `java/junior/00`, which they were derived from | — |
+| Zero-assumption rule · `HC-1` | all topics | B | pre-harvest origin · `java/junior/00` | — |
+| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3` | all topics | B | pre-harvest origin · `java/junior/00` | — |
+| Anticipate-the-TODO pass · `HC-2`, `HC-3` | all topics | B | pre-harvest origin · `java/junior/00` | — |
+| Signature elements → analogies, exact error messages | all topics | B | pre-harvest origin · `java/junior/00` | — |
+| Signature elements → "never phrase the heading as a literal question", on a callout's lead-in — **`en disputa`**, a tie waiting for the next refined pair | all topics | neither, while disputed | pre-harvest origin | `java/junior/00` |
+| The rest of the writing rules → link to other note files | all topics | B | pre-harvest origin · `java/junior/00` | — |
+| Bilingual notes → the Spanish reads as native Spanish | all topics | C | pre-harvest origin · `java/junior/00` | — |
 
 ---
 

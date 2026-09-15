@@ -142,7 +142,10 @@ that judges the rule — stage C, `_notes-review-es-prompt.md`, for a rule judge
 stage B, `_notes-review-prompt.md`, otherwise; the pass names the stage on the rule — built from real
 before/after pairs, and, once it repeats, relocating or rewording the rule, which is the flip
 `_recommendation-resolution-doctrine.md` already rules for a repeated breach. `fuera` is counted and
-produces nothing.
+produces nothing. What the first two produce lands in `_note-quality-standard.md` → **Harvested from refined pairs**:
+rules as `HR-N`, examples as `HE-N`, checks as `HC-N` tagged with their stage, and every rule the pass
+touched gains its pairs in that section's "Evidence" table. A check runs because the stage's own audit
+checklist points at that block; a stage with a check and no pointer is owed one in the same pass.
 
 **Rules carry their evidence.** Every rule names the pairs that support it and any that contradict it,
 and its scope: a rule applies to every topic by default, and a topic slug (`java`) marks only a rule
@@ -201,6 +204,10 @@ form. `Completed` and `Refined` are the two commits the pass read. `missing` is 
 
 | Pair | Completed | Refined | Date | REC | missing | unapplied | fuera | Style/100 | Changed | Mode |
 |---|---|---|---|---|---|---|---|---|---|---|
+| java/junior/00 | 7435f152 | b08fb059 | 2026-09-15 | REC-171 | 60 (new 7) | 47 | 15 | 15.1 | 108 % | full |
+
+`java/junior/00` has no `NTH` rows — its TODOs were resolved before this sink existed — so its TODO count
+is **no medible**, and its pass classified from the two versions, their diff and the standard alone.
 
 ## TODO rows
 

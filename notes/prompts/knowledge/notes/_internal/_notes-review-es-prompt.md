@@ -150,6 +150,9 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   does not own — **report it and do not rewrite it**. An anchor into this same file is unaffected.
   That sentence exists in `en/` too, the English is canonical, and repairing only the Spanish half
   splits the pair.
+- **Index anchors** — every entry of the index above the title links a heading that exists in this
+  `es/` file, by the slug of its Spanish text (the standard's **Harvested from refined pairs** → `HR-1`).
+  An anchor still carrying the English heading is a broken link: fix the anchor, never the heading.
 - **Structural labels** — `Propósito:`, `Archivo:` translated; `Docs:` stays. Code comments, if
   translated, read as natural Spanish.
 - **Standalone learning outcome** — studying only the Spanish must let Victor achieve TASK's
