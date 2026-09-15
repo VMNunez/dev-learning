@@ -709,7 +709,7 @@ Sin ninguna de las dos, si un usuario escribe `id=abc` en una URL, la excepción
 
 ### Número → texto
 
-Para pasar un número de tipo `int` a texto hay tres formas posibles de hacerlo, usando `String.valueOf(x)`, `Integer.toString(x)` o concatenando con un texto vacío (`"" + x`), siendo `String.valueOf(x)` la más segura de ellas. Por qué es la más segura no se ve con un `int`, sino cuando el número llega como `Integer`, y se explica justo debajo del bloque:
+Para pasar un número de tipo `int` a texto hay tres formas posibles de hacerlo, usando `String.valueOf(x)`, `Integer.toString(x)` o concatenando con un texto vacío (`"" + x`), siendo `String.valueOf(x)` la más segura de ellas. Por qué es la más segura no se ve cuando lo que se intenta convertir es un `int`, sino cuando el número llega como un `Integer` que puede ser `null`, y se explica justo debajo del bloque:
 
 ```java
 int hours = 38;

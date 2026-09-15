@@ -710,7 +710,7 @@ Without either, if a user types `id=abc` into a URL, the exception is not caught
 
 ### Number → text
 
-To turn a number of type `int` into text there are three possible ways to do it, using `String.valueOf(x)`, `Integer.toString(x)` or concatenating with an empty string (`"" + x`), with `String.valueOf(x)` being the safest of them. Why it is the safest does not show with an `int`, but when the number arrives as an `Integer`, and it is explained right below the block:
+To turn a number of type `int` into text there are three possible ways to do it, using `String.valueOf(x)`, `Integer.toString(x)` or concatenating with an empty string (`"" + x`), with `String.valueOf(x)` being the safest of them. Why it is the safest does not show when what you are converting is an `int`, but when the number arrives as an `Integer` that can be `null`, and it is explained right below the block:
 
 ```java
 int hours = 38;
