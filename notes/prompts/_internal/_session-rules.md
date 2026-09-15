@@ -452,7 +452,7 @@ agent itself chose to improve — a complaint Victor did not make is not evidenc
 
 It obeys the same four prohibitions as ritual friction, for the same reason: **it never opens a
 `REC-NNN` on sight, never dispatches a cold reviewer, never blocks or asks, and is never argued with.**
-A category is promoted only by the count the sink defines — cross-pair recurrence, first harvest at four
+A category is promoted only by the count the sink defines — cross-pair recurrence, first harvest at three
 refined pairs — and a due category then opens its own `REC-NNN`, resolved under the ledger's four steps
 with the mandatory cold reviewer. The standard is hand-written only, so **no skill and no run may edit it
 from this sink**.

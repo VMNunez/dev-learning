@@ -196,7 +196,7 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   **Stating that a category is mature is the whole of this skill's authority over it.** A mature
   category opens its own `REC-NNN` and is resolved under the ledger's four steps with the mandatory cold
   reviewer. You never edit `_note-quality-standard.md` from this line, never open the `REC` yourself,
-  and never dispatch a reviewer over it. The first harvest also waits on `REC-170`'s four refined pairs,
+  and never dispatch a reviewer over it. The first harvest also waits on `REC-170`'s three refined pairs,
   so an early `madura` is reported and goes no further.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
