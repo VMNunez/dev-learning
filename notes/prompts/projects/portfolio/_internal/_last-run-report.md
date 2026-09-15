@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-15
 **Target:** `PROJECT_PATH = projects/05-task-manager`, `PORTFOLIO_SCOPE = full`, `DRY_RUN = false`
-**Status:** clean
+**Status:** open
 
 ## Close-out check against disk
 
@@ -47,9 +47,8 @@ breach, no open `FRIC` row to consume.
 
 ## 5. Verdict
 
-**Pipeline clean.** The 1.00-ratio drift in bullet 1 is recorded, not proposed: it fails condition 2 —
-nothing in the prompt is wrong or silent; it is the variance of a judgment role, which no wording removes.
-`REC-232`, `REC-234`, `REC-236` stay open, unchanged by this run.
+**Change worth considering: the Phase 1a acceptance gate cannot fail on decisions the reviewer did not find** — routed to `REC-237`. It clears the bar: real evidence (34 additions and four factual corrections over a bank four reviewers certified `1.00` the day before), the prompt is silent on how the ratio's denominator is checked, the committed bank was different and partly wrong, and `REC-236` covers parity, not this. Not drafted here: the fix is a design choice step 1 has to measure first (padding vs real gaps), not a one-line edit. Friction only, not routed: the death ladder's resume rung needs an agent id that a rate-limited dispatch never returned — the re-dispatch rung produced the same result.
+`REC-232`, `REC-234`, `REC-236` stay open, unchanged by this run; `REC-237` opened.
 
 `maps unaffected` — no edit landed. `map: verified — README.md catalogue row` (reads / generates).
 `_system-map.md` rows: `map: not verified — not opened this run`.
