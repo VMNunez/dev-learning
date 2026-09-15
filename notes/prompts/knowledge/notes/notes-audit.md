@@ -195,13 +195,14 @@ It binds every stage of this run:
    **Reporting them is no longer all you owe them.** A marker you may not resolve is still Victor's own
    measurement of his prose bar, and until it is rowed it exists only in a report the next run overwrites.
    So the orchestrator is the harvest's **secondary** writer: for every marker seen in frozen prose,
-   append or increment one `NTH-NNNN` row in `_internal/_note-todo-harvest.md`, under
+   append or extend one `NTH-NNNN` row in `_internal/_note-todo-harvest.md`, under
    `_session-rules.md` → "When Victor corrects the prose of a note — the note-TODO harvest", which owns
    the trigger this does not restate. One row per **pair and category**, an existing `open` row for that
-   `Pair` + `Category` incremented rather than duplicated, one or two of his words verbatim in the
-   language he wrote them. You are second here on purpose: `study-content-writer` writes at resolution,
-   when the reason is known, so the two writers' sets overlap and the sink's `Count` is a lower bound by
-   construction — never reconcile it, and never skip a row because the resolver may row it later. Only a
+   `Pair` + `Category` extended with his new words on its `Quote` rather than duplicated, one or two of
+   his words verbatim in the language he wrote them, and the frozen `Count` never written. You are second
+   here on purpose: `study-content-writer` writes at resolution, when the reason is known, so the two
+   writers' sets overlap — never reconcile them, and never skip a row because the resolver may row it
+   later. Only a
    marker **Victor** wrote qualifies; a quality miss this pipeline noticed is reported and never rowed.
 2. The only permitted change is **new sections appended** for the bullets in `Pending additions`, placed
    where they read best without moving existing sections, plus their Spanish counterparts.
@@ -354,7 +355,7 @@ so it is the one a report may not leave to the diff. Stage B's own corrections a
 `FIXED` list, which this clause does not re-specify. In append-only mode, also report the consumed bullets, the
 appended headings in both languages, the additions-only diff proof for each file, any quality issue
 observed in existing prose and deliberately left untouched, any TODO marker seen in the frozen prose
-with the inline route named **and the `NTH-NNNN` row each one was appended to or incremented, or the
+with the inline route named **and the `NTH-NNNN` row each one was appended to or extended, or the
 reason none was**, the `Pending study` entries written or the reason none were, and the
 remaining `Pending additions`.
 
@@ -374,7 +375,7 @@ full. Write `_internal/_last-run-report.md`; upsert the exact `TOPIC + LEVEL + N
 of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing, or `blocked`. This prompt
 has no dry-run mode and never records one. Then recalculate the matching Notes J/M/S summary cell from the plan.
 Commit report and tracker together, **and stage `_internal/_note-todo-harvest.md` with them whenever this
-run appended or incremented an `NTH-NNNN` row** — Stage C stages exact paths only and knows nothing of
+run appended or extended an `NTH-NNNN` row** — Stage C stages exact paths only and knows nothing of
 this sink, so a row written and never staged is a row lost, which is the exact failure the sink exists to
 end. A failed content run remains `blocked` and never changes the plan
 entry to complete.

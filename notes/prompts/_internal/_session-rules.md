@@ -444,7 +444,7 @@ pass, and neither's evidence survived. `notes/prompts/knowledge/notes/_internal/
 is its event sink; that file owns the contract and this section only states the trigger.
 
 **Whenever a TODO Victor wrote in a note pair is resolved, or a correction he states directly in chat is
-applied to one, append or increment one `NTH-NNNN` row** — one row per **pair and category**, never per
+applied to one, append or extend one `NTH-NNNN` row** — one row per **pair and category**, never per
 TODO, carrying one or two of his own words **verbatim** and a `missing` / `unapplied` verdict. The
 primary writer is `study-content-writer`, at resolution, while the reason is still known; `notes-audit`
 is the secondary writer, for the markers it reports and may not resolve. Never write a row for prose the
@@ -452,10 +452,11 @@ agent itself chose to improve — a complaint Victor did not make is not evidenc
 
 It obeys the same four prohibitions as ritual friction, for the same reason: **it never opens a
 `REC-NNN` on sight, never dispatches a cold reviewer, never blocks or asks, and is never argued with.**
-A category is promoted only by the count the sink defines — cross-pair recurrence, first harvest at three
-refined pairs — and a due category then opens its own `REC-NNN`, resolved under the ledger's four steps
-with the mandatory cold reviewer. The standard is hand-written only, so **no skill and no run may edit it
-from this sink**.
+The rows are consumed **once per refined pair**, by the harvest pass the sink defines (`REC-171`,
+2026-09-15): the pass reads that pair's completed→refined diff alongside its rows, and is not itself a
+ledger item — only an edit it makes to the standard or a notes prompt becomes a `REC-NNN`, resolved under
+the ledger's four steps with the mandatory cold reviewer. `study-content-writer`'s freeze-sync route names each pass owed on its `cosecha:` line. The
+standard is hand-written only, so **no skill and no run may edit it from this sink**.
 
 The raw prose that provoked each complaint stays in git: the TODO pass is committed before it is
 resolved, so it is recoverable as `git diff <todo-pass-commit>..<refined-commit>`. Countable index in the

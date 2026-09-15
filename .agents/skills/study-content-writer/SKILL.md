@@ -147,10 +147,11 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
     that report is its only evidence — write it even when the fix was one word.
 
     **Then harvest it, in the same breath, because the reason is only known now.** Per instruction
-    resolved, append or increment one `NTH-NNNN` row in
+    resolved, append or extend one `NTH-NNNN` row in
     `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md` — one row per **pair and category**,
-    so several TODOs of the same kind in one pair are one row with a higher `Count`, and an existing
-    `open` row for that `Pair` + `Category` is **incremented, never duplicated**. Copy one or two of his
+    so several TODOs of the same kind in one pair are one row: an existing `open` row for that `Pair` +
+    `Category` gains his new words on its `Quote`, **never a duplicate row**, and `Count` is frozen and
+    never written (a new row carries `—`). Copy one or two of his
     own words **verbatim**, in the language he wrote them, and reuse an existing `Category` slug by exact
     match whenever the complaint is the same one. Judge `missing` vs `unapplied` against the standard you
     loaded at Step 1 — did it lack the rule, or carry it and go unapplied? — and cite the rule's heading
@@ -182,23 +183,22 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
   Fold its report row into your own report. A blocked sync leaves `Status` untouched and therefore
   invokes nothing.
 
-  **This route is also the harvest's counter, and it prints its line on every run, clean ones
+  **This route also says which harvest passes are owed, and it prints its line on every run, clean ones
   included.** At the end of this route — after the sync, whether or not `Status: refined` was written,
-  since a blocked sync writes nothing and still owes the line — read
-  `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md` and print, as its own visible line,
-  `cosecha: ninguna` or `cosecha: {categoría} madura` — one line naming each category that has now
-  recurred in **two different pairs** since the last harvest, which is that file's standing threshold.
-  Count categories, never rows: two `open` rows carrying the same slug on two different `Pair` values is
-  a mature category; five occurrences inside one pair is that note's quirk and matures nothing. Print
-  `cosecha: ninguna` when the sink is empty, and print it on a blocked sync too — the run that should
-  notice a threshold is exactly the run that does not, which is why this is a visible line and not a
-  passive check, the same reason `desvíos:` is one.
+  since a blocked sync writes nothing and still owes the line — read the `## Harvested pairs` table in
+  `notes/prompts/knowledge/notes/_internal/_note-todo-harvest.md`, and for every `Status: refined` entry
+  in the plan holding the pair this route synced that has no row there, print one visible line
+  `cosecha: pasada pendiente — {topic}/{level}/{NN}`; print `cosecha: ninguna pendiente` when every
+  refined entry of that plan has one. The pass is owed per **refined pair**, once — that file's
+  "The harvest pass — one per refined pair" owns the procedure and this line does not restate it. Print
+  it on a blocked sync too: the run that should notice an owed pass is exactly the run that does not,
+  which is why this is a visible line and not a passive check, the same reason `desvíos:` is one.
 
-  **Stating that a category is mature is the whole of this skill's authority over it.** A mature
-  category opens its own `REC-NNN` and is resolved under the ledger's four steps with the mandatory cold
-  reviewer. You never edit `_note-quality-standard.md` from this line, never open the `REC` yourself,
-  and never dispatch a reviewer over it. The first harvest itself is `REC-171` (g), unblocked since
-  `REC-170` closed on three refined pairs.
+  **Stating that a pass is owed is the whole of this skill's authority over it.** The pass is done by
+  hand under that file's procedure, and it is not a ledger item; only an edit it makes to the standard or
+  a notes prompt becomes a `REC-NNN`, opened by the session performing the pass and resolved under the
+  ledger's four steps with the mandatory cold reviewer. You never run the pass, never open that `REC`,
+  never edit `_note-quality-standard.md` from this line, and never dispatch a reviewer over it.
 - Never allocate a prefix or create an unplanned note file here. The old append-only allocator closed
   the dead counter but still created content outside the plan's denominator; that is the systemic
   half of REC-053 and is now forbidden.
@@ -275,9 +275,10 @@ It does not write `PROGRESS.md`. Its refining routes hand the `## Authoring prog
 project table to
 `authoring-progress-recount`, which owns and commits them — which is why this skill's trigger still
 excludes that file even though refining a pair now moves it.
-It does not write `_note-quality-standard.md`. It is the harvest's primary writer and its counter, and
-neither role reaches the standard: a mature category is stated on the `cosecha:` line and resolved as its
-own `REC-NNN`, under the ledger's four steps, by hand.
+It does not write `_note-quality-standard.md`. It is the harvest's primary writer and the one that says
+which passes are owed, and neither role reaches the standard: an owed pass is stated on the `cosecha:`
+line and performed by hand under the sink's procedure; only the edits it makes go through the ledger's
+four steps.
 It does not run the audit pipeline and does not restructure the whole topic. Committing is governed
 by `notes/prompts/_internal/_session-rules.md` → `No git side effects on code`, not by this skill — in
 a daily session the active agent MAY commit `notes/` files directly (atomic, no Co-Authored-By,

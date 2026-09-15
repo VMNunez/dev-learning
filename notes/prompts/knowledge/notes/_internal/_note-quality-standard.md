@@ -431,8 +431,9 @@ Not every element fits every section, but a finished note visibly uses most of t
 `mecanismo` slug. The family below was derived once, by hand, from a single pass, and the TODOs that
 produced it are gone — the sink is what lets the next revision of these rules be edited from counted
 data rather than from memory. It is the named source for any change here, and it is also the fence: a
-rule enters or leaves this section through a `REC-NNN` resolved under the ledger's four steps with the
-mandatory cold reviewer, at most one added and one cut per harvest, and never by a skill or a run.
+rule derived from Victor's corrections enters or leaves this section only through the sink's harvest
+pass, one per refined pair; any other change is a `REC-NNN`; both are resolved under the ledger's four
+steps with the mandatory cold reviewer, and never by a skill or a run.
 
 This is the step that actually reduces how many TODOs Victor has to add. Half of his TODOs are the
 same kind of doubt: **mechanism questions** — he asks *why* something works the way it does, not what
@@ -498,9 +499,9 @@ they are judged.
 **Where this family's evidence lives** (2026-08-27): `_note-todo-harvest.md` beside this file, on the
 seven register slugs it seeds from these rules. Those twenty TODOs no longer exist anywhere — one pass,
 one file, one derivation, and the sink is what stops that happening to the next twenty. Same fence as
-the family above: this section is edited from the harvest, through a `REC-NNN` under the ledger's four
-steps with the mandatory cold reviewer, at most one rule added and one cut per harvest, never by a skill
-or a run. **The `unapplied` column is what protects these seven specifically** — a rule already stated
+the family above: a rule derived from Victor's corrections is edited here from the harvest pass, one per
+refined pair, and any other change through a `REC-NNN`, both under the ledger's four steps with the
+mandatory cold reviewer, never by a skill or a run. **The `unapplied` column is what protects these seven specifically** — a rule already stated
 here and breached anyway is harvested as a *breach of it*, never as a new eighth rule saying the same
 thing.
 

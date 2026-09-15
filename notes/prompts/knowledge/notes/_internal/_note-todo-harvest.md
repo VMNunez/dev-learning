@@ -6,8 +6,8 @@ were derived once, by hand, from a single pass — the mechanism family (its "An
 and the seven sentence-level register rules (its "Sentence-level register") — and neither's evidence
 survived: the TODO lines are gone from the files, and `git log -S TODO --follow` over the pair that
 produced the seven returns one added line, written by the pipeline. This file is the countable index of
-that evidence. The source contract is `_recommendation-ledger.md` → `REC-171`; this file is only its
-event sink and must not restate or widen it.
+that evidence. The source contract is `_recommendation-ledger.md` → `REC-171`; this file is its event
+sink and the home of the harvest procedure that row's resolution fixed, and nothing else may widen it.
 
 ## Why this is not `git log -p`, and not the other three sinks
 
@@ -15,8 +15,9 @@ The draft→refined diff does survive, because the pipeline commits its own draf
 **answer** without the **question**, and the question is what produced those seven rules
 ("MAL EXPRESADO", "¿QUÉ ME IMPIDE HACER?"). `_recommendation-resolution-doctrine.md` settles the rest:
 *evidence whose value is recurrence needs a store that can be counted, not merely one it can be recovered
-from*. The harvest's question is recurrence **across pairs**, and `git log -p` answers it only by
-archaeology over N diffs with no normalised field for which rule was at fault.
+from*. So the harvest pass below reads **both**: the diff for every change Victor made, including the
+ones he made directly with no TODO, and these rows for the question behind the ones he asked for — with a
+normalised field saying which rule was at fault, which no diff carries.
 
 The three machinery sinks record what a **ritual** did — a failed step (`FRIC`), a run not worth its
 cost (`RITF`), a text that made a run improvise (`SBRC`). This one records what **Victor's prose bar**
@@ -31,21 +32,21 @@ be. The TODO pass is committed before it is resolved, so the provoking text is r
 
 ## What a row must contain
 
-`ID` uses the next zero-padded `NTH-NNNN`. `ID`, `Date`, `Pair`, `Lang`, `Category`, `Quote`, `Verdict`
-and `Rule` never change after insertion. **Two** fields move, and this is the only sink with a second
-one: `Disposition`, and `Count`. Escape a literal table pipe as `\|`.
+`ID` uses the next zero-padded `NTH-NNNN`. `ID`, `Date`, `Pair`, `Lang`, `Category`, `Verdict` and `Rule`
+never change after insertion. **Two** fields move: `Disposition`, and `Quote`, which only ever grows.
+Escape a literal table pipe as `\|`.
 
 **One row per pair and category, never per TODO.** One file yields twenty markers, and a per-row cost
 that size inside a daily block is what `REC-054` watches. **At most one `open` row may exist for a given
-`Pair` + `Category`**: a writer meeting that key again increments `Count` instead of appending a row.
-That invariant is the load-bearing one — a duplicated row corrupts the cross-pair count the threshold
-below is computed from, while an imprecise `Count` corrupts nothing.
+`Pair` + `Category`**: a writer meeting that key again appends his new words to that row's `Quote`,
+separated by ` / `, instead of appending a row. That invariant is the load-bearing one — a duplicated
+row splits one complaint's evidence in two, and the harvest pass reads a pair's rows as its index.
 
-**`Count` is a lower bound, not a tally.** The two writers see overlapping sets of markers on one pair
-(see "Who writes it"), and neither can tell which of the other's it has already counted. No rule in this
-file rests on its exact value: the threshold is **cross-pair**, and the within-pair number is only there
-to separate a note's quirk from an invariant. Never reconcile it, and never read a low count as evidence
-of anything.
+**`Count` is frozen, not written** (2026-09-15, `REC-171`). It was a lower bound — the two writers see
+overlapping markers and neither knows which the other counted — and its only reader was the cross-pair
+threshold this file used to define, which the harvest pass below replaced. The values already on rows
+`NTH-0001`–`NTH-0047` stay as they were written, as evidence; a row written after that date carries `—`,
+and no writer increments it. Never read it as a tally, and never reconcile it.
 
 **`Quote` is the payload, not decoration.** One or two of Victor's own words, **verbatim**, in the
 language he wrote them. The seven register rules exist because his literal wording survived; a
@@ -56,7 +57,7 @@ paraphrase would not have produced one of them. Never summarise the complaint, a
 about `Breached step`, for the same reason: two rows count as the same defect only when the string
 matches. A new slug is for a complaint no existing slug covers, which is the discovery this file exists
 for; the set is deliberately open, because a closed enum could only ever re-find the rules the standard
-already has. The slugs are Spanish because his TODOs are, and because the counter line below is.
+already has. The slugs are Spanish because his TODOs are.
 
 The seeds, derived from the two families the standard already carries — not a closed list:
 
@@ -80,11 +81,11 @@ repeated `unapplied` flips from the executor's fault to the rule being mis-worde
 
 `Rule` is `—` on a `missing` row.
 
-`Disposition` is `open` until a harvest rules on that category, then `harvested YYYY-MM-DD` — **written
-to every open row carrying that slug at once, not only to the two that matured it.** Its writer is the
-`REC-NNN` that performs the harvest, and nothing else moves it. Leaving a third row of a harvested
-category `open` would silently drop the standing threshold from two new pairs to one, which is the
-count the whole file is built to protect.
+`Disposition` is `open` until a harvest pass consumes the row, then `harvested YYYY-MM-DD` — **written
+to every row that pass read at once**: every row on the pair it harvested, plus any row on an already
+harvested pair it took as extra input (see the pass below). Its writer is the hand resolution performing
+the pass, and nothing else moves it. A row left `open` is owed to the next pass, which is the only thing
+`open` means here.
 
 ## Who writes it
 
@@ -105,31 +106,103 @@ under the closest existing slug or a new one, never left unrowed pending a decis
 `notes-audit` in its **standard** mode resolves Victor's TODOs itself and clears the marker
 (`_notes-write-prompt.md` → "Step 1 — Resolve TODOs"), and that path writes **no** row. `REC-171` (f)
 scopes this file's second writer to "the markers it may not touch", so the exclusion is deliberate and
-not an oversight — but it is a real hole in the measurement, and a category that only ever occurs on a
-`pending` note will never mature here. Widening it is a `REC-NNN` of its own, never a run's improvisation.
+not an oversight — but it is a real hole in the measurement: a correction that only ever occurs on a
+`pending` note is never rowed here, and the harvest pass sees its answer in the diff without its question. Widening it is a `REC-NNN` of its own, never a run's improvisation.
 
-## Who counts it, and when a category is due
+## The harvest pass — one per refined pair
 
-The counter is the close-out that already writes `Status: refined` — `study-content-writer`'s
-freeze-sync route. It prints `cosecha: ninguna` or `cosecha: {categoría} madura` on **every** run, clean
-ones included. That is the `desvíos:` visible-line discipline and it exists for the same reason: the run
-that should have noticed is exactly the run that does not, and a passive "check the threshold" is obeyed
-only when it was not needed.
+**The unit is the refined pair, and each pair is harvested once** (2026-09-15, `REC-171`, replacing the
+cross-pair category threshold and its one-rule-per-harvest cap). A pair that reaches `Status: refined`
+owes one pass; the pass consumes it, and the pair is never read for this purpose again. What it taught
+lives in `_note-quality-standard.md` from then on, so the cost of a `/notes-audit` run does not grow with
+the number of refined notes.
 
-**The first harvest is due at three refined pairs** — `REC-170`'s own count over the same evidence set.
-It was sequenced behind that row, which closed on those three pairs, so it is due now and is
-`_recommendation-ledger.md` → `REC-171` (g). **Standing after that, a category is
-due when it recurs in two different pairs since the last harvest.** Cross-pair is the whole qualifier:
-five occurrences inside one pair are that note's quirk; two pairs is an invariant.
+**Inputs, per pass, and nothing else:**
 
-**A harvest writes at most one rule into `_note-quality-standard.md` and is licensed to cut one** the
-harvested pairs never needed. The standard is otherwise a file that only grows.
+1. the pair's two `es/` versions, by `git show <hash>:<path>` — at the `/notes-audit` Stage C commit that
+   completed it, and at the commit that froze it;
+2. the diff between them;
+3. every `open` row on that pair, plus every `open` row on an already harvested pair;
+4. the refined `es/` file at the `Refined` commit, read whole;
+5. `_note-quality-standard.md` twice — at the `Completed` commit, which is what the draft was written
+   against, and as it stands now, which is what earlier passes have already added.
 
-**A due category opens its own `REC-NNN`** and is resolved under the ledger's four steps with the
-mandatory cold reviewer — **never by a skill, never by a run**. The standard is hand-written only
-(`_session-rules.md` → "Who writes a standard or a shared contract"). The threshold is what keeps this
-sink out of the refill loop the ledger's preamble forbids: evidence is promoted by the count, never by
-arrival.
+**Classification uses this file's vocabulary, so nothing is classified twice.** A change a row already
+covers takes that row's `Verdict`. Every other change is exactly one of `missing` (the standard **at the
+`Completed` commit** lacked what the change applies), `unapplied` (the standard at that commit carried it
+and the draft did not apply it) or `fuera` (content or depth rather than style — a fact added, an error
+corrected). A *change* is one correction that stands on its own; a diff hunk holding two corrections
+counts as two. **A `missing` is *new* only when the standard as it stands now still lacks it**: a
+`missing` an earlier pass has since answered stays `missing` in the counts, is recorded as one more pair
+supporting that rule, and produces nothing else.
+
+**What each verdict produces.** A new `missing` becomes a rule or a before/after example. `unapplied`
+becomes **enforcement, never a second rule saying the same thing**: an explicit check in the review stage
+that judges the rule — stage C, `_notes-review-es-prompt.md`, for a rule judged on the `es/` prose, and
+stage B, `_notes-review-prompt.md`, otherwise; the pass names the stage on the rule — built from real
+before/after pairs, and, once it repeats, relocating or rewording the rule, which is the flip
+`_recommendation-resolution-doctrine.md` already rules for a repeated breach. `fuera` is counted and
+produces nothing.
+
+**Rules carry their evidence.** Every rule names the pairs that support it and any that contradict it,
+and its scope: a rule applies to every topic by default, and a topic slug (`java`) marks only a rule
+about that topic's own content. **A rule written before 2026-09-15 counts as supported by one pair**
+until a pass records its supporting and contradicting pairs, so no single pair can remove it. **Examples
+are bounded**: at most eight before/after pairs of at most ten lines each, and a better example replaces
+a worse one rather than joining it.
+
+**Disputes.** One pair never changes or removes a rule another pair supports. A conditional rule — both
+true, in different situations — is tried first. When none holds, the rule is marked `en disputa`: while
+disputed, neither side binds the writer or the reviewer; the side with more supporting pairs wins, and a
+tie waits for the next refined pair. A dispute widens no gate.
+
+**The pass is not a ledger item; what it edits is.** A pass that only classifies, writes its table row
+and sets the `harvested` dispositions writes `—` in the table's `REC` column and owes no reviewer, since
+it edits nothing a reviewer would judge. **An edit a pass makes to `_note-quality-standard.md` or a notes
+prompt is a `REC-NNN`**, opened by hand by the session performing the pass and resolved under the
+ledger's four steps with the mandatory cold reviewer — **never a skill's, never a run's** — because the
+standard is hand-written only (`_session-rules.md` → "Who writes a standard or a shared contract");
+Victor ruled on 2026-09-15 that the cold reviewer alone gates it, without his sign-off. That `REC-NNN`
+goes in the `REC` column. For the first three pairs (`java/junior/00`–`02`) that `REC-NNN` is `REC-171`
+itself; the first pass after it closes opens a new one.
+
+**Full and light passes.** A full pass may make such edits. After two consecutive passes that found no
+new `missing`, a pass is **light**: it classifies, writes its row and the dispositions, and edits
+nothing. A light pass that finds a new `missing` becomes full. **In a light pass an `unapplied` is
+counted and produces nothing** — the trend reading below, flat with `unapplied` dominating, is what makes the next pass
+full.
+
+**A TODO written on an already harvested pair** is rowed `open` as usual and enters the next pass of any
+pair as extra input. The harvested pair itself is not re-read.
+
+**What is measured.** Success is fewer **style changes per 100 lines** of the refined `es/` file at the
+`Refined` commit — the changes a pass classifies `missing` or `unapplied`, never `fuera`. The share of
+changed lines (`git diff --numstat` added plus deleted, over that file's line count) is recorded beside it
+as context and never as the measure. TODOs are not counted: most are resolved before they are ever
+committed, so git undercounts them, and `Count` was only ever a lower bound. **Read the trend over three
+pairs, never one**: falling, the loop works; flat with `unapplied` dominating, the rules are right and
+mis-placed or mis-worded, so the prompt or the reviewer is what changes; flat with new `missing`
+dominating, the examples need more weight.
+
+**Who says a pass is owed.** `study-content-writer`'s freeze-sync route — the close-out that already
+writes `Status: refined` — prints on **every** run, clean ones included, `cosecha: ninguna pendiente` or
+one `cosecha: pasada pendiente — {pair}` line for each refined pair **of the plan holding the pair it
+synced** that has no row in the table below. That is the `desvíos:` visible-line discipline, for the same
+reason: the run that should have noticed is exactly the run that does not. Stating the debt is the whole
+of the skill's authority over it.
+
+## Harvested pairs
+
+One row per pair, written by the pass that consumed it, `Pair` in the rows' own `{topic}/{level}/{NN}`
+form. `Completed` and `Refined` are the two commits the pass read. `missing` is written `N (new M)`.
+`Style/100` is (`missing` + `unapplied`) × 100 ÷ the lines of the refined `es/` file at `Refined`;
+`Changed` is the `--numstat` share. `REC` is the `REC-NNN` the pass's edits were resolved under, or `—`.
+`Mode` is `full` or `light`.
+
+| Pair | Completed | Refined | Date | REC | missing | unapplied | fuera | Style/100 | Changed | Mode |
+|---|---|---|---|---|---|---|---|---|---|---|
+
+## TODO rows
 
 | ID | Date | Pair | Lang | Category | Count | Quote | Verdict | Rule | Disposition |
 |---|---|---|---|---|---|---|---|---|---|
