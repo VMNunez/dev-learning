@@ -5,6 +5,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
@@ -80,6 +81,7 @@ export class Shell {
   private readonly sidenav = viewChild(MatSidenav);
   readonly dialog = inject(MatDialog);
   protected readonly userName = computed(() => this.authService.session()?.name ?? '');
+  protected readonly isAccountMenuOpen = signal(false);
   readonly links = computed(() => {
     const role = this.authService.session()?.role;
     return role ? NAV_LINKS.filter((link) => link.roles.includes(role)) : [];

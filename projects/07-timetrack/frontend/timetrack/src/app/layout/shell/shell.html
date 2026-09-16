@@ -2,6 +2,7 @@
   @if (!isDesktop()) {
     <button
       matIconButton
+      class="nav-toggle"
       (click)="drawer.toggle()"
       aria-label="Toggle navigation menu"
       [attr.aria-expanded]="drawer.opened"
@@ -18,10 +19,19 @@
 
   <span class="spacer"></span>
   <div>
-    <button #accountButton matButton [matMenuTriggerFor]="menu">
+    <button
+      #accountButton
+      matButton
+      [matMenuTriggerFor]="menu"
+      (menuOpened)="isAccountMenuOpen.set(true)"
+      (menuClosed)="isAccountMenuOpen.set(false)"
+    >
       <span class="account-name">{{ userName() }}</span>
-      <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+      <mat-icon iconPositionEnd class="menu-arrow" [class.open]="isAccountMenuOpen()">
+        arrow_drop_down
+      </mat-icon>
     </button>
+
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="openDialog()">
         <mat-icon>lock_reset</mat-icon>

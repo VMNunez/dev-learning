@@ -8,6 +8,10 @@
   flex: 1;
 }
 
+.nav-toggle {
+  margin-inline-end: 0.5rem;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -28,6 +32,18 @@
 
   @media (max-width: 599px) {
     max-width: 6rem;
+  }
+}
+
+.menu-arrow {
+  transition: transform 150ms ease-out;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 
