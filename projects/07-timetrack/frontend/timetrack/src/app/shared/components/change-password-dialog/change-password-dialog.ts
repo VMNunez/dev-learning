@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
-import { ApiError } from '../../models/api-error';
+import { isApiError } from '../../models/api-error';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -119,8 +119,8 @@ export class ChangePasswordDialog {
           this.loading.set(false);
           this.form.enable({ emitEvent: false });
 
-          const apiError = err.error as ApiError | null;
-          const fieldErrors = err.status === 400 ? apiError?.fieldErrors : undefined;
+          const fieldErrors =
+            err.status === 400 && isApiError(err.error) ? err.error.fieldErrors : undefined;
 
           if (fieldErrors) {
             for (const field of ['currentPassword', 'newPassword'] as const) {
