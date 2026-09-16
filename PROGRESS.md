@@ -41,7 +41,7 @@ exercises, simulations, and unaided explanation demonstrate it.
 | TypeScript | Junior — building | Notes plan stale, +4 unmapped bullets (0/15 authored, 0 studied); junior Q&A bank carries no stable IDs | Projects 01–07, including a project 03 reactive form whose control types match the model so the submitted value needs no `as` assertion, a project 04 API model that types `MealResponse.meals` as `Meal[] | null` because the endpoint returns `null` on no match, and a project 05 `Task.id` widened from `number` to `string` where the compiler enumerated every signature naming it, and a project 06 query-param read where a `value is T` predicate over an `as const` list replaced the `as` cast that let `?status=foo` through, and a project 06 dialog contract named at both ends — `open<T, D, R>` at every call site and `MatDialogRef<T, R>` on the dialog — so `afterClosed()` is checked instead of yielding `any` | Refresh the junior notes plan |
 | SQL | Junior — building | Notes plan current (0/17 authored, 0 studied); junior Q&A bank carries no stable IDs | PostgreSQL project work, including a least-privilege application role in project 07; exercises in progress | Author the 17 junior notes |
 | JavaScript | Junior — building | Notes plan stale, +3 unmapped bullets (0/22 authored, 0 studied); junior Q&A bank carries no stable IDs | Applied throughout Angular projects, including a localStorage read in project 03 that survives both a corrupt stored value and a well-formed one of the wrong shape, a default form date built from the local clock rather than `toISOString()`, and entity ids generated with `crypto.randomUUID()` instead of `Date.now()` | Refresh the junior notes plan |
-| HTML | Junior — building | Coverage generated 2026-09-04 (81 junior bullets, boundary migration consumed); no notes plan yet; no Q&A bank | Markup across projects 01–06, including a nav list whose landmark and accessible name are declared on the element rather than implied, and icon-only controls whose accessible name is bound with `[attr.aria-label]` | Run the first `/notes-plan html junior` |
+| HTML | Junior — building | Coverage generated 2026-09-04 (81 junior bullets, boundary migration consumed); no notes plan yet; no Q&A bank | Markup across projects 01–06, including a nav list whose landmark and accessible name are declared on the element rather than implied, and icon-only controls whose accessible name is bound with `[attr.aria-label]`, and a project 07 login page whose only `<h1>` names the view rather than the brand at every width | Run the first `/notes-plan html junior` |
 | CSS | Junior — building | Notes plan stale, +2 unmapped bullets and no run recorded in the tracker (0/16 authored, 0 studied); junior Q&A bank carries no stable IDs | Projects 01–06, including a `prefers-reduced-motion` guard that drops the decorative hover and slows the loading spinner in project 02, and a project 04 `.visually-hidden` utility that takes the search label out of the flex row with `position: absolute` while keeping it in the accessibility tree, and a keyboard-only focus ring raised with `:focus-visible` and lifted to the whole card with `:has()`, and a text-styled `<button>` whose user-agent background, border, padding, font and cursor are reset explicitly | Refresh the junior notes plan |
 | Git | Junior — building | Notes plan stale and never run through the plan pipeline (0/8 authored, 0 studied); junior Q&A bank carries no stable IDs | Daily feature-branch workflow | Refresh the junior notes plan |
 | General | Junior — building | Notes plan stale, +4 unmapped bullets (0/21 authored, 0 studied); junior Q&A bank carries no stable IDs | HTTP, testing, debugging, configuration across projects, including a project 06 hand-written test double whose surface was widened to every member the unit reaches once a partial one threw at construction, and a scaffolded assertion left permanently red against a template that no longer contained it | Refresh the junior notes plan |
@@ -60,7 +60,7 @@ level in the table above.
 | Topic | Junior | Middle | Senior |
 |---|---|---|---|
 | Angular | 110/157 (70%) | 0/12 (0%)* | 0/6 (0%)* |
-| Angular Material | 57/83 (69%) | 4/13 (31%)* | 0/2 (0%)* |
+| Angular Material | 58/84 (69%) | 4/13 (31%)* | 0/2 (0%)* |
 | Spring | 8/58 (14%) | 0/25 (0%)* | 0/7 (0%)* |
 | Spring Boot | 89/137 (65%) | 1/14 (7%)* | 0/5 (0%)* |
 | Java | 55/132 (42%) | 3/14 (21%)* | 0/5 (0%)* |
@@ -69,11 +69,11 @@ level in the table above.
 | TypeScript | 39/84 (46%) | 0/15 (0%)* | 0/4 (0%)* |
 | SQL | 26/151 (17%) | 0/16 (0%)* | 0/5 (0%)* |
 | JavaScript | 40/131 (31%) | 0/13 (0%)* | 0/4 (0%)* |
-| HTML | 6/83 (7%) | 0/15 (0%)* | 0/7 (0%)* |
+| HTML | 7/83 (8%) | 0/15 (0%)* | 0/7 (0%)* |
 | CSS | 58/115 (50%) | 1/10 (10%)* | 0/4 (0%)* |
 | Git | 26/92 (28%) | 0/4 (0%)* | 0/4 (0%)* |
 | General | 33/120 (28%) | 0/13 (0%)* | 0/5 (0%)* |
-| **Total** | **647/1529 (42%)** | **10/191 (5%)** | **0/68 (0%)** |
+| **Total** | **649/1530 (42%)** | **10/191 (5%)** | **0/68 (0%)** |
 
 `*` provisional denominator — that level's coverage has not been generated by the coverage pipeline
 yet (no run recorded in `notes/prompts/_internal/_run-tracker.md`), so its total will move.
