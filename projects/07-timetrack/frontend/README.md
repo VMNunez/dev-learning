@@ -49,6 +49,7 @@ src/app/
 - HTTP interceptor — JWT attached automatically to every outgoing request
 - Session expiry handled once, in the interceptor — a `401` on a request that carried a token clears the stored session and navigates to `/login`, where the page explains the session expired, so no page re-implements it; a failed login's `401` carries no token and is left to the Login page's own error
 - Role-aware UI — same route (`/entries`, `/dashboard`), different data and columns per role
+- Page titles through a custom `TitleStrategy` — each route declares only its page name and `AppTitleStrategy` appends `| TimeTrack` in one place, writing the brand alone when no route resolves a title, because the default strategy writes nothing then and the tab would keep the previous page's name
 - `forkJoin` — parallel API calls on dashboard load for stat cards
 - Material theming through token overrides — `mat.theme()` for the palette, density and shape, and `mat.button-overrides` / `mat.card-overrides` for what it does not reach, because Material's internal CSS classes are private and change between releases
 - Typed `ApiError` + a runtime type guard — the backend's error shape is narrowed before it is read, so a failure with no `ErrorResponse` body falls back to a connection message instead of rendering `undefined`
