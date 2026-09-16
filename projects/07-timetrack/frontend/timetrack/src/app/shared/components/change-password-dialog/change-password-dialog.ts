@@ -101,7 +101,6 @@ export class ChangePasswordDialog {
 
     this.loading.set(true);
     this.form.disable({ emitEvent: false });
-    this.dialogRef.disableClose = true;
 
     this.userService
       .changePassword({ currentPassword, newPassword })
@@ -114,7 +113,6 @@ export class ChangePasswordDialog {
         error: (err: HttpErrorResponse) => {
           this.loading.set(false);
           this.form.enable({ emitEvent: false });
-          this.dialogRef.disableClose = false;
 
           const apiError = err.error as ApiError | null;
           const fieldErrors = err.status === 400 ? apiError?.fieldErrors : undefined;
