@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` holds **6 open frontend Lows**, all raised on 2026-09-16 — five in the pre-PR review of Step 7a (the toolbar trigger without the user's name; the dialog's missing visibility toggles and full-screen rule; PLANNING drift; a hygiene bundle) and one while closing the sidenav task (the navigation toggle's missing `aria-controls`) — to close on this branch before the PR; the Medium raised with them (a shell sidenav that never collapsed below 1024px) closed on 2026-09-16 in `40fc27e5` |
+| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` holds **5 open frontend Lows**, all raised on 2026-09-16 — four in the pre-PR review of Step 7a (the dialog's missing visibility toggles and full-screen rule; PLANNING drift; a hygiene bundle) and one while closing the sidenav task (the navigation toggle's missing `aria-controls`) — to close on this branch before the PR; the Medium raised with them (a shell sidenav that never collapsed below 1024px) closed on 2026-09-16 in `40fc27e5`, and the Low for the toolbar trigger without the user's name closed the same day in `3fd72933` |
 | **Current branch** | `feat/angular-shell-auth` — Step 7a's done condition passed on 2026-09-16, so per §22 the branch is **ready to PR into `projects/07-timetrack`** and takes no further step work. After that merge, `feat/angular-entries` is cut from `projects/07-timetrack` for Step 7b |
 | **Done condition** | Step 7b's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input` |
 | **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a done, Steps 7b–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7b–7d |
@@ -908,6 +908,7 @@ src/app/
     ├── components/
     │   ├── change-password-dialog/ ← current + new password form, opened from the shell user menu (not routed) → PATCH /api/users/me/password
     │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete
+    │   ├── logo/               ← the clock mark, sized by each host's class (Login, shell toolbar)
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
     │   └── status-badge/      ← coloured badge, used in Entries, Approvals, Dashboard
     └── models/                    ← interfaces mirroring the backend response DTOs
@@ -1100,6 +1101,9 @@ Small list, non-negotiable, and cheap if done as each page is built rather than 
   real heading as an attribute (`<h1 mat-card-title>`, `<h2 mat-dialog-title>`), never as the bare
   element, which leaves the view with no entry in the heading outline (WCAG 1.3.1)
 - **Every table action is reachable by keyboard**, in the order the row reads
+- **A control that shows text is named by that text.** No `aria-label` on top of visible text: it replaces the
+  text as the accessible name, and speech input then cannot reach the control by what the user reads
+  (WCAG 2.5.3) — the toolbar's account trigger is named by the user's name alone
 - **Icons on a coloured container take its `on-*` colour through the icon button's own token.** A
   `matIconButton` reads `icon-color`, not the container's text colour, so on the `primary` toolbar it stays
   `on-surface-variant` grey, under the 3:1 non-text minimum (WCAG 1.4.11). Set `on-primary` with
@@ -1216,6 +1220,9 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
   form sits at a fixed top offset rather than centred, because the virtual keyboard shrinks `100dvh` and a
   centred form jumps as typing starts; below 600px the card drops its outline and container colour through
   `mat.card-overrides`, so the form reads as the page instead of a box inside it
+- **Toolbar** — the logo shows only while the sidenav is a fixed rail, so below 1024px the hamburger takes its
+  place rather than sitting beside a second glyph; the account menu trigger truncates the user's name with an
+  ellipsis below 600px instead of hiding it, so its accessible name never needs a phone-only `aria-label`
 - **Dialogs** — `MatDialog` opens full-screen below 600px
 
 ---
@@ -2019,7 +2026,7 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds 6 open Lows, all frontend** — five raised on 2026-09-16 in the pre-PR review of Step 7a: the toolbar trigger shows no user name, the change-password dialog lacks visibility toggles and the full-screen rule, PLANNING drifted from the built code, and a hygiene bundle; and one raised the same day while closing the sidenav task: the navigation toggle names no `aria-controls` target. The Medium raised with them (`Shell` kept its sidenav in `side` mode at every width) closed the same day in `40fc27e5`. The frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
+currently holds 5 open Lows, all frontend** — four raised on 2026-09-16 in the pre-PR review of Step 7a: the change-password dialog lacks visibility toggles and the full-screen rule, PLANNING drifted from the built code, and a hygiene bundle; and one raised the same day while closing the sidenav task: the navigation toggle names no `aria-controls` target. The Medium raised with them (`Shell` kept its sidenav in `side` mode at every width) closed the same day in `40fc27e5`, and the Low for the toolbar trigger that showed no user name and no logo closed the same day in `3fd72933`. The frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
 HTTP `.subscribe()` calls with no teardown, against §6), closed the same day in `c5e69b3a`, the frontend
 Medium raised beside it (closing the change-password dialog dropped keyboard focus to `<body>`) closed on
 2026-09-14 in `1d4bf603`, the three frontend Lows raised on 2026-09-10 (the stuck login spinner, the missing `OnPush`,
