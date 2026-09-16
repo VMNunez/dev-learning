@@ -47,7 +47,7 @@ src/app/
 
 - `authGuard` + `managerGuard` — route protection per role
 - HTTP interceptor — JWT attached automatically to every outgoing request
-- Session expiry handled once, in the interceptor — any `401` clears the stored session and navigates to `/login`, so no page re-implements it and an expired token never leaves the user on a screen whose calls all fail
+- Session expiry handled once, in the interceptor — a `401` on a request that carried a token clears the stored session and navigates to `/login`, where the page explains the session expired, so no page re-implements it; a failed login's `401` carries no token and is left to the Login page's own error
 - Role-aware UI — same route (`/entries`, `/dashboard`), different data and columns per role
 - `forkJoin` — parallel API calls on dashboard load for stat cards
 - Material theming through token overrides — `mat.theme()` for the palette, density and shape, and `mat.button-overrides` / `mat.card-overrides` for what it does not reach, because Material's internal CSS classes are private and change between releases
