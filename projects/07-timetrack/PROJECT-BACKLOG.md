@@ -44,15 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **css / junior** `[frontend]` — The Login page's mobile layout looks unfinished. Below 768px it
-  already follows §14 → *Responsive intent* (the branding panel is hidden and only the form card remains),
-  but that rule says nothing about how the card itself should sit on a phone. Seen in Chrome's device
-  toolbar on 2026-09-15: the card is pinned to the top with the rest of the viewport left empty, and its
-  spacing and type still carry the desktop proportions. Decide the target mobile layout first (for
-  example, the card's position and side margins, and whether it keeps its border at phone width), then
-  implement it in `frontend/timetrack/src/app/pages/login/` using `rem` spacing, and check it at 375px and
-  768px. **Effort:** Small *(raised 2026-09-15 at Victor's request while verifying Step 7a's login clause
-  on a phone-width viewport; not a review finding)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -216,6 +208,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — phone login layout decided: a logo + name lockup above the greeting below 768px, the form at a fixed `4rem` top offset instead of centred, and the outlined card flattened below 600px through `mat.card-overrides` (`ee3855b6`) → coverage: `css/junior` content-driven breakpoints and `angular-material/middle` token overrides already covered and marked, `angular-material/junior` "Responsive Material composition" left unmarked (its named cases are sidenav, dialogs and tables); frontend README Tradeoffs; PLANNING §14 Responsive intent + §0/§22 counts; PROGRESS Angular Material evidence cell. Verified in DevTools at 393, 700 and 768px
 - 2026-09-16 · **[Low]** `[frontend]` — toolbar account icon button raised from ≈1.45:1 to 6.42:1 contrast with `mat.icon-button-overrides` (`icon-color: on-primary`) scoped to `.mat-toolbar` (`382a4983`) → coverage: `angular-material/middle` "Component and theme token overrides" already covered and marked; frontend README Key patterns already names token overrides; PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS Angular Material evidence cell. Measured in DevTools
 - 2026-09-14 · **[Low]** `[frontend]` — `Login` and `ChangePasswordDialog` tear their HTTP calls down with `takeUntilDestroyed(this.destroyRef)`, and the dialog holds `dialogRef.disableClose` while its `PATCH` is in flight (`c5e69b3a`); real scope was the 2 call sites **plus** that lock, because teardown alone turns an Escape mid-save into a password change the server commits with no confirmation → coverage: new `angular/junior` bullet "Cancelling an in-flight `HttpClient` request" (authored + marked ✅ 07-timetrack), `angular/junior` injection context + subscription cleanup and `angular-material/junior` dismissal bullets already covered and marked; frontend README Key patterns + Tradeoffs (Back mid-save still closes the dialog — accepted); PLANNING §6 Subscription lifetime + §14 dialog Loading + §0/§22 counts; PROGRESS Angular + Angular Material evidence cells. Verified manually across 3 tests with a backend breakpoint: dismissal refused mid-save and restored after a `400`, success still confirms and closes, Back mid-save shows `(canceled)` while the password still changed. `/notes-plan angular junior` owed
 - 2026-09-11 · **[Low]** `[frontend]` — `tonal-container-shape: 4px` added so all five button variants share the 4px shape → coverage angular-material/middle (marker clause repointed), frontend README already names token overrides
