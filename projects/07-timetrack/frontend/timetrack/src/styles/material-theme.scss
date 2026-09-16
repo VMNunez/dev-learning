@@ -38,6 +38,14 @@ html {
     )
   );
 
+  .mat-toolbar {
+    @include mat.icon-button-overrides(
+      (
+        icon-color: var(--mat-sys-on-primary),
+      )
+    );
+  }
+
   @include mat.card-overrides(
     (
       outlined-container-color: var(--mat-sys-surface-container-lowest),
