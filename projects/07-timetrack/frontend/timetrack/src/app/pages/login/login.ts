@@ -56,7 +56,12 @@ export class Login {
   constructor() {
     this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.error.set(null));
 
-    afterNextRender(() => this.emailInput().nativeElement.focus());
+    afterNextRender(() => {
+      if (this.authService.consumeSessionExpired()) {
+        this.error.set('Your session has expired. Please log in again.');
+      }
+      this.emailInput().nativeElement.focus();
+    });
   }
 
   onSubmit() {

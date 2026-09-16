@@ -14,6 +14,7 @@ export class AuthService {
   private readonly authUrl = `${environment.apiUrl}/auth`;
   readonly session = signal<AuthResponse | null>(this.readStoredSession());
   readonly isLoggedIn = computed(() => !!this.session());
+  private sessionExpired = false;
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http
@@ -24,6 +25,18 @@ export class AuthService {
   logout() {
     localStorage.removeItem(SESSION_KEY);
     this.session.set(null);
+    this.sessionExpired = false;
+  }
+
+  expireSession() {
+    this.logout();
+    this.sessionExpired = true;
+  }
+
+  consumeSessionExpired(): boolean {
+    const expired = this.sessionExpired;
+    this.sessionExpired = false;
+    return expired;
   }
 
   private saveSession(response: AuthResponse) {
