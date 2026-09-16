@@ -1,4 +1,14 @@
 <mat-toolbar>
+  @if (!isDesktop()) {
+    <button
+      matIconButton
+      (click)="drawer.toggle()"
+      aria-label="Toggle navigation menu"
+      [attr.aria-expanded]="drawer.opened"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  }
   <span>TimeTrack</span>
   <span class="spacer"></span>
   <div>
@@ -18,7 +28,7 @@
   </div>
 </mat-toolbar>
 <mat-sidenav-container>
-  <mat-sidenav mode="side" opened>
+  <mat-sidenav #drawer [mode]="isDesktop() ? 'side' : 'over'" [opened]="isDesktop()">
     <mat-nav-list>
       @for (link of links(); track link.route) {
         @if (link.pending) {

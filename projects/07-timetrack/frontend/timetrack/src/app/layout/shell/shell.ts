@@ -8,9 +8,16 @@ import {
   viewChild,
 } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationSkipped,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { Role } from '../../shared/models/auth';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +25,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { ChangePasswordDialog } from '../../shared/components/change-password-dialog/change-password-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
 
 interface NavLink {
   label: string;
@@ -55,10 +65,17 @@ const NAV_LINKS: readonly NavLink[] = [
 export class Shell {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  protected readonly isDesktop = toSignal(
+    this.breakpointObserver.observe('(min-width: 1024px)').pipe(map((state) => state.matches)),
+    { requireSync: true },
+  );
+
   private readonly accountButton = viewChild.required<string, ElementRef<HTMLButtonElement>>(
     'accountButton',
     { read: ElementRef },
   );
+  private readonly sidenav = viewChild(MatSidenav);
   readonly dialog = inject(MatDialog);
   readonly links = computed(() => {
     const role = this.authService.session()?.role;
@@ -67,6 +84,17 @@ export class Shell {
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.dialog.closeAll());
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd || event instanceof NavigationSkipped),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        const sidenav = this.sidenav();
+        if (sidenav?.mode === 'over') {
+          sidenav.close();
+        }
+      });
   }
 
   logout(): void {
