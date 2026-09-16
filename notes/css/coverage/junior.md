@@ -137,7 +137,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `opacity` vs alpha-channel colour — fade the whole rendered element subtree or only the colour of one painted property
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
-- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the login logo strokes in `currentColor` and inherits `--mat-sys-on-primary` from the branding panel
+- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the shared `Logo` SVG strokes in `currentColor`, so it inherits `--mat-sys-on-primary` on the login branding panel and the toolbar
 - Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 

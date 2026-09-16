@@ -60,7 +60,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `constructor` vs `ngOnInit` — reserve construction for dependency setup and use `ngOnInit` for initialisation that depends on Angular-bound inputs ✅ 02-weather-app
 - `ngOnChanges` — react when decorator or signal inputs change and read `SimpleChanges` without assuming `ngOnInit` runs again
 - View queries and `ngAfterViewInit` — treat `ngAfterViewInit` as the normal safe point for decorator queries while recognising static and signal-query timing differences ✅ 05-task-manager
-- Query `read` option — a query's locator decides both which element matches and which value comes back, so a template reference on a component host returns the component instance; `read: ElementRef` retrieves that element's DOM node instead, and `read: TemplateRef` or `read: ViewContainerRef` other values from the same element ✅ 07-timetrack — `Shell` reads `#accountButton` with `viewChild.required(..., { read: ElementRef })`, since the ref on the `matIconButton` host would otherwise return the `MatIconButton` instance
+- Query `read` option — a query's locator decides both which element matches and which value comes back, so a template reference on a component host returns the component instance; `read: ElementRef` retrieves that element's DOM node instead, and `read: TemplateRef` or `read: ViewContainerRef` other values from the same element ✅ 07-timetrack — `Shell` reads `#accountButton` with `viewChild.required(..., { read: ElementRef })`, since the ref on the `matButton` host would otherwise return the `MatButton` instance
 - `afterNextRender` — schedule work that needs the painted DOM, such as measuring an element or placing initial focus, so it runs after the next render and only in a browser, where a lifecycle hook would also run during server-side rendering with no DOM to read ✅ 07-timetrack — the login page focuses its email input from `afterNextRender`, where the `viewChild.required` node already exists
 - Destruction cleanup — tie `ngOnDestroy` or `DestroyRef` callbacks to component destruction so timers, listeners, and subscriptions do not outlive the view ✅ 02-weather-app
 
@@ -242,7 +242,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
-- `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `account_circle` icon button opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
+- `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `matButton`, labelled with the logged-in user's name, opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
 
@@ -1802,7 +1802,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `opacity` vs alpha-channel colour — fade the whole rendered element subtree or only the colour of one painted property
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
-- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the login logo strokes in `currentColor` and inherits `--mat-sys-on-primary` from the branding panel
+- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the shared `Logo` SVG strokes in `currentColor`, so it inherits `--mat-sys-on-primary` on the login branding panel and the toolbar
 - Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 
