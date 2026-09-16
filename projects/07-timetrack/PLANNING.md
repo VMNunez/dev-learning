@@ -1163,7 +1163,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 
 | Page | Loading | Error | Empty |
 |---|---|---|---|
-| Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up; arriving after an expired session, the same line reads "Your session has expired. Please log in again." until the user types | n/a — no data load |
+| Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | A `role="alert"` line above the fields: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same line, and the form stays enabled so the user can retry once the minute is up; arriving after an expired session, the same line reads "Your session has expired. Please log in again." until the user types | n/a — no data load |
 | Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
 | Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
 | Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
@@ -1172,7 +1172,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 | Team | Skeleton cards + spinner over the table | `mat-error` + Retry | "No team members yet. Add your first member." |
 | Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
 | Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
-| Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `mat-error` at the dialog foot, dialog stays open | n/a — a form dialog always opens with its fields |
+| Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `role="alert"` line above the fields, dialog stays open | n/a — a form dialog always opens with its fields |
 
 > **Reversal, 2026-09-10 — `disabled` is a visual and interaction state, not a business rule.** The Login
 > row originally said *form disabled while saving*. Removing `form.disable()/enable()` was decided while
@@ -1271,12 +1271,12 @@ password would be permanent in practice.
 - Calls `PATCH /api/users/me/password` with `currentPassword` + `newPassword`; `204` closes the dialog and
   a snackbar confirms "Password changed". No re-login and no token refresh — the JWT stays valid
 - **Loading** — the Change password button shows its spinner and all three fields disable while the call is
-  in flight, exactly as the other form dialogs; Escape and a backdrop click do not close it until the call
-  settles (§6 Subscription lifetime)
+  in flight, exactly as the other form dialogs; a backdrop click never closes it, and Escape does not close it
+  until the call settles (§6 Subscription lifetime)
 - **Error** — a `400` carrying `fieldErrors.currentPassword` renders **under the current-password input**
   (the ⚠ line in the wireframe), never as a dialog-level error: the user must see *which* field is wrong.
   `fieldErrors.newPassword` (the 8–72 length rule) renders under the new-password input. Any other failure
-  is a `mat-error` at the dialog foot. The dialog never closes on error, so nothing typed is lost
+  is a `role="alert"` line above the fields. The dialog never closes on error, so nothing typed is lost
 - **Empty** — n/a, a form dialog always opens with its three fields
 - "Confirm new" is validated **on the frontend only** (a cross-field validator on the reactive form) — the
   backend has no `confirmPassword` field in `ChangePasswordRequest` (§10), so this error never comes from a
@@ -1672,16 +1672,14 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   the user out)
 - The Login page ships its declared §14 states from the start: spinner inside the "Log in" button while
   the call is in flight — the inputs are **not** disabled, per the 2026-09-10 reversal recorded under
-  §14's async-states table — and a `mat-error` under the form on `401` (§6's Async-states
+  §14's async-states table — and a `role="alert"` line above the fields on `401` (§6's Async-states
   rule; Login has no empty state — it loads no data)
 - **New concepts:** Angular consuming a real REST API end to end
 - **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
-- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the error line above the fields while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
 - **Verified 2026-09-16**, all five clauses in the browser, the expired-token clause with a 20-second
-  token. **One deviation from the wording, not from the behaviour:** the `401` message on the Login page
-  is a form-level `<p class="login-error" role="alert">` above the fields, not a `mat-error` — a
-  `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field. §14's
-  Login row and this step's text still say `mat-error`; that wording is left for the next G2 pass
+  token. The `401` message is a form-level `<p class="login-error" role="alert">` above the fields, not a
+  `mat-error`: a `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field
 
 #### Step 7b — Employee flow: dashboard + entries
 - Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
