@@ -54,6 +54,15 @@ That ledger is append-only and authoritative — a review never re-raises what i
   confirm in DevTools → *Accessibility* that exactly one heading level 1 exists at 393px and at 1024px.
   **Effort:** Small *(raised 2026-09-16 while closing the phone login layout task — the fix added the
   second, phone-only `<h1>` with the same brand text, so the defect now spans both layouts)*
+- [ ] **angular / junior** `[frontend]` — `src/app/app.spec.ts` still carries the CLI scaffold's
+  `should render title` test, which expects `compiled.querySelector('h1')?.textContent` to contain
+  `Hello, timetrack`, while `src/app/app.html` no longer holds any `<h1>` (`grep -c "h1"
+  src/app/app.html` completed with exit 1 and a count of 0 on 2026-09-16; the spec was not run). A spec
+  asserting an element the template no longer has is a broken spec, not a missing test, so it is in scope
+  for components in 07. Replace the assertion with one the current `App` template satisfies, or delete the
+  stale test if `App` holds nothing worth asserting, then run the frontend test command and confirm it
+  passes. **Effort:** Small *(raised 2026-09-16 while triaging the «Login page's `<h1>` names the brand»
+  task — seen in the grep for every `<h1>` consumer)*
 
 ## Beyond the current gate
 
