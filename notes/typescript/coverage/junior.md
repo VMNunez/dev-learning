@@ -31,6 +31,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - Classes as types — recognise that a class declaration creates both a runtime constructor value and an instance type
 - `implements` — check that a class instance satisfies a contract without assuming the interface changes the emitted class at runtime ✅ 04-meal-finder
 - Abstract classes vs interfaces — recognise shared implementation plus an unconstructable base class versus an erased shape-only contract
+- The `override` modifier — mark a member that replaces an inherited one so that, under `noImplicitOverride`, a base-class rename or a misspelt name fails the build instead of silently adding a method nobody calls ✅ 07-timetrack — `AppTitleStrategy` declares `override updateTitle()`, compiled under the `noImplicitOverride: true` the frontend `tsconfig.json` sets
 - Parameter properties — read constructor parameters that declare and initialise class fields in one TypeScript shorthand
 - TypeScript access modifiers vs ECMAScript `#private` fields — distinguish compile-time visibility from privacy that JavaScript enforces at runtime
 

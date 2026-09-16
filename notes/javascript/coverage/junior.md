@@ -79,7 +79,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
 - Prototype delegation — understand that property lookup can continue through an object's prototype chain
 - Class construction and instance methods — read `constructor` and instance behaviour as class syntax built on prototype delegation
-- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
+- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes ✅ 07-timetrack — `AppTitleStrategy extends TitleStrategy` and calls the inherited `buildTitle()` through `this` inside its own `updateTitle()`
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
