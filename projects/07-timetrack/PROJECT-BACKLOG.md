@@ -73,6 +73,11 @@ That ledger is append-only and authoritative — a review never re-raises what i
   `id` on the `<mat-sidenav>`, which the disclosure pattern pairs with `aria-expanded` so assistive technology can
   reach the panel the button opens. Give the sidenav an `id` and bind it from the toggle. **Effort:** Small
   *(raised 2026-09-16 while closing the responsive-sidenav task)*
+- [ ] **angular-material / junior** `[frontend]` — the account menu trigger in `shell.html` shows a fixed
+  `arrow_drop_down` icon that never reflects the menu's state: with the menu open it still points down, so
+  the one visual cue of open/closed lies. `MatMenuTrigger` exposes the state (`menuOpened` / `menuClosed`),
+  but nothing in the template reads it. **Effort:** Small *(raised 2026-09-16 by Victor while checking the
+  toolbar in the browser)*
 
 ## Beyond the current gate
 
