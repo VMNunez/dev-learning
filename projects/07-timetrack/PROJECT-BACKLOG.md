@@ -44,24 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular / junior** `[frontend]` — `src/app/app.spec.ts` still carries the CLI scaffold's
-  `should render title` test, which expects `compiled.querySelector('h1')?.textContent` to contain
-  `Hello, timetrack`, while `src/app/app.html` no longer holds any `<h1>` (`grep -c "h1"
-  src/app/app.html` completed with exit 1 and a count of 0 on 2026-09-16; the spec was not run). A spec
-  asserting an element the template no longer has is a broken spec, not a missing test, so it is in scope
-  for components in 07. Replace the assertion with one the current `App` template satisfies, or delete the
-  stale test if `App` holds nothing worth asserting, then run the frontend test command and confirm it
-  passes. **Effort:** Small *(raised 2026-09-16 while triaging the «Login page's `<h1>` names the brand»
-  task — seen in the grep for every `<h1>` consumer)*
-- [ ] **angular / junior** `[frontend]` — `change-password-dialog.spec.ts` mounts `ChangePasswordDialog` with
-  only `imports: [ChangePasswordDialog]`, while the component injects `MatDialogRef` — a token no module
-  provides, minted by `MatDialog.open()` — so `should create` fails with `NG0201: No provider found for
-  MatDialogRef`. Proven by Victor's own `ng test --watch=false` run on 2026-09-16, which completed with
-  `Test Files 1 failed | 11 passed (12)` and this spec as the only failure. Supply `MatDialogRef` as a
-  `useValue` double in the spec's providers; the component also injects `UserService` and `MatSnackBar`, so
-  expect the next missing provider to surface once this one is satisfied and give each exactly what it
-  needs. Then re-run the suite and confirm `0 failed`. **Effort:** Small *(raised 2026-09-16 while
-  verifying the stale `app.spec.ts` task — the suite run it required)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -225,6 +208,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — `change-password-dialog.spec.ts` registers `MatDialogRef` as a `{ close: vi.fn() }` `useValue` double, so the dialog mounts without `MatDialog.open()` (`81d8a173`); real scope was that one provider — `HttpClient`, `Router` and `MatSnackBar` are root-provided in v21, as `login.spec.ts` passing with none proves → coverage: `angular/junior` runtime-supplied tokens already marked ✅ 05-task-manager; README n/a; PLANNING §16 scaffold-spec rule + §0/§22 counts; PROGRESS Angular evidence cell. Verified by Victor: `ng test --watch=false` → 12/12 passed
+- 2026-09-16 · **[Low]** `[frontend]` — scaffold `should render title` test removed from `app.spec.ts`: `App` renders only `<router-outlet />`, and a rewritten assertion on the outlet could never fail (`72e15280`) → coverage: `general/junior` "Meaningful assertion" already covered, left unmarked (the surviving test asserts construction only); README n/a; PLANNING §16 scaffold-spec rule + §0/§22 counts. Verified by Victor in the same 12/12 run
 - 2026-09-16 · **[Low]** `[frontend]` — `Login`'s only `<h1>` now names the view: `<h1 mat-card-title>Welcome back</h1>`, the brand a `<span class="login-brand-name">` styled by class at both widths (`d0fb4a01`) → coverage: `html/junior` "One `<h1>` per page" marked ✅ 07-timetrack, new `angular-material/junior` bullet "Title directives carry no heading semantics" (authored + marked), `html/junior` hiding-from-the-tree clause repointed to the `.login-brand-name` text; frontend README n/a (idiom, not a project decision); PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS HTML evidence cell. Verified in DevTools Accessibility: role heading, level 1, name "Welcome back". `/notes-plan angular-material junior` owed
 - 2026-09-16 · **[Low]** `[frontend]` — phone login layout decided: a logo + name lockup above the greeting below 768px, the form at a fixed `4rem` top offset instead of centred, and the outlined card flattened below 600px through `mat.card-overrides` (`ee3855b6`) → coverage: `css/junior` content-driven breakpoints and `angular-material/middle` token overrides already covered and marked, `angular-material/junior` "Responsive Material composition" left unmarked (its named cases are sidenav, dialogs and tables); frontend README Tradeoffs; PLANNING §14 Responsive intent + §0/§22 counts; PROGRESS Angular Material evidence cell. Verified in DevTools at 393, 700 and 768px
 - 2026-09-16 · **[Low]** `[frontend]` — toolbar account icon button raised from ≈1.45:1 to 6.42:1 contrast with `mat.icon-button-overrides` (`icon-color: on-primary`) scoped to `.mat-toolbar` (`382a4983`) → coverage: `angular-material/middle` "Component and theme token overrides" already covered and marked; frontend README Key patterns already names token overrides; PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS Angular Material evidence cell. Measured in DevTools
