@@ -54,6 +54,12 @@ That ledger is append-only and authoritative — a review never re-raises what i
   `id` on the `<mat-sidenav>`, which the disclosure pattern pairs with `aria-expanded` so assistive technology can
   reach the panel the button opens. Give the sidenav an `id` and bind it from the toggle. **Effort:** Small
   *(raised 2026-09-16 while closing the responsive-sidenav task)*
+- [ ] **html / junior** `[frontend]` — no route in `app.routes.ts` declares a `title`, so the document title never
+  changes: `/login`, `/dashboard` and `/projects` all leave the tab, the history entry and the screen reader's
+  page announcement reading the one static `<title>` from `index.html`, which names the site and not the page.
+  Give each routed page its own title (Angular's route `title`, optionally a `TitleStrategy` that appends the
+  brand); `index.html`'s title stays as the pre-bootstrap fallback. **Effort:** Small
+  *(raised 2026-09-16 while triaging the Step 7a hygiene task)*
 
 ## Beyond the current gate
 
