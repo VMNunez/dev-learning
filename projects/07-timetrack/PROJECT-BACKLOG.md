@@ -44,12 +44,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular-material / junior** `[frontend]` — the toolbar diverges from §14 App shell: the `MatMenu`
-  trigger is an icon-only `account_circle` button where §14 has it show the logged-in user's name (§13's
-  shared-state row also lists "App shell (name, …)"), and no logo sits beside "TimeTrack". `session()`
-  already carries `name`, yet nothing in the app shows who is logged in. Render the name in the trigger
-  with an accessible name that still says what the button opens, or rule the icon-only trigger in §14.
-  **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
 - [ ] **angular-material / junior** `[frontend]` — the change-password dialog's password inputs have no
   visibility toggle, which §14's dialog spec asks for as a `matIconButton` `matSuffix` with an
   `aria-label` per the Accessibility floor. §14 says "both password inputs" while the dialog has three —
@@ -243,6 +237,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — the toolbar shows the logo beside "TimeTrack" and the user's name as the `MatMenu` trigger (`36e6fe96`, `a6dd0ada`, `3fd72933`); real scope added the `aria-label` removal, since keeping it over visible text breaks Label in Name, a sub-600px ellipsis instead of hiding the name, and a shared `Logo` component replacing the login's two inline SVG copies, shown in the toolbar only at 1024px and wider so it never sits beside the hamburger; no theme change — Material already gives an unthemed `matButton` inside `.mat-toolbar` the toolbar's text colour → coverage: nothing authored, every concept already covered (`html/junior` Label in Name, `angular/junior` `:host`, `css/junior` text truncation and `currentColor`, `angular-material/junior` `BreakpointObserver`); 3 project-07 clauses repointed (`mat-menu` composition, query `read` option, `currentColor`); frontend README Shared components (`logo`) + Tradeoffs (truncate over hide); PLANNING §14 Accessibility floor + Responsive intent, §13 tree, §0/§22 counts; PROGRESS Angular + HTML evidence cells. Verified in the browser at 1280 and 375px (Accessibility Name = the user's name, whole even when cut off) and `ng test` 13/13
 - 2026-09-16 · **[Low]** `[frontend]` — `change-password-dialog.spec.ts` registers `MatDialogRef` as a `{ close: vi.fn() }` `useValue` double, so the dialog mounts without `MatDialog.open()` (`81d8a173`); real scope was that one provider — `HttpClient`, `Router` and `MatSnackBar` are root-provided in v21, as `login.spec.ts` passing with none proves → coverage: `angular/junior` runtime-supplied tokens already marked ✅ 05-task-manager; README n/a; PLANNING §16 scaffold-spec rule + §0/§22 counts; PROGRESS Angular evidence cell. Verified by Victor: `ng test --watch=false` → 12/12 passed
 - 2026-09-16 · **[Low]** `[frontend]` — scaffold `should render title` test removed from `app.spec.ts`: `App` renders only `<router-outlet />`, and a rewritten assertion on the outlet could never fail (`72e15280`) → coverage: `general/junior` "Meaningful assertion" already covered, left unmarked (the surviving test asserts construction only); README n/a; PLANNING §16 scaffold-spec rule + §0/§22 counts. Verified by Victor in the same 12/12 run
 - 2026-09-16 · **[Low]** `[frontend]` — `Login`'s only `<h1>` now names the view: `<h1 mat-card-title>Welcome back</h1>`, the brand a `<span class="login-brand-name">` styled by class at both widths (`d0fb4a01`) → coverage: `html/junior` "One `<h1>` per page" marked ✅ 07-timetrack, new `angular-material/junior` bullet "Title directives carry no heading semantics" (authored + marked), `html/junior` hiding-from-the-tree clause repointed to the `.login-brand-name` text; frontend README n/a (idiom, not a project decision); PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS HTML evidence cell. Verified in DevTools Accessibility: role heading, level 1, name "Welcome back". `/notes-plan angular-material junior` owed
