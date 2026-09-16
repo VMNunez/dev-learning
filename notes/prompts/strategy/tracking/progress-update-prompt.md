@@ -114,7 +114,7 @@ Read:
    the projects table and each project's status. Treat statuses as a starting point — the subagents
    verify them.
 2. The "Current study progress" and "Active project" lines of the shared session rules — general orientation only
-   (which project is active). the shared session rules is already loaded into your context by the supported agent runtime; do **not**
+   (which project is active). Your run-start check already read the shared session rules to EOF; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
 3. For each topic row in `Professional level by topic`, inspect the selected level's persistent notes
    plan at headings/status/studied-field level and the interview-prep bank fingerprint plus lifecycle

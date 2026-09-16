@@ -199,4 +199,8 @@ Include:
 - qualitative stopping-rule result;
 - mirror parity;
 - files and commits;
+- evidence clauses this run believes false — the bullet, the marker, and why — named as
+  `coverage-mark` repoints owed, or `none`. This pass preserves them verbatim and never repoints
+  (see "When the marked project's code changes" in the standard); reporting them is the whole of
+  its duty, and silence is what leaves a false clause standing.
 - unresolved risks or `none`.

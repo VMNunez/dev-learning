@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off; `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier**, so nothing gates this step. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
-| **Current branch** | `feat/angular-shell-auth`, cut from `projects/07-timetrack` after the 2026-08-29 merge. `fix/backend-backlog` met its §22 closing condition and is done — do not commit to it again. Per §22 this branch PRs back into `projects/07-timetrack` when Step 7a's done condition passes |
-| **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
-| **Next gate** | G4 — frontend review — **blocked, no frontend code exists yet**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7a–7d |
+| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` holds **no open task at any priority**: the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`; the Low raised that day while closing the sidenav task (the navigation toggle's missing `aria-controls`) closed the same day in `3b48f37a`; the pre-PR hygiene bundle itself closed that day across `5c69a9e7`–`5241a4c7`; the pre-PR PLANNING-drift Low closed that day as a decision (§6 Form dialogs own their write, Navigation boundary); the Medium raised with them (a shell sidenav that never collapsed below 1024px) closed on 2026-09-16 in `40fc27e5`, and the Lows for the toolbar trigger without the user's name and for its arrow that never turned closed the same day in `3fd72933` and `e3a981fa`, as did the dialog's missing visibility toggles in `91df6a48`, and the dialog's missing full-screen rule was closed that day as a decision to keep Material's compact card on phones |
+| **Current branch** | `feat/angular-shell-auth` — Step 7a's done condition passed on 2026-09-16, so per §22 the branch is **ready to PR into `projects/07-timetrack`** and takes no further step work. After that merge, `feat/angular-entries` is cut from `projects/07-timetrack` for Step 7b |
+| **Done condition** | Step 7b's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input` |
+| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a done, Steps 7b–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7b–7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
-| **Last updated** | 2026-08-29 |
+| **Last updated** | 2026-09-16 |
 
 ---
 
@@ -92,7 +92,7 @@ Concepts from earlier projects this project reinforces.
 | MatTable + MatDialog | Project 05 | Entries, Projects, Approvals tables and dialogs |
 | `forkJoin` parallel requests | Project 02 | Manager dashboard stat cards |
 | Signals + `computed()` | Project 01 onwards | Derived stat counts across pages |
-| Auth persistence with signal + `effect()` | Project 06 | Token + current user kept in localStorage |
+| Auth persistence with a signal + `localStorage` | Project 06 | Token + current user kept in localStorage, written imperatively by `AuthService` on login and logout — the only two moments the session changes |
 | Soft delete | Project 07 (Step 2) | Reused for users and projects |
 | `MatSidenav` app shell | Project 06 | Same fixed toolbar + scrollable content layout |
 
@@ -222,24 +222,41 @@ Browser                               Server
 Same bar as the backend block: each line is violable — a reviewer can open a file and point at the break.
 - **State ownership** — the page component under `pages/` owns all state for its route (signals declared
   in the page class). Child components receive data through `input()` and report through `output()`, and
-  never inject a `core/services/` service. The one exception is `AuthService`, whose current-user signal
+  never inject a `core/services/` service. The one exception is `AuthService`, whose `session` signal
   is app-wide state read directly by the shell and the guards.
+- **Form dialogs own their write** — a `MatDialog` is not a child component: `MatDialog.open()` creates it
+  in the overlay container, so it has no `input()`/`output()` to speak through. A dialog that submits a form the API
+  can refuse field by field (`change-password-dialog`, `entry-dialog`, `user-dialog`) receives what it displays through
+  `MAT_DIALOG_DATA`, issues its own write through the `core/services/` service, and closes with
+  `dialogRef.close(result)` only on success; the opening page then refetches. It owns the write because it
+  owns the write's in-flight state — the spinner, the `disableClose` lock of Subscription lifetime below,
+  and the `400` `fieldErrors` under its own inputs, which a page saving after `close()` would receive with
+  the form already gone. It never *reads* a list its page already loaded — that arrives as dialog data
+  (§13's shared-state table) — and a dialog that submits nothing (`confirm-dialog`) returns its
+  answer through `close()` and calls no service.
 - **Shared endpoints** — when two pages read the same endpoint, each page fetches it independently on
   its own load; no cross-page cache. `GET /api/entries?month=` is read by both the dashboard and the
   entries page, and each calls it for itself.
 - **Service boundary** — a `core/services/` service does exactly two things: issue the HTTP call and map
-  the response to a `shared/models/` interface. It never navigates (`Router` is injected in pages and
-  guards only), never opens a dialog or snackbar, and never holds page state. `AuthService` is the single
-  exception: it also holds the token + current-user signal, because auth state outlives every page.
-- **Component conventions** — every component is `standalone: true`, declares
-  `changeDetection: ChangeDetectionStrategy.OnPush`, and gets its dependencies through `inject()`, never
-  through a constructor parameter list.
+  the response to a `shared/models/` interface. It never navigates, never opens a dialog or snackbar, and never
+  holds page state. `AuthService` is the single exception: it also holds the `session` signal (token, name,
+  role), because auth state outlives every page.
+- **Navigation boundary** — `Router` is injected in four places only: pages, guards, the auth interceptor
+  (a token-bearing `401` is answered once in `core/`, never per page — §10) and the layout shell (logout
+  lives in its user menu). A `core/services/` service never injects it, so no HTTP call can move the user.
+- **Component conventions** — every component is standalone by default and never writes
+  `standalone: true` (the v20+ default, which the app's generated `.claude/CLAUDE.md` forbids setting),
+  declares `changeDetection: ChangeDetectionStrategy.OnPush`, and gets its dependencies through `inject()`,
+  never through a constructor parameter list.
 - **Typing** — every `shared/models/` interface mirrors one backend response DTO field for field. No
   `any` at an API boundary: `http.get<TimeEntry[]>(...)` is typed, and a response shape that has no model
   gets one before the call is written.
 - **Subscription lifetime** — a template consumes an observable through the `async` pipe; a subscription
   in a class is wrapped in `takeUntilDestroyed()`. A bare `.subscribe()` with no teardown is a defect,
-  including in a dialog.
+  including in a dialog. Tearing down a write aborts only the browser's wait, never a change the server
+  already received, so a form dialog opens with `disableClose` (a backdrop click never closes it) and
+  re-admits Escape through `dialogRef.keydownEvents()` only while no write is in flight — refused exactly
+  as its disabled Cancel button is. Browser Back still closes it (`closeOnNavigation` ignores `disableClose`); that exit losing the confirmation is accepted. A dialog lives in the overlay container, not in its opener's view, and `closeOnNavigation` ignores `router.navigate()`, so the component that opens dialogs closes them when it is destroyed (`DestroyRef.onDestroy` + `MatDialog.closeAll()`) — the auth interceptor in `core/` never touches Material.
 - **Async states** — every page that loads data renders three states explicitly: a `MatProgressSpinner`
   while `loading()` is true, a `mat-error` message plus a retry button when the call fails, and the empty
   message from §14 when the call succeeds with zero rows. A page that renders only the success table is
@@ -400,7 +417,7 @@ APPROVED     REJECTED ─────────┘
 > earlier `403` broke this plan's own convention, where `403` means *the caller's role or ownership does not
 > permit this action*. On `/api/users/me/password` neither can fail: the caller is authenticated and owns
 > `/me` by definition, so nothing about authorization is being refused. `401` is worse than
-> wrong: the Angular interceptor treats every `401` as an expired session and redirects to `/login`, so a
+> wrong: the Angular interceptor treats a `401` on any token-bearing request as an expired session and redirects to `/login`, so a
 > single typo in the current-password field would log the user out mid-change. `400` also lets the response
 > reuse the `fieldErrors` contract (§10), putting the message under the offending input instead of on a
 > generic error banner.
@@ -515,8 +532,9 @@ POST /api/auth/login       → returns JWT
 original 24h on 2026-07-28: a token stolen from `localStorage` was valid for a full day, and with no
 refresh-token flow in scope, 60 min is the balance between a usable work session and a bounded blast
 radius. When a token expires mid-session the API returns 401 — the Angular interceptor (Step 7a) catches
-it, clears the stored session, and redirects to `/login`. Expiry is handled once in the interceptor,
-never per page. The access/refresh trade-off is documented in `backend/README.md`.
+it, clears the stored session, and redirects to `/login`, which tells the user the session expired. Expiry
+is handled once in the interceptor, never per page, and **only for a request that carried a token**: the
+`401` of `POST /api/auth/login` means wrong credentials and belongs to the Login page. The access/refresh trade-off is documented in `backend/README.md`.
 
 **Login throttling:** five consecutive failed logins on the same email — or from the same client IP —
 answer `429` for one minute. `LoginAttemptService` holds the counters in memory and `AuthService` reads
@@ -874,20 +892,26 @@ src/main/java/com/victor/timetrack/
 
 ```
 src/app/
+├── layout/
+│   └── shell/                     ← MatSidenav + toolbar around a nested <router-outlet />; the component of the guarded parent route, so /login never renders inside it
 ├── core/
 │   ├── guards/
-│   │   ├── auth.guard.ts         ← blocks any route without a stored token
-│   │   └── manager.guard.ts      ← blocks manager-only routes for an EMPLOYEE
+│   │   ├── auth-guard.ts         ← blocks any route without a stored token
+│   │   ├── no-auth-guard.ts      ← the mirror: keeps an authenticated user off /login, sending them to /dashboard
+│   │   └── manager-guard.ts      ← blocks manager-only routes for an EMPLOYEE
 │   ├── interceptors/
-│   │   └── auth.interceptor.ts   ← attaches the Bearer token; on 401 clears the session → /login
+│   │   └── auth-interceptor.ts   ← attaches the Bearer token; on a token-bearing 401 expires the session → /login
+│   ├── strategies/
+│   │   └── app-title-strategy.ts ← TitleStrategy: suffixes each route's title with the brand, or writes the brand alone
 │   └── services/
-│       ├── auth.service.ts       ← login, logout, current user + role
-│       ├── entry.service.ts      ← /api/entries CRUD + the workflow PATCH calls
-│       ├── project.service.ts    ← /api/projects
-│       ├── user.service.ts       ← /api/users (Team page, manager dashboard card, Approvals employee filter) + changePassword() → PATCH /api/users/me/password
-│       └── report.service.ts     ← /api/reports (the three monthly reports)
+│       ├── auth-service.ts       ← login, logout, current user + role
+│       ├── entry-service.ts      ← /api/entries CRUD + the workflow PATCH calls
+│       ├── project-service.ts    ← /api/projects
+│       ├── user-service.ts       ← /api/users (Team page, manager dashboard card, Approvals employee filter) + changePassword() → PATCH /api/users/me/password
+│       └── report-service.ts     ← /api/reports (the three monthly reports)
 ├── pages/
 │   ├── login/                    ← email + password form, both roles
+│   ├── coming-soon/              ← placeholder routed for every nav link whose page is not built yet; each later step replaces one of its routes
 │   ├── dashboard/                ← role-aware summary (employee vs manager variant)
 │   ├── entries/
 │   │   ├── entry-list/           ← filterable table of entries
@@ -901,14 +925,24 @@ src/app/
     ├── components/
     │   ├── change-password-dialog/ ← current + new password form, opened from the shell user menu (not routed) → PATCH /api/users/me/password
     │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete
+    │   ├── logo/               ← the clock mark, sized by each host's class (Login, shell toolbar)
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
     │   └── status-badge/      ← coloured badge, used in Entries, Approvals, Dashboard
     └── models/                    ← interfaces mirroring the backend response DTOs
-        ├── user.model.ts          ← User + Role
-        ├── project.model.ts       ← Project
-        ├── time-entry.model.ts    ← TimeEntry + EntryStatus
-        └── report.model.ts        ← the three report shapes
+        ├── auth.ts                ← LoginRequest, AuthResponse, Role + isRole
+        ├── api-error.ts           ← ApiError + its runtime type guard
+        ├── user.ts                ← ChangePasswordRequest (Step 7a); User joins it in Step 7d
+        ├── project.ts             ← Project
+        ├── time-entry.ts          ← TimeEntry + EntryStatus
+        └── report.ts              ← the three report shapes
 ```
+
+**File naming — the 2025 Angular style guide, applied to every file in `src/app/`** (ruled 2026-09-11).
+A file is named after the primary identifier it holds, in kebab-case, with **no type suffix**: `AuthService`
+→ `auth-service.ts`, `authGuard` → `auth-guard.ts`, a `Login` component → `login.ts`. A file holding several
+identifiers takes the name of their common theme (`auth.ts` for the auth DTOs), never a generic `utils.ts`.
+A spec is its file's name plus `.spec.ts`. The `.service.ts` / `.model.ts` suffixes are the 2016 guide the
+CLI stopped generating in v20; the class keeps its descriptive name (`AuthService`, not the CLI's bare `Auth`).
 
 ### Angular routes
 ```
@@ -943,7 +977,7 @@ it differently mid-build:
 | `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
 | `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
 | `GET /api/reports/summary?month=` | Reports page ("Approved this month" card) · Manager dashboard ("Approved this month" card) · Employee dashboard ("Approved this month" card, scoped by the token) | **Each page fetches independently**, for its own selected month |
-| — current user + token (no endpoint after login) | App shell (name, role-filtered sidebar) · both guards · every role-aware page | **`AuthService`** — the one piece of app-wide state, a signal persisted to `localStorage` with `effect()`. Auth outlives every route, so a page cannot own it |
+| — current user + token (no endpoint after login) | App shell (name, role-filtered sidebar) · both guards · every role-aware page | **`AuthService`** — the one piece of app-wide state, the `session` signal, written to `localStorage` by `login()` and `logout()` themselves. Auth outlives every route, so a page cannot own it |
 | Pending-approvals count (`MatBadge` in the shell) | App shell only | Owned by the **shell component**, which issues its own `GET /api/entries?status=SUBMITTED` on load. It is deliberately **not** live-synced with the Approvals page — approving an entry does not decrement the badge until the next navigation. Keeping it live would need exactly the shared store §20 rejects, for a badge |
 
 ---
@@ -1040,7 +1074,7 @@ stylesheet and point at the break.
 | **Primary colour** | A teal-based M3 palette, declared once in `material-theme.scss`. `#00695C` above is the **intent**; under M3 the theme generates its own tonal ramp from it, so the rendered hex will differ and that is correct — do not force the seed hex back with CSS |
 | **Status colours** | Four CSS custom properties (`--status-draft`, `--status-submitted`, `--status-approved`, `--status-rejected`) declared once in the global stylesheet and consumed **only** by `status-badge`. They are not theme colours; no other component may reference them |
 | **Typography** | Material's type scale only. Page title `headline-small`, section heading `title-medium`, table and body text `body-medium`, stat-card number `display-small`, card label `body-small` muted. **No `font-size` in a component stylesheet** |
-| **Spacing** | An 8px grid: 8 · 16 · 24 · 32. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary pixel values |
+| **Spacing** | An 8px grid: 8 · 16 · 24 · 32, **written in `rem`** (0.5 · 1 · 1.5 · 2rem at the default 16px root) so spacing and fixed widths grow with the user's browser font size. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary values; `px` only for hairline borders, media-query breakpoints and the theme's shape tokens |
 | **Elevation & shape** | Flat, per the identity: cards are `<mat-card appearance="outlined">` at elevation 0 with a 1px outline; only overlays lift — dialogs at elevation 3, menus/snackbars at Material's default. Never a hand-written `box-shadow`. One 4px corner radius, set as the theme's shape token and never overridden per component |
 | **Density** | Material's **compact** density, set once in `mat.theme()` and inherited by every `MatTable` and form field — so ten rows fit on a laptop screen without scrolling. Never set per table |
 | **Dark mode** | **Out of scope, deliberately.** One theme finished properly beats two half-done, and the demo is judged in light mode. Revisit in project 08 |
@@ -1055,6 +1089,9 @@ Animation here is feedback, not decoration — the bar is "the app feels respons
   loading. This is the one animation that is not optional, because §14 mandates skeletons everywhere
 - **Sidenav** uses Material's built-in slide in `over` mode — do not customise it
 - **Dialogs and snackbars** keep Material's default enter/leave. No custom transitions
+- **The account menu arrow** turns 180° over 150ms while its menu is open, driven by the trigger's
+  `menuOpened` / `menuClosed` outputs, because `MatMenuTrigger` updates `aria-expanded` but never its own
+  content; the turn is instant under `prefers-reduced-motion`
 - **Approve / reject** gives its feedback through the snackbar and the row disappearing on refetch; no
   bespoke row animation
 - **Budget:** any transition is ≤ 200ms and fires on a state change only. Nothing animates on page load,
@@ -1075,7 +1112,36 @@ Small list, non-negotiable, and cheap if done as each page is built rather than 
   usual place this fails
 - **Focus stays visible** — never `outline: none` without a replacement. `MatDialog` already traps focus:
   do not break it
+- **Closing a dialog returns focus to what opened it.** `MatDialog` restores focus to the element that
+  held it when the dialog opened, so a dialog opened from a `mat-menu-item` must pass the menu's trigger
+  as `restoreFocus`: the item is destroyed with its menu, and the default restore leaves focus on
+  `<body>` (WCAG 2.4.3)
+- **Every page owns exactly one `<h1>`, and it names the view** — never the brand, which is plain text
+  wherever it appears. Material's title directives add typography, not heading semantics, so they go on a
+  real heading as an attribute (`<h1 mat-card-title>`, `<h2 mat-dialog-title>`), never as the bare
+  element, which leaves the view with no entry in the heading outline (WCAG 1.3.1)
+- **Every routed page declares its own `title`** — the name of the page only (`'Dashboard'`), never the
+  brand: `core/strategies/app-title-strategy.ts`, provided for `TitleStrategy` in `app.config.ts`, appends
+  `| TimeTrack` and writes the brand alone when no route resolves one. A route added without a `title`
+  would otherwise keep the previous page's name in the tab, because the default strategy writes nothing
+  then; `index.html`'s `<title>` is only the pre-bootstrap fallback (WCAG 2.4.2)
+- **Every password input has a visibility toggle** — a `type="button"` `matIconButton` `matSuffix` with a
+  fixed `aria-label` ("Show password") whose on/off state is `[attr.aria-pressed]`, never a name that flips
+  between Show and Hide. Its `mousedown` default is prevented, so pressing it keeps focus in the field
+  instead of blurring it and marking an empty control touched mid-typing
+- **A control that shows and hides a panel states both its state and its target.** `aria-expanded` bound to
+  the panel's open state, and `aria-controls` naming the panel's DOM `id` — a template reference variable
+  such as `#drawer` never reaches the DOM, so it links the two for Angular only. The shell's navigation
+  toggle points at `id="app-sidenav"`
 - **Every table action is reachable by keyboard**, in the order the row reads
+- **A control that shows text is named by that text.** No `aria-label` on top of visible text: it replaces the
+  text as the accessible name, and speech input then cannot reach the control by what the user reads
+  (WCAG 2.5.3) — the toolbar's account trigger is named by the user's name alone
+- **Icons on a coloured container take its `on-*` colour through the icon button's own token.** A
+  `matIconButton` reads `icon-color`, not the container's text colour, so on the `primary` toolbar it stays
+  `on-surface-variant` grey, under the 3:1 non-text minimum (WCAG 1.4.11). Set `on-primary` with
+  `mat.icon-button-overrides` nested under `.mat-toolbar`: at `html` it would whiten every icon button on a
+  light surface, and a `mat.icon-overrides` would stop the icon inheriting the button's disabled colour
 
 ---
 
@@ -1091,7 +1157,7 @@ pages in one sitting — that is the only way inconsistency becomes visible:
 - [ ] All four status colours pass contrast at badge size, and no status reads by colour alone
 - [ ] Every icon-only button has an `aria-label`; every table action is reachable by tab
 - [ ] At 1024, 768 and 375px wide: no horizontal page scroll, sidenav behaves per the responsive rules,
-      tables scroll inside their wrapper, dialogs go full-screen below 600
+      tables scroll inside their wrapper, dialogs stay a card with every action reachable below 600
 - [ ] Skeletons pulse; nothing else animates on load; `prefers-reduced-motion` stops the pulse
 - [ ] Two screenshots worth putting in the README exist — the manager dashboard and the entries page
 
@@ -1134,7 +1200,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 
 | Page | Loading | Error | Empty |
 |---|---|---|---|
-| Login | Spinner inside the "Log in" button, form disabled | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up | n/a — no data load |
+| Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | A `role="alert"` line above the fields: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same line, and the form stays enabled so the user can retry once the minute is up; arriving after an expired session, the same line reads "Your session has expired. Please log in again." until the user types | n/a — no data load |
 | Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
 | Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
 | Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
@@ -1143,7 +1209,30 @@ repeated in each wireframe. A page that renders only its success table is incomp
 | Team | Skeleton cards + spinner over the table | `mat-error` + Retry | "No team members yet. Add your first member." |
 | Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
 | Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
-| Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `mat-error` at the dialog foot, dialog stays open | n/a — a form dialog always opens with its fields |
+| Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `role="alert"` line above the fields, dialog stays open | n/a — a form dialog always opens with its fields |
+
+> **Reversal, 2026-09-10 — `disabled` is a visual and interaction state, not a business rule.** The Login
+> row originally said *form disabled while saving*. Removing `form.disable()/enable()` was decided while
+> building Step 7a, on this argument: the invariant being protected is "one login in flight at a time",
+> and that invariant already lived in TypeScript — `onSubmit()` opens with
+> `if (this.form.invalid || this.loading()) return;`, which is the real defence against a double submit.
+> The `disable()` protected nothing and cost two things that were measured: it repainted both
+> `mat-form-field` outlines grey for ~50 ms against a localhost backend, and it **dropped focus to
+> `document.body`**, because a disabled control cannot hold focus and nothing restored it on re-enable —
+> so a keyboard user lost their place after every failed login (WCAG 2.4.3). The `{ emitEvent: false }`
+> flags went with it: they existed only so that `disable()` would not fire the `valueChanges` that clears
+> the error message, a hidden coupling that no longer needs explaining. The same reasoning put
+> `disabledInteractive` on the button — a native `<button disabled>` cannot hold focus either, so Material
+> marks it `aria-disabled` and keeps it focusable instead. The accepted trade is that the button still
+> receives clicks, which Material's own input documentation warns about; the TypeScript guard is what
+> makes that safe, so **that line must not be removed**. A third option — delaying the disable ~150 ms so
+> fast responses never paint it — was rejected: it buys a flicker that only exists at localhost latency in
+> exchange for a second signal, a manual timer and an uncovered teardown path.
+>
+> **The dialog rows above still say "fields disabled while saving" and have not been reversed** — they are
+> unbuilt, and the case differs: a dialog's fields can be edited while its request is in flight and the
+> user then sees stale values against a saved record. Decide it per dialog when Step 7b builds the first
+> one, with this note as the precedent, rather than copying either answer by reflex.
 
 ---
 
@@ -1152,15 +1241,25 @@ repeated in each wireframe. A page that renders only its success table is incomp
 Desktop-first, but the demo must survive a recruiter opening the link on a phone:
 
 - **Sidenav** — `mode="side"` and permanently open at ≥ 1024px; below that it becomes `mode="over"`,
-  closed by default and opened by a hamburger button in the toolbar
+  closed by default and opened by a hamburger button in the toolbar, and it closes itself after every
+  completed or skipped navigation — a tap on the current page's link completes none, so both count
 - **Tables** — every `MatTable` sits in an `overflow-x: auto` wrapper so a narrow viewport scrolls the
   table instead of the page. Below 600px the Entries and Approvals tables hide the Description column
   (the least load-bearing) rather than shrinking every column
 - **Stat cards** — a CSS grid with `repeat(auto-fit, minmax(200px, 1fr))`, so four cards reflow to two
   and then one with no breakpoint of their own
 - **Login** — the two-column split collapses to the form card alone below 768px; the branding panel is
-  hidden, not stacked
-- **Dialogs** — `MatDialog` opens full-screen below 600px
+  hidden, not stacked, and a one-line lockup (logo + app name) sits above the greeting in its place. The
+  form sits at a fixed top offset rather than centred, because the virtual keyboard shrinks `100dvh` and a
+  centred form jumps as typing starts; below 600px the card drops its outline and container colour through
+  `mat.card-overrides`, so the form reads as the page instead of a box inside it
+- **Toolbar** — the logo shows only while the sidenav is a fixed rail, so below 1024px the hamburger takes its
+  place rather than sitting beside a second glyph; the account menu trigger truncates the user's name with an
+  ellipsis below 600px instead of hiding it, so its accessible name never needs a phone-only `aria-label`
+- **Dialogs** — below 600px every `MatDialog` keeps Material's compact-window card (`calc(100vw - 32px)`
+  wide, as tall as its content), never full-screen: a Material 3 full-screen dialog is a different layout,
+  a top bar with close and confirm actions, not the standard dialog stretched to the viewport, and a
+  stretched one was tried and rejected on 2026-09-16
 
 ---
 
@@ -1216,17 +1315,17 @@ password would be permanent in practice.
 - Calls `PATCH /api/users/me/password` with `currentPassword` + `newPassword`; `204` closes the dialog and
   a snackbar confirms "Password changed". No re-login and no token refresh — the JWT stays valid
 - **Loading** — the Change password button shows its spinner and all three fields disable while the call is
-  in flight, exactly as the other form dialogs
+  in flight, exactly as the other form dialogs; a backdrop click never closes it, and Escape does not close it
+  until the call settles (§6 Subscription lifetime)
 - **Error** — a `400` carrying `fieldErrors.currentPassword` renders **under the current-password input**
   (the ⚠ line in the wireframe), never as a dialog-level error: the user must see *which* field is wrong.
   `fieldErrors.newPassword` (the 8–72 length rule) renders under the new-password input. Any other failure
-  is a `mat-error` at the dialog foot. The dialog never closes on error, so nothing typed is lost
+  is a `role="alert"` line above the fields. The dialog never closes on error, so nothing typed is lost
 - **Empty** — n/a, a form dialog always opens with its three fields
 - "Confirm new" is validated **on the frontend only** (a cross-field validator on the reactive form) — the
   backend has no `confirmPassword` field in `ChangePasswordRequest` (§10), so this error never comes from a
   `fieldErrors` map
-- Both password inputs use a `MatIconButton` suffix to toggle visibility, with an `aria-label` per the
-  accessibility floor; the dialog goes full-screen below 600px like every other dialog
+- Every password input carries the visibility toggle the accessibility floor requires, Confirm included; below 600px the dialog keeps Material's compact card like every other dialog
 
 ---
 
@@ -1587,7 +1686,7 @@ One step per coherent slice, days not weeks — same granularity the backend had
 own done condition covering its **full** scope, and each falls inside exactly one §22 branch — 7c and 7d
 share `feat/angular-manager-pages`, since §22's rule is one branch per coherent feature, never one per step.
 
-#### Step 7a — Shell + auth
+#### Step 7a — Shell + auth ✅
 
 > **Backend prerequisite — satisfied 2026-07-29.** The toolbar dialog below calls
 > `PATCH /api/users/me/password`. That endpoint did not exist when this step was planned: the
@@ -1614,12 +1713,16 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   fields disabled while saving, and the `400` `fieldErrors.currentPassword` / `fieldErrors.newPassword`
   messages under their own inputs with the dialog staying open (a wrong current password must not log
   the user out)
-- The Login page ships its declared §14 states from the start: spinner inside the "Log in" button with the
-  form disabled while the call is in flight, and a `mat-error` under the form on `401` (§6's Async-states
+- The Login page ships its declared §14 states from the start: spinner inside the "Log in" button while
+  the call is in flight — the inputs are **not** disabled, per the 2026-09-10 reversal recorded under
+  §14's async-states table — and a `role="alert"` line above the fields on `401` (§6's Async-states
   rule; Login has no empty state — it loads no data)
 - **New concepts:** Angular consuming a real REST API end to end
 - **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
-- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+- **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the error line above the fields while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+- **Verified 2026-09-16**, all five clauses in the browser, the expired-token clause with a 20-second
+  token. The `401` message is a form-level `<p class="login-error" role="alert">` above the fields, not a
+  `mat-error`: a `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field
 
 #### Step 7b — Employee flow: dashboard + entries
 - Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
@@ -1711,7 +1814,7 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `UserService.update` | Applies name, email, role and the optional `active` flag | promoting a user who holds a `DRAFT` **or** a `REJECTED` entry → throws `InvalidStateTransitionException` (409), each status asserted on its own so neither passes on the other's evidence; a user holding only `SUBMITTED`/`APPROVED` entries promotes normally (§8 routes `SUBMITTED` to another manager); `MANAGER → EMPLOYEE` never blocks **for another user**, while a demotion or a deactivation whose target id is the caller's own throws `InvalidStateTransitionException` (409), each of the two transitions asserted separately; renaming your own account still succeeds, so the guard is shown to read the transition and not the target; and reactivating a deactivated user who holds a `DRAFT` succeeds, since the role did not change |
 | `UserService.delete` | Sets `active = false` on the target | the caller deleting their own id → throws `InvalidStateTransitionException` (409); deleting an already-inactive user succeeds, so the soft delete stays idempotent |
 | `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidPasswordException` carrying `currentPassword` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); a `newPassword` equal to the current one → the same type carrying `newPassword`, and the stored hash is left untouched; the new hash differs from the old one and `matches()` the new password |
-| `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password; a sixth consecutive failure on the same email or IP → `TooManyAttemptsException` (429) without reaching the `AuthenticationManager`, and a successful login resets both counters |
+| `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password; a sixth consecutive failure on the same email or IP → `TooManyAttemptsException` (429) without reaching the `AuthenticationManager`, and a successful login resets both counters; an email differing from the stored one only in letter case draws on the **same** per-email budget, since the key is the normalized address |
 | `ReportService.getHoursByProject` / `.getHoursByUser` | Groups hours per project / per user for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
 | `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field; an EMPLOYEE caller gets only their own entries in all three figures, a MANAGER the whole company |
 
@@ -1734,6 +1837,12 @@ was called. No trivial "it exists" tests.
 
 ### Angular — services (Vitest + TestBed, Step 9)
 
+**The CLI-generated component specs stay green from Step 7a on**, even though component tests are out of
+scope here: `ng test` runs every `*.spec.ts`, so one broken scaffold fails the suite Step 9's done condition
+reads. A spec is updated in the change that alters its unit — an assertion about content the template no
+longer renders is deleted rather than rewritten into one that cannot fail, and a unit that injects a token
+the framework mints at runtime (`MatDialogRef` from `MatDialog.open()`) gets it as a `useValue` double.
+
 Configure the test module with `provideHttpClient()` + `provideHttpClientTesting()` — **not** the
 deprecated `HttpClientTestingModule` — and assert the request through `HttpTestingController`, without
 a real backend.
@@ -1745,8 +1854,8 @@ whose test asserts a stored token or a signal.
 
 | Service method | Happy path | Edge cases to cover |
 |---|---|---|
-| `AuthService.login` | POSTs `{email, password}` to `/api/auth/login`; on 200 stores the token in `localStorage` and sets the `currentUser` signal with the role from the response | wrong password → 401 leaves the token unstored and `currentUser` null (a failed login must not half-authenticate); the request body carries the password only in the POST body, never as a query param |
-| `AuthService.logout` | Clears the token and resets `currentUser` to null | called with no session stored → does not throw |
+| `AuthService.login` | POSTs `{email, password}` to `/api/auth/login`; on 200 stores the session in `localStorage` and sets the `session` signal with the role from the response | wrong password → 401 leaves the session unstored and `session` null (a failed login must not half-authenticate); the request body carries the password only in the POST body, never as a query param |
+| `AuthService.logout` | Clears the stored session and resets `session` to null | called with no session stored → does not throw |
 | `EntryService.getEntries` | GETs `/api/entries` and returns the typed `TimeEntry[]` | `month`, `status` and `projectId` appear as query params **only when supplied** — an unset filter sends no empty param; a `[]` response returns an empty array, not null |
 | `EntryService.approve` | PATCHes `/api/entries/{id}/approve` with no body and returns the updated `TimeEntry` | the id is interpolated into the path, not sent as a param; **the service stores nothing** — the returned value is the only channel (§6 Service boundary), so the caller page is what refetches |
 | `EntryService.create` | POSTs the entry and returns the created `TimeEntry` | a 400 surfaces the `fieldErrors` map from the §10 error contract to the caller, un-swallowed, so the reactive form can bind a message per input |
@@ -1849,9 +1958,10 @@ Write when the frontend is complete (after Step 7d).
 - Signals for page state — the page component under `pages/` owns every signal for its route (§6)
 - **No cross-page cache.** Two pages reading the same endpoint each fetch it on their own load; a
   `core/services/` service issues the call and maps the response, and holds no state (§6, §13's table)
-- `AuthService` is the single app-wide exception — token + current user, persisted with `effect()`,
-  because auth outlives every route
-- Coordinator pattern — page owns all state, child components receive and emit
+- `AuthService` is the single app-wide exception — token + current user in the `session` signal,
+  written to `localStorage` on login and logout, because auth outlives every route
+- Coordinator pattern — page owns all state, child components receive and emit; a form dialog owns its
+  own write and the page refetches when it closes (§6 Form dialogs own their write)
 
 **3. Key patterns**
 - `authGuard` + `managerGuard` — route protection per role
@@ -1952,12 +2062,15 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds no open task at any priority in either tier**, so **G7's
-stricter bar — no open High *or* Medium — is satisfied months before the closing gate reads it.** The
-earlier plan for this branch anticipated leaving those tasks open for G7; that is no longer the state.
+currently holds no open task at any priority** — the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`. The Low raised the same day while closing the sidenav task (the navigation toggle named no `aria-controls` target) closed that day in `3b48f37a`. The pre-PR hygiene bundle itself (an `as ApiError` cast beside the existing `isApiError` guard, a public `Shell.dialog`, `px` in `shell.scss`, the `Timetrack` title) closed that day across `5c69a9e7`–`5241a4c7`. The pre-PR Low for PLANNING drifting from the built code closed that day as a decision, no code change: §6 now rules that a form dialog owns its write and where `Router` may be injected. The Medium raised with them (`Shell` kept its sidenav in `side` mode at every width) closed the same day in `40fc27e5`, and the Low for the toolbar trigger that showed no user name and no logo closed the same day in `3fd72933`, as did the Low Victor raised that day for the account trigger's arrow that never turned with the menu, in `e3a981fa`, and the pre-PR Low for the dialog's missing password visibility toggles closed that day in `91df6a48`, its toggle extended to the login's password field, and the pre-PR Low for the dialog's missing full-screen rule closed that day as a decision, no code change: dialogs keep Material's compact card on phones (§14 Responsive intent). The frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
+HTTP `.subscribe()` calls with no teardown, against §6), closed the same day in `c5e69b3a`, the frontend
+Medium raised beside it (closing the change-password dialog dropped keyboard focus to `<body>`) closed on
+2026-09-14 in `1d4bf603`, the three frontend Lows raised on 2026-09-10 (the stuck login spinner, the missing `OnPush`,
+the unsquared `tonal` variant) all closed on 2026-09-11, and the backend High raised the same day closed on
+2026-09-11 in `2fd8891e` — so **no High or Medium is open, which G7's stricter bar requires.** The frontend tier has never been reviewed, so G4's `review-audit` run can still reopen it.
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
-Remaining sequence, with no backlog work left in it at any priority: `fix/backend-backlog` merged into
+Remaining sequence, with only those two frontend tasks as backlog work: `fix/backend-backlog` merged into
 `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), signing G3 off → create
 `feat/angular-shell-auth` from `projects/07-timetrack` → Step 7a.
 

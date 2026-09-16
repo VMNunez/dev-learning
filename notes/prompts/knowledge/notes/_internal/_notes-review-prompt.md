@@ -14,8 +14,7 @@ upstream of you, reads it for Victor's markers. You still check nothing bilingua
 reason that holds on every path: structural parity is T's deliverable, the Spanish prose is C's, and
 under `SCOPE = append-only` the `es/` is frozen — where it diverges from the English that divergence
 is Victor's freeze, not a defect. So never open `{FILE}`'s `es/` counterpart and never judge `{FILE}`
-against it; the one Spanish file you do open is the calibration reference in the reading list below,
-read for depth and texture. Your whole job is: is this `en/` file at the full standard? You never
+against it. Your whole job is: is this `en/` file at the full standard? You never
 commit and never touch `es/` — you fix the English and hand off to the translator.
 
 It is normally launched by `notes-audit.md` as subagent **B**. You can also run it standalone to audit
@@ -80,8 +79,6 @@ a review without it is not accepted.
 
 Before starting, read:
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bar you audit against, in full.
-- The first section of notes/java/junior/es/11-excepciones.md — the calibration reference for "finished"
-  (read it for depth/texture; you audit English).
 - The siblings named in `{READABLE_SIBLINGS}`, and no others — to catch duplicated examples/concepts and
   broken or missing forward/cross-topic references.
 
@@ -89,8 +86,7 @@ Before starting, read:
 > before this pipeline existed, which no run has ever checked against the topic's coverage file.
 > `{READABLE_SIBLINGS}` is the subset the plan marks `complete` or `refined` — the only sibling prose
 > the system has accepted, and therefore the only prose you may open, quote, or treat as evidence. Where
-> two of them disagree on a convention, the `refined` one wins: Victor froze it himself. The one
-> exception is the calibration reference above, readable for depth and texture only. When
+> two of them disagree on a convention, the `refined` one wins: Victor froze it himself. When
 > `{READABLE_SIBLINGS}` is `none` — the topic's first entry, or a route whose siblings are all `pending`
 > — the duplication and seam checks against sibling prose simply do not run: judge the seams against the
 > plan contract you were given and report that they went unchecked.
@@ -128,6 +124,12 @@ For each section of the file, check:
   contrasted; exact scope stated; JS/TS anchored only where genuinely equivalent.
 - **Anticipate-the-TODO** — the mechanism doubts Victor would raise ("why…?", "in what order…?")
   are already answered in the prose. This is the highest-value check — most misses are here.
+- **Harvested rules and reviewer checks** — the standard's **Harvested from refined pairs**: every
+  `HR` rule it judges at stage B (`HR-1`, the index above the title, among them) and every check its
+  "Reviewer checks" block assigns to stage B, run on every section as written there. The rules are what
+  Victor's refined pairs taught the standard, and the checks enforce rules earlier drafts carried and did
+  not apply, so a section that passes the generic points above can still fail one; name the check in the
+  trace when it drives a fix.
 - **Signature texture** — worked example carried through; ASCII diagram for anything structural;
   analogy for abstract mechanisms; abundant `> blockquote` callouts; every table has a "how to read
   it" sentence; exact error messages quoted; wrong-vs-right labelled. No section drops below its

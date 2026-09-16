@@ -122,9 +122,13 @@ Resolve `NUMBER` (the next number above the highest existing `projects/` folder)
   match its header. Compute the digest with the canonical command in "Evidence markers" in
   `notes/prompts/knowledge/coverage/_internal/_coverage-standard.md`, never a plain `sha256sum`: markers
   are excluded from that digest by design, so an unstripped hash marks every brief stale the first time
-  a step closes. Use it. If only `Project markers counted:` has moved, that is **soft stale** — bullets
-  were demonstrated since the decision: name the delta and pass it to the author, which is the only
-  staleness the digest cannot see.
+  a step closes. Use it. If only `Project markers counted:` has moved, that is **soft stale** — the
+  demonstrated set changed since the decision: name the delta **and its direction** and pass both to the
+  author, which is the only staleness the digest cannot see. A **rise** means bullets were demonstrated;
+  a **fall** means a marker was repointed or removed because the project stopped supporting its clause
+  (`_coverage-standard.md` → "When the marked project's code changes"), which withdraws a review
+  concept's provenance rather than adding one. A net-zero delta hides both, so where the brief's review
+  concepts rest on markers, spot-check that each still carries one.
 - **It is missing or hard-stale** — launch one `role-appropriate` subagent, `reasoning tier: deep`,
   `execution: foreground`: *"Read `notes/prompts/projects/plan/project-brief-prompt.md` and execute it
   in full. It commits its own brief. Report the project chosen, the second opinion's verdict, and the

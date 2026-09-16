@@ -1,0 +1,60 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.nav-toggle {
+  margin-inline-end: 0.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.account-name {
+  display: block;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 599px) {
+    max-width: 6rem;
+  }
+}
+
+.menu-arrow {
+  transition: transform 150ms ease-out;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+mat-sidenav {
+  width: 15rem;
+}
+
+mat-sidenav-container {
+  flex: 1;
+}
+
+mat-nav-list {
+  padding-inline: 0.5rem;
+}

@@ -3,7 +3,7 @@
 **This file is a target, not a description of what runs today.** Nothing written here is implemented
 unless an open row of `_recommendation-ledger.md` says so, and every step below names the row that owns
 it. It exists because the target spans four rows and lived only in one conversation: `REC-180`,
-`REC-183`, `REC-184` and `REC-171` (g) each carry one slice of it, and a row is forbidden from
+`REC-183`, `REC-184` and `REC-171`'s harvest each carry one slice of it, and a row is forbidden from
 restating its neighbours, so the shape none of them can hold had nowhere to be written down.
 **Loop A is now largely built and Loop B is not.** `REC-183` closed 2026-08-29 (step 4, both banks);
 `REC-180`'s two halves landed 2026-08-31 and gave the **project** bank steps 1–5 all but the priority
@@ -178,7 +178,7 @@ voice before he ever reads them.
    `Status: refined` in the plan and the pair Victor declares refined.
 8. **Maturity.** A pattern is due when it recurs **across different questions**, never on repetitions
    inside one — five occurrences in one answer is that answer's quirk, two questions is an invariant.
-   *The threshold shape is `REC-171` (g)'s, applied to a different population.*
+   *The threshold shape was `REC-171`'s retired (g), applied to a different population; that row replaced it on 2026-09-15 with a once-per-refined-pair pass.*
    **Two questions is a placeholder, not a measurement, and must not be built as if it were one.** It
    was chosen by analogy to a sink whose population is note pairs, before this sink held a single row.
    Two co-occurrences in a nearly empty corpus are as likely to be a coincidence as a voice, and the
@@ -298,7 +298,7 @@ updated in the same commit if one lands.
 | 5 | same | Victor alone writes `[refined]` | — | nothing — already the contract | — |
 | 6 | `notes/interview-prep/routes/{LEVEL}.md` · **`routes/projects.md`** · `PROGRESS.md` `## Study progress` **and its per-project table** | `/interview-prep-route` · **`/interview-prep-route-projects`** (2026-09-06) · the closing rituals | block-open (both routes, the project one on request), `study-block-close`, `authoring-progress-recount` | **landed in full 2026-09-06** — the route, the block, the marker's writer (`study-block-close`, into a file `_portfolio-standard.md` governs) and both counters, as a per-project table under each progress section | `REC-180` |
 | 7 | a **new** sink, likely under `knowledge/interview-prep/_internal/` — **unblocked 2026-08-31**, since a row can now store a question ID | — | — | one **episode** per question: `v0`, a round per TODO (verbatim + its version, rejected once superseded), the `[refined]` text, rounds-to-freeze, `Disposition`. Two writes, not one — appended by `study-content-writer`, closed by the freeze. The `REC-054` cost objection answered explicitly, since storing prose is what `REC-171` priced and declined, and an episode stores more of it than a row | `REC-184` |
-| 8 | the same sink | — | its consumer | the across-questions threshold, and where the count is printed — `REC-171`'s equivalent is a close-out's `cosecha:` line | `REC-184` |
+| 8 | the same sink | — | its consumer | the across-questions threshold, and where the count is printed — `REC-171` has no equivalent since 2026-09-15: its `cosecha:` line names a pass owed per refined pair, not a matured category | `REC-184` |
 | 9 | `_interview-prep-standard.md` **and** `_portfolio-standard.md` | **by hand only** — the standards fence, owned by `_session-rules.md` | their two disjoint chains | the approval gate, and a landing that reaches both chains | `REC-184` |
 
 Step 9 is where this target is easiest to get wrong, because §7's bottom block fences every
@@ -324,16 +324,18 @@ permits: the drafting is a run, the landing is a hand.
 ## The parallel in `notes/`
 
 `REC-171` built the same second loop for note prose and shipped (a)–(f): the sink
-`knowledge/notes/_internal/_note-todo-harvest.md`, its writers, its counter, its threshold. Only the
-first harvest, (g)+(h), is left, and it is blocked behind `REC-170` — the standard's calibration
-exemplar was never validated by Victor, so depth rules refined against it would calibrate the bar
-against the pipeline's own prose. **The question differs even though the evidence is shared**: that
+`knowledge/notes/_internal/_note-todo-harvest.md`, its writers and its `cosecha:` line; its threshold and cap gave way on 2026-09-15 to a once-per-refined-pair harvest pass. It waited on
+`REC-170` — the standard calibrated against a pair Victor never declared refined, so depth rules refined
+against it would have calibrated the bar against the pipeline's own prose — and that row closed on
+2026-09-15, pinning the calibration to his three refined pairs. The first pass over those three landed the
+same day and retired that calibration read, what the pairs teach having moved into the standard's rules;
+every pair he refines later owes one pass of its own. **The question differs even though the evidence is shared**: that
 sink asks *which rule of the standard was missing or unapplied*, countable across pairs. Loop B asks
 *what is Victor's answering voice*, legible only in the before/after.
 
-Because `REC-184` and `REC-171` (g)/(h) must rule the approval gate together or diverge, a session
-resolving `REC-171` (g) or (h) reads this file at its step 1 as well — the fifth reader, where
-`README.md` and `_system-map.md` §7 both list only the first three.
+`REC-184` and `REC-171`'s harvest had to rule the approval gate together or diverge, so a session
+resolving `REC-171` read this file at its step 1 as well. That row closed on 2026-09-15 with the gate
+ruled — the cold reviewer alone — and `REC-184` takes the same one.
 
 ## What no row owns yet
 
@@ -363,19 +365,21 @@ clause in an existing row, or a row of its own, before anything is built.
 both halves landed 2026-08-31**, then **the `es`-review owner and the priority marker, 2026-09-05**, then
 **the whole `[studied]` half — route, marker and both counters — 2026-09-06, closing the row**)
 → `REC-184` (the voice sink and its consumer), whose **Phase 0 is no longer blocked**
-and which should not precede
-`REC-171` (g)'s first harvest: building a second extraction mechanism while the first has never run
-once produces two untested designs.
+and which was not to precede
+`REC-171`'s first harvest — building a second extraction mechanism while the first had never run once
+would have produced two untested designs. That harvest landed 2026-09-15, so the objection no longer holds
+it back.
 
 **`REC-184` should be split along `## Staging`'s phases rather than sequenced as one row.** Phase 0 —
 the sink and its writer, nothing else — was blocked only behind `REC-180` (a row cannot store a question
 ID before question IDs exist) **and that block lifted on 2026-08-31**: the project bank has IDs, the
 freeze that closes an episode, and the channel that opens its rounds. It can start now, well before the
-notes harvest has run. Phase 2 is the part that must wait for `REC-171` (g), because the untested-design objection is
-about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
+notes harvest has run. Phase 2 was the part that had to wait for `REC-171`'s first harvest, which landed 2026-09-15, because the
+untested-design objection is about the *detector and its gate*, not about a file that accumulates rows. Splitting it that way starts
 the corpus months earlier at almost no cost, which is the whole argument of that section.
 
-**The transitive consequence, stated because it is easy to miss:** `REC-171` (g) is blocked behind
-`REC-170`, so the critical path of the voice loop begins at a row about the calibration exemplar of
+**The transitive consequence, stated because it is easy to miss:** `REC-171`'s harvest was blocked behind
+`REC-170`, so the critical path of the voice loop began at a row about the calibration exemplar of
 `_note-quality-standard.md` — a note pair under `notes/java/junior/`, one folder away from everything
-this file describes. Nothing about interview answers can be harvested until Victor validates it.
+this file describes. That row closed on 2026-09-15, and `REC-171`'s first harvest landed the same day, so nothing on that path
+still blocks the voice loop.

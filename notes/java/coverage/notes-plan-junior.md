@@ -118,7 +118,7 @@ Handoff: Numbers behave the way their representation forces them to; entry 02 as
 
 ## 02 — Strings and text
 
-Status: complete
+Status: refined
 
 Studied: pending
 

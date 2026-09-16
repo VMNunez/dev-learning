@@ -96,8 +96,9 @@ authority is the persistent notes plan:
 - only Victor can remove the lock by changing the entry from `refined` back to `pending`.
 
 Evidence metadata is the only allowed mutation: `coverage-mark` may append a new trailing
-`✅ NN-slug — {evidence}` marker to a locked bullet, and every later coverage run preserves it under
-the normal marker rules. That records project demonstration without changing the locked scope bytes.
+`✅ NN-slug — {evidence}` marker to a locked bullet — and may repoint or remove one under "When the
+marked project's code changes" below — and every later coverage run preserves it under the normal
+marker rules. None of the three changes the locked scope bytes, which is why evidence is exempt at all.
 
 Market or level calibration never overrides this study lock. If later evidence says a locked bullet
 would now be placed elsewhere, report a **locked placement conflict** and leave the bullet exactly
@@ -248,7 +249,8 @@ Rules:
   - **The evidence is the project's, not the session's.** It describes code that exists on disk, never
     the step or review that led to it: "closed a backlog finding" is not evidence.
   - It is written **once, by the project that first earns the marker**, and preserved verbatim
-    afterwards under the same rules as the marker itself.
+    afterwards under the same rules as the marker itself — **except when that project's own code
+    stops supporting it**, which is the one case below.
 - **Markers written before 2026-08-01 carry no evidence clause**, and are valid without one — the clause
   was added to the format on that date and is not applied retroactively, because reconstructing why a
   project demonstrated a bullet months later invents a memory rather than recording one. A bare
@@ -258,10 +260,11 @@ Rules:
   project. Studying the concept in `notes/` does not earn it, and neither does reading about it in a
   review finding. An unmarked bullet therefore means "not yet demonstrated", never "not yet studied".
 - **First project wins.** The marker is never updated when a later project uses the same concept again;
-  its purpose is to date the first demonstration.
-- **The marker is state, not scope.** It is written by the `coverage-mark` skill from a completed step or
-  a closed backlog task — never by a coverage authoring or audit pass, and never by hand while writing
-  bullets. Both mirrors of a bullet carry the same marker (see below).
+  its purpose is to date the first demonstration. This governs *other* projects arriving at the concept.
+  It says nothing about the marked project losing it, which is the case below.
+- **The marker is state, not scope.** It is written by the `coverage-mark` skill from a step, a verifiable
+  piece of one, a closed backlog task, a change that removed or rewrote the code a clause names, or Victor
+  asking directly — never by a coverage authoring or audit pass, and never by hand while writing bullets. Both mirrors of a bullet carry the same marker (see below).
 - **Preserve it verbatim when rewording.** A converging or reformulating pass may rewrite a bullet's
   concept sentence freely, but must carry the existing marker onto the rewritten bullet unchanged. A
   bullet whose concept survives in different words has not lost its demonstration. Dropping a marker
@@ -271,7 +274,71 @@ Rules:
   notes plans may wrap the exact bullet in `[ ]`/`[x]` delivery metadata, which is stripped before
   matching and never copied into coverage or its mirrors.
 - A bullet may only be **removed** with its marker if the concept genuinely leaves the level. When a
-  concept moves between levels or topics, the marker moves with it.
+  concept moves between levels or topics, the marker moves with it. Removing the **marker alone** and
+  keeping the bullet is a different act, governed below: the concept left the *project*, not the level.
+
+### When the marked project's code changes — repoint or remove
+
+The clause's bar is falsifiability, so a clause that has become false on disk is the one defect this
+format cannot tolerate. Since marking moved *inside* an open step (`REC-230`), a later step routinely
+deletes or rewrites the code an earlier one was marked for, which makes this ordinary rather than rare.
+
+**The trigger is a change that removes or rewrites code in a project that already carries markers** —
+including one that demonstrates nothing new and would otherwise never reach this file. Whether it actually
+falsified a clause is what the step decides, never what selects it: a reader who skips the step because it
+believes nothing broke is exactly how the three instances that opened `REC-233` survived. The work is `coverage-mark`'s, the same skill that wrote the marker, and this is the only
+licence any skill has to edit or delete an existing clause.
+
+**Scope: markers naming the project whose code the change touched, and no others.** A change in 07
+cannot falsify a marker reading `✅ 06-hr-portal`, because nothing in 06 moved. No wider sweep is
+licensed; project-wide re-verification remains the deliberate backfill run Victor asks for.
+
+**The test is the concept in that project, not the wording of the clause. Both dispositions edit the
+topic file and the global mirror identically:**
+
+- **The project still demonstrates the bullet, elsewhere or differently → repoint.** Rewrite the clause
+  to name the code that demonstrates it *now*, under the clause rules above; the marker itself is
+  untouched. The demonstration did not stop — only the sentence pointing at it went stale.
+- **Nothing in that project demonstrates it any more → remove the marker and its clause** — **including the
+  space before the `✅`**, since the digest strips ` ✅ …` with its leading space and a stray one would change
+  the scope bytes and forge a remap signal — leaving the concept sentence and the bullet in place. It
+  returns to *not yet demonstrated*, which is the truth.
+- **It cannot be told without a project-wide search → leave the marker and report it unresolved**, by
+  name. That search is the backfill, and a candidate reported by name survives the session while a
+  wrong removal does not.
+
+A marker is never *replaced* with a later project's here. If 07's demonstration is gone and 08 has one,
+08 earns it the normal way — but only when some change brings 08 back through the skill. A project
+already built will not be noticed, so name it in the report as a backfill candidate.
+
+**Anchor the candidate set to the diff, not to the project.** A single project can carry hundreds of
+markers across a dozen topic files, so the candidates are those whose clause names a symbol, file,
+endpoint or mechanism the change removed or renamed — a grep, not an audit. Two failure modes belong to
+that fence and must be stated rather than discovered:
+
+- **A clause phrased in prose rather than identifiers will not be found this way.** A clean grep means
+  *no candidate in this diff*, never *nothing false*.
+- **A clause quantified over the project — "every", "never", "no X anywhere" — is falsified by an
+  *addition*.** When the change adds a member of the set such a clause quantifies over, that clause is a
+  candidate too.
+
+The residue is what the backfill run exists for, and so is a clause falsified with no diff at all — a
+project folder renamed, or a refactor made outside any skill run.
+
+**The marked count may fall**, and it did for the first time on 2026-09-10 (`angular / junior`,
+104/153 → 102/153). Consumers recount rather than increment, but a fall is not the same event as a rise:
+**report its direction**, because a reader of a delta will otherwise read it as new demonstrations. A
+repoint moves no count at all. Neither disposition owes a `/notes-plan` remap: markers are outside the
+scope bytes, so neither changes a coverage digest.
+
+**A coverage authoring or audit pass still preserves a clause verbatim, even one it believes false** —
+the action fence stands — **but it reports it in its final report, as a `coverage-mark` repoint owed.**
+Preservation is the action; silence is not. A notes plan that stores its own copy of a marker is
+informational: it is refreshed by that plan's next `/notes-plan` run, and neither disposition owes one.
+
+**A bare pre-2026-08-01 marker has no clause to falsify**, and is neither repointed nor removed for
+lacking evidence. **This section is the project marker's alone**: the drill marker's field is an
+exercise file, and the same rot there is unruled.
 
 ### The drill marker — `✅ sql:{file-slug}`
 
@@ -295,8 +362,8 @@ this*, and it is written only by `sql-step-close`, only from exercises a cold gr
 - **Only a scored exercise marks.** Written or answered is not enough, and a `[Repaso]` exercise marks
   nothing (it drills ground already taken). A marker is never removed, and the first file wins.
 - **Level-local.** A junior exercise marks a junior bullet. It never reaches up into `middle.md`.
-- It is state, not scope: it obeys every rule above about preservation on reword and exclusion from the
-  digest.
+- It is state, not scope: it obeys the preservation-on-reword and digest-exclusion rules above. The
+  repoint-or-remove section is the project marker's alone and does not reach it.
 
 ### Markers are excluded from the coverage digest
 

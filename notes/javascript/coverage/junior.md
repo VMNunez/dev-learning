@@ -59,7 +59,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - First-class and higher-order functions — pass, store, return, and compose functions as ordinary values ✅ 01-todo-list
 - Callbacks — follow control flow when another function decides when and with which arguments a callback runs ✅ 01-todo-list
 - Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
-- Regular-function `this` — determine `this` from the call site rather than the function's definition location
+- Regular-function `this` — determine `this` from the call site rather than the function's definition location ✅ 07-timetrack — `Shell.logout()` calls `this.authService.logout()` through its receiver, instead of storing the method as a detached property that runs with `this` undefined
 - Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
 - Lost method context — diagnose a method extracted or passed as a callback whose original receiver is no longer present
 - `bind` vs `call` vs `apply` — recognise creating a bound function versus invoking immediately with an explicit receiver
@@ -79,7 +79,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
 - Prototype delegation — understand that property lookup can continue through an object's prototype chain
 - Class construction and instance methods — read `constructor` and instance behaviour as class syntax built on prototype delegation
-- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
+- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes ✅ 07-timetrack — `AppTitleStrategy extends TitleStrategy` and calls the inherited `buildTitle()` through `this` inside its own `updateTitle()`
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
@@ -138,7 +138,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
 - Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs ✅ 05-task-manager
 - Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
-- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
+- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions ✅ 07-timetrack — the password visibility toggles call only `$event.preventDefault()` on `mousedown`, cancelling the focus move so the input stays focused and untouched while the `click` still fires
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks

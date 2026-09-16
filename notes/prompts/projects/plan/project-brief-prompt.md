@@ -228,9 +228,12 @@ brief is built from. A consumer then reads staleness in two grades:
 - **Hard stale — the brief is refused.** The stored digest no longer matches (the curriculum itself
   moved), or a different project is now the highest existing folder / last completed one. The decision
   was made against a repo that no longer exists; re-run this prompt.
-- **Soft stale — recorded, and the run continues.** Only the marker count moved: work landed and
-  marked bullets since the brief was written, so some listed gaps may already be demonstrated. Name
-  the delta and re-check the specific bullets being consumed, rather than throwing the decision away —
+- **Soft stale — recorded, and the run continues.** Only the marker count moved: the demonstrated set
+  changed since the brief was written. **Read its direction.** A **rise** means bullets were demonstrated,
+  so some listed gaps may already be closed; a **fall** means a marker was repointed or removed because the
+  project stopped supporting its clause (`_coverage-standard.md` → "When the marked project's code
+  changes"), which withdraws a review concept's provenance instead of adding one. A net-zero delta hides
+  both at once. Name the delta and its direction, and re-check the specific bullets being consumed, rather than throwing the decision away —
   a brief written deliberately ahead of time ages this way by design, and refusing it would make
   thinking ahead impossible.
 

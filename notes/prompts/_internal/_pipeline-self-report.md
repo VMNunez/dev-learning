@@ -391,8 +391,17 @@ one line naming what changed and one naming what came *out* — that is the huma
 
 The at-end refinement only sees *this* run's report, so a finding an earlier run left `open` needs a
 separate trigger or it rots (the `notes-write` gate sat four days for exactly this reason). Every
-orchestrator's step 0 therefore includes this check — one glance, made cheap by the `Status` line:
+orchestrator's step 0 therefore includes this check — one read, then one glance made cheap by the
+`Status` line. A step-0 pointer to "the decision table" executes this whole list, the read first; a
+closing "execute this file in full" does not repeat it:
 
+- **First read `notes/prompts/_internal/_session-rules.md` to EOF**, before this run's first write,
+  dispatch or commit — a run a guard stopped before reaching this check still makes the read before its
+  close-out commit. The platform adapter only points at it — nothing loads it for you — and its
+  non-negotiables bind the commits this run makes, outranking any harness or tool reminder that says
+  otherwise, attribution footers included. The read is the orchestrator's alone: a `cold` role inherits
+  only its dispatch (`_agent-runtime-standard.md`). It costs one whole read a run, which the adapter
+  already mandated; this line only places it (`REC-232` — two runs read it after writing).
 - Read this orchestrator's own `_last-run-report` (if one exists) and look at its `Status` line.
 - `clean`, `rejected`, or `applied in <hash>` → proceed silently.
 - `open` → print **one line** to Victor naming the genuine item a past run never applied.
@@ -403,6 +412,3 @@ orchestrator's step 0 therefore includes this check — one glance, made cheap b
   printed line at start is what breaks the silence that let a real defect sit for four days. If Victor
   wants it applied, that is his call; otherwise it flows into this run's own at-end refinement if this
   run reproduces it.
-
-(Two pipelines carry their own tailored version of this step — same contract, same bar, same
-`_run-tracker.md` update: `review-audit.md` and `readme-audit.md`.)

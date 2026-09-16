@@ -53,27 +53,10 @@ export class AuthService {
     return this.currentUser()?.role;
   }
 
-  /**
-   * Builds a new object with the two session fields, so the credential is dropped by
-   * construction. It never mutates the matched record: `find()` returns the element of
-   * `users` itself, and deleting the field there would break every later login.
-   */
   private toSession({ email, role }: SessionUser): SessionUser {
     return { email, role };
   }
 
-  /**
-   * Keeps only the session fields when reading the entry back. Without this, an entry
-   * written before the password was dropped would be re-persisted verbatim by the
-   * `effect()` on every boot, since that effect also runs once at creation.
-   *
-   * Two separate failures have to be survived here, because this runs in a field
-   * initializer: anything thrown escapes the root `AuthService` constructor and the whole
-   * app fails to bootstrap on a blank page, and the bad value stays in storage so every
-   * reload fails the same way. `JSON.parse` throws on a truncated entry, and a *valid*
-   * JSON value of the wrong shape (`"hi"`, `{}`, `[]`) throws nothing at all while
-   * producing a session whose `role` is `undefined` — which `authGuard` reads as logged in.
-   */
   private readStoredSession(): SessionUser | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
@@ -87,10 +70,6 @@ export class AuthService {
     }
   }
 
-  /**
-   * Narrows the parsed value before it is trusted. `parsed` is `unknown`, so every field
-   * the session needs is checked here rather than asserted with `as`.
-   */
   private isStoredSession(value: unknown): value is SessionUser {
     if (typeof value !== 'object' || value === null) return false;
 

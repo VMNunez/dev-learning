@@ -88,10 +88,11 @@ every section, code block, table, and callout so the two match exactly.
 Before starting, read:
 - `{FILE}` — the canonical English source (your input, do not change it).
 - The existing `es/` counterpart, if any (you are re-syncing it, not starting blind).
-- The first section of `notes/java/junior/es/11-excepciones.md` — the reference for what finished, native
-  Spanish notes read like.
 - notes/prompts/knowledge/notes/_internal/_note-quality-standard.md — the bilingual rules and the Spanish-prose
-  expectations (structural labels, calque list).
+  expectations (structural labels, calque list), and its **Harvested from refined pairs**: every rule it
+  judges at stage C and every check its "Reviewer checks" block assigns to stage C, which you apply as
+  you write (see "Prose is native Spanish" below). No refined note is read as a model — those rules carry
+  what Victor's refined pairs show about finished Spanish.
 
 ## What you produce
 
@@ -123,6 +124,17 @@ native Spanish**, not a word-for-word calque of the English.
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
   `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,
   stack, edge case, trade-off*) stay in English inside the Spanish prose — that is correct, not calque.
+- **Apply the stage-C rules and checks as you translate.** The rules the standard's **Harvested from
+  refined pairs** judges at stage C and the wording repairs of its stage-C checks — the connector of each
+  step of a sequence, the calque and the figure that carries a claim, the note furniture and the unglossed
+  rendering, the bold lead-in read alone, the phrase that stands in for a claim — are wording, so they are
+  yours to get right and stage C's to check after you. They were placed here on 2026-09-15 (`REC-171`):
+  the register family reached two refined pairs `unapplied`, and the stage writing the Spanish was the one
+  stage never told to apply it. What one of them needs beyond wording — a definition, a heading, a code
+  block, a sentence the English does not have — you **report, never add**: the English is canonical.
+  Spelling out in full a claim the English sentence already carries is rendering — the same idea, which
+  the bullet below requires; a claim the English does not carry is content, and is reported. Name in your report each
+  check that shaped a rendering.
 - **Meaning is identical.** Same idea, same emphasis, same worked example — only the language changes.
   Do not summarise, do not expand, do not "improve" the content; render it.
 
@@ -139,6 +151,8 @@ cold, polishes naturalness, and owns the single atomic commit. Leave the `es/` f
 tree and report:
 - `TRANSLATED` (created the `es/`) or `RE-SYNCED` (updated an existing `es/`).
 - The **"N lines, read to EOF"** line for `{FILE}` (and the prior `es/`, if read).
+- Each stage-C check of the standard's **Harvested from refined pairs** that shaped a rendering, and
+  anything one of them needed beyond wording, reported for a follow-up author run.
 - The section-by-section trace.
 - Every internal link you rewrote, with the `{LINK_TARGETS}` row it was matched against, and any link
   whose Spanish target the plan declares but the `es/` folder does not contain yet.
