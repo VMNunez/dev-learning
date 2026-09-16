@@ -44,7 +44,16 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **angular / junior** `[frontend]` — `authInterceptor` treats every `401` as an expired session and
+  says nothing about it. (1) On a mid-session expiry it runs `authService.logout()` +
+  `router.navigate(['/login'])` and the user lands on a blank login with no reason given — observed by
+  Victor on 2026-09-16 while verifying Step 7a's expired-token clause with a 20-second token ("me lleva a un
+  login limpio totalmente sin mensajes"). (2) It also fires on the `401` of `POST /api/auth/login` itself —
+  wrong credentials, not an expired session — running `logout()` and a same-URL navigation that only happen
+  to be no-ops today; any "session expired" message added for (1) would then show on every failed login.
+  React only to a `401` on a request that carried a token, and tell the Login page why it was reached so it
+  can show an expiry message. **Effort:** Small *(raised 2026-09-16 while reviewing the error and dialog
+  patterns before opening the Step 7a PR)*
 
 ## Beyond the current gate
 
