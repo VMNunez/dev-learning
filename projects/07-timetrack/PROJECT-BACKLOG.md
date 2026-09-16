@@ -74,6 +74,11 @@ That ledger is append-only and authoritative — a review never re-raises what i
   `Shell.dialog` is `readonly` public but no template reads it; `shell.scss` sizes the rail and list
   padding in `px` against the project's rem rule; `index.html`'s `<title>` spells the brand `Timetrack`.
   **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
+- [ ] **html / junior** `[frontend]` — the toolbar's navigation toggle in `shell.html` exposes the drawer's state with
+  `[attr.aria-expanded]="drawer.opened"` but never names the element it controls: no `aria-controls` pointing at an
+  `id` on the `<mat-sidenav>`, which the disclosure pattern pairs with `aria-expanded` so assistive technology can
+  reach the panel the button opens. Give the sidenav an `id` and bind it from the toggle. **Effort:** Small
+  *(raised 2026-09-16 while closing the responsive-sidenav task)*
 
 ## Beyond the current gate
 
