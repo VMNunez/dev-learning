@@ -57,6 +57,7 @@ src/app/
 - Dialogs closed when the shell is destroyed — `DestroyRef.onDestroy` runs `MatDialog.closeAll()`, because the overlay outlives the component that opened it and `closeOnNavigation` ignores `router.navigate()`; a mid-session `401` lands on a clean `/login`, and `core/` auth code stays free of Material
 - Change-password dialog dismissal locked around its `PATCH` — `disableClose` refuses a backdrop click for the dialog's whole life, so a stray click never discards a half-filled form, and Escape is re-admitted through `keydownEvents()` only while no save is in flight; the request is torn down with `takeUntilDestroyed(destroyRef)`, which aborts the browser's wait but not the server's write, so an Escape mid-save would otherwise hide a password change that already committed
 - `OnPush` on every component, state in signals — a view is re-checked only when a signal it reads changes, so the shell's role-filtered nav re-renders on login/logout from a `computed()` with no manual `markForCheck()`
+- Breakpoint-driven navigation drawer — below 1024px the sidenav switches from a fixed `side` rail to a closed `over` drawer opened from a toolbar toggle, fed by a CDK `BreakpointObserver` signal, because the 240px rail left a phone about 135px of page; the drawer closes on `NavigationEnd` and on `NavigationSkipped`, since tapping the current page's link completes no navigation
 
 ---
 
