@@ -13,10 +13,10 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off. `PROJECT-BACKLOG.md` was empty at every priority when this step opened; it emptied again on 2026-09-11 — the unsquared-`tonal`-button Low closed on 2026-09-11, the stuck-login-spinner Low closed on 2026-09-11, the `OnPush` Low closed on 2026-09-11, resolved in `b23a7dcb`, and the backend High raised on 2026-09-10 (the unnormalised email key in the login throttle) closed the same day in `2fd8891e`. It emptied a third time on 2026-09-14: the frontend **Medium** raised that day (keyboard focus dropped to `<body>` when the change-password dialog closes) closed in `1d4bf603`, and the frontend **Low** raised beside it (two HTTP `.subscribe()` calls with no teardown, against §6) closed in `c5e69b3a`. On 2026-09-15 three frontend tasks were raised while verifying the done condition: the **Medium** (a dialog left open over `/login` after a mid-session `401`, which blocked the expired-token clause) closed on 2026-09-16 in `b32e11a6`, and of the 2 Lows raised beside it the toolbar account-menu icon colour closed on 2026-09-16 in `382a4983`, and the other (the Login page's mobile layout) closed on 2026-09-16 in `ee3855b6`. Closing it raised **1 frontend Low** (the Login page's `<h1>` names the brand, not the view), which closed on 2026-09-16 in `d0fb4a01`, and triaging that one raised a second (the scaffold `app.spec.ts` still asserts an `<h1>` the `App` template no longer has), and verifying that one raised a third (the change-password dialog spec mounts the dialog without a `MatDialogRef`); both closed on 2026-09-16 in `72e15280` and `81d8a173`, with `ng test` green at 12/12, so the backlog is **empty at every priority** again. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
-| **Current branch** | `feat/angular-shell-auth`, cut from `projects/07-timetrack` after the 2026-08-29 merge. `fix/backend-backlog` met its §22 closing condition and is done — do not commit to it again. Per §22 this branch PRs back into `projects/07-timetrack` when Step 7a's done condition passes |
-| **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
-| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7a–7d |
+| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` is empty at every priority |
+| **Current branch** | `feat/angular-shell-auth` — Step 7a's done condition passed on 2026-09-16, so per §22 the branch is **ready to PR into `projects/07-timetrack`** and takes no further step work. After that merge, `feat/angular-entries` is cut from `projects/07-timetrack` for Step 7b |
+| **Done condition** | Step 7b's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input` |
+| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a done, Steps 7b–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7b–7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
 | **Last updated** | 2026-09-16 |
 
@@ -1642,7 +1642,7 @@ One step per coherent slice, days not weeks — same granularity the backend had
 own done condition covering its **full** scope, and each falls inside exactly one §22 branch — 7c and 7d
 share `feat/angular-manager-pages`, since §22's rule is one branch per coherent feature, never one per step.
 
-#### Step 7a — Shell + auth
+#### Step 7a — Shell + auth ✅
 
 > **Backend prerequisite — satisfied 2026-07-29.** The toolbar dialog below calls
 > `PATCH /api/users/me/password`. That endpoint did not exist when this step was planned: the
@@ -1676,6 +1676,11 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - **New concepts:** Angular consuming a real REST API end to end
 - **Review concepts:** route guards, HTTP interceptor, auth persistence, `MatSidenav` shell
 - **Done condition:** `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login`
+- **Verified 2026-09-16**, all five clauses in the browser, the expired-token clause with a 20-second
+  token. **One deviation from the wording, not from the behaviour:** the `401` message on the Login page
+  is a form-level `<p class="login-error" role="alert">` above the fields, not a `mat-error` — a
+  `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field. §14's
+  Login row and this step's text still say `mat-error`; that wording is left for the next G2 pass
 
 #### Step 7b — Employee flow: dashboard + entries
 - Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
