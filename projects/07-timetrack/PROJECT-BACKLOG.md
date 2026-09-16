@@ -40,22 +40,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **angular-material / junior** `[frontend]` — When a request made from an open dialog returns `401`
-  (an expired token), the app navigates to `/login` but the dialog stays open on top of the login page,
-  showing its generic "Could not change the password. Try again." message. `Shell.openDialog()` in
-  `frontend/timetrack/src/app/layout/shell/shell.ts:74-78` opens `ChangePasswordDialog` through
-  `MatDialog`, whose overlay is attached to the CDK overlay container on `<body>`, outside the shell's view
-  tree, so destroying `Shell` on the navigation does not remove it. `closeOnNavigation` does not cover the
-  case: it reacts to `Location` history changes (Back/Forward), not to the `router.navigate(['/login'])`
-  that `authInterceptor` (`core/interceptors/auth-interceptor.ts:22-25`) runs after `logout()`, and the
-  interceptor's rethrown error still reaches the dialog's `error:` branch. Retrying from that dialog sends
-  the request without a token and repeats the loop. Verified 2026-09-15 in the browser with
-  `app.jwt.expiration=20000`: log in, wait 30 s, submit the change-password dialog → URL is `/login`, dialog
-  still open. Recommended fix: close the dialogs the shell opened when the shell is destroyed
-  (`DestroyRef.onDestroy` + `MatDialog.closeAll()`), which covers every exit from the authenticated area
-  and the Step 7b dialogs too, rather than coupling `core/` auth code to Material. **This blocks Step 7a's
-  done condition clause** `a request with an expired token returns the user to /login`. **Effort:** Small
-  *(raised 2026-09-15 while verifying Step 7a's expired-token clause; not a review finding)*
+*No open Medium tasks.*
 
 #### Low
 
@@ -235,6 +220,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
+- 2026-09-16 · **[Medium]** `[frontend]` — `Shell` closes its dialogs on destroy (`DestroyRef.onDestroy` + `MatDialog.closeAll()`), so a mid-session `401` lands on a clean `/login` instead of under the still-open dialog (`b32e11a6`) → coverage: new `angular-material/junior` bullet "Dialog lifetime is not the opener's" (authored + marked ✅ 07-timetrack), `angular/junior` destruction cleanup already covered; frontend README Key patterns; PLANNING §6 Subscription lifetime + §0/§22 counts; PROGRESS Angular Material evidence cell. Verified in the browser with a 20 s token. `/notes-plan angular-material junior` owed
 - 2026-09-14 · **[Medium]** `[frontend]` — the change-password dialog hands `MatDialog.open()` the toolbar's account button as `restoreFocus`, so closing it returns keyboard focus to the trigger instead of `<body>` (`1d4bf603`) → coverage: new `angular-material/junior` bullet "Focus restoration needs a target that still exists" and new `angular/junior` bullet "Query `read` option" (both authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 Accessibility floor rule + §0 and §22 counts; PROGRESS Angular Material evidence cell. `/notes-plan angular junior` and `/notes-plan angular-material junior` owed
 
 #### Low
