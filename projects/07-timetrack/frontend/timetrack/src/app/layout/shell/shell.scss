@@ -8,6 +8,29 @@
   flex: 1;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.account-name {
+  display: block;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 599px) {
+    max-width: 6rem;
+  }
+}
+
 mat-sidenav {
   width: 240px;
 }

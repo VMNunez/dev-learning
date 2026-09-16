@@ -28,6 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { Logo } from '../../shared/components/logo/logo';
 
 interface NavLink {
   label: string;
@@ -57,6 +58,7 @@ const NAV_LINKS: readonly NavLink[] = [
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
+    Logo,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
@@ -77,6 +79,7 @@ export class Shell {
   );
   private readonly sidenav = viewChild(MatSidenav);
   readonly dialog = inject(MatDialog);
+  protected readonly userName = computed(() => this.authService.session()?.name ?? '');
   readonly links = computed(() => {
     const role = this.authService.session()?.role;
     return role ? NAV_LINKS.filter((link) => link.roles.includes(role)) : [];

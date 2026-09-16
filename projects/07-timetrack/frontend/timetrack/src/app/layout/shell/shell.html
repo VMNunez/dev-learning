@@ -9,11 +9,18 @@
       <mat-icon>menu</mat-icon>
     </button>
   }
-  <span>TimeTrack</span>
+  <span class="brand">
+    @if (isDesktop()) {
+      <app-logo class="brand-logo" />
+    }
+    <span>TimeTrack</span>
+  </span>
+
   <span class="spacer"></span>
   <div>
-    <button #accountButton matIconButton [matMenuTriggerFor]="menu" aria-label="Account menu">
-      <mat-icon>account_circle</mat-icon>
+    <button #accountButton matButton [matMenuTriggerFor]="menu">
+      <span class="account-name">{{ userName() }}</span>
+      <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="openDialog()">
