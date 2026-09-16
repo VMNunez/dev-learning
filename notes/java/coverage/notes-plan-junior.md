@@ -131,9 +131,7 @@ Spanish: notes/java/junior/es/02-cadenas-de-texto.md
 
 Depends on: 01
 
-Pending additions:
-
-- Locale-sensitive case conversion — `toLowerCase()` and `toUpperCase()` with no argument follow the JVM's default locale, so under a Turkish locale `I` lowers to a dotless `ı`; pass `Locale.ROOT` when the result is an identifier, key or protocol value rather than text shown to a user
+Pending additions: none
 
 Narrative role: Give Java's text type the chapter its API size deserves, built on one fact the numeric chapter never needed — a `String` is an object that cannot be changed, so every operation that appears to modify one actually produces another.
 
@@ -158,7 +156,7 @@ Coverage concepts:
 - [x] String immutability — String operations return new values rather than modifying the original object
 - [x] Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code
 - [x] `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
-- [ ] Locale-sensitive case conversion — `toLowerCase()` and `toUpperCase()` with no argument follow the JVM's default locale, so under a Turkish locale `I` lowers to a dotless `ı`; pass `Locale.ROOT` when the result is an identifier, key or protocol value rather than text shown to a user
+- [x] Locale-sensitive case conversion — `toLowerCase()` and `toUpperCase()` with no argument follow the JVM's default locale, so under a Turkish locale `I` lowers to a dotless `ı`; pass `Locale.ROOT` when the result is an identifier, key or protocol value rather than text shown to a user
 - [x] `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
 - [x] String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
 - [x] `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings

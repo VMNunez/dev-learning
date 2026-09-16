@@ -331,6 +331,128 @@ ASCII is the most basic group of characters there is: the unaccented letters of 
 
 ---
 
+## `toLowerCase()` and `toUpperCase()` depend on the machine's language
+
+> 📖 Docs: [Oracle Docs — `String.toLowerCase()`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#toLowerCase()) → read: the "API Note" under it, which gives this section's Turkish example, and the table of lowercase mapping examples under `toLowerCase(Locale)` just above it.
+> 📖 [Oracle Docs — `java.util.Locale`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Locale.html#default_locale) → read: "Default Locale", for how the JVM picks it at startup, and the description of the `ROOT` field.
+
+The method catalogue showed `"Ana Ruiz".toUpperCase()` giving `"ANA RUIZ"`, and said the two case methods are mostly used to normalise text before comparing or storing it. That result is true on your computer, but not on every computer. Run the very same line, with the very same text, on a machine whose language is set to Turkish, and it returns `"ANA RUİZ"`, with a capital `İ` that carries a dot. The code did not change; only the machine did. This section explains where that difference comes from, what it breaks when the converted text is used to find something, and the one argument that makes the result identical everywhere.
+
+### The default locale decides what `toLowerCase()` returns
+
+Changing letters to lower or upper case is not the same operation in every language, so Java needs to know which language's rules to apply. That is what a **locale** is. `Locale` is the standard-library type that names a language and, optionally, a region: `es-ES` is Spanish as used in Spain, `tr-TR` is Turkish as used in Turkey. Methods that format values for people, or change text by the rules of a language, work with one. You will see another one at work in the section _Putting values into text_, further down this file: `"%.2f"` prints `38,50` or `38.50` depending on the computer's regional settings, and those settings are the computer's locale.
+
+This is the chain behind every call to `toLowerCase()` with no argument. The first two steps happen only once, when the program starts; the last two happen on every call:
+
+1. When the JVM starts, it reads the language settings of the operating system and stores them as **system properties**, named values the whole program can read. The two that matter here are `user.language` (for example `es` or `tr`) and `user.country` (`ES`, `TR`).
+2. From those properties it builds one `Locale` object, the **default locale**. `Locale.getDefault()` returns it from then on, unless some code replaces it by calling `Locale.setDefault(...)`.
+3. `toLowerCase()` with no argument does exactly what `toLowerCase(Locale.getDefault())` does; its Javadoc states that equivalence. So it asks for the default locale and applies that language's case rules. `toUpperCase()` with no argument works the same way, through `toUpperCase(Locale.getDefault())`.
+4. If the default locale is Turkish, those rules turn a capital `I` into `ı`.
+
+"Two machines" therefore means your laptop, whose default locale is Spanish or English, and a server whose operating system is set to Turkish. You can reproduce the second one without touching Windows, because step 1 lets you override the properties when you launch the program. The `-D` option sets a system property for that one run only:
+
+```java
+String email = "Isabel@Mail.com";
+System.out.println(email.toLowerCase());
+```
+
+```
+java Main                                        →  isabel@mail.com
+java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com
+```
+
+Read the second line letter by letter. The capital `I` became `ı`, and the capital `M` became `m` as usual. The `i` in `Mail` was already lower case, so lowering left it alone: only a capital `I` is affected. If your terminal prints `?sabel@mail.com` instead, the `?` comes from the output step: that terminal's character set has no `ı`, so Java writes a `?` in its place when it prints. The `String` itself still holds `ı`.
+
+The reason is the Turkish alphabet. English and Spanish have one letter i, written `i` in lower case and `I` in upper case. Turkish has **two** separate letters: an i with a dot and an i without one, and each keeps its dot, or its lack of one, in both cases:
+
+```
+English / Spanish rules                Turkish rules
+  'I' ──lower──▶ 'i'                     'I' ──lower──▶ 'ı'   U+0131  small dotless i
+  'i' ──upper──▶ 'I'                     'i' ──upper──▶ 'İ'   U+0130  capital I with a dot
+```
+
+In Turkish, the capital without a dot, `I`, belongs to the dotless `ı`, so lowering `I` has to give `ı`. And the dotted `i` keeps its dot when raised, so `i` becomes `İ`. That is why `"Ana Ruiz"` became `"ANA RUİZ"` above. Java is applying correct Turkish here; it is not a bug in the JDK.
+
+> **`ı` is a different character from `i`, not another way of drawing it.** Each one has its own code point, the Unicode number the section _`strip()` vs `trim()`_ explained: `i` is `U+0069` and `ı` is `U+0131`. `"ısabel@mail.com".equals("isabel@mail.com")` is `false`, because `equals` compares character by character and the first characters differ. Both texts have the same length and look almost the same in a log, which is what makes this bug so hard to see.
+
+> **Turkish is not the only language with this rule.** Azerbaijani has the same two i's, and Java lowers `I` to `ı` under an Azerbaijani locale too. Lithuanian has special case rules of its own, but they only touch accented i's, so a plain `I` still lowers to `i` there. Spanish and English have no such rule, which is why you never meet the problem on your own machine.
+
+### What the dotless `ı` breaks when an email is a lookup key
+
+The damage appears when the lowered text is used to **find** something. Follow one employee, Isabel, through an application that lowers emails with the no-argument `toLowerCase()`:
+
+1. Isabel signs up typing `isabel@mail.com`. The application lowers it and stores `isabel@mail.com`. There is no capital `I` in it, so every machine stores the same text.
+2. Months later she logs in from her phone. The phone capitalises the first letter, so the request carries `Isabel@mail.com`, together with her correct password.
+3. The server's default locale is Turkish, so `toLowerCase()` produces `ısabel@mail.com`.
+4. The application asks the database for the user whose email is equal to `ısabel@mail.com`. There is no such row: the stored email starts with `U+0069`, not `U+0131`.
+5. The login is refused as if the password were wrong. Nothing is thrown and nothing warns you, and the log line shows an address that reads just like hers.
+
+A lookup key only works if every way of typing the same thing produces the same key. `Isabel@mail.com` and `isabel@mail.com` must both become `isabel@mail.com`, and the default locale breaks exactly that promise. The same applies to anything else that stores or finds by that text: a key in a `HashMap`, a cache entry, a counter.
+
+```java
+// MAL — the result depends on the language of the machine the code runs on
+String key = email.toLowerCase();
+```
+
+```java
+// BIEN — the same result on every machine
+String key = email.toLowerCase(Locale.ROOT);   // "isabel@mail.com", also on a Turkish machine
+```
+
+**`Locale.ROOT` is the locale that belongs to no language.** Its language and its country are both empty text, and the Javadoc describes it as the neutral locale for these operations. Under it, case conversion follows the general Unicode rules, which contain no Turkish exception, so `I` lowers to `i` on every machine. Two pieces of syntax come with it:
+
+- **`Locale.ROOT`** is a ready-made `Locale` value that belongs to the `Locale` class itself, not to one particular `Locale` object. That is why you read it off the class name, the same way you call `Integer.parseInt` on `Integer`. What it means for a member to belong to the class is explained in [06-oop-classes.md](06-oop-classes.md).
+- **`import java.util.Locale;`** goes at the top of the file. `String` lives in the package `java.lang`, which every file can use without an import. `Locale` lives in `java.util`, so without this line you would have to write its full name, `java.util.Locale`, every time. [04-methods.md](04-methods.md) explains packages and imports.
+
+> **Why not skip the lowering and compare with `equalsIgnoreCase`?** Its Javadoc says it does not take the locale into account, so `"Isabel@mail.com".equalsIgnoreCase("isabel@mail.com")` is `true` on every machine. But it only compares two texts you already hold side by side. A lookup does not work that way. The database looks for a stored email equal to the text you give it. A `HashMap` goes to the position that the key's hash picks, as the callout about the three advantages of immutability explained. Both need one agreed spelling of the key before the search starts, and `toLowerCase(Locale.ROOT)` is what produces it.
+
+> **Why not simply make sure the server is never set to Turkish?** You do not decide where your code runs: a colleague's laptop, the machine that runs the tests, a client's server. A line that depends on the default locale passes every test on your computer and fails only on the machine with the other language, the same way the shared `StringBuilder` in _Accumulating text_, further down this file, only fails when requests arrive at the same time. Passing `Locale.ROOT` makes the line correct wherever it runs.
+
+> **Preview — Spring Boot:** the fragment below comes from project 07's login code. `AuthService` and `LoginAttemptService` are Spring service classes you have not studied yet; you will build classes like them in the Spring Boot notes. Here, only the email text passing through them matters.
+
+Project 07 does exactly this. Every email the application receives goes through one method, `EmailNormalizer.normalize`, before it is used:
+
+```java
+// projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/util/EmailNormalizer.java
+return email == null ? null : email.trim().toLowerCase(Locale.ROOT);
+
+// projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/AuthService.java — inside login(...)
+String email = EmailNormalizer.normalize(request.getEmail());
+// ...
+loginAttemptService.recordFailure(email);
+```
+
+The first line reads: "if `email` is `null`, return `null`; otherwise return the email with its surrounding spaces removed and lowered with `Locale.ROOT`". The `condition ? a : b` form is the conditional operator, which [03-control-flow.md](03-control-flow.md) covers. The line uses `trim()` rather than the `strip()` recommended in the section _`strip()` vs `trim()`_; here, only the `toLowerCase(Locale.ROOT)` at its end matters.
+
+In `login`, `request.getEmail()` is the email as the user typed it, and `email` is its normalised form. That normalised value is then used as a key. The method that loads the user by email normalises with the same method, and `recordFailure(email)` adds one failed attempt to a tally stored under that email. After five failures, the next attempt is refused until a minute has passed since the last failure. The project's plan states that an email differing only in letter case uses the **same** tally, because the key is the normalised address. With the no-argument `toLowerCase()` on a Turkish server, that stops being true: `Isabel@mail.com` would be counted under `ısabel@mail.com` and `isabel@mail.com` under `isabel@mail.com`, two separate tallies for one account.
+
+### `Locale.ROOT` or the user's locale — which argument goes where
+
+The previous part showed the one wrong call and the right one for a key. There is a third option, and the choice between the three comes down to one question: will a **program** read the result, or a **person**?
+
+| Call | Whose rules | Use it for |
+|---|---|---|
+| `toLowerCase()` / `toUpperCase()` | the default locale of whatever machine runs the code | nothing whose result must be predictable — in practice, avoid it |
+| `toLowerCase(Locale.ROOT)` / `toUpperCase(Locale.ROOT)` | no particular language | identifiers, keys and protocol values: an email used to find a user, a `HashMap` key, a role name compared with `equals`, the name of an HTTP header |
+| `toUpperCase(Locale.of("tr", "TR"))` — the user's own locale | that user's language | text a person reads in their own language: a title in capitals shown to a Turkish reader must show `İ` |
+
+Read the table by its last column. If a program will compare, store or look up the result, it is an identifier, and `Locale.ROOT` is the argument. If a person will read it, the correct letters are the ones of that person's language, so you pass their locale. `Locale.of("tr", "TR")` builds that locale from a language code and a country code (the method exists since Java 19). In a web application the user's language usually arrives with the browser's request; how you read it there belongs to the Spring Boot notes. The no-argument form fits neither case, because its result depends on the machine instead of the program or the person.
+
+A role name shows the identifier row at work, and it goes wrong in the other direction, through `toUpperCase()`:
+
+```java
+String role = "admin";
+
+role.toUpperCase().equals("ADMIN")              // MAL  — false on a Turkish machine: the result is "ADMİN"
+role.toUpperCase(Locale.ROOT).equals("ADMIN")   // BIEN — true on every machine
+```
+
+The lower-case `i` in `admin` becomes the dotted capital `İ` under Turkish rules, so the result no longer equals `"ADMIN"`, and the check fails for every administrator on that server.
+
+> **You will also meet `Locale.ENGLISH` or `Locale.US` in the same position.** Older code often writes `toUpperCase(Locale.ENGLISH)` for identifiers. The result is the same as with `Locale.ROOT`, because English has no special case rules. `Locale.ROOT` is the clearer choice, because it says that no language is meant, while `Locale.ENGLISH` suggests the text is English when it is really an identifier.
+
+---
+
 ## Putting values into text — `+` and `.formatted()`
 
 > 📖 Docs: [Oracle Docs — `java.util.Formatter`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Formatter.html) → read: "Format String Syntax" and the "Conversions" table — the complete list of what may follow a `%`.

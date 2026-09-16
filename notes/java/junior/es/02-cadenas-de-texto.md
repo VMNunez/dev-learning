@@ -331,6 +331,128 @@ Sobre ninguno de los tres actúa `trim()`, porque los tres tienen un número má
 
 ---
 
+## `toLowerCase()` y `toUpperCase()` dependen del idioma de la máquina
+
+> 📖 Docs: [Oracle Docs — `String.toLowerCase()`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html#toLowerCase()) → leer: la "API Note" que hay debajo, que da el ejemplo turco de esta sección, y la tabla de ejemplos de conversión a minúsculas que hay justo encima, bajo `toLowerCase(Locale)`.
+> 📖 [Oracle Docs — `java.util.Locale`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Locale.html#default_locale) → leer: "Default Locale", para ver cómo la elige la JVM al arrancar, y la descripción del campo `ROOT`.
+
+El catálogo de métodos mostró que `"Ana Ruiz".toUpperCase()` da `"ANA RUIZ"`, y dijo que los dos métodos de mayúsculas y minúsculas se usan sobre todo para normalizar texto antes de compararlo o de guardarlo. Ese resultado es cierto en tu ordenador, pero no en todos los ordenadores. Ejecuta la misma línea, con el mismo texto, en una máquina cuyo idioma esté puesto en turco, y devuelve `"ANA RUİZ"`, con una `İ` mayúscula que lleva un punto. El código no cambió; lo que cambió fue la máquina. Esta sección explica de dónde sale esa diferencia, qué rompe cuando el texto convertido se usa para buscar algo, y cuál es el único argumento que hace que el resultado sea idéntico en cualquier sitio.
+
+### El locale por defecto decide lo que devuelve `toLowerCase()`
+
+Cambiar letras a mayúsculas o a minúsculas no es la misma operación en todos los idiomas, así que Java necesita saber qué reglas de idioma aplicar. A esa información se le llama **locale**. `Locale` es el tipo de la biblioteca estándar que nombra un idioma y, opcionalmente, una región: `es-ES` es el español tal y como se usa en España, `tr-TR` es el turco tal y como se usa en Turquía. Los métodos que dan formato a valores para que los lea una persona, o que cambian texto siguiendo las reglas de un idioma, trabajan con uno. Vas a ver otro en acción en la sección _Metiendo valores dentro de texto_, más adelante en este archivo: `"%.2f"` imprime `38,50` o `38.50` según la configuración regional del ordenador, y esa configuración es el locale del ordenador.
+
+Esta es la cadena que hay detrás de toda llamada a `toLowerCase()` sin argumento. Los dos primeros pasos ocurren una sola vez, cuando arranca el programa; los dos últimos ocurren en cada llamada:
+
+1. Cuando arranca la JVM, lee la configuración de idioma del sistema operativo y la guarda como **propiedades del sistema** (_system properties_), valores con nombre que puede leer todo el programa. Las dos que importan aquí son `user.language` (por ejemplo `es` o `tr`) y `user.country` (`ES`, `TR`).
+2. A partir de esas propiedades construye un objeto `Locale`, el **locale por defecto**. `Locale.getDefault()` lo devuelve a partir de ahí, salvo que algún código lo sustituya llamando a `Locale.setDefault(...)`.
+3. `toLowerCase()` sin argumento hace exactamente lo mismo que `toLowerCase(Locale.getDefault())`; su Javadoc afirma esa equivalencia. Así que pide el locale por defecto y aplica las reglas de mayúsculas y minúsculas de ese idioma. `toUpperCase()` sin argumento funciona igual, a través de `toUpperCase(Locale.getDefault())`.
+4. Si el locale por defecto es el turco, esas reglas convierten una `I` mayúscula en `ı`.
+
+"Dos máquinas" significa entonces tu portátil, cuyo locale por defecto es español o inglés, y un servidor cuyo sistema operativo está puesto en turco. Puedes reproducir la segunda sin tocar Windows, porque el paso 1 te deja sobrescribir las propiedades al lanzar el programa. La opción `-D` fija una propiedad del sistema solo para esa ejecución:
+
+```java
+String email = "Isabel@Mail.com";
+System.out.println(email.toLowerCase());
+```
+
+```
+java Main                                        →  isabel@mail.com
+java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com
+```
+
+Lee la segunda línea letra a letra. La `I` mayúscula se convirtió en `ı`, y la `M` mayúscula se convirtió en `m` como siempre. La `i` de `Mail` ya estaba en minúscula, así que pasarla a minúscula no la tocó: solo se ve afectada la `I` mayúscula. Si tu terminal imprime en su lugar `?sabel@mail.com`, el `?` viene del paso de salida por pantalla: el juego de caracteres de esa terminal no tiene la `ı`, así que Java escribe un `?` en su lugar al imprimir. El propio `String` sigue guardando la `ı`.
+
+El motivo es el alfabeto turco. El inglés y el español tienen una sola letra i, que se escribe `i` en minúscula e `I` en mayúscula. El turco tiene **dos** letras distintas: una i con punto y una i sin punto, y cada una conserva su punto, o la ausencia de él, en las dos formas:
+
+```
+Reglas del inglés / español              Reglas del turco
+  'I' ──minúscula──▶ 'i'                   'I' ──minúscula──▶ 'ı'   U+0131  i minúscula sin punto
+  'i' ──mayúscula──▶ 'I'                   'i' ──mayúscula──▶ 'İ'   U+0130  I mayúscula con punto
+```
+
+En turco, la mayúscula sin punto, `I`, pertenece a la `ı` sin punto, así que pasarla a minúscula tiene que dar `ı`. Y la `i` con punto conserva su punto al pasar a mayúscula, así que `i` se convierte en `İ`. Por eso `"Ana Ruiz"` se convirtió arriba en `"ANA RUİZ"`. Aquí Java está aplicando el turco correctamente; no es un bug del JDK.
+
+> **La `ı` es un carácter distinto de la `i`, no otra forma de dibujarla.** Cada una tiene su propio code point, el número de Unicode que explicó la sección _`strip()` frente a `trim()`_: la `i` es `U+0069` y la `ı` es `U+0131`. `"ısabel@mail.com".equals("isabel@mail.com")` da `false`, porque `equals` compara carácter a carácter y los primeros caracteres son distintos. Los dos textos tienen la misma longitud y se ven casi iguales en un log, que es justo lo que hace tan difícil ver este bug.
+
+> **El turco no es el único idioma con esta regla.** El azerbaiyano tiene las mismas dos íes, y Java también convierte `I` en `ı` bajo un locale azerbaiyano. El lituano tiene sus propias reglas especiales de mayúsculas y minúsculas, pero solo afectan a íes con acento, así que ahí una `I` normal sigue convirtiéndose en `i`. El español y el inglés no tienen ninguna regla así, por eso nunca te encuentras este problema en tu propia máquina.
+
+### Lo que rompe la `ı` sin punto cuando un email es clave de búsqueda
+
+El daño aparece cuando el texto ya en minúsculas se usa para **buscar** algo. Sigue a una empleada, Isabel, a través de una aplicación que pasa los emails a minúsculas con el `toLowerCase()` sin argumento:
+
+1. Isabel se registra escribiendo `isabel@mail.com`. La aplicación lo pasa a minúsculas y guarda `isabel@mail.com`. No hay ninguna `I` mayúscula ahí dentro, así que todas las máquinas guardan el mismo texto.
+2. Meses después inicia sesión desde el móvil. El móvil pone en mayúscula la primera letra, así que la petición lleva `Isabel@mail.com`, junto con su contraseña correcta.
+3. El locale por defecto del servidor es el turco, así que `toLowerCase()` produce `ısabel@mail.com`.
+4. La aplicación le pide a la base de datos el usuario cuyo email sea igual a `ısabel@mail.com`. No existe esa fila: el email guardado empieza por `U+0069`, no por `U+0131`.
+5. El login se rechaza como si la contraseña fuera incorrecta. No se lanza nada y no avisa de nada, y la línea del log muestra una dirección que se lee igual que la suya.
+
+Una clave de búsqueda solo funciona si cada forma de escribir lo mismo produce la misma clave. `Isabel@mail.com` e `isabel@mail.com` tienen que convertirse los dos en `isabel@mail.com`, y el locale por defecto rompe justo esa promesa. Lo mismo se aplica a cualquier otra cosa que guarde o busque por ese texto: una clave de un `HashMap`, una entrada de caché, un contador.
+
+```java
+// MAL — el resultado depende del idioma de la máquina donde se ejecuta el código
+String key = email.toLowerCase();
+```
+
+```java
+// BIEN — el mismo resultado en cualquier máquina
+String key = email.toLowerCase(Locale.ROOT);   // "isabel@mail.com", también en una máquina turca
+```
+
+**`Locale.ROOT` es el locale que no pertenece a ningún idioma.** Su idioma y su país son ambos un texto vacío, y el Javadoc lo describe como el locale neutro para estas operaciones. Con él, la conversión de mayúsculas y minúsculas sigue las reglas generales de Unicode, que no tienen ninguna excepción turca, así que `I` pasa a `i` en cualquier máquina. Vienen con él dos piezas de sintaxis:
+
+- **`Locale.ROOT`** es un valor `Locale` ya construido que pertenece a la propia clase `Locale`, no a un objeto `Locale` en concreto. Por eso se lee sobre el nombre de la clase, igual que llamas a `Integer.parseInt` sobre `Integer`. Lo que significa que un miembro pertenezca a la clase se explica en [06-poo-clases.md](06-poo-clases.md).
+- **`import java.util.Locale;`** va al principio del archivo. `String` vive en el paquete `java.lang`, que puede usar cualquier archivo sin necesidad de un import. `Locale` vive en `java.util`, así que sin esta línea tendrías que escribir su nombre completo, `java.util.Locale`, cada vez. [04-metodos.md](04-metodos.md) explica los paquetes y los imports.
+
+> **¿Por qué no saltarse el paso a minúsculas y comparar directamente con `equalsIgnoreCase`?** Su Javadoc dice que no tiene en cuenta el locale, así que `"Isabel@mail.com".equalsIgnoreCase("isabel@mail.com")` da `true` en cualquier máquina. Pero solo compara dos textos que ya tienes uno junto al otro. Una búsqueda no funciona así. La base de datos busca un email guardado que sea igual al texto que le das. Un `HashMap` va a la posición que elige el hash de la clave, como explicó el aviso sobre las tres ventajas de la inmutabilidad. Las dos necesitan una única forma acordada de escribir la clave antes de que empiece la búsqueda, y `toLowerCase(Locale.ROOT)` es lo que la produce.
+
+> **¿Por qué no basta con asegurarte de que el servidor nunca esté puesto en turco?** Tú no decides dónde se ejecuta tu código: el portátil de un compañero, la máquina que ejecuta los tests, el servidor de un cliente. Una línea que depende del locale por defecto pasa todos los tests en tu ordenador y solo falla en la máquina con el otro idioma, de la misma forma que el `StringBuilder` compartido de _Acumulando texto_, más adelante en este archivo, solo falla cuando llegan peticiones a la vez. Pasar `Locale.ROOT` hace que la línea sea correcta dondequiera que se ejecute.
+
+> **Adelanto — Spring Boot:** el fragmento de abajo viene del código de login del proyecto 07. `AuthService` y `LoginAttemptService` son clases de servicio de Spring que todavía no has estudiado; vas a construir clases como ellas en las notas de Spring Boot. Aquí solo importa el texto del email que pasa a través de ellas.
+
+El proyecto 07 hace exactamente esto. Todo email que recibe la aplicación pasa por un método, `EmailNormalizer.normalize`, antes de usarse:
+
+```java
+// projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/util/EmailNormalizer.java
+return email == null ? null : email.trim().toLowerCase(Locale.ROOT);
+
+// projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/AuthService.java — dentro de login(...)
+String email = EmailNormalizer.normalize(request.getEmail());
+// ...
+loginAttemptService.recordFailure(email);
+```
+
+La primera línea se lee: "si `email` es `null`, devuelve `null`; si no, devuelve el email sin los espacios que lo rodean y pasado a minúsculas con `Locale.ROOT`". La forma `condición ? a : b` es el operador condicional, que cubre [03-flujo-de-control.md](03-flujo-de-control.md). La línea usa `trim()` en lugar del `strip()` recomendado en la sección _`strip()` frente a `trim()`_; aquí lo único que importa es el `toLowerCase(Locale.ROOT)` del final.
+
+En `login`, `request.getEmail()` es el email tal y como lo escribió el usuario, y `email` es su forma normalizada. Ese valor normalizado se usa después como clave. El método que carga el usuario por email normaliza con el mismo método, y `recordFailure(email)` añade un intento fallido más al contador guardado bajo ese email. Tras cinco fallos, el siguiente intento se rechaza hasta que pase un minuto desde el último fallo. El plan del proyecto dice que un email que solo difiere en mayúsculas o minúsculas usa el **mismo** contador, porque la clave es la dirección normalizada. Con el `toLowerCase()` sin argumento en un servidor turco, eso deja de ser cierto: `Isabel@mail.com` se contaría bajo `ısabel@mail.com` e `isabel@mail.com` bajo `isabel@mail.com`, dos contadores separados para una sola cuenta.
+
+### `Locale.ROOT` o el locale del usuario — qué argumento va en cada sitio
+
+La parte anterior mostró la única llamada incorrecta y la correcta para una clave. Hay una tercera opción, y la elección entre las tres se reduce a una sola pregunta: ¿va a leer el resultado un **programa**, o una **persona**?
+
+| Llamada | Reglas que sigue | Para qué se usa |
+| --- | --- | --- |
+| `toLowerCase()` / `toUpperCase()` | el locale por defecto de la máquina que ejecute el código | nada cuyo resultado tenga que ser predecible — en la práctica, evítala |
+| `toLowerCase(Locale.ROOT)` / `toUpperCase(Locale.ROOT)` | ningún idioma en concreto | identificadores, claves y valores de protocolo: un email que se usa para buscar un usuario, una clave de `HashMap`, un nombre de rol que se compara con `equals`, el nombre de una cabecera HTTP |
+| `toUpperCase(Locale.of("tr", "TR"))` — el locale propio del usuario | el idioma de ese usuario | texto que lee una persona en su propio idioma: un título en mayúsculas mostrado a un lector turco tiene que mostrar `İ` |
+
+Lee la tabla por su última columna. Si un programa va a comparar, guardar o buscar el resultado, es un identificador, y el argumento es `Locale.ROOT`. Si lo va a leer una persona, las letras correctas son las del idioma de esa persona, así que le pasas su locale. `Locale.of("tr", "TR")` construye ese locale a partir de un código de idioma y un código de país (el método existe desde Java 19). En una aplicación web el idioma del usuario suele llegar con la petición del navegador; cómo se lee ahí pertenece a las notas de Spring Boot. La forma sin argumento no encaja en ninguno de los dos casos, porque su resultado depende de la máquina en lugar de depender del programa o de la persona.
+
+Un ejemplo con `toUpperCase()` repite la fila del identificador de la tabla anterior, ahora en la dirección contraria:
+
+```java
+String role = "admin";
+
+role.toUpperCase().equals("ADMIN")              // MAL  — false en una máquina turca: el resultado es "ADMİN"
+role.toUpperCase(Locale.ROOT).equals("ADMIN")   // BIEN — true en cualquier máquina
+```
+
+La `i` minúscula de `admin` se convierte, bajo las reglas del turco, en la `İ` mayúscula con punto, así que el resultado deja de ser igual a `"ADMIN"`, y la comprobación falla para todos los administradores de ese servidor.
+
+> **También te vas a encontrar `Locale.ENGLISH` o `Locale.US` en ese mismo sitio.** El código más antiguo suele escribir `toUpperCase(Locale.ENGLISH)` para identificadores. El resultado es el mismo que con `Locale.ROOT`, porque el inglés no tiene reglas especiales de mayúsculas y minúsculas. `Locale.ROOT` es la opción más clara, porque deja claro que no se quiere decir ningún idioma en concreto, mientras que `Locale.ENGLISH` da a entender que el texto es inglés cuando en realidad es un identificador.
+
+---
+
 ## Metiendo valores dentro de texto — `+` y `.formatted()`
 
 > 📖 Docs: [Oracle Docs — `java.util.Formatter`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Formatter.html) → leer: "Format String Syntax" y la tabla "Conversions" — la lista completa de qué puede ir después de un `%`.
