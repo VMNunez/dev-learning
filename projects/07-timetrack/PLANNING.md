@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off. `PROJECT-BACKLOG.md` was empty at every priority when this step opened; it emptied again on 2026-09-11 — the unsquared-`tonal`-button Low closed on 2026-09-11, the stuck-login-spinner Low closed on 2026-09-11, the `OnPush` Low closed on 2026-09-11, resolved in `b23a7dcb`, and the backend High raised on 2026-09-10 (the unnormalised email key in the login throttle) closed the same day in `2fd8891e`. It emptied a third time on 2026-09-14: the frontend **Medium** raised that day (keyboard focus dropped to `<body>` when the change-password dialog closes) closed in `1d4bf603`, and the frontend **Low** raised beside it (two HTTP `.subscribe()` calls with no teardown, against §6) closed in `c5e69b3a`, so no open task at any priority gates this step. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
+| **Current step** | **Step 7a — Angular shell + auth**, the first §15 step of the frontend. `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), which signed G3 off. `PROJECT-BACKLOG.md` was empty at every priority when this step opened; it emptied again on 2026-09-11 — the unsquared-`tonal`-button Low closed on 2026-09-11, the stuck-login-spinner Low closed on 2026-09-11, the `OnPush` Low closed on 2026-09-11, resolved in `b23a7dcb`, and the backend High raised on 2026-09-10 (the unnormalised email key in the login throttle) closed the same day in `2fd8891e`. It emptied a third time on 2026-09-14: the frontend **Medium** raised that day (keyboard focus dropped to `<body>` when the change-password dialog closes) closed in `1d4bf603`, and the frontend **Low** raised beside it (two HTTP `.subscribe()` calls with no teardown, against §6) closed in `c5e69b3a`. On 2026-09-15 three frontend tasks were raised while verifying the done condition: the **Medium** (a dialog left open over `/login` after a mid-session `401`, which blocked the expired-token clause) closed on 2026-09-16 in `b32e11a6`, and **2 Lows stay open** (the toolbar account-menu icon colour, the Login page's mobile layout), neither of which gates this step. It starts on a `feat/angular-shell-auth` branch cut from `projects/07-timetrack` |
 | **Current branch** | `feat/angular-shell-auth`, cut from `projects/07-timetrack` after the 2026-08-29 merge. `fix/backend-backlog` met its §22 closing condition and is done — do not commit to it again. Per §22 this branch PRs back into `projects/07-timetrack` when Step 7a's done condition passes |
 | **Done condition** | Step 7a's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: login at localhost:4200 redirects to /dashboard inside the shell; a wrong password shows the mat-error under the form while the button spins during the call; the toolbar user menu opens the change-password dialog and a wrong current password shows the error under that input with the dialog open and the session intact, while a correct one closes it and the new password logs in; /projects as EMPLOYEE redirects away; a request with an expired token returns the user to /login` |
 | **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7a–7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
-| **Last updated** | 2026-09-14 |
+| **Last updated** | 2026-09-16 |
 
 ---
 
@@ -242,7 +242,7 @@ Same bar as the backend block: each line is violable — a reviewer can open a f
   including in a dialog. Tearing down a write aborts only the browser's wait, never a change the server
   already received, so a dialog whose write is in flight holds `disableClose` until the call settles —
   Escape and a backdrop click are refused exactly as its disabled Cancel button is. Browser Back still
-  closes it (`closeOnNavigation` ignores `disableClose`); that exit losing the confirmation is accepted.
+  closes it (`closeOnNavigation` ignores `disableClose`); that exit losing the confirmation is accepted. A dialog lives in the overlay container, not in its opener's view, and `closeOnNavigation` ignores `router.navigate()`, so the component that opens dialogs closes them when it is destroyed (`DestroyRef.onDestroy` + `MatDialog.closeAll()`) — the auth interceptor in `core/` never touches Material.
 - **Async states** — every page that loads data renders three states explicitly: a `MatProgressSpinner`
   while `loading()` is true, a `mat-error` message plus a retry button when the call fails, and the empty
   message from §14 when the call succeeds with zero rows. A page that renders only the success table is
@@ -1996,7 +1996,7 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds no open task at any priority** — the frontend Low raised on 2026-09-14, during Step 7a (two
+currently holds 2 open Lows and nothing above** — both frontend, raised on 2026-09-15 while verifying Step 7a (the toolbar account-menu icon colour, the Login page's mobile layout); the Medium raised beside them (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
 HTTP `.subscribe()` calls with no teardown, against §6), closed the same day in `c5e69b3a`, the frontend
 Medium raised beside it (closing the change-password dialog dropped keyboard focus to `<body>`) closed on
 2026-09-14 in `1d4bf603`, the three frontend Lows raised on 2026-09-10 (the stuck login spinner, the missing `OnPush`,
@@ -2005,7 +2005,7 @@ the unsquared `tonal` variant) all closed on 2026-09-11, and the backend High ra
 stands.** The frontend tier has never been reviewed, so G4's `review-audit` run can still reopen it.
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
-Remaining sequence, with no backlog work left in it at any priority: `fix/backend-backlog` merged into
+Remaining sequence, with only those 2 Lows as backlog work: `fix/backend-backlog` merged into
 `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), signing G3 off → create
 `feat/angular-shell-auth` from `projects/07-timetrack` → Step 7a.
 
