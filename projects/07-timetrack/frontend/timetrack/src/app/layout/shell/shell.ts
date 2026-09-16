@@ -79,7 +79,7 @@ export class Shell {
     { read: ElementRef },
   );
   private readonly sidenav = viewChild(MatSidenav);
-  readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(MatDialog);
   protected readonly userName = computed(() => this.authService.session()?.name ?? '');
   protected readonly isAccountMenuOpen = signal(false);
   readonly links = computed(() => {
