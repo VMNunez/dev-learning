@@ -20,6 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiError } from '../../models/api-error';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -79,6 +80,16 @@ export class ChangePasswordDialog {
     },
     { validators: passwordsMatch },
   );
+
+  constructor() {
+    this.dialogRef
+      .keydownEvents()
+      .pipe(
+        filter((event) => event.key === 'Escape' && !this.loading()),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.dialogRef.close());
+  }
 
   onSubmit(): void {
     this.error.set(null);

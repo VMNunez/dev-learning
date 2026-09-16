@@ -77,6 +77,7 @@ export class Shell {
   openDialog(): void {
     this.dialog.open(ChangePasswordDialog, {
       restoreFocus: this.accountButton().nativeElement,
+      disableClose: true,
     });
   }
 }
