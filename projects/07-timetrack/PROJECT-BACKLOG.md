@@ -40,13 +40,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **angular-material / junior** `[frontend]` — `Shell` renders `<mat-sidenav mode="side" opened>` at every
-  width and the toolbar has no menu button, while §14 Responsive intent puts the sidenav in `mode="over"`,
-  closed by default and opened from a hamburger, below 1024px. At 375px the fixed 240px rail leaves about
-  135px for the page, so Steps 7b–7d would lay out every page against a content width a phone never has —
-  the one screen §14 says a recruiter may open. Drive `mode`/`opened` from a breakpoint (CDK
-  `BreakpointObserver` → signal), add the toolbar toggle with an `aria-label`, and close the drawer after a
-  navigation in `over` mode. **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
+*No open Medium tasks.*
 
 #### Low
 
@@ -238,6 +232,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
+- 2026-09-16 · **[Medium]** `[frontend]` — `Shell` binds the sidenav's `mode`/`opened` to a CDK `BreakpointObserver` signal: a fixed `side` rail at 1024px and wider, a closed `over` drawer opened from a toolbar toggle (`aria-label` + `aria-expanded`) below, closed after `NavigationEnd` or `NavigationSkipped` (`40fc27e5`); real scope added `NavigationSkipped`, since the only enabled link in 7a is the current page and a same-URL navigation completes none, and read the drawer through an optional `viewChild` because the navigation that creates `Shell` can end before its first render → coverage: new `angular-material/junior` bullet "`BreakpointObserver`" and new `angular/junior` bullet "Same-URL navigation is skipped, not completed" (both authored + marked ✅ 07-timetrack), `angular-material/junior` "Sidenav modes" and "Responsive Material composition" marked, `html/junior` disclosure-state bullet left unmarked (no `aria-controls`); frontend README Key patterns; PLANNING §14 Responsive intent + §0/§22 counts; PROGRESS Angular + Angular Material evidence cells. Verified in DevTools across 4 tests (1280 unchanged; 375 closed with the toggle opening an overlay; the current page's link closing it; crossing 1024px both ways) and `ng test` 12/12; the browser-Back path waits for a second in-app route in 7b. `/notes-plan angular junior` and `/notes-plan angular-material junior` owed
 - 2026-09-16 · **[Medium]** `[frontend]` — `Shell` closes its dialogs on destroy (`DestroyRef.onDestroy` + `MatDialog.closeAll()`), so a mid-session `401` lands on a clean `/login` instead of under the still-open dialog (`b32e11a6`) → coverage: new `angular-material/junior` bullet "Dialog lifetime is not the opener's" (authored + marked ✅ 07-timetrack), `angular/junior` destruction cleanup already covered; frontend README Key patterns; PLANNING §6 Subscription lifetime + §0/§22 counts; PROGRESS Angular Material evidence cell. Verified in the browser with a 20 s token. `/notes-plan angular-material junior` owed
 - 2026-09-14 · **[Medium]** `[frontend]` — the change-password dialog hands `MatDialog.open()` the toolbar's account button as `restoreFocus`, so closing it returns keyboard focus to the trigger instead of `<body>` (`1d4bf603`) → coverage: new `angular-material/junior` bullet "Focus restoration needs a target that still exists" and new `angular/junior` bullet "Query `read` option" (both authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 Accessibility floor rule + §0 and §22 counts; PROGRESS Angular Material evidence cell. `/notes-plan angular junior` and `/notes-plan angular-material junior` owed
 
