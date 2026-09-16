@@ -53,6 +53,15 @@ That ledger is append-only and authoritative — a review never re-raises what i
   stale test if `App` holds nothing worth asserting, then run the frontend test command and confirm it
   passes. **Effort:** Small *(raised 2026-09-16 while triaging the «Login page's `<h1>` names the brand»
   task — seen in the grep for every `<h1>` consumer)*
+- [ ] **angular / junior** `[frontend]` — `change-password-dialog.spec.ts` mounts `ChangePasswordDialog` with
+  only `imports: [ChangePasswordDialog]`, while the component injects `MatDialogRef` — a token no module
+  provides, minted by `MatDialog.open()` — so `should create` fails with `NG0201: No provider found for
+  MatDialogRef`. Proven by Victor's own `ng test --watch=false` run on 2026-09-16, which completed with
+  `Test Files 1 failed | 11 passed (12)` and this spec as the only failure. Supply `MatDialogRef` as a
+  `useValue` double in the spec's providers; the component also injects `UserService` and `MatSnackBar`, so
+  expect the next missing provider to surface once this one is satisfied and give each exactly what it
+  needs. Then re-run the suite and confirm `0 failed`. **Effort:** Small *(raised 2026-09-16 while
+  verifying the stale `app.spec.ts` task — the suite run it required)*
 
 ## Beyond the current gate
 
