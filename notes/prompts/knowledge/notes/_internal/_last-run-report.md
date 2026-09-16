@@ -1,20 +1,23 @@
 # Notes-audit — last run self-report
 
-**Date:** 2026-09-16 · **Target:** Java / junior / note 03
+**Date:** 2026-09-16 · **Target:** Java / junior / note 02 (append-only)
 
 **Status:** clean
 
-1. **Plan vs reality** — No stage reached. Guard 5 stopped the run: the scope-byte digest of
-   `notes/java/coverage/junior.md` is `bad12930` and the plan stores `2be5f410` (markers stripped first,
-   canonical command). Two `coverage-bullet-add` commits (`06f4851a`, `8066a023`) landed after the
-   2026-08-28 plan; the tracker's `Plan J` cell already flagged `⚠ stale 2026-09-11 (+2 bullets)`. The
-   entry is also a guard-13 no-op (`complete`, 6/6 `[x]`, both files present). No whole-artefact pass ran.
-2. **Report discipline** — No stage dispatched; nothing trimmed.
-3. **Failures & retries** — None. Required dispatches: 0 (blocked before dispatch); actual: 0.
-4. **Rule friction and rule breaches** — No breach. The guard-order observation from the 2026-08-28 run
-   (guard 5 before guard 13 prints `blocked` for an entry that owes nothing) recurred on this second
-   request for the same entry. Still not an edit: fails condition 3 — the replan is owed regardless, and
-   the output (no file changed) is identical either way. `_note-quality-standard.md` was not read: the
-   run stopped at a guard that does not consult it and dispatched no stage that would.
-5. **Verdict** — pipeline clean; closing recount `authoring-progress-recount` junior: 5/213* unchanged,
-   no commit.
+1. **Plan vs reality** — The split held: one append-only entry, four cold stages, one addition. No
+   whole-artefact step exists beyond the stages themselves; evidence is the traces plus the
+   orchestrator's own disk checks after every stage (both files `+122/−0`, pre-existing headings
+   unchanged and in order, parity 4 headings / 14 fences / 8 callouts / 5 table rows / 3 links).
+   Stage B still found 5 defects after Stage A had run the stage-B checks itself, so the checks
+   placed at A (`REC-171`) reduce but do not replace B.
+2. **Report discipline** — No output trimmed or discarded.
+3. **Failures & retries** — None. Required dispatches 4 (A deep, B deep, T standard, C standard);
+   actual 4; no re-dispatch.
+4. **Rule friction and rule breaches** — No breach. Friction: Stage C reported an HC-5 structural gap
+   for "Javadoc", which entry 00 already defines — HC-5 passes a term "an earlier note of the route
+   defined", but `_notes-review-es-prompt.md`'s config carries no `READABLE_SIBLINGS`, so Stage C
+   cannot check that exemption. The orchestrator dismissed it against 00's text; nothing was reopened.
+   `_session-rules.md` was read to EOF before the first dispatch.
+5. **Verdict** — pipeline clean. Candidate "pass `READABLE_SIBLINGS` to Stage C for HC-5's
+   earlier-note exemption" rejected — condition 3: the gap was report-only, the commit and the note
+   were unaffected. Closing recount `authoring-progress-recount` junior: 3/213* → 4/213* (`699c7d60`).
