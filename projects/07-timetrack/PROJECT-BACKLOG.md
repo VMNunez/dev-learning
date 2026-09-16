@@ -44,16 +44,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **html / junior** `[frontend]` — The Login page's only `<h1>` names the brand, not the page. At every
-  width the heading is `TimeTrack` (inside `.login-branding` at ≥ 768px, inside `.login-app-name` below it),
-  while the text that says what the view is — `Welcome back` — is a `mat-card-title`, which renders a
-  `<div>` and never reaches the heading outline. `html/junior` → "One `<h1>` per page, and it names the
-  page" says the reverse: a screen-reader user jumping by heading lands on the product name and never on
-  the view. Decide which text names the view (for example, the greeting as the `<h1>` with the lockup's
-  name demoted to plain text), then fix it in `frontend/timetrack/src/app/pages/login/login.html` and
-  confirm in DevTools → *Accessibility* that exactly one heading level 1 exists at 393px and at 1024px.
-  **Effort:** Small *(raised 2026-09-16 while closing the phone login layout task — the fix added the
-  second, phone-only `<h1>` with the same brand text, so the defect now spans both layouts)*
 - [ ] **angular / junior** `[frontend]` — `src/app/app.spec.ts` still carries the CLI scaffold's
   `should render title` test, which expects `compiled.querySelector('h1')?.textContent` to contain
   `Hello, timetrack`, while `src/app/app.html` no longer holds any `<h1>` (`grep -c "h1"
@@ -226,6 +216,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — `Login`'s only `<h1>` now names the view: `<h1 mat-card-title>Welcome back</h1>`, the brand a `<span class="login-brand-name">` styled by class at both widths (`d0fb4a01`) → coverage: `html/junior` "One `<h1>` per page" marked ✅ 07-timetrack, new `angular-material/junior` bullet "Title directives carry no heading semantics" (authored + marked), `html/junior` hiding-from-the-tree clause repointed to the `.login-brand-name` text; frontend README n/a (idiom, not a project decision); PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS HTML evidence cell. Verified in DevTools Accessibility: role heading, level 1, name "Welcome back". `/notes-plan angular-material junior` owed
 - 2026-09-16 · **[Low]** `[frontend]` — phone login layout decided: a logo + name lockup above the greeting below 768px, the form at a fixed `4rem` top offset instead of centred, and the outlined card flattened below 600px through `mat.card-overrides` (`ee3855b6`) → coverage: `css/junior` content-driven breakpoints and `angular-material/middle` token overrides already covered and marked, `angular-material/junior` "Responsive Material composition" left unmarked (its named cases are sidenav, dialogs and tables); frontend README Tradeoffs; PLANNING §14 Responsive intent + §0/§22 counts; PROGRESS Angular Material evidence cell. Verified in DevTools at 393, 700 and 768px
 - 2026-09-16 · **[Low]** `[frontend]` — toolbar account icon button raised from ≈1.45:1 to 6.42:1 contrast with `mat.icon-button-overrides` (`icon-color: on-primary`) scoped to `.mat-toolbar` (`382a4983`) → coverage: `angular-material/middle` "Component and theme token overrides" already covered and marked; frontend README Key patterns already names token overrides; PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS Angular Material evidence cell. Measured in DevTools
 - 2026-09-14 · **[Low]** `[frontend]` — `Login` and `ChangePasswordDialog` tear their HTTP calls down with `takeUntilDestroyed(this.destroyRef)`, and the dialog holds `dialogRef.disableClose` while its `PATCH` is in flight (`c5e69b3a`); real scope was the 2 call sites **plus** that lock, because teardown alone turns an Escape mid-save into a password change the server commits with no confirmation → coverage: new `angular/junior` bullet "Cancelling an in-flight `HttpClient` request" (authored + marked ✅ 07-timetrack), `angular/junior` injection context + subscription cleanup and `angular-material/junior` dismissal bullets already covered and marked; frontend README Key patterns + Tradeoffs (Back mid-save still closes the dialog — accepted); PLANNING §6 Subscription lifetime + §14 dialog Loading + §0/§22 counts; PROGRESS Angular + Angular Material evidence cells. Verified manually across 3 tests with a backend breakpoint: dismissal refused mid-save and restored after a `400`, success still confirms and closes, Back mid-save shows `(canceled)` while the password still changed. `/notes-plan angular junior` owed
