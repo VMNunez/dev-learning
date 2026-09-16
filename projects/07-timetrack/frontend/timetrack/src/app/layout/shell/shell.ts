@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   ElementRef,
   inject,
   viewChild,
@@ -58,13 +59,15 @@ export class Shell {
     'accountButton',
     { read: ElementRef },
   );
-
   readonly dialog = inject(MatDialog);
-
   readonly links = computed(() => {
     const role = this.authService.session()?.role;
     return role ? NAV_LINKS.filter((link) => link.roles.includes(role)) : [];
   });
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.dialog.closeAll());
+  }
 
   logout(): void {
     this.authService.logout();
