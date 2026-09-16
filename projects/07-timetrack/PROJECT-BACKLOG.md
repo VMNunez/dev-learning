@@ -44,10 +44,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular-material / junior** `[frontend]` — the change-password dialog's password inputs have no
-  visibility toggle, which §14's dialog spec asks for as a `matIconButton` `matSuffix` with an
-  `aria-label` per the Accessibility floor. §14 says "both password inputs" while the dialog has three —
-  rule whether Confirm gets one too. **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
 - [ ] **angular-material / junior** `[frontend]` — no dialog goes full-screen below 600px (§14 Responsive
   intent and the dialog spec): `MAT_DIALOG_DEFAULT_OPTIONS` in `app.config.ts` sets only `width: '30rem'`,
   so on a phone the change-password dialog renders at Material's `80vw` max width. The rule is app-wide and
@@ -237,6 +233,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — every password input gets a visibility toggle (`91df6a48`); real scope was the dialog's three inputs, Confirm included, plus the login's password field at Victor's request: a `type="button"` `matIconButton` `matSuffix` with a fixed `aria-label` and `aria-pressed`, its `mousedown` default prevented so the field keeps focus and is not marked touched → coverage: `html/junior` toggle pressed state and default `type="submit"`, `javascript/junior` `preventDefault` marked ✅ 07-timetrack, `angular-material/junior` form-field composition already ✅ 05; frontend README Key patterns; PLANNING §14 Accessibility floor + dialog spec + §0/§22 counts; PROGRESS HTML evidence cell. Verified in the browser across 7 tests and `ng test` 13/13
 - 2026-09-16 · **[Low]** `[frontend]` — the account menu arrow now turns with the open menu (`e3a981fa`) → coverage angular-material/junior, PLANNING §14 Motion
 - 2026-09-16 · **[Low]** `[frontend]` — the toolbar shows the logo beside "TimeTrack" and the user's name as the `MatMenu` trigger (`36e6fe96`, `a6dd0ada`, `3fd72933`); real scope added the `aria-label` removal, since keeping it over visible text breaks Label in Name, a sub-600px ellipsis instead of hiding the name, and a shared `Logo` component replacing the login's two inline SVG copies, shown in the toolbar only at 1024px and wider so it never sits beside the hamburger; no theme change — Material already gives an unthemed `matButton` inside `.mat-toolbar` the toolbar's text colour → coverage: nothing authored, every concept already covered (`html/junior` Label in Name, `angular/junior` `:host`, `css/junior` text truncation and `currentColor`, `angular-material/junior` `BreakpointObserver`); 3 project-07 clauses repointed (`mat-menu` composition, query `read` option, `currentColor`); frontend README Shared components (`logo`) + Tradeoffs (truncate over hide); PLANNING §14 Accessibility floor + Responsive intent, §13 tree, §0/§22 counts; PROGRESS Angular + HTML evidence cells. Verified in the browser at 1280 and 375px (Accessibility Name = the user's name, whole even when cut off) and `ng test` 13/13
 - 2026-09-16 · **[Low]** `[frontend]` — `change-password-dialog.spec.ts` registers `MatDialogRef` as a `{ close: vi.fn() }` `useValue` double, so the dialog mounts without `MatDialog.open()` (`81d8a173`); real scope was that one provider — `HttpClient`, `Router` and `MatSnackBar` are root-provided in v21, as `login.spec.ts` passing with none proves → coverage: `angular/junior` runtime-supplied tokens already marked ✅ 05-task-manager; README n/a; PLANNING §16 scaffold-spec rule + §0/§22 counts; PROGRESS Angular evidence cell. Verified by Victor: `ng test --watch=false` → 12/12 passed
