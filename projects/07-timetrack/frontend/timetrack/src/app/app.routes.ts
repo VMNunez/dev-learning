@@ -6,6 +6,7 @@ import { managerGuard } from './core/guards/manager-guard';
 export const routes: Routes = [
   {
     path: 'login',
+    title: 'Log in',
     canActivate: [noAuthGuard],
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
   },
@@ -21,10 +22,12 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
+        title: 'Dashboard',
         loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'projects',
+        title: 'Projects',
         canActivate: [managerGuard],
         loadComponent: () => import('./pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
       },
