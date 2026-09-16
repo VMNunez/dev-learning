@@ -240,9 +240,9 @@ Same bar as the backend block: each line is violable — a reviewer can open a f
 - **Subscription lifetime** — a template consumes an observable through the `async` pipe; a subscription
   in a class is wrapped in `takeUntilDestroyed()`. A bare `.subscribe()` with no teardown is a defect,
   including in a dialog. Tearing down a write aborts only the browser's wait, never a change the server
-  already received, so a dialog whose write is in flight holds `disableClose` until the call settles —
-  Escape and a backdrop click are refused exactly as its disabled Cancel button is. Browser Back still
-  closes it (`closeOnNavigation` ignores `disableClose`); that exit losing the confirmation is accepted. A dialog lives in the overlay container, not in its opener's view, and `closeOnNavigation` ignores `router.navigate()`, so the component that opens dialogs closes them when it is destroyed (`DestroyRef.onDestroy` + `MatDialog.closeAll()`) — the auth interceptor in `core/` never touches Material.
+  already received, so a form dialog opens with `disableClose` (a backdrop click never closes it) and
+  re-admits Escape through `dialogRef.keydownEvents()` only while no write is in flight — refused exactly
+  as its disabled Cancel button is. Browser Back still closes it (`closeOnNavigation` ignores `disableClose`); that exit losing the confirmation is accepted. A dialog lives in the overlay container, not in its opener's view, and `closeOnNavigation` ignores `router.navigate()`, so the component that opens dialogs closes them when it is destroyed (`DestroyRef.onDestroy` + `MatDialog.closeAll()`) — the auth interceptor in `core/` never touches Material.
 - **Async states** — every page that loads data renders three states explicitly: a `MatProgressSpinner`
   while `loading()` is true, a `mat-error` message plus a retry button when the call fails, and the empty
   message from §14 when the call succeeds with zero rows. A page that renders only the success table is
