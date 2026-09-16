@@ -74,6 +74,7 @@ src/app/
 - Signals over NgRx — app complexity did not justify a full state management library
 - Angular Material over custom CSS — enterprise UI library, matches what consultancies use in production
 - `disabledInteractive` on the login button over disabling the form during the call — focus stays on the button after a failed attempt instead of dropping to the page body; in exchange the component blocks a double submit itself with its `loading()` guard
+- Login form at a fixed top offset on phones over vertical centring — the virtual keyboard shrinks `100dvh`, so a centred form would jump as the user starts typing; in exchange a tall phone leaves empty space below the form
 - Browser Back closing the change-password dialog even mid-save over `closeOnNavigation: false` — the flag is read only when the dialog opens, so it would stop Back closing the dialog at all; in exchange a user who navigates away mid-save loses the confirmation while the server still commits the change
 
 ---
