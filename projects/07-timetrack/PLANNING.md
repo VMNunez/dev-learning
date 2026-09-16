@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` holds **1 open frontend Low** (raised 2026-09-16 while reviewing the Step 7a error patterns before its PR: the interceptor treats every `401`, including a failed login, as a silent session expiry), to close on this branch before the PR |
+| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` is **empty at every priority** — the frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (the interceptor treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029` |
 | **Current branch** | `feat/angular-shell-auth` — Step 7a's done condition passed on 2026-09-16, so per §22 the branch is **ready to PR into `projects/07-timetrack`** and takes no further step work. After that merge, `feat/angular-entries` is cut from `projects/07-timetrack` for Step 7b |
 | **Done condition** | Step 7b's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input` |
 | **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a done, Steps 7b–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7b–7d |
@@ -403,7 +403,7 @@ APPROVED     REJECTED ─────────┘
 > earlier `403` broke this plan's own convention, where `403` means *the caller's role or ownership does not
 > permit this action*. On `/api/users/me/password` neither can fail: the caller is authenticated and owns
 > `/me` by definition, so nothing about authorization is being refused. `401` is worse than
-> wrong: the Angular interceptor treats every `401` as an expired session and redirects to `/login`, so a
+> wrong: the Angular interceptor treats a `401` on any token-bearing request as an expired session and redirects to `/login`, so a
 > single typo in the current-password field would log the user out mid-change. `400` also lets the response
 > reuse the `fieldErrors` contract (§10), putting the message under the offending input instead of on a
 > generic error banner.
@@ -518,8 +518,9 @@ POST /api/auth/login       → returns JWT
 original 24h on 2026-07-28: a token stolen from `localStorage` was valid for a full day, and with no
 refresh-token flow in scope, 60 min is the balance between a usable work session and a bounded blast
 radius. When a token expires mid-session the API returns 401 — the Angular interceptor (Step 7a) catches
-it, clears the stored session, and redirects to `/login`. Expiry is handled once in the interceptor,
-never per page. The access/refresh trade-off is documented in `backend/README.md`.
+it, clears the stored session, and redirects to `/login`, which tells the user the session expired. Expiry
+is handled once in the interceptor, never per page, and **only for a request that carried a token**: the
+`401` of `POST /api/auth/login` means wrong credentials and belongs to the Login page. The access/refresh trade-off is documented in `backend/README.md`.
 
 **Login throttling:** five consecutive failed logins on the same email — or from the same client IP —
 answer `429` for one minute. `LoginAttemptService` holds the counters in memory and `AuthService` reads
@@ -885,7 +886,7 @@ src/app/
 │   │   ├── no-auth-guard.ts      ← the mirror: keeps an authenticated user off /login, sending them to /dashboard
 │   │   └── manager-guard.ts      ← blocks manager-only routes for an EMPLOYEE
 │   ├── interceptors/
-│   │   └── auth-interceptor.ts   ← attaches the Bearer token; on 401 clears the session → /login
+│   │   └── auth-interceptor.ts   ← attaches the Bearer token; on a token-bearing 401 expires the session → /login
 │   └── services/
 │       ├── auth-service.ts       ← login, logout, current user + role
 │       ├── entry-service.ts      ← /api/entries CRUD + the workflow PATCH calls
@@ -1162,7 +1163,7 @@ repeated in each wireframe. A page that renders only its success table is incomp
 
 | Page | Loading | Error | Empty |
 |---|---|---|---|
-| Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up | n/a — no data load |
+| Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | `mat-error` under the form: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same `mat-error`, and the form stays enabled so the user can retry once the minute is up; arriving after an expired session, the same line reads "Your session has expired. Please log in again." until the user types | n/a — no data load |
 | Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
 | Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
 | Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
@@ -2019,7 +2020,7 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds 1 open Low and nothing above** — frontend, raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR: `authInterceptor` treats every `401`, including a failed login, as a session expiry and redirects with no message. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
+currently holds no open task at any priority** — the frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
 HTTP `.subscribe()` calls with no teardown, against §6), closed the same day in `c5e69b3a`, the frontend
 Medium raised beside it (closing the change-password dialog dropped keyboard focus to `<body>`) closed on
 2026-09-14 in `1d4bf603`, the three frontend Lows raised on 2026-09-10 (the stuck login spinner, the missing `OnPush`,
@@ -2028,7 +2029,7 @@ the unsquared `tonal` variant) all closed on 2026-09-11, and the backend High ra
 stands.** The frontend tier has never been reviewed, so G4's `review-audit` run can still reopen it.
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
-Remaining sequence, with only that Low as backlog work: `fix/backend-backlog` merged into
+Remaining sequence, with no backlog work open: `fix/backend-backlog` merged into
 `projects/07-timetrack` on 2026-08-29 (PR #70, `a67866c4`), signing G3 off → create
 `feat/angular-shell-auth` from `projects/07-timetrack` → Step 7a.
 
