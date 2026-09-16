@@ -44,12 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **html / junior** `[frontend]` — no route in `app.routes.ts` declares a `title`, so the document title never
-  changes: `/login`, `/dashboard` and `/projects` all leave the tab, the history entry and the screen reader's
-  page announcement reading the one static `<title>` from `index.html`, which names the site and not the page.
-  Give each routed page its own title (Angular's route `title`, optionally a `TitleStrategy` that appends the
-  brand); `index.html`'s title stays as the pre-bootstrap fallback. **Effort:** Small
-  *(raised 2026-09-16 while triaging the Step 7a hygiene task)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -214,6 +209,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — every routed page declares its own document `title` (`b91a19ae`), and `AppTitleStrategy` in `core/strategies/`, provided for `TitleStrategy` in `app.config.ts`, appends `| TimeTrack` or writes the brand alone when no route resolves one (`82329089`) → coverage: new `angular/junior` bullet "Route titles" and new `typescript/junior` bullet "The `override` modifier" (both authored + marked ✅ 07-timetrack), `html/junior` "The title after a client-side route change" and `javascript/junior` "Class inheritance" marked, `angular/junior` provider recipes already ✅ 05; frontend README Key patterns; PLANNING §14 Accessibility floor + §13 tree + §0/§22 counts; PROGRESS Angular + HTML evidence cells. Verified in the browser across 3 tests (`Dashboard | TimeTrack`, `Log in | TimeTrack` after logout, `Projects | TimeTrack` as MANAGER) and `ng test` 13/13. `/notes-plan angular junior` and `/notes-plan typescript junior` owed
 - 2026-09-16 · **[Low]** `[frontend]` — the shell's navigation toggle pairs `aria-expanded` with `aria-controls` naming the sidenav's `id="app-sidenav"` (`3b48f37a`) → coverage html/junior (marked), PLANNING §6 Accessibility floor, frontend README already names the drawer toggle
 - 2026-09-16 · **[Low]** `[frontend]` — Step 7a hygiene: `ChangePasswordDialog` reads `fieldErrors` only after `isApiError` narrows `err.error`, `Shell.dialog` is `private`, the sidenav width and list padding are `15rem`/`0.5rem`, and `<title>` reads `TimeTrack` (`5c69a9e7`, `05a9a373`, `f5886a54`, `5241a4c7`) → coverage: new `angular/junior` bullet "Component member visibility" (authored + marked ✅ 07-timetrack), `typescript/junior` type predicates ✅ 06, `angular/junior` `HttpErrorResponse` ✅ 07 and `css/junior` `rem` ✅ 01 already covered and marked; frontend README n/a (typed `ApiError` + runtime guard already in Key patterns; the rest are idioms, not project decisions); PLANNING §14 Spacing now written in `rem` + §0/§22 counts; PROGRESS TypeScript evidence cell. Verified in the browser across 5 tests (field error still under its input on a `400`; generic line and no `TypeError` with the backend down; a server-flagged field blocks resubmit until edited; sidenav 240px → 360px with Chrome font size Very large and the content margin following on reload; tab title) and `ng test` 13/13. `/notes-plan angular junior` owed
 - 2026-09-16 · **[Low]** `[frontend]` — PLANNING aligned with the Step 7a it built — DECISION, no code change: §4/§13/§18 persistence written imperatively in `login()`/`logout()` (no `effect()`), §16 signal named `session`, §6 Component conventions no longer write `standalone: true`, §13 tree gains `pages/coming-soon/` and `user.ts ← ChangePasswordRequest`; real scope added two rulings Victor took before 7b — §6 *Form dialogs own their write* (a dialog the API can refuse field by field issues its own save through the `core/` service and closes only on success, the page refetches; `confirm-dialog` submits nothing) and §6 *Navigation boundary* (`Router` in pages, guards, the auth interceptor and the layout shell; never a service) → coverage: new `angular-material/junior` bullet "Where a form dialog's save runs" (authored + marked ✅ 07-timetrack from `ChangePasswordDialog`), `angular/junior` "Session expiry in an auth interceptor" and "Standalone `@Component`" already covered; frontend README Tradeoffs; PLANNING §6 + §0/§22 counts; PROGRESS n/a (evidence cell). `/notes-plan angular-material junior` owed
