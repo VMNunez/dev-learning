@@ -82,6 +82,7 @@ src/app/
 - A read-once expiry flag on `AuthService` over a `?expired` query param on `/login` — the reason is an event, so a reload or a bookmark never replays "Your session has expired"; in exchange the notice cannot be linked to or survive a full page reload
 - Browser Back closing the change-password dialog even mid-save over `closeOnNavigation: false` — the flag is read only when the dialog opens, so it would stop Back closing the dialog at all; in exchange a user who navigates away mid-save loses the confirmation while the server still commits the change
 - Truncating the toolbar's account name with an ellipsis on phones over hiding it — the visible name stays the trigger's whole accessible name, so no phone-only `aria-label` is needed; in exchange a long name shows cut off below 600px
+- Material's compact card for dialogs on phones over full-screen dialogs — a Material 3 full-screen dialog needs its own layout, a top bar with close and confirm actions, and stretching the standard dialog only spread its fields and buttons apart; in exchange a long form dialog scrolls inside a card with the page dimmed around it
 
 ---
 
