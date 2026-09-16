@@ -44,15 +44,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular-material / junior** `[frontend]` — The toolbar's account-menu button icon renders dark grey
-  on the teal primary toolbar, which looks well under the WCAG AA 3:1 minimum for a non-text UI component
-  that the frontend's generated guide requires. `frontend/timetrack/src/app/layout/shell/shell.html:5-6`
-  places `<mat-icon>account_circle</mat-icon>` inside a `matIconButton` in the toolbar with no colour
-  override, so the icon button keeps its default on-surface-variant colour instead of the colour meant for
-  content on the primary container. Observed 2026-09-15 in a browser screenshot of `/dashboard`; the ratio
-  was not measured — confirm it first with DevTools' contrast picker or an axe run on the shell before
-  fixing. **Effort:** Small *(raised 2026-09-15 while verifying Step 7a's login clause; not a review
-  finding)*
 - [ ] **css / junior** `[frontend]` — The Login page's mobile layout looks unfinished. Below 768px it
   already follows §14 → *Responsive intent* (the branding panel is hidden and only the form card remains),
   but that rule says nothing about how the card itself should sit on a phone. Seen in Chrome's device
@@ -225,6 +216,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — toolbar account icon button raised from ≈1.45:1 to 6.42:1 contrast with `mat.icon-button-overrides` (`icon-color: on-primary`) scoped to `.mat-toolbar` (`382a4983`) → coverage: `angular-material/middle` "Component and theme token overrides" already covered and marked; frontend README Key patterns already names token overrides; PLANNING §14 Accessibility floor rule + §0/§22 counts; PROGRESS Angular Material evidence cell. Measured in DevTools
 - 2026-09-14 · **[Low]** `[frontend]` — `Login` and `ChangePasswordDialog` tear their HTTP calls down with `takeUntilDestroyed(this.destroyRef)`, and the dialog holds `dialogRef.disableClose` while its `PATCH` is in flight (`c5e69b3a`); real scope was the 2 call sites **plus** that lock, because teardown alone turns an Escape mid-save into a password change the server commits with no confirmation → coverage: new `angular/junior` bullet "Cancelling an in-flight `HttpClient` request" (authored + marked ✅ 07-timetrack), `angular/junior` injection context + subscription cleanup and `angular-material/junior` dismissal bullets already covered and marked; frontend README Key patterns + Tradeoffs (Back mid-save still closes the dialog — accepted); PLANNING §6 Subscription lifetime + §14 dialog Loading + §0/§22 counts; PROGRESS Angular + Angular Material evidence cells. Verified manually across 3 tests with a backend breakpoint: dismissal refused mid-save and restored after a `400`, success still confirms and closes, Back mid-save shows `(canceled)` while the password still changed. `/notes-plan angular junior` owed
 - 2026-09-11 · **[Low]** `[frontend]` — `tonal-container-shape: 4px` added so all five button variants share the 4px shape → coverage angular-material/middle (marker clause repointed), frontend README already names token overrides
 - 2026-09-11 · **[Low]** `[frontend]` — post-login `navigate()` promise handled: `false` releases the form, a failed chunk load shows an error → coverage angular/junior (`Router.navigate()` outcome, new + marked)
