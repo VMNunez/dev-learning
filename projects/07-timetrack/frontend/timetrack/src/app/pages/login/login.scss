@@ -80,6 +80,22 @@
 
 .login-app-name {
   display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1rem 0;
+  color: var(--mat-sys-primary);
+
+  .login-app-logo {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+  }
+
+  h1 {
+    margin: 0;
+    font: var(--mat-sys-title-large);
+    font-weight: 700;
+  }
 }
 
 @media (max-width: 767px) {
@@ -92,6 +108,22 @@
   }
 
   .login-app-name {
-    display: block;
+    display: flex;
+  }
+
+  .login-panel {
+    align-items: flex-start;
+    padding: 4rem 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 599px) {
+  .login-card {
+    @include mat.card-overrides(
+      (
+        outlined-outline-width: 0,
+        outlined-container-color: transparent,
+      )
+    );
   }
 }
