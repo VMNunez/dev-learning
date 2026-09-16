@@ -29,6 +29,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `matButton`, labelled with the logged-in user's name, opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
+- Menu trigger open state — `MatMenuTrigger` sets `aria-expanded` on its host but never changes the host's content, so an indicator inside the trigger, such as a dropdown arrow, shows the open menu only when bound to the trigger's `menuOpened` and `menuClosed` outputs, which fire however the menu closes ✅ 07-timetrack — the `Shell` account trigger sets an `isAccountMenuOpen` signal from `(menuOpened)`/`(menuClosed)` and rotates its `arrow_drop_down` through `[class.open]`
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
 - Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
 
