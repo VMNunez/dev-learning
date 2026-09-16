@@ -171,7 +171,7 @@ Handoff: With values and text both understood one at a time, entry 03 stops eval
 
 ## 03 — Control flow
 
-Status: complete
+Status: pending
 
 Studied: pending
 
