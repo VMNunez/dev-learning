@@ -44,7 +44,16 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **html / junior** `[frontend]` — The Login page's only `<h1>` names the brand, not the page. At every
+  width the heading is `TimeTrack` (inside `.login-branding` at ≥ 768px, inside `.login-app-name` below it),
+  while the text that says what the view is — `Welcome back` — is a `mat-card-title`, which renders a
+  `<div>` and never reaches the heading outline. `html/junior` → "One `<h1>` per page, and it names the
+  page" says the reverse: a screen-reader user jumping by heading lands on the product name and never on
+  the view. Decide which text names the view (for example, the greeting as the `<h1>` with the lockup's
+  name demoted to plain text), then fix it in `frontend/timetrack/src/app/pages/login/login.html` and
+  confirm in DevTools → *Accessibility* that exactly one heading level 1 exists at 393px and at 1024px.
+  **Effort:** Small *(raised 2026-09-16 while closing the phone login layout task — the fix added the
+  second, phone-only `<h1>` with the same brand text, so the defect now spans both layouts)*
 
 ## Beyond the current gate
 
