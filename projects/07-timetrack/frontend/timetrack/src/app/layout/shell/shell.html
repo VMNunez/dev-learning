@@ -6,6 +6,7 @@
       (click)="drawer.toggle()"
       aria-label="Toggle navigation menu"
       [attr.aria-expanded]="drawer.opened"
+      aria-controls="app-sidenav"
     >
       <mat-icon>menu</mat-icon>
     </button>
@@ -45,7 +46,12 @@
   </div>
 </mat-toolbar>
 <mat-sidenav-container>
-  <mat-sidenav #drawer [mode]="isDesktop() ? 'side' : 'over'" [opened]="isDesktop()">
+  <mat-sidenav
+    #drawer
+    id="app-sidenav"
+    [mode]="isDesktop() ? 'side' : 'over'"
+    [opened]="isDesktop()"
+  >
     <mat-nav-list>
       @for (link of links(); track link.route) {
         @if (link.pending) {
