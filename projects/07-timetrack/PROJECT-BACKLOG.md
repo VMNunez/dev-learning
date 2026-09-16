@@ -44,16 +44,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **angular / junior** `[frontend]` — PLANNING describes a Step 7a it did not build, and in each case the
-  code is the better answer: (1) §4, §13's shared-state row and §18 say `AuthService` persists with
-  `effect()`, but it writes `localStorage` imperatively in `saveSession()`/`logout()`; (2) §16 calls the
-  signal `currentUser`, the code `session`; (3) §6 Component conventions requires `standalone: true`, which
-  v20+ makes the default and the app's generated guide says not to write; (4) §6 Service boundary injects
-  `Router` "in pages and guards only", yet §10 has the interceptor navigate and `Shell` navigates on
-  logout; (5) §6 State ownership forbids a child component injecting a `core/services/` service, while
-  §15 7a has `change-password-dialog` call `UserService` — 7b's `entry-dialog` needs that ruled before it
-  is built. §13's tree also omits `pages/coming-soon/` and lists `user.ts ← User` for a file holding
-  `ChangePasswordRequest`. **Effort:** Small, docs only *(raised 2026-09-16 in the pre-PR review of Step 7a)*
 - [ ] **angular / junior** `[frontend]` — hygiene left from Step 7a: `ChangePasswordDialog` reads the error
   body with `err.error as ApiError | null` where `Login` narrows it with the existing `isApiError` guard;
   `Shell.dialog` is `readonly` public but no template reads it; `shell.scss` sizes the rail and list
@@ -228,6 +218,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-16 · **[Low]** `[frontend]` — PLANNING aligned with the Step 7a it built — DECISION, no code change: §4/§13/§18 persistence written imperatively in `login()`/`logout()` (no `effect()`), §16 signal named `session`, §6 Component conventions no longer write `standalone: true`, §13 tree gains `pages/coming-soon/` and `user.ts ← ChangePasswordRequest`; real scope added two rulings Victor took before 7b — §6 *Form dialogs own their write* (a dialog the API can refuse field by field issues its own save through the `core/` service and closes only on success, the page refetches; `confirm-dialog` submits nothing) and §6 *Navigation boundary* (`Router` in pages, guards, the auth interceptor and the layout shell; never a service) → coverage: new `angular-material/junior` bullet "Where a form dialog's save runs" (authored + marked ✅ 07-timetrack from `ChangePasswordDialog`), `angular/junior` "Session expiry in an auth interceptor" and "Standalone `@Component`" already covered; frontend README Tradeoffs; PLANNING §6 + §0/§22 counts; PROGRESS n/a (evidence cell). `/notes-plan angular-material junior` owed
 - 2026-09-16 · **[Low]** `[frontend]` — dialogs keep Material's compact-window card on phones, not full-screen below 600px — DECISION, no code change: in Material 21 the card is capped at `calc(100vw - 32px)` by `--mat-dialog-container-small-max-width` (the task's `80vw` was stale), and an opt-in stretched `panelClass` (`container-small-max-width: 100vw`, `height: 100dvh`) was built, checked in the browser at 375px and rejected by Victor, then reverted uncommitted — a Material 3 full-screen dialog is a different layout (top bar with close and confirm actions), and stretching the standard one only spread the fields and buttons apart; a blanket rule would also have sent `confirm-dialog` full-screen → coverage: `angular-material/junior` "Responsive Material composition" already covered, left as marked (sidenav clause still true); frontend README Tradeoffs; PLANNING §14 Responsive intent + visual checklist + change-password dialog spec, §0/§22 counts; PROGRESS n/a
 - 2026-09-16 · **[Low]** `[frontend]` — every password input gets a visibility toggle (`91df6a48`); real scope was the dialog's three inputs, Confirm included, plus the login's password field at Victor's request: a `type="button"` `matIconButton` `matSuffix` with a fixed `aria-label` and `aria-pressed`, its `mousedown` default prevented so the field keeps focus and is not marked touched → coverage: `html/junior` toggle pressed state and default `type="submit"`, `javascript/junior` `preventDefault` marked ✅ 07-timetrack, `angular-material/junior` form-field composition already ✅ 05; frontend README Key patterns; PLANNING §14 Accessibility floor + dialog spec + §0/§22 counts; PROGRESS HTML evidence cell. Verified in the browser across 7 tests and `ng test` 13/13
 - 2026-09-16 · **[Low]** `[frontend]` — the account menu arrow now turns with the open menu (`e3a981fa`) → coverage angular-material/junior, PLANNING §14 Motion
