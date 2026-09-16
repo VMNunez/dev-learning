@@ -40,11 +40,46 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-*No open Medium tasks.*
+- [ ] **angular-material / junior** `[frontend]` — `Shell` renders `<mat-sidenav mode="side" opened>` at every
+  width and the toolbar has no menu button, while §14 Responsive intent puts the sidenav in `mode="over"`,
+  closed by default and opened from a hamburger, below 1024px. At 375px the fixed 240px rail leaves about
+  135px for the page, so Steps 7b–7d would lay out every page against a content width a phone never has —
+  the one screen §14 says a recruiter may open. Drive `mode`/`opened` from a breakpoint (CDK
+  `BreakpointObserver` → signal), add the toolbar toggle with an `aria-label`, and close the drawer after a
+  navigation in `over` mode. **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **angular-material / junior** `[frontend]` — the toolbar diverges from §14 App shell: the `MatMenu`
+  trigger is an icon-only `account_circle` button where §14 has it show the logged-in user's name (§13's
+  shared-state row also lists "App shell (name, …)"), and no logo sits beside "TimeTrack". `session()`
+  already carries `name`, yet nothing in the app shows who is logged in. Render the name in the trigger
+  with an accessible name that still says what the button opens, or rule the icon-only trigger in §14.
+  **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
+- [ ] **angular-material / junior** `[frontend]` — the change-password dialog's password inputs have no
+  visibility toggle, which §14's dialog spec asks for as a `matIconButton` `matSuffix` with an
+  `aria-label` per the Accessibility floor. §14 says "both password inputs" while the dialog has three —
+  rule whether Confirm gets one too. **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
+- [ ] **angular-material / junior** `[frontend]` — no dialog goes full-screen below 600px (§14 Responsive
+  intent and the dialog spec): `MAT_DIALOG_DEFAULT_OPTIONS` in `app.config.ts` sets only `width: '30rem'`,
+  so on a phone the change-password dialog renders at Material's `80vw` max width. The rule is app-wide and
+  7a ships the first dialog, so the mechanism belongs in one place, not repeated per dialog in 7b–7d.
+  **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
+- [ ] **angular / junior** `[frontend]` — PLANNING describes a Step 7a it did not build, and in each case the
+  code is the better answer: (1) §4, §13's shared-state row and §18 say `AuthService` persists with
+  `effect()`, but it writes `localStorage` imperatively in `saveSession()`/`logout()`; (2) §16 calls the
+  signal `currentUser`, the code `session`; (3) §6 Component conventions requires `standalone: true`, which
+  v20+ makes the default and the app's generated guide says not to write; (4) §6 Service boundary injects
+  `Router` "in pages and guards only", yet §10 has the interceptor navigate and `Shell` navigates on
+  logout; (5) §6 State ownership forbids a child component injecting a `core/services/` service, while
+  §15 7a has `change-password-dialog` call `UserService` — 7b's `entry-dialog` needs that ruled before it
+  is built. §13's tree also omits `pages/coming-soon/` and lists `user.ts ← User` for a file holding
+  `ChangePasswordRequest`. **Effort:** Small, docs only *(raised 2026-09-16 in the pre-PR review of Step 7a)*
+- [ ] **angular / junior** `[frontend]` — hygiene left from Step 7a: `ChangePasswordDialog` reads the error
+  body with `err.error as ApiError | null` where `Login` narrows it with the existing `isApiError` guard;
+  `Shell.dialog` is `readonly` public but no template reads it; `shell.scss` sizes the rail and list
+  padding in `px` against the project's rem rule; `index.html`'s `<title>` spells the brand `Timetrack`.
+  **Effort:** Small *(raised 2026-09-16 in the pre-PR review of Step 7a)*
 
 ## Beyond the current gate
 
