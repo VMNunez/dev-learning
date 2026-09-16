@@ -19,6 +19,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { isApiError } from '../../shared/models/api-error';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Logo } from '../../shared/components/logo/logo';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +30,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    Logo,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
