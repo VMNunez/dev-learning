@@ -20,6 +20,7 @@ import { AuthService } from '../../core/services/auth-service';
 import { isApiError } from '../../shared/models/api-error';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Logo } from '../../shared/components/logo/logo';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,7 @@ import { Logo } from '../../shared/components/logo/logo';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatIconModule,
     Logo,
   ],
   templateUrl: './login.html',
@@ -43,7 +45,7 @@ export class Login {
   private readonly destroyRef = inject(DestroyRef);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-
+  readonly showPassword = signal(false);
   readonly form = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,

@@ -12,15 +12,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { UserService } from '../../../core/services/user-service';
 
-import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ApiError } from '../../models/api-error';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
+import { ApiError } from '../../models/api-error';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -49,6 +50,7 @@ class MismatchErrorStateMatcher implements ErrorStateMatcher {
     ReactiveFormsModule,
     MatProgressSpinner,
     MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './change-password-dialog.html',
   styleUrl: './change-password-dialog.scss',
@@ -62,6 +64,9 @@ export class ChangePasswordDialog {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly mismatchMatcher = new MismatchErrorStateMatcher();
+  readonly showCurrent = signal(false);
+  readonly showNew = signal(false);
+  readonly showConfirm = signal(false);
 
   readonly form = new FormGroup(
     {
