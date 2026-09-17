@@ -422,13 +422,11 @@ String email = EmailNormalizer.normalize(request.getEmail());
 loginAttemptService.recordFailure(email);
 ```
 
-La primera línea se lee: "si `email` es `null`, devuelve `null`; si no, devuelve el email sin los espacios que lo rodean y pasado a minúsculas con `Locale.ROOT`". La forma `condición ? a : b` es el operador condicional, que cubre [03-flujo-de-control.md](03-flujo-de-control.md). La línea usa `trim()` en lugar del `strip()` recomendado en la sección _`strip()` frente a `trim()`_; aquí lo único que importa es el `toLowerCase(Locale.ROOT)` del final.
-
 En `login`, `request.getEmail()` es el email tal y como lo escribió el usuario, y `email` es su forma normalizada. Ese valor normalizado se usa después como clave. El método que carga el usuario por email normaliza con el mismo método, y `recordFailure(email)` añade un intento fallido más al contador guardado bajo ese email. Tras cinco fallos, el siguiente intento se rechaza hasta que pase un minuto desde el último fallo. El plan del proyecto dice que un email que solo difiere en mayúsculas o minúsculas usa el **mismo** contador, porque la clave es la dirección normalizada. Con el `toLowerCase()` sin argumento en un servidor turco, eso deja de ser cierto: `Isabel@mail.com` se contaría bajo `ısabel@mail.com` e `isabel@mail.com` bajo `isabel@mail.com`, dos contadores separados para una sola cuenta.
 
 ### `Locale.ROOT` o el locale del usuario — qué argumento va en cada sitio
 
-La parte anterior mostró la única llamada incorrecta y la correcta para una clave. Hay una tercera opción, y la elección entre las tres se reduce a una sola pregunta: ¿va a leer el resultado un **programa**, o una **persona**?
+La parte anterior mostró la única llamada incorrecta y la correcta para una clave(TODO: NO ME GUSTA "La parte anterior mostró la única llamada incorrecta y la correcta para una clave"). Hay una tercera opción, y la elección entre las tres se reduce a una sola pregunta: ¿va a leer el resultado un **programa**, o una **persona**?
 
 | Llamada                                                             | Reglas que sigue                                          | Para qué se usa                                                                                                                                                                                  |
 | ------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
