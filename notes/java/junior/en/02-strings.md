@@ -361,9 +361,9 @@ java Main                                        →  isabel@mail.com   (the loc
 java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com   (locale changed to Turkish, for this run only)
 ```
 
-Read the second line letter by letter. The capital `I` became `ı`, and the capital `M` became `m` as usual. The `i` in `Mail` was already lower case, so lowering left it alone: only a capital `I` is affected. If your terminal prints `?sabel@mail.com` instead, the `?` comes from the output step, that is, from `System.out.println`: that terminal's character set, that is, the set of characters that terminal allows, has no `ı`. That is why it is Java, not the terminal, that writes a `?` in its place: when it turns the text into the bytes it sends to the terminal, it replaces with `?` every character that character set does not include. The `String` itself still holds `ı`.
+Read the second line letter by letter. The capital `I` became `ı`, and the capital `M` became `m` as usual. The `i` in `Mail` was already lower case, so lowering left it alone: only a capital `I` is affected. If your terminal prints `?sabel@mail.com` instead, the `?` comes from the output step, that is, from `System.out.println`: that terminal's character set, that is, the set of characters that terminal allows, has no `ı`. That is why Java writes a `?` in its place. The `String` itself still holds `ı`.
 
-The reason is the Turkish alphabet. English and Spanish have one letter i, written `i` in lower case and `I` in upper case. Turkish has **two** separate letters: an i with a dot and an i without one, and each keeps its dot, or its lack of one, in both cases:
+The reason for this failure is the use of the Turkish alphabet. English and Spanish have one letter i, written `i` in lower case and `I` in upper case. Turkish has **two** separate letters: an i with a dot and an i without one, and each keeps its dot, or its lack of one, in both cases:
 
 ```
 English / Spanish rules                Turkish rules
@@ -379,7 +379,7 @@ In Turkish, the capital without a dot, `I`, belongs to the dotless `ı`, so lowe
 
 ### What the dotless `ı` breaks when an email is a lookup key
 
-The damage appears when the lowered text is used to **find** something. Follow one employee, Isabel, through an application that lowers emails with the no-argument `toLowerCase()`:
+The damage appears when the lowered text is used to **find** something. Follow one employee, Isabel, through an application that lowers emails with the no-argument `toLowerCase()` and runs on a server whose default locale is Turkish. The locale that counts is the server's, not Isabel's: whatever language her phone is set to makes no difference, because `toLowerCase()` runs on the server:
 
 1. Isabel signs up typing `isabel@mail.com`. The application lowers it and stores `isabel@mail.com`. There is no capital `I` in it, so every machine stores the same text.
 2. Months later she logs in from her phone. The phone capitalises the first letter, so the request carries `Isabel@mail.com`, together with her correct password.

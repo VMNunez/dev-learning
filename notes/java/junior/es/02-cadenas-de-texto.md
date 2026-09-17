@@ -363,7 +363,7 @@ java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com   (locale
 
 Lee la segunda línea letra a letra. La `I` mayúscula se convirtió en `ı`, y la `M` mayúscula se convirtió en `m` como siempre. La `i` de `Mail` ya estaba en minúscula, así que pasarla a minúscula no la tocó: solo se ve afectada la `I` mayúscula. Si tu terminal imprime en su lugar `?sabel@mail.com`, el `?` viene del paso de salida por pantalla, es decir, de `System.out.println`: el juego de caracteres de esa terminal, es decir, el conjunto de caracteres que esa terminal permite usar, no tiene la `ı`. Por eso Java escribe un `?` en su lugar. El propio `String` sigue guardando la `ı`.
 
-El motivo (TODO: DE ESTE FALLO ES EL USO DEL )es el alfabeto turco. El inglés y el español tienen una sola letra i, que se escribe `i` en minúscula e `I` en mayúscula. El turco tiene **dos** letras distintas: una i con punto y una i sin punto, y cada una conserva su punto, o la ausencia de él, en las dos formas:
+El motivo de este fallo es el uso del alfabeto turco. El inglés y el español tienen una sola letra i, que se escribe `i` en minúscula e `I` en mayúscula. El turco tiene **dos** letras distintas: una i con punto y una i sin punto, y cada una conserva su punto, o la ausencia de él, en las dos formas:
 
 ```
 Reglas del inglés / español              Reglas del turco
@@ -379,7 +379,7 @@ En turco, la mayúscula sin punto, `I`, pertenece a la `ı` sin punto, así que 
 
 ### Lo que rompe la `ı` sin punto cuando un email es clave de búsqueda
 
-El daño aparece cuando el texto ya en minúsculas se usa para **buscar** algo. Sigue a una empleada(TODO: DE TURQUIA CON SU LOCALE EN TURCO), Isabel, a través de una aplicación que pasa los emails a minúsculas con el `toLowerCase()` sin argumento:
+El daño aparece cuando el texto ya en minúsculas se usa para **buscar** algo. Sigue a una empleada, Isabel, a través de una aplicación que pasa los emails a minúsculas con el `toLowerCase()` sin argumento y que se ejecuta en un servidor cuyo locale por defecto es el turco. El locale que cuenta es el de ese servidor, no el de Isabel: da igual en qué idioma tenga ella su móvil, porque `toLowerCase()` se ejecuta en el servidor:
 
 1. Isabel se registra escribiendo `isabel@mail.com`. La aplicación lo pasa a minúsculas y guarda `isabel@mail.com`. No hay ninguna `I` mayúscula ahí dentro, así que todas las máquinas guardan el mismo texto.
 2. Meses después inicia sesión desde el móvil. El móvil pone en mayúscula la primera letra, así que la petición lleva `Isabel@mail.com`, junto con su contraseña correcta.
