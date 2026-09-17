@@ -436,7 +436,7 @@ So far you have seen two ways to call `toLowerCase()`: with no argument, which y
 
 Read the table by its last column. If a program will compare, store or look up the result, it is an identifier, and `Locale.ROOT` is the argument. If a person will read it, the correct letters are the ones of that person's language, so you pass their locale. `Locale.of("tr", "TR")` builds that locale from a language code and a country code (the method exists since Java 19). In a web application the user's language usually arrives with the browser's request; how you read it there belongs to the Spring Boot notes. The no-argument form fits neither case, because its result depends on the machine instead of the program or the person.
 
-A role name shows the identifier row at work, and it goes wrong in the other direction, through `toUpperCase()`:
+The next example applies the same rule to `toUpperCase()`: a role name is an identifier, and here it is raised to upper case to compare it with `equals`:
 
 ```java
 String role = "admin";

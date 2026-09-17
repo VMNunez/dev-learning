@@ -436,7 +436,7 @@ Hasta aquí has visto dos formas de llamar a `toLowerCase()`: sin argumento, que
 
 Lee la tabla por su última columna. Si un programa va a comparar, guardar o buscar el resultado, es un identificador, y el argumento es `Locale.ROOT`. Si lo va a leer una persona, las letras correctas son las del idioma de esa persona, así que le pasas su locale. `Locale.of("tr", "TR")` construye ese locale a partir de un código de idioma y un código de país (el método existe desde Java 19). En una aplicación web el idioma del usuario suele llegar con la petición del navegador; cómo se lee ahí pertenece a las notas de Spring Boot. La forma sin argumento no encaja en ninguno de los dos casos, porque su resultado depende de la máquina en lugar de depender del programa o de la persona.
 
-Un ejemplo con `toUpperCase()` repite la fila del identificador de la tabla anterior(TODO: NO ME GUSTA "repite la fila del identificador de la tabla anterior"), ahora en la dirección contraria:
+El siguiente ejemplo aplica la misma regla a `toUpperCase()`: el nombre de un rol es un identificador, y aquí se pasa a mayúsculas para compararlo con `equals`:
 
 ```java
 String role = "admin";
