@@ -408,7 +408,7 @@ String key = email.toLowerCase(Locale.ROOT);   // "isabel@mail.com", también en
 
 > **¿Por qué no basta con asegurarte de que el servidor nunca esté puesto en turco?** Tú no decides dónde se ejecuta tu código: el portátil de un compañero, la máquina que ejecuta los tests, el servidor de un cliente. Una línea que depende del locale por defecto pasa todos los tests en tu ordenador y solo falla en la máquina con el otro idioma. Pasar `Locale.ROOT` hace que la línea sea correcta dondequiera que se ejecute.
 
-> **Adelanto — Spring Boot:** el fragmento de abajo viene del código de login del proyecto 07. `AuthService` y `LoginAttemptService` son clases de servicio(TODO: CLASES DE SERVICIO?) de Spring que todavía no has estudiado; vas a construir clases como ellas en las notas de Spring Boot. Aquí solo importa el texto del email que pasa a través de ellas.
+> **Adelanto — Spring Boot:** el fragmento de abajo viene del código de login del proyecto 07. `AuthService` y `LoginAttemptService` son clases de servicio de Spring, es decir, las clases donde una aplicación de Spring pone su lógica de negocio: aquí, comprobar el login y contar los intentos fallidos. Todavía no las has estudiado; vas a construir clases como ellas en las notas de Spring Boot. Aquí solo importa el texto del email que pasa a través de ellas.
 
 El proyecto 07 hace exactamente esto. Todo email que recibe la aplicación pasa por un método, `EmailNormalizer.normalize`, antes de usarse:
 
