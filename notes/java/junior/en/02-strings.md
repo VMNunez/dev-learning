@@ -344,7 +344,7 @@ Changing letters to lower or upper case is not the same operation in every langu
 
 The steps behind every call to `toLowerCase()` or `toUpperCase()` with no argument are listed below. The first two steps happen only once, when the program starts; the last two happen on every call:
 
-1. When the JVM starts, it reads the language settings of the operating system and stores them as **system properties**, which are values with a fixed name that the whole program can read. The two system properties that matter here are `user.language` (for example `es` or `tr`) and `user.country` (`ES`, `TR`).
+1. When the JVM starts, it reads the language settings of the operating system and stores them as **system properties**, which are values with a fixed name that the whole program can read. The two system properties that are imported here are `user.language` (for example `es` or `tr`) and `user.country` (`ES`, `TR`).
 2. From those properties it builds one `Locale` object, the **default locale**. From then on, that default locale is obtained with `Locale.getDefault()`, unless some code replaces it by calling `Locale.setDefault(...)`.
 3. `toLowerCase()` with no argument does exactly what `toLowerCase(Locale.getDefault())` does. So it asks for the default locale and applies that language's case rules. `toUpperCase()` with no argument works the same way, because internally it uses `toUpperCase(Locale.getDefault())`.
 4. If the default locale is Turkish, those rules turn a capital `I` into `ı` when lowering, and a small `i` into `İ`, a capital I with a dot, when raising.
@@ -385,7 +385,7 @@ The damage appears when the lowered text is used to **find** something. Follow o
 2. Months later she logs in from her phone. The phone capitalises the first letter, so the request carries `Isabel@mail.com`, together with her correct password.
 3. The server's default locale is Turkish, so `toLowerCase()` produces `ısabel@mail.com`.
 4. The application asks the database for the user whose email is equal to `ısabel@mail.com`. There is no such row: the stored email starts with `U+0069`, which is the letter `i`, not with `U+0131`, which is the letter `ı`.
-5. The login is refused as if the email or the password were wrong. Nothing is thrown and nothing warns you, and the log line shows an address that reads just like hers.
+5. The login is refused as if the username or the password were wrong. Nothing is thrown and nothing warns you, and the log line shows an address that reads just like hers.
 
 A lookup key only works if every way of typing the same thing produces the same key. `Isabel@mail.com` and `isabel@mail.com` must both become `isabel@mail.com`, and the default locale breaks exactly that promise. The same applies to anything else that stores or finds by that text: a key in a `HashMap`, a cache entry, a counter.
 
@@ -404,7 +404,7 @@ String key = email.toLowerCase(Locale.ROOT);   // "isabel@mail.com", also on a T
 - **`Locale.ROOT`** is a ready-made `Locale` value that belongs to the `Locale` class itself, not to one particular `Locale` object. That is why you read it off the class name, the same way you call `Integer.parseInt` on `Integer`. What it means for a member to belong to the class is explained in [06-oop-classes.md](06-oop-classes.md).
 - **`import java.util.Locale;`** goes at the top of the file. `String` lives in the package `java.lang`, which every file can use without an import. `Locale` lives in `java.util`, so without this line you would have to write its full name, `java.util.Locale`, every time. [04-methods.md](04-methods.md) explains packages and imports.
 
-> **Why not skip the lowering and compare with `equalsIgnoreCase`?** Its Javadoc, the method's official documentation, says it does not take the locale into account: it compares letter by letter using the general Unicode rules, with no language's exceptions, just as when you use `Locale.ROOT`. That is why `"Isabel@mail.com".equalsIgnoreCase("isabel@mail.com")` is `true` on every machine. But it only compares two texts you already hold side by side. A lookup does not work that way. The database looks for a stored email equal to the text you give it. A `HashMap` goes to the position that the key's hash picks. Both need one agreed spelling of the key before the search starts, and `toLowerCase(Locale.ROOT)` is the right way to create that single spelling, so we call this method before storing the key, and also before searching with it.
+> **Why not skip the lowering and compare with `equalsIgnoreCase`?** Its Javadoc, the method's official documentation, says it does not take the locale into account: it compares letter by letter using the general Unicode rules, with no language's exceptions, just as when you use `Locale.ROOT`. That is why `"Isabel@mail.com".equalsIgnoreCase("isabel@mail.com")` is `true` on every machine. But it only compares two texts you already hold side by side. A lookup does not work that way. The database looks for a stored email equal to the text you give it. A `HashMap` goes to the position that the key's hash picks. Both need one agreed spelling of the key before the search starts, and `toLowerCase(Locale.ROOT)` is the right way to create that single spelling, so we will use this method before storing the key, and also before searching with it.
 
 > **Why not simply make sure the server is never set to Turkish?** You do not decide where your code runs: a colleague's laptop, the machine that runs the tests, a client's server. A line that depends on the default locale passes every test on your computer and fails only on the machine with the other language. Passing `Locale.ROOT` makes the line correct wherever it runs.
 
@@ -445,7 +445,7 @@ role.toUpperCase().equals("ADMIN")              // MAL  — false on a Turkish m
 role.toUpperCase(Locale.ROOT).equals("ADMIN")   // BIEN — true on every machine
 ```
 
-> **You will also meet `Locale.ENGLISH` or `Locale.US` instead of `Locale.ROOT`.** Older code often writes `toUpperCase(Locale.ENGLISH)` for identifiers. The result is the same as with `Locale.ROOT`, because English has no special case rules. `Locale.ROOT` is the clearer choice, because it says that no language is meant, while `Locale.ENGLISH` suggests the text is English when it is really an identifier.
+> **You will also meet `Locale.ENGLISH` or `Locale.US` instead of `Locale.ROOT`.** Older code often writes `toUpperCase(Locale.ENGLISH)` for identifiers. The result is the same as with `Locale.ROOT`, because English has no special case rules. `Locale.ROOT` is the clearer choice, because it makes clear that no particular language is meant, while `Locale.ENGLISH` suggests the text is English when it is really an identifier.
 
 ---
 
