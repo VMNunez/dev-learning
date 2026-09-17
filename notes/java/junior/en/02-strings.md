@@ -431,7 +431,7 @@ So far you have seen two ways to call `toLowerCase()`: with no argument, which y
 | Call | Whose rules | Use it for |
 |---|---|---|
 | `toLowerCase()` / `toUpperCase()` | the default locale of whatever machine runs the code | nothing whose result must be predictable — in practice, avoid it |
-| `toLowerCase(Locale.ROOT)` / `toUpperCase(Locale.ROOT)` | no particular language | identifiers, keys and protocol values: an email used to find a user, a `HashMap` key, a role name compared with `equals`, the name of an HTTP header |
+| `toLowerCase(Locale.ROOT)` / `toUpperCase(Locale.ROOT)` | no particular language | identifiers, keys and protocol values, which are texts whose format a communication standard such as HTTP fixes: an email used to find a user, a `HashMap` key, a role name compared with `equals`, the name of an HTTP header |
 | `toUpperCase(Locale.of("tr", "TR"))` — the user's own locale | that user's language | text a person reads in their own language: a title in capitals shown to a Turkish reader must show `İ` |
 
 Read the table by its last column. If a program will compare, store or look up the result, it is an identifier, and `Locale.ROOT` is the argument. If a person will read it, the correct letters are the ones of that person's language, so you pass their locale. `Locale.of("tr", "TR")` builds that locale from a language code and a country code (the method exists since Java 19). In a web application the user's language usually arrives with the browser's request; how you read it there belongs to the Spring Boot notes. The no-argument form fits neither case, because its result depends on the machine instead of the program or the person.
