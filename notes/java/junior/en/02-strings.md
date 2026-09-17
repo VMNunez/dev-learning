@@ -384,8 +384,8 @@ The damage appears when the lowered text is used to **find** something. Follow o
 1. Isabel signs up typing `isabel@mail.com`. The application lowers it and stores `isabel@mail.com`. There is no capital `I` in it, so every machine stores the same text.
 2. Months later she logs in from her phone. The phone capitalises the first letter, so the request carries `Isabel@mail.com`, together with her correct password.
 3. The server's default locale is Turkish, so `toLowerCase()` produces `ısabel@mail.com`.
-4. The application asks the database for the user whose email is equal to `ısabel@mail.com`. There is no such row: the stored email starts with `U+0069`, not `U+0131`.
-5. The login is refused as if the password were wrong. Nothing is thrown and nothing warns you, and the log line shows an address that reads just like hers.
+4. The application asks the database for the user whose email is equal to `ısabel@mail.com`. There is no such row: the stored email starts with `U+0069`, which is the letter `i`, not with `U+0131`, which is the letter `ı`.
+5. The login is refused as if the email or the password were wrong. Nothing is thrown and nothing warns you, and the log line shows an address that reads just like hers.
 
 A lookup key only works if every way of typing the same thing produces the same key. `Isabel@mail.com` and `isabel@mail.com` must both become `isabel@mail.com`, and the default locale breaks exactly that promise. The same applies to anything else that stores or finds by that text: a key in a `HashMap`, a cache entry, a counter.
 
