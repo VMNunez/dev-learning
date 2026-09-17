@@ -10,7 +10,7 @@ it is written in, it names the row adjudicating it **in the token's own parenthe
 and where its rounds ran it carries the round count
 it replaces and the words `no closing round`; every use is counted on the validator's PASS line. It
 records what the gate did; it never stands for a gate that was not run, and it annotates a closure
-already on disk rather than routing a live resolution to step 4.
+already on disk rather than routing a live resolution to step 4. Beyond those fields a **rejected**
 item keeps its reason, because that reason is the only thing stopping the next analysis re-raising it,
 and a **residue** clause names work the item left open. The reviewer field starts at `REC-107` and the
 two-map field at the first item collapsed after 2026-08-07; earlier lines are not retrofitted. On disk that
