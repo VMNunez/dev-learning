@@ -349,7 +349,7 @@ A continuación se enumeran los pasos que hay detrás de toda llamada a `toLower
 3. `toLowerCase()` sin argumento hace exactamente lo mismo que `toLowerCase(Locale.getDefault())`. Así que pide el locale por defecto y aplica las reglas de mayúsculas y minúsculas de ese idioma. `toUpperCase()` sin argumento funciona igual, ya que internamente usa `toUpperCase(Locale.getDefault())`.
 4. Si el locale por defecto es el turco, esas reglas convierten una `I` mayúscula en `ı` al pasar a minúsculas, y una `i` minúscula en `İ`, una I mayúscula con punto, al pasar a mayúsculas.
 
-"Dos máquinas" significa entonces tu portátil(TODO: EL HECHO DE TENER DOS MAQUINAS DIFERENTES PUEDE SIGNIFICAR TENER MI PORTATIL), cuyo locale por defecto es español o inglés, y un servidor cuyo sistema operativo está puesto en turco(TODO: O CUALQUIER OTRO LOCALE). Puedes reproducir la segunda sin tocar Windows, porque el paso 1 te deja sobrescribir las propiedades al lanzar el programa. La opción `-D` fija una propiedad del sistema solo para esa ejecución:
+Tener dos máquinas diferentes puede significar, por ejemplo, tener tu portátil, cuyo locale por defecto es español o inglés, y un servidor cuyo sistema operativo está puesto en turco o en cualquier otro locale. Puedes reproducir la segunda máquina sin tocar Windows, porque el paso 1 te deja sobrescribir las propiedades al lanzar el programa. La opción `-D` fija una propiedad del sistema solo para esa ejecución:
 
 ```java
 String email = "Isabel@Mail.com";
@@ -357,8 +357,8 @@ System.out.println(email.toLowerCase());
 ```
 
 ```
-java Main                                        →  isabel@mail.com
-java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com //TODO: IMAGINO QUE ESTO ES SI CAMBIAMOS EL LOCALE
+java Main                                        →  isabel@mail.com   (el locale que da tu sistema operativo)
+java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com   (locale cambiado a turco, solo en esta ejecución)
 ```
 
 Lee la segunda línea letra a letra. La `I` mayúscula se convirtió en `ı`, y la `M` mayúscula se convirtió en `m` como siempre. La `i` de `Mail` ya estaba en minúscula, así que pasarla a minúscula no la tocó: solo se ve afectada la `I` mayúscula. Si tu terminal imprime en su lugar `?sabel@mail.com`, el `?` viene del paso de salida por pantalla: el juego de caracteres de esa terminal no tiene la `ı`, así que Java escribe un `?` en su lugar al imprimir. El propio `String` sigue guardando la `ı`.

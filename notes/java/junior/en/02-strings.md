@@ -349,7 +349,7 @@ The steps behind every call to `toLowerCase()` or `toUpperCase()` with no argume
 3. `toLowerCase()` with no argument does exactly what `toLowerCase(Locale.getDefault())` does. So it asks for the default locale and applies that language's case rules. `toUpperCase()` with no argument works the same way, because internally it uses `toUpperCase(Locale.getDefault())`.
 4. If the default locale is Turkish, those rules turn a capital `I` into `ı` when lowering, and a small `i` into `İ`, a capital I with a dot, when raising.
 
-"Two machines" therefore means your laptop, whose default locale is Spanish or English, and a server whose operating system is set to Turkish. You can reproduce the second one without touching Windows, because step 1 lets you override the properties when you launch the program. The `-D` option sets a system property for that one run only:
+Having two different machines can mean, for example, having your laptop, whose default locale is Spanish or English, and a server whose operating system is set to Turkish or to any other locale. You can reproduce the second machine without touching Windows, because step 1 lets you override the properties when you launch the program. The `-D` option sets a system property for that one run only:
 
 ```java
 String email = "Isabel@Mail.com";
@@ -357,8 +357,8 @@ System.out.println(email.toLowerCase());
 ```
 
 ```
-java Main                                        →  isabel@mail.com
-java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com
+java Main                                        →  isabel@mail.com   (the locale your operating system gives)
+java -Duser.language=tr -Duser.country=TR Main   →  ısabel@mail.com   (locale changed to Turkish, for this run only)
 ```
 
 Read the second line letter by letter. The capital `I` became `ı`, and the capital `M` became `m` as usual. The `i` in `Mail` was already lower case, so lowering left it alone: only a capital `I` is affected. If your terminal prints `?sabel@mail.com` instead, the `?` comes from the output step: that terminal's character set has no `ı`, so Java writes a `?` in its place when it prints. The `String` itself still holds `ı`.
