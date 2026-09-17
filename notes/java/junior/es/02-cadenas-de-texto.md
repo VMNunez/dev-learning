@@ -426,7 +426,7 @@ En `login`, `request.getEmail()` es el email tal y como lo escribió el usuario,
 
 ### `Locale.ROOT` o el locale del usuario — qué argumento va en cada sitio
 
-La parte anterior mostró la única llamada incorrecta y la correcta para una clave(TODO: NO ME GUSTA "La parte anterior mostró la única llamada incorrecta y la correcta para una clave"). Hay una tercera opción, y la elección entre las tres se reduce a una sola pregunta: ¿va a leer el resultado un **programa**, o una **persona**?
+Hasta aquí has visto dos formas de llamar a `toLowerCase()`: sin argumento, que no debes usar para una clave, y con `Locale.ROOT`, que es la correcta para una clave. Hay una tercera opción, y la elección entre las tres se reduce a una sola pregunta: ¿va a leer el resultado un **programa**, o una **persona**?
 
 | Llamada                                                             | Reglas que sigue                                          | Para qué se usa                                                                                                                                                                                  |
 | ------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

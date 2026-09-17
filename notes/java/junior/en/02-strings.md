@@ -422,13 +422,11 @@ String email = EmailNormalizer.normalize(request.getEmail());
 loginAttemptService.recordFailure(email);
 ```
 
-The first line reads: "if `email` is `null`, return `null`; otherwise return the email with its surrounding spaces removed and lowered with `Locale.ROOT`". The `condition ? a : b` form is the conditional operator, which [03-control-flow.md](03-control-flow.md) covers. The line uses `trim()` rather than the `strip()` recommended in the section _`strip()` vs `trim()`_; here, only the `toLowerCase(Locale.ROOT)` at its end matters.
-
 In `login`, `request.getEmail()` is the email as the user typed it, and `email` is its normalised form. That normalised value is then used as a key. The method that loads the user by email normalises with the same method, and `recordFailure(email)` adds one failed attempt to a tally stored under that email. After five failures, the next attempt is refused until a minute has passed since the last failure. The project's plan states that an email differing only in letter case uses the **same** tally, because the key is the normalised address. With the no-argument `toLowerCase()` on a Turkish server, that stops being true: `Isabel@mail.com` would be counted under `ısabel@mail.com` and `isabel@mail.com` under `isabel@mail.com`, two separate tallies for one account.
 
 ### `Locale.ROOT` or the user's locale — which argument goes where
 
-The previous part showed the one wrong call and the right one for a key. There is a third option, and the choice between the three comes down to one question: will a **program** read the result, or a **person**?
+So far you have seen two ways to call `toLowerCase()`: with no argument, which you must not use for a key, and with `Locale.ROOT`, which is the right one for a key. There is a third option, and the choice between the three comes down to one question: will a **program** read the result, or a **person**?
 
 | Call | Whose rules | Use it for |
 |---|---|---|
