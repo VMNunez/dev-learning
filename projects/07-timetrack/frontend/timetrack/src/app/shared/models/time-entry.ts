@@ -20,3 +20,17 @@ export interface TimeEntryFilters {
   status?: EntryStatus;
   month?: string;
 }
+
+export interface CreateTimeEntryRequest {
+  projectId: number;
+  date: string;
+  hours: number;
+  description: string;
+}
+
+export interface UpdateTimeEntryRequest {
+  projectId: number;
+  date: string;
+  hours: number;
+  description: string;
+}
