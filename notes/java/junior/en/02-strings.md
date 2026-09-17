@@ -445,9 +445,7 @@ role.toUpperCase().equals("ADMIN")              // MAL  — false on a Turkish m
 role.toUpperCase(Locale.ROOT).equals("ADMIN")   // BIEN — true on every machine
 ```
 
-The lower-case `i` in `admin` becomes the dotted capital `İ` under Turkish rules, so the result no longer equals `"ADMIN"`, and the check fails for every administrator on that server.
-
-> **You will also meet `Locale.ENGLISH` or `Locale.US` in the same position.** Older code often writes `toUpperCase(Locale.ENGLISH)` for identifiers. The result is the same as with `Locale.ROOT`, because English has no special case rules. `Locale.ROOT` is the clearer choice, because it says that no language is meant, while `Locale.ENGLISH` suggests the text is English when it is really an identifier.
+> **You will also meet `Locale.ENGLISH` or `Locale.US` instead of `Locale.ROOT`.** Older code often writes `toUpperCase(Locale.ENGLISH)` for identifiers. The result is the same as with `Locale.ROOT`, because English has no special case rules. `Locale.ROOT` is the clearer choice, because it says that no language is meant, while `Locale.ENGLISH` suggests the text is English when it is really an identifier.
 
 ---
 

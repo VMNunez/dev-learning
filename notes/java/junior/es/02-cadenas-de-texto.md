@@ -445,7 +445,7 @@ role.toUpperCase().equals("ADMIN")              // MAL  — false en una máquin
 role.toUpperCase(Locale.ROOT).equals("ADMIN")   // BIEN — true en cualquier máquina
 ```
 
-> **También te vas a encontrar `Locale.ENGLISH` o `Locale.US` en ese mismo sitio(TODO: EN LUGAR DE USAR ....).** El código más antiguo suele escribir `toUpperCase(Locale.ENGLISH)` para identificadores. El resultado es el mismo que con `Locale.ROOT`, porque el inglés no tiene reglas especiales de mayúsculas y minúsculas. `Locale.ROOT` es la opción más clara, porque deja claro que no se quiere decir ningún idioma en concreto, mientras que `Locale.ENGLISH` da a entender que el texto es inglés cuando en realidad es un identificador.
+> **También te vas a encontrar `Locale.ENGLISH` o `Locale.US` en lugar de `Locale.ROOT`.** El código más antiguo suele escribir `toUpperCase(Locale.ENGLISH)` para identificadores. El resultado es el mismo que con `Locale.ROOT`, porque el inglés no tiene reglas especiales de mayúsculas y minúsculas. `Locale.ROOT` es la opción más clara, porque deja claro que no se quiere decir ningún idioma en concreto, mientras que `Locale.ENGLISH` da a entender que el texto es inglés cuando en realidad es un identificador.
 
 ---
 
