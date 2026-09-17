@@ -16,8 +16,9 @@ and a **residue** clause names work the item left open. The reviewer field start
 two-map field at the first item collapsed after 2026-08-07; earlier lines are not retrofitted. On disk that
 second field becomes continuous at `REC-058`, and that is the number `validate-prompt-system.ps1`
 invariant 9 enforces — it reads every line here against this schema and fails the run on a missing
-field, a broken ID order, a `{commit}` template, or an ID that is open in the ledger and closed here
-at once. The one-line budget it only **reports**, as a character count beside the longest row.
+field, a broken ID order, a `{commit}` template, an ID that is open in the ledger and closed here at
+once, or an ID holding two rows in that ledger's `## Open` table (`REC-239`). The one-line budget it
+only **reports**, as a character count beside the longest row.
 
 **Where the reasoning is.** In `git log -p` on this file and on the ledger — the closing commit removes
 the row from `## Open` there and adds the line here, so either side reaches it. Restating an argument

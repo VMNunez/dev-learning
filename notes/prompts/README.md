@@ -81,7 +81,10 @@ Run `_internal/validate-prompt-system.ps1` after adding, removing, or renaming a
 editing a skill, a coverage file, a notes plan, or any file another file points at, **and before the
 commit that collapses a ledger row**, which is the one act that writes the line invariant 9 reads and was
 missing from this list until `REC-195` (the `REC-190` closure landed with two schema fields absent and
-was found by a later session's run, a day late). Run it, since it also
+was found by a later session's run, a day late). **Before the commit that *opens* one, and after a merge
+that brings another branch's ledger rows into this tree**, for the other half of that invariant
+(`REC-239`): an ID is allocated once, and the merge is the first moment one tree holds both rows, so it
+is the only run that can see two branches having allocated the same number. Run it, since it also
 checks nine invariants nothing else can see: that both catalogues advertise the **same** arguments for a
 command and that every key a launcher advertises is one the canonical prompt's own `## Configuration`
 block accepts, in both directions — a key the prompt accepts and neither launcher mentions fails too,
@@ -211,9 +214,22 @@ carries the round count it replaces and the words `no closing round` — and eve
 PASS line, so it cannot accumulate unseen. It annotates a closure already on disk; it is never a way for
 a live resolution to reach step 4. It is not offered to invariant 8's self-reports: those are
 written by the run that held the gate, where a verdict is never lost, only omitted. No ID may be open in
-`_recommendation-ledger.md` and closed here at once. Until this check nothing read that schema, though
+`_recommendation-ledger.md` and closed here at once — **and no ID may hold two rows in that file's
+`## Open` table**, which nothing checked until `REC-239`, so `REC-231` and `REC-232` were each written
+twice by parallel branches and sat in the queue through several merges. A third pair followed two days
+after that row was opened, nine IDs wide (`REC-246`, renumbered out of a collision with
+`feat/angular-shell-auth`), and it is the one that produced the cost: a citation landing on the wrong
+row, `_breach-log-portfolio-audit.md` routing its rows by bare ID. That half publishes its
+own reach on the PASS line (the distinct open rows it compared) and **one limit that decides where it
+is run**: it rules on one working tree, so it sees a collision only once both rows are in the same
+file, which is never the moment the ID is allocated — a detector at merge time, not a mutex, and the
+trigger list above names the merge for that reason. It is deliberately **not** a gap check: measured
+2026-09-17, the ID space carries no gap at all, so failing an unexplained jump would find nothing
+today and would fail a branch whose sibling rows are merely unmerged. Until the closure-schema check
+nothing read that schema, though
 three files state it, which is how the 2026-08-18 collapse left six rejected rows carrying the literal
-`{commit}`. Three published limits and one deliberate non-gate: it proves the fields are **present**, never
+`{commit}`. Three further published limits and one more deliberate non-gate, beside the two the
+uniqueness half already states above: it proves the fields are **present**, never
 that a reviewer ran or that the hash names the edit — invariant 8's limit over the self-reports, reached
 again here; a row that applied an edit and wrote the em dash escapes the verdict requirement, and nothing
 on the line can settle that; the escape's citation is proved present **and in position**, never

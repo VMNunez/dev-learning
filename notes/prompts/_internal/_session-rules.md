@@ -988,6 +988,13 @@ everything commits on the branch you're on — is simpler to remember than a spl
   `PROJECT-BACKLOG.md`, `PLANNING.md`, and `README.md` already worked this way.
 - **`main` never receives direct commits, only merges via PR** — same rule for study materials as
   for code: `feat/x` → PR → project branch → PR → `main`.
+- **A merge that brings another branch's `notes/prompts/` ledger rows into this one owes one
+  `notes/prompts/_internal/validate-prompt-system.ps1` run** — a `REC-NNN` is allocated once, and the
+  merge is the first tree that holds both branches' rows, so it is the earliest moment a collision can
+  be seen at all; three pairs shipped that way between 2026-09-09 and 2026-09-15 (`REC-239`). The
+  merge is named here because it is performed on ordinary project branches, by whoever is merging
+  rather than by machinery work; `notes/prompts/README.md` still owns the rest of that script's
+  trigger list, and this bullet adds no other entry to it.
 - SQL block (12:30): work in `practice/sql/` on the active branch, commit there, and update the SQL
   section of `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
 - The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:

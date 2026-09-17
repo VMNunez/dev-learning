@@ -798,6 +798,56 @@ $closedUnrecorded = 0
 $closedRowPattern = '^- `REC-(?<id>[0-9]{3})`(?<residue> residue)? ' + $emDash + ' '
 $closedTailPattern = '(?:`[0-9a-f]{7,40}`(?:, `[0-9a-f]{7,40}`)*|`' + $emDash + '`)$'
 $closedText = [System.IO.File]::ReadAllText($ledgerClosedPath) -replace "`r`n", "`n"
+#
+# THE OPEN TABLE IS READ FIRST AND OUTSIDE THE CLOSED ARCHIVE'S BRANCH (`REC-239`). An ID is
+# allocated once, and nothing said so: the archive's ordering test catches a repeat among CLOSED
+# lines and the overlap test below catches one item in both states, while two rows carrying the same
+# ID in `## Open` passed. `REC-231` was written on 2026-09-09 (`c8693bcf`) and again on 2026-09-10
+# (`3942cc44`), `REC-232` on 2026-09-10 (`9aef6c0c`) and again on 2026-09-12 (`11482418`), and both
+# pairs survived several merges until a human listing of the queue noticed them. A THIRD pair followed
+# two days after this row was opened and is nine IDs wide - `REC-246`'s Source cell records it,
+# "recorded as `REC-237` in `e54f6fc4`; renumbered 2026-09-15 on an ID collision with
+# `feat/angular-shell-auth`, whose ledger already holds `REC-237`-`REC-245`" - and it is the one that
+# produced the cost: a citation landing on the wrong row, since `_breach-log-portfolio-audit.md` routes
+# its rows by bare ID and `BRCH-0003` was still pointing at the old number when this check was written.
+# (Its `BRCH-0001`/`BRCH-0002` citations of `REC-232` are correct; the first two pairs cost that log
+# nothing.)
+#
+# WHAT IT CANNOT SETTLE, published rather than assumed (`REC-076`). It rules on ONE WORKING TREE, so
+# it sees a collision only once both rows are in the same file - which is never the moment the ID is
+# allocated. Both collisions above were born on separate branches, where neither tree could see the
+# other's row, and the run that catches such a pair is the one after the MERGE. It is a detector at
+# merge time, not a mutex at allocation time, and the trigger list in `README.md` says so.
+#
+# NOT A GAP CHECK, and that was measured rather than assumed (`REC-239`'s step 1, 2026-09-17). Failing
+# an ID higher than the maximum by more than one would catch a skipped number; on disk there is no gap
+# at all (248 unique IDs over 1..248, 27 open and 222 closed rows), so it would find nothing today and
+# would fail a branch whose sibling rows are simply not merged yet - the legitimate case this file
+# cannot distinguish from a typo.
+$openIds = [System.Collections.Generic.List[int]]::new()
+$openText = [System.IO.File]::ReadAllText($ledgerOpenPath) -replace "`r`n", "`n"
+$openSection = [regex]::Split($openText, '(?m)^## Open[ \t]*$')
+# EXACTLY ONE TABLE, or the run says so. A renamed heading drops the whole population in silence, and a
+# SECOND `## Open` - the shape a badly hand-resolved merge leaves, which is the act this fix just added
+# to the trigger list - would park a duplicate in a section this test never reads while the PASS line
+# prints a plausible reach for the one it did. Same answer the file's other invariants give an
+# unparseable population (3's manifest rows, 5's section 9, 7's harvested names, 8's `Status:` field),
+# and an empty-but-present table still passes at reach 0, which the ledger's preamble calls legitimate.
+if ($openSection.Count -ne 2) {
+    Add-ValidationError "Recommendation ledger holds $($openSection.Count - 1) '## Open' headings; the uniqueness test reads one table by contract, and a run that cannot find exactly one would compare nothing while claiming a reach on its PASS line."
+} else {
+    $openBody = [regex]::Split($openSection[1], '(?m)^## ')[0]
+    $openSeen = @{}
+    foreach ($openRow in [regex]::Matches($openBody, '(?m)^\|[ \t]*REC-(?<id>[0-9]{3})[ \t]*\|')) {
+        $openId = [int]$openRow.Groups['id'].Value
+        if ($openSeen.ContainsKey($openId)) {
+            Add-ValidationError "REC-$($openRow.Groups['id'].Value) holds more than one row in the ledger's '## Open' table; an ID is allocated once, and two rows under it send a closure, a doctrine promotion or a breach-log citation to whichever one the reader happens to find."
+        } else {
+            $openSeen[$openId] = $true
+            $openIds.Add($openId)
+        }
+    }
+}
 $closedSplit = [regex]::Split($closedText, '(?m)^## Closed[ \t]*$')
 if ($closedSplit.Count -ne 2) {
     Add-ValidationError "Closed recommendation ledger holds $($closedSplit.Count - 1) '## Closed' headings; the archive is one section by contract."
@@ -911,15 +961,12 @@ if ($closedSplit.Count -ne 2) {
     }
     # An ID cannot be queued and resolved at once. A collapse that adds the line and forgets to
     # remove the row leaves one item in two states, and the ledger is the current-status source.
-    $openText = [System.IO.File]::ReadAllText($ledgerOpenPath) -replace "`r`n", "`n"
-    $openSection = [regex]::Split($openText, '(?m)^## Open[ \t]*$')
-    if ($openSection.Count -ge 2) {
-        $openBody = [regex]::Split($openSection[1], '(?m)^## ')[0]
-        foreach ($openRow in [regex]::Matches($openBody, '(?m)^\|[ \t]*REC-(?<id>[0-9]{3})[ \t]*\|')) {
-            $openId = $openRow.Groups['id'].Value
-            if ($closedIds -contains [int]$openId) {
-                Add-ValidationError "REC-$openId is open in the ledger and closed in the archive at once; a collapse removes the row it adds the line for."
-            }
+    # This half stays inside the archive's branch because it needs `$closedIds`; the uniqueness test
+    # above does not, and a malformed archive heading must not silence it (`REC-084` - a check that
+    # silently exempts part of its population is worse than no check).
+    foreach ($openId in $openIds) {
+        if ($closedIds -contains $openId) {
+            Add-ValidationError "REC-$('{0:000}' -f $openId) is open in the ledger and closed in the archive at once; a collapse removes the row it adds the line for."
         }
     }
 }
@@ -1614,6 +1661,10 @@ if ($selfReportReports.Count -gt 0) {
 # and the fourth is `REC-195`'s escape, printed for exactly the same reason: an unrecorded verdict
 # that nobody counts is one nobody notices accumulating.
 Write-Output "PASS: closed ledger lines carry their closure schema ($closedRowsScanned rows, longest $closedLongest chars, $closedOverBudget over the $closedBudget-char one-line budget, $closedUnrecorded with an unrecorded verdict)"
+# The uniqueness half prints its own reach for `REC-090`'s reason: a comparison over an open table
+# this run failed to parse - a renamed heading, a reshaped row - compares nothing and would pass as
+# loudly as one that compared every row. The number is the distinct IDs the test actually held.
+Write-Output "PASS: ledger IDs are allocated once ($($openIds.Count) distinct open row(s) compared; a collision on another branch is invisible until the merge)"
 Write-Output "PASS: skill mirror parity ($($claudeManifest.Count) files per adapter)"
 if ($MachineryOnly) {
     Write-Output 'SKIP: live coverage, notes-plan, SQL-route (including declared exercise names), and simulation-route state (machinery-only mode)'
