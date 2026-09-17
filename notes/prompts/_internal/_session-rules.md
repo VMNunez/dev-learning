@@ -1067,7 +1067,11 @@ them — `node_modules/@schematics/angular/{guard,interceptor,resolver}/schema.j
 `type` with **no default at all**, which is the whole rule in one sentence and the cheapest way to
 check a schematic nobody has run yet. Both corrections came from
 Victor after a wrong command was given — when guiding a step that creates a file by CLI, give the
-full command from this table rather than reconstructing it.
+full command from this table rather than reconstructing it. **That applies at Levels 2 and 3 only.** At
+Level 1 the command is part of what Victor attempts: state only the file and class the step must
+produce, and use this table to check the command he writes. Stated 2026-09-17 on the `EntryService`
+step of project 07 — *"me has puesto el comando y no deberías porque era modo 1 y yo lo tenía que
+intentar"*.
 
 ### The Angular CLI MCP server
 
