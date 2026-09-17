@@ -215,7 +215,7 @@ Handoff: After Victor can control statement execution, entry 04 packages that be
 
 ## 04 — Methods
 
-Status: complete
+Status: pending
 
 Studied: pending
 
@@ -249,11 +249,11 @@ Must answer:
 
 Coverage concepts:
 
-- [x] Method signatures, parameters, and return values — read what a method accepts, what it returns, and which overload a call can match
-- [x] Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
-- [x] Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
-- [x] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
-- [x] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
+- [ ] Method signatures, parameters, and return values — read what a method accepts, what it returns, and which overload a call can match
+- [ ] Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
+- [ ] Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
+- [ ] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
+- [ ] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
 
 Audit note: the 2026-08-27 audit consolidated `04-methods.md`'s pass-by-value, access-modifier and static-method sections into entries 05 and 06; the file now carries only marked forward references to them. `03-control-flow.md` still carries a `## Null guards` section beside this entry's `null` / `NullPointerException` section — its next audit confirms it is reduced to a marked forward reference to entry 04.
 
