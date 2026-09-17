@@ -384,8 +384,8 @@ El daño aparece cuando el texto ya en minúsculas se usa para **buscar** algo. 
 1. Isabel se registra escribiendo `isabel@mail.com`. La aplicación lo pasa a minúsculas y guarda `isabel@mail.com`. No hay ninguna `I` mayúscula ahí dentro, así que todas las máquinas guardan el mismo texto.
 2. Meses después inicia sesión desde el móvil. El móvil pone en mayúscula la primera letra, así que la petición lleva `Isabel@mail.com`, junto con su contraseña correcta.
 3. El locale por defecto del servidor es el turco, así que `toLowerCase()` produce `ısabel@mail.com`.
-4. La aplicación le pide a la base de datos el usuario cuyo email sea igual a `ısabel@mail.com`. No existe esa fila: el email guardado empieza por `U+0069`, no por `U+0131`.
-5. El login se rechaza como si la contraseña fuera incorrecta. No se lanza nada y no avisa de nada, y la línea del log muestra una dirección que se lee igual que la suya.
+4. La aplicación le pide a la base de datos el usuario cuyo email sea igual a `ısabel@mail.com`. No existe esa fila: el email guardado empieza por `U+0069`(TODO: QUE CORRESPONDE A LA LETRA...), no por `U+0131`(TODO: QUE CORRESPONDE A LA LETRA...).
+5. El login se rechaza como si la contraseña fuera incorrecta(TODO: COMO SI EL USUARIO O CONTRASEÑA FUERAN). No se lanza nada y no avisa de nada, y la línea del log muestra una dirección que se lee igual que la suya.
 
 Una clave de búsqueda solo funciona si cada forma de escribir lo mismo produce la misma clave. `Isabel@mail.com` e `isabel@mail.com` tienen que convertirse los dos en `isabel@mail.com`, y el locale por defecto rompe justo esa promesa. Lo mismo se aplica a cualquier otra cosa que guarde o busque por ese texto: una clave de un `HashMap`, una entrada de caché, un contador.
 
