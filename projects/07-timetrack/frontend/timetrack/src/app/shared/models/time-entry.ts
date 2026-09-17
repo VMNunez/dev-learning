@@ -14,3 +14,9 @@ export interface TimeEntry {
   status: EntryStatus;
   rejectionNote: string | null;
 }
+
+export interface TimeEntryFilters {
+  projectId?: number;
+  status?: EntryStatus;
+  month?: string;
+}
