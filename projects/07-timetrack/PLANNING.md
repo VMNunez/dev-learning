@@ -1725,7 +1725,9 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   `mat-error`: a `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field
 
 #### Step 7b — Employee flow: dashboard + entries
-- Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
+- Employee dashboard: stat cards whose hour totals come from `GET /api/reports/summary` and whose counts
+  come from `page.totalElements` on `GET /api/entries?status=…&size=1` (§14 "How stat cards get their
+  data" — never a client-side sum of a paged list) + recent entries from page 0 of `GET /api/entries`
 - Entries page: filter bar, table, FAB; entry-dialog (create/edit); inline submit quick action
 - **Re-open action on REJECTED rows** (owner only, §8/§14): calls `PATCH /api/entries/{id}/reopen`, the row returns to DRAFT and the edit / delete / submit icons take over; the row also surfaces the manager's `rejectionNote`
 - Shared components: `status-badge`, `confirm-dialog`
@@ -1735,6 +1737,18 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   the per-page empty message ("No entries found for this period" / "You have not logged any hours yet")
 - **Review concepts:** coordinator pattern, reactive forms, MatTable/MatDialog, signals + `computed()`
 - **Done condition:** `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input`
+- **In progress — pieces landed and records owed** (delete this block when the step closes):
+  1. Data layer — `shared/models/time-entry.ts` + `page.ts` (`27678587`) and `EntryService` with
+     `getEntries` + the five writes (`5559f1e6`, `93b42cc2`) ✅; `Project` model + read-only
+     `ProjectService` next. 2. `status-badge` + `confirm-dialog`. 3. `/entries` page. 4. `entry-dialog`.
+     5. Employee dashboard. 6. Browser run of the done condition → `step-complete`
+  - **Owed the first time the data layer runs in front of Victor** (the `/entries` page shows data and
+    the request is read in Network — a compiling service is not a verifiable piece, `coverage-mark` §1):
+    `coverage-bullet-add` + `coverage-mark` + `readme-concept-add` for a union type derived from an
+    `as const` array, the generic `Page<T>` response model, immutable `HttpParams` omitting unset
+    filters, `null` vs optional in a response model, and PUT vs PATCH with a `204` typed `void`
+  - Deferred to 7c on purpose: `userId` in `TimeEntryFilters` (Approvals employee filter — an EMPLOYEE
+    caller is overwritten by the JWT user) and the approve/reject calls
 
 #### Step 7c — Manager review flow: dashboard, approvals, projects
 - Manager dashboard (`forkJoin` stat cards) + pending approvals list with inline approve / reject
