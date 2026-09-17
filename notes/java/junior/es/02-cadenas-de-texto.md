@@ -344,10 +344,10 @@ Cambiar letras a mayúsculas o a minúsculas no es la misma operación en todos 
 
 A continuación se enumeran los pasos que hay detrás de toda llamada a `toLowerCase()` o `toUpperCase()` sin argumento. Los dos primeros pasos ocurren una sola vez, cuando arranca el programa; los dos últimos ocurren en cada llamada:
 
-1. Cuando arranca la JVM, lee la configuración de idioma del sistema operativo y la guarda como **propiedades del sistema** (_system properties_), (TODO: QUE SON VALORES CON UN NOMBRE DETERMINADO QUE PUEDE LEER TODO EL PROGRAMA)valores con nombre que puede leer todo el programa. Las dos (TODO: LOS DOS SYSTEM PROPERTIES)que importan aquí son `user.language` (por ejemplo `es` o `tr`) y `user.country` (`ES`, `TR`).
-2. A partir de esas propiedades construye un objeto `Locale`, el **locale por defecto**. `Locale.getDefault()` lo devuelve a partir de ahí(TODO: SE OBTIENE A PARTIR DE AHI, QUE IMAGINO QUE ES EL LOCALE POR DEFECTO), salvo que algún código lo sustituya llamando a `Locale.setDefault(...)`.
-3. `toLowerCase()` sin argumento hace exactamente lo mismo que `toLowerCase(Locale.getDefault())`. Así que pide el locale por defecto y aplica las reglas de mayúsculas y minúsculas de ese idioma. `toUpperCase()` sin argumento funciona igual, a través de(TODO: YA QUE USA INTERNAMENTE....) `toUpperCase(Locale.getDefault())`.
-4. Si el locale por defecto es el turco, esas reglas convierten una `I` mayúscula en `ı`.(TODO: O EL EJEMPLO DE LA I CON EL PUNTO)
+1. Cuando arranca la JVM, lee la configuración de idioma del sistema operativo y la guarda como **propiedades del sistema** (_system properties_), que son valores con un nombre determinado que puede leer todo el programa. Las dos propiedades del sistema que importan aquí son `user.language` (por ejemplo `es` o `tr`) y `user.country` (`ES`, `TR`).
+2. A partir de esas propiedades construye un objeto `Locale`, el **locale por defecto**. A partir de ahí, ese locale por defecto se obtiene con `Locale.getDefault()`, salvo que algún código lo sustituya llamando a `Locale.setDefault(...)`.
+3. `toLowerCase()` sin argumento hace exactamente lo mismo que `toLowerCase(Locale.getDefault())`. Así que pide el locale por defecto y aplica las reglas de mayúsculas y minúsculas de ese idioma. `toUpperCase()` sin argumento funciona igual, ya que internamente usa `toUpperCase(Locale.getDefault())`.
+4. Si el locale por defecto es el turco, esas reglas convierten una `I` mayúscula en `ı` al pasar a minúsculas, y una `i` minúscula en `İ`, una I mayúscula con punto, al pasar a mayúsculas.
 
 "Dos máquinas" significa entonces tu portátil, cuyo locale por defecto es español o inglés, y un servidor cuyo sistema operativo está puesto en turco. Puedes reproducir la segunda sin tocar Windows, porque el paso 1 te deja sobrescribir las propiedades al lanzar el programa. La opción `-D` fija una propiedad del sistema solo para esa ejecución:
 
