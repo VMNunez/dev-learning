@@ -213,10 +213,23 @@ open.
   estas fallando a la hora de ponerme las pruebas, te las tengo que pedir siempre de nuevo para que
   me las expliques bien"*. Correct content in list form is still the defect: the list is what makes
   him ask again.
-- **Every technical explanation carries two layers, in this order, at every help level.** The simple
-  layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
-  the other: without the first Victor cannot see the problem, without the second he cannot write the
-  fix. Name the files the change touches before either layer.
+- **Every technical explanation opens with an introduction to what is being built, then carries two
+  layers, in this order, at every help level.** The introduction answers *what are we building and where
+  does this piece sit*; the simple layer answers *what the problem is*; the technical layer answers *how
+  it is fixed*. None replaces another: without the introduction Victor reads a correct explanation of a
+  piece whose purpose he cannot place, without the simple layer he cannot see the problem, without the
+  technical one he cannot write the fix. Name the files the change touches after the introduction and
+  before either layer.
+  - **The introduction comes first and stays short.** At the opening of a plan step it is the step's
+    map: what the user will see when it is done (the §14 wireframe when one exists), the step's pieces
+    in build order, and which piece comes now. At the opening of a backlog task or of a later piece it is
+    the feature, screen or endpoint the change lives in and what it does today for the person using it.
+    No code and no mechanism — those belong to the two layers. Stated 2026-09-17 on the opening of
+    Step 7b of project 07, where the first message went straight into a full two-layer explanation of
+    `time-entry.ts` without ever saying what the step builds — *"has empezado a explicar mucho sin
+    ponerme en contexto de lo que vamos a construir, y eso no puede ser"* — and then *"necesito una
+    introduccion de lo que vamos a construir, luego una explicacion sencilla y luego una explicacion mas
+    tecnica"*.
   - **The simple layer is only complete with all three of its parts** — a trace that skips them reads
     as abstract and fails: (a) **what happens today**, quoting the real code, contrasting the place
     that already does the right thing with the place that does not; (b) **why that is a problem**, as
@@ -273,9 +286,10 @@ open.
     canonical example of the pair, and this shape is not a one-off repair but the standing form.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
   - **A task's priority never scales the depth of its explanation.** A `[Low]` finding with
-    `Effort: Small`, or a fix that is one moved line, still opens with both layers complete and all
-    seven of their parts: the size of the diff says nothing about the size of the concept behind it.
-    The brevity rule governs verdicts, reports and ordinary conversation — never these two layers.
+    `Effort: Small`, or a fix that is one moved line, still opens with the introduction and both layers
+    complete, all seven of their parts: the size of the diff says nothing about the size of the concept
+    behind it. The brevity rule governs verdicts, reports and ordinary conversation — never the
+    introduction or these two layers.
     And *"explícamelo mejor"* is the failure signal for this whole contract: by the time he has to ask
     for depth, the first message was already wrong. Stated 2026-08-26 on the DRAFT-guard ordering task
     of project 07, where a `[Low]` line got a short simple layer with no request body and a technical
