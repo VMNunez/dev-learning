@@ -94,6 +94,7 @@ src/app/
 - Disabling the entry dialog's fields while it saves over leaving them editable like the login form — a value typed during the request would sit on screen against a record that saved the old one; in exchange focus leaves the field for the length of the save
 - Disabling "Log hours" until the project list has loaded over hiding it or opening the dialog with an empty list — the dialog reads its projects once, at open, so a `null` list is refused rather than passed on as `[]`, and the header does not shift when the load ends; in exchange the disabled button explains nothing itself and leaves that to the spinner or the error below it
 - An illustration on the first-use empty state only, over one on every empty state — a new user's blank dashboard is a welcome and reads as unfinished without one, while a filter that matches nothing is a notice inside a page that still works; in exchange the two empty states no longer share one look
+- An inline read-only table for the dashboard's recent entries over reusing `EntryList` — that component's sortable headers and row actions belong to `/entries`, and on a dashboard its sort arrows would respond to nothing; in exchange the two tables repeat their shared cell templates
 
 ---
 
