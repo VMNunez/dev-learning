@@ -1280,7 +1280,10 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
 - **Dialogs** — below 600px every `MatDialog` keeps Material's compact-window card (`calc(100vw - 32px)`
   wide, as tall as its content), never full-screen: a Material 3 full-screen dialog is a different layout,
   a top bar with close and confirm actions, not the standard dialog stretched to the viewport, and a
-  stretched one was tried and rejected on 2026-09-16
+  stretched one was tried and rejected on 2026-09-16; and no standard dialog carries a ✕ in its title bar (removed from the
+  wireframes below on 2026-09-18) — in Material 3 the close icon belongs to the full-screen layout, and a
+  standard dialog is dismissed by its Cancel action, by Escape while no write is in flight, and never by a
+  backdrop click on a form dialog (§6 Subscription lifetime)
 
 ---
 
@@ -1321,7 +1324,7 @@ password would be permanent in practice.
 
 ```
 ┌──────────────────────────────────────┐
-│  Change password                  ✕  │
+│  Change password                     │
 │                                      │
 │  Current password  [password input]  │
 │  ⚠ Current password is incorrect     │
@@ -1389,7 +1392,7 @@ Stat cards + user table + "Add member" button.
 
 ```
 ┌──────────────────────────────────┐
-│  Add member                   ✕  │
+│  Add member                      │
 │                                  │
 │  Name     [text input]           │
 │  Email    [text input]           │
@@ -1521,7 +1524,7 @@ Opens as a `MatDialog` from the "Log hours" button or the edit icon.
 
 ```
 ┌──────────────────────────────────┐
-│  Log hours                    ✕  │
+│  Log hours                       │
 │                                  │
 │  Project  [select ▼]             │
 │  Date     [date picker]          │
