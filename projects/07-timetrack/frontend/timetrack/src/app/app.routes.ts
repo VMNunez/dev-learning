@@ -26,6 +26,11 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
+        path: 'entries',
+        title: 'Entries',
+        loadComponent: () => import('./pages/entries/entries').then((m) => m.Entries),
+      },
+      {
         path: 'projects',
         title: 'Projects',
         canActivate: [managerGuard],

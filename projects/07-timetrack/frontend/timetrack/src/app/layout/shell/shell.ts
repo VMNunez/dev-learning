@@ -40,7 +40,7 @@ interface NavLink {
 
 const NAV_LINKS: readonly NavLink[] = [
   { label: 'Dashboard', route: '/dashboard', roles: ['EMPLOYEE', 'MANAGER'] },
-  { label: 'Entries', route: '/entries', roles: ['EMPLOYEE', 'MANAGER'], pending: true },
+  { label: 'Entries', route: '/entries', roles: ['EMPLOYEE', 'MANAGER'] },
   { label: 'Projects', route: '/projects', roles: ['MANAGER'], pending: true },
   { label: 'Approvals', route: '/approvals', roles: ['MANAGER'], pending: true },
   { label: 'Team', route: '/team', roles: ['MANAGER'], pending: true },
