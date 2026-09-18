@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Page } from '../../shared/models/page';
+import { Page, PageRequest } from '../../shared/models/page';
 import {
   CreateTimeEntryRequest,
   TimeEntry,
@@ -17,8 +17,18 @@ export class EntryService {
   private readonly http = inject(HttpClient);
   private readonly entryUrl = `${environment.apiUrl}/entries`;
 
-  getEntries(filters: TimeEntryFilters = {}): Observable<Page<TimeEntry>> {
+  getEntries(
+    filters: TimeEntryFilters = {},
+    pageRequest?: PageRequest,
+  ): Observable<Page<TimeEntry>> {
     let params = new HttpParams();
+
+    if (pageRequest) {
+      params = params.set('page', pageRequest.page).set('size', pageRequest.size);
+      if (pageRequest.sort) {
+        params = params.set('sort', pageRequest.sort);
+      }
+    }
 
     if (filters.month) {
       params = params.set('month', filters.month);
