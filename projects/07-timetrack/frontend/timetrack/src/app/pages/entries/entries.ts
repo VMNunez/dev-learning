@@ -196,10 +196,16 @@ export class Entries {
     };
   }
 
+  // The dialog reads its project list once, at open, so it never opens before that list has loaded.
   private openDialog(entry: TimeEntry | null): void {
+    const projects = this.projects();
+    if (!projects) {
+      return;
+    }
+
     this.dialog
       .open<EntryDialog, EntryDialogData, boolean>(EntryDialog, {
-        data: { entry, projects: this.projects() ?? [] },
+        data: { entry, projects },
         disableClose: true,
       })
       .afterClosed()
