@@ -264,6 +264,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Basic `mat-autocomplete` — connect an input to a local option panel and distinguish the displayed label from the stored object or identifier
 - Selection events vs form values — react to `selectionChange` only for side effects and read the form control for the authoritative selected value ✅ 05-task-manager
 - `mat-optgroup` — group a long option set semantically without pretending group labels are selectable values
+- Select panel width — a `mat-select` panel copies its trigger's width by default, so an option longer than the field wraps onto two lines; `panelWidth` set to `null` lets the panel size to its longest option, and any bound on it goes on a `panelClass` in a global stylesheet, because the panel renders in the overlay container ✅ 07-timetrack — the three `/entries` filter selects pass `[panelWidth]="null"` and `panelClass="filter-select-panel"`, whose rule in `styles.scss` keeps the panel between `12rem` and `24rem`
 - Checkbox, radio, and select choice — use checkboxes for independent booleans or multi-select, radio buttons for a small visible single-choice set, and a select when compactness or option count warrants it
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
