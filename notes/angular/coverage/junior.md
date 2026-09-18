@@ -167,7 +167,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
 - Form `valueChanges` — compose dependent-field and filtering behaviour as an Observable without nesting manual event handlers ✅ 07-timetrack — one `valueChanges` subscription clears the login's server error instead of an input handler on each control
-- `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event
+- `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event ✅ 07-timetrack — `Entries.showAllMonths()` relies on that emission, its `setValue('')` reloading the table through the filters' `valueChanges` subscription, while `EntryDialog` suppresses it with `form.disable({ emitEvent: false })` around its save
 
 ## Change detection
 
