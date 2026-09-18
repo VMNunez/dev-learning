@@ -16,13 +16,13 @@
 } @else {
   @let current = loading() ? null : data();
 
-  <section class="stat-grid" aria-label="This month at a glance" [attr.aria-busy]="loading()">
+  <section class="stat-grid" aria-label="Your hours and entries at a glance" [attr.aria-busy]="loading()">
     <app-stat-card
       label="Approved hours this month"
       [value]="current ? (current.summary.approvedHours | number: '1.0-2') + 'h' : null"
     />
     <app-stat-card
-      label="Hours awaiting approval"
+      label="Hours awaiting approval this month"
       [value]="current ? (current.summary.pendingHours | number: '1.0-2') + 'h' : null"
     />
     <app-stat-card
