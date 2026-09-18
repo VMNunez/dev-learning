@@ -365,7 +365,7 @@ foreach ($prompt in $singleShotPrompts) {
         Add-ValidationError "Single-shot tracker row missing: $promptName."
     }
 }
-foreach ($requiredTrackerContract in @('## Notes file executions', '## Single-shot prompt executions', 'completed|blocked|dry-run')) {
+foreach ($requiredTrackerContract in @('## Single-shot prompt executions', 'completed|blocked|dry-run')) {
     if ($trackerText -notmatch [regex]::Escape($requiredTrackerContract)) {
         Add-ValidationError "Run tracker lacks '$requiredTrackerContract'."
     }

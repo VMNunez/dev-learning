@@ -1,7 +1,7 @@
 # Run tracker — which targets each prompt has been run on
 
 **What this is.** A permanent dashboard of every runnable prompt's latest execution, with target-level
-progress for pipelines and file-level progress for study notes. It answers at a glance what completed,
+progress for pipelines. It answers at a glance what completed,
 what remains pending, and what last stopped as blocked or dry-run. Detailed machinery verdicts stay in
 each prompt's `_last-run-report*.md`; this file stores concise operational state.
 
@@ -77,21 +77,8 @@ is the first retained execution.
 
 Columns are grouped by level (J, then M, then S), with Coverage → Verify → Plan → Notes → Interview
 inside each level. The Notes J/M/S cells are summaries, written as `X/Y complete` plus the last outcome. Their denominator
-comes from the corresponding notes plan, never from counting files on disk.
-
-## Notes file executions
-
-One row per planned pair, upserted by `notes-audit`. `Plan status` mirrors the selected plan entry;
-`Last outcome` records the execution independently, so a failed retry remains visible without falsely
-marking the note complete.
-
-| Topic | Level | Note | English | Spanish | Plan status | Last run | Last outcome |
-|---|---|---|---|---|---|---|---|
-| Java | junior | 00 | `notes/java/junior/en/00-intro-java.md` | `notes/java/junior/es/00-intro-java.md` | complete | 2026-08-20 | completed — audit under the 2026-08-02 plan; 2/2 concepts `[x]`; four intro invariants written; `Studied` field inserted as `pending`; four stages passed |
-| Java | junior | 01 | `notes/java/junior/en/01-variables-types.md` | `notes/java/junior/es/01-variables-tipos.md` | complete | 2026-08-25 | completed — audit under the 2026-08-02 plan; 12/12 concepts `[x]`; `String` section moved out to entry 02 and the `Integer` cache / `final` sections to entry 06; 6 sections written for the uncovered bullets; `Studied` field inserted as `pending`; four stages passed |
-| Java | junior | 02 | `notes/java/junior/en/02-strings.md` | `notes/java/junior/es/02-cadenas-de-texto.md` | refined | 2026-09-16 | completed — append-only under the 2026-09-16 plan; 1 pending addition consumed (locale-sensitive case conversion), 7/7 concepts `[x]`, `Pending additions: none`; `Status: refined` kept; `Studied: pending` and `Pending study: none` preserved; 4 headings appended in both languages (en 806→928, es 805→927, +122/−0 each, parity 4 headings / 14 fences / 8 callouts); 3 siblings admitted as `READABLE_SIBLINGS`, 1 `LINK_TARGETS` pair unwritten (13), 0 orphans, 0 TODO markers; four stages passed (B fixed 5, C fixed 2); commit `96f3f8cc` |
-| Java | junior | 03 | `notes/java/junior/en/03-control-flow.md` | `notes/java/junior/es/03-flujo-de-control.md` | complete | 2026-09-16 | completed — standard-mode audit, 6/6 concepts `[x]`, 4 stages (A 🔧, B FIXED, T re-synced, C FIXED); `## Null guards` reduced to a forward reference to 04 per entry 04's audit note; `a88e7e2f` |
-| Java | junior | 04 | `notes/java/junior/en/04-methods.md` | `notes/java/junior/es/04-metodos.md` | complete | 2026-08-27 | completed — audit under the 2026-08-26 plan; 5/5 concepts `[x]`; `pending` → `complete`; en 546→604, es 546→605, 18 headings / 66 fences parity; `## Access modifiers`, `## Static methods` and the pass-by-value subsection consolidated out to entries 06 and 05 as marked forward references; `## Packages and imports` and the `null`/NPE section written; `Studied: pending` preserved, `Pending study: none`; 4 siblings admitted as `READABLE_SIBLINGS`, 1 `LINK_TARGETS` pair unwritten (13), 0 orphans; four stages passed |
+comes from the corresponding notes plan, never from counting files on disk. There is no per-note row: which
+entries are complete lives in the plan's `Status:` fields, and each run's detail in `_last-run-report.md`.
 
 ## SQL exercise track
 

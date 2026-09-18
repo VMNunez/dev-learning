@@ -128,11 +128,10 @@ says which, and this contract names no heading on purpose: the one it carried un
 no heading the tracker has ever had. Never invent a heading and never fall back to the nearest table,
 which reports `completed` while the real row stays `pending`. Record the date, resolved target/mode,
 outcome, and a concise result. A blocked run names
-the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, also
-upsert one row in `## Notes file executions`, keyed by `TOPIC + LEVEL + NOTE`, with both resolved
-language paths, plan status, last outcome, and date. Recalculate the matching Notes J/M/S summary
-cell as `complete entries / total entries`; the notes plan remains the authority for which entries
-exist.
+the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, its cell
+is the matching Notes J/M/S summary, recalculated as `complete entries / total entries` plus the
+selected note and its outcome; the notes plan remains the authority for which entries exist, and no
+per-note tracker row is kept.
 
 **(b) The probe is `git status` *and* `git log`.** Most orchestrators commit before reaching this step
 (per file in `notes-audit`, per topic in `interview-prep-audit`, the inbox in `coverage-prompt`), so a
