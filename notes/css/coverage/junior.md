@@ -62,7 +62,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
 - `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space ✅ 07-timetrack — the employee dashboard's `.stat-grid` sizes its cards with `minmax(12.5rem, 1fr)`
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
-- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch ✅ 07-timetrack — the employee dashboard's `.stat-grid` uses `repeat(auto-fit, …)` so four cards stretch across the row and reflow to two and one
+- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
 - Explicit vs implicit grid and auto-placement — distinguish declared tracks from rows or columns Grid creates when items have no explicit placement
 - Grid alignment — distinguish aligning items inside their grid areas with `justify-items`/`align-items` from aligning the grid tracks inside the container
