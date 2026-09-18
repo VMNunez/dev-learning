@@ -1263,7 +1263,10 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
   table instead of the page. Below 600px the Entries and Approvals tables hide the Description column
   (the least load-bearing) rather than shrinking every column
 - **Stat cards** — a CSS grid with `repeat(auto-fit, minmax(200px, 1fr))`, so four cards reflow to two
-  and then one with no breakpoint of their own
+  and then one with no breakpoint of their own. The strip is capped at `max-inline-size: 64rem` (added 2026-09-18): on a
+  wide monitor `1fr` stretched four cards to ~400px each, which reads as hero cards rather than the thin
+  Harvest-style summary strip; 64rem still fits four cards at the 12.5rem minimum, and below the cap
+  nothing changes
 - **Login** — the two-column split collapses to the form card alone below 768px; the branding panel is
   hidden, not stacked, and a one-line lockup (logo + app name) sits above the greeting in its place. The
   form sits at a fixed top offset rather than centred, because the virtual keyboard shrinks `100dvh` and a
