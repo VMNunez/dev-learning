@@ -10,11 +10,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-
-  h1 {
-    margin: 0;
-    font: var(--mat-sys-headline-small);
-  }
 }
 
 .filter-bar {
@@ -31,20 +26,6 @@
       width: 100%;
     }
   }
-}
-
-.page-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding-block: 2rem;
-  text-align: center;
-}
-
-.empty-message {
-  margin: 0;
-  color: var(--mat-sys-on-surface-variant);
 }
 
 .table-area {

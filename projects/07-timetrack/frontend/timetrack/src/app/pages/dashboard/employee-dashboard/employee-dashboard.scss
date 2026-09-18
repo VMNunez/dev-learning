@@ -8,11 +8,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-
-  h1 {
-    margin: 0;
-    font: var(--mat-sys-headline-small);
-  }
 }
 
 .greeting {
@@ -56,20 +51,6 @@ table {
 .mat-column-date,
 .mat-column-hours {
   white-space: nowrap;
-}
-
-.page-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding-block: 2rem;
-  text-align: center;
-}
-
-.empty-message {
-  margin: 0;
-  color: var(--mat-sys-on-surface-variant);
 }
 
 @media (max-width: 599px) {
