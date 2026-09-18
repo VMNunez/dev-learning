@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7b — Employee flow: dashboard + entries**, in progress on `feat/angular-entries` since 2026-09-17 (`feat/angular-shell-auth` merged through PR #90). Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` holds **no open task at any priority**: the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`; the Low raised that day while closing the sidenav task (the navigation toggle's missing `aria-controls`) closed the same day in `3b48f37a`; the pre-PR hygiene bundle itself closed that day across `5c69a9e7`–`5241a4c7`; the pre-PR PLANNING-drift Low closed that day as a decision (§6 Form dialogs own their write, Navigation boundary); the Medium raised with them (a shell sidenav that never collapsed below 1024px) closed on 2026-09-16 in `40fc27e5`, and the Lows for the toolbar trigger without the user's name and for its arrow that never turned closed the same day in `3fd72933` and `e3a981fa`, as did the dialog's missing visibility toggles in `91df6a48`, and the dialog's missing full-screen rule was closed that day as a decision to keep Material's compact card on phones |
-| **Current branch** | `feat/angular-entries`, cut from `projects/07-timetrack` on 2026-09-17 for Step 7b, after `feat/angular-shell-auth` merged through PR #90 (`e41ace4a`) |
-| **Done condition** | Step 7b's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input` |
-| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a done, Steps 7b–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7b–7d |
+| **Current step** | **Step 7c — Manager review flow: dashboard, approvals, projects**, next. Step 7b closed ✅ on 2026-09-18, its done condition verified clause by clause in the browser as an EMPLOYEE; the manager's `/dashboard` is still the `coming-soon` page, served by the `roleMatch('MANAGER')` route this step replaces. `PROJECT-BACKLOG.md` holds **no open task at any priority** |
+| **Current branch** | `feat/angular-entries` — **ready to merge** into `projects/07-timetrack` (PR), its Step 7b work complete; `feat/angular-manager-pages` is cut from `projects/07-timetrack` after that merge and carries Steps 7c and 7d (§22) |
+| **Done condition** | Step 7c's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals and the dashboard "Pending approval" card drops; create and deactivate a project at /projects; with the queue emptied /approvals shows "No pending approvals. Your team is up to date."` |
+| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Steps 7a–7b done, Steps 7c–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7c–7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
-| **Last updated** | 2026-09-17 |
+| **Last updated** | 2026-09-18 |
 
 ---
 
@@ -897,6 +897,7 @@ src/app/
 ├── core/
 │   ├── guards/
 │   │   ├── auth-guard.ts         ← blocks any route without a stored token
+│   │   ├── role-match.ts         ← `roleMatch(role)` CanMatchFn: picks the role's variant of a route declared twice (`/dashboard`)
 │   │   ├── no-auth-guard.ts      ← the mirror: keeps an authenticated user off /login, sending them to /dashboard
 │   │   └── manager-guard.ts      ← blocks manager-only routes for an EMPLOYEE
 │   ├── interceptors/
@@ -912,9 +913,11 @@ src/app/
 ├── pages/
 │   ├── login/                    ← email + password form, both roles
 │   ├── coming-soon/              ← placeholder routed for every nav link whose page is not built yet; each later step replaces one of its routes
-│   ├── dashboard/                ← role-aware summary (employee vs manager variant)
-│   ├── entries/
-│   │   ├── entry-list/           ← filterable table of entries
+│   ├── dashboard/
+│   │   ├── employee-dashboard/   ← stat cards + recent entries, EMPLOYEE variant of /dashboard
+│   │   └── manager-dashboard/    ← MANAGER variant of /dashboard (Step 7c)
+│   ├── entries/                  ← the page: filter bar, paging, the three states, row actions
+│   │   ├── entry-list/           ← presentational table: sortable columns, per-status actions
 │   │   └── entry-dialog/         ← create / edit an entry (reactive form)
 │   ├── projects/                 ← project CRUD table, manager only
 │   ├── approvals/                ← SUBMITTED entries queue, approve / reject
@@ -927,14 +930,17 @@ src/app/
     │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete
     │   ├── logo/               ← the clock mark, sized by each host's class (Login, shell toolbar)
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
+    │   ├── stat-card/         ← outlined number + label with a pulsing skeleton, used by both dashboards and Reports
     │   └── status-badge/      ← coloured badge, used in Entries, Approvals, Dashboard
-    └── models/                    ← interfaces mirroring the backend response DTOs
-        ├── auth.ts                ← LoginRequest, AuthResponse, Role + isRole
-        ├── api-error.ts           ← ApiError + its runtime type guard
-        ├── user.ts                ← ChangePasswordRequest (Step 7a); User joins it in Step 7d
-        ├── project.ts             ← Project
-        ├── time-entry.ts          ← TimeEntry + EntryStatus
-        └── report.ts              ← the three report shapes
+    ├── models/                    ← interfaces mirroring the backend response DTOs
+    │   ├── auth.ts                ← LoginRequest, AuthResponse, Role + isRole
+    │   ├── api-error.ts           ← ApiError, its runtime type guard and `apiErrorMessage()`
+    │   ├── user.ts                ← ChangePasswordRequest (Step 7a); User joins it in Step 7d
+    │   ├── page.ts                ← generic Page<T> + PageRequest for the paged GET /api/entries
+    │   ├── project.ts             ← Project
+    │   ├── time-entry.ts          ← TimeEntry + EntryStatus
+    │   └── report.ts              ← ReportSummary (Step 7b); the two hours reports join it in Step 7d
+    └── dates.ts                   ← local `YYYY-MM-DD` / `YYYY-MM` helpers and the month options of the filter bars
 ```
 
 **File naming — the 2025 Angular style guide, applied to every file in `src/app/`** (ruled 2026-09-11).
@@ -972,7 +978,7 @@ it differently mid-build:
 
 | Endpoint | Pages that read it | Owner |
 |---|---|---|
-| `GET /api/entries?month=` | Employee dashboard (stat cards + recent list) · Entries page (table) | **Each page fetches independently** into its own `entries` signal. The dashboard asks for the current month; the entries page asks for whatever the filter bar holds — the same URL with different params, so a shared cache would be wrong more often than right. Refetch after every mutation on the page that made it |
+| `GET /api/entries?month=` | Employee dashboard (stat cards + recent list) · Entries page (table) | **Each page fetches independently** into its own `entries` signal. The dashboard asks for status counts (`size=1`) and page 0 as its recent list; the entries page asks for whatever the filter bar holds — the same URL with different params, so a shared cache would be wrong more often than right. Refetch after every mutation on the page that made it |
 | `GET /api/entries?status=SUBMITTED` | Manager dashboard ("Pending approval" card + review list) · Approvals page (queue) | **Each page fetches independently.** Approving from the dashboard refetches only the dashboard; the Approvals page is re-read when the user navigates to it |
 | `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
 | `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
@@ -1048,11 +1054,15 @@ the teal / compact / flat identity above.
 | Role | Colour | Usage |
 |---|---|---|
 | Primary | Teal (`#00695C`) | Toolbar, buttons, active links |
-| DRAFT | Grey | Status badge |
-| SUBMITTED | Blue (`#1976D2`) | Status badge |
-| APPROVED | Green (`#388E3C`) | Status badge |
-| REJECTED | Red (`#D32F2F`) | Status badge |
+| DRAFT | Grey (`#616161`) | Status badge |
+| SUBMITTED | Blue (`#1565C0`) | Status badge |
+| APPROVED | Green (`#2E7D32`) | Status badge |
+| REJECTED | Red (`#C62828`) | Status badge |
 | Surface | White / light grey | Cards, sidebar background |
+
+The three saturated status colours are Material's 800 tones, not the 700s first planned: measured on
+2026-09-18 against the badge's own fill — the colour at 8% over white — `#1976D2`, `#388E3C` and
+`#D32F2F` fell under 4.5:1 at badge size, and the 800s clear it (5.1, 4.6 and 5.0; grey 5.5).
 
 ---
 
@@ -1233,6 +1243,12 @@ repeated in each wireframe. A page that renders only its success table is incomp
 > unbuilt, and the case differs: a dialog's fields can be edited while its request is in flight and the
 > user then sees stale values against a saved record. Decide it per dialog when Step 7b builds the first
 > one, with this note as the precedent, rather than copying either answer by reflex.
+>
+> **Decided for `entry-dialog`, 2026-09-18: its fields disable while saving.** The dialog case the
+> paragraph above describes is real there — a value typed during the request would sit on screen
+> against a record that saved the old one — and the dialog's Save is a filled button whose spinner
+> already tells the user to wait. The cost is the one measured on Login: focus leaves the field for
+> the length of the save. `user-dialog` and `reject-dialog` still decide for themselves.
 
 ---
 
@@ -1400,9 +1416,9 @@ Four stat cards + recent entries list.
 Good morning, Victor
 
 ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-│ 16h      │ │ 52h      │ │ 3        │ │ 8        │
-│ This     │ │ This     │ │ Pending  │ │ Approved │
-│ week     │ │ month    │ │ review   │ │ this mo. │
+│ 52h      │ │ 8h       │ │ 3        │ │ 2        │
+│ Approved │ │ Awaiting │ │ Pending  │ │ Drafts   │
+│ this mo. │ │ approval │ │ review   │ │ to submit│
 └──────────┘ └──────────┘ └──────────┘ └──────────┘
 
 Recent entries
@@ -1421,8 +1437,13 @@ Recent entries
 - The employee dashboard therefore reads `GET /api/reports/summary`, which is **scoped to the caller** by
   the same ownership rule `GET /api/entries` applies (employee → own, manager → all) — see the §10 reports
   ruling. The page sends no role and no user id: the token decides what the totals cover
-- "Pending review" and "Approved this month" are counts, and a paged response carries them exactly:
-  `page.totalElements` with `?status=…&size=1`, which is cheaper than the old count-the-array approach
+- "Approved hours this month" and "Hours awaiting approval" are the summary's `approvedHours` and
+  `pendingHours`; "Entries pending review" and "Drafts to submit" are counts, and a paged response
+  carries them exactly: `page.totalElements` with `?status=SUBMITTED|DRAFT&size=1`
+- **No "This week" card** (changed 2026-09-18, Step 7b). The first wireframe had one, but the API
+  aggregates by month only, and a weekly total summed in the browser is exactly what the first bullet
+  forbids. The Drafts card took its place because it is the one number an employee acts on — it moves
+  on every create and every submit
 - The recent-entries table below the cards is the one genuine consumer of the list itself, and it reads
   page 0 directly
 
@@ -1724,7 +1745,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   token. The `401` message is a form-level `<p class="login-error" role="alert">` above the fields, not a
   `mat-error`: a `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field
 
-#### Step 7b — Employee flow: dashboard + entries
+#### Step 7b — Employee flow: dashboard + entries ✅
 - Employee dashboard: stat cards whose hour totals come from `GET /api/reports/summary` and whose counts
   come from `page.totalElements` on `GET /api/entries?status=…&size=1` (§14 "How stat cards get their
   data" — never a client-side sum of a paged list) + recent entries from page 0 of `GET /api/entries`
@@ -1736,19 +1757,21 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   `loading()` is true (skeleton cards on the dashboard), `mat-error` + **Retry** when the call fails, and
   the per-page empty message ("No entries found for this period" / "You have not logged any hours yet")
 - **Review concepts:** coordinator pattern, reactive forms, MatTable/MatDialog, signals + `computed()`
+- **Concept learned:** a string-literal union derived from an `as const` array · a generic `Page<T>`
+  response model · `null` vs optional in a response model · immutable `HttpParams` that omit unset
+  filters · PUT vs PATCH with a `204` typed `Observable<void>` · a `canMatch` guard choosing a route
+  variant by role · a `Subject` + `switchMap` reload stream that cancels the stale request · `forkJoin`
+  loading independent calls as one all-or-nothing result · server-side paging and sorting driven by
+  `MatPaginator` / `MatSort` · backend `fieldErrors` placed under their controls with `setErrors` ·
+  a local `YYYY-MM-DD` date instead of `toISOString()` · `trackBy` keeping table rows across a reload ·
+  status colours checked against the 4.5:1 AA ratio at badge size
 - **Done condition:** `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input`
-- **In progress — pieces landed and records owed** (delete this block when the step closes):
-  1. Data layer — `shared/models/time-entry.ts` + `page.ts` (`27678587`) and `EntryService` with
-     `getEntries` + the five writes (`5559f1e6`, `93b42cc2`) ✅; `Project` model + read-only
-     `ProjectService` next. 2. `status-badge` + `confirm-dialog`. 3. `/entries` page. 4. `entry-dialog`.
-     5. Employee dashboard. 6. Browser run of the done condition → `step-complete`
-  - **Owed the first time the data layer runs in front of Victor** (the `/entries` page shows data and
-    the request is read in Network — a compiling service is not a verifiable piece, `coverage-mark` §1):
-    `coverage-bullet-add` + `coverage-mark` + `readme-concept-add` for a union type derived from an
-    `as const` array, the generic `Page<T>` response model, immutable `HttpParams` omitting unset
-    filters, `null` vs optional in a response model, and PUT vs PATCH with a `204` typed `void`
-  - Deferred to 7c on purpose: `userId` in `TimeEntryFilters` (Approvals employee filter — an EMPLOYEE
-    caller is overwritten by the JWT user) and the approve/reject calls
+- **Verified 2026-09-18** in the browser as an EMPLOYEE, every clause: the empty message for a month
+  with no entries, create → edit (`PUT`) → inline submit with the dashboard cards moving, a description of
+  spaces answered by the backend's `fieldErrors.description` under the input, Re-open on an entry rejected
+  through Postman, and Retry after stopping the backend. Changed against the plan: the employee dashboard's
+  cards (§14), the badge colours (§14 Colour palette), and `/dashboard` split into two role variants
+  chosen by a `canMatch` guard, the manager one still the `coming-soon` page until Step 7c (§13)
 
 #### Step 7c — Manager review flow: dashboard, approvals, projects
 - Manager dashboard (`forkJoin` stat cards) + pending approvals list with inline approve / reject
