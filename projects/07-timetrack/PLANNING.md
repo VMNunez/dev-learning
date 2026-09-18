@@ -1190,7 +1190,7 @@ pages in one sitting — that is the only way inconsistency becomes visible:
 | `MatProgressSpinner` | Loading state on every async page |
 | `MatTooltip` | Approve/reject buttons in the approvals table |
 | `MatMenu` | User menu in toolbar (change password, logout) |
-| `MatFab` | "Log hours" floating action button on the entries page |
+| `MatButton` (filled, with icon) | "Log hours" in the entries page header — not a `MatFab` (changed 2026-09-18): a FAB floats over content, and one fixed in a desktop header is only an elevated button in `primary-container` that breaks the flat identity and outshouts the teal primary |
 
 ---
 
@@ -1483,7 +1483,7 @@ Empty state: "No pending approvals. Your team is up to date."
 
 #### Entries page — both roles
 
-Filter bar + table + floating action button (employee only).
+Filter bar + table + a filled "Log hours" button in the page header (employee only).
 
 ```
 [Month ▼]  [Project ▼]  [Status ▼]              [+ Log hours]  ← hidden for managers
@@ -1749,7 +1749,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - Employee dashboard: stat cards whose hour totals come from `GET /api/reports/summary` and whose counts
   come from `page.totalElements` on `GET /api/entries?status=…&size=1` (§14 "How stat cards get their
   data" — never a client-side sum of a paged list) + recent entries from page 0 of `GET /api/entries`
-- Entries page: filter bar, table, FAB; entry-dialog (create/edit); inline submit quick action
+- Entries page: filter bar, table, "Log hours" button; entry-dialog (create/edit); inline submit quick action
 - **Re-open action on REJECTED rows** (owner only, §8/§14): calls `PATCH /api/entries/{id}/reopen`, the row returns to DRAFT and the edit / delete / submit icons take over; the row also surfaces the manager's `rejectionNote`
 - Shared components: `status-badge`, `confirm-dialog`
 - Reactive forms consume the `fieldErrors` map from the error contract — message under each input on 400
