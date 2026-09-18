@@ -1041,6 +1041,10 @@ the teal / compact / flat identity above.
 └──────────────┴──────────────────────────────────┘
 ```
 
+- The routed page renders inside a `<main class="page-content">` capped at `max-inline-size: 80rem`,
+  left-aligned beside the sidebar (added 2026-09-18). On a wide monitor the uncapped page stretched four
+  stat cards to ~400px each and opened a wide gap between table columns; capping the whole page rather
+  than each block keeps cards and tables on one right edge. Below ~1366px it changes nothing
 - Sidebar links filtered by role — only one section is shown depending on who is logged in
 - `MatBadge` on Approvals link showing the count of pending SUBMITTED entries
 - Toolbar shows the logged-in user's name as a `MatMenu` trigger; the menu holds **Change password** and
@@ -1263,10 +1267,7 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
   table instead of the page. Below 600px the Entries and Approvals tables hide the Description column
   (the least load-bearing) rather than shrinking every column
 - **Stat cards** — a CSS grid with `repeat(auto-fit, minmax(200px, 1fr))`, so four cards reflow to two
-  and then one with no breakpoint of their own. The strip is capped at `max-inline-size: 64rem` (added 2026-09-18): on a
-  wide monitor `1fr` stretched four cards to ~400px each, which reads as hero cards rather than the thin
-  Harvest-style summary strip; 64rem still fits four cards at the 12.5rem minimum, and below the cap
-  nothing changes
+  and then one with no breakpoint of their own
 - **Login** — the two-column split collapses to the form card alone below 768px; the branding panel is
   hidden, not stacked, and a one-line lockup (logo + app name) sits above the greeting in its place. The
   form sits at a fixed top offset rather than centred, because the virtual keyboard shrinks `100dvh` and a
