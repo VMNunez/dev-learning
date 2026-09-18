@@ -10,6 +10,7 @@
   </div>
 } @else if (!loading() && data()?.hasEntries === false) {
   <div class="page-state">
+    <mat-icon class="empty-illustration" aria-hidden="true">more_time</mat-icon>
     <p class="empty-message">You have not logged any hours yet</p>
     <a matButton="filled" routerLink="/entries">Log your first entry</a>
   </div>

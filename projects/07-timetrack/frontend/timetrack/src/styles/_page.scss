@@ -15,6 +15,14 @@
   text-align: center;
 }
 
+// A first-use empty state carries an illustration; a filter that matches nothing does not.
+.empty-illustration {
+  width: 4rem;
+  height: 4rem;
+  font-size: 4rem;
+  color: var(--mat-sys-outline);
+}
+
 .empty-message {
   margin: 0;
   color: var(--mat-sys-on-surface-variant);
