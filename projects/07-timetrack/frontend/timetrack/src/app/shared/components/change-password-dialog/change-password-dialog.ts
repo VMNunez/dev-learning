@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { UserService } from '../../../core/services/user-service';
@@ -22,6 +22,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
 import { isApiError } from '../../models/api-error';
+import { confirmDiscard } from '../confirm-dialog/confirm-discard';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -59,6 +60,7 @@ class MismatchErrorStateMatcher implements ErrorStateMatcher {
 export class ChangePasswordDialog {
   private readonly userService = inject(UserService);
   private readonly dialogRef = inject(MatDialogRef<ChangePasswordDialog>);
+  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   readonly loading = signal(false);
@@ -93,6 +95,17 @@ export class ChangePasswordDialog {
         filter((event) => event.key === 'Escape' && !this.loading()),
         takeUntilDestroyed(this.destroyRef),
       )
+      .subscribe(() => this.close());
+  }
+
+  close(): void {
+    if (!this.form.dirty) {
+      this.dialogRef.close();
+      return;
+    }
+
+    confirmDiscard(this.dialog)
+      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.dialogRef.close());
   }
 

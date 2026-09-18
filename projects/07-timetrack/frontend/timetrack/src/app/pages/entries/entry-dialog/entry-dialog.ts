@@ -5,13 +5,19 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { filter, Observable, switchMap } from 'rxjs';
 import { EntryService } from '../../../core/services/entry-service';
+import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { fromIsoDate, toIsoDate } from '../../../shared/dates';
 import { isApiError } from '../../../shared/models/api-error';
 import { Project } from '../../../shared/models/project';
@@ -49,6 +55,7 @@ const FORM_FIELDS = ['projectId', 'date', 'hours', 'description'] as const;
 export class EntryDialog {
   private readonly entryService = inject(EntryService);
   private readonly dialogRef = inject(MatDialogRef<EntryDialog, boolean>);
+  private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly data = inject<EntryDialogData>(MAT_DIALOG_DATA);
 
@@ -90,7 +97,14 @@ export class EntryDialog {
   }
 
   close(): void {
-    this.dialogRef.close(this.saved);
+    if (!this.form.dirty) {
+      this.dialogRef.close(this.saved);
+      return;
+    }
+
+    confirmDiscard(this.dialog)
+      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.dialogRef.close(this.saved));
   }
 
   save(submitAfterSave = false): void {
