@@ -1,0 +1,89 @@
+<header class="page-header">
+  <h1>Entries</h1>
+
+  @if (isEmployee()) {
+    <button matFab extended type="button" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Log hours
+    </button>
+  }
+</header>
+
+<form class="filter-bar" [formGroup]="filters">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Month</mat-label>
+    <mat-select formControlName="month">
+      <mat-option value="">All months</mat-option>
+      @for (month of months; track month.value) {
+        <mat-option [value]="month.value">{{ month.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Project</mat-label>
+    <mat-select formControlName="projectId">
+      <mat-option [value]="null">All projects</mat-option>
+      @for (project of projects() ?? []; track project.id) {
+        <mat-option [value]="project.id">{{ project.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status">
+      <mat-option [value]="null">All statuses</mat-option>
+      @for (status of statuses; track status) {
+        <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</form>
+
+@if (error(); as message) {
+  <div class="page-state page-error">
+    <mat-error role="alert">{{ message }}</mat-error>
+    <button matButton="outlined" type="button" (click)="reload()">Retry</button>
+  </div>
+} @else if (loading() && entries().length === 0) {
+  <div class="page-state">
+    <mat-progress-spinner mode="indeterminate" diameter="40" aria-label="Loading entries" />
+  </div>
+} @else if (entries().length === 0) {
+  <div class="page-state">
+    <p class="empty-message">No entries found for this period</p>
+    @if (isEmployee()) {
+      <button matButton="filled" type="button" (click)="openCreate()">Log your first entry</button>
+    }
+  </div>
+} @else {
+  <section class="table-area" [attr.aria-busy]="loading()">
+    <app-entry-list
+      [entries]="entries()"
+      [showEmployee]="!isEmployee()"
+      [showActions]="isEmployee()"
+      [busyEntryId]="busyEntryId()"
+      (edit)="openEdit($event)"
+      (remove)="confirmDelete($event)"
+      (submitForReview)="submit($event)"
+      (reopen)="reopen($event)"
+      (sortChange)="onSort($event)"
+    />
+
+    @if (loading()) {
+      <div class="table-overlay">
+        <mat-progress-spinner mode="indeterminate" diameter="40" aria-label="Loading entries" />
+      </div>
+    }
+
+    <mat-paginator
+      [length]="totalElements()"
+      [pageIndex]="pageIndex()"
+      [pageSize]="pageSize()"
+      [pageSizeOptions]="[10, 20, 50]"
+      aria-label="Select page of entries"
+      (page)="onPage($event)"
+    />
+  </section>
+}
