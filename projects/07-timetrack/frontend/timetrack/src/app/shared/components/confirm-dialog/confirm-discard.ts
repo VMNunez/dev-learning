@@ -6,8 +6,8 @@ import { ConfirmDialog, ConfirmDialogData } from './confirm-dialog';
  * Asks before a form dialog throws away what the user typed. Emits `true` only when the user
  * chooses to discard; closing the question any other way keeps the form open.
  *
- * It opens on top of a dialog that already dims the page, so it brings no second scrim and is
- * narrower than the form: it has to read as a question about the form, not as a form of its own.
+ * It opens narrower than the form it sits on, and with its own scrim dimming that form: flat
+ * dialogs share one surface colour, so only the scrim separates the question from the form below.
  */
 export function confirmDiscard(dialog: MatDialog): Observable<boolean> {
   return dialog
@@ -19,7 +19,6 @@ export function confirmDiscard(dialog: MatDialog): Observable<boolean> {
         destructive: true,
       },
       width: '24rem',
-      backdropClass: 'cdk-overlay-transparent-backdrop',
     })
     .afterClosed()
     .pipe(map((discard) => discard === true));
