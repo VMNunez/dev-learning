@@ -58,15 +58,6 @@ html {
     )
   );
 
-  // The page-size select is a full outlined form field; at the theme density it stands 40px tall
-  // beside 12px text. 32px keeps it a control while letting the paginator read as a footer.
-  @include mat.paginator-overrides(
-    (
-      form-field-container-height: 2rem,
-      form-field-container-vertical-padding: 0.5rem,
-    )
-  );
-
   @include mat.list-overrides(
     (
       active-indicator-shape: 4px,
