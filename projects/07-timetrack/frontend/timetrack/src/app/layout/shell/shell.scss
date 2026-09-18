@@ -55,6 +55,14 @@ mat-sidenav-container {
   flex: 1;
 }
 
+mat-sidenav-content {
+  padding: 1.5rem;
+
+  @media (max-width: 599px) {
+    padding: 1rem;
+  }
+}
+
 mat-nav-list {
   padding-inline: 0.5rem;
 }
