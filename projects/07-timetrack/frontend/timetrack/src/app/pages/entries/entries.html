@@ -12,7 +12,7 @@
 <form class="filter-bar" [formGroup]="filters">
   <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Month</mat-label>
-    <mat-select formControlName="month">
+    <mat-select formControlName="month" [panelWidth]="null" panelClass="filter-select-panel">
       <mat-option value="">All months</mat-option>
       @for (month of months; track month.value) {
         <mat-option [value]="month.value">{{ month.label }}</mat-option>
@@ -22,7 +22,7 @@
 
   <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Project</mat-label>
-    <mat-select formControlName="projectId">
+    <mat-select formControlName="projectId" [panelWidth]="null" panelClass="filter-select-panel">
       <mat-option [value]="null">All projects</mat-option>
       @for (project of projects() ?? []; track project.id) {
         <mat-option [value]="project.id">{{ project.name }}</mat-option>
@@ -32,7 +32,7 @@
 
   <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>Status</mat-label>
-    <mat-select formControlName="status">
+    <mat-select formControlName="status" [panelWidth]="null" panelClass="filter-select-panel">
       <mat-option [value]="null">All statuses</mat-option>
       @for (status of statuses; track status) {
         <mat-option [value]="status">{{ statusLabels[status] }}</mat-option>

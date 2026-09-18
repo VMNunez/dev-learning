@@ -31,6 +31,13 @@ body {
 }
 /* You can add global styles to this file, and also import other style files */
 
+// A filter select's panel grows to its longest option instead of copying the field's width,
+// so "September 2026" stays on one line; long project names still wrap inside the cap.
+.filter-select-panel {
+  min-width: 12rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+}
+
 .skeleton {
   border-radius: 4px;
   background: var(--mat-sys-surface-container-high);
