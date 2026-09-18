@@ -2,6 +2,13 @@ export const ENTRY_STATUSES = ['DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED'] as 
 
 export type EntryStatus = (typeof ENTRY_STATUSES)[number];
 
+export const ENTRY_STATUS_LABELS: Record<EntryStatus, string> = {
+  DRAFT: 'Draft',
+  SUBMITTED: 'Submitted',
+  APPROVED: 'Approved',
+  REJECTED: 'Rejected',
+};
+
 export interface TimeEntry {
   id: number;
   userId: number;
