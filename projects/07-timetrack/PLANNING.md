@@ -1283,7 +1283,9 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
   stretched one was tried and rejected on 2026-09-16; and no standard dialog carries a ✕ in its title bar (removed from the
   wireframes below on 2026-09-18) — in Material 3 the close icon belongs to the full-screen layout, and a
   standard dialog is dismissed by its Cancel action, by Escape while no write is in flight, and never by a
-  backdrop click on a form dialog (§6 Subscription lifetime)
+  backdrop click on a form dialog (§6 Subscription lifetime). A form dialog whose form is dirty asks
+  "Discard changes?" (the shared `confirmDiscard`, a destructive `confirm-dialog`) before Cancel or Escape
+  closes it; a pristine one closes at once
 
 ---
 
