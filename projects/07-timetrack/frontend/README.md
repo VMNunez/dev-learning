@@ -97,6 +97,7 @@ src/app/
 - An inline read-only table for the dashboard's recent entries over reusing `EntryList` — that component's sortable headers and row actions belong to `/entries`, and on a dashboard its sort arrows would respond to nothing; in exchange the two tables repeat their shared cell templates
 - Container queries on the dashboard's own width over viewport media queries or `auto-fit` for the stat cards — the 15rem sidenav rail narrows the page from 1024px up, so the window's width misjudges the room, and `auto-fit` left four cards as 3 + 1; in exchange the page's `:host` becomes an `inline-size` container, so its width can never come from its content
 - The paginator's defaults provided by the Entries page over app-wide in `app.config.ts` — importing even its options token at bootstrap pulled the paginator, select, form field and tooltip into the initial bundle (665 kB against a 500 kB budget, 448 kB after); in exchange a second paginated page must provide the same defaults again
+- `/entries` opening on the current month over all months — a timesheet is worked and reviewed by month and the query stays bounded; in exchange the first days of a month open on an empty table, so the empty state offers "Show all months" while a month is selected
 
 ---
 
