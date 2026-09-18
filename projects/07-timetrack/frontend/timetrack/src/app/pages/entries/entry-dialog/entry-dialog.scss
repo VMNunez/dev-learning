@@ -8,4 +8,6 @@
 .dialog-error {
   display: block;
   margin-block-start: 0.5rem;
+  color: var(--mat-sys-error);
+  font: var(--mat-sys-body-small);
 }
