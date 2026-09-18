@@ -92,6 +92,7 @@ src/app/
 - Material's compact card for dialogs on phones over full-screen dialogs — a Material 3 full-screen dialog needs its own layout, a top bar with close and confirm actions, and stretching the standard dialog only spread its fields and buttons apart; in exchange a long form dialog scrolls inside a card with the page dimmed around it
 - Four monthly stat cards over a "this week" hours card — the API aggregates by month only, and summing a week of entries in the browser would break the no-client-side-sum rule; in exchange the employee dashboard shows no weekly figure
 - Disabling the entry dialog's fields while it saves over leaving them editable like the login form — a value typed during the request would sit on screen against a record that saved the old one; in exchange focus leaves the field for the length of the save
+- Disabling "Log hours" until the project list has loaded over hiding it or opening the dialog with an empty list — the dialog reads its projects once, at open, so a `null` list is refused rather than passed on as `[]`, and the header does not shift when the load ends; in exchange the disabled button explains nothing itself and leaves that to the spinner or the error below it
 
 ---
 
