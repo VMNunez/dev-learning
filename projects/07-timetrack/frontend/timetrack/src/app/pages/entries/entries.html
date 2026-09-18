@@ -52,9 +52,17 @@
   </div>
 } @else if (entries().length === 0) {
   <div class="page-state">
-    <p class="empty-message">No entries found for this period</p>
-    @if (isEmployee()) {
+    @if (filtered()) {
+      <p class="empty-message">No entries match these filters</p>
+      @if (isEmployee()) {
+        <button matButton="filled" type="button" (click)="openCreate()">Log hours</button>
+      }
+    } @else if (isEmployee()) {
+      <mat-icon class="empty-illustration" aria-hidden="true">more_time</mat-icon>
+      <p class="empty-message">You have not logged any hours yet</p>
       <button matButton="filled" type="button" (click)="openCreate()">Log your first entry</button>
+    } @else {
+      <p class="empty-message">Your team has not logged any hours yet</p>
     }
     @if (filters.controls.month.value) {
       <button matButton type="button" (click)="showAllMonths()">Show all months</button>

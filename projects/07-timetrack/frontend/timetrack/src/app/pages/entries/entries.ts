@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -99,6 +99,16 @@ export class Entries {
     month: new FormControl(toIsoMonth(new Date()), { nonNullable: true }),
     projectId: new FormControl<number | null>(null),
     status: new FormControl<EntryStatus | null>(null),
+  });
+
+  // With no filter set, an empty table means the user has no entries at all: a first-use empty state,
+  // not a filter that matched nothing.
+  private readonly filterValue = toSignal(this.filters.valueChanges, {
+    initialValue: this.filters.getRawValue(),
+  });
+  protected readonly filtered = computed(() => {
+    const { month, projectId, status } = this.filterValue();
+    return !!month || projectId != null || status != null;
   });
 
   private readonly reload$ = new Subject<void>();
