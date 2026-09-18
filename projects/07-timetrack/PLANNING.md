@@ -1091,6 +1091,7 @@ stylesheet and point at the break.
 | **Spacing** | An 8px grid: 8 · 16 · 24 · 32, **written in `rem`** (0.5 · 1 · 1.5 · 2rem at the default 16px root) so spacing and fixed widths grow with the user's browser font size. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary values; `px` only for hairline borders, media-query breakpoints and the theme's shape tokens |
 | **Elevation & shape** | Flat, per the identity: cards are `<mat-card appearance="outlined">` at elevation 0 with a 1px outline; only overlays lift — dialogs at elevation 3, menus/snackbars at Material's default. Never a hand-written `box-shadow`. One 4px corner radius, set as the theme's shape token and never overridden per component |
 | **Density** | Material's **compact** density, set once in `mat.theme()` and inherited by every `MatTable` and form field — so ten rows fit on a laptop screen without scrolling. Never set per table |
+| **Paginator** | Ten rows per page, **no page-size select**: `MAT_PAGINATOR_DEFAULT_OPTIONS` in `app.config.ts` sets `hidePageSize` once for every table, because the select is a full outlined form field that turns the footer into a form. The paginator reads as the table's footer — `mat.paginator-overrides` tints it `surface-container-low` with `on-surface-variant` text. Decided 2026-09-18 |
 | **Dark mode** | **Out of scope, deliberately.** One theme finished properly beats two half-done, and the demo is judged in light mode. Revisit in project 08 |
 
 ---
