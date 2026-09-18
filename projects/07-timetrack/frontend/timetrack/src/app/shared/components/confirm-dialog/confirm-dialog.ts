@@ -6,12 +6,15 @@ export interface ConfirmDialogData {
   title: string;
   message: string;
   confirmLabel: string;
+  /** Paints the confirm button in the theme's error colour, for actions that destroy data. */
+  destructive?: boolean;
 }
 
 @Component({
   selector: 'app-confirm-dialog',
   imports: [MatDialogModule, MatButtonModule],
   templateUrl: './confirm-dialog.html',
+  styleUrl: './confirm-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialog {

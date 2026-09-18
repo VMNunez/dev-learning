@@ -146,6 +146,7 @@ export class Entries {
           title: 'Delete entry?',
           message: `The ${entry.hours}h draft for ${entry.projectName} will be deleted permanently.`,
           confirmLabel: 'Delete',
+          destructive: true,
         },
       })
       .afterClosed()
