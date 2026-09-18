@@ -60,9 +60,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
-- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space
+- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space ✅ 07-timetrack — the employee dashboard's `.stat-grid` sizes its cards with `minmax(12.5rem, 1fr)`
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
-- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch
+- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch ✅ 07-timetrack — the employee dashboard's `.stat-grid` uses `repeat(auto-fit, …)` so four cards stretch across the row and reflow to two and one
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
 - Explicit vs implicit grid and auto-placement — distinguish declared tracks from rows or columns Grid creates when items have no explicit placement
 - Grid alignment — distinguish aligning items inside their grid areas with `justify-items`/`align-items` from aligning the grid tracks inside the container
@@ -138,7 +138,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the shared `Logo` SVG strokes in `currentColor`, so it inherits `--mat-sys-on-primary` on the login branding panel and the toolbar
-- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
+- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background ✅ 07-timetrack — each `--status-*` badge colour measures at least 4.5:1 against its 8% `color-mix()` tint in `status-badge.scss`
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 
 ## Borders, shadows, and backgrounds

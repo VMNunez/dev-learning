@@ -26,12 +26,12 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 ## Buttons, icons, menus, and tooltips
 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
-- FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
+- FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action ✅ 07-timetrack — the Entries page's only `matFab extended` is Log hours, while row and dialog actions stay icon or text buttons
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `matButton`, labelled with the logged-in user's name, opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu trigger open state — `MatMenuTrigger` sets `aria-expanded` on its host but never changes the host's content, so an indicator inside the trigger, such as a dropdown arrow, shows the open menu only when bound to the trigger's `menuOpened` and `menuClosed` outputs, which fire however the menu closes ✅ 07-timetrack — the `Shell` account trigger sets an `isAccountMenuOpen` signal from `(menuOpened)`/`(menuClosed)` and rotates its `arrow_drop_down` through `[class.open]`
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
-- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
+- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions ✅ 07-timetrack — the entry row icon buttons carry an `aria-label` beside their `matTooltip`, and the badge's rejection-note tooltip repeats text shown under the description
 
 ## Form-field composition and selection controls
 
@@ -51,9 +51,9 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
 - Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control ✅ 06-hr-portal
-- Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
+- Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions ✅ 07-timetrack — `EntryDialog` keeps its date control a `Date` under `provideNativeDateAdapter()` and converts to `YYYY-MM-DD` only when building the request
 - Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept ✅ 06-hr-portal
-- Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission
+- Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission ✅ 07-timetrack — `EntryDialog` binds `[max]="today"` and renders the `matDatepickerMax` error as "Date cannot be in the future" under the field
 
 ## Tables, sorting, filtering, and pagination
 
@@ -66,12 +66,12 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - `MatTableDataSource` scope — use the convenience class for simple client-side sorting, filtering, and pagination, not as a server-side data-access abstraction ✅ 05-task-manager
 - Sort integration — connect `MatSort` after the view exists, mark only sortable headers, and handle nested or derived values through a sorting accessor or server query ✅ 05-task-manager
 - Paginator integration — connect `MatPaginator` for client data or translate page events into backend parameters without paginating the same result twice ✅ 05-task-manager
-- Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
+- Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded ✅ 07-timetrack — the Entries `mat-paginator` binds `length` to `page.totalElements` and sends `pageIndex`/`pageSize` as the API's `page`/`size`
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
 - Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to ✅ 06-hr-portal
 - Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
-- Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
+- Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset ✅ 07-timetrack — `EntryList` hands `matSortChange` and the paginator's `page` event to `Entries`, which turns them into `GET /api/entries` params with no `MatTableDataSource`
 
 ## Dialogs and confirmation flows
 

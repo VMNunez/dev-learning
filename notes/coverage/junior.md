@@ -23,7 +23,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - A child's `input()` and `output()` types are part of the domain boundary — declaring them as `string` when the parent's state is a narrow union re-widens the value at the boundary, so the narrowing a runtime check bought survives only inside the parent and the compiler stops rejecting a filter value nothing can match ✅ 06-hr-portal — `EmployeeFilters` declares `selectedStatus` as `input<EmployeeStatusFilter>` and `statusChange` as `output<EmployeeStatusFilter>`, so the union the page validated at the query-param read is the same one the filter child speaks
 - Component member visibility — a component's public members are an API other code reaches through dependency injection and queries, so members only its template reads are `protected` and members only the class itself uses are `private`; the template compiler can read `protected` but rejects `private` at build time ✅ 07-timetrack — `Shell` keeps `dialog`, `router` and `authService` `private` and exposes `isDesktop`, `userName` and `isAccountMenuOpen` to its template as `protected`
 - `@if` — branch on a condition so mutually exclusive UI states stay readable instead of being hidden with CSS ✅ 01-todo-list
-- `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject
+- `@switch` — express a value's known variants as fixed cases instead of chaining conditions that repeat the same subject ✅ 07-timetrack — `EntryList`'s action cell switches on `entry.status`, rendering edit/delete/submit for `DRAFT` and Re-open for `REJECTED`
 - `@for` and `track` — render collections with stable identity so Angular can reuse DOM nodes instead of recreating them ✅ 01-todo-list
 - `@empty` — attach a collection's empty case to the loop instead of a sibling condition, and recognise that it reports only that the loop's own expression rendered nothing, so a filtered list must consult its unfiltered source to say why it is empty ✅ 01-todo-list — `task-list.html` nests `@if (totalCount() === 0)` inside `@empty` so a filtered miss and an empty list read differently
 - Template reference variables — capture a template element, directive, or component instance for a local interaction without turning it into application state ✅ 01-todo-list
@@ -93,10 +93,10 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `forkJoin()` vs `combineLatest()` — coordinate one-time completion or continuing latest-value streams according to source behaviour ✅ 02-weather-app
 
 - `Observable` vs `Promise` — compare stream composition and cancellation with a single eventual Promise while recognising that Observables may be cold or hot and may emit once or many times
-- `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container
+- `Observable` vs `Subject` — distinguish a declarative subscribable stream from a subject that can be imperatively fed and multicast, rather than using a subject as the default state container ✅ 07-timetrack — `Entries` and `EmployeeDashboard` feed a `reload$` `Subject` only as a load trigger, while the loaded rows live in signals
 - `subscribe()` callbacks — handle next and error outcomes deliberately and keep presentation state consistent after a failed request ✅ 02-weather-app
 - `map()` vs `tap()` — transform emitted data with `map()` and reserve `tap()` for observation or side effects ✅ 04-meal-finder — `paramMap.pipe(map(params => params.get("id")))` narrows the router stream to the id before it becomes a signal
-- `switchMap()` — cancel a stale inner request when a newer search term or route value arrives
+- `switchMap()` — cancel a stale inner request when a newer search term or route value arrives ✅ 07-timetrack — `Entries` pushes every reload through a `Subject` into `switchMap`, so a filter or page change drops the `GET /api/entries` still in flight
 - `switchMap()` vs `mergeMap()` — cancel replaceable work with `switchMap()` and preserve deliberate concurrent inner work with `mergeMap()` instead of choosing by habit
 - `concatMap()` vs `exhaustMap()` — queue ordered inner work with `concatMap()` and ignore new triggers with `exhaustMap()` while current work is active, especially for writes and form submissions
 - Search pipeline operators — combine `debounceTime()`, `distinctUntilChanged()`, and `switchMap()` to avoid premature, duplicate, and stale requests
@@ -114,7 +114,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Route definitions and `routerLink` — map paths to components and move between them declaratively so the application becomes navigable ✅ 03-expense-tracker
 - `routerLink` on a host that is not an anchor — the directive writes an `href` only on an `<a>`, so on any other element the click still navigates while the tab stop, the `link` role and the browser's context menu are silently absent ✅ 06-hr-portal — the dashboard's five stat cards are `<a class="stat-card-link" routerLink>` wrapping the `mat-card`, replacing a `routerLink` sitting on the `mat-card` itself
 - Application shell outside the outlet — place chrome that must survive navigation in the root component around `RouterOutlet`, because the router destroys and recreates the routed component on every navigation ✅ 04-meal-finder — the nav and its favourites badge sit in `app.html` above `<router-outlet />`, so the count stays on screen while `/`, `/detail/:id` and `/favourites` are mounted and destroyed under it
-- Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes ✅ 07-timetrack — the `path: ''` route loads `Shell`, whose own `<router-outlet />` swaps `Dashboard` underneath while the shell itself is never re-created
+- Child routes and nested outlets — model a feature's route hierarchy so its shared layout remains mounted while child content changes ✅ 07-timetrack — the `path: ''` route loads `Shell`, whose own `<router-outlet />` swaps `EmployeeDashboard` and `Entries` underneath while the shell itself is never re-created
 - Route titles — declare `title` on every routed page so the router sets the document title after each navigation; the default `TitleStrategy` writes only when the deepest primary route resolves a title, so a route table titled in part keeps the previous page's title, and a `TitleStrategy` subclass provided in its place formats every title, such as a brand suffix, in one place ✅ 07-timetrack — `AppTitleStrategy`, provided for `TitleStrategy` in `app.config.ts`, suffixes each route `title` with `| TimeTrack` and writes the brand alone when none resolves
 - `ActivatedRoute` route params — read route identity from `paramMap` so a routed component knows which resource it is showing ✅ 04-meal-finder
 - A route parameter is always text — `paramMap.get()` yields `string | null` whatever the model declares, so converting it is a decision that has to agree with the identifier's real type; a conversion that no longer matches fails silently, because the lookup simply finds nothing and the view renders as if the record did not exist ✅ 06-hr-portal — `DepartmentForm.ngOnInit` hands `paramMap.get('id')` straight to `getById`, the `Number(rawId)` conversion dropped once `Department.id` became a `string`
@@ -138,6 +138,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Redirect `pathMatch` — use `pathMatch: 'full'` for an empty-path redirect when prefix matching would otherwise catch every URL ✅ 06-hr-portal
 - `CanActivateFn` guards — return a boolean or `UrlTree` from a guard and avoid triggering a second navigation with an imperative redirect ✅ 06-hr-portal
 - Stacked route guards — compose several guards on one route and recognise that every one must allow activation, which keeps authentication and authorisation as separate reusable checks ✅ 06-hr-portal
+- `CanMatchFn` guards — decide whether a route definition is considered at all, so a `false` makes the router try the next route with the same path instead of cancelling the navigation, which lets one URL serve a variant per role and keeps a rejected lazy route's code from being downloaded ✅ 07-timetrack — two `/dashboard` routes carry `canMatch: [roleMatch('EMPLOYEE')]` and `[roleMatch('MANAGER')]`, loading `EmployeeDashboard` or the manager placeholder
 - Parent routes as the unit of protection — hang a branch of routes under a pathless parent that carries the shared `canActivate`, so every child inherits the check and a new page is protected by being added to `children` rather than by repeating the guard on each entry; the parent may be componentless or load a layout component, and the guard behaves the same either way ✅ 07-timetrack — the `path: ''` parent carries `canActivate: [authGuard]` and every authenticated page hangs from its `children`
 - Route guards vs backend authorisation — treat guards as client-side navigation control, never as enforcement of data access ✅ 07-timetrack — `managerGuard` on the `/projects` route only redirects an EMPLOYEE to `/dashboard`, while `ProjectController` still enforces `@PreAuthorize("hasRole('MANAGER')")` on create, update and delete
 - `CanDeactivateFn` guards — protect unsaved form state while recognising that browser or process termination may bypass application navigation ✅ 06-hr-portal
@@ -242,12 +243,12 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 ### Buttons, icons, menus, and tooltips
 
 - Material button variants — choose a visually prominent button for the primary action and lower-emphasis variants for secondary or tertiary actions ✅ 05-task-manager
-- FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action
+- FAB vs ordinary button — reserve `matFab` or `matMiniFab` for a dominant screen-level action rather than every positive action ✅ 07-timetrack — the Entries page's only `matFab extended` is Log hours, while row and dialog actions stay icon or text buttons
 - `mat-icon` and icon fonts — understand that the component renders an icon name from a loaded icon font or registered SVG set rather than bundling every icon automatically ✅ 05-task-manager
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `matButton`, labelled with the logged-in user's name, opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu trigger open state — `MatMenuTrigger` sets `aria-expanded` on its host but never changes the host's content, so an indicator inside the trigger, such as a dropdown arrow, shows the open menu only when bound to the trigger's `menuOpened` and `menuClosed` outputs, which fire however the menu closes ✅ 07-timetrack — the `Shell` account trigger sets an `isAccountMenuOpen` signal from `(menuOpened)`/`(menuClosed)` and rotates its `arrow_drop_down` through `[class.open]`
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
-- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions
+- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions ✅ 07-timetrack — the entry row icon buttons carry an `aria-label` beside their `matTooltip`, and the badge's rejection-note tooltip repeats text shown under the description
 
 ### Form-field composition and selection controls
 
@@ -267,9 +268,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Checkbox vs slide toggle — use a checkbox for selection or confirmation and `mat-slide-toggle` for a boolean setting whose change is presented as immediately active
 - Checkbox indeterminate state — represent partial aggregate selection visually without confusing it with a third submitted boolean value
 - Datepicker composition — connect the input, toggle, picker reference, and a configured date adapter as one control ✅ 06-hr-portal
-- Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions
+- Date-adapter compatibility — keep the datepicker control value compatible with its configured `DateAdapter` rather than hiding a representation mismatch with type assertions ✅ 07-timetrack — `EntryDialog` keeps its date control a `Date` under `provideNativeDateAdapter()` and converts to `YYYY-MM-DD` only when building the request
 - Datepicker selectable-date constraints — use `min`, `max`, and `matDatepickerFilter` to declare which dates the calendar and the input will accept ✅ 06-hr-portal
-- Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission
+- Datepicker validation feedback — surface the validation errors those constraints produce instead of letting an out-of-range value fail only after submission ✅ 07-timetrack — `EntryDialog` binds `[max]="today"` and renders the `matDatepickerMax` error as "Date cannot be in the future" under the field
 
 ### Tables, sorting, filtering, and pagination
 
@@ -282,12 +283,12 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `MatTableDataSource` scope — use the convenience class for simple client-side sorting, filtering, and pagination, not as a server-side data-access abstraction ✅ 05-task-manager
 - Sort integration — connect `MatSort` after the view exists, mark only sortable headers, and handle nested or derived values through a sorting accessor or server query ✅ 05-task-manager
 - Paginator integration — connect `MatPaginator` for client data or translate page events into backend parameters without paginating the same result twice ✅ 05-task-manager
-- Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded
+- Server-side paginator state — bind `length` to the backend's total matching count and treat `pageIndex` and `pageSize` as request state so the controls remain correct when only one page of rows is loaded ✅ 07-timetrack — the Entries `mat-paginator` binds `length` to `page.totalElements` and sends `pageIndex`/`pageSize` as the API's `page`/`size`
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
 - Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to ✅ 06-hr-portal
 - Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
-- Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset
+- Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset ✅ 07-timetrack — `EntryList` hands `matSortChange` and the paginator's `page` event to `Entries`, which turns them into `GET /api/entries` params with no `MatTableDataSource`
 
 ### Dialogs and confirmation flows
 
@@ -1730,9 +1731,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
-- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space
+- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space ✅ 07-timetrack — the employee dashboard's `.stat-grid` sizes its cards with `minmax(12.5rem, 1fr)`
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
-- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch
+- `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch ✅ 07-timetrack — the employee dashboard's `.stat-grid` uses `repeat(auto-fit, …)` so four cards stretch across the row and reflow to two and one
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
 - Explicit vs implicit grid and auto-placement — distinguish declared tracks from rows or columns Grid creates when items have no explicit placement
 - Grid alignment — distinguish aligning items inside their grid areas with `justify-items`/`align-items` from aligning the grid tracks inside the container
@@ -1808,7 +1809,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
 - `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the shared `Logo` SVG strokes in `currentColor`, so it inherits `--mat-sys-on-primary` on the login branding panel and the toolbar
-- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
+- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background ✅ 07-timetrack — each `--status-*` badge colour measures at least 4.5:1 against its 8% `color-mix()` tint in `status-badge.scss`
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 
 ### Borders, shadows, and backgrounds
