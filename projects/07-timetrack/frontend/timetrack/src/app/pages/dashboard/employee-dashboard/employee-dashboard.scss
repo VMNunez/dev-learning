@@ -53,6 +53,10 @@ table {
   white-space: nowrap;
 }
 
+.mat-column-hours {
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 599px) {
   .mat-column-description {
     display: none;

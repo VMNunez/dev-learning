@@ -12,6 +12,10 @@ table {
   white-space: nowrap;
 }
 
+.mat-column-hours {
+  font-variant-numeric: tabular-nums;
+}
+
 .mat-column-actions {
   width: 1%;
   text-align: end;
