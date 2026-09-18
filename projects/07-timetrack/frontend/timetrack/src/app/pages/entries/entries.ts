@@ -200,6 +200,7 @@ export class Entries {
       .open<EntryDialog, EntryDialogData, boolean>(EntryDialog, {
         data: { entry, projects: this.projects() ?? [] },
         disableClose: true,
+        width: '32rem',
       })
       .afterClosed()
       .pipe(
