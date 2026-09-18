@@ -44,7 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — `/entries`' empty state always labels its action "Log your first entry" (`entries.html`, and §14 specifies that text), but the state is reached by any filter that matches nothing — an employee with entries in other months, projects or statuses is told this would be their first; word it for the filtered case (e.g. "Log hours") or keep "first" only when the user has no entries at all, which the dashboard already knows through `hasEntries` *(raised 2026-09-18 by Victor's screenshot while closing the all-months empty-state task)* *(Effort: Small)*
 
 ## Beyond the current gate
 
