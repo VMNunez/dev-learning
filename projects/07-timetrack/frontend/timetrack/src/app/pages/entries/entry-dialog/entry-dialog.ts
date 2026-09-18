@@ -151,7 +151,9 @@ export class EntryDialog {
 
     return update$.pipe(
       switchMap(() => {
+        // The edit is stored now, so if the submit fails Cancel has nothing left to discard.
         this.saved = true;
+        this.form.markAsPristine();
         return this.entryService.submitEntry(entryId);
       }),
     );
