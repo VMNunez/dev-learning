@@ -1,0 +1,8 @@
+<span
+  [class]="badgeClass()"
+  [class.has-note]="!!note()"
+  [matTooltip]="note() ?? ''"
+  [matTooltipDisabled]="!note()"
+  [attr.tabindex]="note() ? 0 : null"
+  >{{ label() }}</span
+>
