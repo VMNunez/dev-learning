@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit entry' : 'Log hours' }}</h2>
+
+<mat-dialog-content>
+  <form id="entry-form" class="dialog-form" [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field appearance="outline">
+      <mat-label>Project</mat-label>
+      <mat-select formControlName="projectId">
+        @for (project of projectOptions; track project.id) {
+          <mat-option [value]="project.id">{{ project.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.projectId.hasError('required')) {
+        <mat-error>Choose a project</mat-error>
+      } @else if (form.controls.projectId.hasError('server')) {
+        <mat-error>{{ form.controls.projectId.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date</mat-label>
+      <input matInput formControlName="date" [matDatepicker]="picker" [max]="today" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker" />
+      <mat-datepicker #picker />
+      @if (form.controls.date.hasError('required')) {
+        <mat-error>Enter a valid date</mat-error>
+      } @else if (form.controls.date.hasError('matDatepickerMax')) {
+        <mat-error>Date cannot be in the future</mat-error>
+      } @else if (form.controls.date.hasError('server')) {
+        <mat-error>{{ form.controls.date.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hours</mat-label>
+      <input matInput type="number" formControlName="hours" min="0.5" max="24" step="0.5" />
+      @if (form.controls.hours.hasError('required')) {
+        <mat-error>Hours are required</mat-error>
+      } @else if (form.controls.hours.hasError('min') || form.controls.hours.hasError('max')) {
+        <mat-error>Hours must be between 0.5 and 24</mat-error>
+      } @else if (form.controls.hours.hasError('server')) {
+        <mat-error>{{ form.controls.hours.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (form.controls.description.hasError('required')) {
+        <mat-error>Description is required</mat-error>
+      } @else if (form.controls.description.hasError('maxlength')) {
+        <mat-error>Description must be at most 255 characters</mat-error>
+      } @else if (form.controls.description.hasError('server')) {
+        <mat-error>{{ form.controls.description.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+
+  @if (error(); as message) {
+    <mat-error class="dialog-error" role="alert">{{ message }}</mat-error>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button matButton type="button" [disabled]="saving()" (click)="close()">Cancel</button>
+
+  @if (canSubmit) {
+    <button
+      matButton="outlined"
+      type="button"
+      disabledInteractive
+      [disabled]="saving()"
+      [attr.aria-busy]="saving() === 'submit'"
+      (click)="save(true)"
+    >
+      @if (saving() === 'submit') {
+        <mat-progress-spinner diameter="20" mode="indeterminate" aria-hidden="true" />
+      } @else {
+        Submit for review
+      }
+    </button>
+  }
+
+  <button
+    matButton="filled"
+    type="submit"
+    form="entry-form"
+    disabledInteractive
+    [disabled]="saving()"
+    [attr.aria-busy]="saving() === 'save'"
+  >
+    @if (saving() === 'save') {
+      <mat-progress-spinner diameter="20" mode="indeterminate" aria-hidden="true" />
+    } @else {
+      Save
+    }
+  </button>
+</mat-dialog-actions>

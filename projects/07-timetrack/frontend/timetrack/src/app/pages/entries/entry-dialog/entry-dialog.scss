@@ -1,0 +1,11 @@
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block-start: 0.5rem;
+}
+
+.dialog-error {
+  display: block;
+  margin-block-start: 0.5rem;
+}
