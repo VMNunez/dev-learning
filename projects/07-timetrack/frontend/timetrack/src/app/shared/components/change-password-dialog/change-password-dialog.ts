@@ -104,9 +104,19 @@ export class ChangePasswordDialog {
       return;
     }
 
+    // Opening the question moves focus out of the form, and that blur marks the focused field
+    // touched. Keep editing must return the form exactly as it was, so undo that one side effect.
+    const untouched = Object.values(this.form.controls).filter((control) => control.untouched);
+
     confirmDiscard(this.dialog)
-      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.dialogRef.close());
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((discard) => {
+        if (discard) {
+          this.dialogRef.close();
+          return;
+        }
+        untouched.forEach((control) => control.markAsUntouched());
+      });
   }
 
   onSubmit(): void {
