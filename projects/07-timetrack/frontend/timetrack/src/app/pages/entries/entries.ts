@@ -140,6 +140,12 @@ export class Entries {
     this.reload();
   }
 
+  // The page opens on the current month, which is empty for its first days while last month's drafts
+  // still wait to be submitted; this is the way out of that empty state.
+  showAllMonths(): void {
+    this.filters.controls.month.setValue('');
+  }
+
   onSort(sort: Sort): void {
     this.sort.set(sort.direction ? `${sort.active},${sort.direction}` : DEFAULT_SORT);
     this.pageIndex.set(0);
