@@ -1,0 +1,88 @@
+<header class="page-header">
+  <h1>Dashboard</h1>
+  <p class="greeting">Welcome back, {{ userName() }}</p>
+</header>
+
+@if (error(); as message) {
+  <div class="page-state">
+    <mat-error role="alert">{{ message }}</mat-error>
+    <button matButton="outlined" type="button" (click)="reload()">Retry</button>
+  </div>
+} @else if (!loading() && data()?.hasEntries === false) {
+  <div class="page-state">
+    <p class="empty-message">You have not logged any hours yet</p>
+    <a matButton="filled" routerLink="/entries">Log your first entry</a>
+  </div>
+} @else {
+  @let current = loading() ? null : data();
+
+  <section class="stat-grid" aria-label="This month at a glance" [attr.aria-busy]="loading()">
+    <app-stat-card
+      label="Approved hours this month"
+      [value]="current ? (current.summary.approvedHours | number: '1.0-2') + 'h' : null"
+    />
+    <app-stat-card
+      label="Hours awaiting approval"
+      [value]="current ? (current.summary.pendingHours | number: '1.0-2') + 'h' : null"
+    />
+    <app-stat-card
+      label="Entries pending review"
+      [value]="current ? '' + current.submittedCount : null"
+    />
+    <app-stat-card label="Drafts to submit" [value]="current ? '' + current.draftCount : null" />
+  </section>
+
+  <section class="recent" aria-labelledby="recent-heading">
+    <div class="recent-header">
+      <h2 id="recent-heading">Recent entries</h2>
+      <a matButton routerLink="/entries">View all</a>
+    </div>
+
+    @if (current) {
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="current.recent">
+          <ng-container matColumnDef="project">
+            <th mat-header-cell *matHeaderCellDef>Project</th>
+            <td mat-cell *matCellDef="let entry">{{ entry.projectName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let entry">{{ entry.date | date: 'MMM d' : 'UTC' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="hours">
+            <th mat-header-cell *matHeaderCellDef>Hours</th>
+            <td mat-cell *matCellDef="let entry">{{ entry.hours | number: '1.0-2' }}h</td>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let entry">{{ entry.description }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let entry">
+              <app-status-badge
+                [status]="entry.status"
+                [note]="entry.status === 'REJECTED' ? entry.rejectionNote : null"
+              />
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="recentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: recentColumns"></tr>
+        </table>
+      </div>
+    } @else {
+      <div class="page-state">
+        <mat-progress-spinner
+          mode="indeterminate"
+          diameter="40"
+          aria-label="Loading recent entries"
+        />
+      </div>
+    }
+  </section>
+}
