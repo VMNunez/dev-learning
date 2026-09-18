@@ -111,7 +111,6 @@ export class Shell {
     this.dialog.open(ChangePasswordDialog, {
       restoreFocus: this.accountButton().nativeElement,
       disableClose: true,
-      width: '32rem',
     });
   }
 }
