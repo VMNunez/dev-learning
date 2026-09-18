@@ -44,7 +44,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — `/entries` opens on the current month, so on the first days of a month its empty state reads "No entries found for this period" while last month's drafts are still unsubmitted, and the only way to them is reopening the Month select; the empty state should offer a one-click way to all months while the Month filter is set *(raised 2026-09-18 by Victor, asking whether the page should open on all months — it keeps the current month)* *(Effort: Small)*
 
 ## Beyond the current gate
 
