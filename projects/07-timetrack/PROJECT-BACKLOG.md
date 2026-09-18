@@ -40,11 +40,14 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-*No open Medium tasks.*
+- [ ] **[Medium]** `[frontend]` — `/entries`' header "Log hours" button (`entries.html:4-9`) renders as soon as `isEmployee()` is true, outside the `@if (error()) / @else if (loading())` block, so it is clickable while the first `forkJoin` is still in flight or after it failed; `openDialog()` then passes `projects: this.projects() ?? []` (`entries.ts:202`), and because `MAT_DIALOG_DATA` is read once at open the dialog stays on an empty Project dropdown whose only message is "Choose a project". Trigger: open `/entries` with the backend slowed or stopped and click "Log hours". Gate or disable the header button until `projects()` is loaded, the same condition the empty-state "Log your first entry" button already meets *(raised 2026-09-18, Step 7b scoped review)* *(Effort: Small)*
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — in the entry dialog's edit-and-submit path, `saved` becomes `true` once the `PUT` succeeds but the form stays `dirty` (`entry-dialog.ts:148-158`); if the following `PATCH …/submit` fails, Cancel still asks "discard changes?" about an edit that is already saved. Clear the question in that case (e.g. `markAsPristine()` after the `PUT`, or skip the prompt when `saved`) *(raised 2026-09-18, Step 7b scoped review)* *(Effort: Small)*
+- [ ] **[Low]** `[frontend]` — the employee dashboard's stat grid is named `aria-label="This month at a glance"` (`employee-dashboard.html:19`), but the "pending review" and "drafts" cards count all months (§14 "How stat cards get their data" queries them with no `month`); a screen reader promises a scope two of the four numbers do not keep. Rename it scope-neutral or label the card groups separately *(raised 2026-09-18, Step 7b scoped review)* *(Effort: Small)*
+- [ ] **[Low]** `[frontend]` — PLANNING §14 specifies the dashboard's new-user empty state as "illustration + text + button", while the built one (like `/entries`') is text + button only; add an icon/illustration or align §14 with what shipped *(raised 2026-09-18, Step 7b scoped review)* *(Effort: Small)*
+- [ ] **[Low]** `[frontend]` — the employee dashboard renders its recent-entries `mat-table` inline (`employee-dashboard.html:41-87`), while `/entries` delegates its table to the presentational `EntryList`; decide whether the read-only recent list reuses `EntryList` (actions hidden) or stays inline, and record the choice in §13 so Step 7c's manager dashboard follows it *(raised 2026-09-18, Step 7b scoped review — consistency pass; filed Low, not the standard's Medium, because the two tables differ in columns and actions and PLANNING's tree places the list inside `employee-dashboard/`)* *(Effort: Small)*
 
 ## Beyond the current gate
 
