@@ -45,7 +45,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — the first-use empty-state icon renders as a clipped fragment on `/dashboard` (and `/entries`): `.empty-illustration` in `styles/_page.scss:19-24` sets `width`/`height: 4rem` with one class, and `MatIcon`'s own component styles (`.mat-icon { height: 24px; width: 24px; overflow: hidden }`, injected into `<head>` at runtime, after the global stylesheet) win the tie at equal specificity, so the 4rem `more_time` glyph is cut to a 24px box showing only its top-left corner; §14's first-use illustration is not visible *(Effort: Small)* *(raised 2026-09-19 while verifying Step 7b in the browser before the `feat/angular-entries` PR — Victor's screenshot of a fresh EMPLOYEE's dashboard)*
 
 ## Beyond the current gate
 
