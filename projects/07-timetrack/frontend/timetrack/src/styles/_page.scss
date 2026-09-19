@@ -16,7 +16,9 @@
 }
 
 // A first-use empty state carries an illustration; a filter that matches nothing does not.
-.empty-illustration {
+// Two classes, because MatIcon injects `.mat-icon { width: 24px; height: 24px; overflow: hidden }`
+// after this stylesheet, and at one class each that later rule would win and clip the glyph.
+.mat-icon.empty-illustration {
   width: 4rem;
   height: 4rem;
   font-size: 4rem;
