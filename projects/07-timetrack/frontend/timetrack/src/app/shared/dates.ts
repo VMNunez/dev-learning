@@ -3,7 +3,7 @@ export interface MonthOption {
   label: string;
 }
 
-const MONTH_LABEL = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
+const MONTH_LABEL = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric' });
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
