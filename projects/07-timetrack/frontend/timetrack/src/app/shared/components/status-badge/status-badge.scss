@@ -29,9 +29,3 @@
 .badge-rejected {
   --badge-color: var(--status-rejected);
 }
-
-.has-note {
-  cursor: help;
-  text-decoration: underline dotted;
-  text-underline-offset: 0.2em;
-}
