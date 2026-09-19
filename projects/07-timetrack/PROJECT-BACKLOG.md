@@ -31,7 +31,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[backend]` — every Bean Validation message the API returns is Hibernate Validator's default template — lower-case and sometimes technical (`must not be blank`, `size must be between 8 and 72`, `numeric value out of bounds (<2 digits>.<2 digits> expected)`) — while every service-thrown message is a capitalised sentence (`Date cannot be in the future`), so the same `fieldErrors` slot under an input reads in two styles: none of the 45 constraint annotations under `dto/` sets a `message`, and `src/main/resources` has no `ValidationMessages.properties`; override the used templates there (`NotBlank`, `NotNull`, `Size`, `Email`, `DecimalMin`, `DecimalMax`, `Digits`) in the API's sentence style *(Effort: Small)* *(raised 2026-09-19 while verifying Step 7b in the browser before the `feat/angular-entries` PR — Victor saw `must not be blank` under the entry dialog's Description)*
 
 ### Frontend
 
