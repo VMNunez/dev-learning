@@ -45,7 +45,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — a REJECTED row states the manager's note twice: as a `Rejected: …` line under the description (`entry-list.html:36-38`) and as the `status-badge` tooltip (`entry-list.html:47`), while §14 (Entries page) and §15 Step 7b name the tooltip only; decide which one the row keeps — the inline line is the one a touch screen can read, since a hover tooltip needs a pointer — and bring §14 and the template to that single answer *(Effort: Small)* *(raised 2026-09-19 while verifying Step 7b in the browser before the `feat/angular-entries` PR — Victor's screenshot of a rejected row)*
 
 ## Beyond the current gate
 
