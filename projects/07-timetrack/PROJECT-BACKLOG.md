@@ -45,7 +45,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — the app still runs under Angular's default `en-US` locale, so the entry dialog's datepicker shows `9/19/2026` and both entry tables `Sep 19, 2026`, against the §14 *Dates* row ruled 2026-09-19 (`en-GB`, day-first); switching needs `registerLocaleData(localeEnGb)` + `LOCALE_ID` for `DatePipe`, `MAT_DATE_LOCALE` `en-GB` for the datepicker, and `EntryDialog`'s `provideNativeDateAdapter()` replaced by `provideDateFnsAdapter()` (`@angular/material-date-fns-adapter` 21.2.x + `date-fns`), because `NativeDateAdapter.parse` is `Date.parse` and returns an invalid date for a typed `19/09/2026` *(Effort: Medium)* *(raised 2026-09-19 while verifying Step 7b in the browser before the `feat/angular-entries` PR — Victor asked whether month/day/year was right for his users and chose day-first)*
 
 ## Beyond the current gate
 
