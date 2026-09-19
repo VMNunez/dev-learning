@@ -49,7 +49,7 @@
 
           <ng-container matColumnDef="date">
             <th mat-header-cell *matHeaderCellDef>Date</th>
-            <td mat-cell *matCellDef="let entry">{{ entry.date | date: 'MMM d' : 'UTC' }}</td>
+            <td mat-cell *matCellDef="let entry">{{ entry.date | date: 'MMM d' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="hours">
