@@ -41,7 +41,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-*No open Medium tasks.*
+- [ ] **[Medium]** `[frontend]` — both entry tables show every date one day early east of UTC: `entry-list.html:14` (`date: 'MMM d, y' : 'UTC'`) and `employee-dashboard.html:52` (`date: 'MMM d' : 'UTC'`) hand `DatePipe` a date-only `YYYY-MM-DD` string, which `DatePipe` parses as **local** midnight (`toDate` → `createDate(y, m - 1, d)`), then format it in UTC — in Spain (UTC+2) that is 22:00 the previous day, so an entry dated `2026-09-19` (confirmed in the `PUT` payload and in the edit dialog) reads "Sep 18"; the dialog's `fromIsoDate` is right, only the two display pipes are wrong *(Effort: Small)* *(raised 2026-09-19 while verifying Step 7b in the browser before the `feat/angular-entries` PR — Victor's dashboard screenshot)*
 
 #### Low
 
