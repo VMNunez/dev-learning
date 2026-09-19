@@ -252,7 +252,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `matButton`, labelled with the logged-in user's name, opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu trigger open state — `MatMenuTrigger` sets `aria-expanded` on its host but never changes the host's content, so an indicator inside the trigger, such as a dropdown arrow, shows the open menu only when bound to the trigger's `menuOpened` and `menuClosed` outputs, which fire however the menu closes ✅ 07-timetrack — the `Shell` account trigger sets an `isAccountMenuOpen` signal from `(menuOpened)`/`(menuClosed)` and rotates its `arrow_drop_down` through `[class.open]`
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
-- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions ✅ 07-timetrack — the entry row icon buttons carry an `aria-label` beside their `matTooltip`, and the badge's rejection-note tooltip repeats text shown under the description
+- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions ✅ 07-timetrack — the entry row icon buttons carry an `aria-label` beside their `matTooltip`, and the rejection note is a `Manager's note:` line under the description, never a tooltip
 
 ### Form-field composition and selection controls
 
