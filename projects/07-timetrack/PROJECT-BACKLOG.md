@@ -31,7 +31,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — every Bean Validation message the API returns is Hibernate Validator's default template — lower-case and sometimes technical (`must not be blank`, `size must be between 8 and 72`, `numeric value out of bounds (<2 digits>.<2 digits> expected)`) — while every service-thrown message is a capitalised sentence (`Date cannot be in the future`), so the same `fieldErrors` slot under an input reads in two styles: none of the 45 constraint annotations under `dto/` sets a `message`, and `src/main/resources` has no `ValidationMessages.properties`; override the used templates there (`NotBlank`, `NotNull`, `Size`, `Email`, `DecimalMin`, `DecimalMax`, `Digits`) in the API's sentence style *(Effort: Small)* *(raised 2026-09-19 while verifying Step 7b in the browser before the `feat/angular-entries` PR — Victor saw `must not be blank` under the entry dialog's Description)*
+*No open Low tasks.*
 
 ### Frontend
 
@@ -139,6 +139,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-19 · **[Low]** `[backend]` — `ValidationMessages.properties` rewords the seven constraints the request DTOs use as capitalised sentences (`Must not be blank`, `Must be at most 255 characters` through an EL template that names only the maximum when `min` is 0), so a `fieldErrors` message no longer reads in Hibernate Validator's lower-case default beside the services' own sentences (`6c43386c`, with a 2-test `ValidationMessagesTest` in `f0cf1e4d`) → coverage: new `spring-boot/junior` bullet "Constraint messages" (authored + marked ✅ 07-timetrack, `afc18880`); backend README n/a — a Bean Validation idiom, not a project decision; PLANNING §10 error contract gains the message-voice rule and its example corrected + §0/§22 counts; PROGRESS n/a. Verified in the browser by Victor after an IntelliJ restart: three spaces in the entry dialog's Description answer `Must not be blank` under the field. `/notes-plan spring-boot junior` owed (tracker flag +2)
 - 2026-08-29 · **[Low]** `[backend]` — the `### DTO boundary` snippet now shows the real setter-based `toResponse`, not an all-args constructor `@Data` never generates → backend README `### DTO boundary` (the fix itself, `0d06bdd8`); coverage n/a — spring-boot/junior "Entity-to-DTO mapping implementation" already covers it and already carries ✅ 07-timetrack for this exact `toResponse`; PLANNING §0 + §22 Lows count. Verified against `ProjectResponse` (`@Data` only, no `@AllArgsConstructor`) and `ProjectService:107-115`
 
 - 2026-08-29 · **[Low]** `[backend]` — `pom.xml` declares a real `name` and `description`; the empty `url`, `licenses`, `developers` and `scm` blocks deleted → coverage java/junior (new "Project metadata in `pom.xml`" bullet, marked ✅ 07-timetrack); README n/a — build-file hygiene is not a Key pattern; PLANNING §0 + §22 Lows count. Verified with `./mvnw.cmd -q validate` (exit 0). The file was also reindented from tabs to 4 spaces in the same commit. `/notes-plan java junior` owed
