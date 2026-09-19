@@ -1,0 +1,31 @@
+// Page-level building blocks shared by every routed view, so the eight pages
+// cannot drift apart: the view's one <h1>, and the loading / error / empty block.
+
+.page-title {
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+}
+
+.page-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-block: 2rem;
+  text-align: center;
+}
+
+// A first-use empty state carries an illustration; a filter that matches nothing does not.
+// Two classes, because MatIcon injects `.mat-icon { width: 24px; height: 24px; overflow: hidden }`
+// after this stylesheet, and at one class each that later rule would win and clip the glyph.
+.mat-icon.empty-illustration {
+  width: 4rem;
+  height: 4rem;
+  font-size: 4rem;
+  color: var(--mat-sys-outline);
+}
+
+.empty-message {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { noAuthGuard } from './core/guards/no-auth-guard';
 import { managerGuard } from './core/guards/manager-guard';
+import { roleMatch } from './core/guards/role-match';
 
 export const routes: Routes = [
   {
@@ -23,7 +24,22 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         title: 'Dashboard',
-        loadComponent: () => import('./pages/dashboard/dashboard').then((m) => m.Dashboard),
+        canMatch: [roleMatch('EMPLOYEE')],
+        loadComponent: () =>
+          import('./pages/dashboard/employee-dashboard/employee-dashboard').then(
+            (m) => m.EmployeeDashboard,
+          ),
+      },
+      {
+        path: 'dashboard',
+        title: 'Dashboard',
+        canMatch: [roleMatch('MANAGER')],
+        loadComponent: () => import('./pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+      },
+      {
+        path: 'entries',
+        title: 'Entries',
+        loadComponent: () => import('./pages/entries/entries').then((m) => m.Entries),
       },
       {
         path: 'projects',

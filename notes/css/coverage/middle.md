@@ -14,6 +14,6 @@ Concepts expected when a developer owns component-system styling and responsive 
 ## Component-responsive layout
 
 - Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions
-- Container queries — adapt a component to its available container rather than the global viewport
+- Container queries — adapt a component to its available container rather than the global viewport ✅ 07-timetrack — the employee dashboard's `:host` is an `inline-size` container, and `@container` rules at `36rem` and `52rem` split its four stat cards 1, 2 + 2 or 4 by the page's width, which the 15rem sidenav rail narrows independently of the window
 - Subgrid — align nested content with an ancestor grid when independent nested tracks would drift
 - Registered custom properties with `@property` — give custom properties syntax, inheritance, and animatable initial values

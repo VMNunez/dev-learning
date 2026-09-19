@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+// Fill the grid cell, so a card whose label wraps never stands taller than its row.
+mat-card {
+  height: 100%;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-value {
+  font: var(--mat-sys-display-small);
+  color: var(--mat-sys-on-surface);
+
+  &.skeleton {
+    width: 5rem;
+    height: var(--mat-sys-display-small-line-height);
+  }
+}
+
+.stat-label {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}

@@ -55,6 +55,19 @@ mat-sidenav-container {
   flex: 1;
 }
 
+mat-sidenav-content {
+  padding: 1.5rem;
+
+  @media (max-width: 599px) {
+    padding: 1rem;
+  }
+}
+
+// Wide monitors cap the page, not each block inside it, so cards and tables share one right edge.
+.page-content {
+  max-inline-size: 80rem;
+}
+
 mat-nav-list {
   padding-inline: 0.5rem;
 }

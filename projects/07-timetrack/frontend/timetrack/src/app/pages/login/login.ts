@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -17,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
-import { isApiError } from '../../shared/models/api-error';
+import { apiErrorMessage } from '../../shared/models/api-error';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Logo } from '../../shared/components/logo/logo';
 import { MatIconModule } from '@angular/material/icon';
@@ -87,12 +86,13 @@ export class Login {
               this.error.set('Could not load the app — refresh the page and try again');
               this.loading.set(false);
             }),
-        error: (err: HttpErrorResponse) => {
-          const message = isApiError(err.error)
-            ? err.error.message
-            : 'Could not reach the server — check your connection and try again';
-
-          this.error.set(message);
+        error: (err: unknown) => {
+          this.error.set(
+            apiErrorMessage(
+              err,
+              'Could not reach the server — check your connection and try again',
+            ),
+          );
           this.loading.set(false);
         },
       });

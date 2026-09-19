@@ -478,9 +478,7 @@ Dry run prints the complete proposed plan and reconciliation summary without wri
 
 After the plan commit, execute `_pipeline-self-report.md`: write
 `_internal/_last-run-report-notes-plan.md`, update the selected `Plan J/M/S` tracker cell — rewriting it
-whole, so any ` · ⚠ stale` flag it carried disappears with the debt this run just paid — correct the
-`## Notes file executions` rows of every pair this run relocated or renumbered, since they are keyed by
-`TOPIC + LEVEL + NOTE` and would otherwise name files that no longer exist, recalculate
+whole, so any ` · ⚠ stale` flag it carried disappears with the debt this run just paid — recalculate
 the matching Notes J/M/S summary as `complete entries / total entries` — a `refined` entry counts as
 complete unless it carries unconsumed `Pending additions` — and commit the report and
 tracker together. Dry run does not write `PLAN`, but it still writes and commits its self-report plus

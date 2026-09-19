@@ -49,11 +49,16 @@ src/app/
 - HTTP interceptor — JWT attached automatically to every outgoing request
 - Session expiry handled once, in the interceptor — a `401` on a request that carried a token clears the stored session and navigates to `/login`, where the page explains the session expired, so no page re-implements it; a failed login's `401` carries no token and is left to the Login page's own error
 - Role-aware UI — same route (`/entries`, `/dashboard`), different data and columns per role
+- Role variants of one URL through `canMatch` — `/dashboard` is declared twice and `roleMatch` lets the router load the employee or the manager page, instead of one component branching on the role and holding both variants' state
 - Page titles through a custom `TitleStrategy` — each route declares only its page name and `AppTitleStrategy` appends `| TimeTrack` in one place, writing the brand alone when no route resolves a title, because the default strategy writes nothing then and the tab would keep the previous page's name
 - `forkJoin` — parallel API calls on dashboard load for stat cards
+- Stat cards read aggregates, never a sum of a page — hours come from `GET /api/reports/summary` and counts from `page.totalElements` on `GET /api/entries?status=…&size=1`, because the list is paged and a client-side sum would report page one as the month
+- One `reload$` stream per page, flattened with `switchMap` — a filter or page change cancels the request still in flight, so a slow earlier response can never overwrite the newer table
+- Server-side paging and sorting — `MatPaginator` and `MatSort` events become the `page`, `size` and `sort` params of `GET /api/entries`, with no `MatTableDataSource`, because entries is the one collection the API pages
 - Material theming through token overrides — `mat.theme()` for the palette, density and shape, and `mat.button-overrides` / `mat.card-overrides` for what it does not reach, because Material's internal CSS classes are private and change between releases
 - Typed `ApiError` + a runtime type guard — the backend's error shape is narrowed before it is read, so a failure with no `ErrorResponse` body falls back to a connection message instead of rendering `undefined`
 - Backend `fieldErrors` mapped onto their controls — a `400` lands under its own input through `setErrors({ server })` instead of a generic toast, so a wrong current password keeps the change-password dialog open and the session intact
+- Form-level error as a `role="alert"` line that is always in the DOM — the login page and both form dialogs render it empty and only change its text, because an alert inserted together with its message may never be announced
 - Explicit `restoreFocus` target on the change-password dialog — the menu item that opens it is destroyed with its menu, so closing the dialog returns keyboard focus to the toolbar's account button instead of the page body
 - Dialogs closed when the shell is destroyed — `DestroyRef.onDestroy` runs `MatDialog.closeAll()`, because the overlay outlives the component that opened it and `closeOnNavigation` ignores `router.navigate()`; a mid-session `401` lands on a clean `/login`, and `core/` auth code stays free of Material
 - Change-password dialog dismissal locked around its `PATCH` — `disableClose` refuses a backdrop click for the dialog's whole life, so a stray click never discards a half-filled form, and Escape is re-admitted through `keydownEvents()` only while no save is in flight; the request is torn down with `takeUntilDestroyed(destroyRef)`, which aborts the browser's wait but not the server's write, so an Escape mid-save would otherwise hide a password change that already committed
@@ -71,6 +76,7 @@ src/app/
 | `confirm-dialog` | Delete entry, deactivate user, deactivate project |
 | `reject-dialog` | Approvals page — manager enters the rejection note |
 | `logo` | Login page (branding panel and card) and the shell toolbar — one SVG sized by each host's own class through `:host`, instead of a copy per page |
+| `stat-card` | Employee dashboard, and next the manager dashboard and Reports — one outlined card with its own pulsing skeleton, so a real `0` and "not loaded yet" never look the same on any page |
 
 ---
 
@@ -85,6 +91,16 @@ src/app/
 - Browser Back closing the change-password dialog even mid-save over `closeOnNavigation: false` — the flag is read only when the dialog opens, so it would stop Back closing the dialog at all; in exchange a user who navigates away mid-save loses the confirmation while the server still commits the change
 - Truncating the toolbar's account name with an ellipsis on phones over hiding it — the visible name stays the trigger's whole accessible name, so no phone-only `aria-label` is needed; in exchange a long name shows cut off below 600px
 - Material's compact card for dialogs on phones over full-screen dialogs — a Material 3 full-screen dialog needs its own layout, a top bar with close and confirm actions, and stretching the standard dialog only spread its fields and buttons apart; in exchange a long form dialog scrolls inside a card with the page dimmed around it
+- Four monthly stat cards over a "this week" hours card — the API aggregates by month only, and summing a week of entries in the browser would break the no-client-side-sum rule; in exchange the employee dashboard shows no weekly figure
+- Disabling the entry dialog's fields while it saves over leaving them editable like the login form — a value typed during the request would sit on screen against a record that saved the old one; in exchange focus leaves the field for the length of the save
+- Disabling "Log hours" until the project list has loaded over hiding it or opening the dialog with an empty list — the dialog reads its projects once, at open, so a `null` list is refused rather than passed on as `[]`, and the header does not shift when the load ends; in exchange the disabled button explains nothing itself and leaves that to the spinner or the error below it
+- The `/entries` Project filter listing what `GET /api/projects` returns over a list built from the caller's own entries — an employee receives active projects only, and the entries list is paged, so the browser cannot see every project those entries name; in exchange an employee cannot isolate their entries on a project deactivated since, which month and status still reach
+- An illustration on the first-use empty state only, over one on every empty state — a new user's blank dashboard is a welcome and reads as unfinished without one, while a filter that matches nothing is a notice inside a page that still works; in exchange the two empty states no longer share one look
+- An inline read-only table for the dashboard's recent entries over reusing `EntryList` — that component's sortable headers and row actions belong to `/entries`, and on a dashboard its sort arrows would respond to nothing; in exchange the two tables repeat their shared cell templates
+- Container queries on the dashboard's own width over viewport media queries or `auto-fit` for the stat cards — the 15rem sidenav rail narrows the page from 1024px up, so the window's width misjudges the room, and `auto-fit` left four cards as 3 + 1; in exchange the page's `:host` becomes an `inline-size` container, so its width can never come from its content
+- Day-first `en-GB` dates over Angular's `en-US` default — the users are Spanish teams, who read `9/19/2026` backwards; in exchange the datepicker needs the date-fns adapter (two dependencies), because `NativeDateAdapter` parses typed input with `Date.parse` and rejects `19/09/2026`
+- The paginator's defaults provided by the Entries page over app-wide in `app.config.ts` — importing even its options token at bootstrap pulled the paginator, select, form field and tooltip into the initial bundle (665 kB against a 500 kB budget, 448 kB after); in exchange a second paginated page must provide the same defaults again
+- `/entries` opening on the current month over all months — a timesheet is worked and reviewed by month and the query stays bounded; in exchange the first days of a month open on an empty table, so the empty state offers "Show all months" while a month is selected
 
 ---
 

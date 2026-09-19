@@ -346,10 +346,10 @@ blocked run changed no `Status` and its recount is an expected no-op. Fold its r
 report above, and do not re-stage `PROGRESS.md` here.
 
 After the content attempt, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in
-full. Write `_internal/_last-run-report.md`; upsert the exact `TOPIC + LEVEL + NOTE` row in
-`notes/prompts/_internal/_run-tracker.md` with both language paths, plan status, date, and an outcome
-of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing, or `blocked`. This prompt
-has no dry-run mode and never records one. Then recalculate the matching Notes J/M/S summary cell from the plan.
+full. Write `_internal/_last-run-report.md`; then rewrite the matching Notes J/M/S summary cell of
+`notes/prompts/_internal/_run-tracker.md`, recalculated from the plan, naming the selected `TOPIC + LEVEL + NOTE` and
+an outcome of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing, or `blocked`.
+This prompt has no dry-run mode and never records one. The tracker keeps no per-note row.
 Commit report and tracker together, **and stage `_internal/_note-todo-harvest.md` with them whenever this
 run appended or extended an `NTH-NNNN` row** — Stage C stages exact paths only and knows nothing of
 this sink, so a row written and never staged is a row lost, which is the exact failure the sink exists to

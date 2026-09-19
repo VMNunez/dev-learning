@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { UserService } from '../../../core/services/user-service';
@@ -21,7 +21,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
-import { isApiError } from '../../models/api-error';
+import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
+import { confirmDiscard } from '../confirm-dialog/confirm-discard';
+
+// The request fields the API can refuse one by one; confirmPassword never leaves the browser.
+const SERVER_FIELDS = ['currentPassword', 'newPassword'] as const;
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -59,6 +63,7 @@ class MismatchErrorStateMatcher implements ErrorStateMatcher {
 export class ChangePasswordDialog {
   private readonly userService = inject(UserService);
   private readonly dialogRef = inject(MatDialogRef<ChangePasswordDialog>);
+  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   readonly loading = signal(false);
@@ -93,7 +98,28 @@ export class ChangePasswordDialog {
         filter((event) => event.key === 'Escape' && !this.loading()),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => this.dialogRef.close());
+      .subscribe(() => this.close());
+  }
+
+  close(): void {
+    if (!this.form.dirty) {
+      this.dialogRef.close();
+      return;
+    }
+
+    // Opening the question moves focus out of the form, and that blur marks the focused field
+    // touched. Keep editing must return the form exactly as it was, so undo that one side effect.
+    const untouched = Object.values(this.form.controls).filter((control) => control.untouched);
+
+    confirmDiscard(this.dialog)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((discard) => {
+        if (discard) {
+          this.dialogRef.close();
+          return;
+        }
+        untouched.forEach((control) => control.markAsUntouched());
+      });
   }
 
   onSubmit(): void {
@@ -119,18 +145,9 @@ export class ChangePasswordDialog {
           this.loading.set(false);
           this.form.enable({ emitEvent: false });
 
-          const fieldErrors =
-            err.status === 400 && isApiError(err.error) ? err.error.fieldErrors : undefined;
-
-          if (fieldErrors) {
-            for (const field of ['currentPassword', 'newPassword'] as const) {
-              const message = fieldErrors[field]?.[0];
-              if (message) this.form.controls[field].setErrors({ server: message });
-            }
-            return;
+          if (!placeFieldErrors(err, this.form.controls, SERVER_FIELDS)) {
+            this.error.set(apiErrorMessage(err, 'Could not change the password. Try again.'));
           }
-
-          this.error.set('Could not change the password. Try again.');
         },
       });
   }

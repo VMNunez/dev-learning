@@ -1,0 +1,10 @@
+<mat-card appearance="outlined">
+  <mat-card-content class="stat">
+    @if (value(); as shown) {
+      <span class="stat-value">{{ shown }}</span>
+    } @else {
+      <span class="stat-value skeleton" aria-hidden="true"></span>
+    }
+    <span class="stat-label">{{ label() }}</span>
+  </mat-card-content>
+</mat-card>

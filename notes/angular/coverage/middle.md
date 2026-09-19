@@ -21,4 +21,4 @@ Concepts expected once the junior Angular foundation is consolidated and a devel
 - `@defer` blocks — choose viewport, interaction, or idle triggers for heavy template dependencies
 - Signal `resource()` APIs — evaluate signal-native asynchronous loading against established `HttpClient` and RxJS patterns only when the project's Angular version provides the required stable API
 - `ChangeDetectorRef` — use manual marking, detection, or detachment only when normal Angular notifications cannot model an integration
-- Bundle and rendering profiling — use Angular DevTools and build statistics to find a measured bottleneck before optimising
+- Bundle and rendering profiling — use Angular DevTools and build statistics to find a measured bottleneck before optimising ✅ 07-timetrack — `ng build --stats-json` attributed 217 kB of the initial bundle to the paginator entry point imported by `app.config.ts`, measured before moving its provider

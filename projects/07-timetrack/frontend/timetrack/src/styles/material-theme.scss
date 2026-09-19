@@ -58,6 +58,15 @@ html {
     )
   );
 
+  // The paginator is the table's footer, not content: a tinted band and muted text make it recede
+  // behind the rows it pages.
+  @include mat.paginator-overrides(
+    (
+      container-background-color: var(--mat-sys-surface-container-low),
+      container-text-color: var(--mat-sys-on-surface-variant),
+    )
+  );
+
   @include mat.list-overrides(
     (
       active-indicator-shape: 4px,

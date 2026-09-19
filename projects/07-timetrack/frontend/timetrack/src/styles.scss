@@ -1,10 +1,11 @@
 @use './styles/material-theme';
+@use './styles/page';
 
 :root {
   --status-draft: #616161;
-  --status-submitted: #1976d2;
-  --status-approved: #388e3c;
-  --status-rejected: #d32f2f;
+  --status-submitted: #1565c0;
+  --status-approved: #2e7d32;
+  --status-rejected: #c62828;
 }
 
 html {
@@ -29,3 +30,28 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+// A filter select's panel grows to its longest option instead of copying the field's width,
+// so "September 2026" stays on one line; long project names still wrap inside the cap.
+.filter-select-panel {
+  min-width: 12rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+}
+
+.skeleton {
+  border-radius: 4px;
+  background: var(--mat-sys-surface-container-high);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

@@ -228,8 +228,10 @@ the only file guaranteed to be loaded when a task is opened, and a rule that liv
 half depth and were only repaired when Victor asked again — *"por que no me lo pones asi desde el
 principio?"*. Asking a second time is this contract's failure signal, never its normal path.
 
-Before sending, verify all four are present:
+Before sending, verify all five are present:
 
+- [ ] **Introduction** — the feature, screen or endpoint the task lives in and what it does today for
+      the person using it, in a few plain lines, before any file or theory.
 - [ ] **`## Archivo(s) afectado(s)`** — every file the change touches, linked, before any theory.
 - [ ] **Simple layer, its three parts** — (a) what happens today, quoting the real code and
       contrasting the place that already does it right; (b) why that is a problem, as a visible
@@ -247,7 +249,7 @@ Before sending, verify all four are present:
 
 **Priority never scales depth.** `[Low]`, `Effort: Small` and a one-line fix earn the same full
 explanation as a `[High]`: the size of the diff says nothing about the size of the concept. The
-brevity rule governs verdicts, reports and conversation — never these two layers.
+brevity rule governs verdicts, reports and conversation — never the introduction or these two layers.
 
 ---
 

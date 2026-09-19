@@ -13,12 +13,12 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7b — Employee flow: dashboard + entries**, next once `feat/angular-shell-auth` merges into `projects/07-timetrack`. Step 7a closed ✅ on 2026-09-16, its done condition verified clause by clause in the browser; `PROJECT-BACKLOG.md` holds **no open task at any priority**: the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`; the Low raised that day while closing the sidenav task (the navigation toggle's missing `aria-controls`) closed the same day in `3b48f37a`; the pre-PR hygiene bundle itself closed that day across `5c69a9e7`–`5241a4c7`; the pre-PR PLANNING-drift Low closed that day as a decision (§6 Form dialogs own their write, Navigation boundary); the Medium raised with them (a shell sidenav that never collapsed below 1024px) closed on 2026-09-16 in `40fc27e5`, and the Lows for the toolbar trigger without the user's name and for its arrow that never turned closed the same day in `3fd72933` and `e3a981fa`, as did the dialog's missing visibility toggles in `91df6a48`, and the dialog's missing full-screen rule was closed that day as a decision to keep Material's compact card on phones |
-| **Current branch** | `feat/angular-shell-auth` — Step 7a's done condition passed on 2026-09-16, so per §22 the branch is **ready to PR into `projects/07-timetrack`** and takes no further step work. After that merge, `feat/angular-entries` is cut from `projects/07-timetrack` for Step 7b |
-| **Done condition** | Step 7b's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input` |
-| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Step 7a done, Steps 7b–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` still reads `never`. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7b–7d |
+| **Current step** | **Step 7c — Manager review flow: dashboard, approvals, projects**, next. Step 7b closed ✅ on 2026-09-18, its done condition verified clause by clause in the browser as an EMPLOYEE; the manager's `/dashboard` is still the `coming-soon` page, served by the `roleMatch('MANAGER')` route this step replaces. `PROJECT-BACKLOG.md` holds **no open task at any priority**: of the tasks raised 2026-09-19 in the pre-PR browser check of Step 7b, the REJECTED row stating the manager's note twice closed that day in `e8a44736` and the backend Low for the API's lower-case default validation messages in `6c43386c`; the three other tasks raised in that check all closed that day — the switch to §14's day-first `en-GB` dates in `51bb8046`, both entry tables showing each date a day early east of UTC in `e6f2fb0b`, and the frontend Low (the first-use empty-state icon clipped to 24px by `MatIcon`'s own styles) closed that day in `160cf8fe`, and the three frontend Mediums raised by the 2026-09-19 `review-audit` of Steps 7a–7b all closed that day — Login's inline error mapping in `e3e66f7a`, the dialogs' two error conventions in `5a957659`, and the `/entries` Project filter's option list as a decision with no code change (§14 Entries page). Before that review it held no open task either (the two `/entries` empty-state Lows raised by Victor closed on 2026-09-18 in `256b95ed` and `eb867534`); the Medium and four Lows of the review scoped to Step 7b's diff (not the G4 review) all closed the same day, in `580994cc`, `9603a9f8`, `03c8dfe8`, `844d3da0` and one decision with no code change, and so did the three Lows raised while fixing them — the stat-card layout (`58822815`, `1fd76f7c`), the Month filter panel (`2b154e91`) and the initial bundle budget (`0353a6db`). The four closes verified by `ng build` + `ng test` only — the empty-state icon, the stat grid, the filter panels and the paginator's hidden page-size select — got their browser check on 2026-09-19, in the pre-PR walk of Step 7b's whole done condition as a fresh EMPLOYEE: all four hold (the icon only after its clipping was fixed in `160cf8fe`), as do the login and form-dialog error messages closed that morning |
+| **Current branch** | `feat/angular-entries` — **ready to merge** into `projects/07-timetrack` (PR), its Step 7b work complete; `feat/angular-manager-pages` is cut from `projects/07-timetrack` after that merge and carries Steps 7c and 7d (§22) |
+| **Done condition** | Step 7c's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals and the dashboard "Pending approval" card drops; create and deactivate a project at /projects; with the queue emptied /approvals shows "No pending approvals. Your team is up to date."` |
+| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Steps 7a–7b done, Steps 7c–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` reads 2026-09-19 for a review run ahead of the gate over Steps 7a–7b only, so G4 still owes its full pass. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7c–7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
-| **Last updated** | 2026-09-16 |
+| **Last updated** | 2026-09-19 |
 
 ---
 
@@ -234,6 +234,12 @@ Same bar as the backend block: each line is violable — a reviewer can open a f
   the form already gone. It never *reads* a list its page already loaded — that arrives as dialog data
   (§13's shared-state table) — and a dialog that submits nothing (`confirm-dialog`) returns its
   answer through `close()` and calls no service.
+- **Form errors** — a form that submits to the API shows a refusal in exactly two places. Each
+  `fieldErrors` entry for a field the form declares goes under that control through `placeFieldErrors()`
+  (whatever the status — a `400` validation and a `409` duplicate both carry them); any failure no
+  declared field claimed goes to one form-level `<p role="alert">` above the fields, worded by
+  `apiErrorMessage()`. That line is always in the DOM, empty until it has a message: an alert inserted
+  together with its text may never be announced.
 - **Shared endpoints** — when two pages read the same endpoint, each page fetches it independently on
   its own load; no cross-page cache. `GET /api/entries?month=` is read by both the dashboard and the
   entries page, and each calls it for itself.
@@ -257,6 +263,12 @@ Same bar as the backend block: each line is violable — a reviewer can open a f
   already received, so a form dialog opens with `disableClose` (a backdrop click never closes it) and
   re-admits Escape through `dialogRef.keydownEvents()` only while no write is in flight — refused exactly
   as its disabled Cancel button is. Browser Back still closes it (`closeOnNavigation` ignores `disableClose`); that exit losing the confirmation is accepted. A dialog lives in the overlay container, not in its opener's view, and `closeOnNavigation` ignores `router.navigate()`, so the component that opens dialogs closes them when it is destroyed (`DestroyRef.onDestroy` + `MatDialog.closeAll()`) — the auth interceptor in `core/` never touches Material.
+- **Calendar dates** — an entry's `date` is a day, never an instant: it is written with `toIsoDate()` (never
+  `toISOString()`), read back with `fromIsoDate()`, and displayed through `DatePipe` with no time-zone argument.
+  The pipe reads a `YYYY-MM-DD` string as local midnight, so `'UTC'` would print the previous day east of UTC.
+- **Error messages** — a failed HTTP call becomes user-facing text only through `apiErrorMessage(err, fallback)`
+  in `shared/models/api-error.ts`: the server's `ErrorResponse.message` when one was parsed, the caller's
+  fallback otherwise. No component narrows `err.error` itself, so the rule has one home.
 - **Async states** — every page that loads data renders three states explicitly: a `MatProgressSpinner`
   while `loading()` is true, a `mat-error` message plus a retry button when the call fails, and the empty
   message from §14 when the call succeeds with zero rows. A page that renders only the success table is
@@ -585,11 +597,18 @@ All errors return the same `ErrorResponse` body from `GlobalExceptionHandler`:
 Validation errors (400 from `@Valid`, via `MethodArgumentNotValidException`) additionally carry a
 field-level map the reactive forms consume to show a message under each input (Step 7b):
 ```json
-{ "status": 400, "message": "Validation failed", "fieldErrors": { "hours": ["must be at most 24"] } }
+{ "status": 400, "message": "Validation failed", "fieldErrors": { "hours": ["Must be at most 24"] } }
 ```
 Each value is an **array**, because one field can fail several constraints at once (`email` can be both
 too long and malformed) and Bean Validation reports every one. A form renders the first message or all
 of them, but the contract never decides that by discarding violations on the way out.
+
+**Every message is a capitalised sentence, whoever writes it.** A constraint annotation carries no
+`message`; its text comes from `src/main/resources/ValidationMessages.properties`, which rewords each
+constraint the request DTOs use (`Must not be blank`, `Must be at most 255 characters`) in the voice a
+service uses for the messages it throws (`Date cannot be in the future`). Without that bundle Hibernate
+Validator's lower-case defaults reach the client, and one `fieldErrors` slot reads in two styles. A new
+constraint type joins the bundle before it ships.
 
 **`fieldErrors` is not exclusive to `@Valid` 400s.** It is the channel for *any* failure attributable to
 one input, whatever its status: a wrong current password carries `fieldErrors.currentPassword` on a 400,
@@ -897,6 +916,7 @@ src/app/
 ├── core/
 │   ├── guards/
 │   │   ├── auth-guard.ts         ← blocks any route without a stored token
+│   │   ├── role-match.ts         ← `roleMatch(role)` CanMatchFn: picks the role's variant of a route declared twice (`/dashboard`)
 │   │   ├── no-auth-guard.ts      ← the mirror: keeps an authenticated user off /login, sending them to /dashboard
 │   │   └── manager-guard.ts      ← blocks manager-only routes for an EMPLOYEE
 │   ├── interceptors/
@@ -912,9 +932,11 @@ src/app/
 ├── pages/
 │   ├── login/                    ← email + password form, both roles
 │   ├── coming-soon/              ← placeholder routed for every nav link whose page is not built yet; each later step replaces one of its routes
-│   ├── dashboard/                ← role-aware summary (employee vs manager variant)
-│   ├── entries/
-│   │   ├── entry-list/           ← filterable table of entries
+│   ├── dashboard/
+│   │   ├── employee-dashboard/   ← stat cards + recent entries, EMPLOYEE variant of /dashboard
+│   │   └── manager-dashboard/    ← MANAGER variant of /dashboard (Step 7c)
+│   ├── entries/                  ← the page: filter bar, paging, the three states, row actions
+│   │   ├── entry-list/           ← presentational table: sortable columns, per-status actions
 │   │   └── entry-dialog/         ← create / edit an entry (reactive form)
 │   ├── projects/                 ← project CRUD table, manager only
 │   ├── approvals/                ← SUBMITTED entries queue, approve / reject
@@ -927,14 +949,17 @@ src/app/
     │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete
     │   ├── logo/               ← the clock mark, sized by each host's class (Login, shell toolbar)
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
+    │   ├── stat-card/         ← outlined number + label with a pulsing skeleton, used by both dashboards and Reports
     │   └── status-badge/      ← coloured badge, used in Entries, Approvals, Dashboard
-    └── models/                    ← interfaces mirroring the backend response DTOs
-        ├── auth.ts                ← LoginRequest, AuthResponse, Role + isRole
-        ├── api-error.ts           ← ApiError + its runtime type guard
-        ├── user.ts                ← ChangePasswordRequest (Step 7a); User joins it in Step 7d
-        ├── project.ts             ← Project
-        ├── time-entry.ts          ← TimeEntry + EntryStatus
-        └── report.ts              ← the three report shapes
+    ├── models/                    ← interfaces mirroring the backend response DTOs
+    │   ├── auth.ts                ← LoginRequest, AuthResponse, Role + isRole
+    │   ├── api-error.ts           ← ApiError, its runtime type guard, `apiErrorMessage()` and `placeFieldErrors()`
+    │   ├── user.ts                ← ChangePasswordRequest (Step 7a); User joins it in Step 7d
+    │   ├── page.ts                ← generic Page<T> + PageRequest for the paged GET /api/entries
+    │   ├── project.ts             ← Project
+    │   ├── time-entry.ts          ← TimeEntry + EntryStatus
+    │   └── report.ts              ← ReportSummary (Step 7b); the two hours reports join it in Step 7d
+    └── dates.ts                   ← local `YYYY-MM-DD` / `YYYY-MM` helpers and the month options of the filter bars
 ```
 
 **File naming — the 2025 Angular style guide, applied to every file in `src/app/`** (ruled 2026-09-11).
@@ -943,6 +968,13 @@ A file is named after the primary identifier it holds, in kebab-case, with **no 
 identifiers takes the name of their common theme (`auth.ts` for the auth DTOs), never a generic `utils.ts`.
 A spec is its file's name plus `.spec.ts`. The `.service.ts` / `.model.ts` suffixes are the 2016 guide the
 CLI stopped generating in v20; the class keeps its descriptive name (`AuthService`, not the CLI's bare `Auth`).
+
+**`entry-list/` is the interactive entries table, not every table of entries** (ruled 2026-09-18). It owns the
+sortable headers that drive the API's `sort` param and the per-status row actions of `/entries`. A dashboard's
+list — the employee's recent entries, and in Step 7c the manager's review list — is a glance with its own
+columns, no sort and its own actions, so it stays inline in its dashboard component: reused there, `EntryList`
+would draw sort arrows that respond to nothing. A table is extracted into `shared/` or a presentational child
+only when a second page needs the same columns **and** the same interactions.
 
 ### Angular routes
 ```
@@ -972,7 +1004,7 @@ it differently mid-build:
 
 | Endpoint | Pages that read it | Owner |
 |---|---|---|
-| `GET /api/entries?month=` | Employee dashboard (stat cards + recent list) · Entries page (table) | **Each page fetches independently** into its own `entries` signal. The dashboard asks for the current month; the entries page asks for whatever the filter bar holds — the same URL with different params, so a shared cache would be wrong more often than right. Refetch after every mutation on the page that made it |
+| `GET /api/entries?month=` | Employee dashboard (stat cards + recent list) · Entries page (table) | **Each page fetches independently** into its own `entries` signal. The dashboard asks for status counts (`size=1`) and page 0 as its recent list; the entries page asks for whatever the filter bar holds — the same URL with different params, so a shared cache would be wrong more often than right. Refetch after every mutation on the page that made it |
 | `GET /api/entries?status=SUBMITTED` | Manager dashboard ("Pending approval" card + review list) · Approvals page (queue) | **Each page fetches independently.** Approving from the dashboard refetches only the dashboard; the Approvals page is re-read when the user navigates to it |
 | `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
 | `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
@@ -1035,6 +1067,10 @@ the teal / compact / flat identity above.
 └──────────────┴──────────────────────────────────┘
 ```
 
+- The routed page renders inside a `<main class="page-content">` capped at `max-inline-size: 80rem`,
+  left-aligned beside the sidebar (added 2026-09-18). On a wide monitor the uncapped page stretched four
+  stat cards to ~400px each and opened a wide gap between table columns; capping the whole page rather
+  than each block keeps cards and tables on one right edge. Below ~1366px it changes nothing
 - Sidebar links filtered by role — only one section is shown depending on who is logged in
 - `MatBadge` on Approvals link showing the count of pending SUBMITTED entries
 - Toolbar shows the logged-in user's name as a `MatMenu` trigger; the menu holds **Change password** and
@@ -1048,11 +1084,15 @@ the teal / compact / flat identity above.
 | Role | Colour | Usage |
 |---|---|---|
 | Primary | Teal (`#00695C`) | Toolbar, buttons, active links |
-| DRAFT | Grey | Status badge |
-| SUBMITTED | Blue (`#1976D2`) | Status badge |
-| APPROVED | Green (`#388E3C`) | Status badge |
-| REJECTED | Red (`#D32F2F`) | Status badge |
+| DRAFT | Grey (`#616161`) | Status badge |
+| SUBMITTED | Blue (`#1565C0`) | Status badge |
+| APPROVED | Green (`#2E7D32`) | Status badge |
+| REJECTED | Red (`#C62828`) | Status badge |
 | Surface | White / light grey | Cards, sidebar background |
+
+The three saturated status colours are Material's 800 tones, not the 700s first planned: measured on
+2026-09-18 against the badge's own fill — the colour at 8% over white — `#1976D2`, `#388E3C` and
+`#D32F2F` fell under 4.5:1 at badge size, and the 800s clear it (5.1, 4.6 and 5.0; grey 5.5).
 
 ---
 
@@ -1077,6 +1117,8 @@ stylesheet and point at the break.
 | **Spacing** | An 8px grid: 8 · 16 · 24 · 32, **written in `rem`** (0.5 · 1 · 1.5 · 2rem at the default 16px root) so spacing and fixed widths grow with the user's browser font size. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary values; `px` only for hairline borders, media-query breakpoints and the theme's shape tokens |
 | **Elevation & shape** | Flat, per the identity: cards are `<mat-card appearance="outlined">` at elevation 0 with a 1px outline; only overlays lift — dialogs at elevation 3, menus/snackbars at Material's default. Never a hand-written `box-shadow`. One 4px corner radius, set as the theme's shape token and never overridden per component |
 | **Density** | Material's **compact** density, set once in `mat.theme()` and inherited by every `MatTable` and form field — so ten rows fit on a laptop screen without scrolling. Never set per table |
+| **Paginator** | Ten rows per page, **no page-size select**: `MAT_PAGINATOR_DEFAULT_OPTIONS` sets `hidePageSize` in the `providers` of each page that renders a paginator (`Entries` today) — never in `app.config.ts`, where even the token's import put the paginator, select, form field and tooltip in the initial bundle — because the select is a full outlined form field that turns the footer into a form. The paginator reads as the table's footer — `mat.paginator-overrides` tints it `surface-container-low` with `on-surface-variant` text. Decided 2026-09-18 |
+| **Dates** | English UI, **day-first dates**: the app runs under the `en-GB` locale — `LOCALE_ID` for `DatePipe` and `MAT_DATE_LOCALE` for the datepicker — because its users are Spanish teams, and `9/19/2026` reads backwards to them while `3/4/2026` is ambiguous outright. A text month keeps a table date unambiguous; the datepicker's input is numeric (`19/09/2026`) and is parsed by the date-fns adapter (`provideDateFnsAdapter`), because `NativeDateAdapter.parse` is `Date.parse`, which cannot read a day-first string. Each table shows the year only when its scope needs one: `/entries` spans months and years (`19 Sept 2026`), the dashboard's recent list does not (`19 Sept`) |
 | **Dark mode** | **Out of scope, deliberately.** One theme finished properly beats two half-done, and the demo is judged in light mode. Revisit in project 08 |
 
 ---
@@ -1180,7 +1222,7 @@ pages in one sitting — that is the only way inconsistency becomes visible:
 | `MatProgressSpinner` | Loading state on every async page |
 | `MatTooltip` | Approve/reject buttons in the approvals table |
 | `MatMenu` | User menu in toolbar (change password, logout) |
-| `MatFab` | "Log hours" floating action button on the entries page |
+| `MatButton` (filled, with icon) | "Log hours" in the entries page header — not a `MatFab` (changed 2026-09-18): a FAB floats over content, and one fixed in a desktop header is only an elevated button in `primary-container` that breaks the flat identity and outshouts the teal primary |
 
 ---
 
@@ -1196,19 +1238,23 @@ repeated in each wireframe. A page that renders only its success table is incomp
   plus a **Retry** button that re-issues the same call. No table, no cards, no empty message. A `401` is
   not a page error — the interceptor has already redirected to `/login`
 - **Empty** — the call succeeded with zero rows: the per-page message named in its wireframe below, plus
-  the primary action where one exists ("Log your first entry", "Add your first member")
+  the primary action where one exists ("Log your first entry", "Add your first member"). Two kinds, and
+  only one is illustrated: a **first-use** empty state (the user has nothing yet — the new employee's
+  dashboard) adds a decorative `aria-hidden` icon above the message through the shared
+  `.empty-illustration` class, while a **no-results** one (a filter that matches nothing, inside a page
+  whose header and filters still work) stays message + action
 
 | Page | Loading | Error | Empty |
 |---|---|---|---|
 | Login | Spinner inside the "Log in" button; **the inputs stay enabled and the button uses `disabledInteractive`** — reversed 2026-09-10, see the note under this table | A `role="alert"` line above the fields: "Invalid email or password" (`401`) — no retry button, the form *is* the retry; a `429` renders that response's own message ("Too many failed login attempts. Try again later.") in the same line, and the form stays enabled so the user can retry once the minute is up; arriving after an expired session, the same line reads "Your session has expired. Please log in again." until the user types | n/a — no data load |
 | Dashboard (employee) | Skeleton cards + spinner over the recent list | `mat-error` + Retry, replacing both cards and list | "You have not logged any hours yet" + "Log your first entry" |
 | Dashboard (manager) | Skeleton cards + spinner over the review list | `mat-error` + Retry — one failed `forkJoin` call fails the whole load, since a dashboard with three of four cards is misleading | "No pending approvals. Your team is up to date." |
-| Entries | Spinner over the table, filter bar stays enabled | `mat-error` + Retry above the table | "No entries found for this period" + "Log your first entry" (button hidden for managers) |
+| Entries | Spinner over the table, filter bar stays enabled; the header's "Log hours" stays disabled until the project list has loaded, because the entry dialog reads its projects once, at open | `mat-error` + Retry above the table | With a filter set: "No entries match these filters" + "Log hours" (button hidden for managers), plus "Show all months" while a month is selected. With none set — the user has no entries at all — the first-use state: the illustration, "You have not logged any hours yet" + "Log your first entry" (a manager reads "Your team has not logged any hours yet") |
 | Projects | Skeleton cards + spinner over the table | `mat-error` + Retry | "No projects yet. Create your first project." |
 | Approvals | Spinner over the table, filter bar stays enabled | `mat-error` + Retry | "No pending approvals. Your team is up to date." |
 | Team | Skeleton cards + spinner over the table | `mat-error` + Retry | "No team members yet. Add your first member." |
 | Reports | Skeleton cards + spinner over both tables | `mat-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
-| Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `mat-error` at the dialog foot — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
+| Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `role="alert"` line above the fields — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
 | Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `role="alert"` line above the fields, dialog stays open | n/a — a form dialog always opens with its fields |
 
 > **Reversal, 2026-09-10 — `disabled` is a visual and interaction state, not a business rule.** The Login
@@ -1233,6 +1279,12 @@ repeated in each wireframe. A page that renders only its success table is incomp
 > unbuilt, and the case differs: a dialog's fields can be edited while its request is in flight and the
 > user then sees stale values against a saved record. Decide it per dialog when Step 7b builds the first
 > one, with this note as the precedent, rather than copying either answer by reflex.
+>
+> **Decided for `entry-dialog`, 2026-09-18: its fields disable while saving.** The dialog case the
+> paragraph above describes is real there — a value typed during the request would sit on screen
+> against a record that saved the old one — and the dialog's Save is a filled button whose spinner
+> already tells the user to wait. The cost is the one measured on Login: focus leaves the field for
+> the length of the save. `user-dialog` and `reject-dialog` still decide for themselves.
 
 ---
 
@@ -1246,8 +1298,15 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
 - **Tables** — every `MatTable` sits in an `overflow-x: auto` wrapper so a narrow viewport scrolls the
   table instead of the page. Below 600px the Entries and Approvals tables hide the Description column
   (the least load-bearing) rather than shrinking every column
-- **Stat cards** — a CSS grid with `repeat(auto-fit, minmax(200px, 1fr))`, so four cards reflow to two
-  and then one with no breakpoint of their own
+- **Filter selects** — a filter bar's `mat-select` panels take `[panelWidth]="null"` and the global
+  `filter-select-panel` class, so a panel grows to its longest option between `12rem` and `24rem` instead
+  of copying its `12rem` field: "September 2026" stays on one line, and only an unbounded label — a long
+  project name — wraps
+- **Stat cards** — a CSS grid sized by **container queries on the page's own width**, not by the viewport:
+  one column, two from `36rem`, four from `52rem`, so four cards split 1, 2 + 2 or 4 and never leave one
+  orphaned (`auto-fit` did, as 3 + 1). The page's `:host` is the `inline-size` container because the 15rem
+  sidenav rail narrows it from 1024px up, independently of the window. Each `stat-card` fills its grid cell,
+  so a label that wraps to two lines never makes one card taller than its row
 - **Login** — the two-column split collapses to the form card alone below 768px; the branding panel is
   hidden, not stacked, and a one-line lockup (logo + app name) sits above the greeting in its place. The
   form sits at a fixed top offset rather than centred, because the virtual keyboard shrinks `100dvh` and a
@@ -1259,7 +1318,14 @@ Desktop-first, but the demo must survive a recruiter opening the link on a phone
 - **Dialogs** — below 600px every `MatDialog` keeps Material's compact-window card (`calc(100vw - 32px)`
   wide, as tall as its content), never full-screen: a Material 3 full-screen dialog is a different layout,
   a top bar with close and confirm actions, not the standard dialog stretched to the viewport, and a
-  stretched one was tried and rejected on 2026-09-16
+  stretched one was tried and rejected on 2026-09-16; and no standard dialog carries a ✕ in its title bar (removed from the
+  wireframes below on 2026-09-18) — in Material 3 the close icon belongs to the full-screen layout, and a
+  standard dialog is dismissed by its Cancel action, by Escape while no write is in flight, and never by a
+  backdrop click on a form dialog (§6 Subscription lifetime). A form dialog whose form is dirty asks
+  "Discard changes?" (the shared `confirmDiscard`, a destructive `confirm-dialog`) before Cancel or Escape
+  closes it; a pristine one closes at once. A form that stays open after one of its writes has landed —
+  an edit whose `PUT` saved before a chained submit failed — is marked pristine at that point, so the
+  question covers only what was typed afterwards
 
 ---
 
@@ -1300,7 +1366,7 @@ password would be permanent in practice.
 
 ```
 ┌──────────────────────────────────────┐
-│  Change password                  ✕  │
+│  Change password                     │
 │                                      │
 │  Current password  [password input]  │
 │  ⚠ Current password is incorrect     │
@@ -1368,7 +1434,7 @@ Stat cards + user table + "Add member" button.
 
 ```
 ┌──────────────────────────────────┐
-│  Add member                   ✕  │
+│  Add member                      │
 │                                  │
 │  Name     [text input]           │
 │  Email    [text input]           │
@@ -1400,9 +1466,9 @@ Four stat cards + recent entries list.
 Good morning, Victor
 
 ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-│ 16h      │ │ 52h      │ │ 3        │ │ 8        │
-│ This     │ │ This     │ │ Pending  │ │ Approved │
-│ week     │ │ month    │ │ review   │ │ this mo. │
+│ 52h      │ │ 8h       │ │ 3        │ │ 2        │
+│ Approved │ │ Awaiting │ │ Pending  │ │ Drafts   │
+│ this mo. │ │ this mo. │ │ review   │ │ to submit│
 └──────────┘ └──────────┘ └──────────┘ └──────────┘
 
 Recent entries
@@ -1421,8 +1487,16 @@ Recent entries
 - The employee dashboard therefore reads `GET /api/reports/summary`, which is **scoped to the caller** by
   the same ownership rule `GET /api/entries` applies (employee → own, manager → all) — see the §10 reports
   ruling. The page sends no role and no user id: the token decides what the totals cover
-- "Pending review" and "Approved this month" are counts, and a paged response carries them exactly:
-  `page.totalElements` with `?status=…&size=1`, which is cheaper than the old count-the-array approach
+- "Approved hours this month" and "Hours awaiting approval this month" are the summary's `approvedHours`
+  and `pendingHours`; "Entries pending review" and "Drafts to submit" are counts, and a paged response
+  carries them exactly: `page.totalElements` with `?status=SUBMITTED|DRAFT&size=1`
+- **The grid mixes two scopes, so it names neither.** The two hour cards cover the current month and the
+  two counts cover every month, so the `<section>` is named "Your hours and entries at a glance" and each
+  month-scoped card says "this month" in its own label — a group name is read over every value inside it
+- **No "This week" card** (changed 2026-09-18, Step 7b). The first wireframe had one, but the API
+  aggregates by month only, and a weekly total summed in the browser is exactly what the first bullet
+  forbids. The Drafts card took its place because it is the one number an employee acts on — it moves
+  on every create and every submit
 - The recent-entries table below the cards is the one genuine consumer of the list itself, and it reads
   page 0 directly
 
@@ -1462,7 +1536,7 @@ Empty state: "No pending approvals. Your team is up to date."
 
 #### Entries page — both roles
 
-Filter bar + table + floating action button (employee only).
+Filter bar + table + a filled "Log hours" button in the page header (employee only).
 
 ```
 [Month ▼]  [Project ▼]  [Status ▼]              [+ Log hours]  ← hidden for managers
@@ -1481,11 +1555,23 @@ Filter bar + table + floating action button (employee only).
 - Edit, delete, and submit icons only appear on DRAFT rows — and only for employees
 - **REJECTED rows show a "Re-open" action instead** (owner only, `PATCH /api/entries/{id}/reopen`): it returns
   the entry to DRAFT, where the edit / delete / submit icons above take over — the correct-and-resubmit loop
-  in the §8 state machine. A REJECTED row also surfaces the manager's `rejectionNote` (tooltip on the badge)
+  in the §8 state machine. A REJECTED row also surfaces the manager's `rejectionNote` once, as a `Manager's note:` line under the description — not as a badge tooltip, which a touch screen cannot open and which would only repeat the line
   so the employee knows what to fix. Managers never see this action
 - "Submit" inline button: quick action — changes status to SUBMITTED without opening the dialog
 - Manager sees an extra "Employee" column and all users' entries; employee sees only their own — same route, different data from the API
-- Empty state: "No entries found for this period" + "Log your first entry" button (button hidden for managers)
+- The Project filter lists exactly what `GET /api/projects` returns, read once with the page's first load:
+  every project for a manager, **active projects only for an employee** (§10). A project deactivated after an
+  employee billed to it leaves their filter, so those entries are reached by month and status, not by
+  project — accepted. The alternative, also listing the inactive projects the caller's own entries carry
+  (which the §8 project-existence ruling would allow, since the caller is already entitled to them), cannot
+  be built in the browser: the entries list is paged, so only a new caller-scoped backend query knows
+  every project those entries name
+- Empty state: two kinds, told apart by the filters the page already holds. With any filter set it is a
+  no-results state — "No entries match these filters" + a "Log hours" button (hidden for managers); the page
+  opens on the current month, so while a month is selected it also offers a text "Show all months" button
+  that resets the Month filter, the way to last month's drafts on the first days of a month. With no filter
+  set the user has no entries at all, so it is the first-use state: the illustration, "You have not logged
+  any hours yet" + "Log your first entry" (a manager reads "Your team has not logged any hours yet")
 
 ---
 
@@ -1495,7 +1581,7 @@ Opens as a `MatDialog` from the "Log hours" button or the edit icon.
 
 ```
 ┌──────────────────────────────────┐
-│  Log hours                    ✕  │
+│  Log hours                       │
 │                                  │
 │  Project  [select ▼]             │
 │  Date     [date picker]          │
@@ -1724,9 +1810,11 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   token. The `401` message is a form-level `<p class="login-error" role="alert">` above the fields, not a
   `mat-error`: a `mat-error` renders only inside a `mat-form-field`, and this error belongs to no single field
 
-#### Step 7b — Employee flow: dashboard + entries
-- Employee dashboard (stat cards from one `GET /api/entries?month=` call) + recent entries
-- Entries page: filter bar, table, FAB; entry-dialog (create/edit); inline submit quick action
+#### Step 7b — Employee flow: dashboard + entries ✅
+- Employee dashboard: stat cards whose hour totals come from `GET /api/reports/summary` and whose counts
+  come from `page.totalElements` on `GET /api/entries?status=…&size=1` (§14 "How stat cards get their
+  data" — never a client-side sum of a paged list) + recent entries from page 0 of `GET /api/entries`
+- Entries page: filter bar, table, "Log hours" button; entry-dialog (create/edit); inline submit quick action
 - **Re-open action on REJECTED rows** (owner only, §8/§14): calls `PATCH /api/entries/{id}/reopen`, the row returns to DRAFT and the edit / delete / submit icons take over; the row also surfaces the manager's `rejectionNote`
 - Shared components: `status-badge`, `confirm-dialog`
 - Reactive forms consume the `fieldErrors` map from the error contract — message under each input on 400
@@ -1734,7 +1822,21 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   `loading()` is true (skeleton cards on the dashboard), `mat-error` + **Retry** when the call fails, and
   the per-page empty message ("No entries found for this period" / "You have not logged any hours yet")
 - **Review concepts:** coordinator pattern, reactive forms, MatTable/MatDialog, signals + `computed()`
+- **Concept learned:** a string-literal union derived from an `as const` array · a generic `Page<T>`
+  response model · `null` vs optional in a response model · immutable `HttpParams` that omit unset
+  filters · PUT vs PATCH with a `204` typed `Observable<void>` · a `canMatch` guard choosing a route
+  variant by role · a `Subject` + `switchMap` reload stream that cancels the stale request · `forkJoin`
+  loading independent calls as one all-or-nothing result · server-side paging and sorting driven by
+  `MatPaginator` / `MatSort` · backend `fieldErrors` placed under their controls with `setErrors` ·
+  a local `YYYY-MM-DD` date instead of `toISOString()` · `trackBy` keeping table rows across a reload ·
+  status colours checked against the 4.5:1 AA ratio at badge size
 - **Done condition:** `Browser: at /entries an employee creates, edits and submits an entry and the table + dashboard cards update; the table shows "No entries found for this period" before the first entry exists and a mat-error with a working Retry when the API is down; Re-open on a REJECTED row returns it to DRAFT with the edit/delete/submit icons visible; an invalid form submit shows the backend field error under the input`
+- **Verified 2026-09-18** in the browser as an EMPLOYEE, every clause: the empty message for a month
+  with no entries, create → edit (`PUT`) → inline submit with the dashboard cards moving, a description of
+  spaces answered by the backend's `fieldErrors.description` under the input, Re-open on an entry rejected
+  through Postman, and Retry after stopping the backend. Changed against the plan: the employee dashboard's
+  cards (§14), the badge colours (§14 Colour palette), and `/dashboard` split into two role variants
+  chosen by a `canMatch` guard, the manager one still the `coming-soon` page until Step 7c (§13)
 
 #### Step 7c — Manager review flow: dashboard, approvals, projects
 - Manager dashboard (`forkJoin` stat cards) + pending approvals list with inline approve / reject
@@ -2062,7 +2164,7 @@ High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and
 **The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
-currently holds no open task at any priority** — the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`. The Low raised the same day while closing the sidenav task (the navigation toggle named no `aria-controls` target) closed that day in `3b48f37a`. The pre-PR hygiene bundle itself (an `as ApiError` cast beside the existing `isApiError` guard, a public `Shell.dialog`, `px` in `shell.scss`, the `Timetrack` title) closed that day across `5c69a9e7`–`5241a4c7`. The pre-PR Low for PLANNING drifting from the built code closed that day as a decision, no code change: §6 now rules that a form dialog owns its write and where `Router` may be injected. The Medium raised with them (`Shell` kept its sidenav in `side` mode at every width) closed the same day in `40fc27e5`, and the Low for the toolbar trigger that showed no user name and no logo closed the same day in `3fd72933`, as did the Low Victor raised that day for the account trigger's arrow that never turned with the menu, in `e3a981fa`, and the pre-PR Low for the dialog's missing password visibility toggles closed that day in `91df6a48`, its toggle extended to the login's password field, and the pre-PR Low for the dialog's missing full-screen rule closed that day as a decision, no code change: dialogs keep Material's compact card on phones (§14 Responsive intent). The frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
+currently holds no open task at any priority** (the two Lows raised last in the 2026-09-19 pre-PR browser check — a REJECTED row stating the manager's note twice and the API's lower-case default validation messages — closed that day in `e8a44736` and `6c43386c`) — the frontend Low raised in that check for the switch to §14's day-first `en-GB` dates closed that day in `51bb8046`, as did the frontend Medium raised in that check (both entry tables showing each date a day early east of UTC) closed that day in `e6f2fb0b`, and the frontend Low raised in the same check (the first-use empty-state icon clipped by `MatIcon`'s own 24px box) closed that day in `160cf8fe`, and the three frontend Mediums of the 2026-09-19 `review-audit`, run ahead of G4, closed that day (`e3e66f7a`, `5a957659`, and one decision with no code change); before that review it held none — the two `/entries` empty-state Lows raised by Victor on 2026-09-18 closed that day in `256b95ed` and `eb867534`; the initial bundle over its `angular.json` budget, raised 2026-09-18, closed that day in `0353a6db` (665 kB → 448 kB); the two Lows Victor reported that day both closed with it open, the stat cards' unequal heights and 3 + 1 wrap in `58822815` and `1fd76f7c`, and the Month filter panel wrapping its labels in `2b154e91` (the stat cards' unequal heights and 3 + 1 wrap at a mid width, and the Month filter's option panel wrapping its labels); the Medium raised with them (the entries header's "Log hours" usable before the project list had loaded) closed the same day in `580994cc`, and the Low for the entry dialog asking to discard an edit already saved before a failed submit closed that day in `9603a9f8`, as did the Low for the stat grid's `aria-label` promising a month two of its cards do not keep, in `03c8dfe8`, and the Low for the dashboard's first-use empty state missing the illustration §14 specifies, in `844d3da0`; the Low asking whether the dashboard's recent list should reuse `EntryList` closed that day as a decision, no code change (§13: it stays inline). Before them, the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`. The Low raised the same day while closing the sidenav task (the navigation toggle named no `aria-controls` target) closed that day in `3b48f37a`. The pre-PR hygiene bundle itself (an `as ApiError` cast beside the existing `isApiError` guard, a public `Shell.dialog`, `px` in `shell.scss`, the `Timetrack` title) closed that day across `5c69a9e7`–`5241a4c7`. The pre-PR Low for PLANNING drifting from the built code closed that day as a decision, no code change: §6 now rules that a form dialog owns its write and where `Router` may be injected. The Medium raised with them (`Shell` kept its sidenav in `side` mode at every width) closed the same day in `40fc27e5`, and the Low for the toolbar trigger that showed no user name and no logo closed the same day in `3fd72933`, as did the Low Victor raised that day for the account trigger's arrow that never turned with the menu, in `e3a981fa`, and the pre-PR Low for the dialog's missing password visibility toggles closed that day in `91df6a48`, its toggle extended to the login's password field, and the pre-PR Low for the dialog's missing full-screen rule closed that day as a decision, no code change: dialogs keep Material's compact card on phones (§14 Responsive intent). The frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
 HTTP `.subscribe()` calls with no teardown, against §6), closed the same day in `c5e69b3a`, the frontend
 Medium raised beside it (closing the change-password dialog dropped keyboard focus to `<body>`) closed on
 2026-09-14 in `1d4bf603`, the three frontend Lows raised on 2026-09-10 (the stuck login spinner, the missing `OnPush`,

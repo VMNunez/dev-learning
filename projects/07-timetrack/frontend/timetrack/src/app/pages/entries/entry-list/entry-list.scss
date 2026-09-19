@@ -1,0 +1,34 @@
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-date,
+.mat-column-hours,
+.mat-column-actions {
+  white-space: nowrap;
+}
+
+.mat-column-hours {
+  font-variant-numeric: tabular-nums;
+}
+
+.mat-column-actions {
+  width: 1%;
+  text-align: end;
+}
+
+.rejection-note {
+  display: block;
+  color: var(--mat-sys-error);
+  font: var(--mat-sys-body-small);
+}
+
+@media (max-width: 599px) {
+  .mat-column-description {
+    display: none;
+  }
+}
