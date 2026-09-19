@@ -144,7 +144,7 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - Functional HTTP interceptors — centralise auth headers and shared response handling without swallowing feature-specific errors or creating an interceptor loop ✅ 06-hr-portal
 - Immutable interceptor requests — clone an `HttpRequest` before changing headers or other request properties because interceptor inputs are immutable ✅ 06-hr-portal
 - Session expiry in an auth interceptor — treat a `401` as an expired session only on a request that carried a token, because the same status on the login call means wrong credentials, which the calling page must render rather than a global handler redirecting ✅ 07-timetrack — `authInterceptor` calls `expireSession()` only on `error.status === 401 && token`, the token read before the request was sent, so a failed `POST /api/auth/login` reaches `Login`'s own error callback
-- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure ✅ 07-timetrack — the login error callback narrows `err.error` through `isApiError` and falls back when no `ErrorResponse` was parsed
+- `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure ✅ 07-timetrack — `apiErrorMessage` accepts the `HttpErrorResponse`, narrows its `error` body through `isApiError` and returns the caller's fallback when no `ErrorResponse` was parsed; the login, dashboard and entries failures all go through it
 
 ## Reactive forms and template transformation
 
