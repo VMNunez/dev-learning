@@ -19,7 +19,7 @@ import { filter, Observable, switchMap } from 'rxjs';
 import { EntryService } from '../../../core/services/entry-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { fromIsoDate, toIsoDate } from '../../../shared/dates';
-import { isApiError } from '../../../shared/models/api-error';
+import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
 import { Project } from '../../../shared/models/project';
 import { CreateTimeEntryRequest, TimeEntry } from '../../../shared/models/time-entry';
 
@@ -175,19 +175,8 @@ export class EntryDialog {
     this.saving.set(null);
     this.form.enable({ emitEvent: false });
 
-    const body = isApiError(err.error) ? err.error : null;
-    let placedOnField = false;
-
-    for (const field of FORM_FIELDS) {
-      const message = body?.fieldErrors?.[field]?.[0];
-      if (message) {
-        this.form.controls[field].setErrors({ server: message });
-        placedOnField = true;
-      }
-    }
-
-    if (!placedOnField) {
-      this.error.set(body?.message ?? 'Could not save the entry. Try again.');
+    if (!placeFieldErrors(err, this.form.controls, FORM_FIELDS)) {
+      this.error.set(apiErrorMessage(err, 'Could not save the entry. Try again.'));
     }
   }
 

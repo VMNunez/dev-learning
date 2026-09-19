@@ -2,6 +2,8 @@
 
 <mat-dialog-content>
   <form id="entry-form" class="dialog-form" [formGroup]="form" (ngSubmit)="save()">
+    <p class="dialog-error" role="alert">{{ error() }}</p>
+
     <mat-form-field appearance="outline">
       <mat-label>Project</mat-label>
       <mat-select formControlName="projectId">
@@ -54,10 +56,6 @@
       }
     </mat-form-field>
   </form>
-
-  @if (error(); as message) {
-    <mat-error class="dialog-error" role="alert">{{ message }}</mat-error>
-  }
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

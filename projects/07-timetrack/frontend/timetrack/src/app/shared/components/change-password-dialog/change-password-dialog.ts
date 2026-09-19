@@ -21,8 +21,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
-import { isApiError } from '../../models/api-error';
+import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
 import { confirmDiscard } from '../confirm-dialog/confirm-discard';
+
+// The request fields the API can refuse one by one; confirmPassword never leaves the browser.
+const SERVER_FIELDS = ['currentPassword', 'newPassword'] as const;
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const newPassword = group.get('newPassword')?.value;
@@ -142,18 +145,9 @@ export class ChangePasswordDialog {
           this.loading.set(false);
           this.form.enable({ emitEvent: false });
 
-          const fieldErrors =
-            err.status === 400 && isApiError(err.error) ? err.error.fieldErrors : undefined;
-
-          if (fieldErrors) {
-            for (const field of ['currentPassword', 'newPassword'] as const) {
-              const message = fieldErrors[field]?.[0];
-              if (message) this.form.controls[field].setErrors({ server: message });
-            }
-            return;
+          if (!placeFieldErrors(err, this.form.controls, SERVER_FIELDS)) {
+            this.error.set(apiErrorMessage(err, 'Could not change the password. Try again.'));
           }
-
-          this.error.set('Could not change the password. Try again.');
         },
       });
   }
