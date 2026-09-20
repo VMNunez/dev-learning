@@ -23,6 +23,8 @@ export interface TimeEntry {
 }
 
 export interface TimeEntryFilters {
+  // MANAGER only: the API ignores it for an employee caller, who is always scoped to their own rows.
+  userId?: number;
   projectId?: number;
   status?: EntryStatus;
   month?: string;

@@ -34,6 +34,9 @@ export class EntryService {
     if (filters.month) {
       params = params.set('month', filters.month);
     }
+    if (filters.userId !== undefined) {
+      params = params.set('userId', filters.userId);
+    }
     if (filters.projectId !== undefined) {
       params = params.set('projectId', filters.projectId);
     }
