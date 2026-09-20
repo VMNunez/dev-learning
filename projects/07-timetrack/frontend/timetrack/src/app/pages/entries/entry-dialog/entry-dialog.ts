@@ -52,7 +52,6 @@ const FORM_FIELDS = ['projectId', 'date', 'hours', 'description'] as const;
   // The native adapter parses typed input with Date.parse, which cannot read a day-first 19/09/2026.
   providers: [provideDateFnsAdapter(), { provide: MAT_DATE_LOCALE, useValue: enGB }],
   templateUrl: './entry-dialog.html',
-  styleUrl: './entry-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EntryDialog {

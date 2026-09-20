@@ -35,7 +35,6 @@ const FORM_FIELDS = ['name', 'description'] as const;
     MatProgressSpinner,
   ],
   templateUrl: './project-dialog.html',
-  styleUrl: './project-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDialog {

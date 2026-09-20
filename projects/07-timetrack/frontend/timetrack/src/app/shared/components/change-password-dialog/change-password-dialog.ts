@@ -57,7 +57,6 @@ class MismatchErrorStateMatcher implements ErrorStateMatcher {
     MatIconModule,
   ],
   templateUrl: './change-password-dialog.html',
-  styleUrl: './change-password-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePasswordDialog {

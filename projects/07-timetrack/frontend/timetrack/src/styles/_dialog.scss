@@ -1,0 +1,26 @@
+// Dialog-level building blocks shared by every form dialog, so the five of them cannot drift apart —
+// the same reason `_page.scss` holds the routed views' block. They were copied byte-for-byte into
+// each component stylesheet until 2026-09-20, which meant the error line's reserved height had to be
+// changed in four files or the dialogs would stop looking alike.
+//
+// Global rather than per component on purpose: a `MatDialog` renders its own component's view, so
+// these would work as component styles — but then each new dialog decides again, which is what this
+// file exists to stop. A dialog-only class that has one user (`reject-dialog`'s context line) stays
+// in its own stylesheet.
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  // Keeps the first field's floating label off the content box's top edge.
+  padding-block-start: 0.5rem;
+}
+
+// Always in the DOM, empty until it has a message: an alert inserted together with its text may never
+// be announced. The `min-height` is what stops the form jumping when one arrives.
+.dialog-error {
+  margin-block: 0 0.5rem;
+  min-height: var(--mat-sys-body-small-line-height);
+  color: var(--mat-sys-error);
+  font: var(--mat-sys-body-small);
+}
