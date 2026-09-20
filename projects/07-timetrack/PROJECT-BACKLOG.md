@@ -108,6 +108,43 @@ That ledger is append-only and authoritative — a review never re-raises what i
   *(raised 2026-09-20 by Victor in the browser: a reload while logged in returned him to `/login`,
   right after `AuthResponse` gained its `id` field)*
 
+- [ ] **[Low]** `[frontend]` — the **page-level layout blocks are copied per page**, the same defect
+  `_dialog.scss` was created to end one level down and left unfinished. `.page-header` is byte-identical
+  in `entries.scss`, `projects.scss` and `approvals.scss`; `.filter-bar` in `entries.scss` and
+  `approvals.scss`; `.table-area` + `.table-wrapper` + `.table-overlay` in `projects.scss` and
+  `approvals.scss`; `table { width: 100% }`, the `white-space: nowrap` / `width: 1%` / `text-align: end`
+  action-column rules, `.rejection-note` and the 599px Description hide in `entry-list.scss` and
+  `approvals.scss`. §14's design-system preamble is explicit that these are decided once and obeyed by
+  all eight pages, and `_page.scss` already states that purpose in its own header comment; Team and
+  Reports in Step 7d would make a fourth and fifth copy. The proof it is mechanical rather than
+  considered: `approvals.scss` sets `justify-content: space-between` on a header that has one child.
+  Move them to `_page.scss` or a sibling `_table.scss`; what genuinely belongs to a page stays
+  (`.own-entry`, the two approve/reject `icon-button-overrides`, `.mat-column-hours`). **The reason it
+  is not done inline:** it edits the stylesheets of two pages already built and verified, so it owes a
+  look at all four screens, which is cheapest inside §14's Visual QA pass *(Effort: Medium)* *(raised
+  2026-09-20 by the cold design review of the Approvals page)*
+
+- [ ] **[Low]** `[frontend]` — the four-field **filter bar wraps 3 + 1 at both desktop widths §14's own
+  visual-QA checklist walks**. Four `mat-form-field`s at `12rem` with three `1rem` gaps need `51rem`
+  (816px); at 1024px the `15rem` rail and the shell's `1.5rem` padding each side leave 736px (46rem),
+  and at 768px, where the rail is `over` and takes nothing, 720px (45rem). So the Status filter drops
+  alone onto a second line — the same orphan §14's responsive intent forbids by name for the stat-card
+  ladder ("never leave one orphaned"). `/entries` never shows it because three fields fit in 39rem.
+  Neither `flex: 1 1 12rem` (the fields then grow past 12rem on a wide monitor and stop matching
+  `/entries`) nor `flex: 0 1 12rem` alone (they shrink below a legible width before the 599px
+  full-width rule takes over) is right without a `min-width`, so this needs checking at 1440, 1024, 768
+  and 375 in the browser rather than a one-line guess *(Effort: Small)* *(raised 2026-09-20 by the cold
+  design review of the Approvals page; arithmetic re-checked against `shell.scss`)*
+
+- [ ] **[Low]** `[frontend]` — a **rejection note is unreachable on a phone**, on both tables that show
+  one. The note renders inside the Description cell (`entry-list.html`, `approvals.html`), and §14's
+  responsive rule hides the Description column below 600px, so the only place in the app that says
+  *why* an entry was rejected disappears at 375px. It matters more on `/entries`, where an employee has
+  to act on it, than on `/approvals`, where a manager is re-reading a decision. Options: render the
+  note in the Status cell under the badge, keep the hidden column's text as a stacked secondary line,
+  or accept it and say so in §14 *(Effort: Small)* *(raised 2026-09-20 by the cold design review of the
+  Approvals page)*
+
 - [ ] **[Low]** `[frontend]` — `npx prettier --check "src/**/*.{ts,html,scss}"` reports **66 files** as
   unformatted in a tree with no uncommitted changes (run 2026-09-20, exit 1). None of them is: the repo
   has `core.autocrlf = true` and no `.gitattributes`, so every tracked file is on disk with CRLF, while
