@@ -176,11 +176,16 @@ export class Entries {
     this.openDialog(null);
   }
 
+  // The row's action buttons stay focusable while their write is in flight (`disabledInteractive`),
+  // so the guard opening each of the four is what keeps one action per row at a time.
   openEdit(entry: TimeEntry): void {
+    if (this.busyEntryId() === entry.id) return;
     this.openDialog(entry);
   }
 
   confirmDelete(entry: TimeEntry): void {
+    if (this.busyEntryId() === entry.id) return;
+
     this.dialog
       .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
         data: {
@@ -204,10 +209,12 @@ export class Entries {
   }
 
   submit(entry: TimeEntry): void {
+    if (this.busyEntryId() === entry.id) return;
     this.runAction(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
   }
 
   reopen(entry: TimeEntry): void {
+    if (this.busyEntryId() === entry.id) return;
     this.runAction(entry, this.entryService.reopenEntry(entry.id), 'Entry re-opened as a draft');
   }
 
@@ -269,12 +276,26 @@ export class Entries {
   }
 
   private runAction(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
+    // Where the user is when the write starts decides whether its result may move them at all.
+    const pressed = document.activeElement;
     this.busyEntryId.set(entry.id);
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.busyEntryId.set(null);
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
+        // A status change re-renders the row's actions into a different branch and a delete takes
+        // the row away, so either way the control the user pressed is about to be destroyed. Unlike
+        // the Projects row, nothing here survives the write, so focus goes to the header's own
+        // action — the one target the reload cannot remove. Only when the user has not moved on
+        // themselves: the header button stays enabled during the write, so a dialog opened from it
+        // meanwhile would have its focus trap broken by an unconditional move, and a user who
+        // tabbed away would be dragged back.
+        const focusLeftNowhere =
+          document.activeElement === pressed || document.activeElement === document.body;
+        if (focusLeftNowhere) {
+          this.logHoursButton()?.nativeElement.focus();
+        }
         this.reload();
       },
       error: (err: unknown) => {

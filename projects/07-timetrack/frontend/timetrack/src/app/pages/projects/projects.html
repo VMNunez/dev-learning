@@ -58,8 +58,8 @@
               <span class="cdk-visually-hidden">Actions</span>
             </th>
             <td mat-cell *matCellDef="let project">
-              <!-- `disabledInteractive`, as on every dialog's Save (`/entries`' row actions still owe
-                   it — the backlog Medium of 2026-09-20): a native
+              <!-- `disabledInteractive`, as on every dialog's Save and on `/entries`' row actions:
+                   a native
                    `<button disabled>` cannot hold focus, so disabling the one the user just pressed
                    drops focus to `<body>` (§14 Accessibility floor). The re-entry guard lives in
                    TypeScript instead, which is what actually protects the invariant. -->
