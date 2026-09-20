@@ -108,6 +108,23 @@ That ledger is append-only and authoritative — a review never re-raises what i
   *(raised 2026-09-20 by Victor in the browser: a reload while logged in returned him to `/login`,
   right after `AuthResponse` gained its `id` field)*
 
+- [ ] **[Low]** `[frontend]` — the **Projects table cannot be sorted by Status**, so with a mix of
+  active and archived rows there is no way to group them and the inactive ones sit scattered through a
+  list ordered by name. **This reopens a §14 ruling and must be triaged against it, not around it:**
+  the "Material components used" table states *"Projects takes `MatTable` alone (ruled 2026-09-20):
+  `GET /api/projects` returns an unpaged `Project[]` already sorted by name, so a paginator has no
+  backend behind it and a sort header would re-sort in the browser what the API already ordered"*. That
+  argument is about **name** — the one order the API does supply — and says nothing about status, which
+  it does not. Two things make a client-side sort defensible here and not on `/entries`: the response
+  is **unpaged**, so sorting in the browser orders the whole set rather than silently reordering one
+  visible page, and `/entries` sends `sort` to the API precisely because it is paged. Decide the scope
+  as part of the fix: adding `matSort` and making only Status sortable reads oddly, so it is probably
+  Status **and** Name, with the API's order as the default. Effort is not zero — the table binds
+  `[dataSource]="projects()"`, a plain array, which `MatSort` does not sort on its own, so it needs a
+  `MatTableDataSource` or a `computed()` that sorts; `trackById` is already in place, so rows survive
+  the reorder. If it is implemented, §14's ruling and the rows that repeat it are corrected in the same
+  close *(Effort: Small)* *(raised 2026-09-20 by Victor while verifying the Approvals page)*
+
 - [ ] **[Low]** `[frontend]` — the **page-level layout blocks are copied per page**, the same defect
   `_dialog.scss` was created to end one level down and left unfinished. `.page-header` is byte-identical
   in `entries.scss`, `projects.scss` and `approvals.scss`; `.filter-bar` in `entries.scss` and
