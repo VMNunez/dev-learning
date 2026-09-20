@@ -45,7 +45,7 @@ export const routes: Routes = [
         path: 'projects',
         title: 'Projects',
         canActivate: [managerGuard],
-        loadComponent: () => import('./pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        loadComponent: () => import('./pages/projects/projects').then((m) => m.Projects),
       },
     ],
   },

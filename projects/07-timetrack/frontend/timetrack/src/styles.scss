@@ -6,6 +6,11 @@
   --status-submitted: #1565c0;
   --status-approved: #2e7d32;
   --status-rejected: #c62828;
+
+  // A project's own state, not an entry status: same green as APPROVED on purpose — its contrast is
+  // already measured at badge size (4.6:1) — but its own token, because the two mean different things
+  // and must be free to move apart.
+  --project-active: #2e7d32;
 }
 
 html {
