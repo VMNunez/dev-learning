@@ -91,6 +91,17 @@ That ledger is append-only and authoritative — a review never re-raises what i
   before moving them is `padding-block-start`, which `change-password-dialog` does not carry *(Effort:
   Small)* *(raised 2026-09-20 while building `reject-dialog`, whose stylesheet is the fourth copy)*
 
+- [ ] **[Low]** `[frontend]` — `npx prettier --check "src/**/*.{ts,html,scss}"` reports **66 files** as
+  unformatted in a tree with no uncommitted changes (run 2026-09-20, exit 1). None of them is: the repo
+  has `core.autocrlf = true` and no `.gitattributes`, so every tracked file is on disk with CRLF, while
+  Prettier's `endOfLine` has defaulted to `"lf"` since v2 and counts each line as a difference. The
+  check is therefore unusable as a gate — it fails identically on clean and dirty trees, which is the
+  worst shape a check can have, and it is why formatting has only ever been verified on the handful of
+  files a session just wrote. `"endOfLine": "auto"` in `.prettierrc` is the documented fix and changes
+  no file's content; the alternative, a `.gitattributes` normalising the checkout, rewrites every file
+  in the working tree once *(Effort: Small)* *(raised 2026-09-20 while running the formatting check
+  over the shared dialog stylesheet)*
+
 ## Beyond the current gate
 
 <!-- Findings the level-fit pass judged real but early: above the open gate and not strictly necessary
