@@ -80,9 +80,12 @@ table {
   text-align: end;
 }
 
+// Muted, not red: unlike the same line on /entries — where it is the employee's to-do — here a
+// manager is re-reading a decision already taken, and the row's REJECTED badge one cell away already
+// carries the alarm. Explanatory metadata, like `.own-entry` below.
 .rejection-note {
   display: block;
-  color: var(--mat-sys-error);
+  color: var(--mat-sys-on-surface-variant);
   font: var(--mat-sys-body-small);
 }
 

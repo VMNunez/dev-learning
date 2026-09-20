@@ -124,7 +124,7 @@
           <td mat-cell *matCellDef="let entry">
             {{ entry.description }}
             @if (entry.status === 'REJECTED' && entry.rejectionNote) {
-              <span class="rejection-note">Your note: {{ entry.rejectionNote }}</span>
+              <span class="rejection-note">Rejection note: {{ entry.rejectionNote }}</span>
             }
           </td>
         </ng-container>
