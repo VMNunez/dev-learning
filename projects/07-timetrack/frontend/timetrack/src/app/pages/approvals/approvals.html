@@ -81,7 +81,9 @@
       <p class="empty-message">No pending approvals. Your team is up to date.</p>
     } @else {
       <p class="empty-message">No entries match these filters</p>
-      <button matButton="filled" type="button" (click)="showQueue()">Show pending approvals</button>
+      <button matButton="outlined" type="button" (click)="showQueue()">
+        Show pending approvals
+      </button>
     }
   </div>
 } @else {
