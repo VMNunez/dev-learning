@@ -1,0 +1,33 @@
+@use '@angular/material' as mat;
+
+.dialog-context {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-block-start: 0.5rem;
+}
+
+.dialog-error {
+  margin-block: 0 0.5rem;
+  min-height: var(--mat-sys-body-small-line-height);
+  color: var(--mat-sys-error);
+  font: var(--mat-sys-body-small);
+}
+
+// The same error role `confirm-dialog` paints a destructive confirm in, for the same reason: a
+// filled teal button reads as "save", and this one sends the hours back for the employee to redo.
+// It matches the red ✕ in the row that opened it.
+.destructive {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-error),
+      filled-label-text-color: var(--mat-sys-on-error),
+    )
+  );
+}
