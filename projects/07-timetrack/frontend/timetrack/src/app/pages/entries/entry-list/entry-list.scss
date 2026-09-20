@@ -12,6 +12,15 @@ table {
   white-space: nowrap;
 }
 
+// A name, a project or a description with no spaces in it would otherwise set its column's
+// min-content width and push Status and the row actions off a narrow screen — the §14 Tables rule
+// the approvals and projects tables already obey.
+.mat-column-employee,
+.mat-column-project,
+.mat-column-description {
+  overflow-wrap: anywhere;
+}
+
 .mat-column-hours {
   font-variant-numeric: tabular-nums;
 }
