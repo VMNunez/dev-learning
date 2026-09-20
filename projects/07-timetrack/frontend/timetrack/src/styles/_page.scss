@@ -6,6 +6,18 @@
   font: var(--mat-sys-headline-small);
 }
 
+// A page whose rows carry the only actions moves focus here when a write removes the row that held
+// it (§14), so the title is a real focus target and its indicator has to look like the rest of the
+// app rather than like the browser's default black box. Never removed, only restyled: the
+// accessibility floor requires focus to stay visible. `:focus` as well as `:focus-visible`, because
+// this focus arrives from script and the two do not always agree on a programmatic move.
+.page-title:focus,
+.page-title:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 0.25rem;
+  border-radius: 4px;
+}
+
 .page-state {
   display: flex;
   flex-direction: column;
