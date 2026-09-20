@@ -68,29 +68,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
   2026-09-20 by Victor in the browser, after deactivating projects while verifying Step 7c's Projects
   page left one of his own drafts unsubmittable)*
 
-- [ ] **[Low]** `[frontend]` — `/approvals` offers ✓ and ✕ on a manager's **own** SUBMITTED rows, which
-  §8 refuses with a `403` (segregation of duties). The page cannot tell whose row it is: `AuthResponse`
-  (§10) carries `token`, `name` and `role` and **no id**, so `AuthService`'s session signal has nothing
-  to compare `entry.userId` against, and the token's `sub` is deliberately never parsed in the browser.
-  It is reachable because §8's promotion guard refuses a promotion to MANAGER only while the user holds
-  `DRAFT`/`REJECTED` entries — `SUBMITTED` ones pass, and they land in the new manager's own queue. The
-  refusal is handled (the snackbar shows the API message) so nothing breaks; what is wrong is offering
-  an action that cannot succeed, the same shape as the inactive-project submit above. Decide between
-  adding `id` to `AuthResponse`, matching on `name` (fragile — names are not unique, and §10 appends
-  `id` to `by-user`'s sort for exactly that reason) and leaving it to the error message *(Effort:
-  Small)* *(raised 2026-09-20 while building the Approvals page, which is the first screen where a
-  manager sees a review action at all)*
-
-- [ ] **[Low]** `[frontend]` — the `.dialog-form` / `.dialog-error` pair is copied byte-for-byte into
-  four component stylesheets (`entry-dialog`, `project-dialog`, `change-password-dialog` and now
-  `reject-dialog`), and `user-dialog` will make five. §14's design system exists so a decision is taken
-  once and obeyed by every page; four copies means the next dialog decides again, and a change to the
-  error line's `min-height` — the one that reserves its space so the form does not jump — has to be made
-  in four files or the dialogs drift apart. `src/styles/_page.scss` is the precedent for the fix: the
-  page-level building blocks already live in one partial for the same reason. The one thing to check
-  before moving them is `padding-block-start`, which `change-password-dialog` does not carry *(Effort:
-  Small)* *(raised 2026-09-20 while building `reject-dialog`, whose stylesheet is the fourth copy)*
-
 - [ ] **[Low]** `[frontend]` — `AuthService` **writes the session without validating it and reads it
   back validating**, so a login response the app does not understand produces a session that works
   until the first page reload and then logs the user out with no message. `saveSession()` stores
@@ -345,6 +322,8 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-20 · **[Low]** `[frontend]` — `/approvals` drops the review actions on the manager's own rows and `AuthResponse` gains `id` → coverage: `security/junior` "Server-side enforcement" already ✅ 07; backend + frontend README Key patterns; PLANNING §10 contract ruling; PROGRESS n/a. Verified by `ng build` and `ng test` 37/37 only — **the browser check is owed**: it needs a manager holding SUBMITTED entries, which only the Team page (Step 7d) makes reachable
+- 2026-09-20 · **[Low]** `[frontend]` — the dialogs' shared form, error and destructive-button rules move to `styles/_dialog.scss`, retiring four component stylesheets → coverage: `css/junior` "Sass modules and partials" and "Reusable low-specificity selectors" marked ✅ 07; frontend README Key patterns; PLANNING §14 design-system row; PROGRESS recount (CSS junior 62→64/115). Verified by Victor in the browser on the reject and discard dialogs; **the change-password dialog's inherited top padding is still owed**
 - 2026-09-20 · **[Low]** `[frontend]` — a soft-deleted project can be reactivated from its own row, through one button that toggles 🗑/↺ so the write cannot destroy the control holding focus → coverage: new `html/junior` bullet "Focus dies with the element that holds it" (authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 Projects wireframe + §14 accessibility floor; PROGRESS recount. Verified by Victor with the keyboard: Tab stays on the row after the confirmation closes
 - 2026-09-20 · **[Low]** `[frontend]` — a row action no longer drops focus to `<body>`: Projects keeps one control across the write and takes `disabledInteractive` with a TypeScript re-entry guard, and `/entries`' delete, which removes the whole row, hands the confirmation the header's "Log hours" button as `restoreFocus` (with `?? true`, so an absent target falls back instead of switching restoration off) → coverage: the `html/junior` focus bullet above; frontend README Key patterns; PLANNING §14 accessibility floor gains "a mutation must not destroy the control that holds focus"; PROGRESS recount. Verified by Victor with the keyboard on both pages. **`/entries`' submit and re-open still owe it** — open Medium of the same day
 - 2026-09-20 · **[Low]** `[frontend]` — the discard question's dismiss button is named after its outcome ("Keep editing") through a new optional `ConfirmDialogData.cancelLabel`; the delete confirmations keep "Cancel" → coverage: new `html/junior` bullet "A button is named by its consequence" (authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING n/a; PROGRESS recount. Verified by Victor in all three dialogs
