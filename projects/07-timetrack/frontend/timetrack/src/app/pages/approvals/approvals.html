@@ -149,7 +149,7 @@
                  disabling the one just pressed would drop focus to `<body>` (§14). The re-entry
                  guard lives in TypeScript instead. -->
             @if (entry.status === 'SUBMITTED' && isOwnEntry(entry)) {
-              <span class="own-entry">Your own entry</span>
+              <span class="own-entry">Awaiting another manager</span>
             } @else if (canReview(entry)) {
               <button
                 matIconButton
