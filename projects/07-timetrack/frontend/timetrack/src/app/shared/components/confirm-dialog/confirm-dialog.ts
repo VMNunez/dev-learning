@@ -20,7 +20,6 @@ export interface ConfirmDialogData {
   selector: 'app-confirm-dialog',
   imports: [MatDialogModule, MatButtonModule],
   templateUrl: './confirm-dialog.html',
-  styleUrl: './confirm-dialog.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialog {
