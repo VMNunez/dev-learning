@@ -41,3 +41,9 @@ export interface UpdateTimeEntryRequest {
   hours: number;
   description: string;
 }
+
+// The note the employee reads on the rejected row, so the API refuses a blank one (400 with
+// `fieldErrors.rejectionNote`) rather than storing a rejection nobody can act on.
+export interface RejectRequest {
+  rejectionNote: string;
+}

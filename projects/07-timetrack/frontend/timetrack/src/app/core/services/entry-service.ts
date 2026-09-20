@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Page, PageRequest } from '../../shared/models/page';
 import {
   CreateTimeEntryRequest,
+  RejectRequest,
   TimeEntry,
   TimeEntryFilters,
   UpdateTimeEntryRequest,
@@ -61,6 +62,16 @@ export class EntryService {
 
   reopenEntry(id: number): Observable<TimeEntry> {
     return this.http.patch<TimeEntry>(`${this.entryUrlFor(id)}/reopen`, null);
+  }
+
+  approveEntry(id: number): Observable<TimeEntry> {
+    return this.http.patch<TimeEntry>(`${this.entryUrlFor(id)}/approve`, null);
+  }
+
+  // The only one of the six workflow calls that carries a body: the note is what the employee reads
+  // on the rejected row, and the API refuses a blank one.
+  rejectEntry(id: number, request: RejectRequest): Observable<TimeEntry> {
+    return this.http.patch<TimeEntry>(`${this.entryUrlFor(id)}/reject`, request);
   }
 
   private entryUrlFor(id: number): string {
