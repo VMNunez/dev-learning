@@ -2,7 +2,6 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatError } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
@@ -36,7 +35,6 @@ const COUNT_ONLY = { page: 0, size: 1 };
     DecimalPipe,
     RouterLink,
     MatButtonModule,
-    MatError,
     MatIconModule,
     MatProgressSpinner,
     MatTableModule,

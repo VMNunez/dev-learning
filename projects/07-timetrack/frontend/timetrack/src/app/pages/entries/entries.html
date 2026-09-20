@@ -2,7 +2,13 @@
   <h1 class="page-title">Entries</h1>
 
   @if (isEmployee()) {
-    <button matButton="filled" type="button" [disabled]="!projects()" (click)="openCreate()">
+    <button
+      #logHoursButton
+      matButton="filled"
+      type="button"
+      [disabled]="!projects()"
+      (click)="openCreate()"
+    >
       <mat-icon>add</mat-icon>
       Log hours
     </button>
@@ -42,8 +48,8 @@
 </form>
 
 @if (error(); as message) {
-  <div class="page-state page-error">
-    <mat-error role="alert">{{ message }}</mat-error>
+  <div class="page-state">
+    <p class="page-error" role="alert">{{ message }}</p>
     <button matButton="outlined" type="button" (click)="reload()">Retry</button>
   </div>
 } @else if (loading() && entries().length === 0) {
@@ -62,6 +68,7 @@
       <p class="empty-message">You have not logged any hours yet</p>
       <button matButton="filled" type="button" (click)="openCreate()">Log your first entry</button>
     } @else {
+      <mat-icon class="empty-illustration" aria-hidden="true">more_time</mat-icon>
       <p class="empty-message">Your team has not logged any hours yet</p>
     }
     @if (filters.controls.month.value) {

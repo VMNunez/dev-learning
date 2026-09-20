@@ -5,7 +5,7 @@
 
 @if (error(); as message) {
   <div class="page-state">
-    <mat-error role="alert">{{ message }}</mat-error>
+    <p class="page-error" role="alert">{{ message }}</p>
     <button matButton="outlined" type="button" (click)="reload()">Retry</button>
   </div>
 } @else if (!loading() && data()?.hasEntries === false) {
@@ -17,7 +17,11 @@
 } @else {
   @let current = loading() ? null : data();
 
-  <section class="stat-grid" aria-label="Your hours and entries at a glance" [attr.aria-busy]="loading()">
+  <section
+    class="stat-grid"
+    aria-label="Your hours and entries at a glance"
+    [attr.aria-busy]="loading()"
+  >
     <app-stat-card
       label="Approved hours this month"
       [value]="current ? (current.summary.approvedHours | number: '1.0-2') + 'h' : null"

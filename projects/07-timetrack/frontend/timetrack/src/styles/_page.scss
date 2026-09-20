@@ -25,6 +25,15 @@
   color: var(--mat-sys-outline);
 }
 
+// A page-level error belongs to no field, so it cannot be a `mat-error`: that class is styled by the
+// form-field component's own stylesheet, which only enters the document once a `mat-form-field` is
+// instantiated — on a page whose error state renders no form, the message inherits the body colour and
+// stops looking like an error. Same reasoning as Login's form-level error (§14, Step 7a).
+.page-error {
+  margin: 0;
+  color: var(--mat-sys-error);
+}
+
 .empty-message {
   margin: 0;
   color: var(--mat-sys-on-surface-variant);
