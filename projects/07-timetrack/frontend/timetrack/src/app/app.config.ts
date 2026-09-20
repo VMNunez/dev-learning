@@ -21,6 +21,9 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      // No `maxWidth` here on purpose: Material's own stylesheet already caps a dialog at
+      // `calc(100vw - 32px)` below 600px, which is exactly what §14 Responsive asks for. Setting it
+      // would replace the 560px desktop cap with a viewport-wide one for every future dialog.
       useValue: { ...new MatDialogConfig(), width: '30rem' },
     },
   ],
