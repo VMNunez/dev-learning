@@ -190,6 +190,10 @@ Every service method is explicitly `@Transactional` (writes) or `@Transactional(
 
 `LoginRequest` keeps `@Data` but adds `@ToString.Exclude` on `password`: `@Data`'s generated `toString()` otherwise includes every field, so the plaintext password would land in any future request-logging or framework body-dump call. No logger stringifies the request today, but the fix is one annotation and closes the gap before it becomes exploitable. `AuthResponse.token` carries the same annotation for the same reason on the way out: the field holds a live 60-minute bearer credential, and a `toString()` that includes it would put a usable session in the logs. Neither annotation touches the JSON — Jackson serialises from the getters, so the token still reaches the client.
 
+### The login response identifies the caller
+
+`AuthResponse` carries `id` beside `token`, `name` and `role`. It discloses nothing the client does not already hold — the same value is the token's `sub` claim, in the same response body. What it buys is the only way the browser can recognise its own rows without parsing the JWT, and a name cannot do it, because two users may share one (which is why `by-user` appends `id` to its own sort). Two §8 rules need that: the entries a manager may **not** review under segregation of duties, and the account they may **not** demote or deactivate. The API enforces both regardless and answers `403` / `409` whatever the client draws; the field only lets the UI stop offering an action that cannot succeed.
+
 ### Explicit JWT validation ✓
 
 `JwtUtil.isValid` parses the token once and checks the subject **and** `getExpiration().after(new Date())` explicitly, instead of relying on `extractUserId` throwing as a side effect of parsing. Makes the expiration check a deliberate decision in the code, not an accident of call order.
