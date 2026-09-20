@@ -62,7 +62,11 @@ export class AuthService {
     if (typeof value !== 'object' || value === null) return false;
 
     const candidate = value as Partial<AuthResponse>;
+    // A session stored before `id` existed fails here and starts the user logged out. That is the
+    // right answer rather than a migration: the guard's job is to refuse a shape the app would then
+    // read `undefined` out of, and one login restores it.
     return (
+      typeof candidate.id === 'number' &&
       typeof candidate.name === 'string' &&
       typeof candidate.token === 'string' &&
       isRole(candidate.role)

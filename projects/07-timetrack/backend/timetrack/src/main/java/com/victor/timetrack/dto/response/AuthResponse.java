@@ -12,6 +12,7 @@ import lombok.ToString;
 public class AuthResponse {
     @ToString.Exclude
     private String token;
+    private Long id;
     private String name;
     private Role role;
 }

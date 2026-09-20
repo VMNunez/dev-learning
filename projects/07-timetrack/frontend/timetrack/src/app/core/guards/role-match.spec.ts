@@ -18,7 +18,7 @@ describe('roleMatch', () => {
   });
 
   it('matches only a session holding the given role', () => {
-    session.set({ token: 't', name: 'Ana', role: 'EMPLOYEE' });
+    session.set({ token: 't', id: 1, name: 'Ana', role: 'EMPLOYEE' });
 
     const employee = TestBed.runInInjectionContext(() => roleMatch('EMPLOYEE')(route, segments));
     const manager = TestBed.runInInjectionContext(() => roleMatch('MANAGER')(route, segments));
