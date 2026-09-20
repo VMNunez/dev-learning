@@ -11,6 +11,11 @@
   // already measured at badge size (4.6:1) — but its own token, because the two mean different things
   // and must be free to move apart.
   --project-active: #2e7d32;
+
+  // The ✓ in the approvals queue, on the same terms: an action a manager can take, not the status a
+  // row already has, so it carries the same measured green under a name of its own. Its ✕ twin needs
+  // no token — the theme already has an error role, and that is exactly what a rejection is.
+  --action-approve: #2e7d32;
 }
 
 html {
