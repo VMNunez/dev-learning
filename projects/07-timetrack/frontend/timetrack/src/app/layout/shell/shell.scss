@@ -56,6 +56,11 @@ mat-sidenav-container {
 }
 
 mat-sidenav-content {
+  // `box-sizing` is not decoration here. Material sizes `.mat-drawer-content` with `height: 100%` and
+  // scrolls it, so under the default content-box this padding is *added* to the container's height:
+  // the scroll box ran 48px past the bottom of the window, taking its own down arrow and the last
+  // table row with it. Invisible until a page was tall enough to scroll — /entries pages at 10 rows.
+  box-sizing: border-box;
   padding: 1.5rem;
 
   @media (max-width: 599px) {
