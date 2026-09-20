@@ -128,8 +128,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Sass nesting — keep nesting shallow and use `&` for a component's states or modifiers without recreating the DOM tree as a high-specificity selector chain
 - Sass variables — use build-time constants when runtime cascade and inheritance are not required
 - Sass mixins — reuse a parameterised declaration group only when it removes meaningful repetition rather than hiding ordinary CSS
-- Sass modules and partials — split styles by concern and load explicit members without returning to global `@import` coupling
-- Reusable low-specificity selectors — prefer stable class selectors and a consistent naming convention so existing styles can be extended without specificity escalation
+- Sass modules and partials — split styles by concern and load explicit members without returning to global `@import` coupling ✅ 07-timetrack — `styles/_dialog.scss` holds the form, error and destructive-button rules the five dialogs share, loaded by `@use`
+- Reusable low-specificity selectors — prefer stable class selectors and a consistent naming convention so existing styles can be extended without specificity escalation ✅ 07-timetrack — `.dialog-form`, `.dialog-error` and `.dialog-destructive` are single-class rules shared across the five dialogs
 
 ## Colors and transparency
 - Color notation — read hex, RGB, and HSL representations and follow a consistent project convention rather than treating one notation as universally superior ✅ 01-todo-list
