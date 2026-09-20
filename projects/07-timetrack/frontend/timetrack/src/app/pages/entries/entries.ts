@@ -3,8 +3,10 @@ import {
   Component,
   computed,
   DestroyRef,
+  ElementRef,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -79,6 +81,14 @@ export class Entries {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
+
+  // Deleting a row destroys the button that opened the confirmation, so the dialog's default restore
+  // would leave focus on `<body>` (§14 Accessibility floor, WCAG 2.4.3). The header's action survives
+  // every mutation on this page, and it is the control a keyboard user would reach for next.
+  private readonly logHoursButton = viewChild<string, ElementRef<HTMLButtonElement>>(
+    'logHoursButton',
+    { read: ElementRef },
+  );
 
   protected readonly isEmployee = computed(() => this.authService.session()?.role === 'EMPLOYEE');
   protected readonly months = recentMonths(new Date(), 12);
@@ -179,6 +189,9 @@ export class Entries {
           confirmLabel: 'Delete',
           destructive: true,
         },
+        // `?? true` matters: the key is always present in the merged config, and `undefined` would
+        // switch restoration off instead of falling back to the element that opened the dialog.
+        restoreFocus: this.logHoursButton()?.nativeElement ?? true,
       })
       .afterClosed()
       .pipe(
@@ -211,7 +224,12 @@ export class Entries {
       }),
     }).pipe(
       catchError((err: unknown) => {
-        this.error.set(apiErrorMessage(err, 'Could not load your entries. Check your connection.'));
+        // Worded by role, the same convention the empty state follows: a manager is not looking at
+        // entries of their own.
+        const fallback = this.isEmployee()
+          ? 'Could not load your entries. Check your connection.'
+          : "Could not load the team's entries. Check your connection.";
+        this.error.set(apiErrorMessage(err, fallback));
         this.loading.set(false);
         return EMPTY;
       }),
