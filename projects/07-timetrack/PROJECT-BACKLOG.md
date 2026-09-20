@@ -91,6 +91,23 @@ That ledger is append-only and authoritative — a review never re-raises what i
   before moving them is `padding-block-start`, which `change-password-dialog` does not carry *(Effort:
   Small)* *(raised 2026-09-20 while building `reject-dialog`, whose stylesheet is the fourth copy)*
 
+- [ ] **[Low]** `[frontend]` — `AuthService` **writes the session without validating it and reads it
+  back validating**, so a login response the app does not understand produces a session that works
+  until the first page reload and then logs the user out with no message. `saveSession()` stores
+  whatever `POST /api/auth/login` returned and sets the `session` signal from it, so `authGuard` passes
+  on the in-memory object; `readStoredSession()` then runs the same value through `isStoredSession()`,
+  which refuses it, and every reload lands on `/login`. The failure is asymmetric, which is what makes
+  it expensive: navigating works, reloading does not, and nothing on screen names a cause. Two halves
+  to fix, and they are separable: **validate in `saveSession()` too**, so a bad response fails at login
+  where the user can act on it rather than one refresh later; and **say why** — §14's Login error row
+  already specifies *"Your session has expired. Please log in again."* for the equivalent case, and
+  `expireSession()` / `consumeSessionExpired()` already exist to carry it, but a rejected stored
+  session never routes through them. Low rather than Medium because it needs the client and the API to
+  disagree about the response shape, and this project deploys both together — the reachable case is a
+  staged deploy, or a frontend running against a backend that has not been restarted *(Effort: Small)*
+  *(raised 2026-09-20 by Victor in the browser: a reload while logged in returned him to `/login`,
+  right after `AuthResponse` gained its `id` field)*
+
 - [ ] **[Low]** `[frontend]` — `npx prettier --check "src/**/*.{ts,html,scss}"` reports **66 files** as
   unformatted in a tree with no uncommitted changes (run 2026-09-20, exit 1). None of them is: the repo
   has `core.autocrlf = true` and no `.gitattributes`, so every tracked file is on disk with CRLF, while
