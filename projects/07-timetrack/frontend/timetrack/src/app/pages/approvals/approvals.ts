@@ -28,6 +28,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { catchError, EMPTY, forkJoin, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { AuthService } from '../../core/services/auth-service';
 import { EntryService } from '../../core/services/entry-service';
 import { ProjectService } from '../../core/services/project-service';
 import { UserService } from '../../core/services/user-service';
@@ -92,6 +93,7 @@ const QUEUE_FILTERS = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Approvals {
+  private readonly authService = inject(AuthService);
   private readonly entryService = inject(EntryService);
   private readonly projectService = inject(ProjectService);
   private readonly userService = inject(UserService);
@@ -141,6 +143,19 @@ export class Approvals {
     const { month, userId, projectId, status } = this.filterValue();
     return !month && userId == null && projectId == null && status === QUEUE_FILTERS.status;
   });
+
+  // §8 refuses approve and reject on the caller's own entry with a `403` — segregation of duties —
+  // and the queue is shared, so the row stays for the manager who *can* review it. Only the two
+  // buttons go, on the caller's own rows. A manager holding entries at all is the promotion case §8
+  // describes: `SUBMITTED` rows deliberately do not block a promotion to MANAGER, because they are
+  // meant to be reviewed by a different manager. The API stays the boundary; this only stops the
+  // page offering an action that cannot succeed.
+  private readonly currentUserId = computed(() => this.authService.session()?.id ?? null);
+
+  protected readonly canReview = (entry: TimeEntry) =>
+    entry.status === 'SUBMITTED' && entry.userId !== this.currentUserId();
+
+  protected readonly isOwnEntry = (entry: TimeEntry) => entry.userId === this.currentUserId();
 
   protected readonly trackById = (_index: number, entry: TimeEntry) => entry.id;
 

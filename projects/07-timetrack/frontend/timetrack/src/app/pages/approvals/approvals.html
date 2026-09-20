@@ -127,11 +127,15 @@
           </th>
           <td mat-cell *matCellDef="let entry">
             <!-- Only a SUBMITTED entry can be reviewed (§8), so an approved or rejected row carries
-                 no action at all — the API would refuse it with a 409.
+                 no action at all — the API would refuse it with a 409. The caller's own row keeps
+                 its place in the shared queue for the manager who may review it, and says why it
+                 carries no buttons here: dropping them silently would read as a broken row.
                  `disabledInteractive` on both: a native `<button disabled>` cannot hold focus, so
                  disabling the one just pressed would drop focus to `<body>` (§14). The re-entry
                  guard lives in TypeScript instead. -->
-            @if (entry.status === 'SUBMITTED') {
+            @if (entry.status === 'SUBMITTED' && isOwnEntry(entry)) {
+              <span class="own-entry">Your own entry</span>
+            } @else if (canReview(entry)) {
               <button
                 matIconButton
                 class="approve-action"
