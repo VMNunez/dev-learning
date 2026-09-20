@@ -622,7 +622,19 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `POST /api/auth/login` | public | Authenticate and issue a JWT | `LoginRequest` — `email`, `password` | `200` + `AuthResponse` — `token`, `name`, `role` · `401` on bad credentials or inactive user · `429` while the email or the caller's IP is inside the failed-login cooldown |
+| `POST /api/auth/login` | public | Authenticate and issue a JWT | `LoginRequest` — `email`, `password` | `200` + `AuthResponse` — `token`, `id`, `name`, `role` · `401` on bad credentials or inactive user · `429` while the email or the caller's IP is inside the failed-login cooldown |
+
+> **Contract ruling — `AuthResponse` carries the caller's `id`** *(decided 2026-09-20)*. It discloses
+> nothing: the same value is the `sub` claim of the token in the same body, which the browser already
+> holds and the API already trusts. What it buys is the only way the client can recognise its own
+> rows, and §8 needs that twice — the entries a manager may **not** review (segregation of duties) and
+> the account they may **not** demote or deactivate, whose §14 wireframe draws its actions on every row
+> including the caller's. The alternative, matching on `name`, is not an identity: two people share
+> one, which is why `by-user` appends `id` to its own sort. **The API stays the boundary** — both rules
+> are enforced server-side and answer `403` / `409` whatever the UI draws (§8 *"Shared routes stay
+> role-aware"*); the `id` only stops the app offering an action that cannot succeed. The frontend's
+> stored-session type guard requires it, so a session saved before this change fails validation and
+> starts logged out — chosen over a migration, since one login restores it.
 
 ### Users (`UserController` — MANAGER only, except `PATCH /me/password`)
 
