@@ -68,6 +68,29 @@ That ledger is append-only and authoritative — a review never re-raises what i
   2026-09-20 by Victor in the browser, after deactivating projects while verifying Step 7c's Projects
   page left one of his own drafts unsubmittable)*
 
+- [ ] **[Low]** `[frontend]` — `/approvals` offers ✓ and ✕ on a manager's **own** SUBMITTED rows, which
+  §8 refuses with a `403` (segregation of duties). The page cannot tell whose row it is: `AuthResponse`
+  (§10) carries `token`, `name` and `role` and **no id**, so `AuthService`'s session signal has nothing
+  to compare `entry.userId` against, and the token's `sub` is deliberately never parsed in the browser.
+  It is reachable because §8's promotion guard refuses a promotion to MANAGER only while the user holds
+  `DRAFT`/`REJECTED` entries — `SUBMITTED` ones pass, and they land in the new manager's own queue. The
+  refusal is handled (the snackbar shows the API message) so nothing breaks; what is wrong is offering
+  an action that cannot succeed, the same shape as the inactive-project submit above. Decide between
+  adding `id` to `AuthResponse`, matching on `name` (fragile — names are not unique, and §10 appends
+  `id` to `by-user`'s sort for exactly that reason) and leaving it to the error message *(Effort:
+  Small)* *(raised 2026-09-20 while building the Approvals page, which is the first screen where a
+  manager sees a review action at all)*
+
+- [ ] **[Low]** `[frontend]` — the `.dialog-form` / `.dialog-error` pair is copied byte-for-byte into
+  four component stylesheets (`entry-dialog`, `project-dialog`, `change-password-dialog` and now
+  `reject-dialog`), and `user-dialog` will make five. §14's design system exists so a decision is taken
+  once and obeyed by every page; four copies means the next dialog decides again, and a change to the
+  error line's `min-height` — the one that reserves its space so the form does not jump — has to be made
+  in four files or the dialogs drift apart. `src/styles/_page.scss` is the precedent for the fix: the
+  page-level building blocks already live in one partial for the same reason. The one thing to check
+  before moving them is `padding-block-start`, which `change-password-dialog` does not carry *(Effort:
+  Small)* *(raised 2026-09-20 while building `reject-dialog`, whose stylesheet is the fourth copy)*
+
 ## Beyond the current gate
 
 <!-- Findings the level-fit pass judged real but early: above the open gate and not strictly necessary
