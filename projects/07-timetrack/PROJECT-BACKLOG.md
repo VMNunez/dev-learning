@@ -41,19 +41,32 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **[Medium]** `[frontend]` — `/entries`' submit-for-review and re-open row actions break the rule
-  §14's accessibility floor gained on 2026-09-20: neither opens a dialog, so focus is still on the row
-  button when `runAction` disables it (`entry-list.html:75-92`, `entries.ts` `runAction`), and the refetch
-  then destroys that button outright because the `@switch` on `entry.status` renders a different branch
-  (DRAFT → SUBMITTED drops all three icons; REJECTED → DRAFT replaces Re-open). Focus lands on `<body>`
-  twice over. Apply the same pair the Projects page now uses — `disabledInteractive` plus a TypeScript
-  re-entry guard — and give the write a surviving focus target *(Effort: Small)* *(raised 2026-09-20 by
-  the second cold review, of the fixes to the first one; the rule it breaks was written the same day, so
-  the code and §14 currently disagree)*
+*No open Medium tasks.*
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — a row action that changes an entry's status sends focus to the page
+  header, which on row 40 of a paged table costs the user a Tab through the filter bar and every row
+  above to get back. §14's accessibility floor offers only two answers — keep a control across the write,
+  impossible here (DRAFT → SUBMITTED leaves the cell with no actions at all), or a target the write
+  cannot remove — and the second is the safe floor rather than the good one. The refinement is to give
+  the actions `<td>` a `tabindex="-1"` and focus the cell, the standard remediation of moving to the
+  nearest surviving ancestor, since `trackById` keeps the `<tr>` across the refetch; the header stays as
+  the fallback for the case the row really does leave, which it does whenever the Status filter no longer
+  matches it *(Effort: Small)* *(raised 2026-09-20 by the cold review of the row-action focus fix, which
+  judged the header correct and this better)*
+
+- [ ] **[Low]** `[frontend]` — an entry whose project was deactivated after it was logged offers the same
+  ➤ submit action as any other and is refused with the §8 `400` ("Cannot submit entries for an inactive
+  project") only once pressed; the row gives no warning and names no way out, though two exist — editing
+  the entry onto another project (the dialog keeps the inactive one listed as `(inactive)` for exactly
+  this) or reactivating the project. Warning earlier is not cheap: `TimeEntryResponse` (§10) carries
+  `projectId` and `projectName` but not whether that project is active, so the page cannot know without a
+  second call per row or a backend DTO change after G3 signed the backend off — the same shape as the
+  dropped "Entries" count column. Decide between leaving it to the error message, adding `projectActive`
+  to the response, and wording the snackbar so it names the two ways out *(Effort: Small)* *(raised
+  2026-09-20 by Victor in the browser, after deactivating projects while verifying Step 7c's Projects
+  page left one of his own drafts unsubmittable)*
 
 ## Beyond the current gate
 
@@ -213,6 +226,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
+- 2026-09-20 · **[Medium]** `[frontend]` — `/entries`' four row actions take `disabledInteractive` with a TypeScript re-entry guard, and a status write moves focus to the header's "Log hours" — only while focus is still where the write started or already on `<body>` → coverage: new `html/junior` bullet "A deferred focus move asks where focus is now" (authored + marked ✅ 07-timetrack); frontend README Key patterns entry extended; PLANNING §14 accessibility floor gains the conditional half of the rule + §0/§22 counts; PROGRESS recount. Real scope was four buttons, not the two the task named: two behaviours in one cell would have been worse than one. The first attempt moved focus unconditionally and the cold review caught that it would break an open dialog's focus trap. Verified by Victor with the keyboard across six checks, including opening a dialog mid-write on Slow 4G
 - 2026-09-20 · **[Medium]** `[frontend]` — the shell's scroll box stopped running 48px below the window (`box-sizing: border-box` on `mat-sidenav-content`, whose `height: 100%` was taking the padding on top) → coverage: `css/junior` box-sizing already covered and marked ✅ 01-todo-list; frontend README n/a — a box-model fix, not a project decision; PLANNING §0/§22 counts; PROGRESS n/a. Built in Step 7a, invisible until `/projects`, the first page with no paginator to keep it short. Verified by Victor in the browser: `content client` 903 → 855, the down arrow back on screen and the last row whole
 - 2026-09-20 · **[Medium]** `[frontend]` — page-level errors render as `<p class="page-error">` from `_page.scss` instead of a `mat-error`, whose colour only exists once a `MatFormField` has put its stylesheet in the document → coverage: new `angular-material/junior` bullet "A library class only carries styles while its component is on the page" (authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 three-states rule and all seven page rows; PROGRESS recount. Verified by Victor in the browser on `/projects` and `/entries`, both red after a hard reload with the backend stopped
 - 2026-09-19 · **[Medium]** `[frontend]` — the entries table and the dashboard's recent list format `entry.date` with `DatePipe` and no `'UTC'` zone, so a date-only `YYYY-MM-DD` read as local midnight no longer prints the previous day east of UTC (`e6f2fb0b`) → coverage: new `angular/junior` bullet "`DatePipe` and a date-only value" (authored + marked ✅ 07-timetrack), `javascript/junior` date time-zone hazards already covered and marked ✅ 03-expense-tracker; frontend README n/a — a pipe idiom, not a project decision; PLANNING §6 new *Calendar dates* rule + §0/§22 counts; PROGRESS n/a. Verified in the browser by Victor: the entry saved as `2026-09-19` (confirmed in the `PUT` payload) reads Sep 19, 2026 on `/entries` and Sep 19 on the dashboard. `/notes-plan angular junior` owed (tracker flag +16)
