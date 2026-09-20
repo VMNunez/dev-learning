@@ -152,6 +152,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `HttpErrorResponse` — inspect status and error payload while distinguishing a backend error response from a client-side or network failure ✅ 07-timetrack — `apiErrorMessage` accepts the `HttpErrorResponse`, narrows its `error` body through `isApiError` and returns the caller's fallback when no `ErrorResponse` was parsed; the login, dashboard and entries failures all go through it
 
 ### Reactive forms and template transformation
+- The control event stream — `AbstractControl.events` emits one typed stream of `ValueChangeEvent`, `StatusChangeEvent`, `PristineChangeEvent` and `TouchedChangeEvent`, which is what makes an interaction state like `touched` observable at all: `valueChanges` never reports it, so a side effect that marks a field touched can only be answered by subscribing to the control's events, and `markAsUntouched({ emitEvent: false })` is what keeps that answer from re-entering ✅ 07-timetrack — `confirmDiscard()` subscribes to each untouched control's `events` and answers a `TouchedChangeEvent` with `markAsUntouched({ emitEvent: false })` for as long as the question is open
 
 - `FormControl` and `FormGroup` — model individual controls and grouped control sets explicitly so the form's shape, validators, and value types live in TypeScript rather than in the template ✅ 03-expense-tracker
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
@@ -166,7 +167,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Disabled controls and `getRawValue()` — recognise that a disabled control is excluded from `form.value` and opt into its value only when the submission contract requires it
 - `dirty` — distinguish a form the user has actually edited from an untouched one, for example to guard discarding unsaved changes ✅ 05-task-manager
 - `reset()` and server errors — reset the saved baseline and avoid losing backend errors through an immediate validator rerun
-- Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls ✅ 07-timetrack — `placeFieldErrors` copies each `fieldErrors` entry a form lists onto its control with `setErrors({ server })`, both form dialogs render it in that field's `mat-error`, and a failure no listed field matched falls back to one form-level alert
+- Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls ✅ 07-timetrack — `placeFieldErrors` copies each `fieldErrors` entry a form lists onto its control with `setErrors({ server })`, all three form dialogs render it in that field's `mat-error`, and a failure no listed field matched falls back to one form-level alert
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
 - Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
 - `DatePipe` and a date-only value — a `YYYY-MM-DD` string is read as local midnight, so passing a different time zone such as `'UTC'` moves the instant across midnight and the pipe prints the neighbouring day for every user on the far side of UTC; a calendar date is formatted in the zone it was read in ✅ 07-timetrack — the entries table and the dashboard's recent list format `entry.date` with no zone argument, so the `2026-09-19` the dialog saved reads 19 Sept in Spain
@@ -231,6 +232,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Version-matched documentation and migrations — consult the docs for the installed Angular Material major version and use official update tooling instead of copying obsolete selectors or theming APIs
 
 ### Theming and styling boundaries
+- A library class only carries styles while its component is on the page — the same stylesheet that arrives when a component first renders is the *only* place its public classes are styled, so borrowing one for a plain element on a view that renders no instance of that component leaves the element unstyled and inheriting; the visible symptom is an error message that renders in the body's colour on the one page whose failure state contains no field ✅ 07-timetrack — the three data pages render their failure state as `<p class="page-error">` from `_page.scss`, after a `mat-error` on /projects, whose error state contains no field, inherited the body's colour instead of the theme's
 
 - Prebuilt vs custom themes — choose a prebuilt theme for fast setup or a Sass theme when the product needs controlled colour, typography, or density ✅ 07-timetrack — the schematic's cyan/orange prebuilt seed is replaced by a generated teal Sass palette in `styles/material-theme.scss`
 - Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once ✅ 05-task-manager
@@ -297,6 +299,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset ✅ 07-timetrack — `EntryList` hands `matSortChange` and the paginator's `page` event to `Entries`, which turns them into `GET /api/entries` params with no `MatTableDataSource`
 
 ### Dialogs and confirmation flows
+- Initial dialog focus moves asynchronously — the overlay traps focus after its enter animation, which is later than the ref's own "opened" notification, so the blur it causes in the view underneath lands after any handler subscribed there; state that has to survive the question is guarded by reacting to the change itself, never by undoing it at a moment believed to be "just after" ✅ 07-timetrack — `confirmDiscard()` guards the form through the controls' event stream, after re-applying the snapshot on `afterOpened()` still left the emptied Name showing its required error behind the scrim
 
 - `MatDialog` and `MatDialogRef` — open overlay content from the caller and control its lifecycle and result through the returned reference ✅ 05-task-manager
 - Dialog component input — use `MAT_DIALOG_DATA` for an explicit, typed input boundary rather than reaching into caller state ✅ 05-task-manager
@@ -1614,6 +1617,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `width` and `height` on `<img>` — the intrinsic dimensions let the browser reserve the right box before the bytes arrive, which is what stops the content below from jumping when the image finally loads
 
 ### Links, buttons, and native interactive elements
+- A button is named by its consequence — the accessible name is what the user is deciding between, so "Cancel", "OK" and "Yes" say nothing when two dialogs are stacked or when the question is itself a negation; a button whose label names what will happen ("Discard", "Keep editing") is also the one a screen-reader user can act on out of context, since the name is read without the surrounding prose ✅ 07-timetrack — the discard question's dismiss button reads "Keep editing" through `ConfirmDialogData.cancelLabel`, where a bare "Cancel" sat directly above the form's own Cancel meaning the opposite
 
 - Navigating elements must be links — an element that takes the user to another URL has to be an `<a>` with a real `href`, because keyboard reachability, the `link` role, Enter activation and the browser's own affordances (open in a new tab, copy link address) are all derived from the tag and its attributes, never from a click listener
 - Acting elements must be buttons — an element that performs an in-page action has to be a `<button>`, because focusability, the `button` role and activation by both Enter and Space come from the tag; the mirror of the rule above, and the reason a click handler on a `<div>` works with the mouse and with nothing else
@@ -1666,6 +1670,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Visually hidden but announced — the opposite case: text meant only for assistive technology has to leave the visual layout while staying in the accessibility tree, which none of the properties above can do because each removes it from both; the pattern is a positioned one-pixel box that is clipped rather than sized to zero
 
 ### Focus and keyboard operability
+- Focus dies with the element that holds it — a write that succeeds re-renders the view, and the control the user activated is often the one it replaces, so focus falls to the document body and the next Tab restarts at the top of the page (WCAG 2.4.3); the two ways out are keeping one control across the change, its label and icon swapping instead of the element, and naming a target the change cannot remove for the code that restores focus afterwards ✅ 07-timetrack — the Projects row keeps one button that toggles between Deactivate and Reactivate, while /entries' delete hands the confirmation the header's Log hours button as `restoreFocus`, the row it removes being no target at all
 
 - Everything interactive is keyboard operable — a feature that can only be reached or triggered with a pointer is unusable for keyboard and screen-reader users, and it is the fastest defect to find: put the mouse down and Tab through the page
 - Sequential focus order follows DOM order — the tab sequence comes from the document, not from the visual arrangement, so a control moved on screen by layout is still reached where its markup sits, and a visual order that no longer matches the source is a reading-order defect rather than a styling detail
@@ -1835,7 +1840,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
-- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container
+- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — the Projects table gives Name and Description `overflow-wrap: anywhere`, after a space-less project name set the column's min-content width at 375px and pushed the status and the row actions off screen
 
 ### CSS functions
 - `calc()` — combine compatible values and units in one expression when neither a purely relative nor fixed size represents the constraint ✅ 05-task-manager

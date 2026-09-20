@@ -11,6 +11,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Version-matched documentation and migrations — consult the docs for the installed Angular Material major version and use official update tooling instead of copying obsolete selectors or theming APIs
 
 ## Theming and styling boundaries
+- A library class only carries styles while its component is on the page — the same stylesheet that arrives when a component first renders is the *only* place its public classes are styled, so borrowing one for a plain element on a view that renders no instance of that component leaves the element unstyled and inheriting; the visible symptom is an error message that renders in the body's colour on the one page whose failure state contains no field ✅ 07-timetrack — the three data pages render their failure state as `<p class="page-error">` from `_page.scss`, after a `mat-error` on /projects, whose error state contains no field, inherited the body's colour instead of the theme's
 
 - Prebuilt vs custom themes — choose a prebuilt theme for fast setup or a Sass theme when the product needs controlled colour, typography, or density ✅ 07-timetrack — the schematic's cyan/orange prebuilt seed is replaced by a generated teal Sass palette in `styles/material-theme.scss`
 - Theme application — recognise that a Material theme controls colour, typography, and density, and ensure the application emits the required core and component styles once ✅ 05-task-manager
@@ -77,6 +78,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset ✅ 07-timetrack — `EntryList` hands `matSortChange` and the paginator's `page` event to `Entries`, which turns them into `GET /api/entries` params with no `MatTableDataSource`
 
 ## Dialogs and confirmation flows
+- Initial dialog focus moves asynchronously — the overlay traps focus after its enter animation, which is later than the ref's own "opened" notification, so the blur it causes in the view underneath lands after any handler subscribed there; state that has to survive the question is guarded by reacting to the change itself, never by undoing it at a moment believed to be "just after" ✅ 07-timetrack — `confirmDiscard()` guards the form through the controls' event stream, after re-applying the snapshot on `afterOpened()` still left the emptied Name showing its required error behind the scrim
 
 - `MatDialog` and `MatDialogRef` — open overlay content from the caller and control its lifecycle and result through the returned reference ✅ 05-task-manager
 - Dialog component input — use `MAT_DIALOG_DATA` for an explicit, typed input boundary rather than reaching into caller state ✅ 05-task-manager
