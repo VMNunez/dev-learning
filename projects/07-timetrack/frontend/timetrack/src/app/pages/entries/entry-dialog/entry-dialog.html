@@ -78,6 +78,9 @@
       disabledInteractive
       [disabled]="saving()"
       [attr.aria-busy]="saving() === 'submit'"
+      [attr.aria-label]="
+        saving() === 'submit' ? 'Submitting entry for review' : 'Submit for review'
+      "
       (click)="save(true)"
     >
       @if (saving() === 'submit') {
@@ -94,6 +97,7 @@
     form="entry-form"
     disabledInteractive
     [disabled]="saving()"
+    [attr.aria-label]="saving() === 'save' ? 'Saving entry' : 'Save'"
     [attr.aria-busy]="saving() === 'save'"
   >
     @if (saving() === 'save') {

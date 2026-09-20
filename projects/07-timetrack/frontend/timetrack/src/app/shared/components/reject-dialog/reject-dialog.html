@@ -51,6 +51,7 @@
     disabledInteractive
     [disabled]="saving()"
     [attr.aria-busy]="saving()"
+    [attr.aria-label]="saving() ? 'Rejecting entry' : 'Reject entry'"
   >
     @if (saving()) {
       <mat-progress-spinner diameter="20" mode="indeterminate" aria-hidden="true" />
