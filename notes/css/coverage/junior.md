@@ -71,12 +71,12 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `static` vs `relative` positioning — keep an element in normal flow and use relative offsets without removing its original layout space
 - `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it ✅ 04-meal-finder — the visually hidden search label sits inside the flex `.search-container` without taking a slot in the row
 - `fixed` vs `sticky` positioning — distinguish a box normally anchored to the viewport from one that remains in flow until it reaches an inset within its scroll container
-- Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate
+- Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate ✅ 07-timetrack — the `stickyEnd` actions column stays pinned while `.table-wrapper`, its nearest `overflow-x: auto` ancestor, scrolls the other columns under it
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
   establishes a containing block; otherwise it falls back to the initial containing block ✅ 03-expense-tracker
 - `z-index` and stacking context — applies to positioned boxes and flex/grid items; properties such
   as `transform` and `opacity < 1` create a new stacking context, explaining why a large number
-  cannot escape an ancestor's stacking order
+  cannot escape an ancestor's stacking order ✅ 07-timetrack — the absolutely positioned `.table-overlay` takes `z-index: 2` to paint over the pinned cells' inline `z-index: 1` in the same stacking context
 - `inset: 0` — set all four positioning offsets to zero with one shorthand, as in a viewport-covering overlay
 
 ## Responsive design
@@ -155,7 +155,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
-- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` gives every table's name, employee, project and description columns `overflow-wrap: anywhere`, so a space-less value wraps instead of widening its column
+- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` wraps a space-less project name inside its `12rem`-capped column with `break-word`, and a pasted URL inside the description with `anywhere`
+- `overflow-wrap: anywhere` vs `break-word` — both break a word only where it would otherwise overflow its line, but `anywhere` also counts those breaks when the browser measures how narrow the box can become, so a shrink-to-fit box or an auto-layout table column can collapse to a single character, while `break-word` keeps the longest word as its floor ✅ 07-timetrack — `_table.scss` gives the name, employee and project columns `break-word` under a `12rem` cap and keeps `anywhere` on the description alone, behind a `9rem` floor
 
 ## CSS functions
 - `calc()` — combine compatible values and units in one expression when neither a purely relative nor fixed size represents the constraint ✅ 05-task-manager

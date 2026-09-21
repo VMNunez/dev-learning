@@ -75,6 +75,7 @@ Concepts needed to build, explain, test, and debug ordinary business interfaces 
 - Filter semantics — define which fields and normalisation rules filtering uses instead of assuming the default row stringification matches the product ✅ 05-task-manager
 - Reset pagination after filtering — return to a valid first page when a narrower client-side filter can make the current page empty
 - Table row actions — keep row identity explicit so a per-row control operates on the record it belongs to ✅ 06-hr-portal
+- Sticky table columns — `stickyEnd` or `sticky` on a column definition pins that column with `position: sticky` inside the table's scroll container, so row actions or identifiers stay in view while the other columns scroll; the CDK writes an inline `z-index` on every pinned cell, which anything layered over the table must exceed ✅ 07-timetrack — the Approvals, Entries and Projects tables pin their actions `matColumnDef` with `stickyEnd`, and `.table-overlay` sits at `z-index: 2` above the pinned cells
 - Nested interactive controls in rows — prevent action buttons inside a row from accidentally triggering row selection or navigation
 - Client-side vs server-side table operations — let `MatTableDataSource` transform an in-memory collection or translate sort, filter, and page events into backend queries, never both for the same dataset ✅ 07-timetrack — `EntryList` hands `matSortChange` and the paginator's `page` event to `Entries`, which turns them into `GET /api/entries` params with no `MatTableDataSource`
 
