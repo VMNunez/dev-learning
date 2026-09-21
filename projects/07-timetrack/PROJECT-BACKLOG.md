@@ -150,6 +150,22 @@ That ledger is append-only and authoritative — a review never re-raises what i
   in the working tree once *(Effort: Small)* *(raised 2026-09-20 while running the formatting check
   over the shared dialog stylesheet)*
 
+- [ ] **[Low]** `[frontend]` — below 600px a table too wide for the screen **collapses its text columns to
+  one character**: on `/approvals` at 375px with Status set to All statuses, the Employee and Project
+  headers and cells wrap letter by letter ("E / m / pl / o…") while Date, Hours and Status keep their
+  width and the table scrolls sideways. The cause is the `overflow-wrap: anywhere` §14's Responsive intent
+  put on the text columns on 2026-09-20 (now `_table.scss`, `.mat-column-name` / `-employee` / `-project`
+  / `-description`): unlike `break-word`, `anywhere` counts its break opportunities when the browser
+  measures a cell's min-content width, which drops to a single character, and when the columns' min-content
+  widths add up to more than the wrapper — six visible columns on `/approvals`, five with three icon
+  buttons on an employee's `/entries` — automatic table layout gives every column exactly that minimum.
+  `/projects` never showed it because its three visible columns fit. Likely fix: a `min-width` floor on the
+  text columns kept alongside `anywhere`, so a long space-less value still wraps but no column drops below
+  a legible width and the table scrolls inside its wrapper as §14 intends; check `/approvals`, `/entries`
+  as both roles and the dashboard at 375 *(Effort: Small)* *(raised 2026-09-21 by Victor's 375px browser
+  check while verifying the rejection-note task; pre-existing since the 2026-09-20 rule — moving it into
+  the shared `_table.scss` that morning changed nothing about it)*
+
 ## Beyond the current gate
 
 <!-- Findings the level-fit pass judged real but early: above the open gate and not strictly necessary
