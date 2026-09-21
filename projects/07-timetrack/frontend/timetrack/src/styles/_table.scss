@@ -118,10 +118,12 @@
   // pushed to the cell's end: inline beside them, an inline-block sizes itself against the whole cell
   // rather than the space the buttons leave, overflows the nowrap line, and Material's
   // `text-overflow: ellipsis` on the cell then hides it behind a lone "…". A fixed width is also what the
-  // table measures when it sizes the column, so the column grows to 10rem and no further.
+  // table measures when it sizes the column, so the column grows to it and no further. 6.5rem sets both
+  // notes on two lines ("Awaiting another / manager"): at 10rem, on one, the pinned column took 3.5rem
+  // more than its buttons need and pushed /approvals and /entries into a sideways scroll at 1024px.
   .action-note {
     display: block;
-    inline-size: 10rem;
+    inline-size: 6.5rem;
     margin-inline-start: auto;
     color: var(--mat-sys-on-surface-variant);
     font: var(--mat-sys-body-small);
