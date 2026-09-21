@@ -1,10 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { AuthResponse, isRole, LoginRequest } from '../../shared/models/auth';
-import { Observable, tap } from 'rxjs';
+import { AuthResponse, isAuthResponse, LoginRequest } from '../../shared/models/auth';
+import { map, Observable, tap } from 'rxjs';
 
 const SESSION_KEY = 'timetrack_session';
+
+// A `200` whose body is not an `AuthResponse`: the frontend and the API disagree about the contract,
+// which is what a staged deploy or an API that was not restarted produces. Thrown so the login fails
+// on the form, where the user can act on it, instead of one reload later. The page words it.
+export class UnreadableSessionError extends Error {
+  constructor() {
+    super('The login response is not an AuthResponse.');
+    this.name = 'UnreadableSessionError';
+  }
+}
 
 @Injectable({
   providedIn: 'root',
@@ -17,9 +27,13 @@ export class AuthService {
   private sessionExpired = false;
 
   login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.authUrl}/login`, request)
-      .pipe(tap((response) => this.saveSession(response)));
+    return this.http.post<unknown>(`${this.authUrl}/login`, request).pipe(
+      map((response) => {
+        if (!isAuthResponse(response)) throw new UnreadableSessionError();
+        return response;
+      }),
+      tap((session) => this.saveSession(session)),
+    );
   }
 
   logout() {
@@ -39,9 +53,9 @@ export class AuthService {
     return expired;
   }
 
-  private saveSession(response: AuthResponse) {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(response));
-    this.session.set(response);
+  private saveSession(session: AuthResponse) {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    this.session.set(session);
   }
 
   private readStoredSession(): AuthResponse | null {
@@ -51,25 +65,10 @@ export class AuthService {
 
     try {
       const parsed: unknown = JSON.parse(raw);
-      return this.isStoredSession(parsed) ? parsed : null;
+      return isAuthResponse(parsed) ? parsed : null;
     } catch (error) {
       console.error('Stored session could not be parsed; starting logged out.', error);
       return null;
     }
-  }
-
-  private isStoredSession(value: unknown): value is AuthResponse {
-    if (typeof value !== 'object' || value === null) return false;
-
-    const candidate = value as Partial<AuthResponse>;
-    // A session stored before `id` existed fails here and starts the user logged out. That is the
-    // right answer rather than a migration: the guard's job is to refuse a shape the app would then
-    // read `undefined` out of, and one login restores it.
-    return (
-      typeof candidate.id === 'number' &&
-      typeof candidate.name === 'string' &&
-      typeof candidate.token === 'string' &&
-      isRole(candidate.role)
-    );
   }
 }

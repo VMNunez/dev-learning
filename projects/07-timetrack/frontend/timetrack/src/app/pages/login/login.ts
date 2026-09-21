@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth-service';
+import { AuthService, UnreadableSessionError } from '../../core/services/auth-service';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Logo } from '../../shared/components/logo/logo';
@@ -87,11 +87,15 @@ export class Login {
               this.loading.set(false);
             }),
         error: (err: unknown) => {
+          // The one failure that is not an HTTP error: the call succeeded and its body did not.
+          // `apiErrorMessage`'s connection fallback would blame the network for it.
           this.error.set(
-            apiErrorMessage(
-              err,
-              'Could not reach the server — check your connection and try again',
-            ),
+            err instanceof UnreadableSessionError
+              ? 'The server sent a response this app cannot read. Refresh the page and try again.'
+              : apiErrorMessage(
+                  err,
+                  'Could not reach the server — check your connection and try again',
+                ),
           );
           this.loading.set(false);
         },

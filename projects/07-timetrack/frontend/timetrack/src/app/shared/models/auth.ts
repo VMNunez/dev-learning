@@ -22,3 +22,19 @@ export interface AuthResponse {
   name: string;
   role: Role;
 }
+
+// `post<AuthResponse>` and `JSON.parse` only tell the compiler what arrived; neither checks it. The
+// login response and the stored session are both read through this guard, so the app never holds a
+// session it would later refuse. A session stored before `id` existed fails here and starts the user
+// logged out — the right answer rather than a migration, since one login restores it.
+export function isAuthResponse(value: unknown): value is AuthResponse {
+  if (typeof value !== 'object' || value === null) return false;
+
+  const candidate = value as Partial<AuthResponse>;
+  return (
+    typeof candidate.id === 'number' &&
+    typeof candidate.name === 'string' &&
+    typeof candidate.token === 'string' &&
+    isRole(candidate.role)
+  );
+}
