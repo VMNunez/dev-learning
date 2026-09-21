@@ -1,5 +1,4 @@
+// The employee's to-do on a rejected entry, so it reads as an error. Its shape is shared (`_table.scss`).
 .rejection-note {
-  display: block;
   color: var(--mat-sys-error);
-  font: var(--mat-sys-body-small);
 }

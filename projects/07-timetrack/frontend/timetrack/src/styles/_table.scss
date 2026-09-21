@@ -57,10 +57,29 @@
     text-align: end;
   }
 
+  // Why an entry was rejected, the one line an employee has to act on. It lives under the description,
+  // and a second copy under the status badge takes over below 600px, where the Description column is
+  // hidden; each table colours it for its reader. `display: none` removes the idle copy from the
+  // accessibility tree as well as from the layout, so at any width the note is seen and read once.
+  .rejection-note {
+    display: block;
+    font: var(--mat-sys-body-small);
+    overflow-wrap: anywhere;
+  }
+
+  .mat-column-status .rejection-note {
+    display: none;
+    margin-block-start: 0.5rem;
+  }
+
   // The least load-bearing column goes first, rather than every column shrinking (§14 Tables).
   @media (max-width: 599px) {
     .mat-column-description {
       display: none;
+    }
+
+    .mat-column-status .rejection-note {
+      display: block;
     }
   }
 }
