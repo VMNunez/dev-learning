@@ -51,7 +51,9 @@
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="actions">
+    <!-- `stickyEnd`: pinned to the right edge, so a table too wide for its wrapper scrolls its reading
+         columns under the buttons instead of scrolling the buttons out of view. -->
+    <ng-container matColumnDef="actions" stickyEnd>
       <th mat-header-cell *matHeaderCellDef><span class="cdk-visually-hidden">Actions</span></th>
       <td mat-cell *matCellDef="let entry">
         <!-- `disabledInteractive` on every row action: a native `<button disabled>` cannot hold

@@ -12,9 +12,12 @@
 }
 
 // A refetch keeps the rows on screen and dims them under a spinner, rather than blanking the table.
+// Above the pinned actions column: `stickyEnd` writes `z-index: 1` inline on every one of its cells, so
+// at the default level the overlay would dim the row and leave its buttons looking live.
 .table-overlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
   display: grid;
   place-items: center;
   background: color-mix(in srgb, var(--mat-sys-surface) 60%, transparent);
