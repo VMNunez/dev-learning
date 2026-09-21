@@ -5,6 +5,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  Injector,
   signal,
   viewChild,
 } from '@angular/core';
@@ -33,6 +34,7 @@ import {
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { recentMonths, toIsoMonth } from '../../shared/dates';
+import { refocusAfterRender } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Page } from '../../shared/models/page';
 import { Project } from '../../shared/models/project';
@@ -81,6 +83,7 @@ export class Entries {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
 
   // Deleting a row destroys the button that opened the confirmation, so the dialog's default restore
   // would leave focus on `<body>` (§14 Accessibility floor, WCAG 2.4.3). The header's action survives
@@ -130,6 +133,12 @@ export class Entries {
     return !!month || projectId != null || status != null;
   });
 
+  // A dialog save can take away the control that opened it, which Material has just handed focus
+  // back to: the empty state's button once the first entry lands, or an edit button whose row the
+  // refetch turns SUBMITTED, filters out or re-sorts. So the opener is remembered, and once the refetch
+  // has rendered focus returns to it, or to "Log hours" if it is gone (§14).
+  private refocusAfterReload: HTMLElement | null = null;
+
   private readonly reload$ = new Subject<void>();
 
   constructor() {
@@ -149,6 +158,7 @@ export class Entries {
         this.entries.set(page.content);
         this.totalElements.set(page.page.totalElements);
         this.loading.set(false);
+        this.restoreFocus();
       });
 
     this.filters.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
@@ -247,6 +257,7 @@ export class Entries {
           : "Could not load the team's entries. Check your connection.";
         this.error.set(apiErrorMessage(err, fallback));
         this.loading.set(false);
+        this.refocusAfterReload = null;
         return EMPTY;
       }),
     );
@@ -268,6 +279,8 @@ export class Entries {
       return;
     }
 
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
     this.dialog
       .open<EntryDialog, EntryDialogData, boolean>(EntryDialog, {
         data: { entry, projects },
@@ -280,8 +293,17 @@ export class Entries {
       )
       .subscribe(() => {
         this.snackBar.open(entry ? 'Entry updated' : 'Entry saved', 'Close', { duration: 4000 });
+        this.refocusAfterReload = opener;
         this.reload();
       });
+  }
+
+  private restoreFocus(): void {
+    const target = this.refocusAfterReload;
+    this.refocusAfterReload = null;
+    if (!target) return;
+
+    refocusAfterRender(this.injector, [target, this.logHoursButton()?.nativeElement]);
   }
 
   private runAction(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
