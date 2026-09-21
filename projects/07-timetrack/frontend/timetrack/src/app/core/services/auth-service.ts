@@ -22,9 +22,11 @@ export class UnreadableSessionError extends Error {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly authUrl = `${environment.apiUrl}/auth`;
+  // Declared before `session`: field initializers run in order, and `session`'s can raise this flag —
+  // declared after it, `= false` would run second and erase the notice it just set.
+  private sessionExpired = false;
   readonly session = signal<AuthResponse | null>(this.readStoredSession());
   readonly isLoggedIn = computed(() => !!this.session());
-  private sessionExpired = false;
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<unknown>(`${this.authUrl}/login`, request).pipe(
@@ -63,12 +65,20 @@ export class AuthService {
 
     if (!raw) return null;
 
+    let parsed: unknown;
     try {
-      const parsed: unknown = JSON.parse(raw);
-      return isAuthResponse(parsed) ? parsed : null;
+      parsed = JSON.parse(raw);
     } catch (error) {
       console.error('Stored session could not be parsed; starting logged out.', error);
-      return null;
     }
+
+    if (isAuthResponse(parsed)) return parsed;
+
+    // A session this build cannot read — saved by an older one, or edited by hand — ends the way an
+    // expired token does: removed, so the next visit does not repeat it, and explained on /login
+    // (§14 Login error row) instead of a silent logout on every reload.
+    localStorage.removeItem(SESSION_KEY);
+    this.sessionExpired = true;
+    return null;
   }
 }
