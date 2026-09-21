@@ -1,6 +1,6 @@
 <header class="dashboard-header">
-  <!-- Focusable by script only: every approval and rejection takes its row away, and this is where
-       the focus that row held lands. -->
+  <!-- Focusable by script only: every approval and rejection takes its row away, and Retry is taken
+       away by the reload it starts; this is where the focus they held lands. -->
   <h1 #pageHeading class="page-title" tabindex="-1">Dashboard</h1>
   <p class="greeting">Welcome back, {{ userName() }}</p>
 </header>
@@ -8,7 +8,7 @@
 @if (error(); as message) {
   <div class="page-state">
     <p class="page-error" role="alert">{{ message }}</p>
-    <button matButton="outlined" type="button" (click)="reload()">Retry</button>
+    <button matButton="outlined" type="button" (click)="retry()">Retry</button>
   </div>
 } @else {
   @let current = data();

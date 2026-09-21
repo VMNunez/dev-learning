@@ -93,6 +93,13 @@ export class Entries {
     { read: ElementRef },
   );
 
+  // Where Retry's focus lands: the reload replaces the error block the button sits in, and a manager's
+  // header has no action to fall back on (§14).
+  private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
+    'pageHeading',
+    { read: ElementRef },
+  );
+
   protected readonly isEmployee = computed(() => this.authService.session()?.role === 'EMPLOYEE');
   protected readonly months = recentMonths(new Date(), 12);
   protected readonly statuses = ENTRY_STATUSES;
@@ -171,6 +178,13 @@ export class Entries {
 
   reload(): void {
     this.reload$.next();
+  }
+
+  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
+  // `<body>`; the heading is on screen in every state, failed again or loaded.
+  retry(): void {
+    this.reload();
+    refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
   onPage(event: PageEvent): void {

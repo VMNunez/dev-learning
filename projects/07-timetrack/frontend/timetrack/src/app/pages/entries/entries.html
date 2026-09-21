@@ -1,5 +1,7 @@
 <header class="page-header">
-  <h1 class="page-title">Entries</h1>
+  <!-- Focusable by script only: Retry is taken away by the reload it starts, and this is where the
+       focus it held lands. -->
+  <h1 #pageHeading class="page-title" tabindex="-1">Entries</h1>
 
   @if (isEmployee()) {
     <button
@@ -60,7 +62,7 @@
 @if (error(); as message) {
   <div class="page-state">
     <p class="page-error" role="alert">{{ message }}</p>
-    <button matButton="outlined" type="button" (click)="reload()">Retry</button>
+    <button matButton="outlined" type="button" (click)="retry()">Retry</button>
   </div>
 } @else if (loading() && entries().length === 0) {
   <div class="page-state">

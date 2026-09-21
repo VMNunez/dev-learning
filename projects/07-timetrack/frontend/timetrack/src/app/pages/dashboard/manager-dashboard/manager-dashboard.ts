@@ -6,6 +6,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  Injector,
   signal,
   viewChild,
 } from '@angular/core';
@@ -30,6 +31,7 @@ import {
 } from '../../../shared/components/reject-dialog/reject-dialog';
 import { StatCard } from '../../../shared/components/stat-card/stat-card';
 import { toIsoMonth } from '../../../shared/dates';
+import { refocusAfterRender } from '../../../shared/focus';
 import { apiErrorMessage } from '../../../shared/models/api-error';
 import { TimeEntry } from '../../../shared/models/time-entry';
 
@@ -70,10 +72,11 @@ export class ManagerDashboard {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
 
   // Approving or rejecting takes the row out of the list, so the control the user pressed is always
   // destroyed by the refetch (§14: a mutation must not destroy the control that holds focus). The
-  // heading survives every write, as on /approvals.
+  // heading survives every write, as on /approvals, and every reload Retry starts.
   private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
     'pageHeading',
     { read: ElementRef },
@@ -127,6 +130,13 @@ export class ManagerDashboard {
 
   reload(): void {
     this.reload$.next();
+  }
+
+  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
+  // `<body>`; the heading is on screen in every state, failed again or loaded.
+  retry(): void {
+    this.reload();
+    refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
   approve(entry: TimeEntry): void {

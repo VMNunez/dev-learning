@@ -1,5 +1,14 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +22,7 @@ import { ReportService } from '../../../core/services/report-service';
 import { StatCard } from '../../../shared/components/stat-card/stat-card';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { toIsoMonth } from '../../../shared/dates';
+import { refocusAfterRender } from '../../../shared/focus';
 import { apiErrorMessage } from '../../../shared/models/api-error';
 import { ReportSummary } from '../../../shared/models/report';
 import { TimeEntry } from '../../../shared/models/time-entry';
@@ -49,6 +59,13 @@ export class EmployeeDashboard {
   private readonly authService = inject(AuthService);
   private readonly entryService = inject(EntryService);
   private readonly reportService = inject(ReportService);
+  private readonly injector = inject(Injector);
+
+  // Where Retry's focus lands: the reload replaces the error block the button sits in (§14).
+  private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
+    'pageHeading',
+    { read: ElementRef },
+  );
 
   protected readonly userName = computed(() => this.authService.session()?.name ?? '');
   protected readonly recentColumns = ['project', 'date', 'hours', 'description', 'status'];
@@ -86,6 +103,13 @@ export class EmployeeDashboard {
 
   reload(): void {
     this.reload$.next();
+  }
+
+  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
+  // `<body>`; the heading is on screen in every state, failed again or loaded.
+  retry(): void {
+    this.reload();
+    refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
   private fetch(): Observable<DashboardData> {

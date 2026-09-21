@@ -59,6 +59,13 @@ export class Projects {
     { read: ElementRef },
   );
 
+  // Where Retry's focus lands, as on every page with an error state: the reload replaces the error
+  // block the button sits in (§14).
+  private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
+    'pageHeading',
+    { read: ElementRef },
+  );
+
   protected readonly columns = ['name', 'description', 'status', 'actions'];
   protected readonly projects = signal<Project[]>([]);
   protected readonly loading = signal(true);
@@ -133,6 +140,13 @@ export class Projects {
 
   reload(): void {
     this.reload$.next();
+  }
+
+  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
+  // `<body>`; the heading is on screen in every state, failed again or loaded.
+  retry(): void {
+    this.reload();
+    refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
   onSort(sort: Sort): void {
