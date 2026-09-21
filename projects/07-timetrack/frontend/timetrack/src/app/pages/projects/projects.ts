@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { catchError, EMPTY, filter, Observable, Subject, switchMap, tap } from 'rxjs';
@@ -33,6 +34,7 @@ import { ProjectDialog, ProjectDialogData } from './project-dialog/project-dialo
     MatButtonModule,
     MatIconModule,
     MatProgressSpinner,
+    MatSortModule,
     MatTableModule,
     MatTooltip,
     StatCard,
@@ -66,12 +68,34 @@ export class Projects {
     return { total: projects.length, active, inactive: projects.length - active };
   });
 
+  // The list is unpaged, so ordering it here orders the whole set rather than one visible page — the
+  // reason /entries sends its sort to the API and this table does not need to. The API already returns
+  // it by name (§10), so a name sort never compares two names in the browser: ascending is the API's
+  // order and descending its reverse, which keeps the database's collation where `localeCompare` might
+  // put "nuevo" and "Project" the other way round. A status sort is stable, so each group keeps it too.
+  private readonly sort = signal<Sort>({ active: 'name', direction: 'asc' });
+
+  protected readonly sortedProjects = computed(() => {
+    const { active, direction } = this.sort();
+    const projects = this.projects();
+
+    if (active === 'status') {
+      const activeFirst = direction === 'asc' ? -1 : 1;
+      return [...projects].sort((a, b) =>
+        a.active === b.active ? 0 : a.active ? activeFirst : -activeFirst,
+      );
+    }
+
+    return direction === 'desc' ? [...projects].reverse() : projects;
+  });
+
   protected readonly trackById = (_index: number, project: Project) => project.id;
 
-  // `trackBy` keeps a row's node across a refetch, but a row that changes place — a rename, since the
-  // API orders the list by name — is moved, and taking a node out of the document to move it takes
-  // the focus off it too. So a write remembers where it started, and the refetch hands focus back
-  // once it has rendered (§14: a mutation must not destroy the control that holds focus).
+  // `trackBy` keeps a row's node across a refetch, but a row that changes place — a deactivation
+  // under the Status sort, a rename under the Name one — is moved, and taking a node out of the
+  // document to move it takes the focus off it too. So a write remembers where it started, and the
+  // refetch hands focus back once it has rendered (§14: a mutation must not destroy the control that
+  // holds focus).
   private refocusAfterReload: HTMLElement | null = null;
 
   private readonly reload$ = new Subject<void>();
@@ -99,6 +123,10 @@ export class Projects {
 
   reload(): void {
     this.reload$.next();
+  }
+
+  onSort(sort: Sort): void {
+    this.sort.set(sort);
   }
 
   openCreate(): void {
