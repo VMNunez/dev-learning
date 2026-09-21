@@ -37,7 +37,6 @@ interface NavLink {
   label: string;
   route: string;
   roles: readonly Role[];
-  pending?: boolean;
   countsPendingApprovals?: boolean;
 }
 
@@ -47,7 +46,7 @@ const NAV_LINKS: readonly NavLink[] = [
   { label: 'Projects', route: '/projects', roles: ['MANAGER'] },
   { label: 'Approvals', route: '/approvals', roles: ['MANAGER'], countsPendingApprovals: true },
   { label: 'Team', route: '/team', roles: ['MANAGER'] },
-  { label: 'Reports', route: '/reports', roles: ['MANAGER'], pending: true },
+  { label: 'Reports', route: '/reports', roles: ['MANAGER'] },
 ];
 
 @Component({

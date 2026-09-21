@@ -1,0 +1,143 @@
+<header class="page-header">
+  <!-- Focusable by script only: Retry is taken away by the reload it starts, and this is where the
+       focus it held lands. -->
+  <h1 #pageHeading class="page-title" tabindex="-1">Reports</h1>
+</header>
+
+<!-- Stays enabled in every state, the empty one included, so another month is one choice away. -->
+<form class="filter-bar" (submit)="$event.preventDefault()">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Month</mat-label>
+    <mat-select [formControl]="month" [panelWidth]="null" panelClass="filter-select-panel">
+      @for (option of months; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</form>
+
+@if (error(); as message) {
+  <div class="page-state">
+    <p class="page-error" role="alert">{{ message }}</p>
+    <button matButton="outlined" type="button" (click)="retry()">Retry</button>
+  </div>
+} @else {
+  @let current = data();
+
+  @if (isEmpty()) {
+    <div class="page-state">
+      <p class="empty-message">No approved hours for this month yet.</p>
+      @if (current && current.summary.pendingHours > 0) {
+        <p class="pending-note">
+          {{ current.summary.pendingHours | number: '1.0-2' }}h awaiting approval
+        </p>
+      }
+    </div>
+  } @else {
+    <section class="report-summary">
+      <!-- Approved hours only (§8), so it equals the sum of either table; pending hours are never
+           folded into it, and are stated on their own line below. -->
+      <div
+        class="stat-grid stat-grid-3"
+        role="group"
+        [attr.aria-label]="monthLabel() + ' at a glance'"
+        [attr.aria-busy]="loading()"
+      >
+        <app-stat-card
+          label="Approved hours"
+          [value]="current ? (current.summary.approvedHours | number: '1.0-2') + 'h' : null"
+        />
+        <app-stat-card label="Employees" [value]="current ? '' + current.byUser.length : null" />
+        <app-stat-card label="Projects" [value]="current ? '' + current.byProject.length : null" />
+      </div>
+
+      @if (current && current.summary.pendingHours > 0) {
+        <p class="pending-note">
+          {{ current.summary.pendingHours | number: '1.0-2' }}h awaiting approval, not included
+          above
+        </p>
+      }
+    </section>
+
+    <div class="report-tables">
+      <section class="report-section" aria-labelledby="by-project-heading">
+        <h2 id="by-project-heading">Hours by project</h2>
+
+        @if (!current) {
+          <div class="page-state">
+            <mat-progress-spinner
+              mode="indeterminate"
+              diameter="40"
+              aria-label="Loading hours by project"
+            />
+          </div>
+        } @else {
+          <div class="table-area">
+            <div class="table-wrapper">
+              <!-- In the API's order — hours descending, then name (§10) — so the rows need no sort. -->
+              <table mat-table [dataSource]="current.byProject" [trackBy]="trackByProject">
+                <ng-container matColumnDef="project">
+                  <th mat-header-cell *matHeaderCellDef>Project</th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.projectName }}
+                    <!-- A deactivated project keeps its hours in the report (§10), flagged rather
+                         than hidden: the hours were genuinely worked. -->
+                    @if (!row.active) {
+                      <span class="status-pill">Inactive</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="hours">
+                  <th mat-header-cell *matHeaderCellDef>Hours</th>
+                  <td mat-cell *matCellDef="let row">{{ row.totalHours | number: '1.0-2' }}h</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="projectColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: projectColumns"></tr>
+              </table>
+            </div>
+          </div>
+        }
+      </section>
+
+      <section class="report-section" aria-labelledby="by-employee-heading">
+        <h2 id="by-employee-heading">Hours by employee</h2>
+
+        @if (!current) {
+          <div class="page-state">
+            <mat-progress-spinner
+              mode="indeterminate"
+              diameter="40"
+              aria-label="Loading hours by employee"
+            />
+          </div>
+        } @else {
+          <div class="table-area">
+            <div class="table-wrapper">
+              <table mat-table [dataSource]="current.byUser" [trackBy]="trackByUser">
+                <ng-container matColumnDef="employee">
+                  <th mat-header-cell *matHeaderCellDef>Employee</th>
+                  <td mat-cell *matCellDef="let row">
+                    {{ row.userName }}
+                    @if (!row.active) {
+                      <span class="status-pill">Inactive</span>
+                    }
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="hours">
+                  <th mat-header-cell *matHeaderCellDef>Hours</th>
+                  <td mat-cell *matCellDef="let row">{{ row.totalHours | number: '1.0-2' }}h</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="userColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: userColumns"></tr>
+              </table>
+            </div>
+          </div>
+        }
+      </section>
+    </div>
+  }
+}

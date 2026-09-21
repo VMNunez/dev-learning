@@ -1,0 +1,57 @@
+// The container the shared `.stat-grid` ladder and filter bar measure (`_page.scss`), and the two
+// tables below: the page's own width, which the sidenav rail narrows from 1024px up.
+:host {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.report-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+// Stated beside the total and never inside it (§14): the §8 reports count APPROVED hours only.
+.pending-note {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Side by side from the ladder's 52rem rung, where each table still has room for a long name and its
+// hours; stacked below it, never squeezed.
+.report-tables {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem 1rem;
+}
+
+@container (min-width: 52rem) {
+  .report-tables {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.report-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  // A grid item's minimum is its content's width, so a long name would widen its column past its half;
+  // zero lets the table's own wrapper scroll it instead.
+  min-width: 0;
+
+  h2 {
+    margin: 0;
+    font: var(--mat-sys-title-medium);
+  }
+}
+
+// A total reads down its column, so the digits line up at the right edge, as in any ledger.
+.mat-column-hours {
+  text-align: end;
+}
+
+.status-pill {
+  margin-inline-start: 0.5rem;
+}

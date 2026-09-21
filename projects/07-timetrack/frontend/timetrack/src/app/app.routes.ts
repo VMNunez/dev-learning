@@ -62,6 +62,12 @@ export const routes: Routes = [
         canActivate: [managerGuard],
         loadComponent: () => import('./pages/team/team').then((m) => m.Team),
       },
+      {
+        path: 'reports',
+        title: 'Reports',
+        canActivate: [managerGuard],
+        loadComponent: () => import('./pages/reports/reports').then((m) => m.Reports),
+      },
     ],
   },
   {
