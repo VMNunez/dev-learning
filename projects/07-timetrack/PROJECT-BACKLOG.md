@@ -37,33 +37,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
-- [ ] **[High]** `[frontend]` — a table's **text columns break inside words**, at desktop width as well as on
-  a phone: on `/approvals` with Status set to All statuses, at 1280px the Employee header reads "Employe /
-  e" and a "Test Employee" cell "Test Employe / e", because the Project and Description columns beside it
-  hold long values and take the space; at 375px the Employee and Project headers and cells wrap letter by
-  letter ("E / m / pl / o…") while Date, Hours and Status keep their width and the table scrolls sideways.
-  The cause is the `overflow-wrap: anywhere` §14's Responsive intent put on the text columns on 2026-09-20 (now `_table.scss`, `.mat-column-name` / `-employee` / `-project`
-  / `-description`): unlike `break-word`, `anywhere` counts its break opportunities when the browser
-  measures a cell's min-content width, which drops to a single character, and when the columns' min-content
-  widths add up to more than the wrapper — six visible columns on `/approvals`, five with three icon
-  buttons on an employee's `/entries` — automatic table layout gives every column exactly that minimum;
-  when they fit, it still hands the spare width out by content length, so a short column beside long ones
-  drops below its own longest word. `/projects` never showed it because its three visible columns fit.
-  On an employee's `/entries` at 620px, where the columns only just fit at those minimums, Project, Description and the red
-  rejection note break every three or four letters ("Man / ager / 's note / Falt / a el…"). The cold
-  design review of 2026-09-21 measured the same independently in headless Chrome (DR-2): Project and
-  Employee 41–46px wide at 375 and 620px, of which 32px is padding, Description 19–21px at 620, and names
-  split mid-word at 1024 and 768 whenever a row carries a long note; it tested `min-width` floors of 6rem
-  on the name / employee / project columns and 10rem on description, which keep every text column at
-  least 96px while `/approvals` scrolls about 33px sideways at 1024 and 768 — which §14 allows. **High,
-  not Low**: §14's Responsive intent says the demo must survive a recruiter opening the link on a phone,
-  and the two main tables are unreadable there, which is the review standard's High — "makes the project
-  look unprofessional/incomplete to a recruiter". Likely fix: a `min-width` floor on the text columns kept alongside `anywhere`, so a long space-less value still wraps but no column drops below
-  a legible width and the table scrolls inside its wrapper as §14 intends; check `/approvals`, `/entries`
-  as both roles and the dashboard at 375 *(Effort: Small)* *(raised 2026-09-21 by Victor's browser
-  checks at 375, 620 and 1280 while verifying the rejection-note task, and re-rated High that day on the
-  620px evidence; pre-existing since the 2026-09-20 rule — moving it into
-  the shared `_table.scss` that morning changed nothing about it)*
+*No open High tasks.*
 
 #### Medium
 
@@ -237,7 +211,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### High
 
-*No High tasks closed yet.*
+- 2026-09-21 · **[High]** `[frontend]` — table name columns sized by their longest word under a `12rem` cap (`break-word`) and the description floored at `9rem` behind `anywhere` (`26428c9d`), the row-actions column pinned with `stickyEnd` and the loading overlay raised above its cells (`c0241dcc`), its divider drawn only while a scroll-state query says table remains under it (`64fa43a4`); real scope was 4 files, not the one rule the task named — its `6rem` floors, measured in headless Chrome over 5 views × 5 widths, hid the approve/reject buttons at 1024 and 768px, and a fixed `7rem` floor then reserved width short names never use → coverage: new `css/junior` bullet "`overflow-wrap: anywhere` vs `break-word`", new `angular-material/junior` "Sticky table columns" and new `css/senior` "Scroll-state container queries" (all authored + marked ✅ 07-timetrack), `css/junior` sticky conditions and `z-index` marked, "Long-word wrapping" clause repointed (`48c8c922`); frontend README Key patterns + Tradeoffs (`ffc0c4e3`); PLANNING §14 Responsive intent Tables rule, §0/§22 (`3364fb8b`); PROGRESS CSS + Angular Material evidence cells. Verified by Victor in the browser: `/approvals` whole at 1280 (All statuses) and 1024, the employee's `/entries` at 375 with Re-open pinned and the rejection note red under the badge — the check owed since the rejection-note close — and the divider shown only while table remains under the buttons. `/notes-plan css junior` and `/notes-plan angular-material junior` owed
 
 #### Medium
 
