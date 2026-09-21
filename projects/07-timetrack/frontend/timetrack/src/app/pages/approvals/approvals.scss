@@ -1,5 +1,3 @@
-@use '@angular/material' as mat;
-
 // The container the shared filter bar measures (`_page.scss`): the page's own width, which the
 // sidenav rail narrows from 1024px up.
 :host {
@@ -14,23 +12,4 @@
 // alarm. Explanatory metadata, like the row's `.action-note`. Its shape is shared (`_table.scss`).
 .rejection-note {
   color: var(--mat-sys-on-surface-variant);
-}
-
-// The icon button reads its own `icon-color` token, not the cell's text colour, so the colour goes
-// through `icon-button-overrides`; a `mat-icon-overrides` would also stop the glyph inheriting the
-// button's disabled colour while a write is in flight (§14 Accessibility floor).
-.approve-action {
-  @include mat.icon-button-overrides(
-    (
-      icon-color: var(--action-approve),
-    )
-  );
-}
-
-.reject-action {
-  @include mat.icon-button-overrides(
-    (
-      icon-color: var(--mat-sys-error),
-    )
-  );
 }

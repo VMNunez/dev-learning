@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 // Table-level building blocks shared by every data table, for the same reason `_page.scss` holds the
 // page's: four tables built on different days had each copied the wrapper, the loading overlay and the
 // column rules, so a change to one convention had to be made four times or the tables drifted apart.
@@ -87,6 +89,26 @@
     .mat-mdc-table-sticky-border-elem-right {
       border-inline-start: 1px solid var(--mat-sys-outline-variant);
     }
+  }
+
+  // The review actions of the approvals queue and the manager dashboard. The icon button reads its own
+  // `icon-color` token, not the cell's text colour, so the colour goes through `icon-button-overrides`;
+  // a `mat-icon-overrides` would also stop the glyph inheriting the button's disabled colour while a
+  // write is in flight (§14 Accessibility floor).
+  .approve-action {
+    @include mat.icon-button-overrides(
+      (
+        icon-color: var(--action-approve),
+      )
+    );
+  }
+
+  .reject-action {
+    @include mat.icon-button-overrides(
+      (
+        icon-color: var(--mat-sys-error),
+      )
+    );
   }
 
   // Stands in for row actions the API would refuse, and says why — "Awaiting another manager" on a
