@@ -41,17 +41,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-- [ ] **[Medium]** `[frontend]` — creating the **first** item from a page's first-use empty state leaves
-  keyboard focus on `<body>`. On `/projects`, "New project" in the empty state opens the dialog; Material
-  restores focus to that button when it closes, and the refetch then swaps the whole empty state for the
-  table, destroying it. The focus hand-back added to `Projects` on 2026-09-21 (`restoreFocus()`, which
-  returns focus to the control a write started from once the refetch renders) remembers the destroyed
-  button, finds it no longer connected and gives up. `/entries`' "Log your first entry" drops focus the
-  same way, with no hand-back at all. The accessibility floor's second answer applies to both: fall back
-  to a target the write cannot remove — the header's own primary action, which both pages have ("New
-  project", "Log hours", as `/entries` already does for delete through `logHoursButton`) *(Effort:
-  Small)* *(raised 2026-09-21 by the cold design review of that day's backlog fixes, DR-3, measured in
-  headless Chrome; the `/entries` half predates that session)*
+*No open Medium tasks.*
 
 #### Low
 
@@ -215,6 +205,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
+- 2026-09-21 · **[Medium]** `[frontend]` — a write whose refetch removes the control that opened its dialog now hands focus to the page's header action: the new `shared/focus.ts` `refocusAfterRender()` focuses, once the refetch has rendered and only while focus is on `<body>`, the first target still in the page — the opener, then New project or Log hours (`5c4dad81` for Projects, `ce32e773` for Entries, which had no hand-back at all); real scope on `/entries` was every entry-dialog save whose opener the refetch removes or moves — the no-results Log hours, an edit submitted from the dialog, a row re-sorted or filtered out — not only "Log your first entry" → coverage: `html/junior` "Focus dies with the element that holds it", `angular/junior` `afterNextRender` and `architecture/junior` DRY already covered and marked; swept `typescript/junior` "`instanceof` narrowing" marked ✅ 07-timetrack; "A moved element loses focus too" clause repointed at the helper (`8bc068a6`); frontend README already represented (row-action and moved-row focus entries); PLANNING §14 accessibility floor gains the removed-control fallback, §0/§22 (`5dff4b1b`); PROGRESS n/a. Verified by Victor with the keyboard: an edit submitted from the dialog lands on Log hours, and the first project created from the empty state — reached through a DevTools Local Override answering `[]` — lands on the header's New project; the first entry from `/entries`' empty state checked in headless Chrome only
 - 2026-09-20 · **[Medium]** `[frontend]` — `/entries`' four row actions take `disabledInteractive` with a TypeScript re-entry guard, and a status write moves focus to the header's "Log hours" — only while focus is still where the write started or already on `<body>` → coverage: new `html/junior` bullet "A deferred focus move asks where focus is now" (authored + marked ✅ 07-timetrack); frontend README Key patterns entry extended; PLANNING §14 accessibility floor gains the conditional half of the rule + §0/§22 counts; PROGRESS recount. Real scope was four buttons, not the two the task named: two behaviours in one cell would have been worse than one. The first attempt moved focus unconditionally and the cold review caught that it would break an open dialog's focus trap. Verified by Victor with the keyboard across six checks, including opening a dialog mid-write on Slow 4G
 - 2026-09-20 · **[Medium]** `[frontend]` — the shell's scroll box stopped running 48px below the window (`box-sizing: border-box` on `mat-sidenav-content`, whose `height: 100%` was taking the padding on top) → coverage: `css/junior` box-sizing already covered and marked ✅ 01-todo-list; frontend README n/a — a box-model fix, not a project decision; PLANNING §0/§22 counts; PROGRESS n/a. Built in Step 7a, invisible until `/projects`, the first page with no paginator to keep it short. Verified by Victor in the browser: `content client` 903 → 855, the down arrow back on screen and the last row whole
 - 2026-09-20 · **[Medium]** `[frontend]` — page-level errors render as `<p class="page-error">` from `_page.scss` instead of a `mat-error`, whose colour only exists once a `MatFormField` has put its stylesheet in the document → coverage: new `angular-material/junior` bullet "A library class only carries styles while its component is on the page" (authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 three-states rule and all seven page rows; PROGRESS recount. Verified by Victor in the browser on `/projects` and `/entries`, both red after a hard reload with the backend stopped
