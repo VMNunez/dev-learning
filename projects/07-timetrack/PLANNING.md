@@ -13,10 +13,10 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7c — Manager review flow: dashboard, approvals, projects**, in progress. Built and verified in the browser on 2026-09-20: the **Projects page** (list, create, edit, soft delete and its reactivate, the three §14 states, the row-action toggle — and, since 2026-09-21, a client-side sort by Name or Status), its `project-dialog`, `ProjectService`'s three write methods, the `/projects` route and the sidebar link; and the **Approvals page** (the SUBMITTED queue with its four filters, approve, reject through the shared `reject-dialog`, the three states, the `/approvals` route and the sidebar link). Still open in this step: the **manager dashboard** (`/dashboard` is still the `coming-soon` page, served by the `roleMatch('MANAGER')` route) and the shell's `MatBadge`. `PROJECT-BACKLOG.md` holds **six open tasks, all frontend, one Medium and five Lows**, raised on 2026-09-21. Four come from that day's cold design review of Step 7c: the **Medium**, `/approvals` still scrolling sideways at a 1024px window with ordinary data while the pinned actions cover its Status column; and three Lows — Retry dropping focus to `<body>`, the badge's error red against §14's palette, and the dashboard list's title over the caller's own entries. Two Lows come from Victor's browser check of Step 7c: the page title's focus ring showing after a *mouse* approval or a click on the title, in a different shape on each page, because `_page.scss` styles `:focus` as well as `:focus-visible`; and a decision task on the sidebar's pending-approvals badge, which keeps its old count on `/approvals` until the next navigation as §13 rules, and which Victor finds worse than the shared state a live count would need. The two frontend tasks raised earlier that day both closed the same day: the **High** — a table's text columns breaking inside words, because `overflow-wrap: anywhere` lowered their minimum width to a single letter — now sizes name columns by their longest word under a `12rem` cap, keeps a `9rem` floor on the description and pins the row actions with `stickyEnd`; the **Medium** — focus dropping to `<body>` when the first item is created from a first-use empty state — now hands focus to the page's header action once the refetch has removed the button that opened the dialog. The eight Lows open that morning all closed on 2026-09-21 — seven fixed and verified in the browser, one (focus to the actions cell on `/entries`) dropped as a decision with no code change. Twelve tasks were raised on 2026-09-20 (three Medium, nine Low) by three cold reviews and Victor's browser walks; ten closed that day. Before them the backlog held no open task at any priority, the last of the Step 7b closes having landed on 2026-09-19 |
+| **Current step** | **Step 7d — Manager admin: team + reports**, next. Step 7c closed ✅ on 2026-09-21: the manager dashboard, the Approvals and Projects pages and the shell's `MatBadge`, its done condition verified clause by clause in the browser that day. `PROJECT-BACKLOG.md` holds **six open tasks, all frontend, one Medium and five Lows**, all raised on 2026-09-21 and all to be worked before Step 7d's pages: the **Medium** from the cold design review of Step 7c — `/approvals` still scrolling sideways at a 1024px window with ordinary data while the pinned actions cover its Status column; three Lows from the same review — Retry dropping focus to `<body>`, the badge's error red against §14's palette, and the dashboard list's title over the caller's own entries; and two Lows from Victor's browser check — the page title's focus ring after a mouse action or a click on the title, and a decision on whether the sidebar badge should follow a write live, which §13 rules it does not. The two frontend tasks open when 2026-09-21 began — the High on table text columns breaking inside words and the Medium on focus after the first create from an empty state — closed that day, as did the eight Lows open that morning |
 | **Current branch** | `feat/angular-manager-pages` — cut from `projects/07-timetrack` on 2026-09-19 right after PR #91 merged `feat/angular-entries` (Step 7b, merge `668c10fb`; the branch was then deleted locally and on `origin`); it carries Steps 7c and 7d and merges back into `projects/07-timetrack` when Step 7d's done condition passes (§22) |
-| **Done condition** | Step 7c's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals and the dashboard "Pending approval" card drops; create and deactivate a project at /projects; with the queue emptied /approvals shows "No pending approvals. Your team is up to date."` |
-| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Steps 7a–7b done, Steps 7c–7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` reads 2026-09-19 for a review run ahead of the gate over Steps 7a–7b only, so G4 still owes its full pass. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on each of Steps 7c–7d |
+| **Done condition** | Step 7d's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none; the §14 Visual QA checklist passes on all eight pages at 1024, 768 and 375px` |
+| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Steps 7a–7c done, Step 7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` reads 2026-09-19 for a review run ahead of the gate over Steps 7a–7b only, so G4 still owes its full pass. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on Step 7d |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
 | **Last updated** | 2026-09-21 |
 
@@ -946,7 +946,6 @@ src/app/
 │       └── report-service.ts     ← /api/reports (the three monthly reports)
 ├── pages/
 │   ├── login/                    ← email + password form, both roles
-│   ├── coming-soon/              ← placeholder routed for every nav link whose page is not built yet; each later step replaces one of its routes
 │   ├── dashboard/
 │   │   ├── employee-dashboard/   ← stat cards + recent entries, EMPLOYEE variant of /dashboard
 │   │   └── manager-dashboard/    ← MANAGER variant of /dashboard (Step 7c)
@@ -1948,14 +1947,33 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   cards (§14), the badge colours (§14 Colour palette), and `/dashboard` split into two role variants
   chosen by a `canMatch` guard, the manager one still the `coming-soon` page until Step 7c (§13)
 
-#### Step 7c — Manager review flow: dashboard, approvals, projects
+#### Step 7c — Manager review flow: dashboard, approvals, projects ✅
 - Manager dashboard (`forkJoin` stat cards) + pending approvals list with inline approve / reject
 - Approvals page (filter bar + queue) with the shared `reject-dialog`; `MatBadge` pending count in the shell
 - Projects page (CRUD) reusing `confirm-dialog` for the soft-delete confirmation
 - Three §14 states on each page: skeleton cards / spinner over the table, `.page-error` + Retry (one failed
   `forkJoin` call fails the whole dashboard load), and the per-page empty message
 - **Review concepts:** `forkJoin`, role-aware UI, MatTable, `MatBadge`
+- **Concept learned:** a client-side `MatSort` over an unpaged list that reuses the API's own order · one
+  button that toggles its label and icon instead of two that swap, so a write keeps the focused node ·
+  `disabledInteractive` with a TypeScript re-entry guard on a row action · focus handed back after a
+  refetch that moves or removes the control a write started from (`afterNextRender`, one shared
+  `refocusAfterRender()`) · a review action withheld on the caller's own rows from the `id` the login
+  response carries · a page-level error that is no `mat-error` · shared `styles/` partials a global rule
+  reaches a dialog through · table columns sized by their longest word under a cap, `overflow-wrap: anywhere`
+  vs `break-word` · a row-actions column pinned with `stickyEnd`, its divider drawn by a scroll-state
+  container query · a count and its list read from one paged query · numbers kept, dimmed and
+  `aria-busy`, across a refetch · a `MatBadge` whose `aria-hidden` count is stated again in the link's
+  own text · a shell-owned count re-read after `NavigationEnd`, its failure caught inside `switchMap`
 - **Done condition:** `Browser: as MANAGER, approve one entry and reject another (with note) at /approvals and the dashboard "Pending approval" card drops; create and deactivate a project at /projects; with the queue emptied /approvals shows "No pending approvals. Your team is up to date."`
+- **Verified 2026-09-21** in the browser as MANAGER, every clause: an approval and a rejection with a note at
+  `/approvals` each dropped the dashboard's Pending approval card (3 → 2 → 1) and the sidebar badge on the
+  next navigation; the project "Focus test" was created from `/projects`' empty state and deactivated; the
+  last entry, approved from the dashboard, left `/approvals` showing the empty queue message. Changed
+  against the plan: "Team members" counts active accounts only, the review list uses the ✓ ✕ icon buttons
+  of `/approvals` rather than text buttons, "Pending approval" is read from the list's own paged query
+  rather than a fifth call, and the badge is re-read after every navigation (§13); the `coming-soon`
+  placeholder page, which served the manager's `/dashboard` until now, is removed
 
 #### Step 7d — Manager admin: team + reports
 - Team page + `user-dialog` (name, email, role — no password field); the generated password is surfaced once
