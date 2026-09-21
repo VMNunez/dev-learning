@@ -41,12 +41,26 @@
     white-space: nowrap;
   }
 
-  // A value with no spaces in it would otherwise set its column's min-content width and push the status
-  // and the row actions off a narrow screen — the two things a table row is for.
+  // A name is read whole, so these columns are exactly as narrow as their longest word. With `break-word`
+  // — unlike `anywhere` — a word's full width counts when the table measures the column, so a crowded
+  // table can never hand them less ("Employe / e"), and a short name reserves no more than it needs. The
+  // 12rem cap is what stops a value with no spaces in it from setting its column as wide as itself and
+  // pushing the rest of the row off screen: past it, that one word breaks. Chromium applies a cell's
+  // `max-width` when it measures the column, which CSS 2.1 leaves undefined; an engine that ignored it
+  // would only let that one value widen its column, and the table would scroll under the pinned actions.
   .mat-column-name,
   .mat-column-employee,
-  .mat-column-project,
+  .mat-column-project {
+    max-width: 12rem;
+    overflow-wrap: break-word;
+  }
+
+  // A description is prose, read a phrase at a time, so it takes a floor instead of its longest word:
+  // `anywhere` lets a pasted URL or identifier wrap without widening the column, and the floor gives back
+  // the minimum `anywhere` takes away, which would otherwise be a single letter. Material's cells are
+  // border-box, so 9rem leaves 7rem of text — a phrase per line, and room for the rejection note under it.
   .mat-column-description {
+    min-width: 9rem;
     overflow-wrap: anywhere;
   }
 
