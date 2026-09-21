@@ -11,7 +11,10 @@
   gap: 1rem;
 }
 
+// Sized to its words wherever it sits: a flex column — the dashboard's header — would otherwise stretch
+// it across the page, and its focus ring with it, while a row's title hugs its text.
 .page-title {
+  inline-size: fit-content;
   margin: 0;
   font: var(--mat-sys-headline-small);
 }
@@ -121,9 +124,10 @@
 // A page whose rows carry the only actions moves focus here when a write removes the row that held
 // it (§14), so the title is a real focus target and its indicator has to look like the rest of the
 // app rather than like the browser's default black box. Never removed, only restyled: the
-// accessibility floor requires focus to stay visible. `:focus` as well as `:focus-visible`, because
-// this focus arrives from script and the two do not always agree on a programmatic move.
-.page-title:focus,
+// accessibility floor requires focus to stay visible. `:focus-visible` alone, which is the browser's
+// answer to "did the user get here by keyboard": a focus moved by script matches only when the element
+// it left did, so Enter on ✓ rings the title and a click on ✓ does not, and a click on the title itself
+// — focusable through its `tabindex="-1"` — never matches. `:focus` rang it after every mouse action.
 .page-title:focus-visible {
   outline: 2px solid var(--mat-sys-primary);
   outline-offset: 0.25rem;
