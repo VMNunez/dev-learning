@@ -6,3 +6,12 @@
   flex-direction: column;
   gap: 2rem;
 }
+
+// On a phone the least load-bearing column goes first, as Description does on the other tables (§14
+// Tables): an email is the widest value in the row and the one the manager needs least at a glance —
+// the name identifies the member, and the edit dialog still shows the address.
+@media (max-width: 599px) {
+  .mat-column-email {
+    display: none;
+  }
+}
