@@ -13,7 +13,11 @@
     <button matButton="outlined" type="button" (click)="reload()">Retry</button>
   </div>
 } @else {
-  <section class="stat-grid" aria-label="Projects at a glance" [attr.aria-busy]="loading()">
+  <section
+    class="stat-grid stat-grid-3"
+    aria-label="Projects at a glance"
+    [attr.aria-busy]="loading()"
+  >
     @let current = counts();
     <app-stat-card label="Total" [value]="current ? '' + current.total : null" />
     <app-stat-card label="Active" [value]="current ? '' + current.active : null" />

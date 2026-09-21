@@ -1,4 +1,4 @@
-<header class="page-header">
+<header class="dashboard-header">
   <h1 class="page-title">Dashboard</h1>
   <p class="greeting">Welcome back, {{ userName() }}</p>
 </header>
@@ -18,7 +18,7 @@
   @let current = loading() ? null : data();
 
   <section
-    class="stat-grid"
+    class="stat-grid stat-grid-4"
     aria-label="Your hours and entries at a glance"
     [attr.aria-busy]="loading()"
   >

@@ -1,0 +1,66 @@
+// Table-level building blocks shared by every data table, for the same reason `_page.scss` holds the
+// page's: four tables built on different days had each copied the wrapper, the loading overlay and the
+// column rules, so a change to one convention had to be made four times or the tables drifted apart.
+
+// The border, the radius and the clip sit on the positioned box, so the loading overlay is clipped to
+// the same rounded corners instead of painting four square ones over them.
+.table-area {
+  position: relative;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+// A refetch keeps the rows on screen and dims them under a spinner, rather than blanking the table.
+.table-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--mat-sys-surface) 60%, transparent);
+}
+
+// Every table sits in this wrapper so a narrow viewport scrolls the table, not the page (§14 Tables).
+.table-wrapper {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+  }
+
+  // The column conventions, keyed on the class MatTable writes from each column's name. Nested under
+  // the wrapper on purpose: Material's table stylesheet sets `text-align: start` on
+  // `.mdc-data-table__cell` and `.mat-mdc-header-cell` with one class and enters the document after
+  // this one, so a one-class `.mat-column-actions` would lose that tie and the actions would drift left.
+  .mat-column-date,
+  .mat-column-hours,
+  .mat-column-actions {
+    white-space: nowrap;
+  }
+
+  // A value with no spaces in it would otherwise set its column's min-content width and push the status
+  // and the row actions off a narrow screen — the two things a table row is for.
+  .mat-column-name,
+  .mat-column-employee,
+  .mat-column-project,
+  .mat-column-description {
+    overflow-wrap: anywhere;
+  }
+
+  .mat-column-hours {
+    font-variant-numeric: tabular-nums;
+  }
+
+  // Shrink-wrapped and right-aligned: left in a wide cell, the icons float in the middle of empty space.
+  .mat-column-actions {
+    width: 1%;
+    text-align: end;
+  }
+
+  // The least load-bearing column goes first, rather than every column shrinking (§14 Tables).
+  @media (max-width: 599px) {
+    .mat-column-description {
+      display: none;
+    }
+  }
+}

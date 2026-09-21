@@ -1,9 +1,61 @@
-// Page-level building blocks shared by every routed view, so the eight pages
-// cannot drift apart: the view's one <h1>, and the loading / error / empty block.
+// Page-level building blocks shared by every routed view, so the eight pages cannot drift apart: the
+// header with the view's one <h1>, the filter bar, the stat-card strip, and the loading / error / empty
+// block. The tables' blocks live in `_table.scss`.
+
+// The view's <h1> and, where the page has one, its primary action — in the header, right-aligned (§14).
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
 
 .page-title {
   margin: 0;
   font: var(--mat-sys-headline-small);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  mat-form-field {
+    width: 12rem;
+  }
+
+  @media (max-width: 599px) {
+    mat-form-field {
+      width: 100%;
+    }
+  }
+}
+
+// The §14 ladder, sized by the page's own width rather than the viewport's, because the 15rem rail
+// narrows the page from 1024px up independently of the window — so the page's `:host` declares
+// `container-type: inline-size`. Four cards split 1, 2 + 2 or 4; three go straight from 1 to 3 on the
+// same 52rem rung, never through 2 + 1. Neither strip ever leaves a card orphaned.
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@container (min-width: 36rem) {
+  .stat-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 52rem) {
+  .stat-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stat-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 // A page whose rows carry the only actions moves focus here when a write removes the row that held

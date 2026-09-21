@@ -1,3 +1,5 @@
+// The container the shared `.stat-grid` ladder measures (`_page.scss`): the page's own width, which
+// the sidenav rail narrows from 1024px up.
 :host {
   container-type: inline-size;
   display: flex;
@@ -5,7 +7,9 @@
   gap: 2rem;
 }
 
-.page-header {
+// Not the shared `.page-header`: this one stacks a greeting under the title instead of setting a
+// primary action beside it, and that row's centring would pull the greeting into the middle.
+.dashboard-header {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -14,26 +18,6 @@
 .greeting {
   margin: 0;
   color: var(--mat-sys-on-surface-variant);
-}
-
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-// Four cards split 4, 2 + 2 or 1, never 3 + 1. The page's own width decides, not the viewport's,
-// because the sidenav rail takes 15rem of it from 1024px up.
-@container (min-width: 36rem) {
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@container (min-width: 52rem) {
-  .stat-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
 }
 
 .recent {
@@ -59,27 +43,9 @@
   }
 }
 
+// A glance, not a working table: no loading overlay to clip, so the outline sits on the shared
+// scrolling wrapper itself rather than on a `.table-area` around it.
 .table-wrapper {
-  overflow-x: auto;
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 4px;
-}
-
-table {
-  width: 100%;
-}
-
-.mat-column-date,
-.mat-column-hours {
-  white-space: nowrap;
-}
-
-.mat-column-hours {
-  font-variant-numeric: tabular-nums;
-}
-
-@media (max-width: 599px) {
-  .mat-column-description {
-    display: none;
-  }
 }

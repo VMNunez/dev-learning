@@ -6,80 +6,6 @@
   gap: 1.5rem;
 }
 
-.page-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-
-  mat-form-field {
-    width: 12rem;
-  }
-
-  @media (max-width: 599px) {
-    mat-form-field {
-      width: 100%;
-    }
-  }
-}
-
-// The border, the radius and the clip sit on the positioned box, so the loading overlay is clipped
-// to the same rounded corners instead of painting four square ones over them.
-.table-area {
-  position: relative;
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-.table-overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--mat-sys-surface) 60%, transparent);
-}
-
-table {
-  width: 100%;
-}
-
-.mat-column-date,
-.mat-column-hours,
-.mat-column-actions {
-  white-space: nowrap;
-}
-
-// A name, a project or a description with no spaces in it would otherwise set its column's
-// min-content width and push the row actions off a narrow screen — the thing the page is for.
-.mat-column-employee,
-.mat-column-project,
-.mat-column-description {
-  overflow-wrap: anywhere;
-}
-
-.mat-column-hours {
-  font-variant-numeric: tabular-nums;
-}
-
-// Shrink-wrapped and right-aligned, as on the other two tables: left in a wide cell the two icons
-// float in the middle of empty space.
-.mat-column-actions {
-  width: 1%;
-  text-align: end;
-}
-
 // Muted, not red: unlike the same line on /entries — where it is the employee's to-do — here a
 // manager is re-reading a decision already taken, and the row's REJECTED badge one cell away already
 // carries the alarm. Explanatory metadata, like `.own-entry` below.
@@ -113,10 +39,4 @@ table {
       icon-color: var(--mat-sys-error),
     )
   );
-}
-
-@media (max-width: 599px) {
-  .mat-column-description {
-    display: none;
-  }
 }

@@ -1,3 +1,5 @@
+// The container the shared `.stat-grid` ladder measures (`_page.scss`): the page's own width, which
+// the sidenav rail narrows from 1024px up.
 :host {
   container-type: inline-size;
   display: flex;
@@ -5,72 +7,8 @@
   gap: 2rem;
 }
 
-.page-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-// Three cards split 3 or 1, never 2 + 1. The page's own width decides, not the viewport's, because
-// the sidenav rail takes 15rem of it from 1024px up — the same rule as the dashboard's four, and the
-// jump is on the same rung of its ladder (52rem) so a card is not visibly denser on one page than
-// the other at the same window size.
-@container (min-width: 52rem) {
-  .stat-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-// The border, the radius and the clip sit on the positioned box, so the loading overlay is clipped to
-// the same rounded corners instead of painting four square ones over them (the shape entries.scss uses).
-.table-area {
-  position: relative;
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.table-wrapper {
-  overflow-x: auto;
-}
-
-.table-overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--mat-sys-surface) 60%, transparent);
-}
-
-table {
-  width: 100%;
-}
-
-// A project name or description with no spaces in it would otherwise set the column's min-content
-// width and push Status and the row actions off a narrow screen — the two things the page is for.
-.mat-column-name,
-.mat-column-description {
-  overflow-wrap: anywhere;
-}
-
-.mat-column-status,
-.mat-column-actions {
+.mat-column-status {
   white-space: nowrap;
-}
-
-// Shrink-wrapped and right-aligned, as on the entries table: left in a quarter-width cell the two
-// icons float in the middle of empty space.
-.mat-column-actions {
-  width: 1%;
-  text-align: end;
 }
 
 // Both states wear the same pill, because one badge among bare words reads as an exception rather
@@ -97,10 +35,4 @@ table {
   border-color: color-mix(in srgb, var(--project-active) 30%, transparent);
   background: color-mix(in srgb, var(--project-active) 8%, white);
   color: var(--project-active);
-}
-
-@media (max-width: 599px) {
-  .mat-column-description {
-    display: none;
-  }
 }
