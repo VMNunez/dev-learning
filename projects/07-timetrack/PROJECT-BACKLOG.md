@@ -42,15 +42,14 @@ That ledger is append-only and authoritative — a review never re-raises what i
   e" and a "Test Employee" cell "Test Employe / e", because the Project and Description columns beside it
   hold long values and take the space; at 375px the Employee and Project headers and cells wrap letter by
   letter ("E / m / pl / o…") while Date, Hours and Status keep their width and the table scrolls sideways.
-  The cause is the `overflow-wrap: anywhere` §14's Responsive intent
-  put on the text columns on 2026-09-20 (now `_table.scss`, `.mat-column-name` / `-employee` / `-project`
+  The cause is the `overflow-wrap: anywhere` §14's Responsive intent put on the text columns on 2026-09-20 (now `_table.scss`, `.mat-column-name` / `-employee` / `-project`
   / `-description`): unlike `break-word`, `anywhere` counts its break opportunities when the browser
   measures a cell's min-content width, which drops to a single character, and when the columns' min-content
   widths add up to more than the wrapper — six visible columns on `/approvals`, five with three icon
   buttons on an employee's `/entries` — automatic table layout gives every column exactly that minimum;
   when they fit, it still hands the spare width out by content length, so a short column beside long ones
-  drops below its own longest word. `/projects` never showed it because its three visible columns fit. On an employee's
-  `/entries` at 620px, where the columns only just fit at those minimums, Project, Description and the red
+  drops below its own longest word. `/projects` never showed it because its three visible columns fit.
+  On an employee's `/entries` at 620px, where the columns only just fit at those minimums, Project, Description and the red
   rejection note break every three or four letters ("Man / ager / 's note / Falt / a el…"). The cold
   design review of 2026-09-21 measured the same independently in headless Chrome (DR-2): Project and
   Employee 41–46px wide at 375 and 620px, of which 32px is padding, Description 19–21px at 620, and names
@@ -59,10 +58,9 @@ That ledger is append-only and authoritative — a review never re-raises what i
   least 96px while `/approvals` scrolls about 33px sideways at 1024 and 768 — which §14 allows. **High,
   not Low**: §14's Responsive intent says the demo must survive a recruiter opening the link on a phone,
   and the two main tables are unreadable there, which is the review standard's High — "makes the project
-  look unprofessional/incomplete to a recruiter" Likely fix: a `min-width` floor on the
-  text columns kept alongside `anywhere`, so a long space-less value still wraps but no column drops below
+  look unprofessional/incomplete to a recruiter". Likely fix: a `min-width` floor on the text columns kept alongside `anywhere`, so a long space-less value still wraps but no column drops below
   a legible width and the table scrolls inside its wrapper as §14 intends; check `/approvals`, `/entries`
-  as both roles and the dashboard at 375 *(Effort: Small)* *(raised 2026-09-21 by Victor's 375px browser
+  as both roles and the dashboard at 375 *(Effort: Small)* *(raised 2026-09-21 by Victor's browser
   checks at 375, 620 and 1280 while verifying the rejection-note task, and re-rated High that day on the
   620px evidence; pre-existing since the 2026-09-20 rule — moving it into
   the shared `_table.scss` that morning changed nothing about it)*
