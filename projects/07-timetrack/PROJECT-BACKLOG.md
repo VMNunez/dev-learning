@@ -45,7 +45,17 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — the page title's focus ring shows after a **mouse** action. On `/approvals`,
+  and on the manager dashboard that shares the rule, approving or rejecting a row moves focus to the view's
+  `<h1>` because the row it came from disappears (§14 accessibility floor), and `_page.scss` styles
+  `.page-title:focus` as well as `:focus-visible`, so a manager who clicked ✓ sees a teal ring around a title
+  they never tabbed to. The rule's comment reasons that the two pseudo-classes "do not always agree on a
+  programmatic move", but measured in headless Chrome 153 they agree the way the floor wants: after a mouse
+  click on ✓ the focused `<h1>` does not match `:focus-visible`, and after Enter on ✓ it does. Likely fix:
+  keep `:focus-visible` alone, after checking Firefox, whose heuristic for a focus moved by script may
+  differ, so a keyboard user still sees where they landed *(Effort: Small)* *(raised 2026-09-21 by Victor's
+  browser check of the approve action while verifying Step 7c, and measured the same day with a scripted
+  mouse click and a scripted Enter on the same button)*
 
 ## Beyond the current gate
 
