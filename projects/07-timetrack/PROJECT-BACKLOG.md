@@ -51,11 +51,18 @@ That ledger is append-only and authoritative — a review never re-raises what i
   `.page-title:focus` as well as `:focus-visible`, so a manager who clicked ✓ sees a teal ring around a title
   they never tabbed to. The rule's comment reasons that the two pseudo-classes "do not always agree on a
   programmatic move", but measured in headless Chrome 153 they agree the way the floor wants: after a mouse
-  click on ✓ the focused `<h1>` does not match `:focus-visible`, and after Enter on ✓ it does. Likely fix:
-  keep `:focus-visible` alone, after checking Firefox, whose heuristic for a focus moved by script may
-  differ, so a keyboard user still sees where they landed *(Effort: Small)* *(raised 2026-09-21 by Victor's
-  browser check of the approve action while verifying Step 7c, and measured the same day with a scripted
-  mouse click and a scripted Enter on the same button)*
+  click on ✓ the focused `<h1>` does not match `:focus-visible`, and after Enter on ✓ it does. Two more
+  symptoms of the same rule, reported by Victor the same day: the `tabindex="-1"` that makes the title a
+  script target also makes it focusable by a mouse click, so clicking the words "Dashboard" or "Approvals"
+  rings them, while the Entries and Projects titles, which are no focus target, do not react; and the ring
+  has a different shape on each page — the dashboard's `<h1>` stretches across its flex column, so its ring
+  spans the whole content width, while the Approvals `<h1>` sits in the header's row and its ring hugs the
+  word. Likely fix: keep `:focus-visible` alone, which a click on a non-editable element does not set, after
+  checking Firefox, whose heuristic for a focus moved by script may differ, so a keyboard user still sees
+  where they landed; and size the title to its text wherever it can take focus. Analyse before fixing
+  *(Effort: Small)* *(raised 2026-09-21 by Victor's browser check of the approve action while verifying Step
+  7c, and measured the same day with a scripted mouse click and a scripted Enter on the same button;
+  widened the same day with his click on the two titles)*
 - [ ] **[Low]** `[frontend]` — decide before touching it: the shell's pending-approvals badge disagrees with
   the page under it until the manager navigates. Rejecting on `/approvals` leaves the queue one row shorter
   while the sidebar's Approvals badge still shows the old count, because the shell reads the count for
