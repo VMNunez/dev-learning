@@ -1,7 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
@@ -37,6 +43,13 @@ interface ProjectOption {
 
 const FORM_FIELDS = ['projectId', 'date', 'hours', 'description'] as const;
 
+// The archived project stays in the list, so the select shows what the entry holds, but it is invalid:
+// the API refuses to save or to submit an entry against it (§10), and this says so before Save does.
+function activeProject(activeIds: ReadonlySet<number>): ValidatorFn {
+  return (control) =>
+    control.value == null || activeIds.has(control.value) ? null : { inactiveProject: true };
+}
+
 @Component({
   selector: 'app-entry-dialog',
   imports: [
@@ -65,6 +78,10 @@ export class EntryDialog {
   protected readonly isEdit = this.entry !== null;
   protected readonly canSubmit = this.entry?.status === 'DRAFT';
   protected readonly today = new Date();
+  // Declared before the form: its validator reads this set as the control is constructed.
+  private readonly activeProjectIds = new Set(
+    this.data.projects.filter((project) => project.active).map((project) => project.id),
+  );
   protected readonly projectOptions = this.buildProjectOptions();
   protected readonly saving = signal<'save' | 'submit' | null>(null);
   protected readonly error = signal<string | null>(null);
@@ -74,7 +91,7 @@ export class EntryDialog {
 
   protected readonly form = new FormGroup({
     projectId: new FormControl<number | null>(this.entry?.projectId ?? null, {
-      validators: [Validators.required],
+      validators: [Validators.required, activeProject(this.activeProjectIds)],
     }),
     date: new FormControl<Date | null>(this.entry ? fromIsoDate(this.entry.date) : this.today, {
       validators: [Validators.required],
@@ -89,6 +106,12 @@ export class EntryDialog {
   });
 
   constructor() {
+    // An entry on an archived project cannot be saved where it is, so the reason is shown as the
+    // dialog opens rather than after a Save that could never succeed.
+    if (this.form.controls.projectId.hasError('inactiveProject')) {
+      this.form.controls.projectId.markAsTouched();
+    }
+
     this.dialogRef
       .keydownEvents()
       .pipe(
@@ -178,7 +201,7 @@ export class EntryDialog {
 
   private buildProjectOptions(): ProjectOption[] {
     const options: ProjectOption[] = this.data.projects
-      .filter((project) => project.active)
+      .filter((project) => this.activeProjectIds.has(project.id))
       .map(({ id, name }) => ({ id, name }));
 
     // An entry may still point at a project archived after it was logged; keep it selectable.

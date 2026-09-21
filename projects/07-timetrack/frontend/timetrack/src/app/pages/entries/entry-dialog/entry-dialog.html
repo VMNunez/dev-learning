@@ -13,6 +13,8 @@
       </mat-select>
       @if (form.controls.projectId.hasError('required')) {
         <mat-error>Choose a project</mat-error>
+      } @else if (form.controls.projectId.hasError('inactiveProject')) {
+        <mat-error>This project is inactive. Choose an active one.</mat-error>
       } @else if (form.controls.projectId.hasError('server')) {
         <mat-error>{{ form.controls.projectId.getError('server') }}</mat-error>
       }
