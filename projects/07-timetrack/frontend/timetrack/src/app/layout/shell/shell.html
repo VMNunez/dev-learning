@@ -63,8 +63,26 @@
             routerLinkActive
             #linkActive="routerLinkActive"
             [activated]="linkActive.isActive"
-            >{{ link.label }}</a
           >
+            @if (link.countsPendingApprovals) {
+              <!-- The badge sits on the label, the placement Material documents for text: on the
+                   full-width link it would land in the item's corner, cut off by the drawer. Its
+                   content is `aria-hidden`, and a description given to a non-interactive host is
+                   appended inside that same hidden node, so the count reaches a screen reader as
+                   text of the link itself. -->
+              <span
+                [matBadge]="pendingBadge()"
+                matBadgeOverlap="false"
+                [matBadgeHidden]="pendingApprovals() === 0"
+                >{{ link.label }}</span
+              >
+              @if (pendingApprovals() > 0) {
+                <span class="cdk-visually-hidden">, {{ pendingApprovals() }} pending</span>
+              }
+            } @else {
+              {{ link.label }}
+            }
+          </a>
         }
       }
     </mat-nav-list>
