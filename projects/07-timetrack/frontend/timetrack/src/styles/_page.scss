@@ -16,6 +16,43 @@
   font: var(--mat-sys-headline-small);
 }
 
+// A dashboard's header stacks a greeting under the <h1> instead of setting a primary action beside it,
+// so it is not `.page-header`, whose centred row would pull the greeting into the middle.
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.greeting {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// A dashboard section: its heading and a "View all" link over the table or its empty state.
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  h2 {
+    margin: 0;
+    font: var(--mat-sys-title-medium);
+  }
+
+  // A text button's label sits inside its own horizontal padding; pulling the button out by that same
+  // token puts "View all" on the table's right edge.
+  a {
+    margin-inline-end: calc(-1 * var(--mat-button-text-horizontal-padding, 0.75rem));
+  }
+}
+
 // Every field is 12rem above the phone layout — narrower and a selected "September 2026" no longer fits
 // its trigger. So a bar too narrow for its fields on one line changes shape instead of shrinking them,
 // on the same terms as the stat-card ladder: never an orphan. Four fields need 51rem, which the 1024px
