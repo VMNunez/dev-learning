@@ -24,8 +24,10 @@
 }
 
 // Every table sits in this wrapper so a narrow viewport scrolls the table, not the page (§14 Tables).
+// A scroll-state container too, so the pinned actions column below can ask whether anything is under it.
 .table-wrapper {
   overflow-x: auto;
+  container-type: scroll-state;
 
   table {
     width: 100%;
@@ -72,6 +74,19 @@
   .mat-column-actions {
     width: 1%;
     text-align: end;
+  }
+
+  // The pinned actions column (`stickyEnd`) meets the columns scrolling under it along this hairline —
+  // only while something is under it. `scrollable: inline-end` holds exactly while the table can still
+  // scroll toward the buttons, so a table that fits, or one scrolled to its end, shows no line, and an
+  // actions column with nothing in it never frames a blank strip. Without the line, a badge half under
+  // the buttons reads as a rendering fault rather than as more table to the right. The CDK puts the
+  // class on the first cell pinned to the right edge of every row; a browser without scroll-state
+  // queries draws no line at all.
+  @container scroll-state(scrollable: inline-end) {
+    .mat-mdc-table-sticky-border-elem-right {
+      border-inline-start: 1px solid var(--mat-sys-outline-variant);
+    }
   }
 
   // Stands in for row actions the API would refuse, and says why — "Awaiting another manager" on a
