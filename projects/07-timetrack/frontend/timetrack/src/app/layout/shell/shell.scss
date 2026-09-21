@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -75,4 +77,13 @@ mat-sidenav-content {
 
 mat-nav-list {
   padding-inline: 0.5rem;
+
+  // The pending count on the Approvals label. Material's list clips a label's text box (`overflow:
+  // hidden`, for its ellipsis), and the badge's default offset lifts it 4px above the line, where that
+  // clip cut its top off. Its own offset token brings it down onto the line, a small gap after the word.
+  @include mat.badge-overrides(
+    (
+      container-offset: -1.125rem 0 -1.125rem 0.25rem,
+    )
+  );
 }
