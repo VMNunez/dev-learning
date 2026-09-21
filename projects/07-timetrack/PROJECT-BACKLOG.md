@@ -81,110 +81,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[frontend]` — a row action that changes an entry's status sends focus to the page
-  header, which on row 40 of a paged table costs the user a Tab through the filter bar and every row
-  above to get back. §14's accessibility floor offers only two answers — keep a control across the write,
-  impossible here (DRAFT → SUBMITTED leaves the cell with no actions at all), or a target the write
-  cannot remove — and the second is the safe floor rather than the good one. The refinement is to give
-  the actions `<td>` a `tabindex="-1"` and focus the cell, the standard remediation of moving to the
-  nearest surviving ancestor, since `trackById` keeps the `<tr>` across the refetch; the header stays as
-  the fallback for the case the row really does leave, which it does whenever the Status filter no longer
-  matches it *(Effort: Small)* *(raised 2026-09-20 by the cold review of the row-action focus fix, which
-  judged the header correct and this better)*
-
-- [ ] **[Low]** `[frontend]` — an entry whose project was deactivated after it was logged offers the same
-  ➤ submit action as any other and is refused with the §8 `400` ("Cannot submit entries for an inactive
-  project") only once pressed; the row gives no warning and names no way out, though two exist — editing
-  the entry onto another project (the dialog keeps the inactive one listed as `(inactive)` for exactly
-  this) or reactivating the project. Warning earlier is not cheap: `TimeEntryResponse` (§10) carries
-  `projectId` and `projectName` but not whether that project is active, so the page cannot know without a
-  second call per row or a backend DTO change after G3 signed the backend off — the same shape as the
-  dropped "Entries" count column. Decide between leaving it to the error message, adding `projectActive`
-  to the response, and wording the snackbar so it names the two ways out *(Effort: Small)* *(raised
-  2026-09-20 by Victor in the browser, after deactivating projects while verifying Step 7c's Projects
-  page left one of his own drafts unsubmittable)*
-
-- [ ] **[Low]** `[frontend]` — `AuthService` **writes the session without validating it and reads it
-  back validating**, so a login response the app does not understand produces a session that works
-  until the first page reload and then logs the user out with no message. `saveSession()` stores
-  whatever `POST /api/auth/login` returned and sets the `session` signal from it, so `authGuard` passes
-  on the in-memory object; `readStoredSession()` then runs the same value through `isStoredSession()`,
-  which refuses it, and every reload lands on `/login`. The failure is asymmetric, which is what makes
-  it expensive: navigating works, reloading does not, and nothing on screen names a cause. Two halves
-  to fix, and they are separable: **validate in `saveSession()` too**, so a bad response fails at login
-  where the user can act on it rather than one refresh later; and **say why** — §14's Login error row
-  already specifies *"Your session has expired. Please log in again."* for the equivalent case, and
-  `expireSession()` / `consumeSessionExpired()` already exist to carry it, but a rejected stored
-  session never routes through them. Low rather than Medium because it needs the client and the API to
-  disagree about the response shape, and this project deploys both together — the reachable case is a
-  staged deploy, or a frontend running against a backend that has not been restarted *(Effort: Small)*
-  *(raised 2026-09-20 by Victor in the browser: a reload while logged in returned him to `/login`,
-  right after `AuthResponse` gained its `id` field)*
-
-- [ ] **[Low]** `[frontend]` — the **Projects table cannot be sorted by Status**, so with a mix of
-  active and archived rows there is no way to group them and the inactive ones sit scattered through a
-  list ordered by name. **This reopens a §14 ruling and must be triaged against it, not around it:**
-  the "Material components used" table states *"Projects takes `MatTable` alone (ruled 2026-09-20):
-  `GET /api/projects` returns an unpaged `Project[]` already sorted by name, so a paginator has no
-  backend behind it and a sort header would re-sort in the browser what the API already ordered"*. That
-  argument is about **name** — the one order the API does supply — and says nothing about status, which
-  it does not. Two things make a client-side sort defensible here and not on `/entries`: the response
-  is **unpaged**, so sorting in the browser orders the whole set rather than silently reordering one
-  visible page, and `/entries` sends `sort` to the API precisely because it is paged. Decide the scope
-  as part of the fix: adding `matSort` and making only Status sortable reads oddly, so it is probably
-  Status **and** Name, with the API's order as the default. Effort is not zero — the table binds
-  `[dataSource]="projects()"`, a plain array, which `MatSort` does not sort on its own, so it needs a
-  `MatTableDataSource` or a `computed()` that sorts; `trackById` is already in place, so rows survive
-  the reorder. If it is implemented, §14's ruling and the rows that repeat it are corrected in the same
-  close *(Effort: Small)* *(raised 2026-09-20 by Victor while verifying the Approvals page)*
-
-- [ ] **[Low]** `[frontend]` — the **page-level layout blocks are copied per page**, the same defect
-  `_dialog.scss` was created to end one level down and left unfinished. `.page-header` is byte-identical
-  in `entries.scss`, `projects.scss` and `approvals.scss`; `.filter-bar` in `entries.scss` and
-  `approvals.scss`; `.table-area` + `.table-wrapper` + `.table-overlay` in `projects.scss` and
-  `approvals.scss`; `table { width: 100% }`, the `white-space: nowrap` / `width: 1%` / `text-align: end`
-  action-column rules, `.rejection-note` and the 599px Description hide in `entry-list.scss` and
-  `approvals.scss`. §14's design-system preamble is explicit that these are decided once and obeyed by
-  all eight pages, and `_page.scss` already states that purpose in its own header comment; Team and
-  Reports in Step 7d would make a fourth and fifth copy. The proof it is mechanical rather than
-  considered: `approvals.scss` sets `justify-content: space-between` on a header that has one child.
-  Move them to `_page.scss` or a sibling `_table.scss`; what genuinely belongs to a page stays
-  (`.own-entry`, the two approve/reject `icon-button-overrides`, `.mat-column-hours`). **The reason it
-  is not done inline:** it edits the stylesheets of two pages already built and verified, so it owes a
-  look at all four screens, which is cheapest inside §14's Visual QA pass *(Effort: Medium)* *(raised
-  2026-09-20 by the cold design review of the Approvals page)*
-
-- [ ] **[Low]** `[frontend]` — the four-field **filter bar wraps 3 + 1 at both desktop widths §14's own
-  visual-QA checklist walks**. Four `mat-form-field`s at `12rem` with three `1rem` gaps need `51rem`
-  (816px); at 1024px the `15rem` rail and the shell's `1.5rem` padding each side leave 736px (46rem),
-  and at 768px, where the rail is `over` and takes nothing, 720px (45rem). So the Status filter drops
-  alone onto a second line — the same orphan §14's responsive intent forbids by name for the stat-card
-  ladder ("never leave one orphaned"). `/entries` never shows it because three fields fit in 39rem.
-  Neither `flex: 1 1 12rem` (the fields then grow past 12rem on a wide monitor and stop matching
-  `/entries`) nor `flex: 0 1 12rem` alone (they shrink below a legible width before the 599px
-  full-width rule takes over) is right without a `min-width`, so this needs checking at 1440, 1024, 768
-  and 375 in the browser rather than a one-line guess *(Effort: Small)* *(raised 2026-09-20 by the cold
-  design review of the Approvals page; arithmetic re-checked against `shell.scss`)*
-
-- [ ] **[Low]** `[frontend]` — a **rejection note is unreachable on a phone**, on both tables that show
-  one. The note renders inside the Description cell (`entry-list.html`, `approvals.html`), and §14's
-  responsive rule hides the Description column below 600px, so the only place in the app that says
-  *why* an entry was rejected disappears at 375px. It matters more on `/entries`, where an employee has
-  to act on it, than on `/approvals`, where a manager is re-reading a decision. Options: render the
-  note in the Status cell under the badge, keep the hidden column's text as a stacked secondary line,
-  or accept it and say so in §14 *(Effort: Small)* *(raised 2026-09-20 by the cold design review of the
-  Approvals page)*
-
-- [ ] **[Low]** `[frontend]` — `npx prettier --check "src/**/*.{ts,html,scss}"` reports **66 files** as
-  unformatted in a tree with no uncommitted changes (run 2026-09-20, exit 1). None of them is: the repo
-  has `core.autocrlf = true` and no `.gitattributes`, so every tracked file is on disk with CRLF, while
-  Prettier's `endOfLine` has defaulted to `"lf"` since v2 and counts each line as a difference. The
-  check is therefore unusable as a gate — it fails identically on clean and dirty trees, which is the
-  worst shape a check can have, and it is why formatting has only ever been verified on the handful of
-  files a session just wrote. `"endOfLine": "auto"` in `.prettierrc` is the documented fix and changes
-  no file's content; the alternative, a `.gitattributes` normalising the checkout, rewrites every file
-  in the working tree once *(Effort: Small)* *(raised 2026-09-20 while running the formatting check
-  over the shared dialog stylesheet)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -358,6 +255,14 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-21 · **[Low]** `[frontend]` — the Projects table sorts by Name or Status in the browser (`7fe9a808`), and a refetch that moves a row hands focus back to the button the write started from (`b729a0c5`), which also fixed a rename moving its row under the API's own name order; the §14 ruling is reversed for status only — the list is unpaged, a name sort reuses the API's order (its reverse for descending) and a status sort is stable → coverage: new `html/junior` bullet "A moved element loses focus too" (authored + marked ✅ 07-timetrack), `javascript/junior` "Array sorting" marked; frontend README Key patterns, and its Tradeoffs entry corrected (it said "unsorted"); PLANNING §14 Material components row and accessibility floor, §0/§22; PROGRESS HTML evidence cell. Verified by Victor in the browser: both sorts both ways, and a keyboard deactivation under the Status sort and a rename under the Name sort each leave focus on the moved row's button
+- 2026-09-21 · **[Low]** `[frontend]` — a draft on a deactivated project no longer offers ➤: the page derives it from the active-project list it already holds and shows "Project inactive — edit to move it" as a shared `.action-note` (`5e43a6aa`; `cc3957d2` moved the note onto its own line after Material's cell ellipsis hid it), and `EntryDialog` flags the project with an `activeProject` `ValidatorFn` as it opens (`0f7737d0`); the task's premise was false — no `projectActive` field or per-row call is needed, the dialog already inferred "(inactive)" the same way; `.own-entry` folded into `.action-note` → coverage: `angular/junior` "Custom validators" already ✅ 07-timetrack; frontend README already represents the pattern ("The UI never offers an action the API will refuse"); PLANNING §14 Entries page, §0/§22; PROGRESS n/a. Verified by Victor in the browser: the note and no ➤ on the row, the error under Project as the dialog opens, no `PUT` sent on Save, and ➤ back once the entry moves to an active project
+- 2026-09-21 · **[Low]** `[frontend]` — a status change on `/entries` keeps sending focus to the header's "Log hours" rather than to the row's actions cell — DECISION, no code change, dropped: the cost the task names ("row 40 of a paged table") cannot occur on a 10-row page, the §14 floor is met as written (a target the write cannot remove), and focusing the cell needs an imperative focus API on the presentational `EntryList` plus a post-render fallback for a row that leaves by filter or sort — complexity for a few Tabs → PLANNING §0/§22 counts only
+- 2026-09-21 · **[Low]** `[frontend]` — the rejection note stays readable below 600px: rendered under the description and again under the status badge, whichever is idle `display: none`, so at any width it is seen and read once (`f41991f4`); putting it in the Status cell at every width was rejected, since it would widen that column on desktop; its shared shape moved to `_table.scss`, each table keeping its own colour → coverage: `html/junior` "Hiding from the layout, from the tree, or from both" already ✅ 07-timetrack, `angular-material/junior` "Tooltip purpose" clause repointed; frontend README Key patterns; PLANNING §14 Entries page and Responsive intent tables rule, §0/§22; PROGRESS n/a. Verified by Victor on `/approvals` at 375 and 1280; the employee's `/entries` at 375 measured by the cold design review in headless Chrome
+- 2026-09-21 · **[Low]** `[frontend]` — a filter bar changes shape instead of orphaning its last field: fields stay `12rem`, `.filter-bar-4` caps the bar at two fields' width below a `51rem` page (2 + 2 at 1024 and 768px) and `.filter-bar-3` stacks below `38rem`, the page `:host` being the container (`f99ace26`); a first attempt letting fields shrink from a `10rem` basis was dropped before commit, since a `10.75rem` trigger truncates a selected "September 2026"; real scope added `/entries`' own 2 + 1 at ~600–655px → coverage: `css/middle` "Container queries" clause repointed, nothing authored; frontend README Tradeoffs; PLANNING §14 Responsive intent new *Filter bars* rule, §0/§22; PROGRESS n/a. Verified by Victor in the browser: `/approvals` on one line at 1280, 2 + 2 at 1024 and 768, stacked at 375; `/entries` stacked at 620
+- 2026-09-21 · **[Low]** `[frontend]` — the page and table layout blocks are declared once, in `styles/_page.scss` (header, filter bar, stat-card strip) and a new `styles/_table.scss` (wrapper, overlay, and column rules nested under `.table-wrapper` so they beat Material's later-injected `.mdc-data-table__cell`) (`4d1077f4`); real scope added `.mat-column-hours`, the dashboard's table rules and the `.stat-grid` ladder as `.stat-grid-3` / `.stat-grid-4`, and renamed the dashboard's `.page-header` to `.dashboard-header`, a different block the shared rule would have centred; `.rejection-note` was left to the rejection-note task → coverage: `css/junior` partials, low-specificity selectors and specificity already ✅ 07-timetrack, `css/junior` "Long-word wrapping" and `css/middle` "Container queries" clauses repointed, the `css/junior` `minmax()` marker removed (nothing in 07 uses it since `1fd76f7c`); frontend README Key patterns; PLANNING §14 Shared styles row, §0/§22; PROGRESS CSS evidence cell. Verified by Victor in the browser on `/entries`, `/projects`, `/approvals` and the employee dashboard at 1280, 800 and 375
+- 2026-09-21 · **[Low]** `[frontend]` — the session is validated on the way in and the way out: `isAuthResponse`, moved to `shared/models/auth.ts`, refuses a login response the app cannot read before it is stored, `Login` wording it through `UnreadableSessionError` (`32150c5d`), and an unreadable stored session is removed and explained on `/login` like an expired one (`cf07d270`); real scope added `Login`'s own message and the field-order trap — `sessionExpired` must be declared before `session`, whose initializer raises it → coverage: new `javascript/junior` bullet "Class field initialization order" (authored + marked ✅ 07-timetrack), `javascript/junior` "Runtime data enforcement", "Custom error classes" and "`typeof` vs `instanceof`" marked; frontend README Key patterns; PLANNING §6 Typing, §13 tree, §14 Login row, §16 `AuthService.login` edge cases (the tests stay Step 9's), §0/§22; PROGRESS JavaScript evidence cell. Verified by Victor in the browser: a stored session without `id` lands on `/login` with the expiry line once, and a login response overridden without `id` in DevTools reads "The server sent a response this app cannot read"
+- 2026-09-21 · **[Low]** `[frontend]` — `prettier --check` follows the CRLF checkout (`endOfLine: "auto"`, `6826005e`), and the one real difference it had been hiding, `main.ts`'s split `.catch`, is formatted (`c1edc2e8`); real scope 64 files, not 66; a `.gitattributes` normalisation rejected as a mass rewrite → coverage: `git/junior` "Line-ending policy" marked ✅ 07-timetrack; README n/a — repository tooling, not an app decision; PLANNING §0/§22 counts; PROGRESS Git evidence cell. Verified by `prettier --check` (exit 0) and `ng build`
 - 2026-09-20 · **[Low]** `[frontend]` — `/approvals` drops the review actions on the manager's own rows and `AuthResponse` gains `id` → coverage: `security/junior` "Server-side enforcement" already ✅ 07; backend + frontend README Key patterns; PLANNING §10 contract ruling; PROGRESS n/a. Verified by `ng build` and `ng test` 37/37 only — **the browser check is owed**: it needs a manager holding SUBMITTED entries, which only the Team page (Step 7d) makes reachable
 - 2026-09-20 · **[Low]** `[frontend]` — the dialogs' shared form, error and destructive-button rules move to `styles/_dialog.scss`, retiring four component stylesheets → coverage: `css/junior` "Sass modules and partials" and "Reusable low-specificity selectors" marked ✅ 07; frontend README Key patterns; PLANNING §14 design-system row; PROGRESS recount (CSS junior 62→64/115). Verified by Victor in the browser on the reject and discard dialogs; **the change-password dialog's inherited top padding is still owed**
 - 2026-09-20 · **[Low]** `[frontend]` — a soft-deleted project can be reactivated from its own row, through one button that toggles 🗑/↺ so the write cannot destroy the control holding focus → coverage: new `html/junior` bullet "Focus dies with the element that holds it" (authored + marked ✅ 07-timetrack); frontend README Key patterns; PLANNING §14 Projects wireframe + §14 accessibility floor; PROGRESS recount. Verified by Victor with the keyboard: Tab stays on the row after the confirmation closes
