@@ -10,29 +10,3 @@
 .mat-column-status {
   white-space: nowrap;
 }
-
-// Both states wear the same pill, because one badge among bare words reads as an exception rather
-// than as a state — and the row's text colour is left alone: a dim quiet enough to clear the 4.5:1
-// floor was too quiet to notice, so the pill carries the whole signal. Same mould as the entries'
-// `status-badge` (hairline border at 30%, 8% tint, 4px radius, label-small in small caps), with a
-// project's own colours: `--project-active` and, for inactive, the neutral outline tokens — never a
-// --status-* colour, which would claim this shares an entry status's meaning.
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.125rem 0.5rem;
-  border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 4px;
-  background: var(--mat-sys-surface-container);
-  color: var(--mat-sys-on-surface-variant);
-  font: var(--mat-sys-label-small);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.status-active {
-  border-color: color-mix(in srgb, var(--project-active) 30%, transparent);
-  background: color-mix(in srgb, var(--project-active) 8%, white);
-  color: var(--project-active);
-}
