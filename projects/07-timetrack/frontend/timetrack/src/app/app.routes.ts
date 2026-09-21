@@ -34,7 +34,10 @@ export const routes: Routes = [
         path: 'dashboard',
         title: 'Dashboard',
         canMatch: [roleMatch('MANAGER')],
-        loadComponent: () => import('./pages/coming-soon/coming-soon').then((m) => m.ComingSoon),
+        loadComponent: () =>
+          import('./pages/dashboard/manager-dashboard/manager-dashboard').then(
+            (m) => m.ManagerDashboard,
+          ),
       },
       {
         path: 'entries',
