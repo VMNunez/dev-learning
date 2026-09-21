@@ -81,17 +81,24 @@
             >
               <mat-icon>delete</mat-icon>
             </button>
-            <button
-              matIconButton
-              type="button"
-              aria-label="Submit entry for review"
-              matTooltip="Submit for review"
-              disabledInteractive
-              [disabled]="busyEntryId() === entry.id"
-              (click)="submitForReview.emit(entry)"
-            >
-              <mat-icon>send</mat-icon>
-            </button>
+            <!-- The API refuses to submit an entry whose project was archived after it was logged
+                 (§8), and would say so only after the press. The page already knows from the list it
+                 loaded, so the row says it up front, and names the way out edit still offers. -->
+            @if (canSubmit(entry)) {
+              <button
+                matIconButton
+                type="button"
+                aria-label="Submit entry for review"
+                matTooltip="Submit for review"
+                disabledInteractive
+                [disabled]="busyEntryId() === entry.id"
+                (click)="submitForReview.emit(entry)"
+              >
+                <mat-icon>send</mat-icon>
+              </button>
+            } @else {
+              <span class="action-note">Project inactive — edit to move it</span>
+            }
           }
           @case ('REJECTED') {
             <button

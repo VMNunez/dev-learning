@@ -96,6 +96,15 @@ export class Entries {
   protected readonly statusLabels = ENTRY_STATUS_LABELS;
 
   protected readonly projects = signal<Project[] | null>(null);
+  // For an employee `GET /api/projects` returns active projects only (§10), so an entry whose project
+  // is missing from this set sits on one archived after it was logged — the one DRAFT the API refuses to
+  // submit. Null until the list has loaded: then nothing is known and the row offers its usual actions.
+  protected readonly activeProjectIds = computed(() => {
+    const projects = this.projects();
+    return projects
+      ? new Set(projects.filter((project) => project.active).map((project) => project.id))
+      : null;
+  });
   protected readonly entries = signal<TimeEntry[]>([]);
   protected readonly totalElements = signal(0);
   protected readonly pageIndex = signal(0);

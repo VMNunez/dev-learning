@@ -92,6 +92,7 @@
       [showEmployee]="!isEmployee()"
       [showActions]="isEmployee()"
       [busyEntryId]="busyEntryId()"
+      [activeProjectIds]="activeProjectIds()"
       (edit)="openEdit($event)"
       (remove)="confirmDelete($event)"
       (submitForReview)="submit($event)"

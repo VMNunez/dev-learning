@@ -57,6 +57,20 @@
     text-align: end;
   }
 
+  // Stands in for row actions the API would refuse, and says why — "Awaiting another manager" on a
+  // manager's own entry, "Project inactive" on a draft whose project was archived. Muted and unboxed on
+  // purpose: an explanation, not a status, since the row's badge already carries one and a second pill
+  // would read as another. It wraps inside a narrow box so the actions column stays slim.
+  .action-note {
+    display: inline-block;
+    max-inline-size: 10rem;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-small);
+    text-align: start;
+    white-space: normal;
+    vertical-align: middle;
+  }
+
   // Why an entry was rejected, the one line an employee has to act on. It lives under the description,
   // and a second copy under the status badge takes over below 600px, where the Description column is
   // hidden; each table colours it for its reader. `display: none` removes the idle copy from the

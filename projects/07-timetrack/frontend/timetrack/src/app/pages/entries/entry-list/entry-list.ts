@@ -29,6 +29,7 @@ export class EntryList {
   readonly showEmployee = input(false);
   readonly showActions = input(false);
   readonly busyEntryId = input<number | null>(null);
+  readonly activeProjectIds = input<ReadonlySet<number> | null>(null);
 
   readonly edit = output<TimeEntry>();
   readonly remove = output<TimeEntry>();
@@ -37,6 +38,10 @@ export class EntryList {
   readonly sortChange = output<Sort>();
 
   protected readonly trackById = (_index: number, entry: TimeEntry) => entry.id;
+
+  // Unknown until the page's project list arrives, and then the API stays the boundary: offer it.
+  protected readonly canSubmit = (entry: TimeEntry) =>
+    this.activeProjectIds()?.has(entry.projectId) ?? true;
 
   protected readonly columns = computed(() => [
     'date',
