@@ -1,9 +1,11 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
   inject,
+  Injector,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -44,6 +46,7 @@ export class Projects {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly injector = inject(Injector);
 
   protected readonly columns = ['name', 'description', 'status', 'actions'];
   protected readonly projects = signal<Project[]>([]);
@@ -65,6 +68,12 @@ export class Projects {
 
   protected readonly trackById = (_index: number, project: Project) => project.id;
 
+  // `trackBy` keeps a row's node across a refetch, but a row that changes place — a rename, since the
+  // API orders the list by name — is moved, and taking a node out of the document to move it takes
+  // the focus off it too. So a write remembers where it started, and the refetch hands focus back
+  // once it has rendered (§14: a mutation must not destroy the control that holds focus).
+  private refocusAfterReload: HTMLElement | null = null;
+
   private readonly reload$ = new Subject<void>();
 
   constructor() {
@@ -82,6 +91,7 @@ export class Projects {
       .subscribe((projects) => {
         this.projects.set(projects);
         this.loading.set(false);
+        this.restoreFocus();
       });
 
     this.reload();
@@ -144,12 +154,17 @@ export class Projects {
       catchError((err: unknown) => {
         this.error.set(apiErrorMessage(err, 'Could not load the projects. Check your connection.'));
         this.loading.set(false);
+        this.refocusAfterReload = null;
         return EMPTY;
       }),
     );
   }
 
   private openDialog(project: Project | null): void {
+    // The ✏ that opened it, where Material's own restore puts focus back on close — before a rename
+    // moves its row.
+    const opener = activeElement();
+
     this.dialog
       .open<ProjectDialog, ProjectDialogData, boolean>(ProjectDialog, {
         data: { project },
@@ -164,17 +179,20 @@ export class Projects {
         this.snackBar.open(project ? 'Project updated' : 'Project created', 'Close', {
           duration: 4000,
         });
+        this.refocusAfterReload = opener;
         this.reload();
       });
   }
 
   private run(project: Project, action$: Observable<unknown>, successMessage: string): void {
+    const pressed = activeElement();
     this.busyProjectId.set(project.id);
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.busyProjectId.set(null);
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
+        this.refocusAfterReload = pressed;
         this.reload();
       },
       error: (err: unknown) => {
@@ -185,4 +203,26 @@ export class Projects {
       },
     });
   }
+
+  private restoreFocus(): void {
+    const target = this.refocusAfterReload;
+    this.refocusAfterReload = null;
+    if (!target) return;
+
+    afterNextRender(
+      () => {
+        // Only when the move is what took it: a user who has tabbed on, or opened a dialog meanwhile,
+        // is not dragged back (§14).
+        if (document.activeElement === document.body && target.isConnected) {
+          target.focus();
+        }
+      },
+      { injector: this.injector },
+    );
+  }
+}
+
+function activeElement(): HTMLElement | null {
+  const active = document.activeElement;
+  return active instanceof HTMLElement ? active : null;
 }
