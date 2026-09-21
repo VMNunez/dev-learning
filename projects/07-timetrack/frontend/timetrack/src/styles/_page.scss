@@ -16,6 +16,13 @@
   font: var(--mat-sys-headline-small);
 }
 
+// Every field is 12rem above the phone layout — narrower and a selected "September 2026" no longer fits
+// its trigger. So a bar too narrow for its fields on one line changes shape instead of shrinking them,
+// on the same terms as the stat-card ladder: never an orphan. Four fields need 51rem, which the 1024px
+// and 768px windows do not have (46rem and 45rem once the rail and the padding are taken), so below it
+// the bar is capped at two fields' width — 25rem, plus 1rem of slack so sub-pixel rounding at another root
+// font size cannot push the second field down — and they split 2 + 2 rather than 3 + 1. Three need 38rem,
+// and below it they stack, since two columns would orphan the third. The page's `:host` is the container.
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -24,11 +31,27 @@
   mat-form-field {
     width: 12rem;
   }
+}
 
-  @media (max-width: 599px) {
-    mat-form-field {
-      width: 100%;
-    }
+@container (width < 51rem) {
+  .filter-bar-4 {
+    max-width: 26rem;
+  }
+}
+
+@container (width < 38rem) {
+  .filter-bar-3 mat-form-field {
+    width: 100%;
+  }
+}
+
+@media (max-width: 599px) {
+  .filter-bar {
+    max-width: none;
+  }
+
+  .filter-bar mat-form-field {
+    width: 100%;
   }
 }
 

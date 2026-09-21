@@ -1,4 +1,7 @@
+// The container the shared filter bar measures (`_page.scss`): the page's own width, which the
+// sidenav rail narrows from 1024px up.
 :host {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
