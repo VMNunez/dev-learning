@@ -31,7 +31,17 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[backend]` — decide before touching it: a manager who loses a new member's generated
+  password cannot recover the account the way §14 says. §14's User form section states that a manager who
+  misses it "cannot recover the password, only deactivate the account and recreate it", but
+  `UserService.create` refuses that recreate: `UserRepository.existsByEmail` counts deactivated accounts
+  too, so the same email answers `409` "Email already in use". The member cannot help either — without the
+  password they never reach `PATCH /api/users/me/password`. The one path back today is undocumented:
+  rename the stranded account's email through `PUT /api/users/{id}`, then create the member again. Two
+  outcomes: (a) a MANAGER-only reset that issues a fresh generated password for an account, which reopens
+  the backend after G3 signed it off; (b) keep the API, correct §14 to the real recovery path and state it
+  in the frontend README's Tradeoffs *(Effort: Small for (b), Medium for (a))* *(raised 2026-09-21 while
+  building Step 7d's Team page, verified against `UserService.create` and `UserRepository.existsByEmail`)*
 
 ### Frontend
 
