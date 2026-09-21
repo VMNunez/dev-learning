@@ -60,7 +60,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
-- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space ✅ 07-timetrack — the employee dashboard's `.stat-grid` sizes its cards with `minmax(12.5rem, 1fr)`
+- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
 - `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
@@ -155,7 +155,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
-- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — the Projects table gives Name and Description `overflow-wrap: anywhere`, after a space-less project name set the column's min-content width at 375px and pushed the status and the row actions off screen
+- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` gives every table's name, employee, project and description columns `overflow-wrap: anywhere`, so a space-less value wraps instead of widening its column
 
 ## CSS functions
 - `calc()` — combine compatible values and units in one expression when neither a purely relative nor fixed size represents the constraint ✅ 05-task-manager

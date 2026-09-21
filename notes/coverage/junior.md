@@ -254,7 +254,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `mat-menu` composition — connect a trigger to a menu reference and use labelled menu items when several contextual actions should not remain inline ✅ 07-timetrack — the `Shell` toolbar's `matButton`, labelled with the logged-in user's name, opens a `mat-menu` through `[matMenuTriggerFor]`, holding labelled Change password and Log out items
 - Menu trigger open state — `MatMenuTrigger` sets `aria-expanded` on its host but never changes the host's content, so an indicator inside the trigger, such as a dropdown arrow, shows the open menu only when bound to the trigger's `menuOpened` and `menuClosed` outputs, which fire however the menu closes ✅ 07-timetrack — the `Shell` account trigger sets an `isAccountMenuOpen` signal from `(menuOpened)`/`(menuClosed)` and rotates its `arrow_drop_down` through `[class.open]`
 - Menu vs select — use a menu to invoke commands and a select to choose a value owned by a form or application state
-- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions ✅ 07-timetrack — the entry row icon buttons carry an `aria-label` beside their `matTooltip`, and the rejection note is a `Manager's note:` line under the description, never a tooltip
+- Tooltip purpose — use `matTooltip` for short supplementary help on hover or focus, never as the only name or as a container for essential instructions ✅ 07-timetrack — the entry row icon buttons carry an `aria-label` beside their `matTooltip`, and the rejection note is a `Manager's note:` line under the description, or under the status badge where the Description column is hidden, never a tooltip
 
 ### Form-field composition and selection controls
 
@@ -1412,7 +1412,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Primitive values vs objects — primitives behave as immutable values, while objects, arrays, and functions are reference-bearing mutable objects
 - `typeof` and its edge cases — inspect broad runtime categories while recognising `typeof null === "object"` and that arrays require a separate check
 - `Array.isArray` vs `typeof` — identify arrays explicitly because `typeof` reports them as objects
-- `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
+- `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked ✅ 07-timetrack — `isAuthResponse` checks `id`, `name` and `token` with `typeof`, while `Login` asks `err instanceof UnreadableSessionError` of an object
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
 - Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy ✅ 01-todo-list
 - Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion ✅ 06-hr-portal
@@ -1483,6 +1483,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
 - Prototype delegation — understand that property lookup can continue through an object's prototype chain
 - Class construction and instance methods — read `constructor` and instance behaviour as class syntax built on prototype delegation
+- Class field initialization order — field initializers run top to bottom as the instance is built, before the constructor body, so an initializer that reads a field declared below it sees `undefined`, and a value one initializer's side effect writes into a later field is overwritten when that field's own initializer runs ✅ 07-timetrack — `AuthService` declares `sessionExpired` above `session`, whose initializer's `readStoredSession()` raises it, and `EntryDialog` builds `activeProjectIds` above the form whose validator reads it
 - Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes ✅ 07-timetrack — `AppTitleStrategy extends TitleStrategy` and calls the inherited `buildTitle()` through `this` inside its own `updateTitle()`
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
@@ -1502,7 +1503,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup ✅ 06-hr-portal — the status guards ask `EMPLOYEE_STATUS_FILTERS.includes(value)` for plain membership rather than an index they would then compare to `-1`
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
-- Array sorting — provide an appropriate comparator and account for `sort` mutating the array
+- Array sorting — provide an appropriate comparator and account for `sort` mutating the array ✅ 07-timetrack — `Projects.sortedProjects` sorts, or reverses, a `[...projects]` copy with a status comparator, so the signal's own array is never mutated
 - Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
@@ -1554,12 +1555,12 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### Errors and runtime boundaries
 
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
-- Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
+- Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text ✅ 07-timetrack — `UnreadableSessionError extends Error`, and `Login` tells an unreadable login response from an HTTP failure by `instanceof`, not by its message
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
 - `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently ✅ 03-expense-tracker — the localStorage read resolves the parse failure at its own boundary and logs the original error instead of swallowing it
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
 - Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
-- Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime
+- Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime ✅ 07-timetrack — `isAuthResponse` checks the `POST /api/auth/login` body in `AuthService.login()` and the stored session in `readStoredSession()` before either becomes the session
 
 ### Debugging and performance
 
@@ -1672,6 +1673,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Focus and keyboard operability
 - Focus dies with the element that holds it — a write that succeeds re-renders the view, and the control the user activated is often the one it replaces, so focus falls to the document body and the next Tab restarts at the top of the page (WCAG 2.4.3); the two ways out are keeping one control across the change, its label and icon swapping instead of the element, and naming a target the change cannot remove for the code that restores focus afterwards ✅ 07-timetrack — the Projects row keeps one button that toggles between Deactivate and Reactivate, while /entries' delete hands the confirmation the header's Log hours button as `restoreFocus`, the row it removes being no target at all
+- A moved element loses focus too — a list that reorders moves its surviving rows by taking each node out of the document and inserting it elsewhere, and taking a focused node out drops focus to the document body even though the same element comes back, so keeping one control across a change fails whenever that change can also move its row ✅ 07-timetrack — `Projects.restoreFocus()` refocuses the button a write started from in `afterNextRender` once the refetch has rendered, because the Status sort moves its row
 
 - Everything interactive is keyboard operable — a feature that can only be reached or triggered with a pointer is unusable for keyboard and screen-reader users, and it is the fastest defect to find: put the mouse down and Tab through the page
 - Sequential focus order follows DOM order — the tab sequence comes from the document, not from the visual arrangement, so a control moved on screen by layout is still reached where its markup sits, and a visual order that no longer matches the source is a reading-order defect rather than a styling detail
@@ -1747,7 +1749,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### CSS Grid
 - `grid-template-columns` and `gap` — the two properties set most often on a grid container; understanding `fr` units is required to explain any Grid answer ✅ 04-meal-finder
 - `repeat()` function — `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`; `repeat(auto-fill, minmax(250px, 1fr))` is the responsive card grid pattern that needs no media queries ✅ 04-meal-finder
-- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space ✅ 07-timetrack — the employee dashboard's `.stat-grid` sizes its cards with `minmax(12.5rem, 1fr)`
+- `minmax()` — give a grid track a lower and upper sizing limit so responsive columns remain usable while sharing available space
 - `fr` unit — distributes free space after fixed columns are placed; does not include the gap in the calculation, which is why it is cleaner than percentages for equal columns ✅ 04-meal-finder
 - `auto-fill` vs `auto-fit` — create as many tracks as fit while choosing whether empty tracks remain or collapse so occupied tracks can stretch
 - `grid-column` and `grid-row` — placing an item across multiple tracks using grid line numbers; `grid-column: 1 / -1` spans all columns; `span 2` spans two tracks from wherever the item is placed ✅ 04-meal-finder
@@ -1842,7 +1844,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
-- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — the Projects table gives Name and Description `overflow-wrap: anywhere`, after a space-less project name set the column's min-content width at 375px and pushed the status and the row actions off screen
+- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` gives every table's name, employee, project and description columns `overflow-wrap: anywhere`, so a space-less value wraps instead of widening its column
 
 ### CSS functions
 - `calc()` — combine compatible values and units in one expression when neither a purely relative nor fixed size represents the constraint ✅ 05-task-manager
@@ -2142,7 +2144,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - Git configuration scopes — distinguish system, global, and local settings and use repository-specific overrides when appropriate
 - Author vs committer identity — configure `user.name` and `user.email` deliberately and recognise that rebasing or cherry-picking can preserve the author while recording a different committer ✅ 01-todo-list
-- Line-ending policy — recognise CRLF/LF noise and follow repository configuration such as `.gitattributes` instead of committing mass rewrites
+- Line-ending policy — recognise CRLF/LF noise and follow repository configuration such as `.gitattributes` instead of committing mass rewrites ✅ 07-timetrack — `.prettierrc` sets `endOfLine: "auto"`, so `prettier --check` follows the CRLF checkout `core.autocrlf` produces instead of demanding a rewrite of every file
 - Executable-bit changes — recognise permission-only diffs and avoid accidental file-mode changes across operating systems
 - Signed Git objects awareness — recognise verified commit or tag requirements without treating signing infrastructure or hosting branch protection as junior ownership
 
