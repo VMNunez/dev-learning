@@ -2,6 +2,11 @@ export const ROLES = ['EMPLOYEE', 'MANAGER'] as const;
 
 export type Role = (typeof ROLES)[number];
 
+export const ROLE_LABELS: Record<Role, string> = {
+  EMPLOYEE: 'Employee',
+  MANAGER: 'Manager',
+};
+
 export function isRole(value: unknown): value is Role {
   return ROLES.includes(value as Role);
 }
