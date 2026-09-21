@@ -135,8 +135,8 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
           <td mat-cell *matCellDef="let entry">
             <app-status-badge [status]="entry.status" />
-            <!-- The Description column is hidden below 600px; this copy takes over there. One of the
-                 two is always display: none (`_table.scss`). -->
+            <!-- The Description column is hidden below a 56rem page (`approvals.scss`); this copy takes
+                 over there. One of the two is always display: none. -->
             @if (entry.status === 'REJECTED' && entry.rejectionNote) {
               <span class="rejection-note">Rejection note: {{ entry.rejectionNote }}</span>
             }

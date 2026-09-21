@@ -13,3 +13,19 @@
 .rejection-note {
   color: var(--mat-sys-on-surface-variant);
 }
+
+// Seven columns are one more than any other table carries, and with ordinary data they need about 51rem
+// of page — which the 1024px window (46rem once the rail and the padding are taken) and the 768px one
+// (45rem) do not have. Past the wrapper, the pinned actions sit over Status, one of the two things a row
+// here is for. So this table drops its least load-bearing column below 56rem of page instead of only on
+// a phone — 5rem of slack for longer names — and the rejection note takes over under the badge, the same
+// swap `_table.scss` runs below 600px for every table. Measured on the page's `:host` container.
+@container (width < 56rem) {
+  .mat-column-description {
+    display: none;
+  }
+
+  .mat-column-status .rejection-note {
+    display: block;
+  }
+}
