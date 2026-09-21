@@ -1,12 +1,13 @@
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
+  ElementRef,
   inject,
   Injector,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +25,7 @@ import {
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
+import { refocusAfterRender } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Project } from '../../shared/models/project';
 import { ProjectDialog, ProjectDialogData } from './project-dialog/project-dialog';
@@ -49,6 +51,13 @@ export class Projects {
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
+
+  // The header's own action, which every refetch leaves in place: where focus lands when the control a
+  // write started from is gone, such as the empty state's button once the first project exists.
+  private readonly newProjectButton = viewChild.required<string, ElementRef<HTMLButtonElement>>(
+    'newProjectButton',
+    { read: ElementRef },
+  );
 
   protected readonly columns = ['name', 'description', 'status', 'actions'];
   protected readonly projects = signal<Project[]>([]);
@@ -93,9 +102,10 @@ export class Projects {
 
   // `trackBy` keeps a row's node across a refetch, but a row that changes place — a deactivation
   // under the Status sort, a rename under the Name one — is moved, and taking a node out of the
-  // document to move it takes the focus off it too. So a write remembers where it started, and the
-  // refetch hands focus back once it has rendered (§14: a mutation must not destroy the control that
-  // holds focus).
+  // document to move it takes the focus off it too; the first project created from the empty state
+  // removes the button that opened its dialog outright. So a write remembers where it started, and the
+  // refetch hands focus back once it has rendered, to that control or else to the header's (§14: a
+  // mutation must not destroy the control that holds focus).
   private refocusAfterReload: HTMLElement | null = null;
 
   private readonly reload$ = new Subject<void>();
@@ -237,16 +247,7 @@ export class Projects {
     this.refocusAfterReload = null;
     if (!target) return;
 
-    afterNextRender(
-      () => {
-        // Only when the move is what took it: a user who has tabbed on, or opened a dialog meanwhile,
-        // is not dragged back (§14).
-        if (document.activeElement === document.body && target.isConnected) {
-          target.focus();
-        }
-      },
-      { injector: this.injector },
-    );
+    refocusAfterRender(this.injector, [target, this.newProjectButton().nativeElement]);
   }
 }
 
