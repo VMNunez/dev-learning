@@ -56,6 +56,18 @@ That ledger is append-only and authoritative — a review never re-raises what i
   differ, so a keyboard user still sees where they landed *(Effort: Small)* *(raised 2026-09-21 by Victor's
   browser check of the approve action while verifying Step 7c, and measured the same day with a scripted
   mouse click and a scripted Enter on the same button)*
+- [ ] **[Low]** `[frontend]` — decide before touching it: the shell's pending-approvals badge disagrees with
+  the page under it until the manager navigates. Rejecting on `/approvals` leaves the queue one row shorter
+  while the sidebar's Approvals badge still shows the old count, because the shell reads the count for
+  itself after each `NavigationEnd` and nothing tells it about a write — exactly what §13's shared-state
+  table rules ("deliberately not live-synced … Keeping it live would need exactly the shared store §20
+  rejects, for a badge"). Victor judged the mismatch worse than the machinery. Two defensible outcomes:
+  (a) a root-provided holder of the count — a signal plus a `refresh()` — that the shell renders and
+  `/approvals` and the manager dashboard call after each approve or reject; it needs its own §6 rule, since
+  "Service boundary" forbids a `core/services/` service holding state and only `AuthService` is exempt, and
+  it reverses the §13 row and the §20 tradeoff it cites; (b) keep §13 as written and state the mismatch in
+  the frontend README's Tradeoffs *(Effort: Small)* *(raised 2026-09-21 by Victor while verifying Step 7c's
+  reject at `/approvals`: "me molesta ese comportamiento en el sidebar")*
 
 ## Beyond the current gate
 
