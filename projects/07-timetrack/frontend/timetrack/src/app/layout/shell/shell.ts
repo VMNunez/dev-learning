@@ -46,7 +46,7 @@ const NAV_LINKS: readonly NavLink[] = [
   { label: 'Entries', route: '/entries', roles: ['EMPLOYEE', 'MANAGER'] },
   { label: 'Projects', route: '/projects', roles: ['MANAGER'] },
   { label: 'Approvals', route: '/approvals', roles: ['MANAGER'], countsPendingApprovals: true },
-  { label: 'Team', route: '/team', roles: ['MANAGER'], pending: true },
+  { label: 'Team', route: '/team', roles: ['MANAGER'] },
   { label: 'Reports', route: '/reports', roles: ['MANAGER'], pending: true },
 ];
 

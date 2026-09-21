@@ -52,7 +52,9 @@
   // pushing the rest of the row off screen: past it, that one word breaks. Chromium applies a cell's
   // `max-width` when it measures the column, which CSS 2.1 leaves undefined; an engine that ignored it
   // would only let that one value widen its column, and the table would scroll under the pinned actions.
+  // An email is one long word by construction, so it is the value that cap was written for.
   .mat-column-name,
+  .mat-column-email,
   .mat-column-employee,
   .mat-column-project {
     max-width: 12rem;

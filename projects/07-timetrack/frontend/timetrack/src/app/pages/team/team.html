@@ -1,0 +1,134 @@
+<header class="page-header">
+  <!-- Focusable by script only: Retry is taken away by the reload it starts, and this is where the
+       focus it held lands. -->
+  <h1 #pageHeading class="page-title" tabindex="-1">Team</h1>
+
+  <button #addMemberButton matButton="filled" type="button" (click)="openCreate()">
+    <mat-icon>person_add</mat-icon>
+    Add member
+  </button>
+</header>
+
+@if (error(); as message) {
+  <div class="page-state">
+    <p class="page-error" role="alert">{{ message }}</p>
+    <button matButton="outlined" type="button" (click)="retry()">Retry</button>
+  </div>
+} @else {
+  <!-- Four cards, not the Projects page's three: an account carries two independent axes, its role and
+       its status (§14). -->
+  <section class="stat-grid stat-grid-4" aria-label="Team at a glance" [attr.aria-busy]="loading()">
+    @let current = counts();
+    <app-stat-card label="Total" [value]="current ? '' + current.total : null" />
+    <app-stat-card label="Employees" [value]="current ? '' + current.employees : null" />
+    <app-stat-card label="Managers" [value]="current ? '' + current.managers : null" />
+    <app-stat-card label="Inactive" [value]="current ? '' + current.inactive : null" />
+  </section>
+
+  @if (loading() && users().length === 0) {
+    <div class="page-state">
+      <mat-progress-spinner mode="indeterminate" diameter="40" aria-label="Loading the team" />
+    </div>
+  } @else if (users().length === 0) {
+    <div class="page-state">
+      <mat-icon class="empty-illustration" aria-hidden="true">group_add</mat-icon>
+      <p class="empty-message">No team members yet. Add your first member.</p>
+      <button matButton="filled" type="button" (click)="openCreate()">Add member</button>
+    </div>
+  } @else {
+    <section class="table-area" [attr.aria-busy]="loading()">
+      <div class="table-wrapper">
+        <table
+          mat-table
+          [dataSource]="sortedUsers()"
+          [trackBy]="trackById"
+          matSort
+          matSortActive="status"
+          matSortDirection="asc"
+          matSortDisableClear
+          (matSortChange)="onSort($event)"
+        >
+          <!-- Sorted here, not by the API: the list is unpaged, so the browser holds every row. -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+          </ng-container>
+
+          <!-- Plain text, not a pill: a role is an attribute of the account, and the one pill on the row
+               is kept for its state, so the eye finds an inactive account without reading every word. -->
+          <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
+            <td mat-cell *matCellDef="let user">{{ roleLabel(user) }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let user">
+              <span class="status-pill" [class.status-active]="user.active">
+                {{ user.active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- `stickyEnd`: pinned to the right edge, so a table too wide for its wrapper scrolls its
+               reading columns under the buttons instead of scrolling the buttons out of view. -->
+          <ng-container matColumnDef="actions" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>
+              <span class="cdk-visually-hidden">Actions</span>
+            </th>
+            <td mat-cell *matCellDef="let user">
+              <!-- `disabledInteractive`, as on every row action: a native `<button disabled>` cannot
+                   hold focus, so disabling the one just pressed would drop focus to `<body>` (§14).
+                   The re-entry guard lives in TypeScript. -->
+              <button
+                matIconButton
+                type="button"
+                aria-label="Edit member"
+                matTooltip="Edit"
+                disabledInteractive
+                [disabled]="busyUserId() === user.id"
+                (click)="openEdit(user)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <!-- One button that toggles 🗑 / ↺, as on Projects, so the node holding focus survives the
+                   refetch. On the caller's own row it stays, disabled but focusable, so its tooltip can
+                   say why: a missing button would read as a broken row. -->
+              <button
+                matIconButton
+                type="button"
+                [attr.aria-label]="user.active ? 'Deactivate member' : 'Reactivate member'"
+                [matTooltip]="
+                  isSelf(user)
+                    ? 'You cannot deactivate your own account'
+                    : user.active
+                      ? 'Deactivate'
+                      : 'Reactivate'
+                "
+                disabledInteractive
+                [disabled]="busyUserId() === user.id || isSelf(user)"
+                (click)="toggleActive(user)"
+              >
+                <mat-icon>{{ user.active ? 'delete' : 'restore' }}</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="columns"></tr>
+          <tr mat-row *matRowDef="let row; columns: columns"></tr>
+        </table>
+      </div>
+
+      @if (loading()) {
+        <div class="table-overlay">
+          <mat-progress-spinner mode="indeterminate" diameter="40" aria-label="Loading the team" />
+        </div>
+      }
+    </section>
+  }
+}
