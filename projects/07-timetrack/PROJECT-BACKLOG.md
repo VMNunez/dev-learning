@@ -41,10 +41,46 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Medium
 
-*No open Medium tasks.*
+- [ ] **[Medium]** `[frontend]` — at a 1024px window `/approvals` still scrolls sideways with ordinary data, and
+  the pinned actions column then covers the whole Status column. Measured by the cold design review of
+  Step 7c in headless Chrome with no space-less names: wrapper overflow 153px with All statuses and 114px
+  on the default SUBMITTED queue; employee 99, project 131, date 117, hours 88, description 144 (its `9rem`
+  floor), status 114, actions 193 — 886px in a 736px wrapper, the pinned strip starting at x=541 and Status
+  at x=540, so every badge sits under it at scroll start, and on non-SUBMITTED rows under a blank strip.
+  Without the "Awaiting another manager" note the overflow is still 57px (All statuses) and 18px (queue).
+  It lasts from the 1024px window to about 1174px; `/entries` as either role, `/projects` and both
+  dashboards fit at 1024. §14 Responsive intent rejected a fixed floor precisely because it "pushed
+  `/approvals` into a sideways scroll at 1024px", and names status and row actions as the two things a row
+  is for. Likely fix: hide Description — switching the rejection note to its copy under the badge — with a
+  container query on the page width that reaches the 1024px window rather than only below 600px, and
+  settle the 10rem note's width in the pinned column with it *(Effort: Small)* *(raised 2026-09-21 by the
+  cold design review of Step 7c, DR-1, screenshots `rv-real-approvals-1024-start.png` and
+  `rv-tbl-approvals-1024-start.png` in that session's scratchpad)*
 
 #### Low
 
+- [ ] **[Low]** `[frontend]` — pressing **Retry** on a page's error state drops keyboard focus to `<body>`: the
+  button is part of the error block the successful reload replaces. Measured by the cold design review on
+  the manager dashboard (Enter on Retry, reload succeeds, `document.activeElement` is `<body>`) and the same
+  on `/approvals`, so every page with a Retry does it. The accessibility floor's rule is written for
+  mutations, and a reload is not one, so no rule covers it yet. Likely fix: once the reload has rendered,
+  hand focus through `refocusAfterRender()` to the page's `<h1>` (focusable by script on the dashboard and
+  `/approvals` already) or its header action *(Effort: Small)* *(raised 2026-09-21 by the cold design
+  review of Step 7c, DR-2)*
+- [ ] **[Low]** `[frontend]` — decide before touching it: the sidebar's pending-approvals badge wears
+  Material's default error red (`#BA1A1A`), while §14 Visual identity keeps "the four status colours as the
+  only saturated ink on screen" and the entries it counts are SUBMITTED, which is blue; the red reads
+  almost as REJECTED's `#C62828`. Contrast is fine (white text, about 6.4:1). Two outcomes: (a) theme it
+  through the `mat.badge-overrides` block `shell.scss` already holds (`primary` / `on-primary`, or the
+  SUBMITTED blue as its own token); (b) record the red as a deliberate notification colour in §14
+  *(Effort: Small)* *(raised 2026-09-21 by the cold design review of Step 7c, DR-3; the same question was
+  put to Victor during that day's browser check and left unanswered)*
+- [ ] **[Low]** `[frontend]` — the manager dashboard titles its list "Waiting for your review" (§14's
+  wireframe wording), yet the list carries the caller's own SUBMITTED entries, which §8 bars them from
+  reviewing and which the row labels "Awaiting another manager"; the "Pending approval" card and the badge
+  count them too. Likely fix: title the section "Pending approvals", true of every row it lists, and
+  correct the §14 wireframe with it — the dashboard is one of the two README screenshots §14 Visual QA
+  names *(Effort: Small)* *(raised 2026-09-21 by the cold design review of Step 7c, DR-4)*
 - [ ] **[Low]** `[frontend]` — the page title's focus ring shows after a **mouse** action. On `/approvals`,
   and on the manager dashboard that shares the rule, approving or rejecting a row moves focus to the view's
   `<h1>` because the row it came from disappears (§14 accessibility floor), and `_page.scss` styles
