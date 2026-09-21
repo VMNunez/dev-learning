@@ -81,8 +81,12 @@ mat-nav-list {
   // The pending count on the Approvals label. Material's list clips a label's text box (`overflow:
   // hidden`, for its ellipsis), and the badge's default offset lifts it 4px above the line, where that
   // clip cut its top off. Its own offset token brings it down onto the line, a small gap after the word.
+  // Teal, not Material's default error red: the count is work waiting, not a fault, and red already
+  // means REJECTED here (§14 Colour palette) — so a red 5 beside Approvals read as five failures.
   @include mat.badge-overrides(
     (
+      background-color: var(--mat-sys-primary),
+      text-color: var(--mat-sys-on-primary),
       container-offset: -1.125rem 0 -1.125rem 0.25rem,
     )
   );
