@@ -29,8 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatBadgeModule } from '@angular/material/badge';
-import { catchError, EMPTY, filter, map, switchMap } from 'rxjs';
-import { EntryService } from '../../core/services/entry-service';
+import { filter, map } from 'rxjs';
+import { PendingApprovals } from '../../core/state/pending-approvals';
 import { Logo } from '../../shared/components/logo/logo';
 
 interface NavLink {
@@ -71,7 +71,7 @@ const NAV_LINKS: readonly NavLink[] = [
 })
 export class Shell {
   private readonly authService = inject(AuthService);
-  private readonly entryService = inject(EntryService);
+  private readonly pendingApprovalsState = inject(PendingApprovals);
   private readonly router = inject(Router);
   private readonly breakpointObserver = inject(BreakpointObserver);
   protected readonly isDesktop = toSignal(
@@ -92,34 +92,32 @@ export class Shell {
     return role ? NAV_LINKS.filter((link) => link.roles.includes(role)) : [];
   });
 
-  // The shell owns this count and reads it for itself (§13): it is not live-synced with the pages that
-  // change it — that would take the shared store §20 rejects, for a badge — so it is re-read after every
-  // navigation instead, and an approval shows in the badge as soon as the manager moves on.
-  protected readonly pendingApprovals = signal(0);
+  // The badge's count lives in the app-wide `PendingApprovals` (§13), because the pages under the shell
+  // change it: an approval re-reads it at once, so the badge never disagrees with the queue beside it.
+  protected readonly pendingApprovals = this.pendingApprovalsState.count;
   protected readonly pendingBadge = computed(() => {
     const count = this.pendingApprovals();
     return count > 99 ? '99+' : `${count}`;
   });
 
   constructor() {
-    inject(DestroyRef).onDestroy(() => this.dialog.closeAll());
+    // The shell lives exactly as long as a session — logging out, or a `401`, routes to /login outside
+    // it — so its end is where the count is cleared, or the next manager to log in would see this one's.
+    inject(DestroyRef).onDestroy(() => {
+      this.dialog.closeAll();
+      this.pendingApprovalsState.clear();
+    });
 
     // `NavigationEnd` also closes the navigation that created the shell, so the first read needs no
-    // trigger of its own. Only a manager has an Approvals link; an employee's shell never asks.
+    // trigger of its own, and entries other people submitted or reviewed since are counted on the way.
+    // Only a manager has an Approvals link; an employee's shell never asks.
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
         filter(() => this.authService.session()?.role === 'MANAGER'),
-        switchMap(() =>
-          this.entryService.getEntries({ status: 'SUBMITTED' }, { page: 0, size: 1 }).pipe(
-            // A badge that fails to load keeps its last count rather than turning the shell into an
-            // error: the Approvals page itself reports the failure when it is opened.
-            catchError(() => EMPTY),
-          ),
-        ),
         takeUntilDestroyed(),
       )
-      .subscribe((page) => this.pendingApprovals.set(page.page.totalElements));
+      .subscribe(() => this.pendingApprovalsState.refresh());
 
     this.router.events
       .pipe(

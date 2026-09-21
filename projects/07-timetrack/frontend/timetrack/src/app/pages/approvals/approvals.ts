@@ -33,6 +33,7 @@ import { AuthService } from '../../core/services/auth-service';
 import { EntryService } from '../../core/services/entry-service';
 import { ProjectService } from '../../core/services/project-service';
 import { UserService } from '../../core/services/user-service';
+import { PendingApprovals } from '../../core/state/pending-approvals';
 import {
   RejectDialog,
   RejectDialogData,
@@ -103,6 +104,8 @@ export class Approvals {
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
+  // The shell's badge counts this queue; each write re-reads it so the two never disagree (§13).
+  private readonly pendingApprovals = inject(PendingApprovals);
 
   // Approving or rejecting takes the row out of the queue, so the control the user pressed is always
   // destroyed by the refetch (§14: a mutation must not destroy the control that holds focus). This
@@ -253,6 +256,7 @@ export class Approvals {
             this.pageHeading().nativeElement.focus();
           }
           this.reload();
+          this.pendingApprovals.refresh();
         },
         error: (err: unknown) => {
           this.busyEntryId.set(null);
@@ -293,6 +297,7 @@ export class Approvals {
         this.snackBar.open('Entry rejected', 'Close', { duration: 4000 });
         this.pageHeading().nativeElement.focus();
         this.reload();
+        this.pendingApprovals.refresh();
       });
   }
 
