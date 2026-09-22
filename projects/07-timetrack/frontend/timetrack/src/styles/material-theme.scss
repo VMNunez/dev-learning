@@ -38,10 +38,26 @@ html {
     )
   );
 
+  // Material draws a keyboard focus ring on every component that carries `.mat-focus-indicator`, but
+  // only once asked: without this its ring stays `display: none`, and an icon button shows focus only
+  // through its faint state layer. Primary, like the page title's own ring, so focus reads one way.
+  @include mat.strong-focus-indicators(
+    (
+      border-color: var(--mat-sys-primary),
+    )
+  );
+
   .mat-toolbar {
     @include mat.icon-button-overrides(
       (
         icon-color: var(--mat-sys-on-primary),
+      )
+    );
+
+    // A button's ring sits outside it, on the toolbar's own primary: a primary ring there is invisible.
+    @include mat.strong-focus-indicators(
+      (
+        border-color: var(--mat-sys-on-primary),
       )
     );
   }
