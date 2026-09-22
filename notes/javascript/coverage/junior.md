@@ -100,6 +100,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
 - Array sorting — provide an appropriate comparator and account for `sort` mutating the array ✅ 07-timetrack — `Projects.sortedProjects` sorts, or reverses, a `[...projects]` copy with a status comparator, so the signal's own array is never mutated
+- Locale-aware string comparison — `localeCompare()` and `Intl.Collator` order text by a language's rules, so accented and differently cased names sort where a reader expects them, while `<` and the default `sort()` compare UTF-16 code units and put "Álvaro" after "Zoe" ✅ 07-timetrack — `Team` sorts its Name column through `new Intl.Collator(LOCALE_ID, { sensitivity: 'base' })`, so "Iván" follows "Ana" instead of trailing every unaccented name
 - Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
