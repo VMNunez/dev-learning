@@ -45,17 +45,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[frontend]` — the README screenshots §14 Visual QA names do not exist yet, and cannot be taken
-  from the development database as it stands: its users, projects and entries are test fixtures ("Test
-  Member", "Admin Manager Editado", a project called "nuevo nombreeeee…" built to stress the `12rem`
-  column cap), so a capture reads as a test run rather than as a product. Before gate G5 — `readme-audit`
-  places the images in the README's Screenshots section — remove the test rows, load a small realistic
-  demo dataset (a handful of employees with Spanish names, three or four client projects, a month of
-  entries across every status with one rejection note), and capture at 1280×800 with DevTools' Capture
-  screenshot into `projects/07-timetrack/screenshots/`: the manager dashboard and the entries page as the
-  checklist requires, plus Team and Reports, the two pages Step 7d added *(Effort: Small)* *(raised
-  2026-09-22 while closing Step 7d: Victor chose to take the README screenshots on realistic data rather
-  than on the test fixtures, so the Visual QA's screenshot item moves here)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -238,6 +228,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-22 · **[Low]** `[frontend]` — README screenshots captured on a realistic demo dataset, not the test fixtures → `screenshots/` manager-dashboard, entries, team, reports at 1280×800 (`79be29c2`); PLANNING §14 Visual QA item ticked; README placement stays `readme-audit`'s at G5; no concept, coverage/README/PROGRESS n/a
 - 2026-09-22 · **[Low]** `[frontend]` — §14 Accessibility floor no longer claims every Material component draws the 3px ring: it names the buttons, icon buttons, list items, menu items, options and sort headers that carry `.mat-focus-indicator`, and states that an outlined `mat-form-field` shows focus by thickening its own outline — DECISION, no code change: forcing a ring onto form fields was rejected, since it would duplicate a focus signal Material already draws and reach into its internal classes → coverage: the `angular-material/junior` "Strong focus indicators are opt-in" bullet authored that morning made the same overclaim and was narrowed in both copies (`8c03caeb`), its ✅ 07-timetrack marker and clause kept; frontend README n/a — it never repeated the claim; PLANNING §14 + §0/§22 counts; PROGRESS n/a. Evidence: the review's `ff.js` found no focus-indicator element on a focused `mat-select`, and `.mat-focus-indicator` ships in 17 Material entry points, `form-field` not among them
 - 2026-09-22 · **[Low]** `[frontend]` — the five form dialogs' error line rings like the page title when a failed save hands it focus: `_dialog.scss` gives `.dialog-error:focus-visible` a 3px primary outline, `0.25rem` offset and `fit-content` width, replacing the browser's default black `outline: auto` drawn across the dialog's full 432px (`9ce2b3f4`) → coverage: `html/junior` "A visible focus indicator is required" (✅ 07) and `css/junior` "`:focus` vs `:focus-visible`" (✅ 04) already covered and marked; frontend README already represented (the dialogs' failed-save focus entry); PLANNING §14 Accessibility floor (the second script-moved focus target) + Spacing (its offset named) + §0/§22 counts; PROGRESS n/a. Verified headless with the review's `errline.js`: after Enter in a field and a `500`, the line holds `solid 3px rgb(4, 107, 94)` offset 4px over its 204px of text, unclipped; `ng test` 41/41
 - 2026-09-22 · **[Low]** `[frontend]` — the employee dashboard drops Date below a `23.5rem` page, not `23rem`: the four columns need a 373px page, so the 368px rung left the table 2–5px too wide at 400–403px windows, and §14 cited 371px against its own rule (`66f1e442`) → coverage: `css/junior` "Content-driven breakpoints" (✅ 04) and `css/middle` "Container queries" (✅ 07) already covered and marked; frontend README n/a — a rung inside a decision already represented; PLANNING §14 Responsive intent figure corrected + §0/§22 counts; PROGRESS n/a. Verified headless: overflow 0 at 399, 400, 401, 403, 405, 408, 409 and 414px windows, Date hidden up to 405 and shown from 408
