@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +25,7 @@ import { filter, map, Observable } from 'rxjs';
 import { UserService } from '../../../core/services/user-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
+import { refocusAfterFailedSave } from '../../../shared/focus';
 import { Role, ROLE_LABELS, ROLES } from '../../../shared/models/auth';
 import { CreateUserResponse, User } from '../../../shared/models/user';
 
@@ -53,6 +62,8 @@ export class UserDialog {
   private readonly dialogRef = inject(MatDialogRef<UserDialog, UserDialogResult>);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private readonly data = inject<UserDialogData>(MAT_DIALOG_DATA);
 
   protected readonly user = this.data.user;
@@ -143,6 +154,7 @@ export class UserDialog {
   private showError(err: HttpErrorResponse): void {
     this.saving.set(false);
     this.form.enable({ emitEvent: false });
+    refocusAfterFailedSave(this.injector, this.host.nativeElement);
     if (this.isSelf) {
       this.form.controls.role.disable({ emitEvent: false });
     }

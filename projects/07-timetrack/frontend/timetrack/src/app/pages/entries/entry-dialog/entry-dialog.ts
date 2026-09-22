@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
@@ -28,6 +36,7 @@ import { EntryService } from '../../../core/services/entry-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { fromIsoDate, toIsoDate } from '../../../shared/dates';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
+import { refocusAfterFailedSave } from '../../../shared/focus';
 import { Project } from '../../../shared/models/project';
 import { CreateTimeEntryRequest, TimeEntry } from '../../../shared/models/time-entry';
 
@@ -72,6 +81,8 @@ export class EntryDialog {
   private readonly dialogRef = inject(MatDialogRef<EntryDialog, boolean>);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private readonly data = inject<EntryDialogData>(MAT_DIALOG_DATA);
 
   protected readonly entry = this.data.entry;
@@ -193,6 +204,7 @@ export class EntryDialog {
   private showError(err: HttpErrorResponse): void {
     this.saving.set(null);
     this.form.enable({ emitEvent: false });
+    refocusAfterFailedSave(this.injector, this.host.nativeElement);
 
     if (!placeFieldErrors(err, this.form.controls, FORM_FIELDS)) {
       this.error.set(apiErrorMessage(err, 'Could not save the entry. Try again.'));

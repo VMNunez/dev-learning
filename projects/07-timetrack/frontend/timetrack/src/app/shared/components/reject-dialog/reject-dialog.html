@@ -9,7 +9,7 @@
   </p>
 
   <form id="reject-form" class="dialog-form" [formGroup]="form" (ngSubmit)="reject()">
-    <p class="dialog-error" role="alert">{{ error() }}</p>
+    <p class="dialog-error" role="alert" tabindex="-1">{{ error() }}</p>
 
     <mat-form-field appearance="outline">
       <mat-label>Reason</mat-label>

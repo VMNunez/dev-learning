@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -22,6 +30,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
 import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
+import { refocusAfterFailedSave } from '../../focus';
 import { confirmDiscard } from '../confirm-dialog/confirm-discard';
 
 // The request fields the API can refuse one by one; confirmPassword never leaves the browser.
@@ -65,6 +74,8 @@ export class ChangePasswordDialog {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly mismatchMatcher = new MismatchErrorStateMatcher();
@@ -137,6 +148,7 @@ export class ChangePasswordDialog {
         error: (err: HttpErrorResponse) => {
           this.loading.set(false);
           this.form.enable({ emitEvent: false });
+          refocusAfterFailedSave(this.injector, this.host.nativeElement);
 
           if (!placeFieldErrors(err, this.form.controls, SERVER_FIELDS)) {
             this.error.set(apiErrorMessage(err, 'Could not change the password. Try again.'));

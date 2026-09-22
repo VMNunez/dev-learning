@@ -1,6 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +24,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { filter } from 'rxjs';
 import { EntryService } from '../../../core/services/entry-service';
 import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
+import { refocusAfterFailedSave } from '../../focus';
 import { TimeEntry } from '../../models/time-entry';
 import { confirmDiscard } from '../confirm-dialog/confirm-discard';
 
@@ -47,6 +56,8 @@ export class RejectDialog {
   private readonly dialogRef = inject(MatDialogRef<RejectDialog, boolean>);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private readonly data = inject<RejectDialogData>(MAT_DIALOG_DATA);
 
   protected readonly entry = this.data.entry;
@@ -110,6 +121,7 @@ export class RejectDialog {
   private showError(err: HttpErrorResponse): void {
     this.saving.set(false);
     this.form.enable({ emitEvent: false });
+    refocusAfterFailedSave(this.injector, this.host.nativeElement);
 
     // A 409 lands here too: another manager may have reviewed the entry since the queue was loaded,
     // and it is no longer SUBMITTED. That refusal names no field, so it reads above the input.

@@ -18,3 +18,21 @@ export function refocusAfterRender(
     { injector },
   );
 }
+
+// A form dialog disables its controls while it saves, and a disabled control cannot hold focus, so the
+// one the user typed in drops focus to `<body>`. When the save fails, the controls come back but the focus
+// does not: once the server's errors have rendered — Material writes `aria-invalid` in that render — it
+// goes to the first control that carries one, or else to the dialog's own error line, which takes
+// `tabindex="-1"` for it. Only while focus is still on `<body>`, as above.
+export function refocusAfterFailedSave(injector: Injector, host: HTMLElement): void {
+  afterNextRender(
+    () => {
+      if (document.activeElement !== document.body) return;
+      const target =
+        host.querySelector<HTMLElement>('[aria-invalid="true"]') ??
+        host.querySelector<HTMLElement>('.dialog-error');
+      target?.focus();
+    },
+    { injector },
+  );
+}

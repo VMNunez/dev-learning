@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  Injector,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +24,7 @@ import { filter, Observable } from 'rxjs';
 import { ProjectService } from '../../../core/services/project-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
+import { refocusAfterFailedSave } from '../../../shared/focus';
 import { CreateProjectRequest, Project } from '../../../shared/models/project';
 
 export interface ProjectDialogData {
@@ -42,6 +51,8 @@ export class ProjectDialog {
   private readonly dialogRef = inject(MatDialogRef<ProjectDialog, boolean>);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private readonly data = inject<ProjectDialogData>(MAT_DIALOG_DATA);
 
   protected readonly project = this.data.project;
@@ -122,6 +133,7 @@ export class ProjectDialog {
   private showError(err: HttpErrorResponse): void {
     this.saving.set(false);
     this.form.enable({ emitEvent: false });
+    refocusAfterFailedSave(this.injector, this.host.nativeElement);
 
     // A duplicate name is a 409 carrying `fieldErrors.name`, so it lands under the input like a 400.
     if (!placeFieldErrors(err, this.form.controls, FORM_FIELDS)) {
