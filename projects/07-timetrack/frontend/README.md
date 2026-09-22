@@ -2,8 +2,6 @@
 
 Angular frontend for the TimeTrack project.
 
-*This README will be completed when the Angular frontend is built (Step 7).*
-
 ---
 
 ## Folder structure
@@ -42,8 +40,6 @@ src/app/
 ---
 
 ## Key patterns
-
-*To be filled in when the frontend is complete.*
 
 - `authGuard` + `managerGuard` — route protection per role
 - HTTP interceptor — JWT attached automatically to every outgoing request
@@ -87,7 +83,7 @@ src/app/
 | `confirm-dialog` | Delete entry, deactivate user, deactivate project |
 | `reject-dialog` | Approvals page — manager enters the rejection note |
 | `logo` | Login page (branding panel and card) and the shell toolbar — one SVG sized by each host's own class through `:host`, instead of a copy per page |
-| `stat-card` | Employee dashboard, and next the manager dashboard and Reports — one outlined card with its own pulsing skeleton, so a real `0` and "not loaded yet" never look the same on any page |
+| `stat-card` | Both dashboards, Projects, Team and Reports — one outlined card with its own pulsing skeleton, so a real `0` and "not loaded yet" never look the same on any page |
 
 ---
 
@@ -119,13 +115,13 @@ src/app/
 - `/entries` opening on the current month over all months — a timesheet is worked and reviewed by month and the query stays bounded; in exchange the first days of a month open on an empty table, so the empty state offers "Show all months" while a month is selected
 - Sorting the Projects table in the browser over sending `sort` to the API as `/entries` does — `GET /api/projects` returns every project in one unpaged response, so the browser holds the whole set and orders all of it, and the name order reuses the API's own, reversed for descending, to keep the database's collation; in exchange a very long project list is sorted and scrolled client-side, with no paginator and no Description column on phones
 - The theme's teal for the sidebar's pending-approvals badge over Material's default error red — the count is work waiting, not a fault, and red already means REJECTED in this app, so a red number beside Approvals read as that many failures; in exchange the badge draws less attention than a notification red, which a to-do count does not need
+- A dialog for a new member's generated password over the copyable snackbar first planned — the plaintext exists only in the `POST /api/users` response, so it must not vanish on a timeout or under the next snackbar; the dialog opens on Copy, reports whether the browser accepted the copy, and closes only on Done, never on Escape or a backdrop click; in exchange adding a member takes one extra click
+- Sorting the Team table in the browser, with a locale `Intl.Collator` for the Name column only, over adding a `sort` parameter to `GET /api/users` — the API already returns every account ordered by status and then name, so Status and Role are stable sorts that keep its order, and only a pure name order needs a comparison, which runs in the app's own `en-GB` locale; in exchange that one order can differ from the database collation on edge cases
 - A project's own `--project-active` token over reusing the APPROVED status colour — the two share a value and its measured contrast, but a project's state and a time entry's status mean different things and must be free to move apart; in exchange the palette carries two greens that look identical today
 
 ---
 
 ## How to run alone
-
-*Angular project setup coming in Step 7.*
 
 ```
 cd projects/07-timetrack/frontend
