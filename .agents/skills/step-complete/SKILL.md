@@ -143,17 +143,17 @@ invoked `coverage-bullet-add` and `coverage-mark` as it landed, so by the time y
 checklist normally already carries the step's concepts and there is nothing here to write.
 
 Read the **whole step's diff**, resolved mechanically rather than from memory: the step began at the
-commit that last repointed §0, so
-`git log -1 --format=%H -G'Current step' -- {PROJECT_PATH}/PLANNING.md` gives that SHA and
-`git diff <sha>..HEAD -- {PROJECT_PATH}` gives the range — **scoped to the project path**, which also
-keeps the pieces' own `notes/` commits out of it.
+last §15 close, which this ritual committed as a `✅` on that step's heading, so
+`git log -1 --format=%H -G'^###.*Step .*✅' -- {PROJECT_PATH}/PLANNING.md`, run before this close's own
+PLANNING commit, gives that SHA — check its subject is a step close, since a `plan-audit` that rewrites
+a `✅` heading matches too — and `git diff <sha>..HEAD -- {PROJECT_PATH}` gives the range, **scoped to
+the project path**, which also keeps the pieces' own `notes/` commits out of it.
 
-**`-G`, never `-S`.** A repoint rewrites the cell's *value*; the label `Current step` still appears
-exactly once before and after, so the occurrence count never changes and `-S` cannot see the commit at
-all — it silently returns the commit that *created* §0 months earlier, and the verification then reads a
-quarter of the project's history as "the step's diff" without erroring. **Sanity-check the SHA against
-the branch point: if it is older, the derivation missed and the branch point is the range.** If §0 was
-never repointed on this branch, say so and use the branch point. Then ask of every concept
+**Never anchor it on the `Current step` cell.** Every commit that recounts open backlog tasks rewrites
+it — raises and plan rulings as well as `backlog-task-close` — so its last commit is routinely a
+same-day recount and the range shrinks to a handful of files without erroring. **Sanity-check the SHA
+against the branch point: if it is older, the previous step closed on an earlier branch and the branch
+point is the range.** If no §15 step carries a `✅` yet, use the branch point. Then ask of every concept
 step 2 extracted, and of every one the diff shows that step 2 did not: **is there a bullet, and does it
 carry a `✅ NN-slug` naming this project?** The diff is the source, deliberately: a piece that recorded
 nothing because it had no coverage-worthy concept and a piece that skipped its recording emit the same
