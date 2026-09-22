@@ -43,22 +43,15 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
       <td mat-cell *matCellDef="let entry">
         <app-status-badge [status]="entry.status" />
-        <!-- The Description column is hidden below 600px, and with it the only line that says what to
-             fix; this copy takes over there. One of the two is always display: none (`_table.scss`). -->
         @if (entry.status === 'REJECTED' && entry.rejectionNote) {
           <span class="rejection-note">Manager's note: {{ entry.rejectionNote }}</span>
         }
       </td>
     </ng-container>
 
-    <!-- `stickyEnd`: pinned to the right edge, so a table too wide for its wrapper scrolls its reading
-         columns under the buttons instead of scrolling the buttons out of view. -->
     <ng-container matColumnDef="actions" stickyEnd>
       <th mat-header-cell *matHeaderCellDef><span class="cdk-visually-hidden">Actions</span></th>
       <td mat-cell *matCellDef="let entry">
-        <!-- `disabledInteractive` on every row action: a native `<button disabled>` cannot hold
-             focus, so disabling the one just pressed drops focus to `<body>` (§14 Accessibility
-             floor). The re-entry guard lives in the page's TypeScript instead. -->
         @switch (entry.status) {
           @case ('DRAFT') {
             <button
@@ -83,9 +76,6 @@
             >
               <mat-icon>delete</mat-icon>
             </button>
-            <!-- The API refuses to submit an entry whose project was archived after it was logged
-                 (§8), and would say so only after the press. The page already knows from the list it
-                 loaded, so the row says it up front, and names the way out edit still offers. -->
             @if (canSubmit(entry)) {
               <button
                 matIconButton

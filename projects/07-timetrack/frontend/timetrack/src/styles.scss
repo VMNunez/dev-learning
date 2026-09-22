@@ -9,14 +9,8 @@
   --status-approved: #2e7d32;
   --status-rejected: #c62828;
 
-  // A project's own state, not an entry status: same green as APPROVED on purpose — its contrast is
-  // already measured at badge size (4.6:1) — but its own token, because the two mean different things
-  // and must be free to move apart.
   --project-active: #2e7d32;
 
-  // The ✓ in the approvals queue, on the same terms: an action a manager can take, not the status a
-  // row already has, so it carries the same measured green under a name of its own. Its ✕ twin needs
-  // no token — the theme already has an error role, and that is exactly what a rejection is.
   --action-approve: #2e7d32;
 }
 
@@ -25,26 +19,16 @@ html {
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
-  // Reset the user agent margin.
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */
 
-// A filter select's panel grows to its longest option instead of copying the field's width,
-// so "September 2026" stays on one line; long project names still wrap inside the cap.
 .filter-select-panel {
   min-width: 12rem;
   max-width: min(24rem, calc(100vw - 2rem));

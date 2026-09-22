@@ -32,13 +32,9 @@ import { CreateUserResponse, User } from '../../../shared/models/user';
 
 export interface UserDialogData {
   user: User | null;
-  // The caller's own account. Editable, except the role: §8 refuses a self-demotion with a `409`, so the
-  // form does not offer the change the API would refuse.
   isSelf: boolean;
 }
 
-// A create carries the generated password back to the page, which shows it once; an edit carries
-// nothing the page needs beyond "refetch".
 export type UserDialogResult =
   { kind: 'created'; member: CreateUserResponse } | { kind: 'updated' };
 
@@ -84,7 +80,6 @@ export class UserDialog implements HoldsOneTimeSecret {
       nonNullable: true,
       validators: [Validators.required, Validators.email, Validators.maxLength(255)],
     }),
-    // A new account opens as an employee — the common case, and the one with no approval rights.
     role: new FormControl<Role>(
       { value: this.user?.role ?? 'EMPLOYEE', disabled: this.data.isSelf },
       { nonNullable: true, validators: [Validators.required] },
@@ -101,8 +96,6 @@ export class UserDialog implements HoldsOneTimeSecret {
       .subscribe(() => this.close());
   }
 
-  // A create in flight is carrying the one response that holds the new member's password, so `/team`'s
-  // guard asks here too — the dialog showing it does not exist yet.
   holdsOneTimeSecret(): boolean {
     return !this.isEdit && this.saving();
   }
@@ -129,8 +122,6 @@ export class UserDialog implements HoldsOneTimeSecret {
     if (this.form.invalid || this.saving()) return;
 
     this.saving.set(true);
-    // Disabled while saving, as in the entry and project dialogs: an email typed during the request
-    // would sit on screen against an account that saved the old one.
     this.form.disable({ emitEvent: false });
 
     this.write()
@@ -142,13 +133,9 @@ export class UserDialog implements HoldsOneTimeSecret {
   }
 
   private write(): Observable<UserDialogResult> {
-    // `getRawValue()`, not `value`: a disabled control — the caller's own role — is left out of `value`,
-    // and the update needs it.
     const { name, email, role } = this.form.getRawValue();
     const request = { name: name.trim(), email: email.trim(), role };
 
-    // No `active` on the update: omitted, the API leaves the account as it is — the row's own action
-    // owns deactivation and the way back.
     return this.user
       ? this.userService
           .updateUser(this.user.id, request)
@@ -166,8 +153,6 @@ export class UserDialog implements HoldsOneTimeSecret {
       this.form.controls.role.disable({ emitEvent: false });
     }
 
-    // A duplicate email is a 409 carrying `fieldErrors.email`, so it lands under the input like a 400;
-    // a promotion refused while the user still holds drafts (§8) belongs to no field and reads above.
     if (!placeFieldErrors(err, this.form.controls, FORM_FIELDS)) {
       this.error.set(apiErrorMessage(err, 'Could not save the member. Try again.'));
     }

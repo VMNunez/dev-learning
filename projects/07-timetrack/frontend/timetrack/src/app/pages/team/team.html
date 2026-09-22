@@ -1,6 +1,4 @@
 <header class="page-header">
-  <!-- Focusable by script only: Retry is taken away by the reload it starts, and this is where the
-       focus it held lands. -->
   <h1 #pageHeading class="page-title" tabindex="-1">Team</h1>
 
   <button #addMemberButton matButton="filled" type="button" (click)="openCreate()">
@@ -15,8 +13,6 @@
     <button matButton="outlined" type="button" (click)="retry()">Retry</button>
   </div>
 } @else {
-  <!-- Four cards, not the Projects page's three: an account carries two independent axes, its role and
-       its status (§14). -->
   <section class="stat-grid stat-grid-4" aria-label="Team at a glance" [attr.aria-busy]="loading()">
     @let current = counts();
     <app-stat-card label="Total" [value]="current ? '' + current.total : null" />
@@ -48,7 +44,6 @@
           matSortDisableClear
           (matSortChange)="onSort($event)"
         >
-          <!-- Sorted here, not by the API: the list is unpaged, so the browser holds every row. -->
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
             <td mat-cell *matCellDef="let user">{{ user.name }}</td>
@@ -56,17 +51,12 @@
 
           <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef>Email</th>
-            <!-- An address has no space for the column's 12rem cap to break at, so the browser would split
-                 it wherever it could ("company." / "com"); `<wbr>` offers the one break that reads right,
-                 after the @, and copies as nothing. -->
             <td mat-cell *matCellDef="let user">
               @let at = user.email.indexOf('@');
               {{ user.email.slice(0, at + 1) }}<wbr />{{ user.email.slice(at + 1) }}
             </td>
           </ng-container>
 
-          <!-- Plain text, not a pill: a role is an attribute of the account, and the one pill on the row
-               is kept for its state, so the eye finds an inactive account without reading every word. -->
           <ng-container matColumnDef="role">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Role</th>
             <td mat-cell *matCellDef="let user">{{ roleLabel(user) }}</td>
@@ -81,16 +71,11 @@
             </td>
           </ng-container>
 
-          <!-- `stickyEnd`: pinned to the right edge, so a table too wide for its wrapper scrolls its
-               reading columns under the buttons instead of scrolling the buttons out of view. -->
           <ng-container matColumnDef="actions" stickyEnd>
             <th mat-header-cell *matHeaderCellDef>
               <span class="cdk-visually-hidden">Actions</span>
             </th>
             <td mat-cell *matCellDef="let user">
-              <!-- `disabledInteractive`, as on every row action: a native `<button disabled>` cannot
-                   hold focus, so disabling the one just pressed would drop focus to `<body>` (§14).
-                   The re-entry guard lives in TypeScript. -->
               <button
                 matIconButton
                 type="button"
@@ -102,8 +87,6 @@
               >
                 <mat-icon>edit</mat-icon>
               </button>
-              <!-- Kept on the caller's own row, disabled but focusable, so its tooltip can point at the
-                   account menu's Change password, which asks for the current one. -->
               <button
                 matIconButton
                 type="button"
@@ -117,9 +100,6 @@
               >
                 <mat-icon>key</mat-icon>
               </button>
-              <!-- One button that toggles 🗑 / ↺, as on Projects, so the node holding focus survives the
-                   refetch. On the caller's own row it stays, disabled but focusable, so its tooltip can
-                   say why: a missing button would read as a broken row. -->
               <button
                 matIconButton
                 type="button"

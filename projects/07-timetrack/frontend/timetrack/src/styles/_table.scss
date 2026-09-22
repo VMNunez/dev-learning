@@ -1,11 +1,5 @@
 @use '@angular/material' as mat;
 
-// Table-level building blocks shared by every data table, for the same reason `_page.scss` holds the
-// page's: four tables built on different days had each copied the wrapper, the loading overlay and the
-// column rules, so a change to one convention had to be made four times or the tables drifted apart.
-
-// The border, the radius and the clip sit on the positioned box, so the loading overlay is clipped to
-// the same rounded corners instead of painting four square ones over them.
 .table-area {
   position: relative;
   border: 1px solid var(--mat-sys-outline-variant);
@@ -13,9 +7,6 @@
   overflow: hidden;
 }
 
-// A refetch keeps the rows on screen and dims them under a spinner, rather than blanking the table.
-// Above the pinned actions column: `stickyEnd` writes `z-index: 1` inline on every one of its cells, so
-// at the default level the overlay would dim the row and leave its buttons looking live.
 .table-overlay {
   position: absolute;
   inset: 0;
@@ -25,8 +16,6 @@
   background: color-mix(in srgb, var(--mat-sys-surface) 60%, transparent);
 }
 
-// Every table sits in this wrapper so a narrow viewport scrolls the table, not the page (§14 Tables).
-// A scroll-state container too, so the pinned actions column below can ask whether anything is under it.
 .table-wrapper {
   overflow-x: auto;
   container-type: scroll-state;
@@ -35,24 +24,12 @@
     width: 100%;
   }
 
-  // The column conventions, keyed on the class MatTable writes from each column's name. Nested under
-  // the wrapper on purpose: Material's table stylesheet sets `text-align: start` on
-  // `.mdc-data-table__cell` and `.mat-mdc-header-cell` with one class and enters the document after
-  // this one, so a one-class `.mat-column-actions` would lose that tie and the actions would drift left.
   .mat-column-date,
   .mat-column-hours,
   .mat-column-actions {
     white-space: nowrap;
   }
 
-  // A name is read whole, so these columns are exactly as narrow as their longest word. With `break-word`
-  // — unlike `anywhere` — a word's full width counts when the table measures the column, so a crowded
-  // table can never hand them less ("Employe / e"), and a short name reserves no more than it needs. The
-  // 12rem cap is what stops a value with no spaces in it from setting its column as wide as itself and
-  // pushing the rest of the row off screen: past it, that one word breaks. Chromium applies a cell's
-  // `max-width` when it measures the column, which CSS 2.1 leaves undefined; an engine that ignored it
-  // would only let that one value widen its column, and the table would scroll under the pinned actions.
-  // An email is one long word by construction, so it is the value that cap was written for.
   .mat-column-name,
   .mat-column-email,
   .mat-column-employee,
@@ -61,10 +38,6 @@
     overflow-wrap: break-word;
   }
 
-  // A description is prose, read a phrase at a time, so it takes a floor instead of its longest word:
-  // `anywhere` lets a pasted URL or identifier wrap without widening the column, and the floor gives back
-  // the minimum `anywhere` takes away, which would otherwise be a single letter. Material's cells are
-  // border-box, so 9rem leaves 7rem of text — a phrase per line, and room for the rejection note under it.
   .mat-column-description {
     min-width: 9rem;
     overflow-wrap: anywhere;
@@ -74,29 +47,17 @@
     font-variant-numeric: tabular-nums;
   }
 
-  // Shrink-wrapped and right-aligned: left in a wide cell, the icons float in the middle of empty space.
   .mat-column-actions {
     width: 1%;
     text-align: end;
   }
 
-  // The pinned actions column (`stickyEnd`) meets the columns scrolling under it along this hairline —
-  // only while something is under it. `scrollable: inline-end` holds exactly while the table can still
-  // scroll toward the buttons, so a table that fits, or one scrolled to its end, shows no line, and an
-  // actions column with nothing in it never frames a blank strip. Without the line, a badge half under
-  // the buttons reads as a rendering fault rather than as more table to the right. The CDK puts the
-  // class on the first cell pinned to the right edge of every row; a browser without scroll-state
-  // queries draws no line at all.
   @container scroll-state(scrollable: inline-end) {
     .mat-mdc-table-sticky-border-elem-right {
       border-inline-start: 1px solid var(--mat-sys-outline-variant);
     }
   }
 
-  // The review actions of the approvals queue and the manager dashboard. The icon button reads its own
-  // `icon-color` token, not the cell's text colour, so the colour goes through `icon-button-overrides`;
-  // a `mat-icon-overrides` would also stop the glyph inheriting the button's disabled colour while a
-  // write is in flight (§14 Accessibility floor).
   .approve-action {
     @include mat.icon-button-overrides(
       (
@@ -113,16 +74,6 @@
     );
   }
 
-  // Stands in for row actions the API would refuse, and says why — "Awaiting another manager" on a
-  // manager's own entry, "Project inactive" on a draft whose project was archived. Muted and unboxed on
-  // purpose: an explanation, not a status, since the row's badge already carries one and a second pill
-  // would read as another. A block of its own under whatever buttons the row keeps, at a fixed width
-  // pushed to the cell's end: inline beside them, an inline-block sizes itself against the whole cell
-  // rather than the space the buttons leave, overflows the nowrap line, and Material's
-  // `text-overflow: ellipsis` on the cell then hides it behind a lone "…". A fixed width is also what the
-  // table measures when it sizes the column, so the column grows to it and no further. 6.5rem sets both
-  // notes on two lines ("Awaiting another / manager"): at 10rem, on one, the pinned column took 3.5rem
-  // more than its buttons need and pushed /approvals and /entries into a sideways scroll at 1024px.
   .action-note {
     display: block;
     inline-size: 6.5rem;
@@ -132,11 +83,6 @@
     white-space: normal;
   }
 
-  // Why an entry was rejected, the one line an employee has to act on. It lives under the description,
-  // and a second copy under the status badge takes over wherever the Description column is hidden —
-  // below 600px here, and /approvals below a wider page of its own; each table colours it for its
-  // reader. `display: none` removes the idle copy from the accessibility tree as well as from the
-  // layout, so at any width the note is seen and read once.
   .rejection-note {
     display: block;
     font: var(--mat-sys-body-small);
@@ -148,18 +94,11 @@
     margin-block-start: 0.5rem;
   }
 
-  // A cell that stacks a second line under its value — the rejection note under a description or a
-  // badge, the action note under a row's buttons — grows past the row's 44px minimum, and Material's
-  // cells carry no vertical padding (`padding: 0 16px`), so the stack sat flush against both borders.
-  // Only these cells take it: padded everywhere, every row holding icon buttons and every name that
-  // wraps onto two lines would lose the compact 44px. A note on its own ("Awaiting another manager")
-  // fits the row and needs none.
   .mat-mdc-cell:has(> .rejection-note),
   .mat-mdc-cell:has(> .mat-mdc-icon-button ~ .action-note) {
     padding-block: 0.5rem;
   }
 
-  // The least load-bearing column goes first, rather than every column shrinking (§14 Tables).
   @media (max-width: 599px) {
     .mat-column-description {
       display: none;
@@ -171,13 +110,6 @@
   }
 }
 
-// A record's own state — a project or an account, Active or Inactive — in the Projects and Team tables
-// (§14). Both states wear the same pill, because one badge among bare words reads as an exception rather
-// than as a state — and the row's text colour is left alone: a dim quiet enough to clear the 4.5:1
-// floor was too quiet to notice, so the pill carries the whole signal. Same mould as the entries'
-// `status-badge` (hairline border at 30%, 8% tint, 4px radius, label-small in small caps), with a
-// record's own colours: `--project-active` and, for inactive, the neutral outline tokens — never a
-// --status-* colour, which would claim this shares an entry status's meaning.
 .status-pill {
   display: inline-flex;
   align-items: center;

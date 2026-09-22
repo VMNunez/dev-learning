@@ -1,8 +1,6 @@
 <h2 mat-dialog-title>Reject entry</h2>
 
 <mat-dialog-content>
-  <!-- Which entry is being rejected: the queue row is behind the scrim, and a note written against
-       the wrong row is the one mistake this dialog can make. -->
   <p class="dialog-context">
     {{ entry.userName }} · {{ entry.projectName }} · {{ entry.date | date: 'd MMM y' }} ·
     {{ entry.hours | number: '1.0-2' }}h
@@ -31,8 +29,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <!-- Pressing Cancel must not blur the focused field first: the blur marks it touched and its
-       required error would flash for the length of the click. -->
   <button
     matButton
     type="button"

@@ -33,7 +33,6 @@ import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
 import { refocusAfterFailedSave } from '../../focus';
 import { confirmDiscard } from '../confirm-dialog/confirm-discard';
 
-// The request fields the API can refuse one by one; confirmPassword never leaves the browser.
 const SERVER_FIELDS = ['currentPassword', 'newPassword'] as const;
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {

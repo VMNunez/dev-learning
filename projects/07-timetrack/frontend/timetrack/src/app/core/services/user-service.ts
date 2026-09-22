@@ -18,8 +18,6 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly userUrl = `${environment.apiUrl}/users`;
 
-  // Unpaged by contract: a company's headcount is tens of rows, and every consumer — the Team page, the
-  // manager dashboard's count and the Approvals employee filter — needs the whole list to be correct.
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.userUrl);
   }
@@ -32,13 +30,10 @@ export class UserService {
     return this.http.put<User>(this.userUrlFor(id), request);
   }
 
-  // The API's DELETE is the soft delete: the account keeps every entry it logged and can no longer log in.
   deactivateUser(id: number): Observable<void> {
     return this.http.delete<void>(this.userUrlFor(id));
   }
 
-  // A manager's reset of someone else's password; the API refuses the caller's own account, which has
-  // `changePassword` instead. POST with no body: every call mints a new password.
   resetPassword(id: number): Observable<PasswordResetResponse> {
     return this.http.post<PasswordResetResponse>(`${this.userUrlFor(id)}/password-reset`, null);
   }

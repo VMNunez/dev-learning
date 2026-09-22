@@ -15,7 +15,6 @@ export class ReportService {
     return this.http.get<ReportSummary>(`${this.reportUrl}/summary`, { params: monthParam(month) });
   }
 
-  // Ordered by the API — hours descending, then name — so the page renders the rows as they arrive.
   getHoursByProject(month: string): Observable<ProjectHours[]> {
     return this.http.get<ProjectHours[]>(`${this.reportUrl}/by-project`, {
       params: monthParam(month),

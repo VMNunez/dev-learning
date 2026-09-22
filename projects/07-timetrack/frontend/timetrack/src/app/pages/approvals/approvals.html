@@ -1,6 +1,4 @@
 <header class="page-header">
-  <!-- Focusable by script only: every approval and rejection takes its row away, and Retry is taken
-       away by the reload it starts; this is where the focus they held lands. -->
   <h1 #pageHeading class="page-title" tabindex="-1">Approvals</h1>
 </header>
 
@@ -24,8 +22,6 @@
       panelClass="filter-select-panel"
     >
       <mat-option [value]="null">All employees</mat-option>
-      <!-- Deactivated accounts stay in the list: their hours are still in the queue, and a filter
-           that could not reach them would leave those rows unfindable by employee. -->
       @for (user of users() ?? []; track user.id) {
         <mat-option [value]="user.id">
           {{ user.active ? user.name : user.name + ' (inactive)' }}
@@ -99,9 +95,6 @@
         matSortDisableClear
         (matSortChange)="onSort($event)"
       >
-        <!-- Every column but Description sorts, on the server: the page holds 20 rows of the whole
-             queue, so ordering them in the browser would reorder one page and mislead about the rest.
-             The API maps `employee` and `project` to their names; Description has no sort key. -->
         <ng-container matColumnDef="employee">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Employee</th>
           <td mat-cell *matCellDef="let entry">{{ entry.userName }}</td>
@@ -136,28 +129,17 @@
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
           <td mat-cell *matCellDef="let entry">
             <app-status-badge [status]="entry.status" />
-            <!-- The Description column is hidden below a 56rem page (`approvals.scss`); this copy takes
-                 over there. One of the two is always display: none. -->
             @if (entry.status === 'REJECTED' && entry.rejectionNote) {
               <span class="rejection-note">Rejection note: {{ entry.rejectionNote }}</span>
             }
           </td>
         </ng-container>
 
-        <!-- `stickyEnd`: pinned to the right edge, so a table too wide for its wrapper scrolls its
-             reading columns under the buttons instead of scrolling the buttons out of view. -->
         <ng-container matColumnDef="actions" stickyEnd>
           <th mat-header-cell *matHeaderCellDef>
             <span class="cdk-visually-hidden">Actions</span>
           </th>
           <td mat-cell *matCellDef="let entry">
-            <!-- Only a SUBMITTED entry can be reviewed (§8), so an approved or rejected row carries
-                 no action at all — the API would refuse it with a 409. The caller's own row keeps
-                 its place in the shared queue for the manager who may review it, and says why it
-                 carries no buttons here: dropping them silently would read as a broken row.
-                 `disabledInteractive` on both: a native `<button disabled>` cannot hold focus, so
-                 disabling the one just pressed would drop focus to `<body>` (§14). The re-entry
-                 guard lives in TypeScript instead. -->
             @if (entry.status === 'SUBMITTED' && isOwnEntry(entry)) {
               <span class="action-note">Awaiting another manager</span>
             } @else if (canReview(entry)) {

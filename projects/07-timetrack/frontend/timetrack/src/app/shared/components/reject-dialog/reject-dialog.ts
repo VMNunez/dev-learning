@@ -32,7 +32,6 @@ export interface RejectDialogData {
   entry: TimeEntry;
 }
 
-// The control is named after the API's field so a `fieldErrors.rejectionNote` lands under it.
 const FORM_FIELDS = ['rejectionNote'] as const;
 
 @Component({
@@ -103,10 +102,6 @@ export class RejectDialog {
     if (this.form.invalid || this.saving()) return;
 
     this.saving.set(true);
-    // Disabled while saving, the ruling entry-dialog took on 2026-09-18 and project-dialog followed:
-    // the note is the whole payload of this write, so a sentence typed while the request is in
-    // flight would sit on screen against the different note the entry actually carries — and this
-    // one the employee reads.
     this.form.disable({ emitEvent: false });
 
     this.entryService
@@ -123,8 +118,6 @@ export class RejectDialog {
     this.form.enable({ emitEvent: false });
     refocusAfterFailedSave(this.injector, this.host.nativeElement);
 
-    // A 409 lands here too: another manager may have reviewed the entry since the queue was loaded,
-    // and it is no longer SUBMITTED. That refusal names no field, so it reads above the input.
     if (!placeFieldErrors(err, this.form.controls, FORM_FIELDS)) {
       this.error.set(apiErrorMessage(err, 'Could not reject the entry. Try again.'));
     }

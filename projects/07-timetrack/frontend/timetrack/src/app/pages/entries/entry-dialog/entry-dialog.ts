@@ -52,8 +52,6 @@ interface ProjectOption {
 
 const FORM_FIELDS = ['projectId', 'date', 'hours', 'description'] as const;
 
-// The archived project stays in the list, so the select shows what the entry holds, but it is invalid:
-// the API refuses to save or to submit an entry against it (§10), and this says so before Save does.
 function activeProject(activeIds: ReadonlySet<number>): ValidatorFn {
   return (control) =>
     control.value == null || activeIds.has(control.value) ? null : { inactiveProject: true };
@@ -71,7 +69,6 @@ function activeProject(activeIds: ReadonlySet<number>): ValidatorFn {
     MatButtonModule,
     MatProgressSpinner,
   ],
-  // The native adapter parses typed input with Date.parse, which cannot read a day-first 19/09/2026.
   providers: [provideDateFnsAdapter(), { provide: MAT_DATE_LOCALE, useValue: enGB }],
   templateUrl: './entry-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,7 +86,6 @@ export class EntryDialog {
   protected readonly isEdit = this.entry !== null;
   protected readonly canSubmit = this.entry?.status === 'DRAFT';
   protected readonly today = new Date();
-  // Declared before the form: its validator reads this set as the control is constructed.
   private readonly activeProjectIds = new Set(
     this.data.projects.filter((project) => project.active).map((project) => project.id),
   );
@@ -97,7 +93,6 @@ export class EntryDialog {
   protected readonly saving = signal<'save' | 'submit' | null>(null);
   protected readonly error = signal<string | null>(null);
 
-  // Once a save lands, the page must refetch even if a later step fails and the user cancels.
   private saved = false;
 
   protected readonly form = new FormGroup({
@@ -117,8 +112,6 @@ export class EntryDialog {
   });
 
   constructor() {
-    // An entry on an archived project cannot be saved where it is, so the reason is shown as the
-    // dialog opens rather than after a Save that could never succeed.
     if (this.form.controls.projectId.hasError('inactiveProject')) {
       this.form.controls.projectId.markAsTouched();
     }
@@ -181,7 +174,6 @@ export class EntryDialog {
 
     return update$.pipe(
       switchMap(() => {
-        // The edit is stored now, so if the submit fails Cancel has nothing left to discard.
         this.saved = true;
         this.form.markAsPristine();
         return this.entryService.submitEntry(entryId);
@@ -192,7 +184,6 @@ export class EntryDialog {
   private buildRequest(): CreateTimeEntryRequest {
     const { projectId, date, hours, description } = this.form.getRawValue();
 
-    // The required validators guarantee these three are set before a request is built.
     return {
       projectId: projectId!,
       date: toIsoDate(date!),
@@ -216,7 +207,6 @@ export class EntryDialog {
       .filter((project) => this.activeProjectIds.has(project.id))
       .map(({ id, name }) => ({ id, name }));
 
-    // An entry may still point at a project archived after it was logged; keep it selectable.
     if (this.entry && !options.some((option) => option.id === this.entry!.projectId)) {
       options.push({ id: this.entry.projectId, name: `${this.entry.projectName} (inactive)` });
     }

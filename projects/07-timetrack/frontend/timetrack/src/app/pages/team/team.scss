@@ -1,5 +1,3 @@
-// The container the shared `.stat-grid` ladder measures (`_page.scss`): the page's own width, which
-// the sidenav rail narrows from 1024px up.
 :host {
   container-type: inline-size;
   display: flex;
@@ -7,12 +5,6 @@
   gap: 2rem;
 }
 
-// The least load-bearing columns go first when the page is too narrow for the table, as Description
-// does on the other tables (§14 Tables), measured on the page's own width like /approvals, because the
-// three pinned actions must never cover Status. Email goes below a 40rem page, where the whole row
-// (about 617px) stops fitting — it is the widest value and the one the manager needs least at a glance,
-// and the edit dialog still shows it. Role follows below 28rem, where name, role, status and actions
-// (about 425px) stop fitting: the cards count the roles, and the edit dialog shows each member's.
 @container (width < 40rem) {
   .mat-column-email {
     display: none;

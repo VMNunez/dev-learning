@@ -58,10 +58,6 @@ mat-sidenav-container {
 }
 
 mat-sidenav-content {
-  // `box-sizing` is not decoration here. Material sizes `.mat-drawer-content` with `height: 100%` and
-  // scrolls it, so under the default content-box this padding is *added* to the container's height:
-  // the scroll box ran 48px past the bottom of the window, taking its own down arrow and the last
-  // table row with it. Invisible until a page was tall enough to scroll — /entries pages at 10 rows.
   box-sizing: border-box;
   padding: 1.5rem;
 
@@ -70,7 +66,6 @@ mat-sidenav-content {
   }
 }
 
-// Wide monitors cap the page, not each block inside it, so cards and tables share one right edge.
 .page-content {
   max-inline-size: 80rem;
 }
@@ -78,11 +73,6 @@ mat-sidenav-content {
 mat-nav-list {
   padding-inline: 0.5rem;
 
-  // The pending count on the Approvals label. Material's list clips a label's text box (`overflow:
-  // hidden`, for its ellipsis), and the badge's default offset lifts it 4px above the line, where that
-  // clip cut its top off. Its own offset token brings it down onto the line, a small gap after the word.
-  // Teal, not Material's default error red: the count is work waiting, not a fault, and red already
-  // means REJECTED here (§14 Colour palette) — so a red 5 beside Approvals read as five failures.
   @include mat.badge-overrides(
     (
       background-color: var(--mat-sys-primary),

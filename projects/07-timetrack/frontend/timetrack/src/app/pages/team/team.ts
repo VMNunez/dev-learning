@@ -60,23 +60,18 @@ export class Team implements HoldsOneTimeSecret {
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
-  // The one comparison this page makes in the browser (see `sortedUsers`), in the app's own locale.
   private readonly collator = new Intl.Collator(inject(LOCALE_ID), { sensitivity: 'base' });
 
-  // The header's own action, which every refetch leaves in place: where focus lands when the control a
-  // write started from is gone, and where the password dialog hands it back.
   private readonly addMemberButton = viewChild.required<string, ElementRef<HTMLButtonElement>>(
     'addMemberButton',
     { read: ElementRef },
   );
 
-  // Where Retry's focus lands, as on every page with an error state (§14).
   private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
     'pageHeading',
     { read: ElementRef },
   );
 
-  // A cell's `let user` reaches the template untyped, so the label is looked up here, where it is a User.
   protected readonly roleLabel = (user: User) => ROLE_LABELS[user.role];
   protected readonly columns = ['name', 'email', 'role', 'status', 'actions'];
   protected readonly users = signal<User[]>([]);
@@ -84,13 +79,9 @@ export class Team implements HoldsOneTimeSecret {
   protected readonly error = signal<string | null>(null);
   protected readonly busyUserId = signal<number | null>(null);
 
-  // §8 refuses a self-deactivation and a self-demotion with a `409`, so the caller's own row keeps its
-  // edit but not its deactivate, and the dialog keeps its role fixed. The API stays the boundary.
   private readonly currentUserId = computed(() => this.authService.session()?.id ?? null);
   protected readonly isSelf = (user: User) => user.id === this.currentUserId();
 
-  // Counted over the whole list (§14): Total and the role split include deactivated accounts, and
-  // Inactive cuts across both roles. Skeletons until the first load, then kept across a refetch.
   protected readonly counts = computed(() => {
     if (this.loading() && this.users().length === 0) return null;
 
@@ -104,10 +95,6 @@ export class Team implements HoldsOneTimeSecret {
     };
   });
 
-  // Sorted here, as on Projects: the list is unpaged, so the browser holds every account. The API's own
-  // order is active first, then name (§10), which is the Status sort ascending — the page opens on it.
-  // Status and Role are stable sorts, so each group keeps the API's name order and its collation. Name
-  // is the one order the API never serves on its own, so it is the one compared here.
   private readonly sort = signal<Sort>({ active: 'status', direction: 'asc' });
 
   protected readonly sortedUsers = computed(() => {
@@ -129,19 +116,12 @@ export class Team implements HoldsOneTimeSecret {
 
   protected readonly trackById = (_index: number, user: User) => user.id;
 
-  // A write remembers the control it started from, and the refetch hands focus back to it once it has
-  // rendered — or to the header's action when the refetch took it away (§14).
   private refocusAfterReload: HTMLElement | null = null;
 
   private readonly reload$ = new Subject<void>();
 
-  // The dialog showing a new member's generated password, while it is open: the one thing on this page
-  // the app can never fetch again, so `/team`'s route refuses to leave while it is set.
   private passwordDialog: MatDialogRef<GeneratedPasswordDialog> | null = null;
 
-  // The password is at stake from the moment its request is sent, not from the moment it is shown: the
-  // server has already written it, and a page that leaves discards the only response carrying it. So the
-  // guard also holds while a reset is in flight here, or a create in the member form.
   private resetInFlight = false;
   private userDialog: MatDialogRef<UserDialog> | null = null;
 
@@ -178,8 +158,6 @@ export class Team implements HoldsOneTimeSecret {
     );
   }
 
-  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
-  // `<body>`; the heading is on screen in every state, failed again or loaded.
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
@@ -198,15 +176,10 @@ export class Team implements HoldsOneTimeSecret {
     this.openDialog(user);
   }
 
-  // Deactivating locks someone out, so it asks first; reactivating only undoes it and asks nothing.
   toggleActive(user: User): void {
-    // The buttons stay focusable while the write is in flight (`disabledInteractive`), and the caller's
-    // own deactivate stays focusable to explain itself, so this is the guard that refuses both.
     if (this.busyUserId() === user.id || this.isSelf(user)) return;
 
     if (!user.active) {
-      // `PUT` needs the whole account, so it replays the row as the browser last fetched it — as the
-      // Projects reactivation does, and with the same accepted cost (§14).
       this.run(
         user,
         this.userService.updateUser(user.id, {
@@ -253,9 +226,6 @@ export class Team implements HoldsOneTimeSecret {
   private openDialog(user: User | null): void {
     const opener = activeElement();
 
-    // Out of `closeOnNavigation` for the same reason as the password dialog: Back would dispose the form
-    // before the guard runs, and with it a create still in flight. A Back the guard lets through still
-    // closes it, through the `closeAll()` this page runs when it is destroyed.
     this.userDialog = this.dialog.open<UserDialog, UserDialogData, UserDialogResult>(UserDialog, {
       data: { user, isSelf: user !== null && this.isSelf(user) },
       disableClose: true,
@@ -279,8 +249,6 @@ export class Team implements HoldsOneTimeSecret {
         }
 
         const { name, email, generatedPassword } = result.member;
-        // The empty state's button that may have opened the form is gone once the first member exists;
-        // the header's action is the one target the refetch cannot remove.
         this.showPassword(
           { name, email, password: generatedPassword, reason: 'created' },
           this.addMemberButton().nativeElement,
@@ -288,9 +256,6 @@ export class Team implements HoldsOneTimeSecret {
       });
   }
 
-  // A manager's reset, for a member who lost the password they were given: the old one stops working at
-  // once, so it asks first. The row stays as it is — nothing in the list changed — so no refetch, and
-  // the new password comes back in the same dialog a new account's does.
   resetPassword(user: User): void {
     if (this.busyUserId() === user.id || this.isSelf(user)) return;
 
@@ -334,9 +299,6 @@ export class Team implements HoldsOneTimeSecret {
       });
   }
 
-  // The one place a generated password is shown. `disableClose` stops Escape and the backdrop, not the
-  // browser's Back: by default the overlay disposes itself on that history change, before the route's
-  // guard can refuse it — so it also opts out of `closeOnNavigation`, and `/team`'s guard reads the ref.
   private showPassword(data: GeneratedPasswordDialogData, restoreFocus?: HTMLElement): void {
     this.passwordDialog = this.dialog.open<GeneratedPasswordDialog, GeneratedPasswordDialogData>(
       GeneratedPasswordDialog,

@@ -61,7 +61,6 @@ export class EmployeeDashboard {
   private readonly reportService = inject(ReportService);
   private readonly injector = inject(Injector);
 
-  // Where Retry's focus lands: the reload replaces the error block the button sits in (§14).
   private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
     'pageHeading',
     { read: ElementRef },
@@ -105,8 +104,6 @@ export class EmployeeDashboard {
     this.reload$.next();
   }
 
-  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
-  // `<body>`; the heading is on screen in every state, failed again or loaded.
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);

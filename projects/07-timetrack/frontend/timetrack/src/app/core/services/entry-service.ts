@@ -71,8 +71,6 @@ export class EntryService {
     return this.http.patch<TimeEntry>(`${this.entryUrlFor(id)}/approve`, null);
   }
 
-  // The only one of the six workflow calls that carries a body: the note is what the employee reads
-  // on the rejected row, and the API refuses a blank one.
   rejectEntry(id: number, request: RejectRequest): Observable<TimeEntry> {
     return this.http.patch<TimeEntry>(`${this.entryUrlFor(id)}/reject`, request);
   }

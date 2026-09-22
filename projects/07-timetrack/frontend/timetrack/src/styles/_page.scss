@@ -1,8 +1,3 @@
-// Page-level building blocks shared by every routed view, so the eight pages cannot drift apart: the
-// header with the view's one <h1>, the filter bar, the stat-card strip, and the loading / error / empty
-// block. The tables' blocks live in `_table.scss`.
-
-// The view's <h1> and, where the page has one, its primary action — in the header, right-aligned (§14).
 .page-header {
   display: flex;
   flex-wrap: wrap;
@@ -11,16 +6,12 @@
   gap: 1rem;
 }
 
-// Sized to its words wherever it sits: a flex column — the dashboard's header — would otherwise stretch
-// it across the page, and its focus ring with it, while a row's title hugs its text.
 .page-title {
   inline-size: fit-content;
   margin: 0;
   font: var(--mat-sys-headline-small);
 }
 
-// A dashboard's header stacks a greeting under the <h1> instead of setting a primary action beside it,
-// so it is not `.page-header`, whose centred row would pull the greeting into the middle.
 .dashboard-header {
   display: flex;
   flex-direction: column;
@@ -32,15 +23,12 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
-// A dashboard section: its heading and a "View all" link over the table or its empty state.
 .dashboard-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-// A section heading inside a page — the dashboards' lists and the Reports tables — named by its own class
-// rather than by the container it sits in, so a page without the dashboards' header row reuses it.
 .section-heading {
   margin: 0;
   font: var(--mat-sys-title-medium);
@@ -51,20 +39,11 @@
   align-items: center;
   justify-content: space-between;
 
-  // A text button's label sits inside its own horizontal padding; pulling the button out by that same
-  // token puts "View all" on the table's right edge.
   a {
     margin-inline-end: calc(-1 * var(--mat-button-text-horizontal-padding, 0.75rem));
   }
 }
 
-// Every field is 12rem above the phone layout — narrower and a selected "September 2026" no longer fits
-// its trigger. So a bar too narrow for its fields on one line changes shape instead of shrinking them,
-// on the same terms as the stat-card ladder: never an orphan. Four fields need 51rem, which the 1024px
-// and 768px windows do not have (46rem and 45rem once the rail and the padding are taken), so below it
-// the bar is capped at two fields' width — 25rem, plus 1rem of slack so sub-pixel rounding at another root
-// font size cannot push the second field down — and they split 2 + 2 rather than 3 + 1. Three need 38rem,
-// and below it they stack, since two columns would orphan the third. The page's `:host` is the container.
 .filter-bar {
   display: flex;
   flex-wrap: wrap;
@@ -97,12 +76,6 @@
   }
 }
 
-// The §14 ladder, sized by the page's own width rather than the viewport's, because the 15rem rail
-// narrows the page from 1024px up independently of the window — so the page's `:host` declares
-// `container-type: inline-size`. Four cards split 1, 2 + 2 or 4; three go straight from 1 to 3, never
-// through 2 + 1, on a 42rem rung of their own — below 52rem, because the 1024px and 768px windows leave
-// a 45–46rem page, where three stacked cards were a 338px column above the table rather than a strip.
-// Neither strip ever leaves a card orphaned.
 .stat-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -127,15 +100,7 @@
   }
 }
 
-// A page whose rows carry the only actions moves focus here when a write removes the row that held
-// it (§14), so the title is a real focus target and its indicator has to look like the rest of the
-// app rather than like the browser's default black box. Never removed, only restyled: the
-// accessibility floor requires focus to stay visible. `:focus-visible` alone, which is the browser's
-// answer to "did the user get here by keyboard": a focus moved by script matches only when the element
-// it left did, so Enter on ✓ rings the title and a click on ✓ does not, and a click on the title itself
-// — focusable through its `tabindex="-1"` — never matches. `:focus` rang it after every mouse action.
 .page-title:focus-visible {
-  // The width of Material's own strong focus indicator, so a script-moved focus and a tabbed one match.
   outline: 3px solid var(--mat-sys-primary);
   outline-offset: 0.25rem;
   border-radius: var(--mat-sys-corner-small);
@@ -150,9 +115,6 @@
   text-align: center;
 }
 
-// A first-use empty state carries an illustration; a filter that matches nothing does not.
-// Two classes, because MatIcon injects `.mat-icon { width: 24px; height: 24px; overflow: hidden }`
-// after this stylesheet, and at one class each that later rule would win and clip the glyph.
 .mat-icon.empty-illustration {
   width: 4rem;
   height: 4rem;
@@ -160,10 +122,6 @@
   color: var(--mat-sys-outline);
 }
 
-// A page-level error belongs to no field, so it cannot be a `mat-error`: that class is styled by the
-// form-field component's own stylesheet, which only enters the document once a `mat-form-field` is
-// instantiated — on a page whose error state renders no form, the message inherits the body colour and
-// stops looking like an error. Same reasoning as Login's form-level error (§14, Step 7a).
 .page-error {
   margin: 0;
   color: var(--mat-sys-error);

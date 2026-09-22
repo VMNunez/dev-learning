@@ -50,7 +50,6 @@ export class Reports {
   private readonly reportService = inject(ReportService);
   private readonly injector = inject(Injector);
 
-  // Where Retry's focus lands, as on every page with an error state (§14).
   private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
     'pageHeading',
     { read: ElementRef },
@@ -61,22 +60,16 @@ export class Reports {
   private readonly selectedMonth = toSignal(this.month.valueChanges, {
     initialValue: this.month.value,
   });
-  // The cards count one month, and the selector says which: the group is named after it, so a screen
-  // reader hears the scope the eye reads above.
   protected readonly monthLabel = computed(
     () => this.months.find((option) => option.value === this.selectedMonth())?.label ?? '',
   );
 
   protected readonly projectColumns = ['project', 'hours'];
   protected readonly userColumns = ['employee', 'hours'];
-  // Cleared on every load: a month change replaces every number on the page, so the last month's
-  // figures dimmed under a spinner would read as this month's for the length of the request.
   protected readonly data = signal<ReportData | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
-  // Every aggregate counts APPROVED entries only (§8), so both lists are empty exactly when the month
-  // has no approved hours — the empty state, which replaces the cards and both tables.
   protected readonly isEmpty = computed(() => {
     const current = this.data();
     return current !== null && current.byProject.length === 0 && current.byUser.length === 0;
@@ -95,8 +88,6 @@ export class Reports {
           this.error.set(null);
           this.data.set(null);
         }),
-        // `switchMap`: picking another month while the last one is still loading drops that answer,
-        // so a slow response can never paint the wrong month's report.
         switchMap(() =>
           this.fetch(this.month.value).pipe(
             catchError((err: unknown) => {
@@ -122,15 +113,11 @@ export class Reports {
     this.reload$.next();
   }
 
-  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
-  // `<body>`; the heading is on screen in every state, failed again or loaded.
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
-  // Three independent calls, one all-or-nothing result (§14): a report whose cards and tables came
-  // from different answers could disagree, and their agreement is the point of the §8 rule.
   private fetch(month: string): Observable<ReportData> {
     return forkJoin({
       summary: this.reportService.getSummary(month),

@@ -1,34 +1,18 @@
 @use '@angular/material' as mat;
 
-// Dialog-level building blocks shared by every form dialog, so the five of them cannot drift apart —
-// the same reason `_page.scss` holds the routed views' block. They were copied byte-for-byte into
-// each component stylesheet until 2026-09-20, which meant the error line's reserved height had to be
-// changed in four files or the dialogs would stop looking alike.
-//
-// Global rather than per component on purpose: a `MatDialog` renders its own component's view, so
-// these would work as component styles — but then each new dialog decides again, which is what this
-// file exists to stop. A dialog-only class that has one user (`reject-dialog`'s context line) stays
-// in its own stylesheet.
-
 .dialog-form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  // Keeps the first field's floating label off the content box's top edge.
   padding-block-start: 0.5rem;
 }
 
-// Always in the DOM, empty until it has a message: an alert inserted together with its text may never
-// be announced. The `min-height` is what stops the form jumping when one arrives.
 .dialog-error {
   margin-block: 0 0.5rem;
   min-height: var(--mat-sys-body-small-line-height);
   color: var(--mat-sys-error);
   font: var(--mat-sys-body-small);
 
-  // A failed save hands focus here when no field is at fault (`refocusAfterFailedSave()`), so it rings
-  // like the page title, the app's other script-moved focus target: 3px primary, offset from the text,
-  // sized to its words rather than drawn across the dialog.
   &:focus-visible {
     inline-size: fit-content;
     outline: 3px solid var(--mat-sys-primary);
@@ -37,10 +21,6 @@
   }
 }
 
-// A destructive confirm must not look like a primary save: the button takes the theme's error role
-// through the button's own tokens, never a hand-picked red. Two dialogs paint it — `confirm-dialog`
-// on a Delete / Deactivate / Discard answer, `reject-dialog` on the one action whose result the
-// employee then has to undo.
 .dialog-destructive {
   @include mat.button-overrides(
     (

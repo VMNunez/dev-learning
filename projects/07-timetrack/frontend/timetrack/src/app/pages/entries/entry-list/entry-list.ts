@@ -39,7 +39,6 @@ export class EntryList {
 
   protected readonly trackById = (_index: number, entry: TimeEntry) => entry.id;
 
-  // Unknown until the page's project list arrives, and then the API stays the boundary: offer it.
   protected readonly canSubmit = (entry: TimeEntry) =>
     this.activeProjectIds()?.has(entry.projectId) ?? true;
 

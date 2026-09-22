@@ -87,8 +87,6 @@ export class Login {
               this.loading.set(false);
             }),
         error: (err: unknown) => {
-          // The one failure that is not an HTTP error: the call succeeded and its body did not.
-          // `apiErrorMessage`'s connection fallback would blame the network for it.
           this.error.set(
             err instanceof UnreadableSessionError
               ? 'The server sent a response this app cannot read. Refresh the page and try again.'

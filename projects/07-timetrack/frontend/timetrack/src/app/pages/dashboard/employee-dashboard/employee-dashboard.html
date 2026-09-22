@@ -1,6 +1,4 @@
 <header class="dashboard-header">
-  <!-- Focusable by script only: Retry is taken away by the reload it starts, and this is where the
-       focus it held lands. -->
   <h1 #pageHeading class="page-title" tabindex="-1">Dashboard</h1>
   <p class="greeting">Welcome back, {{ userName() }}</p>
 </header>
@@ -46,8 +44,6 @@
     </div>
 
     @if (current) {
-      <!-- A group, not a second region: the section around it is already the "Recent entries" region,
-           and two landmarks with one name are indistinguishable. -->
       <div class="table-wrapper" tabindex="0" role="group" aria-labelledby="recent-heading">
         <table mat-table [dataSource]="current.recent">
           <ng-container matColumnDef="project">

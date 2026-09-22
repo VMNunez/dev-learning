@@ -91,8 +91,6 @@ export class Shell {
     return role ? NAV_LINKS.filter((link) => link.roles.includes(role)) : [];
   });
 
-  // The badge's count lives in the app-wide `PendingApprovals` (§13), because the pages under the shell
-  // change it: an approval re-reads it at once, so the badge never disagrees with the queue beside it.
   protected readonly pendingApprovals = this.pendingApprovalsState.count;
   protected readonly pendingBadge = computed(() => {
     const count = this.pendingApprovals();
@@ -100,16 +98,11 @@ export class Shell {
   });
 
   constructor() {
-    // The shell lives exactly as long as a session — logging out, or a `401`, routes to /login outside
-    // it — so its end is where the count is cleared, or the next manager to log in would see this one's.
     inject(DestroyRef).onDestroy(() => {
       this.dialog.closeAll();
       this.pendingApprovalsState.clear();
     });
 
-    // `NavigationEnd` also closes the navigation that created the shell, so the first read needs no
-    // trigger of its own, and entries other people submitted or reviewed since are counted on the way.
-    // Only a manager has an Approvals link; an employee's shell never asks.
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),

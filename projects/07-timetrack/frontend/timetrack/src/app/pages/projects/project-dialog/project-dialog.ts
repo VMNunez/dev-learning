@@ -103,8 +103,6 @@ export class ProjectDialog {
     if (this.form.invalid || this.saving()) return;
 
     this.saving.set(true);
-    // Disabled while saving, the ruling entry-dialog took on 2026-09-18: a name typed during the
-    // request would sit on screen against a record that saved the old one.
     this.form.disable({ emitEvent: false });
 
     this.write()
@@ -123,8 +121,6 @@ export class ProjectDialog {
       : this.projectService.createProject(request);
   }
 
-  // An empty description is sent as null, not as "": the column is nullable and the API stores what
-  // it is given, so an empty string would make "no description" two different values in the table.
   private buildRequest(): CreateProjectRequest {
     const { name, description } = this.form.getRawValue();
     return { name: name.trim(), description: description.trim() || null };
@@ -135,7 +131,6 @@ export class ProjectDialog {
     this.form.enable({ emitEvent: false });
     refocusAfterFailedSave(this.injector, this.host.nativeElement);
 
-    // A duplicate name is a 409 carrying `fieldErrors.name`, so it lands under the input like a 400.
     if (!placeFieldErrors(err, this.form.controls, FORM_FIELDS)) {
       this.error.set(apiErrorMessage(err, 'Could not save the project. Try again.'));
     }

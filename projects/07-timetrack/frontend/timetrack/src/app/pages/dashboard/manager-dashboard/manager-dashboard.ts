@@ -44,7 +44,6 @@ interface DashboardData {
   review: TimeEntry[];
 }
 
-// The first page of the queue: the dashboard is a glance, and /approvals holds the rest.
 const REVIEW_SIZE = 5;
 
 @Component({
@@ -74,29 +73,20 @@ export class ManagerDashboard {
   private readonly snackBar = inject(MatSnackBar);
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
-  // The shell's badge counts this queue; each write re-reads it so the two never disagree (§13).
   private readonly pendingApprovals = inject(PendingApprovals);
 
-  // Approving or rejecting takes the row out of the list, so the control the user pressed is always
-  // destroyed by the refetch (§14: a mutation must not destroy the control that holds focus). The
-  // heading survives every write, as on /approvals, and every reload Retry starts.
   private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
     'pageHeading',
     { read: ElementRef },
   );
 
   protected readonly userName = computed(() => this.authService.session()?.name ?? '');
-  // Hours second, as on /approvals: the number a review decides on stays clear of the pinned ✓ ✕ on a phone.
   protected readonly reviewColumns = ['employee', 'hours', 'project', 'date', 'actions'];
-  // Kept across a refetch: every approval reloads the dashboard, and blanking four numbers the page is
-  // still showing would read as breakage rather than as loading (§14, the same answer as Projects).
   protected readonly data = signal<DashboardData | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly busyEntryId = signal<number | null>(null);
 
-  // §8 refuses a review of the caller's own entry, and the queue is shared, so that row keeps its place
-  // for the manager who can review it and only its two buttons go — the same rule as /approvals.
   private readonly currentUserId = computed(() => this.authService.session()?.id ?? null);
   protected readonly isOwnEntry = (entry: TimeEntry) => entry.userId === this.currentUserId();
 
@@ -136,16 +126,12 @@ export class ManagerDashboard {
     this.reload$.next();
   }
 
-  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
-  // `<body>`; the heading is on screen in every state, failed again or loaded.
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
   approve(entry: TimeEntry): void {
-    // The row's buttons stay focusable while their write is in flight (`disabledInteractive`), so
-    // this guard is what keeps one action per row at a time.
     if (this.busyEntryId() === entry.id) return;
 
     const pressed = activeElement();
@@ -158,8 +144,6 @@ export class ManagerDashboard {
         next: () => {
           this.busyEntryId.set(null);
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
-          // Only while the user has not moved on themselves: a dialog opened meanwhile would have its
-          // focus trap broken by an unconditional move (§14).
           if (activeElement() === pressed || activeElement() === document.body) {
             this.pageHeading().nativeElement.focus();
           }
@@ -177,7 +161,6 @@ export class ManagerDashboard {
       });
   }
 
-  // The dialog owns the write (§6); the dashboard only refetches once it reports a rejection.
   openReject(entry: TimeEntry): void {
     if (this.busyEntryId() === entry.id) return;
 
@@ -187,8 +170,6 @@ export class ManagerDashboard {
       .open<RejectDialog, RejectDialogData, boolean>(RejectDialog, {
         data: { entry },
         disableClose: true,
-        // Material's own restore would put focus back on the ✕ the refetch is about to remove, so
-        // both branches are set by hand, as on /approvals.
         restoreFocus: false,
       })
       .afterClosed()
@@ -207,14 +188,10 @@ export class ManagerDashboard {
   }
 
   private fetch(): Observable<DashboardData> {
-    // Four independent calls, one all-or-nothing result: a dashboard showing three of its four numbers
-    // would be misleading, so any failure fails the whole load (§14).
     return forkJoin({
       summary: this.reportService.getSummary(toIsoMonth(new Date())),
       users: this.userService.getUsers(),
       projects: this.projectService.getProjects(),
-      // The list and the "Pending approval" count are one query: the paged response carries the
-      // count of every SUBMITTED entry, not just the ones on its first page.
       pending: this.entryService.getEntries(
         { status: 'SUBMITTED' },
         { page: 0, size: REVIEW_SIZE },
@@ -222,7 +199,6 @@ export class ManagerDashboard {
     }).pipe(
       map(({ summary, users, projects, pending }) => ({
         pendingCount: pending.page.totalElements,
-        // `GET /api/users` also returns deactivated accounts; they log no hours, so they are not team.
         teamMembers: users.filter((user) => user.active).length,
         approvedHours: summary.approvedHours,
         activeProjects: projects.filter((project) => project.active).length,

@@ -62,10 +62,6 @@ const DEFAULT_SORT = 'date,desc';
     MatSelectModule,
     EntryList,
   ],
-  // Provided here, not in app.config.ts: importing the paginator there put it and everything it pulls
-  // in (select, form field, tooltip) into the initial bundle, for a component only this page renders.
-  // Ten rows is the page the layout is designed around, so the paginator shows only the range and
-  // the arrows: a page-size select is a full form field that turns the table footer into a form.
   providers: [
     {
       provide: MAT_PAGINATOR_DEFAULT_OPTIONS,
@@ -85,16 +81,11 @@ export class Entries {
   private readonly destroyRef = inject(DestroyRef);
   private readonly injector = inject(Injector);
 
-  // Deleting a row destroys the button that opened the confirmation, so the dialog's default restore
-  // would leave focus on `<body>` (§14 Accessibility floor, WCAG 2.4.3). The header's action survives
-  // every mutation on this page, and it is the control a keyboard user would reach for next.
   private readonly logHoursButton = viewChild<string, ElementRef<HTMLButtonElement>>(
     'logHoursButton',
     { read: ElementRef },
   );
 
-  // Where Retry's focus lands: the reload replaces the error block the button sits in, and a manager's
-  // header has no action to fall back on (§14).
   private readonly pageHeading = viewChild.required<string, ElementRef<HTMLHeadingElement>>(
     'pageHeading',
     { read: ElementRef },
@@ -106,9 +97,6 @@ export class Entries {
   protected readonly statusLabels = ENTRY_STATUS_LABELS;
 
   protected readonly projects = signal<Project[] | null>(null);
-  // For an employee `GET /api/projects` returns active projects only (§10), so an entry whose project
-  // is missing from this set sits on one archived after it was logged — the one DRAFT the API refuses to
-  // submit. Null until the list has loaded: then nothing is known and the row offers its usual actions.
   protected readonly activeProjectIds = computed(() => {
     const projects = this.projects();
     return projects
@@ -130,8 +118,6 @@ export class Entries {
     status: new FormControl<EntryStatus | null>(null),
   });
 
-  // With no filter set, an empty table means the user has no entries at all: a first-use empty state,
-  // not a filter that matched nothing.
   private readonly filterValue = toSignal(this.filters.valueChanges, {
     initialValue: this.filters.getRawValue(),
   });
@@ -140,10 +126,6 @@ export class Entries {
     return !!month || projectId != null || status != null;
   });
 
-  // A dialog save can take away the control that opened it, which Material has just handed focus
-  // back to: the empty state's button once the first entry lands, or an edit button whose row the
-  // refetch turns SUBMITTED, filters out or re-sorts. So the opener is remembered, and once the refetch
-  // has rendered focus returns to it, or to "Log hours" if it is gone (§14).
   private refocusAfterReload: HTMLElement | null = null;
 
   private readonly reload$ = new Subject<void>();
@@ -180,8 +162,6 @@ export class Entries {
     this.reload$.next();
   }
 
-  // Retry sits in the error block its own reload takes away, so the focus it held would fall to
-  // `<body>`; the heading is on screen in every state, failed again or loaded.
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
@@ -193,8 +173,6 @@ export class Entries {
     this.reload();
   }
 
-  // The page opens on the current month, which is empty for its first days while last month's drafts
-  // still wait to be submitted; this is the way out of that empty state.
   showAllMonths(): void {
     this.filters.controls.month.setValue('');
   }
@@ -209,8 +187,6 @@ export class Entries {
     this.openDialog(null);
   }
 
-  // The row's action buttons stay focusable while their write is in flight (`disabledInteractive`),
-  // so the guard opening each of the four is what keeps one action per row at a time.
   openEdit(entry: TimeEntry): void {
     if (this.busyEntryId() === entry.id) return;
     this.openDialog(entry);
@@ -227,8 +203,6 @@ export class Entries {
           confirmLabel: 'Delete',
           destructive: true,
         },
-        // `?? true` matters: the key is always present in the merged config, and `undefined` would
-        // switch restoration off instead of falling back to the element that opened the dialog.
         restoreFocus: this.logHoursButton()?.nativeElement ?? true,
       })
       .afterClosed()
@@ -264,8 +238,6 @@ export class Entries {
       }),
     }).pipe(
       catchError((err: unknown) => {
-        // Worded by role, the same convention the empty state follows: a manager is not looking at
-        // entries of their own.
         const fallback = this.isEmployee()
           ? 'Could not load your entries. Check your connection.'
           : "Could not load the team's entries. Check your connection.";
@@ -286,7 +258,6 @@ export class Entries {
     };
   }
 
-  // The dialog reads its project list once, at open, so it never opens before that list has loaded.
   private openDialog(entry: TimeEntry | null): void {
     const projects = this.projects();
     if (!projects) {
@@ -321,7 +292,6 @@ export class Entries {
   }
 
   private runAction(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
-    // Where the user is when the write starts decides whether its result may move them at all.
     const pressed = document.activeElement;
     this.busyEntryId.set(entry.id);
 
@@ -329,13 +299,6 @@ export class Entries {
       next: () => {
         this.busyEntryId.set(null);
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
-        // A status change re-renders the row's actions into a different branch and a delete takes
-        // the row away, so either way the control the user pressed is about to be destroyed. Unlike
-        // the Projects row, nothing here survives the write, so focus goes to the header's own
-        // action — the one target the reload cannot remove. Only when the user has not moved on
-        // themselves: the header button stays enabled during the write, so a dialog opened from it
-        // meanwhile would have its focus trap broken by an unconditional move, and a user who
-        // tabbed away would be dragged back.
         const focusLeftNowhere =
           document.activeElement === pressed || document.activeElement === document.body;
         if (focusLeftNowhere) {

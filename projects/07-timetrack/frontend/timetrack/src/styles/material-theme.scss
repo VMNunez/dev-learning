@@ -1,9 +1,3 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
-
 @use '@angular/material' as mat;
 @use './theme-colors' as theme;
 
@@ -38,9 +32,6 @@ html {
     )
   );
 
-  // Material draws a keyboard focus ring on every component that carries `.mat-focus-indicator`, but
-  // only once asked: without this its ring stays `display: none`, and an icon button shows focus only
-  // through its faint state layer. Primary, like the page title's own ring, so focus reads one way.
   @include mat.strong-focus-indicators(
     (
       border-color: var(--mat-sys-primary),
@@ -54,7 +45,6 @@ html {
       )
     );
 
-    // A button's ring sits outside it, on the toolbar's own primary: a primary ring there is invisible.
     @include mat.strong-focus-indicators(
       (
         border-color: var(--mat-sys-on-primary),
@@ -74,8 +64,6 @@ html {
     )
   );
 
-  // The paginator is the table's footer, not content: a tinted band and muted text make it recede
-  // behind the rows it pages.
   @include mat.paginator-overrides(
     (
       container-background-color: var(--mat-sys-surface-container-low),

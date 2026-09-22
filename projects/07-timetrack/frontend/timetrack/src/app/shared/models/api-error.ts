@@ -23,8 +23,6 @@ export function apiErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-// Puts each server field error under the control it names, as a `server` error the template reads.
-// Returns false when none of the listed fields had one, so the caller shows a form-level message.
 export function placeFieldErrors<K extends string>(
   error: unknown,
   controls: Record<K, AbstractControl>,

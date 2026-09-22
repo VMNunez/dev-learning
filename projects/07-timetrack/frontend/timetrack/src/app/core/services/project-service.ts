@@ -23,7 +23,6 @@ export class ProjectService {
     return this.http.put<Project>(this.projectUrlFor(id), request);
   }
 
-  // The API's DELETE is the soft delete: the project keeps its entries and stops accepting new ones.
   deactivateProject(id: number): Observable<void> {
     return this.http.delete<void>(this.projectUrlFor(id));
   }
