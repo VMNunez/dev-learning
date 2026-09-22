@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.request.ChangePasswordRequest;
 import com.victor.timetrack.dto.request.CreateUserRequest;
 import com.victor.timetrack.dto.request.UpdateUserRequest;
 import com.victor.timetrack.dto.response.CreateUserResponse;
+import com.victor.timetrack.dto.response.PasswordResetResponse;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.service.UserService;
 import jakarta.validation.Valid;
@@ -45,6 +46,14 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request){
         return ResponseEntity.ok(userService.update(id,request));
+    }
+
+    // POST, not PATCH: each call mints a new password, so it is not idempotent, and the body it answers
+    // with is the only copy of that password.
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/{id}/password-reset")
+    public ResponseEntity<PasswordResetResponse> resetPassword(@PathVariable Long id){
+        return ResponseEntity.ok(userService.resetPassword(id));
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -4,6 +4,7 @@ import com.victor.timetrack.dto.request.ChangePasswordRequest;
 import com.victor.timetrack.dto.request.CreateUserRequest;
 import com.victor.timetrack.dto.request.UpdateUserRequest;
 import com.victor.timetrack.dto.response.CreateUserResponse;
+import com.victor.timetrack.dto.response.PasswordResetResponse;
 import com.victor.timetrack.dto.response.UserResponse;
 import com.victor.timetrack.exception.DuplicateResourceException;
 import com.victor.timetrack.exception.InvalidPasswordException;
@@ -143,6 +144,28 @@ public class UserService {
 
         user.setActive(false);
         userRepository.save(user);
+    }
+
+    // An administrator's reset, not a self-service one: the member cannot prove who they are without the
+    // password they lost, and a self-service reset needs an email channel this project does not have. The
+    // manager's own account is refused, because it has `changePassword`, which asks for the current one.
+    @Transactional
+    public PasswordResetResponse resetPassword(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + id));
+
+        if (user.getId().equals(authenticatedUserProvider.currentUser().getId())) {
+            throw new InvalidStateTransitionException(
+                    "You cannot reset your own password. Use Change password instead");
+        }
+
+        String generatedPassword = generatePassword();
+        user.setPassword(passwordEncoder.encode(generatedPassword));
+        userRepository.save(user);
+
+        PasswordResetResponse response = new PasswordResetResponse();
+        response.setGeneratedPassword(generatedPassword);
+        return response;
     }
 
     @Transactional
