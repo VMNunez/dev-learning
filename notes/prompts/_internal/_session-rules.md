@@ -13,7 +13,7 @@ that is reference-only lives in its own file and is linked from here.
   Never silently increase the help level. Code is shown only in Level 3 or after Victor explicitly moves
   there, and still one small explained change at a time rather than a full solution dump.
 - **Teach against the active plan** — work toward the current `PLANNING.md` step; never invent off-scope tasks.
-- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), the simulation artifacts the prompt system writes (`practice/simulations/PLANNING.md`, `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`, `practice/simulations/MISTAKES.md`, `practice/simulations/TRACKER.md`, and the timed-test spec files — Victor's submitted solution code is never included), the shared interview-practice weakness sink (`practice/interview/MISTAKES.md`, written and consumed by the interview-practice prompts), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill (and either of them raising a task for a defect noticed while triaging or closing), never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator, **broadened 2026-09-08 to any flow**: the file is machinery the prompts write, never Victor, so it commits directly like the rest of this list — the earlier orchestrator-only limit was what forced `REC-216` to hand back a one-file commit after every other site of the same fix had landed. The `roadmap-review` **conditional survives for that pipeline**: a run of it commits only when both its reviewers finished and every fix landed cleanly, and prints the command instead on anything uncertain — a whole-file rewrite carries a risk a targeted correction does not), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **One authorization reaches outside this repository** (added 2026-09-07, `REC-220`): `dev/portfolio/VMNunez/README.md` and that repo's platform adapter / gap list — pipeline output written **between them** by `portfolio-audit`'s ✅-Ready step (the README alone) and `profile-readme-prompt` (both), and by nobody else — are committed **inside that repo**, with `git -C {resolved absolute path}`, never staged into this repo's index and never folded into a learning-repo commit. It is the same boundary, applied consistently: those files are the agent's output, and the separate repo governs *where* the commit runs, not who runs it. **Pushing that repo is always Victor's** — publishing to a public GitHub profile is outward-facing in a way the commit is not — as is everything else in it, including `job-search/**`, which no prompt commits. **The boundary is authorship, not folder: anything Victor produces himself — project code, SQL answers, timed-simulation solutions, and leetcode solutions — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery and task/tracking artifacts the agent writes, never his solution work. No `Co-Authored-By` lines. Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
+- **No git side effects on code** — when writing project code, never run git/CLI commands; only write them for Victor to run, and **he always makes code commits himself**. **Exception:** when writing/refining notes (`notes/`), the prompt system (`notes/prompts/`), platform skills/commands, the SQL tracking files the prompt system writes (`practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` and `practice/sql/MISTAKES.md` — the `.sql` exercise files themselves stay Victor's, at every level), the simulation artifacts the prompt system writes (`practice/simulations/PLANNING.md`, `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md`, `practice/simulations/MISTAKES.md`, `practice/simulations/TRACKER.md`, and the timed-test spec files — Victor's submitted solution code is never included), the shared interview-practice weakness sink (`practice/interview/MISTAKES.md`, written and consumed by the interview-practice prompts), any project's `PROJECT-BACKLOG.md` (authorized 2026-07-29 — the file is written by `review-audit`, the `backlog-task-open` skill (its `⏸ Deferred` marker) and the `backlog-task-close` skill (and either of them raising a task for a defect noticed while triaging or closing), never by Victor, so it commits directly whenever it is updated, in any flow, not just inside the review pipeline), the repository's root `PROGRESS.md`, `ROADMAP.md` (granted 2026-07-09 to the `roadmap-review` orchestrator, **broadened 2026-09-08 to any flow**: the file is machinery the prompts write, never Victor, so it commits directly like the rest of this list — the earlier orchestrator-only limit was what forced `REC-216` to hand back a one-file commit after every other site of the same fix had landed. The `roadmap-review` **conditional survives for that pipeline**: a run of it commits only when both its reviewers finished and every fix landed cleanly, and prints the command instead on anything uncertain — a whole-file rewrite carries a risk a targeted correction does not), `projects/briefs/project-brief-{NN}.md` (added 2026-08-05 — written only by the `project-brief` prompt, never by Victor, and it is the decision `PLANNING.md` is then built from), any project's `PLANNING.md`, `PROGRESS.md` and `README.md` (authorized 2026-08-01 — the prompts and rituals write these, so they commit directly in any flow, superseding the earlier rule that handed them back to Victor and the narrower `progress-update` / `roadmap-review` orchestrator-only permission), or the session-rule files, the active coding agent may run the commits directly. **One authorization reaches outside this repository** (added 2026-09-07, `REC-220`): `dev/portfolio/VMNunez/README.md` and that repo's platform adapter / gap list — pipeline output written **between them** by `portfolio-audit`'s ✅-Ready step (the README alone) and `profile-readme-prompt` (both), and by nobody else — are committed **inside that repo**, with `git -C {resolved absolute path}`, never staged into this repo's index and never folded into a learning-repo commit. It is the same boundary, applied consistently: those files are the agent's output, and the separate repo governs *where* the commit runs, not who runs it. **Pushing that repo is always Victor's** — publishing to a public GitHub profile is outward-facing in a way the commit is not — as is everything else in it, including `job-search/**`, which no prompt commits. **The boundary is authorship, not folder: anything Victor produces himself — project code, SQL answers, timed-simulation solutions, and leetcode solutions — is never auto-committed**; the agent and prompts only print the commands for him. The exceptions above cover system machinery and task/tracking artifacts the agent writes, never his solution work. No `Co-Authored-By` lines — and where a platform adapter or a harness reminder instructs a co-author footer, that instruction does not apply here, the same precedence "Pull request descriptions" states for PR signatures (`REC-232`). Commits are atomic (one logical change). **Before every notes/prompts commit, run `git status` right before `git add` and right before `git commit`** — confirm only authorized prompt-system paths are staged, and unstage anything else.
 - **Claude local settings never remain pending at handoff.** `.claude/settings.local.json` is a tracked
   permissions ledger, not disposable working-tree noise. At the close of **every task**, if it is dirty,
   validate it as JSON and commit it directly in its own `chore(claude): ...` commit — even when the
@@ -213,10 +213,23 @@ open.
   estas fallando a la hora de ponerme las pruebas, te las tengo que pedir siempre de nuevo para que
   me las expliques bien"*. Correct content in list form is still the defect: the list is what makes
   him ask again.
-- **Every technical explanation carries two layers, in this order, at every help level.** The simple
-  layer answers *what the problem is*; the technical layer answers *how it is fixed*. Neither replaces
-  the other: without the first Victor cannot see the problem, without the second he cannot write the
-  fix. Name the files the change touches before either layer.
+- **Every technical explanation opens with an introduction to what is being built, then carries two
+  layers, in this order, at every help level.** The introduction answers *what are we building and where
+  does this piece sit*; the simple layer answers *what the problem is*; the technical layer answers *how
+  it is fixed*. None replaces another: without the introduction Victor reads a correct explanation of a
+  piece whose purpose he cannot place, without the simple layer he cannot see the problem, without the
+  technical one he cannot write the fix. Name the files the change touches after the introduction and
+  before either layer.
+  - **The introduction comes first and stays short.** At the opening of a plan step it is the step's
+    map: what the user will see when it is done (the §14 wireframe when one exists), the step's pieces
+    in build order, and which piece comes now. At the opening of a backlog task or of a later piece it is
+    the feature, screen or endpoint the change lives in and what it does today for the person using it.
+    No code and no mechanism — those belong to the two layers. Stated 2026-09-17 on the opening of
+    Step 7b of project 07, where the first message went straight into a full two-layer explanation of
+    `time-entry.ts` without ever saying what the step builds — *"has empezado a explicar mucho sin
+    ponerme en contexto de lo que vamos a construir, y eso no puede ser"* — and then *"necesito una
+    introduccion de lo que vamos a construir, luego una explicacion sencilla y luego una explicacion mas
+    tecnica"*.
   - **The simple layer is only complete with all three of its parts** — a trace that skips them reads
     as abstract and fails: (a) **what happens today**, quoting the real code, contrasting the place
     that already does the right thing with the place that does not; (b) **why that is a problem**, as
@@ -273,9 +286,10 @@ open.
     canonical example of the pair, and this shape is not a one-off repair but the standing form.
   - Dense technical prose alone is the known failure mode: it is correct and he does not understand it.
   - **A task's priority never scales the depth of its explanation.** A `[Low]` finding with
-    `Effort: Small`, or a fix that is one moved line, still opens with both layers complete and all
-    seven of their parts: the size of the diff says nothing about the size of the concept behind it.
-    The brevity rule governs verdicts, reports and ordinary conversation — never these two layers.
+    `Effort: Small`, or a fix that is one moved line, still opens with the introduction and both layers
+    complete, all seven of their parts: the size of the diff says nothing about the size of the concept
+    behind it. The brevity rule governs verdicts, reports and ordinary conversation — never the
+    introduction or these two layers.
     And *"explícamelo mejor"* is the failure signal for this whole contract: by the time he has to ask
     for depth, the first message was already wrong. Stated 2026-08-26 on the DRAFT-guard ordering task
     of project 07, where a `[Low]` line got a short simple layer with no request body and a technical
@@ -444,7 +458,7 @@ pass, and neither's evidence survived. `notes/prompts/knowledge/notes/_internal/
 is its event sink; that file owns the contract and this section only states the trigger.
 
 **Whenever a TODO Victor wrote in a note pair is resolved, or a correction he states directly in chat is
-applied to one, append or increment one `NTH-NNNN` row** — one row per **pair and category**, never per
+applied to one, append or extend one `NTH-NNNN` row** — one row per **pair and category**, never per
 TODO, carrying one or two of his own words **verbatim** and a `missing` / `unapplied` verdict. The
 primary writer is `study-content-writer`, at resolution, while the reason is still known; `notes-audit`
 is the secondary writer, for the markers it reports and may not resolve. Never write a row for prose the
@@ -452,10 +466,11 @@ agent itself chose to improve — a complaint Victor did not make is not evidenc
 
 It obeys the same four prohibitions as ritual friction, for the same reason: **it never opens a
 `REC-NNN` on sight, never dispatches a cold reviewer, never blocks or asks, and is never argued with.**
-A category is promoted only by the count the sink defines — cross-pair recurrence, first harvest at four
-refined pairs — and a due category then opens its own `REC-NNN`, resolved under the ledger's four steps
-with the mandatory cold reviewer. The standard is hand-written only, so **no skill and no run may edit it
-from this sink**.
+The rows are consumed **once per refined pair**, by the harvest pass the sink defines (`REC-171`,
+2026-09-15): the pass reads that pair's completed→refined diff alongside its rows, and is not itself a
+ledger item — only an edit it makes to the standard or a notes prompt becomes a `REC-NNN`, resolved under
+the ledger's four steps with the mandatory cold reviewer. `study-content-writer`'s freeze-sync route names each pass owed on its `cosecha:` line. The
+standard is hand-written only, so **no skill and no run may edit it from this sink**.
 
 The raw prose that provoked each complaint stays in git: the TODO pass is committed before it is
 resolved, so it is recoverable as `git diff <todo-pass-commit>..<refined-commit>`. Countable index in the
@@ -639,6 +654,15 @@ rather than at the G4 review — three steps too late to be cheap.
   filters and row actions), a throwaway HTML mock rendered before writing Angular lets Victor judge
   hierarchy and spacing while it is still free to change. Offer it; never impose it, and never let it
   become the deliverable — the Angular implementation is the work.
+- **Angular file names follow the current official style guide, never the plan's memory of an older
+  one.** Projects 07 onward use the 2025 Angular style guide (angular.dev/style-guide, the CLI default
+  since v20): a file is named after the primary identifier it holds, in kebab-case, with **no type
+  suffix** — `AuthService` → `auth-service.ts`, `authGuard` → `auth-guard.ts`, a group of related types →
+  their common theme (`auth.ts`), never `utils.ts`; specs append `.spec.ts`. Before guiding any new file,
+  name it by this rule, and when a `PLANNING.md` tree still shows `.service.ts` / `.model.ts`, follow the
+  guide and correct the tree. Verify through the Angular CLI MCP (`search_documentation`) rather than from
+  memory when in doubt. Stated 2026-09-11 on project 07, where `models/` held three conventions at once
+  — *"como lo nombre según lo que realmente se usa, mira el mcp"*.
 - **The rules apply to review too.** When showing the key diff at the end of a feature (see
   Complementary skills), ask Victor which §6 rule each change respects — the same way the backend's
   layer boundaries get checked.
@@ -722,7 +746,7 @@ Not the main focus now, but keep them in mind. How the coding agent applies each
 
 All format, structure, writing style, and organisation rules → `notes/prompts/knowledge/notes/_internal/_note-quality-standard.md`. First run `notes-plan-prompt` for one topic and level; it writes a persistent, coverage-fingerprinted file map without authoring prose. Then run `notes-audit` with `TOPIC + LEVEL + NOTE`; it builds exactly one planned English/Spanish pair through the four cold stages and marks that plan entry complete. Folder-wide generation, arbitrary file paths, and temporary worklists are unsupported.
 
-**Detail standard — applies to every notes file written in a session, not only in the audit prompt.** Victor's quality bar is high for every topic; the best reference is the first section of `notes/java/junior/es/11-excepciones.md`. Two rules carry most of the weight:
+**Detail standard — applies to every notes file written in a session, not only in the audit prompt.** Victor's quality bar is high for every topic; what carries it is the rules the pairs he himself declared `refined` taught, harvested into `_note-quality-standard.md` → "Harvested from refined pairs" — never a draft the pipeline may still rewrite, and no refined note read as a model. Two rules carry most of the weight:
 - **Explain the mechanism, not just the behaviour.** State *why* something works the way it does, under the hood, step by step — not only what it does. Describing behaviour without tracing the mechanism is the number-one reason Victor has to add TODOs (e.g. don't say "the exception travels up the stack" without explaining what the stack is, how methods are stacked, and why "up" means "toward the caller").
 - **Anticipate his "why?" before he asks it.** Before finalizing a section, simulate the chained "why does this work?" / "does this mean that?" questions he would ask and make sure the prose already answers them. Never mention an action in the abstract ("you can rethrow it") without the concrete code snippet.
 - The signature texture of a finished note: open with the pain not the definition; one worked example carried through the whole section; ASCII diagrams for anything structural; real-world analogies; abundant `> blockquote` callouts (roughly one per non-obvious sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN labelled examples.
@@ -964,6 +988,13 @@ everything commits on the branch you're on — is simpler to remember than a spl
   `PROJECT-BACKLOG.md`, `PLANNING.md`, and `README.md` already worked this way.
 - **`main` never receives direct commits, only merges via PR** — same rule for study materials as
   for code: `feat/x` → PR → project branch → PR → `main`.
+- **A merge that brings another branch's `notes/prompts/` ledger rows into this one owes one
+  `notes/prompts/_internal/validate-prompt-system.ps1` run** — a `REC-NNN` is allocated once, and the
+  merge is the first tree that holds both branches' rows, so it is the earliest moment a collision can
+  be seen at all; three pairs shipped that way between 2026-09-09 and 2026-09-15 (`REC-239`). The
+  merge is named here because it is performed on ordinary project branches, by whoever is merging
+  rather than by machinery work; `notes/prompts/README.md` still owns the rest of that script's
+  trigger list, and this bullet adds no other entry to it.
 - SQL block (12:30): work in `practice/sql/` on the active branch, commit there, and update the SQL
   section of `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
 - The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:
@@ -1022,9 +1053,73 @@ everything commits on the branch you're on — is simpler to remember than a spl
 
 ## Angular CLI conventions
 
-- Generate a service: `ng generate service path/name.service`
-  - Example: `ng generate service pages/todo-page/services/task.service` → creates `task.service.ts` with class `TaskService`
-- Generate a component: `ng generate component path/name` → creates the 4 files with the correct structure
+### File naming with `ng generate` (CLI v20+)
+
+The v20 naming change did **not** apply uniformly, so whether the suffix is typed depends on the
+schematic. Getting it wrong is silent: it produces `auth-guard-guard.ts` or a bare `auth.ts`.
+
+| Schematic | Command | File produced | Suffix |
+|---|---|---|---|
+| component | `ng g c pages/todo-page` | `todo-page.ts` | typed by hand if wanted |
+| service | `ng g s core/services/auth.service` | `auth.service.ts` | **typed by hand** |
+| guard | `ng g guard core/guards/auth` | `auth-guard.ts` | **CLI appends it** |
+| interceptor | `ng g interceptor core/interceptors/auth` | `auth-interceptor.ts` | **CLI appends it** |
+| resolver | `ng g resolver core/resolvers/project` | `project-resolver.ts` | **CLI appends it** |
+
+Verified 2026-09-09 in `projects/07-timetrack/frontend/timetrack` (`@angular/cli` ^21.2.4) for guard
+and interceptor, and 2026-09-01 in `projects/04-meal-finder` for service. The guard, interceptor and
+resolver rows were re-verified 2026-09-10 **against the schematics themselves** rather than by running
+them — `node_modules/@schematics/angular/{guard,interceptor,resolver}/schema.json` each declare
+`typeSeparator` with `"default": "-"`, while `component/schema.json` and `service/schema.json` declare
+`type` with **no default at all**, which is the whole rule in one sentence and the cheapest way to
+check a schematic nobody has run yet. Both corrections came from
+Victor after a wrong command was given — when guiding a step that creates a file by CLI, give the
+full command from this table rather than reconstructing it. **That applies at Levels 2 and 3 only.** At
+Level 1 the command is part of what Victor attempts: state only the file and class the step must
+produce, and use this table to check the command he writes. Stated 2026-09-17 on the `EntryService`
+step of project 07 — *"me has puesto el comando y no deberías porque era modo 1 y yo lo tenía que
+intentar"*.
+
+### The Angular CLI MCP server
+
+The repository registers it in `.mcp.json` at the root, so it is available in **every** session here,
+not only in a frontend one — Angular claims are made while writing `notes/angular/`, while planning a
+project and while grading an interview answer, and all three are wrong in the same way when they are
+made from memory.
+
+- **What it is.** A local process (`ng mcp`), part of the `@angular/cli` package already installed — no
+  account, no key, no cost. Registered `--read-only`, so it exposes consultation tools only and cannot
+  run a build, a test or a dev server: Victor runs his own work, and that rule does not bend because a
+  tool makes it convenient.
+- **The tools that matter.** `get_best_practices` returns Angular's current practices **for the
+  installed version**; `search_documentation` returns the real text of angular.dev; `list_projects`
+  reads `angular.json`. `find_examples` requires Node 22.16 and is skipped on Victor's Node 20.20 —
+  its absence in the tool list is expected, not a broken install.
+- **When it is not optional.** Any claim about what current Angular *recommends* — naming, folder
+  layout, forms strategy, testing, a deprecated API — that is load-bearing for a note, a coverage
+  bullet, a plan section, an interview answer or a correction to Victor's code. Guidance changed
+  sharply at v20 (naming, standalone-by-default, control flow) and again at v22 (signal forms), so a
+  remembered convention is a plausible-sounding wrong answer, which is the expensive kind.
+- **Version pinning is deliberate.** The config points at the CLI inside the **active** Angular
+  project's `node_modules`, not at `npx @angular/cli@latest`, so the practices returned match the
+  version Victor is actually writing against (v21.2.23 as of 2026-09-10). When a later project moves
+  to a newer Angular, repoint the path in `.mcp.json` — that is the maintenance this choice costs, and
+  it is cheaper than teaching v22 conventions into a v21 project.
+- **A tool call is not a source.** Quote what it returned and say so, the same as any other verified
+  claim; "the MCP says" without the returned text is the same unfounded assertion in a new costume.
+
+Registered 2026-09-10 (`43cdb6a7`), after a session in which the folder-taxonomy question was answered
+from memory and only checked against angular.dev because Victor asked. `REC-231` holds the related
+finding — that `_planning-standard.md` §13 hard-codes one taxonomy — and `REC-238` the open question of
+how the prompt pipeline consumes these tools inside its subagents.
+
+**This section is the only home for the table.** It was briefly copied into
+`projects/07-timetrack/frontend/timetrack/.claude/CLAUDE.md` on 2026-09-09 and reverted the same day:
+the generated Angular guides are the CLI's file, and "Generated Angular guide files inside a frontend"
+below states plainly that they are not edited by hand and are not a place to record session policy.
+The pull to copy it there is real — that guide is what gets read when guiding frontend work — and it
+is exactly what the rule forbids, because the copy dies on the next `ng update` with nothing
+announcing it.
 
 ---
 
@@ -1277,7 +1372,10 @@ learning/
 ├── projects/              ← every project, chronological (01–06 Angular-only, 07+ full-stack); see projects/README.md
 │   ├── 06-hr-portal/      ← last Angular-only project
 │   └── 07-timetrack/      ← Spring Boot + Angular + PostgreSQL + Docker
-│       └── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
+│       ├── PROJECT-BACKLOG.md ← improvement tasks for this project, written by review-audit
+│       ├── backend/timetrack/   ← Spring Boot app
+│       └── frontend/timetrack/  ← Angular app; its .claude/CLAUDE.md and AGENTS.md are
+│                                   Angular's own generated guides, not adapters (see below)
 ├── practice/              ← exercises, not portfolio
 │   ├── sql/               ← SQL exercises, one directory per level (junior/01-basics.sql, …);
 │   │                        PLANNING.md (doctrine) + MISTAKES.md stay at the root
@@ -1285,3 +1383,25 @@ learning/
 │   └── leetcode/          ← algorithm exercises for interviews (gated — see ROADMAP.md)
 └── notes/                 ← study guide + prompt system (see notes/ folder and notes/prompts/README.md)
 ```
+
+### Generated Angular guide files inside a frontend
+
+From project 07 onward, every Angular app is scaffolded with the CLI's *"configure AI tools with Angular
+best practices"* option answered **Claude + Agents.md**. The CLI writes a `CLAUDE.md` and an `AGENTS.md`
+into the Angular project (`projects/NN-*/frontend/<app>/.claude/CLAUDE.md` and `.../<app>/AGENTS.md` —
+the Claude one lives inside `.claude/`, the Codex one at the app root). They are **not** adapters and **not**
+part of this contract — they are Angular's own official guidance for the CLI version that generated them
+(signals, standalone components, `inject()`, `@if`/`@for`).
+
+Keep the two kinds strictly apart:
+
+| File | Author | What it governs | Precedence |
+|---|---|---|---|
+| Root `CLAUDE.md` / `AGENTS.md` | this repo | which platform adapter is active | points at these shared rules |
+| `_session-rules.md` (this file) | this repo | how a session behaves — authorship, commits, rituals, gates | **authoritative; wins over everything** |
+| `frontend/<app>/.claude/CLAUDE.md` · `frontend/<app>/AGENTS.md` | Angular CLI | Angular technique inside that app only | additive; never overrides a session rule |
+
+**Read the frontend's generated guide before teaching or reviewing Angular code in that project.** It is
+scoped to the app's real CLI version, which is what keeps guidance off deprecated patterns (`*ngIf`,
+`NgModule`, constructor injection) that a model may reproduce from memory. Do not edit these files by
+hand and do not treat them as a place to record session policy — refresh them with `ng update`.

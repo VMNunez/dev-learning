@@ -19,7 +19,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## Sizing
 - `width`, `min-width`, and `max-width` — combine a preferred size with lower and upper bounds so a component can shrink and grow without becoming unusable
 - `height`, `min-height`, and `max-height` — prefer content-driven height and add constraints only when the interface has a real scrolling or viewport requirement
-- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen
+- Percentage heights — understand that `height: 100%` needs a definite containing-block height, while `min-height` with a viewport unit is often the robust choice for a page that must fill the screen ✅ 07-timetrack — `.login-layout` fills the screen with `min-height: 100dvh` instead of a chain of percentage heights
+- Reserving space for content that toggles — an element added to or removed from normal flow displaces everything after it, so a message that appears in response to an action moves the controls beneath it out from under the pointer; sizing its container to the space it will occupy keeps the layout still whether the content is present or not ✅ 07-timetrack — `.login-error` holds one `--mat-sys-body-small-line-height` while empty, so the submit button never shifts
 - Automatic minimum size in flex and grid — use `min-width: 0` or `min-height: 0` when a flex or grid child must be allowed to shrink instead of overflowing
 
 ## Cascade and inheritance
@@ -40,7 +41,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Pseudo-class vs pseudo-element — use `:` for a state or structural condition and `::` for a generated or selected part of an element
 - `:focus` vs `:focus-visible` — `:focus` matches every focused element, while `:focus-visible` follows browser heuristics for when a visible focus indicator is needed, including typical keyboard navigation ✅ 04-meal-finder — `.meal-link:focus-visible` rings the card only on keyboard entry, leaving the mouse click unringed
 - Pseudo-elements: `::before`, `::after` — insert CSS-generated content before or after an element; must have a `content` property (can be an empty string); used for decorative elements and Angular Material state layers ✅ 06-hr-portal
-- Specificity scoring — compare inline styles, IDs, classes/attributes/pseudo-classes, and elements/pseudo-elements as separate columns; source order decides only after the relevant cascade criteria and specificity tie
+- Specificity scoring — compare inline styles, IDs, classes/attributes/pseudo-classes, and elements/pseudo-elements as separate columns; source order decides only after the relevant cascade criteria and specificity tie ✅ 07-timetrack — `.mat-icon.empty-illustration` (two classes) beats `MatIcon`'s later-loaded `.mat-icon`, which won the one-class tie on source order
 - `!important` — raises a declaration into the important cascade, after which origin, layer, and
   specificity still resolve competing important declarations; use it sparingly because it makes
   overrides harder to reason about
@@ -70,12 +71,12 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `static` vs `relative` positioning — keep an element in normal flow and use relative offsets without removing its original layout space
 - `absolute` positioning — remove a box from normal flow and position it from its containing block rather than from where siblings would place it ✅ 04-meal-finder — the visually hidden search label sits inside the flex `.search-container` without taking a slot in the row
 - `fixed` vs `sticky` positioning — distinguish a box normally anchored to the viewport from one that remains in flow until it reaches an inset within its scroll container
-- Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate
+- Sticky positioning conditions — supply an inset such as `top`, ensure the scroll container has room to scroll, and inspect ancestor overflow when sticky behaviour appears not to activate ✅ 07-timetrack — the `stickyEnd` actions column stays pinned while `.table-wrapper`, its nearest `overflow-x: auto` ancestor, scrolls the other columns under it
 - How `absolute` finds its reference point — positions relative to the nearest ancestor that
   establishes a containing block; otherwise it falls back to the initial containing block ✅ 03-expense-tracker
 - `z-index` and stacking context — applies to positioned boxes and flex/grid items; properties such
   as `transform` and `opacity < 1` create a new stacking context, explaining why a large number
-  cannot escape an ancestor's stacking order
+  cannot escape an ancestor's stacking order ✅ 07-timetrack — the absolutely positioned `.table-overlay` takes `z-index: 2` to paint over the pinned cells' inline `z-index: 1` in the same stacking context
 - `inset: 0` — set all four positioning offsets to zero with one shorthand, as in a viewport-covering overlay
 
 ## Responsive design
@@ -84,7 +85,7 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Fluid images — constrain an image to its container while preserving its intrinsic aspect ratio
 - `@media (prefers-color-scheme: dark)` — applies styles when the user's system uses dark mode; with CSS variables on `:root`, switching only requires updating the variable values inside the media query; asked increasingly in 2026 since dark mode support is now expected
 - `prefers-reduced-motion` — remove or reduce non-essential movement for users who request it without disabling functional state feedback ✅ 02-weather-app — the decorative card hover is dropped under a `reduce` query while the loading spinner is only slowed from 0.8s to 2.4s
-- Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right
+- Logical properties — use `margin-inline`, `padding-block`, and logical inset or size properties when layout should follow writing direction instead of hard-coded left and right ✅ 07-timetrack — the shell's nav list is inset with `padding-inline` and the login form's gap with `padding-block-start`, no left/right rules
 - Responsive content testing — test narrow widths, zoom, long labels, translated text, and missing or oversized media because a layout is responsive only if real content can change without clipping
 
 ## Units
@@ -127,8 +128,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - Sass nesting — keep nesting shallow and use `&` for a component's states or modifiers without recreating the DOM tree as a high-specificity selector chain
 - Sass variables — use build-time constants when runtime cascade and inheritance are not required
 - Sass mixins — reuse a parameterised declaration group only when it removes meaningful repetition rather than hiding ordinary CSS
-- Sass modules and partials — split styles by concern and load explicit members without returning to global `@import` coupling
-- Reusable low-specificity selectors — prefer stable class selectors and a consistent naming convention so existing styles can be extended without specificity escalation
+- Sass modules and partials — split styles by concern and load explicit members without returning to global `@import` coupling ✅ 07-timetrack — `styles/_dialog.scss` holds the form, error and destructive-button rules every form dialog and the confirmation share, loaded by `@use`
+- Reusable low-specificity selectors — prefer stable class selectors and a consistent naming convention so existing styles can be extended without specificity escalation ✅ 07-timetrack — `.dialog-form`, `.dialog-error` and `.dialog-destructive` are single-class rules shared across the dialogs
+- A spacing scale and its named exceptions — draw the margins, gaps and paddings between elements from one small scale, such as multiples of 8px, so screens built on different days line up, and treat an optical adjustment inside a component — a pill's padding against its own text, a badge's offset from its label — as a named exception measured against that content rather than as a new step on the scale
 
 ## Colors and transparency
 - Color notation — read hex, RGB, and HSL representations and follow a consistent project convention rather than treating one notation as universally superior ✅ 01-todo-list
@@ -136,8 +138,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `opacity` vs alpha-channel colour — fade the whole rendered element subtree or only the colour of one painted property
 - `visibility: hidden` vs `opacity: 0` — both preserve layout space, but visibility changes painting and interaction semantics while zero opacity can leave an invisible element hit-testable and focusable
 - `rgba` for overlays and shadows — `rgba(0, 0, 0, 0.5)` for modal backgrounds, `rgba(0, 0, 0, 0.08)` for card shadows; `rgba` allows the shadow to blend with whatever background colour is beneath it, unlike a hex value ✅ 02-weather-app
-- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value
-- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background
+- `currentColor` — a keyword that resolves to the element's current `color` value; used to keep borders, icons, and SVG fills in sync with the text color without repeating the value ✅ 07-timetrack — the shared `Logo` SVG strokes in `currentColor`, so it inherits `--mat-sys-on-primary` on the login branding panel and the toolbar
+- Contrast ratios — meet at least 4.5:1 for normal text and 3:1 for large text and meaningful user-interface graphics so content remains readable against its background ✅ 07-timetrack — each `--status-*` badge colour measures at least 4.5:1 against its 8% `color-mix()` tint in `status-badge.scss`
 - Non-colour cues — never make colour the only signal for status, validation, links, or interaction state; add text, an icon, shape, or another visible distinction
 
 ## Borders, shadows, and backgrounds
@@ -154,7 +156,8 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
-- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container
+- Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` wraps a space-less project name inside its `12rem`-capped column with `break-word`, and a pasted URL inside the description with `anywhere`
+- `overflow-wrap: anywhere` vs `break-word` — both break a word only where it would otherwise overflow its line, but `anywhere` also counts those breaks when the browser measures how narrow the box can become, so a shrink-to-fit box or an auto-layout table column can collapse to a single character, while `break-word` keeps the longest word as its floor ✅ 07-timetrack — `_table.scss` gives the name, employee and project columns `break-word` under a `12rem` cap and keeps `anywhere` on the description alone, behind a `9rem` floor
 
 ## CSS functions
 - `calc()` — combine compatible values and units in one expression when neither a purely relative nor fixed size represents the constraint ✅ 05-task-manager

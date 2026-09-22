@@ -143,25 +143,32 @@ invoked `coverage-bullet-add` and `coverage-mark` as it landed, so by the time y
 checklist normally already carries the step's concepts and there is nothing here to write.
 
 Read the **whole step's diff**, resolved mechanically rather than from memory: the step began at the
-commit that last repointed §0, so
-`git log -1 --format=%H -G'Current step' -- {PROJECT_PATH}/PLANNING.md` gives that SHA and
-`git diff <sha>..HEAD -- {PROJECT_PATH}` gives the range — **scoped to the project path**, which also
-keeps the pieces' own `notes/` commits out of it.
+last §15 close, which this ritual committed as a `✅` on that step's heading, so
+`git log -1 --format=%H -G'^###.*Step .*✅' -- {PROJECT_PATH}/PLANNING.md`, run before this close's own
+PLANNING commit, gives that SHA — check its subject is a step close, since a `plan-audit` that rewrites
+a `✅` heading matches too — and `git diff <sha>..HEAD -- {PROJECT_PATH}` gives the range, **scoped to
+the project path**, which also keeps the pieces' own `notes/` commits out of it.
 
-**`-G`, never `-S`.** A repoint rewrites the cell's *value*; the label `Current step` still appears
-exactly once before and after, so the occurrence count never changes and `-S` cannot see the commit at
-all — it silently returns the commit that *created* §0 months earlier, and the verification then reads a
-quarter of the project's history as "the step's diff" without erroring. **Sanity-check the SHA against
-the branch point: if it is older, the derivation missed and the branch point is the range.** If §0 was
-never repointed on this branch, say so and use the branch point. Then ask of every concept
+**Never anchor it on the `Current step` cell.** Every commit that recounts open backlog tasks rewrites
+it — raises and plan rulings as well as `backlog-task-close` — so its last commit is routinely a
+same-day recount and the range shrinks to a handful of files without erroring. **Sanity-check the SHA
+against the branch point: if it is older, the previous step closed on an earlier branch and the branch
+point is the range.** If no §15 step carries a `✅` yet, use the branch point. Then ask of every concept
 step 2 extracted, and of every one the diff shows that step 2 did not: **is there a bullet, and does it
 carry a `✅ NN-slug` naming this project?** The diff is the source, deliberately: a piece that recorded
 nothing because it had no coverage-worthy concept and a piece that skipped its recording emit the same
 silence, so nothing is asked of the pieces and no per-piece declaration is required — this check is what
 makes that silence safe.
 
-- **Every concept accounted for** — the expected path. Say so with the count, and skip 3a/3b: the writes
-  already happened, under this same contract, in the turns that earned them.
+- **Every concept accounted for** — the expected path. Say so with the count, and skip 3a: the writes
+  already happened, under this same contract, in the turns that earned them. **3b still runs** — for its
+  `§3c` alone, with no concepts and no topic, passing the whole-step diff. The removal branch below is why.
+- **The step's diff removed or rewrote code** — invoke `coverage-mark` for its `§3c` even when every
+  concept is accounted for and there is nothing whatever to mark. This is the one branch that fires on a
+  step that demonstrated nothing new: a later piece routinely deletes the code an earlier piece was
+  marked for, leaving the clause false on disk (`REC-233`), and this ritual holds the only whole-step
+  diff anything ever reads. Skipping it because nothing needs marking is exactly how the three instances
+  that opened that row survived until Victor noticed them by hand.
 - **A concept with no bullet, or a bullet with no marker for this project** — run 3a/3b on that concept
   now, and report it as a **process failure of the piece that should have recorded it**, naming that
   piece. It is not a discovery: that row is the whole instrument `REC-230` bought, and folding it in
@@ -183,7 +190,8 @@ makes that silence safe.
   the pieces that came after it; run 3a/3b on the earlier ones and open **no** friction row for them,
   since no trigger existed to fire. Say which pieces fell on each side.
 
-Say which of the four cases this run is in.
+Say which of these cases this run is in — the removal branch is **additive**, and can hold together with
+any of the others.
 
 When 3a/3b do run, run them in this order, for each concept:
 
@@ -381,7 +389,8 @@ Close with a compact table so Victor can see at a glance that nothing was skippe
 | Done condition | all 3 clauses verified (`mvn` boot, `GET /api/entries` 200, Postman reject → DRAFT) |
 | PLANNING.md ✅ | `### Step 5 — TimeEntry workflow ✅` (or: `#### Step 7a ✅`; parent Step 7 still open, 7b–7d pending) |
 | PROGRESS.md | status only — `Steps 1–5 done, Step 6 next`; coverage table left to the coverage skills |
-| Coverage verification | case 1 of 4 — all 6 concepts carry a bullet and a `✅ 07-timetrack`, verified against `git diff a1b2c3d..HEAD -- projects/07-timetrack`; `spring-boot`/junior reads 24/139 (17%) in PROGRESS.md |
+| Coverage falsified | *(§3c)* none — the step's diff removed no code (or: 1 clause repointed, 1 marker removed, 1 raised as `[Low]`) |
+| Coverage verification | case 1 — all 6 concepts carry a bullet and a `✅ 07-timetrack`, verified against `git diff a1b2c3d..HEAD -- projects/07-timetrack`; `spring-boot`/junior reads 24/139 (17%) in PROGRESS.md |
 | Process failures | none (or: the JWT-interceptor piece left `CanActivateFn` unmarked — authored and marked here, `FRIC-0002` opened) |
 | Coverage bullet | *(exception path only)* added "declarative transaction boundaries" to `spring-boot`/junior + mirror, 141/141 match |
 | Topic chosen | *(exception path only)* `spring-boot` — the framework mechanism, not the neutral boundary rule |

@@ -64,13 +64,14 @@ Framework behaviour remains in Spring Boot coverage; examples here may use Sprin
 - `Objects.equals(a, b)` — perform null-safe object equality by handling nulls before delegating to `equals`
 - The `equals` / `hashCode` contract — equal objects must have equal hash codes, and both methods must change together for correct `HashSet` and `HashMap` behaviour ✅ 07-timetrack
 - Mutable hash keys — changing fields used by `equals` or `hashCode` after insertion can make an entry effectively unreachable in a hash-based collection ✅ 07-timetrack
-- `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract ✅ 07-timetrack — every credential field (`LoginRequest.password`, both `ChangePasswordRequest` fields, `AuthResponse.token`) carries `@ToString.Exclude`, so Lombok's generated string cannot publish it
+- `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract ✅ 07-timetrack — every credential field (`LoginRequest.password`, both `ChangePasswordRequest` fields, `AuthResponse.token` and the `generatedPassword` of `CreateUserResponse` and `PasswordResetResponse`) carries `@ToString.Exclude`, so Lombok's generated string cannot publish it
 
 ## Strings and decimal values
 
 - String immutability — String operations return new values rather than modifying the original object
 - Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code ✅ 07-timetrack
 - `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
+- Locale-sensitive case conversion — `toLowerCase()` and `toUpperCase()` with no argument follow the JVM's default locale, so under a Turkish locale `I` lowers to a dotless `ı`; pass `Locale.ROOT` when the result is an identifier, key or protocol value rather than text shown to a user ✅ 07-timetrack — `EmailNormalizer.normalize` lowers with `Locale.ROOT`, and `AuthService.login` keys its failed-login counter on that value
 - `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
 - String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException` ✅ 07-timetrack — `JwtUtil` renders the id with `String.valueOf` and reads it back with `Long.valueOf`, whose `NumberFormatException` rejects a legacy token
 - `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings

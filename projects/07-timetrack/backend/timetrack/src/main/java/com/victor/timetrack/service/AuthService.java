@@ -8,6 +8,7 @@ import com.victor.timetrack.model.User;
 import com.victor.timetrack.repository.UserRepository;
 import com.victor.timetrack.security.JwtUtil;
 import com.victor.timetrack.security.LoginAttemptService;
+import com.victor.timetrack.util.EmailNormalizer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,24 +33,24 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request, String ip) {
-        String emailKey = request.getEmail().toLowerCase();
+        String email = EmailNormalizer.normalize(request.getEmail());
 
-        if (loginAttemptService.isBlocked(emailKey) || loginAttemptService.isBlocked(ip)) {
+        if (loginAttemptService.isBlocked(email) || loginAttemptService.isBlocked(ip)) {
             throw new TooManyAttemptsException("Too many failed login attempts. Try again later.");
         }
 
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                    new UsernamePasswordAuthenticationToken(email, request.getPassword())
             );
         } catch (AuthenticationException e) {
-            loginAttemptService.recordFailure(emailKey);
+            loginAttemptService.recordFailure(email);
             loginAttemptService.recordFailure(ip);
             throw e;
         }
 
-        loginAttemptService.reset(emailKey);
+        loginAttemptService.reset(email);
         loginAttemptService.reset(ip);
 
         User user = userRepository.findByEmail(authentication.getName())
@@ -57,7 +58,7 @@ public class AuthService {
 
         String token = jwtUtil.generateToken(user.getId());
 
-        return new AuthResponse(token, user.getName(), user.getRole());
+        return new AuthResponse(token, user.getId(), user.getName(), user.getRole());
 
     }
 }

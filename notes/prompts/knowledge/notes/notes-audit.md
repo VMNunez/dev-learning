@@ -142,18 +142,18 @@ junior run approved a forward reference in a finished note by verifying it again
 l.67, a legacy file no run has ever checked against `COVERAGE`, so a claim inside a `complete` note now
 rests on prose a later `notes-audit` may rewrite or delete outright.
 
-Two things the rule deliberately does not reach:
+One thing the rule deliberately does not reach: **a file in `EN_DIR` or `ES_DIR` that no plan entry
+declares** is neither readable nor linkable. Report it; it is either an orphan the plan owes an entry or
+a leftover to delete, and both are Victor's call, not this run's.
 
-- **The one calibration reference — the first section of `notes/java/junior/es/11-excepciones.md`** —
-  stays readable at any plan status. `_note-quality-standard.md` cites it as Victor's own validated bar
-  for depth and texture, which is a different claim from plan-accepted content: read that one section for
-  texture, never for a convention, a filename, or a fact. The other files the standard names beside it
-  (`01-variables-tipos.md`, `08-herencia-polimorfismo.md`, `10-colecciones.md`) get no exemption — an
-  admissible one is already in `READABLE_SIBLINGS`, and a `pending` one is precisely the prose this rule
-  exists to keep out.
-- **A file in `EN_DIR` or `ES_DIR` that no plan entry declares** is neither readable nor linkable.
-  Report it; it is either an orphan the plan owes an entry or a leftover to delete, and both are
-  Victor's call, not this run's.
+## No stage reads a refined note as a model
+
+Until 2026-09-15 this prompt resolved a `CALIBRATION` list — the `es/` files of the pairs Victor declared
+`refined` — and every stage read it whole for depth and texture. `REC-171` retired it in the commit that
+harvested the last of those pairs: what they teach now lives in `_note-quality-standard.md` → **Harvested
+from refined pairs**, which every stage already reads, and a read that grows with every refined pair is
+the cost the harvest exists to remove. Pass no such list, and never admit a refined note outside
+`READABLE_SIBLINGS` to a stage as an exemplar.
 
 ## Append-only mode
 
@@ -174,13 +174,14 @@ It binds every stage of this run:
    **Reporting them is no longer all you owe them.** A marker you may not resolve is still Victor's own
    measurement of his prose bar, and until it is rowed it exists only in a report the next run overwrites.
    So the orchestrator is the harvest's **secondary** writer: for every marker seen in frozen prose,
-   append or increment one `NTH-NNNN` row in `_internal/_note-todo-harvest.md`, under
+   append or extend one `NTH-NNNN` row in `_internal/_note-todo-harvest.md`, under
    `_session-rules.md` → "When Victor corrects the prose of a note — the note-TODO harvest", which owns
    the trigger this does not restate. One row per **pair and category**, an existing `open` row for that
-   `Pair` + `Category` incremented rather than duplicated, one or two of his words verbatim in the
-   language he wrote them. You are second here on purpose: `study-content-writer` writes at resolution,
-   when the reason is known, so the two writers' sets overlap and the sink's `Count` is a lower bound by
-   construction — never reconcile it, and never skip a row because the resolver may row it later. Only a
+   `Pair` + `Category` extended with his new words on its `Quote` rather than duplicated, one or two of
+   his words verbatim in the language he wrote them, and the frozen `Count` never written. You are second
+   here on purpose: `study-content-writer` writes at resolution, when the reason is known, so the two
+   writers' sets overlap — never reconcile them, and never skip a row because the resolver may row it
+   later. Only a
    marker **Victor** wrote qualifies; a quality miss this pipeline noticed is reported and never rowed.
 2. The only permitted change is **new sections appended** for the bullets in `Pending additions`, placed
    where they read best without moving existing sections, plus their Spanish counterparts.
@@ -330,7 +331,7 @@ so it is the one a report may not leave to the diff. Stage B's own corrections a
 `FIXED` list, which this clause does not re-specify. In append-only mode, also report the consumed bullets, the
 appended headings in both languages, the additions-only diff proof for each file, any quality issue
 observed in existing prose and deliberately left untouched, any TODO marker seen in the frozen prose
-with the inline route named **and the `NTH-NNNN` row each one was appended to or incremented, or the
+with the inline route named **and the `NTH-NNNN` row each one was appended to or extended, or the
 reason none was**, the `Pending study` entries written or the reason none were, and the
 remaining `Pending additions`.
 
@@ -345,12 +346,12 @@ blocked run changed no `Status` and its recount is an expected no-op. Fold its r
 report above, and do not re-stage `PROGRESS.md` here.
 
 After the content attempt, read `notes/prompts/_internal/_pipeline-self-report.md` and execute it in
-full. Write `_internal/_last-run-report.md`; upsert the exact `TOPIC + LEVEL + NOTE` row in
-`notes/prompts/_internal/_run-tracker.md` with both language paths, plan status, date, and an outcome
-of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing, or `blocked`. This prompt
-has no dry-run mode and never records one. Then recalculate the matching Notes J/M/S summary cell from the plan.
+full. Write `_internal/_last-run-report.md`; then rewrite the matching Notes J/M/S summary cell of
+`notes/prompts/_internal/_run-tracker.md`, recalculated from the plan, naming the selected `TOPIC + LEVEL + NOTE` and
+an outcome of `completed`, `completed — no-op` for a guard 13/14 entry that owed nothing, or `blocked`.
+This prompt has no dry-run mode and never records one. The tracker keeps no per-note row.
 Commit report and tracker together, **and stage `_internal/_note-todo-harvest.md` with them whenever this
-run appended or incremented an `NTH-NNNN` row** — Stage C stages exact paths only and knows nothing of
+run appended or extended an `NTH-NNNN` row** — Stage C stages exact paths only and knows nothing of
 this sink, so a row written and never staged is a row lost, which is the exact failure the sink exists to
 end. A failed content run remains `blocked` and never changes the plan
 entry to complete.

@@ -77,7 +77,9 @@ producer rather than to the skill that exposed it.
 
 Commit this reconciliation **before and separately from** the normal report + tracker commit: a REC
 promotion stages `_skill-friction.md` plus `_recommendation-ledger.md`; a dismissal stages only
-`_skill-friction.md`. Run `git status` immediately before staging and committing. This step records and
+`_skill-friction.md`. Run `git status` immediately before staging and committing — and, where it
+promoted a `FRIC` row to a **new** `REC-NNN`, run the validator first, under the rule stated below with
+the other route that opens a row. This step records and
 routes evidence; it never edits a skill, and therefore does not replace the mandatory cold review when
 the recommendation is later resolved.
 
@@ -89,6 +91,11 @@ that file's own four-step procedure, which ends by collapsing it into a single l
 promoting any rule it established into `_recommendation-resolution-doctrine.md`, which holds that
 file's case law. Historical reports remain unchanged; the ledger is
 the current status source.
+
+**Run `_internal/validate-prompt-system.ps1` before committing a row this run opened** — the same rule
+the ledger's step 4 states for the commit that *collapses* one, and owed here for the other half of
+invariant 9 since `REC-239`: an ID is allocated once, nothing fires the script on its own, and a row
+reusing a number already in the table is otherwise found by whoever next reads the queue, days later.
 
 Then exactly these three bullets, honest, including "nothing to report". Keep each short; a bullet earns
 extra lines only when reporting something that actually went wrong:
@@ -186,7 +193,11 @@ in and one naming what came out.
 
 ## Step 5 — Run-start check (this prompt's step 0, not its last)
 
-Every prompt using this file opens by reading its own `_last-run-report-<prompt-name>.md`. **It invokes
+Every prompt using this file opens by reading `notes/prompts/_internal/_session-rules.md` to EOF, before
+its first write, dispatch or commit (a run a guard stopped before this step makes it before Step 3's
+commit) — the rule and its reason are `_pipeline-self-report.md` → "Run-start check — surface
+anything the last run left open", first bullet, and apply here unchanged — and then its own
+`_last-run-report-<prompt-name>.md`. **It invokes
 this step before any content work — guards and configuration resolution may precede it, Step 2 may not —
 and a final-step "execute this file in full" therefore means Steps 1–4**: Step 2 overwrites the report
 this step reads, so a Step 5 reached at the end reads the run's own fresh report and the earlier `open`

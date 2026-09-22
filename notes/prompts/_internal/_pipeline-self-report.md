@@ -64,7 +64,9 @@ producer rather than to the skill that exposed it.
 
 Commit this reconciliation **before and separately from** the normal report + tracker commit: a REC
 promotion stages `_skill-friction.md` plus `_recommendation-ledger.md`; a dismissal stages only
-`_skill-friction.md`. Run `git status` immediately before staging and committing. This step records and
+`_skill-friction.md`. Run `git status` immediately before staging and committing — and, where it
+promoted a `FRIC` row to a **new** `REC-NNN`, run the validator first, under the rule stated below with
+the other route that opens a row. This step records and
 routes evidence; it never edits a skill, and therefore does not replace the mandatory cold review when
 the recommendation is later resolved.
 
@@ -76,6 +78,11 @@ that file's own four-step procedure, which ends by collapsing it into a single l
 promoting any rule it established into `_recommendation-resolution-doctrine.md`, which holds that
 file's case law. Historical reports remain unchanged; the ledger is
 the current status source.
+
+**Run `_internal/validate-prompt-system.ps1` before committing a row this run opened** — the same rule
+the ledger's step 4 states for the commit that *collapses* one, and owed here for the other half of
+invariant 9 since `REC-239`: an ID is allocated once, nothing fires the script on its own, and a row
+reusing a number already in the table is otherwise found by whoever next reads the queue, days later.
 
 Then these five bullets — honest, including "nothing to report". Keep each one short; a bullet only
 earns extra lines when it is reporting something that actually went wrong:
@@ -121,11 +128,10 @@ says which, and this contract names no heading on purpose: the one it carried un
 no heading the tracker has ever had. Never invent a heading and never fall back to the nearest table,
 which reports `completed` while the real row stays `pending`. Record the date, resolved target/mode,
 outcome, and a concise result. A blocked run names
-the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, also
-upsert one row in `## Notes file executions`, keyed by `TOPIC + LEVEL + NOTE`, with both resolved
-language paths, plan status, last outcome, and date. Recalculate the matching Notes J/M/S summary
-cell as `complete entries / total entries`; the notes plan remains the authority for which entries
-exist.
+the failed gate, and a dry run never looks completed. If the orchestrator is `notes-audit`, its cell
+is the matching Notes J/M/S summary, recalculated as `complete entries / total entries` plus the
+selected note and its outcome; the notes plan remains the authority for which entries exist, and no
+per-note tracker row is kept.
 
 **(b) The probe is `git status` *and* `git log`.** Most orchestrators commit before reaching this step
 (per file in `notes-audit`, per topic in `interview-prep-audit`, the inbox in `coverage-prompt`), so a
@@ -391,8 +397,17 @@ one line naming what changed and one naming what came *out* — that is the huma
 
 The at-end refinement only sees *this* run's report, so a finding an earlier run left `open` needs a
 separate trigger or it rots (the `notes-write` gate sat four days for exactly this reason). Every
-orchestrator's step 0 therefore includes this check — one glance, made cheap by the `Status` line:
+orchestrator's step 0 therefore includes this check — one read, then one glance made cheap by the
+`Status` line. A step-0 pointer to "the decision table" executes this whole list, the read first; a
+closing "execute this file in full" does not repeat it:
 
+- **First read `notes/prompts/_internal/_session-rules.md` to EOF**, before this run's first write,
+  dispatch or commit — a run a guard stopped before reaching this check still makes the read before its
+  close-out commit. The platform adapter only points at it — nothing loads it for you — and its
+  non-negotiables bind the commits this run makes, outranking any harness or tool reminder that says
+  otherwise, attribution footers included. The read is the orchestrator's alone: a `cold` role inherits
+  only its dispatch (`_agent-runtime-standard.md`). It costs one whole read a run, which the adapter
+  already mandated; this line only places it (`REC-232` — two runs read it after writing).
 - Read this orchestrator's own `_last-run-report` (if one exists) and look at its `Status` line.
 - `clean`, `rejected`, or `applied in <hash>` → proceed silently.
 - `open` → print **one line** to Victor naming the genuine item a past run never applied.
@@ -403,6 +418,3 @@ orchestrator's step 0 therefore includes this check — one glance, made cheap b
   printed line at start is what breaks the silence that let a real defect sit for four days. If Victor
   wants it applied, that is his call; otherwise it flows into this run's own at-end refinement if this
   run reproduces it.
-
-(Two pipelines carry their own tailored version of this step — same contract, same bar, same
-`_run-tracker.md` update: `review-audit.md` and `readme-audit.md`.)

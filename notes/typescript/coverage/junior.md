@@ -24,12 +24,14 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - A shared model type as the single source of truth — changing a field's type in the model turns every signature that names it into a compilation error, so a contract change is enumerated by the compiler rather than hunted by hand ✅ 05-task-manager — widening `Task.id` from `number` to `string` failed compilation at every signature naming it, so `output<string>()` in `task-table`, `TaskService.deleteTask(taskId: string)` and `TaskPage.onDeleteTask(id: string)` were enumerated by `tsc` rather than found by grep
 - Optional properties vs properties containing `undefined` — distinguish a property that may be absent from one that must exist but may hold `undefined` ✅ 05-task-manager
 - `readonly` properties — prevent reassignment through a type without assuming that the object is deeply immutable at runtime ✅ 02-weather-app — `WeatherService.baseUrl` is `private readonly`, fixed at declaration and unreachable from outside the class
+- `readonly T[]` — declare an array through which elements cannot be added, removed, or reassigned, and separate that from `const`, which fixes only the binding and leaves the contents mutable ✅ 07-timetrack — the shell's `NAV_LINKS` table and each link's `roles` list are typed `readonly`, so the navigation config cannot be pushed to or reordered from a component
 - Interface extension vs type intersections — derive related shapes while recognising their different conflict and composition behaviour
 - Excess property checks — understand why a fresh object literal can be rejected for extra fields even when a previously assigned variable is structurally compatible
 - Index signatures — model dynamic property names whose values share a type and avoid fixed members that contradict the signature
 - Classes as types — recognise that a class declaration creates both a runtime constructor value and an instance type
 - `implements` — check that a class instance satisfies a contract without assuming the interface changes the emitted class at runtime ✅ 04-meal-finder
 - Abstract classes vs interfaces — recognise shared implementation plus an unconstructable base class versus an erased shape-only contract
+- The `override` modifier — mark a member that replaces an inherited one so that, under `noImplicitOverride`, a base-class rename or a misspelt name fails the build instead of silently adding a method nobody calls ✅ 07-timetrack — `AppTitleStrategy` declares `override updateTitle()`, compiled under the `noImplicitOverride: true` the frontend `tsconfig.json` sets
 - Parameter properties — read constructor parameters that declare and initialise class fields in one TypeScript shorthand
 - TypeScript access modifiers vs ECMAScript `#private` fields — distinguish compile-time visibility from privacy that JavaScript enforces at runtime
 
@@ -54,13 +56,13 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 ## Narrowing and safe control flow
 
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
-- `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"`
-- `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces
+- `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"` ✅ 07-timetrack — `isApiError` tests `value === null` explicitly, because `typeof null` would let a null body through
+- `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces ✅ 07-timetrack — `Entries.openDialog()` narrows `document.activeElement`, typed `Element`, with `instanceof HTMLElement` before keeping it as the control to refocus
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
 - Truthiness narrowing — recognise that `0`, `false`, and `""` are removed along with nullish values, so truthiness is unsafe when those values are valid ✅ 06-hr-portal — `DepartmentForm.onSubmit` tests `editId !== null` rather than `if (this.editId())`, so an identifier that is a `string` cannot read as "not editing"
-- Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data
+- Discriminated unions — model mutually exclusive states with a shared literal tag so each branch exposes only its valid data ✅ 07-timetrack — `UserDialogResult` is `{ kind: 'created'; member }` or `{ kind: 'updated' }`, and only the `created` branch carries a password for `Team` to show
 - User-defined type predicates — centralise a reusable runtime check that teaches the compiler how a value narrows ✅ 06-hr-portal — `isLeaveRequestFilter(value): value is LeaveRequestFilter` is the one check the leave-request page narrows through, so the query-param read needs no `as` assertion
 - Exhaustiveness checks with `never` — make an unhandled union member a compile-time error when the union later grows ✅ 01-todo-list — the `filteredTasks` switch covers all three `Filter` members with no `default`, so adding a fourth stops compiling
 - `unknown` in `catch` — narrow a caught value before reading `message` because JavaScript can throw values that are not `Error` instances
@@ -79,7 +81,7 @@ Concepts needed to read, write, debug, and review type-safe application code in 
 - `Omit<T, K>` — derive a shape by removing selected keys so the source model stays the single definition of the fields that remain ✅ 03-expense-tracker
 - `Pick<T, K>` — derive a shape by retaining only selected keys when the required subset is smaller than what removing the rest would express
 - `Readonly<T>` — make top-level properties readonly without mistaking the utility for deep immutability
-- Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists
+- Index signatures vs `Record<K, V>` — choose an open dynamic-key contract or a mapped set of required finite keys while recognising that `Record<string, V>` cannot prove an arbitrary runtime key exists ✅ 07-timetrack — `ApiError.fieldErrors` is a `Record<string, string[]>`, the open-key shape the backend's `Map<String, List<String>>` serialises to
 - `NonNullable<T>` — remove `null` and `undefined` from a union only after program logic guarantees their absence
 
 ## Literal preservation and contract checking

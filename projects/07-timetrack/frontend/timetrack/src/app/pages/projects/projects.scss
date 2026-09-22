@@ -1,0 +1,10 @@
+:host {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mat-column-status {
+  white-space: nowrap;
+}

@@ -1,0 +1,53 @@
+@use './styles/material-theme';
+@use './styles/page';
+@use './styles/table';
+@use './styles/dialog';
+
+:root {
+  --status-draft: #616161;
+  --status-submitted: #1565c0;
+  --status-approved: #2e7d32;
+  --status-rejected: #c62828;
+
+  --project-active: #2e7d32;
+
+  --action-approve: #2e7d32;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  color-scheme: light;
+
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  margin: 0;
+  height: 100%;
+}
+
+.filter-select-panel {
+  min-width: 12rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+}
+
+.skeleton {
+  border-radius: var(--mat-sys-corner-small);
+  background: var(--mat-sys-surface-container-high);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

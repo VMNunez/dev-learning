@@ -2,8 +2,8 @@
 
 Plan status: current
 Coverage: notes/java/coverage/junior.md
-Coverage SHA-256: 2be5f410d021f4b5863355d6b7a6cf5807e46c120bd535442b49a139cb094aa0
-Generated: 2026-08-28
+Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
+Generated: 2026-09-16
 Study order: the entry number is the reading order, 00 → 17, and it is identical to the number in the filename — the `NN` of `## NN` is always the `NN-` prefix of that entry’s `English:` and `Spanish:` files. The legacy files that broke this correspondence were renumbered on 2026-08-21, together with every repository-relative link that targeted them; `notes-plan-prompt.md` → Planning algorithm step 6 makes the match a standing requirement, so a future entry inserted into this route renumbers what follows it instead of leaving a gap or a remap table. On 2026-08-26 entry 12 was split into 12 (behaviour as a value) and 13 (streams and collectors) because one file carried two mental models, and entries 13–16 were renumbered to 14–17 with every repository-relative link that targeted them; entry 13's pair is the one prefix the route still owes a file, and its `Action: create` reserves the number.
 
 `Prerequisites` and `Depends on` list the nearest entries a chapter assumes; the full assumed set is their **transitive closure**. Entry 12 relies on entry 07's anonymous inner classes through the chain 09 → 08 → 07, and that is legal without restating 07.
@@ -48,7 +48,7 @@ Coverage concepts:
 - [x] Source, bytecode, and JVM execution — recognise that `javac` checks and compiles source into bytecode that a JVM executes, without requiring JVM-internals knowledge
 - [x] Compile-time vs runtime failure — distinguish type and syntax errors rejected by the compiler from exceptions and logic errors that appear while the program runs
 
-Audit note: `00-intro-java.md` is `refined` and frozen — nothing already in it may be rewritten. The topic-introduction invariants it once lacked were written by the 2026-08-20 run and are present today: `## Index of this note` and the seven-section orientation paragraph, `## What Java is, and the job it does in your stack`, `## Five traits that come back in every later chapter`, `## Coming from JavaScript — where the comparison helps, and where it lies`, and `## The route from here to Maven, and why it runs in that order` with its full table. Two defects remain, both correctable in place without restructuring: (a) the route callout still reads "Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet" and leaves `02-strings.md` as the one unlinked route entry, while both files now exist and the entry is `complete`; (b) the closing paragraph never states outright what a reader must have settled before opening `01`. Both are Victor's to authorise on a frozen pair — report them, do not rewrite around them. Until he does, defect (b) means entry 00 does not meet topic-introduction requirement 7, and reporting it is not discharging it.
+Audit note: `00-intro-java.md` is `refined` and frozen — nothing already in it may be rewritten. The topic-introduction invariants it once lacked were written by the 2026-08-20 run and are present today: `## Index of this note` and the seven-section orientation paragraph, `## What Java is, and the job it does in your stack`, `## Five traits that come back in every later chapter`, `## Coming from JavaScript — where the comparison helps, and where it lies`, and `## The route from here to Maven, and why it runs in that order` with its full table. Two defects remain, both correctable in place without restructuring: (a) the route callout still reads "Only `02` is missing today: that number is reserved for the text chapter and the file is not written yet" and leaves `02-strings.md` as the one unlinked route entry, while both files now exist and the entry is `refined` — the only route entry still without a file is `13-streams-collectors.md`, reserved by its `Action: create`; (b) the closing paragraph never states outright what a reader must have settled before opening `01`. Both are Victor's to authorise on a frozen pair — report them, do not rewrite around them. Until he does, defect (b) means entry 00 does not meet topic-introduction requirement 7, and reporting it is not discharging it.
 
 Rationale: What Java is, how source becomes executable, and when failures surface are the orientation every later chapter assumes. The entry-point signature and `System.out.println` are declared scaffolding: every subsequent chapter's examples print something, so the tokens must be recognisable here even though `static`, visibility, and arrays are each owned by a later entry.
 
@@ -118,7 +118,7 @@ Handoff: Numbers behave the way their representation forces them to; entry 02 as
 
 ## 02 — Strings and text
 
-Status: complete
+Status: refined
 
 Studied: pending
 
@@ -144,6 +144,7 @@ Must answer:
 - If a `String` cannot change, what exactly happens in memory when code appends to one, and when does `+` in a loop become the wrong tool?
 - Which everyday `String` operations does Victor need to read ordinary code — length, substring, splitting, trimming, containment, case-insensitive comparison — and what does each return?
 - What is the practical difference between a String that is empty and one that contains only spaces or a tab, and which of the two does a submitted form field usually produce?
+- Why can the same `toLowerCase()` call return different text on two machines, what does the Turkish dotless `ı` break when the lowered value is an email used as a lookup key, and when is `Locale.ROOT` the right argument rather than the default locale?
 - Why does an invalid format specifier survive compilation and fail only when the line executes?
 - How is a multi-line JSON or SQL fragment written without escaping every quote and newline?
 - What turns the text `"42"` into the number `42`, what does it mean that the resulting `NumberFormatException` is _unchecked_, and why is the full checked/unchecked model deferred to entry 11?
@@ -155,13 +156,14 @@ Coverage concepts:
 - [x] String immutability — String operations return new values rather than modifying the original object
 - [x] Text blocks — read a triple-quoted `"""` multi-line String literal as ordinary String content, used for embedded JSON, SQL, or HTML fragments in modern (Java 17+) code
 - [x] `String.isEmpty()` vs `String.isBlank()` — empty means length zero, while blank also includes whitespace-only content
+- [x] Locale-sensitive case conversion — `toLowerCase()` and `toUpperCase()` with no argument follow the JVM's default locale, so under a Turkish locale `I` lowers to a dotless `ı`; pass `Locale.ROOT` when the result is an identifier, key or protocol value rather than text shown to a user
 - [x] `String.formatted()` — substitute values into a format string while understanding that invalid format specifiers fail at runtime
 - [x] String and number conversion — parse text into numbers with `Integer.parseInt` or `Integer.valueOf` and render values back with `String.valueOf`, knowing that malformed input throws the unchecked `NumberFormatException`
 - [x] `String` concatenation vs `StringBuilder` — use simple `+` for small expressions and a mutable builder for repeated accumulation that would create many intermediate Strings
 
-Audit note: none. Both files were authored and committed on 2026-08-25; the entry is an ordinary audit target from here on.
+Audit note: the pending `Locale-sensitive case conversion` addition is appended with declared scaffolding. `Locale` is read as the standard-library type naming a language and region, and `Locale.ROOT` as a constant read off the class name the same way `Integer.parseInt` is called on it — what a `static` member is belongs to entry 06. `import java.util.Locale;` is read as the line that makes the simple name available, which entry 04 explains.
 
-Rationale: Every bullet here is a consequence of one mechanism — a `String` is an immutable object — and that mechanism is what makes the chapter teachable as a unit rather than as an API list. Immutability explains why `+` in a loop allocates, why `StringBuilder` exists, why every method returns a new value, and why `==` will later turn out to compare the wrong thing. The chapter is separated from entry 01 because the numeric chapter's organising idea, that representation decides arithmetic, says nothing about `substring` or `isBlank`.
+Rationale: The chapter is organised around one mechanism — a `String` is an immutable object — and that mechanism is what makes the chapter teachable as a unit rather than as an API list. Immutability explains why `+` in a loop allocates, why `StringBuilder` exists, why every method returns a new value, and why `==` will later turn out to compare the wrong thing. The chapter is separated from entry 01 because the numeric chapter's organising idea, that representation decides arithmetic, says nothing about `substring` or `isBlank`.
 
 Handoff: With values and text both understood one at a time, entry 03 stops evaluating expressions individually and starts controlling which statements run, and how often.
 
@@ -213,7 +215,7 @@ Handoff: After Victor can control statement execution, entry 04 packages that be
 
 ## 04 — Methods
 
-Status: complete
+Status: pending
 
 Studied: pending
 
@@ -247,13 +249,13 @@ Must answer:
 
 Coverage concepts:
 
-- [x] Method signatures, parameters, and return values — read what a method accepts, what it returns, and which overload a call can match
-- [x] Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
-- [x] Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
-- [x] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
-- [x] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
+- [ ] Method signatures, parameters, and return values — read what a method accepts, what it returns, and which overload a call can match
+- [ ] Overloading — methods share a name but have different parameter lists, and the compiler selects the applicable signature
+- [ ] Varargs — a `Type...` parameter accepts zero or more arguments collected into an array and must be the last parameter, as seen in APIs such as `List.of` and `String.format`
+- [ ] Packages and imports — packages organise and name types, while imports let source use a simple name instead of a fully qualified one
+- [ ] `null` and `NullPointerException` — dereferencing `null` fails at runtime; validate required values and use guard clauses at clear boundaries
 
-Audit note: `04-methods.md` currently carries three sections that teach bullets this plan assigns elsewhere — `### How arguments are actually passed — Java is always pass-by-value` belongs to entry 05, and `## Access modifiers` and `## Static methods` belong to entry 06. All three are consolidated into their owning chapters; this file keeps at most a marked forward reference. `03-control-flow.md`'s `## Null checks` section also teaches this entry's `null` / `NullPointerException` bullet one chapter early; it consolidates here, and entry 03 keeps at most a marked forward reference.
+Audit note: the 2026-08-27 audit consolidated `04-methods.md`'s pass-by-value, access-modifier and static-method sections into entries 05 and 06; the file now carries only marked forward references to them. `03-control-flow.md` still carries a `## Null guards` section beside this entry's `null` / `NullPointerException` section — its next audit confirms it is reduced to a marked forward reference to entry 04.
 
 Rationale: Signatures, overload selection, variable argument lists, package naming, and boundary validation are one unit — everything the compiler and the caller must agree on before a method runs.
 
@@ -288,6 +290,7 @@ Must answer:
 - What is copied when an object is passed — the object, or something smaller?
 - What does one call-stack frame actually contain, in what order are frames added and removed, and why is the newest frame the one that can fail?
 - Where do local variables live compared with the objects they refer to, and why does that split exist at all?
+- When a variable holds `null` and code dereferences it, what is missing on the heap at that moment, and why does the `NullPointerException` name the dereferencing line rather than the line that stored the `null`?
 - If two references point to one mutable object, which changes become visible through the other reference, and how does that produce a bug nobody wrote on purpose?
 - When a `String` is rebuilt or an object is no longer referenced, what happens to the abandoned one, and why does Java not require Victor to free it?
 - Why is garbage collection covered here only as a mechanism to recognise, with tuning and diagnosis left to a later professional level?
@@ -298,7 +301,7 @@ Coverage concepts:
 - [ ] Call stack and method returns — each call creates a frame holding its local state, and returning or throwing removes frames toward the caller
 - [ ] Object aliasing — two references can point to the same mutable object, so a change through one reference is visible through the other
 
-Audit note: the pass-by-value bullet is currently taught twice — here at `05-memory-model.md`'s opening section and again at `04-methods.md`. This file is the owner; the audit of entry 04 removes the duplicate there. Two further defects, both from the 2026-08-21 renumber: the file closes with `## How this closes out the Java notes`, which declares the whole topic finished and hands off to Spring Boot from chapter five — it must become a handoff to entry 06, in the plan's own words: references are now understood in isolation, and entry 06 uses them to build classes whose state stays valid — and its prose still cites the pre-renumber numbering ("files 04–06", "file 07", "file 01") while three passages refer to `11-exceptions.md` as a chapter already read. All of it is corrected in both languages.
+Audit note: the pass-by-value duplicate in `04-methods.md` was removed by entry 04's 2026-08-27 audit, which left a forward reference to this file; this file is the owner. `### Why `result += name` in a loop is wasteful — the whole point, finally explained` re-teaches entry 02's `StringBuilder` bullet and is reduced to a one-sentence reference to `02-strings.md`. Two further defects, both from the 2026-08-21 renumber: the file closes with `## How this closes out the Java notes`, which declares the whole topic finished and hands off to Spring Boot from chapter five — it must become a handoff to entry 06, in the plan's own words: references are now understood in isolation, and entry 06 uses them to build classes whose state stays valid — and its prose still cites the pre-renumber numbering ("files 04–06", "file 07", "file 01") while three passages refer to `11-exceptions.md` as a chapter already read. All of it is corrected in both languages.
 
 Rationale: Argument copying, the call stack, and aliasing are three consequences of one fact — a variable holds either a value or a reference to something stored elsewhere. The stack/heap picture and a single garbage-collection callout are declared scaffolding: they are the mechanism this chapter's own questions depend on, and the standard requires mechanism over behaviour.
 
@@ -323,7 +326,7 @@ Pending additions: none
 
 Narrative role: Build valid domain objects from the method and reference mechanics already learned, then answer the question those objects immediately raise — when are two of them the same? The chapter runs in two movements: first what one valid object is made of — state, visibility, `static`, `final`, records — and then when two of them count as the same value. The hash half of that second question waits for entry 10.
 
-Learning outcome: Design a small class or record whose constructor refuses invalid state, with controlled visibility, appropriate immutability, and correct value equality, and explain why identity comparison is the wrong default.
+Learning outcome: Design a small class or record whose constructor refuses invalid state, with controlled visibility and appropriate immutability; compare `String`, wrapper and record values with `equals` rather than `==`; and explain why identity comparison is the wrong default — writing `equals` and `hashCode` for an ordinary class waits for entry 10.
 
 Prerequisites: 05
 
@@ -341,6 +344,7 @@ Must answer:
 - If a record's components are final, why can the object it holds still be modified from outside?
 - When is a record the right choice, what exactly does Java generate for its components, and why does defensively **copying** a mutable component in a compact constructor stay a middle-level concern even though **validating** a required component does not?
 - A record generates `hashCode` as well as `equals` — what is a hash code at the level this chapter needs, and why does what it is _for_ have to wait until entry 10 introduces hash-based collections?
+- What does `==` compare when both operands are primitives and when both are references, and why do `String`, `Integer` and a record answer `equals` by value?
 - Why is `==` wrong for comparing two `String` values that were built at runtime, when it appears to work for two literals?
 - Why does `Integer` `==` seem to work for small numbers and then fail for large ones?
 - What does `Objects.equals(a, b)` do that `a.equals(b)` cannot, and which of the two arguments was the dangerous one?
@@ -370,7 +374,7 @@ Audit note: four separate conflicts, all requiring prose to move rather than mer
 (c) `### Anonymous class` belongs to entry 07; the surrounding `## Nested classes` framing stays here under the preservation rule, and entry 07's moved section opens with a one-sentence link back to it so the term is not orphaned.
 (d) The access-modifier and static-member bullets are currently also taught in `04-methods.md`; they consolidate here.
 
-Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. The compiler-supplied no-argument constructor is declared scaffolding here: the non-instantiable-utility-class bullet cannot be stated without it, so this chapter names the bare fact — a class that declares no constructor is handed a public one — and stops there. When Java supplies it, how `this(...)` chains constructors and why `super(...)` runs first are entry 08's `Constructor defaults and chaining` bullet. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised.
+Rationale: State, visibility, immutability boundaries, records, and value equality all describe one object standing alone. The compiler-supplied no-argument constructor is declared scaffolding here: the non-instantiable-utility-class bullet cannot be stated without it, so this chapter names the bare fact — a class that declares no constructor is handed a public one — and stops there. When Java supplies it, how `this(...)` chains constructors and why `super(...)` runs first are entry 08's `Constructor defaults and chaining` bullet. `protected` is the one part of the access-modifier bullet this chapter cannot fully discharge, because its meaning is "visible to subclasses" and subclasses arrive in entry 08 — so it is named and bounded here, not silently promised. `toString()` is written here as a method every object already has; that writing it overrides `Object.toString`, and what `@Override` checks, are declared scaffolding owned by entries 07 and 08.
 
 Handoff: Concrete classes can now hold valid state and compare correctly; entry 07 separates the behaviour a caller needs from the particular class that happens to provide it.
 
@@ -401,6 +405,7 @@ Must answer:
 
 - What does a caller gain by depending on an interface instead of the class that implements it?
 - When does shared instance state or a required constructor make an abstract class the better tool?
+- An abstract class can never be instantiated, so what does the one line `class Dog extends Animal` let `Dog` do with the methods `Animal` left abstract, and why is everything else about subclasses left to entry 08?
 - Why can a class implement several interfaces but extend only one class?
 - What problem do default methods solve, and how does an implementing class replace that inherited behaviour?
 - What is actually happening in code such as `new Runnable() { ... }`, which appears to instantiate something that has no body?
@@ -419,7 +424,7 @@ Coverage concepts:
 
 Audit note: `07-interfaces-abstract.md` carries `## Subclass constructors`, which teaches entry 08's constructor-chaining bullet and uses `super(...)` before entry 08 introduces subclasses — it consolidates into entry 08, leaving at most the one-sentence `super(name)` callout the abstract-class section needs. `## Functional interfaces (Java 8+)` teaches bullets entry 12 owns; reduce it to the single fact the anonymous-inner-class bullet needs — an interface with exactly one abstract method — and defer the four standard interfaces to entry 12.
 
-Rationale: Interfaces, abstract classes, default methods, multiple contracts, and anonymous implementations are one unit about declaring and supplying behaviour independently of a named concrete class.
+Rationale: Interfaces, abstract classes, default methods, multiple contracts, and anonymous implementations are one unit about declaring and supplying behaviour independently of a named concrete class. `extends` is declared scaffolding here: an abstract class is usable only through a subclass, so this chapter shows the single line `class Dog extends Animal` and what it means for the subclass to supply the abstract methods; what else a subclass inherits, `super(...)` chaining, `protected` and runtime dispatch are entry 08's.
 
 Handoff: With contracts separated from implementations, entry 08 explains how Java decides at runtime which implementation actually runs, and when composition is the better design than a hierarchy.
 
@@ -517,7 +522,7 @@ Audit note: `09-generics.md` diverges from this contract in three directions.
 (b) It never mentions `?`, `? extends T` or `? super T` at all, so the wildcard-recognition bullet this entry owns is currently unwritten.
 (c) `### Using an Optional`, `### Optional.map() vs Stream.map()` and `### Chaining map() + orElseThrow()` teach `Optional` _usage_, which this entry's own must-answer question defers to entry 12; and `## Bounded type parameters` plus the generic-class and generic-method authoring sections exceed bullets that specify recognition and explicitly exclude advanced generic API design.
 
-Rationale: All of these answer one question — what does this container promise about the values inside it, and how does the compiler enforce that promise? `Optional` appears here as a type to read; operating on it requires lambdas and is therefore entry 12's work.
+Rationale: All of these answer one question — what does this container promise about the values inside it, and how does the compiler enforce that promise? `Optional` appears here as a type to read; operating on it requires lambdas and is therefore entry 12's work. `List<E>` is declared scaffolding here, read only as "an ordered, growable container of `E`"; what a `List` promises and which implementation to choose are entry 10's.
 
 Handoff: Parameterised types can now be read fluently, so entry 10 can teach the real collection contracts without a single line of unexplained syntax.
 
@@ -549,6 +554,7 @@ Must answer:
 - When is a fixed-length array still the right structure, and when does a collection replace it?
 - Why is `array.length` written without parentheses while `String.length()` and `List.size()` need them, and what error appears when the index is out of range?
 - When does a problem need a `List`, a `Set`, or a `Map`?
+- When a `Set` or a `Map` is needed and nothing about iteration order matters, why are `HashSet` and `HashMap` the default implementations, and what order do they refuse to promise?
 - How does a `Map` distinguish a key that is missing from a key mapped to `null`, and why does `get` alone not tell you?
 - Why should a variable be declared as `List` while the object created is an `ArrayList`?
 - Why do `List.of` and its siblings reject nulls and refuse modification, and why is the result still not deeply immutable?
@@ -671,6 +677,7 @@ Must answer:
 
 - How do `Predicate`, `Function`, `Consumer`, and `Supplier` decide what a lambda may accept and must return?
 - How does the anonymous inner class from entry 07 become a lambda, and what did the language have to add for that to be possible?
+- Entry 10 called `list.removeIf(...)` without explaining its argument — which functional interface does `removeIf` accept, and how does the lambda written there match it?
 - When is `Employee::getName` exactly equivalent to a lambda, and when is it not?
 - How do `map` and `ifPresent` remove an explicit presence check on an `Optional`?
 - How does `filter` on an `Optional` turn a present-but-rejected value into an empty one, and why does that let a single `orElseThrow` handle both "not found" and "found but not allowed"?
@@ -754,7 +761,7 @@ Audit note: the source prose is the stream half of `12-streams-lambdas.md` — `
 
 Rationale: Laziness is the mental model, not "the functional API". A pipeline that describes work and runs once explains, in a single stroke, why an intermediate operation prints nothing, why a consumed stream throws, why `sorted` needs a contract from entry 10, and why the collector — not the stream — decides whether the result can be modified.
 
-Handoff: Arbitrary values can now be filtered, transformed, ordered, and collected; entry 14 turns from processing values to narrowing them into a closed set the compiler itself can police.
+Handoff: Streams have filtered and grouped values by whatever a field happened to hold — often a status stored as a `String`, where a typo still compiles; entry 14 closes that hole by making the set of legal values a type the compiler checks.
 
 ## 14 — Enums
 
@@ -857,7 +864,7 @@ Action: audit
 English: notes/java/junior/en/16-annotations.md
 Spanish: notes/java/junior/es/16-anotaciones.md
 
-Depends on: 04, 07
+Depends on: 04, 07, 14
 
 Pending additions: none
 
@@ -865,7 +872,7 @@ Narrative role: Generalise from `@Override`, the one annotation Victor has alrea
 
 Learning outcome: Determine where an annotation may appear, how long it is retained, which tool processes it, and where its real contract is documented.
 
-Prerequisites: 04, 07
+Prerequisites: 04, 07, 14
 
 Must answer:
 
@@ -911,6 +918,7 @@ Prerequisites: 00, 04
 Must answer:
 
 - How do `groupId`, `artifactId`, and `version` identify exactly one artifact?
+- Once coordinates identify an artifact in a repository such as Maven Central, which `pom.xml` elements describe the project to a reader (`name`, `description`), which matter only when it is published there for others (`licenses`, `developers`, `scm` — the source-control location), and why does an empty block left by a project generator state less than no block at all?
 - What distinct jobs do dependencies, plugins, properties, and inherited configuration each perform inside a POM?
 - Where does Maven find a library, and how does a dependency Victor never declared end up on the classpath?
 - Why are the Spring Boot starter and the `spring-boot-starter-parent` block named here only as the concrete case of generic POM inheritance, with what they actually bundle and pin belonging to the Spring Boot notes rather than to Java?
@@ -922,6 +930,7 @@ Must answer:
 Coverage concepts:
 
 - [ ] Maven coordinates — identify an artifact through `groupId`, `artifactId`, and `version`
+- [ ] Project metadata in `pom.xml` — distinguish the descriptive elements (`name`, `description`) from the publication-only blocks (`licenses`, `developers`, `scm`) a generator emits empty, and recognise that a declared-but-empty element states less than an absent one
 - [ ] `pom.xml` build structure — locate dependencies, plugins, properties, and inherited configuration without confusing their roles
 - [ ] Dependency resolution — locate an artifact in Maven Central, add its coordinates, and let Maven resolve transitive dependencies while inspecting unexpected versions
 - [ ] Build lifecycle — distinguish `clean`, `compile`, `test`, `package`, and `install` and know that a later lifecycle phase runs the earlier phases
@@ -930,6 +939,6 @@ Coverage concepts:
 
 Audit note: the junior coverage section header assigns starter, parent, and plugin behaviour to Spring Boot coverage, not Java. `17-maven.md` currently explains both as Maven topics — a starter callout inside the POM-structure section and a whole section on `spring-boot-starter-parent` version management. Reduce both to the generic mechanism (POM inheritance, dependency aggregation) with the Spring-specific behaviour deferred. The Maven Wrapper bullet is also barely covered and needs real content.
 
-Rationale: Coordinates, POM structure, resolution, lifecycle, scopes, and the wrapper describe one complete beginner workflow for building a Java project. The testing references are cross-topic previews only; JUnit itself is owned by `notes/general/`.
+Rationale: Coordinates, descriptive and publication-only metadata, POM structure, resolution, lifecycle, scopes, and the wrapper describe one complete beginner workflow for building a Java project. The testing references are cross-topic previews only; JUnit itself is owned by `notes/general/`.
 
 Handoff: Maven closes the junior journey by turning the language concepts from entries 00–16 into a repeatable compile-test-package workflow, ready for the Spring Boot notes and for middle-level Java design.

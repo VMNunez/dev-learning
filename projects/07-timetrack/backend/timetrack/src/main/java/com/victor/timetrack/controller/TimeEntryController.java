@@ -20,7 +20,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.YearMonth;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 @RestController
@@ -32,7 +34,16 @@ public class TimeEntryController {
         this.timeEntryService = timeEntryService;
     }
 
-    private static final Set<String> SORTABLE_PROPERTIES = Set.of("date", "hours", "status", "id");
+    // The public sort keys and the entity path each one orders by. A key is a name in the API contract,
+    // never a path the client composes: `employee` orders by `user.name`, while `user.name` itself — and
+    // with it `user.password` — is refused like any other unknown key.
+    private static final Map<String, String> SORT_KEYS = Map.of(
+            "date", "date",
+            "hours", "hours",
+            "status", "status",
+            "id", "id",
+            "employee", "user.name",
+            "project", "project.name");
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping
@@ -44,9 +55,9 @@ public class TimeEntryController {
             @PageableDefault(size = 20, sort = {"date", "id"},
                     direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        validateSort(pageable.getSort());
-        return ResponseEntity.ok(
-                timeEntryService.findByFilter(userId, projectId, status, month, withIdTiebreaker(pageable)));
+        Pageable resolved = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                withIdTiebreaker(toEntitySort(pageable.getSort())));
+        return ResponseEntity.ok(timeEntryService.findByFilter(userId, projectId, status, month, resolved));
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -98,23 +109,25 @@ public class TimeEntryController {
         return ResponseEntity.noContent().build();
     }
 
-    private void validateSort(Sort sort) {
+    private Sort toEntitySort(Sort sort) {
+        List<Sort.Order> orders = new ArrayList<>();
         for (Sort.Order order : sort) {
-            if (!SORTABLE_PROPERTIES.contains(order.getProperty())) {
+            String path = SORT_KEYS.get(order.getProperty());
+            if (path == null) {
                 throw new BusinessRuleViolationException(
                         "Invalid sort property '" + order.getProperty()
-                                + "'. Allowed: " + String.join(", ", new TreeSet<>(SORTABLE_PROPERTIES)));
+                                + "'. Allowed: " + String.join(", ", new TreeSet<>(SORT_KEYS.keySet())));
             }
+            orders.add(order.withProperty(path));
         }
+        return Sort.by(orders);
     }
 
-    private Pageable withIdTiebreaker(Pageable pageable) {
-        Sort sort = pageable.getSort();
+    private Sort withIdTiebreaker(Sort sort) {
         if (sort.getOrderFor("id") != null) {
-            return pageable;
+            return sort;
         }
-        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                sort.and(Sort.by(Sort.Order.desc("id"))));
+        return sort.and(Sort.by(Sort.Order.desc("id")));
     }
 
 }

@@ -1,0 +1,44 @@
+:host {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.report-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pending-note {
+  margin: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.report-tables {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem 1rem;
+}
+
+@container (min-width: 52rem) {
+  .report-tables {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.report-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.mat-column-hours {
+  text-align: end;
+}
+
+.status-pill {
+  margin-inline-start: 0.5rem;
+}

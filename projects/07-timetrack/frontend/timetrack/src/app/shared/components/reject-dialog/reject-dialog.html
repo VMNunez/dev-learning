@@ -1,0 +1,58 @@
+<h2 mat-dialog-title>Reject entry</h2>
+
+<mat-dialog-content>
+  <p class="dialog-context">
+    {{ entry.userName }} · {{ entry.projectName }} · {{ entry.date | date: 'd MMM y' }} ·
+    {{ entry.hours | number: '1.0-2' }}h
+  </p>
+
+  <form id="reject-form" class="dialog-form" [formGroup]="form" (ngSubmit)="reject()">
+    <p class="dialog-error" role="alert" tabindex="-1">{{ error() }}</p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Reason</mat-label>
+      <textarea
+        matInput
+        formControlName="rejectionNote"
+        rows="3"
+        placeholder="What the employee needs to change"
+      ></textarea>
+      @if (form.controls.rejectionNote.hasError('required')) {
+        <mat-error>A reason is required</mat-error>
+      } @else if (form.controls.rejectionNote.hasError('maxlength')) {
+        <mat-error>The reason must be at most 255 characters</mat-error>
+      } @else if (form.controls.rejectionNote.hasError('server')) {
+        <mat-error>{{ form.controls.rejectionNote.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    matButton
+    type="button"
+    [disabled]="saving()"
+    (mousedown)="$event.preventDefault()"
+    (click)="close()"
+  >
+    Cancel
+  </button>
+
+  <button
+    matButton="filled"
+    class="dialog-destructive"
+    type="submit"
+    form="reject-form"
+    disabledInteractive
+    [disabled]="saving()"
+    [attr.aria-busy]="saving()"
+    [attr.aria-label]="saving() ? 'Rejecting entry' : 'Reject entry'"
+  >
+    @if (saving()) {
+      <mat-progress-spinner diameter="20" mode="indeterminate" aria-hidden="true" />
+    } @else {
+      Reject entry
+    }
+  </button>
+</mat-dialog-actions>

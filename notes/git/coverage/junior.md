@@ -35,7 +35,7 @@ Git concepts a junior or junior-mid developer must understand to work safely in 
 
 - Git configuration scopes — distinguish system, global, and local settings and use repository-specific overrides when appropriate
 - Author vs committer identity — configure `user.name` and `user.email` deliberately and recognise that rebasing or cherry-picking can preserve the author while recording a different committer ✅ 01-todo-list
-- Line-ending policy — recognise CRLF/LF noise and follow repository configuration such as `.gitattributes` instead of committing mass rewrites
+- Line-ending policy — recognise CRLF/LF noise and follow repository configuration such as `.gitattributes` instead of committing mass rewrites ✅ 07-timetrack — `.prettierrc` sets `endOfLine: "auto"`, so `prettier --check` follows the CRLF checkout `core.autocrlf` produces instead of demanding a rewrite of every file
 - Executable-bit changes — recognise permission-only diffs and avoid accidental file-mode changes across operating systems
 - Signed Git objects awareness — recognise verified commit or tag requirements without treating signing infrastructure or hosting branch protection as junior ownership
 

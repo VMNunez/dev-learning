@@ -8,7 +8,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - Primitive values vs objects — primitives behave as immutable values, while objects, arrays, and functions are reference-bearing mutable objects
 - `typeof` and its edge cases — inspect broad runtime categories while recognising `typeof null === "object"` and that arrays require a separate check
 - `Array.isArray` vs `typeof` — identify arrays explicitly because `typeof` reports them as objects
-- `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked
+- `typeof` vs `instanceof` — choose primitive-category inspection or prototype-chain membership according to the question being asked ✅ 07-timetrack — `isAuthResponse` checks `id`, `name` and `token` with `typeof`, while `Login` asks `err instanceof UnreadableSessionError` of an object
 - `null` vs `undefined` — distinguish intentional absence from missing or uninitialised values without assuming every API uses them consistently
 - Truthy and falsy values — predict conditional behaviour for zero, empty strings, `NaN`, `null`, and `undefined`, while recognising that empty arrays and objects are truthy ✅ 01-todo-list
 - Explicit conversion with `Boolean`, `Number`, and `String` — convert at input boundaries deliberately instead of relying on surprising operator coercion ✅ 06-hr-portal
@@ -59,7 +59,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - First-class and higher-order functions — pass, store, return, and compose functions as ordinary values ✅ 01-todo-list
 - Callbacks — follow control flow when another function decides when and with which arguments a callback runs ✅ 01-todo-list
 - Closures — explain how a function retains access to its lexical environment and how captured mutable state changes over time
-- Regular-function `this` — determine `this` from the call site rather than the function's definition location
+- Regular-function `this` — determine `this` from the call site rather than the function's definition location ✅ 07-timetrack — `Shell.logout()` calls `this.authService.logout()` through its receiver, instead of storing the method as a detached property that runs with `this` undefined
 - Arrow-function `this` — recognise lexical capture and avoid using arrows where a method needs a dynamic receiver
 - Lost method context — diagnose a method extracted or passed as a callback whose original receiver is no longer present
 - `bind` vs `call` vs `apply` — recognise creating a bound function versus invoking immediately with an explicit receiver
@@ -79,7 +79,8 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `Object.freeze` depth — prevent top-level writes without assuming nested objects become immutable
 - Prototype delegation — understand that property lookup can continue through an object's prototype chain
 - Class construction and instance methods — read `constructor` and instance behaviour as class syntax built on prototype delegation
-- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes
+- Class field initialization order — field initializers run top to bottom as the instance is built, before the constructor body, so an initializer that reads a field declared below it sees `undefined`, and a value one initializer's side effect writes into a later field is overwritten when that field's own initializer runs ✅ 07-timetrack — `AuthService` declares `sessionExpired` above `session`, whose initializer's `readStoredSession()` raises it, and `EntryDialog` builds `activeProjectIds` above the form whose validator reads it
+- Class inheritance — use `extends` and `super` while recognising that JavaScript still delegates through prototypes ✅ 07-timetrack — `AppTitleStrategy extends TitleStrategy` and calls the inherited `buildTitle()` through `this` inside its own `updateTitle()`
 - Static vs instance members — access class-level behaviour through the constructor and per-instance behaviour through its prototype
 - `new` and constructor-function mechanics — recognise how `new` creates an object, links its prototype, binds `this`, and handles an explicit object return when reading class or legacy constructor code
 - JSON text vs JavaScript values — distinguish a serialized interchange string from the runtime object produced by parsing it ✅ 03-expense-tracker
@@ -98,7 +99,8 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - `includes`, `findIndex`, and indexed access — choose membership, matching-position, or known-position lookup ✅ 06-hr-portal — the status guards ask `EMPLOYEE_STATUS_FILTERS.includes(value)` for plain membership rather than an index they would then compare to `-1`
 - `forEach` vs `map` — choose side-effect iteration or value transformation without expecting `forEach` to return results
 - `reduce` — accumulate a collection with an explicit initial value when it improves clarity rather than hiding a simpler operation ✅ 03-expense-tracker
-- Array sorting — provide an appropriate comparator and account for `sort` mutating the array
+- Array sorting — provide an appropriate comparator and account for `sort` mutating the array ✅ 07-timetrack — `Projects.sortedProjects` sorts, or reverses, a `[...projects]` copy with a status comparator, so the signal's own array is never mutated
+- Locale-aware string comparison — `localeCompare()` and `Intl.Collator` order text by a language's rules, so accented and differently cased names sort where a reader expects them, while `<` and the default `sort()` compare UTF-16 code units and put "Álvaro" after "Zoe" ✅ 07-timetrack — `Team` sorts its Name column through `new Intl.Collator(LOCALE_ID, { sensitivity: 'base' })`, so "Iván" follows "Ana" instead of trailing every unaccented name
 - Method chaining — trace the intermediate type and value produced at every stage of a transformation pipeline ✅ 03-expense-tracker
 - `for...of` vs `for...in` — iterate iterable values or enumerable property keys without using object-key iteration accidentally on arrays
 - Array methods vs explicit loops — prefer declarative transformations, but use a loop when early exit, irregular stepping, or awaited sequential work is clearer
@@ -138,7 +140,7 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 - DOM selection and update recognition — inspect and modify ordinary elements while preferring framework rendering in Angular-owned code
 - Event listeners and the event object — read event type, target/current target, and handler registration without confusing browser events with Angular APIs ✅ 05-task-manager
 - Event bubbling and capture — predict the propagation path and choose delegation or a direct listener deliberately ✅ 04-meal-finder
-- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions
+- `stopPropagation` vs `preventDefault` — control event travel or the browser's default action as independent decisions ✅ 07-timetrack — the password visibility toggles call only `$event.preventDefault()` on `mousedown`, cancelling the focus move so the input stays focused and untouched while the `click` still fires
 - Event delegation — handle repeated or dynamic descendants through a stable ancestor when the propagation model makes it suitable
 - Listener, timer, and resource cleanup — remove registrations and cancel scheduled work when their owner no longer needs them
 - `setTimeout` and `setInterval` — treat delays as minimum scheduling thresholds and cancel repeated or obsolete callbacks
@@ -150,12 +152,12 @@ JavaScript language knowledge required to read, write, debug, and review ordinar
 ## Errors and runtime boundaries
 
 - `Error` objects — preserve useful message, cause, name, and stack context when creating or wrapping a failure
-- Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text
+- Custom error classes — extend `Error` to express domain-specific failure categories that callers can distinguish without inspecting message text ✅ 07-timetrack — `UnreadableSessionError extends Error`, and `Login` tells an unreadable login response from an HTTP failure by `instanceof`, not by its message
 - `throw` control flow — stop normal execution with a meaningful error value that the correct boundary can handle
 - `try`, `catch`, and `finally` — handle only what the current boundary can resolve, clean up reliably, and never swallow an error silently ✅ 03-expense-tracker — the localStorage read resolves the parse failure at its own boundary and logs the original error instead of swallowing it
 - Synchronous throws vs promise rejections — trace failures through the correct call-stack or asynchronous observation path
 - Fetch settlement mechanics — recognise that the promise rejects for request failures but fulfils with a response for HTTP status outcomes
-- Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime
+- Runtime data enforcement — check untrusted parsed data before relying on its shape because compile-time annotations do not exist at runtime ✅ 07-timetrack — `isAuthResponse` checks the `POST /api/auth/login` body in `AuthService.login()` and the stored session in `readStoredSession()` before either becomes the session
 
 ## Debugging and performance
 

@@ -1,0 +1,88 @@
+<header>
+  <mat-toolbar>
+    @if (!isDesktop()) {
+      <button
+        matIconButton
+        class="nav-toggle"
+        (click)="drawer.toggle()"
+        aria-label="Toggle navigation menu"
+        [attr.aria-expanded]="drawer.opened"
+        aria-controls="app-sidenav"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+    }
+    <span class="brand">
+      @if (isDesktop()) {
+        <app-logo class="brand-logo" />
+      }
+      <span>TimeTrack</span>
+    </span>
+
+    <span class="spacer"></span>
+    <div>
+      <button
+        #accountButton
+        matButton
+        [matMenuTriggerFor]="menu"
+        (menuOpened)="isAccountMenuOpen.set(true)"
+        (menuClosed)="isAccountMenuOpen.set(false)"
+      >
+        <span class="account-name">{{ userName() }}</span>
+        <mat-icon iconPositionEnd class="menu-arrow" [class.open]="isAccountMenuOpen()">
+          arrow_drop_down
+        </mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="openDialog()">
+          <mat-icon>lock_reset</mat-icon>
+          <span>Change password</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Log out</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+</header>
+<mat-sidenav-container>
+  <mat-sidenav
+    #drawer
+    id="app-sidenav"
+    [mode]="isDesktop() ? 'side' : 'over'"
+    [opened]="isDesktop()"
+  >
+    <mat-nav-list>
+      @for (link of links(); track link.route) {
+        <a
+          mat-list-item
+          [routerLink]="link.route"
+          routerLinkActive
+          #linkActive="routerLinkActive"
+          [activated]="linkActive.isActive"
+        >
+          @if (link.countsPendingApprovals) {
+            <span
+              [matBadge]="pendingBadge()"
+              matBadgeOverlap="false"
+              [matBadgeHidden]="pendingApprovals() === 0"
+              >{{ link.label }}</span
+            >
+            @if (pendingApprovals() > 0) {
+              <span class="cdk-visually-hidden">, {{ pendingApprovals() }} pending</span>
+            }
+          } @else {
+            {{ link.label }}
+          }
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

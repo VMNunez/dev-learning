@@ -1,0 +1,18 @@
+:host {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@container (width < 40rem) {
+  .mat-column-email {
+    display: none;
+  }
+}
+
+@container (width < 28rem) {
+  .mat-column-role {
+    display: none;
+  }
+}

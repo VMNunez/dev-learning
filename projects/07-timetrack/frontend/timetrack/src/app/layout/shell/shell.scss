@@ -1,0 +1,83 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.nav-toggle {
+  margin-inline-end: 0.5rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.account-name {
+  display: block;
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 599px) {
+    max-width: 6rem;
+  }
+}
+
+.menu-arrow {
+  transition: transform 150ms ease-out;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+mat-sidenav {
+  width: 15rem;
+}
+
+mat-sidenav-container {
+  flex: 1;
+}
+
+mat-sidenav-content {
+  box-sizing: border-box;
+  padding: 1.5rem;
+
+  @media (max-width: 599px) {
+    padding: 1rem;
+  }
+}
+
+.page-content {
+  max-inline-size: 80rem;
+}
+
+mat-nav-list {
+  padding-inline: 0.5rem;
+
+  @include mat.badge-overrides(
+    (
+      background-color: var(--mat-sys-primary),
+      text-color: var(--mat-sys-on-primary),
+      container-offset: -1.125rem 0 -1.125rem 0.25rem,
+    )
+  );
+}

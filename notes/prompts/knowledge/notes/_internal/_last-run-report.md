@@ -1,28 +1,22 @@
 # Notes-audit — last run self-report
 
-**Date:** 2026-08-28 · **Target:** Java / junior / note 03
+**Date:** 2026-09-16 · **Target:** Java / junior / note 03 (standard mode)
 
-**Status:** open
+**Status:** clean
 
-1. **Plan vs reality** — The run never reached a stage. Guard 5 stopped it: the canonical scope-byte
-   digest of `notes/java/coverage/junior.md` is `2be5f410` and `notes-plan-junior.md` stores
-   `8c66ee9b` (markers were stripped first, per `_coverage-standard.md` → "Evidence markers"). Three
-   `coverage-bullet-add` commits landed in java junior after the 2026-08-26 plan run, and the `Plan J`
-   cell of `_run-tracker.md` already carried `⚠ stale 2026-08-28 (+1 bullet)`, so the block is the
-   flagged state being enforced, not a surprise. Worth recording: the entry was also a guard-13 no-op
-   (`Status: complete`, 6/6 concepts `[x]`, both files on disk, last audited 2026-08-26), so even a
-   current plan would have produced no content — two independent reasons to stop, and the cheaper one
-   (guard 13) is checked last.
-2. **Report discipline** — No stage dispatched; nothing trimmed.
-3. **Failures & retries** — None. Required dispatches: 0; actual: 0; re-dispatches: 0.
-4. **Rule friction and rule breaches** — No breach; no row added to a breach log. One observation:
-   the guard order runs the expensive fingerprint check (guard 5) before the cheap terminal-state
-   check (guard 13), so a request for an already-complete entry under a stale plan is reported as
-   `blocked` — "run notes-plan-prompt" — rather than as the no-op it also is. The two verdicts point
-   Victor at different work: guard 5 sends him to a full replan, guard 13 tells him this note owes
-   nothing. Both are true here and only the first was printable. Not routed as a ledger item on one
-   occurrence — the ordering is defensible (a stale plan can make a `complete` status itself wrong,
-   since a new bullet may belong to this entry) and the fix is a report line, not a reordering.
-5. **Verdict** — pipeline clean; the run-start check surfaced the previous run's still-open `REC-173`
-   (inbound links from sibling notes to a section consolidated out of an audited file are owned by no
-   stage), which this run did not reproduce because it dispatched no stage.
+1. **Plan vs reality** — One `pending`/`audit` entry, four cold stages, no whole-artefact step beyond
+   the stages; evidence is the traces plus the orchestrator's disk checks after each stage (headings
+   matched every trace; final parity 610/610 lines, 18 headings, 48 fences, 62 callout lines, 19 table
+   rows, 28 internal links). Stage B still made 18 fixes (3 false facts) after Stage A had run the
+   stage-B checks, so checks at A reduce but do not replace B — same as the 02 run.
+2. **Report discipline** — No output trimmed or discarded.
+3. **Failures & retries** — None. Required dispatches 4 (A deep, B deep, T standard, C standard);
+   actual 4; no re-dispatch.
+4. **Rule friction and rule breaches** — No breach; `_session-rules.md` read to EOF before the first
+   dispatch. Friction: Stage T reported 52 code fences per file where both hold 48 — parity still held,
+   caught only by the orchestrator's own count, so a translator's parity numbers are not evidence on
+   their own. Entry 04's `Audit note` carried an obligation on entry 03's file; it reached the stages
+   only because the orchestrator restated it in `TASK` — `LINK_TARGETS` would have carried it anyway.
+5. **Verdict** — pipeline clean. No candidate change: the parity miscount fails condition 3 (the
+   orchestrator's check is already mandated by the trace gate; the commit was unaffected). Closing
+   recount `authoring-progress-recount` junior: 4/213* → 5/213* (`9e2ae6b9`).

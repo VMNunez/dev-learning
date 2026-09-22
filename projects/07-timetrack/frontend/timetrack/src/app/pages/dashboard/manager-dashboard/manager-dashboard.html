@@ -1,0 +1,124 @@
+<header class="dashboard-header">
+  <h1 #pageHeading class="page-title" tabindex="-1">Dashboard</h1>
+  <p class="greeting">Welcome back, {{ userName() }}</p>
+</header>
+
+@if (error(); as message) {
+  <div class="page-state">
+    <p class="page-error" role="alert">{{ message }}</p>
+    <button matButton="outlined" type="button" (click)="retry()">Retry</button>
+  </div>
+} @else {
+  @let current = data();
+
+  <section
+    class="stat-grid stat-grid-4"
+    aria-label="Your team at a glance"
+    [attr.aria-busy]="loading()"
+  >
+    <app-stat-card label="Pending approval" [value]="current ? '' + current.pendingCount : null" />
+    <app-stat-card label="Team members" [value]="current ? '' + current.teamMembers : null" />
+    <app-stat-card
+      label="Approved hours this month"
+      [value]="current ? (current.approvedHours | number: '1.0-2') + 'h' : null"
+    />
+    <app-stat-card label="Active projects" [value]="current ? '' + current.activeProjects : null" />
+  </section>
+
+  <section class="dashboard-section" aria-labelledby="review-heading">
+    <div class="dashboard-section-header">
+      <h2 class="section-heading" id="review-heading">Pending approvals</h2>
+      <a matButton routerLink="/approvals">View all</a>
+    </div>
+
+    @if (!current) {
+      <div class="page-state">
+        <mat-progress-spinner
+          mode="indeterminate"
+          diameter="40"
+          aria-label="Loading pending approvals"
+        />
+      </div>
+    } @else if (current.review.length === 0) {
+      <div class="page-state">
+        <mat-icon class="empty-illustration" aria-hidden="true">task_alt</mat-icon>
+        <p class="empty-message">No pending approvals. Your team is up to date.</p>
+      </div>
+    } @else {
+      <div class="table-area" [attr.aria-busy]="loading()">
+        <div class="table-wrapper">
+          <table mat-table [dataSource]="current.review" [trackBy]="trackById">
+            <ng-container matColumnDef="employee">
+              <th mat-header-cell *matHeaderCellDef>Employee</th>
+              <td mat-cell *matCellDef="let entry">{{ entry.userName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="project">
+              <th mat-header-cell *matHeaderCellDef>Project</th>
+              <td mat-cell *matCellDef="let entry">{{ entry.projectName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Date</th>
+              <td mat-cell *matCellDef="let entry">{{ entry.date | date: 'd MMM y' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="hours">
+              <th mat-header-cell *matHeaderCellDef>Hours</th>
+              <td mat-cell *matCellDef="let entry">{{ entry.hours | number: '1.0-2' }}h</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef>
+                <span class="cdk-visually-hidden">Actions</span>
+              </th>
+              <td mat-cell *matCellDef="let entry">
+                @if (isOwnEntry(entry)) {
+                  <span class="action-note">Awaiting another manager</span>
+                } @else {
+                  <button
+                    matIconButton
+                    class="approve-action"
+                    type="button"
+                    aria-label="Approve entry"
+                    matTooltip="Approve"
+                    disabledInteractive
+                    [disabled]="busyEntryId() === entry.id"
+                    (click)="approve(entry)"
+                  >
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button
+                    matIconButton
+                    class="reject-action"
+                    type="button"
+                    aria-label="Reject entry"
+                    matTooltip="Reject"
+                    disabledInteractive
+                    [disabled]="busyEntryId() === entry.id"
+                    (click)="openReject(entry)"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="reviewColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: reviewColumns"></tr>
+          </table>
+        </div>
+
+        @if (loading()) {
+          <div class="table-overlay">
+            <mat-progress-spinner
+              mode="indeterminate"
+              diameter="40"
+              aria-label="Loading pending approvals"
+            />
+          </div>
+        }
+      </div>
+    }
+  </section>
+}

@@ -1,0 +1,31 @@
+:host {
+  display: inline-flex;
+}
+
+.badge {
+  --badge-color: var(--status-draft);
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--badge-color) 30%, transparent);
+  border-radius: var(--mat-sys-corner-small);
+  background: color-mix(in srgb, var(--badge-color) 8%, white);
+  color: var(--badge-color);
+  font: var(--mat-sys-label-small);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-submitted {
+  --badge-color: var(--status-submitted);
+}
+
+.badge-approved {
+  --badge-color: var(--status-approved);
+}
+
+.badge-rejected {
+  --badge-color: var(--status-rejected);
+}

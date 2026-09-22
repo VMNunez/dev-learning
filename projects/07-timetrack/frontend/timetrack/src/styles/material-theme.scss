@@ -1,0 +1,79 @@
+@use '@angular/material' as mat;
+@use './theme-colors' as theme;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: theme.$primary-palette,
+        tertiary: theme.$tertiary-palette,
+        theme-type: light,
+      ),
+      typography: Roboto,
+      density: -2,
+    ),
+    $overrides: (corner-small: 4px, corner-medium: 4px, corner-large: 4px, corner-extra-large: 4px)
+  );
+
+  @include mat.button-overrides(
+    (
+      filled-container-shape: var(--mat-sys-corner-small),
+      outlined-container-shape: var(--mat-sys-corner-small),
+      protected-container-shape: var(--mat-sys-corner-small),
+      text-container-shape: var(--mat-sys-corner-small),
+      tonal-container-shape: var(--mat-sys-corner-small),
+    )
+  );
+
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-primary),
+      container-text-color: var(--mat-sys-on-primary),
+    )
+  );
+
+  @include mat.strong-focus-indicators(
+    (
+      border-color: var(--mat-sys-primary),
+    )
+  );
+
+  .mat-toolbar {
+    @include mat.icon-button-overrides(
+      (
+        icon-color: var(--mat-sys-on-primary),
+      )
+    );
+
+    @include mat.strong-focus-indicators(
+      (
+        border-color: var(--mat-sys-on-primary),
+      )
+    );
+  }
+
+  @include mat.card-overrides(
+    (
+      outlined-container-color: var(--mat-sys-surface-container-lowest),
+    )
+  );
+
+  @include mat.sidenav-overrides(
+    (
+      container-divider-color: var(--mat-sys-outline-variant),
+    )
+  );
+
+  @include mat.paginator-overrides(
+    (
+      container-background-color: var(--mat-sys-surface-container-low),
+      container-text-color: var(--mat-sys-on-surface-variant),
+    )
+  );
+
+  @include mat.list-overrides(
+    (
+      active-indicator-shape: var(--mat-sys-corner-small),
+    )
+  );
+}

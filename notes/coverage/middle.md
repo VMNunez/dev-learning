@@ -28,14 +28,14 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `@defer` blocks — choose viewport, interaction, or idle triggers for heavy template dependencies
 - Signal `resource()` APIs — evaluate signal-native asynchronous loading against established `HttpClient` and RxJS patterns only when the project's Angular version provides the required stable API
 - `ChangeDetectorRef` — use manual marking, detection, or detachment only when normal Angular notifications cannot model an integration
-- Bundle and rendering profiling — use Angular DevTools and build statistics to find a measured bottleneck before optimising
+- Bundle and rendering profiling — use Angular DevTools and build statistics to find a measured bottleneck before optimising ✅ 07-timetrack — `ng build --stats-json` attributed 217 kB of the initial bundle to the paginator entry point imported by `app.config.ts`, measured before moving its provider
 
 ## Angular Material
 
 ### Theming and custom controls
 
 - Custom theme palettes — define product palettes and semantic colours instead of relying only on prebuilt themes
-- Component and theme token overrides — customise a narrow visual contract without depending on brittle internal selectors
+- Component and theme token overrides — customise a narrow visual contract without depending on brittle internal selectors ✅ 07-timetrack — `mat.button-overrides` squares all five button variants and `mat.card-overrides`, scoped to `.login-card`, retypes its title
 - Selective theme emission — choose all-component or per-component base, colour, typography, and density mixins while preventing duplicated CSS output
 - Runtime dark mode — switch complete theme token sets while preserving contrast and user preference
 - Material custom form controls — integrate a `ControlValueAccessor` with `mat-form-field`, validation, focus, and error state
@@ -287,8 +287,8 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 
 ### Component-responsive layout
 
-- Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions
-- Container queries — adapt a component to its available container rather than the global viewport
+- Intrinsic sizing — recognise `min-content`, `max-content`, and `fit-content()` as sizes derived from content rather than arbitrary fixed dimensions ✅ 07-timetrack — `.page-title` takes `inline-size: fit-content` in `_page.scss`, so the dashboard's flex-column header stops stretching the title and its focus ring across the page
+- Container queries — adapt a component to its available container rather than the global viewport ✅ 07-timetrack — each page `:host` is an `inline-size` container, and `_page.scss`'s `@container` rules split the stat cards without an orphan and cap a four-field filter bar at two fields below `51rem`
 - Subgrid — align nested content with an ancestor grid when independent nested tracks would drift
 - Registered custom properties with `@property` — give custom properties syntax, inheritance, and animatable initial values
 

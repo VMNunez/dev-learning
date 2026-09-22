@@ -131,6 +131,7 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 - `AccountStatusUserDetailsChecker` — re-validates the loaded `UserDetails`' account status inside `JwtFilter` on every request, so a token issued before deactivation is rejected on its very next request instead of staying valid until it expires
 - `@Size(max = ...)` on every unconstrained request string, including a lower bound (72) for login password — matches BCrypt's real truncation boundary, capping the CPU an unauthenticated caller can force
 - Token lifetime as a tradeoff — cutting `app.jwt.expiration` from 24h to 60min balances a usable work session against the blast radius of a token stolen from `localStorage`
+- One error contract on both sides — the Angular client mirrors the backend's `ErrorResponse` as a typed `ApiError` and renders the server's own `message`, so 401 and 429 need no duplicated text in the frontend
 
 ---
 

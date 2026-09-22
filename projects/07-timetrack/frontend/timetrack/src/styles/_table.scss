@@ -1,0 +1,131 @@
+@use '@angular/material' as mat;
+
+.table-area {
+  position: relative;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-small);
+  overflow: hidden;
+}
+
+.table-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--mat-sys-surface) 60%, transparent);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  container-type: scroll-state;
+
+  table {
+    width: 100%;
+  }
+
+  .mat-column-date,
+  .mat-column-hours,
+  .mat-column-actions {
+    white-space: nowrap;
+  }
+
+  .mat-column-name,
+  .mat-column-email,
+  .mat-column-employee,
+  .mat-column-project {
+    max-width: 12rem;
+    overflow-wrap: break-word;
+  }
+
+  .mat-column-description {
+    min-width: 9rem;
+    overflow-wrap: anywhere;
+  }
+
+  .mat-column-hours {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mat-column-actions {
+    width: 1%;
+    text-align: end;
+  }
+
+  @container scroll-state(scrollable: inline-end) {
+    .mat-mdc-table-sticky-border-elem-right {
+      border-inline-start: 1px solid var(--mat-sys-outline-variant);
+    }
+  }
+
+  .approve-action {
+    @include mat.icon-button-overrides(
+      (
+        icon-color: var(--action-approve),
+      )
+    );
+  }
+
+  .reject-action {
+    @include mat.icon-button-overrides(
+      (
+        icon-color: var(--mat-sys-error),
+      )
+    );
+  }
+
+  .action-note {
+    display: block;
+    inline-size: 6.5rem;
+    margin-inline-start: auto;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-small);
+    white-space: normal;
+  }
+
+  .rejection-note {
+    display: block;
+    font: var(--mat-sys-body-small);
+    overflow-wrap: anywhere;
+  }
+
+  .mat-column-status .rejection-note {
+    display: none;
+    margin-block-start: 0.5rem;
+  }
+
+  .mat-mdc-cell:has(> .rejection-note),
+  .mat-mdc-cell:has(> .mat-mdc-icon-button ~ .action-note) {
+    padding-block: 0.5rem;
+  }
+
+  @media (max-width: 599px) {
+    .mat-column-description {
+      display: none;
+    }
+
+    .mat-column-status .rejection-note {
+      display: block;
+    }
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-small);
+  background: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-small);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-active {
+  border-color: color-mix(in srgb, var(--project-active) 30%, transparent);
+  background: color-mix(in srgb, var(--project-active) 8%, white);
+  color: var(--project-active);
+}

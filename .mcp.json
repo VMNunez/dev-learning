@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "angular-cli": {
+      "command": "node",
+      "args": [
+        "projects/07-timetrack/frontend/timetrack/node_modules/@angular/cli/bin/ng.js",
+        "mcp",
+        "--read-only"
+      ]
+    }
+  }
+}

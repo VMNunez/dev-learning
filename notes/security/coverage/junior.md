@@ -119,6 +119,7 @@ review without taking on specialist or production-platform ownership.
 - Credential change must actually change the credential — a rotation request that re-stores the value already in use produces a different stored hash yet leaves the old secret valid, so the new value is compared against the stored one and refused when they match, and that comparison runs only after the current credential has been proven so it cannot answer "is this the password?" for an unauthenticated caller ✅ 07-timetrack — `UserService.changePassword` refuses a `newPassword` whose `passwordEncoder.matches` the stored hash with 400 `fieldErrors.newPassword`, and runs that check only after the current-password check has passed
 - Password reset — use a short-lived, single-use, unpredictable token, invalidate it after success,
   and never email the existing password or trust only an account identifier
+- Administrative credential reset — when a user can no longer prove who they are and no out-of-band channel exists for a self-service reset, an authorised operator issues a fresh generated credential that is shown once and stored only as a hash, never recovering or re-sending the old one; the operator's own account is excluded, because it has the self-service path that verifies the current credential ✅ 07-timetrack — `POST /api/users/{id}/password-reset`, MANAGER-only, stores the hash of a fresh `SecureRandom` password, returns the plaintext once for `Team`'s one-time dialog, and answers `409` on the caller's own id
 - Multi-factor authentication awareness — recognise that a second independent factor reduces the
   damage from a stolen password without requiring a junior to design an enterprise identity system
 - Generic authentication failures — keep login status, response shape, message, and observable timing
@@ -220,7 +221,7 @@ review without taking on specialist or production-platform ownership.
 - Indirect disclosure through result ordering — a value the response never serialises can still leak
   when the caller chooses which column a result set is ordered by, since an order derived from a secret
   is an observation of it, so the sortable and filterable fields are constrained to an explicit
-  allow-list rather than accepted as the persistence layer receives them ✅ 07-timetrack — `TimeEntryController.validateSort` rejects any `sort` property outside `date`, `hours`, `status`, `id` with 400, so `?sort=user.password,asc` can no longer order the page by the BCrypt hash column
+  allow-list rather than accepted as the persistence layer receives them ✅ 07-timetrack — `TimeEntryController.SORT_KEYS` maps six public sort keys to entity paths, `employee` to `user.name`, and `toEntitySort` refuses any other key with 400, so `?sort=user.password,asc` can no longer order the page by the BCrypt hash column
 - Security logging hygiene — record useful authentication and authorisation events while excluding
   passwords, tokens, session IDs, authorisation headers, and unnecessary personal data ✅ 07-timetrack
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or

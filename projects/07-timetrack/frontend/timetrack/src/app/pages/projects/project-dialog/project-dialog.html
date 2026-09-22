@@ -1,0 +1,57 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit project' : 'New project' }}</h2>
+
+<mat-dialog-content>
+  <form id="project-form" class="dialog-form" [formGroup]="form" (ngSubmit)="save()">
+    <p class="dialog-error" role="alert" tabindex="-1">{{ error() }}</p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      @if (form.controls.name.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      } @else if (form.controls.name.hasError('maxlength')) {
+        <mat-error>Name must be at most 255 characters</mat-error>
+      } @else if (form.controls.name.hasError('server')) {
+        <mat-error>{{ form.controls.name.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      @if (form.controls.description.hasError('maxlength')) {
+        <mat-error>Description must be at most 255 characters</mat-error>
+      } @else if (form.controls.description.hasError('server')) {
+        <mat-error>{{ form.controls.description.getError('server') }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    matButton
+    type="button"
+    [disabled]="saving()"
+    (mousedown)="$event.preventDefault()"
+    (click)="close()"
+  >
+    Cancel
+  </button>
+
+  <button
+    matButton="filled"
+    type="submit"
+    form="project-form"
+    disabledInteractive
+    [disabled]="saving()"
+    [attr.aria-busy]="saving()"
+    [attr.aria-label]="saving() ? 'Saving project' : 'Save'"
+  >
+    @if (saving()) {
+      <mat-progress-spinner diameter="20" mode="indeterminate" aria-hidden="true" />
+    } @else {
+      Save
+    }
+  </button>
+</mat-dialog-actions>

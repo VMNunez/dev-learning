@@ -157,9 +157,9 @@ save work. The whole point of this pass is that its verdict can be trusted in bo
 
 ## 3 — Route the verdict
 
-**Valid as written / valid with corrected scope** → hand off to the normal cycle: explain the problem
-and the theory first, let Victor try it himself, give code only if he asks (his standing teach-first
-rule). Carry the corrected scope into that explanation so he is not working from the task's wrong list.
+**Valid as written / valid with corrected scope** → hand off to the normal cycle: step 5's explanation,
+then the fix at the mode Victor picks — or written by you, when his own instruction for the session has
+delegated it. Carry the corrected scope into that explanation so no one works from the task's wrong list.
 
 **Valid, wrong moment** → put the choice to Victor with the tradeoff stated, then record what he
 decides. A verdict that lives only in the chat is re-derived from scratch every session the task is
@@ -220,16 +220,15 @@ table**, complete, on the first pass.
 ## 5 — The explanation contract, checked before the message is sent
 
 The verdict table above closes the triage; it is not the explanation. What follows it is governed by
-`notes/prompts/_internal/_session-rules.md` -> "How to guide me" -> the two-layer rule, which is
-authoritative and unabridged there. It is restated as a checklist here for one reason: this skill is
-the only file guaranteed to be loaded when a task is opened, and a rule that lives only in a
-1000-line file that was not read is a rule that does not fire. Three consecutive openings
-(2026-08-25 `@Size(min=8)`, 2026-08-26 DRAFT guard, 2026-08-27 `ProjectResponse.active`) went out at
-half depth and were only repaired when Victor asked again — *"por que no me lo pones asi desde el
-principio?"*. Asking a second time is this contract's failure signal, never its normal path.
+`notes/prompts/_internal/_session-rules.md` -> "How to guide me" -> the two-layer rule, authoritative
+and unabridged there, and restated as a checklist here only because this skill is the file guaranteed
+to be loaded when a task is opened — a rule left in a file that was not read does not fire. Asking a
+second time is this contract's failure signal, never its normal path.
 
-Before sending, verify all four are present:
+Before sending, verify all five are present:
 
+- [ ] **Introduction** — the feature, screen or endpoint the task lives in and what it does today for
+      the person using it, in a few plain lines, before any file or theory.
 - [ ] **`## Archivo(s) afectado(s)`** — every file the change touches, linked, before any theory.
 - [ ] **Simple layer, its three parts** — (a) what happens today, quoting the real code and
       contrasting the place that already does it right; (b) why that is a problem, as a visible
@@ -244,10 +243,13 @@ Before sending, verify all four are present:
       reasoned design/security nuances, argued, never a caveat list.
 - [ ] **The three guidance modes**, as the closing block, in the verbatim numbered `1)` `2)` `3)`
       Spanish wording fixed by `_session-rules.md` -> "How to guide me" -- copied exactly, never paraphrased.
+      **Unless Victor has already answered it** — a mode picked in the message opening this task, or the
+      implementation delegated to you by his own instruction for the session: then one line naming that
+      choice replaces the block, and the four checks above stay owed in full — he reads them to approve the fix.
 
 **Priority never scales depth.** `[Low]`, `Effort: Small` and a one-line fix earn the same full
 explanation as a `[High]`: the size of the diff says nothing about the size of the concept. The
-brevity rule governs verdicts, reports and conversation — never these two layers.
+brevity rule governs verdicts, reports and conversation — never the introduction or these two layers.
 
 ---
 
