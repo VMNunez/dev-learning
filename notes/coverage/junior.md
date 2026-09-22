@@ -678,7 +678,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `Objects.equals(a, b)` — perform null-safe object equality by handling nulls before delegating to `equals`
 - The `equals` / `hashCode` contract — equal objects must have equal hash codes, and both methods must change together for correct `HashSet` and `HashMap` behaviour ✅ 07-timetrack
 - Mutable hash keys — changing fields used by `equals` or `hashCode` after insertion can make an entry effectively unreachable in a hash-based collection ✅ 07-timetrack
-- `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract ✅ 07-timetrack — every credential field (`LoginRequest.password`, both `ChangePasswordRequest` fields, `AuthResponse.token`) carries `@ToString.Exclude`, so Lombok's generated string cannot publish it
+- `toString()` — provide a useful textual representation for diagnostics without exposing secrets or relying on it as a serialization contract ✅ 07-timetrack — every credential field (`LoginRequest.password`, both `ChangePasswordRequest` fields, `AuthResponse.token` and the `generatedPassword` of `CreateUserResponse` and `PasswordResetResponse`) carries `@ToString.Exclude`, so Lombok's generated string cannot publish it
 
 ### Strings and decimal values
 
