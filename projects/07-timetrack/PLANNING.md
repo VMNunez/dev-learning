@@ -13,10 +13,10 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 7d — Manager admin: team + reports**, next. Step 7c closed ✅ on 2026-09-21: the manager dashboard, the Approvals and Projects pages and the shell's `MatBadge`, its done condition verified clause by clause in the browser that day. `PROJECT-BACKLOG.md` holds **ten open tasks — nine frontend, one Medium and eight Lows, and one backend Low**. Eight of the frontend ones — one Medium (the browser's Back button discarding a new member's generated password) and seven Lows — were raised on 2026-09-22 by the cold design review of Step 7d, and a ninth that day while closing it: the README screenshots, to be taken on a realistic demo dataset before G5; the backend Low, raised on 2026-09-21 while building the Team page, is a decision on recovering an account whose generated password was lost. All six frontend tasks raised on 2026-09-21 closed on 2026-09-22 — their **Medium** (`/approvals` scrolling sideways at a 1024px window) and the Lows on the page title's focus ring after a mouse action, on Retry dropping focus, on the badge's error red, on the dashboard list's title, and the decision that made the sidebar badge follow a write live. The two frontend tasks open when 2026-09-21 began — the High on table text columns breaking inside words and the Medium on focus after the first create from an empty state — closed that day, as did the eight Lows open that morning |
-| **Current branch** | `feat/angular-manager-pages` — cut from `projects/07-timetrack` on 2026-09-19 right after PR #91 merged `feat/angular-entries` (Step 7b, merge `668c10fb`; the branch was then deleted locally and on `origin`); it carries Steps 7c and 7d and merges back into `projects/07-timetrack` when Step 7d's done condition passes (§22) |
-| **Done condition** | Step 7d's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none; the §14 Visual QA checklist passes on all eight pages at 1024, 768 and 375px` |
-| **Next gate** | G4 — frontend review — **blocked, the frontend is still mid-build (Steps 7a–7c done, Step 7d open)**: its trigger is `feat/angular-manager-pages` merging after Step 7d, and the backlog's `**Last Reviewed — frontend:**` reads 2026-09-19 for a review run ahead of the gate over Steps 7a–7b only, so G4 still owes its full pass. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`). Until G4's trigger fires, the only gate running is G1, the per-step `step-complete` ritual on Step 7d |
+| **Current step** | **Step 8 — Backend tests**, next — it starts once `feat/angular-manager-pages` merges. Step 7d closed ✅ on 2026-09-22 (the Team and Reports pages), and with it the parent Step 7: the Angular frontend is built, every sub-step's done condition verified clause by clause in the browser. `PROJECT-BACKLOG.md` holds **ten open tasks — nine frontend, one Medium and eight Lows, and one backend Low**: the Medium (the browser's Back button discarding a new member's generated password) and seven Lows came from the cold design review of Step 7d on 2026-09-22, the ninth frontend task is the README screenshots on a realistic demo dataset before G5, and the backend Low is the decision on recovering an account whose generated password was lost |
+| **Current branch** | `feat/angular-manager-pages` — carries Steps 7c and 7d, and with Step 7d closed it is ready to merge into `projects/07-timetrack` through a PR Victor opens by hand (§22); the next branch, `feat/backend-tests`, is cut from `projects/07-timetrack` after that merge |
+| **Done condition** | Step 8's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Terminal: mvn test passes — TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest and ReportServiceTest all green; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted` |
+| **Next gate** | G4 — frontend review — **due when `feat/angular-manager-pages` merges**, its trigger (`review-audit` with `REVIEW_SCOPE = frontend`): the frontend is complete, and the backlog's `**Last Reviewed — frontend:**` reads 2026-09-19 for a review run ahead of the gate over Steps 7a–7b only, so G4 owes its full pass over all four sub-steps. The open Medium blocks G7, not G4. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`) |
 | **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
 | **Last updated** | 2026-09-22 |
 
@@ -1905,7 +1905,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
 - **Concept learned:** interface projections (`ProjectHoursReportResponse`, `UserHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
 
-### Step 7 — Angular frontend (split into 7a / 7b / 7c / 7d)
+### Step 7 — Angular frontend (split into 7a / 7b / 7c / 7d) ✅
 
 One step per coherent slice, days not weeks — same granularity the backend had. Each sub-step has its
 own done condition covering its **full** scope, and each falls inside exactly one §22 branch — 7c and 7d
@@ -2005,7 +2005,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   rather than a fifth call, and the badge is re-read after every navigation (§13); the `coming-soon`
   placeholder page, which served the manager's `/dashboard` until now, is removed
 
-#### Step 7d — Manager admin: team + reports
+#### Step 7d — Manager admin: team + reports ✅
 - Team page + `user-dialog` (name, email, role — no password field); the generated password is surfaced once
   in a copyable snackbar from the `CreateUserResponse` (§14)
 - Reports page: month selector, summary cards and the two `forkJoin` hours tables
@@ -2015,7 +2015,24 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   so it is the only point where inconsistency between pages built on different days is visible. Anything it
   finds is fixed now, not filed: G4 is the next gate and a portfolio verdict comes after it
 - **Review concepts:** reactive forms, MatTable, `forkJoin`, role-aware UI
+- **Concept learned:** a one-time secret shown in a dialog only its Done button closes, with the CDK's
+  `cdkCopyToClipboard` reporting whether the browser accepted the copy · a discriminated-union dialog
+  result (`created` carries the new account, `updated` nothing) · a control disabled for the caller's own
+  account and read back with `getRawValue()` · a disabled button kept focusable through
+  `disabledInteractive` so its tooltip can say why · a browser sort where only the order the API never
+  serves compares strings, through a locale `Intl.Collator`, and the rest are stable sorts over the API's
+  own order · three report calls in one `forkJoin`, cleared on every month change, with `switchMap`
+  dropping a slower month's answer · a shared style moved to its partial the day a second page needs it
 - **Done condition:** `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none; the §14 Visual QA checklist passes on all eight pages at 1024, 768 and 375px`
+- **Verified 2026-09-22** in the browser as MANAGER, every clause: "Test Member" created at `/team` showed
+  its 12-character password once, copied, survived Escape and closed only on Done, and logged in with it;
+  `/reports` rendered both tables for September 2026, 5h reconciling across the card and both tables, and
+  "No approved hours for this month yet." for October 2025; the Visual QA ran headless over the eight views
+  at 1024, 768 and 375 plus browser checks at 1024 and 768. Changed against the plan: the password surfaces
+  in a dialog, not a snackbar (§14 had left both open), and the two README screenshots the checklist names
+  moved to a backlog Low, to be taken on a realistic demo dataset before G5 rather than on the test
+  fixtures; Team sorts by status by default (the API's own order), hides Email below 600px, and fixes the
+  caller's role in the edit dialog; the Reports card reads "Approved hours" because the month is chosen
 
 ### Step 8 — Backend tests
 - JUnit 5 + Mockito — one test per service method
