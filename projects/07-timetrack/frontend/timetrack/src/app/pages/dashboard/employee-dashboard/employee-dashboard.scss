@@ -12,4 +12,19 @@
 .table-wrapper {
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 4px;
+
+  // Focusable because nothing inside it is: with no row actions and no sort headers, Tab would skip a
+  // box the keyboard can only scroll while it holds focus. Ringed like every other focus in the app.
+  &:focus-visible {
+    outline: 3px solid var(--mat-sys-primary);
+  }
+}
+
+// Date goes first on a phone, as Description already does below 600px (§14 Tables): the list is ordered
+// newest first, so its order says what is recent, while Hours is the number the employee logs. Below a
+// 23rem page, where project, date, hours and status (about 371px) stop fitting.
+@container (width < 23rem) {
+  .mat-column-date {
+    display: none;
+  }
 }

@@ -46,7 +46,9 @@
     </div>
 
     @if (current) {
-      <div class="table-wrapper">
+      <!-- A group, not a second region: the section around it is already the "Recent entries" region,
+           and two landmarks with one name are indistinguishable. -->
+      <div class="table-wrapper" tabindex="0" role="group" aria-labelledby="recent-heading">
         <table mat-table [dataSource]="current.recent">
           <ng-container matColumnDef="project">
             <th mat-header-cell *matHeaderCellDef>Project</th>
