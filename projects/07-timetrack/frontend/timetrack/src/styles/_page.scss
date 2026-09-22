@@ -97,8 +97,10 @@
 
 // The §14 ladder, sized by the page's own width rather than the viewport's, because the 15rem rail
 // narrows the page from 1024px up independently of the window — so the page's `:host` declares
-// `container-type: inline-size`. Four cards split 1, 2 + 2 or 4; three go straight from 1 to 3 on the
-// same 52rem rung, never through 2 + 1. Neither strip ever leaves a card orphaned.
+// `container-type: inline-size`. Four cards split 1, 2 + 2 or 4; three go straight from 1 to 3, never
+// through 2 + 1, on a 42rem rung of their own — below 52rem, because the 1024px and 768px windows leave
+// a 45–46rem page, where three stacked cards were a 338px column above the table rather than a strip.
+// Neither strip ever leaves a card orphaned.
 .stat-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -111,11 +113,13 @@
   }
 }
 
-@container (min-width: 52rem) {
+@container (min-width: 42rem) {
   .stat-grid-3 {
     grid-template-columns: repeat(3, 1fr);
   }
+}
 
+@container (min-width: 52rem) {
   .stat-grid-4 {
     grid-template-columns: repeat(4, 1fr);
   }
