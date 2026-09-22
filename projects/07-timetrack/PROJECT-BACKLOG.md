@@ -45,7 +45,16 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — `/approvals` cannot be sorted by Employee: only Date, Hours and Status carry
+  `mat-sort-header` (`approvals.html`), so a manager reviewing a week of submissions cannot group one
+  person's entries together — the column a reviewer scans first is the one that does not sort. The fix
+  crosses tiers: `GET /api/entries` refuses any `?sort=` key outside `date`, `hours`, `status`, `id`
+  (`TimeEntryController.SORTABLE_PROPERTIES`, PLANNING §10), and that allow-list is deliberate — a nested
+  path like `user.password` must never become orderable — so the backend needs a public key such as
+  `employee` mapped server-side to `user.name`, never the raw path, plus the §10 allow-list sentence
+  updated; then the header on the Employee column. Project has the same gap and the same shape of fix
+  (`project` → `project.name`); decide in triage whether it rides along *(Effort: Small)* *(raised
+  2026-09-22 by Victor in the browser, on the demo dataset, after the backlog had been cleared)*
 
 ## Beyond the current gate
 
