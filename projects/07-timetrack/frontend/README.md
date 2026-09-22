@@ -81,7 +81,7 @@ src/app/
 |---|---|
 | `status-badge` | Entries page, Approvals page, Dashboard |
 | `confirm-dialog` | Delete entry, deactivate user, deactivate project |
-| `reject-dialog` | Approvals page — manager enters the rejection note |
+| `reject-dialog` | Approvals page and the manager dashboard's pending list — manager enters the rejection note |
 | `logo` | Login page (branding panel and card) and the shell toolbar — one SVG sized by each host's own class through `:host`, instead of a copy per page |
 | `stat-card` | Both dashboards, Projects, Team and Reports — one outlined card with its own pulsing skeleton, so a real `0` and "not loaded yet" never look the same on any page |
 
