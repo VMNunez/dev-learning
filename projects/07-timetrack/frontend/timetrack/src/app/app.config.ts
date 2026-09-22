@@ -3,7 +3,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import localeEnGb from '@angular/common/locales/en-GB';
 import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
-import { provideRouter, TitleStrategy } from '@angular/router';
+import { provideRouter, TitleStrategy, withRouterConfig } from '@angular/router';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
@@ -16,7 +16,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     { provide: LOCALE_ID, useValue: 'en-GB' },
-    provideRouter(routes),
+    // A navigation a guard cancels puts the browser back where it was: under the default 'replace' a
+    // refused Back rewrites the previous history entry instead, so each further Back walks one entry
+    // closer to leaving the app — and `/team`'s one-time password with it.
+    provideRouter(routes, withRouterConfig({ canceledNavigationResolution: 'computed' })),
     { provide: TitleStrategy, useClass: AppTitleStrategy },
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     {
