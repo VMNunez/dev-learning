@@ -18,6 +18,12 @@ export interface CreateUserResponse extends User {
   generatedPassword: string;
 }
 
+// Mirrors `PasswordResetResponse`: the new password a manager's reset generated, with the same one-time
+// life as the one above. The page already holds the account it reset, so nothing else comes back.
+export interface PasswordResetResponse {
+  generatedPassword: string;
+}
+
 // No password field: the backend generates it (§8), so the manager never chooses or sees a stored one.
 export interface CreateUserRequest {
   name: string;

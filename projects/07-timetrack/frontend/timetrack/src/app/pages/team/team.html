@@ -96,6 +96,21 @@
               >
                 <mat-icon>edit</mat-icon>
               </button>
+              <!-- Kept on the caller's own row, disabled but focusable, so its tooltip can point at the
+                   account menu's Change password, which asks for the current one. -->
+              <button
+                matIconButton
+                type="button"
+                aria-label="Reset password"
+                [matTooltip]="
+                  isSelf(user) ? 'Use Change password in your account menu' : 'Reset password'
+                "
+                disabledInteractive
+                [disabled]="busyUserId() === user.id || isSelf(user)"
+                (click)="resetPassword(user)"
+              >
+                <mat-icon>key</mat-icon>
+              </button>
               <!-- One button that toggles 🗑 / ↺, as on Projects, so the node holding focus survives the
                    refetch. On the caller's own row it stays, disabled but focusable, so its tooltip can
                    say why: a missing button would read as a broken row. -->

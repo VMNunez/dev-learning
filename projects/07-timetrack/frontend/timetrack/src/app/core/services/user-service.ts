@@ -6,6 +6,7 @@ import {
   ChangePasswordRequest,
   CreateUserRequest,
   CreateUserResponse,
+  PasswordResetResponse,
   UpdateUserRequest,
   User,
 } from '../../shared/models/user';
@@ -34,6 +35,12 @@ export class UserService {
   // The API's DELETE is the soft delete: the account keeps every entry it logged and can no longer log in.
   deactivateUser(id: number): Observable<void> {
     return this.http.delete<void>(this.userUrlFor(id));
+  }
+
+  // A manager's reset of someone else's password; the API refuses the caller's own account, which has
+  // `changePassword` instead. POST with no body: every call mints a new password.
+  resetPassword(id: number): Observable<PasswordResetResponse> {
+    return this.http.post<PasswordResetResponse>(`${this.userUrlFor(id)}/password-reset`, null);
   }
 
   changePassword(request: ChangePasswordRequest): Observable<void> {

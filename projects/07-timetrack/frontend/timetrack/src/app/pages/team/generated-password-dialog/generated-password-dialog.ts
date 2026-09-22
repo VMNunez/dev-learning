@@ -10,6 +10,8 @@ export interface GeneratedPasswordDialogData {
   name: string;
   email: string;
   password: string;
+  // Why the password exists: a new account, or a manager's reset of one that already had a password.
+  reason: 'created' | 'reset';
 }
 
 // Shows a new member's generated password, the one time it exists outside the database's hash: it

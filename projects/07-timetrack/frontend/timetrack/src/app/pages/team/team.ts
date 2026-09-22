@@ -263,24 +263,70 @@ export class Team implements HoldsOneTimeSecret {
         }
 
         const { name, email, generatedPassword } = result.member;
-        this.passwordDialog = this.dialog.open<
-          GeneratedPasswordDialog,
-          GeneratedPasswordDialogData
-        >(GeneratedPasswordDialog, {
-          data: { name, email, password: generatedPassword },
-          disableClose: true,
-          // `disableClose` stops Escape and the backdrop, not the browser's Back: by default the
-          // overlay disposes itself on that history change, before the route's guard can refuse it.
-          closeOnNavigation: false,
-          // The empty state's button that may have opened the form is gone once the first member
-          // exists; the header's action is the one target the refetch cannot remove.
-          restoreFocus: this.addMemberButton().nativeElement,
-        });
-        this.passwordDialog
-          .afterClosed()
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(() => (this.passwordDialog = null));
+        // The empty state's button that may have opened the form is gone once the first member exists;
+        // the header's action is the one target the refetch cannot remove.
+        this.showPassword(
+          { name, email, password: generatedPassword, reason: 'created' },
+          this.addMemberButton().nativeElement,
+        );
       });
+  }
+
+  // A manager's reset, for a member who lost the password they were given: the old one stops working at
+  // once, so it asks first. The row stays as it is — nothing in the list changed — so no refetch, and
+  // the new password comes back in the same dialog a new account's does.
+  resetPassword(user: User): void {
+    if (this.busyUserId() === user.id || this.isSelf(user)) return;
+
+    this.dialog
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
+        data: {
+          title: 'Reset password?',
+          message: `${user.name}'s current password stops working at once. You will see the new one only once.`,
+          confirmLabel: 'Reset password',
+          destructive: true,
+        },
+      })
+      .afterClosed()
+      .pipe(
+        filter((confirmed) => confirmed === true),
+        switchMap(() => {
+          this.busyUserId.set(user.id);
+          return this.userService.resetPassword(user.id);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: ({ generatedPassword }) => {
+          this.busyUserId.set(null);
+          this.showPassword({
+            name: user.name,
+            email: user.email,
+            password: generatedPassword,
+            reason: 'reset',
+          });
+        },
+        error: (err: unknown) => {
+          this.busyUserId.set(null);
+          this.snackBar.open(apiErrorMessage(err, 'The reset failed. Try again.'), 'Close', {
+            duration: 6000,
+          });
+        },
+      });
+  }
+
+  // The one place a generated password is shown. `disableClose` stops Escape and the backdrop, not the
+  // browser's Back: by default the overlay disposes itself on that history change, before the route's
+  // guard can refuse it — so it also opts out of `closeOnNavigation`, and `/team`'s guard reads the ref.
+  private showPassword(data: GeneratedPasswordDialogData, restoreFocus?: HTMLElement): void {
+    this.passwordDialog = this.dialog.open<GeneratedPasswordDialog, GeneratedPasswordDialogData>(
+      GeneratedPasswordDialog,
+      { data, disableClose: true, closeOnNavigation: false, restoreFocus: restoreFocus ?? true },
+    );
+    this.passwordDialog
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => (this.passwordDialog = null));
   }
 
   private run(user: User, action$: Observable<unknown>, successMessage: string): void {
