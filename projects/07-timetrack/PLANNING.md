@@ -1268,15 +1268,25 @@ The gap between "it works" and "it looks finished" is where portfolio projects u
 checklist rather than good intentions. Run it **at the end of Step 7d, before gate G4**, over all eight
 pages in one sitting — that is the only way inconsistency becomes visible:
 
-- [ ] Every page uses the type scale and the 8px grid — no stray `font-size`, no arbitrary margin
-- [ ] The three states (loading · error · empty) are reachable on every page: throttle the network for
+- [x] Every page uses the type scale and the 8px grid — no stray `font-size`, no arbitrary margin
+- [x] The three states (loading · error · empty) are reachable on every page: throttle the network for
       loading, stop the backend for error, filter to a month with no data for empty
-- [ ] All four status colours pass contrast at badge size, and no status reads by colour alone
-- [ ] Every icon-only button has an `aria-label`; every table action is reachable by tab
-- [ ] At 1024, 768 and 375px wide: no horizontal page scroll, sidenav behaves per the responsive rules,
+- [x] All four status colours pass contrast at badge size, and no status reads by colour alone
+- [x] Every icon-only button has an `aria-label`; every table action is reachable by tab
+- [x] At 1024, 768 and 375px wide: no horizontal page scroll, sidenav behaves per the responsive rules,
       tables scroll inside their wrapper, dialogs stay a card with every action reachable below 600
-- [ ] Skeletons pulse; nothing else animates on load; `prefers-reduced-motion` stops the pulse
+- [x] Skeletons pulse; nothing else animates on load; `prefers-reduced-motion` stops the pulse
 - [x] Two screenshots worth putting in the README exist — the manager dashboard and the entries page
+
+Run 2026-09-22 on the demo dataset, all nine views (Login, both dashboards, Entries as each role, Approvals,
+Projects, Team, Reports): a stylesheet scan found no `font-size` but the empty-state glyph's `4rem` and no
+off-grid value outside the named optical exceptions; headless at 1024, 768 and 375 found no sideways page
+scroll, the sidenav `side` and open only at 1024, every table inside its `overflow-x: auto` wrapper, no
+unnamed button, every table action tabbable and every status pill carrying its word; axe (WCAG 2 A/AA) found
+no violation, colour contrast included, with all four statuses on screen; each page reached its loading,
+error and empty states with the API held, failed and emptied; the entry, project, member and reject dialogs
+stayed 343px cards at 375 with every action reachable; and on load only the skeletons pulse beside the
+spinners each page's state row names, their pulse `none` under `prefers-reduced-motion`.
 
 ---
 
