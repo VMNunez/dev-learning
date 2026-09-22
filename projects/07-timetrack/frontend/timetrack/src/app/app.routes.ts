@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { noAuthGuard } from './core/guards/no-auth-guard';
 import { managerGuard } from './core/guards/manager-guard';
+import { oneTimeSecretGuard } from './core/guards/one-time-secret-guard';
 import { roleMatch } from './core/guards/role-match';
 
 export const routes: Routes = [
@@ -60,6 +61,7 @@ export const routes: Routes = [
         path: 'team',
         title: 'Team',
         canActivate: [managerGuard],
+        canDeactivate: [oneTimeSecretGuard],
         loadComponent: () => import('./pages/team/team').then((m) => m.Team),
       },
       {

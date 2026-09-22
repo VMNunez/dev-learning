@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,6 +20,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { catchError, EMPTY, filter, Observable, Subject, switchMap, tap } from 'rxjs';
+import { HoldsOneTimeSecret } from '../../core/guards/one-time-secret-guard';
 import { AuthService } from '../../core/services/auth-service';
 import { UserService } from '../../core/services/user-service';
 import {
@@ -52,7 +53,7 @@ import { UserDialog, UserDialogData, UserDialogResult } from './user-dialog/user
   styleUrl: './team.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Team {
+export class Team implements HoldsOneTimeSecret {
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly dialog = inject(MatDialog);
@@ -134,6 +135,10 @@ export class Team {
 
   private readonly reload$ = new Subject<void>();
 
+  // The dialog showing a new member's generated password, while it is open: the one thing on this page
+  // the app can never fetch again, so `/team`'s route refuses to leave while it is set.
+  private passwordDialog: MatDialogRef<GeneratedPasswordDialog> | null = null;
+
   constructor() {
     this.destroyRef.onDestroy(() => this.dialog.closeAll());
 
@@ -157,6 +162,10 @@ export class Team {
 
   reload(): void {
     this.reload$.next();
+  }
+
+  holdsOneTimeSecret(): boolean {
+    return this.passwordDialog !== null;
   }
 
   // Retry sits in the error block its own reload takes away, so the focus it held would fall to
@@ -254,16 +263,23 @@ export class Team {
         }
 
         const { name, email, generatedPassword } = result.member;
-        this.dialog.open<GeneratedPasswordDialog, GeneratedPasswordDialogData>(
+        this.passwordDialog = this.dialog.open<
           GeneratedPasswordDialog,
-          {
-            data: { name, email, password: generatedPassword },
-            disableClose: true,
-            // The empty state's button that may have opened the form is gone once the first member
-            // exists; the header's action is the one target the refetch cannot remove.
-            restoreFocus: this.addMemberButton().nativeElement,
-          },
-        );
+          GeneratedPasswordDialogData
+        >(GeneratedPasswordDialog, {
+          data: { name, email, password: generatedPassword },
+          disableClose: true,
+          // `disableClose` stops Escape and the backdrop, not the browser's Back: by default the
+          // overlay disposes itself on that history change, before the route's guard can refuse it.
+          closeOnNavigation: false,
+          // The empty state's button that may have opened the form is gone once the first member
+          // exists; the header's action is the one target the refetch cannot remove.
+          restoreFocus: this.addMemberButton().nativeElement,
+        });
+        this.passwordDialog
+          .afterClosed()
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(() => (this.passwordDialog = null));
       });
   }
 
