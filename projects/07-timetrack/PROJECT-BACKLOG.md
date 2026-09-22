@@ -87,24 +87,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
   count them too. Likely fix: title the section "Pending approvals", true of every row it lists, and
   correct the §14 wireframe with it — the dashboard is one of the two README screenshots §14 Visual QA
   names *(Effort: Small)* *(raised 2026-09-21 by the cold design review of Step 7c, DR-4)*
-- [ ] **[Low]** `[frontend]` — the page title's focus ring shows after a **mouse** action. On `/approvals`,
-  and on the manager dashboard that shares the rule, approving or rejecting a row moves focus to the view's
-  `<h1>` because the row it came from disappears (§14 accessibility floor), and `_page.scss` styles
-  `.page-title:focus` as well as `:focus-visible`, so a manager who clicked ✓ sees a teal ring around a title
-  they never tabbed to. The rule's comment reasons that the two pseudo-classes "do not always agree on a
-  programmatic move", but measured in headless Chrome 153 they agree the way the floor wants: after a mouse
-  click on ✓ the focused `<h1>` does not match `:focus-visible`, and after Enter on ✓ it does. Two more
-  symptoms of the same rule, reported by Victor the same day: the `tabindex="-1"` that makes the title a
-  script target also makes it focusable by a mouse click, so clicking the words "Dashboard" or "Approvals"
-  rings them, while the Entries and Projects titles, which are no focus target, do not react; and the ring
-  has a different shape on each page — the dashboard's `<h1>` stretches across its flex column, so its ring
-  spans the whole content width, while the Approvals `<h1>` sits in the header's row and its ring hugs the
-  word. Likely fix: keep `:focus-visible` alone, which a click on a non-editable element does not set, after
-  checking Firefox, whose heuristic for a focus moved by script may differ, so a keyboard user still sees
-  where they landed; and size the title to its text wherever it can take focus. Analyse before fixing
-  *(Effort: Small)* *(raised 2026-09-21 by Victor's browser check of the approve action while verifying Step
-  7c, and measured the same day with a scripted mouse click and a scripted Enter on the same button;
-  widened the same day with his click on the two titles)*
 - [ ] **[Low]** `[frontend]` — decide before touching it: the shell's pending-approvals badge disagrees with
   the page under it until the manager navigates. Rejecting on `/approvals` leaves the queue one row shorter
   while the sidebar's Approvals badge still shows the old count, because the shell reads the count for
@@ -332,6 +314,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-22 · **[Low]** `[frontend]` — the page title rings only on `:focus-visible`, so a focus moved there after a mouse approval or a click on the title shows no ring while a keyboard move still does, and `inline-size: fit-content` sizes the title to its words, so the dashboard's flex-column header no longer stretches the ring across the page (`ea11973e`); analysed first: headless Chrome showed `:focus-visible` false after a click on ✓ and on the title, true after Enter and after a keyboard rejection, so `:focus` was the only source of the mouse ring; Firefox unverified (not installed) → coverage: `css/junior` "`:focus` vs `:focus-visible`" already marked ✅ 04-meal-finder, `css/middle` "Intrinsic sizing" marked ✅ 07-timetrack (cross-level), `html/junior` focus-indicator clause repointed to `:focus-visible` (`48e51991`, `d1893afa`); frontend README n/a — a CSS idiom, not a project decision; PLANNING §14 accessibility floor + §0/§22 (`e73c7e4a`); PROGRESS n/a. Verified by Victor in the browser: no ring after a mouse approve, and a ring hugging "Projects" after a keyboard Retry
 - 2026-09-21 · **[Low]** `[frontend]` — the Projects table sorts by Name or Status in the browser (`7fe9a808`), and a refetch that moves a row hands focus back to the button the write started from (`b729a0c5`), which also fixed a rename moving its row under the API's own name order; the §14 ruling is reversed for status only — the list is unpaged, a name sort reuses the API's order (its reverse for descending) and a status sort is stable → coverage: new `html/junior` bullet "A moved element loses focus too" (authored + marked ✅ 07-timetrack), `javascript/junior` "Array sorting" marked; frontend README Key patterns, and its Tradeoffs entry corrected (it said "unsorted"); PLANNING §14 Material components row and accessibility floor, §0/§22; PROGRESS HTML evidence cell. Verified by Victor in the browser: both sorts both ways, and a keyboard deactivation under the Status sort and a rename under the Name sort each leave focus on the moved row's button
 - 2026-09-21 · **[Low]** `[frontend]` — a draft on a deactivated project no longer offers ➤: the page derives it from the active-project list it already holds and shows "Project inactive — edit to move it" as a shared `.action-note` (`5e43a6aa`; `cc3957d2` moved the note onto its own line after Material's cell ellipsis hid it), and `EntryDialog` flags the project with an `activeProject` `ValidatorFn` as it opens (`0f7737d0`); the task's premise was false — no `projectActive` field or per-row call is needed, the dialog already inferred "(inactive)" the same way; `.own-entry` folded into `.action-note` → coverage: `angular/junior` "Custom validators" already ✅ 07-timetrack; frontend README already represents the pattern ("The UI never offers an action the API will refuse"); PLANNING §14 Entries page, §0/§22; PROGRESS n/a. Verified by Victor in the browser: the note and no ➤ on the row, the error under Project as the dialog opens, no `PUT` sent on Save, and ➤ back once the entry moves to an active project
 - 2026-09-21 · **[Low]** `[frontend]` — a status change on `/entries` keeps sending focus to the header's "Log hours" rather than to the row's actions cell — DECISION, no code change, dropped: the cost the task names ("row 40 of a paged table") cannot occur on a 10-row page, the §14 floor is met as written (a target the write cannot remove), and focusing the cell needs an imperative focus API on the presentational `EntryList` plus a post-render fallback for a row that leaves by filter or sort — complexity for a few Tabs → PLANNING §0/§22 counts only
