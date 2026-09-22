@@ -1824,6 +1824,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Sass mixins — reuse a parameterised declaration group only when it removes meaningful repetition rather than hiding ordinary CSS
 - Sass modules and partials — split styles by concern and load explicit members without returning to global `@import` coupling ✅ 07-timetrack — `styles/_dialog.scss` holds the form, error and destructive-button rules every form dialog and the confirmation share, loaded by `@use`
 - Reusable low-specificity selectors — prefer stable class selectors and a consistent naming convention so existing styles can be extended without specificity escalation ✅ 07-timetrack — `.dialog-form`, `.dialog-error` and `.dialog-destructive` are single-class rules shared across the dialogs
+- A spacing scale and its named exceptions — draw the margins, gaps and paddings between elements from one small scale, such as multiples of 8px, so screens built on different days line up, and treat an optical adjustment inside a component — a pill's padding against its own text, a badge's offset from its label — as a named exception measured against that content rather than as a new step on the scale
 
 ### Colors and transparency
 - Color notation — read hex, RGB, and HSL representations and follow a consistent project convention rather than treating one notation as universally superior ✅ 01-todo-list
