@@ -25,6 +25,16 @@
   min-height: var(--mat-sys-body-small-line-height);
   color: var(--mat-sys-error);
   font: var(--mat-sys-body-small);
+
+  // A failed save hands focus here when no field is at fault (`refocusAfterFailedSave()`), so it rings
+  // like the page title, the app's other script-moved focus target: 3px primary, offset from the text,
+  // sized to its words rather than drawn across the dialog.
+  &:focus-visible {
+    inline-size: fit-content;
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: 0.25rem;
+    border-radius: var(--mat-sys-corner-small);
+  }
 }
 
 // A destructive confirm must not look like a primary save: the button takes the theme's error role
