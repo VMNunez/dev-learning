@@ -138,7 +138,7 @@
   // The width of Material's own strong focus indicator, so a script-moved focus and a tabbed one match.
   outline: 3px solid var(--mat-sys-primary);
   outline-offset: 0.25rem;
-  border-radius: 4px;
+  border-radius: var(--mat-sys-corner-small);
 }
 
 .page-state {

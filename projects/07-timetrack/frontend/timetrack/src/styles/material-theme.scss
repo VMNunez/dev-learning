@@ -23,11 +23,11 @@ html {
 
   @include mat.button-overrides(
     (
-      filled-container-shape: 4px,
-      outlined-container-shape: 4px,
-      protected-container-shape: 4px,
-      text-container-shape: 4px,
-      tonal-container-shape: 4px,
+      filled-container-shape: var(--mat-sys-corner-small),
+      outlined-container-shape: var(--mat-sys-corner-small),
+      protected-container-shape: var(--mat-sys-corner-small),
+      text-container-shape: var(--mat-sys-corner-small),
+      tonal-container-shape: var(--mat-sys-corner-small),
     )
   );
 
@@ -85,7 +85,7 @@ html {
 
   @include mat.list-overrides(
     (
-      active-indicator-shape: 4px,
+      active-indicator-shape: var(--mat-sys-corner-small),
     )
   );
 }

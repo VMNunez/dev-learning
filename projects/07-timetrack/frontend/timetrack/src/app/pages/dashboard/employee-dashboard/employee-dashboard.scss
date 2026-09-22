@@ -11,7 +11,7 @@
 // scrolling wrapper itself rather than on a `.table-area` around it.
 .table-wrapper {
   border: 1px solid var(--mat-sys-outline-variant);
-  border-radius: 4px;
+  border-radius: var(--mat-sys-corner-small);
 
   // Focusable because nothing inside it is: with no row actions and no sort headers, Tab would skip a
   // box the keyboard can only scroll while it holds focus. Ringed like every other focus in the app.
