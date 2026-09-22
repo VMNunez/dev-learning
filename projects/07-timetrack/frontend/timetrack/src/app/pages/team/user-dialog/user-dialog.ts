@@ -22,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { filter, map, Observable } from 'rxjs';
+import { HoldsOneTimeSecret } from '../../../core/guards/one-time-secret-guard';
 import { UserService } from '../../../core/services/user-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
@@ -57,7 +58,7 @@ const FORM_FIELDS = ['name', 'email', 'role'] as const;
   templateUrl: './user-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserDialog {
+export class UserDialog implements HoldsOneTimeSecret {
   private readonly userService = inject(UserService);
   private readonly dialogRef = inject(MatDialogRef<UserDialog, UserDialogResult>);
   private readonly dialog = inject(MatDialog);
@@ -98,6 +99,12 @@ export class UserDialog {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.close());
+  }
+
+  // A create in flight is carrying the one response that holds the new member's password, so `/team`'s
+  // guard asks here too — the dialog showing it does not exist yet.
+  holdsOneTimeSecret(): boolean {
+    return !this.isEdit && this.saving();
   }
 
   close(): void {

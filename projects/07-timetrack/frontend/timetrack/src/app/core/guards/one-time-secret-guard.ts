@@ -3,7 +3,7 @@ import { CanDeactivateFn } from '@angular/router';
 import { AuthService } from '../services/auth-service';
 
 // A page that can be showing a value the app can never fetch again — a generated password exists in
-// the browser only in the response that carried it.
+// the browser only in the response that carried it — or waiting for the request that returns one.
 export interface HoldsOneTimeSecret {
   holdsOneTimeSecret(): boolean;
 }

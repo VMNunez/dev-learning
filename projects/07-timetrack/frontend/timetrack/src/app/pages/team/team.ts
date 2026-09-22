@@ -139,6 +139,12 @@ export class Team implements HoldsOneTimeSecret {
   // the app can never fetch again, so `/team`'s route refuses to leave while it is set.
   private passwordDialog: MatDialogRef<GeneratedPasswordDialog> | null = null;
 
+  // The password is at stake from the moment its request is sent, not from the moment it is shown: the
+  // server has already written it, and a page that leaves discards the only response carrying it. So the
+  // guard also holds while a reset is in flight here, or a create in the member form.
+  private resetInFlight = false;
+  private userDialog: MatDialogRef<UserDialog> | null = null;
+
   constructor() {
     this.destroyRef.onDestroy(() => this.dialog.closeAll());
 
@@ -165,7 +171,11 @@ export class Team implements HoldsOneTimeSecret {
   }
 
   holdsOneTimeSecret(): boolean {
-    return this.passwordDialog !== null;
+    return (
+      this.passwordDialog !== null ||
+      this.resetInFlight ||
+      (this.userDialog?.componentInstance?.holdsOneTimeSecret() ?? false)
+    );
   }
 
   // Retry sits in the error block its own reload takes away, so the focus it held would fall to
@@ -243,13 +253,19 @@ export class Team implements HoldsOneTimeSecret {
   private openDialog(user: User | null): void {
     const opener = activeElement();
 
-    this.dialog
-      .open<UserDialog, UserDialogData, UserDialogResult>(UserDialog, {
-        data: { user, isSelf: user !== null && this.isSelf(user) },
-        disableClose: true,
-      })
+    // Out of `closeOnNavigation` for the same reason as the password dialog: Back would dispose the form
+    // before the guard runs, and with it a create still in flight. A Back the guard lets through still
+    // closes it, through the `closeAll()` this page runs when it is destroyed.
+    this.userDialog = this.dialog.open<UserDialog, UserDialogData, UserDialogResult>(UserDialog, {
+      data: { user, isSelf: user !== null && this.isSelf(user) },
+      disableClose: true,
+      closeOnNavigation: false,
+    });
+
+    this.userDialog
       .afterClosed()
       .pipe(
+        tap(() => (this.userDialog = null)),
         filter((result) => result !== undefined),
         takeUntilDestroyed(this.destroyRef),
       )
@@ -292,6 +308,7 @@ export class Team implements HoldsOneTimeSecret {
         filter((confirmed) => confirmed === true),
         switchMap(() => {
           this.busyUserId.set(user.id);
+          this.resetInFlight = true;
           return this.userService.resetPassword(user.id);
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -299,6 +316,7 @@ export class Team implements HoldsOneTimeSecret {
       .subscribe({
         next: ({ generatedPassword }) => {
           this.busyUserId.set(null);
+          this.resetInFlight = false;
           this.showPassword({
             name: user.name,
             email: user.email,
@@ -308,6 +326,7 @@ export class Team implements HoldsOneTimeSecret {
         },
         error: (err: unknown) => {
           this.busyUserId.set(null);
+          this.resetInFlight = false;
           this.snackBar.open(apiErrorMessage(err, 'The reset failed. Try again.'), 'Close', {
             duration: 6000,
           });
