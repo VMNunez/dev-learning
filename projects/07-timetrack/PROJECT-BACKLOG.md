@@ -45,16 +45,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[frontend]` — `/approvals` cannot be sorted by Employee: only Date, Hours and Status carry
-  `mat-sort-header` (`approvals.html`), so a manager reviewing a week of submissions cannot group one
-  person's entries together — the column a reviewer scans first is the one that does not sort. The fix
-  crosses tiers: `GET /api/entries` refuses any `?sort=` key outside `date`, `hours`, `status`, `id`
-  (`TimeEntryController.SORTABLE_PROPERTIES`, PLANNING §10), and that allow-list is deliberate — a nested
-  path like `user.password` must never become orderable — so the backend needs a public key such as
-  `employee` mapped server-side to `user.name`, never the raw path, plus the §10 allow-list sentence
-  updated; then the header on the Employee column. Project has the same gap and the same shape of fix
-  (`project` → `project.name`); decide in triage whether it rides along *(Effort: Small)* *(raised
-  2026-09-22 by Victor in the browser, on the demo dataset, after the backlog had been cleared)*
+*No open Low tasks.*
 
 ## Beyond the current gate
 
@@ -237,6 +228,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-22 · **[Low]** `[frontend]` — `/approvals` sorts by Employee and Project: `SORT_KEYS` maps the public keys to `user.name` / `project.name` on the server, raw paths still refused (`e68ebf05`, `9a8a2fce`) → coverage security/junior + spring-boot/junior clauses repointed (`3cf125d8`), backend README allow-list entry (`7930cb83`), PLANNING §10
 - 2026-09-22 · **[Low]** `[frontend]` — README screenshots captured on a realistic demo dataset, not the test fixtures → `screenshots/` manager-dashboard, entries, team, reports at 1280×800 (`79be29c2`); PLANNING §14 Visual QA item ticked; README placement stays `readme-audit`'s at G5; no concept, coverage/README/PROGRESS n/a
 - 2026-09-22 · **[Low]** `[frontend]` — §14 Accessibility floor no longer claims every Material component draws the 3px ring: it names the buttons, icon buttons, list items, menu items, options and sort headers that carry `.mat-focus-indicator`, and states that an outlined `mat-form-field` shows focus by thickening its own outline — DECISION, no code change: forcing a ring onto form fields was rejected, since it would duplicate a focus signal Material already draws and reach into its internal classes → coverage: the `angular-material/junior` "Strong focus indicators are opt-in" bullet authored that morning made the same overclaim and was narrowed in both copies (`8c03caeb`), its ✅ 07-timetrack marker and clause kept; frontend README n/a — it never repeated the claim; PLANNING §14 + §0/§22 counts; PROGRESS n/a. Evidence: the review's `ff.js` found no focus-indicator element on a focused `mat-select`, and `.mat-focus-indicator` ships in 17 Material entry points, `form-field` not among them
 - 2026-09-22 · **[Low]** `[frontend]` — the five form dialogs' error line rings like the page title when a failed save hands it focus: `_dialog.scss` gives `.dialog-error:focus-visible` a 3px primary outline, `0.25rem` offset and `fit-content` width, replacing the browser's default black `outline: auto` drawn across the dialog's full 432px (`9ce2b3f4`) → coverage: `html/junior` "A visible focus indicator is required" (✅ 07) and `css/junior` "`:focus` vs `:focus-visible`" (✅ 04) already covered and marked; frontend README already represented (the dialogs' failed-save focus entry); PLANNING §14 Accessibility floor (the second script-moved focus target) + Spacing (its offset named) + §0/§22 counts; PROGRESS n/a. Verified headless with the review's `errline.js`: after Enter in a field and a `500`, the line holds `solid 3px rgb(4, 107, 94)` offset 4px over its 204px of text, unclipped; `ng test` 41/41
