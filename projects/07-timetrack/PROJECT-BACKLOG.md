@@ -105,6 +105,17 @@ That ledger is append-only and authoritative — a review never re-raises what i
   page: `mat-toolbar` is not a `<header>`, so "TimeTrack" sits outside any landmark. Built in Step 7a.
   Likely fix: wrap the toolbar in a `<header>` *(Effort: Small)* *(raised 2026-09-22 by the cold design
   review of Step 7d, F10, script `rv-axe.js`)*
+- [ ] **[Low]** `[frontend]` — the README screenshots §14 Visual QA names do not exist yet, and cannot be taken
+  from the development database as it stands: its users, projects and entries are test fixtures ("Test
+  Member", "Admin Manager Editado", a project called "nuevo nombreeeee…" built to stress the `12rem`
+  column cap), so a capture reads as a test run rather than as a product. Before gate G5 — `readme-audit`
+  places the images in the README's Screenshots section — remove the test rows, load a small realistic
+  demo dataset (a handful of employees with Spanish names, three or four client projects, a month of
+  entries across every status with one rejection note), and capture at 1280×800 with DevTools' Capture
+  screenshot into `projects/07-timetrack/screenshots/`: the manager dashboard and the entries page as the
+  checklist requires, plus Team and Reports, the two pages Step 7d added *(Effort: Small)* *(raised
+  2026-09-22 while closing Step 7d: Victor chose to take the README screenshots on realistic data rather
+  than on the test fixtures, so the Visual QA's screenshot item moves here)*
 
 ## Beyond the current gate
 
