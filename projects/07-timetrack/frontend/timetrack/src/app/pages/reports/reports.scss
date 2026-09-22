@@ -40,11 +40,6 @@
   // A grid item's minimum is its content's width, so a long name would widen its column past its half;
   // zero lets the table's own wrapper scroll it instead.
   min-width: 0;
-
-  h2 {
-    margin: 0;
-    font: var(--mat-sys-title-medium);
-  }
 }
 
 // A total reads down its column, so the digits line up at the right edge, as in any ledger.

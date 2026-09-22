@@ -39,15 +39,17 @@
   gap: 1rem;
 }
 
+// A section heading inside a page — the dashboards' lists and the Reports tables — named by its own class
+// rather than by the container it sits in, so a page without the dashboards' header row reuses it.
+.section-heading {
+  margin: 0;
+  font: var(--mat-sys-title-medium);
+}
+
 .dashboard-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  h2 {
-    margin: 0;
-    font: var(--mat-sys-title-medium);
-  }
 
   // A text button's label sits inside its own horizontal padding; pulling the button out by that same
   // token puts "View all" on the table's right edge.
