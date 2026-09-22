@@ -66,6 +66,17 @@ That ledger is append-only and authoritative — a review never re-raises what i
   settle the 10rem note's width in the pinned column with it *(Effort: Small)* *(raised 2026-09-21 by the
   cold design review of Step 7c, DR-1, screenshots `rv-real-approvals-1024-start.png` and
   `rv-tbl-approvals-1024-start.png` in that session's scratchpad)*
+- [ ] **[Medium]** `[frontend]` — the browser's Back button throws away a new member's generated password.
+  `/team` opens `GeneratedPasswordDialog` with `disableClose`, so Escape and a backdrop click cannot close
+  it and its only intended exit is Done — but `MatDialog`'s `closeOnNavigation` ignores `disableClose`,
+  and `Team` also calls `MatDialog.closeAll()` when it is destroyed, so one Back press closes the dialog and
+  leaves the page with the only plaintext copy of the password gone. §14's User form section says the
+  password "is shown once and never again", and the backend Low raised the same day shows a recreate with
+  the same email is refused, so the account is stranded. Measured by the cold design review of Step 7d in
+  headless Chrome at 375px: dialog open on `/team`, `goBack()`, dialog gone and the path `/dashboard`.
+  Likely fix: `closeOnNavigation: false` on that dialog plus a `canDeactivate` guard on `/team` that refuses
+  to leave while it is open *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d,
+  F2, script `rv-pwback.js` in that session's scratchpad)*
 
 #### Low
 
@@ -121,6 +132,46 @@ That ledger is append-only and authoritative — a review never re-raises what i
   it reverses the §13 row and the §20 tradeoff it cites; (b) keep §13 as written and state the mismatch in
   the frontend README's Tradeoffs *(Effort: Small)* *(raised 2026-09-21 by Victor while verifying Step 7c's
   reject at `/approvals`: "me molesta ese comportamiento en el sidebar")*
+- [ ] **[Low]** `[frontend]` — decide before touching it: a three-card stat strip is one tall column at the
+  1024px and 768px windows, on `/reports` and `/projects`. §14's ladder gives a three-card strip one
+  column below a `52rem` page and three from it, with no stop at `36rem`, so at 1024 (a 46rem page) each
+  card is 736×102px and the strip takes about 340px before the first table — against §14 Visual identity's
+  "stat cards are a thin summary strip above it" and the Harvest row's "thin summary strip … rather than
+  large hero cards". Two outcomes: (a) a three-column rung for three cards from about `42rem`, since three
+  `13rem` cards fit a 46rem page; (b) keep the ladder and record the tall stack as accepted
+  *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d, F3, `rv-reports-1024.png`)*
+- [ ] **[Low]** `[frontend]` — `/team` at 375px still scrolls sideways with the Status pill under the pinned
+  actions, reading "ACTI" / "INAC" at scroll start, although `80e5d2c2` hid Email on phones for exactly this:
+  name 99, role 95, status 102 and actions 97 leave the wrapper 52px short. Likely fix: hide Role as well
+  below 600px — the cards count the roles and the edit dialog shows each one — or narrow the actions cell
+  *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d, F4, `rv-team-375.png`)*
+- [ ] **[Low]** `[frontend]` — `/team`'s Email column breaks an ordinary address mid-word at 1024px while
+  the table has width to spare: "marta.fernandez@company.co / m", because the `12rem` cap `_table.scss`
+  gives name columns breaks any word past it. Compliant with §14 Tables, and it looks broken. Likely fix: a
+  break opportunity after the `@` (`<wbr>`), or a wider cap for email alone, which costs nothing on phones
+  where the column is hidden *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d,
+  F5, `rv-team-1024.png`)*
+- [ ] **[Low]** `[frontend]` — a failed save leaves keyboard focus on `<body>` inside a form dialog:
+  `user-dialog` disables its fields while saving, so after a `409` or a `500` the field that held focus is
+  re-enabled but no longer focused. Tab re-enters the dialog, so the trap holds, but the user loses their
+  place; `project-dialog` does the same, so the pattern predates Step 7d, and §14's dialog note still says
+  `user-dialog` "still decide[s] for [itself]". Likely fix: on error, focus the first control carrying a
+  server error, else the alert line — and record `user-dialog`'s choice in §14 *(Effort: Small)*
+  *(raised 2026-09-22 by the cold design review of Step 7d, F6, scripts `rv-dialogs.js` and
+  `rv-projdlg.js`)*
+- [ ] **[Low]** `[frontend]` — two values sit off §14's 8px grid ("No arbitrary values"): the shared status
+  pill's `padding: 0.125rem 0.5rem` (`_table.scss`) and the badge's `container-offset: -1.125rem 0 -1.125rem
+  0.25rem` (`shell.scss`). Likely fix: justify both in §14 as optical exceptions, or snap them to the grid
+  *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d, F7)*
+- [ ] **[Low]** `[frontend]` — the section-heading rule is copied rather than shared: `reports.scss`'s
+  `h2 { margin: 0; font: var(--mat-sys-title-medium) }` repeats the one `_page.scss` gives
+  `.dashboard-section-header h2`, against §14 Shared styles ("never copied into each component
+  stylesheet"). Likely fix: one shared section-heading class in `_page.scss` used by both dashboards and
+  Reports *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d, F8)*
+- [ ] **[Low]** `[frontend]` — axe's best-practice `region` rule flags the toolbar's brand text on every
+  page: `mat-toolbar` is not a `<header>`, so "TimeTrack" sits outside any landmark. Built in Step 7a.
+  Likely fix: wrap the toolbar in a `<header>` *(Effort: Small)* *(raised 2026-09-22 by the cold design
+  review of Step 7d, F10, script `rv-axe.js`)*
 
 ## Beyond the current gate
 
