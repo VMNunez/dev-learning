@@ -31,6 +31,13 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- [ ] **[Low]** `[backend]` — `CreateUserResponse.generatedPassword` carries no `@ToString.Exclude`, against
+  §6's rule that a DTO field holding a credential does: `@Data` puts the plaintext of a new account's
+  password in the generated `toString()`, so any later log line or exception message interpolating the
+  response publishes it. `AuthResponse.token` and `LoginRequest.password` already carry the annotation
+  (ledger 2026-08-25 and 2026-08-01). Likely fix: the annotation on the field, the same one line
+  *(Effort: Small)* *(raised 2026-09-22 while triaging the lost-generated-password recovery task — seen
+  in `dto/response/CreateUserResponse.java`)*
 - [ ] **[Low]** `[backend]` — decide before touching it: a manager who loses a new member's generated
   password cannot recover the account the way §14 says. §14's User form section states that a manager who
   misses it "cannot recover the password, only deactivate the account and recreate it", but
