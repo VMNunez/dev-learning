@@ -7,11 +7,20 @@
   gap: 2rem;
 }
 
-// On a phone the least load-bearing column goes first, as Description does on the other tables (§14
-// Tables): an email is the widest value in the row and the one the manager needs least at a glance —
-// the name identifies the member, and the edit dialog still shows the address.
-@media (max-width: 599px) {
+// The least load-bearing columns go first when the page is too narrow for the table, as Description
+// does on the other tables (§14 Tables), measured on the page's own width like /approvals, because the
+// three pinned actions must never cover Status. Email goes below a 40rem page, where the whole row
+// (about 617px) stops fitting — it is the widest value and the one the manager needs least at a glance,
+// and the edit dialog still shows it. Role follows below 28rem, where name, role, status and actions
+// (about 425px) stop fitting: the cards count the roles, and the edit dialog shows each member's.
+@container (width < 40rem) {
   .mat-column-email {
+    display: none;
+  }
+}
+
+@container (width < 28rem) {
+  .mat-column-role {
     display: none;
   }
 }
