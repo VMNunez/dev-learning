@@ -38,17 +38,6 @@ That ledger is append-only and authoritative — a review never re-raises what i
   (ledger 2026-08-25 and 2026-08-01). Likely fix: the annotation on the field, the same one line
   *(Effort: Small)* *(raised 2026-09-22 while triaging the lost-generated-password recovery task — seen
   in `dto/response/CreateUserResponse.java`)*
-- [ ] **[Low]** `[backend]` — decide before touching it: a manager who loses a new member's generated
-  password cannot recover the account the way §14 says. §14's User form section states that a manager who
-  misses it "cannot recover the password, only deactivate the account and recreate it", but
-  `UserService.create` refuses that recreate: `UserRepository.existsByEmail` counts deactivated accounts
-  too, so the same email answers `409` "Email already in use". The member cannot help either — without the
-  password they never reach `PATCH /api/users/me/password`. The one path back today is undocumented:
-  rename the stranded account's email through `PUT /api/users/{id}`, then create the member again. Two
-  outcomes: (a) a MANAGER-only reset that issues a fresh generated password for an account, which reopens
-  the backend after G3 signed it off; (b) keep the API, correct §14 to the real recovery path and state it
-  in the frontend README's Tradeoffs *(Effort: Small for (b), Medium for (a))* *(raised 2026-09-21 while
-  building Step 7d's Team page, verified against `UserService.create` and `UserRepository.existsByEmail`)*
 
 ### Frontend
 
@@ -66,7 +55,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
   actions, reading "ACTI" / "INAC" at scroll start, although `80e5d2c2` hid Email on phones for exactly this:
   name 99, role 95, status 102 and actions 97 leave the wrapper 52px short. Likely fix: hide Role as well
   below 600px — the cards count the roles and the edit dialog shows each one — or narrow the actions cell
-  *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d, F4, `rv-team-375.png`)*
+  *(Effort: Small)* *(raised 2026-09-22 by the cold design review of Step 7d, F4, `rv-team-375.png`)* *(re-measured 2026-09-22 after the reset-password action landed: the actions cell is 129px, not 97, and the wrapper overflows 84px — 341 of 425 — so hiding Role alone may no longer be enough)*
 - [ ] **[Low]** `[frontend]` — `/team`'s Email column breaks an ordinary address mid-word at 1024px while
   the table has width to spare: "marta.fernandez@company.co / m", because the `12rem` cap `_table.scss`
   gives name columns breaks any word past it. Compliant with §14 Tables, and it looks broken. Likely fix: a
@@ -198,6 +187,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-22 · **[Low]** `[backend]` — a member who lost or forgot their password is recovered by a manager's reset, not by the deactivate-and-recreate the docs promised and `existsByEmail` refused: `POST /api/users/{id}/password-reset` (MANAGER) stores a fresh `SecureRandom` password's hash and returns the plaintext once in a `PasswordResetResponse`, `404` for an unknown id and `409` on the caller's own account, whose path is `PATCH /api/users/me/password` (`27d9dee1`); `/team` gains a 🔑 row action that confirms and shows the password in the same one-time dialog, Back guard included (`b52af306`); decided by Victor as (a) over correcting the docs to a rename-and-recreate that splits a member's history; real scope was three documents claiming the dead path, not one → coverage: new `security/junior` bullet "Administrative credential reset" (authored + marked ✅ 07-timetrack), `general/junior` idempotency already marked, `typescript/junior` discriminated-union clause repointed (`e71f1431`); backend README Tradeoffs rewritten (`d41a3672`); PLANNING §8 rule, §10 row, §13 tree, §14 User form, §16 `UserService.resetPassword` test row for Step 8, §18 limitation, §0/§22 counts; PROGRESS Security evidence cell. Verified: `mvnw compile`, headless with fixtures at 1280 and 375, `ng test` 41/41; live Postman check pending. Raised while triaging: `CreateUserResponse.generatedPassword` lacks `@ToString.Exclude`
 - 2026-09-19 · **[Low]** `[backend]` — `ValidationMessages.properties` rewords the seven constraints the request DTOs use as capitalised sentences (`Must not be blank`, `Must be at most 255 characters` through an EL template that names only the maximum when `min` is 0), so a `fieldErrors` message no longer reads in Hibernate Validator's lower-case default beside the services' own sentences (`6c43386c`, with a 2-test `ValidationMessagesTest` in `f0cf1e4d`) → coverage: new `spring-boot/junior` bullet "Constraint messages" (authored + marked ✅ 07-timetrack, `afc18880`); backend README n/a — a Bean Validation idiom, not a project decision; PLANNING §10 error contract gains the message-voice rule and its example corrected + §0/§22 counts; PROGRESS n/a. Verified in the browser by Victor after an IntelliJ restart: three spaces in the entry dialog's Description answer `Must not be blank` under the field. `/notes-plan spring-boot junior` owed (tracker flag +2)
 - 2026-08-29 · **[Low]** `[backend]` — the `### DTO boundary` snippet now shows the real setter-based `toResponse`, not an all-args constructor `@Data` never generates → backend README `### DTO boundary` (the fix itself, `0d06bdd8`); coverage n/a — spring-boot/junior "Entity-to-DTO mapping implementation" already covers it and already carries ✅ 07-timetrack for this exact `toResponse`; PLANNING §0 + §22 Lows count. Verified against `ProjectResponse` (`@Data` only, no `@AllArgsConstructor`) and `ProjectService:107-115`
 
