@@ -519,7 +519,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Interface-based projections — declare a getter-only interface matching the `AS` aliases of a `@Query` (or a derived query's implicit column names) and Spring Data populates it without a full entity or DTO class; read-only, and the getter names must match the aliases exactly ✅ 07-timetrack
 - `@Modifying` write queries — a declared update or delete query needs the modifying marker and an active transaction, and it bypasses the persistence context, so already-loaded entities can be left stale afterwards
 - Spring Data pagination — accept a `Pageable` and return a bounded result, and know that page number, size, and sort arrive as request parameters bound automatically ✅ 07-timetrack
-- `@PageableDefault` is a default, not a floor — a client-supplied `page`, `size` or `sort` replaces the annotation's value entirely rather than merging with it, so any invariant the default was carrying (such as the unique tie-breaker that makes an order total) has to be re-applied to the incoming `Pageable`; `Pageable` and `Sort` are immutable, so re-applying it means rebuilding them rather than mutating what arrived ✅ 07-timetrack — `TimeEntryController.withIdTiebreaker` rebuilds the incoming `Pageable` with `id` appended when the caller's `?sort=` does not already name it
+- `@PageableDefault` is a default, not a floor — a client-supplied `page`, `size` or `sort` replaces the annotation's value entirely rather than merging with it, so any invariant the default was carrying (such as the unique tie-breaker that makes an order total) has to be re-applied to the incoming `Pageable`; `Pageable` and `Sort` are immutable, so re-applying it means rebuilding them rather than mutating what arrived ✅ 07-timetrack — `TimeEntryController.findByFilter` rebuilds the incoming `Pageable` with `PageRequest.of`, its `Sort` mapped to entity paths and `withIdTiebreaker` appending `id` when the caller's `?sort=` does not already name it
 - `Page<T>` vs `Slice<T>` — return total-count metadata only when the client needs it, because a slice can answer whether another chunk exists without an additional count query
 
 ### Query behaviour and diagnosis
@@ -1238,7 +1238,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Indirect disclosure through result ordering — a value the response never serialises can still leak
   when the caller chooses which column a result set is ordered by, since an order derived from a secret
   is an observation of it, so the sortable and filterable fields are constrained to an explicit
-  allow-list rather than accepted as the persistence layer receives them ✅ 07-timetrack — `TimeEntryController.validateSort` rejects any `sort` property outside `date`, `hours`, `status`, `id` with 400, so `?sort=user.password,asc` can no longer order the page by the BCrypt hash column
+  allow-list rather than accepted as the persistence layer receives them ✅ 07-timetrack — `TimeEntryController.SORT_KEYS` maps six public sort keys to entity paths, `employee` to `user.name`, and `toEntitySort` refuses any other key with 400, so `?sort=user.password,asc` can no longer order the page by the BCrypt hash column
 - Security logging hygiene — record useful authentication and authorisation events while excluding
   passwords, tokens, session IDs, authorisation headers, and unnecessary personal data ✅ 07-timetrack
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or

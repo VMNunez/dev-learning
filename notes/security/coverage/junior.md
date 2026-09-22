@@ -221,7 +221,7 @@ review without taking on specialist or production-platform ownership.
 - Indirect disclosure through result ordering — a value the response never serialises can still leak
   when the caller chooses which column a result set is ordered by, since an order derived from a secret
   is an observation of it, so the sortable and filterable fields are constrained to an explicit
-  allow-list rather than accepted as the persistence layer receives them ✅ 07-timetrack — `TimeEntryController.validateSort` rejects any `sort` property outside `date`, `hours`, `status`, `id` with 400, so `?sort=user.password,asc` can no longer order the page by the BCrypt hash column
+  allow-list rather than accepted as the persistence layer receives them ✅ 07-timetrack — `TimeEntryController.SORT_KEYS` maps six public sort keys to entity paths, `employee` to `user.name`, and `toEntitySort` refuses any other key with 400, so `?sort=user.password,asc` can no longer order the page by the BCrypt hash column
 - Security logging hygiene — record useful authentication and authorisation events while excluding
   passwords, tokens, session IDs, authorisation headers, and unnecessary personal data ✅ 07-timetrack
 - Sensitive-response caching — use appropriate private or `no-store` cache controls when credentials or
