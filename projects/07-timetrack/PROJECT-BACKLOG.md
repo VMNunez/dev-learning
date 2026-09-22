@@ -31,13 +31,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-- [ ] **[Low]** `[backend]` — `CreateUserResponse.generatedPassword` carries no `@ToString.Exclude`, against
-  §6's rule that a DTO field holding a credential does: `@Data` puts the plaintext of a new account's
-  password in the generated `toString()`, so any later log line or exception message interpolating the
-  response publishes it. `AuthResponse.token` and `LoginRequest.password` already carry the annotation
-  (ledger 2026-08-25 and 2026-08-01). Likely fix: the annotation on the field, the same one line
-  *(Effort: Small)* *(raised 2026-09-22 while triaging the lost-generated-password recovery task — seen
-  in `dto/response/CreateUserResponse.java`)*
+*No open Low tasks.*
 
 ### Frontend
 
@@ -187,6 +181,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
+- 2026-09-22 · **[Low]** `[backend]` — `CreateUserResponse.generatedPassword` carries `@ToString.Exclude` like every other credential field (`dbe17695`), so the plaintext of a new account's password cannot reach a log through Lombok's generated `toString()`; verified with `javap`, whose `toString` concatenates id, name, email, role and active only → coverage: `security/junior` "Security logging hygiene" and `java/junior` `toString()` already covered and marked, the latter's enumerating clause repointed (`7c6b1663`); backend README already represented ("Credentials excluded from generated `toString()`"); PLANNING §6 credential-DTO rule already states it, §0/§22 counts; PROGRESS n/a
 - 2026-09-22 · **[Low]** `[backend]` — a member who lost or forgot their password is recovered by a manager's reset, not by the deactivate-and-recreate the docs promised and `existsByEmail` refused: `POST /api/users/{id}/password-reset` (MANAGER) stores a fresh `SecureRandom` password's hash and returns the plaintext once in a `PasswordResetResponse`, `404` for an unknown id and `409` on the caller's own account, whose path is `PATCH /api/users/me/password` (`27d9dee1`); `/team` gains a 🔑 row action that confirms and shows the password in the same one-time dialog, Back guard included (`b52af306`); decided by Victor as (a) over correcting the docs to a rename-and-recreate that splits a member's history; real scope was three documents claiming the dead path, not one → coverage: new `security/junior` bullet "Administrative credential reset" (authored + marked ✅ 07-timetrack), `general/junior` idempotency already marked, `typescript/junior` discriminated-union clause repointed (`e71f1431`); backend README Tradeoffs rewritten (`d41a3672`); PLANNING §8 rule, §10 row, §13 tree, §14 User form, §16 `UserService.resetPassword` test row for Step 8, §18 limitation, §0/§22 counts; PROGRESS Security evidence cell. Verified: `mvnw compile`, headless with fixtures at 1280 and 375, `ng test` 41/41; live Postman check pending. Raised while triaging: `CreateUserResponse.generatedPassword` lacks `@ToString.Exclude`
 - 2026-09-19 · **[Low]** `[backend]` — `ValidationMessages.properties` rewords the seven constraints the request DTOs use as capitalised sentences (`Must not be blank`, `Must be at most 255 characters` through an EL template that names only the maximum when `min` is 0), so a `fieldErrors` message no longer reads in Hibernate Validator's lower-case default beside the services' own sentences (`6c43386c`, with a 2-test `ValidationMessagesTest` in `f0cf1e4d`) → coverage: new `spring-boot/junior` bullet "Constraint messages" (authored + marked ✅ 07-timetrack, `afc18880`); backend README n/a — a Bean Validation idiom, not a project decision; PLANNING §10 error contract gains the message-voice rule and its example corrected + §0/§22 counts; PROGRESS n/a. Verified in the browser by Victor after an IntelliJ restart: three spaces in the entry dialog's Description answer `Must not be blank` under the field. `/notes-plan spring-boot junior` owed (tracker flag +2)
 - 2026-08-29 · **[Low]** `[backend]` — the `### DTO boundary` snippet now shows the real setter-based `toResponse`, not an all-args constructor `@Data` never generates → backend README `### DTO boundary` (the fix itself, `0d06bdd8`); coverage n/a — spring-boot/junior "Entity-to-DTO mapping implementation" already covers it and already carries ✅ 07-timetrack for this exact `toResponse`; PLANNING §0 + §22 Lows count. Verified against `ProjectResponse` (`@Data` only, no `@AllArgsConstructor`) and `ProjectService:107-115`
