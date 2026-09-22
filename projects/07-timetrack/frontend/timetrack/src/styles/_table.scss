@@ -148,6 +148,17 @@
     margin-block-start: 0.5rem;
   }
 
+  // A cell that stacks a second line under its value — the rejection note under a description or a
+  // badge, the action note under a row's buttons — grows past the row's 44px minimum, and Material's
+  // cells carry no vertical padding (`padding: 0 16px`), so the stack sat flush against both borders.
+  // Only these cells take it: padded everywhere, every row holding icon buttons and every name that
+  // wraps onto two lines would lose the compact 44px. A note on its own ("Awaiting another manager")
+  // fits the row and needs none.
+  .mat-mdc-cell:has(> .rejection-note),
+  .mat-mdc-cell:has(> .mat-mdc-icon-button ~ .action-note) {
+    padding-block: 0.5rem;
+  }
+
   // The least load-bearing column goes first, rather than every column shrinking (§14 Tables).
   @media (max-width: 599px) {
     .mat-column-description {
