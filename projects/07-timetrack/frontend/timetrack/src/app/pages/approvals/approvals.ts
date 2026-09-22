@@ -165,11 +165,13 @@ export class Approvals {
 
   protected readonly trackById = (_index: number, entry: TimeEntry) => entry.id;
 
+  // Hours second, beside the name: they are what a review decides on, and on a phone the columns past the
+  // first two scroll under the pinned ✓ ✕ (§14 Tables) — so the decision stays in view at any width.
   protected readonly columns = [
     'employee',
+    'hours',
     'project',
     'date',
-    'hours',
     'description',
     'status',
     'actions',

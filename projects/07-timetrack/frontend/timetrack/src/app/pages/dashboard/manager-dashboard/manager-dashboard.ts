@@ -86,7 +86,8 @@ export class ManagerDashboard {
   );
 
   protected readonly userName = computed(() => this.authService.session()?.name ?? '');
-  protected readonly reviewColumns = ['employee', 'project', 'date', 'hours', 'actions'];
+  // Hours second, as on /approvals: the number a review decides on stays clear of the pinned ✓ ✕ on a phone.
+  protected readonly reviewColumns = ['employee', 'hours', 'project', 'date', 'actions'];
   // Kept across a refetch: every approval reloads the dashboard, and blanking four numbers the page is
   // still showing would read as breakage rather than as loading (§14, the same answer as Projects).
   protected readonly data = signal<DashboardData | null>(null);
