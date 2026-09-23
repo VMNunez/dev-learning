@@ -27,6 +27,7 @@ import { UserService } from '../../../core/services/user-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
 import { refocusAfterFailedSave } from '../../../shared/focus';
+import { notBlank } from '../../../shared/validators';
 import { Role, ROLE_LABELS, ROLES } from '../../../shared/models/auth';
 import { CreateUserResponse, User } from '../../../shared/models/user';
 
@@ -74,7 +75,7 @@ export class UserDialog implements HoldsOneTimeSecret {
   protected readonly form = new FormGroup({
     name: new FormControl(this.user?.name ?? '', {
       nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
+      validators: [Validators.required, notBlank, Validators.maxLength(255)],
     }),
     email: new FormControl(this.user?.email ?? '', {
       nonNullable: true,

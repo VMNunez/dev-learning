@@ -31,6 +31,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { filter } from 'rxjs';
 import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
 import { refocusAfterFailedSave } from '../../focus';
+import { notBlank } from '../../validators';
 import { confirmDiscard } from '../confirm-dialog/confirm-discard';
 
 const SERVER_FIELDS = ['currentPassword', 'newPassword'] as const;
@@ -90,7 +91,12 @@ export class ChangePasswordDialog {
       }),
       newPassword: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, Validators.minLength(8), Validators.maxLength(72)],
+        validators: [
+          Validators.required,
+          notBlank,
+          Validators.minLength(8),
+          Validators.maxLength(72),
+        ],
       }),
       confirmPassword: new FormControl('', {
         nonNullable: true,

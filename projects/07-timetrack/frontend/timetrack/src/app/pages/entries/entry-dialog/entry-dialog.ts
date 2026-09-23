@@ -37,6 +37,7 @@ import { confirmDiscard } from '../../../shared/components/confirm-dialog/confir
 import { fromIsoDate, toIsoDate } from '../../../shared/dates';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
 import { refocusAfterFailedSave } from '../../../shared/focus';
+import { notBlank } from '../../../shared/validators';
 import { Project } from '../../../shared/models/project';
 import { CreateTimeEntryRequest, TimeEntry } from '../../../shared/models/time-entry';
 
@@ -107,7 +108,7 @@ export class EntryDialog {
     }),
     description: new FormControl(this.entry?.description ?? '', {
       nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
+      validators: [Validators.required, notBlank, Validators.maxLength(255)],
     }),
   });
 
