@@ -138,6 +138,6 @@
 
 .status-active {
   border-color: color-mix(in srgb, var(--project-active) 30%, transparent);
-  background: color-mix(in srgb, var(--project-active) 8%, white);
+  background: color-mix(in srgb, var(--project-active) 8%, var(--mat-sys-surface));
   color: var(--project-active);
 }
