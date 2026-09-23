@@ -20,6 +20,7 @@
   </div>
 } @else {
   @let current = data();
+  @let cards = loading() ? null : current;
 
   @if (isEmpty()) {
     <div class="page-state">
@@ -40,16 +41,15 @@
       >
         <app-stat-card
           label="Approved hours"
-          [value]="current ? (current.summary.approvedHours | number: '1.0-2') + 'h' : null"
+          [value]="cards ? (cards.summary.approvedHours | number: '1.0-2') + 'h' : null"
         />
-        <app-stat-card label="Employees" [value]="current ? '' + current.byUser.length : null" />
-        <app-stat-card label="Projects" [value]="current ? '' + current.byProject.length : null" />
+        <app-stat-card label="Employees" [value]="cards ? '' + cards.byUser.length : null" />
+        <app-stat-card label="Projects" [value]="cards ? '' + cards.byProject.length : null" />
       </div>
 
-      @if (current && current.summary.pendingHours > 0) {
+      @if (cards && cards.summary.pendingHours > 0) {
         <p class="pending-note">
-          {{ current.summary.pendingHours | number: '1.0-2' }}h awaiting approval, not included
-          above
+          {{ cards.summary.pendingHours | number: '1.0-2' }}h awaiting approval, not included above
         </p>
       }
     </section>
@@ -89,6 +89,16 @@
                 <tr mat-row *matRowDef="let row; columns: projectColumns"></tr>
               </table>
             </div>
+
+            @if (loading()) {
+              <div class="table-overlay">
+                <mat-progress-spinner
+                  mode="indeterminate"
+                  diameter="40"
+                  aria-label="Loading hours by project"
+                />
+              </div>
+            }
           </div>
         }
       </section>
@@ -127,6 +137,16 @@
                 <tr mat-row *matRowDef="let row; columns: userColumns"></tr>
               </table>
             </div>
+
+            @if (loading()) {
+              <div class="table-overlay">
+                <mat-progress-spinner
+                  mode="indeterminate"
+                  diameter="40"
+                  aria-label="Loading hours by employee"
+                />
+              </div>
+            }
           </div>
         }
       </section>

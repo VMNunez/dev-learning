@@ -72,7 +72,12 @@ export class Reports {
 
   protected readonly isEmpty = computed(() => {
     const current = this.data();
-    return current !== null && current.byProject.length === 0 && current.byUser.length === 0;
+    return (
+      !this.loading() &&
+      current !== null &&
+      current.byProject.length === 0 &&
+      current.byUser.length === 0
+    );
   });
 
   protected readonly trackByProject = (_index: number, row: ProjectHours) => row.projectId;
@@ -86,7 +91,6 @@ export class Reports {
         tap(() => {
           this.loading.set(true);
           this.error.set(null);
-          this.data.set(null);
         }),
         switchMap(() =>
           this.fetch(this.month.value).pipe(
