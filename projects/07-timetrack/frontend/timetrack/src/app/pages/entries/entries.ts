@@ -229,19 +229,17 @@ export class Entries {
         filter((confirmed) => confirmed === true),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() =>
-        this.runAction(entry, this.entryService.deleteEntry(entry.id), 'Entry deleted'),
-      );
+      .subscribe(() => this.run(entry, this.entryService.deleteEntry(entry.id), 'Entry deleted'));
   }
 
   submit(entry: TimeEntry): void {
     if (this.busyEntryId() === entry.id) return;
-    this.runAction(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
+    this.run(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
   }
 
   reopen(entry: TimeEntry): void {
     if (this.busyEntryId() === entry.id) return;
-    this.runAction(entry, this.entryService.reopenEntry(entry.id), 'Entry re-opened as a draft');
+    this.run(entry, this.entryService.reopenEntry(entry.id), 'Entry re-opened as a draft');
   }
 
   private fetch(): Observable<{ projects: Project[]; page: Page<TimeEntry> }> {
@@ -311,7 +309,7 @@ export class Entries {
     refocusAfterRender(this.injector, [target, this.logHoursButton()?.nativeElement]);
   }
 
-  private runAction(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
+  private run(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
     const pressed = activeElement();
     this.busyEntryId.set(entry.id);
 
