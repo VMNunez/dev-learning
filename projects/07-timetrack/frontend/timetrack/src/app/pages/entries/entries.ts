@@ -34,7 +34,7 @@ import {
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { recentMonths, toIsoMonth } from '../../shared/dates';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender, refocusAfterWrite } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Page } from '../../shared/models/page';
 import { Project } from '../../shared/models/project';
@@ -284,7 +284,7 @@ export class Entries {
       return;
     }
 
-    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const opener = activeElement();
 
     this.dialog
       .open<EntryDialog, EntryDialogData, boolean>(EntryDialog, {
@@ -312,18 +312,14 @@ export class Entries {
   }
 
   private runAction(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
-    const pressed = document.activeElement;
+    const pressed = activeElement();
     this.busyEntryId.set(entry.id);
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.busyEntryId.set(null);
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
-        const focusLeftNowhere =
-          document.activeElement === pressed || document.activeElement === document.body;
-        if (focusLeftNowhere) {
-          this.logHoursButton()?.nativeElement.focus();
-        }
+        refocusAfterWrite(pressed, this.logHoursButton()?.nativeElement);
         this.reload();
       },
       error: (err: unknown) => {

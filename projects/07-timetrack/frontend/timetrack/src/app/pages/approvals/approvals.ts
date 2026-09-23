@@ -40,7 +40,7 @@ import {
 } from '../../shared/components/reject-dialog/reject-dialog';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { recentMonths } from '../../shared/dates';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender, refocusAfterWrite } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Page } from '../../shared/models/page';
 import { Project } from '../../shared/models/project';
@@ -242,9 +242,7 @@ export class Approvals {
         next: () => {
           this.busyEntryId.set(null);
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
-          if (activeElement() === pressed || activeElement() === document.body) {
-            this.pageHeading().nativeElement.focus();
-          }
+          refocusAfterWrite(pressed, this.pageHeading().nativeElement);
           this.reload();
           this.pendingApprovals.refresh();
         },
@@ -279,7 +277,7 @@ export class Approvals {
         }
 
         this.snackBar.open('Entry rejected', 'Close', { duration: 4000 });
-        this.pageHeading().nativeElement.focus();
+        refocusAfterWrite(pressed, this.pageHeading().nativeElement);
         this.reload();
         this.pendingApprovals.refresh();
       });
@@ -318,9 +316,4 @@ export class Approvals {
       status: status ?? undefined,
     };
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }

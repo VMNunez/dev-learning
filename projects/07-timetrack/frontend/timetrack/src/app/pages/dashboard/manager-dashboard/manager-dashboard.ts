@@ -32,7 +32,7 @@ import {
 } from '../../../shared/components/reject-dialog/reject-dialog';
 import { StatCard } from '../../../shared/components/stat-card/stat-card';
 import { toIsoMonth } from '../../../shared/dates';
-import { refocusAfterRender } from '../../../shared/focus';
+import { activeElement, refocusAfterRender, refocusAfterWrite } from '../../../shared/focus';
 import { apiErrorMessage } from '../../../shared/models/api-error';
 import { TimeEntry } from '../../../shared/models/time-entry';
 
@@ -145,9 +145,7 @@ export class ManagerDashboard {
         next: () => {
           this.busyEntryId.set(null);
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
-          if (activeElement() === pressed || activeElement() === document.body) {
-            this.pageHeading().nativeElement.focus();
-          }
+          refocusAfterWrite(pressed, this.pageHeading().nativeElement);
           this.reload();
           this.pendingApprovals.refresh();
         },
@@ -182,7 +180,7 @@ export class ManagerDashboard {
         }
 
         this.snackBar.open('Entry rejected', 'Close', { duration: 4000 });
-        this.pageHeading().nativeElement.focus();
+        refocusAfterWrite(pressed, this.pageHeading().nativeElement);
         this.reload();
         this.pendingApprovals.refresh();
       });
@@ -207,9 +205,4 @@ export class ManagerDashboard {
       })),
     );
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }
