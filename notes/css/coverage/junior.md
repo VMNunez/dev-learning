@@ -120,6 +120,18 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
 - `:root` vs component scope — expose a custom property globally or restrict it to one element subtree according to who owns the design token ✅ 01-todo-list
+- A token is named by what it means, never by the value it holds — two roles that happen to share a
+  colour today keep a token each, so either can move without dragging the other with it; folding them
+  into one because the hex matches makes an accident of history into a constraint, and a role that has
+  no token of its own silently borrows a neighbouring one's meaning ✅ 07-timetrack — `--action-approve`
+  and `--action-reject` hold the same values as `--status-approved` and `--status-rejected`, and stay
+  separate tokens because a row action and an entry's status are free to move apart
+- A value mixed from another colour has to read its real backdrop — a tint composed against a literal
+  `white` matches only while the surface happens to render white, so it stops matching the moment the
+  theme's surface tone moves, and the drift is invisible because the value still resolves and still
+  looks plausible; compose against the token the surface itself reads ✅ 07-timetrack — the Projects
+  status pill mixes its 8% tint against `--mat-sys-surface`, which the theme renders `#f7faf8`, not the
+  `white` the rule had hard-coded
 - CSS variables participate in the runtime cascade — their values can change through selector state, media queries, inheritance, or an inline style without recompiling the stylesheet
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 

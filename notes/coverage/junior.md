@@ -247,7 +247,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - A palette generated from one seed colour — a Material 3 theme derives a whole tonal ramp from a single brand colour, so the rendered primary is a tone of that ramp rather than the seed itself, and forcing the seed back with CSS discards the contrast relationships the ramp guarantees ✅ 07-timetrack — `_theme-colors.scss` is generated from `#00695C` and the rendered `--mat-sys-primary` is its tone 40, `#046b5e`
 - System token overrides — change a theme value through the theme's own override map rather than restyling components, so one declaration moves every place that token is read and a misspelled token fails the build instead of being silently ignored ✅ 07-timetrack — `material-theme.scss` flattens the four `corner-*` tokens to 4px through `$overrides`, with no component CSS
 - Density as a single inherited scale — density is one negative step on a 0 to -5 scale declared with the theme and inherited by every component, not padding tuned per table or per form field ✅ 07-timetrack — `density: -2` is declared once in `mat.theme()` and no component stylesheet re-tunes a Material component's own padding
-- Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases ✅ 07-timetrack — shape and density are changed through `mat.theme()` tokens and no rule targets a `.mat-mdc-*` class
+- Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases ✅ 07-timetrack — shape and density are changed through `mat.theme()` tokens, and the table's sticky-column divider is drawn on the generated `.mat-column-actions` class rather than the CDK's internal sticky-border element class
 - A component's own styles arrive after the global stylesheet — a Material component adds its stylesheet to the document when it first renders, so a global rule of equal specificity that restyles its public class loses the tie on source order; the override names the component's class as well, or goes through its token, rather than reaching for `!important` ✅ 07-timetrack — `.mat-icon.empty-illustration` sizes the first-use icon's box to 4rem, where one class lost to `MatIcon`'s 24px `width`/`height` and clipped the glyph
 - System colour roles over ad-hoc custom properties — express a role the theme already defines (surface, outline, secondary text) with its `--mat-sys-*` token so one theme change moves every use of that role at once ✅ 05-task-manager — every secondary-text rule (`.filter-text`, `.stat-label`, the table's meta cells) reads `--mat-sys-on-surface-variant`, and `styles.css` keeps custom properties only for roles Material has no token for
 - Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals ✅ 05-task-manager
@@ -1844,6 +1844,18 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
 - `:root` vs component scope — expose a custom property globally or restrict it to one element subtree according to who owns the design token ✅ 01-todo-list
+- A token is named by what it means, never by the value it holds — two roles that happen to share a
+  colour today keep a token each, so either can move without dragging the other with it; folding them
+  into one because the hex matches makes an accident of history into a constraint, and a role that has
+  no token of its own silently borrows a neighbouring one's meaning ✅ 07-timetrack — `--action-approve`
+  and `--action-reject` hold the same values as `--status-approved` and `--status-rejected`, and stay
+  separate tokens because a row action and an entry's status are free to move apart
+- A value mixed from another colour has to read its real backdrop — a tint composed against a literal
+  `white` matches only while the surface happens to render white, so it stops matching the moment the
+  theme's surface tone moves, and the drift is invisible because the value still resolves and still
+  looks plausible; compose against the token the surface itself reads ✅ 07-timetrack — the Projects
+  status pill mixes its 8% tint against `--mat-sys-surface`, which the theme renders `#f7faf8`, not the
+  `white` the rule had hard-coded
 - CSS variables participate in the runtime cascade — their values can change through selector state, media queries, inheritance, or an inline style without recompiling the stylesheet
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
