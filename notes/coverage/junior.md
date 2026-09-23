@@ -925,6 +925,12 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   handler keeps only the earlier feedback ✅ 06-hr-portal — `EmployeeDialog.hasDuplicateEmail()` runs from
   both `onNext` and `onSubmit`, because the linear stepper's step-2 header reaches the save without the
   Next button
+- Per-item state does not fit in a single slot — a flag answering "is *this* item busy" held as one
+  value is overwritten the moment a second item enters the same condition, silently releasing the first
+  while its own operation is still running and re-enabling the control that flag was protecting; state
+  takes the shape of the question it answers, so a condition several items can be in at once is a set,
+  never a scalar ✅ 07-timetrack — the five list pages hold their in-flight row ids in a `ReadonlySet`,
+  so a write started on one row leaves every other row's guard standing until its own request returns
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
