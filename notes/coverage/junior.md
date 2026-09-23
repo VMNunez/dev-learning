@@ -2282,6 +2282,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - API-call debugging workflow — inspect URL, method, status, headers, and body before blaming client or server framework code
 - Same-origin and CORS recognition — identify an origin from scheme, host, and port and distinguish a browser-enforced CORS or preflight failure from an HTTP response produced by application logic ✅ 07-timetrack
 - Collection query contract — define filtering, sorting, pagination inputs, stable ordering, and response metadata so clients can navigate a changing collection predictably ✅ 07-timetrack
+- A page index expires — it is a claim about a collection the server can shrink between one request and the next, and an index past the end comes back as a **valid, empty page** rather than an error, so a client that remembers it keeps asking for something that no longer exists and renders its empty state over a collection that still has rows ✅ 07-timetrack — `/approvals` and `/entries` re-ask for the last page that exists when a reload returns no rows against a non-zero total
+- A corrective retry has to terminate — a client that re-issues a request with a parameter it derived from the answer will repeat for ever whenever the answer keeps implying the same parameter, which two statements of one read can do under a concurrent write, so the correction moves strictly toward its floor instead of being re-derived from scratch each time ✅ 07-timetrack — `clampPageIndex()` takes `min(lastPage, pageIndex - 1)`, so a total still claiming the empty page cannot ask for it twice
 
 ### JSON and API contracts
 
