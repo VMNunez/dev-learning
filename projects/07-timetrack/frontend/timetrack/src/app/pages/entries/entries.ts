@@ -146,6 +146,7 @@ export class Entries {
         this.projects.set(projects);
         this.entries.set(page.content);
         this.totalElements.set(page.page.totalElements);
+        if (this.clampPageIndex()) return;
         this.loading.set(false);
         this.restoreFocus();
       });
@@ -165,6 +166,24 @@ export class Entries {
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
+  }
+
+  /**
+   * A write can shrink the collection under a page index this page is still asking for, and the
+   * server answers that with a valid, empty page rather than an error. Re-ask for the last page
+   * the reported total implies, and never fewer than one page back: a count and a slice read in
+   * separate statements can disagree under a concurrent write, so a total that still claims this
+   * page exists must not send us to ask for it again. The index therefore always decreases, and
+   * page 0 is the floor the guard above stops at.
+   */
+  private clampPageIndex(): boolean {
+    const total = this.totalElements();
+    if (this.entries().length > 0 || total === 0 || this.pageIndex() === 0) return false;
+
+    const lastPage = Math.ceil(total / this.pageSize()) - 1;
+    this.pageIndex.set(Math.min(lastPage, this.pageIndex() - 1));
+    this.reload();
+    return true;
   }
 
   onPage(event: PageEvent): void {
