@@ -181,6 +181,9 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
   kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
   is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
+- A branch excluded by configuration is not dead code — the test is the declared type of the input, not
+  the settings that happen to narrow it today; a case the type still admits stays handled, and the branch
+  is retired by narrowing the type at its producer rather than by deleting the handling at its consumer
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
 - Similar code that runs at different moments — two fragments applying the same test are still two
