@@ -124,7 +124,10 @@ exist", and it is raised at the same severity it would otherwise carry.
 
 ## Output — findings table + trace (no edits, no commit)
 
-Return, for **this slice only**:
+Return, for **this slice only**, **in the reply itself** — never in a scratch file and never as a pointer
+to an earlier message. The orchestrator is not required to read anything but your reply, so a block left
+anywhere else did not arrive: an unsent trace costs the slice its coverage, and unsent findings never
+reach the backlog at all.
 
 **1. Findings** — one table, most severe first, each row tagged with its lens:
 `| Priority (High/Medium/Low) | Lens (quality/correctness/tests) | File | Finding (trigger+wrong result for correctness) | Fix | Why it matters |`
