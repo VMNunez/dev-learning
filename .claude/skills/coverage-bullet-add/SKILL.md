@@ -233,12 +233,18 @@ Rules, all of which exist because this cell already holds something worth keepin
 
 - **Append, never overwrite.** The execution record underneath is the only trace that the plan ever ran;
   replacing it to show a debt destroys the thing the debt is measured against.
-- **Recount `N`, do not increment blindly.** If the cell is already flagged, this run raises the existing
-  count and updates the date to today — one flag per cell, never two.
+- **Recount `N` per `_run-tracker.md`'s "One flag per cell" paragraph, never increment blindly.** That
+  file owns the arithmetic: `N` is the bullets **added** since the plan ran, and the date moves to today.
+  Added — not the difference between two file sizes, which silently absorbs a bullet deleted since
+  (Angular Material junior reads 96 − 76 = 20 under flags totalling 21). The baseline is the concept
+  count the cell's own execution record states, never `git log -1` on `notes-plan-{LEVEL}.md`, which
+  `study-block-close` and the notes pipeline also write; a cell recording no run has no baseline, so its
+  flag's own count is the one to raise.
+- **A cell an earlier run left carrying two flags is folded into one**, dated today, their counts summed
+  with this run's, every enumeration and any `fingerprint only` clause kept inside the parenthetical.
+  Say in the report that you merged flags you did not write.
 - **Never clear a flag.** `notes-plan` rewrites the whole cell when it runs, which removes it. A flag
   cleared by anything else is a debt hidden rather than paid.
-- **No plan, no flag.** If step 6 found no `notes-plan-{LEVEL}.md`, nothing is owed, so nothing is
-  recorded — an empty `Plan` cell already reads as pending and needs no help.
 - **A bullet routed to `_cross-topic-inbox.md` flags nothing.** No bullet landed in that topic's file, so
   its plan still maps the whole checklist. The proposal is the other topic's decision to make.
 
