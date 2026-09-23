@@ -68,7 +68,12 @@
           </div>
         } @else {
           <div class="table-area">
-            <div class="table-wrapper">
+            <div
+              class="table-wrapper"
+              tabindex="0"
+              role="group"
+              aria-labelledby="by-project-heading"
+            >
               <table mat-table [dataSource]="current.byProject" [trackBy]="trackByProject">
                 <ng-container matColumnDef="project">
                   <th mat-header-cell *matHeaderCellDef>Project</th>
@@ -116,7 +121,12 @@
           </div>
         } @else {
           <div class="table-area">
-            <div class="table-wrapper">
+            <div
+              class="table-wrapper"
+              tabindex="0"
+              role="group"
+              aria-labelledby="by-employee-heading"
+            >
               <table mat-table [dataSource]="current.byUser" [trackBy]="trackByUser">
                 <ng-container matColumnDef="employee">
                   <th mat-header-cell *matHeaderCellDef>Employee</th>

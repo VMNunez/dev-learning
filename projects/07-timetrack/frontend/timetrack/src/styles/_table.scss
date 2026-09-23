@@ -5,6 +5,14 @@
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: var(--mat-sys-corner-small);
   overflow: hidden;
+
+  &:has(> .table-wrapper:focus-visible) {
+    outline: 3px solid var(--mat-sys-primary);
+  }
+
+  > .table-wrapper:focus-visible {
+    outline: none;
+  }
 }
 
 .table-overlay {
@@ -19,6 +27,10 @@
 .table-wrapper {
   overflow-x: auto;
   container-type: scroll-state;
+
+  &:focus-visible {
+    outline: 3px solid var(--mat-sys-primary);
+  }
 
   table {
     width: 100%;
