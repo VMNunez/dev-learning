@@ -124,6 +124,7 @@ src/app/
 - A dialog for a new member's generated password over the copyable snackbar first planned — the plaintext exists only in the `POST /api/users` response, so it must not vanish on a timeout or under the next snackbar; the dialog opens on Copy, reports whether the browser accepted the copy, and closes only on Done, never on Escape or a backdrop click; in exchange adding a member takes one extra click
 - Sorting the Team table in the browser, with a locale `Intl.Collator` for the Name column only, over adding a `sort` parameter to `GET /api/users` — the API already returns every account ordered by status and then name, so Status and Role are stable sorts that keep its order, and only a pure name order needs a comparison, which runs in the app's own `en-GB` locale; in exchange that one order can differ from the database collation on edge cases
 - A project's own `--project-active` token over reusing the APPROVED status colour — the two share a value and its measured contrast, but a project's state and a time entry's status mean different things and must be free to move apart; in exchange the palette carries two greens that look identical today
+- The year printed in the employee dashboard's recent list over the shorter `d MMM` its wireframe showed — that list asks `GET /api/entries` with no month, so a date without a year claims a bound the query never applied, and the `/entries` table it links to already prints one; in exchange its Date column now needs a 25rem page instead of 23.5rem and drops on a 414px phone, where it used to fit
 
 ---
 
