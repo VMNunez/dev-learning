@@ -182,6 +182,7 @@ export class Projects {
         this.error.set(apiErrorMessage(err, 'Could not load the projects. Check your connection.'));
         this.loading.set(false);
         this.refocusAfterReload = null;
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );

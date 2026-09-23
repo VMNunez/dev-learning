@@ -284,6 +284,7 @@ export class Approvals {
           apiErrorMessage(err, 'Could not load the approvals queue. Check your connection.'),
         );
         this.loading.set(false);
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );

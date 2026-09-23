@@ -218,6 +218,7 @@ export class Team implements HoldsOneTimeSecret {
         this.error.set(apiErrorMessage(err, 'Could not load the team. Check your connection.'));
         this.loading.set(false);
         this.refocusAfterReload = null;
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );

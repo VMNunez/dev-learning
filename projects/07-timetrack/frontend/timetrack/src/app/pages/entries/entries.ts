@@ -244,6 +244,7 @@ export class Entries {
         this.error.set(apiErrorMessage(err, fallback));
         this.loading.set(false);
         this.refocusAfterReload = null;
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );

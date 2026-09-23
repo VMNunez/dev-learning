@@ -108,6 +108,7 @@ export class ManagerDashboard {
             catchError((err: unknown) => {
               this.error.set(apiErrorMessage(err, "Could not load your team's dashboard."));
               this.loading.set(false);
+              refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
               return EMPTY;
             }),
           ),
