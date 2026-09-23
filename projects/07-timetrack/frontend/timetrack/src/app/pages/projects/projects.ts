@@ -25,7 +25,7 @@ import {
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Project } from '../../shared/models/project';
 import { ProjectDialog, ProjectDialogData } from './project-dialog/project-dialog';
@@ -237,9 +237,4 @@ export class Projects {
 
     refocusAfterRender(this.injector, [target, this.newProjectButton().nativeElement]);
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }

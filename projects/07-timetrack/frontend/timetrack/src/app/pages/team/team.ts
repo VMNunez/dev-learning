@@ -28,7 +28,7 @@ import {
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { ROLE_LABELS, ROLES } from '../../shared/models/auth';
 import { User } from '../../shared/models/user';
@@ -338,9 +338,4 @@ export class Team implements HoldsOneTimeSecret {
 
     refocusAfterRender(this.injector, [target, this.addMemberButton().nativeElement]);
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }
