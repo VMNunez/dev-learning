@@ -128,6 +128,7 @@ src/app/
 - A project's own `--project-active` token over reusing the APPROVED status colour — the two share a value and its measured contrast, but a project's state and a time entry's status mean different things and must be free to move apart; in exchange the palette carries two greens that look identical today
 - The year printed in the employee dashboard's recent list over the shorter `d MMM` its wireframe showed — that list asks `GET /api/entries` with no month, so a date without a year claims a bound the query never applied, and the `/entries` table it links to already prints one; in exchange its Date column now needs a 25rem page instead of 23.5rem and drops on a 414px phone, where it used to fit
 - The login and current-password fields left out of the blank check over applying it to every required field — both are submitted for comparison against a stored value, so a client rule refusing whitespace could lock an account out of a credential the server would still accept; in exchange those two learn it from the server's `400` like any other refusal
+- Two focus helpers over one shared predicate — `refocusAfterWrite()` measures where focus is the moment a write resolves and `refocusAfterRender()` measures it after the next render, so routing the first through the second would have made it a no-op: at render time the refetch has not yet removed the pressed control; in exchange the two read as one duplicated test until their doc comments are read
 
 ---
 
