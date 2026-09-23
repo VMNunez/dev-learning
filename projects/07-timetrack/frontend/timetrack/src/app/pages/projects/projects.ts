@@ -20,12 +20,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { catchError, EMPTY, filter, Observable, Subject, switchMap, tap } from 'rxjs';
 import { ProjectService } from '../../core/services/project-service';
+import { withBusyId, withoutBusyId } from '../../shared/busy-ids';
 import {
   ConfirmDialog,
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Project } from '../../shared/models/project';
 import { ProjectDialog, ProjectDialogData } from './project-dialog/project-dialog';
@@ -66,7 +67,7 @@ export class Projects {
   protected readonly projects = signal<Project[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyProjectId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
 
   protected readonly counts = computed(() => {
     if (this.loading() && this.projects().length === 0) return null;
@@ -137,12 +138,12 @@ export class Projects {
   }
 
   openEdit(project: Project): void {
-    if (this.busyProjectId() === project.id) return;
+    if (this.busyIds().has(project.id)) return;
     this.openDialog(project);
   }
 
   toggleActive(project: Project): void {
-    if (this.busyProjectId() === project.id) return;
+    if (this.busyIds().has(project.id)) return;
 
     if (!project.active) {
       this.run(
@@ -182,6 +183,7 @@ export class Projects {
         this.error.set(apiErrorMessage(err, 'Could not load the projects. Check your connection.'));
         this.loading.set(false);
         this.refocusAfterReload = null;
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );
@@ -211,17 +213,17 @@ export class Projects {
 
   private run(project: Project, action$: Observable<unknown>, successMessage: string): void {
     const pressed = activeElement();
-    this.busyProjectId.set(project.id);
+    this.busyIds.update((ids) => withBusyId(ids, project.id));
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.busyProjectId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, project.id));
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
         this.refocusAfterReload = pressed;
         this.reload();
       },
       error: (err: unknown) => {
-        this.busyProjectId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, project.id));
         this.snackBar.open(apiErrorMessage(err, 'The action failed. Try again.'), 'Close', {
           duration: 6000,
         });
@@ -236,9 +238,4 @@ export class Projects {
 
     refocusAfterRender(this.injector, [target, this.newProjectButton().nativeElement]);
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }

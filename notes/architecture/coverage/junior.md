@@ -26,6 +26,10 @@ apply in a small codebase, and defend with concrete trade-offs.
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
   data actually is, or add the filter, but never leave the two disagreeing ✅ 07-timetrack
+- A rule stated on both sides of a network boundary must measure the same thing — client-side validation exists
+  for immediate feedback rather than authority, so when it applies a looser test than the server's the form
+  accepts a value the request is about to be refused for, and the user pays a round trip to learn what the
+  client already held enough information to say ✅ 07-timetrack — the reject note, both names, the entry description and `newPassword` refuse whitespace client-side exactly as `@NotBlank` does
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
@@ -121,12 +125,22 @@ apply in a small codebase, and defend with concrete trade-offs.
   value is normalised and checked before it crosses the boundary, so the parent and every later
   listener receive a value already fit to use; deferring that check to the consumer makes each new
   listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
+- A rendered value must not imply a scope the query never applied — omitting the year from a date, the
+  currency from an amount or the unit from a measure reads as a claim that the surrounding view fixes
+  it, so a list the server never bounded shows values the reader cannot place; the format is chosen
+  from the range the query can return, never from what the screen is called ✅ 07-timetrack — the dashboard's recent list asks `GET /api/entries` with no month and prints `d MMM y`, the same format as `/entries`
 - A rule enforced inside a control's event handler is only as strong as the number of paths that reach
   that control — a multi-step form whose navigation offers a second route to the same save leaves the
   rule unchecked, so the guard belongs at the single exit where the data leaves the boundary and the
   handler keeps only the earlier feedback ✅ 06-hr-portal — `EmployeeDialog.hasDuplicateEmail()` runs from
   both `onNext` and `onSubmit`, because the linear stepper's step-2 header reaches the save without the
   Next button
+- Per-item state does not fit in a single slot — a flag answering "is *this* item busy" held as one
+  value is overwritten the moment a second item enters the same condition, silently releasing the first
+  while its own operation is still running and re-enabling the control that flag was protecting; state
+  takes the shape of the question it answers, so a condition several items can be in at once is a set,
+  never a scalar ✅ 07-timetrack — the five list pages hold their in-flight row ids in a `ReadonlySet`,
+  so a write started on one row leaves every other row's guard standing until its own request returns
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
@@ -173,8 +187,15 @@ apply in a small codebase, and defend with concrete trade-offs.
 - Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
   kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
   is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
+- A branch excluded by configuration is not dead code — the test is the declared type of the input, not
+  the settings that happen to narrow it today; a case the type still admits stays handled, and the branch
+  is retired by narrowing the type at its producer rather than by deleting the handling at its consumer
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
+- Similar code that runs at different moments — two fragments applying the same test are still two
+  rules when one is measured synchronously and the other after a later tick or render; the moment is
+  not visible in the predicate, so folding them into one helper deletes the behaviour of whichever
+  moment does not survive ✅ 07-timetrack — `shared/focus.ts` keeps `refocusAfterWrite()` and `refocusAfterRender()` as two exported rules over the same predicate, one measured when the write resolves and one from `afterNextRender`, because routing the first through the second would test focus before the refetch removed the control
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental

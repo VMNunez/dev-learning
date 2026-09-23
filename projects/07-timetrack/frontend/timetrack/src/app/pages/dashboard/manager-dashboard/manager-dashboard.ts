@@ -22,6 +22,7 @@ import { RouterLink } from '@angular/router';
 import { catchError, EMPTY, forkJoin, map, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../../core/services/auth-service';
 import { EntryService } from '../../../core/services/entry-service';
+import { withBusyId, withoutBusyId } from '../../../shared/busy-ids';
 import { ProjectService } from '../../../core/services/project-service';
 import { ReportService } from '../../../core/services/report-service';
 import { UserService } from '../../../core/services/user-service';
@@ -32,7 +33,7 @@ import {
 } from '../../../shared/components/reject-dialog/reject-dialog';
 import { StatCard } from '../../../shared/components/stat-card/stat-card';
 import { toIsoMonth } from '../../../shared/dates';
-import { refocusAfterRender } from '../../../shared/focus';
+import { activeElement, refocusAfterRender, refocusAfterWrite } from '../../../shared/focus';
 import { apiErrorMessage } from '../../../shared/models/api-error';
 import { TimeEntry } from '../../../shared/models/time-entry';
 
@@ -85,7 +86,7 @@ export class ManagerDashboard {
   protected readonly data = signal<DashboardData | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyEntryId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
 
   private readonly currentUserId = computed(() => this.authService.session()?.id ?? null);
   protected readonly isOwnEntry = (entry: TimeEntry) => entry.userId === this.currentUserId();
@@ -108,6 +109,7 @@ export class ManagerDashboard {
             catchError((err: unknown) => {
               this.error.set(apiErrorMessage(err, "Could not load your team's dashboard."));
               this.loading.set(false);
+              refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
               return EMPTY;
             }),
           ),
@@ -132,26 +134,24 @@ export class ManagerDashboard {
   }
 
   approve(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
-    this.busyEntryId.set(entry.id);
+    this.busyIds.update((ids) => withBusyId(ids, entry.id));
 
     this.entryService
       .approveEntry(entry.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
-          if (activeElement() === pressed || activeElement() === document.body) {
-            this.pageHeading().nativeElement.focus();
-          }
+          refocusAfterWrite(pressed, this.pageHeading().nativeElement);
           this.reload();
           this.pendingApprovals.refresh();
         },
         error: (err: unknown) => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open(
             apiErrorMessage(err, 'Could not approve the entry. Try again.'),
             'Close',
@@ -162,7 +162,7 @@ export class ManagerDashboard {
   }
 
   openReject(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
 
@@ -181,7 +181,7 @@ export class ManagerDashboard {
         }
 
         this.snackBar.open('Entry rejected', 'Close', { duration: 4000 });
-        this.pageHeading().nativeElement.focus();
+        refocusAfterWrite(pressed, this.pageHeading().nativeElement);
         this.reload();
         this.pendingApprovals.refresh();
       });
@@ -206,9 +206,4 @@ export class ManagerDashboard {
       })),
     );
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }

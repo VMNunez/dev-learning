@@ -31,6 +31,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { catchError, EMPTY, forkJoin, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/services/auth-service';
 import { EntryService } from '../../core/services/entry-service';
+import { withBusyId, withoutBusyId } from '../../shared/busy-ids';
 import { ProjectService } from '../../core/services/project-service';
 import { UserService } from '../../core/services/user-service';
 import { PendingApprovals } from '../../core/state/pending-approvals';
@@ -40,7 +41,7 @@ import {
 } from '../../shared/components/reject-dialog/reject-dialog';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { recentMonths } from '../../shared/dates';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender, refocusAfterWrite } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Page } from '../../shared/models/page';
 import { Project } from '../../shared/models/project';
@@ -117,7 +118,7 @@ export class Approvals {
   protected readonly pageSize = signal(10);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyEntryId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
   private readonly sort = signal(DEFAULT_SORT);
 
   protected readonly filters = new FormGroup({
@@ -174,6 +175,7 @@ export class Approvals {
         this.projects.set(projects);
         this.entries.set(page.content);
         this.totalElements.set(page.page.totalElements);
+        if (this.clampPageIndex()) return;
         this.loading.set(false);
       });
 
@@ -194,6 +196,24 @@ export class Approvals {
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
   }
 
+  /**
+   * A write can shrink the collection under a page index this page is still asking for, and the
+   * server answers that with a valid, empty page rather than an error. Re-ask for the last page
+   * the reported total implies, and never fewer than one page back: a count and a slice read in
+   * separate statements can disagree under a concurrent write, so a total that still claims this
+   * page exists must not send us to ask for it again. The index therefore always decreases, and
+   * page 0 is the floor the guard above stops at.
+   */
+  private clampPageIndex(): boolean {
+    const total = this.totalElements();
+    if (this.entries().length > 0 || total === 0 || this.pageIndex() === 0) return false;
+
+    const lastPage = Math.ceil(total / this.pageSize()) - 1;
+    this.pageIndex.set(Math.min(lastPage, this.pageIndex() - 1));
+    this.reload();
+    return true;
+  }
+
   onPage(event: PageEvent): void {
     this.pageIndex.set(event.pageIndex);
     this.pageSize.set(event.pageSize);
@@ -211,26 +231,24 @@ export class Approvals {
   }
 
   approve(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
-    this.busyEntryId.set(entry.id);
+    this.busyIds.update((ids) => withBusyId(ids, entry.id));
 
     this.entryService
       .approveEntry(entry.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
-          if (activeElement() === pressed || activeElement() === document.body) {
-            this.pageHeading().nativeElement.focus();
-          }
+          refocusAfterWrite(pressed, this.pageHeading().nativeElement);
           this.reload();
           this.pendingApprovals.refresh();
         },
         error: (err: unknown) => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open(
             apiErrorMessage(err, 'Could not approve the entry. Try again.'),
             'Close',
@@ -241,7 +259,7 @@ export class Approvals {
   }
 
   openReject(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
 
@@ -260,7 +278,7 @@ export class Approvals {
         }
 
         this.snackBar.open('Entry rejected', 'Close', { duration: 4000 });
-        this.pageHeading().nativeElement.focus();
+        refocusAfterWrite(pressed, this.pageHeading().nativeElement);
         this.reload();
         this.pendingApprovals.refresh();
       });
@@ -284,6 +302,7 @@ export class Approvals {
           apiErrorMessage(err, 'Could not load the approvals queue. Check your connection.'),
         );
         this.loading.set(false);
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );
@@ -298,9 +317,4 @@ export class Approvals {
       status: status ?? undefined,
     };
   }
-}
-
-function activeElement(): HTMLElement | null {
-  const active = document.activeElement;
-  return active instanceof HTMLElement ? active : null;
 }

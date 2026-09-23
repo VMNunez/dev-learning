@@ -120,6 +120,18 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 ## CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
 - `:root` vs component scope — expose a custom property globally or restrict it to one element subtree according to who owns the design token ✅ 01-todo-list
+- A token is named by what it means, never by the value it holds — two roles that happen to share a
+  colour today keep a token each, so either can move without dragging the other with it; folding them
+  into one because the hex matches makes an accident of history into a constraint, and a role that has
+  no token of its own silently borrows a neighbouring one's meaning ✅ 07-timetrack — `--action-approve`
+  and `--action-reject` hold the same values as `--status-approved` and `--status-rejected`, and stay
+  separate tokens because a row action and an entry's status are free to move apart
+- A value mixed from another colour has to read its real backdrop — a tint composed against a literal
+  `white` matches only while the surface happens to render white, so it stops matching the moment the
+  theme's surface tone moves, and the drift is invisible because the value still resolves and still
+  looks plausible; compose against the token the surface itself reads ✅ 07-timetrack — the Projects
+  status pill mixes its 8% tint against `--mat-sys-surface`, which the theme renders `#f7faf8`, not the
+  `white` the rule had hard-coded
 - CSS variables participate in the runtime cascade — their values can change through selector state, media queries, inheritance, or an inline style without recompiling the stylesheet
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
@@ -154,6 +166,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ## Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
+- What an ancestor's clipping reaches — an `outline` is painted outside the element's border box, so an
+  ancestor with `overflow: hidden` removes it from view entirely while the element itself is still focused;
+  a focus ring on a clipped child has to be drawn by the box that does the clipping ✅ 07-timetrack — `_table.scss` rings `.table-area`, since its `overflow: hidden` erased the outline of the `.table-wrapper` that scrolls
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
 - Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` wraps a space-less project name inside its `12rem`-capped column with `break-word`, and a pasted URL inside the description with `anywhere`

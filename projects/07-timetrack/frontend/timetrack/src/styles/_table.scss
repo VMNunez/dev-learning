@@ -5,6 +5,14 @@
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: var(--mat-sys-corner-small);
   overflow: hidden;
+
+  &:has(> .table-wrapper:focus-visible) {
+    outline: 3px solid var(--mat-sys-primary);
+  }
+
+  > .table-wrapper:focus-visible {
+    outline: none;
+  }
 }
 
 .table-overlay {
@@ -19,6 +27,10 @@
 .table-wrapper {
   overflow-x: auto;
   container-type: scroll-state;
+
+  &:focus-visible {
+    outline: 3px solid var(--mat-sys-primary);
+  }
 
   table {
     width: 100%;
@@ -53,7 +65,7 @@
   }
 
   @container scroll-state(scrollable: inline-end) {
-    .mat-mdc-table-sticky-border-elem-right {
+    .mat-column-actions {
       border-inline-start: 1px solid var(--mat-sys-outline-variant);
     }
   }
@@ -69,7 +81,7 @@
   .reject-action {
     @include mat.icon-button-overrides(
       (
-        icon-color: var(--mat-sys-error),
+        icon-color: var(--action-reject),
       )
     );
   }
@@ -94,8 +106,8 @@
     margin-block-start: 0.5rem;
   }
 
-  .mat-mdc-cell:has(> .rejection-note),
-  .mat-mdc-cell:has(> .mat-mdc-icon-button ~ .action-note) {
+  td:has(> .rejection-note),
+  td:has(> button ~ .action-note) {
     padding-block: 0.5rem;
   }
 
@@ -126,6 +138,6 @@
 
 .status-active {
   border-color: color-mix(in srgb, var(--project-active) 30%, transparent);
-  background: color-mix(in srgb, var(--project-active) 8%, white);
+  background: color-mix(in srgb, var(--project-active) 8%, var(--mat-sys-surface));
   color: var(--project-active);
 }

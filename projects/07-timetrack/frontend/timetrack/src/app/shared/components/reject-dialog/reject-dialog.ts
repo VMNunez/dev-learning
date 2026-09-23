@@ -25,6 +25,7 @@ import { filter } from 'rxjs';
 import { EntryService } from '../../../core/services/entry-service';
 import { apiErrorMessage, placeFieldErrors } from '../../models/api-error';
 import { refocusAfterFailedSave } from '../../focus';
+import { notBlank } from '../../validators';
 import { TimeEntry } from '../../models/time-entry';
 import { confirmDiscard } from '../confirm-dialog/confirm-discard';
 
@@ -66,7 +67,7 @@ export class RejectDialog {
   protected readonly form = new FormGroup({
     rejectionNote: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
+      validators: [Validators.required, notBlank, Validators.maxLength(255)],
     }),
   });
 
@@ -95,7 +96,7 @@ export class RejectDialog {
       });
   }
 
-  reject(): void {
+  save(): void {
     this.error.set(null);
     this.form.markAllAsTouched();
 

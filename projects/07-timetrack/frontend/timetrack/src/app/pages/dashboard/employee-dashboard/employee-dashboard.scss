@@ -8,13 +8,9 @@
 .table-wrapper {
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: var(--mat-sys-corner-small);
-
-  &:focus-visible {
-    outline: 3px solid var(--mat-sys-primary);
-  }
 }
 
-@container (width < 23.5rem) {
+@container (width < 25rem) {
   .mat-column-date {
     display: none;
   }

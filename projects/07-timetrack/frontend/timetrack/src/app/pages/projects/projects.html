@@ -77,7 +77,7 @@
                 aria-label="Edit project"
                 matTooltip="Edit"
                 disabledInteractive
-                [disabled]="busyProjectId() === project.id"
+                [disabled]="busyIds().has(project.id)"
                 (click)="openEdit(project)"
               >
                 <mat-icon>edit</mat-icon>
@@ -88,7 +88,7 @@
                 [attr.aria-label]="project.active ? 'Deactivate project' : 'Reactivate project'"
                 [matTooltip]="project.active ? 'Deactivate' : 'Reactivate'"
                 disabledInteractive
-                [disabled]="busyProjectId() === project.id"
+                [disabled]="busyIds().has(project.id)"
                 (click)="toggleActive(project)"
               >
                 <mat-icon>{{ project.active ? 'delete' : 'restore' }}</mat-icon>

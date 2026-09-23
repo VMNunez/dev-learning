@@ -28,13 +28,14 @@ import { Sort } from '@angular/material/sort';
 import { catchError, EMPTY, filter, forkJoin, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/services/auth-service';
 import { EntryService } from '../../core/services/entry-service';
+import { withBusyId, withoutBusyId } from '../../shared/busy-ids';
 import { ProjectService } from '../../core/services/project-service';
 import {
   ConfirmDialog,
   ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog';
 import { recentMonths, toIsoMonth } from '../../shared/dates';
-import { refocusAfterRender } from '../../shared/focus';
+import { activeElement, refocusAfterRender, refocusAfterWrite } from '../../shared/focus';
 import { apiErrorMessage } from '../../shared/models/api-error';
 import { Page } from '../../shared/models/page';
 import { Project } from '../../shared/models/project';
@@ -109,7 +110,7 @@ export class Entries {
   protected readonly pageSize = signal(10);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyEntryId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
   private readonly sort = signal(DEFAULT_SORT);
 
   protected readonly filters = new FormGroup({
@@ -146,6 +147,7 @@ export class Entries {
         this.projects.set(projects);
         this.entries.set(page.content);
         this.totalElements.set(page.page.totalElements);
+        if (this.clampPageIndex()) return;
         this.loading.set(false);
         this.restoreFocus();
       });
@@ -165,6 +167,24 @@ export class Entries {
   retry(): void {
     this.reload();
     refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
+  }
+
+  /**
+   * A write can shrink the collection under a page index this page is still asking for, and the
+   * server answers that with a valid, empty page rather than an error. Re-ask for the last page
+   * the reported total implies, and never fewer than one page back: a count and a slice read in
+   * separate statements can disagree under a concurrent write, so a total that still claims this
+   * page exists must not send us to ask for it again. The index therefore always decreases, and
+   * page 0 is the floor the guard above stops at.
+   */
+  private clampPageIndex(): boolean {
+    const total = this.totalElements();
+    if (this.entries().length > 0 || total === 0 || this.pageIndex() === 0) return false;
+
+    const lastPage = Math.ceil(total / this.pageSize()) - 1;
+    this.pageIndex.set(Math.min(lastPage, this.pageIndex() - 1));
+    this.reload();
+    return true;
   }
 
   onPage(event: PageEvent): void {
@@ -188,12 +208,12 @@ export class Entries {
   }
 
   openEdit(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
     this.openDialog(entry);
   }
 
   confirmDelete(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     this.dialog
       .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
@@ -210,19 +230,17 @@ export class Entries {
         filter((confirmed) => confirmed === true),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() =>
-        this.runAction(entry, this.entryService.deleteEntry(entry.id), 'Entry deleted'),
-      );
+      .subscribe(() => this.run(entry, this.entryService.deleteEntry(entry.id), 'Entry deleted'));
   }
 
   submit(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
-    this.runAction(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
+    if (this.busyIds().has(entry.id)) return;
+    this.run(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
   }
 
   reopen(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
-    this.runAction(entry, this.entryService.reopenEntry(entry.id), 'Entry re-opened as a draft');
+    if (this.busyIds().has(entry.id)) return;
+    this.run(entry, this.entryService.reopenEntry(entry.id), 'Entry re-opened as a draft');
   }
 
   private fetch(): Observable<{ projects: Project[]; page: Page<TimeEntry> }> {
@@ -244,6 +262,7 @@ export class Entries {
         this.error.set(apiErrorMessage(err, fallback));
         this.loading.set(false);
         this.refocusAfterReload = null;
+        refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
         return EMPTY;
       }),
     );
@@ -264,7 +283,7 @@ export class Entries {
       return;
     }
 
-    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const opener = activeElement();
 
     this.dialog
       .open<EntryDialog, EntryDialogData, boolean>(EntryDialog, {
@@ -291,23 +310,19 @@ export class Entries {
     refocusAfterRender(this.injector, [target, this.logHoursButton()?.nativeElement]);
   }
 
-  private runAction(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
-    const pressed = document.activeElement;
-    this.busyEntryId.set(entry.id);
+  private run(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
+    const pressed = activeElement();
+    this.busyIds.update((ids) => withBusyId(ids, entry.id));
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.busyEntryId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
-        const focusLeftNowhere =
-          document.activeElement === pressed || document.activeElement === document.body;
-        if (focusLeftNowhere) {
-          this.logHoursButton()?.nativeElement.focus();
-        }
+        refocusAfterWrite(pressed, this.logHoursButton()?.nativeElement);
         this.reload();
       },
       error: (err: unknown) => {
-        this.busyEntryId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
         this.snackBar.open(apiErrorMessage(err, 'The action failed. Try again.'), 'Close', {
           duration: 6000,
         });

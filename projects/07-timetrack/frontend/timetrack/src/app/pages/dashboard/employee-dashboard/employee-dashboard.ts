@@ -86,6 +86,7 @@ export class EmployeeDashboard {
             catchError((err: unknown) => {
               this.error.set(apiErrorMessage(err, 'Could not load your dashboard.'));
               this.loading.set(false);
+              refocusAfterRender(this.injector, [this.pageHeading().nativeElement]);
               return EMPTY;
             }),
           ),

@@ -25,6 +25,7 @@ import { ProjectService } from '../../../core/services/project-service';
 import { confirmDiscard } from '../../../shared/components/confirm-dialog/confirm-discard';
 import { apiErrorMessage, placeFieldErrors } from '../../../shared/models/api-error';
 import { refocusAfterFailedSave } from '../../../shared/focus';
+import { notBlank } from '../../../shared/validators';
 import { CreateProjectRequest, Project } from '../../../shared/models/project';
 
 export interface ProjectDialogData {
@@ -63,7 +64,7 @@ export class ProjectDialog {
   protected readonly form = new FormGroup({
     name: new FormControl(this.project?.name ?? '', {
       nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(255)],
+      validators: [Validators.required, notBlank, Validators.maxLength(255)],
     }),
     description: new FormControl(this.project?.description ?? '', {
       nonNullable: true,

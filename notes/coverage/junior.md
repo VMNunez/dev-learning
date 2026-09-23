@@ -74,6 +74,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `computed()` vs `effect()` — choose a returned derived value for UI state and an effect only for synchronisation with an external system ✅ 04-meal-finder
 - `effect()` cleanup function — register cleanup inside an effect so work started by the previous run is cancelled before it re-executes or the injection context is destroyed ✅ 04-meal-finder — the detail-page effect unsubscribes the in-flight `getMealById` through `onCleanup` before reloading for a new route id
 - Signal reference vs snapshot — preserve a live signal reference when reactivity is required; storing `service.value()` once creates a stale snapshot ✅ 01-todo-list
+- Derived state outlives the data it describes — once a value survives a reload instead of being cleared, every predicate over it keeps answering about the **previous** load while the next one runs, so a test such as "the result is empty" has to say which load it describes or it will suppress the very state announcing that one is in flight ✅ 07-timetrack — `Reports.isEmpty()` reads `loading()` beside the rows, so the previous month's empty result stops hiding the spinner
 - Immutable updates with signals — replace object or array references so state changes remain predictable across signals and `OnPush` views ✅ 01-todo-list
 - `signal()` vs `computed()` — keep writable source state in a signal and expose read-only derivations through a computed signal ✅ 01-todo-list
 - `asReadonly()` — expose a service's writable signal as a read-only handle so consumers stay reactive while the service's own methods remain the only writers ✅ 04-meal-finder — `FavouriteService` keeps the writable signal private and exposes `favourites` through `asReadonly()`, so `addFavourite`/`deleteFavourite` are the only writers the three pages can reach
@@ -87,6 +88,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Cold HTTP Observables — recognise that each subscription to an `HttpClient` Observable sends a request, so accidental duplicate subscriptions can duplicate network calls
 - Cancelling an in-flight `HttpClient` request — unsubscribing aborts the browser request but never undoes a write the server already received, so a teardown or `switchMap()` that cancels a mutation leaves its outcome unknown to the client rather than reversed ✅ 07-timetrack — `ChangePasswordDialog` refuses Escape in its `keydownEvents()` filter and disables Cancel while its `PATCH /api/users/me/password` is in flight, because `takeUntilDestroyed` would abort it
 - Remote UI states — represent loading, empty, error, and success explicitly so a page does not treat a successful response as its only possible state ✅ 02-weather-app
+- A refetch is not a first load — a page that already holds rows keeps them on screen and dims them while the replacements arrive, because removing them says the content is gone rather than that it is being replaced; only a first load, which has nothing to keep, may render the spinner in the content's place ✅ 07-timetrack — the month filter on `/reports` keeps both hours tables rendered and dims them under a translucent overlay while the new month loads
 
 ### RxJS streams and pipelines
 
@@ -103,6 +105,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Nested subscriptions vs flattening operators — compose dependent asynchronous work in one pipeline so cancellation, errors, and cleanup remain visible
 - `catchError()` — recover, translate, or rethrow an error without silently converting every failure into successful empty data ✅ 04-meal-finder — `MealService.handleFailure` logs once and rethrows a domain `Error`, so a network failure never arrives at a page as an empty result list
 - `catchError()` placement around flattening operators — recover inside an inner request when the outer interaction stream must remain alive and catch outside only when terminating the whole pipeline is intended ✅ 07-timetrack — `PendingApprovals` catches a failed count read inside `switchMap`, so its `requests$` stream survives and the next refresh reads the count again
+- Recovering with `EMPTY` vs a fallback value — a `catchError()` that returns `EMPTY` completes the stream without emitting, so the subscriber's `next` never runs and anything it would have restored is skipped on the failure path; emitting a fallback keeps one code path for both outcomes, and state that must hold either way belongs in `finalize()` or in both branches explicitly ✅ 07-timetrack — all seven list pages refocus the page `<h1>` from inside `catchError`, since the `subscribe` that restores focus never runs after `EMPTY`
 - `finalize()` — clear loading or other lifecycle state when a stream completes or errors without duplicating cleanup across success and failure callbacks
 - `async` pipe vs manual subscription — prefer template-managed subscription for displayed streams and subscribe imperatively only when a side effect requires it
 - Subscription cleanup — use the `async` pipe or `takeUntilDestroyed()` for long-lived streams; do not overstate the leak risk of finite `HttpClient` Observables that complete ✅ 02-weather-app
@@ -159,6 +162,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states ✅ 03-expense-tracker
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
+- What `required` actually tests — it reports an error only when the value is null or its length is zero, so a
+  control holding whitespace alone satisfies it, and a server rule that trims before measuring refuses the same
+  value the form accepted ✅ 07-timetrack — `notBlank` in `shared/validators.ts` sits beside `Validators.required` on the five controls whose server field is `@NotBlank`
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule ✅ 07-timetrack — `passwordsMatch` returns `{ passwordMismatch: true }` or `null` for the change-password dialog
 - Cross-field validators — attach the rule to the `FormGroup` rather than to a control, because a validator only ever receives the control it is declared on, and recognise that the resulting error lands in the group's own `errors` rather than on either of the compared fields ✅ 07-timetrack — the change-password dialog hangs `passwordsMatch` on the `FormGroup` and reads it with `form.hasError('passwordMismatch')`
 - `setErrors()` for rules a validator cannot express — attach a keyed error to a control from code when the check needs data a validator function cannot reach, such as a uniqueness lookup, recognising that the next validator run clears it again ✅ 06-hr-portal
@@ -171,7 +177,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - Client vs server validation — use form validation for immediate feedback while treating backend validation as authoritative and mapping field errors back to the relevant controls ✅ 07-timetrack — `placeFieldErrors` copies each `fieldErrors` entry a form lists onto its control with `setErrors({ server })`, every form dialog renders it in that field's `mat-error`, and a failure no listed field matched falls back to one form-level alert
 - `FormArray` vs `FormGroup` — model a dynamic indexed collection separately from a fixed set of named controls
 - Built-in pipes — apply Angular's standard display transformations such as `DecimalPipe`, `DatePipe`, and `SlicePipe` in the template instead of duplicating formatting logic in the component class ✅ 02-weather-app
-- `DatePipe` and a date-only value — a `YYYY-MM-DD` string is read as local midnight, so passing a different time zone such as `'UTC'` moves the instant across midnight and the pipe prints the neighbouring day for every user on the far side of UTC; a calendar date is formatted in the zone it was read in ✅ 07-timetrack — the entries table and the dashboard's recent list format `entry.date` with no zone argument, so the `2026-09-19` the dialog saved reads 19 Sept in Spain
+- `DatePipe` and a date-only value — a `YYYY-MM-DD` string is read as local midnight, so passing a different time zone such as `'UTC'` moves the instant across midnight and the pipe prints the neighbouring day for every user on the far side of UTC; a calendar date is formatted in the zone it was read in ✅ 07-timetrack — the entries table and the dashboard's recent list format `entry.date` with no zone argument, so the `2026-09-19` the dialog saved reads 19 Sept 2026 in Spain
 - Application locale — `DatePipe` and the other formatting pipes read `LOCALE_ID`, which defaults to `en-US`; another locale needs its data registered with `registerLocaleData` and `LOCALE_ID` provided at bootstrap, while an explicit format pattern fixes its own order whatever the locale would choose ✅ 07-timetrack — `app.config.ts` registers `en-GB` and provides it as `LOCALE_ID`, and the entry tables' `'d MMM y'` pattern prints `19 Sept 2026`
 - Custom pipes — extract a reusable pure display transformation behind a pipe without hiding business logic or expensive impure work in it
 - Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
@@ -241,7 +247,7 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - A palette generated from one seed colour — a Material 3 theme derives a whole tonal ramp from a single brand colour, so the rendered primary is a tone of that ramp rather than the seed itself, and forcing the seed back with CSS discards the contrast relationships the ramp guarantees ✅ 07-timetrack — `_theme-colors.scss` is generated from `#00695C` and the rendered `--mat-sys-primary` is its tone 40, `#046b5e`
 - System token overrides — change a theme value through the theme's own override map rather than restyling components, so one declaration moves every place that token is read and a misspelled token fails the build instead of being silently ignored ✅ 07-timetrack — `material-theme.scss` flattens the four `corner-*` tokens to 4px through `$overrides`, with no component CSS
 - Density as a single inherited scale — density is one negative step on a 0 to -5 scale declared with the theme and inherited by every component, not padding tuned per table or per form field ✅ 07-timetrack — `density: -2` is declared once in `mat.theme()` and no component stylesheet re-tunes a Material component's own padding
-- Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases ✅ 07-timetrack — shape and density are changed through `mat.theme()` tokens and no rule targets a `.mat-mdc-*` class
+- Supported theming vs internal selectors — prefer theme tokens, mixins, and public host classes because internal DOM and CSS classes are private and may change between releases ✅ 07-timetrack — shape and density are changed through `mat.theme()` tokens, and the table's sticky-column divider is drawn on the generated `.mat-column-actions` class rather than the CDK's internal sticky-border element class
 - A component's own styles arrive after the global stylesheet — a Material component adds its stylesheet to the document when it first renders, so a global rule of equal specificity that restyles its public class loses the tie on source order; the override names the component's class as well, or goes through its token, rather than reaching for `!important` ✅ 07-timetrack — `.mat-icon.empty-illustration` sizes the first-use icon's box to 4rem, where one class lost to `MatIcon`'s 24px `width`/`height` and clipped the glyph
 - System colour roles over ad-hoc custom properties — express a role the theme already defines (surface, outline, secondary text) with its `--mat-sys-*` token so one theme change moves every use of that role at once ✅ 05-task-manager — every secondary-text rule (`.filter-text`, `.stat-label`, the table's meta cells) reads `--mat-sys-on-surface-variant`, and `styles.css` keeps custom properties only for roles Material has no token for
 - Page layout vs component theming — use application CSS for layout, spacing, and responsive composition while using Material APIs for component internals ✅ 05-task-manager
@@ -810,6 +816,10 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
   data actually is, or add the filter, but never leave the two disagreeing ✅ 07-timetrack
+- A rule stated on both sides of a network boundary must measure the same thing — client-side validation exists
+  for immediate feedback rather than authority, so when it applies a looser test than the server's the form
+  accepts a value the request is about to be refused for, and the user pays a round trip to learn what the
+  client already held enough information to say ✅ 07-timetrack — the reject note, both names, the entry description and `newPassword` refuse whitespace client-side exactly as `@NotBlank` does
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
@@ -905,12 +915,22 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   value is normalised and checked before it crosses the boundary, so the parent and every later
   listener receive a value already fit to use; deferring that check to the consumer makes each new
   listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
+- A rendered value must not imply a scope the query never applied — omitting the year from a date, the
+  currency from an amount or the unit from a measure reads as a claim that the surrounding view fixes
+  it, so a list the server never bounded shows values the reader cannot place; the format is chosen
+  from the range the query can return, never from what the screen is called ✅ 07-timetrack — the dashboard's recent list asks `GET /api/entries` with no month and prints `d MMM y`, the same format as `/entries`
 - A rule enforced inside a control's event handler is only as strong as the number of paths that reach
   that control — a multi-step form whose navigation offers a second route to the same save leaves the
   rule unchecked, so the guard belongs at the single exit where the data leaves the boundary and the
   handler keeps only the earlier feedback ✅ 06-hr-portal — `EmployeeDialog.hasDuplicateEmail()` runs from
   both `onNext` and `onSubmit`, because the linear stepper's step-2 header reaches the save without the
   Next button
+- Per-item state does not fit in a single slot — a flag answering "is *this* item busy" held as one
+  value is overwritten the moment a second item enters the same condition, silently releasing the first
+  while its own operation is still running and re-enabling the control that flag was protecting; state
+  takes the shape of the question it answers, so a condition several items can be in at once is a set,
+  never a scalar ✅ 07-timetrack — the five list pages hold their in-flight row ids in a `ReadonlySet`,
+  so a write started on one row leaves every other row's guard standing until its own request returns
 - Page coordinator pattern — a page coordinates feature state and delegates focused presentation work to
   children, while shared or independently reusable state may belong in a service rather than in the page ✅ 02-weather-app
 - When a coordinator grows too large — the signal to extract a service or split the feature into sub-pages; Single Responsibility applied at the component level ✅ 06-hr-portal — the 139-line `dashboard-page` template split into `stat-card`, `dashboard-panel` and `panel-item`, leaving the page holding only its `computed()` state
@@ -957,8 +977,15 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - Dead code — state, members and generated scaffolding no caller or template reads are deleted rather than
   kept "just in case"; they cost nothing at runtime and mislead every later reader about what the unit
   is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
+- A branch excluded by configuration is not dead code — the test is the declared type of the input, not
+  the settings that happen to narrow it today; a case the type still admits stays handled, and the branch
+  is retired by narrowing the type at its producer rather than by deleting the handling at its consumer
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
+- Similar code that runs at different moments — two fragments applying the same test are still two
+  rules when one is measured synchronously and the other after a later tick or render; the moment is
+  not visible in the predicate, so folding them into one helper deletes the behaviour of whichever
+  moment does not survive ✅ 07-timetrack — `shared/focus.ts` keeps `refocusAfterWrite()` and `refocusAfterRender()` as two exported rules over the same predicate, one measured when the write resolves and one from `afterNextRender`, because routing the first through the second would test focus before the refetch removed the control
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
@@ -1352,7 +1379,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 - Control-flow analysis across reachability and assignments — trace how branches, early returns, assignments, and merged paths narrow or widen a variable at each program point ✅ 04-meal-finder — the detail page reads `mealId()` into a local and returns early on `!id`, so `string | null` is `string` for the rest of the effect without an `as string`
 - `typeof` narrowing — narrow primitive unions while remembering the JavaScript edge case `typeof null === "object"` ✅ 07-timetrack — `isApiError` tests `value === null` explicitly, because `typeof null` would let a null body through
-- `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces ✅ 07-timetrack — `Entries.openDialog()` narrows `document.activeElement`, typed `Element`, with `instanceof HTMLElement` before keeping it as the control to refocus
+- `instanceof` narrowing — narrow values created by runtime constructors without using it for erased interfaces ✅ 07-timetrack — `activeElement()` in `shared/focus.ts` narrows `document.activeElement`, typed `Element`, with `instanceof HTMLElement` before returning it as the control to refocus
 - Array and object guards — combine `Array.isArray`, null checks, and object checks before iterating or reading an `unknown` boundary value ✅ 03-expense-tracker — `Array.isArray` rejects a well-formed `{"a":1}` before it reaches the `Transaction[]` signal
 - `in` narrowing — refine object unions by checking for a property that not every member declares
 - Equality narrowing — use equality with a literal or another typed value to refine compatible union members ✅ 03-expense-tracker — `type === ''` refines the select's control to `'income' | 'expense'` before the transaction is emitted
@@ -1688,7 +1715,7 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - A scrollable region must be reachable by keyboard — the arrow keys scroll a box only while focus is inside it, so a box that scrolls and holds nothing focusable is skipped by Tab and its hidden content is out of a keyboard user's reach; it takes `tabindex="0"` together with a role and an accessible name, since a focus stop that announces nothing tells a screen-reader user nothing about where they are ✅ 07-timetrack — the employee dashboard's recent-entries `.table-wrapper`, whose table holds no control, takes `tabindex="0"` with `role="group"` and `aria-labelledby` its heading
 - A visible focus indicator is required — a keyboard user has no other way to tell where they are, so an indicator removed for aesthetics is replaced rather than deleted; that it must exist and be perceivable is an accessibility obligation, while how it is drawn is a CSS decision ✅ 07-timetrack — `.page-title:focus-visible` in `_page.scss` draws the theme's teal ring at a `0.25rem` offset in place of the browser's default box, rather than removing it
 - Moving focus deliberately — opening a dialog, revealing a panel or navigating in a single-page application leaves focus where it was unless code moves it, so focus is sent to the new content and returned to the trigger when it closes
-- A deferred focus move asks where focus is now — code that moves focus when a request resolves was written for the user who is still where they were, and by then they may have tabbed elsewhere or opened a modal, whose focus trap the move would break by sending them to content the dialog has marked `aria-hidden`; the move is conditional on focus still being on the control the action started from, or already lost to the document body ✅ 07-timetrack — `/entries`' row actions send focus to the header's "Log hours" only when `document.activeElement` is still the button that started the write or has already fallen to the body, so a dialog the user opened while it was in flight keeps its focus trap
+- A deferred focus move asks where focus is now — code that moves focus when a request resolves was written for the user who is still where they were, and by then they may have tabbed elsewhere or opened a modal, whose focus trap the move would break by sending them to content the dialog has marked `aria-hidden`; the move is conditional on focus still being on the control the action started from, or already lost to the document body ✅ 07-timetrack — `/entries`' row actions hand `refocusAfterWrite()` the pressed control and the header's "Log hours", and it focuses that fallback only while `document.activeElement` is still the pressed control or has already fallen to the body, so a dialog the user opened while the write was in flight keeps its focus trap
 - Skip link to main content — a first focusable link that jumps past the navigation spares a keyboard user tabbing through the whole menu on every page, and it is the cheapest evidence that the page was actually used from the keyboard
 
 ### Reading and reviewing markup
@@ -1817,6 +1844,18 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 ### CSS variables
 - `--variable-name` and `var()` — define a value once and reuse it everywhere; Angular Material uses CSS variables for its theme colours; change one variable and the whole UI updates ✅ 01-todo-list
 - `:root` vs component scope — expose a custom property globally or restrict it to one element subtree according to who owns the design token ✅ 01-todo-list
+- A token is named by what it means, never by the value it holds — two roles that happen to share a
+  colour today keep a token each, so either can move without dragging the other with it; folding them
+  into one because the hex matches makes an accident of history into a constraint, and a role that has
+  no token of its own silently borrows a neighbouring one's meaning ✅ 07-timetrack — `--action-approve`
+  and `--action-reject` hold the same values as `--status-approved` and `--status-rejected`, and stay
+  separate tokens because a row action and an entry's status are free to move apart
+- A value mixed from another colour has to read its real backdrop — a tint composed against a literal
+  `white` matches only while the surface happens to render white, so it stops matching the moment the
+  theme's surface tone moves, and the drift is invisible because the value still resolves and still
+  looks plausible; compose against the token the surface itself reads ✅ 07-timetrack — the Projects
+  status pill mixes its 8% tint against `--mat-sys-surface`, which the theme renders `#f7faf8`, not the
+  `white` the rule had hard-coded
 - CSS variables participate in the runtime cascade — their values can change through selector state, media queries, inheritance, or an inline style without recompiling the stylesheet
 - `var()` with a fallback — `var(--primary, #e8572a)` uses the second argument when the variable is not defined; provides a safety net when customising Angular Material where some variables may not be set
 
@@ -1851,6 +1890,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
+- What an ancestor's clipping reaches — an `outline` is painted outside the element's border box, so an
+  ancestor with `overflow: hidden` removes it from view entirely while the element itself is still focused;
+  a focus ring on a clipped child has to be drawn by the box that does the clipping ✅ 07-timetrack — `_table.scss` rings `.table-area`, since its `overflow: hidden` erased the outline of the `.table-wrapper` that scrolls
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
 - Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` wraps a space-less project name inside its `12rem`-capped column with `break-word`, and a pasted URL inside the description with `anywhere`
@@ -2279,6 +2321,8 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 - API-call debugging workflow — inspect URL, method, status, headers, and body before blaming client or server framework code
 - Same-origin and CORS recognition — identify an origin from scheme, host, and port and distinguish a browser-enforced CORS or preflight failure from an HTTP response produced by application logic ✅ 07-timetrack
 - Collection query contract — define filtering, sorting, pagination inputs, stable ordering, and response metadata so clients can navigate a changing collection predictably ✅ 07-timetrack
+- A page index expires — it is a claim about a collection the server can shrink between one request and the next, and an index past the end comes back as a **valid, empty page** rather than an error, so a client that remembers it keeps asking for something that no longer exists and renders its empty state over a collection that still has rows ✅ 07-timetrack — `/approvals` and `/entries` re-ask for the last page that exists when a reload returns no rows against a non-zero total
+- A corrective retry has to terminate — a client that re-issues a request with a parameter it derived from the answer will repeat for ever whenever the answer keeps implying the same parameter, which two statements of one read can do under a concurrent write, so the correction moves strictly toward its floor instead of being re-derived from scratch each time ✅ 07-timetrack — `clampPageIndex()` takes `min(lastPage, pageIndex - 1)`, so a total still claiming the empty page cannot ask for it twice
 
 ### JSON and API contracts
 

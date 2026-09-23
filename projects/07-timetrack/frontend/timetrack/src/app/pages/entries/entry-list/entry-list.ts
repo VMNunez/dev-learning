@@ -28,7 +28,7 @@ export class EntryList {
   readonly entries = input.required<TimeEntry[]>();
   readonly showEmployee = input(false);
   readonly showActions = input(false);
-  readonly busyEntryId = input<number | null>(null);
+  readonly busyIds = input<ReadonlySet<number>>(new Set());
   readonly activeProjectIds = input<ReadonlySet<number> | null>(null);
 
   readonly edit = output<TimeEntry>();
