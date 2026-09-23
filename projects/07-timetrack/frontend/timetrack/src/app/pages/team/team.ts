@@ -121,9 +121,9 @@ export class Team implements HoldsOneTimeSecret {
 
   private readonly reload$ = new Subject<void>();
 
-  private passwordDialog: MatDialogRef<GeneratedPasswordDialog> | null = null;
+  private openPasswordDialogs = 0;
 
-  private resetInFlight = false;
+  private resetsInFlight = 0;
   private userDialog: MatDialogRef<UserDialog> | null = null;
 
   constructor() {
@@ -153,8 +153,8 @@ export class Team implements HoldsOneTimeSecret {
 
   holdsOneTimeSecret(): boolean {
     return (
-      this.passwordDialog !== null ||
-      this.resetInFlight ||
+      this.openPasswordDialogs > 0 ||
+      this.resetsInFlight > 0 ||
       (this.userDialog?.componentInstance?.holdsOneTimeSecret() ?? false)
     );
   }
@@ -275,7 +275,7 @@ export class Team implements HoldsOneTimeSecret {
         filter((confirmed) => confirmed === true),
         switchMap(() => {
           this.busyIds.update((ids) => withBusyId(ids, user.id));
-          this.resetInFlight = true;
+          this.resetsInFlight += 1;
           return this.userService.resetPassword(user.id);
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -283,7 +283,7 @@ export class Team implements HoldsOneTimeSecret {
       .subscribe({
         next: ({ generatedPassword }) => {
           this.busyIds.update((ids) => withoutBusyId(ids, user.id));
-          this.resetInFlight = false;
+          this.resetsInFlight -= 1;
           this.showPassword({
             name: user.name,
             email: user.email,
@@ -293,7 +293,7 @@ export class Team implements HoldsOneTimeSecret {
         },
         error: (err: unknown) => {
           this.busyIds.update((ids) => withoutBusyId(ids, user.id));
-          this.resetInFlight = false;
+          this.resetsInFlight -= 1;
           this.snackBar.open(apiErrorMessage(err, 'The reset failed. Try again.'), 'Close', {
             duration: 6000,
           });
@@ -302,14 +302,17 @@ export class Team implements HoldsOneTimeSecret {
   }
 
   private showPassword(data: GeneratedPasswordDialogData, restoreFocus?: HTMLElement): void {
-    this.passwordDialog = this.dialog.open<GeneratedPasswordDialog, GeneratedPasswordDialogData>(
-      GeneratedPasswordDialog,
-      { data, disableClose: true, closeOnNavigation: false, restoreFocus: restoreFocus ?? true },
-    );
-    this.passwordDialog
+    this.openPasswordDialogs += 1;
+    this.dialog
+      .open<GeneratedPasswordDialog, GeneratedPasswordDialogData>(GeneratedPasswordDialog, {
+        data,
+        disableClose: true,
+        closeOnNavigation: false,
+        restoreFocus: restoreFocus ?? true,
+      })
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => (this.passwordDialog = null));
+      .subscribe(() => (this.openPasswordDialogs -= 1));
   }
 
   private run(user: User, action$: Observable<unknown>, successMessage: string): void {
