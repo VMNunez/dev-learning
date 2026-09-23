@@ -157,6 +157,9 @@ Items are ordered by filtering risk and cover both modern Angular and the legacy
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states ✅ 03-expense-tracker
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
+- What `required` actually tests — it reports an error only when the value is null or its length is zero, so a
+  control holding whitespace alone satisfies it, and a server rule that trims before measuring refuses the same
+  value the form accepted ✅ 07-timetrack — `notBlank` in `shared/validators.ts` sits beside `Validators.required` on the five controls whose server field is `@NotBlank`
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule ✅ 07-timetrack — `passwordsMatch` returns `{ passwordMismatch: true }` or `null` for the change-password dialog
 - Cross-field validators — attach the rule to the `FormGroup` rather than to a control, because a validator only ever receives the control it is declared on, and recognise that the resulting error lands in the group's own `errors` rather than on either of the compared fields ✅ 07-timetrack — the change-password dialog hangs `passwordsMatch` on the `FormGroup` and reads it with `form.hasError('passwordMismatch')`
 - `setErrors()` for rules a validator cannot express — attach a keyed error to a control from code when the check needs data a validator function cannot reach, such as a uniqueness lookup, recognising that the next validator run clears it again ✅ 06-hr-portal

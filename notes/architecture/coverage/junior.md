@@ -26,6 +26,10 @@ apply in a small codebase, and defend with concrete trade-offs.
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
   data actually is, or add the filter, but never leave the two disagreeing ✅ 07-timetrack
+- A rule stated on both sides of a network boundary must measure the same thing — client-side validation exists
+  for immediate feedback rather than authority, so when it applies a looser test than the server's the form
+  accepts a value the request is about to be refused for, and the user pays a round trip to learn what the
+  client already held enough information to say ✅ 07-timetrack — the reject note, both names, the entry description and `newPassword` refuse whitespace client-side exactly as `@NotBlank` does
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack

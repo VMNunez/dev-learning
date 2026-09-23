@@ -154,6 +154,9 @@ Topics a junior must explain confidently to pass a technical screening at NTT Da
 
 ## Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
+- What an ancestor's clipping reaches — an `outline` is painted outside the element's border box, so an
+  ancestor with `overflow: hidden` removes it from view entirely while the element itself is still focused;
+  a focus ring on a clipped child has to be drawn by the box that does the clipping ✅ 07-timetrack — `_table.scss` rings `.table-area`, since its `overflow: hidden` erased the outline of the `.table-wrapper` that scrolls
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
 - Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` wraps a space-less project name inside its `12rem`-capped column with `break-word`, and a pasted URL inside the description with `anywhere`

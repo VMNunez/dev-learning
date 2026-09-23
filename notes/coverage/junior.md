@@ -162,6 +162,9 @@ Order follows study priority: Angular → Angular Material → Spring → Spring
 - `FormBuilder` — construct the same control model with less ceremony, recognising it as concise syntax over `FormControl` and `FormGroup` rather than a different forms model ✅ 06-hr-portal
 - Typed reactive forms — keep control nullability and value types aligned with the API model so casts do not hide invalid form states ✅ 03-expense-tracker
 - Built-in validators — combine rules such as `required`, `email`, `min`, and `maxLength` at the control boundary ✅ 03-expense-tracker
+- What `required` actually tests — it reports an error only when the value is null or its length is zero, so a
+  control holding whitespace alone satisfies it, and a server rule that trims before measuring refuses the same
+  value the form accepted ✅ 07-timetrack — `notBlank` in `shared/validators.ts` sits beside `Validators.required` on the five controls whose server field is `@NotBlank`
 - Custom validators — return `null` or a keyed error object from a pure validation function so templates can identify the failed rule ✅ 07-timetrack — `passwordsMatch` returns `{ passwordMismatch: true }` or `null` for the change-password dialog
 - Cross-field validators — attach the rule to the `FormGroup` rather than to a control, because a validator only ever receives the control it is declared on, and recognise that the resulting error lands in the group's own `errors` rather than on either of the compared fields ✅ 07-timetrack — the change-password dialog hangs `passwordsMatch` on the `FormGroup` and reads it with `form.hasError('passwordMismatch')`
 - `setErrors()` for rules a validator cannot express — attach a keyed error to a control from code when the check needs data a validator function cannot reach, such as a uniqueness lookup, recognising that the next validator run clears it again ✅ 06-hr-portal
@@ -813,6 +816,10 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
   narrower concept than what it actually returns (e.g. `by-employee` on a query that groups by user
   with no role filter) reads as correct until someone relies on the implied filter; rename to what the
   data actually is, or add the filter, but never leave the two disagreeing ✅ 07-timetrack
+- A rule stated on both sides of a network boundary must measure the same thing — client-side validation exists
+  for immediate feedback rather than authority, so when it applies a looser test than the server's the form
+  accepts a value the request is about to be refused for, and the user pays a round trip to learn what the
+  client already held enough information to say ✅ 07-timetrack — the reject note, both names, the entry description and `newPassword` refuse whitespace client-side exactly as `@NotBlank` does
 - Endpoints deriving totals from the same rows must apply identical filter criteria — when a headline
   summary and its detail tables are computed independently, a summary built on a looser filter than its
   breakdown produces a total that cannot equal the sum of the rows the client is shown ✅ 07-timetrack
@@ -1858,6 +1865,9 @@ Maven is ecosystem tooling rather than Java language syntax; this section owns g
 
 ### Overflow
 - `overflow: visible`, `hidden`, `scroll`, `auto` — `hidden` clips content; used to prevent images from breaking out of a `border-radius` card container; `scroll` always shows scrollbars; `auto` only shows them when content overflows ✅ 04-meal-finder
+- What an ancestor's clipping reaches — an `outline` is painted outside the element's border box, so an
+  ancestor with `overflow: hidden` removes it from view entirely while the element itself is still focused;
+  a focus ring on a clipped child has to be drawn by the box that does the clipping ✅ 07-timetrack — `_table.scss` rings `.table-area`, since its `overflow: hidden` erased the outline of the `.table-wrapper` that scrolls
 - `overflow-x` and `overflow-y` — control each axis independently; `overflow-x: hidden` prevents a horizontal scrollbar on mobile when an element slightly overflows the viewport ✅ 06-hr-portal
 - Scrollable container pattern — combine `overflow-y: auto` with a meaningful height constraint so overflowing content scrolls inside the component rather than extending the page ✅ 04-meal-finder
 - Long-word wrapping — use `overflow-wrap` to let long URLs, identifiers, or translations break before they force a component wider than its container ✅ 07-timetrack — `_table.scss` wraps a space-less project name inside its `12rem`-capped column with `break-word`, and a pasted URL inside the description with `anywhere`
