@@ -6,7 +6,7 @@
     {{ entry.hours | number: '1.0-2' }}h
   </p>
 
-  <form id="reject-form" class="dialog-form" [formGroup]="form" (ngSubmit)="reject()">
+  <form id="reject-form" class="dialog-form" [formGroup]="form" (ngSubmit)="save()">
     <p class="dialog-error" role="alert" tabindex="-1">{{ error() }}</p>
 
     <mat-form-field appearance="outline">

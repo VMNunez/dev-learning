@@ -96,7 +96,7 @@ export class RejectDialog {
       });
   }
 
-  reject(): void {
+  save(): void {
     this.error.set(null);
     this.form.markAllAsTouched();
 

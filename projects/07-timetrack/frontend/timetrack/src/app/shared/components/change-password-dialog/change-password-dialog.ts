@@ -131,7 +131,7 @@ export class ChangePasswordDialog {
       });
   }
 
-  onSubmit(): void {
+  save(): void {
     this.error.set(null);
     this.form.markAllAsTouched();
 
