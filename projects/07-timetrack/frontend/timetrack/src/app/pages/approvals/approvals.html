@@ -150,7 +150,7 @@
                 aria-label="Approve entry"
                 matTooltip="Approve"
                 disabledInteractive
-                [disabled]="busyEntryId() === entry.id"
+                [disabled]="busyIds().has(entry.id)"
                 (click)="approve(entry)"
               >
                 <mat-icon>check</mat-icon>
@@ -162,7 +162,7 @@
                 aria-label="Reject entry"
                 matTooltip="Reject"
                 disabledInteractive
-                [disabled]="busyEntryId() === entry.id"
+                [disabled]="busyIds().has(entry.id)"
                 (click)="openReject(entry)"
               >
                 <mat-icon>close</mat-icon>

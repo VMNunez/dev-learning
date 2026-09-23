@@ -22,6 +22,7 @@ import { RouterLink } from '@angular/router';
 import { catchError, EMPTY, forkJoin, map, Observable, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../../core/services/auth-service';
 import { EntryService } from '../../../core/services/entry-service';
+import { withBusyId, withoutBusyId } from '../../../shared/busy-ids';
 import { ProjectService } from '../../../core/services/project-service';
 import { ReportService } from '../../../core/services/report-service';
 import { UserService } from '../../../core/services/user-service';
@@ -85,7 +86,7 @@ export class ManagerDashboard {
   protected readonly data = signal<DashboardData | null>(null);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyEntryId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
 
   private readonly currentUserId = computed(() => this.authService.session()?.id ?? null);
   protected readonly isOwnEntry = (entry: TimeEntry) => entry.userId === this.currentUserId();
@@ -133,24 +134,24 @@ export class ManagerDashboard {
   }
 
   approve(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
-    this.busyEntryId.set(entry.id);
+    this.busyIds.update((ids) => withBusyId(ids, entry.id));
 
     this.entryService
       .approveEntry(entry.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
           refocusAfterWrite(pressed, this.pageHeading().nativeElement);
           this.reload();
           this.pendingApprovals.refresh();
         },
         error: (err: unknown) => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open(
             apiErrorMessage(err, 'Could not approve the entry. Try again.'),
             'Close',
@@ -161,7 +162,7 @@ export class ManagerDashboard {
   }
 
   openReject(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
 

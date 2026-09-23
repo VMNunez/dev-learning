@@ -23,6 +23,7 @@ import { catchError, EMPTY, filter, Observable, Subject, switchMap, tap } from '
 import { HoldsOneTimeSecret } from '../../core/guards/one-time-secret-guard';
 import { AuthService } from '../../core/services/auth-service';
 import { UserService } from '../../core/services/user-service';
+import { withBusyId, withoutBusyId } from '../../shared/busy-ids';
 import {
   ConfirmDialog,
   ConfirmDialogData,
@@ -77,7 +78,7 @@ export class Team implements HoldsOneTimeSecret {
   protected readonly users = signal<User[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyUserId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
 
   private readonly currentUserId = computed(() => this.authService.session()?.id ?? null);
   protected readonly isSelf = (user: User) => user.id === this.currentUserId();
@@ -172,12 +173,12 @@ export class Team implements HoldsOneTimeSecret {
   }
 
   openEdit(user: User): void {
-    if (this.busyUserId() === user.id) return;
+    if (this.busyIds().has(user.id)) return;
     this.openDialog(user);
   }
 
   toggleActive(user: User): void {
-    if (this.busyUserId() === user.id || this.isSelf(user)) return;
+    if (this.busyIds().has(user.id) || this.isSelf(user)) return;
 
     if (!user.active) {
       this.run(
@@ -258,7 +259,7 @@ export class Team implements HoldsOneTimeSecret {
   }
 
   resetPassword(user: User): void {
-    if (this.busyUserId() === user.id || this.isSelf(user)) return;
+    if (this.busyIds().has(user.id) || this.isSelf(user)) return;
 
     this.dialog
       .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
@@ -273,7 +274,7 @@ export class Team implements HoldsOneTimeSecret {
       .pipe(
         filter((confirmed) => confirmed === true),
         switchMap(() => {
-          this.busyUserId.set(user.id);
+          this.busyIds.update((ids) => withBusyId(ids, user.id));
           this.resetInFlight = true;
           return this.userService.resetPassword(user.id);
         }),
@@ -281,7 +282,7 @@ export class Team implements HoldsOneTimeSecret {
       )
       .subscribe({
         next: ({ generatedPassword }) => {
-          this.busyUserId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, user.id));
           this.resetInFlight = false;
           this.showPassword({
             name: user.name,
@@ -291,7 +292,7 @@ export class Team implements HoldsOneTimeSecret {
           });
         },
         error: (err: unknown) => {
-          this.busyUserId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, user.id));
           this.resetInFlight = false;
           this.snackBar.open(apiErrorMessage(err, 'The reset failed. Try again.'), 'Close', {
             duration: 6000,
@@ -313,17 +314,17 @@ export class Team implements HoldsOneTimeSecret {
 
   private run(user: User, action$: Observable<unknown>, successMessage: string): void {
     const pressed = activeElement();
-    this.busyUserId.set(user.id);
+    this.busyIds.update((ids) => withBusyId(ids, user.id));
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.busyUserId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, user.id));
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
         this.refocusAfterReload = pressed;
         this.reload();
       },
       error: (err: unknown) => {
-        this.busyUserId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, user.id));
         this.snackBar.open(apiErrorMessage(err, 'The action failed. Try again.'), 'Close', {
           duration: 6000,
         });

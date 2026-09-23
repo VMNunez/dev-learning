@@ -60,7 +60,7 @@
               aria-label="Edit entry"
               matTooltip="Edit"
               disabledInteractive
-              [disabled]="busyEntryId() === entry.id"
+              [disabled]="busyIds().has(entry.id)"
               (click)="edit.emit(entry)"
             >
               <mat-icon>edit</mat-icon>
@@ -71,7 +71,7 @@
               aria-label="Delete entry"
               matTooltip="Delete"
               disabledInteractive
-              [disabled]="busyEntryId() === entry.id"
+              [disabled]="busyIds().has(entry.id)"
               (click)="remove.emit(entry)"
             >
               <mat-icon>delete</mat-icon>
@@ -83,7 +83,7 @@
                 aria-label="Submit entry for review"
                 matTooltip="Submit for review"
                 disabledInteractive
-                [disabled]="busyEntryId() === entry.id"
+                [disabled]="busyIds().has(entry.id)"
                 (click)="submitForReview.emit(entry)"
               >
                 <mat-icon>send</mat-icon>
@@ -97,7 +97,7 @@
               matButton
               type="button"
               disabledInteractive
-              [disabled]="busyEntryId() === entry.id"
+              [disabled]="busyIds().has(entry.id)"
               (click)="reopen.emit(entry)"
             >
               Re-open

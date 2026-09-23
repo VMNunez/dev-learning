@@ -31,6 +31,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { catchError, EMPTY, forkJoin, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/services/auth-service';
 import { EntryService } from '../../core/services/entry-service';
+import { withBusyId, withoutBusyId } from '../../shared/busy-ids';
 import { ProjectService } from '../../core/services/project-service';
 import { UserService } from '../../core/services/user-service';
 import { PendingApprovals } from '../../core/state/pending-approvals';
@@ -117,7 +118,7 @@ export class Approvals {
   protected readonly pageSize = signal(10);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyEntryId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
   private readonly sort = signal(DEFAULT_SORT);
 
   protected readonly filters = new FormGroup({
@@ -230,24 +231,24 @@ export class Approvals {
   }
 
   approve(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
-    this.busyEntryId.set(entry.id);
+    this.busyIds.update((ids) => withBusyId(ids, entry.id));
 
     this.entryService
       .approveEntry(entry.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open('Entry approved', 'Close', { duration: 4000 });
           refocusAfterWrite(pressed, this.pageHeading().nativeElement);
           this.reload();
           this.pendingApprovals.refresh();
         },
         error: (err: unknown) => {
-          this.busyEntryId.set(null);
+          this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
           this.snackBar.open(
             apiErrorMessage(err, 'Could not approve the entry. Try again.'),
             'Close',
@@ -258,7 +259,7 @@ export class Approvals {
   }
 
   openReject(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     const pressed = activeElement();
 

@@ -82,7 +82,7 @@
                 aria-label="Edit member"
                 matTooltip="Edit"
                 disabledInteractive
-                [disabled]="busyUserId() === user.id"
+                [disabled]="busyIds().has(user.id)"
                 (click)="openEdit(user)"
               >
                 <mat-icon>edit</mat-icon>
@@ -95,7 +95,7 @@
                   isSelf(user) ? 'Use Change password in your account menu' : 'Reset password'
                 "
                 disabledInteractive
-                [disabled]="busyUserId() === user.id || isSelf(user)"
+                [disabled]="busyIds().has(user.id) || isSelf(user)"
                 (click)="resetPassword(user)"
               >
                 <mat-icon>key</mat-icon>
@@ -112,7 +112,7 @@
                       : 'Reactivate'
                 "
                 disabledInteractive
-                [disabled]="busyUserId() === user.id || isSelf(user)"
+                [disabled]="busyIds().has(user.id) || isSelf(user)"
                 (click)="toggleActive(user)"
               >
                 <mat-icon>{{ user.active ? 'delete' : 'restore' }}</mat-icon>

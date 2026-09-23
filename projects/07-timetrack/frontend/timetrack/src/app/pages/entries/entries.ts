@@ -28,6 +28,7 @@ import { Sort } from '@angular/material/sort';
 import { catchError, EMPTY, filter, forkJoin, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../core/services/auth-service';
 import { EntryService } from '../../core/services/entry-service';
+import { withBusyId, withoutBusyId } from '../../shared/busy-ids';
 import { ProjectService } from '../../core/services/project-service';
 import {
   ConfirmDialog,
@@ -109,7 +110,7 @@ export class Entries {
   protected readonly pageSize = signal(10);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
-  protected readonly busyEntryId = signal<number | null>(null);
+  protected readonly busyIds = signal<ReadonlySet<number>>(new Set());
   private readonly sort = signal(DEFAULT_SORT);
 
   protected readonly filters = new FormGroup({
@@ -207,12 +208,12 @@ export class Entries {
   }
 
   openEdit(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
     this.openDialog(entry);
   }
 
   confirmDelete(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
 
     this.dialog
       .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
@@ -233,12 +234,12 @@ export class Entries {
   }
 
   submit(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
     this.run(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
   }
 
   reopen(entry: TimeEntry): void {
-    if (this.busyEntryId() === entry.id) return;
+    if (this.busyIds().has(entry.id)) return;
     this.run(entry, this.entryService.reopenEntry(entry.id), 'Entry re-opened as a draft');
   }
 
@@ -311,17 +312,17 @@ export class Entries {
 
   private run(entry: TimeEntry, action$: Observable<unknown>, successMessage: string): void {
     const pressed = activeElement();
-    this.busyEntryId.set(entry.id);
+    this.busyIds.update((ids) => withBusyId(ids, entry.id));
 
     action$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.busyEntryId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
         this.snackBar.open(successMessage, 'Close', { duration: 4000 });
         refocusAfterWrite(pressed, this.logHoursButton()?.nativeElement);
         this.reload();
       },
       error: (err: unknown) => {
-        this.busyEntryId.set(null);
+        this.busyIds.update((ids) => withoutBusyId(ids, entry.id));
         this.snackBar.open(apiErrorMessage(err, 'The action failed. Try again.'), 'Close', {
           duration: 6000,
         });
