@@ -106,8 +106,8 @@
     margin-block-start: 0.5rem;
   }
 
-  .mat-mdc-cell:has(> .rejection-note),
-  .mat-mdc-cell:has(> .mat-mdc-icon-button ~ .action-note) {
+  td:has(> .rejection-note),
+  td:has(> button ~ .action-note) {
     padding-block: 0.5rem;
   }
 
