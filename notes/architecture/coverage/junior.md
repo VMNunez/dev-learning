@@ -183,6 +183,10 @@ apply in a small codebase, and defend with concrete trade-offs.
   is responsible for ✅ 05-task-manager — the root `App` declares no members at all: the CLI's `title` signal and the `should render title` spec asserting on an `<h1>` went out with the scaffold template
 - DRY and duplicated knowledge — remove repeated business rules that can diverge, without forcing
   superficially similar code with different reasons to change into one abstraction ✅ 05-task-manager
+- Similar code that runs at different moments — two fragments applying the same test are still two
+  rules when one is measured synchronously and the other after a later tick or render; the moment is
+  not visible in the predicate, so folding them into one helper deletes the behaviour of whichever
+  moment does not survive ✅ 07-timetrack — `shared/focus.ts` keeps `refocusAfterWrite()` and `refocusAfterRender()` as two exported rules over the same predicate, one measured when the write resolves and one from `afterNextRender`, because routing the first through the second would test focus before the refetch removed the control
 - Extract Method — move a coherent block behind a well-named method when that clarifies intent or
   centralises one repeated rule, not merely to reduce line count ✅ 02-weather-app
 - Technical debt — a deliberate shortcut has a known cost and follow-up condition; accidental
