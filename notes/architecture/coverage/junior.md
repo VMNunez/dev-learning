@@ -121,6 +121,10 @@ apply in a small codebase, and defend with concrete trade-offs.
   value is normalised and checked before it crosses the boundary, so the parent and every later
   listener receive a value already fit to use; deferring that check to the consumer makes each new
   listener repeat it, and a template expression cannot hold the guard at all ✅ 02-weather-app — `WeatherForm.submit` trims and rejects a blank city before `cityToSearch.emit`, so `WeatherPage` never receives raw input
+- A rendered value must not imply a scope the query never applied — omitting the year from a date, the
+  currency from an amount or the unit from a measure reads as a claim that the surrounding view fixes
+  it, so a list the server never bounded shows values the reader cannot place; the format is chosen
+  from the range the query can return, never from what the screen is called ✅ 07-timetrack — the dashboard's recent list asks `GET /api/entries` with no month and prints `d MMM y`, the same format as `/entries`
 - A rule enforced inside a control's event handler is only as strong as the number of paths that reach
   that control — a multi-step form whose navigation offers a second route to the same save leaves the
   rule unchecked, so the guard belongs at the single exit where the data leaves the boundary and the
