@@ -65,7 +65,7 @@
   }
 
   @container scroll-state(scrollable: inline-end) {
-    .mat-mdc-table-sticky-border-elem-right {
+    .mat-column-actions {
       border-inline-start: 1px solid var(--mat-sys-outline-variant);
     }
   }
