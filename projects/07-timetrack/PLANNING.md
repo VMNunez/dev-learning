@@ -583,10 +583,22 @@ No other row must exist at startup: `Role` and `EntryStatus` are Java enums stor
 is no lookup table to seed.
 
 **The hosted database (Step 12) is seeded by hand.** `DataInitializer` never runs there — the deployed
-instance does not activate `dev` — so the first manager is inserted once with a BCrypt hash generated
-locally and never committed. That account is a public demo login rather than a secret: its email and
-password are written in the global README, which Step 12's done condition logs in with, and not in any
-file the build reads.
+instance does not activate `dev` — so no row is created by the build. **Built differently (2026-09-24):**
+rather than a lone manager, the hosted database carries a copy of the local demo dataset (5 users, 4
+projects, 80 entries), loaded from a data-only `pg_dump` (column `INSERT`s plus the three `setval`s, so
+the first write the app makes does not collide with a copied id). No local password survived the copy:
+the manager's hash was replaced in place with `crypt(…, gen_salt('bf', 10))` from `pgcrypto` — a
+`$2a$10$` hash `BCryptPasswordEncoder` accepts, the extension dropped straight after — and each employee
+was reset through `POST /api/users/{id}/password-reset`. The manager (`manager@timetrack.com`) is a
+public demo login rather than a secret: its password is written in the global README, which Step 12's
+done condition logs in with, and not in any file the build reads.
+
+**Restoring the demo (§20: the public app is writable).** A second data-only dump, taken from the hosted
+database after those resets, lives **outside every repository** in `dev/demo-data/07-timetrack/` — it
+holds real hashes, so it is never committed. Restoring is two runs in the Query Tool connected to the
+**hosted** server as `timetrack_app`: `TRUNCATE time_entries, projects, users;`, then the file. The
+`TRUNCATE` is deliberately kept out of the file, so the file opened against the local database by
+mistake fails on duplicate keys instead of emptying it.
 
 > **Replaced `data.sql` on 2026-07-23 — and the reason is the point.** The original plan seeded the account
 > from `src/main/resources/data.sql` with a pre-generated BCrypt hash and `ON CONFLICT DO NOTHING`, running
