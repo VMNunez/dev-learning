@@ -174,8 +174,6 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 
 ## How to run
 
-*Full Docker setup coming in the final step.*
-
 **Requirements:** Java 25, PostgreSQL running locally, and a database named `timetrack` owned by a
 non-superuser role `timetrack_app` — the app never connects as `postgres`. The two `CREATE` statements
 are in [backend/README.md](backend/README.md#how-to-run-alone)
