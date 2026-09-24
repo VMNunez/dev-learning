@@ -2657,7 +2657,7 @@ coverage table.
 
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
 open for the whole project. It only merges into `main` when every §15 step is done — Step 10 is the last
-in the build order 11 → 12 → 8 → 9 → 10 — and that PR is the closure checklist's last box (§23).
+in the build order 11 → 12 → 8 → 9 → 10 — and that PR is the closure checklist's last box (§23). Once it merges, both hosts' deploy branch (Render and Netlify, Step 12) is repointed to `main` **before** the project branch is deleted — deleting it first leaves the live app frozen on its last deploy, with every later merge silently undeployed.
 
 **Immediate action (updated 2026-09-24):** every feature branch through Step 7 and both backlog-fix
 branches are closed — `fix/backend-backlog` through PR #70 on 2026-08-29 (G3), `fix/frontend-backlog`
