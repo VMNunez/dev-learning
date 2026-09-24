@@ -2414,7 +2414,8 @@ Format: `[option chosen] over [option rejected] — [reason]`
 - docker-compose over separate manual setup — one command runs the full project locally
 - `Pageable` pagination on GET /api/entries, return-all everywhere else — entries is the only collection here that grows without a bound, so it is the only one paged; the month filter narrows a result but does not cap it. Reversed the original return-all choice on 2026-08-01, while Step 7a was still unbuilt and the change cost a method signature rather than a rewritten table
 - Signals in the page component over a state-management library (NgRx) — eight pages, each reading its own endpoint and sharing nothing but the logged-in user and the pending-approvals count, each held in one root signal; a store would add actions, reducers and effects for state that never leaves one route. NgRx becomes worth it when many values must stay in sync across distant pages, not for one count
-- Local `docker-compose` over a deployed public URL — the portfolio value of this project is the backend it is the first of (layering, JWT, workflow), which a recruiter reads in the code and the READMEs; a free-tier API + database host that cold-starts and expires would add hosting work without adding a new concept. Deployment is a project 08 objective, where the app is the demo
+- A deployed public URL over local-only `docker-compose` — **reversed by Victor on 2026-09-23.** The original choice read: *local `docker-compose` over a deployed public URL — the portfolio value is the backend (layering, JWT, workflow), read in the code and the READMEs; a free-tier host that cold-starts and expires adds hosting work without a new concept; deployment is a project 08 objective.* That reasoning still holds on concepts. What moved is the job search, now under way: a recruiter who can open a working app is reached before one who has to clone and run it. The costs are accepted knowingly — a free-tier API that sleeps after 15 idle minutes and wakes slowly on a 0.1-CPU instance, a demo database anyone can write to, and the hosting work itself. Deployment is pulled forward from project 08, and Docker (Step 11) moves ahead of it as its prerequisite; the reorder of §15/§22 is G2's
+- Publishing before the tests (Steps 8–9) over the session rules' *no project is finished without tests* — **decided by Victor on 2026-09-23 as a project-07-only exception**, for the same urgency. The rule is not relaxed: the project stays unfinished until Steps 8–9 pass, and the app keeps being worked on after it is live. §23 records what this does to G7
 - `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan; versioned migrations become necessary the moment a second environment or teammate exists
 
 ---
@@ -2547,6 +2548,18 @@ become accurate — not remembered at the very end. The project is not closed un
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
 `G3/G4 → fix the Highs → G5 → G6 → G7 → G8`. G5 before G7 because the portfolio gate reads the READMEs;
 G6 before G7 because it reads PROGRESS; G3/G4 before G7 because it reads the backlog.
+
+**Publishing before the tests — what it does to G7 (2026-09-23, §20).** With Steps 8–9 unbuilt, Check 1
+resolves the project as incomplete, so a `PORTFOLIO_SCOPE = full` run returns **❌ Not ready** at its
+step-0 preflight — no bank, no CV bullet, no ticked box — and is not run until Steps 8–9 pass. The two
+things it would have produced come from elsewhere meanwhile:
+
+- **The question bank** — `portfolio-audit` at `PORTFOLIO_SCOPE = backend`, then `frontend`: bank-only
+  runs that owe none of the chain and sign no gate. Because the project route admits only a `✅ Ready`
+  project, the bank is not served by `interview-prep-block-open`'s project route until the `full` run.
+- **A provisional CV bullet** — `cv-prompt`, which drafts from the README when `cv-bullets.md` has no
+  entry. It owes a clean G6 and ROADMAP's CV gate, so it runs after the deployment, G5 and G6. It claims
+  no tests. The `full` run after Steps 8–9 writes the polished bullet that replaces it.
 
 ### Closure checklist — the project's definition of done
 
