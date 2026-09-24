@@ -13,11 +13,11 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 12 — Deployment**, next — §15's build order after Step 7 is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20). Step 11 closed ✅ on 2026-09-24: the API builds as a two-stage image and runs beside its own PostgreSQL through `docker compose`, the done condition verified with IntelliJ and the Windows PostgreSQL service stopped. Step 12 opens once `feat/docker` merges into the project branch (§22). Three things it needs that §15 does not settle, each to be decided when it opens: how the hosted database gets demo data beyond the first manager, what a publicly writable demo accepts (Victor's decision), and keeping the static host's per-deploy credits from being spent by docs-only pushes. `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier** — the backend Low raised on 2026-09-24 (`.env.example`'s `JWT_SECRET` placeholder) closed the same day in `a5da20a0` |
-| **Current branch** | `feat/docker` — Step 11's branch, **its work is done**: ready for a PR into `projects/07-timetrack` (opened by Victor on GitHub, never into `main`). `feat/deployment` is cut from the project branch after that merge and carries Step 12 (§22). `main` sits behind the project branch and holds only PR #92's merge — the wrong-base merge of 2026-09-22 recorded in §22 — and receives the project only when every §15 step is done |
-| **Done condition** | Step 12's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: the public frontend URL opens /login, and logging in with the README's demo manager credentials reaches /dashboard with its stat cards loaded from the hosted API` |
-| **Next gate** | G5 — READMEs (`readme-audit · PROJECT_PATH = projects/07-timetrack`), its trigger met (every High from G3/G4 fixed; G4 found none) but **held until Step 12 is live**: the README has to carry the public URL, the demo credentials and the cold-start warning, and `REC-250` has to land first, since `_readme-standard.md` still states every full-stack project is local-only. G4 signed off on 2026-09-23 (`d22a69e4`), G3 on 2026-08-29 (`a67866c4`), G2 on 2026-09-24 (`e43d809d`). G7 waits on G5, G6 and on Steps 8–9: until they pass, a `full` run stops at its preflight as ❌ Not ready (§23, publishing before the tests) |
-| **Phase** | Docker + deployment (Phase 6) — Steps 11–12, opening with `feat/docker`; the test steps 8–9 and the SQL complement 10 follow it (§15 build order). §15 defines no phases; this cell numbers them in build order. Phase 5 (frontend, Step 7) closed on 2026-09-23 with G4 signed off and its backlog merged through PR #93; Phase 4 (backend) closed on 2026-08-29 |
+| **Current step** | **Step 8 — Backend tests**, next — §15's build order is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20). Step 12 closed ✅ on 2026-09-24: the app is public at `https://07-timetrack.netlify.app` against the API on Render and the database on Neon, and the done condition passed in the browser (§15 Step 12, *Built so far*). Step 8 opens once `feat/deployment` merges into the project branch (§22). The project stays unfinished until Steps 8–9 pass (§20). `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier** |
+| **Current branch** | `feat/deployment` — Step 12's branch, **its work is done**: its code already reached `projects/07-timetrack` through PRs #95 and #96, and a last PR carries the Step 12 close docs (opened by Victor on GitHub, never into `main`). `feat/backend-tests` is cut from the project branch after that merge and carries Step 8 (§22). `main` sits behind the project branch and receives the project only when every §15 step is done — both hosts' deploy branch is repointed to `main` then, before the project branch is deleted |
+| **Done condition** | Step 8's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Terminal: mvn test passes — 8 test classes, 0 failures: TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest, ReportServiceTest, LoginAttemptServiceTest, UserDetailsServiceImplTest and the existing ValidationMessagesTest all green with no database running; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted` |
+| **Next gate** | G5 — READMEs (`readme-audit · PROJECT_PATH = projects/07-timetrack`), its trigger met (every High from G3/G4 fixed; G4 found none) and Step 12 now live, **held only by `REC-250`**: `_readme-standard.md` still states every full-stack project is local-only, and the README has to carry the public URL, the demo credentials and the cold-start warning (about two minutes plus the container wake). G4 signed off on 2026-09-23 (`d22a69e4`), G3 on 2026-08-29 (`a67866c4`), G2 on 2026-09-24 (`e43d809d`). G7 waits on G5, G6 and on Steps 8–9: until they pass, a `full` run stops at its preflight as ❌ Not ready (§23, publishing before the tests) |
+| **Phase** | Testing (Phase 7) — Steps 8–9, then the SQL complement 10 (§15 build order). §15 defines no phases; this cell numbers them in build order. Phase 6 (Docker + deployment, Steps 11–12) closed on 2026-09-24 with the app public; Phase 5 (frontend, Step 7) closed on 2026-09-23; Phase 4 (backend) closed on 2026-08-29 |
 | **Last updated** | 2026-09-24 |
 
 ---
@@ -2354,7 +2354,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - **Done condition:** `Postman: GET localhost:8080/api/projects without a token returns 401 — the §10 JSON error body, served by the app container with IntelliJ and the local PostgreSQL service both stopped, so the container started only because the compose database accepted its connection`
 - **Built differently from the third bullet (2026-09-24):** no `docker` profile and no `application-docker.properties` — compose sets `DB_URL` to `jdbc:postgresql://db:5432/timetrack`, which the `${DB_URL:…}` placeholder of §9 already allowed. The compose database creates the non-superuser `timetrack_app` and the `timetrack` database it owns from `docker/db/init/01-create-app-role.sh` on its first start, so §9's least privilege holds inside Docker; its port is not published; secrets live in a git-ignored `.env` documented by `.env.example`; compose runs the `dev` profile so the manager is seeded locally. Verified 2026-09-24 with IntelliJ and the Windows PostgreSQL service stopped
 
-### Step 12 — Deployment
+### Step 12 — Deployment ✅
 - The API image from Step 11 and a PostgreSQL database on a free-tier host; the Angular production build
   on a static host, its `environment` pointing at the hosted API URL
 - Per-environment values made explicit: the hosted database URL and credentials and `JWT_SECRET` as the
@@ -2393,6 +2393,22 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   - **Cold start measured:** `Started TimetrackApplication in 128.6 / 140.6 seconds` on the free 0.1 CPU —
     about two minutes plus the container wake, not the "about one minute" Render quotes; the README's
     warning owes that figure. Memory under 512 MB not measured yet (Render → Metrics) — tuning waits on it
+  - **Frontend — Netlify** project `07-timetrack`, public at `https://07-timetrack.netlify.app`: branch
+    `projects/07-timetrack`, base directory `projects/07-timetrack/frontend/timetrack`, build command `npm run build`,
+    publish directory `dist/timetrack/browser`, no environment variables — the API URL is public and ships in
+    `environment.ts`, which the default production configuration builds without file replacements. No ignore command:
+    with a base directory set, Netlify's default skips any push that leaves that directory unchanged, so docs-only
+    pushes spend none of the Free plan's 300 monthly credits (15 per successful production deploy, shared with
+    projects 01–06). `public/_redirects` rewrites every path with no file to `/index.html` with a 200, so a reload
+    or a direct link reaches the router
+  - **CORS** — `APP_CORS_ALLOWEDORIGINS=http://localhost:4200,https://07-timetrack.netlify.app` on Render overrides
+    `app.cors.allowed-origins` through Spring Boot's relaxed binding (canonical `@Value` name → upper case, dots to
+    underscores, dashes removed); no backend change. Verified: the login response carries
+    `Access-Control-Allow-Origin: https://07-timetrack.netlify.app`
+  - **Done condition passed 2026-09-24** — in a private window, `/login` opened directly, the demo manager's login
+    returned 200 from the Render host, and `/dashboard` loaded its four stat cards (merged through PRs #95 and #96)
+  - **When the project branch merges into `main`**, repoint both hosts' deploy branch to `main` before deleting
+    `projects/07-timetrack` (§22)
   - **Secrets** live only in 1Password (`TimeTrack — Render (production)` for the four variables,
     `TimeTrack — public demo` for the demo manager) and in the Render dashboard — never in a file on disk;
     the local `.env` keeps the Docker values only
@@ -2676,8 +2692,8 @@ one branch per coherent feature, never one per step.
 | `feat/angular-shell-auth` | Step 7a — Shell + auth | After `feat/reports` merges | Closed — Step 7a's done condition passed; merged through PR #90 |
 | `feat/angular-entries` | Step 7b — Employee flow: dashboard + entries | After `feat/angular-shell-auth` merges | Closed — Step 7b's done condition passed; merged through PR #91 |
 | `feat/angular-manager-pages` | Steps 7c–7d — Manager review flow + manager admin pages | After `feat/angular-entries` merges | Closed 2026-09-22 — Step 7d's done condition passed and PR #92 merged it; the last frontend branch, so G4 is due. The PR was opened against `main` rather than `projects/07-timetrack`, and the project branch was fast-forwarded onto the same commit on 2026-09-23 (see below) |
-| `feat/docker` | Step 11 — Docker | Cut 2026-09-24 from `projects/07-timetrack` (`4b484606`); first in §15's build order 11 → 12 → 8 → 9 → 10 | Done 2026-09-24 — Step 11's done condition passed; PR into `projects/07-timetrack` next |
-| `feat/deployment` | Step 12 — Deployment | After `feat/docker` merges | When Step 12's done condition passes — the app is public from here, before the test steps (§20) |
+| `feat/docker` | Step 11 — Docker | Cut 2026-09-24 from `projects/07-timetrack` (`4b484606`); first in §15's build order 11 → 12 → 8 → 9 → 10 | Closed 2026-09-24 — Step 11's done condition passed; merged through PR #94 |
+| `feat/deployment` | Step 12 — Deployment | After `feat/docker` merges | Done 2026-09-24 — Step 12's done condition passed; its code merged early through PRs #95 and #96 so the static host could build it, and a last PR into `projects/07-timetrack` carries the close docs. The app is public from here, before the test steps (§20) |
 | `feat/backend-tests` | Step 8 — Backend tests | After `feat/deployment` merges | When Step 8's done condition passes |
 | `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes — the last feature branch before the project branch closes |
 | — (no dedicated branch) | Step 10 — SQL complement | After `feat/angular-tests` merges — last in the build order | Commits go on the branch active at the time — by then the project branch itself — per the session rules' rule (2026-07-14) that study materials follow the active branch; closes when Step 10's done condition passes — `main` only receives merges via PR |
