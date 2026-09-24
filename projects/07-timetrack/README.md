@@ -14,7 +14,7 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 
 **[07-timetrack.netlify.app](https://07-timetrack.netlify.app)**
 
-Demo login (manager): `manager@timetrack.com` / *(password — to be added)*
+Demo login (manager): `manager@timetrack.com` / `V9pr4VLCKaqxkpD8xnHz`
 
 The API runs on a free tier that sleeps when idle, so the first login after a quiet spell can take about two minutes while it wakes up — later requests are fast.
 
