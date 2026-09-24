@@ -2767,7 +2767,7 @@ The project is never declared finished early — it is closed only when every bo
 
 ```
 - [ ] Every §15 step's done condition passes, each with its step-complete ritual (G1)
-- [ ] PLANNING.md still matches what was built — re-run plan-audit MODE=review if §15/§22 moved (G2)
+- [x] PLANNING.md still matches what was built — re-run plan-audit MODE=review if §15/§22 moved (G2) — ran 2026-09-24 after the deploy-first reorder (`e43d809d`, report `Status: clean`): Step 12 Deployment added, build order 11 → 12 → 8 → 9 → 10, §0 on Step 11. Re-run if §15/§22 move again
 - [x] review-audit REVIEW_SCOPE=backend has run — PROJECT-BACKLOG.md's `**Last Reviewed — backend:**` line carries that run's date with no `(incomplete — …)` qualifier — and every High task it found is fixed (G3)
 - [x] review-audit REVIEW_SCOPE=frontend has run — PROJECT-BACKLOG.md's `**Last Reviewed — frontend:**` line carries that run's date with no `(incomplete — …)` qualifier — and every High task it found is fixed (G4) — ran 2026-09-23 over Steps 7a–7d, eleven slices plus the consistency pass (`d22a69e4`); it found no High at any priority, so the box closes on an empty set. Its 6 Mediums were G7's to clear, not G4's, and all closed on 2026-09-23
 - [ ] readme-audit has run — global + backend + frontend READMEs at standard (G5)
