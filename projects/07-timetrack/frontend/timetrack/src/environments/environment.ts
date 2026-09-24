@@ -1,3 +1,3 @@
 export const environment = {
-  apiUrl: '/api',
+  apiUrl: 'https://timetrack-api-skun.onrender.com/api',
 };
