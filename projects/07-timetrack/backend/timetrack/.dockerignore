@@ -1,0 +1,10 @@
+# Build output and IDE files — rebuilt or irrelevant inside the image
+target/
+.idea/
+*.iml
+.vscode/
+HELP.md
+
+# Never send local secrets to the build
+.env
+*.env
