@@ -32,7 +32,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[backend]` — `.env.example` ships a `JWT_SECRET` placeholder that is not valid Base64, so a reviewer who copies it to run `docker compose up` gets an API that starts and then answers every login with a 500. `JwtUtil.getSigningKey()` decodes `app.jwt.secret` with `Decoders.BASE64` (`JwtUtil.java:59`), and the placeholder `change-me-to-a-long-random-string-of-at-least-64-characters-000000` (`.env.example:10`) throws `DecodingException: Illegal base64 character: '-'` — verified 2026-09-24 against `jjwt-api` 0.12.6. Startup cannot catch it, because the key is decoded lazily on the first token issued; `GET` without a token still returns the expected 401, so the failure hides until someone logs in. The example should carry a value that decodes (or none at all, with the generation command in its comment), and its `at least 64 characters` comment should say what the key really needs: Base64 of at least 32 random bytes, generated with `openssl rand 64 | openssl base64 -A`. Both READMEs were corrected in `b864f99d`; this file is project config and stays Victor's *(Effort: Small)* *(raised 2026-09-24 while documenting Step 11's Docker run path during Step 12)*
 
 ### Frontend
 
