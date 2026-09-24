@@ -13,11 +13,11 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 8 — Backend tests**, next — its precondition is met: `feat/angular-manager-pages` merged on 2026-09-22 (§22). Step 7d closed ✅ on 2026-09-22 (the Team and Reports pages), and with it the parent Step 7: the Angular frontend is built, every sub-step's done condition verified clause by clause in the browser. `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier** — every one of the nine Lows the G4 `review-audit` run of 2026-09-23 (`d22a69e4`) raised closed that day, as did the one raised while triaging them (`/team`'s scalar one-time-secret bookkeeping) — the ninth, `approvals.ts` re-implementing a focus fallback inline, closed on 2026-09-23 (`1e8fc369`, `2efaed32`), and the eighth, `entry-dialog`'s supposedly unreachable create-and-submit branch, closed the same day as a false positive — all six of that run's Mediums closed on 2026-09-23: a reload failing outside Retry never moving focus to the page `<h1>` (`a61fb96c`), `/reports` blanking its two tables to a bare spinner on every reload (`e7401662`), `/approvals` and `/entries` showing a false empty state after a write emptied the page they were on (`6e062870`), the employee dashboard's recent list printing a date with no year against a query that bounds no month (`b3e77c42`), the two `/reports` hours tables unreachable by keyboard (`b8f33794`), and five controls accepting a whitespace-only value their server field refuses as `@NotBlank` (`d64536a3`) — the Lows block no gate at all. Before that run it held no open task at any priority: the last, `/approvals` unable to sort by Employee, raised on 2026-09-22 by Victor in the browser after the backlog had been cleared, closed that day with `employee` and `project` sort keys mapped on the server (`e68ebf05`, `9a8a2fce`). The README screenshots Low closed on 2026-09-22 with the manager dashboard, Entries, Team and Reports captured at 1280×800 on a realistic demo dataset in `screenshots/`, placed in the README by `readme-audit` at G5. The three Lows the cold design review of that day's second round of closes raised all closed the same day — the employee dashboard's Date rung, the dialogs' error-line ring, and §14 claiming every Material component rings focus when form fields keep their own outline. The nine tasks the cold design review of that day's backlog closes raised all closed the same day — its four Mediums, Hours hidden under the pinned actions of the review tables at 375px, a Back pressed during an in-flight password reset or member create losing the new password, the icon buttons' 1.25:1 focus indicator, and the employee dashboard's table clipped and unreachable by keyboard at 375px, and its five Lows, the unnamed optical value and "The four" listing three with one §14 Spacing edit, the hand-written 4px radius, now read from the theme's shape token, the failed-save focus headline, now true of Save as well as of a field, and the login brand's weight, kept as a named typography exception. Every task the cold design review of Step 7d raised on 2026-09-22 closed the same day — its Medium (the browser's Back button discarding a new member's generated password) and its seven Lows — and so did both backend Lows: the recovery decision, closed with a manager's password reset, and a new account's password missing `@ToString.Exclude` on `CreateUserResponse` |
-| **Current branch** | `projects/07-timetrack` — the project branch, at `34d5a2e6`. `fix/frontend-backlog` closed on 2026-09-23: every Medium and every Low G4 raised, plus the one raised while triaging them, merged through PR #93 into the project branch, and the branch was deleted (§22). The gates G5–G7 run from here; the next feature branch, `feat/backend-tests`, is cut from it when Step 8 opens. `main` sits **behind** this branch and holds only PR #92's merge — the wrong-base merge of 2026-09-22 recorded in §22 — and receives the project only at Step 11 |
-| **Done condition** | Step 8's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Terminal: mvn test passes — TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest and ReportServiceTest all green; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted` |
-| **Next gate** | G5 — READMEs (`readme-audit · PROJECT_PATH = projects/07-timetrack`), **signable now**: its trigger is every High from G3/G4 fixed and committed, and G4 found none. G4 signed off on 2026-09-23 — `review-audit REVIEW_SCOPE = frontend` ran over Steps 7a–7d across eleven slices plus the consistency pass (`d22a69e4`), superseding the 2026-09-19 run that reached 7a–7b only; the backlog's `**Last Reviewed — frontend:**` now reads 2026-09-23. **G7 no longer blocks on the backlog**: all six Mediums that run raised closed on 2026-09-23, so nothing open is above `[Low]`; it still waits on G5 and G6, which precede it in §23's chain. G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`) |
-| **Phase** | Frontend (Phase 5) — opened on 2026-08-29 by the G3 sign-off; Phase 4 (backend) is closed, its backlog empty at every priority |
+| **Current step** | **Step 11 — Docker**, next — §15's build order after Step 7 is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20), so Docker comes before the test steps; its precondition is met: `feat/angular-manager-pages` merged on 2026-09-22 (§22). Step 7d closed ✅ on 2026-09-22 (the Team and Reports pages), and with it the parent Step 7: the Angular frontend is built, every sub-step's done condition verified clause by clause in the browser. `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier** — every one of the nine Lows the G4 `review-audit` run of 2026-09-23 (`d22a69e4`) raised closed that day, as did the one raised while triaging them (`/team`'s scalar one-time-secret bookkeeping) — the ninth, `approvals.ts` re-implementing a focus fallback inline, closed on 2026-09-23 (`1e8fc369`, `2efaed32`), and the eighth, `entry-dialog`'s supposedly unreachable create-and-submit branch, closed the same day as a false positive — all six of that run's Mediums closed on 2026-09-23: a reload failing outside Retry never moving focus to the page `<h1>` (`a61fb96c`), `/reports` blanking its two tables to a bare spinner on every reload (`e7401662`), `/approvals` and `/entries` showing a false empty state after a write emptied the page they were on (`6e062870`), the employee dashboard's recent list printing a date with no year against a query that bounds no month (`b3e77c42`), the two `/reports` hours tables unreachable by keyboard (`b8f33794`), and five controls accepting a whitespace-only value their server field refuses as `@NotBlank` (`d64536a3`) — the Lows block no gate at all. Before that run it held no open task at any priority: the last, `/approvals` unable to sort by Employee, raised on 2026-09-22 by Victor in the browser after the backlog had been cleared, closed that day with `employee` and `project` sort keys mapped on the server (`e68ebf05`, `9a8a2fce`). The README screenshots Low closed on 2026-09-22 with the manager dashboard, Entries, Team and Reports captured at 1280×800 on a realistic demo dataset in `screenshots/`, placed in the README by `readme-audit` at G5. The three Lows the cold design review of that day's second round of closes raised all closed the same day — the employee dashboard's Date rung, the dialogs' error-line ring, and §14 claiming every Material component rings focus when form fields keep their own outline. The nine tasks the cold design review of that day's backlog closes raised all closed the same day — its four Mediums, Hours hidden under the pinned actions of the review tables at 375px, a Back pressed during an in-flight password reset or member create losing the new password, the icon buttons' 1.25:1 focus indicator, and the employee dashboard's table clipped and unreachable by keyboard at 375px, and its five Lows, the unnamed optical value and "The four" listing three with one §14 Spacing edit, the hand-written 4px radius, now read from the theme's shape token, the failed-save focus headline, now true of Save as well as of a field, and the login brand's weight, kept as a named typography exception. Every task the cold design review of Step 7d raised on 2026-09-22 closed the same day — its Medium (the browser's Back button discarding a new member's generated password) and its seven Lows — and so did both backend Lows: the recovery decision, closed with a manager's password reset, and a new account's password missing `@ToString.Exclude` on `CreateUserResponse` |
+| **Current branch** | `feat/docker` — Step 11's branch in §22, **not yet cut**: create it from the tip of `projects/07-timetrack` as Step 11's first action — not from PR #93's merge (`34d5a2e6`), which the plan commits since have moved past. Until then the checked-out branch is the project branch and any work sits there, where `fix/frontend-backlog` closed on 2026-09-23: every Medium and every Low G4 raised, plus the one raised while triaging them, merged through PR #93 and the branch was deleted (§22). G5 and G6 run from the project branch. `main` sits **behind** it and holds only PR #92's merge — the wrong-base merge of 2026-09-22 recorded in §22 — and receives the project only when every §15 step is done (Step 10 last in the build order) and the closure checklist reaches its last box (§23) |
+| **Done condition** | Step 11's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Postman: GET localhost:8080/api/projects without a token returns 401 — the §10 JSON error body, served by the app container with IntelliJ and the local PostgreSQL service both stopped, so the container started only because the compose database accepted its connection` |
+| **Next gate** | G5 — READMEs (`readme-audit · PROJECT_PATH = projects/07-timetrack`), **signable now**: its trigger is every High from G3/G4 fixed and committed, and G4 found none. G4 signed off on 2026-09-23 — `review-audit REVIEW_SCOPE = frontend` ran over Steps 7a–7d across eleven slices plus the consistency pass (`d22a69e4`), superseding the 2026-09-19 run that reached 7a–7b only; the backlog's `**Last Reviewed — frontend:**` now reads 2026-09-23. **G7 no longer blocks on the backlog**: all six Mediums that run raised closed on 2026-09-23, so nothing open is above `[Low]`; it still waits on G5 and G6, which precede it in §23's chain, and on Steps 8–9: until they pass, a `full` run stops at its preflight as ❌ Not ready (§23, publishing before the tests). G3 signed off on 2026-08-29 with the PR #70 merge (`a67866c4`) |
+| **Phase** | Docker + deployment (Phase 6) — Steps 11–12, opening with `feat/docker`; the test steps 8–9 and the SQL complement 10 follow it (§15 build order). §15 defines no phases; this cell numbers them in build order. Phase 5 (frontend, Step 7) closed on 2026-09-23 with G4 signed off and its backlog merged through PR #93; Phase 4 (backend) closed on 2026-08-29 |
 | **Last updated** | 2026-09-23 |
 
 ---
@@ -35,11 +35,15 @@ monthly hours reports.
 
 ## 2. Why this project
 
-- The workflow pattern (DRAFT → SUBMITTED → APPROVED / REJECTED) appears in almost every enterprise app
-- Role-based authorization in Spring Security is a skill used in every Spring Boot project
-- Spanish consultancies use timesheet tools every day — this domain is immediately relatable to interviewers
-- It is rare in junior portfolios — most people build finance trackers or todo apps
-- It adds what project 06 could not show: 06 was Angular-only against a mock service, so this is the first
+- The domain problem: a company bills and pays against the hours its people log, so no hour can count
+  until a manager has reviewed it — the DRAFT → SUBMITTED → APPROVED / REJECTED workflow that appears in
+  almost every enterprise app
+- The technical gap it closes: role-based authorization in Spring Security, a skill used in every Spring
+  Boot project, enforced on a real workflow instead of a toy endpoint
+- Why a recruiter recognises it: Spanish consultancies use timesheet tools every day, so the domain is
+  immediately relatable to interviewers — and it is rare in junior portfolios, where most people build
+  finance trackers or todo apps
+- What it adds over project 06, which could not show it: 06 was Angular-only against a mock service, so this is the first
   project with a backend Victor wrote — a real REST API, a database schema, server-side authorization and a
   JSON contract two independent apps agree on
 
@@ -47,7 +51,7 @@ monthly hours reports.
 
 ## 3. New concepts
 
-Concepts this project teaches for the first time. (Steps 1–3 are now done and already recorded in PROGRESS.md; they are kept here so the table reflects the whole project scope.)
+Concepts this project teaches for the first time. (Steps 1–7 are done and already recorded in PROGRESS.md; their concepts are kept here so the table reflects the whole project scope.)
 
 | Concept | Topic | Why this project teaches it |
 |---|---|---|
@@ -71,9 +75,12 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 | Interface projections for query results | Spring Boot | Report rows mapped straight from `SELECT ... AS alias` — no class, no manual mapping |
 | `@RestControllerAdvice` GlobalExceptionHandler | Spring Boot | Consistent JSON error bodies |
 | Profile-gated startup seeding (`CommandLineRunner` + `@Profile`) | Spring Boot | First manager account with no register endpoint — seeded in Java so the credential comes from an env var at runtime instead of a hash committed in `data.sql` |
-| JUnit 5 + Mockito unit tests | Java | First backend tests — JUnit and Mockito are plain Java libraries, usable with no Spring context at all, so the concept files under Java even though the class under test is a Spring service |
+| Soft delete (`active` flag instead of a row removal) | Architecture | `TimeEntry` holds not-null FKs to users and projects, so deleting either would break timesheet history; introduced on projects in Step 2 and applied again to users in Step 4 |
+| JUnit 5 + Mockito unit tests | Spring Boot | First backend tests — plain service unit tests with no Spring context; the bullet lives in the Spring Boot coverage file because the unit under test is a Boot service and its collaborators are Spring Data repositories |
 | Angular consuming a real REST API end to end | Angular | First time the frontend talks to a backend you built |
-| Docker + docker-compose | Deployment | One command runs app + database locally |
+| Angular service tests with `provideHttpClientTesting()` + `HttpTestingController` | Angular | First Angular tests with HTTP in them — the request (method, URL, params, body) is asserted and the response flushed, no backend running |
+| Docker + docker-compose | General | One command runs app + database locally, and the image is what the deployment step ships |
+| Configuration parity across environments (IntelliJ, compose, hosted) | General | First app that runs in three places — every difference (DB host, CORS origin, API URL, secrets) must be an explicit per-environment value, never a hidden local assumption |
 
 ---
 
@@ -81,25 +88,24 @@ Concepts this project teaches for the first time. (Steps 1–3 are now done and 
 
 Concepts from earlier projects this project reinforces.
 
-| Concept | Originally learned in | How this project uses it again |
+| Concept | Originally demonstrated in | How this project uses it again |
 |---|---|---|
 | JWT auth flow | Project 06 (frontend side) | Now built on the backend — full round trip |
 | Route guards (`authGuard`, role guard) | Project 06 | `authGuard` + `managerGuard` on protected routes |
 | HTTP interceptor | Project 06 | Attaches the JWT to every request |
 | Role-aware UI | Project 06 | Same route, different data per role (Entries page) |
-| Coordinator (smart/dumb) pattern | Projects 03 / 05 | Each page owns state; children display and emit |
+| Coordinator (smart/dumb) pattern | Project 01 | Each page owns state; children display and emit |
 | Reactive forms + validation | Project 03 | Entry form, user form |
 | MatTable + MatDialog | Project 05 | Entries, Projects, Approvals tables and dialogs |
 | `forkJoin` parallel requests | Project 02 | Manager dashboard stat cards |
 | Signals + `computed()` | Project 01 onwards | Derived stat counts across pages |
 | Auth persistence with a signal + `localStorage` | Project 06 | Token + current user kept in localStorage, written imperatively by `AuthService` on login and logout — the only two moments the session changes |
-| Soft delete | Project 07 (Step 2) | Reused for users and projects |
 | `MatSidenav` app shell | Project 06 | Same fixed toolbar + scrollable content layout |
 
-Every row above comes from an earlier project except **soft delete**, which is the one *intra-project*
-reuse: it is introduced here in Step 2 (projects) and then applied again to users in Step 4, so it is
-recorded in this table rather than in §3's new-concepts list, where Step 2's single major concept is the
-DTO boundary.
+Every row above comes from an earlier project. **Soft delete** is not one of them: its coverage bullet's
+first marker is `✅ 07-timetrack`, so it is recorded in §3 as a concept this project demonstrates, even
+though Step 2's single major concept is the DTO boundary and soft delete rides along as a one-line
+application of it.
 
 ---
 
@@ -109,10 +115,11 @@ DTO boundary.
 |---|---|---|
 | Backend | Java + Spring Boot | First Spring Boot project; layered architecture |
 | Auth | Spring Security + JWT | Stateless; secret from `${JWT_SECRET}` env var |
-| Database | PostgreSQL | Local instance via pgAdmin; same DB used in Docker |
+| Database | PostgreSQL | Local instance via pgAdmin; a compose service in Docker (Step 11) and a free-tier hosted instance (Step 12) |
 | ORM | Spring Data JPA + Hibernate | `JpaRepository` + derived queries; JPQL for reports |
 | Frontend | Angular + Angular Material | Teal M3 theme, compact density (§14); Core/Feature/Shared structure |
 | Local setup | Docker + docker-compose | App + Postgres in one command (Step 11) |
+| Hosting | Free-tier container host + static host | The Step 11 API image and a hosted PostgreSQL, plus the Angular production build; both deploy from the project branch (Step 12, §20) |
 | Tests | JUnit 5 + Mockito (backend), Vitest + TestBed (frontend) | Services only — component tests start at project 08 |
 
 ---
@@ -143,7 +150,9 @@ Browser                               Server
 
 **Backend layer rules:**
 - Controller only handles HTTP — reads the request, calls the service, returns the response. No logic.
-- Service contains all business rules — validation, state transitions, role checks.
+- Service contains all business rules — state transitions, ownership checks, uniqueness, canonicalisation.
+  The controller's only checks are declarative: `@Valid` on the request body (field shape) and
+  `@PreAuthorize` on the method (role); any `if` that decides a business outcome in a controller is a break.
 - Repository only reads and writes data. No logic.
 - Controllers never call the repository directly.
 - A service that already holds the entity deletes it with `delete(entity)`, never `deleteById(id)`. `deleteById` is a `findById` followed by the delete, so it asks the repository for the same row a second time and absorbs an absent id silently — a second not-found policy competing with the guard that loaded the entity and answers `404`.
@@ -288,7 +297,7 @@ Same bar as the backend block: each line is violable — a reviewer can open a f
   declares `changeDetection: ChangeDetectionStrategy.OnPush`, and gets its dependencies through `inject()`,
   never through a constructor parameter list.
 - **Typing** — every `shared/models/` interface mirrors one backend response DTO field for field. No
-  `any` at an API boundary: `http.get<TimeEntry[]>(...)` is typed, and a response shape that has no model
+  `any` at an API boundary: `http.get<Page<TimeEntry>>(...)` is typed, and a response shape that has no model
   gets one before the call is written. A response the app keeps beyond the call — the login session,
   persisted to `localStorage` — also passes a runtime type guard before it is stored, the same guard that
   re-reads it on every reload: the type argument of `http.post<T>()` asserts a shape to the compiler and
@@ -353,9 +362,11 @@ Project 06 was frontend-only (Component + Core/Feature/Shared architecture), so 
 - **State machine workflow (DRAFT → SUBMITTED → APPROVED / REJECTED)** — lives in the Service layer; transitions are enforced business rules, not free-form field edits.
 
 On the frontend the architecture is deliberately unchanged from project 06 — same Core/Feature/Shared
-layout, same page-owns-state coordinator split, same guard + interceptor pair. Nothing new is invented
-there so the novelty budget of this project goes to the backend; what is new for Angular is only the
-data source (a real API you built, instead of a mock service).
+layout, same page-owns-state coordinator split, same guard + interceptor pair, so the novelty budget of
+this project goes to the backend. What is new for Angular is the data source (a real API you built,
+instead of a mock service) and one structural addition it forced: `core/state/`, a home for app-wide
+state that is not an HTTP service (the pending-approvals count, ruled 2026-09-22), added so the Service
+boundary rule above stays true once the shell and the review pages had to agree on one live value.
 
 See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-layered-architecture.md) for the full layered architecture explanation.
 
@@ -398,8 +409,8 @@ See [notes/architecture/03-layered-architecture.md](../../notes/architecture/03-
 | updatedAt | LocalDateTime | TIMESTAMP | not null | Set by `@UpdateTimestamp` on every change |
 
 ### Relationships
-- **User → TimeEntry:** one-to-many. The FK lives on `TimeEntry.user` (`@ManyToOne`); `User` may expose `@OneToMany(mappedBy = "user")` only if a user needs to read their own entries through the entity graph — otherwise skip it and query through the repository.
-- **Project → TimeEntry:** one-to-many. The FK lives on `TimeEntry.project` (`@ManyToOne`).
+- **User → TimeEntry:** one-to-many. The FK lives on `TimeEntry.user` (`@ManyToOne`). The mapping is **unidirectional**: `User` declares no `@OneToMany(mappedBy = "user")`, because every read of a user's entries is a filtered, paged query (`GET /api/entries`, the report aggregates) that goes through `TimeEntryRepository` — an unbounded collection on the entity would serve none of them and invite a lazy load of every entry a user ever logged.
+- **Project → TimeEntry:** one-to-many. The FK lives on `TimeEntry.project` (`@ManyToOne`), unidirectional for the same reason — `Project` declares no inverse collection.
 - **Fetch type:** both `@ManyToOne` are explicitly `FetchType.LAZY`. The JPA default is `EAGER`, which fired 1 + 2N queries on `GET /api/entries` (the classic N+1). The fix is not LAZY alone — with `open-in-view=false` a lazy proxy read outside a transaction throws `LazyInitializationException` — but LAZY **plus** a `LEFT JOIN FETCH` on both relations, added by `TimeEntrySpecifications.fetchUserAndProject()` and guarded by `query.getResultType()` so it is skipped on `COUNT` queries. Every TimeEntry response does need its user and project, so they are always fetched — the point is fetching them in **one** query, not N.
 - **Cascade:** **none** on either `@ManyToOne`. Timesheet history is owned by the company, not by the user or the project that happens to reference it, so a delete on the parent must never propagate. With no cascade and a not-null FK, a hard `DELETE` on a referenced user or project is simply rejected by the FK constraint — which is why both parents use soft delete (`active = false`) instead: the row stays, the entries keep pointing at it, and history is preserved.
 
@@ -421,7 +432,7 @@ Employee creates entry
    Manager reviews             │
       ↙       ↘                │
 APPROVED     REJECTED ─────────┘
-                (employee can edit and resubmit)
+                (employee re-opens it, then edits and resubmits)
 ```
 
 **Rules**
@@ -433,12 +444,12 @@ APPROVED     REJECTED ─────────┘
 - Manager can only approve or reject SUBMITTED entries; a manager never edits, submits or re-opens an entry
 - A manager cannot approve or reject **their own** entries (segregation of duties) — the caller's id is resolved from the JWT and compared to the entry's owner; a match is refused (403). A manager never logs hours in this system (`POST /api/entries` is EMPLOYEE-only, and the UI hides every logging control from managers), so the only way a manager can own an entry is by having been promoted from EMPLOYEE while holding entries — those are reviewed by a different manager. Modelling a manager who bills hours would require an approver hierarchy (each user's entries routed to *their* line manager), which is deliberately out of scope
 - **A user cannot be promoted to MANAGER while they still hold entries in a non-terminal state** (`DRAFT` or `REJECTED`) — refused **409**. The four owner-only transitions are EMPLOYEE-only and resolve ownership from the JWT, so a promoted user can no longer `submit`, `update`, `delete` or `reopen` their own rows, and no manager can act on them either: those entries would be unreachable by every actor, absent from reports (`APPROVED` only) and from the approvals queue (`SUBMITTED` only), yet still listed to their owner. `SUBMITTED` entries do **not** block — the rule above routes them to a different manager, so they are not orphaned. The refusal makes the sequence explicit: the user resolves their own open work, then the promotion succeeds. The check is scoped to the role actually changing to MANAGER, so reactivating a deactivated account through the same endpoint is unaffected
-- **A manager cannot demote or deactivate their own account** — refused **409** (`InvalidStateTransitionException`) on both doors: `PUT /api/users/{id}` with `role: EMPLOYEE` or `active: false`, and `DELETE /api/users/{id}`. Both endpoints are MANAGER-only, so the only route back needs the very privilege the call removes, and the rule above (`AccountStatusUserDetailsChecker`) revokes the still-valid token on the next request — the installation would be left with no reachable admin capability. The §17 Team wireframe renders `✏ 🗑` on every row including the caller's, so it is one misclick. Editing your own name or email is unaffected; the guard reads the transition, not the target. **The system therefore always keeps at least one active MANAGER, with no code of its own to enforce it**: the caller of these endpoints is always an active MANAGER (`@PreAuthorize` plus the status checker) and can never be their own target, so at least they survive every successful call. If any of those three conditions changes, the invariant stops being guaranteed and needs an explicit check
+- **A manager cannot demote or deactivate their own account** — refused **409** (`InvalidStateTransitionException`) on both doors: `PUT /api/users/{id}` with `role: EMPLOYEE` or `active: false`, and `DELETE /api/users/{id}`. Both endpoints are MANAGER-only, so the only route back needs the very privilege the call removes, and the rule below (`AccountStatusUserDetailsChecker`) revokes the still-valid token on the next request — the installation would be left with no reachable admin capability. The §14 Team wireframe renders `✏` on every row including the caller's, so a self-demotion is one misclick in the user dialog; its disabled `🗑` on that row is a UX courtesy, never the protection. Editing your own name or email is unaffected; the guard reads the transition, not the target. **The system therefore always keeps at least one active MANAGER, with no code of its own to enforce it**: the caller of these endpoints is always an active MANAGER (`@PreAuthorize` plus the status checker) and can never be their own target, so at least they survive every successful call. If any of those three conditions changes, the invariant stops being guaranteed and needs an explicit check
 - A rejection note is mandatory when rejecting — a reject with a blank note is refused (400) and the entry stays SUBMITTED
 - Cannot log entries for a future date
 - Hours must be between 0.5 and 24
 - Cannot submit entries for an inactive project — refused **400** (`BusinessRuleViolationException`, the same input-data tier as a future date or an out-of-range hours value; it is a property of the data being submitted, not of the entry's workflow state). The same 400 applies to `POST` and `PUT` **only when the caller is already entitled to know the project exists** — see the project-existence ruling below; otherwise those two answer 404. **`409` (`InvalidStateTransitionException`) is reserved for state conflicts only** — an entry that is not in the status the transition requires (submit/edit/delete on a non-`DRAFT` entry, reopen on a non-`REJECTED` one, approve/reject on a non-`SUBMITTED` one)
-- **Shared routes stay role-aware.** `/dashboard` and `/entries` are reachable by both roles (`authGuard` only, §13), so the manager-only data they show — `GET /api/users`, the `?status=SUBMITTED` review list — is requested **only** in the manager variant of the page, chosen from `AuthService`'s role signal. The API is the real boundary: an EMPLOYEE that reached those calls would get `403`, so the role-aware rendering is a UX decision, never the protection
+- **Shared routes stay role-aware.** `/dashboard` and `/entries` are reachable by both roles (`authGuard` only, §13), so the manager-only data they show — `GET /api/users`, the `?status=SUBMITTED` review list — is requested **only** in the manager variant of the page, chosen from `AuthService`'s role signal — and, in the other direction, the EMPLOYEE-only writes on `/entries` (log, edit, delete, submit, re-open) are offered **only** in the employee variant. The API is the real boundary: a caller of the wrong role that reached any of those calls would get `403`, so the role-aware rendering is a UX decision, never the protection
 - Inactive users cannot log in — their entries remain in the database unchanged
 - A user deactivated *after* their token was issued loses access on their next request, not when the token expires — `JwtFilter` runs the loaded `UserDetails` through an `AccountStatusUserDetailsChecker`, so the login-time `active` check cannot be bypassed by an already-issued token
 
@@ -468,13 +479,13 @@ APPROVED     REJECTED ─────────┘
 > `404`. `403` survives wherever the caller may legitimately know the resource exists — a role refusal
 > (`@PreAuthorize` on a MANAGER-only endpoint), and the segregation-of-duties refusal on `approve`/`reject`,
 > where the manager already reads every entry in the listing and the status therefore discloses nothing.
-> The `/api/users/me/password` ruling above is unaffected: it turns on the caller owning `/me` by
+> The `/api/users/me/password` ruling below is unaffected: it turns on the caller owning `/me` by
 > definition, and its `400` was chosen against `403`-as-permission, not `403`-as-ownership.
 
 **Password rules** *(decided 2026-07-28)*
 - A new account's password is **generated by the backend**, never supplied by the manager and never a fixed literal: a random value from `SecureRandom` (not `Random`, which is predictable and not cryptographically secure)
-- The generated plaintext is returned **once**, in the `POST /api/users` response only — a `CreateUserResponse` distinct from `UserResponse`, so no other endpoint can ever echo it. It is shown once in the §17 snackbar and never retrievable again; only the BCrypt hash is stored
-- Any authenticated user can change **their own** password via `PATCH /api/users/me/password`, supplying the current one (verified with `passwordEncoder.matches`) and a new one of 8–72 characters. A wrong current password is refused **`400`**, carrying `fieldErrors.currentPassword` so the form shows the message under that input (see the ruling below). A `newPassword` that matches the stored hash is refused the same way with `fieldErrors.newPassword`: re-encoding the value already in use writes a different hash and would confirm a rotation that never happened. That comparison runs only after the current password has been verified, so it cannot tell an unauthenticated caller whether a guessed value is the account's password. Nobody can change another user's password — a manager who needs to reset an account deactivates and recreates it
+- The generated plaintext is returned **once**, in the `POST /api/users` response only — a `CreateUserResponse` distinct from `UserResponse`, so no other endpoint can ever echo it. It is shown once in the §14 generated-password dialog and never retrievable again; only the BCrypt hash is stored
+- Any authenticated user can change **their own** password via `PATCH /api/users/me/password`, supplying the current one (verified with `passwordEncoder.matches`) and a new one of 8–72 characters. A wrong current password is refused **`400`**, carrying `fieldErrors.currentPassword` so the form shows the message under that input (see the ruling below). A `newPassword` that matches the stored hash is refused the same way with `fieldErrors.newPassword`: re-encoding the value already in use writes a different hash and would confirm a rotation that never happened. That comparison runs only after the current password has been verified, so it cannot tell an unauthenticated caller whether a guessed value is the account's password. Nobody can *choose* another user's password — a manager recovers an account through the generated reset below
 - A MANAGER can reset **another** account's password via `POST /api/users/{id}/password-reset`: the backend generates a fresh `SecureRandom` password, stores only its hash and returns the plaintext once, in a `PasswordResetResponse` whose field carries `@ToString.Exclude`. It is the recovery path for a member who lost or forgot theirs — a self-service reset needs an email channel, which is out of scope — and it refuses the caller's own id with **`409`**, because that account already has the path above, which proves the current password. A reset does not revoke a token the member already holds; it expires within the 60-minute lifetime (§10)
 - 72 is BCrypt's truncation boundary: input beyond it is silently ignored, so accepting more only lets an unauthenticated caller burn CPU
 
@@ -557,8 +568,25 @@ There is no public register endpoint, so the first manager account must exist be
 bean is not even instantiated outside the `dev` profile and the seed can never reach a deployed
 environment. It reads the admin's email, name and password from `application-dev.properties`
 (`app.admin.*`), with the password itself taken from the `ADMIN_PASSWORD` environment variable, and hashes
-it at runtime through the existing `PasswordEncoder` bean. The runner is idempotent — a
-`findByEmail(...).isPresent()` guard makes a second boot a no-op.
+it at runtime through the existing `PasswordEncoder` bean. The runner is idempotent — an
+`existsByEmail(...)` guard on the normalised email makes a second boot a no-op (§6: an existence question
+is asked with `existsByX`, never by loading the row).
+
+| Seed account | Value |
+|---|---|
+| Role | `MANAGER` — the §8 role every admin endpoint in §10 requires |
+| Email | `manager@timetrack.com` (`ADMIN_EMAIL` overrides it) |
+| Name | `Admin Manager` (`ADMIN_NAME` overrides it) |
+| Password | `ADMIN_PASSWORD` — no default and never written in the repo; the `dev` profile will not start without it |
+
+No other row must exist at startup: `Role` and `EntryStatus` are Java enums stored as strings (§7), so there
+is no lookup table to seed.
+
+**The hosted database (Step 12) is seeded by hand.** `DataInitializer` never runs there — the deployed
+instance does not activate `dev` — so the first manager is inserted once with a BCrypt hash generated
+locally and never committed. That account is a public demo login rather than a secret: its email and
+password are written in the global README, which Step 12's done condition logs in with, and not in any
+file the build reads.
 
 > **Replaced `data.sql` on 2026-07-23 — and the reason is the point.** The original plan seeded the account
 > from `src/main/resources/data.sql` with a pre-generated BCrypt hash and `ON CONFLICT DO NOTHING`, running
@@ -711,13 +739,14 @@ than the handler hardcoding it.
 
 > **Two decisions recorded here (2026-07-28):**
 > - **The manager never supplies or sees a stored password.** `password` is gone from `CreateUserRequest`;
->   the backend generates it and returns it once via `CreateUserResponse` — the only endpoint that ever
->   carries plaintext. `PATCH /api/users/me/password` is `/me`, not `/{id}`, on purpose: password change is
->   a self-service action, so not even a MANAGER can set another user's password. Full rationale in §8.
+>   the backend generates it and returns it once via `CreateUserResponse` — with `PasswordResetResponse`,
+>   the only responses that ever carry plaintext. `PATCH /api/users/me/password` is `/me`, not `/{id}`, on
+>   purpose: *choosing* a password is a self-service action, so not even a MANAGER can choose another
+>   user's — `POST /api/users/{id}/password-reset` only has the backend generate a new one. Full rationale in §8.
 > - **`email` stays editable.** The plan previously contradicted itself — this row said `name, role` while
->   §13 and §17 both described editing the email — with no justification recorded for excluding it. The
+>   §13 and §14 both described editing the email — with no justification recorded for excluding it. The
 >   built behaviour is correct and guarded (duplicate check → 409, and only checked when the value actually
->   changed), so the code stands and §13/§17 now agree with it. Email **is** the login identity, so this is
+>   changed), so the code stands and §13/§14 now agree with it. Email **is** the login identity, so this is
 >   a deliberately MANAGER-only operation, not an incidental field.
 
 > **Contract ruling — the token's subject is the `user.id`, not the email** *(decided 2026-08-24)*.
@@ -737,9 +766,9 @@ than the handler hardcoding it.
 > - **Deactivated accounts are included.** Soft delete is the only delete this API has, so an excluded
 >   account would be unreachable: `PUT /api/users/{id}` with `active = true` is the sole path back, and
 >   the manager can only invoke it on a row the list gave them. `UserResponse.active` is what lets the
->   client tell the two apart, rendered as the §17 "Inactive" status.
+>   client tell the two apart, rendered as the §14 "Inactive" status.
 > - **No `Pageable`.** A company's headcount is tens of rows, and the endpoint's three consumers
->   (§17 Team page, the manager dashboard "Team members" count, the Approvals employee filter) each need
+>   (§14 Team page, the manager dashboard "Team members" count, the Approvals employee filter) each need
 >   the *whole* list to be correct — a paginated response would silently reduce the Approvals filter to
 >   whoever landed on page one, and make the dashboard count a page size. This is a stronger reason than
 >   the general §20 return-all tradeoff: here pagination would break two features, not merely be
@@ -750,7 +779,7 @@ than the handler hardcoding it.
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
 | `GET /api/projects` | both | Employee: active projects only · Manager: all projects. Alphabetical by name | — | `200` + `List<ProjectResponse>` |
-| `GET /api/projects/{id}` | both | Employee: active projects only · Manager: any project. Target of the `Location` header returned by `POST` | — | `200` + `ProjectResponse` · `404` project not found **or inactive and the caller is an EMPLOYEE** |
+| `GET /api/projects/{id}` | both | Employee: active projects only · Manager: any project. Target of the `Location` header returned by `POST`. **Backend-only — no §13 page calls it:** every page already holds the whole list from `GET /api/projects`, and the endpoint exists so the `Location` header names a readable address | — | `200` + `ProjectResponse` · `404` project not found **or inactive and the caller is an EMPLOYEE** |
 | `POST /api/projects` | MANAGER | Create a project | `CreateProjectRequest` — `name`, `description` | `201` + `ProjectResponse` · `400` validation · `409` duplicate name |
 | `PUT /api/projects/{id}` | MANAGER | Update name, description, or reactivate/deactivate | `UpdateProjectRequest` — `name`, `description`, `active` (optional — applied only when non-null) | `200` + `ProjectResponse` · `404` project not found · `409` duplicate name — **renaming a project to its own current name is not a conflict**: the check exempts the target itself, case-insensitively |
 | `DELETE /api/projects/{id}` | MANAGER | Deactivate project (soft delete — sets `active = false`) | — | `204` no body · `404` project not found |
@@ -759,9 +788,9 @@ than the handler hardcoding it.
 
 | Method · Path | Role | Description | Request body | Response |
 |---|---|---|---|---|
-| `GET /api/entries` | both | Employee: own entries only (ownership from the JWT) · Manager: all entries | — (see query filters below) | `200` + paged `TimeEntryResponse` — `content` plus a `page` object carrying `size`, `number`, `totalElements`, `totalPages` |
+| `GET /api/entries` | both | Employee: own entries only (ownership from the JWT) · Manager: all entries | — (see query filters below) | `200` + paged `TimeEntryResponse` — `content` plus a `page` object carrying `size`, `number`, `totalElements`, `totalPages` · `400` a `sort` key outside the allow-list below |
 | `POST /api/entries` | EMPLOYEE | Create an entry in `DRAFT` for the authenticated user | `CreateTimeEntryRequest` — `projectId`, `date`, `hours`, `description` | `201` + `TimeEntryResponse` · `400` validation — future date, hours outside 0.5–24 (`BusinessRuleViolationException`, the input-data tier of §12's taxonomy; `409` is reserved for state conflicts) · `404` project not found **or inactive** (§8 project-existence ruling — a create can never be entitled to an archived project) |
-| `PUT /api/entries/{id}` | EMPLOYEE | Edit own `DRAFT` entry | `UpdateTimeEntryRequest` | `200` + `TimeEntryResponse` · `400` validation — PUT replaces the whole resource, so it re-runs create's rules (future date, hours range), **and the requested project is inactive but is the one the entry already carries** (§8 project-existence ruling) · `404` entry not found **or not owned by the caller** (§8 status ruling), **or the requested project is unknown or inactive and is not the entry's own** · `409` entry not in `DRAFT` — **this refusal precedes every body-derived one**, so a non-`DRAFT` entry answers `409` whatever `projectId` the body carries |
+| `PUT /api/entries/{id}` | EMPLOYEE | Edit own `DRAFT` entry | `UpdateTimeEntryRequest` — `projectId`, `date`, `hours`, `description` (the full resource: PUT replaces it) | `200` + `TimeEntryResponse` · `400` validation — PUT replaces the whole resource, so it re-runs create's rules (future date, hours range), **and the requested project is inactive but is the one the entry already carries** (§8 project-existence ruling) · `404` entry not found **or not owned by the caller** (§8 status ruling), **or the requested project is unknown or inactive and is not the entry's own** · `409` entry not in `DRAFT` — **this refusal precedes every body-derived one**, so a non-`DRAFT` entry answers `409` whatever `projectId` the body carries |
 | `DELETE /api/entries/{id}` | EMPLOYEE | Delete own `DRAFT` entry (hard delete — a draft has no history value) | — | `204` no body · `404` entry not found **or not owned by the caller** (§8 status ruling) · `409` entry not in `DRAFT` |
 | `PATCH /api/entries/{id}/submit` | EMPLOYEE | Own entry `DRAFT → SUBMITTED` | — | `200` + `TimeEntryResponse` · `400` the entry's project is inactive (§8: "cannot submit entries for an inactive project") · `404` entry not found **or not owned by the caller** (§8 status ruling) · `409` entry not in `DRAFT` |
 | `PATCH /api/entries/{id}/reopen` | EMPLOYEE | Own entry `REJECTED → DRAFT` so it can be corrected and resubmitted | — | `200` + `TimeEntryResponse` · `404` entry not found **or not owned by the caller** (§8 status ruling) · `409` entry not in `REJECTED` |
@@ -852,7 +881,7 @@ than the handler hardcoding it.
 > | Endpoint | Order |
 > |---|---|
 > | `GET /api/projects` | `name` asc — unique by the §8 duplicate-name rule, so no tie-breaker is needed. Both role branches share it, so the employee's filtered list is a sub-sequence of the manager's |
-> | `GET /api/users` | `active` desc, `name` asc, `id` asc — inactive accounts sort last so the §17 Team table reads without filtering; `name` is not unique, so `id` closes the order |
+> | `GET /api/users` | `active` desc, `name` asc, `id` asc — inactive accounts sort last so the §14 Team table reads without filtering; `name` is not unique, so `id` closes the order |
 > | `GET /api/entries` | `date` desc, `id` desc by default; when the caller supplies `?sort=`, `id` desc is appended to it unless already named (see the paging rule below) |
 > | `GET /api/reports/by-project` | hours desc, name asc — `name` unique by the §8 duplicate-name rule, so no tie-breaker is needed (see the reports rule above) |
 > | `GET /api/reports/by-user` | hours desc, name asc, `id` asc — `name` is not unique, so `id` closes the order, as on `GET /api/users` (see the reports rule above) |
@@ -893,6 +922,14 @@ Test every endpoint in Postman as soon as it is created. Do not wait until the w
 - Create folders inside it, one per controller: `Auth`, `Users`, `Projects`, `Entries`, `Reports`
 - Add each endpoint to its folder as you build it
 
+| Folder | Endpoints (§10) |
+|---|---|
+| `Auth` | `POST /api/auth/login` |
+| `Users` | `GET /api/users` · `POST /api/users` · `PUT /api/users/{id}` · `PATCH /api/users/me/password` · `POST /api/users/{id}/password-reset` · `DELETE /api/users/{id}` |
+| `Projects` | `GET /api/projects` · `GET /api/projects/{id}` · `POST /api/projects` · `PUT /api/projects/{id}` · `DELETE /api/projects/{id}` |
+| `Entries` | `GET /api/entries` · `POST /api/entries` · `PUT /api/entries/{id}` · `DELETE /api/entries/{id}` · `PATCH /api/entries/{id}/submit` · `/reopen` · `/approve` · `/reject` |
+| `Reports` | `GET /api/reports/summary` · `GET /api/reports/by-project` · `GET /api/reports/by-user` |
+
 **For each endpoint, check:**
 - Correct HTTP status code — including the three this project's taxonomy turns on: **403** for a role
   refusal, **404** for a resource the caller does not own (§8 status ruling — indistinguishable from a
@@ -914,11 +951,14 @@ Test every endpoint in Postman as soon as it is created. Do not wait until the w
 ```
 src/main/resources/
 ├── application.properties      (DB connection, JPA config, JWT secret + expiry)
-└── application-dev.properties  (dev-only: show-sql, app.admin.* seed values)
+├── application-dev.properties  (dev-only: show-sql, app.admin.* seed values)
+└── ValidationMessages.properties (capitalised-sentence text for every Bean Validation constraint the DTOs use)
 
 src/main/java/com/victor/timetrack/
+├── TimetrackApplication.java        (@SpringBootApplication entry point)
 ├── config/
-│   └── DataInitializer.java         (@Profile("dev") CommandLineRunner — seeds the first manager)
+│   ├── DataInitializer.java         (@Profile("dev") CommandLineRunner — seeds the first manager)
+│   └── WebConfig.java               (Page serialised VIA_DTO + the size ≤ 100 page cap)
 ├── controller/
 │   ├── AuthController.java          (POST /api/auth/login — public)
 │   ├── UserController.java          (/api/users — MANAGER only, except PATCH /me/password: any authenticated user)
@@ -929,6 +969,7 @@ src/main/java/com/victor/timetrack/
 │   ├── AuthService.java             (checks the login throttle, authenticates credentials and issues the JWT)
 │   ├── UserService.java             (user CRUD + soft delete + SecureRandom password generation and self-service change)
 │   ├── UserDetailsServiceImpl.java  (Spring Security — loads a user by email for authentication)
+│   ├── AuthenticatedUserProvider.java (the caller's User entity and whether they are a MANAGER, from the SecurityContext)
 │   ├── ProjectService.java          (project CRUD + soft delete)
 │   ├── TimeEntryService.java        (entry CRUD, ownership checks, status transitions)
 │   └── ReportService.java           (monthly aggregations for the three report endpoints)
@@ -948,15 +989,17 @@ src/main/java/com/victor/timetrack/
 │   │   ├── LoginRequest.java                 (email + password)
 │   │   ├── CreateProjectRequest.java         (name + description)
 │   │   ├── UpdateProjectRequest.java         (name + description + active — optional, applied only when non-null)
-│   │   ├── CreateTimeEntryRequest.java       (projectId, date, hours, description — also used by PUT)
+│   │   ├── CreateTimeEntryRequest.java       (projectId, date, hours, description — POST)
+│   │   ├── UpdateTimeEntryRequest.java       (same four fields, the full replacement PUT sends)
 │   │   ├── RejectRequest.java              (rejectionNote body for PATCH /reject)
 │   │   ├── CreateUserRequest.java          (name, email, role — no password: the backend generates it)
 │   │   ├── UpdateUserRequest.java          (name, email, role, active)
 │   │   └── ChangePasswordRequest.java      (currentPassword + newPassword — self-service only)
 │   └── response/
-│       ├── AuthResponse.java                    (token + name + role)
+│       ├── AuthResponse.java                    (token + id + name + role)
 │       ├── UserResponse.java                    (id, name, email, role, active — never the hash)
 │       ├── CreateUserResponse.java              (UserResponse fields + the generated plaintext, returned once)
+│       ├── PasswordResetResponse.java           (generatedPassword only — the manager's reset, returned once)
 │       ├── ProjectResponse.java                 (id, name, description, active)
 │       ├── TimeEntryResponse.java               (flattened user/project ids + names + status, no entities)
 │       ├── ReportSummaryResponse.java         (approvedHours, pendingHours, totalEntries)
@@ -973,6 +1016,8 @@ src/main/java/com/victor/timetrack/
 │   ├── DuplicateResourceException.java    (duplicate email or project name → 409, caller-facing message)
 │   ├── ForbiddenOperationException.java   (segregation of duties on approve/reject → 403)
 │   └── TooManyAttemptsException.java      (email or IP inside the failed-login cooldown → 429)
+├── util/
+│   └── EmailNormalizer.java           (trim + lower-case, so login, create and update compare one email form)
 └── security/
     ├── JwtUtil.java                  (generates and validates the token, reads its claims)
     ├── JwtFilter.java                (OncePerRequestFilter — puts the user in the SecurityContext)
@@ -987,6 +1032,9 @@ src/main/java/com/victor/timetrack/
 
 ```
 src/app/
+├── app.ts                         ← root component: the top-level <router-outlet /> only
+├── app.config.ts                  ← providers: router + title strategy, HttpClient + auth interceptor, Material defaults
+├── app.routes.ts                  ← the route table below, with its guards and per-route titles
 ├── layout/
 │   └── shell/                     ← MatSidenav + toolbar around a nested <router-outlet />; the component of the guarded parent route, so /login never renders inside it
 ├── core/
@@ -1019,13 +1067,14 @@ src/app/
 │   ├── projects/                 ← project CRUD table, manager only
 │   │   └── project-dialog/       ← create / edit a project (name + description, reactive form)
 │   ├── approvals/                ← SUBMITTED entries queue, approve / reject
-│   ├── team/                     ← user list, manager only
-│   │   └── user-dialog/          ← add and edit user (name, email, role — never a password field)
-│   └── reports/                  ← monthly report views (summary, by project, by employee)
+│   ├── team/                     ← user list, manager only; row actions deactivate, reactivate and reset a password
+│   │   ├── user-dialog/          ← add and edit user (name, email, role — never a password field)
+│   │   └── generated-password-dialog/ ← shows a create's or reset's one-time password until the manager closes it
+│   └── reports/                  ← monthly report views (summary, by project, by user)
 └── shared/
     ├── components/
     │   ├── change-password-dialog/ ← current + new password form, opened from the shell user menu (not routed) → PATCH /api/users/me/password
-    │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete
+    │   ├── confirm-dialog/     ← generic yes/no confirmation, used before every delete; `confirm-discard.ts` asks it before a dirty form closes
     │   ├── logo/               ← the clock mark, sized by each host's class (Login, shell toolbar)
     │   ├── reject-dialog/     ← rejection note input, used in Approvals
     │   ├── stat-card/         ← outlined number + label with a pulsing skeleton, used by both dashboards and Reports
@@ -1033,12 +1082,15 @@ src/app/
     ├── models/                    ← interfaces mirroring the backend response DTOs
     │   ├── auth.ts                ← LoginRequest, AuthResponse + isAuthResponse, Role + isRole
     │   ├── api-error.ts           ← ApiError, its runtime type guard, `apiErrorMessage()` and `placeFieldErrors()`
-    │   ├── user.ts                ← ChangePasswordRequest (Step 7a); User joins it in Step 7d
+    │   ├── user.ts                ← User, Create/UpdateUserRequest, CreateUserResponse, PasswordResetResponse, ChangePasswordRequest
     │   ├── page.ts                ← generic Page<T> + PageRequest for the paged GET /api/entries
     │   ├── project.ts             ← Project, CreateProjectRequest, UpdateProjectRequest
-    │   ├── time-entry.ts          ← TimeEntry + EntryStatus
-    │   └── report.ts              ← ReportSummary (Step 7b); the two hours reports join it in Step 7d
-    └── dates.ts                   ← local `YYYY-MM-DD` / `YYYY-MM` helpers and the month options of the filter bars
+    │   ├── time-entry.ts          ← TimeEntry, EntryStatus, TimeEntryFilters, Create/UpdateTimeEntryRequest, RejectRequest
+    │   └── report.ts              ← ReportSummary, ProjectHours, UserHours
+    ├── busy-ids.ts                ← immutable add/remove on the per-row in-flight id set (§6 "In-flight state is per row")
+    ├── dates.ts                   ← local `YYYY-MM-DD` / `YYYY-MM` helpers and the month options of the filter bars
+    ├── focus.ts                   ← focus hand-back after a row write, a render or a failed save
+    └── validators.ts              ← `notBlank`, the client mirror of `@NotBlank` (§6 "A client rule measures what the server measures")
 ```
 
 **File naming — the 2025 Angular style guide, applied to every file in `src/app/`** (ruled 2026-09-11).
@@ -1085,7 +1137,7 @@ it differently mid-build:
 |---|---|---|
 | `GET /api/entries?month=` | Employee dashboard (stat cards + recent list) · Entries page (table) | **Each page fetches independently** into its own `entries` signal. The dashboard asks for status counts (`size=1`) and page 0 as its recent list; the entries page asks for whatever the filter bar holds — the same URL with different params, so a shared cache would be wrong more often than right. Refetch after every mutation on the page that made it |
 | `GET /api/entries?status=SUBMITTED` | Manager dashboard ("Pending approval" card + review list) · Approvals page (queue) | **Each page fetches independently.** Approving from the dashboard refetches only the dashboard; the Approvals page is re-read when the user navigates to it |
-| `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
+| `GET /api/projects` | Projects page · Entries filter bar · entry-dialog project selector · Approvals project filter · Manager dashboard ("Active projects" card) | **Each page fetches independently** on load. The entry-dialog receives the already-loaded list from its parent page through `MatDialog` data — it does not call `ProjectService` itself |
 | `GET /api/users` | Team page · Manager dashboard ("Team members" card) · Approvals employee filter | **Each page fetches independently** |
 | `GET /api/reports/summary?month=` | Reports page ("Approved this month" card) · Manager dashboard ("Approved this month" card) · Employee dashboard ("Approved this month" card, scoped by the token) | **Each page fetches independently**, for its own selected month |
 | — current user + token (no endpoint after login) | App shell (name, role-filtered sidebar) · both guards · every role-aware page | **`AuthService`** — the one piece of app-wide state, the `session` signal, written to `localStorage` by `login()` and `logout()` themselves. Auth outlives every route, so a page cannot own it |
@@ -1100,7 +1152,9 @@ it differently mid-build:
 TimeTrack is an internal payroll-adjacent tool: the feeling to hit is **calm operational instrument**, not
 the friendly consumer app 05 was or the generic corporate portal 06 was. A timesheet is read many times a
 day by people who want the numbers, so the app is quiet, dense and flat. It differs from **every published
-project** on four axes, each one a single theming decision:
+project** on four axes, each one a single theming decision. Projects 01–04 are hand-written CSS with no
+Material and no design section on record, so the axes are contrasted against 05 and 06, the two published
+Material themes:
 
 - **Palette** — a cool **teal** primary (`#00695C` intent) on a light-neutral grey surface, with the four
   status colours as the only saturated ink on screen. Project 05 shipped Material's **blue** palette and
@@ -1119,42 +1173,6 @@ project** on four axes, each one a single theming decision:
 Layout skeleton stays a `MatSidenav` shell (as in 06) on purpose — a role-filtered sidebar is the correct
 shell for seven routes, and the identity is carried by the four axes above, not by moving navigation for
 the sake of it.
-
-### App shell
-
-`MatSidenav` with a fixed toolbar and a scrollable content area — the same skeleton as project 06, wearing
-the teal / compact / flat identity above.
-
-```
-┌─────────────────────────────────────────────────┐
-│  toolbar: logo + app name + user menu ▼         │
-├──────────────┬──────────────────────────────────┤
-│              │                                  │
-│   sidebar    │        page content              │
-│   EMPLOYEE   │                                  │
-│  Dashboard   │                                  │
-│  My Entries  │                                  │
-│              │                                  │
-│   MANAGER    │                                  │
-│  Dashboard   │                                  │
-│  Entries     │                                  │
-│  Projects    │                                  │
-│  Approvals ● │                                  │
-│  Team        │                                  │
-│  Reports     │                                  │
-│              │                                  │
-└──────────────┴──────────────────────────────────┘
-```
-
-- The routed page renders inside a `<main class="page-content">` capped at `max-inline-size: 80rem`,
-  left-aligned beside the sidebar (added 2026-09-18). On a wide monitor the uncapped page stretched four
-  stat cards to ~400px each and opened a wide gap between table columns; capping the whole page rather
-  than each block keeps cards and tables on one right edge. Below ~1366px it changes nothing
-- Sidebar links filtered by role — only one section is shown depending on who is logged in
-- `MatBadge` on Approvals link showing the count of pending SUBMITTED entries
-- Toolbar shows the logged-in user's name as a `MatMenu` trigger; the menu holds **Change password** and
-  **Log out**, in that order. "Change password" opens the shared `change-password-dialog` (wireframe below)
-  — per the §8 ruling it is a dialog, not a route, so it needs no new guard and no entry in §13's route list
 
 ---
 
@@ -1194,10 +1212,10 @@ stylesheet and point at the break.
 | Decision | The rule |
 |---|---|
 | **Theming** | One `styles/material-theme.scss` holding a scoped `mat.theme()` (Angular Material v19 uses the M3 API). Component stylesheets **never** override Material internals with CSS — that is the pattern that breaks on every Material upgrade |
-| **Primary colour** | A teal-based M3 palette, declared once in `material-theme.scss`. `#00695C` above is the **intent**; under M3 the theme generates its own tonal ramp from it, so the rendered hex will differ and that is correct — do not force the seed hex back with CSS |
-| **Status colours** | Four CSS custom properties (`--status-draft`, `--status-submitted`, `--status-approved`, `--status-rejected`) declared once in the global stylesheet and consumed **only** by `status-badge`. They are not theme colours; no other component may reference them |
-| **Typography** | Material's type scale only. Page title `headline-small`, section heading `title-medium`, table and body text `body-medium`, stat-card number `display-small`, card label `body-small` muted. **No `font-size` in a component stylesheet**. One named exception, ruled 2026-09-22: Login's "TimeTrack" (`.login-brand-name`, `display-medium` on the branding panel, `title-large` in the phone lockup) is set at `font-weight: 700`, because there it is the logotype beside the clock mark rather than interface text; the toolbar's brand, which sits among controls, keeps the scale's weight |
-| **Spacing** | An 8px grid: 8 · 16 · 24 · 32, **written in `rem`** (0.5 · 1 · 1.5 · 2rem at the default 16px root) so spacing and fixed widths grow with the user's browser font size. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. No arbitrary values; `px` only for hairline borders, media-query breakpoints and the theme's shape tokens. **The grid governs spacing between elements, not optical alignment inside one** — ruled 2026-09-22: a value measured against a component's own content is allowed and named here, and a value not named here is still a finding. The four: the status pills' `0.125rem` vertical padding (`.status-pill` and `status-badge`'s `.badge`, one mould — at `0.25rem` the pill grows from 22 to 26px and reads as a chip), the Approvals badge's `container-offset` (centres `MatBadge`'s 18px box on its link's text; a grid step moves it 2px off), the page title's and the dialogs' error line's `0.25rem` focus-ring offset, and the dashboards' "View all", pulled out by `-1 × --mat-button-text-horizontal-padding` so its label, not its button box, meets the table's right edge — it reads Material's token rather than a number, so the alignment follows the button's padding if the theme changes it |
+| **Primary colour** | A teal-based M3 palette: the tonal ramps Material's `theme-color` schematic generated from the `#00695C` seed live in `styles/_theme-colors.scss`, and `mat.theme()` in `material-theme.scss` is their only consumer. `#00695C` above is the **intent**; the generated ramp's tones differ from it and that is correct — do not force the seed hex back with CSS |
+| **Status colours** | Four CSS custom properties (`--status-draft`, `--status-submitted`, `--status-approved`, `--status-rejected`) declared once in `:root` of the global `styles.scss` and consumed **only** by `status-badge`. They are not theme colours; no other component may reference them. The three domain tokens beside them follow the same rule with their own consumers: `--project-active` only by the `.status-pill` rule in `styles/_table.scss` (Projects and Team), `--action-approve` / `--action-reject` only by that partial's icon-button overrides on the approve / reject buttons |
+| **Typography** | Material's type scale only, on **Roboto**, set once as `typography` in `mat.theme()` (`material-theme.scss`) and read everywhere through the `--mat-sys-*` font tokens. Page title `headline-small`, section heading `title-medium`, table and body text `body-medium`, stat-card number `display-small`, card label `body-small` muted. **No `font-size` in a component stylesheet**. One named exception, ruled 2026-09-22: Login's "TimeTrack" (`.login-brand-name`, `display-medium` on the branding panel, `title-large` in the phone lockup) is set at `font-weight: 700`, because there it is the logotype beside the clock mark rather than interface text; the toolbar's brand, which sits among controls, keeps the scale's weight |
+| **Spacing** | An 8px grid: 8 · 16 · 24 · 32, **written in `rem`** (0.5 · 1 · 1.5 · 2rem at the default 16px root) so spacing and fixed widths grow with the user's browser font size. Page padding 24 desktop / 16 below 600px, gap between cards 16, vertical gap between sections 32. The values are written directly in the `styles/` partials and component stylesheets — there is no spacing-token layer, so the Visual QA's stylesheet scan is what enforces the grid. No arbitrary values; `px` only for hairline borders, media-query breakpoints and the theme's shape tokens. **The grid governs spacing between elements, not optical alignment inside one** — ruled 2026-09-22: a value measured against a component's own content is allowed and named here, and a value not named here is still a finding. The four: the status pills' `0.125rem` vertical padding (`.status-pill` and `status-badge`'s `.badge`, one mould — at `0.25rem` the pill grows from 22 to 26px and reads as a chip), the Approvals badge's `container-offset` (centres `MatBadge`'s 18px box on its link's text; a grid step moves it 2px off), the page title's and the dialogs' error line's `0.25rem` focus-ring offset, and the dashboards' "View all", pulled out by `-1 × --mat-button-text-horizontal-padding` so its label, not its button box, meets the table's right edge — it reads Material's token rather than a number, so the alignment follows the button's padding if the theme changes it |
 | **Elevation & shape** | Flat, per the identity: cards are `<mat-card appearance="outlined">` at elevation 0 with a 1px outline; only overlays lift — dialogs at elevation 3, menus/snackbars at Material's default. Never a hand-written `box-shadow`. One 4px corner radius, set as the theme's shape token and never overridden per component |
 | **Shared styles** | A rule several components share is declared once in a `styles/` partial and consumed by class — `_page.scss` for the routed views' blocks (header, filter bar, stat-card strip, the three states), `_table.scss` for every table's wrapper, loading overlay and column rules, `_dialog.scss` for the dialogs' form, error line and destructive confirm — never copied into each component stylesheet. A global rule carries no encapsulation attribute, so it reaches a dialog the overlay renders outside its opener's DOM; a class with a single user stays in its own component. Added 2026-09-20, after the pair `.dialog-form` / `.dialog-error` had been copied into four stylesheets. A global rule that must beat a Material component's own stylesheet — injected after the global one — carries one more class than Material's selector: the column rules sit under `.table-wrapper` because `.mdc-data-table__cell` sets `text-align: start` with one class. **No rule in the styles layer names a Material internal class** — ruled 2026-09-23, after a check of `mat.table-overrides` found no token for the sticky-column divider: a private class can be renamed in a release with no compile error, so the rule is written against what the application controls — the generated `.mat-column-{name}` class, a plain element selector, or one of our own — and wins the tie on the wrapper's extra class rather than by naming Material's. `_table.scss` added 2026-09-21, when the page and table blocks had been copied into five stylesheets |
 | **Density** | Material's **compact** density, set once in `mat.theme()` and inherited by every `MatTable` and form field — so ten rows fit on a laptop screen without scrolling. Never set per table |
@@ -1207,171 +1225,65 @@ stylesheet and point at the break.
 
 ---
 
-### Motion
-
-Animation here is feedback, not decoration — the bar is "the app feels responsive", not "the app moves".
-
-- **Skeleton cards pulse.** A static skeleton reads as a broken page; a slow opacity keyframe reads as
-  loading. This is the one animation that is not optional, because §14 mandates skeletons everywhere
-- **Sidenav** uses Material's built-in slide in `over` mode — do not customise it
-- **Dialogs and snackbars** keep Material's default enter/leave. No custom transitions
-- **The account menu arrow** turns 180° over 150ms while its menu is open, driven by the trigger's
-  `menuOpened` / `menuClosed` outputs, because `MatMenuTrigger` updates `aria-expanded` but never its own
-  content; the turn is instant under `prefers-reduced-motion`
-- **Approve / reject** gives its feedback through the snackbar and the row disappearing on refetch; no
-  bespoke row animation
-- **Budget:** any transition is ≤ 200ms and fires on a state change only. Nothing animates on page load,
-  nothing loops, nothing moves purely to look busy
-- **`prefers-reduced-motion`** disables the skeleton pulse — a media query in the global stylesheet
-
----
-
-### Accessibility floor
-
-Small list, non-negotiable, and cheap if done as each page is built rather than at the end:
-
-- **Every icon-only button carries an `aria-label`.** ✏ 🗑 ✓ ✕ ➤ are the entire interaction on Entries,
-  Projects, Team and Approvals — without labels those four pages are unusable with a screen reader
-- **Status is never conveyed by colour alone.** The badge always shows its text; the colour reinforces it
-- **Check the four status colours at badge size** against the 4.5:1 AA contrast ratio on white, and darken
-  the green and the blue if they fall short. Verify, do not assume — small text on a coloured chip is the
-  usual place this fails
-- **Focus stays visible** — never `outline: none` without a replacement. `MatDialog` already traps focus:
-  do not break it. **Every Material button, icon button, list item, menu item, option and sort header draws a 3px ring on
-  keyboard focus** — added 2026-09-22:
-  `material-theme.scss` includes `mat.strong-focus-indicators` once, in `primary`, because without it
-  Material leaves its ring hidden and an icon button shows focus only through its state layer, 1.25:1
-  against a table row; a button's ring sits outside the button, on the surface around it, so the primary
-  toolbar takes its own `on-primary` ring, the way it takes its own icon colour. Form fields carry no such ring
-  and need none: an outlined `mat-form-field` shows focus by thickening its own outline in `primary`. **A heading focused by script shows its ring through `:focus-visible` alone, sized to
-  its text**, 3px wide like Material's — ruled 2026-09-22: a page's `<h1>` is the focus target of last resort when a write or a
-  reload removes the control that held it, and `:focus` rang it after every mouse action and after a
-  click on the title itself, while the browser's own heuristic matches a script-moved focus only when the
-  last input was the keyboard; `inline-size: fit-content` stops a flex column stretching the ring across
-  the page. The dialogs' error line, the other script-moved focus target, rings the same way (added
-  2026-09-22)
-- **Closing a dialog returns focus to what opened it.** `MatDialog` restores focus to the element that
-  held it when the dialog opened, so a dialog opened from a `mat-menu-item` must pass the menu's trigger
-  as `restoreFocus`: the item is destroyed with its menu, and the default restore leaves focus on
-  `<body>` (WCAG 2.4.3)
-- **All visible content sits in a landmark** — added 2026-09-22: the shell's toolbar is wrapped in a top-level
-  `<header>`, which takes the `banner` role, beside the sidenav's navigation list and `<main class="page-content">`;
-  each page's own `<header>` sits inside `<main>` and is not a banner, so there is exactly one. A bare
-  `mat-toolbar` has no role, and axe's `region` rule flagged the brand on every page
-- **Every page owns exactly one `<h1>`, and it names the view** — never the brand, which is plain text
-  wherever it appears. Material's title directives add typography, not heading semantics, so they go on a
-  real heading as an attribute (`<h1 mat-card-title>`, `<h2 mat-dialog-title>`), never as the bare
-  element, which leaves the view with no entry in the heading outline (WCAG 1.3.1)
-- **Every routed page declares its own `title`** — the name of the page only (`'Dashboard'`), never the
-  brand: `core/strategies/app-title-strategy.ts`, provided for `TitleStrategy` in `app.config.ts`, appends
-  `| TimeTrack` and writes the brand alone when no route resolves one. A route added without a `title`
-  would otherwise keep the previous page's name in the tab, because the default strategy writes nothing
-  then; `index.html`'s `<title>` is only the pre-bootstrap fallback (WCAG 2.4.2)
-- **Every password input has a visibility toggle** — a `type="button"` `matIconButton` `matSuffix` with a
-  fixed `aria-label` ("Show password") whose on/off state is `[attr.aria-pressed]`, never a name that flips
-  between Show and Hide. Its `mousedown` default is prevented, so pressing it keeps focus in the field
-  instead of blurring it and marking an empty control touched mid-typing
-- **A control that shows and hides a panel states both its state and its target.** `aria-expanded` bound to
-  the panel's open state, and `aria-controls` naming the panel's DOM `id` — a template reference variable
-  such as `#drawer` never reaches the DOM, so it links the two for Angular only. The shell's navigation
-  toggle points at `id="app-sidenav"`
-- **Every table action is reachable by keyboard**, in the order the row reads. **A table box that holds no
-  control is itself a keyboard stop** — added 2026-09-22: the arrow keys scroll a box only while focus is
-  inside it, so the employee dashboard's recent list, which has no row actions and no sort headers, takes
-  `tabindex="0"` with `role="group"` and `aria-labelledby` its heading — a group, not a region, because the
-  `<section>` around it is already the "Recent entries" region. **Widened 2026-09-23** to the two Reports
-  tables, the only other boxes with neither a sort header nor a row action; on those the ring is drawn by the
-  `.table-area` around the wrapper rather than by the wrapper itself, since an `outline` is painted outside the
-  border box and that box's `overflow: hidden` clips its child's away entirely
-- **A destructive confirmation opens with the focus on its safe button — recorded 2026-09-20.** Material
-  focuses the first tabbable element and `confirm-dialog` puts Cancel first in the DOM, so a reflex Enter
-  cancels and reaching Discard / Delete / Deactivate costs a deliberate Tab. That friction is the point:
-  do not "fix" it by autofocusing the confirm button
-- **A mutation must not destroy the control that holds focus — added 2026-09-20.** The dialog rule above
-  covers the opener that is destroyed with its menu; a row action has the same failure one step later,
-  because the refetch that follows a successful write re-renders the row. Either keep the control across
-  the write (one button whose label and icon change, as on Projects) or hand the confirmation a
-  `restoreFocus` target the write cannot remove (the page's own primary action, as on Entries, whose
-  delete takes the whole row away). `trackBy` is what makes the first option work: without it the row
-  itself is a new node. **It keeps the node, not the focus, once the table can reorder** — added
-  2026-09-21: a sort that moves a row detaches and reinserts its node, which drops focus to the body, so a
-  page whose rows can move hands focus back to the control the write started from once the refetch has
-  rendered (Projects' `restoreFocus()`). **And when the refetch removes that control instead of moving it**
-  — added 2026-09-21: the first item created from a first-use empty state takes the empty state's button
-  away with it, so the hand-back falls back to the page's header action, the one target no refetch
-  removes; one helper, `refocusAfterRender()` in `shared/focus.ts`, holds the rule for Projects and
-  Entries. **A move made when the request resolves is conditional on where focus is by
-  then** — added 2026-09-20: the user may have tabbed away, or opened a dialog whose focus trap an
-  unconditional move would break by sending them to `aria-hidden` content behind it, with no Escape out
-  of a `disableClose` dialog. Move only while focus is still on the control that started the write, or
-  has already fallen to the document body. **That test is `refocusAfterWrite()`, and it is a second
-  helper rather than an argument to the first — widened 2026-09-23**: the two rules read as one
-  predicate and differ only in the moment they measure it. `refocusAfterWrite()` runs when the
-  write resolves, while the pressed control is still on screen; `refocusAfterRender()` runs from
-  `afterNextRender`, once a refetch has removed it. Routing the
-  first through the second makes it a no-op, because at render time nothing has been removed yet and the
-  guard returns early. The three review-and-row actions (`/approvals`, the manager dashboard and
-  `/entries`) call it, including the rejection path, which met the rule only by accident while its dialog
-  opened with `restoreFocus: false`. **A failed save hands focus to what the user has to fix** —
-  added 2026-09-22: the first field in error, else the dialog's error line (the dialog note under the
-  three-states table)
-- **A control that shows text is named by that text.** No `aria-label` on top of visible text: it replaces the
-  text as the accessible name, and speech input then cannot reach the control by what the user reads
-  (WCAG 2.5.3) — the toolbar's account trigger is named by the user's name alone
-- **Icons on a coloured container take its `on-*` colour through the icon button's own token.** A
-  `matIconButton` reads `icon-color`, not the container's text colour, so on the `primary` toolbar it stays
-  `on-surface-variant` grey, under the 3:1 non-text minimum (WCAG 1.4.11). Set `on-primary` with
-  `mat.icon-button-overrides` nested under `.mat-toolbar`: at `html` it would whiten every icon button on a
-  light surface, and a `mat.icon-overrides` would stop the icon inheriting the button's disabled colour
-
----
-
-### Visual QA — the finish bar
-
-The gap between "it works" and "it looks finished" is where portfolio projects usually die, so it gets a
-checklist rather than good intentions. Run it **at the end of Step 7d, before gate G4**, over all eight
-pages in one sitting — that is the only way inconsistency becomes visible:
-
-- [x] Every page uses the type scale and the 8px grid — no stray `font-size`, no arbitrary margin
-- [x] The three states (loading · error · empty) are reachable on every page: throttle the network for
-      loading, stop the backend for error, filter to a month with no data for empty
-- [x] All four status colours pass contrast at badge size, and no status reads by colour alone
-- [x] Every icon-only button has an `aria-label`; every table action is reachable by tab
-- [x] At 1024, 768 and 375px wide: no horizontal page scroll, sidenav behaves per the responsive rules,
-      tables scroll inside their wrapper, dialogs stay a card with every action reachable below 600
-- [x] Skeletons pulse; nothing else animates on load; `prefers-reduced-motion` stops the pulse
-- [x] Two screenshots worth putting in the README exist — the manager dashboard and the entries page
-
-Run 2026-09-22 on the demo dataset, all nine views (Login, both dashboards, Entries as each role, Approvals,
-Projects, Team, Reports): a stylesheet scan found no `font-size` but the empty-state glyph's `4rem` and no
-off-grid value outside the named optical exceptions; headless at 1024, 768 and 375 found no sideways page
-scroll, the sidenav `side` and open only at 1024, every table inside its `overflow-x: auto` wrapper, no
-unnamed button, every table action tabbable and every status pill carrying its word; axe (WCAG 2 A/AA) found
-no violation, colour contrast included, with all four statuses on screen; each page reached its loading,
-error and empty states with the API held, failed and emptied; the entry, project, member and reject dialogs
-stayed 343px cards at 375 with every action reachable; and on load only the skeletons pulse beside the
-spinners each page's state row names, their pulse `none` under `prefers-reduced-motion`.
-
----
-
 ### Material components used
 
 | Component | Where |
 |---|---|
 | `MatSidenav` | App shell |
 | `MatToolbar` | Top bar |
-| `MatCard` | Stat cards on dashboard and reports |
-| `MatTable` + `MatSort` + `MatPaginator` | Entries and Approvals. **Projects takes `MatTable` + `MatSort`, sorted in the browser, and no paginator** (ruled 2026-09-21, reversing the 2026-09-20 ruling that gave it `MatTable` alone): `GET /api/projects` returns an unpaged `Project[]`, so a paginator has no backend behind it, while a client-side sort orders the whole set — the case `/entries` cannot have, which is why it sends `sort` to the API. Name and Status are sortable; a name sort reuses the API's own order, reversed for descending, to keep the database's collation, and a status sort is stable, so each group stays in name order. The 2026-09-20 argument held for name only — the one order the API supplies — and said nothing about status. Team, when it is built, decides the same way |
-| `MatDialog` | Entry form (add and edit), project form (add and edit), reject dialog, confirm dialog, change-password dialog |
+| `MatList` (nav list) | Sidebar links in the app shell |
+| `MatCard` | `stat-card` (both dashboards, Projects, Team, Reports) and the Login form card |
+| `MatTable` alone | The two dashboards' lists and the two Reports tables — glances with no sort and no paging (§13 `entry-list` ruling) |
+| `MatTable` + `MatSort` + `MatPaginator` | Entries and Approvals. **Projects takes `MatTable` + `MatSort`, sorted in the browser, and no paginator** (ruled 2026-09-21, reversing the 2026-09-20 ruling that gave it `MatTable` alone): `GET /api/projects` returns an unpaged `Project[]`, so a paginator has no backend behind it, while a client-side sort orders the whole set — the case `/entries` cannot have, which is why it sends `sort` to the API. Name and Status are sortable; a name sort reuses the API's own order, reversed for descending, to keep the database's collation, and a status sort is stable, so each group stays in name order. The 2026-09-20 argument held for name only — the one order the API supplies — and said nothing about status. **Team takes the same pair on the same argument** — `GET /api/users` is unpaged too |
+| `MatDialog` | Entry form (add and edit), project form (add and edit), user form (add and edit), generated-password dialog, reject dialog, confirm dialog, change-password dialog |
+| `MatFormField` + `MatInput` | Every form field — Login, the five form dialogs, the read-only password field of the generated-password dialog — and the selects of the filter bars and the Reports month selector |
 | `MatDatepicker` | Date field in entry form |
-| `MatSelect` | Project selector in entry form, month filter |
-| `MatChip` (or styled `<span>`) | Status badges |
+| `MatSelect` | Project selector in entry form, role selector in user form, the Entries and Approvals filter bars, the Reports month selector |
+| Styled `<span>` (no `MatChip`) | Status badges (`status-badge`) and the Projects / Team status pill — a chip is an interactive control, and these are read-only labels |
 | `MatSnackBar` | Feedback after every action |
 | `MatBadge` | Pending count on Approvals sidebar link |
 | `MatProgressSpinner` | Loading state on every async page |
-| `MatTooltip` | Every icon-only row action: approve/reject on Approvals, edit/delete/submit on Entries, edit and the deactivate-reactivate toggle on Projects |
+| `MatTooltip` | Every icon-only row action: approve/reject on Approvals and the manager dashboard, edit/delete/submit on Entries, edit and the deactivate-reactivate toggle on Projects, edit / reset password / the deactivate-reactivate toggle on Team |
 | `MatMenu` | User menu in toolbar (change password, logout) |
 | `MatButton` (filled, with icon) | "Log hours" in the entries page header — not a `MatFab` (changed 2026-09-18): a FAB floats over content, and one fixed in a desktop header is only an elevated button in `primary-container` that breaks the flat identity and outshouts the teal primary |
+
+---
+
+### App shell
+
+`MatSidenav` with a fixed toolbar and a scrollable content area — the same skeleton as project 06, wearing
+the teal / compact / flat identity above.
+
+```
+┌─────────────────────────────────────────────────┐
+│  toolbar: logo + app name + user menu ▼         │
+├──────────────┬──────────────────────────────────┤
+│              │                                  │
+│   sidebar    │        page content              │
+│   EMPLOYEE   │                                  │
+│  Dashboard   │                                  │
+│  Entries     │                                  │
+│              │                                  │
+│   MANAGER    │                                  │
+│  Dashboard   │                                  │
+│  Entries     │                                  │
+│  Projects    │                                  │
+│  Approvals ● │                                  │
+│  Team        │                                  │
+│  Reports     │                                  │
+│              │                                  │
+└──────────────┴──────────────────────────────────┘
+```
+
+- The routed page renders inside a `<main class="page-content">` capped at `max-inline-size: 80rem`,
+  left-aligned beside the sidebar (added 2026-09-18). On a wide monitor the uncapped page stretched four
+  stat cards to ~400px each and opened a wide gap between table columns; capping the whole page rather
+  than each block keeps cards and tables on one right edge. Below ~1366px it changes nothing
+- Sidebar links filtered by role — only one section is shown depending on who is logged in
+- `MatBadge` on Approvals link showing the count of pending SUBMITTED entries
+- Toolbar shows the logged-in user's name as a `MatMenu` trigger; the menu holds **Change password** and
+  **Log out**, in that order. "Change password" opens the shared `change-password-dialog` (wireframe below)
+  — per the §8 ruling it is a dialog, not a route, so it needs no new guard and no entry in §13's route list
 
 ---
 
@@ -1418,8 +1330,9 @@ repeated in each wireframe. A page that renders only its success table is incomp
 | Approvals | Spinner over the table, filter bar stays enabled | `.page-error` + Retry | "No pending approvals. Your team is up to date." |
 | Team | Skeleton cards + spinner over the table | `.page-error` + Retry | "No team members yet. Add your first member." |
 | Reports | Skeleton cards + spinner over both tables | `.page-error` + Retry for the whole `forkJoin` | "No approved hours for this month yet." in place of the cards and both tables |
-| Entry dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `role="alert"` line above the fields — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
+| Entry dialog / project dialog / user dialog / reject dialog | Spinner inside the Save button, fields disabled while saving | Backend `fieldErrors` under the offending input — a `@Valid` 400, or the 409 on a duplicate email / project name (§10); anything else in a `role="alert"` line above the fields — the dialog stays open so the typed values are not lost | n/a — a form dialog always opens with its fields |
 | Change-password dialog | Spinner inside the "Change password" button, all three fields disabled while saving | `fieldErrors.currentPassword` under the **current password** input and `fieldErrors.newPassword` under the new one (both `400`, per the §8 status ruling — a wrong current password is *not* a 401 and must not log the user out); anything else in a `role="alert"` line above the fields, dialog stays open | n/a — a form dialog always opens with its fields |
+| Generated-password dialog | n/a — it opens only after the create or reset call has answered, with the password in its `MAT_DIALOG_DATA` | A refused clipboard write reads "The browser refused the copy. Select the password and copy it by hand." in its `role="status"` line; the password stays selectable in its read-only field | n/a — it never opens without a password |
 
 > **Reversal, 2026-09-10 — `disabled` is a visual and interaction state, not a business rule.** The Login
 > row originally said *form disabled while saving*. Removing `form.disable()/enable()` was decided while
@@ -1634,22 +1547,27 @@ Stat cards + user table + "Add member" button.
 └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
 
                                                        [+ Add member]
-┌──────────────────────────────────────────────────────────────┐
-│ Name         │ Email              │ Role     │ Status   │    │
-│─────────────────────────────────────────────────────────────│
-│ Ana García   │ ana@company.com    │ Employee │ Active   │ ✏ 🗑 │
-│ Luis Martín  │ luis@company.com   │ Employee │ Active   │ ✏ 🗑 │
-│ Sara López   │ sara@company.com   │ Manager  │ Active   │ ✏ 🗑 │
-│ Iván Ruiz    │ ivan@company.com   │ Employee │ Inactive │ ✏ 🗑 │
-└──────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│ Name         │ Email              │ Role     │ Status   │         │
+│────────────────────────────────────────────────────────────────│
+│ Ana García   │ ana@company.com    │ Employee │ Active   │ ✏ 🔑 🗑 │
+│ Luis Martín  │ luis@company.com   │ Employee │ Active   │ ✏ 🔑 🗑 │
+│ Sara López   │ sara@company.com   │ Manager  │ Active   │ ✏ 🔑 🗑 │
+│ Iván Ruiz    │ ivan@company.com   │ Employee │ Inactive │ ✏ 🔑 ↺ │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 - The 🗑 icon deactivates the account (soft delete) — it does not delete data. A deactivated user keeps
   every entry they logged and simply cannot log in, so the row **stays in the table** with an "Inactive"
-  status, exactly as an archived project does on the Projects page
+  status, exactly as an archived project does on the Projects page. It is the same one-button toggle as
+  Projects': on an "Inactive" row it is ↺ "Reactivate", which `PUT`s the row back with `active: true`
+  and asks nothing, while 🗑 asks the destructive confirmation first
 - `GET /api/users` returns active and inactive accounts alike (§10), which is what makes reactivation
-  reachable: the ✏ dialog on an "Inactive" row is the only path back to `active = true` via
-  `PUT /api/users/{id}`. Hiding inactive users from the list would strand those accounts
+  reachable: hiding inactive users from the list would strand those accounts
+- The 🔑 icon resets the member's password (`POST /api/users/{id}/password-reset`) after a destructive
+  confirmation, and the new one is shown once in the generated-password dialog below. On the manager's
+  own row 🔑 and 🗑 are disabled, with a tooltip pointing to **Change password** in the account menu and
+  to the §8 self-deactivation rule respectively
 - The four cards count over the **whole** list: `Total`, and the `Employees`/`Managers` split, include
   deactivated accounts; `Inactive` is the deactivated subset cutting across both roles. Four cards
   rather than the Projects page's three because users carry two independent axes — role and status
@@ -1678,12 +1596,45 @@ Stat cards + user table + "Add member" button.
 - Field errors come from the backend `fieldErrors` map (e.g. a duplicate email → 409 shown on the field)
 - Empty/blank state: none — the dialog always opens with the three fields
 
-After creation, a snackbar shows the `generatedPassword` from the `CreateUserResponse` so the manager can
-pass it on. It is shown **once and never again**: the plaintext exists only in that single response, so the
-snackbar needs a copy-to-clipboard action and a long-enough duration (or a small dismissible dialog rather
-than an auto-hiding snackbar) — a manager who misses it cannot recover that password — the row's 🔑 "Reset password" issues a new one,
-shown once in the same dialog (§8). Deactivating and recreating the account is not a way back: the email
-check counts deactivated accounts, so the recreate answers `409`.
+After creation, the `generatedPassword` from the `CreateUserResponse` is shown in the generated-password
+dialog below — not a snackbar, which hides itself on a timer while the password exists only in that single
+response. A manager who loses it cannot recover that password: the row's 🔑 "Reset password" issues a new
+one, shown once in the same dialog (§8). Deactivating and recreating the account is not a way back: the
+email check counts deactivated accounts, so the recreate answers `409`.
+
+##### Generated password — dialog (`team/generated-password-dialog`)
+
+Opened by the Team page after a create ("Member added") or a reset ("Password reset") has answered; the
+title and the first sentence follow the reason, the rest is identical.
+
+```
+┌──────────────────────────────────────────┐
+│  Member added                            │
+│                                          │
+│  Share this password with Ana García     │
+│  (ana@company.com) so they can log in.   │
+│  Copy it now: it is shown only this once │
+│  and cannot be displayed again.          │
+│                                          │
+│  Generated password                      │
+│  [ xK7#pQ2m9vLw           ] (read-only)  │
+│  Password copied to the clipboard.       │
+│                                          │
+│                   [⧉ Copy]  [Done]       │
+└──────────────────────────────────────────┘
+```
+
+- **Only Done closes it**: `disableClose: true` (no Escape, no backdrop) and `closeOnNavigation: false`,
+  while `oneTimeSecretGuard` (§13) keeps `/team` from being left with the dialog open — an ended session
+  always leaves
+- Focus opens on **Copy** (`cdkFocusInitial`), which writes the password through the CDK's
+  `cdkCopyToClipboard`; its icon and label turn to ✓ "Copied" and a `role="status"` line confirms it.
+  Focusing the read-only field selects the whole password for a manual copy
+- On close, focus returns to "Add member" after a create and to the row's 🔑 after a reset (the
+  accessibility floor's `restoreFocus` rule)
+- **Loading** — n/a: the dialog opens only once the call has answered. **Error** — a refused clipboard
+  write replaces the status line with "The browser refused the copy. Select the password and copy it by
+  hand." **Empty** — n/a, it never opens without a password
 
 ---
 
@@ -1745,12 +1696,17 @@ Four stat cards + pending approvals list with quick actions.
 └──────────┘ └──────────┘ └──────────┘ └──────────┘
 
 Pending approvals
-┌──────────────────────────────────────────────────────────────────┐
-│ Ana García   │ Project A  │ May 14  │ 8h  │ [Approve] [Reject]  │
-│ Luis Martín  │ Project B  │ May 13  │ 4h  │ [Approve] [Reject]  │
-└──────────────────────────────────────────────────────────────────┘
-                                              [View all →]
+                                                      [View all]
+┌──────────────────────────────────────────────────────────┐
+│ Employee     │ Hours │ Project    │ Date         │        │
+│─────────────────────────────────────────────────────────│
+│ Ana García   │ 8h    │ Project A  │ 14 May 2026  │ ✓  ✕  │
+│ Luis Martín  │ 4h    │ Project B  │ 13 May 2026  │ ✓  ✕  │
+└──────────────────────────────────────────────────────────┘
 ```
+
+- ✓ / ✕ are the same labelled, tooltipped icon buttons as `/approvals` (the palette's `--action-approve` /
+  `--action-reject`); Hours sits second per the responsive ruling, and "View all" links to `/approvals`
 
 **How stat cards get their data:**
 - "Pending approval" — `GET /api/entries?status=SUBMITTED`, count results
@@ -1889,6 +1845,25 @@ Stat cards + table with CRUD actions.
 - Empty state: "No projects yet. Create your first project." + the "+ New project" button
 - Loading and error states as declared in "The three states of every page"
 
+#### Project form — dialog (`projects/project-dialog`)
+
+Opened by "+ New project" and by the row's ✏; one form for both, titled "New project" / "Edit project".
+
+```
+┌──────────────────────────────────┐
+│  New project                     │
+│                                  │
+│  Name         [text input]       │
+│  Description                     │
+│  [                             ] │
+│                                  │
+│              [Cancel]  [Save]    │
+└──────────────────────────────────┘
+```
+
+- No `active` field (see the Projects page bullets); a duplicate name answers `409` and renders under
+  Name, other failures in the dialog's `role="alert"` line — states as in the three-states table
+
 ---
 
 #### Approvals page — Manager
@@ -1899,12 +1874,12 @@ Defaults to SUBMITTED — but the status filter lets the manager see the full hi
 ```
 [Month ▼]  [Employee ▼]  [Project ▼]  [Status ▼ → default: Pending]
 
-┌──────────────────────────────────────────────────────────────────┐
-│ Employee    │ Project   │ Date    │ Hours │ Description │        │
-│────────────────────────────────────────────────────────────────│
-│ Ana García  │ Project A │ May 14  │ 8h    │ API work    │ ✓  ✕  │
-│ Luis Martín │ Project B │ May 13  │ 4h    │ Frontend    │ ✓  ✕  │
-└──────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Employee    │ Hours │ Project   │ Date        │ Description │ Status    │       │
+│─────────────────────────────────────────────────────────────────────────────│
+│ Ana García  │ 8h    │ Project A │ 14 May 2026 │ API work    │ SUBMITTED │ ✓  ✕ │
+│ Luis Martín │ 4h    │ Project B │ 13 May 2026 │ Frontend    │ SUBMITTED │ ✓  ✕ │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 - ✓ = approve (green icon button with tooltip), ✕ = reject (red icon button with tooltip)
@@ -1955,6 +1930,127 @@ approval" line under the card or a fourth card clearly labelled as pending — n
 
 ---
 
+### Motion
+
+Animation here is feedback, not decoration — the bar is "the app feels responsive", not "the app moves".
+
+- **Skeleton cards pulse.** A static skeleton reads as a broken page; a slow opacity keyframe reads as
+  loading. This is the one animation that is not optional, because §14 mandates skeletons everywhere
+- **Sidenav** uses Material's built-in slide in `over` mode — do not customise it
+- **Dialogs and snackbars** keep Material's default enter/leave. No custom transitions
+- **The account menu arrow** turns 180° over 150ms while its menu is open, driven by the trigger's
+  `menuOpened` / `menuClosed` outputs, because `MatMenuTrigger` updates `aria-expanded` but never its own
+  content; the turn is instant under `prefers-reduced-motion`
+- **Approve / reject** gives its feedback through the snackbar and the row disappearing on refetch; no
+  bespoke row animation
+- **Budget:** any transition is ≤ 200ms and fires on a state change only. Nothing animates on page load,
+  nothing loops, nothing moves purely to look busy — the skeleton pulse above is the one named exception
+  (a 1.5s loop, `.skeleton` in the global `styles.scss`), because it *is* the loading state rather than a
+  transition into one
+- **`prefers-reduced-motion`** disables the skeleton pulse — a media query in the global stylesheet
+
+---
+
+### Accessibility floor
+
+Small list, non-negotiable, and cheap if done as each page is built rather than at the end:
+
+- **Every icon-only button carries an `aria-label`.** ✏ 🗑 ✓ ✕ ➤ are the entire interaction on Entries,
+  Projects, Team and Approvals — without labels those four pages are unusable with a screen reader
+- **Status is never conveyed by colour alone.** The badge always shows its text; the colour reinforces it
+- **Check the four status colours at badge size** against the 4.5:1 AA contrast ratio on white, and darken
+  the green and the blue if they fall short. Verify, do not assume — small text on a coloured chip is the
+  usual place this fails
+- **Focus stays visible** — never `outline: none` without a replacement. `MatDialog` already traps focus:
+  do not break it. **Every Material button, icon button, list item, menu item, option and sort header draws a 3px ring on
+  keyboard focus** — added 2026-09-22:
+  `material-theme.scss` includes `mat.strong-focus-indicators` once, in `primary`, because without it
+  Material leaves its ring hidden and an icon button shows focus only through its state layer, 1.25:1
+  against a table row; a button's ring sits outside the button, on the surface around it, so the primary
+  toolbar takes its own `on-primary` ring, the way it takes its own icon colour. Form fields carry no such ring
+  and need none: an outlined `mat-form-field` shows focus by thickening its own outline in `primary`. **A heading focused by script shows its ring through `:focus-visible` alone, sized to
+  its text**, 3px wide like Material's — ruled 2026-09-22: a page's `<h1>` is the focus target of last resort when a write or a
+  reload removes the control that held it, and `:focus` rang it after every mouse action and after a
+  click on the title itself, while the browser's own heuristic matches a script-moved focus only when the
+  last input was the keyboard; `inline-size: fit-content` stops a flex column stretching the ring across
+  the page. The dialogs' error line, the other script-moved focus target, rings the same way (added
+  2026-09-22)
+- **Closing a dialog returns focus to what opened it.** `MatDialog` restores focus to the element that
+  held it when the dialog opened, so a dialog opened from a `mat-menu-item` must pass the menu's trigger
+  as `restoreFocus`: the item is destroyed with its menu, and the default restore leaves focus on
+  `<body>` (WCAG 2.4.3)
+- **All visible content sits in a landmark** — added 2026-09-22: the shell's toolbar is wrapped in a top-level
+  `<header>`, which takes the `banner` role, beside the sidenav's navigation list and `<main class="page-content">`;
+  each page's own `<header>` sits inside `<main>` and is not a banner, so there is exactly one. A bare
+  `mat-toolbar` has no role, and axe's `region` rule flagged the brand on every page
+- **Every page owns exactly one `<h1>`, and it names the view** — never the brand, which is plain text
+  wherever it appears. Material's title directives add typography, not heading semantics, so they go on a
+  real heading as an attribute (`<h1 mat-card-title>`, `<h2 mat-dialog-title>`), never as the bare
+  element, which leaves the view with no entry in the heading outline (WCAG 1.3.1)
+- **Every routed page declares its own `title`** — the name of the page only (`'Dashboard'`), never the
+  brand: `core/strategies/app-title-strategy.ts`, provided for `TitleStrategy` in `app.config.ts`, appends
+  `| TimeTrack` and writes the brand alone when no route resolves one. A route added without a `title`
+  would otherwise keep the previous page's name in the tab, because the default strategy writes nothing
+  then; `index.html`'s `<title>` is only the pre-bootstrap fallback (WCAG 2.4.2)
+- **Every password input has a visibility toggle** — a `type="button"` `matIconButton` `matSuffix` with a
+  fixed `aria-label` ("Show password") whose on/off state is `[attr.aria-pressed]`, never a name that flips
+  between Show and Hide. Its `mousedown` default is prevented, so pressing it keeps focus in the field
+  instead of blurring it and marking an empty control touched mid-typing
+- **A control that shows and hides a panel states both its state and its target.** `aria-expanded` bound to
+  the panel's open state, and `aria-controls` naming the panel's DOM `id` — a template reference variable
+  such as `#drawer` never reaches the DOM, so it links the two for Angular only. The shell's navigation
+  toggle points at `id="app-sidenav"`
+- **Every table action is reachable by keyboard**, in the order the row reads. **A table box that holds no
+  control is itself a keyboard stop** — added 2026-09-22: the arrow keys scroll a box only while focus is
+  inside it, so the employee dashboard's recent list, which has no row actions and no sort headers, takes
+  `tabindex="0"` with `role="group"` and `aria-labelledby` its heading — a group, not a region, because the
+  `<section>` around it is already the "Recent entries" region. **Widened 2026-09-23** to the two Reports
+  tables, the only other boxes with neither a sort header nor a row action; on those the ring is drawn by the
+  `.table-area` around the wrapper rather than by the wrapper itself, since an `outline` is painted outside the
+  border box and that box's `overflow: hidden` clips its child's away entirely
+- **A destructive confirmation opens with the focus on its safe button — recorded 2026-09-20.** Material
+  focuses the first tabbable element and `confirm-dialog` puts Cancel first in the DOM, so a reflex Enter
+  cancels and reaching Discard / Delete / Deactivate costs a deliberate Tab. That friction is the point:
+  do not "fix" it by autofocusing the confirm button
+- **A mutation must not destroy the control that holds focus — added 2026-09-20.** The dialog rule above
+  covers the opener that is destroyed with its menu; a row action has the same failure one step later,
+  because the refetch that follows a successful write re-renders the row. Either keep the control across
+  the write (one button whose label and icon change, as on Projects) or hand the confirmation a
+  `restoreFocus` target the write cannot remove (the page's own primary action, as on Entries, whose
+  delete takes the whole row away). `trackBy` is what makes the first option work: without it the row
+  itself is a new node. **It keeps the node, not the focus, once the table can reorder** — added
+  2026-09-21: a sort that moves a row detaches and reinserts its node, which drops focus to the body, so a
+  page whose rows can move hands focus back to the control the write started from once the refetch has
+  rendered (Projects' `restoreFocus()`). **And when the refetch removes that control instead of moving it**
+  — added 2026-09-21: the first item created from a first-use empty state takes the empty state's button
+  away with it, so the hand-back falls back to the page's header action, the one target no refetch
+  removes; one helper, `refocusAfterRender()` in `shared/focus.ts`, holds the rule for Projects and
+  Entries. **A move made when the request resolves is conditional on where focus is by
+  then** — added 2026-09-20: the user may have tabbed away, or opened a dialog whose focus trap an
+  unconditional move would break by sending them to `aria-hidden` content behind it, with no Escape out
+  of a `disableClose` dialog. Move only while focus is still on the control that started the write, or
+  has already fallen to the document body. **That test is `refocusAfterWrite()`, and it is a second
+  helper rather than an argument to the first — widened 2026-09-23**: the two rules read as one
+  predicate and differ only in the moment they measure it. `refocusAfterWrite()` runs when the
+  write resolves, while the pressed control is still on screen; `refocusAfterRender()` runs from
+  `afterNextRender`, once a refetch has removed it. Routing the
+  first through the second makes it a no-op, because at render time nothing has been removed yet and the
+  guard returns early. The three review-and-row actions (`/approvals`, the manager dashboard and
+  `/entries`) call it, including the rejection path, which met the rule only by accident while its dialog
+  opened with `restoreFocus: false`. **A failed save hands focus to what the user has to fix** —
+  added 2026-09-22: the first field in error, else the dialog's error line (the dialog note under the
+  three-states table)
+- **A control that shows text is named by that text.** No `aria-label` on top of visible text: it replaces the
+  text as the accessible name, and speech input then cannot reach the control by what the user reads
+  (WCAG 2.5.3) — the toolbar's account trigger is named by the user's name alone
+- **Icons on a coloured container take its `on-*` colour through the icon button's own token.** A
+  `matIconButton` reads `icon-color`, not the container's text colour, so on the `primary` toolbar it stays
+  `on-surface-variant` grey, under the 3:1 non-text minimum (WCAG 1.4.11). Set `on-primary` with
+  `mat.icon-button-overrides` nested under `.mat-toolbar`: at `html` it would whiten every icon button on a
+  light surface, and a `mat.icon-overrides` would stop the icon inheriting the button's disabled colour
+
+---
+
 ### Inspiration
 
 Real products in this domain — a recruiter recognises them. **One concrete element per row**, not "general
@@ -1973,17 +2069,54 @@ the Linear row. The `status-badge` component is built to that Linear description
 
 ---
 
+### Visual QA — the finish bar
+
+The gap between "it works" and "it looks finished" is where portfolio projects usually die, so it gets a
+checklist rather than good intentions. Run it **at the end of Step 7d, before gate G4**, over all eight
+pages in one sitting — that is the only way inconsistency becomes visible:
+
+- [x] Every page uses the type scale and the 8px grid — no stray `font-size`, no arbitrary margin
+- [x] The three states (loading · error · empty) are reachable on every page: throttle the network for
+      loading, stop the backend for error, filter to a month with no data for empty
+- [x] All four status colours pass contrast at badge size, and no status reads by colour alone
+- [x] Every icon-only button has an `aria-label`; every table action is reachable by tab
+- [x] At 1024, 768 and 375px wide: no horizontal page scroll, sidenav behaves per the responsive rules,
+      tables scroll inside their wrapper, dialogs stay a card with every action reachable below 600
+- [x] Skeletons pulse; nothing else animates on load; `prefers-reduced-motion` stops the pulse
+- [x] Two screenshots worth putting in the README exist — the manager dashboard and the entries page
+
+Run 2026-09-22 on the demo dataset, all nine views (Login, both dashboards, Entries as each role, Approvals,
+Projects, Team, Reports): a stylesheet scan found no `font-size` but the empty-state glyph's `4rem` and no
+off-grid value outside the named optical exceptions; headless at 1024, 768 and 375 found no sideways page
+scroll, the sidenav `side` and open only at 1024, every table inside its `overflow-x: auto` wrapper, no
+unnamed button, every table action tabbable and every status pill carrying its word; axe (WCAG 2 A/AA) found
+no violation, colour contrast included, with all four statuses on screen; each page reached its loading,
+error and empty states with the API held, failed and emptied; the entry, project, member and reject dialogs
+stayed 343px cards at 375 with every action reachable; and on load only the skeletons pulse beside the
+spinners each page's state row names, their pulse `none` under `prefers-reduced-motion`.
+
+---
+
 ## 15. Progressive learning plan
 
 This is the first Spring Boot project. Each step introduces one new concept.
+
+**Build order after Step 7 — 11 → 12 → 8 → 9 → 10, not numeric** *(reordered 2026-09-23, §20)*. The
+professional order puts tests before Docker and deployment; Victor pulled deployment forward from
+project 08 because the job search is under way and a recruiter reaches a live URL before a clone, and
+chose to publish before the tests as a project-07-only exception. Docker (Step 11) is the deployment's
+prerequisite — the hosted API runs the image it builds — so it goes first, then Step 12 deploys, then the
+test steps 8–9 and the SQL complement 10 follow on the live app. The step numbers are kept so every
+reference to "Steps 8–9" (§20, §23 G7) stays true; the project is not finished until 8–9 pass.
 
 ### Step 1 — Spring Boot foundation ✅
 - Create project with Spring Initializr (dependencies: Spring Web, Spring Data JPA, PostgreSQL Driver, Lombok)
 - Connect to PostgreSQL via `application.properties`; create the `timetrack` database in pgAdmin
 - Create `User` entity, `UserRepository` (`JpaRepository`), `UserService.getAll()`, `UserController` with `GET /api/users`
 - **New concepts:** layered architecture, REST API + SPA separation (the backend returns JSON and has no View layer — the same single decision as choosing layered architecture over MVC, not a second topic), `@Entity`/JPA basics, `JpaRepository` + derived query methods (`findByEmail` style finders)
+- **Concept density — called out deliberately:** four concepts, one major one — the layered backend. JPA mapping and `JpaRepository` are its bottom layer (professional order items 2–3 combined with setup because `User` has no custom query yet), not a second topic
 - **Review concepts:** none (first backend step)
-- **Done condition:** `Terminal: mvn spring-boot:run — started on port 8080` and `Browser: GET localhost:8080/api/users returns [] at /api/users`
+- **Done condition:** `Browser: [] is returned at localhost:8080/api/users after mvn spring-boot:run logs "Started" on port 8080`
 
 ### Step 2 — Full CRUD for Projects ✅
 - Create `Project` entity, repository, service, controller
@@ -2006,6 +2139,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - `@PreAuthorize("hasRole('MANAGER')")` on project and user write endpoints
 - `SecurityContextHolder` to read the current user inside a service
 - **New concepts:** `@PreAuthorize` role checks, startup seeding, `SecurityContextHolder`
+- **Concept density — called out deliberately:** one major concept, role-based authorization. The seed exists only because a role check needs a MANAGER to exist before anyone can log in, and `SecurityContextHolder` is how the service reads the caller that same check authorizes
 - **Built as `data.sql`, replaced 2026-07-23** by the profile-gated `DataInitializer` (§9) — the step is
   still ✅ on the concept it taught; the seeding *mechanism* changed for the security reason recorded in §9
 - **Review concepts:** JWT flow (token now carries the role)
@@ -2028,6 +2162,7 @@ This is the first Spring Boot project. Each step introduces one new concept.
 - Aggregate queries with JPQL
 - Summary by project and by user for a given month
 - **New concepts:** JPQL aggregation queries, query filters with `@RequestParam`, interface projections for query results
+- **Concept density — called out deliberately:** one major concept, JPQL aggregation. The projection is the shape its `SELECT … AS alias` rows are read into, and `?month=` is the one parameter it groups by — neither stands without the query
 - **Review concepts:** `@PreAuthorize` (`by-project` and `by-user` are MANAGER only; `summary` is scoped to the caller instead)
 - **Done condition:** `Postman: GET /api/reports/by-project?month=2025-05 returns 200 — array of { projectName, totalHours }`
 - **Concept learned:** interface projections (`ProjectHoursReportResponse`, `UserHoursReportResponse`) let Spring Data build a proxy per result row directly from `SELECT ... AS alias` — no class, no manual mapping — as long as each getter's name matches an alias exactly (Java Bean convention: strip `get`, lowercase first letter). `YearMonth` is received in the controller but converted to a `LocalDate` start/end range in the service (business logic), not the controller. Repositories are organized by **entity** (`TimeEntryRepository` owns both report queries, since their `FROM` is `TimeEntry`), a different axis than controllers/services, which are organized by **feature** (`ReportController`/`ReportService`). Found and fixed two real bugs surfaced by the Postman test pass: `MissingServletRequestParameterException` and `MethodArgumentTypeMismatchException` aren't `RuntimeException`s / weren't specifically handled, so a missing or malformed `?month=` fell through to `500` — worse, the missing-param case revealed a genuine Spring Security gotcha where Spring's internal forward to `/error` gets rejected as unauthenticated (`401`) because `JwtFilter` skips error dispatches by default and `/error` was never excluded from `.anyRequest().authenticated()`.
@@ -2087,6 +2222,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - Both pages render the three §14 states, not just the success table: `MatProgressSpinner` while
   `loading()` is true (skeleton cards on the dashboard), `mat-error` + **Retry** when the call fails, and
   the per-page empty message ("No entries found for this period" / "You have not logged any hours yet")
+- **New concepts:** none from §3 — the slice applies 7a's; the smaller idioms it taught are under Concept learned
 - **Review concepts:** coordinator pattern, reactive forms, MatTable/MatDialog, signals + `computed()`
 - **Concept learned:** a string-literal union derived from an `as const` array · a generic `Page<T>`
   response model · `null` vs optional in a response model · immutable `HttpParams` that omit unset
@@ -2110,6 +2246,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - Projects page (CRUD) reusing `confirm-dialog` for the soft-delete confirmation
 - Three §14 states on each page: skeleton cards / spinner over the table, `.page-error` + Retry (one failed
   `forkJoin` call fails the whole dashboard load), and the per-page empty message
+- **New concepts:** none from §3 — the slice applies 7a's; the smaller idioms it taught are under Concept learned
 - **Review concepts:** `forkJoin`, role-aware UI, MatTable, `MatBadge`
 - **Concept learned:** a client-side `MatSort` over an unpaged list that reuses the API's own order · one
   button that toggles its label and icon instead of two that swap, so a write keeps the focused node ·
@@ -2134,13 +2271,14 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 
 #### Step 7d — Manager admin: team + reports ✅
 - Team page + `user-dialog` (name, email, role — no password field); the generated password is surfaced once
-  in a copyable snackbar from the `CreateUserResponse` (§14)
+  in the copyable generated-password dialog from the `CreateUserResponse` (§14)
 - Reports page: month selector, summary cards and the two `forkJoin` hours tables
 - Same three §14 states on both pages; the Reports empty state replaces the cards and both tables while the
   month selector stays enabled
 - **The §14 Visual QA checklist runs here**, over all eight pages at once — this is the last frontend step,
   so it is the only point where inconsistency between pages built on different days is visible. Anything it
   finds is fixed now, not filed: G4 is the next gate and a portfolio verdict comes after it
+- **New concepts:** none from §3 — the slice applies 7a's; the smaller idioms it taught are under Concept learned
 - **Review concepts:** reactive forms, MatTable, `forkJoin`, role-aware UI
 - **Concept learned:** a one-time secret shown in a dialog only its Done button closes, with the CDK's
   `cdkCopyToClipboard` reporting whether the browser accepted the copy · a discriminated-union dialog
@@ -2150,7 +2288,7 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   serves compares strings, through a locale `Intl.Collator`, and the rest are stable sorts over the API's
   own order · three report calls in one `forkJoin`, cleared on every month change, with `switchMap`
   dropping a slower month's answer · a shared style moved to its partial the day a second page needs it
-- **Done condition:** `Browser: as MANAGER, create a user at /team and the generated password appears once in the snackbar; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none; the §14 Visual QA checklist passes on all eight pages at 1024, 768 and 375px`
+- **Done condition:** `Browser: as MANAGER, create a user at /team and the generated password appears once in the generated-password dialog, which only its Done button closes; /reports renders both hours tables for a selected month and shows "No approved hours for this month yet." for a month with none; the §14 Visual QA checklist passes on all eight pages at 1024, 768 and 375px`
 - **Verified 2026-09-22** in the browser as MANAGER, every clause: "Test Member" created at `/team` showed
   its 12-character password once, copied, survived Escape and closed only on Done, and logged in with it;
   `/reports` rendered both tables for September 2026, 5h reconciling across the card and both tables, and
@@ -2162,22 +2300,29 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
   caller's role in the edit dialog; the Reports card reads "Approved hours" because the month is chosen
 
 ### Step 8 — Backend tests
-- JUnit 5 + Mockito — one test per service method
+- JUnit 5 + Mockito — one test class per `@Service` class, seven in all: the five domain services plus
+  `LoginAttemptService` and `UserDetailsServiceImpl`, the two that hold the lockout counter and the
+  inactive-account refusal (Section 16)
 - Cover edge cases, not just the happy path (see Section 16)
+- Delete the Initializr scaffold `TimetrackApplicationTests`: an assertion-free `@SpringBootTest` that boots
+  the whole context, so `mvn test` would fail on any machine without a running PostgreSQL and the
+  `DB_PASSWORD` / `JWT_SECRET` variables — an integration test in a project that introduces only the unit
+  level (Section 16)
 - **New concepts:** JUnit 5 + Mockito unit testing
 - **Review concepts:** business rules and state machine (asserted through tests)
-- **Done condition:** `Terminal: mvn test passes — TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest and ReportServiceTest all green; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted`
+- **Done condition:** `Terminal: mvn test passes — 8 test classes, 0 failures: TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest, ReportServiceTest, LoginAttemptServiceTest, UserDetailsServiceImplTest and the existing ValidationMessagesTest all green with no database running; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted`
 
 ### Step 9 — Angular tests
 - Vitest + TestBed with `provideHttpClient()` + `provideHttpClientTesting()` — one test per service method listed in Section 16
-- Assert the request (URL, method, params, body) and the returned typed value; only `AuthService` asserts
-  stored state, because §6's Service-boundary rule says the other services hold none
+- Assert the request (URL, method, params, body) and the returned typed value; only `AuthService` and the
+  `core/state/` holder `PendingApprovals` assert stored state, because §6's Service-boundary rule says the
+  other services hold none
 - Cover the edge cases in Section 16, not only the happy path — the unset-filter param, the un-swallowed
   `fieldErrors` on 400, the 401 that must not half-authenticate
-- Component tests are NOT in scope — per CLAUDE.md they start at project 08; this project tests services only
+- Component tests are NOT in scope — per the session rules' "Testing rules" they start at project 08; this project tests services only
 - **New concepts:** Angular service unit testing with `provideHttpClientTesting()` and `HttpTestingController`
-- **Review concepts:** auth, entry, user and report services
-- **Done condition:** `Terminal: ng test passes — AuthService, EntryService, UserService and ReportService specs all green; getEntries issues a GET to /api/entries with no empty params when a filter is unset, changePassword surfaces the 400 fieldErrors without clearing the session, and a failed login leaves the token unstored`
+- **Review concepts:** auth, entry, project, user and report services
+- **Done condition:** `Terminal: ng test passes — 6 unit specs written, 0 failures across the whole suite: AuthService, EntryService, ProjectService, UserService, ReportService and PendingApprovals all green; getEntries issues a GET to /api/entries with no empty params when a filter is unset, changePassword surfaces the 400 fieldErrors without clearing the session, and a failed login leaves the token unstored`
 
 ### Step 10 — SQL complement
 - In `sql/`, hand-write the SQL that Hibernate generates for the main report queries (the `GROUP BY` aggregations) and for `GET /api/entries` with filters
@@ -2191,9 +2336,27 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - `docker-compose.yml` with Spring Boot + PostgreSQL services
 - Config per environment: `JWT_SECRET` and DB credentials as env vars in the compose file (never in the image); a `docker` Spring profile (`application-docker.properties`) overrides the DB host to the compose service name instead of `localhost`
 - `docker-compose up` runs everything locally
+- **Built before Steps 8–10** — the deployment in Step 12 runs this image (see the build-order note above)
 - **New concepts:** Docker + docker-compose, containerisation
 - **Review concepts:** none
-- **Done condition:** `Terminal: docker-compose up — app reachable at localhost:8080/api/users and the Postgres service is healthy`
+- **Done condition:** `Postman: GET localhost:8080/api/projects without a token returns 401 — the §10 JSON error body, served by the app container with IntelliJ and the local PostgreSQL service both stopped, so the container started only because the compose database accepted its connection`
+
+### Step 12 — Deployment
+- The API image from Step 11 and a PostgreSQL database on a free-tier host; the Angular production build
+  on a static host, its `environment` pointing at the hosted API URL
+- Per-environment values made explicit: the hosted database URL and credentials and `JWT_SECRET` as the
+  host's environment variables (never in the image or in git), and the static host's origin added to the
+  CORS allowed origins (§6)
+- The first manager on the hosted database is inserted by hand with a BCrypt hash generated locally and
+  never committed — §9's `DataInitializer` is `@Profile("dev")` and never runs there; the demo
+  credentials go in the global README
+- Both hosts build and deploy from the project branch `projects/07-timetrack`, never from `main`: the
+  app goes public before Steps 8–10 exist, while `main` receives the project only once every §15 step is
+  done (§22). Each merge into the project branch redeploys, so the live app follows the test steps as they land
+- Built before Steps 8–10 (see the build-order note above)
+- **New concepts:** configuration parity across environments (IntelliJ, compose, hosted)
+- **Review concepts:** Docker image, environment variables for secrets, CORS
+- **Done condition:** `Browser: the public frontend URL opens /login, and logging in with the README's demo manager credentials reaches /dashboard with its stat cards loaded from the hosted API`
 
 ---
 
@@ -2219,7 +2382,9 @@ Mock the repository; test the service in isolation. Cover the edge cases, not on
 | `UserService.delete` | Sets `active = false` on the target | the caller deleting their own id → throws `InvalidStateTransitionException` (409); deleting an already-inactive user succeeds, so the soft delete stays idempotent |
 | `UserService.changePassword` | Replaces the caller's hash when the current password matches | wrong current password → throws `InvalidPasswordException` carrying `currentPassword` (**400**, `fieldErrors.currentPassword` — the §8 status ruling); a `newPassword` equal to the current one → the same type carrying `newPassword`, and the stored hash is left untouched; the new hash differs from the old one and `matches()` the new password |
 | `UserService.resetPassword` | Replaces another account's hash with a freshly generated password and returns its plaintext | the returned password is **not** what is persisted (the stored value is a hash that `matches()` it); the caller's own id → `InvalidStateTransitionException` (409) and the hash is left untouched; unknown id → `ResourceNotFoundException` (404) |
-| `AuthService.login` | Returns a JWT carrying the role | wrong password → `BadCredentialsException` (401); inactive user → login refused even with the right password; a sixth consecutive failure on the same email or IP → `TooManyAttemptsException` (429) without reaching the `AuthenticationManager`, and a successful login resets both counters; an email differing from the stored one only in letter case draws on the **same** per-email budget, since the key is the normalized address |
+| `AuthService.login` | Returns an `AuthResponse` with the token (its subject the user's id), the id, name and role | wrong password → `BadCredentialsException` (401) and a failure recorded against both the email and the IP key; inactive user → the `DisabledException` the `AuthenticationManager` raises propagates, so login is refused even with the right password; either key blocked → `TooManyAttemptsException` (429) without reaching the `AuthenticationManager`; a successful login resets both keys; an email differing from the stored one only in letter case is recorded under the **same** key, since the key is the normalized address |
+| `LoginAttemptService` | Four recorded failures leave a key unblocked; the fifth blocks it | a blocked key does not block a different key; `reset` unblocks at once; an unknown key is never blocked. The one-minute cooldown expiry is **not** unit-tested: the class reads `Instant.now()` directly, so asserting it needs an injected `Clock` — a stated gap, not a sleeping test |
+| `UserDetailsServiceImpl.loadUserByUsername` / `.loadUserById` | Maps the user to `UserDetails` with the stored hash and `ROLE_` authority | unknown email or id → `UsernameNotFoundException`; an inactive user maps to `isEnabled() == false` (the source of §8's "inactive users cannot log in" and of the per-request revocation); an email in different letter case finds the same user |
 | `ReportService.getHoursByProject` / `.getHoursByUser` | Groups hours per project / per user for the month | empty month → returns empty list, not null; only the statuses §8 declares reportable are summed |
 | `ReportService.getSummary` | Returns the month's approved hours, pending hours and approved entry count | empty month → all zeros, no exception; `approvedHours` **equals the sum of `getHoursByProject`** for the same month (the §8 reconciliation rule, asserted); DRAFT and REJECTED entries change no field; an EMPLOYEE caller gets only their own entries in all three figures, a MANAGER the whole company |
 
@@ -2234,7 +2399,11 @@ Every other §8 rule maps to a row in the table above.
 
 **Backend — slice tests:** none in project 07. This is the first project with tests, so it introduces
 only the unit level (JUnit 5 + Mockito). The slice types (`@WebMvcTest` for controllers, `@DataJpaTest`
-for custom repository queries) are introduced from project 08 — do not add them here.
+for custom repository queries) are introduced from project 08 — do not add them here. For the same reason
+Step 8 deletes the Initializr scaffold `TimetrackApplicationTests`: its `contextLoads()` asserts nothing
+and boots the full context, which needs a live PostgreSQL plus `DB_PASSWORD` and `JWT_SECRET`, so it is an
+integration test that would make `mvn test` depend on the machine it runs on. The existing
+`ValidationMessagesTest` (Bean Validation messages, no Spring context) stays and counts in Step 8's suite.
 
 **Assertion quality:** every test asserts real behaviour — the returned value or the saved object's
 state (status transition, hashed password, computed total) — never only `verify(...)` that a mock method
@@ -2261,16 +2430,17 @@ own state, so they are the only units whose tests assert a stored value or a sig
 |---|---|---|
 | `AuthService.login` | POSTs `{email, password}` to `/api/auth/login`; on 200 stores the session in `localStorage` and sets the `session` signal with the role from the response | wrong password → 401 leaves the session unstored and `session` null (a failed login must not half-authenticate); the request body carries the password only in the POST body, never as a query param; a `200` whose body fails `isAuthResponse` errors with `UnreadableSessionError` and stores nothing; a stored session that fails the same guard at start-up is removed and raises the expiry notice rather than logging the user out silently |
 | `AuthService.logout` | Clears the stored session and resets `session` to null | called with no session stored → does not throw |
-| `EntryService.getEntries` | GETs `/api/entries` and returns the typed `TimeEntry[]` | `month`, `status` and `projectId` appear as query params **only when supplied** — an unset filter sends no empty param; a `[]` response returns an empty array, not null |
-| `EntryService.approve` | PATCHes `/api/entries/{id}/approve` with no body and returns the updated `TimeEntry` | the id is interpolated into the path, not sent as a param; **the service stores nothing** — the returned value is the only channel (§6 Service boundary), so the caller page is what refetches |
-| `EntryService.create` | POSTs the entry and returns the created `TimeEntry` | a 400 surfaces the `fieldErrors` map from the §10 error contract to the caller, un-swallowed, so the reactive form can bind a message per input |
+| `EntryService.getEntries` | GETs `/api/entries` and returns the typed `Page<TimeEntry>` | `month`, `status`, `projectId` and `userId` appear as query params **only when supplied** — an unset filter sends no empty param; `page`/`size`/`sort` are sent only with a `PageRequest`; a page with an empty `content` is returned as-is, not null |
+| `EntryService.approveEntry` | PATCHes `/api/entries/{id}/approve` with no body and returns the updated `TimeEntry` | the id is interpolated into the path, not sent as a param; **the service stores nothing** — the returned value is the only channel (§6 Service boundary), so the caller page is what refetches |
+| `EntryService.createEntry` | POSTs the entry and returns the created `TimeEntry` | a 400 surfaces the `fieldErrors` map from the §10 error contract to the caller, un-swallowed, so the reactive form can bind a message per input |
+| `ProjectService.deactivateProject` | DELETEs `/api/projects/{id}` and completes on `204` with no body to map | the id is interpolated into the path; a `409`/`404` error reaches the caller un-swallowed; the service stores nothing, so the Projects page is what refetches |
 | `UserService.changePassword` | PATCHes `/api/users/me/password` with `{currentPassword, newPassword}` and completes on `204` with no body to map | a `400` surfaces the `fieldErrors` map (`currentPassword` / `newPassword`) to the dialog un-swallowed; the current password travels in the body only, never in the URL; the service stores nothing and does **not** clear the session on that `400` |
 | `PendingApprovals.refresh` | GETs `/api/entries?status=SUBMITTED&size=1` and sets `count` to the page's `totalElements` | a failed read keeps the last count and the stream stays alive for the next `refresh()`; `clear()` issued while a refresh is in flight cancels it, so `count` ends at 0, not at the late response's number |
 | `ReportService.getSummary` | GETs `/api/reports/summary?month=` and returns the typed summary | both roles call it and the backend decides the scope, so the service takes no role argument and the component never asks who is logged in — the employee and manager dashboards share one call |
 
 ### Angular — components
 
-Out of scope for this project. Per CLAUDE.md "Testing rules", component (TestBed) tests are introduced in **project 08**. Project 07 tests services only.
+Out of scope for this project. Per the session rules' "Testing rules" (`notes/prompts/_internal/_session-rules.md`), component (TestBed) tests are introduced in **project 08**. Project 07 tests services only.
 
 For each new testing concept (JUnit 5 + Mockito, `provideHttpClientTesting()`), add one interview
 question to `notes/interview-prep/junior/en/` and `notes/interview-prep/junior/es/` (same question,
@@ -2287,13 +2457,36 @@ is better than a perfect project delivered in September. Ship early, apply in pa
 
 ## 18. README structure
 
-This project uses three READMEs. See `CLAUDE.md → README format for full-stack projects` for the full rules.
+This project uses three READMEs. The full rules are `notes/prompts/projects/readme/_internal/_readme-standard.md`
+(its full-stack global, backend and frontend rules), which `readme-audit` applies at G5.
 
-| File | Audience | When to write |
+| README file | Audience | When to write it |
 |---|---|---|
 | `README.md` | Recruiter | Update after each step |
 | `backend/README.md` | Technical interviewer | Write when backend is complete |
 | `frontend/README.md` | Technical interviewer | Write when frontend is complete |
+
+---
+
+### README.md (global) — planned sections
+
+Updated after each step, in the full-stack order the README standard fixes:
+
+1. **Title + one-line description** — §1
+2. **Why this project** — §2
+3. **How to run** — `docker-compose up` once Step 11 lands, `mvn spring-boot:run` + `ng serve` before it. From
+   Step 12 it also carries the public URL and the demo manager's credentials (§9), with one line saying the
+   free-tier API wakes slowly after idling — a project-07 exception to the standard's local-only full-stack
+   rule, decided in §20
+4. **Screenshots** (and GIFs) — the manager dashboard and the entries page at minimum (§14 Visual QA)
+5. **Features**
+6. **Architecture decisions** — §19
+7. **Tradeoffs** — §20
+8. **Future improvements** — §21
+9. **What I learned**
+10. **Tech stack** — §5, with its testing row once Steps 8–9 exist
+11. **Project structure**
+12. **Backend and frontend details** — the final line linking `backend/README.md` and `frontend/README.md`
 
 ---
 
@@ -2392,7 +2585,7 @@ Write when the frontend is complete (after Step 7d).
 
 ## 19. Architecture decisions to document in the global README
 
-Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
+Format: `[what you did] to [why it matters]` — one line each.
 
 - Stateless JWT auth to keep the API independent of server state — and, because the credential travels in a header the browser never attaches on its own, to make CSRF protection unnecessary
 - DTO boundary between persistence and HTTP layer to control what the API exposes
@@ -2409,20 +2602,20 @@ Format: `[what you did] to [why it matters]` — one line each, 6-8 maximum.
 
 Format: `[option chosen] over [option rejected] — [reason]`
 
-- JWT over session-based auth — stateless API requires no server memory per user
+- JWT over server-side sessions — the API keeps no session store, so the Angular client only sends a header and no request depends on server memory; given up: a logout cannot revoke an issued token, which stays valid until its 60-minute expiry (deactivation is still enforced per request by `JwtFilter`, §8)
 - Soft delete over hard delete — `TimeEntry.user`/`project` are not-null FKs with no cascade, so a real DELETE either fails or forces deleting the entries with it; timesheet history is legal-audit data that must survive a person leaving
-- docker-compose over separate manual setup — one command runs the full project locally
+- docker-compose over a manual local setup (a PostgreSQL install, a JDK and Maven on the reviewer's machine) — the only prerequisite becomes Docker, and the app image built here is the one the deployment step runs; given up: a slower edit-run loop, so daily development still runs from IntelliJ against the local database
 - `Pageable` pagination on GET /api/entries, return-all everywhere else — entries is the only collection here that grows without a bound, so it is the only one paged; the month filter narrows a result but does not cap it. Reversed the original return-all choice on 2026-08-01, while Step 7a was still unbuilt and the change cost a method signature rather than a rewritten table
 - Signals in the page component over a state-management library (NgRx) — eight pages, each reading its own endpoint and sharing nothing but the logged-in user and the pending-approvals count, each held in one root signal; a store would add actions, reducers and effects for state that never leaves one route. NgRx becomes worth it when many values must stay in sync across distant pages, not for one count
 - A deployed public URL over local-only `docker-compose` — **reversed by Victor on 2026-09-23.** The original choice read: *local `docker-compose` over a deployed public URL — the portfolio value is the backend (layering, JWT, workflow), read in the code and the READMEs; a free-tier host that cold-starts and expires adds hosting work without a new concept; deployment is a project 08 objective.* That reasoning still holds on concepts. What moved is the job search, now under way: a recruiter who can open a working app is reached before one who has to clone and run it. The costs are accepted knowingly — a free-tier API that sleeps after 15 idle minutes and wakes slowly on a 0.1-CPU instance, a demo database anyone can write to, and the hosting work itself. Deployment is pulled forward from project 08, and Docker (Step 11) moves ahead of it as its prerequisite; the reorder of §15/§22 is G2's
 - Publishing before the tests (Steps 8–9) over the session rules' *no project is finished without tests* — **decided by Victor on 2026-09-23 as a project-07-only exception**, for the same urgency. The rule is not relaxed: the project stays unfinished until Steps 8–9 pass, and the app keeps being worked on after it is live. §23 records what this does to G7
-- `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan; versioned migrations become necessary the moment a second environment or teammate exists
+- `ddl-auto=update` over Flyway migrations — single developer, schema still evolving with the plan, and the one other database the 2026-09-23 deployment adds holds demo data nobody must keep; given up: a reviewable schema history, and every change `update` cannot make (a drop, a rename, a not-null on a populated column — §6) is applied by hand on each database. Versioned migrations become necessary the moment a teammate exists or a database holds rows that must survive a schema change
 
 ---
 
 ## 21. Future improvements to document in the global README
 
-Domain-realistic only — max 3 bullets.
+Domain-realistic only.
 
 - Export approval reports to PDF or Excel
 - Email notifications when entries are approved or rejected
@@ -2438,37 +2631,42 @@ one branch per coherent feature, never one per step.
 
 | Branch | Covers (steps) | Opens | Closes |
 |---|---|---|---|
-| `feat/spring-foundation` | Steps 1–4 — Spring Boot setup, Project CRUD, JWT auth, role-based authorization | Step 1, right after `projects/07-timetrack` was created from `main` | Now — Step 4's done condition passed. PR into `projects/07-timetrack`. |
-| `feat/timeentry-workflow` | Step 5 — TimeEntry CRUD + workflow | After `feat/spring-foundation` merges | When Step 5's done condition passes |
-| `feat/reports` | Step 6 — Reports | After `feat/timeentry-workflow` merges | When Step 6's done condition passes |
-| `feat/angular-shell-auth` | Step 7a — Shell + auth | After `feat/reports` merges | When Step 7a's done condition passes |
-| `feat/angular-entries` | Step 7b — Employee flow: dashboard + entries | After `feat/angular-shell-auth` merges | When Step 7b's done condition passes |
+| `feat/spring-foundation` | Steps 1–4 — Spring Boot setup, Project CRUD, JWT auth, role-based authorization | Step 1, right after `projects/07-timetrack` was created from `main` | Closed — Step 4's done condition passed; merged into `projects/07-timetrack` through PR #66 |
+| `feat/timeentry-workflow` | Step 5 — TimeEntry CRUD + workflow | After `feat/spring-foundation` merges | Closed — Step 5's done condition passed; merged through PRs #67 and #68 |
+| `feat/reports` | Step 6 — Reports | After `feat/timeentry-workflow` merges | Closed — Step 6's done condition passed; merged through PR #69, the last backend branch, so G3 fired |
+| `feat/angular-shell-auth` | Step 7a — Shell + auth | After `feat/reports` merges | Closed — Step 7a's done condition passed; merged through PR #90 |
+| `feat/angular-entries` | Step 7b — Employee flow: dashboard + entries | After `feat/angular-shell-auth` merges | Closed — Step 7b's done condition passed; merged through PR #91 |
 | `feat/angular-manager-pages` | Steps 7c–7d — Manager review flow + manager admin pages | After `feat/angular-entries` merges | Closed 2026-09-22 — Step 7d's done condition passed and PR #92 merged it; the last frontend branch, so G4 is due. The PR was opened against `main` rather than `projects/07-timetrack`, and the project branch was fast-forwarded onto the same commit on 2026-09-23 (see below) |
-| `feat/backend-tests` | Step 8 — Backend tests | After `feat/angular-manager-pages` merges | When Step 8's done condition passes |
-| `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes |
-| — (no dedicated branch) | Step 10 — SQL complement | — | Commits go on whatever branch is active at the time, per CLAUDE.md's rule (2026-07-14) that study materials follow the active branch — `main` only receives merges via PR |
-| `feat/docker` | Step 11 — Docker | After `feat/angular-tests` merges | When Step 11's done condition passes — the last feature branch before the project branch closes |
+| `feat/docker` | Step 11 — Docker | Now — cut from `projects/07-timetrack` once `fix/frontend-backlog` merged (PR #93, 2026-09-23); first in §15's build order 11 → 12 → 8 → 9 → 10 | When Step 11's done condition passes |
+| `feat/deployment` | Step 12 — Deployment | After `feat/docker` merges | When Step 12's done condition passes — the app is public from here, before the test steps (§20) |
+| `feat/backend-tests` | Step 8 — Backend tests | After `feat/deployment` merges | When Step 8's done condition passes |
+| `feat/angular-tests` | Step 9 — Angular tests | After `feat/backend-tests` merges | When Step 9's done condition passes — the last feature branch before the project branch closes |
+| — (no dedicated branch) | Step 10 — SQL complement | After `feat/angular-tests` merges — last in the build order | Commits go on the branch active at the time — by then the project branch itself — per the session rules' rule (2026-07-14) that study materials follow the active branch; closes when Step 10's done condition passes — `main` only receives merges via PR |
 
 **Backlog-fix branches (outside the feature sequence).** The table above plans the `feat/…` branches
 that build the §15 steps. Work that comes back from a **review gate** — the High/Medium tasks
 `review-audit` writes to `PROJECT-BACKLOG.md` — is not a §15 step and never reopens a completed one, so
-it gets a `fix/…` branch instead (CLAUDE.md branch naming) and is deliberately not a row in the step
+it gets a `fix/…` branch instead (the session rules' branch naming) and is deliberately not a row in the step
 coverage table.
 
 | Branch | Covers | Opens | Closes |
 |---|---|---|---|
-| `fix/backend-backlog` | The **High** backend tasks from G3's `review-audit` run, plus the deferred `PATCH /api/entries/{id}/reopen` endpoint (see Step 5's "Deferred out of this step" line) **and the account-password-flow Medium**, which Step 7a depends on — no §15 step | After G3's `review-audit` wrote `PROJECT-BACKLOG.md` | When every High backend task in `PROJECT-BACKLOG.md` is `[x]`, `reopen` passes its Postman check (`PATCH /api/entries/{id}/reopen` on a REJECTED own entry returns 200 with status DRAFT) — this is what signs G3 off — **and `PATCH /api/users/me/password` returns 204 for a correct current password, 400 with `fieldErrors.currentPassword` for a wrong one and 400 with `fieldErrors.newPassword` for a new password equal to the current one**, so Step 7a has an endpoint to build against. PR into `projects/07-timetrack`. |
+| `fix/backend-backlog` | The **High** backend tasks from G3's `review-audit` run, plus the deferred `PATCH /api/entries/{id}/reopen` endpoint (see Step 5's "Deferred out of this step" line) **and the account-password-flow Medium**, which Step 7a depends on — no §15 step | After G3's `review-audit` wrote `PROJECT-BACKLOG.md` | When every High backend task in `PROJECT-BACKLOG.md` is `[x]`, `reopen` passes its Postman check (`PATCH /api/entries/{id}/reopen` on a REJECTED own entry returns 200 with status DRAFT) — this is what signs G3 off — **and `PATCH /api/users/me/password` returns 204 for a correct current password, 400 with `fieldErrors.currentPassword` for a wrong one and 400 with `fieldErrors.newPassword` for a new password equal to the current one**, so Step 7a has an endpoint to build against. **Closed 2026-08-29** — merged through PR #70 into `projects/07-timetrack` (`a67866c4`), signing G3 off. |
 | `fix/frontend-backlog` | The **Medium** and **Low** frontend tasks from G4's `review-audit` run of 2026-09-23 — no §15 step, and none of them held G4 or G5; the Mediums held G7 alone | After G4's `review-audit` wrote `PROJECT-BACKLOG.md` | **Closed 2026-09-23** — all six Mediums and all nine Lows closed, plus one Low raised while triaging them, leaving `PROJECT-BACKLOG.md` empty at every priority in both tiers. Merged through PR #93 into `projects/07-timetrack` (`34d5a2e6`) and deleted. |
 
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
-open for the whole project. It only merges into `main` when Step 11 is done.
+open for the whole project. It only merges into `main` when every §15 step is done — Step 10 is the last
+in the build order 11 → 12 → 8 → 9 → 10 — and that PR is the closure checklist's last box (§23).
 
-**Immediate action (updated 2026-08-28):** `feat/reports` has merged, so the backend feature branches are
-all closed. `fix/backend-backlog` is the live branch and **its own closing condition is fully met** — every
-High backend task is `[x]`, `reopen` passed its Postman check on 2026-07-22, and the account-password flow
-(`PATCH /api/users/me/password`) closed on 2026-07-29.
+**Immediate action (updated 2026-09-24):** every feature branch through Step 7 and both backlog-fix
+branches are closed — `fix/backend-backlog` through PR #70 on 2026-08-29 (G3), `fix/frontend-backlog`
+through PR #93 on 2026-09-23 — and `PROJECT-BACKLOG.md` holds no open task. The next action is to cut
+`feat/docker` from the tip of `projects/07-timetrack` and build Step 11 on it; until it is cut, work sits
+on the project branch (§0). The history below records how the two backlog-fix branches got there.
 
-**The branch went further than it had to, and that changes what is outstanding.** It cleared every High,
+**`fix/backend-backlog` went further than it had to.** Its own closing condition was met by 2026-08-28 —
+every High backend task `[x]`, `reopen` Postman-checked on 2026-07-22, the account-password flow
+(`PATCH /api/users/me/password`) closed on 2026-07-29 — and it had also cleared every High,
 Medium and Low in batches through 2026-08-01; the 2026-08-06 `review-audit` then reopened the backend tier
 with 3 Highs, all closed on 2026-08-23, plus a set of Lows worked through since. **`PROJECT-BACKLOG.md`
 currently holds **no open task at any priority in either tier** — the nine Lows of the G4 `review-audit` run of 2026-09-23 (`d22a69e4`) and the one raised while triaging them all closed that day; the Lows hold no gate, since G4 closes on Highs alone and found none and G7 refuses a ✅ Ready only on an open High or Medium. Until that run it held no open task at any priority — the last, `/approvals` unable to sort by Employee, raised on 2026-09-22 by Victor in the browser after every other task had closed, closed that day in `e68ebf05` and `9a8a2fce`; the README screenshots Low closed on 2026-09-22 with four captures on a realistic demo dataset in `screenshots/`; the three raised on 2026-09-22 by the cold design review of that day's second round of closes closed that day — the employee dashboard's Date rung, 5px too narrow, in `66f1e442`, the dialogs' error line left with the browser's default ring, in `9ce2b3f4`, and §14 overclaiming the strong focus ring on form fields, as a documentation fix; all nine raised on 2026-09-22 by the cold design review of that day's backlog closes closed that day — five Lows, the login brand's weight kept as a named typography exception in §14, the failed-save focus headline promising more than the code in `bbca778b`, the unnamed optical value and "The four" listing three by naming the fourth optical exception in §14 Spacing, and the hand-written 4px radius in `d94e4137`, and four Mediums — Hours hidden under the pinned actions of Approvals and the manager dashboard at 375px in `a927f81f`, a Back pressed during an in-flight password reset or member create losing the new password in `0c138eb7`, the icon buttons' 1.25:1 keyboard focus indicator in `5f2e12ff`, and the employee dashboard's table clipped and keyboard-unreachable at 375px in `fed3a5ec`. Before them, eight frontend ones (one Medium, the browser's Back button discarding a new member's generated password, and seven Lows, the three-card strip stacked at tablet widths, Team's Status under its pinned actions at 375px, its email split after a dot, the copied section-heading rule, the toolbar outside any landmark, the off-grid values and a failed save leaving focus on the body, all closed the same day) were raised on 2026-09-22 by the cold design review of Step 7d, and a ninth that day while closing it (the README screenshots, owed on a realistic demo dataset before G5, closed that day); the backend Low raised while building Step 7d's Team page, on how an account is recovered once its generated password is lost, closed on 2026-09-22 with a manager's password reset (`27d9dee1`, `b52af306`), and the backend Low raised while triaging it, `CreateUserResponse.generatedPassword` missing `@ToString.Exclude`, closed the same day in `dbe17695`, leaving the backend tier with no open task. All six frontend tasks raised on 2026-09-21 closed on 2026-09-22 — their Medium, `/approvals` scrolling sideways at 1024px, and the Lows on the page title's focus ring after a mouse approval, on Retry dropping focus, on the badge's red, on the dashboard list's title, and the decision that made the sidebar badge follow a write live; before them, the frontend High raised on 2026-09-21 by Victor's browser checks (a table's text columns breaking inside words, at desktop width and down to one character on a phone) closed that day in `c0241dcc`, `26428c9d` and `64fa43a4`, and the Medium raised with it by that day's cold design review (focus lost after the first create from an empty state) closed that day in `5c4dad81` and `ce32e773`. The eight Lows open that morning all closed on 2026-09-21 — seven fixed (Prettier's line-ending check, the login response validated before it is stored, the page and table layout blocks shared, the filter bar split without an orphan, the rejection note kept below 600px, the draft on an inactive project that no longer offers a submit, and the Projects sort by Status), one dropped as a decision with no code change (focus to the actions cell). Of the twelve tasks raised on 2026-09-20 — three Medium and nine Low, from three cold reviews and Victor's browser walks — ten closed the same day, the last of them the Medium for `/entries`' row actions dropping focus to `<body>`. Before them it held no open task at any priority** (the two Lows raised last in the 2026-09-19 pre-PR browser check — a REJECTED row stating the manager's note twice and the API's lower-case default validation messages — closed that day in `e8a44736` and `6c43386c`) — the frontend Low raised in that check for the switch to §14's day-first `en-GB` dates closed that day in `51bb8046`, as did the frontend Medium raised in that check (both entry tables showing each date a day early east of UTC) closed that day in `e6f2fb0b`, and the frontend Low raised in the same check (the first-use empty-state icon clipped by `MatIcon`'s own 24px box) closed that day in `160cf8fe`, and the three frontend Mediums of the 2026-09-19 `review-audit`, run ahead of G4, closed that day (`e3e66f7a`, `5a957659`, and one decision with no code change); before that review it held none — the two `/entries` empty-state Lows raised by Victor on 2026-09-18 closed that day in `256b95ed` and `eb867534`; the initial bundle over its `angular.json` budget, raised 2026-09-18, closed that day in `0353a6db` (665 kB → 448 kB); the two Lows Victor reported that day both closed with it open, the stat cards' unequal heights and 3 + 1 wrap in `58822815` and `1fd76f7c`, and the Month filter panel wrapping its labels in `2b154e91` (the stat cards' unequal heights and 3 + 1 wrap at a mid width, and the Month filter's option panel wrapping its labels); the Medium raised with them (the entries header's "Log hours" usable before the project list had loaded) closed the same day in `580994cc`, and the Low for the entry dialog asking to discard an edit already saved before a failed submit closed that day in `9603a9f8`, as did the Low for the stat grid's `aria-label` promising a month two of its cards do not keep, in `03c8dfe8`, and the Low for the dashboard's first-use empty state missing the illustration §14 specifies, in `844d3da0`; the Low asking whether the dashboard's recent list should reuse `EntryList` closed that day as a decision, no code change (§13: it stays inline). Before them, the frontend Low raised on 2026-09-16 while triaging the Step 7a hygiene bundle (no route declares a document `title`) closed the same day in `b91a19ae` and `82329089`. The Low raised the same day while closing the sidenav task (the navigation toggle named no `aria-controls` target) closed that day in `3b48f37a`. The pre-PR hygiene bundle itself (an `as ApiError` cast beside the existing `isApiError` guard, a public `Shell.dialog`, `px` in `shell.scss`, the `Timetrack` title) closed that day across `5c69a9e7`–`5241a4c7`. The pre-PR Low for PLANNING drifting from the built code closed that day as a decision, no code change: §6 now rules that a form dialog owns its write and where `Router` may be injected. The Medium raised with them (`Shell` kept its sidenav in `side` mode at every width) closed the same day in `40fc27e5`, and the Low for the toolbar trigger that showed no user name and no logo closed the same day in `3fd72933`, as did the Low Victor raised that day for the account trigger's arrow that never turned with the menu, in `e3a981fa`, and the pre-PR Low for the dialog's missing password visibility toggles closed that day in `91df6a48`, its toggle extended to the login's password field, and the pre-PR Low for the dialog's missing full-screen rule closed that day as a decision, no code change: dialogs keep Material's compact card on phones (§14 Responsive intent). The frontend Low raised on 2026-09-16 while reviewing the Step 7a error patterns before its PR (`authInterceptor` treated every `401`, including a failed login, as a silent session expiry) closed the same day in `13730029`. the two frontend spec Lows raised on 2026-09-16 (the scaffold `app.spec.ts` title assertion and the change-password dialog spec missing `MatDialogRef`) both closed that day in `72e15280` and `81d8a173`, leaving `ng test` green at 12/12. The login-`<h1>` Low itself, raised the same day while closing the phone login layout task, closed on 2026-09-16 in `d0fb4a01`. The two frontend Lows raised on 2026-09-15 while verifying Step 7a both closed on 2026-09-16: the Login page's mobile layout in `ee3855b6` and the toolbar account-menu icon colour in `382a4983`; and the Medium raised the same day (a dialog left open over `/login` after a mid-session `401`) closed on 2026-09-16 in `b32e11a6`. The frontend Low raised on 2026-09-14, during Step 7a (two
@@ -2511,8 +2709,10 @@ This count is maintained by the backlog rituals on every close and every raise, 
 Remaining sequence: `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70,
 `a67866c4`), signing G3 off → the four frontend branches built Steps 7a–7d and the last of them,
 `feat/angular-manager-pages`, merged on 2026-09-22 (PR #92) → G4's `review-audit
-REVIEW_SCOPE = frontend`, run from `projects/07-timetrack` so its backlog commit lands there → create
-`feat/backend-tests` from `projects/07-timetrack` → Step 8.
+REVIEW_SCOPE = frontend`, run from `projects/07-timetrack` so its backlog commit lands there → `fix/frontend-backlog` merged
+through PR #93 on 2026-09-23 → create `feat/docker` from `projects/07-timetrack` → Step 11 →
+`feat/deployment` → Step 12 → `feat/backend-tests` → Step 8 → `feat/angular-tests` → Step 9 → Step 10
+on the project branch (§15 build order, reordered 2026-09-23).
 
 **The 2026-09-22 merge went to the wrong base, and the correction is recorded here rather than in the
 history.** PR #92 was opened against `main` instead of `projects/07-timetrack`. `main` held no commit of
@@ -2520,9 +2720,9 @@ its own, so the merge was linear and nothing was lost or conflicted; on 2026-09-
 `projects/07-timetrack` was fast-forwarded to the same commit (`e883a365`) and pushed, leaving `main`
 one merge commit ahead of it. The alternatives — reverting the merge, or force-pushing `main` back —
 were weighed and rejected: the revert would have to be reverted again before the real project-to-`main`
-merge at Step 11, and rewriting the default branch buys a tidier graph at the price of published
+merge at the project's close, and rewriting the default branch buys a tidier graph at the price of published
 history. The consequence to carry forward is that `main` already holds the frontend, so the project
-branch's own merge at Step 11 will carry Steps 8–11 only; the rule this broke — *`main` receives a
+branch's own merge at the project's close will carry Steps 8–12 only; the rule this broke — *`main` receives a
 project only when it is finished* — is unchanged.
 
 ---
@@ -2568,8 +2768,8 @@ The project is never declared finished early — it is closed only when every bo
 ```
 - [ ] Every §15 step's done condition passes, each with its step-complete ritual (G1)
 - [ ] PLANNING.md still matches what was built — re-run plan-audit MODE=review if §15/§22 moved (G2)
-- [x] review-audit REVIEW_SCOPE=backend has run, and every High task it found is fixed (G3)
-- [x] review-audit REVIEW_SCOPE=frontend has run, and every High task it found is fixed (G4) — ran 2026-09-23 over Steps 7a–7d, eleven slices plus the consistency pass (`d22a69e4`); it found no High at any priority, so the box closes on an empty set. Its 6 Mediums are G7's to clear, not G4's
+- [x] review-audit REVIEW_SCOPE=backend has run — PROJECT-BACKLOG.md's `**Last Reviewed — backend:**` line carries that run's date with no `(incomplete — …)` qualifier — and every High task it found is fixed (G3)
+- [x] review-audit REVIEW_SCOPE=frontend has run — PROJECT-BACKLOG.md's `**Last Reviewed — frontend:**` line carries that run's date with no `(incomplete — …)` qualifier — and every High task it found is fixed (G4) — ran 2026-09-23 over Steps 7a–7d, eleven slices plus the consistency pass (`d22a69e4`); it found no High at any priority, so the box closes on an empty set. Its 6 Mediums were G7's to clear, not G4's, and all closed on 2026-09-23
 - [ ] readme-audit has run — global + backend + frontend READMEs at standard (G5)
 - [ ] progress-update MODE=active has run **and its drift report came back empty** — anything it named is repaired by the owner it named (G6)
 - [ ] portfolio-audit returns ✅ Ready — no open High/Medium in PROJECT-BACKLOG.md (G7)
