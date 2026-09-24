@@ -117,6 +117,9 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Image vs container — distinguish an immutable packaged blueprint from a running instance with a writable runtime layer
 - `Dockerfile` vs Compose file — use a Dockerfile to build one image and Compose to define how multiple containers run together
 - Build vs run — separate producing an image from starting a container from that image
+- Multi-stage build — compile in a stage that carries the build toolchain and copy only the runtime artifact into a separate final image, so compilers, build tools and sources never ship with the application ✅ 07-timetrack — the backend `Dockerfile` compiles in an `eclipse-temurin:25-jdk` stage and copies only the jar into a `25-jre` image
+- Image layer cache — each instruction produces a layer reused until its inputs change, so copying the dependency manifest and resolving dependencies before copying source keeps a code change from re-downloading every dependency ✅ 07-timetrack — the backend `Dockerfile` copies `pom.xml` and runs `mvnw dependency:go-offline` before `COPY src`
+- Build context and `.dockerignore` — the builder receives the directory sent with the build, filtered by `.dockerignore`, so build output, editor files and local secrets are excluded before any instruction can copy them ✅ 07-timetrack — the backend `.dockerignore` excludes `target/`, `.idea/`, `*.iml` and every `.env` file from the build context
 - Container lifecycle — choose stop/start or restart for the same container, recreate it for changed runtime configuration, and rebuild its image for changed packaged content
 - Exposed vs published container port — distinguish image metadata documenting an intended container port from the runtime mapping that makes a container port reachable through a host port
 - Container service discovery — use the Compose service name between containers and recognise that `localhost` always means the current container
