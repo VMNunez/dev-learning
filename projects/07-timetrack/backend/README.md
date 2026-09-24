@@ -447,16 +447,16 @@ published in git, which is the whole point of leaving them unresolvable.
 | Variable | Read from | Required | What it is |
 |---|---|---|---|
 | `DB_PASSWORD` | `application.properties` → `spring.datasource.password` | Always | Password of the `timetrack_app` PostgreSQL role |
-| `JWT_SECRET` | `application.properties` → `app.jwt.secret` | Always | HMAC signing key for access tokens. Any string of at least 32 bytes; treat it as a credential |
+| `JWT_SECRET` | `application.properties` → `app.jwt.secret` | Always | HMAC signing key for access tokens, decoded as Base64 — at least 32 random bytes once decoded (`openssl rand 64 \| openssl base64 -A`); a value that is not valid Base64 fails at the first login with a 500. Treat it as a credential |
 | `ADMIN_PASSWORD` | `application-dev.properties` → `app.admin.password` | With the `dev` profile only | Plain-text password of the seeded first manager, hashed with BCrypt at startup and never stored in git |
 
 Miss `JWT_SECRET` and startup ends in `Could not resolve placeholder 'app.jwt.secret'`.
 
 Two further datasource properties are placeholders **with** a local default, so they are optional. They
 are externalised for a different reason than the three above: not secrecy — a hostname is not a secret —
-but so the same build runs against another host. Step 11's `docker` profile sets the compose service
-name in `application-docker.properties`; these placeholders are what let a one-off run override it from
-the environment without a profile at all.
+but so the same build runs against another host. Step 11's compose file sets `DB_URL` to its `db`
+service, and the hosted deployment sets it to the managed database — both through these placeholders,
+with no per-environment profile or properties file.
 
 | Variable | Read from | Default | What it is |
 |---|---|---|---|

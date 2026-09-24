@@ -174,6 +174,23 @@ My previous six projects were Angular-only with localStorage as a fake backend. 
 
 ## How to run
 
+### With Docker
+
+**Requirements:** Docker. From `projects/07-timetrack/`, copy `.env.example` to `.env`, fill in its four
+values, then:
+
+```bash
+docker compose up --build
+```
+
+The API is at `http://localhost:8080`, backed by its own PostgreSQL with no port published, and you can log
+in as `manager@timetrack.com` with the password you set in `ADMIN_PASSWORD`. `JWT_SECRET` is decoded as
+Base64 — generate it with `openssl rand 64 | openssl base64 -A`. The database's passwords are fixed on
+its volume's first start, so after changing them in `.env` run `docker compose down -v`, which deletes
+the Docker database, before starting again.
+
+### Without Docker
+
 **Requirements:** Java 25, PostgreSQL running locally, and a database named `timetrack` owned by a
 non-superuser role `timetrack_app` — the app never connects as `postgres`. The two `CREATE` statements
 are in [backend/README.md](backend/README.md#how-to-run-alone)
@@ -184,7 +201,7 @@ Environment variables):
 | Variable | What it is |
 |---|---|
 | `DB_PASSWORD` | Password of the `timetrack_app` PostgreSQL role |
-| `JWT_SECRET` | Signing key for access tokens — any string of at least 32 bytes |
+| `JWT_SECRET` | Signing key for access tokens — Base64 of at least 32 random bytes (`openssl rand 64 \| openssl base64 -A`) |
 | `ADMIN_PASSWORD` | Password of the first manager account, seeded at startup |
 | `SPRING_PROFILES_ACTIVE=dev` | Activates the `dev` profile. **Required locally** — there is no public register endpoint, so without it no account is seeded and every login returns 401 |
 
