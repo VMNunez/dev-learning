@@ -2370,6 +2370,32 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - **New concepts:** configuration parity across environments (IntelliJ, compose, hosted)
 - **Review concepts:** Docker image, environment variables for secrets, CORS
 - **Done condition:** `Browser: the public frontend URL opens /login, and logging in with the README's demo manager credentials reaches /dashboard with its stat cards loaded from the hosted API`
+- **Built so far (2026-09-24) — the hosted setup, recorded here because it lives in two dashboards and nowhere else:**
+  - **Database — Neon** free plan, region AWS `eu-central-1` (Frankfurt), PostgreSQL 17. The app connects to the
+    **direct** endpoint, never the `-pooler` one (HikariCP keeps its own pool and `ddl-auto` issues DDL):
+    `jdbc:postgresql://ep-long-tooth-b1v62fxm.c-5.eu-central-1.aws.neon.tech/timetrack?sslmode=require&channelBinding=require`.
+    §9's least privilege holds there too, and it took one extra line: a role created in Neon's console joins
+    `neon_superuser` (`CREATEROLE`, `BYPASSRLS`, read/write on all data) without setting `rolsuper`, so
+    `timetrack_app` was created with SQL from the SQL Editor as `neondb_owner` — `CREATE ROLE timetrack_app
+    LOGIN PASSWORD '…'`, then `GRANT timetrack_app TO neondb_owner` (PostgreSQL 16+ gives the creating role
+    `ADMIN` but not `SET`, and `CREATE DATABASE … OWNER` refuses without it), then `CREATE DATABASE timetrack
+    OWNER timetrack_app`. Verified with `pg_roles` and `pg_has_role(…, 'neon_superuser', 'MEMBER')`: all
+    `false`, owner `timetrack_app`. Demo data and its restore → §9
+  - **API — Render** free web service `timetrack-api`, public at `https://timetrack-api-skun.onrender.com`:
+    language Docker, branch `projects/07-timetrack`, region Frankfurt, Root Directory
+    `projects/07-timetrack/backend/timetrack`, Dockerfile Path `./Dockerfile` (both resolve relative to the
+    root directory, which also limits auto-deploy to changes inside it). Environment: `DB_URL`,
+    `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` (a new key, never the local one) and `PORT=8080` — Render routes
+    to `PORT` (default `10000`), and Tomcat binds 8080, so the host is told the port rather than the code
+    reading it. No `SPRING_PROFILES_ACTIVE`: without `dev` nothing is seeded and `ADMIN_PASSWORD` is not
+    needed. Verified: `GET /api/projects` without a token → 401 with the §10 body, and the demo manager's
+    login → 200
+  - **Cold start measured:** `Started TimetrackApplication in 128.6 / 140.6 seconds` on the free 0.1 CPU —
+    about two minutes plus the container wake, not the "about one minute" Render quotes; the README's
+    warning owes that figure. Memory under 512 MB not measured yet (Render → Metrics) — tuning waits on it
+  - **Secrets** live only in 1Password (`TimeTrack — Render (production)` for the four variables,
+    `TimeTrack — public demo` for the demo manager) and in the Render dashboard — never in a file on disk;
+    the local `.env` keeps the Docker values only
 
 ---
 
