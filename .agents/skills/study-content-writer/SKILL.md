@@ -282,7 +282,7 @@ line and performed by hand under the sink's procedure; only the edits it makes g
 four steps.
 It does not run the audit pipeline and does not restructure the whole topic. Committing is governed
 by `notes/prompts/_internal/_session-rules.md` → `No git side effects on code`, not by this skill — in
-a daily session the active agent MAY commit `notes/` files directly (atomic, no Co-Authored-By,
-double `git status` check), so after writing, follow that rule as usual.
+a daily session the active agent MAY commit `notes/` files directly (atomic, `Co-Authored-By` as that rule's
+authorship clause sets it, double `git status` check), so after writing, follow that rule as usual.
 For a full topic build or audit, that is `/notes-audit` or `/interview-prep-audit` in a separate
 session — this skill is only for getting inline, in-session writing right.
