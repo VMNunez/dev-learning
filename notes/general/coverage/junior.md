@@ -107,7 +107,7 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Default configuration — provide a default only when it is safe and semantically valid for every context where it may be used
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
 - Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app
-- Configuration parity — keep environment differences explicit and minimal so deployment failures are not caused by hidden local assumptions
+- Configuration parity — keep environment differences explicit and minimal so deployment failures are not caused by hidden local assumptions ✅ 07-timetrack — `application.properties` takes the datasource and JWT key only from `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` and `JWT_SECRET`, so one image runs under compose and hosted with no per-environment file
 - Example environment file — document required variable names with safe placeholder values without committing real credentials ✅ 07-timetrack — `.env.example` names the four compose secrets with `change-me` placeholders beside a git-ignored `.env`
 - Effective-configuration debugging — compare the value actually used in each environment rather than assuming the intended source won
 

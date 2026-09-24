@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 12 — Deployment**, next — §15's build order after Step 7 is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20). Step 11 closed ✅ on 2026-09-24: the API builds as a two-stage image and runs beside its own PostgreSQL through `docker compose`, the done condition verified with IntelliJ and the Windows PostgreSQL service stopped. Step 12 opens once `feat/docker` merges into the project branch (§22). Three things it needs that §15 does not settle, each to be decided when it opens: how the hosted database gets demo data beyond the first manager, what a publicly writable demo accepts (Victor's decision), and keeping the static host's per-deploy credits from being spent by docs-only pushes. `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier** |
+| **Current step** | **Step 12 — Deployment**, next — §15's build order after Step 7 is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20). Step 11 closed ✅ on 2026-09-24: the API builds as a two-stage image and runs beside its own PostgreSQL through `docker compose`, the done condition verified with IntelliJ and the Windows PostgreSQL service stopped. Step 12 opens once `feat/docker` merges into the project branch (§22). Three things it needs that §15 does not settle, each to be decided when it opens: how the hosted database gets demo data beyond the first manager, what a publicly writable demo accepts (Victor's decision), and keeping the static host's per-deploy credits from being spent by docs-only pushes. `PROJECT-BACKLOG.md` holds **no open task at any priority in either tier** — the backend Low raised on 2026-09-24 (`.env.example`'s `JWT_SECRET` placeholder) closed the same day in `a5da20a0` |
 | **Current branch** | `feat/docker` — Step 11's branch, **its work is done**: ready for a PR into `projects/07-timetrack` (opened by Victor on GitHub, never into `main`). `feat/deployment` is cut from the project branch after that merge and carries Step 12 (§22). `main` sits behind the project branch and holds only PR #92's merge — the wrong-base merge of 2026-09-22 recorded in §22 — and receives the project only when every §15 step is done |
 | **Done condition** | Step 12's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Browser: the public frontend URL opens /login, and logging in with the README's demo manager credentials reaches /dashboard with its stat cards loaded from the hosted API` |
 | **Next gate** | G5 — READMEs (`readme-audit · PROJECT_PATH = projects/07-timetrack`), its trigger met (every High from G3/G4 fixed; G4 found none) but **held until Step 12 is live**: the README has to carry the public URL, the demo credentials and the cold-start warning, and `REC-250` has to land first, since `_readme-standard.md` still states every full-stack project is local-only. G4 signed off on 2026-09-23 (`d22a69e4`), G3 on 2026-08-29 (`a67866c4`), G2 on 2026-09-24 (`e43d809d`). G7 waits on G5, G6 and on Steps 8–9: until they pass, a `full` run stops at its preflight as ❌ Not ready (§23, publishing before the tests) |
@@ -583,10 +583,22 @@ No other row must exist at startup: `Role` and `EntryStatus` are Java enums stor
 is no lookup table to seed.
 
 **The hosted database (Step 12) is seeded by hand.** `DataInitializer` never runs there — the deployed
-instance does not activate `dev` — so the first manager is inserted once with a BCrypt hash generated
-locally and never committed. That account is a public demo login rather than a secret: its email and
-password are written in the global README, which Step 12's done condition logs in with, and not in any
-file the build reads.
+instance does not activate `dev` — so no row is created by the build. **Built differently (2026-09-24):**
+rather than a lone manager, the hosted database carries a copy of the local demo dataset (5 users, 4
+projects, 80 entries), loaded from a data-only `pg_dump` (column `INSERT`s plus the three `setval`s, so
+the first write the app makes does not collide with a copied id). No local password survived the copy:
+the manager's hash was replaced in place with `crypt(…, gen_salt('bf', 10))` from `pgcrypto` — a
+`$2a$10$` hash `BCryptPasswordEncoder` accepts, the extension dropped straight after — and each employee
+was reset through `POST /api/users/{id}/password-reset`. The manager (`manager@timetrack.com`) is a
+public demo login rather than a secret: its password is written in the global README, which Step 12's
+done condition logs in with, and not in any file the build reads.
+
+**Restoring the demo (§20: the public app is writable).** A second data-only dump, taken from the hosted
+database after those resets, lives **outside every repository** in `dev/demo-data/07-timetrack/` — it
+holds real hashes, so it is never committed. Restoring is two runs in the Query Tool connected to the
+**hosted** server as `timetrack_app`: `TRUNCATE time_entries, projects, users;`, then the file. The
+`TRUNCATE` is deliberately kept out of the file, so the file opened against the local database by
+mistake fails on duplicate keys instead of emptying it.
 
 > **Replaced `data.sql` on 2026-07-23 — and the reason is the point.** The original plan seeded the account
 > from `src/main/resources/data.sql` with a pre-generated BCrypt hash and `ON CONFLICT DO NOTHING`, running
@@ -2358,6 +2370,32 @@ share `feat/angular-manager-pages`, since §22's rule is one branch per coherent
 - **New concepts:** configuration parity across environments (IntelliJ, compose, hosted)
 - **Review concepts:** Docker image, environment variables for secrets, CORS
 - **Done condition:** `Browser: the public frontend URL opens /login, and logging in with the README's demo manager credentials reaches /dashboard with its stat cards loaded from the hosted API`
+- **Built so far (2026-09-24) — the hosted setup, recorded here because it lives in two dashboards and nowhere else:**
+  - **Database — Neon** free plan, region AWS `eu-central-1` (Frankfurt), PostgreSQL 17. The app connects to the
+    **direct** endpoint, never the `-pooler` one (HikariCP keeps its own pool and `ddl-auto` issues DDL):
+    `jdbc:postgresql://ep-long-tooth-b1v62fxm.c-5.eu-central-1.aws.neon.tech/timetrack?sslmode=require&channelBinding=require`.
+    §9's least privilege holds there too, and it took one extra line: a role created in Neon's console joins
+    `neon_superuser` (`CREATEROLE`, `BYPASSRLS`, read/write on all data) without setting `rolsuper`, so
+    `timetrack_app` was created with SQL from the SQL Editor as `neondb_owner` — `CREATE ROLE timetrack_app
+    LOGIN PASSWORD '…'`, then `GRANT timetrack_app TO neondb_owner` (PostgreSQL 16+ gives the creating role
+    `ADMIN` but not `SET`, and `CREATE DATABASE … OWNER` refuses without it), then `CREATE DATABASE timetrack
+    OWNER timetrack_app`. Verified with `pg_roles` and `pg_has_role(…, 'neon_superuser', 'MEMBER')`: all
+    `false`, owner `timetrack_app`. Demo data and its restore → §9
+  - **API — Render** free web service `timetrack-api`, public at `https://timetrack-api-skun.onrender.com`:
+    language Docker, branch `projects/07-timetrack`, region Frankfurt, Root Directory
+    `projects/07-timetrack/backend/timetrack`, Dockerfile Path `./Dockerfile` (both resolve relative to the
+    root directory, which also limits auto-deploy to changes inside it). Environment: `DB_URL`,
+    `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` (a new key, never the local one) and `PORT=8080` — Render routes
+    to `PORT` (default `10000`), and Tomcat binds 8080, so the host is told the port rather than the code
+    reading it. No `SPRING_PROFILES_ACTIVE`: without `dev` nothing is seeded and `ADMIN_PASSWORD` is not
+    needed. Verified: `GET /api/projects` without a token → 401 with the §10 body, and the demo manager's
+    login → 200
+  - **Cold start measured:** `Started TimetrackApplication in 128.6 / 140.6 seconds` on the free 0.1 CPU —
+    about two minutes plus the container wake, not the "about one minute" Render quotes; the README's
+    warning owes that figure. Memory under 512 MB not measured yet (Render → Metrics) — tuning waits on it
+  - **Secrets** live only in 1Password (`TimeTrack — Render (production)` for the four variables,
+    `TimeTrack — public demo` for the demo manager) and in the Render dashboard — never in a file on disk;
+    the local `.env` keeps the Docker values only
 
 ---
 
@@ -2657,7 +2695,7 @@ coverage table.
 
 The project branch, `projects/07-timetrack`, was created once from `main` at Step 1 and stays
 open for the whole project. It only merges into `main` when every §15 step is done — Step 10 is the last
-in the build order 11 → 12 → 8 → 9 → 10 — and that PR is the closure checklist's last box (§23).
+in the build order 11 → 12 → 8 → 9 → 10 — and that PR is the closure checklist's last box (§23). Once it merges, both hosts' deploy branch (Render and Netlify, Step 12) is repointed to `main` **before** the project branch is deleted — deleting it first leaves the live app frozen on its last deploy, with every later merge silently undeployed.
 
 **Immediate action (updated 2026-09-24):** every feature branch through Step 7 and both backlog-fix
 branches are closed — `fix/backend-backlog` through PR #70 on 2026-08-29 (G3), `fix/frontend-backlog`
@@ -2704,7 +2742,7 @@ The fifth closed with code: the in-flight row guard is a set of busy ids (`06371
 identical scalar, and the trigger is *more* reachable on them, since their row actions fire with no
 confirmation dialog in the way. Measured in the browser on a throttled connection, before and after: a row
 stayed unguarded for 2.42 s while its own request ran, and now two rows hold their guards at once. §6 gained
-the rule. **5 Low remain, and nothing above them.** The last four closed the same day: the styles layer stops authoring Material internal classes (`d243ba38`, `477d8ffa`) — real scope **2 sites, not 1**, since `.mat-mdc-cell` and `.mat-mdc-icon-button` sat two rules below the sticky-border class the task named, and `mat.table-overrides` exposes no divider token, so the class was replaced rather than blessed; the reject action gains `--action-reject` beside `--action-approve` (`699be364`); the Projects status pill mixes against `--mat-sys-surface` (`006995fb`) — the task called it harmless while the surface renders white, and the theme renders it `#f7faf8`, so the pill had been seven units lighter than its own row; and `/team` counts its in-flight resets and open password dialogs instead of flagging one (`106bb94a`). The §14 Projects row was corrected in the same pass. **The backlog is empty at every priority in both tiers.**
+the rule. **5 Low remain, and nothing above them.** The last four closed the same day: the styles layer stops authoring Material internal classes (`d243ba38`, `477d8ffa`) — real scope **2 sites, not 1**, since `.mat-mdc-cell` and `.mat-mdc-icon-button` sat two rules below the sticky-border class the task named, and `mat.table-overrides` exposes no divider token, so the class was replaced rather than blessed; the reject action gains `--action-reject` beside `--action-approve` (`699be364`); the Projects status pill mixes against `--mat-sys-surface` (`006995fb`) — the task called it harmless while the surface renders white, and the theme renders it `#f7faf8`, so the pill had been seven units lighter than its own row; and `/team` counts its in-flight resets and open password dialogs instead of flagging one (`106bb94a`). The §14 Projects row was corrected in the same pass. **The backlog is empty at every priority in both tiers.** One backend Low was raised on 2026-09-24 while documenting Step 11's Docker run path during Step 12 — `.env.example`'s `JWT_SECRET` placeholder fails `Decoders.BASE64` at the first login. It closed the same day in `a5da20a0`. **The backlog is empty again at every priority in both tiers.**
 This count is maintained by the backlog rituals on every close and every raise, in the same commit.
 
 Remaining sequence: `fix/backend-backlog` merged into `projects/07-timetrack` on 2026-08-29 (PR #70,
