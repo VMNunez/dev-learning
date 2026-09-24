@@ -108,24 +108,27 @@ Framework-neutral concepts a junior or junior-mid developer must understand acro
 - Development, test, staging, and production — use each environment for a distinct confidence level without assuming staging is an exact copy of production
 - Build-time vs runtime configuration — distinguish values embedded while producing an artifact from values supplied when that artifact starts ✅ 02-weather-app
 - Configuration parity — keep environment differences explicit and minimal so deployment failures are not caused by hidden local assumptions
-- Example environment file — document required variable names with safe placeholder values without committing real credentials
+- Example environment file — document required variable names with safe placeholder values without committing real credentials ✅ 07-timetrack — `.env.example` names the four compose secrets with `change-me` placeholders beside a git-ignored `.env`
 - Effective-configuration debugging — compare the value actually used in each environment rather than assuming the intended source won
 
 ## Containers and local runtime
 
 - Container vs virtual machine — distinguish an isolated process sharing the host kernel from a virtualised machine with its own guest operating system
 - Image vs container — distinguish an immutable packaged blueprint from a running instance with a writable runtime layer
-- `Dockerfile` vs Compose file — use a Dockerfile to build one image and Compose to define how multiple containers run together
-- Build vs run — separate producing an image from starting a container from that image
+- `Dockerfile` vs Compose file — use a Dockerfile to build one image and Compose to define how multiple containers run together ✅ 07-timetrack — the backend `Dockerfile` builds only the API image; `docker-compose.yml` runs it together with its PostgreSQL
+- Build vs run — separate producing an image from starting a container from that image ✅ 07-timetrack — `docker-compose.yml` builds the API from `backend/timetrack` and runs it beside a pulled `postgres:17-alpine`
+- Multi-stage build — compile in a stage that carries the build toolchain and copy only the runtime artifact into a separate final image, so compilers, build tools and sources never ship with the application ✅ 07-timetrack — the backend `Dockerfile` compiles in an `eclipse-temurin:25-jdk` stage and copies only the jar into a `25-jre` image
+- Image layer cache — each instruction produces a layer reused until its inputs change, so copying the dependency manifest and resolving dependencies before copying source keeps a code change from re-downloading every dependency ✅ 07-timetrack — the backend `Dockerfile` copies `pom.xml` and runs `mvnw dependency:go-offline` before `COPY src`
+- Build context and `.dockerignore` — the builder receives the directory sent with the build, filtered by `.dockerignore`, so build output, editor files and local secrets are excluded before any instruction can copy them ✅ 07-timetrack — the backend `.dockerignore` excludes `target/`, `.idea/`, `*.iml` and every `.env` file from the build context
 - Container lifecycle — choose stop/start or restart for the same container, recreate it for changed runtime configuration, and rebuild its image for changed packaged content
-- Exposed vs published container port — distinguish image metadata documenting an intended container port from the runtime mapping that makes a container port reachable through a host port
-- Container service discovery — use the Compose service name between containers and recognise that `localhost` always means the current container
-- Bind mount vs named volume — choose direct host-file access or Docker-managed persistent storage from the development and data-lifecycle need
+- Exposed vs published container port — distinguish image metadata documenting an intended container port from the runtime mapping that makes a container port reachable through a host port ✅ 07-timetrack — the image `EXPOSE`s 8080 and compose publishes only the API's `8080:8080`, leaving PostgreSQL unpublished
+- Container service discovery — use the Compose service name between containers and recognise that `localhost` always means the current container ✅ 07-timetrack — the API reaches its database as `jdbc:postgresql://db:5432/timetrack`, the Compose service name
+- Bind mount vs named volume — choose direct host-file access or Docker-managed persistent storage from the development and data-lifecycle need ✅ 07-timetrack — PostgreSQL data lives in the named volume `db-data`; the init scripts are bind-mounted read-only from `docker/db/init`
 - Ephemeral vs persistent container data — recognise what disappears with a container and what must live in a volume or external service
-- Container environment variables — inject runtime configuration instead of baking environment-specific values into a reusable image
+- Container environment variables — inject runtime configuration instead of baking environment-specific values into a reusable image ✅ 07-timetrack — the API image holds no secret; compose injects `DB_URL`, `DB_PASSWORD`, `JWT_SECRET` and `ADMIN_PASSWORD` at start
 - Container logs — inspect process output through the container runtime when no interactive terminal or debugger is attached
-- Compose dependency and readiness — recognise that start order does not prove a dependency is ready to accept traffic
-- Health-check awareness — use a health signal to report whether a service can perform its required work rather than merely whether its process exists
+- Compose dependency and readiness — recognise that start order does not prove a dependency is ready to accept traffic ✅ 07-timetrack — the API `depends_on` the database with `condition: service_healthy`, not start order alone
+- Health-check awareness — use a health signal to report whether a service can perform its required work rather than merely whether its process exists ✅ 07-timetrack — the database health check runs `pg_isready -h localhost` against `timetrack`, so the socket-only init server never reports ready
 - Containerised-stack debugging — inspect container status, logs, ports, service names, configuration, networks, and volumes before rebuilding blindly
 - Reproducible local stack — document enough build, configuration, and data-startup information for another developer to run the same services
 

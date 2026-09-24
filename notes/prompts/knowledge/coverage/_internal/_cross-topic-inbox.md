@@ -74,7 +74,9 @@ is still the source, and the owning topic's three level files remain its only sc
 
 ## General
 
-*(Empty — the three proposals were consumed by the General junior full recalibration on 2026-07-30: framework-specific Jackson and TestBed ownership was removed, while neutral serialization, test structure, setup, and meaningful assertions were retained or added.)*
+*(The three proposals of 2026-07-30 were consumed by the General junior full recalibration that day.)*
+
+- Exec-form vs shell-form entrypoint — run the application as the container's main process so the stop signal reaches it and it shuts down gracefully, instead of a shell that receives the signal and leaves the application to be killed after the grace period — proposed level: **middle** (General middle has no completed coverage run, so it is not authored inline) · source: `coverage-bullet-add`, 2026-09-24, from project 07's Dockerfile
 
 ## JavaScript
 
