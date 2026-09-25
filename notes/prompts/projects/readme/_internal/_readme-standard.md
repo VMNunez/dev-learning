@@ -183,17 +183,35 @@ found three of these tests missing and two nominal only once someone counted the
      work in practice, before applying them in a real codebase."
 3. **Live demo** — own `## Live demo` heading, URL present, test accounts if it has auth (`email /
    password`, one per role). If none exists, flag it as missing — do not skip the section.
-4. **Screenshots** — optimal count for the project (no fixed number); read PLANNING.md + Features to
-   find the essential screens. Plain markdown images stacked vertically (never a 2×2 table — GitHub
-   compresses them badly), bold caption above each, none below, **each its own paragraph** — a blank
-   line between a caption and its image and between one image and the next, per *Source is not render*
-   above. First output a **Visual brief** (one line per screenshot: "Screenshot — [screen]: show
-   [what must be visible]"), then a placeholder for each not-yet-captured visual:
+4. **Screenshots** — screenshots and, where the GIF test below passes, GIFs; optimal count for the
+   project (no fixed number); read PLANNING.md + Features to find the essential screens and flows.
+   Plain markdown images stacked vertically (never a 2×2 table — GitHub compresses them badly), GIFs
+   before screenshots, max 5 MB per GIF, bold caption above each, none below, **each its own
+   paragraph** — a blank line between a caption and its image and between one image and the next, per
+   *Source is not render* above. First output a **Visual brief** (one line per GIF: "GIF — [name]: show
+   [step 1] → [step 2] → [step 3]"; one line per screenshot: "Screenshot — [screen]: show [what must be
+   visible]"), then a placeholder for each not-yet-captured visual: `*(GIF — [name] — to be added)*` or
    `*(screenshot — [screen name] — to be added)*`. Never skip silently.
    - **A screen, not a state.** Count *distinct screens*, not variants of one — a filter applied, an
      empty list or a validation error on the same view is a state, and a single-screen app is legitimately
      done with one screenshot. Never add a placeholder for a state of a screen already shown; if the
      README carries none for it, that is the correct count, not a gap to fill.
+   - **A GIF only where no still can show it.** A GIF passes when it shows a behaviour Features already
+     states and that happens **across screens, or as two roles act on the same record** — a record
+     moving from one status to another as two people act on it, state that survives a trip to another
+     page. Two shapes fail, however many screens they cross: a GIF of one view changing state — typing
+     into a field, a filter narrowing a list, one click swapping one state for another, a reload finding
+     the data still there — and a create, edit or delete dialog or form returning to the list it
+     changed, which every CRUD app does and the form's screenshot beside the list's already says. A
+     difference between what two roles see is two screenshots, not a GIF. Those are a screenshot or
+     nothing. A README with no GIF is not missing one unless something passes this test.
+   - **A closed project (01–06) never gains a placeholder.** Those projects are finished, and
+     `_portfolio-standard.md`'s placeholder scan downgrades a ✅ Ready verdict to ⚠️ whenever it finds
+     one. So a visual this rule warrants there and nobody has captured — a GIF above all, since those
+     projects already carry their screenshots and no run can capture either kind — is named in the
+     Visual brief and in the run's summary instead, and reaches the README only as a finished file, from
+     a task in that project's `PROJECT-BACKLOG.md`: the summary says whether one exists, because the
+     summary does not outlive the run and the task does.
 5. **Features** — optimal count for the project (no fixed number), from the user's perspective, no
    technical terms.
    - **A behaviour, not a capability.** One bullet per behaviour a user can see happen. A bullet naming
@@ -385,12 +403,10 @@ deployed* when §15 has no deployment step. Never infer either from a URL in the
   whether a project deploys is the plan's decision (§20), and this gate does not make it.
 - **Rule 12 (How to run)** content, in both shapes: `docker-compose up` when Docker is ready; `mvn spring-boot:run` +
   `ng serve` in separate terminals before Docker. Do not apply the Angular rule 12 here.
-- **Visuals** — optimal mix of GIFs and screenshots (no fixed count). GIFs for multi-step interactions,
-  screenshots for dashboards/forms/empty states/role differences. Stacked vertically, GIFs before
-  screenshots, max 5 MB per GIF — and the blank lines of *Source is not render* are what make them
-  stacked. If the frontend is not built, leave placeholders for all visuals.
-  First output a **Visual brief** (one line per GIF: "GIF — [name]: show [step 1] → [step 2] → [step
-  3]"; one line per screenshot).
+- **Visuals** — rule 4 governs GIFs and screenshots alike, its GIF test, layout, size cap and Visual
+  brief included. What a full-stack project adds is where screenshots are expected — dashboards, forms,
+  and each role's version of a screen that differs by role — and that, when the frontend is not built,
+  every visual is a placeholder.
 - **Final line:** "Full technical details: [backend/README.md](backend/README.md) and
   [frontend/README.md](frontend/README.md)" — always present; check both paths resolve.
 - **Testing row:** if the project has tests, add one to the Tech Stack table (e.g. `Testing | JUnit 5 +
