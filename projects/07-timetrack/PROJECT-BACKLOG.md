@@ -47,7 +47,7 @@ That ledger is append-only and authoritative — a review never re-raises what i
 
 #### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — Saving from the entry dialog's **Submit for review** announces the wrong outcome: the dialog closes with `true` whichever button saved it (`entry-dialog.ts:158`), and `Entries.openDialog()` then opens `'Entry updated'` for any edit (`entries.ts:299`), so an entry that just moved `DRAFT → SUBMITTED` is reported as a plain edit, while the row's inline ➤ reports the same transition as `'Entry submitted for review'` (`entries.ts:238`). One transition, two messages, and the dialog's is the one that hides the status change the user asked for. Close the dialog with the outcome it reached (saved vs submitted) and let the page word the snackbar from it, the way the inline path already does *(Effort: Small)* *(raised 2026-09-25 while reviewing the README approval-workflow GIF, whose scene 3 shows it)*
 
 ## Beyond the current gate
 
