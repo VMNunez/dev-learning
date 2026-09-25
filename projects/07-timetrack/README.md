@@ -22,7 +22,9 @@ The API runs on a free tier that sleeps when idle, so the first login after a qu
 
 ## Screenshots
 
-*(GIF — approval workflow: an employee logs and submits hours, a manager rejects the entry with a note, the employee re-opens and resubmits it — to be added)*
+**Approval workflow — an employee logs and submits hours, a manager rejects the entry with a note, the employee re-opens and resubmits it, and the manager approves it**
+
+![Approval workflow](screenshots/approval-workflow.gif)
 
 **Manager dashboard — pending approvals with one-click approve and reject**
 
