@@ -19,7 +19,7 @@
 
 ### Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — The README's three screenshots show search results, a recipe and the favourites page each on its own, so two behaviours its Features list claims are never seen: the Favourites count in the nav bar changing the moment a meal is saved, and the search surviving a trip to a recipe and back because the term lives in the URL (`?q=`). Both happen *between* screens, which no still can hold; a GIF of the flow shows them. Shot list, 1280 × 800, one take: (1) search page, type `chicken`, Enter — grid loads, address bar shows `?q=chicken`; (2) open a card — detail page; (3) toggle favourite — the nav badge goes up by one; (4) Back — the same results, `?q=` still there; (5) Favourites — the saved meal, then one category filter; ~2 s still at the end. Lands above the screenshots with a bold caption and no placeholder is ever written into this README (the project is ✅ Ready, and a `*(GIF — …)*` placeholder downgrades it to ⚠️ on the next `portfolio-audit`). **Blocked on `REC-252`**: `_readme-standard.md` rule 4 admits screenshots only on Angular-only READMEs *(Effort: Small)* *(raised 2026-09-25 while reviewing 01–06 for a GIF, after re-recording 07's approval GIF)*
 
 
 ---
