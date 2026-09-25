@@ -1,12 +1,29 @@
 # Pipeline self-report — readme-audit
 
-Date: 2026-09-04 · Project: projects/06-hr-portal (Angular → target `global` only)
+Date: 2026-09-24 · Project: projects/07-timetrack (full-stack → targets `global`, `backend`, `frontend`)
 Status: clean
 
-- **Report discipline** — nothing discarded; all four dispatches (author, reviewer, judge, applier) returned an actionable verdict and summary within budget.
-- **Trace verification** — the reviewer's trace covered all 12 required sections in standard order with a per-section verdict; no gap, no re-dispatch, no false alarm.
-- **Coherence** — N/A: Angular project, single README, coherence subagent correctly skipped.
-- **Effect judge** — 8 items (7 CUT incl. one summary line, 1 ADD) + 3 KEEPs on the one target; B applied all 8 and **returned no objection**, so the arbitration branch never fired. 2 items carry `⚠ regenerable — standard gap`: both are `What I learned` cuts made on rule 9's form test whose concepts are `PLANNING.md` learning objectives, which rule 9's *adder only* clause will have the next author re-add and the next judge cut again. No comparison against a previous run is claimed. **The pre-commit `git diff` verification ran and found nothing**: every cut in the diff maps to a named item, the remaining removals are the author's own rewrites whose shortened replacements are present on the `+` side, and no cut landed in a section a rule positively includes — the `What I learned` cuts are licensed by rule 9's own three tests, and the adder-only clause states the plan "never decides what stays", so no objection was owed there.
-- **Failure protocol** — not triggered; no subagent errored, no README excluded from the commit.
-- **Anything else** — nothing made the run harder than it should be, and no rule was broken: step-0 run-start check executed (previous `Status: clean` → proceeded silently), every mandated dispatch ran (4/4 required for a single-target project), the diff verification ran before the commit. No breach, so no breach-log row; the log file does not yet exist and none was created.
-- **Verdict** — pipeline clean.
+- **Report discipline** — nothing discarded; every dispatch returned an actionable verdict and summary within budget. The dispatch count was 16 against 13 required (3 authors, 3 reviewers, 1 coherence pass, 3 judges, 3 appliers), plus 3 re-dispatches, all itemised below.
+- **Trace verification** — all three reviewer traces were complete on the first pass (global 12 sections + final line, backend 9, frontend 7, each in standard order). No trace re-dispatch, no false alarm.
+- **Coherence** — 2 conflicts:
+  - One real rationale divergence between the global README and PLANNING §19. It was re-dispatched to the global reviewer and aligned.
+  - One fact where PLANNING §9 claims the demo password "is written in the global README" but no README ever carried it. No README re-dispatch can fix that, because the standard forbids inventing a password. The prompt's coherence branch only names "the README that is wrong", so it is silent when PLANNING is the wrong side. The orchestrator ruled no re-dispatch and routed the item to Victor.
+- **Effect judge** — items per target: global 8 (+2 KEEP), backend 10 (+3 KEEP), frontend 8 (+3 KEEP).
+  - Objections: 1, the global live-demo credentials ADD, **sustained** on rule 3's "never invent or guess a password". The GIF ADD was returned as not applicable, since nobody here can capture one.
+  - The pre-commit `git diff` verification, read against a pre-judge baseline snapshot, **found two things**:
+    - The global applier had cut the Tech stack Testing row on the false ground that the project has no tests. Four frontend specs and `ValidationMessagesTest` exist, and the standard's Testing-row clause positively includes the row. The orchestrator raised this as its own objection, **overruled the cut**, and re-dispatched B, which restored the row and made the tradeoff wording consistent with it.
+    - The backend regroup (the Key patterns ADD) left one false "below" cross-reference. B was re-dispatched and fixed it.
+  - `⚠ regenerable — standard gap`: 0 qualify under the prompt's criterion, since no effect-only `What I learned` cut matches a PLANNING objective. The appliers flagged 11 effect-only tier cuts (backend Key patterns, frontend Tradeoffs figures, global Project structure / How to run) as regenerable by analogy.
+  - The judge outranks the green traces here: every target cleared its reviewer and still returned "does not land".
+- **Failure protocol** — not triggered. No subagent errored, and no README was excluded from commit `db821281`.
+- **Anything else** — no rule broken:
+  - Step 0 ran: session rules read to EOF, previous `Status: clean` → silent.
+  - Every mandated dispatch ran, and the diff verification ran before the commit.
+  - One improvisation where the prompt is silent: the orchestrator folded a second, self-raised item (the Testing row a reviewer had removed) into the coherence re-dispatch of the global reviewer, which is outside that step's quote-the-conflict channel. The later applier undid it again, and the diff check caught that.
+  - `FRIC-0002` dismissed on condition 3 (`e7ca3096`).
+  - No breach log exists and none was created.
+  - Prompt size is 325 lines.
+- **Verdict** — pipeline clean. Friction recorded, not applied:
+  - (a) coherence is silent when PLANNING rather than a README is the wrong side — fails condition 3, since the README output was unchanged;
+  - (b) the regenerable flag covers `What I learned` only, while tier Key patterns/Tradeoffs cuts are just as re-addable from PLANNING — fails condition 1, hypothetical until a later run actually re-adds one;
+  - (c) there is no declared channel for an orchestrator-raised finding before the judge step — fails condition 3, since the pre-commit diff check reached the same result.

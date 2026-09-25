@@ -65,6 +65,7 @@ must reflect what was actually built and learned — not what sounded good to wr
 stated in a PLANNING.md is not a bar.** Plans written before 2026-09-01 restate caps this file has since
 replaced with inclusion tests (`07-timetrack` §19 "6-8 maximum", §21 "max 3 bullets"); the sizes below
 are this file's, and a count read out of a plan is ignored — never applied, never flagged as a conflict.
+**The same holds for a section order a plan's §18 lists**: the order is this file's.
 
 **In-progress marker scan.** Before checking sections, scan the README for: "coming soon", "to be
 added", "in progress", "Step X — coming soon", "Updated as each step is completed", and inline progress
@@ -359,13 +360,30 @@ found three of these tests missing and two nominal only once someone counted the
     in `API_KEY` (get it from [service])."
 
 ### Full-stack global README — same 12 rules, plus these changes
-Section order: **Title → Why this project → How to run (replaces Live demo) → Screenshots → Features →
-Architecture decisions → Tradeoffs → Future improvements → What I learned → Tech stack → Project
-structure → Backend and frontend details.**
-- **Rule 3 (Live demo) is replaced** — full-stack projects here are local-only (no live URL). Put a
-  short "How to run" note (`docker-compose up` when Docker is ready; `mvn spring-boot:run` + `ng serve`
-  in separate terminals before Docker) and point to the How to run section. Do not flag it as missing.
-- **Rule 12 (How to run)** content: `docker-compose up` when Docker is ready; `mvn spring-boot:run` +
+**Whether the project is deployed decides rule 3 and the section order, and `PLANNING.md` decides whether
+it is deployed.** `_planning-standard.md`'s implementation order includes a public URL (item 15,
+**Deploy**) and admits a project that stays local only as a §20 tradeoff with a reason, so both shapes
+exist. The project counts as *deployed* when its §15 carries a deployment step marked `✅`, and as *not
+deployed* when §15 has no deployment step. Never infer either from a URL in the existing README.
+- **Deployed** — section order: the Angular order above, then **Backend and frontend details**. Rule 3
+  applies, its accounts clause replaced by this one: its own `## Live demo`, the frontend URL the plan records for its deployment, and
+  the test accounts as `email / password`, one per demo login the plan records for the hosted database
+  (§9 or its deployment step). Keep a password the existing README already carries. A login whose
+  password neither the plan nor the README writes out gets its email and `*(password — to be added)*`,
+  and the run's summary names it — a missing credential, not an in-progress marker: the marker scan leaves
+  it in place. **Never invent or guess a password.** **When the plan records that the hosted API sleeps
+  while idle**, add one line saying so, with the wake time the plan *measured*: never the figure the host quotes, and no
+  figure at all where the plan measured none. Without that line, a recruiter who meets a login that
+  hangs for two minutes assumes the app is broken.
+- **A deployment step not yet `✅`** — the deployed order, with the in-progress rule's one clean
+  placeholder under `## Live demo`.
+- **Not deployed** — section order: **Title → Why this project → How to run (replaces Live demo) →
+  Screenshots → Features → Architecture decisions → Tradeoffs → Future improvements → What I learned →
+  Tech stack → Project structure → Backend and frontend details.** Rule 3 is replaced: put a short "How
+  to run" note (`docker-compose up` when Docker is ready; `mvn spring-boot:run` + `ng serve` in separate
+  terminals before Docker) and point to the How to run section. Do not flag the live demo as missing:
+  whether a project deploys is the plan's decision (§20), and this gate does not make it.
+- **Rule 12 (How to run)** content, in both shapes: `docker-compose up` when Docker is ready; `mvn spring-boot:run` +
   `ng serve` in separate terminals before Docker. Do not apply the Angular rule 12 here.
 - **Visuals** — optimal mix of GIFs and screenshots (no fixed count). GIFs for multi-step interactions,
   screenshots for dashboards/forms/empty states/role differences. Stacked vertically, GIFs before

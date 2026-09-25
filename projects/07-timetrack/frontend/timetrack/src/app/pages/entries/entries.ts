@@ -46,10 +46,11 @@ import {
   TimeEntry,
   TimeEntryFilters,
 } from '../../shared/models/time-entry';
-import { EntryDialog, EntryDialogData } from './entry-dialog/entry-dialog';
+import { EntryDialog, EntryDialogData, EntryDialogResult } from './entry-dialog/entry-dialog';
 import { EntryList } from './entry-list/entry-list';
 
 const DEFAULT_SORT = 'date,desc';
+const SUBMITTED_MESSAGE = 'Entry submitted for review';
 
 @Component({
   selector: 'app-entries',
@@ -235,7 +236,7 @@ export class Entries {
 
   submit(entry: TimeEntry): void {
     if (this.busyIds().has(entry.id)) return;
-    this.run(entry, this.entryService.submitEntry(entry.id), 'Entry submitted for review');
+    this.run(entry, this.entryService.submitEntry(entry.id), SUBMITTED_MESSAGE);
   }
 
   reopen(entry: TimeEntry): void {
@@ -286,17 +287,19 @@ export class Entries {
     const opener = activeElement();
 
     this.dialog
-      .open<EntryDialog, EntryDialogData, boolean>(EntryDialog, {
+      .open<EntryDialog, EntryDialogData, EntryDialogResult>(EntryDialog, {
         data: { entry, projects },
         disableClose: true,
       })
       .afterClosed()
       .pipe(
-        filter((saved) => saved === true),
+        filter((result) => result !== undefined),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => {
-        this.snackBar.open(entry ? 'Entry updated' : 'Entry saved', 'Close', { duration: 4000 });
+      .subscribe((result) => {
+        const message =
+          result === 'submitted' ? SUBMITTED_MESSAGE : entry ? 'Entry updated' : 'Entry saved';
+        this.snackBar.open(message, 'Close', { duration: 4000 });
         this.refocusAfterReload = opener;
         this.reload();
       });

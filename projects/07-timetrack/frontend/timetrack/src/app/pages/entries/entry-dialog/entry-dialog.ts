@@ -46,6 +46,8 @@ export interface EntryDialogData {
   projects: Project[];
 }
 
+export type EntryDialogResult = 'saved' | 'submitted';
+
 interface ProjectOption {
   id: number;
   name: string;
@@ -76,7 +78,7 @@ function activeProject(activeIds: ReadonlySet<number>): ValidatorFn {
 })
 export class EntryDialog {
   private readonly entryService = inject(EntryService);
-  private readonly dialogRef = inject(MatDialogRef<EntryDialog, boolean>);
+  private readonly dialogRef = inject(MatDialogRef<EntryDialog, EntryDialogResult>);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -128,7 +130,7 @@ export class EntryDialog {
 
   close(): void {
     if (!this.form.dirty) {
-      this.dialogRef.close(this.saved);
+      this.dialogRef.close(this.saved ? 'saved' : undefined);
       return;
     }
 
@@ -136,7 +138,7 @@ export class EntryDialog {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((discard) => {
         if (discard) {
-          this.dialogRef.close(this.saved);
+          this.dialogRef.close(this.saved ? 'saved' : undefined);
         }
       });
   }
@@ -155,7 +157,7 @@ export class EntryDialog {
       .subscribe({
         next: () => {
           this.saved = true;
-          this.dialogRef.close(true);
+          this.dialogRef.close(submitAfterSave ? 'submitted' : 'saved');
         },
         error: (err: HttpErrorResponse) => this.showError(err),
       });
