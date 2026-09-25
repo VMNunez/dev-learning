@@ -13,7 +13,7 @@ a close made false), and rewritten wholesale only by a `plan-audit` G2 pass. Do 
 
 | | |
 |---|---|
-| **Current step** | **Step 8 — Backend tests**, next — §15's build order is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20). Step 12 closed ✅ on 2026-09-24: the app is public at `https://07-timetrack.netlify.app` against the API on Render and the database on Neon, and the done condition passed in the browser (§15 Step 12, *Built so far*). Step 8 opens once `feat/deployment` merges into the project branch (§22). The project stays unfinished until Steps 8–9 pass (§20). `PROJECT-BACKLOG.md` holds **two backend Lows and one frontend Low, nothing above them** (raised 2026-09-24: the demo's keep-alive ping and the JWT key decoded at startup; raised 2026-09-25: the entry dialog's *Submit for review* announced as "Entry updated") — Lows hold no gate |
+| **Current step** | **Step 8 — Backend tests**, next — §15's build order is 11 → 12 → 8 → 9 → 10 (reordered 2026-09-23, §20). Step 12 closed ✅ on 2026-09-24: the app is public at `https://07-timetrack.netlify.app` against the API on Render and the database on Neon, and the done condition passed in the browser (§15 Step 12, *Built so far*). Step 8 opens once `feat/deployment` merges into the project branch (§22). The project stays unfinished until Steps 8–9 pass (§20). `PROJECT-BACKLOG.md` holds **two backend Lows and nothing above them** (raised 2026-09-24: the demo's keep-alive ping and the JWT key decoded at startup) — Lows hold no gate |
 | **Current branch** | `feat/deployment` — Step 12's branch, **its work is done**: its code already reached `projects/07-timetrack` through PRs #95 and #96, and a last PR carries the Step 12 close docs (opened by Victor on GitHub, never into `main`). `feat/backend-tests` is cut from the project branch after that merge and carries Step 8 (§22). `main` sits behind the project branch and receives the project only when every §15 step is done — both hosts' deploy branch is repointed to `main` then, before the project branch is deleted |
 | **Done condition** | Step 8's, verbatim from §15 — this is what gate G1 checks before the step can be marked ✅: `Terminal: mvn test passes — 8 test classes, 0 failures: TimeEntryServiceTest, UserServiceTest, ProjectServiceTest, AuthServiceTest, ReportServiceTest, LoginAttemptServiceTest, UserDetailsServiceImplTest and the existing ValidationMessagesTest all green with no database running; approve_throwsWhenNotSubmitted and getSummary_approvedHoursEqualsByProjectSum asserted` |
 | **Next gate** | G5 — READMEs (`readme-audit · PROJECT_PATH = projects/07-timetrack`), its trigger met (every High from G3/G4 fixed; G4 found none) and Step 12 now live, **held only by `REC-250`**: `_readme-standard.md` still states every full-stack project is local-only, and the README has to carry the public URL, the demo credentials and the cold-start warning (about two minutes plus the container wake). G4 signed off on 2026-09-23 (`d22a69e4`), G3 on 2026-08-29 (`a67866c4`), G2 on 2026-09-24 (`e43d809d`). G7 waits on G5, G6 and on Steps 8–9: until they pass, a `full` run stops at its preflight as ❌ Not ready (§23, publishing before the tests) |
@@ -243,7 +243,10 @@ Same bar as the backend block: each line is violable — a reviewer can open a f
   can refuse field by field (all five: `change-password-dialog`, `entry-dialog`, `project-dialog`,
   `reject-dialog`, `user-dialog`) receives what it displays through
   `MAT_DIALOG_DATA`, issues its own write through the `core/services/` service, and closes with
-  `dialogRef.close(result)` only on success; the opening page then refetches. It owns the write because it
+  `dialogRef.close(result)` only on success; the opening page then refetches. A dialog with more than one way
+  to succeed names the one it reached — `entry-dialog`'s `'saved'` or `'submitted'`, `user-dialog`'s `created`
+  or `updated` — because the page words the snackbar from the result and cannot announce a transition it does
+  not carry; a dialog with one outcome (`project-dialog`, `change-password-dialog`) keeps its `true`. It owns the write because it
   owns the write's in-flight state — the spinner, the `disableClose` lock of Subscription lifetime below,
   and the `400` `fieldErrors` under its own inputs, which a page saving after `close()` would receive with
   the form already gone. It never *reads* a list its page already loaded — that arrives as dialog data
@@ -2715,7 +2718,8 @@ in the build order 11 → 12 → 8 → 9 → 10 — and that PR is the closure c
 
 **Immediate action (updated 2026-09-24):** every feature branch through Step 7 and both backlog-fix
 branches are closed — `fix/backend-backlog` through PR #70 on 2026-08-29 (G3), `fix/frontend-backlog`
-through PR #93 on 2026-09-23 — and `PROJECT-BACKLOG.md` holds no open task. The next action is to cut
+through PR #93 on 2026-09-23 — and `PROJECT-BACKLOG.md` holds two backend Lows and nothing above them
+(raised 2026-09-24). The next action is to cut
 `feat/docker` from the tip of `projects/07-timetrack` and build Step 11 on it; until it is cut, work sits
 on the project branch (§0). The history below records how the two backlog-fix branches got there.
 
