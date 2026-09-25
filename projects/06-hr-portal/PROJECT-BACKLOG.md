@@ -20,7 +20,7 @@ enforced at the dialog's save exit, so nothing is outstanding at any priority.
 
 ## Low
 
-*No open Low tasks.*
+- [ ] **[Low]** `[frontend]` — The README's leave-requests screenshot shows the table in one role at one moment, so the app's central workflow — an employee submits a leave request and an admin approves it — is stated in Features ("employees submit, admins approve or reject") but never seen: it is a two-role sequence, and no still shows the same request moving from pending to approved. A GIF of that flow does. Shot list, 1280 × 800, one take with pauses, one browser (the data lives in `localStorage`, so the roles switch by logging out and in, and the login screens are cut in the editor): (1) `employee@hrportal.com` — Leave requests → new request, start and end date and a reason → submit, row shows pending; (2) log out, `admin@hrportal.com` — Leave requests → Approve on that row, status turns approved; (3) log out, employee again — the same row now approved; ~2 s still at the end. Lands above the screenshots with a bold caption and no placeholder is ever written into this README (a `*(GIF — …)*` placeholder downgrades ✅ to ⚠️ on `portfolio-audit`'s scan). **Blocked on `REC-252`**: `_readme-standard.md` rule 4 admits screenshots only on Angular-only READMEs *(Effort: Small)* *(raised 2026-09-25 while reviewing 01–06 for a GIF, after re-recording 07's approval GIF)*
 
 ---
 
