@@ -1,15 +1,13 @@
 # portfolio-audit — last run report
 
 **Date:** 2026-09-26
-**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = backend`, `DRY_RUN = true`
-**Status:** open
+**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = frontend`, `DRY_RUN = false`
+**Status:** clean
 
-1. **Plan vs reality.** Five backend sections completed at final ratios of 1.00. The English bank has 56 unique questions (IDs 001–057, 011 retired), with 16 ⭐⭐⭐ / 34 ⭐⭐ / 6 ⭐. The Spanish twin now matches all 56 IDs and markers in order; stage C returned `FIXED` after improving prose in 18 blocks. No cross-section duplicate found.
-2. **Report discipline.** No author or reviewer output was trimmed. The original translator returned `BLOCKED` without required counts or reason. A correction attempt hit truncated tool output and wrote nothing; the replacement read the 255-line source to EOF in bounded chunks and returned the full five-section trace.
-3. **Failures & retries.** Twelve role completions were required: ten section author/reviewer passes, T, and C. Fourteen pipeline attempts ran: the ten passes, three T attempts (erroneous `BLOCKED`, incomplete correction, successful replacement), and C. A separate read-only diagnostic follow-up established that the first `BLOCKED` had no valid stop condition. Final T was `TRANSLATED` 56/56 and C was `FIXED` on all 56 questions.
-4. **Rule friction and rule breaches.** The two author lane reads remain BRCH-0005. The original T missed its return contract (BRCH-0006) and claimed `BLOCKED` with no valid stop condition (BRCH-0007), causing a false partial close-out until Victor requested correction. These clear execution misses do not earn a prompt edit. No run-start guard was skipped. Dry-run skipped gates, CV and README. Prior `REC-246` remains open.
-5. **Verdict.** **Backend bank completed in dry-run**; no portfolio gate verdict was computed. Victor then explicitly directed the EN/ES content committed in `1e77a4a9`. Header stamps: backend `2026-09-26`, frontend `never`, cross-tier `never`. The post-commit `authoring-progress-recount` found no eligible 07 row because PLANNING.md §23 G7 is unchecked; PROGRESS.md is unchanged. No new prompt change worth considering.
+1. **Plan vs reality.** All five Frontend author/reviewer pairs completed. The whole-bank overlap scan and cold Spanish review provided end-artifact evidence; EN/ES parity is 101/101 overall and 45/45 in Frontend.
+2. **Report discipline.** The Testing reviewer corrected its initial EOF count after a complete three-chunk reread; no role output was discarded.
+3. **Failures & retries.** All 12 required dispatches ran. The translator repaired an out-of-scope heading change after one follow-up; the Testing reviewer corrected its trace count after one follow-up.
+4. **Rule friction and rule breaches.** The translator briefly changed Spanish headings outside Frontend scope; it restored them before the bank commit and the baseline comparison confirmed out-of-scope text was preserved. Logged as BRCH-0008. BRCH-0007/0008 share a step label; no REC opened because the explicit byte-preserving scope rule already covers the behavior (condition 4). No other mandatory step was skipped.
+5. **Verdict.** **Pipeline clean; no prompt change worth considering.** Frontend bank completed and committed as `a5cb976a`; this bank-only run computed no portfolio verdict. The authoring recount found no eligible 07 row while PLANNING.md §23 G7 remains unsigned. The prompt is 1035 lines, over the ~500-line smoke alarm; its largest section is `## Single-project procedure` (443 lines). No extraction was earned.
 
 `maps unaffected` — no map edit landed. `map: verified — README.md portfolio-audit, translator and Spanish-reviewer catalogue rows; _system-map.md project-bank writer and routing rows`.
-
-**Health budget:** 1035 lines, over the ~500-line smoke alarm; largest section `## Single-project procedure` (443 lines). No extraction was earned by this run.
