@@ -179,7 +179,7 @@ project has a study denominator yet. `/interview-prep-route-projects MODE = upda
 | 04 | Meal finder | Route parameters, ActivatedRoute, effect(), computed(), localStorage, favourites | Done ✓ | [Live demo](https://04mealfinder.netlify.app/) |
 | 05 | Task manager | Angular Material, MatTable, MatDialog, CRUD, coordinator pattern, context-specific themes | Done ✓ | — |
 | 06 | HR portal | Route guards, lazy loading, HTTP interceptors, role-based access, MatSidenav, role-aware dashboard | Done ✓ | — |
-| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ — Steps 1–7, 11 and 12 done (built out of order: the 2026-09-23 build order is 11 → 12 → 8 → 9 → 10; live at https://07-timetrack.netlify.app before the tests, §20), Step 8 (Backend tests) next | — |
+| 07 | TimeTrack | Spring Boot REST API, JWT, PostgreSQL, Angular full stack, TimeEntry workflow | In progress ⏳ — Steps 1–7, 11 and 12 done (built out of order: the 2026-09-23 build order is 11 → 12 → 8 → 9 → 10; live at https://07-timetrack.netlify.app before the tests, §20), Step 8 (Backend tests) in progress | — |
 
 ---
 
