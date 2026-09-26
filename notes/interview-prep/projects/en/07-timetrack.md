@@ -1,0 +1,255 @@
+# Interview Questions — 07-timetrack
+
+**Last banked — backend:** 2026-09-26
+**Last banked — frontend:** never
+**Last banked — cross-tier:** never
+
+Questions specific to the implementation decisions made in this project.
+Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `es/`.
+
+## Architecture & Patterns
+
+### Backend
+
+**[07-timetrack-001] Why did you make Spring Boot a JSON API instead of using it to render the View as a server-side MVC application?** ⭐⭐⭐
+
+I chose a backend that serves JSON and has no View layer, rather than a Spring application that renders HTML. This keeps HTTP handling and business logic in the backend layers while leaving page rendering outside the server.
+
+**[07-timetrack-002] In the project-creation path, why does `ProjectController` build the `Location` response while `ProjectService.create` owns normalization, duplicate checks and persistence?** ⭐⭐
+
+I chose to keep HTTP response construction in `ProjectController`: it calls the service, then builds the resource URI and returns `201 Created`. I decided that trimming, case-insensitive duplicate detection and saving belong in `ProjectService`, so a business decision does not depend on an HTTP controller.
+
+**[07-timetrack-003] Why do the write methods in `TimeEntryService` own `@Transactional`, while reads such as `findByFilter` use `readOnly = true`?** ⭐⭐
+
+I chose the service operation as the transaction boundary because a workflow change and its response mapping belong to one unit of work. I marked reads such as `findByFilter` and `ProjectService.getAll` read-only, while writes can update entities and persist their changes.
+
+**[07-timetrack-004] Why do the create controllers return `201 Created` with a `Location` header, while the delete controllers return `204 No Content`?** ⭐⭐
+
+I chose `201` for creates because `ProjectController`, `UserController` and `TimeEntryController` construct the new resource URI from the created response ID. Deletes return `204` after the service completes because those endpoints have no response body to send.
+
+**[07-timetrack-005] How does `TimeEntryService.findByFilter` stop an employee from querying another user's entries while still allowing a manager to filter across users?** ⭐⭐⭐
+
+I decided that the service must check the caller's role and replace the supplied `userId` with the authenticated user's ID for non-managers. Managers keep the requested filter, and the service passes the resulting criteria to `TimeEntrySpecifications` before mapping the page to responses.
+
+**[07-timetrack-006] Why do services obtain the caller through `AuthenticatedUserProvider` instead of accepting a user ID from each controller request?** ⭐⭐
+
+I chose `AuthenticatedUserProvider` to read the authenticated email from Spring Security's `SecurityContext` and load the `User` from `UserRepository`. Services such as `TimeEntryService` therefore derive identity from the established authentication rather than trusting a caller-supplied identity parameter.
+
+**[07-timetrack-007] Why do the services return response DTOs instead of exposing JPA entities from the controllers?** ⭐⭐⭐
+
+I chose explicit response types such as `TimeEntryResponse` in `TimeEntryService.toResponse` and `ProjectResponse` in `ProjectService.toResponse`. That lets the API choose its fields and avoids making persistence entities the JSON contract.
+
+**[07-timetrack-008] In `TimeEntryController`, why is a requested sort key translated through `SORT_KEYS` and given an `id` tie-breaker before the service receives the `Pageable`?** ⭐
+
+I chose named sort keys such as `employee` and `project`, then map them to known entity paths; an unknown key raises `BusinessRuleViolationException` instead of becoming an arbitrary property path. I add descending `id` when the request has no ID sort so equal sort values have deterministic page order.
+
+**[07-timetrack-009] Why are entry workflow changes separate service operations and controller routes for `submit`, `reopen`, `approve` and `reject`, instead of accepting an arbitrary status in a generic update?** ⭐⭐⭐
+
+I chose explicit methods in `TimeEntryService`, where each action checks the current status before changing it; for example, `submit` accepts only `DRAFT` and `approve` only `SUBMITTED`. The controller also exposes distinct `PATCH` routes with role annotations, so callers cannot request an unrestricted status assignment through the ordinary edit endpoint.
+
+**[07-timetrack-010] Why does `ProjectService.getAll` return active projects to employees but every project to managers?** ⭐⭐
+
+I chose to put that role-dependent selection in the service: managers use `findAll`, while other authenticated users use `findByActiveTrue`. The controller stays focused on the HTTP endpoint and returns the service's `ProjectResponse` list.
+
+**[07-timetrack-012] When does `TimeEntryService` map lazy user and project relationships into `TimeEntryResponse`, and why is that mapping kept there?** ⭐⭐
+
+I chose to build the response in `toResponse`, reading the user and project IDs and names while the service operation's transaction is active. The same mapper is used after writes and for the filtered page, so the API returns a stable DTO without making controllers depend on JPA relationships.
+
+**[07-timetrack-013] Why are `CreateProjectRequest` and `UpdateProjectRequest` separate DTOs, and what does the nullable `active` field let `ProjectService.update` represent?** ⭐⭐
+
+I chose separate request types for creation and update, such as `CreateProjectRequest` and `UpdateProjectRequest`, because they represent different API intents. In this implementation `ProjectService.update` changes `active` only when the DTO field is non-null, so omission means “leave the current value alone.” The create request stays independent of that update-only field.
+
+**[07-timetrack-014] In `TimeEntryService.delete`, why does the service pass the already-loaded entry to `delete` instead of calling `deleteById`?** ⭐
+
+I chose to load the entry through `findOwnedEntry`, which applies the ownership check and produces the not-found response, then pass that same entity to `timeEntryRepository.delete`. Calling `deleteById` would look the row up again and could introduce a second, different missing-row behavior.
+
+**[07-timetrack-015] Why do the backend controllers and services receive collaborators through constructors and keep them in `final` fields?** ⭐⭐
+
+I chose constructor injection throughout the backend, for example `ProjectService` receives its repositories and `TimeEntryController` receives its service as constructor parameters. The required collaborators are assigned once to `final` fields, so a bean cannot be created with an unset dependency.
+
+**[07-timetrack-016] Why do `ProjectService` and `UserService` use `saveAndFlush` and translate a database uniqueness failure into `DuplicateResourceException` after checking for duplicates first?** ⭐⭐
+
+I kept the pre-check for a clear case-insensitive or normalized duplicate message, but the unique database constraint remains the atomic guarantee if two requests race. I chose `saveAndFlush` inside the `try` block so a `DataIntegrityViolationException` is raised while the service can translate it into the same domain exception.
+
+**[07-timetrack-017] Why do the services report failures with application exceptions such as `ResourceNotFoundException` and `InvalidStateTransitionException` instead of throwing Spring persistence exceptions for business refusals?** ⭐⭐
+
+I chose project-owned exceptions for service decisions: `findOwnedEntry` raises `ResourceNotFoundException`, and an invalid entry transition raises `InvalidStateTransitionException`. A database failure is translated at the persistence boundary where needed, rather than mislabeling a business refusal as a Spring data-access failure.
+
+**[07-timetrack-018] Why does `ReportController` accept a `YearMonth` while `ReportService` converts it into inclusive `LocalDate` bounds?** ⭐
+
+I chose to keep the HTTP parameter readable as a month and do the query-range calculation in `ReportService.MonthRange.of`. The service passes the month's first and last dates to the repository, keeping date-range logic out of the controller.
+### Frontend
+
+### Cross-tier
+
+## Security & Auth
+
+### Backend
+
+**[07-timetrack-019] Why did you make the API stateless with bearer JWTs and disable CSRF instead of using server-side sessions?** ⭐⭐⭐
+
+I chose stateless authentication because the Angular client sends the JWT explicitly in the `Authorization` header and the API keeps no server-side session. With no cookie-based credential attached automatically by the browser, the plan treats CSRF protection as unnecessary; the trade-off is that logout cannot revoke a token already issued, so it remains valid until its 60-minute expiry.
+
+**[07-timetrack-020] Why does a JWT identify its user with the database ID rather than the editable email address?** ⭐⭐⭐
+
+I chose the stable user ID as the `sub` claim because managers can change an email while an access token is still valid. `JwtFilter` parses that claim as a `Long` and reloads the account by ID, so changing an email does not transfer an existing token to a different account; tokens with the former email-shaped subject are rejected.
+
+**[07-timetrack-021] What happens between `JwtFilter` reading a bearer token and Spring Security authorizing a protected request?** ⭐⭐⭐
+
+I chose to validate the signed token, extract its ID, load the current `UserDetails` from the database and put an authenticated token with that user's authorities in `SecurityContextHolder`. A missing or unusable bearer token does not establish authentication, so the filter chain's authenticated-request rule rejects a protected request through the authentication entry point with `401`.
+
+**[07-timetrack-022] Why does `JwtFilter` reload the user and check account status on every request instead of trusting the claims until expiry?** ⭐⭐⭐
+
+I chose to resolve the account from the token's ID on each request, then run `AccountStatusUserDetailsChecker` before setting the security context. Deactivating a user therefore revokes access on the next request even while their signed token is still within its 60-minute lifetime; `UserDetailsServiceImpl` also reads the current role from that row, so a role change takes effect on the next request instead of trusting a stale role claim in the token.
+
+**[07-timetrack-023] Why is login the only URL permitted by the filter-chain rules while endpoint roles are enforced with method security?** ⭐⭐⭐
+
+I chose a narrow perimeter in `SecurityConfig`: only `POST /api/auth/login` is public and every other request must already be authenticated. `@EnableMethodSecurity` lets each protected endpoint method declare its own `@PreAuthorize` rule, including `isAuthenticated()` where any signed-in user may act, so widening a URL matcher cannot silently open a method whose own authorization rule was not changed.
+
+**[07-timetrack-024] Why does the login path normalize the email before authentication, and how does `UserDetailsServiceImpl` turn the loaded account into Spring Security authorities?** ⭐⭐
+
+I chose to normalize the submitted email before passing it to `AuthenticationManager`, and the user-details service applies the same normalization when looking up a login name. It builds `UserDetails` with the stored password hash, the account's role as a `ROLE_` authority and the account's active state, giving authentication one consistent identity and role representation.
+
+**[07-timetrack-025] Why does `SecurityConfig` expose a `BCryptPasswordEncoder` as the `PasswordEncoder` bean?** ⭐⭐⭐
+
+I chose Spring Security's BCrypt encoder as the application password-encoding strategy, so authentication compares a submitted password against a one-way stored hash rather than needing plaintext. The same encoder can be injected wherever account passwords are created or checked.
+
+**[07-timetrack-026] Why does login throttling count failures by both normalized email and the servlet peer address, and why is the cooldown temporary?** ⭐⭐
+
+I chose separate counters for the normalized email and `HttpServletRequest.getRemoteAddr()`, checked before password authentication; five failures block either key until one minute after its last recorded failure, and a successful login clears both. The two keys cover password spraying across accounts and repeated guesses against one account, while a temporary cooldown avoids a permanent lockout an attacker could trigger to deny the real user access. `LoginAttemptService` keeps the counters in a concurrent in-process map, an accepted single-instance deployment trade-off.
+
+**[07-timetrack-027] Why does the security filter chain return a project-shaped JSON `401` through `JwtAuthenticationEntryPoint`?** ⭐⭐
+
+I chose a dedicated entry point that writes the common `ErrorResponse` shape with status `401` and the message `Authentication required`. That keeps an unauthenticated API refusal in the same JSON contract the Angular client handles, rather than returning a container-generated response.
+
+**[07-timetrack-028] Why does `SecurityConfig` define explicit CORS origins, methods and headers, with credentials disabled?** ⭐
+
+I chose to inject `app.cors.allowed-origins` as a `List<String>` and allow only the API methods and `Authorization` / `Content-Type` headers the client needs, with credentials disabled because the bearer token travels in an explicit header rather than a browser-managed cookie. `OPTIONS` is included for browser preflight requests, which the CORS filter answers before the authenticated-request rule.
+
+**[07-timetrack-029] Why is the JWT signing secret supplied through `JWT_SECRET` instead of stored in the application configuration?** ⭐⭐⭐
+
+I chose to resolve `app.jwt.secret` from the `JWT_SECRET` environment variable, keeping the signing key outside the committed application properties. `JwtUtil` Base64-decodes that value to build the HMAC signing key used both to issue and verify tokens, so deployment must provide a correctly encoded secret.
+
+**[07-timetrack-030] When does `JwtUtil` detect a malformed or undersized `JWT_SECRET`, and why does that timing matter for deployment?** ⭐
+
+I chose to keep the configured secret as a string in the constructor and build the HMAC key lazily in `getSigningKey()`, which is first called when a token is issued or parsed. A present but malformed or undersized value therefore passes bean construction and fails on the first login or bearer-token request; the backend backlog tracks moving that validation to startup so a bad deployment fails before serving traffic.
+
+## Business Rules
+
+### Backend
+
+**[07-timetrack-031] Why does an employee get the same `404` for an entry they do not own as for an ID that does not exist?** ⭐⭐⭐
+
+I chose to make `TimeEntryService.findOwnedEntry` load by ID and then filter by the authenticated user's ID before it can return an entry. Both a missing row and another employee's row therefore raise the same `ResourceNotFoundException`, so the status and message do not reveal which IDs exist.
+
+**[07-timetrack-032] Why does `TimeEntryService.resolveProject` hide an inactive project on entry creation and most edits, but return `400` when an employee keeps the same project on their own entry?** ⭐⭐⭐
+
+I chose to return the same `404` as an unknown ID when the caller is not already entitled to know the archived project exists. On an update, the service compares the requested project ID with the existing entry's project ID; that one known project instead gets `400` with “Project is not active,” which explains why the edit cannot proceed without exposing other archived IDs.
+
+**[07-timetrack-033] Why does `UserService.update` refuse to promote someone who still has `DRAFT` or `REJECTED` entries, while allowing promotion with `SUBMITTED` entries?** ⭐⭐
+
+I chose to block promotion only when `existsByUserIdAndStatusIn` finds `DRAFT` or `REJECTED` work, because the employee-only update, delete and reopen paths stop being available after promotion. A `SUBMITTED` entry remains reviewable by a different manager, so it does not become unreachable when the role changes.
+
+**[07-timetrack-034] Why does `UserService` refuse a manager's own demotion, deactivation or deletion?** ⭐⭐⭐
+
+I chose to compare the target account with `AuthenticatedUserProvider.currentUser()` before those changes and reject a self-lockout with `InvalidStateTransitionException`. Since the caller must already be an active manager, preventing that caller from removing their own manager access guarantees at least one active manager remains without a separate count check.
+
+**[07-timetrack-035] Why does `TimeEntryService.reopen` clear the rejection note when it returns a rejected entry to `DRAFT`?** ⭐⭐
+
+I chose to clear `rejectionNote` at the same time as changing `REJECTED` to `DRAFT`. The old manager's explanation belongs to the rejected submission; leaving it on a corrected draft or a later resubmission would present stale feedback as if it described the new review.
+
+**[07-timetrack-036] How do the request constraints and `TimeEntryService.validateEntryData` divide responsibility for valid time entries?** ⭐⭐
+
+I chose `@NotNull`, `@DecimalMin("0.5")`, `@DecimalMax("24")` and `@Digits` on the request fields to reject missing or out-of-range values at the API boundary, while the service rejects dates after `LocalDate.now()` and repeats the hours-range check in `validateEntryData`. The date rule depends on the current day, so it belongs in service logic; request constraints also require a project ID and a nonblank description of at most 255 characters.
+
+**[07-timetrack-037] Why does `UserService.changePassword` verify the current password before checking that the new password differs from it?** ⭐⭐
+
+I chose to verify the current password first, then compare the proposed new password against the stored hash and raise an `InvalidPasswordException` tied to the specific field. That prevents a caller who cannot prove the current credential from using the unchanged-password response to test guesses, while the two field names let the API report the failure against the relevant input.
+
+**[07-timetrack-038] Why does the backend generate account and reset passwords, and why can a manager reset another account but not their own?** ⭐⭐⭐
+
+I chose `SecureRandom` to generate a fresh 12-character password and store only its encoded value; the plaintext is returned only in the create or reset response. A manager reset is the recovery path for another member, while `UserService.resetPassword` refuses the manager's own ID because that account can use the current-password-verified change flow instead.
+
+**[07-timetrack-039] How does the rejection request encode the rule that every rejected entry needs a usable explanation?** ⭐⭐
+
+I chose `@NotBlank` and `@Size(max = 255)` on `RejectRequest.rejectionNote`, so whitespace-only explanations and notes that exceed the database field's limit fail request validation. `TimeEntryService.reject` stores the accepted note with the `REJECTED` transition, then `reopen` clears it before the corrected draft can be resubmitted.
+
+**[07-timetrack-040] Why does `TimeEntryService` allow an entry to be edited or deleted only while it is `DRAFT`?** ⭐⭐
+
+I chose to check the current status inside both `TimeEntryService.update` and `delete`, requiring `DRAFT` before changing fields or removing the row. Once an entry is submitted, the workflow preserves it for review and its later decision, so an edit or deletion in another status raises `InvalidStateTransitionException` instead of bypassing that history.
+
+**[07-timetrack-041] Why must an entry be `SUBMITTED` before a manager can approve or reject it, and why are managers blocked from reviewing their own entries?** ⭐⭐⭐
+
+I chose to enforce both rules in `TimeEntryService.approve` and `reject`: each refuses any status other than `SUBMITTED`, and each compares the entry owner with the authenticated manager before changing it. This keeps review limited to the review queue and prevents a manager from deciding the outcome of their own hours.
+
+**[07-timetrack-042] Why does `TimeEntryService.submit` recheck that the draft's project is still active?** ⭐⭐
+
+I chose to check project activity at submission as well as when an entry is created or edited, because a project can be archived while an employee's draft remains open. If it is inactive, the service refuses the transition with `BusinessRuleViolationException`, so an entry cannot enter the manager's review queue under a project that no longer accepts work.
+
+**[07-timetrack-043] Why do all report totals count only `APPROVED` entries while `pendingHours` stays separate?** ⭐⭐
+
+I chose to make `APPROVED` the common basis for `getSummary`, `getHoursByProject` and `getHoursByUser`, including `totalEntries`, so the summary and its breakdowns describe the same accepted work. `pendingHours` separately counts `SUBMITTED` work as a manager workload signal; `DRAFT` and `REJECTED` entries belong to neither measure.
+
+**[07-timetrack-044] Why does `ReportService.getSummary` scope employee totals to the authenticated user while managers receive the whole team's summary?** ⭐⭐
+
+I chose to set `userId` from `AuthenticatedUserProvider.currentUser()` whenever the caller is not a manager, instead of trusting a user ID from the request. Managers leave that filter null, while the controller reserves the project and user breakdown endpoints for managers, so each report exposes only the aggregate its caller is allowed to see.
+
+**[07-timetrack-045] Why does `ChangePasswordRequest` require a new password of 8–72 characters and cap the current password at 72?** ⭐⭐
+
+I chose an eight-character minimum for a new password and a 72-character maximum for both inputs, following the project's intended BCrypt input cap before `UserService.changePassword` verifies or encodes either value. `@Size` counts characters, while BCrypt's effective boundary is measured in encoded bytes, so the current check is not byte-exact for non-ASCII passwords; that is a limitation to understand rather than claim this validator eliminates.
+
+## Technical Decisions
+
+### Backend
+
+**[07-timetrack-046] Why does `PUT /api/entries/{id}` require the complete editable entry in `UpdateTimeEntryRequest` instead of accepting a partial patch?** ⭐⭐
+
+I chose `PUT` because an edit replaces the entry's editable fields: `projectId`, `date`, `hours` and `description` are all required, and the service reruns the same data rules as creation. The workflow uses separate `PATCH` routes for status transitions, where only the status changes.
+
+**[07-timetrack-047] Why does `TimeEntryResponse` return both each related user's and project's ID and name?** ⭐⭐
+
+I chose to include `userId` and `projectId` beside `userName` and `projectName` because the client needs the project ID to submit an edit, while the names make the entry readable. Entries have no `GET /{id}` endpoint, so the response is the representation the client holds and should not force it to recover an identifier by matching a label.
+
+**[07-timetrack-048] Why do credential fields in request and response DTOs use Lombok's `@ToString.Exclude`?** ⭐⭐
+
+I chose to exclude fields such as `LoginRequest.password`, `AuthResponse.token` and `PasswordResetResponse.generatedPassword` from generated `toString()` output. Lombok's `@Data` otherwise includes every field, so an object written to a log or exception could expose a plaintext password or bearer token even though JSON serialization is unaffected.
+
+**[07-timetrack-049] Why do the report queries return interface projections such as `ProjectHoursReportResponse` instead of mapping rows into entity objects?** ⭐
+
+I chose interface projections for the grouped report rows because Spring Data maps each selected alias directly to a matching getter, such as `projectName` to `getProjectName()`. The report returns only the aggregate fields it needs without loading entities or maintaining a separate manual row mapper.
+
+**[07-timetrack-050] Why is password reset a `POST` that returns `200 OK` with a `PasswordResetResponse`, rather than an idempotent update or an empty response?** ⭐⭐
+
+I chose `POST /api/users/{id}/password-reset` because every call generates a different password, so repeating the request has another effect rather than repeating the same update. The `200` response carries the only plaintext copy for the manager to pass on; the database stores its hash.
+
+**[07-timetrack-051] How do the datasource placeholders in `application.properties` support local and hosted databases without committing credentials?** ⭐⭐
+
+I chose environment-variable placeholders for `DB_URL`, `DB_USERNAME` and `DB_PASSWORD`: the URL and username have local defaults, while the password must be supplied. The same application configuration can therefore use a local PostgreSQL instance or an externally configured database, without embedding the password in the repository.
+
+**[07-timetrack-052] Why does `application.properties` use Hibernate `ddl-auto=update` instead of versioned Flyway migrations?** ⭐⭐
+
+I chose `update` while one developer is still evolving the schema and the deployed database holds demo data that does not need to survive schema changes. I accept losing a reviewable migration history and having to apply unsupported changes such as drops or renames manually; versioned migrations become necessary when teammates or durable data enter the project.
+
+**[07-timetrack-053] Why does `application.properties` disable Open Session in View instead of letting JSON serialization load lazy relationships?** ⭐⭐
+
+I chose `spring.jpa.open-in-view=false` so a response cannot issue persistence queries after its service operation has returned. `TimeEntryService.toResponse` maps the user and project fields while the service transaction is active, making database access explicit instead of hiding it during JSON serialization.
+
+**[07-timetrack-054] Why does `GlobalExceptionHandler` use `409 Conflict` for duplicate resources and invalid state transitions, but `400 Bad Request` for invalid request data?** ⭐⭐
+
+I chose `409` when a validly formed operation conflicts with existing data or the resource's current state, as in `DuplicateResourceException` and `InvalidStateTransitionException`. Validation failures and `BusinessRuleViolationException` map to `400`, which distinguishes malformed or unacceptable input from a request that conflicts with current state.
+
+**[07-timetrack-055] Why does account creation return a `CreateUserResponse` with a generated password while ordinary `UserResponse` never contains credential fields?** ⭐⭐
+
+I chose a separate `CreateUserResponse` so `UserService.create` can return the generated plaintext once to the manager who creates the account, while normal list and update responses use `UserResponse` without password material. The persisted password remains hashed, and `@ToString.Exclude` also keeps the one-time value out of generated object logs.
+
+## Testing
+
+### Backend
+
+**[07-timetrack-056] Why does `ValidationMessagesTest` build a Bean Validation `Validator` directly instead of starting the Spring application context?** ⭐⭐
+
+I chose to exercise the request constraints and their resolved messages with `Validation.buildDefaultValidatorFactory()`, so this focused test does not need Spring Boot, PostgreSQL or deployment secrets. The test still catches a missing or misconfigured validation message bundle by checking the messages produced for an invalid `CreateTimeEntryRequest`.
+
+**[07-timetrack-057] Why does the `Size` message in `ValidationMessages.properties` distinguish a maximum-only limit from a range?** ⭐⭐
+
+I chose conditional message interpolation so a constraint with `min = 0` says “Must be at most 255 characters” instead of presenting an irrelevant lower bound. `ValidationMessagesTest.sizeWithOnlyAMaximumNamesTheMaximum` asserts that exact wording for a 256-character description, while the other test checks the field-specific `NotNull`, `NotBlank`, `DecimalMax` and `Digits` messages.
