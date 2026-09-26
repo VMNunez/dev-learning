@@ -2,7 +2,7 @@
 
 **Last banked — backend:** 2026-09-26
 **Last banked — frontend:** 2026-09-26
-**Last banked — cross-tier:** never
+**Last banked — cross-tier:** 2026-09-26
 
 Questions specific to the implementation decisions made in this project.
 Use these alongside the topic-based files in `interview-prep/{LEVEL}/en/` and `es/`.
@@ -141,6 +141,9 @@ I chose independent reads because pages often ask for different slices of the sa
 I chose `appConfig` as the single place for router setup, `HttpClient` with the auth interceptor, the title strategy and shared Material defaults. This gives every route the same infrastructure, while a dialog can still override the shared width when its content needs it.
 
 ### Cross-tier
+**[07-timetrack-105] How does a `ProjectService.createProject` request cross the JSON boundary from Angular’s `CreateProjectRequest` to Spring’s DTO, and what does `http.post<Project>(...)` actually guarantee about the response?** ⭐⭐⭐
+
+I chose to keep the matching request and response shapes in Angular interfaces and Spring DTOs: `ProjectService.createProject` sends `CreateProjectRequest` to `POST /api/projects`, and `ProjectController.create` binds the JSON body, applies `@Valid`, then delegates to `ProjectService` and returns `ProjectResponse`. The two applications compile separately, so their declarations do not prove that the JSON shapes stay aligned; I decided to keep the backend DTO as the runtime request check and treat `http.post<Project>(...)` only as a TypeScript compile-time assertion. In this path, `ProjectResponse.createdAt` is serialized for the Angular `Project.createdAt: string`, while `description` remains nullable on both sides.
 
 ## Security & Auth
 
@@ -231,6 +234,13 @@ I chose a component contract, `HoldsOneTimeSecret`, so the guard can refuse to l
 **[07-timetrack-083] How does `roleMatch` choose the dashboard component for `/dashboard` based on the signed-in user's role?** ⭐⭐
 
 I chose `CanMatchFn` guards on two routes with the same path so Angular loads the employee or manager dashboard without making role names part of the URL. When one route does not match `AuthService`'s role, the router tries the other; manager-only screens use `managerGuard` separately.
+
+### Cross-tier
+
+**[07-timetrack-106] From `POST /api/auth/login` to a later API request, why does the browser session carry a role while the JWT carries only the user ID, and how does token expiry end the session?** ⭐⭐⭐
+
+I chose to return the token, ID, name and role in `AuthResponse`: Angular validates it, stores it in `localStorage`, uses the role for the shell and route guards, and the interceptor sends the token as a bearer header; `JwtUtil` signs the database ID as `sub` with a 60-minute expiry. The saved role guides the UI but does not grant API authority. On each bearer request, `JwtFilter` reloads the account, checks its current active status and builds Spring authorities from its current database role, so changing only the saved role cannot grant manager API access and account changes take effect on the next request. When the token expires, the API returns `401` and the interceptor clears the saved session and redirects to `/login`.
+
 ## Business Rules
 
 ### Backend
@@ -349,6 +359,12 @@ I chose to mark each dialog as saving and disable its form and actions until the
 
 I chose to use the projects endpoint's employee-visible list in the filter, so an archived project disappears there while its existing entries remain reachable by month and status. The entries list is paged, so the browser cannot derive every inactive project ID from the employee's own entries; adding those projects would need a separate caller-scoped query.
 
+### Cross-tier
+
+**[07-timetrack-107] Why does the shared Entries screen hide role-inappropriate actions while the API still enforces each operation's role?** ⭐⭐
+
+I chose to render employee actions only for employees and manager review controls only for managers, using the signed-in role in the page. That is a usability rule, not authorization: `TimeEntryController` separately protects employee writes and manager review endpoints with `@PreAuthorize`, so a direct request from the wrong role still receives `403`.
+
 ## Technical Decisions
 
 ### Backend
@@ -406,6 +422,36 @@ I chose `OnPush` as the component-wide change-detection policy. Components read 
 **[07-timetrack-099] Why does `appConfig` set `canceledNavigationResolution: 'computed'` for browser-history navigation?** ⭐
 
 I chose the computed strategy because `oneTimeSecretGuard` can cancel a browser Back action while the generated password is still at risk. Angular restores the history position to the route that remains on screen, instead of leaving the URL and displayed page out of sync.
+
+### Cross-tier
+
+**[07-timetrack-108] How does TimeTrack keep one error contract across Spring's responses and Angular's forms without tying field messages to a particular status code?** ⭐⭐
+
+I chose a shared `ErrorResponse` envelope in `GlobalExceptionHandler`, with `fieldErrors` added only when an error belongs to one or more inputs; each field maps to an array so multiple validation failures survive. Angular's `ApiError` helpers accept an `HttpErrorResponse` only when its body has a numeric `status` and string `message`, then place the first message only on controls the form explicitly allows, regardless of whether the response is `400` or `409`.
+
+**[07-timetrack-109] Why do user and project deactivation preserve their database rows instead of hard-deleting them, and what does that let the rest of TimeTrack do?** ⭐⭐
+
+I chose to set `active` to `false` in `UserService.delete` and `ProjectService.delete`, because time entries keep non-null foreign keys to both records and their history must remain available for audit. The Angular confirmation explains that prior entries stay while new work or logins stop, so the UI and API preserve the same historical record instead of cascading a destructive delete.
+
+**[07-timetrack-110] Why did you choose Docker Compose for the local stack instead of requiring each reviewer to install PostgreSQL, a JDK and Maven?** ⭐⭐⭐
+
+I chose a Compose stack with PostgreSQL and an API image built from `backend/timetrack`, so Docker is the reviewer's only local prerequisite and the image is the one the deployment step runs. A named `db-data` volume preserves the database across container restarts, while the read-only init script creates the least-privileged application role and its database on the volume's first start; daily development can still use IntelliJ against the local database for a faster edit-run loop.
+
+**[07-timetrack-111] Why does `GET /api/entries` use `Pageable` while the other collection endpoints return all their rows, and how does Angular follow that contract?** ⭐⭐
+
+I chose pagination for entries because that is the only collection that grows without a bound; filtering by month narrows the results but does not guarantee a fixed maximum. `TimeEntryController` returns a Spring `Page<TimeEntryResponse>` with a default size of 20, and Angular's `EntryService` sends page, size, filters and sorting while its `Page<TimeEntry>` model reads the response metadata.
+
+**[07-timetrack-112] Why did you deploy a public URL before Steps 8 and 9 had finished, despite the free-tier cold starts and writable demo database?** ⭐⭐⭐
+
+I chose to make the app directly reachable while the job search was under way, because a recruiter can try it before deciding to clone and run it. I accepted the slow wake-up and shared demo data as costs, but did not treat publication as completion: Steps 8 and 9 remain required before TimeTrack is finished.
+
+**[07-timetrack-113] Why does the API wait for PostgreSQL's health check in Compose instead of starting as soon as the database container exists?** ⭐
+
+I chose `depends_on: condition: service_healthy` and a `pg_isready` check because a running PostgreSQL container may still be initializing its database and role. Compose starts the API only once the database accepts connections, avoiding a startup race on a fresh or restarted local stack.
+
+**[07-timetrack-114] Why does the Docker build run `mvnw package -DskipTests` instead of using the image build as the backend test run?** ⭐⭐
+
+I chose to build the runnable JAR in the Dockerfile's JDK stage and keep verification in Step 8, where the backend tests are planned and run as their own check. That separation lets the deployment image exist while the project is still unfinished, but a successful image build alone does not prove the backend tests pass.
 
 ## Testing
 

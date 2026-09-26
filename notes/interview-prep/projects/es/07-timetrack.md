@@ -2,7 +2,7 @@
 
 **Último banco — backend:** 2026-09-26
 **Último banco — frontend:** 2026-09-26
-**Último banco — transversal:** nunca
+**Último banco — transversal:** 2026-09-26
 
 Preguntas específicas de las decisiones de implementación tomadas en este proyecto.
 Úsalas junto a los archivos por tema en `interview-prep/{LEVEL}/es/`.
@@ -143,6 +143,10 @@ Elegí `appConfig` como único lugar para configurar el router, `HttpClient` con
 
 ### Transversal
 
+**[07-timetrack-105] ¿Cómo cruza la petición de `ProjectService.createProject` el límite JSON, desde `CreateProjectRequest` de Angular hasta el DTO de Spring, y qué garantiza realmente `http.post<Project>(...)` sobre la respuesta?** ⭐⭐⭐
+
+Elegí mantener alineados los tipos de petición y respuesta de Angular y los DTO de Spring. `ProjectService.createProject` envía `CreateProjectRequest` a `POST /api/projects`; `ProjectController.create` recibe el JSON, lo valida con `@Valid`, delega en `ProjectService` y devuelve `ProjectResponse`. Como las dos aplicaciones se compilan por separado, sus tipos no garantizan por sí solos que las estructuras JSON sigan coincidiendo; por eso, decidí confiar en la validación de la petición del backend y tratar `http.post<Project>(...)` como una aserción de TypeScript. En este flujo, `ProjectResponse.createdAt` llega a Angular como `Project.createdAt: string`, y `description` admite null en ambos lados.
+
 ## Seguridad y autenticación
 
 ### Backend
@@ -232,6 +236,12 @@ Elegí el contrato de componente `HoldsOneTimeSecret` para que el guard impida s
 **[07-timetrack-083] ¿Cómo elige `roleMatch` el componente de dashboard de `/dashboard` según el rol del usuario autenticado?** ⭐⭐
 
 Elegí guards `CanMatchFn` en dos rutas con la misma dirección para que Angular cargue el dashboard de empleado o de manager sin incluir nombres de rol en la URL. Si una ruta no coincide con el rol de `AuthService`, el router prueba la otra. Las pantallas exclusivas de managers usan `managerGuard` por separado.
+
+### Transversal
+
+**[07-timetrack-106] Desde `POST /api/auth/login` hasta una petición posterior a la API, ¿por qué la sesión del navegador guarda un rol mientras que el JWT solo contiene el ID del usuario, y cómo termina la sesión al caducar el token?** ⭐⭐⭐
+
+Elegí devolver el token, el ID, el nombre y el rol en `AuthResponse`. Angular valida la respuesta y guarda la sesión en `localStorage`; después usa el rol en el shell y los guards de rutas, mientras el interceptor envía el token como bearer. `JwtUtil` firma el ID de la base de datos como `sub` y fija una caducidad de 60 minutos. El rol guardado orienta la interfaz, pero no concede permisos en la API: en cada petición bearer, `JwtFilter` vuelve a cargar la cuenta, comprueba si sigue activa y obtiene las autoridades del rol actual en la base de datos. Así, cambiar solo el rol guardado no concede acceso de manager y los cambios de la cuenta surten efecto en la siguiente petición; cuando caduca el token, la API responde con `401` y el interceptor borra la sesión y redirige a `/login`.
 
 ## Reglas de negocio
 
@@ -352,6 +362,10 @@ Elegí marcar cada diálogo como `saving` y desactivar sus controles hasta que l
 Elegí usar en el filtro la lista de proyectos que el endpoint permite ver a los empleados: un proyecto archivado desaparece de ahí, pero el empleado puede seguir consultando sus entradas por mes y estado. La lista de entradas está paginada, así que el navegador no puede deducir de las entradas del empleado los IDs de todos los proyectos inactivos; incluirlos requeriría otra consulta limitada al usuario actual.
 ### Transversal
 
+**[07-timetrack-107] ¿Por qué la pantalla compartida `Entries` oculta las acciones que no corresponden al rol, mientras que la API sigue exigiendo el rol adecuado para cada operación?** ⭐⭐
+
+Elegí mostrar las acciones de empleado solo a los empleados y los controles de revisión solo a los managers, según el rol de la persona autenticada en la página. Es una regla de usabilidad, no de autorización: `TimeEntryController` protege por separado las operaciones de escritura de empleados y las rutas de revisión de managers con `@PreAuthorize`, así que una petición directa con el rol equivocado sigue recibiendo `403`.
+
 ## Decisiones técnicas
 
 ### Backend
@@ -411,6 +425,34 @@ Elegí `OnPush` como estrategia de detección de cambios para los componentes. L
 Elegí la estrategia `computed` porque `oneTimeSecretGuard` puede cancelar una acción de volver atrás del navegador mientras la contraseña generada siga en riesgo. Angular restaura la posición del historial a la ruta que permanece en pantalla, en vez de dejar desincronizados la URL y el contenido mostrado.
 
 ### Transversal
+
+**[07-timetrack-108] ¿Cómo mantiene TimeTrack un único contrato de errores entre las respuestas de Spring y los formularios de Angular sin vincular los mensajes de campo a un código de estado concreto?** ⭐⭐
+
+Elegí usar un formato común, `ErrorResponse`, en `GlobalExceptionHandler` y añadir `fieldErrors` solo cuando el error corresponde a uno o más campos. Cada campo contiene una lista para conservar varios errores de validación. Los helpers `ApiError` de Angular aceptan un `HttpErrorResponse` solo si el cuerpo tiene un `status` numérico y un `message` de tipo string; después colocan el primer mensaje únicamente en los controles permitidos por el formulario, tanto si la respuesta es `400` como `409`.
+
+**[07-timetrack-109] ¿Por qué la desactivación de usuarios y proyectos conserva sus filas en la base de datos en vez de borrarlas, y qué permite hacer eso al resto de TimeTrack?** ⭐⭐
+
+Elegí asignar `false` a `active` en `UserService.delete` y `ProjectService.delete`, porque las entradas de tiempo mantienen claves foráneas no nulas a ambos registros y su historial debe seguir disponible para auditoría. La confirmación de Angular explica que las entradas anteriores se conservan, aunque se detenga el trabajo nuevo o el inicio de sesión. Así, la interfaz y la API preservan el mismo historial en vez de provocar un borrado en cascada.
+
+**[07-timetrack-110] ¿Por qué elegiste Docker Compose para el stack local en vez de pedir a cada persona que revise el proyecto que instale PostgreSQL, un JDK y Maven?** ⭐⭐⭐
+
+Elegí un stack de Compose con PostgreSQL y una imagen de la API construida desde `backend/timetrack`, para que Docker sea el único requisito local de quien revisa el proyecto y se use esa misma imagen en el paso de despliegue. Un volumen con nombre, `db-data`, conserva la base de datos entre reinicios de los contenedores. En el primer arranque sobre el volumen, el script de inicialización de solo lectura crea el rol de aplicación con los mínimos privilegios y su base de datos. Para el desarrollo diario aún puedo usar IntelliJ con la base local y mantener un ciclo de edición y ejecución más rápido.
+
+**[07-timetrack-111] ¿Por qué `GET /api/entries` usa `Pageable` mientras que los demás endpoints de colección devuelven todas sus filas, y cómo sigue Angular ese contrato?** ⭐⭐
+
+Elegí paginar las entradas porque es la única colección que puede crecer sin límite; filtrar por mes reduce los resultados, pero no garantiza un máximo fijo. `TimeEntryController` devuelve un `Page<TimeEntryResponse>` de Spring con un tamaño predeterminado de 20. `EntryService` de Angular envía la página, el tamaño, los filtros y la ordenación, y su modelo `Page<TimeEntry>` lee los metadatos de la respuesta.
+
+**[07-timetrack-112] ¿Por qué publicaste una URL accesible antes de terminar los pasos 8 y 9, a pesar de los arranques lentos del plan gratuito y de que la base de datos de demostración permite escrituras?** ⭐⭐⭐
+
+Decidí publicar la aplicación mientras buscaba trabajo para que una persona de selección pudiera probarla antes de clonar el proyecto y ejecutarlo. Acepté como costes la espera al despertar el servicio y el uso compartido de los datos de demostración. Aun así, publicar la aplicación no significa que el proyecto esté terminado: los pasos 8 y 9 siguen siendo necesarios para completar TimeTrack.
+
+**[07-timetrack-113] ¿Por qué la API espera a que PostgreSQL supere su health check en Compose, en vez de arrancar en cuanto existe el contenedor de la base de datos?** ⭐
+
+Elegí `depends_on: condition: service_healthy` y una comprobación con `pg_isready`, porque un contenedor de PostgreSQL puede estar en ejecución mientras todavía inicializa la base de datos y el rol. Compose arranca la API cuando la base de datos ya acepta conexiones, lo que evita una carrera de arranque en un stack local nuevo o reiniciado.
+
+**[07-timetrack-114] ¿Por qué la compilación de Docker ejecuta `mvnw package -DskipTests` en vez de usar la creación de la imagen como prueba del backend?** ⭐⭐
+
+Elegí construir el JAR ejecutable en la etapa JDK del Dockerfile y dejar la verificación para el paso 8, donde los tests del backend están previstos y se ejecutan como una comprobación propia. Así, la imagen de despliegue puede existir aunque el proyecto aún esté sin terminar, pero crearla correctamente no demuestra por sí solo que pasen los tests del backend.
 
 ## Testing
 
