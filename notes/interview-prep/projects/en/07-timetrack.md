@@ -1,7 +1,7 @@
 # Interview Questions — 07-timetrack
 
 **Last banked — backend:** 2026-09-26
-**Last banked — frontend:** never
+**Last banked — frontend:** 2026-09-26
 **Last banked — cross-tier:** never
 
 Questions specific to the implementation decisions made in this project.
@@ -80,6 +80,66 @@ I chose project-owned exceptions for service decisions: `findOwnedEntry` raises 
 I chose to keep the HTTP parameter readable as a month and do the query-range calculation in `ReportService.MonthRange.of`. The service passes the month's first and last dates to the repository, keeping date-range logic out of the controller.
 ### Frontend
 
+**[07-timetrack-059] Why does the authenticated shell own the child routes, and why are the pages loaded with `loadComponent`?** ⭐⭐⭐
+
+I chose the shell as the parent route so its navigation and layout wrap the authenticated pages once, with the child `RouterOutlet` switching the page content. Each page uses `loadComponent`, so route-specific UI is loaded when that route is visited rather than being pulled into the initial application bundle.
+
+**[07-timetrack-060] Why are app-wide infrastructure, page coordinators and reusable UI kept in separate `core`, `pages` and `shared` areas?** ⭐⭐
+
+I chose `core` for app-wide services, state and route infrastructure, `pages` for screen-level coordinators, and `shared` for reusable UI and models. That keeps screen-specific behavior out of shared components while giving the shell and pages a common place for cross-screen infrastructure.
+
+**[07-timetrack-061] Why does `Entries` own the entry list's server state while `EntryList` receives inputs and emits user actions?** ⭐⭐⭐
+
+I chose `Entries` as the coordinator for loading, filtering, paging, dialogs and writes, while `EntryList` receives the current entries and display options through inputs and sends actions through outputs. The table can then be reused by another screen without owning an API call or duplicating the page's state transitions.
+
+**[07-timetrack-062] Why does the pending-approval count live in `core/state/PendingApprovals` instead of in the HTTP service or shell?** ⭐⭐⭐
+
+I chose a separate root-provided state service because both the shell badge and manager screens need the same live count, while `EntryService` should remain responsible for HTTP requests. The state service exposes a read-only signal and owns refresh and clear operations, so those consumers share one value without the shell becoming its owner.
+
+**[07-timetrack-063] Why does the shell refresh the manager's pending count after navigation and clear it when the shell is destroyed?** ⭐⭐
+
+I chose `NavigationEnd` as a refresh point so actions completed on one screen are reflected when the manager moves to another screen, and I skip that request for employees. Clearing on shell destruction removes the previous session's badge value when leaving the authenticated area.
+
+**[07-timetrack-064] Why do page reload streams use `switchMap` when filters, sorting or writes trigger another fetch?** ⭐⭐
+
+I chose a `Subject` as the reload trigger and `switchMap` to run the latest page request. If a new filter or reload arrives before the previous response, the earlier subscription is cancelled so an older result cannot overwrite the state for the current selection.
+
+**[07-timetrack-065] Why do pages use `forkJoin` to load related data such as projects and entries before updating the view?** ⭐⭐
+
+I chose `forkJoin` for these finite HTTP requests because the page needs the related results together before it can present a complete view. For example, `Entries` waits for its project options and entry page, then updates both signals from the combined result instead of briefly showing mismatched data.
+
+**[07-timetrack-066] Why do entry dialogs own their form and write operation while `Entries` decides what to reload after the dialog closes?** ⭐⭐
+
+I chose the dialog to own the entry form, validation and create or update request, and to return a result such as `saved` or `submitted`. The page remains responsible for its list and reloads it after the dialog closes, keeping the form flow separate from the coordinator's filters and paging state.
+
+**[07-timetrack-067] Why is unsaved-change confirmation shared through `ConfirmDialog` and `confirmDiscard` instead of being repeated in each form dialog?** ⭐⭐
+
+I chose a data-driven `ConfirmDialog` and a `confirmDiscard` helper so entry, reject and password dialogs can use the same discard flow. The helper also restores untouched controls if the confirmation interaction marks them touched, preserving the form's prior validation state when the user keeps editing.
+
+**[07-timetrack-068] Why do `Entries` and `Approvals` clamp the page index after an action leaves the current page empty?** ⭐
+
+I chose to use the returned total to request the last page that can still contain rows after a delete or review action. The index only moves backward and stops at page zero, which prevents a stale total and page slice from causing an endless retry of the same empty page.
+
+**[07-timetrack-069] Why does the app use `AppTitleStrategy` to combine each route's title with `TimeTrack`?** ⭐
+
+I chose Angular's `TitleStrategy` so the route title is the source for the current page name and one shared strategy adds the application name. That keeps browser-tab titles consistent without repeating title-update code in each page component.
+
+**[07-timetrack-070] Why does `appConfig` set a default dialog width centrally while individual dialogs can still choose their own width?** ⭐
+
+I chose `MAT_DIALOG_DEFAULT_OPTIONS` to give dialogs a consistent `30rem` default, while a dialog that needs a different size can override it in its own open configuration. This keeps ordinary dialogs consistent without making the global setting a hard constraint.
+
+**[07-timetrack-071] Why do the `core/services` classes stop at HTTP calls and model mapping, leaving page state and UI effects to their consumers?** ⭐⭐
+
+I chose to keep `EntryService` focused on typed requests and responses; `Entries` owns its filters, loading state, dialogs and notifications. That lets another page call the same service without inheriting navigation or presentation behavior, while `AuthService` is the planned exception because the session outlives a route.
+
+**[07-timetrack-072] Why does each page fetch a shared endpoint for itself instead of using a cross-page cache?** ⭐⭐
+
+I chose independent reads because pages often ask for different slices of the same resource: the employee dashboard requests counts and recent entries, while `Entries` requests the current filters and page. Each page can then refetch its own view after a write without trying to keep a shared cache synchronized across routes.
+
+**[07-timetrack-073] Why are application-wide providers and defaults registered in `appConfig` rather than configured by each page?** ⭐
+
+I chose `appConfig` as the single place for router setup, `HttpClient` with the auth interceptor, the title strategy and shared Material defaults. This gives every route the same infrastructure, while a dialog can still override the shared width when its content needs it.
+
 ### Cross-tier
 
 ## Security & Auth
@@ -134,6 +194,43 @@ I chose to resolve `app.jwt.secret` from the `JWT_SECRET` environment variable, 
 
 I chose to keep the configured secret as a string in the constructor and build the HMAC key lazily in `getSigningKey()`, which is first called when a token is issued or parsed. A present but malformed or undersized value therefore passes bean construction and fails on the first login or bearer-token request; the backend backlog tracks moving that validation to startup so a bad deployment fails before serving traffic.
 
+### Frontend
+
+**[07-timetrack-074] Why does `AuthService` treat the login response and the saved browser session as `unknown` until `isAuthResponse` validates them?** ⭐⭐
+
+I chose `http.post<unknown>` because an HTTP generic only asserts a TypeScript shape; it does not validate the JSON the server returned. The same runtime guard checks the response before saving it and checks parsed `localStorage` data on startup, removing an unreadable session instead of letting malformed data appear authenticated.
+
+**[07-timetrack-075] Why does `AuthService` persist the session in `localStorage`, and what security trade-off does that create?** ⭐⭐⭐
+
+I chose `localStorage` so a reload can restore the session without asking the user to log in again. Script running in the page can read the stored token, so this choice does not protect against XSS; the project bounds an issued token to 60 minutes and has no refresh-token flow.
+
+**[07-timetrack-076] Why are `authGuard` and `noAuthGuard` separate, and what destination does each return for the wrong session state?** ⭐⭐
+
+I chose `authGuard` for protected navigation: it returns a `/login` `UrlTree` when the validated session is absent. `noAuthGuard` is the inverse for `/login`, returning a `/dashboard` `UrlTree` when a session already exists, so both guards let the router handle the redirect rather than starting navigation as a side effect.
+
+**[07-timetrack-077] Why does `managerGuard` check the role separately from the parent `authGuard`, and where is the actual API security boundary?** ⭐⭐
+
+I chose `managerGuard` to keep an employee out of manager-only screens and send them back to `/dashboard`, while the parent `authGuard` handles a missing session. The checks have separate jobs, and neither protects the API: a caller can bypass the Angular UI, so backend endpoint authorization must refuse manager-only requests.
+
+**[07-timetrack-078] Why does `authInterceptor` clone a request with the current session's bearer token, but pass it through unchanged when there is no token?** ⭐⭐⭐
+
+I chose to add the `Authorization: Bearer` header in one interceptor rather than repeat header logic at each call site. It clones the request only when a session token exists and otherwise forwards the original request unchanged, which lets the public login request run without a credential.
+
+**[07-timetrack-079] Why does the interceptor expire the session only when a `401` comes back for a request that carried a token?** ⭐⭐⭐
+
+I chose to capture the token before sending the request and gate the `401` handling on that value: a token-bearing response clears the session and navigates to `/login`. A login `401` has no token, so it remains a bad-credentials response for the login flow instead of being mistaken for an expired session.
+
+**[07-timetrack-080] Why does `AuthService` distinguish an explicit logout from an expired or unreadable session with a one-shot expiry flag?** ⭐⭐
+
+I chose `logout()` to clear browser storage, session state and any previous expiry notice, while `expireSession()` clears the same state and then records that the session ended unexpectedly. `consumeSessionExpired()` reads and resets that flag so the login page can show its expiry notice once; startup also sets it when the saved session cannot be parsed or validated.
+
+**[07-timetrack-081] Why does `/team` use `oneTimeSecretGuard` as a `CanDeactivate` guard, and why does it allow navigation when the session has ended?** ⭐⭐
+
+I chose a component contract, `HoldsOneTimeSecret`, so the guard can refuse to leave while a generated password is in a dialog or its create/reset request is in flight, protecting the only response that carries that secret. It allows navigation after `AuthService.session()` becomes null so an expired-session redirect is never trapped by the secret-preservation rule.
+
+**[07-timetrack-083] How does `roleMatch` choose the dashboard component for `/dashboard` based on the signed-in user's role?** ⭐⭐
+
+I chose `CanMatchFn` guards on two routes with the same path so Angular loads the employee or manager dashboard without making role names part of the URL. When one route does not match `AuthService`'s role, the router tries the other; manager-only screens use `managerGuard` separately.
 ## Business Rules
 
 ### Backend
@@ -198,6 +295,60 @@ I chose to set `userId` from `AuthenticatedUserProvider.currentUser()` whenever 
 
 I chose an eight-character minimum for a new password and a 72-character maximum for both inputs, following the project's intended BCrypt input cap before `UserService.changePassword` verifies or encodes either value. `@Size` counts characters, while BCrypt's effective boundary is measured in encoded bytes, so the current check is not byte-exact for non-ASCII passwords; that is a limitation to understand rather than claim this validator eliminates.
 
+### Frontend
+
+**[07-timetrack-084] How does the Entries screen limit actions by role and workflow status, and what happens when a draft's project is inactive?** ⭐⭐⭐
+
+I chose one `/entries` page that shows employee actions only for employees and adds the employee column for managers; the API supplies each role's allowed list. `EntryList` offers edit, delete and submit for `DRAFT`, offers re-open for `REJECTED`, and withholds submit when the project is inactive; managers review submissions on the separate Approvals screen.
+
+**[07-timetrack-085] Why can a manager approve or reject a submitted entry only when they are not its owner?** ⭐⭐⭐
+
+I chose `canReview` to require both `SUBMITTED` status and an owner ID different from the signed-in manager; an own submitted entry gets an “Awaiting another manager” message instead of action buttons. The UI makes that segregation rule visible, while `TimeEntryService` still enforces it at the API boundary.
+
+**[07-timetrack-086] Which time-entry rules does `EntryDialog` check before sending a request, and how are API validation failures shown?** ⭐⭐
+
+I chose client validators and input constraints for a required project and date, a date no later than today, hours from 0.5 to 24, and a nonblank description of at most 255 characters. `placeFieldErrors` puts recognized server errors under their controls, while a general API error appears in the form alert; the server remains authoritative for rules that depend on current data.
+
+**[07-timetrack-087] Why does an edit dialog keep an existing inactive project visible but refuse it as the selected value?** ⭐⭐
+
+I chose to append the entry's current project as an explicitly labelled inactive option so the edit form can represent the saved entry without silently replacing its project. The `activeProject` validator marks that value invalid, and the employee must choose an active project before saving or submitting the draft.
+
+**[07-timetrack-088] How does `ProjectDialog` distinguish a required project name from an optional description?** ⭐⭐
+
+I chose a nonblank name capped at 255 characters and an optional description with the same maximum. Before sending either create or update, the dialog trims both values and converts an empty description to `null`, matching the API's project-field rules.
+
+**[07-timetrack-089] How does `UserDialog` validate account fields, and which values does it normalize before saving?** ⭐⭐
+
+I chose required, nonblank names and valid required email addresses, each capped at 255 characters, plus a required role. The dialog trims the name and email before calling `UserService`, while server field errors are shown on the matching controls.
+
+**[07-timetrack-090] Why must the rejection dialog validate and trim the manager's reason before it can reject an entry?** ⭐⭐
+
+I chose a required, nonblank reason capped at 255 characters and trim it before calling `rejectEntry`. That prevents whitespace-only or overlong notes from being submitted, and leaves a useful explanation attached to the rejected entry for its owner.
+
+**[07-timetrack-091] Which self-management actions does the Team screen block, and what can the manager still change on their own account?** ⭐⭐⭐
+
+I chose to disable role editing in `UserDialog` and password reset or deactivation in the Team row for the signed-in user, because those actions could remove the caller's own manager access or bypass the self-service password-change flow. Name and email edits remain available, and the manager changes their own password through the account menu's self-service dialog.
+
+**[07-timetrack-092] How does the change-password form stop an incomplete or mismatched password change before it reaches the API?** ⭐⭐
+
+I chose required current and confirmation fields, a nonblank new password between 8 and 72 characters, and a group validator that requires the new and confirmation values to match. The dialog maps server errors for the current and new password to those inputs, since checks such as verifying the current credential and rejecting an unchanged password belong to the server.
+
+**[07-timetrack-093] Why does the Team form allow a manager to attempt another user's promotion without checking that user's open entries first?** ⭐⭐
+
+I chose not to load each user's entries into the Team page just to preflight a role update; the backend owns the rule that blocks promotion while `DRAFT` or `REJECTED` entries remain. If that state conflict is returned, `UserDialog` displays the API message in its form-level alert instead of presenting a client-side check that could become stale.
+
+**[07-timetrack-094] How does the Projects and Team UI make destructive status changes clear while preserving the records that already exist?** ⭐⭐
+
+I chose a confirmation before deactivating a project or member, with copy that explains logged hours or entries remain while new work or logins stop. Reactivation is direct, while deleting an entry uses a separate confirmation that explicitly says its draft will be permanently deleted.
+
+**[07-timetrack-095] How does the frontend prevent a second mutation while a save or row action is still in flight?** ⭐
+
+I chose to mark each dialog as saving and disable its form and actions until the request succeeds or fails. For table actions, `busyIds` disables only the row currently being changed and the handlers also return early for that ID, preventing a repeat click from sending a duplicate mutation.
+
+**[07-timetrack-096] Why does the Entries project filter offer only active projects to employees, even when their entries refer to an inactive one?** ⭐⭐
+
+I chose to use the projects endpoint's employee-visible list in the filter, so an archived project disappears there while its existing entries remain reachable by month and status. The entries list is paged, so the browser cannot derive every inactive project ID from the employee's own entries; adding those projects would need a separate caller-scoped query.
+
 ## Technical Decisions
 
 ### Backend
@@ -242,6 +393,20 @@ I chose `409` when a validly formed operation conflicts with existing data or th
 
 I chose a separate `CreateUserResponse` so `UserService.create` can return the generated plaintext once to the manager who creates the account, while normal list and update responses use `UserResponse` without password material. The persisted password remains hashed, and `@ToString.Exclude` also keeps the one-time value out of generated object logs.
 
+### Frontend
+
+**[07-timetrack-097] Why was NgRx unnecessary for TimeTrack's page state even though the shell shares a pending-approval count?** ⭐⭐
+
+I chose signals for route-specific state because each page reads and updates its own endpoint data, so a global store with actions, reducers and effects would add machinery for state that does not cross routes. The authenticated session and pending-approval count are the exceptions: `AuthService` and `PendingApprovals` each hold a root signal because multiple parts of the app need them.
+
+**[07-timetrack-098] Why does every component use `ChangeDetectionStrategy.OnPush`, and how does the app update those views?** ⭐⭐
+
+I chose `OnPush` as the component-wide change-detection policy. Components read signals for local and derived state, while reusable children receive values through `input()` and report actions through `output()`, giving Angular explicit state changes to render without relying on default checking for every component.
+
+**[07-timetrack-099] Why does `appConfig` set `canceledNavigationResolution: 'computed'` for browser-history navigation?** ⭐
+
+I chose the computed strategy because `oneTimeSecretGuard` can cancel a browser Back action while the generated password is still at risk. Angular restores the history position to the route that remains on screen, instead of leaving the URL and displayed page out of sync.
+
 ## Testing
 
 ### Backend
@@ -253,3 +418,25 @@ I chose to exercise the request constraints and their resolved messages with `Va
 **[07-timetrack-057] Why does the `Size` message in `ValidationMessages.properties` distinguish a maximum-only limit from a range?** ⭐⭐
 
 I chose conditional message interpolation so a constraint with `min = 0` says “Must be at most 255 characters” instead of presenting an irrelevant lower bound. `ValidationMessagesTest.sizeWithOnlyAMaximumNamesTheMaximum` asserts that exact wording for a 256-character description, while the other test checks the field-specific `NotNull`, `NotBlank`, `DecimalMax` and `Digits` messages.
+
+### Frontend
+
+**[07-timetrack-100] Why do the date tests serialize a late local time and parse the result back as a local calendar day?** ⭐⭐
+
+I chose to treat an entry date as a calendar day, not a UTC instant: `toIsoDate` reads the local year, month and day, and `fromIsoDate` rebuilds local midnight. The spec uses 23:30 and checks the same day after parsing because converting through UTC can shift a late local date to the previous day.
+
+**[07-timetrack-101] Why does `recentMonths` start with the current month and test a list that crosses into the previous year?** ⭐
+
+I chose to build each month from its first local day and subtract a month offset, then format the month key separately from its human-readable label. The test checks newest-first order across January and December, so the month selector does not stop or mislabel its history at a year boundary.
+
+**[07-timetrack-102] Why does `apiErrorMessage` use a server message only for a recognized `HttpErrorResponse` body and otherwise return the caller's fallback?** ⭐⭐
+
+I chose to narrow unknown errors with `isApiError` before reading `message`, while network failures and bodies outside the API error shape use the fallback supplied by the screen. The tests cover both a typed authentication message and an offline browser error, so the UI can show a useful failure without assuming every thrown value has the backend contract.
+
+**[07-timetrack-103] Why does the `placeFieldErrors` spec pass an explicit field list and check that an unlisted server field is ignored?** ⭐⭐
+
+I chose to let each form name the controls that can receive server errors, rather than trusting arbitrary keys from an API response. The spec checks that a listed `hours` error is attached, while an unlisted `userId` error changes no control and the helper reports that nothing was placed.
+
+**[07-timetrack-104] What does the `roleMatch` spec protect when it checks both a mismatched role and a missing session?** ⭐⭐
+
+I chose to make the `CanMatchFn` compare the requested role with `AuthService.session()?.role`, which returns false when the session is absent as well as when its role differs. The spec exercises an EMPLOYEE session against both role variants, then clears the signal and confirms no role route matches.

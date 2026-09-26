@@ -1,7 +1,7 @@
 # Preguntas de entrevista — 07-timetrack
 
 **Último banco — backend:** 2026-09-26
-**Último banco — frontend:** nunca
+**Último banco — frontend:** 2026-09-26
 **Último banco — transversal:** nunca
 
 Preguntas específicas de las decisiones de implementación tomadas en este proyecto.
@@ -81,6 +81,66 @@ Mantuve el parámetro HTTP como un mes fácil de leer y calculé el rango de con
 
 ### Frontend
 
+**[07-timetrack-059] ¿Por qué el shell autenticado es padre de las rutas hijas y las páginas se cargan con `loadComponent`?** ⭐⭐⭐
+
+Elegí el shell como ruta padre para que su navegación y su layout envuelvan una sola vez las páginas autenticadas, mientras el `RouterOutlet` hijo cambia el contenido. Cada página usa `loadComponent`, así que su interfaz se carga al visitar la ruta en vez de formar parte del bundle inicial de la aplicación.
+
+**[07-timetrack-060] ¿Por qué separaste la infraestructura global, los coordinadores de página y la interfaz reutilizable en `core`, `pages` y `shared`?** ⭐⭐
+
+Elegí `core` para los servicios, el estado y la infraestructura de rutas de toda la aplicación; `pages` para los coordinadores de cada pantalla; y `shared` para la interfaz y los modelos reutilizables. Así, el comportamiento propio de una pantalla no acaba en componentes compartidos, y el shell y las páginas tienen un lugar común para la infraestructura que comparten.
+
+**[07-timetrack-061] ¿Por qué `Entries` es responsable del estado de servidor de la lista mientras `EntryList` recibe datos y emite las acciones del usuario?** ⭐⭐⭐
+
+Elegí `Entries` como coordinador de la carga, los filtros, la paginación, los diálogos y las escrituras. `EntryList` recibe las entradas actuales y las opciones de presentación mediante inputs, y comunica las acciones mediante outputs. Así, otra pantalla puede reutilizar la tabla sin que esta haga llamadas a la API ni duplique las transiciones de estado de la página.
+
+**[07-timetrack-062] ¿Por qué el contador de aprobaciones pendientes vive en `core/state/PendingApprovals` y no en el servicio HTTP o en el shell?** ⭐⭐⭐
+
+Elegí un servicio de estado proporcionado en la raíz porque tanto el badge del shell como las pantallas de manager necesitan el mismo contador actualizado, mientras que `EntryService` debe limitarse a las peticiones HTTP. El servicio de estado expone una signal de solo lectura y se ocupa de actualizar y limpiar el valor; así, ambos consumidores lo comparten sin convertir el shell en su propietario.
+
+**[07-timetrack-063] ¿Por qué el shell actualiza el contador de pendientes del manager después de navegar y lo limpia al destruirse?** ⭐⭐
+
+Elegí `NavigationEnd` como momento de actualización para reflejar las acciones realizadas en una pantalla cuando el manager navega a otra; además, omito la petición para los empleados. Al destruirse el shell, borro el contador de la sesión anterior al salir del área autenticada.
+
+**[07-timetrack-064] ¿Por qué los streams que recargan una página usan `switchMap` cuando un filtro, un cambio de orden o una escritura inicia otra petición?** ⭐⭐
+
+Elegí un `Subject` como disparador de recarga y `switchMap` para ejecutar la petición de página más reciente. Si llega un filtro nuevo o se pide otra recarga antes de recibir la respuesta anterior, se cancela esa suscripción para que un resultado antiguo no sobrescriba el estado de la selección actual.
+
+**[07-timetrack-065] ¿Por qué las páginas usan `forkJoin` para cargar datos relacionados, como proyectos y entradas, antes de actualizar la vista?** ⭐⭐
+
+Elegí `forkJoin` para estas peticiones HTTP finitas porque la página necesita recibir los resultados relacionados antes de mostrar una vista completa. Por ejemplo, `Entries` espera tanto las opciones de proyecto como la página de entradas y luego actualiza las dos signals juntas, sin mostrar datos que no correspondan entre sí.
+
+**[07-timetrack-066] ¿Por qué los diálogos de entrada se ocupan del formulario y de guardar, mientras `Entries` decide qué volver a cargar al cerrarse el diálogo?** ⭐⭐
+
+Elegí que el diálogo se encargue del formulario, la validación y la petición de creación o actualización, y devuelva un resultado como `saved` o `submitted`. La página sigue siendo responsable de la lista y la recarga al cerrarse el diálogo; así, el flujo del formulario queda separado de los filtros y la paginación del coordinador.
+
+**[07-timetrack-067] ¿Por qué la confirmación de cambios sin guardar se comparte mediante `ConfirmDialog` y `confirmDiscard` en vez de repetirse en cada diálogo de formulario?** ⭐⭐
+
+Elegí un `ConfirmDialog` basado en datos y la función auxiliar `confirmDiscard` para que los diálogos de entrada, rechazo y contraseña compartan el mismo flujo de descarte. La función también restaura los controles que no estaban marcados como tocados si la interacción de confirmación los marca, y así conserva el estado de validación anterior cuando el usuario decide seguir editando.
+
+**[07-timetrack-068] ¿Por qué `Entries` y `Approvals` ajustan el índice de página si una acción deja vacía la página actual?** ⭐
+
+Elegí usar el total devuelto para pedir la última página que aún puede contener filas después de eliminar o revisar una entrada. El índice solo retrocede y se detiene en la página cero, lo que evita que un total y un fragmento de página obsoletos provoquen intentos repetidos e interminables de cargar esa misma página vacía.
+
+**[07-timetrack-069] ¿Por qué la aplicación usa `AppTitleStrategy` para combinar el título de cada ruta con `TimeTrack`?** ⭐
+
+Elegí la `TitleStrategy` de Angular para que el título de la ruta determine el nombre de la página actual y una estrategia compartida le añada el nombre de la aplicación. Así, los títulos de las pestañas del navegador son coherentes sin repetir código para actualizarlos en cada componente.
+
+**[07-timetrack-070] ¿Por qué `appConfig` establece un ancho predeterminado para los diálogos y permite que cada diálogo elija otro?** ⭐
+
+Elegí `MAT_DIALOG_DEFAULT_OPTIONS` para dar a los diálogos un ancho predeterminado coherente de `30rem`; si alguno necesita otra medida, puede sobrescribirla en su propia configuración de apertura. Así, los diálogos habituales mantienen el mismo aspecto sin que el valor global se convierta en una restricción rígida.
+
+**[07-timetrack-071] ¿Por qué las clases de `core/services` se limitan a las llamadas HTTP y al mapeo de modelos, y dejan el estado de página y los efectos de interfaz a sus consumidores?** ⭐⭐
+
+Elegí que `EntryService` se centre en peticiones y respuestas tipadas, mientras `Entries` mantiene sus filtros, el estado de carga, los diálogos y las notificaciones. Así, otra página puede usar el mismo servicio sin heredar comportamiento de navegación o presentación. `AuthService` es la excepción prevista porque la sesión dura más que una ruta.
+
+**[07-timetrack-072] ¿Por qué cada página consulta por su cuenta un endpoint compartido en vez de usar una caché común entre páginas?** ⭐⭐
+
+Elegí hacer lecturas independientes porque las páginas suelen necesitar partes distintas del mismo recurso: el dashboard del empleado pide contadores y entradas recientes, mientras que `Entries` solicita la página y los filtros actuales. Así, cada pantalla vuelve a cargar sus propios datos después de una escritura sin tener que mantener sincronizada una caché entre rutas.
+
+**[07-timetrack-073] ¿Por qué los providers y valores predeterminados de toda la aplicación se registran en `appConfig` en vez de configurarse en cada página?** ⭐
+
+Elegí `appConfig` como único lugar para configurar el router, `HttpClient` con el auth interceptor, la estrategia de títulos y los valores comunes de Material. Así, todas las rutas comparten la misma infraestructura, y un diálogo aún puede sobrescribir el ancho general si su contenido lo requiere.
+
 ### Transversal
 
 ## Seguridad y autenticación
@@ -134,6 +194,44 @@ Elegí resolver `app.jwt.secret` desde la variable de entorno `JWT_SECRET` para 
 **[07-timetrack-030] ¿Cuándo detecta `JwtUtil` que `JWT_SECRET` tiene un formato incorrecto o es demasiado corto, y por qué importa ese momento en un despliegue?** ⭐
 
 Guardo el secreto configurado como string en el constructor y construyo la clave HMAC cuando se llama por primera vez a `getSigningKey()`, al emitir o analizar un token. Por eso, un valor presente pero mal formado o demasiado corto permite crear el bean y falla en la primera petición de login o con bearer token. El backlog del backend recoge mover esa validación al arranque para que un despliegue incorrecto falle antes de aceptar tráfico.
+
+### Frontend
+
+**[07-timetrack-074] ¿Por qué `AuthService` trata como `unknown` la respuesta del login y la sesión guardada en el navegador hasta que `isAuthResponse` las valida?** ⭐⭐
+
+Elegí `http.post<unknown>` porque el tipo genérico de una petición HTTP solo afirma cuál debería ser la forma de los datos; no valida el JSON que devolvió el servidor. El mismo guard de ejecución comprueba la respuesta antes de guardarla y revisa los datos de `localStorage` al iniciar; si la sesión no se puede leer, la elimina en vez de tratar los datos mal formados como una autenticación válida.
+
+**[07-timetrack-075] ¿Por qué `AuthService` guarda la sesión en `localStorage` y qué trade-off de seguridad implica?** ⭐⭐⭐
+
+Elegí `localStorage` para que, al recargar la página, se pueda recuperar la sesión sin pedirle al usuario que vuelva a iniciar sesión. Un script que se ejecute en la página puede leer el token, así que esta decisión no protege frente a XSS; el proyecto limita los tokens emitidos a 60 minutos y no tiene un flujo de refresh token.
+
+**[07-timetrack-076] ¿Por qué `authGuard` y `noAuthGuard` son distintos, y a qué destino envía cada uno cuando la sesión no está en el estado esperado?** ⭐⭐
+
+Elegí `authGuard` para la navegación protegida: devuelve un `UrlTree` hacia `/login` cuando no hay una sesión validada. `noAuthGuard` hace lo contrario en `/login` y devuelve un `UrlTree` hacia `/dashboard` si ya hay sesión. Así, los dos dejan que el router gestione la redirección en vez de iniciar una navegación como efecto secundario.
+
+**[07-timetrack-077] ¿Por qué `managerGuard` comprueba el rol por separado del `authGuard` padre, y dónde está el verdadero límite de seguridad de la API?** ⭐⭐
+
+Elegí `managerGuard` para impedir que un empleado entre en pantallas exclusivas de managers y devolverlo a `/dashboard`, mientras que `authGuard` padre se ocupa de las sesiones ausentes. Cada guard tiene una tarea distinta, pero ninguno protege la API: una persona puede saltarse la interfaz Angular, por lo que la autorización del backend debe rechazar las peticiones exclusivas de managers.
+
+**[07-timetrack-078] ¿Por qué `authInterceptor` clona la petición y añade el bearer token de la sesión actual, pero la deja intacta si no hay token?** ⭐⭐⭐
+
+Elegí añadir la cabecera `Authorization: Bearer` en un interceptor para no repetir esa lógica en cada llamada. Solo clona la petición si hay un token de sesión; si no, reenvía la original sin cambios, lo que permite que la petición pública de login se procese sin credenciales.
+
+**[07-timetrack-079] ¿Por qué el interceptor caduca la sesión solo si una respuesta `401` corresponde a una petición que llevaba token?** ⭐⭐⭐
+
+Elegí guardar el token antes de enviar la petición y condicionar a ese valor el tratamiento del `401`: si la petición llevaba token, se borra la sesión y se navega a `/login`. El `401` del login no lleva token, así que sigue siendo un error de credenciales para ese flujo y no se confunde con una sesión caducada.
+
+**[07-timetrack-080] ¿Por qué `AuthService` distingue entre cerrar sesión explícitamente y una sesión caducada o ilegible mediante un flag de caducidad de un solo uso?** ⭐⭐
+
+Elegí que `logout()` borre el almacenamiento del navegador, el estado de sesión y cualquier aviso de caducidad anterior; `expireSession()` limpia esos mismos datos y registra que la sesión terminó inesperadamente. `consumeSessionExpired()` lee y reinicia el flag para que la página de login muestre el aviso una sola vez. Al iniciar, también se activa si la sesión guardada no se puede analizar o validar.
+
+**[07-timetrack-081] ¿Por qué `/team` usa `oneTimeSecretGuard` como guard `CanDeactivate`, y por qué permite navegar cuando la sesión ha terminado?** ⭐⭐
+
+Elegí el contrato de componente `HoldsOneTimeSecret` para que el guard impida salir mientras haya una contraseña generada en un diálogo o una petición de creación/reset en curso, protegiendo la única respuesta que contiene ese secreto. Permite navegar cuando `AuthService.session()` pasa a ser null, para que una redirección por sesión caducada nunca quede bloqueada por la regla que conserva el secreto.
+
+**[07-timetrack-083] ¿Cómo elige `roleMatch` el componente de dashboard de `/dashboard` según el rol del usuario autenticado?** ⭐⭐
+
+Elegí guards `CanMatchFn` en dos rutas con la misma dirección para que Angular cargue el dashboard de empleado o de manager sin incluir nombres de rol en la URL. Si una ruta no coincide con el rol de `AuthService`, el router prueba la otra. Las pantallas exclusivas de managers usan `managerGuard` por separado.
 
 ## Reglas de negocio
 
@@ -201,6 +299,57 @@ Elegí un mínimo de ocho caracteres para la nueva contraseña y un máximo de 7
 
 ### Frontend
 
+**[07-timetrack-084] ¿Cómo limita la pantalla `Entries` las acciones según el rol y el estado del flujo, y qué ocurre si el proyecto de un borrador está inactivo?** ⭐⭐⭐
+
+Elegí una sola página `/entries`: muestra las acciones del empleado solo a empleados y añade la columna de empleados para managers; la API proporciona la lista permitida para cada rol. `EntryList` ofrece editar, eliminar y enviar cuando la entrada está en `DRAFT`, permite reabrirla si está en `REJECTED` y oculta la opción de enviarla si el proyecto está inactivo. Los managers revisan las entradas en la pantalla `Approvals`, aparte.
+
+**[07-timetrack-085] ¿Por qué un manager solo puede aprobar o rechazar una entrada enviada si no es su propietario?** ⭐⭐⭐
+
+Elegí que `canReview` exija tanto el estado `SUBMITTED` como un ID de propietario distinto del del manager autenticado. Si la entrada es suya, se muestra «Awaiting another manager» en vez de los botones de acción. La interfaz hace visible esta separación, pero `TimeEntryService` también la aplica en el límite de la API.
+
+**[07-timetrack-086] ¿Qué reglas comprueba `EntryDialog` antes de enviar una petición y cómo muestra los errores de validación de la API?** ⭐⭐
+
+Elegí validadores del cliente y restricciones de los campos para exigir proyecto y fecha, impedir fechas posteriores a hoy, limitar las horas de 0.5 a 24 y exigir una descripción con texto de hasta 255 caracteres. `placeFieldErrors` muestra los errores de servidor reconocidos junto a sus controles; los errores generales de la API aparecen en la alerta del formulario. El servidor sigue siendo quien decide las reglas que dependen de datos actuales.
+
+**[07-timetrack-087] ¿Por qué un diálogo de edición mantiene visible el proyecto inactivo actual, pero no permite seleccionarlo como valor válido?** ⭐⭐
+
+Elegí añadir el proyecto actual de la entrada como opción marcada como inactiva, para que el formulario represente lo que está guardado sin sustituirlo silenciosamente. El validator `activeProject` marca ese valor como inválido, por lo que el empleado debe elegir un proyecto activo antes de guardar o enviar el borrador.
+
+**[07-timetrack-088] ¿Cómo diferencia `ProjectDialog` el nombre obligatorio del proyecto de una descripción opcional?** ⭐⭐
+
+Elegí exigir un nombre con contenido de hasta 255 caracteres y permitir una descripción de hasta el mismo límite. Antes de enviar una creación o actualización, el diálogo elimina los espacios sobrantes de ambos valores y convierte una descripción vacía en `null`, de acuerdo con las reglas de campos del proyecto en la API.
+
+**[07-timetrack-089] ¿Cómo valida `UserDialog` los campos de la cuenta y qué valores normaliza antes de guardarlos?** ⭐⭐
+
+Elegí exigir nombres con contenido, direcciones de email válidas y un rol, y limitar los nombres y el email a 255 caracteres. Antes de llamar a `UserService`, el diálogo elimina los espacios sobrantes del nombre y del email; los errores de campo del servidor se muestran en los controles correspondientes.
+
+**[07-timetrack-090] ¿Por qué el diálogo de rechazo valida y recorta el motivo del manager antes de rechazar una entrada?** ⭐⭐
+
+Elegí exigir un motivo con contenido de hasta 255 caracteres y recortarlo antes de llamar a `rejectEntry`. Así se evitan notas compuestas solo por espacios o demasiado largas, y queda una explicación útil asociada a la entrada rechazada para su propietario.
+
+**[07-timetrack-091] ¿Qué acciones de autogestión bloquea la pantalla Team y qué puede cambiar todavía el manager en su propia cuenta?** ⭐⭐⭐
+
+Elegí desactivar la edición del rol en `UserDialog` y el reset de contraseña o la desactivación de la fila del usuario autenticado, porque esas acciones podrían quitarle al manager su propio acceso o saltarse el cambio de contraseña de autoservicio. Puede seguir cambiando su nombre y email, y cambiar su contraseña desde el diálogo de autoservicio del menú de cuenta.
+
+**[07-timetrack-092] ¿Cómo evita el formulario de cambio de contraseña que una solicitud incompleta o con valores distintos llegue a la API?** ⭐⭐
+
+Elegí exigir las contraseñas actual y de confirmación, requerir que la nueva tenga entre 8 y 72 caracteres y no esté vacía, y añadir un validador de grupo para comprobar que coincida con la confirmación. El diálogo asocia a esos campos los errores del servidor sobre la contraseña actual y la nueva; comprobar la credencial actual y rechazar una contraseña sin cambios son reglas que corresponden al servidor.
+
+**[07-timetrack-093] ¿Por qué el formulario Team permite intentar ascender a otro usuario sin comprobar antes si tiene entradas pendientes?** ⭐⭐
+
+Elegí no cargar las entradas de cada usuario en la página Team solo para comprobar por adelantado un cambio de rol. El backend es responsable de bloquear el ascenso mientras queden entradas `DRAFT` o `REJECTED`. Si la API devuelve ese conflicto de estado, `UserDialog` muestra su mensaje en la alerta general del formulario, en vez de hacer una comprobación del cliente que podría quedar obsoleta.
+
+**[07-timetrack-094] ¿Cómo deja clara la interfaz de Projects y Team una desactivación, a la vez que conserva los registros existentes?** ⭐⭐
+
+Elegí pedir confirmación antes de desactivar un proyecto o a un miembro y explicar en el mensaje que las horas o las entradas existentes se conservan, aunque se impida registrar trabajo nuevo o iniciar sesión. La reactivación es inmediata; eliminar una entrada tiene su propia confirmación, que avisa explícitamente que el borrador se borrará de forma permanente.
+
+**[07-timetrack-095] ¿Cómo impide el frontend que se envíe otra mutación mientras sigue en curso un guardado o una acción sobre una fila?** ⭐
+
+Elegí marcar cada diálogo como `saving` y desactivar sus controles hasta que la petición termine, con éxito o error. En las tablas, `busyIds` desactiva solo la fila que se está modificando y los handlers terminan de inmediato si esa fila ya está ocupada, para que otro clic no envíe una mutación duplicada.
+
+**[07-timetrack-096] ¿Por qué el filtro de proyectos de Entries solo muestra proyectos activos a los empleados, aunque algunas de sus entradas correspondan a proyectos inactivos?** ⭐⭐
+
+Elegí usar en el filtro la lista de proyectos que el endpoint permite ver a los empleados: un proyecto archivado desaparece de ahí, pero el empleado puede seguir consultando sus entradas por mes y estado. La lista de entradas está paginada, así que el navegador no puede deducir de las entradas del empleado los IDs de todos los proyectos inactivos; incluirlos requeriría otra consulta limitada al usuario actual.
 ### Transversal
 
 ## Decisiones técnicas
@@ -249,6 +398,18 @@ Separé `CreateUserResponse` para que `UserService.create` devuelva la contrase�
 
 ### Frontend
 
+**[07-timetrack-097] ¿Por qué NgRx no hacía falta para el estado de las páginas de TimeTrack, aunque el shell comparta el contador de aprobaciones pendientes?** ⭐⭐
+
+Elegí signals para el estado propio de cada ruta porque cada página consulta y actualiza los datos de su endpoint; un store global con actions, reducers y effects añadiría complejidad a un estado que no se comparte entre rutas. La sesión autenticada y el contador de aprobaciones pendientes son las excepciones: `AuthService` y `PendingApprovals` guardan cada uno una signal en la raíz porque varias partes de la aplicación necesitan ese valor.
+
+**[07-timetrack-098] ¿Por qué todos los componentes usan `ChangeDetectionStrategy.OnPush` y cómo actualiza la aplicación esas vistas?** ⭐⭐
+
+Elegí `OnPush` como estrategia de detección de cambios para los componentes. Los componentes leen signals para el estado local y derivado; los hijos reutilizables reciben valores mediante `input()` y comunican acciones mediante `output()`. Así, Angular recibe cambios de estado explícitos que puede renderizar sin depender de la comprobación predeterminada de cada componente.
+
+**[07-timetrack-099] ¿Por qué `appConfig` establece `canceledNavigationResolution: 'computed'` para la navegación con el historial del navegador?** ⭐
+
+Elegí la estrategia `computed` porque `oneTimeSecretGuard` puede cancelar una acción de volver atrás del navegador mientras la contraseña generada siga en riesgo. Angular restaura la posición del historial a la ruta que permanece en pantalla, en vez de dejar desincronizados la URL y el contenido mostrado.
+
 ### Transversal
 
 ## Testing
@@ -264,3 +425,23 @@ Compruebo las restricciones de la petición y los mensajes que generan mediante 
 Distinguí los dos casos en el mensaje para que una restricción con `min = 0` diga “Must be at most 255 characters” sin mencionar un límite inferior que no aporta nada. `ValidationMessagesTest.sizeWithOnlyAMaximumNamesTheMaximum` comprueba ese texto exacto para una descripción de 256 caracteres; el otro test verifica los mensajes de campo de `NotNull`, `NotBlank`, `DecimalMax` y `Digits`.
 
 ### Frontend
+
+**[07-timetrack-100] ¿Por qué los tests de fechas serializan una hora local tardía y vuelven a analizar el resultado como un día del calendario local?** ⭐⭐
+
+Elegí tratar la fecha de una entrada como un día del calendario, no como un instante UTC: `toIsoDate` lee el año, mes y día locales, y `fromIsoDate` reconstruye la medianoche local. El spec usa las 23:30 y comprueba que al analizar el valor se obtiene el mismo día, porque una conversión por UTC podría desplazar una fecha local tardía al día anterior.
+
+**[07-timetrack-101] ¿Por qué `recentMonths` empieza por el mes actual y prueba una lista que cruza al año anterior?** ⭐
+
+Elegí construir cada mes desde su primer día local y retroceder el número de meses correspondiente; después genero por separado la clave del mes y su etiqueta legible. El test comprueba el orden de más reciente a más antiguo entre enero y diciembre, para que el selector no se detenga ni etiquete mal los meses al cambiar de año.
+
+**[07-timetrack-102] ¿Por qué `apiErrorMessage` usa un mensaje del servidor solo si reconoce el cuerpo de `HttpErrorResponse` y, en los demás casos, devuelve el fallback de la pantalla?** ⭐⭐
+
+Elegí validar el error desconocido con `isApiError` antes de leer `message`; ante fallos de red o cuerpos que no respetan la forma de error de la API, se usa el fallback de la pantalla. Los tests comprueban tanto un mensaje de autenticación tipado como un error de navegador sin conexión, para que la interfaz explique el fallo sin asumir que todo valor lanzado cumple el contrato del backend.
+
+**[07-timetrack-103] ¿Por qué el spec de `placeFieldErrors` recibe una lista explícita de campos y comprueba que ignora un campo de servidor que no está en ella?** ⭐⭐
+
+Elegí que cada formulario indique qué controles pueden recibir errores del servidor, en vez de confiar en claves arbitrarias de una respuesta de la API. El spec comprueba que un error de `hours` se asocia a su campo; un error no incluido para `userId` no cambia ningún control y la función informa que no pudo asociar ningún error.
+
+**[07-timetrack-104] ¿Qué protege el spec de `roleMatch` al comprobar tanto un rol distinto como la ausencia de sesión?** ⭐⭐
+
+Elegí que el `CanMatchFn` compare el rol solicitado con `AuthService.session()?.role`; si no hay sesión, devuelve `false`, igual que cuando el rol no coincide. El spec prueba una sesión `EMPLOYEE` frente a las dos variantes de rol, elimina después la signal y confirma que ninguna ruta por rol coincide.
