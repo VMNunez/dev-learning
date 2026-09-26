@@ -1,13 +1,13 @@
 # portfolio-audit — last run report
 
 **Date:** 2026-09-26
-**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = frontend`, `DRY_RUN = false`
+**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = global`, `DRY_RUN = false`
 **Status:** clean
 
-1. **Plan vs reality.** All five Frontend author/reviewer pairs completed. The whole-bank overlap scan and cold Spanish review provided end-artifact evidence; EN/ES parity is 101/101 overall and 45/45 in Frontend.
-2. **Report discipline.** The Testing reviewer corrected its initial EOF count after a complete three-chunk reread; no role output was discarded.
-3. **Failures & retries.** All 12 required dispatches ran. The translator repaired an out-of-scope heading change after one follow-up; the Testing reviewer corrected its trace count after one follow-up.
-4. **Rule friction and rule breaches.** The translator briefly changed Spanish headings outside Frontend scope; it restored them before the bank commit and the baseline comparison confirmed out-of-scope text was preserved. Logged as BRCH-0008. BRCH-0007/0008 share a step label; no REC opened because the explicit byte-preserving scope rule already covers the behavior (condition 4). No other mandatory step was skipped.
-5. **Verdict.** **Pipeline clean; no prompt change worth considering.** Frontend bank completed and committed as `a5cb976a`; this bank-only run computed no portfolio verdict. The authoring recount found no eligible 07 row while PLANNING.md §23 G7 remains unsigned. The prompt is 1035 lines, over the ~500-line smoke alarm; its largest section is `## Single-project procedure` (443 lines). No extraction was earned.
+1. **Plan vs reality.** Four global sections, the whole-bank overlap scan, translation and a cold Spanish review completed. The Spanish reviewer checked the finished twin (489 lines); the EN/ES banks match at 111 IDs, with all 10 in-scope questions present. This end-artifact pass caught no frozen defects or suspected translation errors.
+2. **Report discipline.** The Architecture reviewer’s priority tally did not match the markers on disk; I reconciled the count from the complete bank (29/68/14). Its required EOF proof line was supplied after follow-up.
+3. **Failures & retries.** All 10 required dispatches ran (four author/reviewer pairs, translator, Spanish reviewer). No role failed or required a content re-dispatch; the Spanish reviewer returned FIXED and repaired four answers.
+4. **Rule friction and rule breaches.** No mandatory step was skipped. The bank-only recount correctly added no 07 row: the eligibility source requires G7 `✅ Ready`, and §23 remains unsigned. No portfolio verdict was computed.
+5. **Verdict.** **Pipeline clean; no prompt change worth considering.** The cross-tier bank commit is `9fe56ba7`. The prompt is 1035 lines, over the ~500-line smoke alarm; its largest section is `## Single-project procedure` (443 lines). No extraction was earned.
 
-`maps unaffected` — no map edit landed. `map: verified — README.md portfolio-audit, translator and Spanish-reviewer catalogue rows; _system-map.md project-bank writer and routing rows`.
+`maps unaffected` — no machinery changed. `map: verified — README.md portfolio-audit catalogue row; _system-map.md portfolio bank-writer and routing rows`.
