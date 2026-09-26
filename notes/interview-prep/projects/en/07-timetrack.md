@@ -145,6 +145,34 @@ I chose `appConfig` as the single place for router setup, `HttpClient` with the 
 
 I chose to keep the matching request and response shapes in Angular interfaces and Spring DTOs: `ProjectService.createProject` sends `CreateProjectRequest` to `POST /api/projects`, and `ProjectController.create` binds the JSON body, applies `@Valid`, then delegates to `ProjectService` and returns `ProjectResponse`. The two applications compile separately, so their declarations do not prove that the JSON shapes stay aligned; I decided to keep the backend DTO as the runtime request check and treat `http.post<Project>(...)` only as a TypeScript compile-time assertion. In this path, `ProjectResponse.createdAt` is serialized for the Angular `Project.createdAt: string`, while `description` remains nullable on both sides.
 
+**[07-timetrack-115] Why does Angular read entry results through `content` and a nested `page` object instead of depending on every property of Spring Data's `PageImpl`?** ⭐⭐
+
+I chose `PageSerializationMode.VIA_DTO` in `WebConfig` so the paged HTTP response has a deliberate envelope even though `TimeEntryController` returns a Spring `Page<TimeEntryResponse>`. Angular mirrors that envelope in `Page<T>` and `PageMetadata`: the rows are in `content`, and `size`, `number`, `totalElements` and `totalPages` are under `page`. This keeps consumers from depending on the incidental JSON properties of a framework implementation class, whose internal changes should not dictate TimeTrack's API contract.
+
+**[07-timetrack-116] Why does `EntryService.getEntries` leave an unset filter out of the URL instead of sending an empty value for every possible query parameter?** ⭐⭐
+
+I chose optional query parameters because omitting a filter means that dimension does not narrow the search: `TimeEntryController.findByFilter` declares `userId`, `projectId`, `status` and `month` with `required = false`. `EntryService` builds `HttpParams` only from supplied filters, reassigning the result of each `set`, and sends page settings only when it receives a `PageRequest`. That preserves the server's defaults and avoids asking Spring to convert an empty or literal `undefined` value into a `Long`, `EntryStatus` or `YearMonth`; report calls differ because `ReportController` requires `month`, so `ReportService` always supplies it.
+
+**[07-timetrack-117] Why do TimeTrack's TypeScript status and role types use the backend's uppercase values while separate maps provide the labels shown to users?** ⭐⭐
+
+I chose the same wire values on both sides: Java's `EntryStatus` and `Role` correspond to the `ENTRY_STATUSES` and `ROLES` arrays in Angular, with literal unions derived from those arrays. A filter therefore sends `SUBMITTED`, which `TimeEntryController` can bind to its enum, while `ENTRY_STATUS_LABELS` renders `Submitted` without changing the value sent over HTTP. Keeping labels separate lets presentation wording change without renaming the API's domain values; the Java enum and TypeScript declarations are still maintained separately, so adding a state requires coordinating both sides.
+
+**[07-timetrack-118] Why does the employee dashboard combine a report response, two `size=1` entry queries and a recent-entry page instead of deriving every card from the visible entries?** ⭐⭐
+
+I chose a different part of the API contract for each figure: `EmployeeDashboard.fetch` reads monthly hours from `ReportService.getSummary`, all-time submitted and draft counts from each filtered page's `totalElements`, and recent rows from `content` on page zero. Summing or counting those recent rows would describe only the returned slice, so it would understate the employee's work once more entries exist than fit on that page. The `size=1` queries still return one row, but the dashboard uses their total metadata to get the full filtered count without transferring the full collection.
+
+**[07-timetrack-119] When an employee chooses "Submit for review" while editing a draft, is saving and submitting one atomic API operation, and what happens if only the save succeeds?** ⭐⭐
+
+I chose to reuse the separate update and transition contracts: `EntryDialog.write` waits for `updateEntry`'s `PUT /api/entries/{id}` to succeed before `switchMap` starts `submitEntry`'s `PATCH /api/entries/{id}/submit`. They are two HTTP requests, so failure of the second does not roll back the first. After the update succeeds the dialog records `saved = true` and marks the form pristine; a failed submit keeps the dialog open with the error, and closing it can still return `saved` so the caller knows a write happened rather than claiming the entry was submitted.
+
+**[07-timetrack-120] The API uses `BigDecimal` for hours, but Angular's entry and report interfaces use `number`; what survives that JSON boundary?** ⭐
+
+I chose numeric JSON fields, represented by `BigDecimal` in `TimeEntryResponse` and the report DTOs and by `number` in Angular's `TimeEntry`, `ReportSummary`, `ProjectHours` and `UserHours`. The numeric value crosses the boundary, but Java's decimal arithmetic and trailing-zero scale do not become properties of a JavaScript number, so receiving `4.00` does not itself guarantee a two-decimal display. On writes, `CreateTimeEntryRequest` and `UpdateTimeEntryRequest` enforce the hours range and at most two fractional digits on the backend; on reads, the dashboard consumes the server's report totals instead of rebuilding them by adding a page of browser-side values.
+
+**[07-timetrack-121] Why does the entry form send a local `YYYY-MM-DD` string to Spring's `LocalDate` instead of serializing its `Date` as an instant?** ⭐⭐
+
+I chose `toIsoDate()` in `EntryDialog.buildRequest` because the work date is a calendar day, not a timestamp; converting the browser's `Date` through UTC could shift that day. `CreateTimeEntryRequest` and `UpdateTimeEntryRequest` bind the string to `LocalDate`, and `TimeEntryResponse.date` returns it to Angular's `TimeEntry.date: string`, which `fromIsoDate()` reconstructs as a local `Date` for editing. For monthly requests, `toIsoMonth()` sends `YYYY-MM` to Spring's `YearMonth` parameters, keeping the filter on the same calendar interpretation.
+
 ## Security & Auth
 
 ### Backend
@@ -240,6 +268,26 @@ I chose `CanMatchFn` guards on two routes with the same path so Angular loads th
 **[07-timetrack-106] From `POST /api/auth/login` to a later API request, why does the browser session carry a role while the JWT carries only the user ID, and how does token expiry end the session?** ⭐⭐⭐
 
 I chose to return the token, ID, name and role in `AuthResponse`: Angular validates it, stores it in `localStorage`, uses the role for the shell and route guards, and the interceptor sends the token as a bearer header; `JwtUtil` signs the database ID as `sub` with a 60-minute expiry. The saved role guides the UI but does not grant API authority. On each bearer request, `JwtFilter` reloads the account, checks its current active status and builds Spring authorities from its current database role, so changing only the saved role cannot grant manager API access and account changes take effect on the next request. When the token expires, the API returns `401` and the interceptor clears the saved session and redirects to `/login`.
+
+**[07-timetrack-122] Why does a wrong current password return `400` rather than `401` when the change-password request already carries a JWT?** ⭐⭐
+
+I chose `400` with `fieldErrors.currentPassword` because the caller is authenticated and the submitted password is the invalid field. Angular's change-password dialog can place that message under the control and keep the session; a `401` on this token-bearing request would instead make `authInterceptor` clear the session and send the user to `/login` after a typo.
+
+**[07-timetrack-123] After a user changes or a manager resets a password, why can a previously issued JWT still authorize requests until it expires?** ⭐⭐
+
+I chose JWTs whose signed subject is the stable user ID and whose validity does not depend on the current password hash. `UserService` updates that hash, but `JwtFilter` validates the token and reloads the account's active state and role, not its password; Angular also keeps its saved session until logout or a token-bearing `401`. Password changes therefore block the old password at the next login without revoking an existing access token, which remains usable for at most its 60-minute lifetime unless the account is deactivated.
+
+**[07-timetrack-124] If another manager changes a signed-in user's role, why might the browser still show the old navigation while the API gives that user different permissions?** ⭐⭐
+
+I chose to store the role returned by `POST /api/auth/login` in Angular's `AuthService.session`, and there is no later current-user request to refresh it. The shell and `managerGuard` therefore keep using the saved role until a new login, while `JwtFilter` reloads `UserDetails` by the token's ID on every request and `@PreAuthorize` uses the current database role. A demoted manager can still see a manager link but receives `403` from its endpoint; the interceptor clears the session on a token-bearing `401`, not on that `403`.
+
+**[07-timetrack-126] What does TimeTrack's Log out action revoke, and why could a copied JWT still work afterward?** ⭐⭐
+
+I chose a stateless API with no token denylist, so the shell's Log out action only calls Angular's `AuthService.logout()` to remove `timetrack_session` from `localStorage` and clear the session signal. It sends no logout request to Spring, and `JwtFilter` still accepts a copied, unexpired token whose user remains active. The token expires after 60 minutes, while deactivating the account stops it sooner because the filter reloads and checks the user on each request.
+
+**[07-timetrack-127] What happens if the page reloads with a well-formed browser session whose JWT has already expired?** ⭐
+
+I chose `AuthService.readStoredSession()` to validate the saved response's shape, not to decode the JWT or check its expiry; `authGuard` can therefore admit the shell briefly from that stored role. The first API call sends the stale token, and Spring's `JwtFilter` leaves the request unauthenticated so the API returns `401`. `authInterceptor` then removes the saved session, records the one-shot expiry notice and redirects to `/login`; if no API call occurs, the client has no separate expiry timer to clear it.
 
 ## Business Rules
 
@@ -361,9 +409,65 @@ I chose to use the projects endpoint's employee-visible list in the filter, so a
 
 ### Cross-tier
 
-**[07-timetrack-107] Why does the shared Entries screen hide role-inappropriate actions while the API still enforces each operation's role?** ⭐⭐
+**[07-timetrack-107] Why can managers read the team's Entries page but not use its employee write actions, and where are review actions enforced?** ⭐⭐
 
-I chose to render employee actions only for employees and manager review controls only for managers, using the signed-in role in the page. That is a usability rule, not authorization: `TimeEntryController` separately protects employee writes and manager review endpoints with `@PreAuthorize`, so a direct request from the wrong role still receives `403`.
+I chose to render log, edit, delete, submit and re-open actions only in the employee variant of `Entries`; managers see a read-only team list and review entries on `Approvals`. Those screen choices guide each role, while `TimeEntryController` protects employee writes and manager approve/reject endpoints with `@PreAuthorize`, so a direct request from the wrong role still receives `403`.
+
+**[07-timetrack-128] When an employee changes the `GET /api/entries` user filter or guesses another entry ID, which rule is enforced by Angular and which by Spring?** ⭐⭐⭐
+
+I chose to show employees their own entries in the shared page, while `TimeEntryService.findByFilter` replaces an employee's requested `userId` with the authenticated ID. For owner-only writes, `findOwnedEntry` returns the same `404` for another person's row as for a missing ID. The browser's list and actions guide normal use; the API prevents an altered request from exposing or changing another employee's work.
+
+**[07-timetrack-129] How does a rejected entry get back into the editable workflow from the Entries screen, and why can't the user edit it directly?** ⭐⭐⭐
+
+I chose to show Re-open for a `REJECTED` row, then show edit, delete and submit only after `PATCH /api/entries/{id}/reopen` returns it to `DRAFT`. `TimeEntryService.reopen` verifies ownership and status and clears the old rejection note; its update path still accepts only `DRAFT`. This keeps the correction and resubmission loop explicit on both sides rather than treating rejection as an ordinary edit state.
+
+**[07-timetrack-130] If the Entries or Approvals page shows an action that was valid when it loaded but another request has since changed the entry, what decides the outcome?** ⭐⭐
+
+I chose status-based controls in `EntryList` and `Approvals` so the screen reflects its last response, but that snapshot can become stale. `TimeEntryService` reads the current row and checks `DRAFT`, `REJECTED` or `SUBMITTED` again at the transition; a mismatch becomes `409` and the page reports the API error instead of trusting the old button state.
+
+**[07-timetrack-131] What happens if a draft's project is archived after Angular loaded its active-project list, and why does the server still check it at submission?** ⭐⭐
+
+I chose to hide Submit for a draft whose project is already known inactive and to make the edit form require an active project. That list can be stale, so `TimeEntryService.submit` checks the project's current activity before moving the draft to `SUBMITTED` and returns `400` if it was archived. A client-side disabled action is useful feedback, but it cannot decide whether the manager's queue may accept the entry.
+
+**[07-timetrack-132] Why does `step="0.5"` in the entry form not make half-hour increments a server-side business rule?** ⭐⭐
+
+I chose `step="0.5"` as an input hint, but the Angular form validates only the `0.5`–`24` range for hours; it has no half-hour-increment validator. The request DTO permits two decimal places, and `TimeEntryService.validateEntryData` checks the same range, so the API accepts `0.75`. The form's step hint can therefore suggest half-hours while the accepted API domain includes hundredths.
+
+**[07-timetrack-133] Why does the rejection dialog trim the manager's note if the API also requires a nonblank note, and what can a direct API caller still store?** ⭐⭐
+
+I chose `notBlank` and a 255-character limit in `RejectDialog`, then trim its value before sending it; `RejectRequest` independently uses `@NotBlank` and `@Size(max = 255)`. The backend refuses a blank direct request, but `TimeEntryService.reject` stores a nonblank direct request as supplied, including surrounding spaces. The UI normalization and API validity checks have related but different jobs.
+
+**[07-timetrack-134] Why does the Approvals UI suppress review buttons on a manager's own submitted entry when the backend also checks the owner?** ⭐⭐
+
+I chose `Approvals.canReview` to compare the row's `userId` with the browser session's ID and show “Awaiting another manager” for a match. Both `approve` and `reject` then compare the persisted entry owner with the authenticated manager and refuse self-review with `403`. That server check protects segregation of duties even if the page state is stale or someone calls the endpoint directly.
+
+**[07-timetrack-135] Why does the Team dialog allow a promotion request without first loading the member's draft and rejected entries?** ⭐⭐
+
+I chose to send the requested role from `UserDialog` and let `UserService.update` query the authoritative entries at the time of promotion. If `DRAFT` or `REJECTED` work remains, the API returns `409` and Team shows the failure; `SUBMITTED` work can be reviewed by another manager. A client precheck would need another request and could become stale before the update.
+
+**[07-timetrack-136] How do the Team screen and `UserService` together prevent a manager from locking out their own admin account?** ⭐⭐
+
+I chose to disable the current manager's role field and deactivation control in the UI, while still allowing their name and email to be edited. `UserService.update` and `delete` independently refuse self-demotion or self-deactivation with `409`, including a direct API call. The backend protects the invariant that the active manager making the request remains available after it.
+
+**[07-timetrack-137] Which password-change rules can the Angular dialog check, and which require the authenticated account on the server?** ⭐⭐
+
+I chose to check required inputs, new-password length and confirmation matching before sending only the current and new passwords. `UserService.changePassword` verifies the current password against the stored hash, then rejects reuse of that same password; its field-specific `400` is placed under `currentPassword` or `newPassword` in the dialog. The confirmation is a local typing check, while proof of the old secret and rotation need server state.
+
+**[07-timetrack-138] Why do the dashboard hour cards and Reports page count approved work separately from work awaiting review?** ⭐⭐
+
+I chose `ReportService.getSummary` as the source of the dashboard hour cards and load summary, by-project and by-user reports for the same selected month on `Reports`. The repository queries count only `APPROVED` entries in report totals and `totalEntries`; the summary exposes `SUBMITTED` hours separately as `pendingHours`. Angular displays those returned figures rather than summing visible rows, so a pending submission cannot inflate an approved total on one screen while being absent from another.
+
+**[07-timetrack-139] How is a generated account password shown once across the create/reset API and Team UI, and what remains after the dialog closes?** ⭐⭐
+
+I chose separate create and reset responses that contain the generated plaintext once, while ordinary user responses omit it and the database stores only its hash. Team opens `GeneratedPasswordDialog` from that one response and guards navigation while the secret is on screen; a manager can reset another account but uses Change password for their own. After the dialog closes, the UI cannot fetch the same plaintext again; another reset would issue a new password.
+
+**[07-timetrack-140] Why can an employee see an inactive project on their existing entry while a new or unrelated archived project ID is concealed by the API?** ⭐⭐
+
+I chose to keep the existing project visible in `EntryDialog` with an “inactive” label so the employee understands what their draft currently references, while its validator requires an active replacement before saving. `TimeEntryService.resolveProject` returns `400` for that same project ID on the owned entry, because the employee already knows it exists, but returns the same `404` as an unknown ID for a different archived project. The UI explains a known relationship without turning the entry endpoints into a way to enumerate archived projects.
+
+**[07-timetrack-141] Why do both the date picker and `TimeEntryService` reject future work dates, and which result wins if their idea of today differs?** ⭐⭐
+
+I chose `[max]="today"` in `EntryDialog` to stop the common mistake before a request, while `TimeEntryService.validateEntryData` compares the submitted `LocalDate` with the server's `LocalDate.now()`. If the client accepts a date the server considers future, the API refuses it and Angular shows that error. If the client considers a server-valid date future, the form blocks submission before the API can decide; the local `today` value is captured when the dialog opens.
 
 ## Technical Decisions
 
@@ -427,7 +531,7 @@ I chose the computed strategy because `oneTimeSecretGuard` can cancel a browser 
 
 **[07-timetrack-108] How does TimeTrack keep one error contract across Spring's responses and Angular's forms without tying field messages to a particular status code?** ⭐⭐
 
-I chose a shared `ErrorResponse` envelope in `GlobalExceptionHandler`, with `fieldErrors` added only when an error belongs to one or more inputs; each field maps to an array so multiple validation failures survive. Angular's `ApiError` helpers accept an `HttpErrorResponse` only when its body has a numeric `status` and string `message`, then place the first message only on controls the form explicitly allows, regardless of whether the response is `400` or `409`.
+I chose one `ErrorResponse` shape: `GlobalExceptionHandler` builds controller errors, while `JwtAuthenticationEntryPoint` writes the same shape for a `401` rejected before controller advice runs. When a failure belongs to an input, `fieldErrors` maps its name to an array so multiple validation failures survive. Angular's `ApiError` helpers accept an `HttpErrorResponse` only when its body has a numeric `status` and string `message`, then place the first message only on controls the form explicitly allows, regardless of whether the response is `400` or `409`.
 
 **[07-timetrack-109] Why do user and project deactivation preserve their database rows instead of hard-deleting them, and what does that let the rest of TimeTrack do?** ⭐⭐
 
@@ -435,7 +539,7 @@ I chose to set `active` to `false` in `UserService.delete` and `ProjectService.d
 
 **[07-timetrack-110] Why did you choose Docker Compose for the local stack instead of requiring each reviewer to install PostgreSQL, a JDK and Maven?** ⭐⭐⭐
 
-I chose a Compose stack with PostgreSQL and an API image built from `backend/timetrack`, so Docker is the reviewer's only local prerequisite and the image is the one the deployment step runs. A named `db-data` volume preserves the database across container restarts, while the read-only init script creates the least-privileged application role and its database on the volume's first start; daily development can still use IntelliJ against the local database for a faster edit-run loop.
+I chose a Compose stack with PostgreSQL and an API image built from `backend/timetrack`, so Docker is the reviewer's only local prerequisite; Render builds the hosted API from the same Dockerfile. A named `db-data` volume preserves the database across container restarts, while the read-only init script creates the non-superuser application role and its database on the volume's first start; daily development can still use IntelliJ against the local database for a faster edit-run loop.
 
 **[07-timetrack-111] Why does `GET /api/entries` use `Pageable` while the other collection endpoints return all their rows, and how does Angular follow that contract?** ⭐⭐
 
@@ -451,7 +555,23 @@ I chose `depends_on: condition: service_healthy` and a `pg_isready` check becaus
 
 **[07-timetrack-114] Why does the Docker build run `mvnw package -DskipTests` instead of using the image build as the backend test run?** ⭐⭐
 
-I chose to build the runnable JAR in the Dockerfile's JDK stage and keep verification in Step 8, where the backend tests are planned and run as their own check. That separation lets the deployment image exist while the project is still unfinished, but a successful image build alone does not prove the backend tests pass.
+I chose to build the runnable JAR in the Dockerfile's JDK stage with `-DskipTests` because the image was needed for Step 12 before Step 8's backend tests were written. Step 8 remains open, and a successful image build alone does not prove those tests pass.
+
+**[07-timetrack-142] How do the database host, browser API URL, CORS origins and secrets change between local development, Compose and the hosted app?** ⭐⭐
+
+I chose environment-specific values around the same backend build: `application.properties` defaults `DB_URL` and `DB_USERNAME` for local PostgreSQL, Compose points `DB_URL` at `db`, and Render supplies the hosted database URL and credentials. Angular's development environment uses `localhost:8080`, while its production environment uses the Render API URL; Render also overrides the allowed CORS origins for Netlify. `DB_PASSWORD` and `JWT_SECRET` have no committed defaults, and Compose loads its local values from a git-ignored `.env`.
+
+**[07-timetrack-143] Why does Compose start with a manager account while the hosted API does not seed one on startup?** ⭐⭐
+
+I chose `SPRING_PROFILES_ACTIVE=dev` in Compose so `DataInitializer` creates a manager from `ADMIN_PASSWORD` only when that profile is active. Render runs without `dev`, so its manager and demo data were prepared in the hosted database separately; this keeps a bootstrap credential out of the production image and startup path.
+
+**[07-timetrack-144] Why do the Netlify redirect rule and Render's CORS origin setting both matter when someone opens a TimeTrack page directly?** ⭐⭐
+
+I chose Netlify's `/* /index.html 200` fallback so a direct visit or reload of an Angular route serves the app shell and lets the client router handle the path. The browser then calls the Render API URL compiled into the production environment, and `SecurityConfig` must allow Netlify's origin through `APP_CORS_ALLOWEDORIGINS`; the redirect solves page routing, while CORS permits the separate origin to read API responses.
+
+**[07-timetrack-145] Why do the two public hosts deploy from `projects/07-timetrack` before the project is merged into `main`?** ⭐⭐
+
+I chose the project branch as Render's and Netlify's deploy source because the public demo went live before Steps 8–10 finished, while `main` receives the project only after every planned step is complete. Merges into that branch update the live app as work continues; both hosts must point to `main` before the project branch is deleted.
 
 ## Testing
 

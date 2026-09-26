@@ -145,7 +145,35 @@ Elegí `appConfig` como único lugar para configurar el router, `HttpClient` con
 
 **[07-timetrack-105] ¿Cómo cruza la petición de `ProjectService.createProject` el límite JSON, desde `CreateProjectRequest` de Angular hasta el DTO de Spring, y qué garantiza realmente `http.post<Project>(...)` sobre la respuesta?** ⭐⭐⭐
 
-Elegí mantener alineados los tipos de petición y respuesta de Angular y los DTO de Spring. `ProjectService.createProject` envía `CreateProjectRequest` a `POST /api/projects`; `ProjectController.create` recibe el JSON, lo valida con `@Valid`, delega en `ProjectService` y devuelve `ProjectResponse`. Como las dos aplicaciones se compilan por separado, sus tipos no garantizan por sí solos que las estructuras JSON sigan coincidiendo; por eso, decidí confiar en la validación de la petición del backend y tratar `http.post<Project>(...)` como una aserción de TypeScript. En este flujo, `ProjectResponse.createdAt` llega a Angular como `Project.createdAt: string`, y `description` admite null en ambos lados.
+Elegí mantener alineados los tipos de petición y respuesta de Angular y los DTO de Spring. `ProjectService.createProject` envía `CreateProjectRequest` a `POST /api/projects`; `ProjectController.create` recibe el JSON, lo valida con `@Valid`, delega en `ProjectService` y devuelve `ProjectResponse`. Como las dos aplicaciones se compilan por separado, sus tipos no garantizan por sí solos que las estructuras JSON sigan coincidiendo. Por eso confío en la validación de la petición del backend y trato `http.post<Project>(...)` como una aserción de TypeScript. En este flujo, `ProjectResponse.createdAt` llega a Angular como `Project.createdAt: string`, y `description` admite null en ambos lados.
+
+**[07-timetrack-115] ¿Por qué Angular lee las entradas en `content` y los datos de paginación en un objeto `page`, en vez de depender de todas las propiedades de `PageImpl` de Spring Data?** ⭐⭐
+
+Elegí `PageSerializationMode.VIA_DTO` en `WebConfig` para que la respuesta paginada tenga una estructura definida, aunque `TimeEntryController` devuelva un `Page<TimeEntryResponse>` de Spring. Angular representa esa estructura con `Page<T>` y `PageMetadata`: las filas están en `content` y `size`, `number`, `totalElements` y `totalPages` están dentro de `page`. Así, Angular no depende de cómo se serialice una clase interna del framework; los cambios en esa clase no deberían alterar el contrato de la API de TimeTrack.
+
+**[07-timetrack-116] ¿Por qué `EntryService.getEntries` omite un filtro no establecido en la URL en vez de enviar un valor vacío para cada parámetro posible?** ⭐⭐
+
+Elegí parámetros opcionales porque omitir un filtro significa que ese criterio no limita la búsqueda: `TimeEntryController.findByFilter` declara `userId`, `projectId`, `status` y `month` con `required = false`. `EntryService` construye los `HttpParams` solo con los filtros presentes, reasigna el resultado de cada `set` y envía la paginación únicamente si recibe un `PageRequest`. Esto conserva los valores por defecto del servidor y evita pedirle a Spring que convierta una cadena vacía o el texto `undefined` en un `Long`, `EntryStatus` o `YearMonth`. Los informes son distintos: `ReportController` exige `month` y `ReportService` siempre lo envía.
+
+**[07-timetrack-117] ¿Por qué los tipos de estado y rol de TypeScript conservan los valores en mayúsculas del backend, mientras otros mapas contienen las etiquetas visibles para el usuario?** ⭐⭐
+
+Elegí los mismos valores de intercambio a ambos lados: los enums Java `EntryStatus` y `Role` corresponden a los arrays `ENTRY_STATUSES` y `ROLES` de Angular, de los que se derivan los tipos literales. Así, un filtro envía `SUBMITTED`, que `TimeEntryController` puede convertir a su enum, mientras `ENTRY_STATUS_LABELS` muestra `Submitted` sin cambiar el valor enviado por HTTP. Separar las etiquetas permite modificar el texto visible sin renombrar los valores de la API. Los enums y los tipos de TypeScript siguen manteniéndose por separado: añadir un estado exige coordinar ambos lados.
+
+**[07-timetrack-118] ¿Por qué el dashboard del empleado combina un informe, dos consultas de entradas con `size=1` y una página de entradas recientes, en lugar de calcular todas las tarjetas a partir de las filas visibles?** ⭐⭐
+
+Para cada cifra elegí la consulta de la API que necesitaba: `EmployeeDashboard.fetch` obtiene las horas del mes mediante `ReportService.getSummary`, los contadores históricos de entradas `SUBMITTED` y `DRAFT` mediante `totalElements` de las dos páginas filtradas, y las filas recientes mediante `content` de la página cero. Contar o sumar solo esas filas recientes describiría el fragmento recibido y dejaría de representar todo el trabajo del empleado cuando hubiera más entradas de las que caben en una página. Las consultas con `size=1` reciben una fila cada una, pero el dashboard usa sus metadatos para conocer el total filtrado sin descargar toda la colección.
+
+**[07-timetrack-119] Si un empleado elige «Submit for review» al editar un borrador, ¿guardar y enviar forman una sola operación atómica de la API? ¿Qué ocurre si solo se guarda?** ⭐⭐
+
+Elegí reutilizar los contratos de actualización y transición por separado: `EntryDialog.write` espera a que `updateEntry`, mediante `PUT /api/entries/{id}`, termine bien antes de que `switchMap` inicie `submitEntry`, mediante `PATCH /api/entries/{id}/submit`. Son dos peticiones HTTP, así que un fallo en la segunda no deshace la primera. Tras actualizar, el diálogo marca `saved = true` y deja el formulario pristine; si falla el envío, permanece abierto con el error y, al cerrarse, todavía puede devolver `saved` para indicar que se guardaron los cambios, sin dar a entender que la entrada se envió.
+
+**[07-timetrack-120] La API usa `BigDecimal` para las horas, pero las interfaces de Angular usan `number`. ¿Qué se conserva al cruzar ese límite JSON?** ⭐
+
+Elegí campos numéricos en JSON: `TimeEntryResponse` y los DTO de informes los representan con `BigDecimal`, mientras `TimeEntry`, `ReportSummary`, `ProjectHours` y `UserHours` usan `number` en Angular. El valor numérico cruza el límite, pero la aritmética decimal de Java y la escala de ceros finales no pasan a ser propiedades de un número de JavaScript; recibir `4.00` no garantiza que se muestre con dos decimales. Al escribir, `CreateTimeEntryRequest` y `UpdateTimeEntryRequest` limitan el rango y los decimales a dos cifras en el backend. Al leer, el dashboard usa los totales del informe calculados por el servidor en lugar de recomponerlos sumando una página en el navegador.
+
+**[07-timetrack-121] ¿Por qué el formulario envía a `LocalDate` de Spring una fecha local `YYYY-MM-DD` en vez de serializar su `Date` como un instante?** ⭐⭐
+
+Elegí `toIsoDate()` en `EntryDialog.buildRequest` porque la fecha de trabajo es un día del calendario, no un instante; convertir el `Date` del navegador mediante UTC podría desplazarla de día. `CreateTimeEntryRequest` y `UpdateTimeEntryRequest` convierten la cadena a `LocalDate`, y `TimeEntryResponse.date` la devuelve como `TimeEntry.date: string` a Angular. Para editarla, `fromIsoDate()` reconstruye un `Date` local. En las consultas mensuales, `toIsoMonth()` envía `YYYY-MM` a los parámetros `YearMonth` de Spring, con la misma interpretación del calendario.
 
 ## Seguridad y autenticación
 
@@ -241,7 +269,27 @@ Elegí guards `CanMatchFn` en dos rutas con la misma dirección para que Angular
 
 **[07-timetrack-106] Desde `POST /api/auth/login` hasta una petición posterior a la API, ¿por qué la sesión del navegador guarda un rol mientras que el JWT solo contiene el ID del usuario, y cómo termina la sesión al caducar el token?** ⭐⭐⭐
 
-Elegí devolver el token, el ID, el nombre y el rol en `AuthResponse`. Angular valida la respuesta y guarda la sesión en `localStorage`; después usa el rol en el shell y los guards de rutas, mientras el interceptor envía el token como bearer. `JwtUtil` firma el ID de la base de datos como `sub` y fija una caducidad de 60 minutos. El rol guardado orienta la interfaz, pero no concede permisos en la API: en cada petición bearer, `JwtFilter` vuelve a cargar la cuenta, comprueba si sigue activa y obtiene las autoridades del rol actual en la base de datos. Así, cambiar solo el rol guardado no concede acceso de manager y los cambios de la cuenta surten efecto en la siguiente petición; cuando caduca el token, la API responde con `401` y el interceptor borra la sesión y redirige a `/login`.
+Elegí devolver el token, el ID, el nombre y el rol en `AuthResponse`. Angular valida la respuesta y guarda la sesión en `localStorage`; después usa el rol en el shell y los guards de rutas, mientras el interceptor envía el token como bearer. `JwtUtil` firma el ID de la base de datos como `sub` y fija una caducidad de 60 minutos. El rol guardado orienta la interfaz, pero no concede permisos en la API. En cada petición con el bearer token, `JwtFilter` vuelve a cargar la cuenta, comprueba si sigue activa y obtiene las autoridades del rol actual en la base de datos. Así, cambiar solo el rol guardado no concede acceso de manager y los cambios de la cuenta surten efecto en la siguiente petición; cuando caduca el token, la API responde con `401` y el interceptor borra la sesión y redirige a `/login`.
+
+**[07-timetrack-122] ¿Por qué una contraseña actual incorrecta devuelve `400` en vez de `401` si la petición de cambio ya lleva un JWT?** ⭐⭐
+
+Elegí `400` con `fieldErrors.currentPassword` porque quien llama ya está autenticado y el dato inválido es la contraseña que ha enviado. El diálogo de cambio de contraseña de Angular puede mostrar el mensaje bajo ese campo y conservar la sesión. Si esta petición con token devolviera `401` por un error al teclear, `authInterceptor` borraría la sesión y enviaría al usuario a `/login`.
+
+**[07-timetrack-123] Tras cambiar una contraseña o resetearla un manager, ¿por qué un JWT emitido antes todavía puede autorizar peticiones hasta su caducidad?** ⭐⭐
+
+Elegí JWTs cuyo subject firmado es el ID estable del usuario y cuya validez no depende del hash de su contraseña actual. `UserService` actualiza ese hash, pero `JwtFilter` valida el token y vuelve a cargar el estado activo y el rol de la cuenta, no su contraseña; Angular también conserva la sesión guardada hasta el logout o un `401` en una petición con token. Cambiar la contraseña impide usar la anterior en el siguiente login, pero no revoca un token ya emitido: puede usarse durante el resto de sus 60 minutos de validez, salvo que se desactive la cuenta.
+
+**[07-timetrack-124] Si otro manager cambia el rol de un usuario con sesión abierta, ¿por qué el navegador puede seguir mostrando la navegación anterior mientras la API ya le concede otros permisos?** ⭐⭐
+
+Elegí guardar en `AuthService.session` el rol recibido en `POST /api/auth/login`, y Angular no vuelve a consultar el rol del usuario para actualizarlo. Por eso, el shell y `managerGuard` siguen usando el rol guardado hasta el siguiente login, mientras `JwtFilter` vuelve a cargar `UserDetails` por el ID del token en cada petición y `@PreAuthorize` aplica el rol actual de la base de datos. Un manager degradado todavía puede ver un enlace de manager, pero su endpoint responde `403`; el interceptor borra la sesión ante un `401` con token, no ante ese `403`.
+
+**[07-timetrack-126] ¿Qué revoca la acción Log out de TimeTrack y por qué un JWT copiado podría seguir funcionando después?** ⭐⭐
+
+Elegí una API stateless sin lista de revocación de tokens, de modo que Log out en el shell solo llama a `AuthService.logout()` de Angular: borra `timetrack_session` de `localStorage` y limpia la signal de sesión. No envía ninguna petición de logout a Spring; `JwtFilter` sigue aceptando una copia del token si no ha caducado y su usuario permanece activo. El token expira a los 60 minutos, y desactivar la cuenta lo inutiliza antes porque el filtro vuelve a cargar y comprobar al usuario en cada petición.
+
+**[07-timetrack-127] ¿Qué pasa si se recarga la página con una sesión guardada bien formada cuyo JWT ya ha caducado?** ⭐
+
+Elegí que `AuthService.readStoredSession()` valide la estructura de la respuesta guardada, sin decodificar el JWT ni comprobar su caducidad; por eso, `authGuard` puede dejar entrar brevemente en el shell según el rol almacenado. La primera llamada a la API envía el token caducado y `JwtFilter` deja la petición sin autenticar, por lo que la API devuelve `401`. Entonces `authInterceptor` borra la sesión, registra el aviso de caducidad de un solo uso y redirige a `/login`. Si no hay ninguna llamada a la API, el cliente no tiene un temporizador propio para limpiarla.
 
 ## Reglas de negocio
 
@@ -362,9 +410,65 @@ Elegí marcar cada diálogo como `saving` y desactivar sus controles hasta que l
 Elegí usar en el filtro la lista de proyectos que el endpoint permite ver a los empleados: un proyecto archivado desaparece de ahí, pero el empleado puede seguir consultando sus entradas por mes y estado. La lista de entradas está paginada, así que el navegador no puede deducir de las entradas del empleado los IDs de todos los proyectos inactivos; incluirlos requeriría otra consulta limitada al usuario actual.
 ### Transversal
 
-**[07-timetrack-107] ¿Por qué la pantalla compartida `Entries` oculta las acciones que no corresponden al rol, mientras que la API sigue exigiendo el rol adecuado para cada operación?** ⭐⭐
+**[07-timetrack-107] ¿Por qué los managers pueden consultar la lista del equipo en `Entries` pero no usar sus acciones de escritura para empleados, y dónde se aplican las reglas de revisión?** ⭐⭐
 
-Elegí mostrar las acciones de empleado solo a los empleados y los controles de revisión solo a los managers, según el rol de la persona autenticada en la página. Es una regla de usabilidad, no de autorización: `TimeEntryController` protege por separado las operaciones de escritura de empleados y las rutas de revisión de managers con `@PreAuthorize`, así que una petición directa con el rol equivocado sigue recibiendo `403`.
+Elegí mostrar las acciones de registrar, editar, eliminar, enviar y reabrir solo en la variante de `Entries` para empleados. Los managers ven una lista de equipo de solo lectura y revisan las entradas en `Approvals`. La interfaz muestra a cada rol sus acciones, mientras `TimeEntryController` protege con `@PreAuthorize` tanto las escrituras de empleados como los endpoints de aprobación y rechazo para managers; una petición directa con el rol equivocado recibe `403`.
+
+**[07-timetrack-128] Si un empleado cambia el filtro de usuario de `GET /api/entries` o adivina el ID de una entrada ajena, ¿qué impone Angular y qué impone Spring?** ⭐⭐⭐
+
+Elegí mostrar a los empleados sus propias entradas en la página compartida, mientras `TimeEntryService.findByFilter` sustituye el `userId` solicitado por el ID autenticado cuando el solicitante es un empleado. Para las escrituras reservadas al propietario, `findOwnedEntry` devuelve el mismo `404` tanto para una fila ajena como para un ID inexistente. La lista y los botones del navegador guían el uso normal; la API impide que una petición manipulada exponga o cambie el trabajo de otro empleado.
+
+**[07-timetrack-129] ¿Cómo vuelve una entrada rechazada al flujo editable desde `Entries`, y por qué el usuario no puede editarla directamente?** ⭐⭐⭐
+
+Elegí mostrar Re-open en una fila `REJECTED` y ofrecer editar, eliminar y enviar solo después de que `PATCH /api/entries/{id}/reopen` la devuelva a `DRAFT`. `TimeEntryService.reopen` comprueba el propietario y el estado, y borra la nota de rechazo anterior; su operación de actualización sigue aceptando únicamente `DRAFT`. Así, corregir y reenviar queda como un flujo explícito en la interfaz y en la API, en vez de tratar el rechazo como un estado editable sin transición.
+
+**[07-timetrack-130] Si `Entries` o `Approvals` muestra una acción válida al cargar, pero otra petición cambia la entrada después, ¿quién decide el resultado?** ⭐⭐
+
+Hago que `EntryList` y `Approvals` muestren las acciones según el último estado recibido, pero ese dato puede quedar obsoleto. `TimeEntryService` lee la fila actual y vuelve a comprobar `DRAFT`, `REJECTED` o `SUBMITTED` antes de la transición. Si ya no coincide, devuelve `409` y la página muestra el error de la API en vez de confiar en que el botón seguía siendo válido.
+
+**[07-timetrack-131] ¿Qué pasa si se archiva el proyecto de un borrador después de que Angular cargue la lista de proyectos activos, y por qué el servidor vuelve a comprobarlo al enviar?** ⭐⭐
+
+Elegí ocultar Submit cuando ya se sabe que el proyecto del borrador está inactivo y exigir un proyecto activo en el formulario de edición. La lista puede estar desactualizada, así que `TimeEntryService.submit` comprueba si el proyecto sigue activo antes de pasar el borrador a `SUBMITTED` y devuelve `400` si fue archivado. Desactivar una acción en el cliente ayuda al usuario, pero no puede decidir si la cola del manager debe aceptar esa entrada.
+
+**[07-timetrack-132] ¿Por qué `step="0.5"` en el formulario de entrada no convierte los incrementos de media hora en una regla de negocio del servidor?** ⭐⭐
+
+Elegí `step="0.5"` como indicación del campo, pero el formulario Angular solo valida que las horas estén entre `0.5` y `24`: no tiene un validador de incrementos de media hora. El DTO de petición permite dos decimales y `TimeEntryService.validateEntryData` comprueba el mismo rango, por lo que la API acepta `0.75`. Así, el campo puede sugerir medias horas aunque el dominio aceptado por la API incluya centésimas.
+
+**[07-timetrack-133] ¿Por qué el diálogo de rechazo recorta la nota del manager si la API también exige que tenga contenido, y qué podría guardar aún un cliente que llame directamente a la API?** ⭐⭐
+
+Elegí `notBlank` y un máximo de 255 caracteres en `RejectDialog`, y recorto el valor antes de enviarlo. `RejectRequest` aplica por separado `@NotBlank` y `@Size(max = 255)`. El backend rechaza una petición directa sin contenido, pero `TimeEntryService.reject` guarda una nota no vacía tal como llega, incluso con espacios al principio o al final. La normalización de la interfaz y las comprobaciones de validez de la API cumplen funciones relacionadas, pero distintas.
+
+**[07-timetrack-134] ¿Por qué `Approvals` oculta los botones de revisión en una entrada enviada por el propio manager si el backend también comprueba quién es su propietario?** ⭐⭐
+
+Elegí que `Approvals.canReview` compare `userId` de la fila con el ID de la sesión y muestre «Awaiting another manager» si coinciden. Después, `approve` y `reject` comparan por su cuenta al propietario persistido con el manager autenticado y rechazan la revisión propia con `403`. Esa comprobación en el servidor impide que un manager revise sus propias entradas aunque la pantalla esté desactualizada o alguien llame directamente al endpoint.
+
+**[07-timetrack-135] ¿Por qué el diálogo Team permite pedir un ascenso sin cargar antes las entradas `DRAFT` y `REJECTED` de esa persona?** ⭐⭐
+
+Elegí enviar el rol solicitado desde `UserDialog` y dejar que `UserService.update` consulte las entradas vigentes al procesar el ascenso. Si quedan entradas `DRAFT` o `REJECTED`, la API devuelve `409` y Team muestra el fallo; otra persona con rol manager puede revisar el trabajo `SUBMITTED`. Una comprobación previa en el cliente exigiría otra petición y podría quedar obsoleta antes de actualizar.
+
+**[07-timetrack-136] ¿Cómo impiden conjuntamente la pantalla Team y `UserService` que un manager se bloquee a sí mismo su cuenta de administración?** ⭐⭐
+
+Elegí desactivar en la interfaz el campo de rol y el control de desactivación del manager actual, pero permitirle editar su nombre y email. `UserService.update` y `delete` rechazan por separado la pérdida del propio rol o la autodesactivación con `409`, también cuando alguien llama directamente a la API. El backend garantiza que el manager que hace la petición conserve su acceso.
+
+**[07-timetrack-137] ¿Qué reglas de cambio de contraseña puede comprobar el diálogo Angular y cuáles necesitan consultar la cuenta autenticada en el servidor?** ⭐⭐
+
+Elegí comprobar que los campos obligatorios estén presentes, la longitud de la nueva contraseña y la coincidencia con la confirmación antes de enviar solo la contraseña actual y la nueva. `UserService.changePassword` compara la actual con el hash almacenado y después rechaza reutilizarla; el diálogo coloca su `400` específico bajo `currentPassword` o `newPassword`. La confirmación detecta un error al teclear; para comprobar la contraseña anterior y cambiarla necesito consultar la cuenta en el servidor.
+
+**[07-timetrack-138] ¿Por qué las tarjetas de horas del dashboard y la página Reports separan el trabajo aprobado del pendiente de revisión?** ⭐⭐
+
+Elegí `ReportService.getSummary` como fuente de las tarjetas de horas del dashboard y cargo en `Reports` el resumen y los desgloses por proyecto y usuario del mismo mes seleccionado. Las consultas del repositorio cuentan solo entradas `APPROVED` en los totales y en `totalEntries`; el resumen muestra aparte las horas `SUBMITTED` como `pendingHours`. Angular presenta esas cifras devueltas por la API en vez de sumar las filas visibles, para que una entrada pendiente no aumente el total aprobado en una pantalla y desaparezca en otra.
+
+**[07-timetrack-139] ¿Cómo se muestra una sola vez la contraseña generada entre la API de creación o reset y la pantalla Team, y qué queda después de cerrar el diálogo?** ⭐⭐
+
+Elegí respuestas separadas de creación y reset que incluyen la contraseña generada en texto plano una sola vez; las respuestas ordinarias de usuario la omiten y la base de datos solo guarda su hash. Team abre `GeneratedPasswordDialog` con esa respuesta y protege la navegación mientras el secreto está visible. Un manager puede resetear la cuenta de otro, pero usa Change password para la suya. Al cerrar el diálogo, la interfaz no puede recuperar el mismo texto plano; otro reset generaría una contraseña nueva.
+
+**[07-timetrack-140] ¿Por qué un empleado puede ver un proyecto inactivo en su propia entrada, mientras la API le oculta un ID archivado nuevo o no relacionado?** ⭐⭐
+
+Elegí mantener visible en `EntryDialog` el proyecto ya asociado a la entrada, con la etiqueta «inactive», para que el empleado vea a qué proyecto sigue vinculado su borrador; el validador exige reemplazarlo por uno activo antes de guardar. `TimeEntryService.resolveProject` devuelve `400` si la entrada propia ya contiene ese mismo ID, cuya existencia el empleado conoce, pero responde con el mismo `404` que ante un ID desconocido para cualquier otro proyecto archivado. La interfaz muestra un proyecto que el empleado ya conoce sin permitirle descubrir otros proyectos archivados a través de los endpoints de entradas.
+
+**[07-timetrack-141] ¿Por qué tanto el selector de fecha como `TimeEntryService` rechazan fechas de trabajo futuras, y qué resultado prevalece si discrepan sobre qué día es hoy?** ⭐⭐
+
+Elegí `[max]="today"` en `EntryDialog` para evitar el error habitual antes de enviar la petición, mientras `TimeEntryService.validateEntryData` compara el `LocalDate` recibido con `LocalDate.now()` del servidor. Si el cliente acepta una fecha que el servidor considera futura, la API la rechaza y Angular muestra el error. Si el cliente considera futura una fecha válida para el servidor, el formulario impide enviarla antes de que la API decida; el valor local de `today` queda fijado al abrir el diálogo.
 
 ## Decisiones técnicas
 
@@ -428,15 +532,15 @@ Elegí la estrategia `computed` porque `oneTimeSecretGuard` puede cancelar una a
 
 **[07-timetrack-108] ¿Cómo mantiene TimeTrack un único contrato de errores entre las respuestas de Spring y los formularios de Angular sin vincular los mensajes de campo a un código de estado concreto?** ⭐⭐
 
-Elegí usar un formato común, `ErrorResponse`, en `GlobalExceptionHandler` y añadir `fieldErrors` solo cuando el error corresponde a uno o más campos. Cada campo contiene una lista para conservar varios errores de validación. Los helpers `ApiError` de Angular aceptan un `HttpErrorResponse` solo si el cuerpo tiene un `status` numérico y un `message` de tipo string; después colocan el primer mensaje únicamente en los controles permitidos por el formulario, tanto si la respuesta es `400` como `409`.
+Elegí un formato común `ErrorResponse`: `GlobalExceptionHandler` construye los errores de los controladores y `JwtAuthenticationEntryPoint` escribe el mismo formato para los `401` rechazados antes de llegar al controller advice. Si el fallo corresponde a un campo, `fieldErrors` asocia su nombre con una lista para conservar varios errores de validación. Los helpers `ApiError` de Angular solo aceptan un `HttpErrorResponse` cuyo cuerpo tenga `status` numérico y `message` de tipo string; después muestran el primer mensaje solo en los controles previstos por el formulario, tanto si la respuesta es `400` como `409`.
 
 **[07-timetrack-109] ¿Por qué la desactivación de usuarios y proyectos conserva sus filas en la base de datos en vez de borrarlas, y qué permite hacer eso al resto de TimeTrack?** ⭐⭐
 
-Elegí asignar `false` a `active` en `UserService.delete` y `ProjectService.delete`, porque las entradas de tiempo mantienen claves foráneas no nulas a ambos registros y su historial debe seguir disponible para auditoría. La confirmación de Angular explica que las entradas anteriores se conservan, aunque se detenga el trabajo nuevo o el inicio de sesión. Así, la interfaz y la API preservan el mismo historial en vez de provocar un borrado en cascada.
+Elegí asignar `false` a `active` en `UserService.delete` y `ProjectService.delete`, porque las entradas de tiempo mantienen claves foráneas no nulas a ambos registros y su historial debe seguir disponible para auditoría. La confirmación de Angular explica que las entradas anteriores se conservan, aunque ya no se pueda registrar trabajo nuevo o iniciar sesión. Así, la interfaz y la API preservan el mismo historial en vez de provocar un borrado en cascada.
 
 **[07-timetrack-110] ¿Por qué elegiste Docker Compose para el stack local en vez de pedir a cada persona que revise el proyecto que instale PostgreSQL, un JDK y Maven?** ⭐⭐⭐
 
-Elegí un stack de Compose con PostgreSQL y una imagen de la API construida desde `backend/timetrack`, para que Docker sea el único requisito local de quien revisa el proyecto y se use esa misma imagen en el paso de despliegue. Un volumen con nombre, `db-data`, conserva la base de datos entre reinicios de los contenedores. En el primer arranque sobre el volumen, el script de inicialización de solo lectura crea el rol de aplicación con los mínimos privilegios y su base de datos. Para el desarrollo diario aún puedo usar IntelliJ con la base local y mantener un ciclo de edición y ejecución más rápido.
+Elegí un stack de Compose con PostgreSQL y una imagen de la API construida desde `backend/timetrack`, para que Docker sea el único requisito local de quien revisa el proyecto; Render construye la API alojada desde el mismo Dockerfile. Un volumen con nombre, `db-data`, conserva la base de datos entre reinicios de los contenedores. En el primer arranque del volumen, el script de inicialización montado en modo de solo lectura crea el rol de aplicación sin privilegios de superusuario y su base de datos. Para el desarrollo diario aún puedo usar IntelliJ con la base local y mantener un ciclo de edición y ejecución más rápido.
 
 **[07-timetrack-111] ¿Por qué `GET /api/entries` usa `Pageable` mientras que los demás endpoints de colección devuelven todas sus filas, y cómo sigue Angular ese contrato?** ⭐⭐
 
@@ -448,11 +552,27 @@ Decidí publicar la aplicación mientras buscaba trabajo para que una persona de
 
 **[07-timetrack-113] ¿Por qué la API espera a que PostgreSQL supere su health check en Compose, en vez de arrancar en cuanto existe el contenedor de la base de datos?** ⭐
 
-Elegí `depends_on: condition: service_healthy` y una comprobación con `pg_isready`, porque un contenedor de PostgreSQL puede estar en ejecución mientras todavía inicializa la base de datos y el rol. Compose arranca la API cuando la base de datos ya acepta conexiones, lo que evita una carrera de arranque en un stack local nuevo o reiniciado.
+Elegí `depends_on: condition: service_healthy` y una comprobación con `pg_isready`, porque un contenedor de PostgreSQL puede estar en ejecución mientras todavía inicializa la base de datos y el rol. Compose arranca la API cuando la base de datos ya acepta conexiones, Así, la API no intenta conectarse antes de que PostgreSQL esté listo, tanto en un arranque nuevo como tras reiniciar el stack local.
 
 **[07-timetrack-114] ¿Por qué la compilación de Docker ejecuta `mvnw package -DskipTests` en vez de usar la creación de la imagen como prueba del backend?** ⭐⭐
 
-Elegí construir el JAR ejecutable en la etapa JDK del Dockerfile y dejar la verificación para el paso 8, donde los tests del backend están previstos y se ejecutan como una comprobación propia. Así, la imagen de despliegue puede existir aunque el proyecto aún esté sin terminar, pero crearla correctamente no demuestra por sí solo que pasen los tests del backend.
+Elegí construir el JAR ejecutable en la etapa JDK del Dockerfile con `-DskipTests` porque necesitaba la imagen para el paso 12 antes de haber escrito los tests del backend previstos para el paso 8. Ese paso sigue abierto, y que la imagen se construya correctamente no demuestra que dichos tests pasen.
+
+**[07-timetrack-142] ¿Cómo cambian el host de la base de datos, la URL de la API en el navegador, los orígenes CORS y los secretos entre el desarrollo local, Compose y la aplicación alojada?** ⭐⭐
+
+Mantuve el mismo backend y cambié su configuración según el entorno: `application.properties` tiene valores locales por defecto para `DB_URL` y `DB_USERNAME`, Compose dirige `DB_URL` a `db`, y Render proporciona la URL y las credenciales de la base alojada. El entorno de desarrollo de Angular usa `localhost:8080` y el de producción, la URL de la API en Render; Render también cambia los orígenes CORS permitidos para Netlify. `DB_PASSWORD` y `JWT_SECRET` no tienen valores por defecto versionados, y Compose carga los valores locales desde un `.env` ignorado por Git.
+
+**[07-timetrack-143] ¿Por qué Compose arranca con una cuenta de manager mientras la API alojada no crea ninguna al iniciarse?** ⭐⭐
+
+Elegí `SPRING_PROFILES_ACTIVE=dev` en Compose para que `DataInitializer` cree un manager a partir de `ADMIN_PASSWORD` solo cuando ese perfil esté activo. Render se ejecuta sin `dev`, por lo que la cuenta de manager y los datos de demostración se prepararon aparte en la base de datos alojada. Así, la credencial de arranque no entra en la imagen de producción ni en su proceso de inicio.
+
+**[07-timetrack-144] ¿Por qué importan tanto la regla de redirección de Netlify como la configuración del origen CORS de Render al abrir directamente una página de TimeTrack?** ⭐⭐
+
+Elegí la regla de fallback `/* /index.html 200` de Netlify para que una visita directa o una recarga de una ruta Angular sirva el shell de la aplicación y el router del cliente procese la ruta. Después, el navegador llama a la URL de la API de Render incluida en el entorno de producción, y `SecurityConfig` debe permitir el origen de Netlify mediante `APP_CORS_ALLOWEDORIGINS`. La regla de Netlify permite abrir directamente una ruta Angular; CORS permite que el navegador lea las respuestas de la API desde ese otro origen.
+
+**[07-timetrack-145] ¿Por qué los dos hosts públicos despliegan desde `projects/07-timetrack` antes de que el proyecto se integre en `main`?** ⭐⭐
+
+Elegí la rama del proyecto como fuente de despliegue en Render y Netlify porque la demo pública salió antes de terminar los pasos 8–10, mientras `main` recibe el proyecto cuando se hayan completado todos los pasos previstos. Los merges a esa rama actualizan la aplicación pública durante el desarrollo; ambos hosts deben apuntar a `main` antes de borrar la rama del proyecto.
 
 ## Testing
 
