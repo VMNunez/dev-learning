@@ -1,59 +1,15 @@
 # portfolio-audit — last run report
 
-**Date:** 2026-09-15
-**Target:** `PROJECT_PATH = projects/05-task-manager`, `PORTFOLIO_SCOPE = full`, `DRY_RUN = false`
+**Date:** 2026-09-26
+**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = backend`, `DRY_RUN = true`
 **Status:** open
 
-## Close-out check against disk
+1. **Plan vs reality.** Five backend sections completed; 10/10 author/reviewer dispatches returned usable results, each final scoped ratio was 1.00. Whole-bank scan found 56 unique questions (IDs 001–057, 011 retired) and no cross-section duplicate. Priorities: 16 ⭐⭐⭐, 34 ⭐⭐, 6 ⭐; the proportion check passed.
+2. **Report discipline.** No author/reviewer output was trimmed. Translator returned `BLOCKED` without the required section counts; no Spanish twin exists, so parity could not be checked.
+3. **Failures & retries.** 11 dispatches made of 11 required on this branch: five author/reviewer pairs plus translator T. T was `BLOCKED`; conditional Spanish reviewer C was correctly skipped, with no retries or deaths.
+4. **Rule friction and rule breaches.** Two authors opened files outside their section's declared source lane (architecture: backend README; business rules: AuthService and LoginRequest); T omitted its required counts. Recorded as BRCH-0005 and BRCH-0006. These were clear first-occurrence execution misses; no machinery edit earned. No run-start guard was skipped. Dry-run correctly skipped gates, CV, README, and authoring-progress recount. The existing `REC-246` remains open and was not applied.
+5. **Verdict.** No new prompt change worth considering. Bank-only outcome is **blocked — partial (`es/`)** because T returned `BLOCKED`; no Spanish reviewer ran. EN bank stamped `backend: 2026-09-26`; frontend and cross-tier remain `never`. Hypothetical authoring-progress recount: `| 07-timetrack | 0/56 (0%) |`.
 
-**(a) Declared files** (`README.md` catalogue row): `en/` + `es/` bank pair — both in `7c54cf8f`;
-`notes/cv/cv-bullets.md` — bullet re-drafted identical to the saved one, so no diff and nothing staged;
-`dev/portfolio/VMNunez/README.md` (✅) — committed in that repo, `651d17a`, resolved path
-`C:/Users/Victor/Documents/main/dev/portfolio/VMNunez`. This report and `_run-tracker.md` land in the
-close-out commit. No breach-log row.
+`maps unaffected` — no map edit landed. `map: verified — README.md portfolio-audit catalogue/interface rows and _system-map.md portfolio-bank writer and routing rows`.
 
-**(b) `git status` + `git log`:** bank in `7c54cf8f`, recount in `c9c4d0fe`; tree clean apart from the
-unrelated untracked `projects/07-timetrack/frontend/timetrack/`.
-
-**(c) Declared dispatches — 10 required, 11 made.** Four present sections × (author + reviewer) = 8, one
-translator, one Spanish reviewer; the Testing reviewer twice (see 3). Security & Auth skipped — no auth.
-
-## 1. Plan vs reality
-
-The split held on the reviewers' ratios (all 1.00). But the evidence against "exhaustive" is this run
-itself: one day after a run whose four reviewers each reported 1.00, the same pipeline added 34 questions
-(+32%) and corrected factual errors in 031, 071, 084 and 105 that those reviewers passed. A self-reported
-ratio measures the reviewer's own walk, not the code area. No step reads the finished English bank whole
-outside the slice owners, so nothing stronger is claimed.
-
-## 2. Report discipline
-
-Nothing trimmed.
-
-## 3. Failures & retries
-
-The first Testing reviewer died on an Opus session limit (HTTP 429) with no agent id returned. Ladder:
-its scratch file held findings but `Status: IN PROGRESS` and no verdict → partial; resume impossible
-without an id → re-dispatched once, handed the scratch findings explicitly as unverified input; it
-re-walked the code, kept its predecessor's two additions and returned FIXED. Parity was checked by
-command (section + ID + marker sequence) after T and again after C.
-
-## 4. Rule friction and rule breaches
-
-`_session-rules.md` read to EOF at step 0, before any dispatch or write — the `BRCH-0001`/`0002` step
-reached and not breached (both `routed to REC-232`, no count moves). The harness reminder again asked for
-a `Co-Authored-By` footer; the session rules' prohibition was applied, and no commit carries one. No new
-breach, no open `FRIC` row to consume.
-
-**Found after the run, on merging `main` into `feat/angular-shell-auth`:** this run executed `main`'s 998-line `portfolio-audit.md`, while the feature branch already carried the 1035-line version with `REC-234` applied — the machinery had diverged across branches, the same cause as the `REC-237` → `REC-246` ID collision. The step-0 preflight printed `nothing owed`, so the `REC-234` change is unlikely to have moved this result; the `BRCH-0001`/`0002` step and the health-budget count below describe the older file.
-
-## 5. Verdict
-
-**Change worth considering: the Phase 1a acceptance gate cannot fail on decisions the reviewer did not find** — routed to `REC-246`. It clears the bar: real evidence (34 additions and four factual corrections over a bank four reviewers certified `1.00` the day before), the prompt is silent on how the ratio's denominator is checked, the committed bank was different and partly wrong, and `REC-236` covers parity, not this. Not drafted here: the fix is a design choice step 1 has to measure first (padding vs real gaps), not a one-line edit. Friction only, not routed: the death ladder's resume rung needs an agent id that a rate-limited dispatch never returned — the re-dispatch rung produced the same result.
-`REC-232`, `REC-234`, `REC-236` stay open, unchanged by this run; `REC-246` opened.
-
-`maps unaffected` — no edit landed. `map: verified — README.md catalogue row` (reads / generates).
-`_system-map.md` rows: `map: not verified — not opened this run`.
-
-**Health budget: 998 lines, over the ~500 smoke alarm**; largest section `## Single-project procedure`
-(441 lines). Unchanged.
+**Health budget:** 1035 lines, over the ~500-line smoke alarm; largest section `## Single-project procedure` (443 lines). No extraction was earned by this run.
