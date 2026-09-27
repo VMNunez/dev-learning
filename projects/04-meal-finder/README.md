@@ -2,11 +2,15 @@
 
 My 4th learning project — recipe search app where users find meals, view full recipes on a detail page and save favourites.
 
+**Angular 21 · TypeScript · TheMealDB API · localStorage**
+
+[Live demo](#live-demo) · [Run locally](#how-to-run)
+
 ---
 
 ## Why this project
 
-Most real Angular apps use dynamic URLs — a product ID, a user profile, a recipe. I built this project to understand how route parameters and browser history work, and how to build a more complete UX with multiple states: loading, no results, empty favourites.
+Finding something to cook is a loop: search, open a recipe, go back to the results, keep the ones worth making again. Each step is easy to break — results lost on the way back, a shared recipe link that opens on a blank page, a failed request that leaves an empty screen. This portfolio app runs that loop against a free public recipe database and keeps each step intact: the search lives in the address bar, every recipe has its own link, favourites stay in the browser between visits, and every request shows whether it is loading, found nothing or failed.
 
 ---
 
@@ -51,12 +55,12 @@ https://04mealfinder.netlify.app/
 
 - `MealService` and `FavouriteService` split by responsibility to keep the favourites page free of `HttpClient` and the search page free of persistence
 - `effect()` + `localStorage` in `FavouriteService` to persist every change automatically, with no save call anywhere in the app
-- `computed()` for every derived value to memoise it and keep templates free of method calls that re-run on each change detection
+- `computed()` for every derived value, to recompute it only when its inputs change instead of on every change detection
 - `toSignal(paramMap)` on the `detail/:id` route to reload the recipe when only `:id` changes, since the router reuses the component instance
 - The search term kept in the URL as `?q=` to make results survive navigation and a search linkable
 - `Location.back()` guarded by a `NavigationHistoryService` count to fall back to `/` when a detail URL was opened directly, since browser history is not application history
 - `loadComponent()` on every route to ship each page as its own chunk instead of one bundle carrying all four (253 kB → 238 kB)
-- `meal-card` and `category-filter` kept presentational so the search page and the favourites page reuse the same card
+- `meal-card` and `category-filter` kept presentational to leave every piece of state in the pages and let the search and favourites pages reuse one card
 - `catchError` in `MealService` rethrowing a domain error to give every page a single failure shape to handle
 - `HttpParams` for every query string so `&`, `#` and `+` in a search term cannot silently change what was searched for
 - Separate `isLoading`, `loadFinished` and `hasError` signals to tell loading, empty, not-found and error apart, since TheMealDB answers an unknown id with `200 {"meals": null}`
@@ -65,10 +69,9 @@ https://04mealfinder.netlify.app/
 
 ## Tradeoffs
 
-- TheMealDB over a keyed recipe API — no secret to manage in a public repo and a one-command clone-and-run, giving up server-side filtering and a dataset I could extend
+- TheMealDB over a keyed recipe API — no secret to manage in a public repo and a one-command clone-and-run, giving up a larger catalogue and search that combines criteria such as ingredients, diet and cuisine
 - `subscribe` inside an `effect()` over the `async` pipe — the component owns the loading, empty, not-found and error states explicitly, at the cost of wiring the teardown by hand in the effect's cleanup callback
 - Favourites in `localStorage` over a backend — persistence with no server to build, so favourites live in one browser and are lost when its storage is cleared
-- CLI-generated specs over an authored test suite — authoring tests broadly starts at project 07, so coverage here is the compiling baseline plus one accessibility assertion each on `meal-card` and `category-filter`
 
 ---
 
@@ -86,17 +89,19 @@ https://04mealfinder.netlify.app/
 - `HttpParams` — build the query string so user input cannot become query syntax
 - `catchError` — translate an HTTP failure into one domain error the pages handle
 - `signal()` and `computed()` — reactive state and derived values
+- A `computed()` returning a `Set` of ids — favourite membership queried with `has(id)` in O(1), recomputed only when the underlying list changes instead of on every change detection
 - `asReadonly()` — expose a signal read-only so the service's own methods are the only writers
 - `effect()` — sync a signal with an external system (localStorage) instead of writing in every mutator
 - `effect()` cleanup — cancel the in-flight request before the effect re-runs
+- Route and query parameters — `detail/:id` gives each recipe its own URL and `?q=` keeps the search in the address bar
 - `toSignal()` — read `paramMap` and `queryParamMap` as signals instead of subscribing
 - `input.required()` and `output()` — presentational components take data in and emit intent out
 - `loadComponent()` — lazy route, one chunk per page instead of one bundle
 - `**` wildcard route — an unmatched URL renders the not-found page; declared last, since matching is first-wins
-- `routerLinkActive` — mark the current nav link; the brand link needs `{ exact: true }`
 - `@if` / `@else if` / `@for` — built-in control flow renders one remote state at a time, no `*ngIf` import
 - `Location.back()` — browser history is not application history, so a direct URL needs a fallback
-- `[attr.x]` binding — ARIA attributes have no DOM property behind them, so `[attr.aria-pressed]`, not `[ariaPressed]`
+- `[attr.x]` binding — sets an HTML attribute, not a DOM property, which is how `aria-pressed` reaches screen readers here
+- `ariaCurrentWhenActive` (with `routerLinkActive`) — marks the current nav link with `aria-current`, exposing it to screen readers
 - Narrowing beats asserting — read a `string | null` route id into a local and return early, never `as string`
 - Nullable API responses — normalise `Meal[] | null` once at the service boundary
 - `<a>` vs `<button>` — an `<a>` navigates, a `<button>` acts; an `<a>` with no `href` is skipped by the tab order
@@ -116,6 +121,7 @@ https://04mealfinder.netlify.app/
 | Routing | Angular Router — lazy routes, route + query parameters |
 | State | Angular signals — `signal`, `computed`, `effect` |
 | HTTP | `HttpClient` + `HttpParams` |
+| Reactivity | RxJS — `catchError`, manual `subscribe` |
 | Persistence | Browser `localStorage` |
 | Styles | CSS with custom-property tokens |
 | API | TheMealDB (free, no API key) |
