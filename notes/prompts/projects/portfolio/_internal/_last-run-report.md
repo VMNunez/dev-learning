@@ -1,13 +1,13 @@
 # portfolio-audit — last run report
 
-**Date:** 2026-09-26
-**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = global`, `DRY_RUN = false`
+**Date:** 2026-09-27
+**Target:** `PROJECT_PATH = projects/07-timetrack`, `PORTFOLIO_SCOPE = global`, `DRY_RUN = false` (re-audit of the 2026-09-26 bank)
 **Status:** clean
 
-1. **Plan vs reality.** Four global sections, the whole-bank overlap scan, translation and a cold Spanish review completed. The Spanish reviewer checked the finished twin (489 lines); the EN/ES banks match at 111 IDs, with all 10 in-scope questions present. This end-artifact pass caught no frozen defects or suspected translation errors.
-2. **Report discipline.** The Architecture reviewer’s priority tally did not match the markers on disk; I reconciled the count from the complete bank (29/68/14). Its required EOF proof line was supplied after follow-up.
-3. **Failures & retries.** All 10 required dispatches ran (four author/reviewer pairs, translator, Spanish reviewer). No role failed or required a content re-dispatch; the Spanish reviewer returned FIXED and repaired four answers.
-4. **Rule friction and rule breaches.** No mandatory step was skipped. The bank-only recount correctly added no 07 row: the eligibility source requires G7 `✅ Ready`, and §23 remains unsigned. No portfolio verdict was computed.
-5. **Verdict.** **Pipeline clean; no prompt change worth considering.** The cross-tier bank commit is `9fe56ba7`. The prompt is 1035 lines, over the ~500-line smoke alarm; its largest section is `## Single-project procedure` (443 lines). No extraction was earned.
+1. **Plan vs reality.** Four author/reviewer section pairs completed, followed by whole-bank dedupe, translation and an English-blind Spanish review. The code rewalk enlarged the cross-tier lane from 10 to 40 questions and corrected several factual claims. The finished Spanish review read 609 lines to EOF and checked all 40 in-scope IDs; the pair has 141 matching IDs. These end-artifact checks support the result beyond the section traces.
+2. **Report discipline.** One author's physical-line count omitted blanks and the Spanish reviewer's scratch count initially said 37 instead of 40; both were challenged and corrected before acceptance. No code dump was returned.
+3. **Failures & retries.** All 10 required roles completed. The first Architecture reviewer died at a model usage limit before editing; its scratch held no verdict, and one cold retry completed on an available model. No content-ratio or translation-parity retry was needed.
+4. **Rule friction and rule breaches.** The orchestrator's initial whole-file session-rule output was truncated and the remaining chunks were read only after the content commit. This broke the pre-dispatch read in `_pipeline-self-report.md`'s Run-start check; recorded as BRCH-0009. No other mandatory step was skipped.
+5. **Verdict.** No prompt change pending: the breached read order was a discipline lapse under an explicit rule. The prompt is 1,035 lines, above the ~500-line smoke alarm; `## Single-project procedure` remains its largest section (443 lines), and this run did not earn an extraction.
 
-`maps unaffected` — no machinery changed. `map: verified — README.md portfolio-audit catalogue row; _system-map.md portfolio bank-writer and routing rows`.
+`maps unaffected` — no prompt or skill changed. `map: verified — README.md portfolio catalogue and interface rows; _system-map.md portfolio bank-writer and authoring-recount rows`.
