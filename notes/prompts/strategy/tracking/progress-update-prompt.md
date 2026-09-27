@@ -117,9 +117,12 @@ Read:
    (which project is active). Your run-start check already read the shared session rules to EOF; do **not**
    re-read the file. It is updated by hand and may lag; do not treat it as authoritative.
 3. For each topic row in `Professional level by topic`, inspect the selected level's persistent notes
-   plan at headings/status/studied-field level and the interview-prep bank fingerprint plus lifecycle
-   counts. Read the selected level's interview CORE route metadata too. These artifacts distinguish
-   authored, refined and studied consolidation; do not load their prose.
+   plan at headings/status/studied-field level and recompute its `Coverage SHA-256` with
+   `_coverage-standard.md`'s canonical command: a digest that no longer matches makes the plan stale
+   whatever its `Plan status:` line says, and D7, D9 and D10 read that verdict, not the line. Inspect
+   the interview-prep bank fingerprint plus lifecycle counts and the selected level's interview CORE
+   route metadata too. These artifacts distinguish authored, refined and studied consolidation; do not
+   load their prose.
 
 Decide the project scope from `{MODE}`:
 - **active** — only the in-progress project (⏳). Find it in the PROGRESS.md projects table or the
@@ -511,8 +514,7 @@ and `backlog-task-open`; the `Practice completed` tables are read only by their 
 **An unmarked plan D5 ruled drift is in the drift table, not in a footnote.** Where D5's second
 branch fired, the row reaches `_last-drift-report.md` verbatim like any other and holds the gate open
 until the `✅` is added; where its first branch fired, plan and row agreed and there is nothing to
-print. The line that used to sit here instead — a suggestion printed after the tables, whose
-persistence into the report file was never contracted — went with `REC-136`.
+print.
 
 **The record — the report is a file, not only a chat message.** After printing, write everything you
 just printed to `notes/prompts/strategy/tracking/_internal/_last-drift-report.md`, overwriting the
