@@ -123,25 +123,7 @@ summary), re-dispatch that same subagent once with the same instructions. If it 
 target, exclude its README from the commit command, and flag it clearly in the final summary — never
 commit a README whose pipeline did not complete.
 
-## Cross-README coherence (full-stack only)
-
-Because the three targets are written by separate subagents, the same decision can be described
-inconsistently between them (a tradeoff or pattern told one way in `global` and another in `backend`).
-After the pairs finish, launch one more `role-appropriate` subagent (`reasoning tier: standard`,
-`execution: foreground` — cross-checking three files for contradictions, changes nothing) — do
-**not** read the READMEs yourself; they stay out of your context:
-
-> Read the three READMEs of `{PROJECT_PATH}` (`README.md`, `backend/README.md`, `frontend/README.md`)
-> and `{PROJECT_PATH}/PLANNING.md`, and nothing else. Check that every shared decision (the main tradeoffs, the key patterns, the tech
-> stack) reads consistently across them, with no contradiction. Change nothing. Report in ≤ 10 lines:
-> `COHERENT`, or one line per conflict — which README is wrong, which section, and what the correct
-> version (per the other READMEs and PLANNING.md) says.
-
-If it reports conflicts, re-dispatch the **reviewer** subagent for each README that is wrong, quoting
-the conflict line so it knows exactly what to align — and note it in the summary. Angular projects have
-one README, so skip this.
-
-## Reader-effect judge (every project, every target — the run's last content step)
+## Reader-effect judge (every project, every target — the last editorial pass)
 
 A and B do apply the standard's quality filter, but they apply it **per section with the rule set in
 hand** — so a README can clear every section's own rule and still not land as a page: `04-meal-finder`
@@ -150,8 +132,8 @@ file, no checklist, and the reader that README is actually written for.
 
 Launch one `role-appropriate` subagent **per target** (`reasoning tier: deep` — a judgment with no
 checklist behind it, which is that tier's own criterion; `execution: foreground`). They write
-nothing and touch different files, so **launch all targets in one block**. On full-stack it runs
-**after** the coherence pass, so a tier README is judged in the wording that survived it:
+nothing and touch different files, so **launch all targets in one block**. It runs after the
+author→reviewer pairs; full-stack coherence is checked after its items are applied:
 
 > Read `notes/prompts/projects/readme/_internal/_readme-effect-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Judge that one README as its real reader.
@@ -234,12 +216,38 @@ bullet — which items landed, which did not, and that the file is mid-applicati
 It is the one path on which items outlive the run, and it is a declared failure, never the normal
 ending.
 
+## Cross-README coherence (full-stack only, after the final editorial edits)
+
+Because the targets are written separately, shared decisions can contradict each other. Run this
+after effect-item application, arbitration and diff verification, so it checks the files that will
+actually be committed. Launch one cold subagent (`reasoning tier: standard`, `execution: foreground`)
+with a scratch path under the runtime contract. Do not read the READMEs yourself; they stay out of your
+context:
+
+> Read the three READMEs of `{PROJECT_PATH}` (`README.md`, `backend/README.md`, `frontend/README.md`)
+> and its `PLANNING.md`. Check shared decisions, API semantics, stack, setup, security and testing
+> status for contradictions. For a disputed implementation claim, read only the source/config/test
+> files needed to settle it: agreement with another README or a plan is not proof of runtime behaviour.
+> Change nothing. Report the EOF proofs and, in ≤ 10 lines, `COHERENT` or each conflicting claim with
+> its README/section and the source that settles it; mark anything the available evidence cannot settle.
+
+Re-dispatch B only on affected targets with the quoted conflict and evidence. A conflict between a README
+and `PLANNING.md` alone that the source or the standard settles in the README's favour — a stale plan
+sentence, or a credential the standard leaves as `*(password — to be added)*` — is named in the summary
+for the plan's owner, and neither re-dispatches B nor blocks. After repairs, have the
+coherence role recheck those claims against the current files once. No further editorial pass follows.
+If a conflict remains, evidence cannot settle it, or the role fails under the runtime retry contract,
+stop before the project's README commit, leave the edits explicitly accounted for, and close out as
+`blocked`. An Angular-only project skips this step. Advisory effect-pass failures remain advisory,
+but do not waive this final coherence check.
+
 ## Finishing
 
 Print a **summary of changes** across all targets (one line per section changed, grouped by README),
 **verify the effect items landed as their items named** (`## Reader-effect judge` → *Verify the
 application before you commit* — the `git diff` read against each target's item list, which happens
-before this commit and not after it), then **run the commit yourself**, per the **Auto-committed** note
+before this commit and not after it), complete the final **Cross-README coherence** check when applicable,
+then **run the commit yourself**, per the **Auto-committed** note
 at the top of this prompt (`git status` immediately before staging and before committing).
 
 **What the set covers: one commit for this project**, staging one `git add` per README that actually

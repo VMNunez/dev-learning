@@ -30,11 +30,12 @@ author and reviewer edit the README files directly, they do not just report.
 **The quality filter below is applied twice, and the second reading is not the first one repeated.**
 The author and the reviewer apply it **per section, with this whole rule set in hand** — which is the
 only way they can apply it, and it means every section can clear its own rule while the finished page
-still lands on nobody. So the run's last content step is the **reader-effect judge**: one per README,
+still lands on nobody. So the last editorial pass is the **reader-effect judge**: one per README,
 handed the file whole and no checklist, wearing the audience *Two project formats* below gives that
 target — recruiter for `global`, technical interviewer for the two tier READMEs.
 It reads and proposes; the reviewer applies. That split is deliberate — a judge that edited would move
-the bar on every run, and this file stays the authority.
+the bar on every run, and this file stays the authority. On full-stack projects, cross-README
+coherence is checked after those edits, against the final files.
 
 This readme review is the project's **G5** gate — it runs after every High from G3/G4 (`review-audit`)
 is fixed and committed, and before G7 (`portfolio-audit`), which reads the READMEs it produces. The gate
@@ -65,7 +66,8 @@ must reflect what was actually built and learned — not what sounded good to wr
 stated in a PLANNING.md is not a bar.** Plans written before 2026-09-01 restate caps this file has since
 replaced with inclusion tests (`07-timetrack` §19 "6-8 maximum", §21 "max 3 bullets"); the sizes below
 are this file's, and a count read out of a plan is ignored — never applied, never flagged as a conflict.
-**The same holds for a section order a plan's §18 lists**: the order is this file's.
+**The same holds for a section order or layout a plan's §18 lists** (`07-timetrack` §18 still plans one
+flat endpoint table): both are this file's.
 
 **In-progress marker scan.** Before checking sections, scan the README for: "coming soon", "to be
 added", "in progress", "Step X — coming soon", "Updated as each step is completed", and inline progress
@@ -110,6 +112,30 @@ file and no second home: what runs long is **cut**, never relocated, and `notes/
 it — the two pipelines are independent, and a README rule may not spend the other one's file. The backend/frontend READMEs may
 run deeper (their audience is a technical interviewer), but still no wall of prose where a table or a
 short snippet says it better.
+
+**Reading paths, without deleting evidence.** Before the first long section, a reader must be able to
+find the implemented stack and the demo or run instructions — and, on a full-stack project, the
+technical guides and the current testing status (projects 01–06 carry no Tests section, and their
+absent tests are out of scope, never a status to advertise).
+Use a short stack/status line and descriptive links, not a second copy of each section. On a long tier
+README, add a contents line and link its central decisions to their source files. Group detailed
+patterns by concern; use concise explanations of the choice and consequence instead of replaying every
+debugging step. Optional `<details>` blocks may hold a long recall list or supporting rationale, with a
+descriptive `<summary>` and blank lines around their Markdown content. Keep the section heading and a
+useful summary visible. Demo credentials, setup requirements, security limitations and test status must
+remain visible. This is presentation, not a new inclusion test: no concept is cut just to meet a count,
+and rule 9's protected cross-section repetition stays protected.
+
+**Implementation claims need implementation evidence.** PLANNING describes intent and completed steps;
+code and configuration settle what currently happens. Check a disputed claim in the relevant source,
+including universal claims such as "every request", "no secrets in git" or "fully tested". A test file
+or dependency alone proves no behaviour: distinguish meaningful assertions, generated creation/context
+scaffolds and planned suites, and describe each test by what it asserts. Never call tests passing
+without run evidence — and without it, say nothing about the result: a sentence disclaiming run
+evidence, or explaining that a scaffold proves no coverage, is working-note prose a reader takes as a
+warning. Name a generated scaffold once, neutrally, as what it is. On an unfinished project, state the
+material testing gap near the top and link to Tests; this is product status, not the working note the
+marker scan removes.
 
 **Fix, don't just report.** Add every missing section, fix every present-but-wrong one directly in the
 file. Do not rewrite sections that are already correct — only touch what needs to change. Record what
@@ -175,12 +201,16 @@ on its own: a copy stays internally coherent and its readers never open this fil
 found three of these tests missing and two nominal only once someone counted them clause by clause.
 
 1. **Title + one sentence** — plain language, no tech words, project number included. Says what the app
-   does and who uses it, not what the developer learned.
+   does and who uses it, not what the developer learned. The number stays on purpose: the projects share
+   one repository and are read as a progression (Victor's ruling, 2026-09-27, `REC-253`). A separate
+   short stack line under the sentence may name the implemented technologies.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
      where admins manage employees and leave requests."
 2. **Why this project** — one paragraph, a real-world reason. Never "built to practise X".
-   - Good: "Most production Angular apps have protected routes — I built this to understand how they
-     work in practice, before applying them in a real codebase."
+   Explain the domain problem and the responsibility the project takes on. Be honest that it is a
+   portfolio project; never imply real customers, adoption or professional experience without evidence.
+   - Good: "Leave requests need an owner, a reviewer and a clear outcome; this portfolio app makes that
+     process explicit and keeps employee and administrator responsibilities separate."
 3. **Live demo** — own `## Live demo` heading, URL present, test accounts if it has auth (`email /
    password`, one per role). If none exists, flag it as missing — do not skip the section.
 4. **Screenshots** — screenshots and, where the GIF test below passes, GIFs; optimal count for the
@@ -261,7 +291,8 @@ found three of these tests missing and two nominal only once someone counted the
      the section founded.)*
 9. **What I learned** — one bullet per concept, format `` `ConceptName` — one-line reminder ``. A recall
    list, not a tutorial. Optimal count for the project (no fixed number): the section grows with the work,
-   and what bounds it is the three tests below, never a number. Cross-check against PLANNING.md's learning
+   and what bounds it is the three tests below, never a number. The reading-path rule may group or
+   collapse the surviving list without removing concepts. Cross-check against PLANNING.md's learning
    objectives and add any that are missing — an **adder only**: a plan describes the project as planned,
    not the one its backlog produced, so it never decides what stays.
    - **Structure — full-stack projects only.** On `07+` this section carries two subsections,
@@ -416,9 +447,14 @@ deployed* when §15 has no deployment step. Never infer either from a URL in the
 
 ## Backend README rules (full-stack only) — sections in this exact order
 
-1. **API endpoints table** — method, URL, role required, one-line description. Roles specific (EMPLOYEE,
-   MANAGER, Public — never "All"/"Authenticated"). A not-yet-implemented endpoint stays in the table
-   with role + description, only its row marked `*(planned)*` — not the whole section.
+1. **API endpoint tables** — one table per resource, each under its own `###` heading naming only the
+   resource (`### Auth` first, then one per resource the API exposes), never one flat table for the whole
+   API: a reader looks an endpoint up by the resource it acts on, and a single table hides that grouping
+   (Victor's ruling, 2026-09-27, `REC-253`). Columns: method, URL, role required, one-line description.
+   Roles specific (EMPLOYEE, MANAGER, Public — never "All"/"Authenticated"). A not-yet-implemented
+   endpoint stays in its table with role + description, only its row marked `*(planned)*` — not the whole
+   section. A build marker on a heading (`### Projects ✓`) is the in-progress scan's to remove, never a
+   reason to merge the tables.
 2. **Database schema** — one table per entity (name, type, constraints, notes); after each, one sentence
    on its key design decision (why soft delete, why a status enum vs a boolean) — **blank line first**,
    or GFM absorbs that sentence as one more row of the table it follows.
@@ -448,7 +484,8 @@ deployed* when §15 has no deployment step. Never infer either from a URL in the
    name to create in pgAdmin, how to start, the base URL. Include seed credentials if `data.sql` seeds
    a first account.
 9. **Tests** — the services with unit tests, one bullet per class (`ClassName` — one sentence on what
-   the test verifies). Tool: JUnit 5 + Mockito. If none yet, mark `*(planned)*` — never omit the
+   the test verifies). Name the tools actually used; label planned tools and suites separately. Apply
+   the implementation-evidence rule to scaffolds and passing claims. If none yet, mark `*(planned)*` — never omit the
    section (tests differentiate junior candidates at Spanish consultancies).
 
 ---
@@ -465,7 +502,8 @@ deployed* when §15 has no deployment step. Never infer either from a URL in the
 5. **Tradeoffs** — format `[X] over [Y] — [reason]`. Must include: Signals over NgRx (or why NgRx if used).
 6. **How to run alone** — `ng serve` with the API URL pointing to the backend; include the step to set
    an env var if the API base URL needs one.
-7. **Tests** — services with unit tests, one bullet per class. Tool: Vitest + TestBed. If none yet,
+7. **Tests** — services with unit tests, one bullet per class. Name the tools actually used and apply
+   the implementation-evidence rule to scaffolds and passing claims. If none yet,
    mark `*(planned)*` — never omit.
 
 ---
@@ -486,10 +524,13 @@ misread in both. Who runs that commit differs, and only that:
   README that actually changed and runs **one** `git commit`:
   `docs: update {PROJECT_PATH} README(s) — [one-line summary]`, whose plural is the tell that a single
   command covers the set. The summary of changes above is still printed — it is now a review record,
-  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit. **The
+  not a gate. A README whose author→reviewer pair did not complete is excluded from the commit, and on a
+  full-stack project a final cross-README coherence check left unresolved withholds the project's whole
+  commit (`readme-audit.md` → *Cross-README coherence*). **The
   reader-effect judge is not part of that pair and never excludes a README**: it is advisory, so a run
   whose judge failed twice commits the README on the author and reviewer's work and says so in the
-  summary — the pair is what the commit rests on. The same holds for the **re-dispatch that applies**
+  summary — the pair, and on a full-stack project the final coherence check, is what the commit rests on.
+  The same holds for the **re-dispatch that applies**
   the judge's items: it runs after the pair completed, so its own failure excludes nothing either, and
   the file is committed part-applied with that stated in the commit message and the summary.
   Under `PROJECT_PATH = all` that is one such commit per project.

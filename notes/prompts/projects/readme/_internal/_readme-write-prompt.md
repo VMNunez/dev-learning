@@ -44,7 +44,7 @@ profile and the market live in `notes/prompts/_internal/_shared-context.md` if a
 
 **Scoped code reading.** When a section must be checked against the real code (API endpoints, tests,
 security measures, folder structure), read **only the files that section needs** — e.g. the
-`controller/` package for the endpoint table, the `test/` tree for the Tests section, `ls` output for
+`controller/` package for the endpoint tables, the `test/` tree for the Tests section, `ls` output for
 folder trees. Never sweep the whole project; your attention budget belongs to the README, not the repo.
 
 ## Step 1 — Scan for in-progress markers
@@ -56,6 +56,10 @@ Check this README's sections against the standard's rules for your `{TARGET}`, i
 - Add every missing section; fix every present-but-wrong one **directly** in the file.
 - Move any out-of-order section to its correct position.
 - Apply the **quality filter** (recruiter + interviewer lens) to each section — cut or rewrite noise.
+- Apply the universal **Reading paths** and **Implementation claims** rules: make the stack and the run
+  path — and, on a full-stack project, the navigation and testing status — easy to find; shorten
+  explanations without discarding evidence, and verify claims against scoped source reads rather than
+  inferring coverage from test filenames.
 - Do **not** rewrite sections that are already correct — only touch what misses the bar.
 - **`What I learned` is the exception to the line above**, because its defect is invisible section by
   section: every bullet can be well formed while the section as a whole fails. Run rule 9's three tests

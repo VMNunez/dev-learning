@@ -31,7 +31,7 @@ Before starting, read:
   I learned" / patterns match the plan's learning objectives.
 - The target README file itself.
 
-**Scoped code reading.** When a check needs the real code (truthfulness of the endpoint table, the
+**Scoped code reading.** When a check needs the real code (truthfulness of the endpoint tables, the
 Tests section, security claims), read **only the files that check needs** — never sweep the whole
 project. Your attention budget belongs to the README.
 
@@ -40,7 +40,7 @@ project. Your attention budget belongs to the README.
   target. Add any missing; reorder any misplaced.
 - **Per-section rules** — each section meets its specific rule (format strings like `[X] over [Y] —
   [reason]`, the interview test on architecture decisions, table-not-list for Tech stack, recall-list
-  brevity for "What I learned", specific roles in the API table, prose-only Auth flow, `*(planned)*` for
+  brevity for "What I learned", one API table per resource with specific roles, prose-only Auth flow, `*(planned)*` for
   absent tests, etc.). Every rule about *arrangement* is checked against the standard's *Source is not
   render* — the blank lines, not the order of the lines.
 - **`What I learned` inclusion** — rule 9's three tests, in its stated order
@@ -61,12 +61,18 @@ project. Your attention budget belongs to the README.
   cuts nothing says so — the section is bounded by these tests and by no number.
 - **Quality filter** — every section passes both the recruiter and the interviewer lens; cut or sharpen
   anything that only impresses one.
+- **Reading paths + implementation evidence** — apply those universal rules to the finished page:
+  stack and demo/setup are visible before a long section — plus, on full-stack, the technical links and
+  testing status; detailed patterns are navigable; test assertions support the claimed behaviours, a
+  scaffold is named once and neutrally, and no sentence disclaims run evidence.
 - **Own-text test** — every claim the README makes is stated in the README's own text (a sentence, a
   bullet or a table cell) and never only inside a visual — the standard's *A third reader, and it is not
   human*. Fix it in the section that owns the claim (Tech stack, Features, the title sentence), and on a
   full-stack project let *Which README owns a concept* decide which README that is — never by touching
   the visual.
-- **Truthfulness** — no section claims something not in the code/PLANNING; "What I learned" and patterns
+- **Truthfulness** — no section claims something not in the code/PLANNING, and an implementation claim is
+  settled by code, configuration or tests, never by `PLANNING.md` alone (the standard's *Implementation
+  claims*); "What I learned" and patterns
   match the plan's learning objectives (add any missing objective). The plan is an **adder only** here: it
   describes the project as planned, not the one its backlog produced, so it never licenses keeping a
   bullet the inclusion test above cuts.

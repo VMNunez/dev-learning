@@ -2,7 +2,7 @@
 
 **Internal component.** This is the **reader-effect judge** in the readme pipeline. You normally don't
 launch it — `readme-audit.md` dispatches it as subagent **C**, one per README, **after** the author (A)
-and the reviewer (B) have finished, and after the cross-README coherence pass on a full-stack project.
+and the reviewer (B) have finished; on full-stack projects, coherence is checked after its items are applied.
 It is documented here so the orchestrator can point a subagent at it; you can also run it standalone to
 get a second opinion on one finished README.
 
@@ -73,12 +73,12 @@ returns a verdict neither reader would give.
      two of them — neither a bare title nor a number identifies one on its own.
    - List that block's rules with `awk 'NR>=<start> && NR<=<end> && /^[0-9]+\. /'` and match your section
      to one **by title**. Where the README's heading is not the rule's words — `## API endpoints`
-     against `1. **API endpoints table**`, `## State management approach` against
+     against `1. **API endpoint tables**`, `## State management approach` against
      `2. **State management**` — fall back to **ordinal position**: each block opens with its sections in
      order and numbers its rules in that same order, so the Nth section is rule N.
    - Read from that rule's line to the **next numbered rule inside the block** (the last rule ends at the
      block's own `## `). Never take a stop marker from outside the range: `^10\. ` after the backend's
-     rule 9 lands 63 lines back in the global block.
+     rule 9 lands back in the global block.
    - Only a section with **no rule at its position in your block** has no owning rule; `effect-only` is
      then honest and the item says `no owning rule`. A grep that simply missed is not that case.
    **Then label what you found — and the question is not whether the item passes that rule.** These
