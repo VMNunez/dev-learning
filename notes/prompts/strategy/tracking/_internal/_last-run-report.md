@@ -1,9 +1,9 @@
 # Pipeline self-report — progress-update
 
-**Date:** 2026-09-26 · **Target:** `MODE = active` — project 07, SQL and simulations · **Status:** clean
+**Date:** 2026-09-27 · **Target:** `MODE = all` — projects 01–07, SQL and simulations · **Status:** open
 
-1. **Plan vs reality** — the split matched the task: one project-status role and one SQL role ran independently; simulations and all recounts stayed local. There was no whole-artefact review, so the project result is bounded to the plan markers and the remaining checks to their primary sources.
-2. **Report discipline** — both returns were usable in the required shapes; nothing was trimmed.
-3. **Failures & retries** — none; 2/2 required dispatches returned without re-dispatch.
-4. **Rule friction and rule breaches** — I completed the verified EOF read of `_session-rules.md` only after dispatching both roles, contrary to `_pipeline-self-report.md` → `Run-start check`; both roles therefore launched before that guard was complete. Logged as `BRCH-0001` (`Scope: shared`). The initial `git add` was also denied by the sandbox; an authorized elevated retry succeeded.
-5. **Verdict** — pipeline clean; no prompt change proposed. Prompt length: 467 lines, below the ~500-line alarm. `map: verified` — README catalogue and interface rows; `_system-map.md` chain and §7 writer/read rows for this prompt and its declared inputs/outputs.
+1. **Plan vs reality** — the split fit: 7 project roles + 1 SQL role, all independent; simulations, coverage, authoring/study and matrix measured locally. No whole-artefact review step exists, so the project results are bounded to the plans' markers and the rest to their primary sources.
+2. **Report discipline** — all 8 returns were usable, in shape, with the EOF line; nothing trimmed.
+3. **Failures & retries** — none; 8/8 required dispatches returned without re-dispatch. Session rules read to EOF before the first dispatch (`BRCH-0001`'s step not breached again; that row stays `open`, `shared`, one row).
+4. **Rule friction and rule breaches** — no rule breached. Friction: Step 0 labels 07 "Format B" but its plan now reads as Format C (status is marker-derived either way, no result change); the prompt says "13 topics" while the matrix has 14 rows. The substantive gap: Step 0 item 3 reads each notes plan only "at headings/status/studied-field level", so a plan whose `Plan status:` says `current` over a moved coverage file is reported current — this run found three (Security, SQL, Spring Boot) whose marker-stripped digest no longer matches, and the 2026-09-26 run had left those cells reading `current`.
+5. **Verdict** — change worth considering: Step 0 item 3 should recompute each plan's coverage fingerprint with the canonical command rather than trust `Plan status:`. Prompt length 588 lines, over the ~500 alarm; largest section Step E (59 lines). `map: verified` — README interface row and catalogue row for this prompt; `_system-map.md` §7 rows for `_last-drift-report.md`, `routes/{LEVEL}.md`, `routes/projects.md`, the SQL route, `TRACKER.md`, the `Professional level by topic` row, chain B and the §11 rows naming this prompt.
