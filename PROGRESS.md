@@ -83,8 +83,9 @@ means `0%`, which is what a real count over a real denominator reads as — HTML
 example until its first `/coverage` run landed on 2026-09-04 and turned it into `0/81 (0%)`.
 
 The `✅ NN-slug` marker went live on 2026-07-30 (its `— {evidence}` clause was added to the format on
-2026-08-01 and is not backfilled, so older markers are bare), so these cells are still filling in: projects 01, 02, 03,
-04, 05, 06 and the **backend** of 07 have been backfilled; only the Angular tier of 07 has not. An
+2026-08-01 and is not backfilled, so older markers are bare), so these cells are still filling in: projects 01–06 and the
+**backend** of 07 were backfilled after the marker went live; the Angular tier of 07 was built
+afterwards and marked piece by piece as it landed, so it owes no backfill. An
 unmarked bullet in a topic those projects would touch still means "not yet marked", not "not yet
 applied". Git is the one topic whose evidence is not project-shaped — its markers attribute the daily
 workflow to the first project that established it rather than to code inside that project.
