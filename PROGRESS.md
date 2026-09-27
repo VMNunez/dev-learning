@@ -129,6 +129,7 @@ test.
 | 03-expense-tracker | 0/122 (0%) |
 | 04-meal-finder | 0/177 (0%) |
 | 05-task-manager | 0/139 (0%) |
+| 06-hr-portal | 0/142 (0%) |
 
 ---
 
