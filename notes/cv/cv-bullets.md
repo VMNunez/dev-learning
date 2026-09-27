@@ -24,3 +24,7 @@ Used by `cv-prompt` when drafting the Projects section of your CV.
 ## projects/05-task-manager
 
 - Desarrollé un gestor de tareas en Angular y TypeScript con Angular Material, reutilizando un único diálogo para crear y editar tareas sobre una tabla con ordenación y paginación.
+
+## projects/06-hr-portal
+
+- Desarrollé un portal de recursos humanos en Angular y TypeScript con Angular Material, encadenando guards funcionales por rol en las rutas de administración y cargando cada página bajo demanda.
