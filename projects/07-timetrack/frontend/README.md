@@ -2,6 +2,10 @@
 
 Angular 21 frontend for the TimeTrack project — standalone components (`bootstrapApplication`, no `NgModule`), zoneless change detection (no `zone.js`), `OnPush` and signals throughout.
 
+[Overview and demo](../README.md) · [State](#state-management-approach) · [Patterns and source](#key-patterns) · [Tradeoffs](#tradeoffs) · [Run](#how-to-run-alone) · [Tests](#tests)
+
+**Testing status:** two route guards (`roleMatch`, `oneTimeSecretGuard`) and the error and date helpers have behaviour tests; the HTTP service and `PendingApprovals` tests are planned.
+
 ---
 
 ## Folder structure
@@ -47,45 +51,55 @@ timetrack/src/
 
 ## Key patterns
 
-- `authGuard` + `managerGuard` — route protection per role
-- HTTP interceptor — JWT attached automatically to every outgoing request
-- Session expiry handled once, in the interceptor — a `401` on a request that carried a token clears the stored session and navigates to `/login`, where the page explains the session expired, so no page re-implements it; a failed login's `401` carries no token and is left to the Login page's own error
-- Role-aware UI — `/entries` is one page for both roles: an employee gets their own rows with Log hours and the row actions, a manager every row with an Employee column and no actions; the shell's sidebar lists only the links the role can open
-- The UI never offers an action the API will refuse — `/approvals` drops the approve and reject buttons on the manager's **own** submitted rows, which the API answers with a `403` for segregation of duties, and names who will review them instead; the client learns whose rows they are from the `id` the login response carries, and the API stays the boundary either way
-- Role variants of one URL through `canMatch` — `/dashboard` is declared twice and `roleMatch` lets the router load the employee or the manager page, instead of one component branching on the role and holding both variants' state
-- Page titles through a custom `TitleStrategy` — each route declares only its page name and `AppTitleStrategy` appends `| TimeTrack` in one place, writing the brand alone when no route resolves a title, because the default strategy writes nothing then and the tab would keep the previous page's name
-- `forkJoin` for every load that needs more than one call — both dashboards, Entries, Approvals and Reports fire their requests in parallel and succeed or fail as one, so a page shows its loaded, empty or error state and never half a dashboard
-- Stat cards read aggregates, never a sum of a page — hours come from `GET /api/reports/summary` and counts from `page.totalElements` on `GET /api/entries?status=…&size=1`, because the list is paged and a client-side sum would report page one as the month
-- One `reload$` stream per page, flattened with `switchMap` — a filter or page change cancels the request still in flight, so a slow earlier response can never overwrite the newer table
-- Server-side paging and sorting — `MatPaginator` and `MatSort` events become the `page`, `size` and `sort` params of `GET /api/entries`, with no `MatTableDataSource`, because entries is the one collection the API pages
-- The page index revalidated against every response — a write that empties the page the user is on makes the server answer with a **valid, empty page** rather than an error, so `/approvals` and `/entries` re-ask for the last page that exists instead of rendering their empty state over a collection that still has rows; the correction always steps down at least one page, because a count and a slice read in separate statements can disagree under a concurrent write
-- Dialog styles declared once in a global partial — `styles/_dialog.scss` holds the form layout, the always-present error line and the destructive confirm button that the five dialogs share, instead of a copy in each component stylesheet; a global rule carries no encapsulation attribute, so it reaches a dialog the overlay renders outside its opener's DOM, and changing the error line's reserved height is one edit rather than five
-- Page and table blocks declared once — `styles/_page.scss` holds the header, the filter bar and the stat-card strip, and `styles/_table.scss` the scrolling wrapper, the loading overlay and the column rules every table shares, instead of a copy per page
-- Row actions pinned to the table's right edge — `stickyEnd` on the actions column of Approvals, Entries and Projects, so a table too wide for its wrapper scrolls its reading columns under the buttons instead of the buttons out of view
-- Material theming through token overrides — `mat.theme()` for the palette, density and shape, and `mat.button-overrides` / `mat.card-overrides` for what it does not reach, because Material's internal CSS classes are private and change between releases
-- Typed `ApiError` + a runtime type guard — the backend's error shape is narrowed before it is read, so a failure with no `ErrorResponse` body falls back to a connection message instead of rendering `undefined`
-- One runtime guard on the session, on the way in and the way out — `isAuthResponse` checks the login response before `AuthService` stores it and the stored copy on every reload, so a response the app cannot read fails on the login form with its own message instead of logging the user out one reload later, and a stored session that no longer parses ends like an expired one: removed, and explained on `/login`
-- Backend `fieldErrors` mapped onto their controls — a `400` lands under its own input through `setErrors({ server })` instead of a generic toast, so a wrong current password keeps the change-password dialog open and the session intact
-- Client rules that measure what the server measures — a shared `notBlank` validator sits beside `Validators.required` on every control whose server field is `@NotBlank`, because `required` only tests that a value is not empty and let a field of spaces through to a `400`; it reports the existing `required` key, so none of the five dialogs gains a second message for the same error
-- Form-level error as a `role="alert"` line that is always in the DOM — the login page and both form dialogs render it empty and only change its text, because an alert inserted together with its message may never be announced
-- Page-level errors as a plain `.page-error` paragraph, never a `mat-error` — a Material class is styled by the form-field component's own stylesheet, which the browser only receives once such a component renders, so an error on a page whose failure state shows no field inherited the body colour and stopped looking like an error
-- Explicit `restoreFocus` target on the change-password dialog — the menu item that opens it is destroyed with its menu, so closing the dialog returns keyboard focus to the toolbar's account button instead of the page body
-- In-flight row state as a set of ids, never one — `disabledInteractive` makes refusing the second press the code's job, and a single busy id is overwritten by the next row that starts writing, releasing the first while its own request is still running; the five list pages keep the ids in flight in a `ReadonlySet` (`shared/busy-ids.ts`), whose helpers return a new set because a signal compares by reference and one added to in place notifies nobody
-- A row action that survives its own write — a successful mutation re-renders the row, so Projects toggles one button between Deactivate and Reactivate rather than swapping two, and `/entries`' delete confirmation reuses the header's own button as its `restoreFocus`, keeping the pressed control in place instead of dropping focus to the page body
-- Focus handed back when a refetch moves a row — once the Projects table can be sorted, keeping the pressed control alive is not enough: the CDK table moves a reordered row by detaching its node and inserting it again, which drops focus even though `trackBy` kept the element, so the page remembers the button a write started from and refocuses it in `afterNextRender`, only while focus is still on the page body
-- Focus after a reload that fails — a recovered error emits nothing, so the `subscribe` that hands focus back after a successful refetch never runs; each page's `catchError` sends focus to its `<h1>` instead, whether the reload came from the Retry button or from the refetch behind a row action, whose control the error block has just replaced
-- A table box with nothing to click is itself a keyboard stop — the two Reports tables and the employee dashboard's recent list carry no sort header and no row action, so their scrolling wrapper takes `tabindex="0"` with `role="group"` and its heading as the accessible name
-- Form dialogs locked while they save, and focus handed back when the save fails — unlike the login form, the five dialogs disable their fields during the request, since a value typed mid-save would sit on screen against a record that saved the old one; a disabled field cannot hold focus, so on a refused save `refocusAfterFailedSave()` moves it to the first field Material marks `aria-invalid`, or to the dialog's error line, from wherever the save left it — the page body after Enter in a field, the Save button after a click
-- A responsive duplicate read once — below 600px the Description column is hidden, and with it the only line that says why an entry was rejected, so the note is rendered a second time under the status badge; whichever copy is idle is `display: none`, which removes it from the accessibility tree as well as from the layout
-- One helper owns "leave the form exactly as it was" — `confirmDiscard(dialog, form)` opens the discard question for all three form dialogs and answers the `TouchedChangeEvent` its own focus trap causes, because the CDK moves that focus asynchronously and any undo timed against the dialog's open event races it; its buttons are named after their outcome (Keep editing / Discard), the form's own Cancel sitting right underneath meaning the opposite
-- A form dialog closes with the outcome it reached, not a boolean — the entry dialog returns `'saved'` or `'submitted'` and the page words the snackbar from it, so saving-and-submitting is announced exactly as the row's submit action announces the same transition, while a Cancel after a save whose submit failed still reads as an update
-- One root signal holder for the only number two layers of the UI share — `PendingApprovals` keeps the pending-approvals count as a private signal exposed through `asReadonly()`, refreshed by `/approvals` and the manager dashboard after every approval or rejection and read by the shell's badge on every navigation, so the badge never disagrees with the queue beside it
-- Dialogs closed when the shell is destroyed — `DestroyRef.onDestroy` runs `MatDialog.closeAll()`, because the overlay outlives the component that opened it and `closeOnNavigation` ignores `router.navigate()`; a mid-session `401` lands on a clean `/login`, and `core/` auth code stays free of Material
-- Change-password dialog dismissal locked around its `PATCH` — `disableClose` refuses a backdrop click for the dialog's whole life and Escape is re-admitted through `keydownEvents()` only once no save is in flight, so a stray click or an Escape mid-save can never hide a password change that already committed on the server
-- A one-time secret the browser's Back cannot destroy — `/team` declares `canDeactivate: [oneTimeSecretGuard]`, which refuses to leave from the moment a create or a password reset is sent until the generated-password dialog closes, and both that dialog and the member form opt out of `closeOnNavigation`, because the overlay disposes itself on the history change before any guard runs; an ended session always leaves, so the interceptor's `401` still reaches `/login`, and the router runs with `canceledNavigationResolution: 'computed'`, so a refused Back returns the history to where it was instead of spending one entry each time
-- `OnPush` on every component, state in signals — a view is re-checked only when a signal it reads changes, so the shell's role-filtered nav re-renders on login/logout from a `computed()` with no manual `markForCheck()`
-- Breakpoint-driven navigation drawer — below 1024px the sidenav switches from a fixed `side` rail to a closed `over` drawer opened from a toolbar toggle, fed by a CDK `BreakpointObserver` signal, because the 240px rail left a phone about 135px of page; the drawer closes on `NavigationEnd` and on `NavigationSkipped`, since tapping the current page's link completes no navigation
-- Visibility toggle on every password input — a `matSuffix` icon button with a fixed name whose on/off state lives in `aria-pressed`, rather than a name that flips between Show and Hide; its `mousedown` default is prevented, so pressing it keeps focus in the field and never marks an empty field touched mid-typing
+The [route table](timetrack/src/app/app.routes.ts), [Entries page](timetrack/src/app/pages/entries/entries.ts) and [shared state holder](timetrack/src/app/core/state/pending-approvals.ts) show the main boundaries: routes select access, pages own their requests, and only state shared across routes lives at the root.
+
+### Session and role boundaries
+
+- **Guards and interceptor** — `authGuard` and `managerGuard` protect routes; the interceptor attaches the token and handles a token-bearing `401` once, while login failures stay on the form.
+- **Role-aware pages** — Entries shows employees their own actionable rows and managers the company list; the sidebar exposes the routes each role can use.
+- **Self-review excluded** — Approvals hides actions on the manager's own rows using the login response's `id`; the API independently enforces the refusal.
+- **Role-based route matching** — two `/dashboard` declarations use `roleMatch`, keeping each dashboard's state and template in its own component.
+- **Runtime session validation** — `isAuthResponse` checks both the login payload and stored session before use; malformed storage is removed and the login screen explains the ended session.
+- **Overlay cleanup** — the shell closes Material dialogs on destruction, so an expired session returns to a clean login screen without importing Material into auth services.
+
+### Loading, state and tables
+
+- **Coordinated loads** — `forkJoin` combines dependent page data into one success or error outcome, preventing half-loaded dashboards.
+- **Latest request wins** — each page's `reload$` uses `switchMap`, so a slow response cannot overwrite a newer filter or page selection.
+- **Server paging and sorting** — paginator and sort events become API parameters; aggregate cards use report queries or `totalElements`, never a sum of one page.
+- **Page recovery after writes** — Entries and Approvals request the last valid page when a mutation empties the current one, always moving the index down to avoid a retry loop.
+- **Concurrent row actions** — `ReadonlySet` helpers track every busy id and return a new set for signal notification; each handler refuses a second press while its row is saving.
+- **Shared pending count** — `PendingApprovals` exposes a readonly signal refreshed after reviews, so the queue and sidebar use the same count.
+- **Signals with OnPush** — templates consume signals and the shell derives role navigation with `computed()`, keeping state changes explicit.
+
+### Forms and one-time credentials
+
+- **Dialogs own their save** — the form stays open for API errors and closes with an outcome such as `'saved'` or `'submitted'`; the page refetches and announces that outcome.
+- **Typed error handling** — the `ApiError` guard provides a fallback for non-API failures, and `fieldErrors` maps server messages onto controls through `setErrors()`.
+- **Matching blank validation** — `notBlank` complements `Validators.required` where whitespace is invalid; login and current-password fields follow their credential-verification rules.
+- **Saving and dismissal** — form dialogs disable fields during a write; `refocusAfterFailedSave()` returns focus to the first invalid field or error line, and the change-password dialog blocks backdrop dismissal and Escape during its request.
+- **Discard confirmation** — `confirmDiscard()` preserves the original touched state around the confirmation dialog's asynchronous focus changes, using explicit Keep editing / Discard actions.
+- **One-time secret navigation guard** — `oneTimeSecretGuard` protects Team from request dispatch until the password dialog closes; those dialogs opt out of navigation closure, and a canceled Back restores history with `canceledNavigationResolution: 'computed'`.
+
+### Accessibility and presentation
+
+<details>
+<summary>Focus recovery, responsive tables, shared styles and accessible feedback</summary>
+
+- **Stable alert regions** — login and form dialogs keep their `role="alert"` line mounted and change its text; page-level errors use a plain `.page-error` paragraph independent of form-field styles.
+- **Explicit focus return** — the change-password dialog returns to the account button after its menu disappears; entry deletion returns to a surviving header control.
+- **Focus after row movement** — Projects keeps one toggle action, then uses `afterNextRender` to recover focus after sorting moves its row, only if focus was lost to the body.
+- **Focus on failed reloads** — page `catchError` paths focus the heading when a retry or post-write refetch replaces the pressed control with an error state.
+- **Keyboard-scrollable tables** — read-only report and recent-entry wrappers use `tabindex="0"`, `role="group"` and a heading-based accessible name.
+- **Rejection notes on narrow screens** — a responsive second copy appears below the status; `display: none` removes the inactive copy from both layout and the accessibility tree.
+- **Shared style boundaries** — global `_dialog`, `_page` and `_table` partials keep repeated layouts consistent, including overlays rendered outside their opener's DOM.
+- **Pinned actions** — `stickyEnd` keeps table actions reachable while descriptive columns scroll.
+- **Material tokens** — theme and component overrides avoid coupling styles to private internal CSS classes.
+- **Route titles** — `AppTitleStrategy` appends the brand once and supplies a fallback title when no route title resolves.
+- **Responsive drawer** — `BreakpointObserver` switches between the side rail and overlay drawer; navigation completion or a skipped same-route navigation closes it.
+- **Password visibility controls** — a fixed accessible name and `aria-pressed` expose the toggle state, while preventing the mouse default keeps typing focus in the input.
+
+</details>
 
 ---
 
@@ -104,36 +118,41 @@ timetrack/src/
 
 ## Tradeoffs
 
-- Signals over NgRx — each page owns its own state and only two values are app-wide (the session and the pending count), too little shared state to pay for a store's actions, reducers and effects; in exchange there is no central action log or DevTools timeline to replay a bug from
-- Angular Material over custom CSS — a consistent, accessible component set out of the box; in exchange styling is bounded by tokens and overrides, since Material's internal classes are private and not meant to be styled directly
-- `disabledInteractive` on the login button over disabling the form during the call — focus stays on the button after a failed attempt instead of dropping to the page body; in exchange the component blocks a double submit itself with its `loading()` guard
-- Login form at a fixed top offset on phones over vertical centring — the virtual keyboard shrinks `100dvh`, so a centred form would jump as the user starts typing; in exchange a tall phone leaves empty space below the form
-- A read-once expiry flag on `AuthService` over a `?expired` query param on `/login` — the reason is an event, so a reload or a bookmark never replays "Your session has expired"; in exchange the notice cannot be linked to or survive a full page reload
-- A form dialog that saves itself over one that returns its values for the page to save — a `400`'s `fieldErrors` land under inputs that are still open, and the dialog owns the spinner and the dismissal lock of its own request; in exchange the dialog injects a `core/services/` service, the one component outside `pages/` allowed to, and its page refetches after `afterClosed()`
-- Browser Back closing the change-password dialog even mid-save over `closeOnNavigation: false` — the flag is read only when the dialog opens, so it would stop Back closing the dialog at all; in exchange a user who navigates away mid-save loses the confirmation while the server still commits the change
-- Truncating the toolbar's account name with an ellipsis on phones over hiding it — the visible name stays the trigger's whole accessible name, so no phone-only `aria-label` is needed; in exchange a long name shows cut off below 600px
-- Material's compact card for dialogs on phones over full-screen dialogs — a Material 3 full-screen dialog needs its own layout, a top bar with close and confirm actions, and stretching the standard dialog only spread its fields and buttons apart; in exchange a long form dialog scrolls inside a card with the page dimmed around it
-- Four monthly stat cards over a "this week" hours card — the API aggregates by month only, and summing a week of entries in the browser would break the no-client-side-sum rule; in exchange the employee dashboard shows no weekly figure
-- Disabling "Log hours" until the project list has loaded over hiding it or opening the dialog with an empty list — the dialog reads its projects once, at open, so a `null` list is refused rather than passed on as `[]`, and the header does not shift when the load ends; in exchange the disabled button explains nothing itself and leaves that to the spinner or the error below it
-- The `/entries` Project filter listing what `GET /api/projects` returns over a list built from the caller's own entries — an employee receives active projects only, and the entries list is paged, so the browser cannot see every project those entries name; in exchange an employee cannot isolate their entries on a project deactivated since, which month and status still reach
-- An inline read-only table for the dashboard's recent entries over reusing `EntryList` — that component's sortable headers and row actions belong to `/entries`, and on a dashboard its sort arrows would respond to nothing; in exchange the two tables repeat their shared cell templates
-- Keeping a page's numbers on screen and dimming them while it refetches over showing the skeleton cards again — Projects and the manager dashboard reload after every write, and blanking the strip after each approval or edit read as breakage rather than as loading; in exchange the previous numbers stay visible, marked `aria-busy`, until the new ones arrive
-- Rows dimmed and numbers blanked on the same refetch, over one rule for both — a month change on Reports keeps its two hours tables on screen under the loading overlay while its summary cards return to skeletons: a row from the previous month is still readable, a stale total beside a new one is not tellable from a real `0`
-- Container queries on the dashboard's own width over viewport media queries or `auto-fit` for the stat cards — the 15rem sidenav rail narrows the page from 1024px up, so the window's width misjudges the room, and `auto-fit` left four cards as 3 + 1; in exchange the page's `:host` becomes an `inline-size` container, so its width can never come from its content
-- Filter fields fixed at a width that changes the bar's shape over fields that shrink to fit — a narrower field truncates a selected value like "September 2026" in its trigger; in exchange the filter bar wraps onto multiple rows on a narrow page
-- Table name columns sized by their longest word under a cap over a fixed floor on every text column — `overflow-wrap: anywhere` had let a crowded table cut "Employee" mid-word, and a floor reserved width short names never use, pushing `/approvals` into a sideways scroll; in exchange the cap relies on the browser honouring `max-width` on a table cell, and one that ignores it lets one space-less name widen its column
-- Day-first `en-GB` dates over Angular's `en-US` default — the users are Spanish teams, who read `9/19/2026` backwards; in exchange the datepicker needs the date-fns adapter (two dependencies), because `NativeDateAdapter` parses typed input with `Date.parse` and rejects `19/09/2026`
-- The paginator's defaults provided by the Entries page over app-wide in `app.config.ts` — importing even its options token at bootstrap pulled the paginator, select, form field and tooltip into the initial bundle (665 kB against a 500 kB budget, 448 kB after); in exchange a second paginated page must provide the same defaults again
-- The approvals queue opening on every pending month over the current one like `/entries` — a timesheet is authored by month, but a queue is worked by age, and a month default would hide older submissions behind a filter nobody set while the shell's badge kept counting them; in exchange the queue's first load is not bounded by month
-- Hiding the approvals queue's Description column on a narrow page over keeping every column and letting the table scroll — its seven columns need more width than a laptop or tablet window gives, and past the wrapper the pinned actions sat over Status; in exchange a manager on a laptop or tablet reads the queue without descriptions, the rejection note moving under the badge, while `/entries` keeps its Description at those widths and falls back to scrolling under its buttons only when a project name grows long
-- Hours beside the employee in both review tables over the wireframe's Employee · Project · Date · Hours order — on a phone every column after the first two scrolls under the pinned ✓ ✕, and the hours are what an approval decides on; in exchange project and date are the columns a manager scrolls to on a narrow screen
-- `/entries` opening on the current month over all months — a timesheet is worked and reviewed by month and the query stays bounded; in exchange the first days of a month open on an empty table, so the empty state offers "Show all months" while a month is selected
-- Sorting the Projects table in the browser over sending `sort` to the API as `/entries` does — `GET /api/projects` returns every project in one unpaged response, so the browser holds the whole set and orders all of it, and the name order reuses the API's own, reversed for descending, to keep the database's collation; in exchange a very long project list is sorted and scrolled client-side, with no paginator and no Description column on phones
-- The theme's teal for the sidebar's pending-approvals badge over Material's default error red — the count is work waiting, not a fault, and red already means REJECTED in this app, so a red number beside Approvals read as that many failures; in exchange the badge draws less attention than a notification red, which a to-do count does not need
-- A dialog for a new member's generated password over the copyable snackbar first planned — the plaintext exists only in the `POST /api/users` response, so it must not vanish on a timeout or under the next snackbar; the dialog opens on Copy, reports whether the browser accepted the copy, and closes only on Done, never on Escape or a backdrop click; in exchange adding a member takes one extra click
-- Sorting the Team table in the browser, with a locale `Intl.Collator` for the Name column only, over adding a `sort` parameter to `GET /api/users` — the API already returns every account ordered by status and then name, so Status and Role are stable sorts that keep its order, and only a pure name order needs a comparison, which runs in the app's own `en-GB` locale; in exchange that one order can differ from the database collation on edge cases
-- The year printed in the employee dashboard's recent list over the shorter `d MMM` its wireframe showed — that list asks `GET /api/entries` with no month, so a date without a year claims a bound the query never applied, and the `/entries` table it links to already prints one; in exchange its Date column needs more width and no longer fits on the smallest phones
-- The login and current-password fields left out of the blank check over applying it to every required field — both are submitted for comparison against a stored value, so a client rule refusing whitespace could lock an account out of a credential the server would still accept; in exchange those two learn it from the server's `400` like any other refusal
+- **Signals over NgRx** — page-owned state and two shared values do not need a central store; given up: an action log and replayable DevTools timeline.
+- **Angular Material over custom components** — shared interaction and accessibility primitives reduce bespoke UI work; given up: unrestricted styling beyond supported tokens and overrides.
+- **Self-saving dialogs over returning form values to the page** — API field errors stay under the open form; given up: dialogs depend on HTTP services and the page must refetch after success.
+- **A persistent password dialog over a snackbar** — a generated secret cannot vanish on a timeout; given up: an explicit Done step before leaving Team.
+- **Local table sorting over new API sort parameters** — Projects and Team already receive complete collections; given up: client work as those lists grow, plus possible collation differences for Team's locale-aware name sort.
+- **A full pending queue over a current-month default** — managers see older submissions immediately; given up: the first queue query is not restricted by month.
+- **Active-project filters over a catalogue reconstructed from entries** — the API supplies the allowed projects and entries are paged; given up: employees cannot filter directly to a project archived since their work, though month/status filters still reach those rows.
+
+<details>
+<summary>Further interaction, layout and loading tradeoffs</summary>
+
+- `disabledInteractive` on Login over disabling its form — focus stays usable after failure; the handler must prevent duplicate submission.
+- A fixed mobile login offset over vertical centring — opening the keyboard does not recenter the form; tall phones retain empty space below.
+- A read-once expiry flag over a login query parameter — reloads do not replay the notice; it cannot survive a full page reload or be linked.
+- Back closing Change password over disabling navigation closure — browser navigation keeps its normal dismissal behaviour; leaving mid-save can lose confirmation of a change the server completed.
+- Ellipsis on the account name over hiding it — the visible trigger keeps its accessible name; long names are visually truncated on phones.
+- Compact dialog cards over a separate full-screen layout — one form layout serves all sizes; longer forms scroll inside the card.
+- Monthly cards over a weekly total — the API's aggregate is authoritative; the dashboard offers no weekly figure.
+- Disabling Log hours until projects load over opening with an empty catalogue — the dialog gets a complete snapshot; loading feedback must explain the unavailable action.
+- A separate recent-entry table over reusing `EntryList` — the dashboard avoids irrelevant sorting/actions; common cell templates are repeated.
+- Dimming existing figures over skeletons on every write — repeated approvals preserve visual continuity; previous numbers stay visible under `aria-busy` until refreshed.
+- Keeping report rows but resetting summary cards over one loading treatment — detail remains readable while totals show loading; tables and cards deliberately present different intermediate states.
+- Container queries over viewport-only card layouts — the sidenav's width is accounted for; the container cannot size itself from its contents.
+- Wrapping fixed-width filters over shrinking their fields — selected values stay readable; narrow screens use multiple rows.
+- Word-aware table columns with a cap over fixed minimum widths — short values waste less room; a browser ignoring the cell cap can still let a long unbroken name widen the table.
+- `en-GB` dates over the default US order — day-first input matches the intended users; the date-fns adapter adds dependencies.
+- Page-local paginator defaults over root providers — the measured initial bundle fell from 665 kB to 448 kB; another paginated page repeats the defaults.
+- Hiding Approvals descriptions on narrow layouts over showing every column — review actions stay usable; descriptions are absent there, while rejection notes remain under status.
+- Hours beside the employee over the wireframe's column order — the quantity being reviewed stays visible on phones; project and date may require horizontal scrolling.
+- Current-month Entries over all months — the timesheet opens on bounded, relevant work; a new month can be empty and offers Show all months.
+- A teal pending badge over error red — pending work is distinct from rejection; it attracts less attention.
+- Year-bearing recent-entry dates over `d MMM` — an unbounded recent list cannot imply the current year; its date column needs more space.
+- Exempting login/current credentials from the client blank check over applying it everywhere — verification reaches the server's rules; the client may need a server response to explain a refusal.
+
+</details>
 
 ---
 
@@ -159,7 +178,7 @@ Open `http://localhost:4200` and log in with a seeded account.
 
 ## Tests
 
-Vitest + TestBed, run with `ng test`. The service tests are still planned, one spec per unit with the HTTP request asserted through `provideHttpClientTesting()` + `HttpTestingController`:
+Vitest + TestBed, run from `timetrack/` with `npm test -- --watch=false`. The six files below hold the CLI's generated creation tests; their HTTP request/response/error and state assertions are planned, the HTTP suites with `provideHttpClientTesting()` + `HttpTestingController`:
 
 - `AuthService` *(planned)*
 - `EntryService` *(planned)*
@@ -168,7 +187,7 @@ Vitest + TestBed, run with `ng test`. The service tests are still planned, one s
 - `ReportService` *(planned)*
 - `PendingApprovals` *(planned)*
 
-Already green today, outside the services:
+Implemented behaviour tests, outside the services:
 
 - `roleMatch` — matches only a session holding the given role, and nothing without a session
 - `oneTimeSecretGuard` — keeps `/team` while a generated password is on screen, and always lets an ended session leave for `/login`

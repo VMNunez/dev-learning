@@ -2,11 +2,17 @@
 
 My 7th learning project and my first full-stack app — a timesheet where employees log the hours they work on projects and managers approve or reject every entry.
 
+**Angular 21 · Spring Boot 4 · Java 25 · PostgreSQL**
+
+[Live demo](#live-demo) · [Run locally](#how-to-run) · [Backend decisions](backend/README.md#key-patterns) · [Frontend decisions](frontend/README.md#key-patterns)
+
+**Status:** the full-stack app is deployed. Backend service tests and frontend HTTP/state service tests are still pending; existing checks cover DTO validation and selected frontend behaviours. See [backend tests](backend/README.md#tests) and [frontend tests](frontend/README.md#tests).
+
 ---
 
 ## Why this project
 
-My previous six projects were Angular-only with localStorage as a fake backend. This is the step where everything connects: a real database, a real API and a real frontend talking to each other. I built it to understand how a full-stack app actually works — how Angular calls a Spring Boot API, how the server validates and protects data, and how both sides have to agree on a contract.
+Recorded hours need a clear owner, a reviewer and an outcome before they become a trusted report. This portfolio project implements that process across an Angular client and a Spring Boot API: the server enforces ownership and workflow rules, while the interface makes rejection, correction and resubmission explicit. Archived accounts and projects keep their history.
 
 ---
 
@@ -68,18 +74,18 @@ The API runs on a free tier that sleeps when idle, so the first login after a qu
 - SecurityContextHolder for the current user instead of a client-supplied userId to prevent privilege escalation — the client cannot choose which user the server acts as
 - Manager-only account creation to prevent self-assignment of the Manager role
 - Profile-gated runtime seeding of the first manager account to avoid both a setup endpoint that must be removed after first use and a credential hash committed to git
-- PATCH for status transitions (submit, approve, reject) to signal that only one field changes — PUT would replace the whole resource
+- Dedicated PATCH actions for submit, approve and reject to make each guarded workflow transition explicit
 - DTO boundary between persistence and HTTP layer to control exactly what the API exposes and hides
-- Soft delete for users and projects to preserve all historical time entry data — hard delete would orphan records
+- Soft delete for users and projects to preserve timesheet history and its required relationships
 - Docker Compose to run Spring Boot and PostgreSQL together with one command
-- Environment variables for every per-environment value (database URL, CORS origins, secrets) to run the same image locally, in Docker and on the public host with nothing secret in git
+- Environment variables for database settings, CORS origins and credentials to configure each deployment without embedding active secrets in application configuration
 
 ---
 
 ## Tradeoffs
 
 - JWT over server-side sessions — the API keeps no session store and every request carries its own credential; given up: a logout cannot revoke an issued token before its 60-minute expiry, although deactivation is still checked on every request
-- Soft delete over hard delete — deleting a user or a project would orphan the time entries that reference it; given up: a deactivated account keeps its email, so the same address cannot be registered again
+- Soft delete over hard delete — foreign keys reject deleting a referenced user or project, and archiving preserves their hours; given up: a deactivated account keeps its email, so the same address cannot be registered again
 - docker-compose over a manual local setup — the only prerequisite is Docker, and the API image is the one that gets deployed; given up: a slower edit-run loop, so daily development still runs from IntelliJ against a local database
 - A public deployment over a local-only project — anyone can open the app without cloning it; given up: the free-tier API sleeps when idle and wakes slowly, and the demo data is writable by every visitor
 - Deploying before the unit tests over tests first — a working app was available to open sooner; given up: the first public version shipped with only its validation and frontend unit tests in place, and the service-layer unit tests (JUnit 5 + Mockito, Vitest) still to follow
@@ -96,24 +102,29 @@ The API runs on a free tier that sleeps when idle, so the first login after a qu
 
 ## What I learned
 
+The main lessons were enforcing a workflow and ownership on the server, keeping reports consistent with that workflow, and carrying the API's contract through asynchronous forms. The recall lists below index the implementation; the linked technical guides explain the decisions.
+
 ### Backend
 
+<details>
+<summary>Backend concepts — persistence, authorization, API contracts and deployment</summary>
+
 - Controller → Service → Repository layered architecture — each layer has one job, and the API returns only JSON because Angular is a separate app
-- `@Entity` mapping — `@Id`/`@GeneratedValue` for the key (bare form resolves to `AUTO`, a Postgres/Hibernate 6 sequence, not native identity), `@Column(nullable = false, unique = true)` for the constraints and `@CreationTimestamp` for the insert time
+- `@Entity` mapping — sequence-generated ids, column constraints and creation timestamps express the persistence contract
 - Defaults on both sides — `private boolean active = true` for an object built in Java, `@ColumnDefault` for a row written outside it
 - `boolean` vs `Boolean` (`long` vs `Long`) — a wrapper only where `null` carries meaning, and the switch renames Lombok's getter from `getX()` to `isX()`
 - `@Enumerated(EnumType.STRING)` — `Role` and `EntryStatus` are stored as their names, so reordering an enum never rewrites what old rows mean
 - `JpaRepository` + derived queries — CRUD with no SQL, and finders like `existsByEmail` generated from the method name
 - `@Service` / `@Component` + constructor injection — every collaborator and every `@Value` setting arrives as a `final` constructor parameter, so no bean is ever built half-configured
 - DTOs (`Create*Request`, `Update*Request`, `*Response`) — the API contract stays separate from the entity, mapped in one `toResponse()` helper per service
-- Optional field on an Update DTO (`Boolean active`, applied only when non-null) — lets `PUT` stay a full-replacement contract while still supporting reactivation of a soft-deleted row
+- `UpdateProjectRequest.active` — omitted or null preserves the current flag, while the same PUT requires a name and replaces the description
 - `@RestController` + `@GetMapping`/`@PostMapping`/`@PutMapping`/`@DeleteMapping` — one method per verb and path, with `@PathVariable` binding the URL segment and `@RequestBody` the JSON body
 - `ResponseEntity<T>` — the status is explicit on every endpoint: `201` with a `Location` header on a create, `204` with `ResponseEntity<Void>` on a delete
 - `Optional<T>` + custom unchecked exceptions — a missing row becomes a `ResourceNotFoundException` and a 404, never a `NullPointerException`
 - `@RestControllerAdvice` — one `GlobalExceptionHandler` turns every exception into the same JSON error body
 - Exception-to-status mapping — `InvalidStateTransitionException` → 409 for a state-machine conflict; `BusinessRuleViolationException` and `InvalidPasswordException` share 400 but stay separate classes so each carries the field its message belongs under
 - Bean Validation (`@NotBlank`/`@NotNull` + `@Valid`) across every request DTO — accumulates all failed fields in one response, unlike fail-fast manual checks
-- `@Size(max = ...)` on every request string — 72 on passwords, BCrypt's truncation boundary, caps the CPU an unauthenticated caller can burn
+- `@Size(max = ...)` — request strings have explicit length limits before business logic runs
 - `@Column(precision, scale)` + `@DecimalMin`/`@DecimalMax`/`@Digits` — `hours` is bounded at both the column and the request DTO, so an over-precise value gets a 400 instead of being silently rounded
 - JWT structure — header, payload claims (`sub`, `iat`, `exp`) and an HMAC signature keyed by a Base64 secret decoded with `Keys.hmacShaKeyFor()`
 - JWT `sub` holds the user id, not the email — an email a manager can edit and reassign would hand a still-valid token to its next owner
@@ -127,7 +138,7 @@ The API runs on a free tier that sleeps when idle, so the first login after a qu
 - Account deactivation enforced twice — blocked at login by `.disabled(!user.isActive())`, and blocked on the next request by `AccountStatusUserDetailsChecker` in `JwtFilter`
 - Token lifetime as a tradeoff — cutting `app.jwt.expiration` from 24h to 60min balances a usable work session against the blast radius of a token stolen from `localStorage`
 - Role-based data filtering — `getAll()` branches between `findAll()` and `findByUser()` by reading authorities off `SecurityContextHolder`
-- Broken object-level authorization (BOLA) — a filter on the list endpoint must also be applied on the detail endpoint (`getById`), returning 404 not 403 so the resource's existence isn't confirmed
+- Object-level authorization — project lookup and entry mutations conceal resources the caller may not access with a 404
 - Segregation of duties — a manager cannot approve or reject their own time entry; ownership is resolved from the JWT via `SecurityContextHolder`, the same pattern used for every other ownership check
 - `@ManyToOne` on `TimeEntry` to both `User` and `Project` — two foreign keys on the same entity
 - N+1 fix — lazy `@ManyToOne` plus a `Specification`-driven `LEFT JOIN FETCH`, skipped on `COUNT` queries via `query.getResultType()`
@@ -152,9 +163,14 @@ The API runs on a free tier that sleeps when idle, so the first login after a qu
 - SLF4J `Logger` over `System.out.println` — log levels, automatic context (timestamp/thread/class), and proper stacktrace formatting via `log.error("message", e)`
 - Multi-stage `Dockerfile` — a JDK stage builds the jar and a JRE stage runs it as a non-root user, so the image ships no compiler
 - docker-compose — the API image plus its own PostgreSQL, whose init script creates the non-superuser app role on its first start
-- Configuration parity — the same image runs in IntelliJ, in compose and on the public host, every difference injected as an environment variable (`APP_CORS_ALLOWEDORIGINS` through relaxed binding)
+- Configuration parity — local Java execution and the container share application configuration, with environment variables selecting database and CORS settings
+
+</details>
 
 ### Frontend
+
+<details>
+<summary>Frontend concepts — state, HTTP, forms and accessible interactions</summary>
 
 - Angular against a real REST API — `HttpClient` calls typed with interfaces that mirror the backend DTOs field for field, the base URL swapped per build between localhost and the hosted API
 - `HttpInterceptorFn` — attaches the Bearer token and turns a 401 on a token-bearing request into one "session expired" redirect, while the login form's own 401 stays a wrong-password error
@@ -176,6 +192,8 @@ The API runs on a free tier that sleeps when idle, so the first login after a qu
 - Focus handed back after a write — `afterNextRender` returns focus to a control the refetch did not remove, instead of dropping it to `<body>`
 - `TitleStrategy` — every route writes its own page name into the browser tab, with the brand appended once
 - Status never by colour alone — every badge shows its word, and its colours are checked at 4.5:1 at badge size
+
+</details>
 
 ---
 
