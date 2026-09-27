@@ -9,7 +9,10 @@
 
 ## Tasks
 
-*No open tasks.*
+### Low
+
+- [ ] **[Low]** `[frontend]` — The paginator in `task-table.html:69` carries `aria-label="Select page of periodic elements"`, copied verbatim from the Angular Material table docs example, so a screen reader announces the task list's pagination as a periodic-table control. The label should name what it pages (the tasks) *(Effort: Small)* *(raised 2026-09-27 during readme-audit on 05-task-manager)*
+- [ ] **[Low]** `[frontend]` — PLANNING's Tech stack (line 29) says "Angular + Angular Material v19", but `package.json` pins `@angular/core ^21.2.0` and `@angular/material ^21.2.7`, and the README states Angular 21 and Material 21. DECISION, no code change expected: correct the PLANNING line to the version the project runs *(Effort: Small)* *(raised 2026-09-27 during readme-audit on 05-task-manager)*
 
 ---
 
