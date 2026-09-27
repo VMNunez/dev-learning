@@ -1,20 +1,12 @@
 # Pipeline self-report — readme-audit
 
-Date: 2026-09-27 · Project: projects/05-task-manager (Angular-only → target `global`)
+Date: 2026-09-27 · Project: projects/04-meal-finder (Angular-only → target `global`)
 Status: clean
 
-- **Report discipline** — nothing discarded. 4 dispatches against 4 required (author, reviewer, judge, applier), each within budget and each carrying its EOF proofs. The reviewer and the judge persisted their verdicts to scratch paths.
-- **Trace verification** — reviewer trace complete on the first pass (12/12 sections in standard order), verdict PASS with the README unchanged. No re-dispatch, no false alarm.
+- **Report discipline** — nothing discarded; 5 dispatches against 4 required (author, reviewer, judge, applier), the extra one being the orchestrator objection from the pre-commit diff check; the reviewer and both appliers persisted to scratch paths.
+- **Trace verification** — reviewer trace complete on the first pass (12/12, PASS, unchanged); both applier dispatches also returned full traces; no re-dispatch, no false alarm.
 - **Coherence** — not applicable (Angular-only project); correctly skipped.
-- **Effect judge** — 2 CUTs + 3 KEEPs, 0 ADDs. B objected to none and settled nothing; 0 items carry `⚠ regenerable — standard gap`.
-  - The pre-commit diff verification, read against a pre-judge snapshot, **found nothing**. The judge span holds exactly the two lines the items named, both trims that keep the concept, and the orchestrator raised no objection of its own.
-  - The judge outranks the green trace, on a small scale: the reviewer passed 12/12 unchanged, and the judge still returned "does not LAND" on two form defects.
-- **Failure protocol** — not triggered; no subagent errored. README committed in `a4f93144`.
-- **Anything else** — no rule broken:
-  - Step 0 ran: session rules read to EOF before the first dispatch, previous `Status: clean`, so it proceeded silently. Every mandated dispatch ran, and the diff verification ran before the commit.
-  - A peer session modified `projects/04-meal-finder/README.md` in the same working tree during this run; its diff has the shape of another `readme-audit` run. The prompt states no concurrency rule. Staging by path kept that file out of this run's commit. This report and `_run-tracker.md` are shared by both runs, and both were clean when this run wrote them.
-  - Where the prompt is silent: the author reported two project defects outside the README boundary. The orchestrator verified both and raised them as Low tasks in `PROJECT-BACKLOG.md` in `90b3d7d7`, under the session rules' standing backlog authorization.
-  - No open `FRIC` rows. No breach log exists and none was created. Prompt size is 333 lines. `map: verified` — the rows about this prompt in the `README.md` index and catalogue, and in `_system-map.md` (§7 `{project}/README.md`, the G5 chain steps, §11), all match the prompt.
-- **Verdict** — pipeline clean. Friction recorded, not applied:
-  - (a) There is no declared channel for project defects found outside the README boundary. This is the second run in a row to use the backlog authorization for it. It fails condition 3, because the README output is unaffected.
-  - (b) The prompt has no rule for concurrent runs sharing the report and tracker files. It fails condition 3: path-scoped staging held, and git keeps both runs' commits.
+- **Effect judge** — 4 items (3 CUT, 1 ADD) + 3 KEEPs; B objected to 0; 0 `⚠ regenerable`. The pre-commit `git diff` against a pre-judge snapshot **found one**: a rule-9 test-2 CUT applied as a whole-bullet deletion of a concept that is a PLANNING key-patterns row and whose code half is accessibility behaviour, while B's report asserted it was no PLANNING objective. Raised as an orchestrator objection; the looks-only wording's cut was upheld and B rewrote the concept to its behavioural half. The judge outranks the green trace: the reviewer passed 12/12 and the judge returned "not LANDS".
+- **Failure protocol** — not triggered; no subagent errored; README committed in `1b70f799`.
+- **Anything else** — no rule broken: step 0 ran before the first dispatch, every mandated dispatch ran, the diff check ran before the commit; no open `FRIC` rows; no breach log exists; prompt is 333 lines; `map: verified` (`README.md` index row + catalogue row, `_system-map.md` §7 `PLANNING.md`/`{project}/README.md`, the G5 chain steps, §11). Where the prompt is silent: the orchestrator added an `Out-of-boundary defects:` line to the author and reviewer dispatches and raised the three verified defects as Low tasks in `7dd11128`; the parallel 05 run shared the working tree, held off by a do-not-touch line in each dispatch and path-scoped staging.
+- **Verdict** — pipeline clean. Friction recorded, not applied: (a) an applier deleting where rule 9 prescribes a merge or a rewrite is now a **third sighting** (05 on 2026-09-03, 06 and 04 on 2026-09-27) and fails condition 3 each time, since the `REC-202` diff check restored the output; (b) no declared channel for out-of-boundary project defects, a third sighting, fails condition 3 because the README is unaffected.
