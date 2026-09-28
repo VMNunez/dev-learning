@@ -285,9 +285,9 @@ Angular 01–06). Dispatch one `role-appropriate` subagent, `reasoning tier: sta
 > (frontend); DTO boundary, error-handling path, naming (backend). For each axis: name the convention the
 > **majority** of the code follows, then name every **outlier** that departs from it, with `file:line`.
 > An axis where everything agrees is a one-line "consistent". You are not hunting bugs and not judging any
-> slice on its own merits — another reviewer already did that. Return only a table
-> `| Axis | Convention (majority) | Outlier(s) | Priority |` plus a one-line list of the features you
-> compared, as your trace. No code excerpts. **Do not edit any file.**
+> slice on its own merits — another reviewer already did that. Return, in the reply itself and never as
+> a pointer to an earlier message, only a table `| Axis | Convention (majority) | Outlier(s) | Priority |`
+> plus a one-line list of the features you compared, as your trace. No code excerpts. **Do not edit any file.**
 
 An outlier is **Medium** (High only if it breaks the DTO boundary or leaks an entity). Dedup it in Step 5
 against the slice tables: when a slice reviewer already reported the same thing locally (e.g. "this page
@@ -306,8 +306,8 @@ concept coverage and only makes sense on a `full` run. Dispatch one `role-approp
 > targeted search (grep for its annotation/class/pattern — e.g. `@RestControllerAdvice`,
 > `SecurityContextHolder`, `takeUntilDestroyed`) and read only the file(s) that hit, enough to judge
 > whether the use is meaningful. Never read the codebase end to end. Mark each concept ✅ Demonstrated /
-> ⚠️ Shallow / ❌ Missing with a one-line note (file:line for ✅/⚠️). Return only the table + the tally —
-> no code excerpts. **Do not edit any file.**
+> ⚠️ Shallow / ❌ Missing with a one-line note (file:line for ✅/⚠️). Return only the table + the tally,
+> in the reply itself and never as a pointer to an earlier message — no code excerpts. **Do not edit any file.**
 
 ### Step 5 — Merge into the backlog + commit it (orchestrator)
 You now hold a findings table per slice (flow + security), plus the learning-objectives verdict.

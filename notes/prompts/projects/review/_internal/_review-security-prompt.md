@@ -77,7 +77,12 @@ space; if an area is genuinely clean, say so.
 
 ## Output — findings table + trace (no edits, no commit)
 
-Return, for **this slice only**, a findings table, most severe first:
+Return, for **this slice only**, **in the reply itself** — never in a scratch file and never as a pointer
+to an earlier message. The orchestrator is not required to read anything but your reply, so a block left
+anywhere else did not arrive: an unsent trace costs the slice its coverage, and unsent findings never
+reach the backlog at all.
+
+First a findings table, most severe first:
 
 `| Severity (High/Medium/Low) | File | Finding | Fix | Why an interviewer cares | Related notes/security/coverage/junior.md item |`
 
