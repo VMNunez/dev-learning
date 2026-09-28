@@ -858,7 +858,10 @@ notes/java/
   - **Victor declares the pair refined from the language he refined it in, and the counterpart is
     brought into line before the freeze lands** (2026-08-22). He works the TODOs in one file — `es/` as
     readily as `en/` — and then says which language that was. That declaration makes that file final:
-    the sync run reads it and **changes nothing in it**, not a word, not a line break, not a heading;
+    **one cold read of it comes first** (`REC-247`, 2026-09-28), reporting — never editing — what in it
+    is false, because his refinement is a prose bar and nothing else checks the claims; he decides which
+    fixes land, they are committed in that file alone, and the mandate is `study-content-writer`'s.
+    From there the sync run reads it and **changes nothing in it**, not a word, not a line break, not a heading;
     it repairs only the *counterpart* until the translation is faithful — same content, same message,
     same structure and code blocks, reading as native prose in its own language — and reports what it
     changed. Then both files are committed and the entry takes `Status: refined`. The

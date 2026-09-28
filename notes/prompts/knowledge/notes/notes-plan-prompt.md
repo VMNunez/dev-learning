@@ -406,9 +406,13 @@ second one is protected from the pipeline.
 Victor sets `Status: refined` in `PLAN` — by hand, or by declaring in the session that he has refined
 the pair, which is the same authority typed instead of edited (2026-08-22). No prompt ever assigns it on
 its own initiative. His declaration names the language he refined, and that file is final from that
-moment: the run that acts on it changes **nothing** in it and brings only the counterpart into line —
-same content, same message, same structure, native prose in its own language — commits both files, and
-only then writes `Status: refined`. The direction is whatever he declares; a note refined in `es/` syncs
+moment: the run that acts on it changes **nothing** in it on its own initiative and brings only the
+counterpart into line — same content, same message, same structure, native prose in its own language —
+commits both files, and only then writes `Status: refined`. **One read comes first** (`REC-247`,
+2026-09-28): a cold analyst reads the declared file whole and reports — never edits — what in it is
+false, since his refinement is a prose bar and nothing else checks the claims; the fixes he accepts are
+applied to that file in their own commit before the sync, and none he declines is. The mandate is
+`study-content-writer`'s, which runs this route. The direction is whatever he declares; a note refined in `es/` syncs
 `es/` → `en/`, and the canonical-`en/` default does not override it. Before accepting the freeze, every
 current concept should be `[x]` and `Pending additions` should be `none`; if either fails, sync the
 counterpart, report it, and leave `Status` where it is. From the freeze the pair's existing prose is

@@ -144,7 +144,10 @@ covers takes that row's `Verdict`. Every other change is exactly one of `missing
 `Completed` commit** lacked what the change applies), `unapplied` (the standard at that commit carried it
 and the draft did not apply it) or `fuera` (content or depth rather than style — a fact added, an error
 corrected). A *change* is one correction that stands on its own; a diff hunk holding two corrections
-counts as two. **A `missing` is *new* only when the standard as it stands now still lacks it**: a
+counts as two. **A change landed by a `docs(notes): apply accepted correctness-read fixes to …
+(REC-247)` commit is `fuera`**, whatever it looks like: it answers the cold correctness read
+`study-content-writer` runs on a refined declaration, not Victor's bar, and `git log` over the pair
+between the two commits names it. **A `missing` is *new* only when the standard as it stands now still lacks it**: a
 `missing` an earlier pass has since answered stays `missing` in the counts, is recorded as one more pair
 supporting that rule, and produces nothing else.
 

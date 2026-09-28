@@ -165,12 +165,46 @@ entry in `notes/{topic}/coverage/notes-plan-{LEVEL}.md`.
     and this skill never silently bypasses it.
 - **Victor declaring a pair refined is its own operation, and it runs before the freeze**
   (2026-08-22). When he says he has refined a note and names the language — "esta nota está refinada en
-  español", "the English one is refined" — that file is finished and **you change nothing in it**: not a
-  word, not a line break, not a heading, not the order of a list. Read it whole, then bring the
-  *counterpart* into line until the translation is faithful — same content, same message, same structure
-  and code blocks, native prose in its own language — respecting intentional trims instead of
-  "resyncing" them back in. Then: report every counterpart change and confirm the declared file is
-  untouched (`git diff --stat` proves it), hand Victor the commit for **both** files, and set that
+  español", "the English one is refined" — that file is finished and **you change nothing in it on your
+  own initiative**: not a word, not a line break, not a heading, not the order of a list.
+
+  **First, one correctness read of that file, before anything else moves** (`REC-247`, 2026-09-28).
+  Victor refines for prose, and nothing else checks what the prose *claims*: a TODO pass breaks a fact as
+  easily as it fixes a sentence — `java/junior/02` froze an `em` example whose U+2003 had been saved as
+  U+0020, so it demonstrated the opposite of its own comments. Dispatch **one `analyst`, `reasoning
+  tier: deep`**, per `_agent-runtime-standard.md` — an analyst because it returns evidence for Victor to
+  rule on, never a verdict — cold, so it gets the declared file's path, a scratch path it writes each
+  finding to as it reaches it, this mandate, and nothing of the session. Its mandate: read the file
+  whole (`wc -l` first; a return that does not open with `N lines, read to EOF` is treated as not
+  run); **edit nothing**, because the file is
+  Victor's declared text; report only what is **false** — a concept stated wrongly; a code example whose
+  stated output or behaviour is not what it does (run it where that language's toolchain is installed
+  locally, compare literals byte by byte where the example turns on an invisible or look-alike
+  character, and mark anything it did not execute `reasoned`); a claim wider than what is true; two
+  places in the file that contradict each other; an internal anchor or repository-relative link that
+  does not resolve. Style, register, depth and pedagogy are out of scope — that is the bar he has just
+  applied. Each finding carries its line, the quoted text, why it is false with its evidence, and a
+  proposed fix; none is returned as `findings: 0`. A read that cannot be dispatched as that standard
+  defines it is handled like the blocker below: do the sync, report it, leave `Status` where it is —
+  and write its `FRIC-NNNN` row under the shared failure close-out above, which the blocker does not owe.
+
+  **Then Victor decides — the one wait this route has.** With `findings: 0`, carry on. Otherwise show
+  the findings numbered and stop until he answers; whatever he says — apply some, none, or his own
+  wording — is his instruction. Left unanswered, nothing is synced or written: the declaration is
+  repeated in a later session, which dispatches a fresh read. Apply only what he accepted, quoting his
+  answer, inside the passage each finding names, and commit the declared file alone, under the same
+  commit rule as the pair's commit below and with the subject
+  `docs(notes): apply accepted correctness-read fixes to {topic}/{level}/{NN} (REC-247)`; from that
+  commit it is final. An accepted finding is the analyst's complaint and not his, so it writes no
+  `NTH-NNNN` row, and the harvest pass classifies every change that commit landed as `fuera` — an error
+  corrected. One read per declaration: the fixes are not re-read.
+
+  Then read the declared file whole and bring the *counterpart* into line until the translation is
+  faithful — same content, same message, same structure and code blocks, native prose in its own
+  language — respecting intentional trims instead of "resyncing" them back in. Then: report the read's
+  return, which findings he accepted, and every counterpart change; confirm the declared file is
+  untouched since the declaration, or since the commit of the fixes he accepted (`git diff --stat`
+  proves it); hand Victor the commit for **both** files, and set that
   entry's `Status: refined` in `notes-plan-{LEVEL}.md`. This is the one place a writer assigns that
   status, and the authority is his declaration, not your judgement of the prose. If `Studied` carries a
   date, set it to `pending` — his refinement changed the accepted text after that pass. If a current
