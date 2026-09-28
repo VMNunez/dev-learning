@@ -224,6 +224,9 @@ instruction steps.** Same row: "left out **and reported as a gap**" reached `cv-
 and `linkedin`'s Step 5 and left the readiness box and the printed-output block alone, so a
 compliant run could omit the skill and say nothing — one blocking finding in each of two review
 rounds. Where the obligation is to *say* something, the site is wherever the prompt says things.
+**Also `REC-237`: and wherever every *other* role reporting the same class says it, down to the batch
+return contract that trims what reaches the orchestrator** — stage C's "reported, never rewritten" had no
+print slot, and stage T's sibling report of the same wrong English had none either.
 
 **A source-list entry is a dispatch of the run's reads, so a false one leaves a *hole*, and deleting
 the claim does not fill it.** From `REC-147`. `_application-standard.md` told five prompts that
