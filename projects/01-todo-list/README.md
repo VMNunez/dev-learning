@@ -2,13 +2,25 @@
 
 My 1st learning project — task manager where users add, complete and delete tasks with live filtering.
 
-**Stack:** Angular 21 · TypeScript · Angular signals · plain CSS (custom properties + Flexbox) — [live demo](#live-demo) · [how to run](#how-to-run)
+[Live demo](#live-demo) · [How to run](#how-to-run)
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angular/angular-original.svg" alt="" width="20" height="20"> Angular 21 |
+| Language | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="" width="20" height="20"> TypeScript |
+| Routing | Angular Router |
+| State | Angular signals |
+| Styles | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="" width="20" height="20"> CSS custom properties + Flexbox |
 
 ---
 
 ## Why this project
 
-A task list is only useful while it stays honest: a task added or completed has to show up at once in the list, in the pending counter and under whichever filter is active. This portfolio app gives the task list a single owner, so every view reads the same state and adding, completing and filtering tasks stay separate responsibilities that can never disagree.
+I built this first Angular project to learn the framework's core building blocks from scratch: how components communicate, how a service shares state, and how signals keep the UI in sync. To practise them, I built a task list where users can add, complete, delete and filter tasks. The visible list and pending counter derive from the same task state, so changes appear immediately and consistently under the active filter.
 
 ---
 
@@ -84,18 +96,6 @@ No login — the app opens straight on the task list.
 - State justified by its readers — a signal no template reads is not state, so the root component of a routed app declares none
 - `type` union — `type Filter = 'all' | 'active' | 'completed'` makes an invalid filter a compile error, not a silent no-match
 - Exhaustive `switch` over a union type — omitting `default` makes a new union member a compile error
-
----
-
-## Tech stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Angular 21 |
-| Language | TypeScript |
-| Routing | Angular Router |
-| State | Angular signals |
-| Styles | CSS custom properties + Flexbox |
 
 ---
 
