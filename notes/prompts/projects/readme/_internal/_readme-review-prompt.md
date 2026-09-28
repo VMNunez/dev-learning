@@ -44,7 +44,7 @@ project. Your attention budget belongs to the README.
   versions match the implemented project, and the table states those technologies in text. When the app
   is deployed, check rule 1's `▶ Try the live app` line below the badges links the deployed URL, not
   an anchor, and matches the URL in Live demo; when the app has a login, the demo accounts table follows
-  it, one value per cell, and matches Live demo's accounts.
+  it, each email and password in its own copyable code block, and matches Live demo's accounts.
 - **Per-section rules** — each section meets its specific rule (format strings like `[X] over [Y] —
   [reason]`, the interview test on architecture decisions, table-not-list for Tech stack, recall-list
   brevity for "What I learned", one API table per resource with specific roles, prose-only Auth flow, `*(planned)*` for
