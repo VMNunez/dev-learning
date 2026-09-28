@@ -637,7 +637,7 @@ Embedding a chunk of JSON or SQL in Java source used to be genuinely painful, be
 String json = "{\n  \"name\": \"Ana\",\n  \"role\": \"DEVELOPER\"\n}";
 ```
 
-You cannot read that, you cannot paste it into Postman to check it, and one missing backslash is a compile error. A **text block** is a String literal delimited by three double quotes, and inside it quotes and newlines are simply themselves:
+You cannot read that, you cannot paste it into Postman to check it, and one missing backslash is, depending on which one, a compile error or a wrong character nobody points out to you: if the one in a `\n` is missing, the code compiles and prints a stray `n`. A **text block** is a String literal delimited by three double quotes, and inside it quotes and newlines are simply themselves:
 
 ```java
 // BIEN — a text block
@@ -816,6 +816,7 @@ try {
 // Option 2 — validate first: you only convert if the text is digits
 String clean = input.strip();
 if (clean.matches("\\d+")) {          // \d+ = one or more digits
+    // careful: "99999999999" also passes, and parseInt still throws (it does not fit in an int)
     int id = Integer.parseInt(clean);
 } else {
     throw new IllegalArgumentException("The id must be a number: " + input);
@@ -838,7 +839,7 @@ String b = Integer.toString(hours);    // "38" — the number's own conversion
 String c = "" + hours;                 // "38" — works, but says nothing about intent
 ```
 
-The three forms shown in the code block above convert an `int` into text, and an `int` can never be `null`: it is a primitive type and always holds a number. The `null` problem appears when the number arrives as an `Integer`, the wrapper of `int`, which, as you will remember, can be `null`. So when what you want to convert is not a primitive but an object that can be `null` (such as an `Integer`), the way you convert it does matter, and you have to use `String.valueOf(x)`, because it does not fail when `x` is `null`.
+The three forms shown in the code block above convert an `int` into text, and an `int` can never be `null`: it is a primitive type and always holds a number. The `null` problem appears when the number arrives as an `Integer`, the wrapper of `int`, which, as you will remember, can be `null`. So when what you want to convert is not a primitive but an object that can be `null` (such as an `Integer`), the way you convert it does matter: `Integer.toString(x)` throws `NullPointerException` when `x` is `null`, while `String.valueOf(x)` and `"" + x` return the text `"null"`. Of those two, use `String.valueOf(x)`, because it makes the intent clear.
 
 `valueOf` is a **static** method of `String`: you call it on the class (`String.valueOf(...)`) and pass the value you want to convert as its argument. That value can be an `int`, a `long`, a `double`, a `boolean`, a `char` or any object, because `String` has a version of `valueOf` for each type. If the argument is `null`, `valueOf` checks for it before doing anything and returns the text `"null"`, without throwing any exception.
 
@@ -875,7 +876,7 @@ That is the reason `String.valueOf(x)` is the recommended choice. When we are su
 > String.valueOf(letters);    // uses valueOf(char[]) — letters is an array of characters
 > ```
 >
-> Java decides which one to use by looking at the type of what you pass it. With a bare `null` there is a problem: `null` is not a number or a boolean, but it can take the place of an `Object` or of a `char[]`, so there are two versions of `valueOf` that could receive it. When more than one version of `valueOf` could receive the argument, Java always picks the most specific one: every `char[]` is an `Object`, but not every `Object` is a `char[]`, so `valueOf(char[])` wins for being the most specific. And the first thing that version does is check how many characters the argument has, which in this case is an array because it is a `char[]`; since that array is `null`, it throws the exception. The error message even says so: `Cannot read the array length because "value" is null`. It only ever happens with a literal `null` written in the source, never with a null *variable*, whose declared type resolves the overload correctly. If we ever need to use `String.valueOf` with a `null` written by hand, we have to tell Java to treat it as an `Object`, since `String.valueOf((Object) null)` picks the `valueOf(Object)` version and gives you `"null"`.
+> Java decides which one to use by looking at the type of what you pass it. With a bare `null` there is a problem: `null` is not a number or a boolean, but it can take the place of an `Object` or of a `char[]`, so there are two versions of `valueOf` that could receive it. When more than one version of `valueOf` could receive the argument, Java always picks the most specific one: every `char[]` is an `Object`, but not every `Object` is a `char[]`, so `valueOf(char[])` wins for being the most specific. And the first thing that version does is check how many characters the argument has, which in this case is an array because it is a `char[]`; since that array is `null`, it throws the exception. The error message even says so: `Cannot read the array length because "value" is null`. It happens with a literal `null` written in the source and with a variable of type `char[]` that holds `null`, because in both cases `valueOf(char[])` is chosen. With a null variable of any other object type, its declared type picks `valueOf(Object)` and you get `"null"`. If we ever need to use `String.valueOf` with a `null` written by hand, we have to tell Java to treat it as an `Object`, since `String.valueOf((Object) null)` picks the `valueOf(Object)` version and gives you `"null"`.
 
 In project 07, the `JwtUtil` class performs these conversions in both directions, from number to text and from text to number. When a user logs in, the application creates a JWT and stores that user's id inside it, in the `subject` claim. The problem is that `subject` only accepts text, whereas the id is a number of type `Long`. So when creating the token the id has to be converted to text, and when a request arrives with that token and the application reads the `subject` to find out which user it is, that text has to be converted back to a `Long`:
 
@@ -886,7 +887,7 @@ In project 07, the `JwtUtil` class performs these conversions in both directions
 return Long.valueOf(parseClaims(token).getSubject());     // String → Long, when the token is read
 ```
 
-That second line can throw `NumberFormatException`, because here `Long.valueOf` receives text: it is the method you saw in "Text → number", the one that turns a text such as `"1042"` into a `Long` object. Do not confuse it with `String.valueOf`, which goes the opposite way, from number to text. Like every text-to-number method, if the text is not a valid number, it throws the exception. And here the text comes from outside, from the token the client sends with every request, so nothing guarantees it is a number. That it can throw is on purpose: if a token arrives whose `subject` is not a number —for example, an old token from before the `subject` held an id—, `Long.valueOf` throws the exception and the request is rejected, instead of carrying on with a user who is not authenticated. Which is the correct behaviour, and a good example of a conversion that is *also* a validation.
+That second line can throw `NumberFormatException`, because here `Long.valueOf` receives text: it is the method you saw in "Text → number", the one that turns a text such as `"1042"` into a `Long` object. Do not confuse it with `String.valueOf`, which goes the opposite way, from number to text. Like every text-to-number method, if the text is not a valid number, it throws the exception. And here the text comes from outside, from the token the client sends with every request, so nothing guarantees it is a number. That it can throw is on purpose: if a token arrives whose `subject` is not a number —for example, an old token from before the `subject` held an id—, `Long.valueOf` throws the exception, and `JwtFilter`'s `catch` handles it without authenticating anyone (a `NumberFormatException` is a kind of `IllegalArgumentException`). The request carries on as anonymous, and any protected route answers 401 instead of treating it as if it came from a valid user. Which is the correct behaviour, and a good example of a conversion that is *also* a validation.
 
 ---
 
@@ -914,7 +915,7 @@ name == "Ana"                       // MAL — never use == to compare text
 
 With this file and [01-variables-types.md](01-variables-types.md) you can now work with the two kinds of value that show up in almost any Java program: numbers and text. For numbers, you saw that their type decides how arithmetic operations are carried out on them; for text, that a `String` cannot be modified, and that this immutability explains everything else. In practice, you can now:
 
-- Read and use the `String` methods that come up most often, knowing each one returns a new `String` you have to keep.
+- Read and use the `String` methods that come up most often, knowing the ones that seem to modify the text return a new `String` you have to keep.
 - Validate a field that arrives with only spaces using `isBlank()`, not just an empty one with `isEmpty()`.
 - Build a report line with `+` or `.formatted()`, and use `StringBuilder` when the text accumulates inside a loop.
 - Write a multiline JSON body or SQL query with a text block, without needing to escape quotes or line breaks.

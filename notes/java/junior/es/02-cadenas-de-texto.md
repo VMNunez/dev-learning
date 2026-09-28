@@ -636,7 +636,7 @@ Incrustar un trozo de JSON o SQL en código fuente Java solía ser doloroso, por
 String json = "{\n  \"name\": \"Ana\",\n  \"role\": \"DEVELOPER\"\n}";
 ```
 
-Eso no se puede leer, no se puede pegar en Postman para comprobarlo, y una sola barra invertida que falte es un error de compilación. Un **bloque de texto** es un literal String delimitado por tres comillas dobles, y dentro las comillas y los saltos de línea son simplemente ellos mismos:
+Eso no se puede leer, no se puede pegar en Postman para comprobarlo, y una sola barra invertida que falte es, según cuál sea, un error de compilación o un carácter equivocado que nadie te señala: si falta la de un `\n`, el código compila e imprime una `n` suelta. Un **bloque de texto** es un literal String delimitado por tres comillas dobles, y dentro las comillas y los saltos de línea son simplemente ellos mismos:
 
 ```java
 // BIEN — un bloque de texto
@@ -815,6 +815,7 @@ try {
 // Opción 2 — validar antes: solo conviertes si el texto son dígitos
 String clean = input.strip();
 if (clean.matches("\\d+")) {          // \d+ = uno o más dígitos
+    // ojo: "99999999999" también pasa, y parseInt lanza igual la excepción (no cabe en un int)
     int id = Integer.parseInt(clean);
 } else {
     throw new IllegalArgumentException("El id debe ser un número: " + input);
@@ -837,7 +838,7 @@ String b = Integer.toString(hours);    // "38" — la propia conversión del nú
 String c = "" + hours;                 // "38" — funciona, pero no dice nada sobre la intención
 ```
 
-Las tres formas que se muestran en el bloque de código anterior convierten un `int` en texto, y un `int` nunca puede ser `null`: es un tipo primitivo y siempre guarda un número. El problema del `null` aparece cuando el número llega como `Integer`, el wrapper de `int`, que, como recordarás, sí puede ser `null`. Así que, cuando lo que quieres convertir no es un primitivo sino un objeto que puede ser `null` (como un `Integer`), la forma de convertirlo sí importa, y hay que usar `String.valueOf(x)`, porque no falla cuando `x` es `null`.
+Las tres formas que se muestran en el bloque de código anterior convierten un `int` en texto, y un `int` nunca puede ser `null`: es un tipo primitivo y siempre guarda un número. El problema del `null` aparece cuando el número llega como `Integer`, el wrapper de `int`, que, como recordarás, sí puede ser `null`. Así que, cuando lo que quieres convertir no es un primitivo sino un objeto que puede ser `null` (como un `Integer`), la forma de convertirlo sí importa: `Integer.toString(x)` lanza `NullPointerException` cuando `x` es `null`, mientras que `String.valueOf(x)` y `"" + x` devuelven el texto `"null"`. De esas dos, usa `String.valueOf(x)`, porque deja clara la intención.
 
 `valueOf` es un método **estático** de `String`: lo llamas sobre la clase (`String.valueOf(...)`) y le pasas como argumento el valor que quieres convertir. Ese valor puede ser un `int`, un `long`, un `double`, un `boolean`, un `char` o cualquier objeto, porque `String` tiene una versión de `valueOf` para cada tipo. Si el argumento es `null`, `valueOf` lo comprueba antes de hacer nada y devuelve el texto `"null"`, sin lanzar ninguna excepción.
 
@@ -874,7 +875,7 @@ Ese es el motivo por el que se recomienda usar `String.valueOf(x)`. Cuando estam
 > String.valueOf(letters);    // usa valueOf(char[]) — letters es un array de caracteres
 > ```
 >
-> Java decide cuál usar mirando el tipo de lo que le pasas. Con un `null` a secas hay un problema: `null` no es un número ni un booleano, pero sí puede ocupar el lugar de un `Object` o de un `char[]`, así que hay dos versiones de `valueOf` que podrían recibirlo. Cuando hay más de una versión de `valueOf` que podría recibir el argumento, Java elige siempre la más específica: todo `char[]` es un `Object`, pero no todo `Object` es un `char[]`, así que gana `valueOf(char[])` por ser la más específica. Y lo primero que hace esa versión es mirar cuántos caracteres tiene el argumento, que en este caso es un array por ser `char[]`; como ese array es `null`, lanza la excepción. El mensaje de error incluso lo dice así: `Cannot read the array length because "value" is null`. Solo pasa con un `null` literal escrito en el código fuente, nunca con una variable _nula_, cuyo tipo declarado resuelve la sobrecarga correctamente. Si alguna vez necesitamos usar `String.valueOf` con un `null` escrito a mano, hay que indicarle a Java que lo trate como un `Object`, ya que `String.valueOf((Object) null)` elige la versión `valueOf(Object)` y te da `"null"`.
+> Java decide cuál usar mirando el tipo de lo que le pasas. Con un `null` a secas hay un problema: `null` no es un número ni un booleano, pero sí puede ocupar el lugar de un `Object` o de un `char[]`, así que hay dos versiones de `valueOf` que podrían recibirlo. Cuando hay más de una versión de `valueOf` que podría recibir el argumento, Java elige siempre la más específica: todo `char[]` es un `Object`, pero no todo `Object` es un `char[]`, así que gana `valueOf(char[])` por ser la más específica. Y lo primero que hace esa versión es mirar cuántos caracteres tiene el argumento, que en este caso es un array por ser `char[]`; como ese array es `null`, lanza la excepción. El mensaje de error incluso lo dice así: `Cannot read the array length because "value" is null`. Pasa con un `null` literal escrito en el código fuente y con una variable de tipo `char[]` que valga `null`, porque en los dos casos se elige `valueOf(char[])`. Con una variable nula de cualquier otro tipo de objeto, su tipo declarado elige `valueOf(Object)` y obtienes `"null"`. Si alguna vez necesitamos usar `String.valueOf` con un `null` escrito a mano, hay que indicarle a Java que lo trate como un `Object`, ya que `String.valueOf((Object) null)` elige la versión `valueOf(Object)` y te da `"null"`.
 
 En el proyecto 07, la clase `JwtUtil` realiza estas conversiones en ambos sentidos, tanto de número a texto como de texto a número. Cuando un usuario inicia sesión, la aplicación crea un JWT y guarda dentro, en el claim `subject`, el id de ese usuario. El problema es que `subject` solo admite texto, mientras que el id es un número de tipo `Long`. Por eso, al crear el token hay que convertir el id a texto, y cuando llega una petición con ese token y la aplicación lee el `subject` para saber qué usuario es, hay que convertir ese texto de nuevo a `Long`:
 
@@ -885,7 +886,7 @@ En el proyecto 07, la clase `JwtUtil` realiza estas conversiones en ambos sentid
 return Long.valueOf(parseClaims(token).getSubject());     // String → Long, cuando se lee el token
 ```
 
-Esa segunda línea puede lanzar `NumberFormatException`, porque aquí `Long.valueOf` recibe un texto: es el método que viste en «Texto → número», el que convierte un texto como `"1042"` en un objeto `Long`. No lo confundas con `String.valueOf`, que va en el sentido contrario, de número a texto. Como todos los métodos de texto a número, si el texto no es un número válido, lanza la excepción. Y aquí el texto viene de fuera, del token que envía el cliente en cada petición, así que nada garantiza que sea un número. Que pueda lanzarla es a propósito: si llega un token cuyo `subject` no es un número —por ejemplo, un token antiguo de antes de que el `subject` guardara un id—, `Long.valueOf` lanza la excepción y la petición se rechaza, en lugar de seguir adelante con un usuario que no está autenticado. Lo cual es el comportamiento correcto, y un buen ejemplo de una conversión que _también_ es una validación.
+Esa segunda línea puede lanzar `NumberFormatException`, porque aquí `Long.valueOf` recibe un texto: es el método que viste en «Texto → número», el que convierte un texto como `"1042"` en un objeto `Long`. No lo confundas con `String.valueOf`, que va en el sentido contrario, de número a texto. Como todos los métodos de texto a número, si el texto no es un número válido, lanza la excepción. Y aquí el texto viene de fuera, del token que envía el cliente en cada petición, así que nada garantiza que sea un número. Que pueda lanzarla es a propósito: si llega un token cuyo `subject` no es un número —por ejemplo, un token antiguo de antes de que el `subject` guardara un id—, `Long.valueOf` lanza la excepción, y el `catch` de `JwtFilter` la captura sin autenticar a nadie (un `NumberFormatException` es un tipo de `IllegalArgumentException`). La petición sigue adelante como anónima, y cualquier ruta protegida responde 401 en lugar de tratarla como si viniera de un usuario válido. Lo cual es el comportamiento correcto, y un buen ejemplo de una conversión que _también_ es una validación.
 
 ---
 
@@ -913,7 +914,7 @@ name == "Ana"                       // MAL — nunca uses == para comparar texto
 
 Con este archivo y [01-variables-tipos.md](01-variables-tipos.md) ya sabes trabajar con los dos tipos de valor que aparecen en casi cualquier programa Java: los números y el texto. De los números viste que su tipo decide cómo se realizan las operaciones aritméticas con ellos; del texto, que un `String` no se puede modificar, y que esa inmutabilidad explica todo lo demás. En la práctica, ahora puedes:
 
-- Leer y usar los métodos de `String` que aparecen con más frecuencia, sabiendo que cada uno devuelve un `String` nuevo que tienes que guardar.
+- Leer y usar los métodos de `String` que aparecen con más frecuencia, sabiendo que los que parecen modificar el texto devuelven un `String` nuevo que tienes que guardar.
 - Validar un campo que llega con espacios con `isBlank()`, y no solo uno vacío con `isEmpty()`.
 - Construir una línea de informe con `+` o `.formatted()`, y usar `StringBuilder` cuando el texto se va acumulando dentro de un bucle.
 - Escribir un JSON o una consulta SQL de varias líneas con un bloque de texto, sin la necesidad de tener que escapar comillas ni saltos de línea.
