@@ -416,7 +416,7 @@ Las tres primeras solo se diferencian entre sí en el medio exacto; fuera de ese
 >
 > El javadoc de `BigDecimal` llama a esto "inconsistent with equals". Los dos son métodos de la misma clase y puedes llamarlos tú mismo sobre el mismo par de valores.
 
-> Nadie compara los dos métodos en tiempo de ejecución ni salta ningún aviso: el contrato de Java es que `a.compareTo(b) == 0` y `a.equals(b)` deberían dar siempre la misma respuesta, y `BigDecimal` es una de las pocas clases que lo incumple, porque su `equals` mira la escala y su `compareTo` no. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada en el `TreeMap`
+> Nadie compara los dos métodos en tiempo de ejecución ni salta ningún aviso: la documentación de `Comparable` recomienda con fuerza, sin llegar a exigirlo, que `a.compareTo(b) == 0` y `a.equals(b)` den siempre la misma respuesta, y `BigDecimal` es una de las pocas clases que no sigue esa recomendación, porque su `equals` mira la escala y su `compareTo` no. Es un aviso escrito en la documentación, no un error que salte al ejecutar; nadie te va a avisar, simplemente perderás una entrada en el `TreeMap`
 
 > El segundo `put` no lanza nada, no devuelve un error y no imprime un aviso: para el `TreeMap` esa clave ya estaba, y un `put` sobre una clave que ya existe no añade nada, sustituye el valor que había por el del nuevo `put`. La regla práctica es no usar `BigDecimal` como clave, o normalizar cada clave con `setScale(2, RoundingMode.HALF_UP)` antes de guardarla en el mapa, para que todas lleguen con la misma escala y los dos mapas coincidan. Los mapas se ven en [10-colecciones.md](10-colecciones.md); `equals` y `hashCode` se explican en [06-poo-clases.md](06-poo-clases.md).
 
@@ -445,7 +445,7 @@ System.out.println(count);   // MAL — error: variable count might not have bee
 
 El compilador ejecuta un análisis llamado **asignación definida** (_definite assignment_): recorre todas las rutas posibles que podría tomar la ejecución desde la declaración hasta esta línea y se pregunta "¿hay alguna ruta que llegue aquí sin pasar por una asignación?" Si existe aunque sea una sola de esas rutas, se niega a compilar. Por eso el mensaje dice "_might_ not have been initialized" ("podría no haberse inicializado") en lugar de "no se inicializó" — el compilador no está afirmando que esta ejecución concreta vaya a fallar; está diciendo que no puede demostrar lo contrario para todas las ejecuciones posibles.
 
-> **Entonces, ¿por qué esto sí compila para un campo (una variable declarada dentro de la clase, fuera de todo método)?** Porque la regla se aplica solo a **variables locales** — las declaradas dentro de un método. Un **campo** (declarado directamente en el cuerpo de la clase, fuera de cualquier método) no está cubierto por la asignación definida: la JVM le da a todo campo un valor por defecto automático en cuanto se crea el objeto. Los campos numéricos empiezan en `0` (`0.0` para `double`/`float`), los campos `boolean` en `false`, y todo campo de tipo objeto — `String`, `Integer`, `User` — en `null`.
+> **Entonces, ¿por qué esto sí compila para un campo (una variable declarada dentro de la clase, fuera de todo método)?** Porque la regla se aplica a las **variables locales**, las declaradas dentro de un método, y a los campos `final` sin valor inicial, que tienen que recibirlo en el constructor. Un **campo** normal (declarado directamente en el cuerpo de la clase, fuera de cualquier método) no está cubierto por la asignación definida: la JVM le da a todo campo un valor por defecto automático en cuanto se crea el objeto. Los campos numéricos empiezan en `0` (`0.0` para `double`/`float`), los campos `boolean` en `false`, y todo campo de tipo objeto — `String`, `Integer`, `User` — en `null`.
 >
 > ```java
 > public class User {
@@ -626,7 +626,7 @@ double z = x;      // int (32 bits) → double (64 bits) — automático
 
 Java permite esto en silencio porque el rango del tipo destino contiene por completo el rango del tipo origen — no existe ningún valor de `int` que un `long` no pueda representar, así que nada puede salir mal.
 
-> **Alcance exacto: "widening" no siempre significa "sin pérdida de datos".** Dos de las conversiones de widening sí tienen pérdida, y Java las realiza automáticamente de todos modos. `int` (entero de 32 bits) → `float` (decimal de 32 bits) y `long` (entero de 64 bits) → `double` (decimal de 64 bits) pierden datos aunque el destino ocupe los mismos bits, porque tiene _menos_ cifras significativas: un tipo de coma flotante gasta parte de sus bits en el exponente en lugar de en los dígitos. Un `float` tiene 32 bits como un `int`, pero solo unos 24 de ellos transportan dígitos. El camino contrario, `float` → `int` o `double` → `long`, tampoco es seguro: ahí ya no es widening sino narrowing, tira la parte decimal y exige un cast explícito, que es la sección siguiente. Y es narrowing aunque los bits sean los mismos, porque las dos palabras no hablan del tamaño en bits sino del **conjunto de valores**: widening es ir a un tipo cuyo conjunto contiene entero al del origen. Un `float` está en el rango de ±3,4 × 10³⁸, por lo que no puede representar un `int`: un `int` no guarda decimales y llega como mucho a 2 147 483 647 (unos ±2,1 × 10⁹). Así que ir de `float` a `int` recorta ese conjunto por mucho que ambos ocupen 32 bits.
+> **Alcance exacto: "widening" no siempre significa "sin pérdida de datos".** Tres de las conversiones de widening sí tienen pérdida, y Java las realiza automáticamente de todos modos. `int` (entero de 32 bits) → `float` (decimal de 32 bits), `long` (entero de 64 bits) → `float` y `long` → `double` (decimal de 64 bits) pierden datos aunque el rango del destino sea mayor, porque el destino tiene _menos_ cifras significativas: un tipo de coma flotante gasta parte de sus bits en el exponente en lugar de en los dígitos. Un `float` tiene 32 bits como un `int`, pero solo unos 24 de ellos transportan dígitos. El camino contrario, `float` → `int` o `double` → `long`, tampoco es seguro: ahí ya no es widening sino narrowing, tira la parte decimal y exige un cast explícito, que es la sección siguiente. Y es narrowing aunque los bits sean los mismos, porque las dos palabras no hablan del tamaño en bits sino del **rango de valores**: widening es ir a un tipo cuyo rango contiene entero al del origen, aunque no pueda representar cada valor exacto. Un `float` llega hasta ±3,4 × 10³⁸ y guarda decimales; un `int` no guarda decimales y llega como mucho a 2 147 483 647 (unos ±2,1 × 10⁹), así que un `int` no puede representar la mayoría de los valores de un `float`. Por eso ir de `float` a `int` recorta ese rango por mucho que ambos ocupen 32 bits.
 >
 > ```java
 > int precise = 16777217;      // int (32 bits)
@@ -636,7 +636,7 @@ Java permite esto en silencio porque el rango del tipo destino contiene por comp
 > // solo tiene 24, así que se guarda el valor representable más cercano, 16777216
 > ```
 >
-> Lo mismo pasa con `long` → `double`. Nada te avisa, porque la regla que impone el compilador es _rango_, no _precisión_: el rango de `float` (±3.4 × 10³⁸) contiene cómodamente cualquier `int`, así que la conversión es legal, y el dígito perdido es un daño colateral que el lenguaje acepta. La afirmación fiable es entonces "el widening nunca desborda", no "el widening nunca pierde datos": no desborda porque el compilador solo permite widening hacia un tipo cuyo rango contiene el del origen, así que el valor siempre cabe; lo que puede perderse por el camino son cifras del número, no su magnitud. Para cada conversión de narrowing más abajo, el compilador sí te detiene y exige un cast — que es exactamente por qué estos dos widenings con pérdida son los peligrosos: son las pérdidas que nadie está vigilando.
+> Lo mismo pasa con `long` → `float` y con `long` → `double`. Nada te avisa, porque la regla que impone el compilador es _rango_, no _precisión_: el rango de `float` (±3.4 × 10³⁸) contiene cómodamente cualquier `int`, así que la conversión es legal, y el dígito perdido es un daño colateral que el lenguaje acepta. La afirmación fiable es entonces "el widening nunca desborda", no "el widening nunca pierde datos": no desborda porque el compilador solo permite widening hacia un tipo cuyo rango contiene el del origen, así que el valor siempre cabe; lo que puede perderse por el camino son cifras del número, no su magnitud. Para cada conversión de narrowing más abajo, el compilador sí te detiene y exige un cast — que es exactamente por qué estos tres widenings con pérdida son los peligrosos: son las pérdidas que nadie está vigilando.
 
 ### Narrowing (manual)
 
@@ -794,7 +794,7 @@ if (Math.abs(measured - expected) < epsilon) { ... }
 
 `Math.abs` devuelve el **valor absoluto** de lo que le pases, es decir el número sin signo. Aquí recibe `measured - expected`, una resta que sale negativa cuando el segundo valor es el mayor; el valor absoluto la convierte en positiva, así que lo que queda es la distancia entre los dos y una sola comprobación cubre las dos direcciones. `1e-9` es la notación científica de Java para 0.000000001, y ese valor está elegido entre dos límites. Tiene que ser **mayor que el error de representación**, que es el desvío que introduce el propio `double` al guardar el número y que aparece alrededor del decimoséptimo dígito — es decir, la precisión aproximada de un `double` es `1e-16`, y el epsilon tiene que quedar por encima de esa cifra: si el margen fuera aún más pequeño que ese desvío, dos valores que solo se diferencian en la aproximación seguirían saliendo distintos y no habrías arreglado nada. Y tiene que ser **menor que cualquier diferencia que sí te importe**, o acabarías dando por iguales dos números que de verdad son distintos. Resumido: por encima de la imprecisión del propio `double`, y lo bastante pequeño como para no borrar diferencias reales.
 
-Por ejemplo, si comparas una ratio calculada, las diferencias reales son minúsculas y `1e-9` va bien. Si comparas un importe que una persona ve en pantalla con dos decimales, la diferencia más pequeña que significa algo es un céntimo, así que el margen razonable es `0.01`: cualquier diferencia por debajo de eso es ruido del cálculo, no un importe distinto.
+Por ejemplo, si comparas una ratio calculada, las diferencias reales son minúsculas y `1e-9` va bien. Si comparas un importe que una persona ve en pantalla con dos decimales, la diferencia más pequeña que significa algo es un céntimo, así que el margen razonable es medio céntimo, `0.005`: cualquier diferencia por debajo de eso es ruido del cálculo, no un importe distinto. Con `0.01` no basta, porque dos importes separados justo por un céntimo pueden salir iguales: `0.29 - 0.28` da `0.009999999999999953`, que es menor que `0.01`.
 
 > **El arreglo de verdad suele ser el tipo, no la tolerancia.** Recurres a una tolerancia cuando _heredas_ un `double` — una lectura de un sensor, un campo de una API de terceros, una columna heredada de base de datos. Cuando la decisión es tuya, pregúntate qué es el número. Dinero, o cualquier cantidad que tenga que cuadrar exactamente: `BigDecimal`.
 
@@ -885,8 +885,8 @@ private Long id;
 
 // long (primitivo) — porque la expiración siempre está configurada, nunca es null
 // File: .../com/victor/timetrack/security/JwtUtil.java
-@Value("${app.jwt.expiration}")
-private long expiration;
+private final long expiration;   // la rellena el constructor:
+// public JwtUtil(..., @Value("${app.jwt.expiration}") long expiration)
 ```
 
 ### Autoboxing y unboxing
@@ -938,13 +938,13 @@ Lee la columna de la derecha como "el código que habrías tenido que escribir a
 > }
 > ```
 >
-> El segundo es indicarle al mapa qué valor debe devolver cuando la clave no existe, para que nunca devuelva `null`:
+> El segundo es indicarle al mapa qué valor debe devolver cuando la clave no existe, para que en ese caso no devuelva `null`:
 >
 > ```java
 > int score = scores.getOrDefault("missing", 0);   // devuelve 0 si la clave no está
 > ```
 >
-> `getOrDefault` es un método de `Map`: busca la clave y, si no la encuentra, devuelve el segundo argumento en vez de `null`. Como ya no hay `null`, el unboxing a `int` es seguro.
+> `getOrDefault` es un método de `Map`: busca la clave y, si no la encuentra, devuelve el segundo argumento en vez de `null`. Si la clave falta ya no hay `null`, y el unboxing a `int` es seguro. La excepción es un `HashMap` que guarde `null` como valor de una clave que sí existe: ahí `getOrDefault` devuelve ese `null` y el unboxing vuelve a lanzar la `NullPointerException`.
 >
 > La regla general: cualquier unboxing va a lanzar esa excepción en el momento en que llegue un `null`, y eso incluye campos, argumentos de métodos y sentencias `return`, no solo variables locales.
 

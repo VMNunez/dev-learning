@@ -411,7 +411,7 @@ The first three differ from each other only on the exact half; outside that case
 >
 > `BigDecimal`'s javadoc calls this "inconsistent with equals". Both are methods of the same class and you can call them yourself on the same pair of values.
 
-> Nothing compares the two methods at runtime and no warning fires: Java's contract is that `a.compareTo(b) == 0` and `a.equals(b)` should always give the same answer, and `BigDecimal` is one of the few classes that breaks it, because its `equals` looks at the scale and its `compareTo` does not. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry in the `TreeMap`
+> Nothing compares the two methods at runtime and no warning fires: the `Comparable` documentation strongly recommends, without requiring it, that `a.compareTo(b) == 0` and `a.equals(b)` always give the same answer, and `BigDecimal` is one of the few classes that does not follow that recommendation, because its `equals` looks at the scale and its `compareTo` does not. It is a warning written in the documentation, not an error thrown at runtime; nothing will tell you, you will simply lose an entry in the `TreeMap`
 
 > The second `put` throws nothing, returns no error and prints no warning: to the `TreeMap` that key was already there, and a `put` on a key that already exists adds nothing, it replaces the value that was there with the one from the new `put`. The practical rule is not to use `BigDecimal` as a key, or to normalise every key through `setScale(2, RoundingMode.HALF_UP)` before storing it in the map, so they all arrive with the same scale and both maps agree. Maps are covered in [10-collections.md](10-collections.md); `equals` and `hashCode` are explained in [06-oop-classes.md](06-oop-classes.md).
 
@@ -440,7 +440,7 @@ System.out.println(count);   // MAL — error: variable count might not have bee
 
 The compiler runs an analysis called **definite assignment**: it walks every possible route the execution could take from the declaration to this line and asks "is there a route that reaches here without passing through an assignment?" If even one such route exists, it refuses to compile. That is why the message says "*might* not have been initialized" rather than "was not" — the compiler is not claiming this particular run would fail; it is saying it cannot prove the opposite for every run.
 
-> **Then why does this compile for a field (a variable declared inside the class, outside any method)?** Because the rule applies to **local variables** only — variables declared inside a method. A **field** (declared directly in the class body, outside any method) is not covered by definite assignment: the JVM gives every field an automatic default value when the object is created. Numeric fields start at `0` (`0.0` for `double`/`float`), `boolean` fields at `false`, and every object-typed field — `String`, `Integer`, `User` — at `null`.
+> **Then why does this compile for a field (a variable declared inside the class, outside any method)?** Because the rule applies to **local variables**, the ones declared inside a method, and to `final` fields with no initial value, which must receive it in the constructor. An ordinary **field** (declared directly in the class body, outside any method) is not covered by definite assignment: the JVM gives every field an automatic default value when the object is created. Numeric fields start at `0` (`0.0` for `double`/`float`), `boolean` fields at `false`, and every object-typed field — `String`, `Integer`, `User` — at `null`.
 >
 > ```java
 > public class User {
@@ -621,7 +621,7 @@ double z = x;      // int (32 bits) → double (64 bits) — automatic
 
 Java allows this silently because the destination type's range fully contains the source type's range — there is no value of `int` that a `long` cannot represent, so nothing can go wrong.
 
-> **Exact scope: "widening" does not always mean "no data loss".** Two of the widening conversions are lossy, and Java performs them automatically anyway. `int` (32-bit integer) → `float` (32-bit decimal) and `long` (64-bit integer) → `double` (64-bit decimal) lose data even though the target takes the same number of bits, because it has *fewer* significant digits: a floating-point type spends part of its bits on the exponent instead of on the digits. A `float` has 32 bits like an `int`, but only about 24 of them carry digits. The other direction, `float` → `int` or `double` → `long`, is not safe either: that is narrowing rather than widening, it throws the decimal part away and demands an explicit cast, which is the next section. And it is narrowing even though the bit count is the same, because the two words are not about the size in bits but about the **set of values**: widening means moving to a type whose set fully contains the source's. A `float` sits in the ±3.4 × 10³⁸ range, so it cannot represent an `int`: an `int` stores no decimals and reaches at most 2,147,483,647 (about ±2.1 × 10⁹). So going from `float` to `int` cuts that set down even though both take 32 bits.
+> **Exact scope: "widening" does not always mean "no data loss".** Three of the widening conversions are lossy, and Java performs them automatically anyway. `int` (32-bit integer) → `float` (32-bit decimal), `long` (64-bit integer) → `float` and `long` → `double` (64-bit decimal) lose data even though the target's range is larger, because the target has *fewer* significant digits: a floating-point type spends part of its bits on the exponent instead of on the digits. A `float` has 32 bits like an `int`, but only about 24 of them carry digits. The other direction, `float` → `int` or `double` → `long`, is not safe either: that is narrowing rather than widening, it throws the decimal part away and demands an explicit cast, which is the next section. And it is narrowing even though the bit count is the same, because the two words are not about the size in bits but about the **range of values**: widening means moving to a type whose range fully contains the source's, even if it cannot represent every exact value. A `float` reaches ±3.4 × 10³⁸ and stores decimals; an `int` stores no decimals and reaches at most 2,147,483,647 (about ±2.1 × 10⁹), so an `int` cannot represent most of a `float`'s values. That is why going from `float` to `int` cuts that range down even though both take 32 bits.
 >
 > ```java
 > int precise = 16777217;      // int (32 bits)
@@ -631,7 +631,7 @@ Java allows this silently because the destination type's range fully contains th
 > // has only 24, so the nearest representable value, 16777216, is stored
 > ```
 >
-> The same happens for `long` → `double`. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data": it never overflows because the compiler only allows widening into a type whose range contains the source's, so the value always fits; what can be lost on the way are digits of the number, not its magnitude. For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these two lossy widenings are the dangerous ones: they are the losses nobody is watching.
+> The same happens for `long` → `float` and for `long` → `double`. Nothing warns you, because the rule the compiler enforces is *range*, not *precision*: `float`'s range (±3.4 × 10³⁸) comfortably contains every `int`, so the conversion is legal, and the lost digit is collateral damage the language accepts. The reliable statement is therefore "widening never overflows", not "widening never loses data": it never overflows because the compiler only allows widening into a type whose range contains the source's, so the value always fits; what can be lost on the way are digits of the number, not its magnitude. For every narrowing conversion below, the compiler does stop you and demand a cast — which is exactly why these three lossy widenings are the dangerous ones: they are the losses nobody is watching.
 
 ### Narrowing (manual)
 
@@ -789,7 +789,7 @@ if (Math.abs(measured - expected) < epsilon) { ... }
 
 `Math.abs` returns the **absolute value** of whatever you pass it — the number without its sign. Here it receives `measured - expected`, a subtraction that comes out negative when the second value is the larger one; the absolute value turns it positive, so what is left is the distance between the two and one test covers both directions. `1e-9` is Java's scientific notation for 0.000000001, and that value is chosen between two limits. It has to be **larger than the representation error** — the drift the `double` itself introduces when storing the number, which shows up around the seventeenth digit — that is, a `double`'s approximate precision is `1e-16`, and the epsilon has to stay above that figure: if the margin were smaller than that drift, two values differing only in the approximation would still come out unequal and you would have fixed nothing. And it has to be **smaller than any difference that does matter to you**, or you would end up treating two genuinely different numbers as equal. In short: above the `double`'s own imprecision, and small enough not to erase real differences.
 
-For example, comparing a computed ratio, the real differences are tiny and `1e-9` works. Comparing an amount a person sees on screen with two decimals, the smallest difference that means anything is one cent, so the sensible margin is `0.01`: any difference below that is noise from the calculation, not a different amount.
+For example, comparing a computed ratio, the real differences are tiny and `1e-9` works. Comparing an amount a person sees on screen with two decimals, the smallest difference that means anything is one cent, so the sensible margin is half a cent, `0.005`: any difference below that is noise from the calculation, not a different amount. `0.01` is not enough, because two amounts exactly one cent apart can come out equal: `0.29 - 0.28` gives `0.009999999999999953`, which is less than `0.01`.
 
 > **The real fix is usually the type, not the tolerance.** A tolerance is what you reach for when you *inherited* a `double` — a reading from a sensor, a field from a third-party API, a legacy database column. When the decision is yours, ask what the number is. Money, or any quantity that has to reconcile exactly: `BigDecimal`.
 
@@ -880,8 +880,8 @@ private Long id;
 
 // long (primitive) — because the expiration is always configured, never null
 // File: .../com/victor/timetrack/security/JwtUtil.java
-@Value("${app.jwt.expiration}")
-private long expiration;
+private final long expiration;   // filled in by the constructor:
+// public JwtUtil(..., @Value("${app.jwt.expiration}") long expiration)
 ```
 
 ### Autoboxing and unboxing
@@ -933,13 +933,13 @@ Read the right-hand column as "the code you would have had to type by hand befor
 > }
 > ```
 >
-> The second is to tell the map which value to return when the key is absent, so it never returns `null`:
+> The second is to tell the map which value to return when the key is absent, so that in that case it does not return `null`:
 >
 > ```java
 > int score = scores.getOrDefault("missing", 0);   // returns 0 when the key is absent
 > ```
 >
-> `getOrDefault` is a `Map` method: it looks the key up and, when it is not there, returns the second argument instead of `null`. With no `null` in play, unboxing to `int` is safe.
+> `getOrDefault` is a `Map` method: it looks the key up and, when it is not there, returns the second argument instead of `null`. When the key is missing there is no `null` in play, and unboxing to `int` is safe. The exception is a `HashMap` that stores `null` as the value of a key that does exist: there `getOrDefault` returns that `null` and the unboxing throws the `NullPointerException` again.
 >
 > The general rule: any unboxing will throw that exception the moment a `null` reaches it, and that includes fields, method arguments and `return` statements, not just local variables.
 
