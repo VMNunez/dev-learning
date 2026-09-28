@@ -2,15 +2,15 @@
 
 My 2nd learning project — weather app where you search a city and see its weather right now and for the next 5 days.
 
-**Angular 21 · TypeScript · RxJS · OpenWeatherMap API**
+![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular HttpClient](https://img.shields.io/badge/Angular-HttpClient-DD0031?logo=angular&logoColor=white&labelColor=303030) ![RxJS 7.8](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![OpenWeatherMap API](https://img.shields.io/badge/API-OpenWeatherMap-EB6E4B?labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![CSS](https://img.shields.io/badge/CSS-Styles-1572B6?logo=css&logoColor=white&labelColor=303030)
 
-[Live demo](#live-demo) · [Run locally](#how-to-run)
+**[▶ Try the live app](https://02angularweatherapp.netlify.app/)**
 
 ---
 
 ## Why this project
 
-Checking the weather is two questions at once — what is it like now, and what is coming this week — and both depend on a remote service that can be slow or not know the city typed in. This portfolio app answers both from one search: it asks a public weather API for the current conditions and the 5-day forecast together, shows them on one page, and tells the user plainly while it is loading and when a city cannot be found.
+I built this project to learn how an Angular app calls an external API with `HttpClient` and handles the Observables it returns. To practise that, I built a weather app where users search a city and see its current conditions and 5-day forecast. Both requests to a public weather API run together, and the page shows a loading state while they run and a clear message when the city cannot be found.
 
 ---
 
@@ -89,6 +89,7 @@ https://02angularweatherapp.netlify.app/
 | Language | TypeScript |
 | HTTP | Angular `HttpClient` + RxJS |
 | State | Angular signals |
+| Markup | HTML5 |
 | Styles | CSS |
 | API | OpenWeatherMap |
 | Deployment | Netlify |
