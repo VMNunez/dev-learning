@@ -1436,6 +1436,12 @@ states, per artefact: who **authors** the value, who may **correct** it, and who
 Where a file mixes rules and live state, split the row rather than picking one owner for the file — the
 route's progress fields had been split that way since the standard was written, one row above the one
 that was wrong.
+**Also `REC-262`: adding a writer to a shared file re-reads every existing writer's write *mode*, not only its
+fence.** `REC-179`, `REC-255` and `REC-261` each gave `PROJECT-BACKLOG.md` `## Tasks` a new raiser while
+`review-audit` still wrote "the full task list" — a merge by intent since 2026-07-07, a regenerate by
+wording — so every raised task was one re-review from deletion. A writer that rebuilds its section deletes
+whatever a writer added after it; name the mode (add / reword / regenerate) per writer where the section
+is owned, and a new writer checks it before relying on the section to persist.
 
 **"The map is right" is a claim about two files.** Also `REC-073`, whose own resolution note said the
 map was right and had checked `_system-map.md` only; `README.md` carried one false cell and two
