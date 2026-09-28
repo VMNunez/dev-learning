@@ -47,6 +47,7 @@ full app shell with toolbar and sidebar navigation.
 | Routing | Lazy loading for all feature routes | Admin-only code (employees, departments) is never downloaded by an employee session, so the initial bundle carries only login and the shell |
 | Access control | Functional guards (`CanActivateFn`, `CanDeactivateFn`) | A guard is a function that can `inject()` its dependencies, so authentication and authorisation stay two composable guards stacked on a route instead of one class that has to know about both |
 | HTTP | Functional interceptor (`HttpInterceptorFn`) | The token is attached in one place, so no service can forget it and no service has to know how the session is stored |
+| Dates | date-fns through Material's date-fns adapter | `NativeDateAdapter` reads a typed date with `Date.parse`, which takes `04/10/2026` as month/day; the date-fns adapter prints and reads with one `enGB` pattern, so the leave-request field agrees with the `dd/MM/yyyy` the tables print |
 | State and persistence | Signals + `effect()` over localStorage | There is no backend in this project, and the `effect()` keeps the stored copy a consequence of the signal rather than a second source of truth that every writer has to remember to update |
 
 ---
@@ -298,7 +299,7 @@ guard or the dialog pattern.
 | `dialogRef.close(true)` | Return boolean from confirmation dialog |
 | `dialog.open<T, D, R>` parameterized | The dialog's result type is named at the call site and on the dialog's own `MatDialogRef`, so `afterClosed()` is checked instead of yielding `any` |
 | Multiple filter signals + `computed()` | Chain filters with `&&`; `'all'` as no-filter default |
-| `MatDatepicker` + `provideNativeDateAdapter()` | Date input with calendar popup |
+| `MatDatepicker` + `provideDateFnsAdapter()` with `enGB` | Date input with calendar popup; the adapter both prints and reads `dd/MM/yyyy`, and the dialog provides it itself so date-fns loads with the lazy page |
 | Control typed to what its accessor writes | `startDate` and `endDate` are `FormControl<Date \| null>`, the type `MatDatepickerInput` actually sets, so the submit reads them without an `as unknown as Date` |
 | Local-clock date serialization | `toISOString()` returns the UTC day — build `YYYY-MM-DD` from `getFullYear`/`getMonth`/`getDate` |
 | Conditional `displayColumns` with `computed()` | Change columns based on role — never use `@if` on `ng-container matColumnDef` |

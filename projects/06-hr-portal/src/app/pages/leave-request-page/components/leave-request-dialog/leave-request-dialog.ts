@@ -5,6 +5,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { provideDateFnsAdapter } from '@angular/material-date-fns-adapter';
+import { enGB } from 'date-fns/locale';
 import { toLocalDateString } from '../../../../shared/utils/date.util';
 import type { LeaveRequest } from '../../../../models/leave-request.model';
 
@@ -28,6 +31,11 @@ export type LeaveRequestFormResult = Omit<LeaveRequest, 'id' | 'status' | 'emplo
     MatButtonModule,
     MatDatepickerModule,
   ],
+  // The native adapter reads typed dates with `Date.parse`, which takes `04/10/2026` as
+  // month/day whatever the locale says. The date-fns adapter reads and prints with the
+  // same `enGB` pattern, so the field agrees with the `dd/MM/yyyy` the tables print.
+  // Provided here, not in `app.config.ts`, so date-fns loads with this lazy page only.
+  providers: [provideDateFnsAdapter(), { provide: MAT_DATE_LOCALE, useValue: enGB }],
   templateUrl: './leave-request-dialog.html',
   styleUrl: './leave-request-dialog.css',
 })
