@@ -306,7 +306,7 @@ Java has a personality, and it is remarkably consistent. Five traits explain alm
 
 **1. Static typing — the type is part of the declaration, and it never changes.** When you write `int quantity = 2;`, the name `quantity` is bound to the type `int` for the rest of its life. This is not just a rule to memorise, it is a concrete mechanism: because the type is written down in the source itself, the compiler can reason about a line *without ever running it*. It does not need to know that `quantity` will be `2` at one moment and `40` at another — it only needs the declared type to decide whether an operation is legal. That is why Java can reject code before it ever launches, instead of letting that same error only surface at runtime, on the day the program finally executes the operation that was not allowed. This trait is explained in [01-variables-types.md](01-variables-types.md), and it returns with force in [09-generics.md](09-generics.md), where the type of the values *inside* a collection is itself declared and checked.
 
-**2. All executable code lives inside a class.** It is the direct consequence of the object-oriented model you read about in the first section. In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit that can be compiled and loaded on its own. What a class actually is, what it holds, and how you design one is [06-oop-classes.md](06-oop-classes.md).
+**2. All executable code lives inside a class.** It is the direct consequence of the object-oriented model you read about in the first section. In JavaScript you can put a function alone in a file and export it. Java has no equivalent: `main`, and every other method, has to belong to some class. The reason has to do with how the compiler stores the result: it emits one `.class` file per class, so a class is the smallest unit the JVM loads on its own. What a class actually is, what it holds, and how you design one is [06-oop-classes.md](06-oop-classes.md).
 
 **3. Compile first, run second — always two moments.** It is the process you just walked through in the two sections above. Even when IntelliJ hides both stages behind one green button, they stay two separate moments with two different kinds of error, and knowing which of the two is speaking to you — the compiler, or the program already running — tells you immediately where to look for the problem. [17-maven.md](17-maven.md) is the tool that automates both steps once a real project has dozens of source files and external libraries to fetch before it can even compile.
 
@@ -358,7 +358,7 @@ This is a design decision, not an oversight. Java optimises for the person *read
 | Trait | What it forces on you | Where it is examined in full |
 |---|---|---|
 | Static typing | Declare a type and keep it; the compiler checks every use before launch | `01-variables-types.md`, `09-generics.md` |
-| Code lives in a class | No standalone functions; a class is the unit of compilation | `06-oop-classes.md` |
+| Code lives in a class | No standalone functions; each class compiles to its own `.class` | `06-oop-classes.md` |
 | Compile, then run | Two separate steps — compile first, then run —, two moments, two kinds of error message | this file, then `17-maven.md` |
 | The JVM is the target | The compiler produces bytecode for the JVM, not for your processor; and the JVM manages memory for you | `05-memory-model.md` |
 | More explicit code | More typing, optimised for the reader rather than the writer | `06-oop-classes.md`, `12-streams-lambdas.md` |
@@ -371,7 +371,7 @@ Docs: [Baeldung on Computer Science — Statically Typed vs Dynamically Typed La
 
 ### What works the same in both languages
 
-The syntax of `if`, `while` and `for` is the same. So is the way you walk a **collection**, which is the name Java gives to any object holding several elements inside it. There are three basic shapes: a **list**, which keeps its elements in order and allows duplicates; a **set**, which guarantees no order and allows no duplicates — add the same element twice and only one stays inside; and an **array**, the simplest of the three, a fixed-length row whose size is decided the moment you create it and never changes afterwards. The other two can grow and shrink, and all of them are studied in [10-collections.md](10-collections.md).
+The syntax of `if`, `while` and `for` is the same. So is the way you walk several elements stored together. There are three basic shapes for storing them: a **list**, which keeps its elements in order and allows duplicates; a **set**, which guarantees no order and allows no duplicates — add the same element twice and only one stays inside; and an **array**, the simplest of the three, a fixed-length row whose size is decided the moment you create it and never changes afterwards. The other two can grow and shrink. Java calls the list and the set **collections**; the array is not one, even though you walk it the same way. All three are studied in [10-collections.md](10-collections.md).
 
 To walk a whole collection from start to finish, JavaScript has the `for...of` loop: on each pass it puts the next element into the variable you declared and runs the loop body with it.
 
@@ -395,9 +395,9 @@ Both loops print `Ana` and then `Luis`. In neither of them do you keep an index 
 
 Adding a number to a piece of text with `+` concatenates in both languages, so `"total: " + 30` produces `"total: 30"` exactly as you expect. And `final` on a variable does the same job as `const`: both lock the variable, not the contents of what is inside it. Declare `final List<String> names = new ArrayList<>();` and you cannot reassign `names` to a different list, but you can still add and remove elements from the list it already holds. [01-variables-types.md](01-variables-types.md) takes it further.
 
-`try { } catch (e) { }` is also written the same way in both languages, and that is exactly why it deserves the callout below before you go on.
+`try { } catch { }` also has the same shape in both languages, with one difference: Java requires the type of the error you want to catch, so where JavaScript writes `catch (e)`, Java writes `catch (Exception e)`. Precisely because they look so alike, it deserves the callout below before you go on.
 
-> **`try/catch` is written the same way in Java and in JavaScript, but the exception model underneath is different.** The syntax looks identical, so it is tempting to read one as the other. Underneath they are nothing alike.
+> **`try/catch` is written almost the same way in Java and in JavaScript, but the exception model underneath is different.** The syntax looks almost identical, so it is tempting to read one as the other. Underneath they are nothing alike.
 >
 > An **exception** is how Java reports that something went wrong while the program was running. When an operation cannot finish — a file that does not exist, a division by zero — the code **throws** an object describing that failure; the method it happened in stops right there, and that object travels back, method by method, until one of them **catches** it and decides what to do with it. If nobody catches it, the program stops.
 >
@@ -489,7 +489,7 @@ It is worth recognising that message early, because `cannot find symbol` is the 
 
 In JavaScript you have two equality operators. `===` is **strict equality**: it compares whether the type and the value match on both sides. `==` is **loose equality** (also called abstract or non-strict): it first tries to convert one of the two sides so the types match, and only then compares — that is what type coercion means.
 
-In Java there is no `===`, and Java's `==` performs no coercion at all. When used on objects — two `String` variables, for instance — it asks "do these two variables point at the same object in memory?". And that is almost never the question you meant to ask when comparing two pieces of text, because two texts with identical content can perfectly well be two distinct objects stored in two different places in memory. Getting this wrong is the most common beginner bug in Java.
+In Java there is no `===`, and Java's `==` does not perform JavaScript's coercion: it never turns text into a number, and `"1" == 1` does not even compile. The only thing it does is bring two different numeric types to a common one before comparing, so `1 == 1.0` is `true`. When used on objects — two `String` variables, for instance — it asks "do these two variables point at the same object in memory?". And that is almost never the question you meant to ask when comparing two pieces of text, because two texts with identical content can perfectly well be two distinct objects stored in two different places in memory. Getting this wrong is the most common beginner bug in Java.
 
 This comparison will come up in two places, and each one is solved differently.
 
@@ -525,7 +525,7 @@ void process(List<Integer> ages) { }
 |---|---|---|---|
 | `for...of` over an array | `for (const name of names)` iterates its elements one by one | `for (String name : names)` iterates a collection the same way | Yes |
 | `const` | Locks the variable, not what it holds | `final` does the same | Yes; `01` explains the nuance |
-| `try / catch` syntax | `try { } catch (e) { }` | Written identically, but the exception model underneath differs | In syntax only |
+| `try / catch` syntax | `try { } catch (e) { }` | Same shape, but `catch` requires the type; the exception model underneath differs | In syntax only |
 | `var` | Declares a variable with no type at all | Infers one fixed type and enforces it forever | No — nearly the opposite meaning |
 | Adding a property at runtime | The object grows with any new property | Only the class declares fields; none can be added later | No — raises `cannot find symbol` |
 | `==` versus `===` | Compares with or without type coercion | `==` on objects compares whether they point at the same object in memory, not whether the content matches | No — use `.equals()` |
@@ -577,7 +577,7 @@ error: class PriceCalculator is public, should be declared in a file named Price
 
 The reason is that both the compiler and the JVM find a class *by its name*: when something asks for `PriceCalculator`, the tool goes looking for `PriceCalculator.class`, produced from `PriceCalculator.java`. Having the two names match turns "find this class" into a predictable file lookup, rather than a search across every file on disk.
 
-**`main` is the entry point: that is where the program starts executing.** A program has to start at some specific line, and in Java that line is always inside a method called `main`. When you run `java Hello`, the JVM loads the `Hello` class, looks inside it for a method with exactly this shape and calls it; that is where your program starts, and when that method finishes, the program finishes.
+**`main` is the entry point: that is where the program starts executing.** A program has to start at some specific line, and in Java that line is always inside a method called `main`. When you run `java Hello`, the JVM loads the `Hello` class, looks inside it for the `main` method and calls it; that is where your program starts. The shape below is the classic one, the one you will always write; at the end of this section you will see that Java 25 also accepts a shorter one. When `main` finishes, the program finishes with it, unless it left another **thread** running (a second line of execution running in parallel): then the program stays alive until that thread ends. That is how a Spring Boot application keeps serving requests after its `main` has finished.
 
 There can be many classes with a `main` in the same project — each one would be a separately launchable program — but in any given run only the `main` of the class you launched is used. Every word of that signature is doing a job:
 
@@ -591,7 +591,7 @@ public static void main(String[] args)
   └─ visible from anywhere, including outside this class's own package
 ```
 
-> **Why always `String[] args`?** Because a program can be launched with data written right after the class name: `java Hello Ana 30`. Those two values arrive in your `main` inside `args`, which in that case would hold `["Ana", "30"]`. And it is of type `String` because everything typed in a terminal is text: that `30` arrives as the text `"30"`, not as the number `30`, and if you need it as a number you have to convert it yourself. `args` has to appear in the signature even if you never use it — as happens 99% of the time — because this is the exact shape the JVM and build tools recognise as an entry point.
+> **Why always `String[] args`?** Because a program can be launched with data written right after the class name: `java Hello Ana 30`. Those two values arrive in your `main` inside `args`, which in that case would hold `["Ana", "30"]`. And it is of type `String` because everything typed in a terminal is text: that `30` arrives as the text `"30"`, not as the number `30`, and if you need it as a number you have to convert it yourself. In the classic form, `args` appears in the signature even if you never use it — as happens 99% of the time — because that is the shape the JVM and build tools recognise as an entry point in every Java version.
 >
 > **And isn't an array, being fixed-length, exactly the wrong choice here?** It is the reasonable doubt, and the answer is in *when* that length gets fixed. "Fixed-length" does not mean the size is written in your source; it means the size is decided the instant the array is created, and never changes after that. And you are not the one creating this array: the JVM creates it at launch, when it already knows perfectly well how many values you typed after the class name. With `java Hello Ana 30` it counts two, creates an array of size 2, fills it and hands it to your `main`. Throughout the whole run those arguments are never going to grow or shrink, so an array fits perfectly: what you cannot do is add a third argument halfway through the program, and that is something nobody needs to do.
 
@@ -607,7 +607,7 @@ What all that is for: the package is the class's surname. Your service's full na
 
 **And packages are also the visibility boundary, which is what `public` was measuring in `main`'s signature.** The rule: a class or method marked `public` can be used from any package; without `public`, it can only be used from classes in that same package. So `public` opens the door outwards, and its absence leaves it shut inside the package.
 
-Applied to `main`, that explains why it carries `public`: whoever calls `main` is not another of your classes, it is the JVM, which is code sitting outside your project and therefore outside all of your packages. Without `public`, the JVM could not call it. The full visibility rules — there are four levels, not two — are in [06-oop-classes.md](06-oop-classes.md).
+Applied to `main`, that explains why it carries `public`: whoever calls `main` is not another of your classes, it is the JVM, which is code sitting outside your project and therefore outside all of your packages. In the classic form, without `public` the JVM could not call it; Java 25 relaxes this rule, as you will see at the end of this section. The full visibility rules — there are four levels, not two — are in [06-oop-classes.md](06-oop-classes.md).
 
 If the class you try to launch has no `main` method, the class compiles perfectly well — as a class there is nothing wrong with it — and the failure arrives later, from the JVM, at the exact moment you try to start it:
 
@@ -664,7 +664,7 @@ The whole TimeTrack backend — every controller, every security rule, the datab
 > }
 > ```
 >
-> And launch it directly with `java Hello.java`, without compiling by hand first. Underneath, Java still creates the class and the full `main` for you; it just lets you not write them.
+> And launch it directly with `java Hello.java`, without compiling by hand first. Underneath, Java still creates the class for you, but not a full `main`: at start-up, the JVM creates an object of that class and calls its `main()` as it is, with no `static` and no `args`. That is Java 25's other novelty: the JVM now accepts a `main` with no `public`, no `static` and no parameters, in any class.
 >
 > It was added for a teaching reason: so a beginner's first Java lesson does not have to open by explaining `public`, `static` and `String[]`, three words that cannot be understood yet at that point. The catch is that no real project uses it — not project 07, and not the examples in these notes — because the moment you have more than one file you need real classes. So your rule is simple: if you meet it in a tutorial, recognise it and know that it is the same thing; but always write the full form yourself.
 
