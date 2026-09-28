@@ -6,6 +6,8 @@ My 7th learning project and my first full-stack app — a timesheet where employ
 
 **[▶ Try the live app](https://07-timetrack.netlify.app)**
 
+**Demo account:** Manager `manager@timetrack.com` / `V9pr4VLCKaqxkpD8xnHz`
+
 Technical guides: [Backend decisions](backend/README.md#key-patterns) · [Frontend decisions](frontend/README.md#key-patterns)
 
 **Status:** the full-stack app is deployed. Backend service tests and frontend HTTP/state service tests are still pending; existing checks cover DTO validation and selected frontend behaviours. See [backend tests](backend/README.md#tests) and [frontend tests](frontend/README.md#tests).
