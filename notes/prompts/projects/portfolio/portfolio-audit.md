@@ -66,8 +66,8 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > chain. In `PROJECT_PATH = all` this binds per project, never per run.
 >
 > **A bank-only run owes none of the three either, and that exemption is its own path and no wider.** A
-> run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global` writes questions and stops: it never opens
-> `PROJECT-BACKLOG.md`, never reads a README, prints no verdict and drafts no CV bullet — so nothing the
+> run at `PORTFOLIO_SCOPE = backend`, `frontend` or `global` writes questions and stops: it opens
+> `PROJECT-BACKLOG.md` only to append owed-correction `[Low]` tasks, never to count one, never reads a README, prints no verdict and drafts no CV bullet — so nothing the
 > chain exists to make accurate is anything it reads. It signs off **no gate**, G7 included, for the
 > same reason a ❌ cannot tick that box: the box records a verdict and this run produces none. A
 > project's tiers may therefore be banked in any order, across any number of sessions, long before the
@@ -260,9 +260,9 @@ would read as a pass. `{DRY_RUN}` does not qualify any of this — the block wri
 **The step-0 result cannot contradict Phase 2, and that is what licenses stopping on it — in two halves.**
 **The inputs:** the reason is narrower than "this run writes none of these files" — which is false.
 `PROGRESS.md` is written by a step of this run: the authoring recount below commits it, which is exactly
-why Check 3's date test is pinned to `{BASELINE}`. The claim that holds is per-cell. `PLANNING.md` and
-`PROJECT-BACKLOG.md` are read live and no step of this run writes either — Phase 2's sanity scans report
-and never repair. Two inputs are read live on a file this run does commit or could see move: Check 1's
+why Check 3's date test is pinned to `{BASELINE}`. The claim that holds is per-cell. `PLANNING.md` is
+read live and no step of this run writes it; `PROJECT-BACKLOG.md` is written only by the owed-correction
+raise, after Phase 2 and with `[Low]` tasks Check 2 ignores — Phase 2's sanity scans report and never repair. Two inputs are read live on a file this run does commit or could see move: Check 1's
 `## Projects` row, which the recount never touches (it owns the `## Authoring progress` rows and the
 per-project table and nothing else), and `_last-drift-report.md`, which only `progress-update` writes and
 which a hands-off run cannot re-run mid-flight. Both hold per cell, not per file, so **widening the
@@ -609,8 +609,10 @@ below 1, a parity count that disagrees — and C produces neither: its verdict i
 second dispatch on the same file would only re-ask the same reader the same question. What it returns
 instead goes to Victor in the final report. **A suspected factual error — C's, or an English question T
 reported wrong — is an English defect owed a correction**, not a note on the Spanish: T renders meaning
-unchanged, so the claim sits in both files. No role of this run repairs it; Finishing item 1 prints it for
-Victor to confirm against the code and the `en/` twin and correct through the bank's TODO channel.
+unchanged, so the claim sits in both files. No role of this run repairs it; Finishing item 1 prints it and
+*Raise every owed correction as a backlog task* persists it, for `backlog-task-open` to confirm against
+the code and the `en/` twin; the fix is a `TODO:` Victor writes on that ID, which `study-content-writer`
+resolves.
 
 **If C returns `BLOCKED`** — a half-reviewed twin — take the **leave-and-declare** side, never the
 restore side, exactly as Phase 1b does and for the same reason: the `es/` is created by this pipeline, a
@@ -619,9 +621,7 @@ than the committed one. Declare it `blocked — partial (es/ review)`, and the p
 `_run-tracker.md`, on the dry branch too. **Where C's return names no section it had already rewritten**
 — its `BLOCKED — TODO markers present` stop, which changes nothing — label it
 `blocked — es/ review not run` instead: nothing is partial, and a label claiming a half-reviewed twin is
-worse than one claiming an unaudited one. (That stop should be unreachable, since T meets the same
-markers first and returns `TODO-STOPPED`, which skips this phase — but C's own text provides for it, so
-this one does too.)
+worse than one claiming an unaudited one.
 
 **Neither C's verdict nor its findings move the Phase 2 verdict.** They are about the Spanish of the
 bank, and the verdict is the go/no-go on the **project** — the same rule the thin-bank paragraph below
@@ -729,9 +729,6 @@ not a path any command can run from. Use the resolved path, and print it in the 
 Victor can run them verbatim. What it is **not** is a reason to hand the commit back — that README is this prompt's **output**,
 written to a checkable style, the same class as `cv-bullets.md`, which this run already commits, and the
 commit boundary in `_agent-runtime-standard.md` fences *Victor's* artefacts, not files outside this repo.
-Measured 2026-09-07: the step had run twice and committed neither time, so the profile a recruiter reads
-was two runs stale and nothing in the system could see it — nothing reads that repo's git state, so a run
-cannot tell an unpushed profile from a current one, and a handoff nothing reads back is not a gate.
 
 Three things this step settles, so that no run re-derives them:
 
@@ -752,9 +749,7 @@ Three things this step settles, so that no run re-derives them:
 
 With `{DRY_RUN}` = true, edit the README as always and commit nothing: print the `git -C` add + commit
 pair, together with the push, one command per code block. **Say plainly, in item 5, that the edit is
-sitting uncommitted in a repo nothing else reads** — the launcher defaults `DRY_RUN` to `true`, so this is
-the path that produced the measured dirt in the first place, and a dry run that stays silent about it
-reproduces the defect exactly once per run.
+sitting uncommitted in a repo nothing else reads**.
 
 ## Finishing
 
@@ -781,7 +776,7 @@ outcome), labelling the commit `bank-only — «scope»`; with `{DRY_RUN}` = tru
 print the sequence instead. Record the project in `_run-tracker.md` with the scope in the parenthetical
 the shared close-out contract already defines — `2026-09-05 (backend only, completed — …)` — and
 `completed` only if this scope's own gates passed, `blocked` otherwise, exactly as on any other run.
-Then the authoring recount and the self-report.
+Then the owed-correction raise, the authoring recount and the self-report.
 
 **If Check 1, Check 2 or Check 3 stopped the gate in Phase 2** — Check 1 on a plan with no step marker whose
 project has no `## Projects` row in `PROGRESS.md`; Check 2 on no backlog · no `Last Reviewed` header · a
@@ -793,7 +788,7 @@ prompt writes either — and nothing else — no verdict, no CV bullet, no GitHu
 README. With `{DRY_RUN}` = false, commit the question bank on the ❌ branch's `git add` below, because
 this run dispatched one and questions a run wrote are saved regardless of the outcome; with `{DRY_RUN}` =
 true commit none of it and print that sequence instead, exactly as on any other verdict. Either way,
-record this project `blocked` in `_run-tracker.md`. Then the authoring recount and the self-report.
+record this project `blocked` in `_run-tracker.md`. Then the owed-correction raise, the authoring recount and the self-report.
 **This branch is reached two ways, and both dispatched the bank.** A project of a `PROJECT_PATH = all`
 batch: the preflight **announced** this stop at step 0, so print it as the stop arriving where the run
 said it would, not as news. Or a single project whose preflight printed `nothing owed` while Phase 2
@@ -815,8 +810,8 @@ Otherwise print, in this order:
    reason Phase 1c did not run. A twin nobody audited and a twin that passed look identical on disk, so
    this line is the only place the difference is stated. On its own line too, **every suspected factual
    error C returned and every English question T reported wrong, outside a frozen block, by ID with its
-   evidence, labelled `owed a correction`** — or `factual errors: none reported`; nothing else in the run
-   acts on one. **On a full-stack
+   evidence, labelled `owed a correction`** — or `factual errors: none reported` — and, beside each, the
+   backlog task it was raised as or the reason it was dropped. **On a full-stack
    project also print the three `Last banked` lines as they now stand**, so a tier still reading `never`
    is visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where
@@ -966,7 +961,8 @@ the diff.
   the same check — the open-High count exists for that.
 - **One atomic commit per project, in this repo.** In `all` mode, one commit per project, never batched.
   The ✅-Ready profile-README commit is not an exception to it and never joins it: it lands in a
-  **different repository**, so the two indexes never meet (`REC-220`). The
+  **different repository**, so the two indexes never meet (`REC-220`). Nor is the owed-correction
+  commit, which is path-scoped to `PROJECT-BACKLOG.md` and follows the audit commit (`REC-261`). The
   orchestrator commits once, after every section's author→reviewer pair **and the project's translator
   and Spanish reviewer** are done; none of the section subagents, the translator or the Spanish reviewer
   commits.
@@ -1002,6 +998,28 @@ the diff.
   `[refined]` marker, a code block and the header are all outside its hand, and a suspected translation
   error is reported for a later stage T rather than guessed at from a file it may not read.
 
+### Raise every owed correction as a backlog task
+
+Each entry on Finishing item 1's `owed a correction` line leaves this run as a task in
+`{PROJECT_PATH}/PROJECT-BACKLOG.md`, the file every session start reads, or as a named drop (`REC-261`).
+**Write the tasks before printing item 1**, which reports each one; commit after the bank's commit. Read
+the file's open tasks and `## Closed` first and **drop** an entry, with its reason, when a task or closed
+line already names the same question ID. File each survivor at its tier and priority — under the Low
+heading the file already uses (`#### Low` in its tier, `### Low` / `## Low` on 01–06), creating only that
+heading where absent and replacing its `*No open …*` placeholder — in the task format `_review-standard.md`
+owns: `- [ ] **[Low]** `[tier]` — Correct `{ID}` in the question bank: {claim} — {evidence} ({C|T})
+*(Effort: Small)* *(raised YYYY-MM-DD during portfolio-audit on {project})*`. **Always `[Low]`**, so it
+never moves the Phase 2 verdict. The tier is the question's sub-heading — a `Cross-tier` question takes
+the tier its claim's code lives in, `[backend]` where it spans both — and `[frontend]` on 01–06. Touch
+nothing else in the file, never create one a project lacks (list the entries in item 1 as owed to its
+first `review-audit`), and never write `PLANNING.md` — its open-task count is `backlog-task-close`'s.
+
+**Commit it on its own**, on every scope: `git status`, then
+`git commit --only -m "docs({project}): raise <n> owed bank correction(s) found during portfolio-audit" -- {PROJECT_PATH}/PROJECT-BACKLOG.md`,
+under `_session-rules.md`'s any-flow authorization for that file. With `DRY_RUN = true` write the tasks
+and print that command instead. No survivor, no write and no commit. On `PROJECT_PATH = all`, one such
+commit per project that raised one.
+
 ### Recount this project's authoring row
 
 After the bank and its twin have committed, **invoke the `authoring-progress-recount` skill**, passing
@@ -1018,12 +1036,8 @@ and never once for the batch — and pass the project's folder name, whether thi
 one, since that is what settles the skill's eligibility test here**. A run that computes no verdict — a
 bank-only scope, or a Check 1 / Check 2 / Check 3 stop in Phase 2 — passes none, and the skill resolves that project from the ladder as
 it does every other. **A run that stopped at step 0 does not invoke it at all**: it wrote no bank, so no
-denominator moved. That matters on exactly the run it matters most: the skill's project list is
-`interview-prep-route-projects-prompt.md`'s eligibility ladder, whose Angular-only fallback reads the
-`portfolio-audit` cell of `_run-tracker.md` — and that cell is written by the self-report **after** this
-step. On the first `full` run over an Angular-only project the skill would therefore find the project
-ineligible on the very run that created its bank. You computed the verdict; hand it over rather than
-making the skill read a cell that does not exist yet. **Skip it entirely when `DRY_RUN = true`.** Not
+denominator moved. The verdict is handed over because the skill's Angular-only fallback reads the
+`_run-tracker.md` cell the self-report writes **after** this step. **Skip it entirely when `DRY_RUN = true`.** Not
 because the row would be unchanged — the bank is written to the working tree either way, so the count
 really has moved — but because the skill's whole output is a commit of `PROGRESS.md`, and a dry run
 commits none of this run's outputs. Print the recount it would have made instead. Fold its report row into the final

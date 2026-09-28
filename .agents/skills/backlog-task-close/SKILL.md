@@ -61,7 +61,7 @@ expresses it (`sql`), and each of those is a separate bullet in a separate file.
 take a **list**, and the report table carries one row per concept. Naming only the headline concept is
 the common failure: the others are demonstrated in the same commit and silently leave no trace.
 
-Four kinds of task exist, and they close differently:
+Five kinds of task exist, and they close differently:
 
 - **Code task** — a fix landed in the project. Normal path, all steps below apply.
 - **Design decision (no code change)** — the task concluded "this is our convention, leave it"
@@ -86,6 +86,12 @@ Four kinds of task exist, and they close differently:
   line still carries `DECISION, no code change`, and its `→` tail must say *why the code is right*
   (false positive) or *why it will never be right here* (dropped) — that tail is the only thing standing
   between the same finding and the next `review-audit` run re-raising it.
+- **Question-bank correction** — a `Correct «ID» in the question bank` task `portfolio-audit` raised
+  (`REC-261`), fixed by a `TODO:` Victor writes on that ID, which `study-content-writer` resolves. The fix
+  is bank prose, not project code, so nothing is demonstrated: steps 1 through 4 are **n/a** except step
+  3b, which every close owes — say so and go to step 5, whose `→` tail names the commit that corrected
+  both languages. One the triage found true as written closes on the false-positive path above instead.
+  Keep `{ID}` in the ledger summary either way: the next raise dedupes on it.
 
 Read `notes/prompts/knowledge/coverage/_internal/_topic-ownership.md` before invoking the coverage
 skills — the coverage topics distinguish `Spring` (container, beans, proxies, transactions) from

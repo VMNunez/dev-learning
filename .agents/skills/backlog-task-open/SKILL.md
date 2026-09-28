@@ -52,6 +52,11 @@ re-derive all of it and would still miss the session history.
 
 Quote the task line verbatim first, so what is being judged is on screen.
 
+**A `Correct «ID» in the question bank` task** (`portfolio-audit`, `REC-261`) claims something about bank
+prose, not code: read that question in both `notes/interview-prep/projects/` files and the code its claim
+names in place of reads 2–6; the verdict is valid or false positive, and a valid one is fixed by a
+`TODO:` Victor writes on that ID, which `study-content-writer` resolves — not through step 5's modes.
+
 Then read, in this order — **all six, before forming any opinion**:
 
 1. **The code the task names.** Open the actual files and lines. The task's line numbers may have moved
