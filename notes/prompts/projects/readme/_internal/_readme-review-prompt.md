@@ -40,8 +40,8 @@ project. Your attention budget belongs to the README.
   target. Add any missing; reorder any misplaced.
 - **Global opening and stack (`global` only)** — verify rule 1's logo badges immediately below the title sentence,
   rule 2's learning-objective-then-application explanation, and rule 10's text-only Tech stack table
-  after What I learned. Check badge names and versions against the implemented project, and make sure
-  the table states those technologies in text.
+  after What I learned. Check that badge order puts this project's learning focus first, names and
+  versions match the implemented project, and the table states those technologies in text.
 - **Per-section rules** — each section meets its specific rule (format strings like `[X] over [Y] —
   [reason]`, the interview test on architecture decisions, table-not-list for Tech stack, recall-list
   brevity for "What I learned", one API table per resource with specific roles, prose-only Auth flow, `*(planned)*` for

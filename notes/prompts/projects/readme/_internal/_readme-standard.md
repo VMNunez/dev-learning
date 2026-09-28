@@ -208,7 +208,11 @@ found three of these tests missing and two nominal only once someone counted the
    flat badges with technology logos for the stack actually used. Name the main framework, language and
    relevant supporting technologies (including HTML5 when used); show a version only when the project's
    files verify it. Give every badge descriptive alt text, and keep its technology name in the plain-text
-   Tech stack table too. Do not add a separate `**Stack:**` line.
+   Tech stack table too. Order the badges by relevance to this project's learning objective: lead with
+   the main framework or capability being learned, follow with the specific concepts and technologies
+   that make that objective visible, then the supporting language/tools and finally markup and styling.
+   Keep related badges together; do not sort alphabetically or copy the Tech stack table's layer order
+   when that buries the learning focus. Do not add a separate `**Stack:**` line.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
      where admins manage employees and leave requests."
 2. **Why this project** — one concise paragraph that starts with the specific learning objective behind
