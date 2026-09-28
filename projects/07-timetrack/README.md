@@ -7,14 +7,14 @@ My 7th learning project and my first full-stack app — a timesheet where employ
 **[▶ Try the live app](https://07-timetrack.netlify.app)**
 
 <table>
-<tr><th>Role</th><th>Email</th><th>Password</th></tr>
-<tr><td>Manager</td><td>
+<tr><th align="center">Role</th><th align="center">Email</th><th align="center">Password</th></tr>
+<tr><td align="center">Manager</td><td align="center">
 
 ```text
 manager@timetrack.com
 ```
 
-</td><td>
+</td><td align="center">
 
 ```text
 V9pr4VLCKaqxkpD8xnHz
