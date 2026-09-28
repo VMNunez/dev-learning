@@ -2,11 +2,15 @@
 
 My 3rd learning project — personal finance tracker where users log income and expenses, see live totals and filter transactions.
 
+**Angular 21 · TypeScript · Reactive Forms · Signals · localStorage**
+
+[Live demo](#live-demo) · [Run locally](#how-to-run)
+
 ---
 
 ## Why this project
 
-Forms and validation appear in almost every business app. I built this project to understand how reactive forms work, how to validate user input properly, and how to navigate between pages before applying those patterns in a real codebase.
+A running balance is only as trustworthy as the entries behind it — one amount of zero, one transaction saved without saying whether it is income or an expense, or a list that vanishes on refresh, and the number on screen stops meaning anything. This portfolio app keeps a personal ledger of income and expenses in the browser: every entry is checked before it is saved, the balance and totals are always worked out from the list itself, and the data is still there after a refresh.
 
 ---
 
@@ -41,27 +45,28 @@ https://03angularexpensetracker.netlify.app/
 
 ## Architecture decisions
 
-- Smart/dumb component split — the two pages own the state and the service, and `summary-card`, `filter-bar`, `transaction-list` and `transaction-form` only take `input()` and emit `output()`, so every child is reusable and testable in isolation
-- Component styles moved with the markup they style — each child owns its rules and uses `:host` for the layout the parent's wrapper used to provide, so no parent CSS reaches into a child
+- Smart/dumb component split to keep every child reusable and testable in isolation, with state and the service confined to the two pages
+- Styles kept in the component that renders the markup, since view encapsulation stops a parent's CSS from reaching into a child
 - `computed()` for the filtered list and the totals to recalculate automatically when the signal changes, without a manual trigger
-- Persistence declared once with `effect()` — the service constructor writes the signal to localStorage whenever it changes, so no mutator has to remember to save
-- localStorage treated as untrusted input — the stored JSON is parsed inside a `try/catch` and shape-checked with `Array.isArray`, so a corrupt value cannot stop the service from constructing
-- Default form date built from the local clock (`getFullYear`/`getMonth`/`getDate`) instead of `toISOString()`, which reports the UTC day and would pre-fill yesterday after local midnight
-- Transaction ids from `crypto.randomUUID()` instead of `Date.now()`, because two submits in the same millisecond would collide and `deleteTransaction` filters by id equality — deleting both rows
-- Form controls typed to match the model — `nonNullable: true` and a literal union for the type select, with `getRawValue()` and a narrowing guard on submit, so the emitted value is a `NewTransaction` without an `as` assertion hiding a mismatch
+- Persistence declared once with `effect()` so no mutator has to remember to write to localStorage
+- localStorage treated as untrusted input so a corrupt or non-array stored value starts the app with an empty list instead of crashing it
+- Default form date built from the local clock, not `toISOString()`, so the form cannot pre-fill yesterday's date just after local midnight
+- Transaction ids from `crypto.randomUUID()` so two transactions can never share an id and one delete can never remove both
+- Form controls typed to match the model so the submitted value needs no `as` assertion that could hide a mismatch
 
 ---
 
 ## Tradeoffs
 
-- Reactive forms over template-driven forms — `markAllAsTouched()` on submit and a typed form value need TypeScript control over the form, which the template-driven API does not give
-- localStorage over a real backend — the focus was reactive forms and routing, and a fake API would have added setup without teaching either
-- `Omit<T, K>` for the create type over a separate interface — one source of truth for the transaction shape, so adding a field cannot leave the two definitions out of sync
+- Reactive forms over template-driven forms — validation and a typed form value live in TypeScript, at the cost of declaring every control in the component class instead of in the template
+- localStorage over a backend API — persistence with no server to build or host, so the data lives in one browser and is lost when its storage is cleared
+- `Omit<Transaction, 'id'>` over a hand-written create interface — one source of truth for the transaction's shape, giving up a create type that can differ from the stored one without a further utility type
 
 ---
 
 ## Future improvements
 
+- Edit a transaction after it has been saved
 - Categories for transactions with colour coding
 - Monthly summary chart
 - Export transactions to CSV
@@ -72,22 +77,18 @@ https://03angularexpensetracker.netlify.app/
 
 - `FormGroup` and `FormControl` — reactive forms
 - `Validators.required` and `Validators.min()` — built-in validation
-- `hasError()` and `touched` — show error messages at the right moment
-- `markAllAsTouched()` — trigger all errors on submit
+- `hasError()` + `touched`, with `markAllAsTouched()` on submit — an error shows once a field is left, or on every field when the form is submitted
 - `form.reset()` — reset form to initial values after submit
-- `nonNullable` controls — a control that never widens its type to `null` on reset
-- `getRawValue()` — typed form value that needs no `as` assertion on submit
+- `nonNullable` controls + `getRawValue()` — a form value typed like the model, narrowed with one guard instead of an `as` assertion
 - `routerLink` and `RouterOutlet` — navigation between pages
 - `Router` service — programmatic navigation with `router.navigate()`
 - `computed()` with filters — derived state that reacts to signals
 - `effect()` — synchronise a signal with an external system (localStorage) instead of repeating the write in every mutator
 - `Omit<T, K>` — TypeScript utility type to remove fields from an existing type
 - Smart/dumb component pattern — containers own the state, children take `input()` and emit `output()`
-- `:host` — style a component's own element when it replaces a styled `<div>` in the parent
-- View encapsulation — a parent's CSS cannot reach markup that moved into a child component
 - `crypto.randomUUID()` — collision-free ids, unlike a `Date.now()` timestamp
 - Local-clock date formatting — `toISOString()` returns the UTC day, not today's local date
-- `position: absolute` and `position: relative` — element positioning
+- `JSON.parse` in `try/catch` + `Array.isArray` — stored data is untrusted input, so a bad value falls back to an empty list
 - `@media (min-width)` — responsive design, mobile first
 
 ---
@@ -103,6 +104,7 @@ https://03angularexpensetracker.netlify.app/
 | State | Angular signals (`signal`, `computed`, `effect`) |
 | Persistence | Browser localStorage |
 | Styles | CSS (mobile-first) |
+| Hosting | Netlify |
 
 ---
 
@@ -112,7 +114,7 @@ https://03angularexpensetracker.netlify.app/
 src/
 ├── app/
 │   ├── models/                                 ← Transaction, NewTransaction and Filter types
-│   ├── services/                               ← TransactionService: the signal, the computed totals and the localStorage sync
+│   ├── services/                               ← TransactionService: the transactions signal, add/delete and the localStorage sync
 │   ├── pages/
 │   │   ├── dashboard-page/                     ← smart page: owns the filter signal and the totals
 │   │   │   └── components/
