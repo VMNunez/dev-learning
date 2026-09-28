@@ -46,7 +46,6 @@ https://03angularexpensetracker.netlify.app/
 ## Architecture decisions
 
 - Smart/dumb component split to keep every child reusable and testable in isolation, with state and the service confined to the two pages
-- Styles kept in the component that renders the markup, since view encapsulation stops a parent's CSS from reaching into a child
 - `computed()` for the filtered list and the totals to recalculate automatically when the signal changes, without a manual trigger
 - Persistence declared once with `effect()` so no mutator has to remember to write to localStorage
 - localStorage treated as untrusted input so a corrupt or non-array stored value starts the app with an empty list instead of crashing it
