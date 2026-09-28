@@ -2,9 +2,11 @@
 
 My 7th learning project and my first full-stack app — a timesheet where employees log the hours they work on projects and managers approve or reject every entry.
 
-**Angular 21 · Spring Boot 4 · Java 25 · PostgreSQL**
+![Spring Boot 4.0](https://img.shields.io/badge/Spring%20Boot-4.0-6DB33F?logo=springboot&logoColor=white&labelColor=303030) ![Java 25](https://img.shields.io/badge/Java-25-ED8B00?logo=openjdk&logoColor=white&labelColor=303030) ![Spring Security with JWT](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&logoColor=white&labelColor=303030) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white&labelColor=303030) ![Spring Data JPA with Hibernate](https://img.shields.io/badge/Spring%20Data%20JPA-Hibernate-59666C?logo=hibernate&logoColor=white&labelColor=303030) ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Material 21](https://img.shields.io/badge/Angular%20Material-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![JUnit](https://img.shields.io/badge/JUnit-Jupiter-25A162?logo=junit5&logoColor=white&labelColor=303030) ![Vitest](https://img.shields.io/badge/Vitest-TestBed-6E9F18?logo=vitest&logoColor=white&labelColor=303030) ![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030)
 
-[Live demo](#live-demo) · [Run locally](#how-to-run) · [Backend decisions](backend/README.md#key-patterns) · [Frontend decisions](frontend/README.md#key-patterns)
+**[▶ Try the live app](https://07-timetrack.netlify.app)**
+
+Technical guides: [Backend decisions](backend/README.md#key-patterns) · [Frontend decisions](frontend/README.md#key-patterns)
 
 **Status:** the full-stack app is deployed. Backend service tests and frontend HTTP/state service tests are still pending; existing checks cover DTO validation and selected frontend behaviours. See [backend tests](backend/README.md#tests) and [frontend tests](frontend/README.md#tests).
 
@@ -12,7 +14,7 @@ My 7th learning project and my first full-stack app — a timesheet where employ
 
 ## Why this project
 
-Recorded hours need a clear owner, a reviewer and an outcome before they become a trusted report. This portfolio project implements that process across an Angular client and a Spring Boot API: the server enforces ownership and workflow rules, while the interface makes rejection, correction and resubmission explicit. Archived accounts and projects keep their history.
+I built this project to learn backend development with Spring Boot — my first REST API, database schema and JSON contract shared by two independent apps — and role-based authorization with Spring Security, enforced on a real workflow instead of a toy endpoint. To practise it, I built a timesheet app where employees log and submit the hours they work on projects and managers approve or reject each entry with a note. The server enforces who owns each entry and which status changes are allowed, the Angular client makes rejection, correction and resubmission explicit, and archived accounts and projects keep their history.
 
 ---
 
@@ -206,6 +208,7 @@ The main lessons were enforcing a workflow and ownership on the server, keeping 
 | Database | PostgreSQL |
 | ORM | Spring Data JPA + Hibernate |
 | Frontend | Angular 21 + Angular Material |
+| Markup | HTML5 |
 | Testing | JUnit 5 + AssertJ (backend) · Vitest + TestBed (frontend) |
 | Local setup | Docker + docker-compose |
 | Hosting | Render (API container) · Neon (PostgreSQL) · Netlify (frontend) |
