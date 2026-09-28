@@ -93,6 +93,7 @@ I built this project to learn advanced Angular routing: functional guards, lazy-
 
 - Core/Feature/Shared structure to separate singleton logic, feature areas and reusable UI
 - Lazy loading on all feature routes to avoid loading admin-only code for every user on every visit
+- The date adapter provided by the leave-request dialog itself, not at bootstrap, to keep date-fns in the lazy leave-request chunk instead of the initial bundle
 - Stacked guards (`authGuard` + `adminGuard`) to keep authentication and authorisation as separate concerns
 - Coordinator pattern on pages with filters and a table to centralise state and keep children reusable
 - `filteredNavLinks computed()` in the root component to keep sidebar links in sync with the current user without duplicating role checks in children
@@ -135,7 +136,7 @@ I built this project to learn advanced Angular routing: functional guards, lazy-
 - `touched`-gated errors — a `required` control is invalid from construction, so its error waits until the user has visited the field
 - `MAT_DIALOG_DATA` — one dialog serves add and edit, switching mode on whether data was injected
 - `MatSidenav` app shell — persistent sidebar with role-filtered navigation links
-- `MatDatepicker` — calendar picker with `provideNativeDateAdapter()`
+- `MatDatepicker` + date-fns adapter — `NativeDateAdapter` reads a typed `04/10/2026` with `Date.parse` as 10 April, so the date-fns adapter with `enGB` reads and shows `dd/MM/yyyy` like the tables
 - Local-clock date serialization — `toISOString()` shifts a picked date to UTC, so `YYYY-MM-DD` is built from `getFullYear`/`getMonth`/`getDate`
 - Conditional `displayColumns` with `computed()` — show or hide table columns based on role
 - Chained filter `computed()`s — the employee and leave-request lists combine several filter signals with `&&`, each falling back to a no-filter default like `'all'` or `''`
@@ -164,6 +165,7 @@ I built this project to learn advanced Angular routing: functional guards, lazy-
 | Routing | Angular Router — functional guards, lazy routes, query parameters |
 | State | Angular signals — `signal`, `computed`, `effect` |
 | Forms | Angular Reactive Forms (typed) |
+| Dates | date-fns, through the Angular Material date-fns adapter |
 | Persistence | Browser localStorage |
 | Markup | HTML5 |
 | Styles | CSS + SCSS (Material theming) |
