@@ -56,7 +56,8 @@ Check this README's sections against the standard's rules for your `{TARGET}`, i
 - Add every missing section; fix every present-but-wrong one **directly** in the file.
 - Move any out-of-order section to its correct position.
 - For `global`, check rules 1, 2 and 10 together: the opening logo badges follow the plain-language
-  sentence in learning-objective order, Why this project leads with that objective and then the
+  sentence in learning-objective order, followed by the `▶ Try the live app` line when the app is
+  deployed, Why this project leads with that objective and then the
   application built for it, and the text-only Tech stack table remains in its ordered section after
   What I learned.
 - Apply the **quality filter** (recruiter + interviewer lens) to each section — cut or rewrite noise.

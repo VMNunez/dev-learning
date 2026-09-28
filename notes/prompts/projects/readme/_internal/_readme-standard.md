@@ -119,8 +119,9 @@ technical guides and the current testing status (projects 01–06 carry no Tests
 absent tests are out of scope, never a status to advertise).
 On the global README, use opening technology badges. Let the section headings guide readers through a
 short global README; do not add an automatic partial index of in-page links such as `Live demo · How to
-run` below the badges when those links only repeat visible section headings. A direct link to an external
-demo or to a separate technical guide may be useful when it saves the reader a real search. On a long
+run` below the badges when those links only repeat visible section headings. The one link that does
+belong there is rule 1's live-app call to action, because it leaves the page for the running app. A
+direct link to a separate technical guide may be useful when it saves the reader a real search. On a long
 tier README, add a contents line and link its central decisions to their source files. Group detailed
 patterns by concern; use concise explanations of the choice and consequence instead of replaying every
 debugging step. Optional `<details>` blocks may hold a long recall list or supporting rationale, with a
@@ -215,6 +216,11 @@ found three of these tests missing and two nominal only once someone counted the
    that make that objective visible, then the supporting language/tools and finally markup and styling.
    Keep related badges together; do not sort alphabetically or copy the Tech stack table's layer order
    when that buries the learning focus. Do not add a separate `**Stack:**` line.
+   When the app is deployed, put one call-to-action line directly below the badges, linking the
+   deployed URL itself, never the `#live-demo` anchor: `**[▶ Try the live app](https://…)**`. The link
+   text is an action that says where it leads, not a bare `Live demo` label, and it is not a Shields.io
+   badge, so it cannot be mistaken for a technology. Rule 3's section stays, because it carries the
+   test accounts and access notes. With no deployed app there is no line.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
      where admins manage employees and leave requests."
 2. **Why this project** — one concise paragraph that starts with the specific learning objective behind
