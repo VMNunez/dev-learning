@@ -357,8 +357,8 @@ any new section, and check them when auditing an existing one:
   to narrow down on their own.
 - **Anchor against JavaScript/TypeScript — but only when equivalent is truly functional.** Anchor
   only when the equivalence is direct and transparent — where using them is functionally the same in
-  both languages (e.g. `final` = `const`, for-each = `for...of`, try/catch syntax is identical,
-  `.formatted()` = template literals). Do NOT anchor when a concept exists in JS/TS but serves a
+  both languages (e.g. `final` = `const`, for-each = `for...of`, try/catch has the same shape except
+  that Java's `catch` names the exception type, `.formatted()` = template literals). Do NOT anchor when a concept exists in JS/TS but serves a
   fundamentally different purpose or requires different mental context — for example, exception types
   in Java (checked/unchecked, compile-time enforcement, type hierarchy) are not comparable to JS
   error objects (runtime-only, informal, no type distinctions). When the JS version is only
@@ -1028,10 +1028,9 @@ produces") — the stage that writes the prose was the one stage never told to a
   says is corrected. Neither has to list every section, and a route or recap line naming a subject by the
   part its section defers passes ("la comparación de dos Strings, la única operación que este capítulo no
   explica", `02`, whose section explains `equals` and sends `==` to `06`). The refined `02` still carries
-  two disagreements this check catches and Victor did not mark — the recap's "sabiendo que cada uno
-  devuelve un `String` nuevo que tienes que guardar" against "Nueve de estos métodos leen el `String` sin
-  producir uno nuevo", and "la pareja pre-Unicode" against `trim()` described by its numbers — which are
-  residue reported to him (`REC-247`), not approved counterexamples.
+  one disagreement this check catches and Victor did not mark — "la pareja pre-Unicode" against `trim()`
+  described by its numbers — which is residue reported to him (`REC-247`), not an approved
+  counterexample.
 - **`HC-11` — A value or an order the example depends on, left untraced** · stage B · enforces
   Second-order completeness → "Explain the mechanism, not just the usage" and Anticipate-the-TODO →
   "Mechanism before behaviour" · built from `java/junior/02`. **A value in code whose effect is the point**
