@@ -7,27 +7,27 @@ My 6th learning project — HR portal where admins manage employees, departments
 **[▶ Try the live app](https://06-hr-portal.netlify.app)**
 
 <table>
-<tr><th>Role</th><th>Email</th><th>Password</th></tr>
-<tr><td>Admin</td><td>
+<tr><th align="center">Role</th><th align="center">Email</th><th align="center">Password</th></tr>
+<tr><td align="center">Admin</td><td align="center">
 
 ```text
 admin@hrportal.com
 ```
 
-</td><td>
+</td><td align="center">
 
 ```text
 admin123
 ```
 
 </td></tr>
-<tr><td>Employee</td><td>
+<tr><td align="center">Employee</td><td align="center">
 
 ```text
 employee@hrportal.com
 ```
 
-</td><td>
+</td><td align="center">
 
 ```text
 employee123
