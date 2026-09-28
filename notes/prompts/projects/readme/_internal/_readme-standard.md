@@ -222,8 +222,7 @@ found three of these tests missing and two nominal only once someone counted the
    badge, so it cannot be mistaken for a technology. When the app has a login, a
    Role / Email / Password table follows it, one row per role. Write it as an HTML `<table>` whose email
    and password cells each hold one fenced `text` code block, with a blank line inside the `<td>` before
-   and after the fence, and every `<th>` and `<td>` carries `align="center"` so the headers, role labels
-and values line up, so GitHub gives every value its own copy button and the reader who clicks can
+   and after the fence, so GitHub gives every value its own copy button and the reader who clicks can
    get past the login screen without scrolling or retyping. Rule 3's section stays and
    repeats the same accounts beside its access notes. With no deployed app there is no line.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
