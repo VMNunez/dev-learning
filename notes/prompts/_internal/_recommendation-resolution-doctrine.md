@@ -151,6 +151,10 @@ adjudicating: a false justification is repaired by re-founding the clause on the
 already holds, never by loosening the mandate it defends or by widening the role's scope to fit the
 exception. `git log -S` on the clause dates the fork, and where the justification predates the mode
 that falsifies it the row is a **restoration**, not a ruling.
+**Also `REC-240`: the event that falsifies it can be a mechanical rename of the justification's *subject*.**
+`2a54d95c` swapped the platform adapter's filename for `_session-rules.md` inside "it is already injected
+into your context", true of the adapter and false of the file it now only points at, so `log -S` on the current wording returns the rename;
+search the pre-image's wording too before calling a clause false from birth.
 
 **A clause about an artefact's *state* is not a clause about the *verdict* that reads it, and a
 runnable that cedes the computation cannot be the site of a partition defect.** From `REC-130`,
