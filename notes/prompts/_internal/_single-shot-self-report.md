@@ -25,7 +25,10 @@ the run's own output files and its chat summary; this file records only how the 
    earlier run passes that test trivially, so check its **mtime is from this run**.
 3. Any declared output missing or untouched is a **skipped step**, and it goes in bullet 2 by name. So is
    one whose only change is cosmetic when the row promised real work — *touched* means the declared work
-   landed, not that the mtime moved.
+   landed, not that the mtime moved. The converse is a finding too: a file the probe shows this run
+   wrote — never one another session or parallel run left there — that neither the row nor a step of
+   this contract accounts for is an **undeclared write**, named in bullet 2
+   and logged as a deviation.
 4. **Where the row's outputs are conditional or absent, say so instead of passing silently.** A cell that
    is mode-conditional (`sql-exercises` writes `MISTAKES.md` in review mode only), optional (`hr-screen`),
    or has no repo file at all (`linkedin`, `cover-letter`) makes this check vacuous. In those runs, name
@@ -105,8 +108,11 @@ extra lines only when reporting something that actually went wrong:
    the wrong value came from somewhere else (a plan, a tracker, a standard) — that is a bug there, not here.
 2. **Rule friction and rule breaches** — two things, one bullet: any instruction here that was ambiguous,
    contradictory, or had to be worked around; **and any rule this run broke**, including every missing
-   output found in Step 1. Name what was breached and what it cost, not just that it happened.
-   **A breach named here also gets a row in this prompt's `_breach-log-<prompt-name>.md`**, and this
+   output found in Step 1 and one a later guard or check of the run caught and repaired (never a
+   reviewer stage improving its author's draft). Name what was breached and
+   what it cost, not just that it happened.
+   **A breach named here also gets a row in this prompt's `_breach-log-<prompt-name>.md`, and so does a
+   deviation** — a step worked around where this prompt is silent, an undeclared write included — and this
    close-out rules on that log's `fixed`/`confirmed` rows for this run — the whole contract, its fields,
    its `own`/`shared` routing, its two-row threshold and its three-run confirmation loop, is owned once
    by `_pipeline-self-report.md` → "The breach log" and is not restated here. This report is overwritten
@@ -140,14 +146,17 @@ the evidence is freshest and the version you executed was the honest, unmodified
    breach log's two-row threshold, and the `shared`-scope exclusion from it, are stated once in
    `_pipeline-self-report.md` → "The breach log" and apply here identically.
 3. **It would have changed the *result*, not just the cost.** This is the condition that does the real
-   work, and most findings die here. Ask it concretely: *would the output file have been different, or
-   wrong, or missing?* If the honest answer is "the run would have been slower / clunkier / needed one
+   work, and most findings die here. Ask it concretely: *would the output have been different, or
+   wrong, or missing?* — every file this run wrote, an undeclared write included, never the declared
+   output alone. If the honest answer is "the run would have been slower / clunkier / needed one
    more question", that is friction — record it in the Verdict and stop. Annoyance is not evidence, and
    a prompt that grows a clause for every annoyance ends up unable to execute the rules it already has.
 4. **Not already covered** — the text does not handle it somewhere this run failed to look.
 
 When you reject a finding, **name the failed condition in the Verdict** so the same zombie is not
-re-proposed next run.
+re-proposed next run — and where it is a breach or a deviation naming a step, its breach-log row is
+written too (cost alone takes none): at two rows the
+finding is no longer this close-out's to reject, under `_pipeline-self-report.md` → "The breach log".
 
 **Independent review before applying.** Dispatch one cold `role-appropriate` subagent (`reasoning tier: deep`)
 with five inputs: the finding as the report states it, the prompt section it targets, your
@@ -187,7 +196,9 @@ since the hash cannot exist until the edit does; `_run-tracker.md` goes with it 
 changed it. An edit that rewrote a breached step moves that step's open breach-log rows to
 `fixed in <hash>` in that same second commit, under the breach-log section named above. When no edit is approved, **Step 3's commit is the run record**; re-commit the report alone
 only for the `cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled —
-and if it wrote none of them, nothing is committed here. Immediately before staging and immediately
+plus, where a draft the reviewer rejected was routed under the breach log's two-row rule, the ledger row
+(validator first) and that log's `routed to REC-NNN` dispositions — and if it wrote none of them,
+nothing is committed here. Immediately before staging and immediately
 before committing, run `git status`; stage only those declared paths. Print one line naming what went
 in and one naming what came out.
 

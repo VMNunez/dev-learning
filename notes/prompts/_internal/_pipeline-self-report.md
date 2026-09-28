@@ -101,12 +101,16 @@ earns extra lines when it is reporting something that actually went wrong:
    the failure protocol behaved.
 4. **Rule friction and rule breaches** — two things, one bullet: any instruction in the prompt that was
    ambiguous, contradictory, or had to be worked around during the run; **and any rule the run itself
-   broke** — a step-0 guard skipped, a model policy violated, a mandatory check not run. Name what was
+   broke** — a step-0 guard skipped, a model policy violated, a mandatory check not run — **including
+   one a later step of the same run caught and repaired**: a guard or check restoring the output every
+   run is evidence the guarded step keeps failing, never that it did not — a reviewer stage improving
+   its author's draft is that stage's job, not a breach. Name what was
    breached and what it cost, not just that it happened. (This half exists because a real coverage run
    word-crafted its items on the wrong model and shipped standard violations: the incident fit none of
    the five bullets, so that report invented a sixth. A broken rule is machinery evidence — it belongs
    here, not in an ad-hoc bullet.)
-   **A breach named here also gets a row in this prompt's breach log** — see "The breach log" below.
+   **A breach named here also gets a row in this prompt's breach log, and so does a deviation** — a step
+   worked around where the prompt is silent; see "The breach log" below.
    The prose in this bullet is deleted by the next run; the row is what survives to be counted.
 5. **Verdict** — one line: "pipeline clean" or "change worth considering: <what>".
 
@@ -138,7 +142,11 @@ per-note tracker row is kept.
 clean `git status` proves nothing — check `git log --name-only` back to this run's first commit as well,
 and count a file as written if it appears in either. Missing from both is a **skipped step**, named in
 bullet 4. So is a file whose only change is cosmetic when the row promised real work: *touched* means the
-declared work landed, not that the mtime moved.
+declared work landed, not that the mtime moved. **The converse is a finding too:** a file this run
+wrote — either probe shows it, and no other session or parallel run left it there — that neither list (a)
+nor a step of this contract accounts for is an **undeclared write** —
+the run wrote where its prompt is silent — named in bullet 4 and logged as a deviation, whatever it did
+to the declared output.
 
 **(c) Declared dispatches — the half no file can prove.** Every subagent this prompt mandates writes into
 a file some other step also writes, so list (a) comes back green whether or not a single one ran. List
@@ -178,8 +186,14 @@ prose is free-form and spread over the whole history, and the close-out that wou
 the most saturated context in the system. So a breach also lands as one row, in one place, in the
 prompt's own words for the step it broke.
 
+**A deviation is logged the same way, and is a breach for every purpose of this section.** The run
+finished the step and had to work around a silence to do it: it improvised where the prompt says nothing,
+or made an undeclared write. Its `Breached step` is the step where the text was silent. Without a row its
+sightings were rebuilt by hand from tracker prose (`REC-256`). A finding that is cost alone — slower, one
+more question — is neither, and takes no row.
+
 **Where.** `_breach-log-<prompt-name>.md`, in that prompt's own family `_internal/` folder, beside its
-report. One per prompt, **created on the first breach and never before** — an empty log is machinery
+report. One per prompt, **created on the first breach or deviation and never before** — an empty log is machinery
 nobody reads. Append-only; rows are never deleted, and a closed one stays as the evidence that this step
 was once a problem.
 
@@ -203,8 +217,10 @@ sight either**. A breach that opens a ledger row on its first occurrence is the 
 and that ledger's own preamble exist to prevent, and `_skill-friction.md`'s rule governs here identically:
 a row is evidence, not automatically a recommendation. It stays `open` until **this prompt's own log holds
 two rows naming that same step** — the same count the paragraph below sets — and then goes to
-`_recommendation-ledger.md` as a `REC-NNN`, provided the finding still clears conditions 1, 3 and 4; its
-disposition becomes `routed to REC-NNN`. **The REC cites this log's `BRCH` IDs and names the log file**,
+`_recommendation-ledger.md` as a `REC-NNN`, or to the open row that already holds it, or, where a closed
+line already rejected it, to that line, whose reason stands; its disposition becomes `routed to REC-NNN`.
+Whether it clears conditions 1, 3 and 4 is then the resolver's ruling, under the ledger's step 1 and its
+cold reviewer — never this close-out's. **The REC cites this log's `BRCH` IDs and names the log file**,
 because `BRCH` numbering is per file and this close-out may not open another prompt's: aggregating one
 step across prompts is the resolver's work at the ledger's step 1, never a run's. That is what makes
 per-prompt logs safe — the one class of breach that recurs across several prompts is exactly the class
@@ -219,6 +235,12 @@ is not read at the moment it must be obeyed. The finding still has to clear cond
 still needs its cold reviewer; what the threshold removes is the one condition that was silently
 discarding the repeat. **It is a floor for the ambiguous case, never a waiting period**: a breach whose
 defect is obvious on the first occurrence clears the bar on the first occurrence, exactly as today.
+**And at two rows the close-out has two exits, not three:** apply the edit through the cold reviewer, or
+route the finding to the ledger as `open`, the way the paragraph above routes a `shared` row. Dismissing
+it — on condition 3 or 4 by its own reading, or by leaving a draft the reviewer rejected `open` in a
+report the next run overwrites — is no longer its call: the reviewer guards an approval and nothing
+guards a dismissal, so a repeat that dies there dies unreviewed. The refill brake above still holds — a
+first row opens nothing — and this is the count it allows.
 
 **A fix is not believed until three runs exercise it.** An approved edit rewriting a breached step sets
 every open row for that step to `fixed in <hash>`. Thereafter, each close-out of this prompt asks one
@@ -294,20 +316,27 @@ three parts below are the filter, the independent gate, and the brake on growth.
    cost" — no edit was needed). **Count before you rule.** That verdict is correct once and false
    forever: open the breach log and count the rows naming this same step. At **two or more**, this
    condition is met by the count alone — a clear rule breached repeatedly is mis-worded or mis-placed,
-   not disobeyed — and the finding proceeds to conditions 3 and 4 like any other. Under two it stands as
+   not disobeyed — and the finding proceeds to conditions 3 and 4, which at that count decide only
+   whether it is applied here or routed to the ledger — never whether it is dropped ("The breach
+   log"). Under two it stands as
    written. The threshold rescues the repeat; it never delays the breach whose defect is plain the first
    time. `Scope: shared` rows are outside this test — that step is not this prompt's to edit — and the
    breach-log section routes them to the ledger **at the same two-row count**, never on the first row.
 3. **It would have changed the *result*, not just the cost.** This is the condition that does the real
-   work, and most findings must die here. Ask it concretely: *would the output file have been different,
-   or wrong, or missing?* If the honest answer is "the run would have been slower, clunkier, or needed
+   work, and most findings must die here. Ask it concretely: *would the output have been different, or
+   wrong, or missing?* — the output being **every file this run wrote**, an undeclared write included,
+   never the declared artefact alone. If the honest answer is "the run would have been slower, clunkier, or needed
    one more question", that is friction — record it in the Verdict and stop. Annoyance is not evidence,
    and a prompt that grows a clause for every annoyance ends up unable to execute the rules it already
    has, which is the failure this whole budget exists to prevent.
 4. **Not already covered** — the text does not handle it somewhere the run failed to look.
 
 Most findings are friction (#3) or a discipline lapse (#2) and are recorded, not applied. When you
-reject one, name the failed condition in the Verdict so the same zombie is not re-proposed next run.
+reject one, name the failed condition in the Verdict so the same zombie is not re-proposed next run —
+and where it is a breach or a deviation naming a step, **recorded** also means its breach-log row — cost
+alone takes none: the Verdict
+is overwritten by the next run, and the row is what lets a second sighting be counted, at which point
+the finding is no longer this close-out's to reject ("The breach log").
 
 **Independent review before you apply — a cold subagent, never your own saturated judgement.** A
 self-report exists to surface what broke, so every finding arrives framed "fix me", and the author of
@@ -389,7 +418,9 @@ commit and with the same hash — the fix now owes the three exercising runs the
 requires, and a row left `open` after its own fix landed will re-trigger the threshold on evidence that
 was already acted on. When no edit is
 approved, that earlier commit is the run record; re-commit the report alone only for the
-`cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled — and if it wrote
+`cold reviewer:` line, the failed-condition Verdict, or a `Status:` this step settled — plus, where a
+draft the reviewer rejected was routed under the breach log's two-row rule, the ledger row (validator
+first) and that log's `routed to REC-NNN` dispositions — and if it wrote
 none of them, nothing is committed here. Alongside the five bullets, print
 one line naming what changed and one naming what came *out* — that is the human's view of the edit.
 

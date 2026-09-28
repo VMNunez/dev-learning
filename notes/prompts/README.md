@@ -426,14 +426,15 @@ defect to one `REC-NNN`, dismiss a non-defect with the failed condition, or leav
 open. That conditional reconciliation is committed separately from report + tracker and is not a
 declared output of every prompt.
 
-**A third file is conditional in the same way**: a run that breaches a declared step, or that rules on an
+**A third file is conditional in the same way**: a run that breaches a declared step, works around one
+where its prompt is silent (an undeclared write included), or rules on an
 earlier fix, also writes `_breach-log-<prompt-name>.md` beside its report — appended, never overwritten,
 and staged with report + tracker rather than separately. Both close-outs then read it where the bar used
 to rule from the last report alone: two rows naming one step retire that step's "discipline lapse"
-verdict, and an approved fix owes three later runs that reach it cleanly before it is believed. The whole
+verdict and the close-out's licence to dismiss the finding, and an approved fix owes three later runs that reach it cleanly before it is believed. The whole
 contract — fields, `own`/`shared` routing to the ledger, both thresholds — is owned once by
 `_pipeline-self-report.md` → "The breach log". It is **not** a declared output of every prompt, and a
-prompt that has never breached a step has no such file.
+prompt that has never breached or worked around a step has no such file.
 
 ### The internal-only files (never launch these)
 
@@ -468,7 +469,7 @@ for the markers it may not resolve, and consumed **once per refined pair** by th
 steps with the cold reviewer; the freeze-sync close-out's `cosecha:` line names each pass owed. The one
 sink here that measures Victor's prose bar rather than what a ritual did),
 `{family}/_internal/_breach-log-<prompt-name>.md` (one append-only log per prompt, created on its first
-breached step: the row survives the report that named it, so a close-out can count how often one *named*
+breached or worked-around step: the row survives the report that named it, so a close-out can count how often one *named*
 step has failed instead of seeing only the last run — read by that prompt's own close-out, never by
 another),
 `_recommendation-resolution-doctrine.md` (the recommendation ledger's case-law half: the rule every
