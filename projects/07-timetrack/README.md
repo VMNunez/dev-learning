@@ -21,6 +21,19 @@ V9pr4VLCKaqxkpD8xnHz
 ```
 
 </td></tr>
+<tr><td>Employee</td><td>
+
+```text
+carlos.ruiz@timetrack.com
+```
+
+</td><td>
+
+```text
+GnpJwJxajMUa
+```
+
+</td></tr>
 </table>
 
 The API runs on a free tier that sleeps when idle, so the first login after a quiet spell can take about two minutes while it wakes up — later requests are fast.
@@ -41,7 +54,9 @@ I built this project to learn backend development with Spring Boot — my first 
 
 **[07-timetrack.netlify.app](https://07-timetrack.netlify.app)**
 
-Demo login (manager): `manager@timetrack.com` / `V9pr4VLCKaqxkpD8xnHz`
+**Demo accounts:**
+- Manager: `manager@timetrack.com` / `V9pr4VLCKaqxkpD8xnHz`
+- Employee: `carlos.ruiz@timetrack.com` / `GnpJwJxajMUa`
 
 The API runs on a free tier that sleeps when idle, so the first login after a quiet spell can take about two minutes while it wakes up — later requests are fast.
 
