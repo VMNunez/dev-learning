@@ -119,8 +119,8 @@ technical guides and the current testing status (projects 01–06 carry no Tests
 absent tests are out of scope, never a status to advertise).
 On the global README, use opening technology badges. Let the section headings guide readers through a
 short global README; do not add an automatic partial index of in-page links such as `Live demo · How to
-run` below the badges when those links only repeat visible section headings. The one link that does
-belong there is rule 1's live-app call to action, because it leaves the page for the running app. A
+run` below the badges when those links only repeat visible section headings. The live-app link needs no
+index either: rule 3 puts the Live demo section, with its call to action, directly below the badges. A
 direct link to a separate technical guide may be useful when it saves the reader a real search. On a long
 tier README, add a contents line and link its central decisions to their source files. Group detailed
 patterns by concern; use concise explanations of the choice and consequence instead of replaying every
@@ -180,7 +180,7 @@ include it, and it must never be created there — a tier concept goes to Key pa
 
 ## Global README rules — the 12 rules
 
-Section order (Angular): **Title → Why this project → Live demo → Screenshots → Features → Architecture
+Section order (Angular): **Title → Live demo → Why this project → Screenshots → Features → Architecture
 decisions → Tradeoffs → Future improvements → What I learned → Tech stack → Project structure → How to
 run.** Move any out-of-order section to its correct position.
 
@@ -216,16 +216,6 @@ found three of these tests missing and two nominal only once someone counted the
    that make that objective visible, then the supporting language/tools and finally markup and styling.
    Keep related badges together; do not sort alphabetically or copy the Tech stack table's layer order
    when that buries the learning focus. Do not add a separate `**Stack:**` line.
-   When the app is deployed, put one call-to-action line directly below the badges, linking the
-   deployed URL itself, never the `#live-demo` anchor: `**[▶ Try the live app](https://…)**`. The link
-   text is an action that says where it leads, not a bare `Live demo` label, and it is not a Shields.io
-   badge, so it cannot be mistaken for a technology. When the app has a login, a
-   Role / Email / Password table follows it, one row per role. Write it as an HTML `<table>` whose email
-   and password cells each hold one fenced `text` code block, with a blank line inside the `<td>` before
-   and after the fence, so GitHub gives every value its own copy button and the reader who clicks can
-   get past the login screen without scrolling or retyping. An access note the reader needs before the
-   first click — a hosted API that sleeps and takes minutes to wake — follows the same way, in one line. Rule 3's section stays and
-   repeats the same accounts beside its access notes. With no deployed app there is no line.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
      where admins manage employees and leave requests."
 2. **Why this project** — one concise paragraph that starts with the specific learning objective behind
@@ -237,8 +227,20 @@ found three of these tests missing and two nominal only once someone counted the
    - Good: "I built this project to learn how Angular components communicate and how signals keep shared
      state in sync. To practise that, I built a task list where users add, complete and filter tasks; the
      list and pending counter update from the same state."
-3. **Live demo** — own `## Live demo` heading, URL present, test accounts if it has auth (`email /
-   password`, one per role). If none exists, flag it as missing — do not skip the section.
+3. **Live demo** — the first section, its own `## Live demo` heading directly after the badges (and, on a
+   full-stack README, after its technical-guide and testing-status lines), so a
+   reader can open the app before reading anything else. It holds, in this order and nothing more:
+   - **One call-to-action line** linking the deployed URL itself, never the `#live-demo` anchor:
+     `**[▶ Try the live app](https://…)**`. The link text is an action that says where it leads, and it
+     is not a Shields.io badge, so it cannot be mistaken for a technology. The URL appears only here.
+   - **When the app has a login, a Role / Email / Password table**, one row per role. Write it as an
+     HTML `<table>` whose email and password cells each hold one fenced `text` code block, with a blank
+     line inside the `<td>` before and after the fence, so GitHub gives every value its own copy button
+     and the reader gets past the login screen without retyping.
+   - **Access notes the reader needs before the first click**, one line each — a hosted API that sleeps
+     and takes minutes to wake, or, for an app with no login, that it opens straight on its first page.
+
+   If no deployed app exists, flag it as missing — do not skip the section.
 4. **Screenshots** — screenshots and, where the GIF test below passes, GIFs; optimal count for the
    project (no fixed number); read PLANNING.md + Features to find the essential screens and flows.
    Plain markdown images stacked vertically (never a 2×2 table — GitHub compresses them badly), GIFs
@@ -442,9 +444,9 @@ it is deployed.** `_planning-standard.md`'s implementation order includes a publ
 exist. The project counts as *deployed* when its §15 carries a deployment step marked `✅`, and as *not
 deployed* when §15 has no deployment step. Never infer either from a URL in the existing README.
 - **Deployed** — section order: the Angular order above, then **Backend and frontend details**. Rule 3
-  applies, its accounts clause replaced by this one: its own `## Live demo`, the frontend URL the plan records for its deployment, and
-  the test accounts as `email / password`, one per demo login the plan records for the hosted database
-  (§9 or its deployment step). Keep a password the existing README already carries. A login whose
+  applies, with these sources for its content: the call to action links the frontend URL the plan records
+  for its deployment, and the accounts table holds one row per demo login the plan records for the
+  hosted database (§9 or its deployment step). Keep a password the existing README already carries. A login whose
   password neither the plan nor the README writes out gets its email and `*(password — to be added)*`,
   and the run's summary names it — a missing credential, not an in-progress marker: the marker scan leaves
   it in place. **Never invent or guess a password.** **When the plan records that the hosted API sleeps
@@ -453,7 +455,7 @@ deployed* when §15 has no deployment step. Never infer either from a URL in the
   hangs for two minutes assumes the app is broken.
 - **A deployment step not yet `✅`** — the deployed order, with the in-progress rule's one clean
   placeholder under `## Live demo`.
-- **Not deployed** — section order: **Title → Why this project → How to run (replaces Live demo) →
+- **Not deployed** — section order: **Title → How to run (replaces Live demo) → Why this project →
   Screenshots → Features → Architecture decisions → Tradeoffs → Future improvements → What I learned →
   Tech stack → Project structure → Backend and frontend details.** Rule 3 is replaced: put a short "How
   to run" note (`docker-compose up` when Docker is ready; `mvn spring-boot:run` + `ng serve` in separate

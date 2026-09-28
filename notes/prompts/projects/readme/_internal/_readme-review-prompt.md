@@ -41,10 +41,10 @@ project. Your attention budget belongs to the README.
 - **Global opening and stack (`global` only)** — verify rule 1's logo badges immediately below the title sentence,
   rule 2's learning-objective-then-application explanation, and rule 10's text-only Tech stack table
   after What I learned. Check that badge order puts this project's learning focus first, names and
-  versions match the implemented project, and the table states those technologies in text. When the app
-  is deployed, check rule 1's `▶ Try the live app` line below the badges links the deployed URL, not
-  an anchor, and matches the URL in Live demo; when the app has a login, the demo accounts table follows
-  it, each email and password in its own copyable code block, and matches Live demo's accounts.
+  versions match the implemented project, and the table states those technologies in text. Check that
+  rule 3's Live demo is the first section: its `▶ Try the live app` line links the deployed URL, not an
+  anchor; on an app with a login its accounts table gives each email and password its own copyable code
+  block; and its access notes are one line each.
 - **Per-section rules** — each section meets its specific rule (format strings like `[X] over [Y] —
   [reason]`, the interview test on architecture decisions, table-not-list for Tech stack, recall-list
   brevity for "What I learned", one API table per resource with specific roles, prose-only Auth flow, `*(planned)*` for
