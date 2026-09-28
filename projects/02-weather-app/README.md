@@ -45,7 +45,6 @@ https://02angularweatherapp.netlify.app/
 - `takeUntilDestroyed` to cancel subscriptions automatically when the component is destroyed — no `ngOnDestroy` needed
 - Environment files for the API key to keep the credential out of the repository and out of git history
 - `HttpParams` for the query string so every value is URL-encoded and user input cannot become query syntax
-- `alt=""` on the weather icons to mark them decorative — the description is already rendered as text beside each one, so an accessible name would only repeat it
 - `prefers-reduced-motion` honoured to spare motion-sensitive users the decorative movement without hiding that a search is still loading
 - Container and presentation components split to keep every API call and piece of state in the page, so the form, card and forecast can change without touching data loading
 
