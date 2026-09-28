@@ -2,11 +2,15 @@
 
 My 2nd learning project — weather app where you search a city and see its weather right now and for the next 5 days.
 
+**Angular 21 · TypeScript · RxJS · OpenWeatherMap API**
+
+[Live demo](#live-demo) · [Run locally](#how-to-run)
+
 ---
 
 ## Why this project
 
-Real Angular apps almost always fetch data from an API. I built this project to understand how HttpClient, Observables and subscription management work — the foundation for any app that talks to a backend.
+Checking the weather is two questions at once — what is it like now, and what is coming this week — and both depend on a remote service that can be slow or not know the city typed in. This portfolio app answers both from one search: it asks a public weather API for the current conditions and the 5-day forecast together, shows them on one page, and tells the user plainly while it is loading and when a city cannot be found.
 
 ---
 
@@ -37,20 +41,19 @@ https://02angularweatherapp.netlify.app/
 
 ## Architecture decisions
 
-- `forkJoin` for parallel requests to load current weather and forecast at the same time instead of sequentially
+- `forkJoin` to run both requests in parallel so the page shows current weather and forecast together, or one error when either request fails
 - `takeUntilDestroyed` to cancel subscriptions automatically when the component is destroyed — no `ngOnDestroy` needed
 - Environment files for the API key to keep the credential out of the repository and out of git history
-- Input normalised in the component that captures it to keep raw text from crossing the `output()` boundary
 - `HttpParams` for the query string so every value is URL-encoded and user input cannot become query syntax
-- `prefers-reduced-motion` honoured so the decorative card hover is dropped while the loading spinner only slows, never stops
 - `alt=""` on the weather icons to mark them decorative — the description is already rendered as text beside each one, so an accessible name would only repeat it
-- Container and presentation components split so the page owns the API call and the state while the form, card and forecast only receive inputs and emit intent
+- `prefers-reduced-motion` honoured to spare motion-sensitive users the decorative movement without hiding that a search is still loading
+- Container and presentation components split to keep every API call and piece of state in the page, so the form, card and forecast can change without touching data loading
 
 ---
 
 ## Tradeoffs
 
-- `subscribe` over `async` pipe — explicit subscription management was clearer for learning the Observable lifecycle
+- `subscribe` over the `async` pipe — one handler sets the results, loading and error signals together, at the cost of tearing the subscription down by hand with `takeUntilDestroyed`
 - API key in the shipped bundle over a proxy backend — a frontend-only project cannot hide the key from the browser; the environment file keeps it out of the repository, and a proxy backend was out of scope
 - One midday reading per day over aggregating each day's eight forecast slots — the 5-day list stays comparable day to day at the cost of the real daily minimum and maximum
 
@@ -71,17 +74,11 @@ https://02angularweatherapp.netlify.app/
 - `forkJoin` — run multiple HTTP requests in parallel
 - `ngOnInit` — run logic when the component loads
 - `signal()` and `computed()` — reactive state and derived values
-- State justified by its readers — a signal no template reads is not state, so the root component of a routed app declares none
 - `(keyup.enter)` — key modifier so Enter and the button click reach one handler
-- `number` pipe with format `'1.0-1'` — `DecimalPipe`, one decimal on every temperature
-- `SlicePipe` — cut strings in templates
+- `SlicePipe` — trims each forecast day's `dt_txt` timestamp down to the date shown on its card
 - Environment files — keep API keys out of the repository, not out of the bundle
-- `takeUntilDestroyed` — cancel HTTP subscriptions automatically when a component is destroyed
-- `DestroyRef` — Angular token injected to notify observables when the component lifecycle ends
-- `@keyframes` and `animation` — CSS animations
-- CSS spinner — `border-top-color` + `rotate` + `border-radius: 50%` on a square element
-- `transition` and `transform: scale()` — hover effects
-- `styleUrl` — a component declares one only when it has styles; an empty stylesheet is a build dependency that buys nothing
+- `takeUntilDestroyed(destroyRef)` — cancel a subscription when the component is destroyed; the injected `DestroyRef` lets it run outside an injection context
+- `prefers-reduced-motion` — drop the decorative hover and slow the loading spinner instead of stopping it
 
 ---
 
