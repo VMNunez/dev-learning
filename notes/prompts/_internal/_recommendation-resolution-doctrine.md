@@ -1363,6 +1363,10 @@ floor for the ambiguous repeat and never a waiting period for the breach whose d
 time. Its corollary is `REC-054` (b)'s, reached from the other side: the threshold is also what keeps the
 new sink out of the refill loop, since a row that opens a `REC` on sight is the operational worklist the
 ledger's preamble forbids — evidence is promoted by the count, never by arrival.
+**Also `REC-256`, which names the ruling the count must also reach: a store that counts only *breaches*
+leaves the close-out's **dismissal** as the one ruling made alone — the cold reviewer guards an approval,
+nothing guards a drop — so a worked-around silence is counted too (a *deviation*), and once counted a
+finding may be applied or routed, never dropped.**
 
 ### Row dispositions — `absence` and `contradiction`
 
