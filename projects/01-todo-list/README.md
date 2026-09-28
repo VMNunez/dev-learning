@@ -10,11 +10,11 @@ My 1st learning project — task manager where users add, complete and delete ta
 
 | Layer | Technology |
 |---|---|
-| Framework | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angular/angular-original.svg" alt="" width="20" height="20"> Angular 21 |
-| Language | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="" width="20" height="20"> TypeScript |
-| Routing | Angular Router |
-| State | Angular signals |
-| Styles | <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="" width="20" height="20"> CSS custom properties + Flexbox |
+| Framework | ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) |
+| Language | ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) |
+| Routing | ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) |
+| State | ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) |
+| Styles | ![CSS custom properties and Flexbox](https://img.shields.io/badge/CSS-Custom%20properties%20%2B%20Flexbox-1572B6?logo=css3&logoColor=white&labelColor=303030) |
 
 ---
 
