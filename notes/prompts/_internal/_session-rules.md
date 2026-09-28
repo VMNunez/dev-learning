@@ -336,6 +336,63 @@ git commit -m "type: description"
 - As I progress, add interview questions to `notes/interview-prep/` adapted to my level and to the Spanish job market — for whatever we worked on that day (Angular, Spring Boot, Java, CSS, SQL, architecture, security, etc.). Always add to both `en/` and `es/` (see "Interview prep — in-session rules")
 - Naturally mention useful keyboard shortcuts as we work — don't explain them all at once, just when they are relevant
 
+### Guiding a README GIF — the fixed method
+
+Which GIF a README may carry is `_readme-standard.md` rule 4's call ("A GIF only where no still can show
+it"; a closed project gains one only as a finished file, from a backlog task). **How** it is made is this
+method, and nothing improvised: it produced `07-timetrack/screenshots/approval-workflow.gif` (2026-09-25)
+and `04-meal-finder/screenshots/search-favourite-flow.gif` (2026-09-28), and Victor asked for it to persist
+(*"debe ser persistente en el repositorio"*). Victor records and edits in **ScreenToGif 2.43.2**; the agent
+guides him **in the tool as well as in the app** — which menu, which field, which value — one step per
+message, verdict first. The agent analyses every saved file itself.
+
+1. **Before recording (agent).** Check the environment without rebuilding it — `curl` the front end and
+   API; for a Netlify deploy, fetch `main-*.js` and its chunks and `grep` for the features the GIF shows —
+   then say **local or deploy** and why (deploy when it is current). `grep` the templates for exact texts
+   and conditions (a badge that only renders above zero). Pick demo data that cannot be confused with
+   existing rows and seed the prior state the shot list needs.
+2. **Environment.** Incognito; in a `localStorage` app one window only, never closed after seeding.
+   Detached DevTools, **Responsive 1280 × 800**, zoom 100 %, DPR 1, Windows at 100 %, Do Not Disturb.
+   Responsive leaves the **address bar outside the frame**, so no shot may depend on the URL.
+3. **Recorder.** **10 fps**, frame **1300 × 820** (20 px larger than the app, trimmed by the crop), cursor
+   visible, click highlight on if offered. Keys: **F7** record/pause · **F8** stop (opens the editor) ·
+   **F9** discard.
+4. **Scenes.** A flow with forms or several roles gets one scene per message (text to copy, a form-data
+   table, numbered actions, what must appear; the clipboard changes during a pause, never via Win+V). A
+   simple single-window flow gets **every scene in one message, numbered from 1**, and may be one
+   continuous take — dead time is cut later. Every result is followed by "~N s still", and the take ends
+   still on the last result **with the cursor away from any other control**.
+5. **Draft.** File → Save as → Gif · encoder **ScreenToGif** · quantizer **Neural network** · **256**
+   colours · **Detect unchanged pixels** + chroma key · into the agent's scratch directory as `draft`.
+   **Nothing is cut or cropped first.** A draft that is not 1300 × 820 was cropped early: Ctrl+Z until the
+   editor shows 1300 × 820, then save again.
+6. **Analysis (agent, Pillow).** Per-frame timeline (index, start, duration, changed-area bbox), numbered
+   contact sheets, enlarged crops of every key moment. Confirm each shot-list step is visible before any
+   cut. Look for: the browser's **autocomplete dropdown** under an input (seeded searches cause it — cut
+   the typing, empty field → word already typed), a cursor hovering a button, long waits, extra clicks at
+   the end.
+7. **Editor frame numbers.** The GIF merges identical frames, so ask for the editor's total — **the last
+   thumbnail's index + 1**, numbering starts at 0 — and map `editor ≈ t_ms / (total_ms / editor_total)`,
+   tolerance ±3. Never assume t × 10.
+8. **Cuts.** A table of ranges **bottom to top**, each with what it shows and which frame survives; then
+   one cut per message naming the first and last frame's content and the scene-change frame that is
+   **not** deleted (click · Shift+click · Delete). Keep ~2 s after each result, ~0.5 s of spinner, ~0.8 s
+   still at the start. Victor may run the whole table at once; the final file is what gets verified.
+9. **Last-frame delay.** Select only the last frame → **Edit tab → Delay group → Override** → **1800 ms**
+   → Apply, and check the thumbnail shows it. It is not in the right-click menu; without it the loop jumps
+   with no pause.
+10. **Crop.** Measure the app's edges in the draft (first/last column and row of the app's background
+    against the dark border) and give the values **in the panel's order — Top, Left, Bottom, Right —
+    as edge coordinates**, not width and height. No Apply until the panel reads **1280 × 800**; Ctrl+Z
+    undoes. (04: 10 / 9 / 810 / 1289.)
+11. **Final.** Same save settings, into `projects/NN-*/screenshots/`, under the name Victor picks. The
+    agent verifies: exactly 1280 × 800, crop offset matching the draft, < 5 MB, contact sheets of the
+    result (clean cuts, still ending, last delay applied).
+12. **README and close.** The agent edits the README to rule 4 (bold caption above, blank lines, GIF
+    before the screenshots, descriptive alt text, no placeholder) and checks Features states everything
+    the GIF shows. The GIF and the README are **one commit Victor runs** — `git add` and `git commit` in
+    separate blocks, no `Co-Authored-By` — and then `backlog-task-close` closes the GIF task.
+
 ### When a skill cannot finish — durable friction
 
 All nineteen in-session skills point here rather than restating this contract. A skill run writes
