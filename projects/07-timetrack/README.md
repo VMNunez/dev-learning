@@ -31,7 +31,7 @@ Technical guides: [Backend decisions](backend/README.md#key-patterns) · [Fronte
 
 ## Why this project
 
-I built this project to learn backend development with Spring Boot — my first REST API, database schema and JSON contract shared by two independent apps — and role-based authorization with Spring Security, enforced on a real workflow instead of a toy endpoint. To practise it, I built a timesheet app where employees log and submit the hours they work on projects and managers approve or reject each entry with a note. The server enforces who owns each entry and which status changes are allowed, the Angular client makes rejection, correction and resubmission explicit, and archived accounts and projects keep their history.
+I built this project to learn backend development with Spring Boot — my first REST API and database schema, with role-based authorization from Spring Security enforced on a real workflow instead of a toy endpoint — and to connect an Angular frontend to that API end to end: the client logs in, sends the JWT with every request and works against the same JSON contract the server defines. To practise it, I built a timesheet app where employees log and submit the hours they work on projects and managers approve or reject each entry with a note. The server enforces who owns each entry and which status changes are allowed, the Angular client makes rejection, correction and resubmission explicit, and archived accounts and projects keep their history.
 
 ---
 
