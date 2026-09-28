@@ -515,7 +515,7 @@ sentence) · the task list as checkboxes. Task line:
 `- [ ] **[Priority]** — [Task description] *(Effort: [Small/Medium/Large])*`
 
 **Tag every task with the tier it belongs to** (`[backend]` / `[frontend]`) right after the priority, so
-a partial-scope run can rewrite its own tier's tasks and leave the other tier's untouched:
+a partial-scope run adds only its own tier's tasks and leaves the other tier's untouched:
 `- [ ] **[High]** `[backend]` — [Task description] *(Effort: [Small])*`
 
 **Both `## Tasks` and `## Closed` are split into `### Backend` and `### Frontend` subsections**, each
@@ -538,6 +538,21 @@ trade bad. The task is still open and still `[ ]`; the marker records the verdic
 re-derived every session. **Preserve the marker verbatim and never delete it**: removing it silently
 re-opens a question Victor already answered. Only `backlog-task-open` clears it, on a later run that
 finds the gate has moved.
+
+**A review run merges into `## Tasks`; it never regenerates it.** It adds its new tasks and leaves every
+open `[ ]` task already in the file exactly as it found it — never deleted, reworded, re-tiered or
+re-prioritised — and a finding that matches one is not filed a second time. `## Tasks` has other writers
+besides this pipeline. Five raise tasks into it: `backlog-task-open` and `backlog-task-close` the defects
+they notice in passing, `coverage-mark` a marker it could not decide, `readme-audit` the project defects
+its roles report outside the README, and `portfolio-audit` the bank corrections its Spanish stages report
+owed — each with a provenance note. A sixth, `plan-audit`'s `whole-plan` specialist, rewords an open task
+a recorded plan decision has superseded: that licence rests on holding the plan, which a code snapshot
+does not. A task list rebuilt from this run's slice tables drops
+every one of them, which is the persistence those channels exist to give, and drops with them any earlier
+review finding a slice reviewer missed this time. An open task whose defect this run finds gone stays
+open too: retiring a task is `backlog-task-close`'s, through `backlog-task-open`'s already-resolved
+verdict. `## Beyond the current gate` is the one exception — this pipeline is its only writer, and its
+lines graduate and are reworded under their own rule below.
 
 **Findings the level-fit pass kept out live in `## Beyond the current gate`**, between `## Tasks` and
 `## Closed`. They are not tasks — nothing there is meant to be worked on now — so they never carry a
@@ -573,6 +588,6 @@ deletes, rewrites or reorders ledger lines; it only adds new `[ ]` tasks. Any ol
 carries checked-off (✅) entries inline is fine — leave them where they are, they collapse as Victor
 closes the rest. The backlog lives in the project folder, so it follows the project's normal
 **feature-branch → PR → main** workflow and never lands on `main` directly — but it **is**
-auto-committed on the active branch by whoever writes it: this pipeline and the two backlog skills
-write it, Victor never does, which is exactly what the shared session rules' 2026-07-29 authorization
+auto-committed on the active branch by whoever writes it: this pipeline, the two backlog skills and the
+other writers named above write it, Victor never does, which is exactly what the shared session rules' 2026-07-29 authorization
 turns on.

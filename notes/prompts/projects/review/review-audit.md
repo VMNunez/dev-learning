@@ -32,8 +32,8 @@ fixes everything himself to learn.**
 reviewer: quality + correctness + tests) · `_review-security-prompt.md` (per-slice attacker pass,
 full-stack only).
 
-> **The orchestrator commits the backlog itself.** `PROJECT-BACKLOG.md` is written by this pipeline and
-> by the two backlog skills, never by Victor, so it auto-commits in any flow (shared session rules,
+> **The orchestrator commits the backlog itself.** `PROJECT-BACKLOG.md` is written by this pipeline, the
+> two backlog skills and the other writers `_review-standard.md` names, never by Victor, so it auto-commits in any flow (shared session rules,
 > authorized 2026-07-29). It is a **docs** commit on the **active branch** — it still follows the
 > project's **feature-branch → PR → main** workflow and never lands on `main` directly, and the
 > "Victor makes code commits himself" rule is untouched. Separate from the Step 6 self-report commit.
@@ -378,9 +378,10 @@ project to be correct** → keep it, tag the line `⬆ {level} — reason` · **
 with the gate that would make it due. Necessity beats level every time; never downgrade a real defect
 to keep the list short.
 
-**Read `## Beyond the current gate` before writing anything**, alongside the `## Closed` ledger: a
-finding already parked there is not re-raised while its gate holds, and one whose gate has since moved
-leaves the section and becomes a normal task.
+**Read `## Beyond the current gate` before writing anything**, alongside the `## Closed` ledger and
+the open `## Tasks`: a finding already parked there is not re-raised while its gate holds, and one whose
+gate has since moved leaves the section and becomes a normal task; a finding an open task already names
+is not filed again.
 
 **No secret value reaches the chat summary, the backlog, or the self-report.** Both slice reviewers cite
 a secret by location and kind only, and the flow reviewer's **secret-valued** config findings arrive as
@@ -399,10 +400,14 @@ the current gate** (how many findings the level-fit pass parked, and how many li
 into `## Tasks` because their gate had moved — `none` when both are zero).
 
 Then update `{PROJECT_PATH}/PROJECT-BACKLOG.md` (create it if missing) per the standard's backlog
-format: the **per-tier "Last Reviewed" lines**, the overall quality rating, and the full task list as
-checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`), and the
-`## Beyond the current gate` section for what the level-fit pass parked (same tier tag; create the
-section if missing, with a placeholder line when it is empty). Preserve tasks already checked off (✅).
+format: the **per-tier "Last Reviewed" lines**, the overall quality rating, this run's new tasks
+**merged into `## Tasks`** as checkboxes, **each task tagged with its tier** (`[backend]` / `[frontend]`),
+and the `## Beyond the current gate` section for what the level-fit pass parked (same tier tag; create
+the section if missing, with a placeholder line when it is empty). Preserve tasks already checked off (✅).
+**Merge means add, never regenerate** — the standard's "A review run merges into `## Tasks`" rule: no open
+`[ ]` task already in the file is deleted, reworded, re-tiered or re-prioritised, whoever raised it — the
+`*(raised …)*` tasks other writers put into these same tiers above all — and an open task whose defect
+you found gone stays open for `backlog-task-close`.
 
 **Stamp today's date only on the tiers this run actually reviewed** — a `backend` run sets
 `**Last Reviewed — backend:**` to today and leaves the `frontend` line exactly as it was (a date, or
@@ -414,9 +419,9 @@ every slice of the tier was read, and the gate above would then stop the one run
 exactly as it was**: overwriting it would destroy the date a real run earned and put a date on a tier
 reading `never`.
 
-**On a partial {REVIEW_SCOPE} run, only touch the reviewed tier's tasks.** A `backend` run rewrites the
-`[backend]`-tagged tasks and leaves every `[frontend]` task untouched (and vice versa) — never delete or
-overwrite the tier you did not review this run. The learning-objectives table is likewise left as-is on
+**On a partial {REVIEW_SCOPE} run, only touch the reviewed tier's tasks.** A `backend` run adds only
+`[backend]`-tagged tasks and leaves every `[frontend]` line untouched (and vice versa) — and within its
+own tier it still only adds, under the merge rule above. The learning-objectives table is likewise left as-is on
 a partial run (it is only regenerated on a `full` run).
 
 Finally, **commit the backlog yourself** (authorized 2026-07-14 — Victor does not want to run these by
@@ -466,8 +471,8 @@ it commits directly, always **separate** from the backlog commit. Also print the
 
 ## Hard rules
 
-- **Commit the backlog yourself** — `PROJECT-BACKLOG.md` is written by this pipeline and the two backlog
-  skills, never by Victor, so the shared session rules have it auto-commit in any flow (authorized
+- **Commit the backlog yourself** — `PROJECT-BACKLOG.md` is written by this pipeline, the two backlog
+  skills and the other writers `_review-standard.md` names, never by Victor, so the shared session rules have it auto-commit in any flow (authorized
   2026-07-29, widening the 2026-07-14 pipeline-only permission). It is a docs commit for a file this
   pipeline wrote, so it does not touch the "Victor makes code commits himself" rule. `git status` before
   add and before commit; stage **only** `PROJECT-BACKLOG.md`, never a project code file that was left
@@ -485,10 +490,13 @@ it commits directly, always **separate** from the backlog commit. Also print the
 - **Two lenses per backend resource** — one flow reviewer (quality + correctness + tests) and one
   security reviewer. They only read, so they may run in parallel; never let one subagent do both.
 - **Never edit the code.** Every finding becomes a backlog task; Victor fixes the code himself to learn.
-- **A partial `REVIEW_SCOPE` run stays in its lane.** `backend` / `frontend` review and rewrite only
-  their own tier's slices and backlog tasks, skip the whole-project learning-objectives pass, and stamp
-  today's date on **only their own tier's** "Last Reviewed" line. The untouched tier's tasks and date are
-  preserved verbatim — a partial run must never make an unreviewed tier look reviewed.
+- **A partial `REVIEW_SCOPE` run stays in its lane.** `backend` / `frontend` review only their own
+  tier's slices and add only their own tier's backlog tasks, skip the whole-project learning-objectives
+  pass, and stamp today's date on **only their own tier's** "Last Reviewed" line. The untouched tier's
+  tasks and date are preserved verbatim — a partial run must never make an unreviewed tier look reviewed.
+- **The backlog is merged into, never regenerated** — on every scope, `full` included. No open task is
+  deleted, reworded, re-tiered or re-prioritised, whoever raised it; `_review-standard.md` → "A review
+  run merges into `## Tasks`" owns the rule and its reason.
 - **Review state lives in `{PROJECT_PATH}/PROJECT-BACKLOG.md`, per tier — nowhere else.** No missing file
   = never reviewed; a tier line of `never` = that tier never reviewed. There is no root-level review
   index, by design: a second copy of the date would drift out of sync with the backlog. **`_run-tracker.md`

@@ -712,13 +712,15 @@ Each generated file, with who writes it and who depends on it:
 - **`{project}/PLANNING.md`** — written by `plan-audit` (new mode) → read by `readme-audit`,
   `review-audit`, `portfolio-audit`, `progress-update`, `roadmap-review`. *It is the contract
   the whole project is checked against.*
-- **`PROJECT-BACKLOG.md`** — written by `review-audit` (the tasks), by the two backlog skills
+- **`PROJECT-BACKLOG.md`** — written by `review-audit` (the tasks, merged in and never regenerated, so
+  no open task another writer below raised is lost to a re-review — `REC-262`), by the two backlog skills
   (`⏸ Deferred` / `## Closed`, and either of them raising a `## Tasks` entry for a real defect noticed while
   triaging or closing — `REC-179`), by `plan-audit`'s `whole-plan` specialist where a task contradicts a
   plan decision, and by `readme-audit` for a project defect its roles reported outside the README and it
   verified (`REC-255`), and by `portfolio-audit`, one `[Low]` task per bank correction its Spanish stages report owed (`REC-261`) → read by `readme-audit` itself, to drop a defect already open, parked or closed, by `portfolio-audit` (open High/Medium tasks block the "ready" verdict, its own owed-correction raise dedupes against `## Tasks` and `## Closed`, and its
   per-tier `Last Reviewed` lines stop the gate outright when one reads `never` or carries
-  `(incomplete — …)`), by `review-audit`'s own next-run gate, by both §0 rituals deriving `Next gate`,
+  `(incomplete — …)`), by `review-audit`'s own next-run gate and its Step 5 merge (the open `## Tasks`,
+  `## Beyond the current gate` and `## Closed`, read before a task is written), by both §0 rituals deriving `Next gate`,
   and by whoever ticks §23's G3/G4 boxes, which quote those same lines.
 - **`notes/cv/cv-bullets.md`** — written by `portfolio-audit` with one polished bullet per committed
   project, verified before saving against `_application-standard.md`'s **Project-bullet spec** (eight
