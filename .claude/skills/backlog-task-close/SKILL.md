@@ -79,8 +79,11 @@ Five kinds of task exist, and they close differently:
   `backlog-task-open` routes here to pay.
 - **False positive, or dropped without a fix** — `backlog-task-open` proved either that the code is
   correct as it stands and always was (false positive), or that the task will never be right *for this
-  project* (dropped). **Nothing was built and nothing was chosen**, so steps 1 through 4 are all
-  **n/a** — say so explicitly and go straight to step 5. The trap is filing these as a design decision:
+  project* (dropped). **Nothing was built and nothing was chosen**, so steps 1 through 4 are **n/a**
+  except step 3b, which every close owes — removing the task still moves `Last updated` and the
+  open-task count, and whichever other cell 3b's checks find false: the `Next gate` qualifier when it
+  was the last open High, `Current step` and its `Done condition` when the removal changes what is being
+  worked on. Say so explicitly and go to step 5. The trap is filing these as a design decision:
   that path authors a coverage bullet and a README **Tradeoffs** entry "if the convention is a real
   concept", and a finding the reviewer got wrong is not a convention Victor decided to keep. The ledger
   line still carries `DECISION, no code change`, and its `→` tail must say *why the code is right*

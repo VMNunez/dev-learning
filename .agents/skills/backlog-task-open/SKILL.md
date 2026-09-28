@@ -164,7 +164,8 @@ save work. The whole point of this pass is that its verdict can be trusted in bo
 
 **Valid as written / valid with corrected scope** → hand off to the normal cycle: step 5's explanation,
 then the fix at the mode Victor picks — or written by you, when his own instruction for the session has
-delegated it. Carry the corrected scope into that explanation so no one works from the task's wrong list.
+delegated it; a question-bank correction takes step 1's `TODO:` route in place of a mode. Carry the
+corrected scope into that explanation so no one works from the task's wrong list.
 
 **Valid, wrong moment** → put the choice to Victor with the tradeoff stated, then record what he
 decides. A verdict that lives only in the chat is re-derived from scratch every session the task is
@@ -251,6 +252,9 @@ Before sending, verify all five are present:
       **Unless Victor has already answered it** — a mode picked in the message opening this task, or the
       implementation delegated to you by his own instruction for the session: then one line naming that
       choice replaces the block, and the four checks above stay owed in full — he reads them to approve the fix.
+      **A question-bank correction replaces it the same way**, with one line naming step 1's route — his
+      `TODO:` on that ID, resolved by `study-content-writer` — since no mode changes who writes that fix;
+      the four checks stay owed in full, because the `TODO:` is written from them.
 
 **Priority never scales depth.** `[Low]`, `Effort: Small` and a one-line fix earn the same full
 explanation as a `[High]`: the size of the diff says nothing about the size of the concept. The
