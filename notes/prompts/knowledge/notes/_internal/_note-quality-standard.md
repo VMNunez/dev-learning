@@ -357,13 +357,14 @@ any new section, and check them when auditing an existing one:
   to narrow down on their own.
 - **Anchor against JavaScript/TypeScript — but only when equivalent is truly functional.** Anchor
   only when the equivalence is direct and transparent — where using them is functionally the same in
-  both languages (e.g. `final` = `const`, for-each = `for...of`, try/catch has the same shape except
-  that Java's `catch` names the exception type, `.formatted()` = template literals). Do NOT anchor when a concept exists in JS/TS but serves a
-  fundamentally different purpose or requires different mental context — for example, exception types
-  in Java (checked/unchecked, compile-time enforcement, type hierarchy) are not comparable to JS
-  error objects (runtime-only, informal, no type distinctions). When the JS version is only
-  superficially similar, acknowledge the difference explicitly instead of suggesting they are
-  equivalent. When in doubt, it is better to acknowledge that JS/TS has no equivalent than to force
+  both languages (e.g. `final` = `const`, for-each = `for...of`, `.formatted()` = template literals).
+  Do NOT anchor when a concept exists in JS/TS but serves a fundamentally different purpose or
+  requires different mental context — for example, exception types in Java (checked/unchecked,
+  compile-time enforcement, type hierarchy) are not comparable to JS error objects (runtime-only,
+  informal, no type distinctions). When the JS version is only superficially similar, acknowledge the
+  difference explicitly instead of suggesting they are equivalent — try/catch has the same shape, but
+  Java's `catch` names the exception type and catches only that type and its subtypes. When in doubt,
+  it is better to acknowledge that JS/TS has no equivalent than to force
   a misleading comparison. **Do not add filler "JS has no equivalent" paragraphs that teach nothing
   — only anchor when the comparison genuinely clarifies.**
 
