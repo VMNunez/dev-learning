@@ -50,6 +50,10 @@ I built this project to learn advanced Angular routing: functional guards, lazy-
 
 ## Screenshots
 
+**Leave approval — an employee submits a leave request, an admin approves it, and the employee sees it approved**
+
+![Leave approval flow — an employee submits a Family holiday request that lands as pending, the admin's dashboard shows one pending request and the admin approves it from the Leave Requests table, then the employee's own list shows the same request approved](screenshots/leave-approval-flow.gif)
+
 **Login**
 
 ![Login](screenshots/login.png)
