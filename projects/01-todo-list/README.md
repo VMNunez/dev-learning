@@ -2,19 +2,9 @@
 
 My 1st learning project — task manager where users add, complete and delete tasks with live filtering.
 
+![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![CSS custom properties and Flexbox](https://img.shields.io/badge/CSS-Custom%20properties%20%2B%20Flexbox-1572B6?logo=css3&logoColor=white&labelColor=303030)
+
 [Live demo](#live-demo) · [How to run](#how-to-run)
-
----
-
-## Tech stack
-
-| Layer | Technology |
-|---|---|
-| Framework | ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) |
-| Language | ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) |
-| Routing | ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) |
-| State | ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) |
-| Styles | ![CSS custom properties and Flexbox](https://img.shields.io/badge/CSS-Custom%20properties%20%2B%20Flexbox-1572B6?logo=css3&logoColor=white&labelColor=303030) |
 
 ---
 
@@ -96,6 +86,18 @@ No login — the app opens straight on the task list.
 - State justified by its readers — a signal no template reads is not state, so the root component of a routed app declares none
 - `type` union — `type Filter = 'all' | 'active' | 'completed'` makes an invalid filter a compile error, not a silent no-match
 - Exhaustive `switch` over a union type — omitting `default` makes a new union member a compile error
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Angular 21 |
+| Language | TypeScript |
+| Routing | Angular Router |
+| State | Angular signals |
+| Styles | CSS custom properties + Flexbox |
 
 ---
 
