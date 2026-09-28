@@ -4,6 +4,10 @@ My 4th learning project — recipe search app where users find meals, view full 
 
 ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Router with route and query parameters](https://img.shields.io/badge/Angular%20Router-Route%20%2B%20query%20params-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals with effect](https://img.shields.io/badge/Angular-Signals%20%2B%20effect-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular HttpClient](https://img.shields.io/badge/Angular-HttpClient-DD0031?logo=angular&logoColor=white&labelColor=303030) ![RxJS 7.8](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white&labelColor=303030) ![Browser localStorage](https://img.shields.io/badge/Web%20Storage-localStorage-000000?logo=mdnwebdocs&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![TheMealDB API](https://img.shields.io/badge/API-TheMealDB-F29D38?labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![CSS custom properties](https://img.shields.io/badge/CSS-Custom%20properties-1572B6?logo=css&logoColor=white&labelColor=303030)
 
+---
+
+## Live demo
+
 **[▶ Try the live app](https://04mealfinder.netlify.app/)**
 
 ---
@@ -11,12 +15,6 @@ My 4th learning project — recipe search app where users find meals, view full 
 ## Why this project
 
 I built this project to learn route parameters, how a component reads them with `ActivatedRoute`, and how `effect()` runs side effects when state changes. To practise them, I built a recipe finder on a free public recipe database: the search term lives in the address bar, every recipe opens on its own detail page, and favourites saved in the browser survive between visits. Every request shows whether it is loading, found nothing or failed.
-
----
-
-## Live demo
-
-https://04mealfinder.netlify.app/
 
 ---
 
