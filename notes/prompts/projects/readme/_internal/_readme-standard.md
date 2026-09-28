@@ -84,7 +84,8 @@ markers like `✓` or `(Step 3)`.
 
 A section that fails both is noise — cut or rewrite it. Passing only the recruiter lens is not enough:
 the goal is a consultancy that asks technical questions. Never define basic terms — a README assumes a
-developer reader.
+developer reader. A plan naming a basic term does not make its generic definition useful to either
+reader; the concept may still earn a recall line when that line passes both lenses and rule 9's tests.
 
 **A third reader, and it is not human.** Before a recruiter opens the repository, a screen may
 already have read it: many recruiting teams run tooling that parses GitHub profiles and repositories
@@ -321,8 +322,11 @@ found three of these tests missing and two nominal only once someone counted the
    list, not a tutorial. Optimal count for the project (no fixed number): the section grows with the work,
    and what bounds it is the three tests below, never a number. The reading-path rule may group or
    collapse the surviving list without removing concepts. Cross-check against PLANNING.md's learning
-   objectives and add any that are missing — an **adder only**: a plan describes the project as planned,
-   not the one its backlog produced, so it never decides what stays.
+   objectives and key patterns as **candidates** for missing concepts. Add a missing concept only when
+   its proposed bullet passes the quality filter and the three tests below; a plan row alone never
+   requires a bullet. In particular, a generic definition of a basic term never qualifies, whatever
+   the plan row says, so the plan never adds one. The plan is an **adder only** for eligible concepts:
+   it describes the project as planned, not the one its backlog produced, so it never decides what stays.
    - **Structure — full-stack projects only.** On `07+` this section carries two subsections,
      `### Backend` first and `### Frontend` second; on `01`–`06` the list is flat. They are `###`
      headings **inside** one `##` section, not sections of their own, so the section-order check does not

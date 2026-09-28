@@ -147,9 +147,8 @@ same channel the coherence branch uses:
 > items: «paste the judge's lines». Apply them to the README. **Do NOT commit.** Report which you
 > applied, including each `CUT`'s `deleted` / `merged` / `rewritten` / `moved` outcome and where a
 > surviving concept landed, compacted into the section trace; **return any objection unresolved** — the item quoted verbatim and the
-> clause of the standard you invoke, quoted — rather than deciding it yourself; and flag any actual
-> removal of a PLANNING-carried `What I learned` concept that a later run would regenerate, regardless
-> of the item's rule label.
+> clause of the standard you invoke, quoted — rather than deciding it yourself; and flag each removal the
+> review prompt marks `⚠ regenerable`.
 
 **The run applies the items; it never hands them over.** B's default is to apply. Never print the judge's
 items as work left for Victor: the whole point of this step is that the README ships fixed inside the
@@ -197,18 +196,9 @@ objection*, not the section it sits in — re-dispatch that target's B with the 
 repair. This is the check that made the 2026-09-02 `04-meal-finder` commit correct while every trace on
 the run was green; it ran out of band then and it is a step now (`REC-202`).
 
-**A cut a later run would undo is a finding about the standard.** Where B flags any actual removal of a
-`What I learned` concept carried by a `PLANNING.md` learning-objective or key-pattern row, the next
-author will re-add it from that plan, whatever rule label the judge used. Carry the flag into the
-summary and into the self-report's Effect judge bullet as `⚠ regenerable — standard gap`, naming the
-concept and plan row. A merge, rewrite or move that still represents the concept earns no flag.
-
-**That flag is a standing signal, not an automatic trigger.** Nothing in this pipeline reads the previous
-run's flags — the self-report is a single file overwritten by every project's run, and step 0 reads only
-its `Status` line — so no run can tell a repeat from a first sighting on its own. What the flag does is
-put the case in front of whoever reads the report: **a bullet flagged here that Victor recognises from an
-earlier run is a `_recommendation-ledger.md` row**, for the durable per-project sink this pipeline does
-not have. Do not claim to have compared against a previous run.
+**A `⚠ regenerable` flag is carried, not resolved.** Put it in the summary and the self-report's Effect
+judge bullet, naming the concept and plan row. No run reads a previous run's flags, so only a reader of
+the report can recognise a repeat, and a recognised repeat is a `_recommendation-ledger.md` row.
 
 **A judge is advisory, so it never blocks the commit.** If one errors twice under the Failure protocol,
 say so in the summary and commit that README on A+B's work — unlike an author or a reviewer, whose

@@ -27,8 +27,8 @@ have checked it against the standard.
 Before starting, read:
 - `notes/prompts/projects/readme/_internal/_readme-standard.md` — the bar, in full: the universal rules and the
   rules for your `{TARGET}` (Global — with full-stack additions if applicable — or Backend or Frontend).
-- `{PROJECT_PATH}/PLANNING.md` — to check the README reflects what was actually built and that the "What
-  I learned" / patterns match the plan's learning objectives.
+- `{PROJECT_PATH}/PLANNING.md` — for the app concept, learning objectives and key patterns; use them as
+  context and candidate concepts under the standard's rules for this target.
 - The target README file itself.
 
 **Scoped code reading.** When a check needs the real code (truthfulness of the endpoint tables, the
@@ -80,10 +80,11 @@ project. Your attention budget belongs to the README.
   the visual.
 - **Truthfulness** — no section claims something not in the code/PLANNING, and an implementation claim is
   settled by code, configuration or tests, never by `PLANNING.md` alone (the standard's *Implementation
-  claims*); "What I learned" and patterns
-  match the plan's learning objectives (add any missing objective). The plan is an **adder only** here: it
-  describes the project as planned, not the one its backlog produced, so it never licenses keeping a
-  bullet the inclusion test above cuts.
+  claims*); check "What I learned" against the plan's learning objectives and key patterns as
+  candidates for missing concepts. Add only a bullet that passes the standard's quality filter and
+  rule 9's tests. The plan is an **adder only** for eligible concepts: it describes the project as
+  planned, not the one its backlog produced, so it never licenses keeping or restoring a bullet those
+  tests cut.
 - **In-progress markers** — no leftover "coming soon" fragments except one clean placeholder per
   genuinely-unbuilt section; no working notes.
 - **Visuals (`global`)** — the Visual brief and placeholders are present and correct; images stacked
@@ -125,16 +126,14 @@ whether the judge's reading of it loses — instead **return the objection unres
 verbatim, name the rule you are invoking and quote the clause, and apply everything else. The
 orchestrator settles it with both in front of it. Items you simply applied need no such return.
 
-**Flag a cut a later run would undo.** If any `CUT`, whether rule-labelled or `effect-only`, removes a
-`What I learned` concept that a `PLANNING.md` learning-objective or key-pattern row carries, the next
-run's author will re-add it from that plan. Compare the concept with those rows and the README after
-application: a merge, rewrite or move that still represents it is not a removal. Apply an actual
-removal, and mark it in your report as `⚠ regenerable — standard gap`, naming the concept and plan row.
-This flag reports the conflict between rule 9's plan adder and the applied cut; it does not claim that
-the judge's item was `effect-only`.
+**Flag a removal the plan will regenerate.** If a `CUT` labelled `effect-only`, or citing only the
+quality filter's recruiter lens on a concept that is not a basic term, actually removes a `What I learned`
+concept a `PLANNING.md` learning-objective or key-pattern row carries — a merge, rewrite or move that
+still represents it is not a removal — apply it and mark it `⚠ regenerable — standard gap`, naming the
+concept and plan row: no rule the author applies excludes it, so rule 9's candidate check re-adds it.
 
 Report which items you applied, which you returned as objections with their quoted rule, and which you
-flagged `⚠ regenerable`, and trace only the sections you touched.
+flagged `⚠ regenerable`. Trace only the sections you touched.
 
 ## Fix, don't just report
 Where a check fails, **fix it directly** in the README. Preserve the author's correct work; only change
