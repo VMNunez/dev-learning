@@ -527,9 +527,10 @@ consume one of these sources of truth.
 ## The prompts — what each one reads and generates
 
 **Two files are not owed by the `Reads` column in any of the five tables below.**
-`notes/prompts/_internal/_session-rules.md` reaches every run through the active platform adapter —
-`_readme-write-prompt.md` tells its author not to re-read it, "it is already injected into your context
-automatically", while a cold dispatched role may instead be told to load the one section it needs
+`notes/prompts/_internal/_session-rules.md` reaches every run through the active platform adapter, which
+only points at it; a cold dispatched role holds it only where its dispatch names it — it may be told it owes
+none of it (`_readme-write-prompt.md`: "Dispatched, you do not hold it … and you do not need it") or told
+to load the one section it needs
 (`roadmap-review-prompt.md`'s Reviewer 1: "do not assume the shared session rules are loaded"). And
 `_shared-context.md` is the profile/market background most prompts open before working, several of them
 through a standard rather than directly (`tracker` through `_application-standard.md`'s own source list).

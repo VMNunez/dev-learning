@@ -39,8 +39,12 @@ Before starting, read:
 - The existing target README (`{PROJECT_PATH}/README.md` for `global`, `.../backend/README.md` for
   `backend`, `.../frontend/README.md` for `frontend`) — if it exists.
 
-Do **not** re-read `notes/prompts/_internal/_session-rules.md` — it is already injected into your context automatically; Victor's
-profile and the market live in `notes/prompts/_internal/_shared-context.md` if a section genuinely needs them.
+Do **not** read `notes/prompts/_internal/_session-rules.md` for this README. Dispatched, you do not hold
+it — neither your dispatch nor any file this prompt names carries it — and you do not need it:
+`_readme-standard.md` is the single source of truth for what a README contains, and the one session rule
+this prompt applies, the test exclusion for projects 01–06 and for components in 07, is restated in the
+`Out-of-boundary defects:` bullet under *Output* below. Victor's profile and the market live in
+`notes/prompts/_internal/_shared-context.md` if a section genuinely needs them.
 
 **Scoped code reading.** When a section must be checked against the real code (API endpoints, tests,
 security measures, folder structure), read **only the files that section needs** — e.g. the
