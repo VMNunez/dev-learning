@@ -4,6 +4,14 @@ My 7th learning project and my first full-stack app — a timesheet where employ
 
 ![Spring Boot 4.0](https://img.shields.io/badge/Spring%20Boot-4.0-6DB33F?logo=springboot&logoColor=white&labelColor=303030) ![Java 25](https://img.shields.io/badge/Java-25-ED8B00?logo=openjdk&logoColor=white&labelColor=303030) ![Spring Security with JWT](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&logoColor=white&labelColor=303030) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white&labelColor=303030) ![Spring Data JPA with Hibernate](https://img.shields.io/badge/Spring%20Data%20JPA-Hibernate-59666C?logo=hibernate&logoColor=white&labelColor=303030) ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Material 21](https://img.shields.io/badge/Angular%20Material-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![JUnit](https://img.shields.io/badge/JUnit-Jupiter-25A162?logo=junit5&logoColor=white&labelColor=303030) ![Vitest](https://img.shields.io/badge/Vitest-TestBed-6E9F18?logo=vitest&logoColor=white&labelColor=303030) ![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030)
 
+Technical guides: [Backend decisions](backend/README.md#key-patterns) · [Frontend decisions](frontend/README.md#key-patterns)
+
+**Status:** the full-stack app is deployed. Backend service tests and frontend HTTP/state service tests are still pending; existing checks cover DTO validation and selected frontend behaviours. See [backend tests](backend/README.md#tests) and [frontend tests](frontend/README.md#tests).
+
+---
+
+## Live demo
+
 **[▶ Try the live app](https://07-timetrack.netlify.app)**
 
 <table>
@@ -38,27 +46,11 @@ GnpJwJxajMUa
 
 The API runs on a free tier that sleeps when idle, so the first login after a quiet spell can take about two minutes while it wakes up — later requests are fast.
 
-Technical guides: [Backend decisions](backend/README.md#key-patterns) · [Frontend decisions](frontend/README.md#key-patterns)
-
-**Status:** the full-stack app is deployed. Backend service tests and frontend HTTP/state service tests are still pending; existing checks cover DTO validation and selected frontend behaviours. See [backend tests](backend/README.md#tests) and [frontend tests](frontend/README.md#tests).
-
 ---
 
 ## Why this project
 
 I built this project to learn backend development with Spring Boot — my first REST API and database schema, with role-based authorization from Spring Security enforced on a real workflow instead of a toy endpoint — and to connect an Angular frontend to that API end to end: the client logs in, sends the JWT with every request and works against the same JSON contract the server defines. To practise it, I built a timesheet app where employees log and submit the hours they work on projects and managers approve or reject each entry with a note. The server enforces who owns each entry and which status changes are allowed, the Angular client makes rejection, correction and resubmission explicit, and archived accounts and projects keep their history.
-
----
-
-## Live demo
-
-**[07-timetrack.netlify.app](https://07-timetrack.netlify.app)**
-
-**Demo accounts:**
-- Manager: `manager@timetrack.com` / `V9pr4VLCKaqxkpD8xnHz`
-- Employee: `carlos.ruiz@timetrack.com` / `GnpJwJxajMUa`
-
-The API runs on a free tier that sleeps when idle, so the first login after a quiet spell can take about two minutes while it wakes up — later requests are fast.
 
 ---
 
