@@ -235,7 +235,7 @@ Cuando el usuario vacía el campo — un input de fecha nativo tiene su forma de
 
 **[03-expense-tracker-057] Tu `today()` construye la cadena a mano con `getFullYear()`, `getMonth() + 1` y `getDate()`. ¿Por qué no `new Date().toISOString().slice(0, 10)`, que es una línea?** ⭐⭐⭐
 
-Porque `toISOString()` convierte antes a UTC, así que para un usuario en España que añade un gasto a la una de la madrugada en verano devuelve la fecha de ayer, y para un usuario al este de UTC a última hora de la tarde devuelve la de mañana. Los tres getters que usé leen el reloj local, que es el día en el que el usuario cree estar, y ese es el único día que puede significar un gestor de gastos personal. El `padStart(2, '0')` está ahí porque `<input type="date">` exige exactamente `YYYY-MM-DD` y rechazaría en silencio `2026-9-9`.
+Porque `toISOString()` convierte antes a UTC, así que para un usuario en España que añade un gasto a la una de la madrugada en verano devuelve la fecha de ayer, y para un usuario al oeste de UTC a última hora de la tarde devuelve la de mañana. Los tres getters que usé leen el reloj local, que es el día en el que el usuario cree estar, y ese es el único día que puede significar un gestor de gastos personal. El `padStart(2, '0')` está ahí porque `<input type="date">` exige exactamente `YYYY-MM-DD` y rechazaría en silencio `2026-9-9`.
 
 **[03-expense-tracker-058] Nada prohíbe una fecha en 2099 ni en 1900. ¿Debería el formulario tener un max?** ⭐⭐
 
@@ -323,7 +323,7 @@ Sí, y ese es el coste real de la elección. `'1.0-2'` redondea solo para mostra
 
 **[03-expense-tracker-079] Formateas el dinero como `{{ amount | number: '1.0-2' }}€` en vez de con `CurrencyPipe`. ¿Qué te costó eso?** ⭐
 
-La agrupación y el separador decimal vienen del locale de la aplicación, que es el `en-US` por defecto, así que un gasto de mil euros se renderiza como `1,000.00€` — una coma para los miles y un punto para los decimales, junto a un símbolo de euro, que no es como se escribe el número en España. `CurrencyPipe` con `registerLocaleData(localeEs)` y un provider de `LOCALE_ID` daría `1.000,00 €` y pondría el símbolo donde lo pone el locale. Elegí el pipe más simple con un `€` literal porque la aplicación tiene exactamente una moneda y ninguna configuración de i18n, y lo llamaría la decisión correcta tomada por la razón equivocada: la moneda es fija, pero el formateo aun así no debería haberlo sido.
+La agrupación y el separador decimal vienen del locale de la aplicación, que es el `en-US` por defecto, así que un gasto de mil euros se renderiza como `1,000€` y uno de `1234.5` como `1,234.5€` — una coma para los miles y un punto para los decimales, junto a un símbolo de euro, que no es como se escribe el número en España. `CurrencyPipe` con `registerLocaleData(localeEs)` y un provider de `LOCALE_ID` daría `1.000,00 €` y pondría el símbolo donde lo pone el locale. Elegí el pipe más simple con un `€` literal porque la aplicación tiene exactamente una moneda y ninguna configuración de i18n, y lo llamaría la decisión correcta tomada por la razón equivocada: la moneda es fija, pero el formateo aun así no debería haberlo sido.
 
 **[03-expense-tracker-080] La lista se renderiza en orden de inserción — nunca la ordenas. ¿Qué ve un usuario cuando fecha una transacción hacia atrás, al mes pasado?** ⭐⭐
 

@@ -235,7 +235,7 @@ When the user clears the field — a native date input has a clear affordance, a
 
 **[03-expense-tracker-057] Your `today()` builds the string by hand from `getFullYear()`, `getMonth() + 1` and `getDate()`. Why not `new Date().toISOString().slice(0, 10)`, which is one line?** ⭐⭐⭐
 
-Because `toISOString()` converts to UTC first, so for a user in Spain adding an expense at 1 a.m. in summer it returns yesterday's date, and for a user east of UTC late in the evening it returns tomorrow's. The three getters I used read the local clock, which is the day the user believes they are in, and that is the only day a personal expense tracker can mean. The `padStart(2, '0')` is there because `<input type="date">` requires exactly `YYYY-MM-DD` and would silently reject `2026-9-9`.
+Because `toISOString()` converts to UTC first, so for a user in Spain adding an expense at 1 a.m. in summer it returns yesterday's date, and for a user west of UTC late in the evening it returns tomorrow's. The three getters I used read the local clock, which is the day the user believes they are in, and that is the only day a personal expense tracker can mean. The `padStart(2, '0')` is there because `<input type="date">` requires exactly `YYYY-MM-DD` and would silently reject `2026-9-9`.
 
 **[03-expense-tracker-058] Nothing forbids a date in 2099 or in 1900. Should the form have a max?** ⭐⭐
 
@@ -323,7 +323,7 @@ Yes, and that is the real cost of the choice. `'1.0-2'` rounds for display only,
 
 **[03-expense-tracker-079] You format money as `{{ amount | number: '1.0-2' }}€` rather than with `CurrencyPipe`. What did that cost?** ⭐
 
-The grouping and the decimal separator come from the app's locale, which is the default `en-US`, so a thousand-euro expense renders as `1,000.00€` — a comma for thousands and a dot for decimals, next to a euro sign, which is not how the number is written in Spain. `CurrencyPipe` with `registerLocaleData(localeEs)` and a `LOCALE_ID` provider would give `1.000,00 €` and put the symbol where the locale puts it. I chose the simpler pipe with a literal `€` because the app has exactly one currency and no i18n setup, and I would call it the right decision made for the wrong reason: the currency is fixed, but the formatting still should not have been.
+The grouping and the decimal separator come from the app's locale, which is the default `en-US`, so a thousand-euro expense renders as `1,000€` and one of `1234.5` as `1,234.5€` — a comma for thousands and a dot for decimals, next to a euro sign, which is not how the number is written in Spain. `CurrencyPipe` with `registerLocaleData(localeEs)` and a `LOCALE_ID` provider would give `1.000,00 €` and put the symbol where the locale puts it. I chose the simpler pipe with a literal `€` because the app has exactly one currency and no i18n setup, and I would call it the right decision made for the wrong reason: the currency is fixed, but the formatting still should not have been.
 
 **[03-expense-tracker-080] The list renders in insertion order — you never sort it. What does a user see when they back-date a transaction to last month?** ⭐⭐
 
