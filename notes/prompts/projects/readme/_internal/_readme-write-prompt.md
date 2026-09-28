@@ -62,7 +62,8 @@ Check this README's sections against the standard's rules for your `{TARGET}`, i
 - Apply the **quality filter** (recruiter + interviewer lens) to each section — cut or rewrite noise.
 - Apply the universal **Reading paths** and **Implementation claims** rules: make the stack and the run
   path — and, on a full-stack project, the navigation and testing status — easy to find; shorten
-  explanations without discarding evidence, and verify claims against scoped source reads rather than
+  explanations without discarding evidence. Do not add a partial in-page index beneath the badges on a
+  short global README; verify claims against scoped source reads rather than
   inferring coverage from test filenames.
 - Do **not** rewrite sections that are already correct — only touch what misses the bar.
 - **`What I learned` is the exception to the line above**, because its defect is invisible section by

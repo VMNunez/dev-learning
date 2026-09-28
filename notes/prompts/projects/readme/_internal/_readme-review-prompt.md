@@ -67,7 +67,8 @@ project. Your attention budget belongs to the README.
   anything that only impresses one.
 - **Reading paths + implementation evidence** — apply those universal rules to the finished page:
   stack and demo/setup are visible before a long section — plus, on full-stack, the technical links and
-  testing status; detailed patterns are navigable; test assertions support the claimed behaviours, a
+  testing status; a short global README has no redundant partial index below the badges; detailed
+  patterns are navigable; test assertions support the claimed behaviours, a
   scaffold is named once and neutrally, and no sentence disclaims run evidence.
 - **Own-text test** — every claim the README makes is stated in the README's own text (a sentence, a
   bullet or a table cell) and never only inside a visual — the standard's *A third reader, and it is not

@@ -117,9 +117,11 @@ short snippet says it better.
 find the implemented stack and the demo or run instructions — and, on a full-stack project, the
 technical guides and the current testing status (projects 01–06 carry no Tests section, and their
 absent tests are out of scope, never a status to advertise).
-On the global README, use opening technology badges; use descriptive links rather than copying whole
-sections into a navigation summary. On a long tier
-README, add a contents line and link its central decisions to their source files. Group detailed
+On the global README, use opening technology badges. Let the section headings guide readers through a
+short global README; do not add an automatic partial index of in-page links such as `Live demo · How to
+run` below the badges when those links only repeat visible section headings. A direct link to an external
+demo or to a separate technical guide may be useful when it saves the reader a real search. On a long
+tier README, add a contents line and link its central decisions to their source files. Group detailed
 patterns by concern; use concise explanations of the choice and consequence instead of replaying every
 debugging step. Optional `<details>` blocks may hold a long recall list or supporting rationale, with a
 descriptive `<summary>` and blank lines around their Markdown content. Keep the section heading and a
@@ -204,7 +206,7 @@ found three of these tests missing and two nominal only once someone counted the
 1. **Title + one sentence** — plain language, no tech words, project number included. Says what the app
    does and who uses it, not what the developer learned. The number stays on purpose: the projects share
    one repository and are read as a progression (Victor's ruling, 2026-09-27, `REC-253`). Immediately
-   below that sentence, before navigation links or the first section, put a compact row of Shields.io
+   below that sentence, before the first section, put a compact row of Shields.io
    flat badges with technology logos for the stack actually used. Name the main framework, language and
    relevant supporting technologies (including HTML5 when used); show a version only when the project's
    files verify it. Give every badge descriptive alt text, and keep its technology name in the plain-text
