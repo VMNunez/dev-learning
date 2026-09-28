@@ -234,8 +234,9 @@ atomic commit with the `en/` bank and the CV bullet. Report:
   by the tiers this run did not translate.
 - The IDs of every `[refined]` question you kept, of every one you rendered for the first time, and of
   any whose English has moved under the freeze — which you did not reconcile.
-- Any English question or answer you believe is wrong (for a follow-up author run — you did **not**
-  change it), and any place the existing Spanish diverged in a way that looked deliberate.
+- Any English question or answer you believe is wrong, by ID with the reason — the orchestrator prints
+  it as owed a correction; you did **not** change it — and any place the existing Spanish diverged in a
+  way that looked deliberate.
 
 **If you cannot finish**, stop and open your report with `BLOCKED — <reason>`, then state exactly which
 sections you had already written into the `es/`. You are writing a file the orchestrator commits

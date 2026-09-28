@@ -301,9 +301,10 @@ cover**, the
 reviewer to its **question count, its questions-vs-decisions ratio, its marker split and the markers it
 added or downgraded, the IDs it allocated or repaired,
 and the uncovered decisions if that ratio is below 1**, the
-translator to its **verdict, its per-section counts including the frozen-kept ones, and its total**, and
-the Spanish reviewer to its **verdict, its frozen defects and its suspected translation errors, both by
-ID** —
+translator to its **verdict, its per-section counts including the frozen-kept ones, its total and any
+English question it believes is wrong, by ID with its reason**, and
+the Spanish reviewer to its **verdict, its frozen defects and its suspected translation errors by ID, and
+its suspected factual errors by ID with the contradicting sentence** —
 not the full trace (the trace still drives their own work; it just stays in their context).
 **Every defect a subagent found inside a `[refined]` block returns in `all` mode too, verbatim and by
 ID.** That is not trace and it is not summarisable: the freeze stopped every role from repairing it, the
@@ -465,8 +466,7 @@ is a judgement about code you did not read.
 report the number by section — **excluding the unmarked ones that carry `[refined]`**, which no role of
 this pipeline may mark and which would otherwise disable this test on that bank permanently; list those
 by ID instead, as Victor's to mark or reopen: a bank written before this rule carries none until its
-first run under it — `01-todo-list` was that bank and is no longer, its 118 questions having been marked
-in full on 2026-09-05 — and a proportion computed over a fraction of a file is a number that reads
+first run under it, and a proportion computed over a fraction of a file is a number that reads
 as a verdict. Where that count is not zero, say so in place of the test — the marked questions are the
 sections this run touched and the debt is what the report carries — and do not backfill the rest by hand:
 marking a question is the author's and the reviewer's work, over the code area it was written against.
@@ -474,8 +474,7 @@ marking a question is the author's and the reviewer's work, over the code area i
 **Count the questions carrying no ID at all, and report the number.** Each section's reviewer allocates
 the missing IDs in its own section, so on a healthy run this is zero — but a section whose author
 returned `BLOCKED` never got a reviewer, and a bank written before this rule existed carries none until
-its first run under it — `01-todo-list`'s 118 questions all carry one since 2026-09-05, so no bank on
-disk is in that state today. A question with no ID cannot be named by a
+its first run under it. A question with no ID cannot be named by a
 `TODO:` or frozen with `[refined]`, so a non-zero count is a debt this run leaves behind and the final
 report says so by section. Do not backfill them yourself: allocating IDs across a bank is per-section
 work, and the section that was blocked is the one nobody finished.
@@ -593,23 +592,25 @@ saying it in a room is the same judgment T makes, one pass later and without the
 > and calque **directly**, inside the sub-headings `SCOPE` covers; change no question, no ID, no
 > `[refined]` marker, no code block and no header line, and never add, remove or reorder a question —
 > parity is stage T's and the gate has already checked it. Report, never repair, a defect inside a
-> `[refined]` block and anything you suspect is a translation error rather than a wording one. **Do NOT
-> commit.** Return `PASS`/`FIXED`/`BLOCKED`, the `N lines, read to EOF` line, the question-by-question
-> trace, every frozen defect quoted by ID, and every suspected translation error by ID. Write your
-> findings and verdict to «scratch path for this project» as you reach them, before returning.
+> `[refined]` block, anything you suspect is a translation error rather than a wording one, and a factual
+> error the bank itself shows. **Do NOT commit.** Return `PASS`/`FIXED`/`BLOCKED`, the
+> `N lines, read to EOF` line, the question-by-question trace, every frozen defect quoted by ID, every
+> suspected translation error by ID, and every suspected factual error by ID with the sentence that
+> contradicts it. Write your findings and verdict to «scratch path for this project» as you reach them,
+> before returning.
 
 Pass C a real scratch path — `_agent-runtime-standard.md` requires it on every `reviewer` dispatch, and
 requires the orchestrator to read it when the reviewer dies.
-
-**It runs once per project, not once per section**, for the same reason T does: register consistency is a
-whole-file property, and it is the only role that reads the finished twin end to end.
 
 **No retry gate, and that is deliberate — and this is not the death ladder.** A C that *dies* takes
 `_agent-runtime-standard.md`'s ladder like any other role: read its scratch path, else resume, else
 re-dispatch once. What has no gate is C's *verdict*: B and T are re-dispatched on a *number* — a ratio
 below 1, a parity count that disagrees — and C produces neither: its verdict is a judgement about prose, so a
 second dispatch on the same file would only re-ask the same reader the same question. What it returns
-instead goes to Victor in the final report.
+instead goes to Victor in the final report. **A suspected factual error — C's, or an English question T
+reported wrong — is an English defect owed a correction**, not a note on the Spanish: T renders meaning
+unchanged, so the claim sits in both files. No role of this run repairs it; Finishing item 1 prints it for
+Victor to confirm against the code and the `en/` twin and correct through the bank's TODO channel.
 
 **If C returns `BLOCKED`** — a half-reviewed twin — take the **leave-and-declare** side, never the
 restore side, exactly as Phase 1b does and for the same reason: the `es/` is created by this pipeline, a
@@ -812,7 +813,10 @@ Otherwise print, in this order:
    role from repairing them, and Victor is the only reader who can reopen one. On its own line too,
    **stage C's verdict on the twin and every suspected translation error it returned, by ID** — or the
    reason Phase 1c did not run. A twin nobody audited and a twin that passed look identical on disk, so
-   this line is the only place the difference is stated. **On a full-stack
+   this line is the only place the difference is stated. On its own line too, **every suspected factual
+   error C returned and every English question T reported wrong, outside a frozen block, by ID with its
+   evidence, labelled `owed a correction`** — or `factual errors: none reported`; nothing else in the run
+   acts on one. **On a full-stack
    project also print the three `Last banked` lines as they now stand**, so a tier still reading `never`
    is visible at the moment the run ends rather than only inside the file.
 2. **Final verdict: ✅ Ready / ⚠️ Almost / ❌ Not ready** (with the checkbox list if ⚠️/❌). **Where

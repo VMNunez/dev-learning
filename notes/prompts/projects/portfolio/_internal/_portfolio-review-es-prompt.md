@@ -161,12 +161,15 @@ Where the Spanish falls short, **rewrite it directly** in the `es/` file — nat
 meaning, same structure, same length register. If the Spanish is genuinely already native and at bar,
 change nothing and record `PASS`.
 
-Two things are always reported instead of fixed: a defect inside a `[refined]` block, and anything you
+Three things are always reported instead of fixed: a defect inside a `[refined]` block, anything you
 believe is a **translation error rather than a wording one** — a Spanish answer that seems to say
 something different from what the question asks, or a passage that reads as though it lost its meaning
-on the way across. You cannot check either against the English, and guessing at the missing half is how
-a Spanish answer ends up saying something the code does not do. Name it by question ID for a follow-up
-stage T run.
+on the way across — and a **factual error the bank itself shows**: an answer contradicting its own
+example, or stating what another question's answer contradicts. You cannot check any of them against the
+English or the code, and guessing at the missing half is how a Spanish answer ends up saying something
+the code does not do. Name a translation error by question ID for a follow-up stage T run; name a factual
+one by ID **with the sentence that contradicts it**, since stage T renders meaning unchanged and the same
+claim is most likely in the English too.
 
 ## Question-by-question trace (mandatory — proof you read the whole twin)
 
@@ -188,6 +191,9 @@ atomic commit with the `en/` bank. Report:
   That line is the only route a frozen question's Spanish defect has: nothing else in this pipeline may
   open one, and Victor is the only reader who can.
 - **Every suspected translation error**, by ID, which you did not touch.
+- **Every suspected factual error**, by ID, with the contradicting sentence and the ID it sits under,
+  which you did not touch — or `none`. One inside a `[refined]` block goes in the frozen-defect line
+  above.
 - Any empty heading you found, and the questions you left unchanged because they sit outside `{SCOPE}`.
 
 Write your findings and this verdict to the scratch path you were dispatched with, as you reach them,
