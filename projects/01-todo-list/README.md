@@ -4,21 +4,19 @@ My 1st learning project — task manager where users add, complete and delete ta
 
 ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![CSS custom properties and Flexbox](https://img.shields.io/badge/CSS-Custom%20properties%20%2B%20Flexbox-1572B6?logo=css&logoColor=white&labelColor=303030)
 
+---
+
+## Live demo
+
 **[▶ Try the live app](https://01angulartodolist.netlify.app/)**
+
+No login — the app opens straight on the task list.
 
 ---
 
 ## Why this project
 
 I built this first Angular project to learn the framework's core building blocks from scratch: how components communicate, how a service shares state, and how signals keep the UI in sync. To practise them, I built a task list where users can add, complete, delete and filter tasks. The visible list and pending counter derive from the same task state, so changes appear immediately and consistently under the active filter.
-
----
-
-## Live demo
-
-https://01angulartodolist.netlify.app/
-
-No login — the app opens straight on the task list.
 
 ---
 
