@@ -2,7 +2,7 @@
 
 My 1st learning project — task manager where users add, complete and delete tasks with live filtering.
 
-![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![CSS custom properties and Flexbox](https://img.shields.io/badge/CSS-Custom%20properties%20%2B%20Flexbox-1572B6?logo=css3&logoColor=white&labelColor=303030)
+![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![CSS custom properties and Flexbox](https://img.shields.io/badge/CSS-Custom%20properties%20%2B%20Flexbox-1572B6?logo=css&logoColor=white&labelColor=303030)
 
 **[▶ Try the live app](https://01angulartodolist.netlify.app/)**
 
