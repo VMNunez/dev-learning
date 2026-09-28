@@ -2,15 +2,15 @@
 
 My 6th learning project — HR portal where admins manage employees, departments and leave requests, and employees check their own data and ask for time off.
 
-**Angular 21 · Angular Material 21 · TypeScript · localStorage**
+![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Router with guards and lazy routes](https://img.shields.io/badge/Angular%20Router-Guards%20%2B%20lazy%20routes-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Material 21](https://img.shields.io/badge/Angular%20Material-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Reactive Forms](https://img.shields.io/badge/Angular-Reactive%20Forms-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![Browser localStorage](https://img.shields.io/badge/Web%20Storage-localStorage-000000?logo=mdnwebdocs&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![SCSS with Material theming](https://img.shields.io/badge/SCSS-Material%20theming-CC6699?logo=sass&logoColor=white&labelColor=303030)
 
-[Live demo](#live-demo) · [Run locally](#how-to-run)
+**[▶ Try the live app](https://06-hr-portal.netlify.app)**
 
 ---
 
 ## Why this project
 
-HR work is two jobs on one dataset: an administrator maintains employees and departments and decides on leave, while an employee may only see their own requests and ask for time off. A shared spreadsheet cannot keep those two views apart. This portfolio app gives each role its own pages and gives every leave request an owner, a reviewer and a final outcome.
+I built this project to learn advanced Angular routing: functional guards, lazy-loaded routes, an HTTP interceptor and role-based access enforced in the router rather than in the templates. To practise it, I built an HR portal with two roles on one dataset. Admins manage employees and departments and decide on leave requests, while employees see only their own data and ask for time off, and every leave request has an owner, a reviewer and a final outcome.
 
 ---
 
@@ -141,6 +141,7 @@ https://06-hr-portal.netlify.app
 | State | Angular signals — `signal`, `computed`, `effect` |
 | Forms | Angular Reactive Forms (typed) |
 | Persistence | Browser localStorage |
+| Markup | HTML5 |
 | Styles | CSS + SCSS (Material theming) |
 | Deployment | Netlify |
 
