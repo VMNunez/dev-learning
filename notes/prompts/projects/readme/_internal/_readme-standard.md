@@ -117,7 +117,8 @@ short snippet says it better.
 find the implemented stack and the demo or run instructions — and, on a full-stack project, the
 technical guides and the current testing status (projects 01–06 carry no Tests section, and their
 absent tests are out of scope, never a status to advertise).
-Use a short stack/status line and descriptive links, not a second copy of each section. On a long tier
+On the global README, use opening technology badges; use descriptive links rather than copying whole
+sections into a navigation summary. On a long tier
 README, add a contents line and link its central decisions to their source files. Group detailed
 patterns by concern; use concise explanations of the choice and consequence instead of replaying every
 debugging step. Optional `<details>` blocks may hold a long recall list or supporting rationale, with a
@@ -202,15 +203,23 @@ found three of these tests missing and two nominal only once someone counted the
 
 1. **Title + one sentence** — plain language, no tech words, project number included. Says what the app
    does and who uses it, not what the developer learned. The number stays on purpose: the projects share
-   one repository and are read as a progression (Victor's ruling, 2026-09-27, `REC-253`). A separate
-   short stack line under the sentence may name the implemented technologies.
+   one repository and are read as a progression (Victor's ruling, 2026-09-27, `REC-253`). Immediately
+   below that sentence, before navigation links or the first section, put a compact row of Shields.io
+   flat badges with technology logos for the stack actually used. Name the main framework, language and
+   relevant supporting technologies (including HTML5 when used); show a version only when the project's
+   files verify it. Give every badge descriptive alt text, and keep its technology name in the plain-text
+   Tech stack table too. Do not add a separate `**Stack:**` line.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
      where admins manage employees and leave requests."
-2. **Why this project** — one paragraph, a real-world reason. Never "built to practise X".
-   Explain the domain problem and the responsibility the project takes on. Be honest that it is a
-   portfolio project; never imply real customers, adoption or professional experience without evidence.
-   - Good: "Leave requests need an owner, a reviewer and a clear outcome; this portfolio app makes that
-     process explicit and keeps employee and administrator responsibilities separate."
+2. **Why this project** — one concise paragraph that starts with the specific learning objective behind
+   choosing this project, drawn from the plan and grounded in what was built. Then explain which
+   application was built to practise that objective, what its users do and why its behaviour makes the
+   learning visible. This is a learning portfolio: do not replace the learning reason with a domain-only
+   pitch or stop at a generic "built to learn X". Never imply real customers, adoption or professional
+   experience without evidence.
+   - Good: "I built this project to learn how Angular components communicate and how signals keep shared
+     state in sync. To practise that, I built a task list where users add, complete and filter tasks; the
+     list and pending counter update from the same state."
 3. **Live demo** — own `## Live demo` heading, URL present, test accounts if it has auth (`email /
    password`, one per role). If none exists, flag it as missing — do not skip the section.
 4. **Screenshots** — screenshots and, where the GIF test below passes, GIFs; optimal count for the
@@ -400,8 +409,9 @@ found three of these tests missing and two nominal only once someone counted the
      soltech's "Lessons learned during development" and "What the developer learned during the process";
      the three tests are this file's own, extended from rules 6 and 5, and none carries a number. The
      ordering rule is founded separately and in two halves, as its own paragraph above states.)*
-10. **Tech stack** — always a table (never a bullet list). Columns: Layer | Technology. Every layer the
-    project actually uses.
+10. **Tech stack** — always a plain-text table (never a bullet list or badges in its cells). Columns:
+    Layer | Technology. Every layer the project actually uses, including HTML5 when used. Keep the table
+    in this section after What I learned; the opening badges are the quick visual summary, not a replacement.
 11. **Project structure** — folder tree **in a fenced code block**, one-line explanation per folder (or
     per file when a folder has few files with non-obvious names).
 12. **How to run** — one command per code block, order: clone → cd → npm install → ng serve (or npm
