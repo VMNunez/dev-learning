@@ -6,7 +6,10 @@ My 6th learning project — HR portal where admins manage employees, departments
 
 **[▶ Try the live app](https://06-hr-portal.netlify.app)**
 
-**Demo accounts:** Admin `admin@hrportal.com` / `admin123` · Employee `employee@hrportal.com` / `employee123`
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin@hrportal.com` | `admin123` |
+| Employee | `employee@hrportal.com` | `employee123` |
 
 ---
 
