@@ -145,9 +145,11 @@ same channel the coherence branch uses:
 > Read `notes/prompts/projects/readme/_internal/_readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. You are dispatched with quoted effect
 > items: «paste the judge's lines». Apply them to the README. **Do NOT commit.** Report which you
-> applied; **return any objection unresolved** — the item quoted verbatim and the clause of the standard
-> you invoke, quoted — rather than deciding it yourself; and flag any `effect-only` cut you applied that
-> a later run would regenerate.
+> applied, including each `CUT`'s `deleted` / `merged` / `rewritten` / `moved` outcome and where a
+> surviving concept landed, compacted into the section trace; **return any objection unresolved** — the item quoted verbatim and the
+> clause of the standard you invoke, quoted — rather than deciding it yourself; and flag any actual
+> removal of a PLANNING-carried `What I learned` concept that a later run would regenerate, regardless
+> of the item's rule label.
 
 **The run applies the items; it never hands them over.** B's default is to apply. Never print the judge's
 items as work left for Victor: the whole point of this step is that the README ships fixed inside the
@@ -186,17 +188,20 @@ unclear.
 **Verify the application before you commit, on every target — `Objections returned: none` is not
 evidence.** A silent application returns nothing to arbitrate, so the ruling above never fires and the
 run's report reads exactly like a correct run's. So once the appliers have returned and before the
-commit, `git diff` **each README that changed** and read it **against that target's item list**: every
-cut in the diff is one an item named, and nothing else went with it. Where the diff shows a cut a rule of
+commit, `git diff` **each README that changed** and read it **against that target's item list, B's
+reported outcome for each `CUT`, and the earlier A/B section traces**: inspect each judge-named line
+and its reported destination, verify that a concept B says survived is present there, and account for
+other changed lines against A/B's work rather than treating them as judge items. Where the diff shows a cut a rule of
 the standard positively *includes* — on the ground its tests reach, per *What counts as a valid
 objection*, not the section it sits in — re-dispatch that target's B with the rule's tests quoted, and settle it as an objection **you** raised — B did not, and that is the finding, not the
 repair. This is the check that made the 2026-09-02 `04-meal-finder` commit correct while every trace on
 the run was green; it ran out of band then and it is a step now (`REC-202`).
 
-**A cut a later run would undo is a finding about the standard.** Where B flags an `effect-only` `CUT` of
-a `What I learned` bullet whose concept is a `PLANNING.md` learning objective, the next author will re-add
-it from that plan and the next judge will cut it again. Carry that flag into the summary and into the
-self-report's Effect judge bullet as `⚠ regenerable — standard gap`, naming the bullet.
+**A cut a later run would undo is a finding about the standard.** Where B flags any actual removal of a
+`What I learned` concept carried by a `PLANNING.md` learning-objective or key-pattern row, the next
+author will re-add it from that plan, whatever rule label the judge used. Carry the flag into the
+summary and into the self-report's Effect judge bullet as `⚠ regenerable — standard gap`, naming the
+concept and plan row. A merge, rewrite or move that still represents the concept earns no flag.
 
 **That flag is a standing signal, not an automatic trigger.** Nothing in this pipeline reads the previous
 run's flags — the self-report is a single file overwritten by every project's run, and step 0 reads only

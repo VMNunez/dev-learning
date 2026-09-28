@@ -90,9 +90,20 @@ trace only those sections, not the full list.
 **If dispatched with quoted effect items** (the reader-effect judge, `_readme-effect-prompt.md`, read
 this README as the recruiter or the technical interviewer it is written for), **apply them** — that is
 the default and the run ends with them in the file, never handed on to Victor. You are the writer at
-this point: cut what it says to cut, add what it says is missing, and leave what it flagged as carrying
-the file. An item marked `effect-only` carries no rule behind it and is applied on that reader's
-authority.
+this point: fix each rule-labelled `CUT` through the remedy of the rule it cites, add what it says is missing, and
+leave what it flagged as carrying the file. `CUT` means the present line must not remain as written;
+it does not always mean its concept disappears. On `TARGET = global`, global rule 9 test 1 merges
+duplicate concept bullets, test 2 splits or rewrites a mixed bullet to its behavioural half, and global
+rule 6 trims a decision to its reason while moving its mechanism into global rule 9. On a tier target,
+use that target's own rule; the same rule numbers name different sections there. For a rule-labelled
+`CUT`, delete only when the cited rule leaves no surviving content;
+when the complaint is vague or over-long wording, a sharper replacement may answer the reader's
+complaint even without a rule label. Apply an `effect-only` item on the reader's authority, subject to
+the objection rule below; a plan row alone never vetoes it. For each
+`CUT`, report `deleted`, `merged`, `rewritten`, or `moved`, and name where its concept landed if it
+survived. Put these outcomes in the affected sections' existing trace lines, separating multiple items
+on one line; do not add one report line per `CUT`. A change of form that answers the judge's criticism
+counts as applying the item.
 
 **Objecting to an item, and who settles it.** A valid objection names a rule of the standard the item
 **breaks *or contradicts*, and a rule that positively *includes* what the item cuts qualifies** — the
@@ -106,11 +117,13 @@ whether the judge's reading of it loses — instead **return the objection unres
 verbatim, name the rule you are invoking and quote the clause, and apply everything else. The
 orchestrator settles it with both in front of it. Items you simply applied need no such return.
 
-**Flag a cut a later run would undo.** If an `effect-only` `CUT` removes a `What I learned` bullet whose
-concept is a learning objective in `PLANNING.md`, the next run's author will re-add it from that plan and
-the next judge will cut it again. Apply the cut, and mark it in your report as
-`⚠ regenerable — standard gap`: nothing in the standard reaches that item, which is a fact about the
-standard rather than about the bullet.
+**Flag a cut a later run would undo.** If any `CUT`, whether rule-labelled or `effect-only`, removes a
+`What I learned` concept that a `PLANNING.md` learning-objective or key-pattern row carries, the next
+run's author will re-add it from that plan. Compare the concept with those rows and the README after
+application: a merge, rewrite or move that still represents it is not a removal. Apply an actual
+removal, and mark it in your report as `⚠ regenerable — standard gap`, naming the concept and plan row.
+This flag reports the conflict between rule 9's plan adder and the applied cut; it does not claim that
+the judge's item was `effect-only`.
 
 Report which items you applied, which you returned as objections with their quoted rule, and which you
 flagged `⚠ regenerable`, and trace only the sections you touched.
