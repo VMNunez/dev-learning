@@ -4,6 +4,10 @@ My 3rd learning project — personal finance tracker where users log income and 
 
 ![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Reactive Forms](https://img.shields.io/badge/Angular-Reactive%20Forms-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Router](https://img.shields.io/badge/Angular-Router-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Browser localStorage](https://img.shields.io/badge/Web%20Storage-localStorage-000000?logo=mdnwebdocs&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![CSS mobile-first](https://img.shields.io/badge/CSS-Mobile--first-1572B6?logo=css&logoColor=white&labelColor=303030)
 
+---
+
+## Live demo
+
 **[▶ Try the live app](https://03angularexpensetracker.netlify.app/)**
 
 ---
@@ -11,12 +15,6 @@ My 3rd learning project — personal finance tracker where users log income and 
 ## Why this project
 
 I built this project to learn reactive forms, multi-page routing and saving data in the browser with localStorage. To practise them, I built a personal finance tracker where users add income and expenses through a validated form on its own page and filter them on the dashboard. The balance and totals are always computed from the saved transactions, and the list is still there after a refresh.
-
----
-
-## Live demo
-
-https://03angularexpensetracker.netlify.app/
 
 ---
 
