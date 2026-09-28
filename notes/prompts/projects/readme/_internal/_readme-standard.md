@@ -219,8 +219,11 @@ found three of these tests missing and two nominal only once someone counted the
    When the app is deployed, put one call-to-action line directly below the badges, linking the
    deployed URL itself, never the `#live-demo` anchor: `**[▶ Try the live app](https://…)**`. The link
    text is an action that says where it leads, not a bare `Live demo` label, and it is not a Shields.io
-   badge, so it cannot be mistaken for a technology. Rule 3's section stays, because it carries the
-   test accounts and access notes. With no deployed app there is no line.
+   badge, so it cannot be mistaken for a technology. When the app has a login, the next line gives the
+   demo accounts, one per role, as a bold `Demo accounts:` label followed by each role and its
+   backticked `email` / `password` pair on the same line, separated by ` · `, so the
+   reader who clicks can get past the login screen without scrolling. Rule 3's section stays and
+   repeats the same accounts beside its access notes. With no deployed app there is no line.
    - Bad: "A role-based HR app to learn route guards." · Good: "My 6th learning project — HR portal
      where admins manage employees and leave requests."
 2. **Why this project** — one concise paragraph that starts with the specific learning objective behind
