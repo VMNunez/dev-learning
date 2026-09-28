@@ -715,7 +715,8 @@ Each generated file, with who writes it and who depends on it:
 - **`PROJECT-BACKLOG.md`** — written by `review-audit` (the tasks, merged in and never regenerated, so
   no open task another writer below raised is lost to a re-review — `REC-262`), by the two backlog skills
   (`⏸ Deferred` / `## Closed`, and either of them raising a `## Tasks` entry for a real defect noticed while
-  triaging or closing — `REC-179`), by `plan-audit`'s `whole-plan` specialist where a task contradicts a
+  triaging or closing — `REC-179`), by `coverage-mark` for a marker it could not repoint or remove without
+  a project-wide search, by `plan-audit`'s `whole-plan` specialist where a task contradicts a
   plan decision, and by `readme-audit` for a project defect its roles reported outside the README and it
   verified (`REC-255`), and by `portfolio-audit`, one `[Low]` task per bank correction its Spanish stages report owed (`REC-261`) → read by `readme-audit` itself, to drop a defect already open, parked or closed, by `portfolio-audit` (open High/Medium tasks block the "ready" verdict, its own owed-correction raise dedupes against `## Tasks` and `## Closed`, and its
   per-tier `Last Reviewed` lines stop the gate outright when one reads `never` or carries

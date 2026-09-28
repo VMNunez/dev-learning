@@ -465,7 +465,7 @@ The things a run leaves behind that are easy to miss.
   than the report's `Date:` (`REC-214`, 2026-09-06). That also fixes the mode: `MODE = active` audits
   the in-progress project alone, so a **completed** project's G6 can only be closed by `MODE = all`.
 - **`PROJECT-BACKLOG.md` auto-commits in any flow**, not just inside `/review-audit` — the file is
-  written by the review prompt, the two backlog skills, `/plan-audit`'s `whole-plan` specialist,
+  written by the review prompt, the two backlog skills, `coverage-mark`, `/plan-audit`'s `whole-plan` specialist,
   `/readme-audit`'s out-of-boundary channel and `/portfolio-audit`'s owed-correction raise, never by Victor. In `/plan-audit` it rides inside that
   run's single atomic plan commit, not one of its own; in `/readme-audit` and `/portfolio-audit` it is a
   commit of its own, after the README set or the bank.
