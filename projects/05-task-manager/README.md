@@ -2,15 +2,15 @@
 
 My 5th learning project — task manager where you create your team's tasks, assign each one to a member and track them by status and priority.
 
-**Angular 21 · Angular Material 21 · TypeScript · localStorage**
+![Angular 21](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Material 21](https://img.shields.io/badge/Angular%20Material-21-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular signals](https://img.shields.io/badge/Angular-Signals-DD0031?logo=angular&logoColor=white&labelColor=303030) ![Angular Reactive Forms](https://img.shields.io/badge/Angular-Reactive%20Forms-DD0031?logo=angular&logoColor=white&labelColor=303030) ![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white&labelColor=303030) ![Browser localStorage](https://img.shields.io/badge/Web%20Storage-localStorage-000000?logo=mdnwebdocs&logoColor=white&labelColor=303030) ![HTML5](https://img.shields.io/badge/HTML5-Markup-E34F26?logo=html5&logoColor=white&labelColor=303030) ![SCSS with Material theming](https://img.shields.io/badge/SCSS-Material%20theming-CC6699?logo=sass&logoColor=white&labelColor=303030)
 
-[Live demo](#live-demo) · [Run locally](#how-to-run)
+**[▶ Try the live app](https://05taskmanager.netlify.app/)**
 
 ---
 
 ## Why this project
 
-A team loses track of its work when tasks live in chat threads and in people's heads: nobody can say who owns a task, how urgent it is or how much is still open. This portfolio app gives every task an assignee, a status and a priority, keeps the whole list in one table that can be sorted, searched and filtered, and shows at a glance how many tasks are pending, in progress and done.
+I built this project to learn Angular Material — theming, `MatTable` and `MatDialog` — and the coordinator pattern, where one page owns the state and its child components only display and emit. To practise them, I built a team task manager where every task has an assignee, a status and a priority. The tasks live in one table that can be sorted, searched and filtered, they are added and edited in a dialog, and stat cards show how many are pending, in progress and done.
 
 ---
 
@@ -108,6 +108,7 @@ https://05taskmanager.netlify.app/
 | State | Angular signals — `signal`, `computed`, `effect` |
 | Forms | Angular Reactive Forms (typed) |
 | Storage | `localStorage` |
+| Markup | HTML5 |
 | Styles | CSS + SCSS (Material theming) |
 | Testing | Vitest + TestBed — dialog component specs |
 | Deployment | Netlify |
