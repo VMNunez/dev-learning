@@ -549,8 +549,10 @@ misread in both. Who runs that commit differs, and only that:
 
 - **`readme-audit.md` — auto-committed, one commit for the project** (authorized 2026-08-29, reversing
   the earlier hand-over rule: Victor does not want to run this commit by hand). It uses the same
-  `_session-rules.md` permission (authorized 2026-08-01). The orchestrator stages one `git add` per
-  README that actually changed and runs **one** `git commit`:
+  `_session-rules.md` permission (authorized 2026-08-01). The orchestrator runs **one**
+  `git commit --only -- <changed README paths>` without staging those READMEs first, so another
+  parallel run can neither absorb this project's READMEs nor enter this project's commit through the
+  shared index:
   `docs: update {PROJECT_PATH} README(s) — [one-line summary]`, whose plural is the tell that a single
   command covers the set. The summary of changes above is still printed — it is now a review record,
   not a gate. A README whose author→reviewer pair did not complete is excluded from the commit, and on a

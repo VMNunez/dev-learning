@@ -22,8 +22,8 @@ feature, or whenever a README feels stale — and always **before** `portfolio-a
 
 > **Auto-committed** (authorized 2026-08-29, reversing the earlier hand-over rule). `_session-rules.md`
 > permits the agent to commit a project's `README.md` directly, and this pipeline uses that permission:
-> the subagents fix the files and the orchestrator **runs one commit for the project** — one `git add`
-> per README that actually changed, never one commit per README and never all three by default. The
+> the subagents fix the files and the orchestrator **runs one path-scoped commit for the project** —
+> naming each README that actually changed, never one commit per README and never all three by default. The
 > summary of changes is still printed, now for review *after* the commit rather than as a gate before
 > it. The rule is owned by `_readme-standard.md` → "Summary + commit rule". There is no `DRY_RUN`.
 
@@ -80,8 +80,8 @@ project's report under a `### [project]` heading, and after the last print the `
 table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s generic
 `Target | Result | Files changed` one. `_batch-mode.md`'s "Commits" section binds here with its target
 read as the **project**, never the individual README, so two projects are never squashed together — and
-with one override: a project's set is one `git add` per changed README plus one `git commit`, not that
-section's single `add` + `commit` pair. Once a project is finished, carry forward only its
+with one override: a project's set is one `git commit --only` naming every changed README, not that
+section's `add` + `commit` pair. Once a project is finished, carry forward only its
 summary table row — drop its per-target detail from your working context before starting the next project.
 Otherwise, follow the procedure once.
 
@@ -256,25 +256,18 @@ Print a **summary of changes** across all targets (one line per section changed,
 application before you commit* — the `git diff` read against each target's item list, which happens
 before this commit and not after it), complete the final **Cross-README coherence** check when applicable,
 then **run the commit yourself**, per the **Auto-committed** note
-at the top of this prompt (`git status` immediately before staging and before committing).
+at the top of this prompt (`git status` immediately before committing).
 
-**What the set covers: one commit for this project**, staging one `git add` per README that actually
-changed — never one commit per README, and never all three by default. A target excluded by the Failure
-protocol is left out of the set even if its file changed. On `PROJECT_PATH = all`, one such set per
-project, printed together at the end in project order. Example, for a full-stack project whose three
-READMEs all changed:
+**What the set covers: one commit for this project**, naming each README that actually changed —
+never one commit per README, and never all three by default. Use `git commit --only` with those paths
+after `--`, without a preceding `git add`: this run leaves no README staged for another parallel run
+to absorb, and its commit ignores files another run staged in the shared index. A target excluded by
+the Failure protocol is left out of the commit path set even if its file changed. On
+`PROJECT_PATH = all`, one such set per project, printed together at the end in project order.
+Example, for a full-stack project whose three READMEs all changed:
 
 ```
-git add {PROJECT_PATH}/README.md
-```
-```
-git add {PROJECT_PATH}/backend/README.md
-```
-```
-git add {PROJECT_PATH}/frontend/README.md
-```
-```
-git commit -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of main changes>"
+git commit --only -m "docs: update {PROJECT_PATH} README(s) — <one-line summary of main changes>" -- {PROJECT_PATH}/README.md {PROJECT_PATH}/backend/README.md {PROJECT_PATH}/frontend/README.md
 ```
 
 ## Pipeline self-report (orchestrator, last)
@@ -329,7 +322,7 @@ unless this report shows a real failure. Also print the report in chat.
   minimum — separately, under the notes/prompts exception.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
-- **Only commit READMEs that changed** — never `git add` all three by default.
+- **Only commit READMEs that changed** — never name all three by default, and do not stage them first.
 - Never skip the reviewer pass, and never skip the reader-effect judge — a run that stops at B has
   answered only the conformance question.
 - **Never commit an applied effect item you have not read in the diff.** Zero objections is not a pass:
