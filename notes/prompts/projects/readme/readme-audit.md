@@ -26,6 +26,8 @@ feature, or whenever a README feels stale — and always **before** `portfolio-a
 > naming each README that actually changed, never one commit per README and never all three by default. The
 > summary of changes is still printed, now for review *after* the commit rather than as a gate before
 > it. The rule is owned by `_readme-standard.md` → "Summary + commit rule". There is no `DRY_RUN`.
+> A **second, separate** commit carries any project defect the run's roles reported and the orchestrator
+> verified into `PROJECT-BACKLOG.md` — *Out-of-boundary project defects* below owns it (`REC-255`).
 
 ---
 
@@ -82,7 +84,8 @@ table (`Project | READMEs changed`) — this table replaces `_batch-mode.md`'s g
 read as the **project**, never the individual README, so two projects are never squashed together — and
 with one override: a project's set is one `git commit --only` naming every changed README, not that
 section's `add` + `commit` pair. Once a project is finished, carry forward only its
-summary table row — drop its per-target detail from your working context before starting the next project.
+summary table row and its out-of-boundary counts (reported / raised / dropped, and the backlog commit)
+— drop its per-target detail from your working context before starting the next project.
 Otherwise, follow the procedure once.
 
 ## Single-project procedure
@@ -100,7 +103,8 @@ target the reviewer must always run **after** its author.
 
 > Read `notes/prompts/projects/readme/_internal/_readme-write-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Fix that one README to the standard.
-> **Do NOT commit.** Report the summary of changes and any intentional placeholder.
+> **Do NOT commit.** Report the summary of changes, any intentional placeholder, and your
+> `Out-of-boundary defects:` line.
 
 Wait for A, then **subagent B — reviewer.** Launch a second, independent `role-appropriate` subagent,
 `reasoning tier: standard`, `execution: foreground` (conformance against a highly prescriptive standard —
@@ -109,14 +113,15 @@ the structure guarantees quality here, and the author already ran at the top tie
 > Read `notes/prompts/projects/readme/_internal/_readme-review-prompt.md` and execute it in full for
 > `PROJECT_PATH = {PROJECT_PATH}` · `TARGET = «this target»`. Audit the just-authored README hard against
 > the standard and fix what falls short directly. **Do NOT commit.** Report the section trace, your
-> verdict (PASS/FIXED), and whether the README changed.
+> verdict (PASS/FIXED), whether the README changed, and your `Out-of-boundary defects:` line.
 
 **Verify the trace.** The reviewer's report must contain a section trace — one line per required
 section for that target. If the trace is missing or skips sections, the audit was not a full pass:
 re-dispatch the reviewer for that target once, telling it which sections lack a trace line.
 
-Collect, per target, whether the README changed. Keep only the verdict, the changed-flag, and the
-one-line-per-section summaries — do not accumulate anything longer in your context.
+Collect, per target, whether the README changed. Keep only the verdict, the changed-flag, the
+one-line-per-section summaries, and each report's `Out-of-boundary defects:` lines — do not accumulate
+anything longer in your context.
 
 **Failure protocol.** If a subagent errors out or returns a report you cannot act on (no verdict, no
 summary), re-dispatch that same subagent once with the same instructions. If it fails again, stop that
@@ -179,7 +184,9 @@ still never write a README — but you may **read the one section in dispute**, 
 the two quotes do not settle it: `grep -n "^## "` the file and read from that heading to the next. The
 coherence pass's "they stay out of your context" governs **that** step; the exceptions to it are two and
 both are bounded — the `git diff` you read against the judge's item list before committing, and this one
-section, which ends when the objection is settled. If the section still does not settle it, **sustain
+section, which ends when the objection is settled. (The cited source lines you read under
+*Out-of-boundary project defects* are not a README read, and are bounded the same way; the one README
+line that section may read — a rule-4 visual's `Features` sentence — is bounded by its own claim.) If the section still does not settle it, **sustain
 the objection**: leaving a bullet a rule arguably includes is the recoverable error, and the summary
 records that you sustained it for want of a decision, which is the signal that the standard's clause is
 unclear.
@@ -232,12 +239,82 @@ context:
 Re-dispatch B only on affected targets with the quoted conflict and evidence. A conflict between a README
 and `PLANNING.md` alone that the source or the standard settles in the README's favour — a stale plan
 sentence, or a credential the standard leaves as `*(password — to be added)*` — is named in the summary
-for the plan's owner, and neither re-dispatches B nor blocks. After repairs, have the
+and, when it is a stale plan statement, joins the out-of-boundary defects below; it neither re-dispatches
+B nor blocks. After repairs, have the
 coherence role recheck those claims against the current files once. No further editorial pass follows.
 If a conflict remains, evidence cannot settle it, or the role fails under the runtime retry contract,
 stop before the project's README commit, leave the edits explicitly accounted for, and close out as
 `blocked`. An Angular-only project skips this step. Advisory effect-pass failures remain advisory,
 but do not waive this final coherence check.
+
+## Out-of-boundary project defects
+
+A and B read `PLANNING.md` and scoped source to check a README, and on the way they see real defects in
+the project itself — a signal nothing reads, a label copied from a docs example, a plan line naming a
+version the project does not run. No README is the place for them and the chat does not survive the
+session; `review-audit`, the gate that would find them again, fires a few times per project. So each one
+leaves this run as a backlog task or as a named drop, never as a mention. Three runs on 2026-09-27
+improvised this channel, two of them only because the orchestrator added the request to the dispatch
+(`REC-255`); it is declared here so it no longer depends on that.
+
+**Sources — three, and no pass is ever started to look for more.** The `Out-of-boundary defects:` line
+every A and B report ends in (`none`, or one `file:line` + what is wrong per defect — a contradicted
+statement in `PLANNING.md` or in `PROJECT-BACKLOG.md` itself included, and a rule-4 visual a closed
+project owes and no run can capture), and the stale plan statements the coherence role settled in a
+README's favour above. The judge reads only the README, so it
+is never a source. A report missing the line is not re-dispatched for it — this is not a gate — but the
+self-report names the role that omitted it.
+
+**Verify each one against the lines it cites, and only those.** Read the cited `file:line` and whatever
+the claim itself names to settle it — the one template, call site or `package.json` entry — never the
+surrounding feature. **A rule-4 visual has no code to cite**, so it is verified against three things
+instead: the Visual brief line in A's report naming it, the one `Features` sentence stating the
+behaviour it would show, and `ls` of the project's `screenshots/` folder proving no such file exists.
+When any source is not `none`, read `PROJECT-BACKLOG.md`'s `## Tasks`, `## Beyond the current gate`
+and `## Closed`. Then raise a defect only when the cited code — or, for a rule-4 visual, those three —
+shows it, and **drop** it, naming it and the reason in the summary, when it is:
+- not borne out by the cited lines;
+- excluded by `_session-rules.md` → "Testing rules" — in 01–06, and for components in 07, missing
+  tests, empty specs and weak assertions are never a finding, while a broken spec or a broken test
+  command is;
+- resting on what a command did **not** find, unless that command ran to completion and the task line
+  records its exit code (`REC-185`) — a quoted hit is self-evidencing and owes nothing;
+- a suspicion or a style preference, not a defect;
+- already an open task; already parked under `## Beyond the current gate`, which `_review-standard.md`
+  forbids re-raising while its gate holds; or already closed in `## Closed` — a `DECISION, no code
+  change` line there is what stops the same finding being raised twice;
+- a defect in a README that A and B can fix, which is theirs to fix, not to report — **except** a
+  rule-4 visual a closed project owes, which no run can capture and `_readme-standard.md` rule 4 sends
+  to a task in this file, so it is raised like any other survivor.
+
+**One declared exception to "never a mention": a project with no `PROJECT-BACKLOG.md` yet.** This run
+does not create that file — `review-audit` does, with the per-tier `Last Reviewed` lines three gates
+read — so its verified defects are listed in the summary as owed to that first review, and the
+self-report records only the count and that this exception fired. The gate chain does not reach this branch (G5 runs after G3/G4, which create the file); it
+exists for a run launched out of order.
+
+**Raise the survivors.** Append each to `## Tasks` in `{PROJECT_PATH}/PROJECT-BACKLOG.md` at its tier
+and priority, in the task format the file's existing tasks follow (`_review-standard.md` owns it), with
+an effort estimate and a provenance note — `*(raised YYYY-MM-DD during readme-audit on {project})*`. A
+plan or backlog statement the source contradicts is raised as `DECISION, no code change expected`. Touch nothing
+else in the file: no triage, fix or reprioritisation of an existing task. **This run never writes
+`PLANNING.md`** — an open-task count the plan states is left to `backlog-task-close`'s recount, exactly as
+after a `review-audit` run, which also raises tasks and also leaves it; the in-session skills that move
+that count do so because they are already editing the plan, and this pipeline is not.
+
+**Commit it on its own**, after the README commit — or where it would have run, when it was withheld —
+and before the self-report. `git status` first, then
+one path-scoped commit, for the same reason as the README set — nothing staged by a parallel run can
+enter it:
+
+```
+git commit --only -m "docs({project}): raise <n> backlog task(s) found during readme-audit — <one-line summary>" -- {PROJECT_PATH}/PROJECT-BACKLOG.md
+```
+
+It rests on `_session-rules.md`'s any-flow authorization for that file. No survivor, no write and no
+commit — say so in the summary. A target the Failure protocol excluded, or a project whose README commit
+the coherence check withheld, still has its verified defects raised: they are facts about the code, not
+about any README. On `PROJECT_PATH = all`, one such commit per project that raised one.
 
 ## Finishing
 
@@ -246,7 +323,8 @@ Print a **summary of changes** across all targets (one line per section changed,
 application before you commit* — the `git diff` read against each target's item list, which happens
 before this commit and not after it), complete the final **Cross-README coherence** check when applicable,
 then **run the commit yourself**, per the **Auto-committed** note
-at the top of this prompt (`git status` immediately before committing).
+at the top of this prompt (`git status` immediately before committing) — and after it, the separate
+backlog commit *Out-of-boundary project defects* owns, when a verified defect survived.
 
 **What the set covers: one commit for this project**, naming each README that actually changed —
 never one commit per README, and never all three by default. Use `git commit --only` with those paths
@@ -274,7 +352,8 @@ Write a short **Pipeline self-report** to
 `Status:`) — meta-observations about the run itself, not the READMEs. This is the evidence a later
 session uses to decide whether these prompts need changing, so be honest, including "nothing to report":
 - **Report discipline** — which subagents, if any, blew their line budget or returned reports that had
-  to be discarded.
+  to be discarded, and which A/B report omitted its `Out-of-boundary defects:` line; then the channel's
+  count — defects reported, raised (with the commit) and dropped, by reason.
 - **Trace verification** — reviewer traces that were missing/incomplete, re-dispatches made, any false alarm.
 - **Coherence** — conflicts the coherence subagent found (a sign the author prompts under-specify a
   shared decision), or `COHERENT`.
@@ -309,7 +388,10 @@ unless this report shows a real failure. Also print the report in chat.
   `_session-rules.md` permission `readme-concept-add` uses, and the same shape as `plan-audit`
   (`PLANNING.md`) and `review-audit` (`PROJECT-BACKLOG.md`). Never ask Victor to run it. The other files
   this flow commits are the shared contract's — `_last-run-report.md` and `_run-tracker.md` at
-  minimum — separately, under the notes/prompts exception.
+  minimum — separately, under the notes/prompts exception; and `PROJECT-BACKLOG.md`, in its own commit,
+  when a verified out-of-boundary defect is raised.
+- **A project defect a role reports is raised or dropped with its reason — never left in the chat**
+  (the no-backlog-file exception aside), and never fixed by this run. The run never writes `PLANNING.md`.
 - **One README per author→reviewer pair.** Never let one subagent write all three — the focused,
   audience-specific pass is the whole point.
 - **Only commit READMEs that changed** — never name all three by default, and do not stage them first.

@@ -147,3 +147,13 @@ Report, in **at most 20 lines**:
   section and the orchestrator will re-dispatch you.
 - Your **verdict**: `PASS` (no changes) or `FIXED`.
 - Which README (`{TARGET}`) and whether it changed — so the orchestrator knows to include it in the commit.
+- **`Out-of-boundary defects:`** — printed on every report, `none` included. A real defect in the
+  project itself — code, configuration, a test, or a statement in `PLANNING.md` or `PROJECT-BACKLOG.md`
+  the source contradicts — that you saw in a file you were already reading for a check: one line each,
+  its `file:line` and what is wrong. **Also one line for each visual rule 4 warrants on a closed project
+  (01–06) that nobody has captured**, which the standard sends to a backlog task because no run can
+  capture it. **Do not fix it and do not go looking**; this records what your scoped reads surfaced, never
+  a review of the project. In 01–06, and for components in 07, missing tests, empty specs and weak
+  assertions are not defects; a broken spec or a broken test command is. Any other defect in this README
+  is not out of boundary — you fix it. The orchestrator verifies each line and raises it in
+  `PROJECT-BACKLOG.md` (`readme-audit.md` → *Out-of-boundary project defects*).

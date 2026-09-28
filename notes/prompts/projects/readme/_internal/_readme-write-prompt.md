@@ -88,3 +88,12 @@ tight; the detail lives in the file itself):
 - A **summary of changes** — one line per section changed: `[Section] — what was wrong → what was fixed`.
   If more sections changed than fit the budget, group minor ones into a single line.
 - Any section left as a placeholder (genuinely not built yet), so the reviewer knows it is intentional.
+- **`Out-of-boundary defects:`** — printed on every report, `none` included. A real defect in the
+  project itself — code, configuration, a test, or a statement in `PLANNING.md` or `PROJECT-BACKLOG.md`
+  the source contradicts — that you saw in a file you were already reading for this README: one line
+  each, its `file:line` and what is wrong. **Also one line for each visual rule 4 warrants on a closed
+  project (01–06) that nobody has captured**, which the standard sends to a backlog task because no run
+  can capture it. **Do not fix it and do not go looking**; this records what your scoped reads surfaced,
+  never a review of the project. In 01–06, and for components in 07, missing tests, empty specs and weak
+  assertions are not defects; a broken spec or a broken test command is. Any other defect in this README
+  is not out of boundary — you fix it.
