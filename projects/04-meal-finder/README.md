@@ -20,6 +20,10 @@ I built this project to learn route parameters, how a component reads them with 
 
 ## Screenshots
 
+**Search, save and filter favourites**
+
+![Search and favourites flow — a search for chicken, a recipe saved from its detail page as the Favourites count goes from 2 to 3, Back returning the same results, then a favourite removed and the rest filtered by category](screenshots/search-favourite-flow.gif)
+
 **Search results**
 
 ![Search results — meal cards for a search term](screenshots/preview.png)
