@@ -159,7 +159,10 @@ inclusion tests rather than prohibitions — rules 4, 5, 6, 7, 8, 9 and the back
 "no rule forbids removing this" is not a reason to remove it, which is how an `effect-only` cut once took
 `04-meal-finder`'s `Future improvements` from three bullets to one against rule 8's own two inclusion
 tests. This widens *which* clauses count and never licenses an objection on taste: no clause, no
-objection, and the item is applied on the reader's authority.
+objection, and the item is applied on the reader's authority. **A rule includes an item only on the
+ground its tests reach:** a cut on a ground it has no test for — a line that passes all three of rule 6's
+tests and still is not a *decision* — contradicts nothing, and the `effect-only` cut stands, as
+`_readme-effect-prompt.md` rules it.
 
 **You settle the objection, not B.** B wrote or fixed the text the judge is reading, so it is judge and
 party on its own prose — and the clause above widens what it may invoke, which sharpens that conflict
@@ -184,9 +187,9 @@ unclear.
 evidence.** A silent application returns nothing to arbitrate, so the ruling above never fires and the
 run's report reads exactly like a correct run's. So once the appliers have returned and before the
 commit, `git diff` **each README that changed** and read it **against that target's item list**: every
-cut in the diff is one an item named, and nothing else went with it. Where the diff shows a cut from a
-section a rule of the standard positively *includes*, re-dispatch that target's B with the rule's tests
-quoted, and settle it as an objection **you** raised — B did not, and that is the finding, not the
+cut in the diff is one an item named, and nothing else went with it. Where the diff shows a cut a rule of
+the standard positively *includes* — on the ground its tests reach, per *What counts as a valid
+objection*, not the section it sits in — re-dispatch that target's B with the rule's tests quoted, and settle it as an objection **you** raised — B did not, and that is the finding, not the
 repair. This is the check that made the 2026-09-02 `04-meal-finder` commit correct while every trace on
 the run was green; it ran out of band then and it is a step now (`REC-202`).
 
