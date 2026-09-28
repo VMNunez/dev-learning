@@ -1,7 +1,7 @@
 # Pipeline self-report — readme-audit
 
 Date: 2026-09-28 · Project: projects/03-expense-tracker (Angular-only → target `global`)
-Status: open
+Status: applied in 798c27a8
 
 - **Report discipline** — nothing discarded; 6 dispatches against 4 required (author, reviewer, judge, applier), the extra two being the orchestrator's own objection (restore) and the re-dispatch overruling it; every reviewer/applier persisted to a scratch path.
 - **Trace verification** — reviewer trace complete on the first pass (12/12, PASS, unchanged); the applier also returned a full trace; no re-dispatch for a missing trace, no false alarm.
@@ -9,4 +9,5 @@ Status: open
 - **Effect judge** — 3 items (1 ADD, 2 CUT) + 3 KEEPs; B objected to 1 (a rule-9 test-1 `CUT`), sustained: test 1 reaches no bullet whose concept no other bullet states; 0 valid `⚠ regenerable` (B flagged one on an Architecture-decisions cut, outside the flag's `What I learned` scope). The pre-commit diff against a pre-judge snapshot showed only item-named changes. The orchestrator nevertheless objected to the `effect-only` rule-6 cut, had it restored and **committed the restore** (`8445bb55`); then found that `_readme-effect-prompt.md:90-92` names that exact case as `effect-only`, "and the cut stands", overruled itself and re-applied it (`b58d05b7`). The judge outranks the green trace: the reviewer passed 12/12, the judge returned "not LANDS".
 - **Failure protocol** — not triggered; no subagent errored.
 - **Anything else** — two rules broken (`BRCH-0003`, `BRCH-0004`). (a) Parallel `readme-audit` runs on 01 and 02 share one git index. The first commit, `83b354ee`, swept in 02's staged README because the Finishing example commits without a pathspec. It was soft-reset and recommitted with `-- <path>` (`8445bb55`), and the 02 session was told. (b) The wrongly sustained objection left two README commits for one project. Its cause is that `readme-audit.md`'s valid-objection clause and diff-check step list rule 6 among the inclusion tests, with no pointer to the ground the effect prompt rules `effect-only`. No out-of-boundary dispatch line was added (`REC-255` still open). Prompt is 333 lines. `map: verified` — `README.md` index row + catalogue row, `_system-map.md` §7 `{project}/README.md`, the G5 chain steps.
-- **Verdict** — change worth considering, both in `readme-audit.md`: (b) the objection clause and the diff check must carry the effect prompt's carve-out; (a) the Finishing commit takes a pathspec.
+- **Verdict** — change worth considering, both in `readme-audit.md`: (b) the objection clause and the diff check must carry the effect prompt's carve-out; (a) the Finishing commit takes a pathspec. (b) applied in `798c27a8` (the objection clause plus the diff-check trigger, reworded to the ground a rule's tests reach; maps unaffected; nothing removed). (a) rejected, condition 2: a clear rule was broken on a first row (`BRCH-0003`). `BRCH-0004` stays open, since `Hard rules` was not rewritten.
+- cold reviewer: approve-with-tightening
