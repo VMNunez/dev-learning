@@ -66,11 +66,11 @@ if (hours > 8) {
 
 The callout **Why "the first true block wins" matters**, just above, put the two ordinary cases in the right order: overtime before worked. The same rule also decides where a value that should never happen goes. An **exceptional case** is an input the chain's normal branches were not written for. In a timesheet, that means hours below zero, or more than the 24 a day has. A value like that usually arrives through a typing mistake in a form or a bug in whatever produced it.
 
-Here is the chain from the start of the `if / else` section again, unchanged, tested with two of those impossible values, `-3` and `30`. In the code, `hours` starts as `-3`; for the second test, change that `-3` to `30`:
+Here is the chain from the start of the `if / else` section again, unchanged, tested with one of those impossible values: `hours` is `-3`. It will print `Absent`, because `-3` is neither greater than 8 nor greater than 0: neither of the first two conditions holds, so Java runs the `else`:
 
 ```java
 // ❌ MAL — the broad branches swallow the impossible values
-int hours = -3;   // impossible: fewer than 0 hours (second test: 30, more than 24)
+int hours = -3;   // impossible: fewer than 0 hours
 
 if (hours > 8) {
     System.out.println("Overtime");
@@ -80,7 +80,6 @@ if (hours > 8) {
     System.out.println("Absent");
 }
 // hours = -3  prints: Absent
-// hours = 30  prints: Overtime
 ```
 
 Trace `hours = 30`. The first test is `30 > 8`. It is `true`, so Java runs the first block, prints `Overtime` and skips every branch below it. Now trace `-3`. `-3 > 8` is `false` and `-3 > 0` is `false`, so the `else` runs and prints `Absent`. Neither answer is an error: the program keeps going and treats a typing mistake as a real overtime day or a real absence. That is the hidden bug. The broad branches (`> 8`, and the `else` that catches everything left over) were written for real days, and they cover the impossible values too.

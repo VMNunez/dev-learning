@@ -66,11 +66,11 @@ if (hours > 8) {
 
 Acabas de ver por qué la condición de horas extra debe ir antes que la de cualquier jornada trabajada. La misma regla afecta a los valores que no deberían aceptarse: menos de 0 horas o más de 24 en un día. Pueden llegar por un error al rellenar el formulario o por un bug anterior. Si las ramas normales los aceptan, el registro mostrará un resultado incorrecto.
 
-Esta es la misma cadena `if / else` del principio de la sección, sin cambios, probada con dos de esos valores imposibles, `-3` y `30`. En el código, `hours` empieza valiendo `-3`; para la segunda prueba, cambia ese `-3` por `30`:
+Esta es la misma cadena `if / else` del principio de la sección, sin cambios, probada con uno de esos valores imposibles: `hours` vale `-3`. Va a mostrar `Absent`, porque `-3` no es mayor que 8 ni mayor que 0: ninguna de las dos primeras condiciones se cumple, así que Java ejecuta el `else`:
 
 ```java
 // ❌ MAL — las ramas amplias se tragan los valores imposibles
-int hours = -3;   // imposible: menos de 0 horas (segunda prueba: 30, más de 24)
+int hours = -3;   // imposible: menos de 0 horas
 
 if (hours > 8) {
     System.out.println("Overtime");
@@ -80,7 +80,6 @@ if (hours > 8) {
     System.out.println("Absent");
 }
 // hours = -3  imprime: Absent
-// hours = 30  imprime: Overtime
 ```
 
 Traza `hours = 30`. La primera comprobación es `30 > 8`. Es `true`, así que Java ejecuta el primer bloque, imprime `Overtime` y se salta todas las ramas de abajo. Ahora traza `-3`. `-3 > 8` es `false` y `-3 > 0` es `false`, así que se ejecuta el `else` e imprime `Absent`. Ninguna de las dos respuestas es un error: el programa sigue adelante y trata un error de tecleo como si fuera un día real de horas extra o una ausencia real. Ese es el bug oculto. Las ramas amplias (`> 8`, y el `else` que recoge todo lo que sobra) se escribieron para días reales, y también cubren los valores imposibles.
