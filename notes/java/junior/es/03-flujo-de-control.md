@@ -434,7 +434,7 @@ Imagina que tienes los nombres de los días de la semana guardados en una sola v
 > System.out.println(week.length);   // 3
 > ```
 >
-> Accedes a un elemento por su **índice**, entre corchetes: `week[0]`. El primer índice es **cero**, así que un array de tres elementos tiene índices 0, 1 y 2, nunca 3. `week.length` indica cuántas posiciones tiene; es un **campo**, sin paréntesis, a diferencia de los métodos `String.length()` y `List.size()`. «Tamaño fijo» significa que no tiene `add()` ni `remove()`, ni puedes convertir un `String[3]` en un `String[4]`. Ese es todo el vocabulario de arrays que necesita este capítulo.
+> Accedes a un elemento por su **índice**, entre corchetes: `week[0]`. El primer índice es **cero**, así que un array de tres elementos tiene índices 0, 1 y 2, nunca 3. `week.length` indica cuántas posiciones tiene; es un **campo**, sin paréntesis, a diferencia de los métodos `String.length()` y `List.size()`. Que un array sea de tamaño fijo significa que, una vez creado, no puedes agregar ni eliminar elementos: no tiene métodos como `add()` o `remove()`, y un array de tres posiciones, como `new String[3]`, no se puede convertir en uno de cuatro. Lo que sí puedes hacer es cambiar el valor de una posición que ya existe, por ejemplo `week[0] = "SUNDAY";`.
 
 > **Por qué basta con esto ahora.** La pregunta interesante es _cuándo conviene usar un array de tamaño fijo y cuándo una `List` que puede cambiar de tamaño_. Para responderla necesitas conocer las APIs de colecciones. [10-colecciones.md](10-colecciones.md) hace la comparación y enseña `List`, incluida la `List<Employee>` mencionada antes. Aquí el array sirve como ejemplo sencillo para recorrer con un bucle; el tema principal sigue siendo el bucle.
 
