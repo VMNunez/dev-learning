@@ -404,7 +404,7 @@ int dailyLimit = switch (day) {
 > // Weekend
 > ```
 
-Cuando necesites **producir un valor** a partir de varios casos, elige la expresión `switch` (_switch expression_). Cuando solo necesites realizar una acción, una sentencia `switch` (_switch statement_) también encaja; las dos formas responden a necesidades distintas.
+Cuando necesites **producir un valor** a partir de varios casos, o cuando el selector sea un `enum`, elige la expresión `switch` (_switch expression_). Cuando solo necesites realizar una acción, una sentencia `switch` (_switch statement_) también encaja; las dos formas responden a necesidades distintas.
 
 ---
 
