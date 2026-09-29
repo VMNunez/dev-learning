@@ -935,7 +935,9 @@ bank inventory. Authoring, refinement and study are deliberately separate states
 3. `sql-plan-audit` — audits the route and the doctrine, and extends the route with steps for coverage
    sections nothing claims yet. Re-run it when a step closes or the plan feels out of date
 4. per step, in the block itself: `sql-exercises` (`MODE = practice`) → answer them in pgAdmin →
-   `sql-exercises` (`MODE = review`) to grade. The step's topic, count and focus come from the route
+   the `sql-grade` skill («corrige el NN») to grade — it runs the review branch cold and, when the
+   step's last file scores ≥ 80%, hands off to `sql-step-close`; `sql-exercises` `MODE = review` is the
+   legacy door, which grades identically but closes no step. The step's topic, count and focus come from the route
 5. at each revision point R1–R5 (every 3 scored files): `sql-exercises` again, focused on the open
    rows of `MISTAKES.md`
 6. once the SQL simulation readiness gate opens, `simulation-plan` admits only techniques from closed
