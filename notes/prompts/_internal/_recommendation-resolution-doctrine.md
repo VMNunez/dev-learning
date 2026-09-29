@@ -194,6 +194,10 @@ whatever it can infer — two `notes-plan` runs lost a round trip each to a dige
 and a field restriction it could not read. The fence is not politeness: where another component already
 recomputes the value, name it, because a verdict with no rule and no fence is the one finding the loop
 cannot settle.
+**Also `REC-260`: a component with two doors — inline after a shell, cold from a skill — is false on one
+door wherever it assumes the other, and in both directions**: reads it believes were made on the cold
+door, a caller, hand-off or commit owner it believes exists on the inline one. So walk each step against
+every door's payload, state in the intro only what all doors give, and name each read at its step.
 
 **One creating commit is not only a reader's error — it is also an authoring *copy*, and the family
 is what names the foreign clause.** From `REC-139`. `REC-130` above dates a partition and reads a
