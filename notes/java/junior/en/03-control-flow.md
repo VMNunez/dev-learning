@@ -272,7 +272,7 @@ switch (day) {
 }
 ```
 
-Notice that the fix uses fall-through *on purpose* too: `case "MONDAY":` through `case "THURSDAY":` have no code between them, so all five weekdays fall into the same block. That is the one legitimate use — stacking labels that share behaviour. The bug is fall-through you did not intend; the pattern is fall-through with nothing in between.
+**Several `case` labels can share the same code.** If you write several labels in a row with no instructions between them, they all lead to the same block. That is what the fixed example does: there are no instructions between `case "MONDAY":` and `case "FRIDAY":`, so all five days reach the same `println` and share a single `break`. This grouping is an intentional fall-through, and it is the only correct use of that behaviour. The bug appears when a branch that does have instructions carries on into the next one because its `break` was forgotten. In the `switch` expression of the next section, the same grouping is written on one line, with the labels separated by commas: `case "SATURDAY", "SUNDAY" ->`.
 
 The `default` block is not required, but include it: it is your safety net for a value nobody anticipated (a typo, a new day name added later), and without it an unmatched value simply does nothing at all — silently.
 

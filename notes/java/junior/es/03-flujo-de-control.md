@@ -216,7 +216,7 @@ Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamad
 
 ### switch clásico (sentencia)
 
-La forma clásica empieza a ejecutar en el caso cuya etiqueta coincide con el valor del selector. Si ese caso tiene instrucciones y no termina con `break`, Java sigue con las instrucciones del siguiente caso, **aunque su etiqueta no coincida**. Ese comportamiento se llama **fall-through**, que en español se suele traducir como «caída»: la ejecución cae de un caso al siguiente sin una nueva comparación.
+La forma clásica empieza a ejecutar en el caso cuya etiqueta coincide con el valor del selector. Si ese caso tiene instrucciones y no termina con `break`, Java sigue con las instrucciones del siguiente caso, **aunque su etiqueta no coincida**. Ese comportamiento se llama **fall-through**: la ejecución cae de un caso al siguiente sin una nueva comparación.
 
 Una etiqueta `case` no inicia un bloque independiente: indica **dónde empieza** la ejecución cuando hay una coincidencia. Desde ahí Java sigue con las sentencias siguientes, aunque encuentre otra etiqueta `case`. En estos ejemplos, un `break` detiene ese recorrido; de otro modo, continúa hasta el final del `switch`.
 
@@ -272,7 +272,7 @@ switch (day) {
 }
 ```
 
-El ejemplo corregido conserva un fall-through intencionado: entre `case "MONDAY":` y `case "FRIDAY":` no hay instrucciones. Los cinco días comparten el mismo código y un solo `break` al final. El problema aparece cuando una rama con instrucciones continúa en otra por haber olvidado ese `break`.
+**Varios `case` pueden compartir el mismo código.** Si escribes varias etiquetas seguidas sin instrucciones entre ellas, todas llevan al mismo bloque. Es lo que hace el ejemplo corregido: entre `case "MONDAY":` y `case "FRIDAY":` no hay instrucciones, así que los cinco días llegan al mismo `println` y comparten un solo `break`. Esta agrupación es un fall-through intencionado, y es el único uso correcto de ese comportamiento. El bug aparece cuando una rama que sí tiene instrucciones continúa en la siguiente porque se olvidó el `break`. En la expresión `switch` de la sección siguiente, la misma agrupación se escribe en una sola línea, con las etiquetas separadas por comas: `case "SATURDAY", "SUNDAY" ->`.
 
 El bloque `default` no es obligatorio en esta sentencia, pero permite manejar un valor no previsto, como un día mal escrito. Sin él, un valor que no coincide con ningún caso deja el `switch` sin ejecutar ninguna rama.
 
