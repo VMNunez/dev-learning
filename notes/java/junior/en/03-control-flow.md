@@ -510,7 +510,7 @@ for (int i = 0; i < weekHours.length; i++) {
 
 The error message tells you exactly what happened: `Index 3` is the value of `i`, `length 3` is the length of the array, and the last valid position has index 2. This is an **off-by-one error**: the limit has been passed by one position. It happens at runtime, after the program has printed three correct lines; [00-intro-java.md](00-intro-java.md) distinguished these failures from the ones the compiler detects.
 
-> **Why does counting start at 0 at all?** In Java's array model, the index is a position number starting at zero: the first slot is `week[0]`, and each next slot increases the index by one. For an array of `length` slots, the last position is `length - 1`. You can read `i` as "how far from the first slot" without assuming a particular memory address or layout.
+> **Indexes start at zero, so the last one is `length - 1`.** In Java's array model, the index is a position number starting at zero: the first slot is `week[0]`, and each next slot increases the index by one. For an array of `length` slots, the last position is `length - 1`. You can read `i` as "how far from the first slot" without assuming a particular memory address or layout.
 
 ### Enhanced for (for-each) — use this for collections and arrays
 

@@ -510,7 +510,7 @@ for (int i = 0; i < weekHours.length; i++) {
 
 El mensaje de error te dice exactamente qué ha pasado: `Index 3` es el valor de `i`, `length 3` es la longitud del array y la última posición válida tiene índice 2. Este es un **error off-by-one**: el límite se ha pasado por una posición. Ocurre en runtime, después de que el programa haya impreso tres líneas correctas; [00-intro-java.md](00-intro-java.md) distinguió estos fallos de los que detecta el compilador.
 
-> **¿Por qué se empieza a contar en cero?** En el modelo de arrays de Java, el índice numera las posiciones desde cero: la primera es `week[0]` y cada posición siguiente aumenta el índice en uno. Si el array tiene `length` posiciones, la última es `length - 1`. Puedes leer `i` como «cuántas posiciones hay desde la primera» sin suponer ninguna dirección o disposición concreta de memoria.
+> **Los índices empiezan en cero, así que el último es `length - 1`.** En el modelo de arrays de Java, el índice numera las posiciones desde cero: la primera es `week[0]` y cada posición siguiente aumenta el índice en uno. Si el array tiene `length` posiciones, la última es `length - 1`. Puedes leer `i` como «cuántas posiciones hay desde la primera» sin suponer ninguna dirección o disposición concreta de memoria.
 
 ### Enhanced for (for-each) — úsalo para colecciones y arrays
 
