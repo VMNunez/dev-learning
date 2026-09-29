@@ -510,14 +510,14 @@ for (int i = 0; i < weekHours.length; i++) {
 
 El mensaje de error te dice exactamente qué ha pasado: `Index 3` es el valor de `i`, `length 3` es la longitud del array y la última posición válida tiene índice 2. Este es un **error off-by-one**: el límite se ha pasado por una posición. Ocurre en runtime, después de que el programa haya impreso tres líneas correctas; [00-intro-java.md](00-intro-java.md) distinguió estos fallos de los que detecta el compilador.
 
-> **Los índices empiezan en cero, así que el último es `length - 1`.** En el modelo de arrays de Java, el índice numera las posiciones desde cero: la primera es `week[0]` y cada posición siguiente aumenta el índice en uno. Si el array tiene `length` posiciones, la última es `length - 1`. Puedes leer `i` como «cuántas posiciones hay desde la primera» sin suponer ninguna dirección o disposición concreta de memoria.
+> **Los índices empiezan en cero, así que el último es `length - 1`.** En el modelo de arrays de Java, el índice numera las posiciones desde cero: la primera es `week[0]` y cada posición siguiente aumenta el índice en uno. Si el array tiene `length` posiciones, la última es `length - 1`.
 
 ### Enhanced for (for-each) — úsalo para colecciones y arrays
 
 > 📖 Docs: [Baeldung — The for-each Loop in Java](https://www.baeldung.com/java-for-each-loop) → leer: "Working" y "Pros and Cons" — las desventajas que se listan ahí son los límites que se explican abajo.
 > 📖 Docs: [JLS §14.14.2 — The enhanced for statement](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.14.2) → leer: las dos expansiones, una para un `Iterable` y otra para un array — la fuente del diagrama de reescritura de abajo.
 
-El `for` clásico obliga a escribir y controlar un índice. Si solo quieres visitar cada elemento, ese índice sobra y puede causar el error off-by-one que acabas de ver. El `for` mejorado entrega los elementos directamente, sin un límite numérico que tengas que calcular. Equivale al `for...of` de JavaScript para este recorrido.
+El `for` clásico obliga a escribir y controlar un índice. Si solo quieres recorrer cada elemento, ese índice sobra y puede causar el error off-by-one que acabas de ver. El `for` mejorado, también llamado _for-each_, entrega los elementos directamente, sin un límite numérico que tengas que calcular. Equivale al `for...of` de JavaScript.
 
 Sintaxis: `for (Tipo variable : colección)` — se lee como "para cada elemento de este tipo en esta colección".
 

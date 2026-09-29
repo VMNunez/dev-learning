@@ -510,14 +510,14 @@ for (int i = 0; i < weekHours.length; i++) {
 
 The error message tells you exactly what happened: `Index 3` is the value of `i`, `length 3` is the length of the array, and the last valid position has index 2. This is an **off-by-one error**: the limit has been passed by one position. It happens at runtime, after the program has printed three correct lines; [00-intro-java.md](00-intro-java.md) distinguished these failures from the ones the compiler detects.
 
-> **Indexes start at zero, so the last one is `length - 1`.** In Java's array model, the index is a position number starting at zero: the first slot is `week[0]`, and each next slot increases the index by one. For an array of `length` slots, the last position is `length - 1`. You can read `i` as "how far from the first slot" without assuming a particular memory address or layout.
+> **Indexes start at zero, so the last one is `length - 1`.** In Java's array model, the index is a position number starting at zero: the first slot is `week[0]`, and each next slot increases the index by one. For an array of `length` slots, the last position is `length - 1`.
 
 ### Enhanced for (for-each) — use this for collections and arrays
 
 > 📖 Docs: [Baeldung — The for-each Loop in Java](https://www.baeldung.com/java-for-each-loop) → read: "Working" and "Pros and Cons" — the drawbacks listed there are the limits explained below.
 > 📖 Docs: [JLS §14.14.2 — The enhanced for statement](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.14.2) → read: the two expansions, one for an `Iterable` and one for an array — the source of the rewrite diagram below.
 
-The classic index loop has two frequent problems: it is longer to write, and — as you just saw — the bounds are yours to get wrong. The enhanced `for` removes the index entirely and hands you each item directly, so the off-by-one error becomes literally unwritable. Think of it as Java's version of `for...of` in JavaScript.
+The classic `for` forces you to write and control an index. If you only want to walk through each element, that index is unnecessary and can cause the off-by-one error you just saw. The enhanced `for`, also called _for-each_, hands you the elements directly, with no numeric limit for you to work out. It is equivalent to JavaScript's `for...of`.
 
 Syntax: `for (Type variable : collection)` — read as "for each item of this type in this collection".
 
