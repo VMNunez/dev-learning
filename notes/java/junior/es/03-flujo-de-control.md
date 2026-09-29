@@ -53,7 +53,14 @@ if (hours > 8) {
 
 > **Por qué importa que "gane el primer bloque verdadero".** El orden es parte de la lógica, no una cuestión de estilo. Si intercambias las dos primeras ramas — poniendo `hours > 0` primero — un empleado con 10 horas coincide con `hours > 0`, imprime `"Worked"`, y la rama de horas extra nunca se alcanza, porque Java se detiene en la primera coincidencia. La regla para cualquier cadena `if/else if`: pon primero la condición **más estrecha** y ve ampliando conforme bajas.
 
-> **La condición tiene que ser un `boolean`.** [01-variables-tipos.md](01-variables-tipos.md) explicó que Java no usa valores truthy o falsy: `if (hours)` falla con `incompatible types: int cannot be converted to boolean`, mientras que `if (hours > 0)` comprueba un `boolean`. La misma regla se aplica a `while`, `do-while` y a los ternarios: la condición que va antes del `?` también tiene que ser un `boolean`. Por eso en Java tampoco puedes comprobar si una variable no tiene valor (`null`) con `if (name)`, como harías en JavaScript: tienes que escribir la comparación entera, `if (name != null)`, que sí da un `boolean`. Cuándo hace falta esa comprobación y cómo usarla para proteger un método se enseña en [04-metodos.md](04-metodos.md).
+> **La condición tiene que ser un `boolean`.** [01-variables-tipos.md](01-variables-tipos.md) explicó que Java no usa valores truthy o falsy: `if (hours)` falla con `incompatible types: int cannot be converted to boolean`, mientras que `if (hours > 0)` comprueba un `boolean`. La misma regla se aplica a `while`, `do-while` y a los ternarios: la condición que va antes del `?` también tiene que ser un `boolean`. Esto también afecta a una costumbre de JavaScript: comprobar si una variable no tiene valor escribiendo solo su nombre dentro del `if`. En Java, una variable de un tipo de objeto, como `String`, vale `null` cuando no guarda la dirección de ningún objeto, como explicó [01-variables-tipos.md](01-variables-tipos.md) en _Variables de referencia y `null`_. Pero `null` no es un `boolean`, así que tienes que escribir tú la comparación:
+>
+> ```java
+> if (name) { ... }          // ❌ MAL — no compila: incompatible types: String cannot be converted to boolean
+> if (name != null) { ... }  // ✅ BIEN — name != null da true o false
+> ```
+>
+> Cuándo hace falta esta comprobación lo verás en [04-metodos.md](04-metodos.md).
 
 ### Los valores imposibles van al principio de la cadena
 

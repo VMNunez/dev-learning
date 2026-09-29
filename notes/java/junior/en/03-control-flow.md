@@ -53,7 +53,14 @@ if (hours > 8) {
 
 > **Why "the first true block wins" matters.** Order is part of the logic, not a style choice. If you swap the first two branches — `hours > 0` first — then an employee with 10 hours matches `hours > 0`, prints `"Worked"`, and the overtime branch is never reached, because Java stops at the first match. The rule for any `if/else if` chain: put the **narrowest** condition first and widen as you go down.
 
-> **The condition must be a real `boolean`.** [01-variables-types.md](01-variables-types.md) explained Java's lack of truthy and falsy values: `if (hours)` fails with `incompatible types: int cannot be converted to boolean`, while `if (hours > 0)` tests an actual `boolean`. The same rule applies to `while`, `do-while` and ternaries: the condition before the `?` must also be a `boolean`. That is also why in Java you cannot check whether a variable has no value (`null`) with `if (name)`, as you would in JavaScript: you have to write the whole comparison, `if (name != null)`, which does give a `boolean`. When that check is needed, and how to use it to protect a method, is taught in [04-methods.md](04-methods.md).
+> **The condition must be a real `boolean`.** [01-variables-types.md](01-variables-types.md) explained Java's lack of truthy and falsy values: `if (hours)` fails with `incompatible types: int cannot be converted to boolean`, while `if (hours > 0)` tests an actual `boolean`. The same rule applies to `while`, `do-while` and ternaries: the condition before the `?` must also be a `boolean`. This also affects a JavaScript habit: checking whether a variable has no value by writing only its name inside the `if`. In Java, a variable of an object type, such as `String`, holds `null` when it stores the address of no object, as [01-variables-types.md](01-variables-types.md) explained in _Reference variables and `null`_. But `null` is not a `boolean`, so you have to write the comparison yourself:
+>
+> ```java
+> if (name) { ... }          // ❌ MAL — does not compile: incompatible types: String cannot be converted to boolean
+> if (name != null) { ... }  // ✅ BIEN — name != null gives true or false
+> ```
+>
+> When this check is needed is covered in [04-methods.md](04-methods.md).
 
 ### Impossible values go at the top of the chain
 
