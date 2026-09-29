@@ -82,9 +82,9 @@ if (hours > 8) {
 // hours = -3  prints: Absent
 ```
 
-If `hours`, instead of being `-3`, becomes `30`, the first test is `30 > 8`. It is `true`, so Java runs the first block, prints `Overtime` and skips every branch below it. Neither the `-3` example nor the `30` one produces an error: the program keeps going and treats a mistake as a real absence (`-3`) or a real overtime day (`30`). That is the hidden bug. The condition `hours > 8` was written with overtime days in mind, but it holds for any number greater than 8: `30`, `100` or `1000` too. The `else` was written for days of absence, with 0 hours, but it catches everything that did not enter the branches above it: `-3` or `-100` too. Neither branch checks that the hours are between 0 and 24, which is all a real day can have.
+If `hours`, instead of being `-3`, becomes `30`, the first test is `30 > 8`. It is `true`, so Java runs the first block, prints `Overtime` and skips every branch below it. Neither the `-3` example nor the `30` one produces an error: the program keeps going and treats a mistake as a real absence (`-3`) or a real overtime day (`30`). That is the hidden bug. The condition `hours > 8` was written with overtime days in mind, but it holds for any number greater than 8: `30`, `100` or `1000` too. The `else` was written for days of absence, with 0 hours, but it catches everything that did not enter the branches above it: `-3` or `-100` too. Neither branch checks that the hours are a valid value, that is, a number between 0 and 24, because a real day cannot have fewer than 0 hours or more than 24.
 
-The fix is to test for the exceptional case **first**, so no broader branch gets a chance to claim it:
+The solution to this problem is to check the invalid values **first**, in their own branch at the start of the chain, before a broader branch accepts them:
 
 ```java
 // ✅ BIEN — the impossible values are caught before any normal branch

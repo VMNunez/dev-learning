@@ -82,9 +82,9 @@ if (hours > 8) {
 // hours = -3  imprime: Absent
 ```
 
-Si `hours`, en vez de valer `-3`, pasa a valer `30`, la primera comprobación es `30 > 8`. Es `true`, así que Java ejecuta el primer bloque, imprime `Overtime` y se salta todas las ramas de abajo. Ni el ejemplo del `-3` ni el del `30` dan un error: el programa sigue adelante y trata un error como si fuera una ausencia real (`-3`) o un día real de horas extra (`30`). Ese es el bug oculto. La condición `hours > 8` se escribió pensando en días con horas extra, pero se cumple con cualquier número mayor que 8: también con `30`, `100` o `1000`. El `else` se escribió para los días de ausencia, con 0 horas, pero recoge todo lo que no ha entrado en las ramas anteriores: también `-3` o `-100`. Ninguna de las dos ramas comprueba que las horas estén entre 0 y 24, que es lo único que puede pasar en un día real.
+Si `hours`, en vez de valer `-3`, pasa a valer `30`, la primera comprobación es `30 > 8`. Es `true`, así que Java ejecuta el primer bloque, imprime `Overtime` y se salta todas las ramas de abajo. Ni el ejemplo del `-3` ni el del `30` dan un error: el programa sigue adelante y trata un error como si fuera una ausencia real (`-3`) o un día real de horas extra (`30`). Ese es el bug oculto. La condición `hours > 8` se escribió pensando en días con horas extra, pero se cumple con cualquier número mayor que 8: también con `30`, `100` o `1000`. El `else` se escribió para los días de ausencia, con 0 horas, pero recoge todo lo que no ha entrado en las ramas anteriores: también `-3` o `-100`. Ninguna de las dos ramas comprueba que las horas sean un valor válido, es decir, un número entre 0 y 24, porque un día real no puede tener menos de 0 horas ni más de 24.
 
-Comprueba los valores inválidos **primero**, antes de que una rama más amplia los acepte:
+La solución a este problema es comprobar los valores inválidos **primero**, en su propia rama al principio de la cadena, antes de que una rama más amplia los acepte:
 
 ```java
 // ✅ BIEN — los valores imposibles se atrapan antes que cualquier rama normal
