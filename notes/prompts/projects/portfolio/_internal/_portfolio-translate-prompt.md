@@ -183,6 +183,10 @@ Spanish.
   property a later reader can check cheaply. **Outside `{SCOPE}` parity is a measurement, not an obligation**: on a
   partial run the `es/` legitimately lacks the tiers nobody has translated yet, and reporting that is
   correct rather than a defect. A `full` run is what makes the whole file a mirror again.
+- **On a re-sync, every ID the orchestrator names as changed is re-rendered from today's English** —
+  frozen ones excepted and reported. Matching counts do not make a twin current: a listed block whose
+  Spanish you left as it was is stale, and the orchestrator checks each listed ID against the file, so a
+  `RE-SYNCED` over one fails its gate.
 - **The header is translated too**, per the standard's file template — on every scope, including the
   `**Último banco — «capa»:**` lines, per the header exception above.
 - **Questions are rendered as an interviewer would ask them in Spanish** — not word for word. A
@@ -234,6 +238,7 @@ atomic commit with the `en/` bank and the CV bullet. Report:
   by the tiers this run did not translate.
 - The IDs of every `[refined]` question you kept, of every one you rendered for the first time, and of
   any whose English has moved under the freeze — which you did not reconcile.
+- Where you were handed a changed-ID list, any listed ID you did not re-render, with the reason.
 - Any English question or answer you believe is wrong, by ID with the reason — the orchestrator prints
   it as owed a correction; you did **not** change it — and any place the existing Spanish diverged in a
   way that looked deliberate.

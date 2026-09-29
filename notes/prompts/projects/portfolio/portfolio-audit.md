@@ -180,9 +180,12 @@ more. The single surviving pause is a legacy two-option `cv-bullets.md` section 
 > clean file means `{BASELINE}` holds them and the restore branch below is available; a dirty one means
 > it does not. This is a baseline-availability check and nothing else.
 >
-> **The `es/` twin is deliberately not baselined.** Phase 1b's only disposition is leave-and-declare, so
-> a baseline for it would have no consumer — and reading one would imply a restore branch that does not
-> exist. Its safety comes from stage T's own STOP conditions, not from `{BASELINE}`.
+> **Then copy both bank files as they stand — `en/` and `es/`, either may be absent — to two distinct
+> scratch paths** (they share a basename, so one directory would let one overwrite the other). That copy is the **comparison snapshot** Phase 1b's parity gate reads, and it works in
+> every git state, including the untracked bank a dry run leaves, where `{BASELINE}` holds no pre-run
+> bytes. It is never a restore source: the `en/` restore reads `{BASELINE}` alone, and the `es/` twin has
+> no restore branch at all — its disposition is leave-and-declare and its safety is stage T's STOP
+> conditions.
 
 First read
 `notes/prompts/projects/portfolio/_internal/_portfolio-standard.md` so you know the verdict logic, the question
@@ -310,8 +313,8 @@ not the full trace (the trace still drives their own work; it just stays in thei
 ID.** That is not trace and it is not summarisable: the freeze stopped every role from repairing it, the
 hard rule below makes the final report its only route to Victor, and a batch that drops it is the one
 shape in which a frozen question stays wrong forever. The translator's
-per-section counts are the exception that is not a trace: they are the parity proof, they are two
-numbers per section, and without them nothing in the run has checked the twin at all. Otherwise, for one project, follow the procedure.
+per-section counts are the exception that is not a trace: two numbers per section, which the parity
+gate sets against its own count of the files, so a trace that disagrees with disk surfaces. Otherwise, for one project, follow the procedure.
 
 ## Single-project procedure
 
@@ -505,11 +508,6 @@ reading `never`, since "leave the line as it was" cannot mean anything when ther
 absent header is indistinguishable from a bank written before this rule existed. **The stamp gates nothing**: no run refuses on it, and Finishing item 1 is
 what puts it in front of Victor.
 
-**Do the dedupe before Phase 1b, never after.** A duplicate removed from the English after the twin
-exists leaves an orphan question in the Spanish that no parity count catches until the next run — the
-`es/` would simply have one section one question longer, which reads as a translator error rather than
-as your edit.
-
 ### Phase 1b — Spanish twin (one translator per PROJECT, after every section)
 
 The English bank is now finished and deduped, so it is a stable source. **Subagent T — translator
@@ -526,24 +524,37 @@ substitution):
 > simply older than its source. Translate the finished
 > `notes/interview-prep/projects/en/«name».md` into its twin
 > `notes/interview-prep/projects/es/«name».md`. **Do NOT commit.** «If any section was left
-> half-written, name it here so it is skipped rather than half-translated.» Copy every question ID
+> half-written, name it here so it is skipped rather than half-translated.» «On a re-sync: these IDs'
+> English changed this run — re-render every one not carrying `[refined]`; I check each against the
+> file.» Copy every question ID
 > verbatim, and **keep the existing Spanish of a `[refined]` question byte-for-byte** instead of
 > re-rendering it. Return `TRANSLATED`,
 > `RE-SYNCED`, `TODO-STOPPED` or `BLOCKED`, the per-section English/Spanish question counts **and their
 > frozen-kept counts**, the
 > totals, and any English question you believe is wrong — which you did not change.
 
-It runs **once per project, not once per section**: the whole point of the stage is that it sees one
-stable, reviewed source, and five per-section translators would each re-derive the register from
-scratch and produce a twin that changes voice at every heading.
+**The changed-ID list is yours, computed by command before the dispatch** — only where the snapshot holds
+an `es/`, since a first translation has no stale Spanish. A **block** is a bold question line and every
+line up to the next bold question line or heading, keyed by its ID, compared with trailing whitespace
+ignored; the list is every ID under an **in-lane** sub-heading — one `{PORTFOLIO_SCOPE}` covers and not
+named to T as skipped — whose `en/` block is absent from the snapshot `en/` or differs from it. Never take it from a return:
+B names its corrections in prose, and your own dedupe, renumber and downgrade edits are in none.
 
-**Parity gate — act on T's counts, don't just record them.** **It runs over the sub-headings
+**Parity gate — act on the files, never on T's return alone.** A `RE-SYNCED` with matching counts has
+shipped stale Spanish before (`REC-236`). **It runs over the sub-headings
 `{PORTFOLIO_SCOPE}` covers, and only those** — an out-of-scope half that no longer matches its English
 is reported as behind, never retried and never repaired here, because this run did not write it and a
-retry would only send T back into Spanish it may not touch. Within the scope: if any Spanish count differs
-from its English count, or a sub-heading is missing that was not named as skipped, the twin is not done:
-re-dispatch T **once**, naming the exact sections that disagree. One retry maximum; if parity still
-fails, **this content acceptance gate has failed** — name the mismatched sections in the final report
+retry would only send T back into Spanish it may not touch. Three tests, each by command over the two
+files and over the in-lane sub-headings only, since T omits a skipped one: **(a)** every in-lane
+sub-heading's Spanish question count equals its English one, and none is missing that was not named as
+skipped; **(b)** the ordered sequence of ID + priority marker on the in-lane bold lines is identical in
+both files — a dropped, reordered or renumbered question or a lost `⭐` moves no count; **(c)** on a
+re-sync, every listed ID not carrying `[refined]` has a Spanish bold line that differs from its snapshot
+`es/` one where its English bold line changed, and a Spanish body that differs where its English body
+changed — a part byte-identical to its snapshot is Spanish nobody re-rendered against English that moved.
+This proves a re-render happened, not that it is faithful; that is T's and stage C's. Any failure
+means the twin is not done: re-dispatch T **once**, naming the exact sections or IDs that fail. One retry maximum; if parity still
+fails, **this content acceptance gate has failed** — name the failing sections or IDs in the final report
 and record this project `blocked` in `_run-tracker.md`, on the dry branch too, exactly as a below-1
 ratio does in Phase 1a.
 
@@ -560,10 +571,6 @@ side. The `es/` is created by this stage, so on a first run there is nothing at 
 to, and on a later run restoring would throw away a twin that is more current than the committed one.
 Declare it `blocked — partial (es/)`, and the project records `blocked`.
 
-**A missing twin does not move the Phase 2 verdict**, for the reason the thin-bank rule already gives
-below: the verdict is the go/no-go on the **project**, and no part of it reads the question bank in
-either language.
-
 ### Phase 1c — Spanish review (one cold `en/`-blind reviewer per PROJECT, after the twin exists)
 
 **Run this only when T returned `TRANSLATED` or `RE-SYNCED`**, and only after the parity gate above has
@@ -572,13 +579,6 @@ half-written and there is nothing finished to audit; and a **parity gate that fa
 retry** is a twin whose structure does not match its source, which a prose pass cannot repair and would
 only obscure. In all three cases skip Phase 1c, say so in the final report, and go to Phase 2 — a
 project already recording `blocked` does not gain a second one for a stage that was correctly not run.
-
-**Why the twin needs a pass of its own, and why it cannot be T's.** Stage T holds the English by
-construction, which makes it structurally unable to judge whether its own Spanish reads as Spanish —
-with the English beside you, any calque still parses. Victor answers these questions **out loud, in
-Spanish**, so the twin is the file that matters at the moment of use, and the only faithful test is a
-reader who takes it cold, exactly as he does. This is the notes family's stage C
-(`_notes-review-es-prompt.md`), which states the same rule for the same reason.
 
 **Subagent C — Spanish reviewer (whole twin).** Launch one `role-appropriate` subagent,
 `reasoning tier: deep`, `execution: foreground` (judging whether an interview answer sounds like Victor
@@ -604,8 +604,8 @@ requires the orchestrator to read it when the reviewer dies.
 
 **No retry gate, and that is deliberate — and this is not the death ladder.** A C that *dies* takes
 `_agent-runtime-standard.md`'s ladder like any other role: read its scratch path, else resume, else
-re-dispatch once. What has no gate is C's *verdict*: B and T are re-dispatched on a *number* — a ratio
-below 1, a parity count that disagrees — and C produces neither: its verdict is a judgement about prose, so a
+re-dispatch once. What has no gate is C's *verdict*: B and T are re-dispatched on a *mechanical test* — a ratio
+below 1, a parity test that fails — and C produces neither: its verdict is a judgement about prose, so a
 second dispatch on the same file would only re-ask the same reader the same question. What it returns
 instead goes to Victor in the final report. **A suspected factual error — C's, or an English question T
 reported wrong — is an English defect owed a correction**, not a note on the Spanish: T renders meaning
