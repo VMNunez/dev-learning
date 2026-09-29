@@ -180,7 +180,7 @@ Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamad
 
 > **Un `boolean` no puede ser el selector de un `switch`.** Para elegir entre `true` y `false`, usa `if/else`.
 
-> **Un `enum` permite comprobar que no falta ningún caso en una expresión `switch`.** Un `enum` es un tipo con una lista fija de valores con nombre; [14-enums.md](14-enums.md) lo enseñará. Por ejemplo, `enum Shift { MORNING, AFTERNOON, NIGHT }` define un tipo `Shift` con solo tres valores posibles. Un `switch` se puede escribir de dos formas, y las dos secciones siguientes las enseñan en detalle.
+> **Con un selector `enum`, usa la expresión `switch`: el compilador te avisa si falta un caso.** Un `enum` es un tipo con una lista fija de valores con nombre; [14-enums.md](14-enums.md) lo enseñará. Por ejemplo, `enum Shift { MORNING, AFTERNOON, NIGHT }` define un tipo `Shift` con solo tres valores posibles. Un `switch` se puede escribir de dos formas, y las dos secciones siguientes las enseñan en detalle.
 >
 > La primera es el **`switch` clásico**, que se escribe con `case X:`. Es una **sentencia**: ejecuta código pero no produce ningún valor, igual que el `if/else`. Si olvidas un valor del `enum`, el compilador no avisa: el código compila, y cuando llega ese valor no se ejecuta ningún caso.
 >
