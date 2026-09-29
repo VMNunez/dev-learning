@@ -66,7 +66,7 @@ if (hours > 8) {
 
 Acabas de ver por qué la condición de horas extra debe ir antes que la de cualquier jornada trabajada. La misma regla afecta a los valores que no deberían aceptarse: menos de 0 horas o más de 24 en un día. Pueden llegar por un error al rellenar el formulario o por un bug anterior. Si las ramas normales los aceptan, el registro mostrará un resultado incorrecto.
 
-Prueba la primera cadena `if / else` con esos dos valores. Responde como si fueran válidos:
+Esta es la misma cadena `if / else` del principio de la sección, sin cambios, probada con dos de esos valores imposibles, `-3` y `30`:
 
 ```java
 // ❌ MAL — las ramas amplias se tragan los valores imposibles
