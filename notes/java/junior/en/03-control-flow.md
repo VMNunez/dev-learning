@@ -224,6 +224,8 @@ Here is the bug that mechanism produces:
 
 ```java
 // ❌ MAL — no break: a Saturday prints TWO lines
+String day = "SATURDAY";
+
 switch (day) {
     case "SATURDAY":
     case "SUNDAY":
@@ -231,7 +233,7 @@ switch (day) {
     default:
         System.out.println("Unknown day");
 }
-// day = "SATURDAY" prints:
+// prints:
 // Weekend shift
 // Unknown day
 ```
