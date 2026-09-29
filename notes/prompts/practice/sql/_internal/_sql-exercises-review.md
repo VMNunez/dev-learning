@@ -1,8 +1,12 @@
 # `sql-exercises` — MODE = review branch
 
-**Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes the shell has
-already resolved `{FILE}`, read `notes/prompts/_internal/_session-rules.md`, `PLANNING.md`, `PROGRESS.md` and `coverage/{LEVEL}.md`, and
-printed the resolution block.
+**Internal component of `sql-exercises-prompt.md`. Not runnable on its own** — it assumes only what both
+of its doors give it: `{LEVEL}`, `{PLAN}` (the route file `{LEVEL}` selects), `{FILE}` and `{TOPIC}`,
+all resolved before this file opens.
+The normal door is the `sql-grade` skill, which dispatches this file **cold** with those four values and
+nothing else; the legacy door is the shell's `MODE = review`, which runs it inline after its own
+Resolution and context reads. **So assume no file has been read for you** — on the normal door none has —
+and open each one at the step that uses it: every step below names the file it reads or edits.
 
 Split out 2026-07-22: a run is either practice or review, never both, so carrying the other branch was
 ~40% of the file for nothing. The shell reads only the branch its `MODE` names.
@@ -15,7 +19,8 @@ Split out 2026-07-22: a run is either practice or review, never both, so carryin
 
 ### Step 1 — Read the file
 
-Read the file at {FILE} (already resolved by the shell, from `{PLAN}` §1, under Resolution).
+Read the file at {FILE} (resolved before this file opened — by `sql-grade` §0 or by the shell's
+Resolution).
 If Victor pasted a file at the end of the chat instead, use the pasted content — a paste always wins
 over {FILE}, because it may hold answers he has not saved to disk yet.
 Confirm in one line which one you used: "Reviso [path]" or "Reviso el archivo pegado".
@@ -316,7 +321,9 @@ list no longer exists** — it was a second, evidence-free copy of the SQL cover
 on 2026-08-03. The *what* is recorded in **4c-bis**, on the coverage bullets, where it carries its
 evidence marker; PROGRESS.md keeps only the *how many*, in 4b. Do not re-create the list.
 
-If this batch exercised a concept with **no bullet in the SQL coverage file**, do not write it into
+If this batch exercised a concept with **no bullet in `notes/sql/coverage/{LEVEL}.md`** — search that
+file for it (`grep -n -i '<concept>' notes/sql/coverage/{LEVEL}.md`) before calling it bullet-less; the
+`{PLAN}` §2 `Coverage bullets` list is only the step's share of that file — do not write it into
 PROGRESS.md: report it in 4e as coverage work owed, naming the concept and level.
 
 #### 4b — PROGRESS.md, `## Practice completed` → `### Exercise route`
@@ -402,7 +409,8 @@ Then refresh the totals line under the table.
 #### 4c-bis — {PLAN} §2, the coverage bullets of that step
 
 This prompt is the only one that can do this, and `sql-plan` is explicitly forbidden from guessing it:
-you generated these exercises, so you alone know which coverage bullet each one tested. In the step's
+only the grading run holds both halves — each scored exercise's text and the step's bullet list — so
+decide from those two which coverage bullet each one tested. In the step's
 `**Coverage bullets:**` list, flip `- [ ]` to `- [x]` for **every bullet a graded exercise of this run
 actually drilled** — the concept was exercised and scored, not merely adjacent to the topic. Leave the
 rest untouched.
@@ -423,7 +431,8 @@ a reinforcement run, and marking them all on close would erase exactly that sign
 
 #### 4d — the doctrine §0, the quick reference
 
-Only when 4c set a row to `closed ✅`. Rewrite the §0 table:
+Only when 4c set a row to `closed ✅`. Open the doctrine, `practice/sql/PLANNING.md` — not `{PLAN}`,
+which has no §0 — and rewrite its §0 table:
 - **Current step** → the next row in {PLAN} §3 that is not ✅
 - **Done condition** → that step's done condition, copied from its {PLAN} §2 entry
 - **Next revision point** → the first point in **`{PLAN}` §1's revision table** whose trigger has not
@@ -442,16 +451,18 @@ The step-complete ritual is PLANNING.md §4, and **one item of it is outside thi
 
 - **`notes/sql/coverage/{LEVEL}.md`** — the `✅ sql:{file-slug}` markers on every bullet these exercises
   drilled, and any concept that turned out to have no bullet at all. This prompt never edits coverage;
-  `sql-step-close` does, and it runs right after you.
+  `sql-step-close` does: `sql-grade` invokes it after you when the step closes, and the legacy
+  `MODE = review` door invokes nothing.
 
 **The exit question is gone** (removed 2026-08-03). Doctrine §3 used to close a step on two conditions,
 the second being the question answered aloud from memory; retrieval practice moved to the interview-prep
 and `simulator` track (§Z), and a step now closes on its scored condition alone. Do not reintroduce it as
 a blocker, and do not print that a step is "not really closed" because of it.
 
-So if 4c set the row to `closed ✅`, print: "Ejercicios del paso [N] cerrados. Falta el paso de coverage —
-lo hace `sql-step-close` a continuación." The caller is `sql-grade`, which hands off automatically; you
-do not invoke anything yourself.
+So if 4c set the row to `closed ✅`, print — dispatched by `sql-grade`: "Ejercicios del paso [N] cerrados.
+Falta el paso de coverage — lo hace `sql-step-close` a continuación."; reached through the shell's
+`MODE = review`: "Ejercicios del paso [N] cerrados. Falta el paso de coverage — di «cierra el step [N]»
+para que lo haga `sql-step-close`." You invoke nothing yourself on either door.
 
 **Do not name notes, Q&A or simulations as blockers.** They are separate tracks (PLANNING.md §Z), no
 step closes on one, and telling Victor a note is "missing to close the step" is precisely the scope
@@ -467,7 +478,9 @@ Concept | Sev | What went wrong | Exercises`. One row per *concept*, not per exe
 that all failed on `WHERE` vs `HAVING` are one row, with all three numbers in `Exercises`.
 
 - **`Coverage section` is the heading from `notes/sql/coverage/{LEVEL}.md`, copied verbatim** — not a
-  paraphrase and not the step name. If the gap fits no existing heading, write the closest one and say
+  paraphrase and not the step name. Read that file's headings here, before the first row is written:
+  `grep -n '^## ' notes/sql/coverage/{LEVEL}.md` lists every one, and the headings are all this column
+  needs. If the gap fits no existing heading, write the closest one and say
   so in one line in the chat; that mismatch is a signal for the next `coverage-audit`, not a licence to
   invent a section name here.
 - **A concept already in `## Open` is never given a second row.** Increment its `Times`, set
@@ -523,20 +536,23 @@ annotate it — the `-- ✅ Corregido` markers are an annotation on his answers,
 so **he** commits it. The doc files you rewrote in Steps 4 and 5 were written by this run, not by him,
 so they are **not** his to commit and you must not hand him a command for them.
 
-**Print exactly one pair of commands, for the exercise file only.** Use the exact `{FILE}` path the
-shell resolved (under Resolution) for {TOPIC} — not `sql/{TOPIC}/`:
+**Print exactly one pair of commands, for the exercise file only.** Use the exact `{FILE}` path you
+were given for {TOPIC} — not `sql/{TOPIC}/`:
 
 ```
-git add [exact {FILE} path from Step 4 table]
+git add [the resolved {FILE} path]
 ```
 
 ```
 git commit -m "docs(sql): grade {FILE} — [X/Y correct]"
 ```
 
-**The doc files go back to your caller, uncommitted.** You run inside a subagent with no branch
-context of your own; the skill that invoked you (`sql-grade`) owns their commit. End your report with
-the exact list of what you modified, so it can stage them without re-deriving it:
+**Who commits the doc files depends on the door.** Dispatched by `sql-grade`, you run inside a
+subagent with no branch context of your own: they go back to it uncommitted, and it owns their commit.
+Reached through the shell's `MODE = review`, there is no caller to hand them to, so commit them
+yourself on the active branch — one atomic commit per concern, `git status` immediately before staging
+and before committing, the `.sql` never staged — the boundary `sql-grade` §4 applies. Either way, end
+your report with the exact list of what you modified, so whoever stages them does not re-derive it:
 
 - `PROGRESS.md`
 - `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`
