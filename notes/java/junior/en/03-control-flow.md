@@ -317,7 +317,7 @@ switch (day) {
 
 The `default` block is not required, but include it: it is your safety net for a value nobody anticipated (a typo, a new day name added later), and without it an unmatched value simply does nothing at all — silently.
 
-> **A `null` selector does not go to `default`.** This `switch (day)` has no `case null`, so a missing day throws `NullPointerException` before any ordinary case runs. This is a preview of [04-methods.md](04-methods.md), which explains where a method should reject missing input; it is not a reason to put a null guard in every `switch` example here.
+> **A `null` selector does not go to `default`.** This `switch (day)` has no `case null`, so a missing day throws `NullPointerException` before any ordinary case runs. This is a preview of [04-methods.md](04-methods.md), which explains where a method should reject missing input.
 
 ### Switch expression (Java 14+) — use this form
 

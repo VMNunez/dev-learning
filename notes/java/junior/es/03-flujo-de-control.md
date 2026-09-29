@@ -317,11 +317,11 @@ switch (day) {
 
 El bloque `default` no es obligatorio en esta sentencia, pero permite manejar un valor no previsto, como un día mal escrito. Sin él, un valor que no coincide con ningún caso deja el `switch` sin ejecutar ninguna rama.
 
-> **Un selector `null` no llega a `default`.** Este `switch (day)` no tiene `case null`, así que un día ausente lanza `NullPointerException` antes de ejecutar cualquier caso normal. Es un anticipo de [04-metodos.md](04-metodos.md), que explica dónde debe rechazarse un argumento ausente. No hace falta añadir una guarda de `null` a cada ejemplo de `switch` de este capítulo.
+> **Un selector `null` no llega a `default`.** Este `switch (day)` no tiene `case null`, así que un día ausente lanza `NullPointerException` antes de ejecutar cualquier caso normal. Es un anticipo de [04-metodos.md](04-metodos.md), que explica dónde debe rechazarse un argumento ausente.
 
 ### Expresión `switch` (Java 14+) — usa esta forma
 
-El `switch` clásico es una **sentencia**: ejecuta código y no produce ningún valor. La **expresión `switch`** sí produce un valor, así que puedes asignarlo directamente a una variable. Es la misma distinción entre sentencia y expresión que viste antes con el ternario.
+El `switch` clásico es una **sentencia**: ejecuta código y no produce ningún valor. La **expresión `switch`** (_switch expression_) sí produce un valor, así que puedes asignarlo directamente a una variable. Es la misma distinción entre sentencia y expresión que viste antes con el ternario.
 
 También elimina el fall-through: cada rama usa `->` y ejecuta exactamente una cosa, así que no existe `break` ni hace falta.
 
