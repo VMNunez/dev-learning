@@ -131,7 +131,7 @@ if (hours > 8) {
 }
 ```
 
-El `if/else` no produce un valor que puedas asignar directamente. Por eso declaras `label` y la asignas en cada rama. Si quitas el `else`, la siguiente lectura de `label` falla con `error: variable label might not have been initialized`: [01-variables-tipos.md](01-variables-tipos.md) explicó que una variable local debe recibir un valor en todos los caminos posibles antes de leerla. El ternario exige las dos alternativas; `hours > 8 ? "Overtime"` no compila (`error: : expected`). Así, la expresión siempre produce un valor y puedes declarar y asignar `label` en una sola línea.
+El `if/else` no produce un valor que puedas asignar directamente. Por eso declaras `label` antes del bloque `if/else` y la asignas en cada rama. Si quitas el `else` del bloque de arriba, cuando `hours` no sea mayor que 8 no se ejecuta ninguna asignación y `label` se queda sin valor. El compilador lo detecta antes de que el programa llegue a ejecutarse: la primera línea que use `label` después del `if` no compila y da el error `variable label might not have been initialized`. [01-variables-tipos.md](01-variables-tipos.md) explicó que una variable local debe recibir un valor en todos los caminos posibles antes de leerla. El ternario exige las dos alternativas; `hours > 8 ? "Overtime"` no compila (`error: : expected`). Así, la expresión siempre produce un valor y puedes declarar y asignar `label` en una sola línea.
 
 ---
 

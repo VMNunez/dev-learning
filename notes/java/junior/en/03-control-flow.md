@@ -131,7 +131,7 @@ if (hours > 8) {
 }
 ```
 
-The `if/else` produces no value, so the only way to get one out of it is to declare `label` first, with nothing in it, and assign it separately in each branch. That leaves room for a mistake the ternary cannot make. Drop the `else` and the compiler rejects the next read of `label` with `error: variable label might not have been initialized`. That is the rule from [01-variables-types.md](01-variables-types.md) that forbids reading a local variable before every path has assigned it. The ternary has no such gap, because it has no optional half: `hours > 8 ? "Overtime"` on its own does not compile (`error: : expected`). An expression always produces a value, so both values must be written, and `label` is declared and assigned in the same line.
+The `if/else` does not produce a value you can assign directly. That is why you declare `label` before the `if/else` block and assign it in each branch. If you remove the `else` from the block above, when `hours` is not greater than 8 no assignment runs and `label` is left without a value. The compiler catches it before the program ever runs: the first line that uses `label` after the `if` does not compile and gives the error `variable label might not have been initialized`. That is the rule from [01-variables-types.md](01-variables-types.md) that forbids reading a local variable before every path has assigned it. The ternary has no such gap, because it has no optional half: `hours > 8 ? "Overtime"` on its own does not compile (`error: : expected`). An expression always produces a value, so both values must be written, and `label` is declared and assigned in the same line.
 
 ---
 
