@@ -23,7 +23,9 @@
 > 📖 [Baeldung — Control structures in Java](https://www.baeldung.com/java-control-structures) → leer: "If/Else/Else If", "Switch" y "Loops"
 > 📖 [Oracle Docs — Control flow statements](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html)
 
-En [01-variables-tipos.md](01-variables-tipos.md) aprendiste a guardar valores y a obtenerlos de expresiones. En [02-cadenas-de-texto.md](02-cadenas-de-texto.md) los usaste para construir un parte de horas y viste un bucle `for` sin detenerte aún en cómo funciona. Ahora el parte indica que una empleada trabajó 10 horas un sábado. Guardar `10` y `"SATURDAY"` no basta: el programa debe decidir si imprime `Overtime`, qué turno asigna y cuándo pasa a la siguiente persona. El **flujo de control** determina qué sentencias se ejecutan, en qué orden y cuántas veces.
+En [01-variables-tipos.md](01-variables-tipos.md) aprendiste a guardar un valor en una variable y a calcular valores nuevos con expresiones. Una **expresión** es un trozo de código que Java calcula para obtener un valor: si `hours` vale `10`, la expresión `hours * 2` da `20`, y la expresión `hours > 8` da `true`. Ese segundo tipo, la expresión que da un `boolean`, es el que usa este capítulo para tomar decisiones. En [02-cadenas-de-texto.md](02-cadenas-de-texto.md) trabajaste con texto: convertiste los datos de un empleado —su nombre, su rol y sus horas de la semana— en una línea de texto legible, y recuperaste esos mismos datos a partir de una línea de un CSV. Allí también apareció un bucle `for`, pero solo para explicar por qué unir texto muchas veces seguidas es costoso; cómo funciona el bucle se explica en este capítulo.
+
+Este capítulo sigue con los mismos empleados, pero ahora mira sus horas día a día, en un **parte de horas**: el registro donde cada empleado apunta cuántas horas ha trabajado cada día de la semana. Cada anotación del parte tiene tres datos: quién (un empleado), qué día (por ejemplo, `"SATURDAY"`) y cuántas horas (por ejemplo, `10`). Con ese registro, la empresa sabe quién ha hecho horas extra y quién ha faltado. Imagina que una anotación dice que una empleada trabajó 10 horas un sábado. Guardar `10` y `"SATURDAY"` no basta: el programa debe decidir si imprime `Overtime`, qué turno asigna y cuándo pasa a la siguiente persona. El **flujo de control** determina qué sentencias se ejecutan, en qué orden y cuántas veces.
 
 Seguiremos con ese parte. Primero, `if / else` elige qué instrucciones ejecutar y el ternario elige un **valor**. Después, `switch` elige entre varios días; verás por qué la forma clásica puede continuar en el caso siguiente y cómo la expresión evita ese problema. Los bucles repetirán el trabajo para varios días o empleados. Al final, `break`, `continue` y `return` mostrarán tres formas distintas de salir antes de tiempo. En cada ejemplo, sigue esta pregunta: **¿qué línea se ejecuta después?**
 
@@ -108,7 +110,7 @@ String label = hours > 8 ? "Overtime" : "Normal";
 
 Úsalo solo cuando ambos valores sean cortos y la condición sea fácil de leer. Si la línea se vuelve difícil de seguir de un vistazo, usa un `if/else` normal.
 
-> **¿Por qué un ternario y no un `if/else` aquí?** Porque `if` es una **sentencia** (statement) y el ternario es una **expresión** (expression). Una sentencia *hace* algo; una expresión *produce un valor*. Solo una expresión puede colocarse a la derecha de un `=`, y por eso `String label = if (...)` directamente no es Java válido. Esta distinción entre sentencia y expresión es exactamente la misma que separa las dos formas de `switch` de más abajo — merece la pena fijarla ahora en la cabeza, porque vuelve a aparecer en la siguiente sección.
+> **¿Por qué un ternario y no un `if/else` aquí?** Porque `if` es una **sentencia** (statement) y el ternario es una **expresión** (expression). Una sentencia _hace_ algo; una expresión _produce un valor_. Solo una expresión puede colocarse a la derecha de un `=`, y por eso `String label = if (...)` directamente no es Java válido. Esta distinción entre sentencia y expresión es exactamente la misma que separa las dos formas de `switch` de más abajo — merece la pena fijarla ahora en la cabeza, porque vuelve a aparecer en la siguiente sección.
 
 Esta es la misma elección escrita con `if/else`, para que veas lo que te ahorra la expresión:
 
@@ -136,14 +138,14 @@ Usa `switch` cuando comparas **una** variable con varios valores posibles. Repet
 
 El valor entre paréntesis de `switch` se llama **selector**. A diferencia de una condición de `if`, que solo necesita producir un `boolean`, el selector debe tener uno de los tipos admitidos. En Java 25 son estos:
 
-| Tipo del selector | ¿Permitido? | Nota |
-|---|---|---|
-| `byte`, `short`, `char`, `int` | ✅ | la familia clásica de tipo entero |
-| `Byte`, `Short`, `Character`, `Integer` | ✅ | los wrappers objeto de esos cuatro |
-| `String` | ✅ | desde Java 7 |
-| un `enum` | ✅ | el mejor caso — ver abajo |
-| `long`, `float`, `double`, `boolean` | ❌ | el compilador los rechaza |
-| cualquier otro objeto (`Employee`, `Object`…) | ✅ *solo* con type patterns (Java 21+) | `case Employee e ->` — no con etiquetas constantes |
+| Tipo del selector                             | ¿Permitido?                            | Nota                                               |
+| --------------------------------------------- | -------------------------------------- | -------------------------------------------------- |
+| `byte`, `short`, `char`, `int`                | ✅                                     | la familia clásica de tipo entero                  |
+| `Byte`, `Short`, `Character`, `Integer`       | ✅                                     | los wrappers objeto de esos cuatro                 |
+| `String`                                      | ✅                                     | desde Java 7                                       |
+| un `enum`                                     | ✅                                     | el mejor caso — ver abajo                          |
+| `long`, `float`, `double`, `boolean`          | ❌                                     | el compilador los rechaza                          |
+| cualquier otro objeto (`Employee`, `Object`…) | ✅ _solo_ con type patterns (Java 21+) | `case Employee e ->` — no con etiquetas constantes |
 
 Cómo leer esta tabla: la columna "¿Permitido?" habla del valor dentro de `switch (...)`, y las dos últimas filas son las que sorprenden. Hacer switch sobre un `long` primitivo no compila, ni siquiera con un valor tan pequeño como `3`:
 
@@ -271,7 +273,7 @@ int dailyLimit = switch (day) {
 };
 ```
 
-> **`yield` no es `return`.** `return` sale del *método* entero. `yield` solo sale de la rama y entrega su valor a la expresión `switch`; después se ejecuta la siguiente línea del mismo método. Escribir `return base;` dentro de una expresión `switch` no compila (`attempt to return out of a switch expression`): las dos palabras no son intercambiables.
+> **`yield` no es `return`.** `return` sale del _método_ entero. `yield` solo sale de la rama y entrega su valor a la expresión `switch`; después se ejecuta la siguiente línea del mismo método. Escribir `return base;` dentro de una expresión `switch` no compila (`attempt to return out of a switch expression`): las dos palabras no son intercambiables.
 
 Cuando necesites **producir un valor** a partir de varios casos, prefiere la expresión `switch`: el compilador comprueba que cubra todas las entradas posibles. Cuando solo necesites realizar una acción, una sentencia `switch` también encaja; las dos formas responden a necesidades distintas.
 
@@ -286,7 +288,7 @@ Sin un bucle tendrías que escribir una instrucción de impresión por cada día
 
 > **Un array, en un párrafo.** Un array es una secuencia de tamaño fijo cuyos elementos tienen el mismo tipo y se localizan mediante índices numéricos. Aquí no necesitas conocer cómo los dispone la JVM en memoria. Puedes crearlo indicando su contenido — `String[] week = {"MONDAY", "TUESDAY", "WEDNESDAY"};` — o pidiendo un tamaño para rellenarlo después — `String[] week = new String[3];`. Sus tres posiciones empiezan con `null`; las de `new int[3]` empezarían con cero, porque un `int` no puede ser `null` (la diferencia entre primitivos y referencias se explica en [01-variables-tipos.md](01-variables-tipos.md)). Accedes a un elemento por su **índice**, entre corchetes: `week[0]`. El primer índice es **cero**, así que un array de tres elementos tiene índices 0, 1 y 2, nunca 3. `week.length` indica cuántas posiciones tiene; es un **campo**, sin paréntesis, a diferencia de los métodos `String.length()` y `List.size()`. «Tamaño fijo» significa que no tiene `add()` ni `remove()`, ni puedes convertir un `String[3]` en un `String[4]`. Ese es todo el vocabulario de arrays que necesita este capítulo.
 
-> **Por qué basta con esto ahora.** La pregunta interesante es *cuándo conviene usar un array de tamaño fijo y cuándo una `List` que puede cambiar de tamaño*. Para responderla necesitas conocer las APIs de colecciones. [10-colecciones.md](10-colecciones.md) hace la comparación y enseña `List`, incluida la `List<Employee>` mencionada antes. Aquí el array sirve como ejemplo sencillo para recorrer con un bucle; el tema principal sigue siendo el bucle.
+> **Por qué basta con esto ahora.** La pregunta interesante es _cuándo conviene usar un array de tamaño fijo y cuándo una `List` que puede cambiar de tamaño_. Para responderla necesitas conocer las APIs de colecciones. [10-colecciones.md](10-colecciones.md) hace la comparación y enseña `List`, incluida la `List<Employee>` mencionada antes. Aquí el array sirve como ejemplo sencillo para recorrer con un bucle; el tema principal sigue siendo el bucle.
 
 ### for clásico
 
@@ -309,7 +311,7 @@ for (int i = 0; i < week.length; i++) {
 - `i < week.length` — continúa mientras esto sea verdadero
 - `i++` — incrementa i en 1 tras cada iteración
 
-Traza el orden de la cabecera: `int i = 0` se ejecuta **una sola vez**. Antes de cada pasada, Java comprueba `i < week.length`; si es falso, el bucle termina. Si es verdadero, ejecuta el cuerpo y *después* `i++`. Luego vuelve a comprobar la condición. Por eso el cuerpo ve `i = 0` en la primera pasada, no `i = 1`.
+Traza el orden de la cabecera: `int i = 0` se ejecuta **una sola vez**. Antes de cada pasada, Java comprueba `i < week.length`; si es falso, el bucle termina. Si es verdadero, ejecuta el cuerpo y _después_ `i++`. Luego vuelve a comprobar la condición. Por eso el cuerpo ve `i = 0` en la primera pasada, no `i = 1`.
 
 > **`i` solo existe dentro del bucle.** Como `int i` se declara en la cabecera del `for`, su alcance (scope) termina al cerrar el bucle. Intentar leerla después falla al compilar con `cannot find symbol / symbol: variable i`. Si necesitas conservar el valor final, declara `i` antes: `int i = 0; for (; i < week.length; i++) { ... }`. [01-variables-tipos.md](01-variables-tipos.md) explica la misma regla de alcance para otras variables locales.
 
@@ -433,6 +435,7 @@ do {
 En el `do-while`, `loadPage(page)` representa la descarga de una página de empleados y `process(batch)` representa su procesamiento; son métodos de ejemplo, no llamadas definidas en este capítulo. En la primera pasada se descarga la página 0, se procesa solo si contiene empleados, se incrementa `page` a 1 y después se comprueba si la página descargada estaba vacía. Cuando llega una página vacía, no se procesa ningún empleado y el bucle termina tras esa pasada. `batch` se declara antes del `do`, no dentro del cuerpo, por la regla de alcance de [01-variables-tipos.md](01-variables-tipos.md): una variable declarada dentro de `{ }` deja de estar disponible al cerrar la llave, y la condición `while (...)` está después. Si declaras `batch` dentro del cuerpo, la condición falla con `cannot find symbol`.
 
 > **Un `while` sin avance puede ejecutarse sin fin.** En un `for` clásico, el incremento está en la cabecera; en un `while`, debes escribirlo dentro del cuerpo. Si lo olvidas o un `continue` lo salta, `i` no cambia y la condición sigue siendo verdadera. El ejemplo imprime `MONDAY` una y otra vez hasta que detengas el programa. No aparece un error de compilación ni una excepción.
+>
 > ```java
 > // ❌ MAL — i nunca se incrementa; esto no termina nunca
 > int i = 0;
@@ -440,7 +443,8 @@ En el `do-while`, `loadPage(page)` representa la descarga de una página de empl
 >     System.out.println(week[i]);
 > }
 > ```
-> El hábito que lo evita: cuando escribas la condición del `while`, escribe de inmediato la línea que en algún momento la hará falsa, *antes* de escribir cualquier otra cosa en el cuerpo.
+>
+> El hábito que lo evita: cuando escribas la condición del `while`, escribe de inmediato la línea que en algún momento la hará falsa, _antes_ de escribir cualquier otra cosa en el cuerpo.
 
 > **`do-while` necesita un punto y coma final.** En `} while (!batch.isEmpty());`, el `while (...)` cierra la sentencia que empezó con `do`; por eso lleva `;`. Si lo omites, el compilador muestra `error: ';' expected`. Los otros bucles no llevan ese punto y coma después de la llave de cierre.
 
@@ -450,12 +454,12 @@ Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo 
 
 Ya has visto las cuatro formas. Elige según **qué controla la repetición**: un contador, los elementos que recorres o una condición que se comprueba antes o después.
 
-| Qué es la repetición | Forma | El contrato que hace |
-|---|---|---|
-| **Contada** — un número conocido de pasadas, y necesitas el número de posición | `for` clásico | escribes tú mismo init, condición y paso, así que el conteo es explícito y tuyo si te equivocas |
+| Qué es la repetición                                                           | Forma          | El contrato que hace                                                                                           |
+| ------------------------------------------------------------------------------ | -------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Contada** — un número conocido de pasadas, y necesitas el número de posición | `for` clásico  | escribes tú mismo init, condición y paso, así que el conteo es explícito y tuyo si te equivocas                |
 | **Recorrido de elementos** — visitar cada elemento, la posición es irrelevante | `for` mejorado | el bucle te entrega cada elemento por turno; no hay índice que escribir, así que no hay off-by-one que cometer |
-| **Comprobada antes** — repite mientras algo se cumpla, posiblemente cero veces | `while` | la condición se comprueba *antes* del cuerpo, así que cero ejecuciones es un resultado legal y normal |
-| **Comprobada después** — repite mientras algo se cumpla, pero al menos una vez | `do-while` | el cuerpo se ejecuta *antes* de la primera comprobación, así que una ejecución está garantizada |
+| **Comprobada antes** — repite mientras algo se cumpla, posiblemente cero veces | `while`        | la condición se comprueba _antes_ del cuerpo, así que cero ejecuciones es un resultado legal y normal          |
+| **Comprobada después** — repite mientras algo se cumpla, pero al menos una vez | `do-while`     | el cuerpo se ejecuta _antes_ de la primera comprobación, así que una ejecución está garantizada                |
 
 Lee primero la columna izquierda: describe la necesidad. La central indica el bucle que encaja y la derecha explica qué garantiza. Tanto el `while` como el `for` clásico comprueban la condición antes de cada pasada, incluida la primera. Elige el `for` cuando conoces y controlas un contador; usa `while` cuando esperas a que cambie una condición durante el trabajo. En el `for` mejorado, el bucle te entrega los elementos y no te da un índice.
 
@@ -494,11 +498,11 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 
 Para distinguirlas, comprueba qué parte del código abandonan y cuál es la siguiente instrucción que se ejecuta:
 
-| Sentencia | Qué deja atrás | Dónde aterriza la ejecución después | Dónde es legal |
-|---|---|---|---|
-| `continue` | el resto de la iteración actual | la siguiente comprobación de condición del bucle — en un `for` clásico, después de que se ejecute el paso (`i++`) | solo dentro de un bucle |
-| `break` | el bucle más interno o el `switch` clásico que lo contiene | la primera línea después de ese bucle o `switch`, en el mismo método | dentro de un bucle, o de un `switch` clásico como sentencia |
-| `return` | el **método** entero, bucle incluido | la línea después de la **llamada**, de vuelta en el método que llamó a este | en cualquier parte de un método, excepto dentro de la rama de un switch expression |
+| Sentencia  | Qué deja atrás                                             | Dónde aterriza la ejecución después                                                                               | Dónde es legal                                                                     |
+| ---------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `continue` | el resto de la iteración actual                            | la siguiente comprobación de condición del bucle — en un `for` clásico, después de que se ejecute el paso (`i++`) | solo dentro de un bucle                                                            |
+| `break`    | el bucle más interno o el `switch` clásico que lo contiene | la primera línea después de ese bucle o `switch`, en el mismo método                                              | dentro de un bucle, o de un `switch` clásico como sentencia                        |
+| `return`   | el **método** entero, bucle incluido                       | la línea después de la **llamada**, de vuelta en el método que llamó a este                                       | en cualquier parte de un método, excepto dentro de la rama de un switch expression |
 
 La tercera columna indica la siguiente instrucción que se ejecuta. Tras `continue` o `break`, el método actual sigue desde otro punto. Tras `return`, termina y la ejecución vuelve al método que lo llamó. **`break` y `continue` cambian el recorrido dentro del método actual; `return` sale de él.**
 
@@ -521,11 +525,11 @@ String firstOvertimeName(List<Employee> employees) {
 }
 ```
 
-Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for`, que produce el siguiente `emp` — el bucle queda intacto y sigue corriendo. El `break` envía el control a la primera línea *después* del bucle, que aquí es `return "none";` — el bucle terminó, el método no. Y `return emp.getName()` no hace ninguna de las dos cosas: el método se detiene en esa línea, `return "none";` no se alcanza en absoluto, y el valor viaja de vuelta a quien escribió `String who = firstOvertimeName(team);`.
+Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for`, que produce el siguiente `emp` — el bucle queda intacto y sigue corriendo. El `break` envía el control a la primera línea _después_ del bucle, que aquí es `return "none";` — el bucle terminó, el método no. Y `return emp.getName()` no hace ninguna de las dos cosas: el método se detiene en esa línea, `return "none";` no se alcanza en absoluto, y el valor viaja de vuelta a quien escribió `String who = firstOvertimeName(team);`.
 
 > **`return` termina la llamada actual.** Cada llamada tiene sus parámetros, sus variables locales y la posición a la que debe volver en el método que la hizo. `break` y `continue` cambian la siguiente instrucción dentro de esa misma llamada. `return` termina la llamada y devuelve la ejecución al punto guardado. Por eso no puede continuar después dentro de su bucle. [05-modelo-de-memoria.md](05-modelo-de-memoria.md) explicará cómo se organiza ese estado en la pila de llamadas (call stack).
 
-> **`return;` sin nada detrás sigue siendo un `return`.** Un método declarado `void` — uno que promete no devolver nada — igualmente puede cortarse a sí mismo con un `return;` a secas. Salir de un método antes de tiempo, a propósito, antes de su trabajo principal, es un patrón con nombre propio, y [04-metodos.md](04-metodos.md) lo enseña. El compilador exige la promesa en ambas direcciones: escribir `return algo;` en un método `void` falla con `error: incompatible types: unexpected return value`, y llegar al final de un método que prometía un valor sin devolver ninguno falla con `error: missing return statement`. *Qué* promete un método — su tipo de retorno, sus parámetros, su signature — es el tema de [04-metodos.md](04-metodos.md), y es el siguiente capítulo precisamente porque acabas de conocer la sentencia que termina uno.
+> **`return;` sin nada detrás sigue siendo un `return`.** Un método declarado `void` — uno que promete no devolver nada — igualmente puede cortarse a sí mismo con un `return;` a secas. Salir de un método antes de tiempo, a propósito, antes de su trabajo principal, es un patrón con nombre propio, y [04-metodos.md](04-metodos.md) lo enseña. El compilador exige la promesa en ambas direcciones: escribir `return algo;` en un método `void` falla con `error: incompatible types: unexpected return value`, y llegar al final de un método que prometía un valor sin devolver ninguno falla con `error: missing return statement`. _Qué_ promete un método — su tipo de retorno, sus parámetros, su signature — es el tema de [04-metodos.md](04-metodos.md), y es el siguiente capítulo precisamente porque acabas de conocer la sentencia que termina uno.
 
 > **Cualquier cosa escrita después de `break`, `continue` o `return` en el mismo bloque no compila.** No es un aviso, ni código muerto que la JVM se salte en silencio: `error: unreachable statement`, y la compilación se detiene. Java se niega a conservar líneas que demostrablemente nunca pueden ejecutarse. Trátalo como un accidente útil más que como una molestia — cuando aparece mientras estás moviendo código de sitio, te está diciendo que la salida ocurre antes de lo que pensabas.
 
