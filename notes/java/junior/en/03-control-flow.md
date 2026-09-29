@@ -182,7 +182,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 
 > **With an `enum` selector, use the `switch` expression: the compiler tells you when a case is missing.** An `enum` is a type with a fixed list of named values; [14-enums.md](14-enums.md) will teach it. For example, `enum Shift { MORNING, AFTERNOON, NIGHT }` defines a `Shift` type with only three possible values. A `switch` can be written in two forms, and the next two sections teach them in detail.
 >
-> The first is the **classic `switch`**, written with `case X:`. It is a **statement**: it runs code but produces no value, just like `if/else`. If you forget a value of the `enum`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
+> The first way to write it is the **classic `switch`**, written with `case X:`. It is a **statement**: it runs code but produces no value, just like `if/else`. If you forget a value of the `enum`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
 >
 > ```java
 > Shift shift = Shift.NIGHT;
@@ -199,7 +199,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 > // with shift = NIGHT it prints nothing
 > ```
 >
-> The second is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
+> The second way to write it is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
 >
 > ```java
 > Shift shift = Shift.NIGHT;
