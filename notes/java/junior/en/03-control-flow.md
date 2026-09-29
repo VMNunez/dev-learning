@@ -253,7 +253,7 @@ switch (day) matches "SATURDAY"
       println("Unknown day");       ← runs too!
 ```
 
-The fix puts a `break` at the end of each group of cases:
+The fix consists of putting a `break` at the end of each group of cases:
 
 ```java
 // ✅ BIEN — break stops the fall

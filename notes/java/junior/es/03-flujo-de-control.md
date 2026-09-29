@@ -253,7 +253,7 @@ switch (day) coincide con "SATURDAY"
       println("Unknown day");       ← ¡esto también se ejecuta!
 ```
 
-El arreglo pone un `break` al final de cada grupo de casos:
+El arreglo consiste en poner un `break` al final de cada grupo de casos:
 
 ```java
 // ✅ BIEN — break detiene la caída
