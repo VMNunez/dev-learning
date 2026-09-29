@@ -166,7 +166,17 @@ switch (x) {                      // ❌
 
 En Java 25 el compilador muestra **dos** errores. El primero dice que usar un `long` como selector solo funcionaría con una funcionalidad nueva de Java que en la versión 25 todavía está a prueba (lo que Java llama _preview_) y viene desactivada. En la práctica significa que un `long` no sirve como selector. El segundo dice que `case 3` es una constante `int` y no es compatible con un selector `long`. No necesitas saber más de esa funcionalidad nueva: los dos errores desaparecen con la misma corrección, que es usar un selector de un tipo marcado con ✅ en la tabla de tipos del selector, justo antes de este ejemplo, como `int`.
 
-La última fila de la tabla habla de los objetos que no aparecen en las filas anteriores. `String`, los cuatro wrappers de la segunda fila y los `enum` también son objetos, pero la tabla los admite con etiquetas constantes normales, como `case 5` o `case "MONDAY"`. Un caso que sorprende es `Long`, el wrapper de `long`: no es ninguno de los cuatro wrappers admitidos, así que `Long id = 5L; switch (id) { case 5: ... }` no compila y falla con `incompatible types: int cannot be converted to Long`. Cualquier objeto que no esté en esas filas, como un `Long` o un `Employee`, solo sirve como selector si sus `case` usan **patrones de tipo** (en inglés, _type patterns_). Un patrón de tipo como `case Employee e ->` pregunta si el selector es un `Employee` y, si lo es, te deja usarlo dentro del caso con el nombre `e`. Todavía no necesitas escribir esta forma: los ejemplos de este capítulo solo usan etiquetas constantes, es decir, un número, un `String` o una constante de `enum`. Cómo comprobar el tipo de un objeto dentro de un `if`, con `instanceof`, se enseña en [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md).
+La última fila de la tabla trata del resto de objetos. Algunos objetos sí pueden ser selectores con constantes normales, como `case 5` o `case "MONDAY"`: son `String`, los cuatro wrappers de la segunda fila y los `enum`. Cualquier otro objeto no admite constantes en sus `case`. Eso incluye a `Long`, el wrapper de `long`, porque no es uno de esos cuatro wrappers:
+
+```java
+Long id = 5L;
+switch (id) {                     // ❌
+    case 5 -> System.out.println("five");
+}
+// error: incompatible types: int cannot be converted to Long
+```
+
+Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamado **patrón de tipo** (en inglés, _type pattern_). Por ejemplo, `case Employee e ->` significa «si el selector es un `Employee`, entra en este caso y llámalo `e`». No necesitas escribirlo todavía, porque en este capítulo todos los `case` usan constantes. Cómo comprobar el tipo de un objeto dentro de un `if`, con `instanceof`, se enseña en [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md).
 
 > **Un selector `boolean` no forma parte del Java 25 habitual.** Un `if/else` ya permite elegir entre sus dos valores. Los tipos primitivos como `boolean` y `long` se están explorando para el pattern matching en [JEP 507](https://openjdk.org/jeps/507), pero esa funcionalidad solo está disponible como preview en Java 25. En este capítulo, usa `if/else` para elegir según un booleano y `switch` cuando un selector permitido tenga varios casos con nombre.
 
