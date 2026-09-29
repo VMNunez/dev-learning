@@ -422,7 +422,7 @@ Imagina que tienes los nombres de los días de la semana guardados en una sola v
 > String[] names = new String[3];                        // 2. solo con su tamaño
 > ```
 >
-> Los corchetes de `String[]` indican que la variable es un array de `String`. La primera forma escribe sus valores entre llaves, separados por comas. La segunda indica solo cuántas posiciones tiene, con `new` y el tamaño entre corchetes, para rellenarlas después. Sus tres posiciones empiezan con `null`; las de `new int[3]` empezarían con cero, porque un `int` no puede ser `null` (la diferencia entre primitivos y referencias se explica en [01-variables-tipos.md](01-variables-tipos.md)).
+> Los corchetes de `String[]` indican que la variable es un array de `String`. La primera forma escribe sus valores entre llaves, separados por comas. La segunda indica solo cuántas posiciones tiene, con `new` y el tamaño entre corchetes, para rellenarlas después. Con `new String[3]`, un array de `String`, sus tres posiciones empiezan con `null`. Con `new int[3]`, un array de `int`, empezarían con `0`, porque un `int` no puede ser `null` (la diferencia entre primitivos y referencias se explica en [01-variables-tipos.md](01-variables-tipos.md)).
 >
 > ```java
 > System.out.println(week[0]);       // MONDAY
