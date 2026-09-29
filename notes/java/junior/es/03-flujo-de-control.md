@@ -466,7 +466,27 @@ El `for` ejecuta las tres partes de su cabecera en este orden:
 3. Si la condición `i < week.length` es verdadera, ejecuta el cuerpo del `for`.
 4. Al acabar el cuerpo, ejecuta el paso, `i++`, y vuelve al punto 2. Los pasos 2, 3 y 4 se siguen repitiendo hasta que la condición sea falsa.
 
-Con `week` de tres elementos, `i` vale `0`, `1` y `2` en las tres pasadas. Cuando vale `3`, la condición `3 < 3` es falsa y el bucle termina. Por eso la primera vez que se ejecuta el cuerpo `i` vale `0`, no `1`: el paso solo se ejecuta después del cuerpo.
+Así se ejecuta el bucle de arriba con `week` de tres elementos, fragmento a fragmento:
+
+```
+int i = 0;                                  // paso 1: i vale 0 (solo esta vez)
+
+i < week.length  →  0 < 3  →  true         // paso 2
+System.out.println(i + ": " + week[i]);     // paso 3: imprime "0: MONDAY"
+i++;                                        // paso 4: i vale 1
+
+i < week.length  →  1 < 3  →  true         // paso 2
+System.out.println(i + ": " + week[i]);     // paso 3: imprime "1: TUESDAY"
+i++;                                        // paso 4: i vale 2
+
+i < week.length  →  2 < 3  →  true         // paso 2
+System.out.println(i + ": " + week[i]);     // paso 3: imprime "2: WEDNESDAY"
+i++;                                        // paso 4: i vale 3
+
+i < week.length  →  3 < 3  →  false        // paso 2: el bucle termina
+```
+
+Por eso la primera vez que se ejecuta el cuerpo `i` vale `0`, no `1`: el paso `i++` solo se ejecuta después del cuerpo.
 
 > **`i` solo existe dentro del bucle.** Como `int i` se declara en la cabecera del `for`, su alcance (scope) termina al cerrar el bucle. Intentar leerla después falla al compilar con `cannot find symbol / symbol: variable i`. Si necesitas conservar el valor final, declara `i` antes: `int i = 0; for (; i < week.length; i++) { ... }`. [01-variables-tipos.md](01-variables-tipos.md) explica la misma regla de alcance para otras variables locales.
 

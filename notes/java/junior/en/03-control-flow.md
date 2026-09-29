@@ -466,7 +466,27 @@ The `for` runs the three parts of its header in this order:
 3. If the condition `i < week.length` is true, it runs the body of the `for`.
 4. When the body finishes, it runs the step, `i++`, and goes back to step 2. Steps 2, 3 and 4 keep repeating until the condition is false.
 
-With a three-element `week`, `i` is `0`, `1` and `2` in the three passes. When it is `3`, the condition `3 < 3` is false and the loop ends. That is why the first time the body runs `i` is `0`, not `1`: the step only runs after the body.
+This is how the loop above runs with a three-element `week`, fragment by fragment:
+
+```
+int i = 0;                                  // step 1: i is 0 (only this once)
+
+i < week.length  →  0 < 3  →  true         // step 2
+System.out.println(i + ": " + week[i]);     // step 3: prints "0: MONDAY"
+i++;                                        // step 4: i is 1
+
+i < week.length  →  1 < 3  →  true         // step 2
+System.out.println(i + ": " + week[i]);     // step 3: prints "1: TUESDAY"
+i++;                                        // step 4: i is 2
+
+i < week.length  →  2 < 3  →  true         // step 2
+System.out.println(i + ": " + week[i]);     // step 3: prints "2: WEDNESDAY"
+i++;                                        // step 4: i is 3
+
+i < week.length  →  3 < 3  →  false        // step 2: the loop ends
+```
+
+That is why the first time the body runs `i` is `0`, not `1`: the step `i++` only runs after the body.
 
 > **`i` dies with the loop.** Because `int i` is declared inside the `for` parentheses, its scope is the loop and nothing else — the moment the loop finishes, the name is gone. Reading it afterwards fails at compile time with `cannot find symbol / symbol: variable i`. This is deliberate: a counter is bookkeeping for the loop, not information for the rest of the method. If you genuinely need the final value after the loop (rare — usually it means you wanted a `while`), declare the variable *before* the loop instead: `int i = 0; for (; i < week.length; i++) { ... }`. Scope in general is covered in [01-variables-types.md](01-variables-types.md) — same rule, applied to the loop header.
 
