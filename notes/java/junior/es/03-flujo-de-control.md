@@ -166,7 +166,7 @@ switch (x) {                      // ❌
 
 En Java 25 el compilador muestra **dos** errores. El primero dice que usar un `long` como selector solo funcionaría con una funcionalidad nueva de Java que en la versión 25 todavía está a prueba (lo que Java llama _preview_) y viene desactivada. En la práctica significa que un `long` no sirve como selector. El segundo dice que `case 3` es una constante `int` y no es compatible con un selector `long`. No necesitas saber más de esa funcionalidad nueva: los dos errores desaparecen con la misma corrección, que es usar un selector de un tipo marcado con ✅ en la tabla de tipos del selector, justo antes de este ejemplo, como `int`.
 
-La última fila de la tabla trata del resto de objetos. Algunos objetos sí pueden ser selectores con constantes normales, como `case 5` o `case "MONDAY"`: son `String`, los cuatro wrappers de la segunda fila y los `enum`. Cualquier otro objeto no admite constantes en sus `case`. Eso incluye a `Long`, el wrapper de `long`, porque no es uno de esos cuatro wrappers:
+La última fila de la tabla se refiere a los objetos que no aparecen en las filas de arriba. Los objetos que sí pueden ser selectores con constantes normales, como `case 5` o `case "MONDAY"`, son estos: `String`, `Byte`, `Short`, `Character`, `Integer` y cualquier `enum`. Cualquier otro objeto no admite constantes en sus `case`. Eso incluye a `Long`, el wrapper de `long`, porque no está en esa lista:
 
 ```java
 Long id = 5L;
