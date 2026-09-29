@@ -216,7 +216,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 
 ### Classic switch (statement)
 
-The classic form runs the code of the case that matches. You must write `break` at the end of each case — without it, execution falls into the next case and runs that code too, **even if it does not match**. This behaviour has a name: **fall-through** (literally "falling down") — control "falls" from one case to the next without stopping.
+The classic form starts executing at the case whose label matches the value of the selector. If that case has instructions and does not end with `break`, Java carries on with the instructions of the next case, **even if its label does not match**. This behaviour is called **fall-through**: execution falls from one case to the next without a new comparison.
 
 The mechanism is worth stating plainly, because it explains everything else here: a `case` label is not the start of a separate block, it is only a **jump target**. Java jumps to the matching label and then keeps executing straight down through whatever follows it, labels included, until something stops it. `break` is that something.
 
