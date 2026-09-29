@@ -155,8 +155,6 @@ El valor entre paréntesis de `switch` se llama **selector**. A diferencia de un
 | `long`, `float`, `double`, `boolean`          | ❌                                     | el compilador los rechaza                          |
 | cualquier otro objeto (`Employee`, `Object`…) | ✅ _solo_ con type patterns (Java 21+) | `case Employee e ->` — no con etiquetas constantes |
 
-Cómo leer esta tabla: la columna "¿Permitido?" habla del valor dentro de `switch (...)`, y las dos últimas filas son las que sorprenden. Hacer switch sobre un `long` primitivo no compila, ni siquiera con un valor tan pequeño como `3`:
-
 ```java
 long x = 3L;
 switch (x) {                      // ❌
@@ -166,7 +164,9 @@ switch (x) {                      // ❌
 // error: constant label of type int is not compatible with switch selector type long
 ```
 
-En Java 25 el compilador muestra **dos** errores. El primero menciona los patrones para tipos primitivos, una funcionalidad aún en preview y desactivada por defecto. El segundo señala el problema concreto del ejemplo: `case 3` es una constante `int` y no es compatible con el selector `long`. Lee ambos mensajes antes de corregir el código.
+En Java 25 el compilador muestra **dos** errores, y cada uno señala un problema distinto. El segundo es el que esperas: `case 3` es una constante `int` y no es compatible con un selector `long`. El primero no habla de la etiqueta, sino del propio selector, y necesita algo más de contexto.
+
+Un **patrón** es un `case` que, en vez de comparar el selector con un valor fijo, pregunta de qué tipo es, como `case Employee e ->` en la última fila de la tabla. Java está ampliando los patrones a los tipos primitivos, y esa misma ampliación es la única que permitiría usar un `long` como selector de `switch`. En Java 25 esa funcionalidad está en **preview**: ya viene incluida en el JDK para que se pueda probar, pero todavía no es definitiva y puede cambiar en la próxima versión. Por eso el compilador la rechaza salvo que la actives a propósito, y así lo dice la línea que `javac` imprime justo debajo del primer error: `(use --enable-preview to enable primitive patterns)`. Puedes comprobar que este error depende solo del selector: si cambias la etiqueta a `case 3L`, el segundo error desaparece y el primero sigue ahí. La corrección no es activar la preview, sino usar un selector de un tipo que la tabla admite, como `int`, o una cadena de `if/else`.
 
 Un selector de tipo objeto solo se permite en la forma con patrones (`case String s ->`), nunca con etiquetas constantes. `Long id = 5L; switch (id) { case 5: ... }` falla con `incompatible types: int cannot be converted to Long`.
 

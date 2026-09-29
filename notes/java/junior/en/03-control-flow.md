@@ -155,8 +155,6 @@ Use `switch` when you have many possible values for **one** variable. A chain of
 | `long`, `float`, `double`, `boolean` | ❌ | rejected by the compiler |
 | any other object (`Employee`, `Object`…) | ✅ *only* with type patterns (Java 21+) | `case Employee e ->` — not constant labels |
 
-How to read this table: the "Allowed?" column is about the value in `switch (...)`, and the last two rows are the ones that surprise people. Switching on a primitive `long` does **not** compile, even when the value is as small as `3`:
-
 ```java
 long x = 3L;
 switch (x) {                      // ❌
@@ -166,7 +164,9 @@ switch (x) {                      // ❌
 // error: constant label of type int is not compatible with switch selector type long
 ```
 
-On Java 25 the compiler answers with **two** errors at once. The first line is the confusing one. Switching on `long`, `double` or `boolean` is part of a language feature that is not released yet, so the compiler assumes you were reaching for that feature and tells you it is switched off. The second line names the real failure: the label `3` is an `int` constant, and it cannot be compared against a `long` selector. Read past the first line, and the second tells you what actually happened.
+On Java 25 the compiler shows **two** errors, and each one points at a different problem. The second is the one you expect: `case 3` is an `int` constant and is not compatible with a `long` selector. The first is not about the label but about the selector itself, and it needs a little more context.
+
+A **pattern** is a `case` that, instead of comparing the selector with a fixed value, asks what type it is, like `case Employee e ->` in the last row of the table. Java is extending patterns to primitive types, and that same extension is the only one that would allow a `long` as a `switch` selector. In Java 25 that feature is in **preview**: it already ships inside the JDK so people can try it, but it is not final yet and may change in the next release. That is why the compiler rejects it unless you turn it on deliberately, and the line `javac` prints right under the first error says so: `(use --enable-preview to enable primitive patterns)`. You can check that this error depends only on the selector: if you change the label to `case 3L`, the second error disappears and the first one stays. The fix is not to enable the preview, but to use a selector of a type the table allows, such as `int`, or an `if/else` chain.
 
 An object selector is allowed only in the pattern form (`case String s ->`), never with constant labels. `Long id = 5L; switch (id) { case 5: ... }` fails with `incompatible types: int cannot be converted to Long`.
 
