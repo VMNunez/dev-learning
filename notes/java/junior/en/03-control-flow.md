@@ -427,6 +427,8 @@ Imagine you have the names of the days of the week stored in a single variable, 
 >
 > The brackets in `String[]` and `int[]` say that the variable is an array of `String` or of `int`. The first form writes its values between braces, separated by commas. The second states only how many positions it has, with `new` and the size between brackets, so you can fill them later. With `new String[3]`, an array of `String`, its three positions start out holding `null`. With `new int[3]`, an array of `int`, they would start at `0`, because an `int` cannot be `null`. This is what you saw in [01-variables-types.md](01-variables-types.md), in the section _Reference variables and `null`_: a primitive variable, such as an `int`, holds the value directly, while a variable of an object, such as a `String`, holds a reference to the memory address where that object lives. `null` means that reference does not point to any object yet.
 >
+> Once the array is created, you need two things to walk it with a loop: read a specific element, by writing its position between brackets after the array's name, and know how many positions it has, with `.length`:
+>
 > ```java
 > System.out.println(week[0]);       // MONDAY
 > System.out.println(week.length);   // 3
