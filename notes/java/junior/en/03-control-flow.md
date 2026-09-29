@@ -164,9 +164,7 @@ switch (x) {                      // ❌
 // error: constant label of type int is not compatible with switch selector type long
 ```
 
-On Java 25 the compiler shows **two** errors, and each one points at a different problem. The second is the one you expect: `case 3` is an `int` constant and is not compatible with a `long` selector. The first is not about the label but about the selector itself, and it needs a little more context.
-
-A **pattern** is a `case` that, instead of comparing the selector with a fixed value, asks what type it is, like `case Employee e ->` in the last row of the table. Java is extending patterns to primitive types, and that same extension is the only one that would allow a `long` as a `switch` selector. In Java 25 that feature is in **preview**: it already ships inside the JDK so people can try it, but it is not final yet and may change in the next release. That is why the compiler rejects it unless you turn it on deliberately, and the line `javac` prints right under the first error says so: `(use --enable-preview to enable primitive patterns)`. You can check that this error depends only on the selector: if you change the label to `case 3L`, the second error disappears and the first one stays. The fix is not to enable the preview, but to use a selector of a type the table allows, such as `int`, or an `if/else` chain.
+On Java 25 the compiler shows **two** errors. The first says that using a `long` as the selector would only work with a new Java feature that, in version 25, is still being tested (what Java calls a _preview_) and is switched off. In practice it means a `long` does not work as a selector. The second says that `case 3` is an `int` constant and is not compatible with a `long` selector. You do not need to know more about that new feature: both errors go away with the same fix, which is to use a selector of a type the table allows, such as `int`, or an `if/else` chain.
 
 An object selector is allowed only in the pattern form (`case String s ->`), never with constant labels. `Long id = 5L; switch (id) { case 5: ... }` fails with `incompatible types: int cannot be converted to Long`.
 
