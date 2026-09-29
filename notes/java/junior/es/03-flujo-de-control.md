@@ -109,7 +109,7 @@ if (hours < 0 || hours > 24) {
 
 > 📖 Docs: [Baeldung — Ternary Operator in Java](https://www.baeldung.com/java-ternary-operator) → leer: la sección de sintaxis y la de anidamiento — incluyendo por qué anidar dos ternarios suele ser un error.
 
-Los ejemplos anteriores imprimen una etiqueta, pero a veces necesitas **guardar** la etiqueta elegida para usarla después. Cuando la etiqueta que quieres guardar solo puede ser una de dos, por ejemplo `"Overtime"` o `"Normal"`, una expresión ternaria elige cuál y la coloca directamente a la derecha del `=`. Su sintaxis es igual que en JavaScript:
+Los ejemplos anteriores imprimen una etiqueta. El operador ternario se usa en otro caso: cuando tienes que elegir entre dos valores y quieres **guardar** el elegido en una variable para usarlo después. Por ejemplo, guardar en `label` la etiqueta `"Overtime"` o la etiqueta `"Normal"`, según las horas. El ternario hace la elección y deja el valor elegido directamente a la derecha del `=`. Su sintaxis es igual que en JavaScript:
 
 ```java
 String label = hours > 8 ? "Overtime" : "Normal";

@@ -109,7 +109,7 @@ if (hours < 0 || hours > 24) {
 
 > 📖 Docs: [Baeldung — Ternary Operator in Java](https://www.baeldung.com/java-ternary-operator) → read: the syntax section and the nesting one — including why nesting two ternaries is usually a mistake.
 
-The previous examples print a label, but sometimes you need to **store** the chosen label so another line can use it. When the label you want to store can only be one of two, for example `"Overtime"` or `"Normal"`, a ternary expression chooses which one and puts it directly on the right of `=`. Its syntax matches JavaScript:
+The previous examples print a label. The ternary operator is used in a different case: when you have to choose between two values and you want to **store** the chosen one in a variable to use later. For example, storing in `label` either the label `"Overtime"` or the label `"Normal"`, depending on the hours. The ternary makes the choice and leaves the chosen value directly on the right of `=`. Its syntax matches JavaScript:
 
 ```java
 String label = hours > 8 ? "Overtime" : "Normal";
