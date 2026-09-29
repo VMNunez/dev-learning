@@ -390,11 +390,11 @@ int dailyLimit = switch (day) {
 >     switch (day) {
 >         case "SATURDAY":
 >             System.out.println("Weekend");
->             return;                            // leaves the whole method
+>             return;                            // leaves the whole printShift method
 >         default:
 >             System.out.println("Weekday");
 >     }
->     System.out.println("Shift checked");       // with "SATURDAY" it does not run
+>     System.out.println("Shift checked");       // with "SATURDAY" it does not run: return already left printShift
 > }
 >
 > // printLimit("MONDAY") prints:
