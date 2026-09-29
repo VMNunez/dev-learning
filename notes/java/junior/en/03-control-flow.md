@@ -105,18 +105,11 @@ if (hours < 0 || hours > 24) {
 
 `hours < 0 || hours > 24` is `true` for both invalid values: both when `hours` is less than 0 and when it is greater than 24. So they stop at the first branch. A real value makes that test `false` and moves on to the same three branches as before, which now only ever see hours between 0 and 24. So the whole ordering rule for an `if / else if` chain is: **impossible values first, then the narrowest real case, widening as you go down, and the `else` last for whatever is left.**
 
-> **Why not put the invalid-value check in the `else` at the end, instead of at the start?** Because with `30` Java would never reach that `else`. Follow `hours = 30` through the original chain, the one that does not check for invalid values:
->
-> 1. Java tests `30 > 8`. It is `true`, so it runs that branch and prints `Overtime`.
-> 2. Since it has already found a `true` condition, it skips every branch below it, `else` included.
->
-> A check can only catch a value that gets as far as that check, and in an `if / else if` chain Java stops at the first condition that is `true`. That is why the invalid-value check has to come first: it is the only position every value passes through.
-
 ### Ternary operator
 
 > 📖 Docs: [Baeldung — Ternary Operator in Java](https://www.baeldung.com/java-ternary-operator) → read: the syntax section and the nesting one — including why nesting two ternaries is usually a mistake.
 
-The previous examples print a label, but sometimes you need to **store** the chosen label so another line can use it. For a choice between two short values, a ternary expression puts that value directly on the right of `=`. Its syntax matches JavaScript:
+The previous examples print a label, but sometimes you need to **store** the chosen label so another line can use it. When the label you want to store can only be one of two, for example `"Overtime"` or `"Normal"`, a ternary expression chooses which one and puts it directly on the right of `=`. Its syntax matches JavaScript:
 
 ```java
 String label = hours > 8 ? "Overtime" : "Normal";

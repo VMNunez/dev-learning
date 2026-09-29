@@ -105,18 +105,11 @@ if (hours < 0 || hours > 24) {
 
 `hours < 0 || hours > 24` es `true` para los dos valores inválidos: tanto si `hours` es menor que 0 como si es mayor que 24. Así que Java ejecuta la primera rama y no llega a las demás. Una cifra entre 0 y 24 continúa por las tres ramas normales. En una cadena `if / else if`, pon **primero los valores inválidos; después, los casos válidos del más específico al más general; y al final, el `else` para lo que quede.**
 
-> **¿Por qué no poner la comprobación de valores inválidos en el `else` del final, en vez de al principio?** Porque con `30` Java nunca llegaría a ese `else`. Sigue el recorrido de `hours = 30` en la cadena original, la que no comprueba los valores inválidos:
->
-> 1. Java comprueba `30 > 8`. Es `true`, así que ejecuta esa rama e imprime `Overtime`.
-> 2. Como ya ha encontrado una condición `true`, se salta todas las ramas de abajo, `else` incluido.
->
-> Una comprobación solo puede detectar un valor que llegue hasta ella, y en una cadena `if / else if` Java se detiene en la primera condición que sea `true`. Por eso la comprobación de valores inválidos tiene que ir la primera: es la única posición por la que pasan todos los valores.
-
 ### Operador ternario
 
 > 📖 Docs: [Baeldung — Ternary Operator in Java](https://www.baeldung.com/java-ternary-operator) → leer: la sección de sintaxis y la de anidamiento — incluyendo por qué anidar dos ternarios suele ser un error.
 
-Los ejemplos anteriores imprimen una etiqueta, pero a veces necesitas **guardar** la etiqueta elegida para usarla después. Si eliges entre dos valores breves, una expresión ternaria coloca el valor directamente a la derecha del `=`. Su sintaxis es igual que en JavaScript:
+Los ejemplos anteriores imprimen una etiqueta, pero a veces necesitas **guardar** la etiqueta elegida para usarla después. Cuando la etiqueta que quieres guardar solo puede ser una de dos, por ejemplo `"Overtime"` o `"Normal"`, una expresión ternaria elige cuál y la coloca directamente a la derecha del `=`. Su sintaxis es igual que en JavaScript:
 
 ```java
 String label = hours > 8 ? "Overtime" : "Normal";
