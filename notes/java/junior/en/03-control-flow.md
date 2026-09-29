@@ -404,7 +404,7 @@ int dailyLimit = switch (day) {
 > // Weekend
 > ```
 
-When you need to **produce a value** from several cases, prefer the switch expression: the compiler checks that it covers every possible input. When you only need to perform an action, a switch statement still fits; the statement and expression forms answer different questions.
+When you need to **produce a value** from several cases, choose the `switch` expression. When you only need to perform an action, a `switch` statement also fits; the two forms answer different needs.
 
 ---
 
