@@ -37,7 +37,7 @@ Para seguir los ejemplos, lee `hours` como un `int` —por ejemplo, `10`— y `d
 
 > 📖 Docs: [Baeldung — If-Else Statement in Java](https://www.baeldung.com/java-if-else) → leer: "Syntax of If-Else" y "Example of If-Else If-Else" — la condición booleana y la forma en cadena.
 
-Cada anotación del registro necesita una etiqueta según sus horas: si son 10, el programa debe imprimir `Overtime` (horas extra); si son 4, `Worked` (una jornada normal).
+Cada anotación del registro necesita una etiqueta según sus horas: si son 10(TODO: SI SON MAS DE 8), el programa debe imprimir `Overtime` (horas extra); si son 4(TODO: SI SON ENTRE 0 Y 8), `Worked` (una jornada normal).(TODO: Y SIN SON 0)
 
 Lo que necesitas es que el programa sepa qué etiqueta mostrar según el valor de `hours`. Eso es lo que hace `if / else if`: Java comprueba las condiciones de arriba abajo, ejecuta el primer bloque cuya condición sea `true` y omite los demás. Si ninguna es verdadera, ejecuta el bloque `else`, siempre que exista.
 
