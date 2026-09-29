@@ -434,9 +434,9 @@ Imagina que tienes los nombres de los días de la semana guardados en una sola v
 > System.out.println(week.length);   // 3
 > ```
 >
-> Accedes a un elemento por su **índice**, entre corchetes: `week[0]`. El primer índice es **cero**, así que un array de tres elementos tiene índices 0, 1 y 2, nunca 3. `week.length` indica cuántas posiciones tiene; es un **campo**, sin paréntesis, a diferencia de los métodos `String.length()` y `List.size()`. Que un array sea de tamaño fijo significa que, una vez creado, no puedes agregar ni eliminar elementos: no tiene métodos como `add()` o `remove()`, y un array de tres posiciones, como `new String[3]`, no se puede convertir en uno de cuatro. Lo que sí puedes hacer es cambiar el valor de una posición que ya existe, por ejemplo `week[0] = "SUNDAY";`.
+> Accedes a un elemento por su **índice**, entre corchetes: `week[0]`. El primer índice es **cero**, así que un array de tres elementos tiene índices 0, 1 y 2, nunca 3. `week.length` indica cuántas posiciones tiene; es un **campo**, sin paréntesis, a diferencia de los métodos `String.length()` y `List.size()`. Que un array sea de tamaño fijo significa que, una vez creado, no puedes agregar ni eliminar elementos: no tiene métodos como `add()` o `remove()`. Lo que sí puedes hacer es cambiar el valor de una posición que ya existe, por ejemplo `week[0] = "SUNDAY";`.
 
-> **Por qué basta con esto ahora.** La pregunta interesante es _cuándo conviene usar un array de tamaño fijo y cuándo una `List` que puede cambiar de tamaño_. Para responderla necesitas conocer las APIs de colecciones. [10-colecciones.md](10-colecciones.md) hace la comparación y enseña `List`, incluida la `List<Employee>` mencionada antes. Aquí el array sirve como ejemplo sencillo para recorrer con un bucle; el tema principal sigue siendo el bucle.
+> **Por qué basta con esto ahora.** La pregunta interesante es _cuándo conviene usar un array de tamaño fijo y cuándo una `List` que puede cambiar de tamaño_. Para responderla necesitas conocer las colecciones. [10-colecciones.md](10-colecciones.md) hace la comparación y enseña `List`, incluida la `List<Employee>` mencionada antes. Aquí el array sirve como ejemplo sencillo para recorrer con un bucle.
 
 ### for clásico
 
@@ -455,11 +455,18 @@ for (int i = 0; i < week.length; i++) {
 // 2: WEDNESDAY
 ```
 
-- `int i = 0` — empieza en el índice 0
-- `i < week.length` — continúa mientras esto sea verdadero
+- `int i = 0` — empieza en el índice 0, es decir, en el primer elemento del array
+- `i < week.length` — continúa mientras esto sea verdadero, es decir, hasta el último elemento del array, el de índice `week.length - 1`
 - `i++` — incrementa i en 1 tras cada iteración
 
-Traza el orden de la cabecera: `int i = 0` se ejecuta **una sola vez**. Antes de cada pasada, Java comprueba `i < week.length`; si es falso, el bucle termina. Si es verdadero, ejecuta el cuerpo y _después_ `i++`. Luego vuelve a comprobar la condición. Por eso el cuerpo ve `i = 0` en la primera pasada, no `i = 1`.
+El `for` ejecuta las tres partes de su cabecera en este orden:
+
+1. `int i = 0` fija la posición de inicio. Se ejecuta una sola vez, al entrar en el bucle.
+2. Comprueba la condición `i < week.length`. Si es falsa, el bucle se acaba.
+3. Si es verdadera, ejecuta el cuerpo del `for`.
+4. Al acabar el cuerpo, ejecuta el paso, `i++`, y vuelve al punto 2.
+
+Con `week` de tres elementos, `i` vale `0`, `1` y `2` en las tres pasadas. Cuando vale `3`, la condición `3 < 3` es falsa y el bucle termina. Por eso la primera vez que se ejecuta el cuerpo `i` vale `0`, no `1`: el paso solo se ejecuta después del cuerpo.
 
 > **`i` solo existe dentro del bucle.** Como `int i` se declara en la cabecera del `for`, su alcance (scope) termina al cerrar el bucle. Intentar leerla después falla al compilar con `cannot find symbol / symbol: variable i`. Si necesitas conservar el valor final, declara `i` antes: `int i = 0; for (; i < week.length; i++) { ... }`. [01-variables-tipos.md](01-variables-tipos.md) explica la misma regla de alcance para otras variables locales.
 

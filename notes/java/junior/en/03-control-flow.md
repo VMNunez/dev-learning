@@ -434,9 +434,9 @@ Imagine you have the names of the days of the week stored in a single variable, 
 > System.out.println(week.length);   // 3
 > ```
 >
-> You reach an element by its **index**, between brackets: `week[0]`. The first index is **zero**, so an array of three elements has indexes 0, 1 and 2, never 3. `week.length` tells you how many positions it has; it is a **field**, with no parentheses, unlike the methods `String.length()` and `List.size()`. That an array has a fixed size means that, once it is created, you cannot add or remove elements: it has no methods like `add()` or `remove()`, and an array of three positions, such as `new String[3]`, cannot be turned into one of four. What you can do is change the value of a position that already exists, for example `week[0] = "SUNDAY";`.
+> You reach an element by its **index**, between brackets: `week[0]`. The first index is **zero**, so an array of three elements has indexes 0, 1 and 2, never 3. `week.length` tells you how many positions it has; it is a **field**, with no parentheses, unlike the methods `String.length()` and `List.size()`. That an array has a fixed size means that, once it is created, you cannot add or remove elements: it has no methods like `add()` or `remove()`. What you can do is change the value of a position that already exists, for example `week[0] = "SUNDAY";`.
 
-> **Why you are given only that much.** The interesting question about arrays is not their syntax, it is *when a fixed row of slots is still the right structure and when a resizable `List` replaces it* — and that question cannot be answered before you have the collection APIs to compare against. [10-collections.md](10-collections.md) answers it in full, and that is also where `List` itself — the `List<Employee>` introduced above — is properly taught. Here an array is deliberate scaffolding: the simplest concrete thing a loop can walk, so the loop stays the subject.
+> **Why this is enough for now.** The interesting question is _when to use a fixed-size array and when a `List` that can change size_. To answer it you need to know collections. [10-collections.md](10-collections.md) makes the comparison and teaches `List`, including the `List<Employee>` mentioned earlier. Here the array serves as a simple example to walk with a loop.
 
 ### Classic for
 
@@ -455,11 +455,18 @@ for (int i = 0; i < week.length; i++) {
 // 2: WEDNESDAY
 ```
 
-- `int i = 0` — start at index 0
-- `i < week.length` — keep going while this is true
+- `int i = 0` — start at index 0, that is, at the first element of the array
+- `i < week.length` — keep going while this is true, that is, up to the last element of the array, the one at index `week.length - 1`
 - `i++` — increment i by 1 after each iteration
 
-The order the three parts actually run in is the part people get wrong, so trace it once: `init` runs **once**, before anything else. Then, before every iteration, `condition` is checked; if it is false the loop ends immediately and the body never runs again. The body runs. *Then* `step` runs — at the **end** of the iteration, not the start. Then back to `condition`. That is why the body sees `i = 0` on the first pass, not `i = 1`.
+The `for` runs the three parts of its header in this order:
+
+1. `int i = 0` sets the starting position. It runs only once, when the loop is entered.
+2. It checks the condition `i < week.length`. If it is false, the loop ends.
+3. If it is true, it runs the body of the `for`.
+4. When the body finishes, it runs the step, `i++`, and goes back to step 2.
+
+With a three-element `week`, `i` is `0`, `1` and `2` in the three passes. When it is `3`, the condition `3 < 3` is false and the loop ends. That is why the first time the body runs `i` is `0`, not `1`: the step only runs after the body.
 
 > **`i` dies with the loop.** Because `int i` is declared inside the `for` parentheses, its scope is the loop and nothing else — the moment the loop finishes, the name is gone. Reading it afterwards fails at compile time with `cannot find symbol / symbol: variable i`. This is deliberate: a counter is bookkeeping for the loop, not information for the rest of the method. If you genuinely need the final value after the loop (rare — usually it means you wanted a `while`), declare the variable *before* the loop instead: `int i = 0; for (; i < week.length; i++) { ... }`. Scope in general is covered in [01-variables-types.md](01-variables-types.md) — same rule, applied to the loop header.
 
