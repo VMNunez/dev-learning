@@ -371,6 +371,38 @@ int dailyLimit = switch (day) {
 ```
 
 > **`yield` no es `return`.** `return` sale del _método_ entero. `yield` solo sale de la rama y entrega su valor a la expresión `switch`; después se ejecuta la siguiente línea del mismo método. Escribir `return base;` dentro de una expresión `switch` no compila (`attempt to return out of a switch expression`): las dos palabras no son intercambiables.
+>
+> La diferencia se ve en la línea que va después del `switch`. Con `yield`, esa línea se ejecuta. Con `return`, el método termina y esa línea nunca llega a ejecutarse:
+>
+> ```java
+> void printLimit(String day) {
+>     int dailyLimit = switch (day) {
+>         case "SATURDAY", "SUNDAY" -> 0;
+>         default -> {
+>             int base = 8;
+>             yield base;                        // sale solo de la rama: dailyLimit vale 8
+>         }
+>     };
+>     System.out.println("Limit: " + dailyLimit);   // se ejecuta
+> }
+>
+> void printShift(String day) {
+>     switch (day) {
+>         case "SATURDAY":
+>             System.out.println("Weekend");
+>             return;                            // sale del método entero
+>         default:
+>             System.out.println("Weekday");
+>     }
+>     System.out.println("Shift checked");       // con "SATURDAY" no se ejecuta
+> }
+>
+> // printLimit("MONDAY") imprime:
+> // Limit: 8
+>
+> // printShift("SATURDAY") imprime:
+> // Weekend
+> ```
 
 Cuando necesites **producir un valor** a partir de varios casos, prefiere la expresión `switch`: el compilador comprueba que cubra todas las entradas posibles. Cuando solo necesites realizar una acción, una sentencia `switch` también encaja; las dos formas responden a necesidades distintas.
 

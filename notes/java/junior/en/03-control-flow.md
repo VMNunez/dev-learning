@@ -371,6 +371,38 @@ int dailyLimit = switch (day) {
 ```
 
 > **`yield` is not `return`.** `return` exits the whole *method*. `yield` exits only the switch arm and gives its value to the switch expression, and execution carries on with the next line of the same method. Writing `return base;` inside a switch expression does not compile at all (`attempt to return out of a switch expression`) — the two words look interchangeable and are not.
+>
+> The difference shows in the line that comes after the `switch`. With `yield`, that line runs. With `return`, the method ends and that line never runs:
+>
+> ```java
+> void printLimit(String day) {
+>     int dailyLimit = switch (day) {
+>         case "SATURDAY", "SUNDAY" -> 0;
+>         default -> {
+>             int base = 8;
+>             yield base;                        // leaves only the branch: dailyLimit is 8
+>         }
+>     };
+>     System.out.println("Limit: " + dailyLimit);   // runs
+> }
+>
+> void printShift(String day) {
+>     switch (day) {
+>         case "SATURDAY":
+>             System.out.println("Weekend");
+>             return;                            // leaves the whole method
+>         default:
+>             System.out.println("Weekday");
+>     }
+>     System.out.println("Shift checked");       // with "SATURDAY" it does not run
+> }
+>
+> // printLimit("MONDAY") prints:
+> // Limit: 8
+>
+> // printShift("SATURDAY") prints:
+> // Weekend
+> ```
 
 When you need to **produce a value** from several cases, prefer the switch expression: the compiler checks that it covers every possible input. When you only need to perform an action, a switch statement still fits; the statement and expression forms answer different questions.
 
