@@ -82,7 +82,7 @@ if (hours > 8) {
 // hours = -3  imprime: Absent
 ```
 
-Traza `hours = 30`. La primera comprobación es `30 > 8`. Es `true`, así que Java ejecuta el primer bloque, imprime `Overtime` y se salta todas las ramas de abajo. Ahora traza `-3`. `-3 > 8` es `false` y `-3 > 0` es `false`, así que se ejecuta el `else` e imprime `Absent`. Ninguna de las dos respuestas es un error: el programa sigue adelante y trata un error de tecleo como si fuera un día real de horas extra o una ausencia real. Ese es el bug oculto. Las ramas amplias (`> 8`, y el `else` que recoge todo lo que sobra) se escribieron para días reales, y también cubren los valores imposibles.
+Si `hours`, en vez de valer `-3`, pasa a valer `30`, la primera comprobación es `30 > 8`. Es `true`, así que Java ejecuta el primer bloque, imprime `Overtime` y se salta todas las ramas de abajo. Ninguna de las dos respuestas es un error: el programa sigue adelante y trata un error de tecleo como si fuera un día real de horas extra o una ausencia real. Ese es el bug oculto. Las ramas amplias (`> 8`, y el `else` que recoge todo lo que sobra) se escribieron para días reales, y también cubren los valores imposibles.
 
 Comprueba los valores inválidos **primero**, antes de que una rama más amplia los acepte:
 

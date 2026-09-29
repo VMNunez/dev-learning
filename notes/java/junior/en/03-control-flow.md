@@ -82,7 +82,7 @@ if (hours > 8) {
 // hours = -3  prints: Absent
 ```
 
-Trace `hours = 30`. The first test is `30 > 8`. It is `true`, so Java runs the first block, prints `Overtime` and skips every branch below it. Now trace `-3`. `-3 > 8` is `false` and `-3 > 0` is `false`, so the `else` runs and prints `Absent`. Neither answer is an error: the program keeps going and treats a typing mistake as a real overtime day or a real absence. That is the hidden bug. The broad branches (`> 8`, and the `else` that catches everything left over) were written for real days, and they cover the impossible values too.
+If `hours`, instead of being `-3`, becomes `30`, the first test is `30 > 8`. It is `true`, so Java runs the first block, prints `Overtime` and skips every branch below it. Neither answer is an error: the program keeps going and treats a typing mistake as a real overtime day or a real absence. That is the hidden bug. The broad branches (`> 8`, and the `else` that catches everything left over) were written for real days, and they cover the impossible values too.
 
 The fix is to test for the exceptional case **first**, so no broader branch gets a chance to claim it:
 
