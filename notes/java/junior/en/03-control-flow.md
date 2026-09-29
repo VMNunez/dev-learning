@@ -257,6 +257,8 @@ The fix consists of putting a `break` at the end of each group of cases:
 
 ```java
 // ✅ BIEN — break stops the fall
+String day = "SATURDAY";
+
 switch (day) {
     case "MONDAY":
     case "TUESDAY":
@@ -272,6 +274,8 @@ switch (day) {
     default:
         System.out.println("Unknown day");
 }
+// prints:
+// Weekend shift
 ```
 
 **Several `case` labels can share the same code.** If you write several labels in a row with no instructions between them, they all lead to the same block. That is what the fixed example does: there are no instructions between `case "MONDAY":` and `case "FRIDAY":`, so all five days reach the same `println` and share a single `break`. This grouping is an intentional fall-through, and it is the only correct use of that behaviour. The bug appears when a branch that does have instructions carries on into the next one because its `break` was forgotten. In the `switch` expression of the next section, the same grouping is written on one line, with the labels separated by commas: `case "SATURDAY", "SUNDAY" ->`.

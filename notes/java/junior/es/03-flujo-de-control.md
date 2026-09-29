@@ -257,6 +257,8 @@ El arreglo consiste en poner un `break` al final de cada grupo de casos:
 
 ```java
 // ✅ BIEN — break detiene la caída
+String day = "SATURDAY";
+
 switch (day) {
     case "MONDAY":
     case "TUESDAY":
@@ -272,6 +274,8 @@ switch (day) {
     default:
         System.out.println("Unknown day");
 }
+// imprime:
+// Weekend shift
 ```
 
 **Varios `case` pueden compartir el mismo código.** Si escribes varias etiquetas seguidas sin instrucciones entre ellas, todas llevan al mismo bloque. Es lo que hace el ejemplo corregido: entre `case "MONDAY":` y `case "FRIDAY":` no hay instrucciones, así que los cinco días llegan al mismo `println` y comparten un solo `break`. Esta agrupación es un fall-through intencionado, y es el único uso correcto de ese comportamiento. El bug aparece cuando una rama que sí tiene instrucciones continúa en la siguiente porque se olvidó el `break`. En la expresión `switch` de la sección siguiente, la misma agrupación se escribe en una sola línea, con las etiquetas separadas por comas: `case "SATURDAY", "SUNDAY" ->`.
