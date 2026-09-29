@@ -490,14 +490,14 @@ Por eso la primera vez que se ejecuta el cuerpo `i` vale `0`, no `1`: el paso `i
 
 > **`i` solo existe dentro del bucle.** Como `int i` se declara en la cabecera del `for`, su alcance (scope) termina al cerrar el bucle. Intentar leerla después falla al compilar con `cannot find symbol / symbol: variable i`. Casi nunca necesitarás el valor de `i` después del bucle. Si alguna vez lo necesitas, declara `i` antes del `for`: `int i = 0; for (; i < week.length; i++) { ... }`. Es una forma poco habitual: cuando te pasa, normalmente es señal de que te encaja mejor un bucle `while`, que se ve más abajo en este capítulo. [01-variables-tipos.md](01-variables-tipos.md) explica la misma regla de alcance para otras variables locales.
 
-**El error off-by-one, y la excepción que produce.** La cabecera de tres partes es potente precisamente porque escribes los límites tú mismo, lo cual significa que también puedes escribirlos mal. El desliz clásico es `<=` donde querías `<`:
+**El error off-by-one, y la excepción que produce.** La cabecera de tres partes es potente precisamente porque escribes los límites tú mismo, lo cual significa que también puedes escribirlos mal. El desliz clásico es escribir `<=` donde querías `<`. Con `<=`, el bucle da una vuelta de más e intenta acceder a una posición que no existe:
 
 ```java
 int[] weekHours = {8, 8, 6};   // longitud 3, índices válidos 0, 1, 2
 
 // ❌ MAL
 for (int i = 0; i <= weekHours.length; i++) {   // i llega a 3
-    System.out.println(weekHours[i]);
+    System.out.println(weekHours[i]);           // con i = 3 falla: weekHours[3] no existe
 }
 // imprime 8, 8, 6 y luego falla:
 // Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3

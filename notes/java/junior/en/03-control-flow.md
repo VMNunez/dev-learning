@@ -490,14 +490,14 @@ That is why the first time the body runs `i` is `0`, not `1`: the step `i++` onl
 
 > **`i` only exists inside the loop.** Because `int i` is declared in the `for` header, its scope ends when the loop closes. Trying to read it afterwards fails at compile time with `cannot find symbol / symbol: variable i`. You will almost never need the value of `i` after the loop. If you ever do, declare `i` before the `for`: `int i = 0; for (; i < week.length; i++) { ... }`. It is an unusual form: when it happens, it is usually a sign that a `while` loop, covered further down in this chapter, fits better. [01-variables-types.md](01-variables-types.md) explains the same scope rule for other local variables.
 
-**The off-by-one error, and the exception it produces.** The three-part header is powerful precisely because you write the bounds yourself, which means you can also write them wrong. The classic slip is `<=` where you meant `<`:
+**The off-by-one error, and the exception it produces.** The three-part header is powerful precisely because you write the bounds yourself, which means you can also write them wrong. The classic slip is writing `<=` where you meant `<`. With `<=`, the loop runs one extra pass and tries to access a position that does not exist:
 
 ```java
 int[] weekHours = {8, 8, 6};   // length 3, valid indexes 0, 1, 2
 
 // ❌ MAL
 for (int i = 0; i <= weekHours.length; i++) {   // i reaches 3
-    System.out.println(weekHours[i]);
+    System.out.println(weekHours[i]);           // with i = 3 it fails: weekHours[3] does not exist
 }
 // prints 8, 8, 6 and then crashes:
 // Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 3 out of bounds for length 3
