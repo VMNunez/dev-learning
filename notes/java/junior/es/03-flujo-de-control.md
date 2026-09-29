@@ -280,6 +280,41 @@ switch (day) {
 
 **Varios `case` pueden compartir el mismo código.** Si escribes varias etiquetas seguidas sin instrucciones entre ellas, todas llevan al mismo bloque. Es lo que hace el ejemplo corregido: entre `case "MONDAY":` y `case "FRIDAY":` no hay instrucciones, así que los cinco días llegan al mismo `println` y comparten un solo `break`. Esta agrupación es un fall-through intencionado, y es el único uso correcto de ese comportamiento. El bug aparece cuando una rama que sí tiene instrucciones continúa en la siguiente porque se olvidó el `break`. En la expresión `switch` de la sección siguiente, la misma agrupación se escribe en una sola línea, con las etiquetas separadas por comas: `case "SATURDAY", "SUNDAY" ->`.
 
+> **Detrás de `case X:` puedes escribir tantas sentencias como quieras, sin llaves.** Se ejecutan en orden hasta llegar a un `break` o al final del `switch`. La sangría no cuenta para Java: solo sirve para que tú leas el código, igual que en el resto del lenguaje. También puedes abrir un bloque con llaves después de los dos puntos, y hace falta cuando dos casos declaran una variable con el mismo nombre. Sin llaves, todas las sentencias de los casos están en el mismo bloque, el del `switch`, así que la segunda declaración choca con la primera:
+>
+> ```java
+> String day = "SATURDAY";
+>
+> // ❌ MAL — sin llaves, las dos variables hours están en el mismo bloque
+> switch (day) {
+>     case "MONDAY":
+>         int hours = 8;
+>         System.out.println(hours);
+>         break;
+>     case "SATURDAY":
+>         int hours = 4;
+>         System.out.println(hours);
+>         break;
+> }
+> // error: variable hours is already defined in method main(String[])
+>
+> // ✅ BIEN — cada caso tiene su propio bloque
+> switch (day) {
+>     case "MONDAY": {
+>         int hours = 8;
+>         System.out.println(hours);
+>         break;
+>     }
+>     case "SATURDAY": {
+>         int hours = 4;
+>         System.out.println(hours);
+>         break;
+>     }
+> }
+> // imprime:
+> // 4
+> ```
+
 El bloque `default` no es obligatorio en esta sentencia, pero permite manejar un valor no previsto, como un día mal escrito. Sin él, un valor que no coincide con ningún caso deja el `switch` sin ejecutar ninguna rama.
 
 > **Un selector `null` no llega a `default`.** Este `switch (day)` no tiene `case null`, así que un día ausente lanza `NullPointerException` antes de ejecutar cualquier caso normal. Es un anticipo de [04-metodos.md](04-metodos.md), que explica dónde debe rechazarse un argumento ausente. No hace falta añadir una guarda de `null` a cada ejemplo de `switch` de este capítulo.
