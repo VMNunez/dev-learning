@@ -488,7 +488,7 @@ i < week.length  →  3 < 3  →  false        // paso 2: el bucle termina
 
 Por eso la primera vez que se ejecuta el cuerpo `i` vale `0`, no `1`: el paso `i++` solo se ejecuta después del cuerpo.
 
-> **`i` solo existe dentro del bucle.** Como `int i` se declara en la cabecera del `for`, su alcance (scope) termina al cerrar el bucle. Intentar leerla después falla al compilar con `cannot find symbol / symbol: variable i`. Si necesitas conservar el valor final, declara `i` antes: `int i = 0; for (; i < week.length; i++) { ... }`. [01-variables-tipos.md](01-variables-tipos.md) explica la misma regla de alcance para otras variables locales.
+> **`i` solo existe dentro del bucle.** Como `int i` se declara en la cabecera del `for`, su alcance (scope) termina al cerrar el bucle. Intentar leerla después falla al compilar con `cannot find symbol / symbol: variable i`. Casi nunca necesitarás el valor de `i` después del bucle. Si alguna vez lo necesitas, declara `i` antes del `for`: `int i = 0; for (; i < week.length; i++) { ... }`. Es una forma poco habitual: cuando te pasa, normalmente es señal de que te encaja mejor un bucle `while`, que se ve más abajo en este capítulo. [01-variables-tipos.md](01-variables-tipos.md) explica la misma regla de alcance para otras variables locales.
 
 **El error off-by-one, y la excepción que produce.** La cabecera de tres partes es potente precisamente porque escribes los límites tú mismo, lo cual significa que también puedes escribirlos mal. El desliz clásico es `<=` donde querías `<`:
 

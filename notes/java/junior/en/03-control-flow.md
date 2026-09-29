@@ -488,7 +488,7 @@ i < week.length  →  3 < 3  →  false        // step 2: the loop ends
 
 That is why the first time the body runs `i` is `0`, not `1`: the step `i++` only runs after the body.
 
-> **`i` dies with the loop.** Because `int i` is declared inside the `for` parentheses, its scope is the loop and nothing else — the moment the loop finishes, the name is gone. Reading it afterwards fails at compile time with `cannot find symbol / symbol: variable i`. This is deliberate: a counter is bookkeeping for the loop, not information for the rest of the method. If you genuinely need the final value after the loop (rare — usually it means you wanted a `while`), declare the variable *before* the loop instead: `int i = 0; for (; i < week.length; i++) { ... }`. Scope in general is covered in [01-variables-types.md](01-variables-types.md) — same rule, applied to the loop header.
+> **`i` only exists inside the loop.** Because `int i` is declared in the `for` header, its scope ends when the loop closes. Trying to read it afterwards fails at compile time with `cannot find symbol / symbol: variable i`. You will almost never need the value of `i` after the loop. If you ever do, declare `i` before the `for`: `int i = 0; for (; i < week.length; i++) { ... }`. It is an unusual form: when it happens, it is usually a sign that a `while` loop, covered further down in this chapter, fits better. [01-variables-types.md](01-variables-types.md) explains the same scope rule for other local variables.
 
 **The off-by-one error, and the exception it produces.** The three-part header is powerful precisely because you write the bounds yourself, which means you can also write them wrong. The classic slip is `<=` where you meant `<`:
 
