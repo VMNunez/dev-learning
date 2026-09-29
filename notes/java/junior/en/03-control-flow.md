@@ -182,7 +182,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 
 > **With an `enum` selector, use the `switch` expression: the compiler tells you when a case is missing.** An `enum` is a type with a fixed list of named values; [14-enums.md](14-enums.md) will teach it. For example, `enum Shift { MORNING, AFTERNOON, NIGHT }` defines a `Shift` type with only three possible values. A `switch` can be written in two forms, and the next two sections teach them in detail.
 >
-> The first way to write it is the **classic `switch`**, written with `case X:`. It is a **statement**, just like `if/else`: the whole block, from `switch` to its last brace, runs code but produces no value you can store in a variable. Having other statements inside it, like the `println` calls in each case, does not change that: the whole `switch` counts as a single statement. If you forget a value of the `enum` in a classic `switch`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
+> The first way to write it is the **classic `switch`** (_switch statement_), written with `case X:`. It is a **statement**, just like `if/else`: the whole block, from `switch` to its last brace, runs code but produces no value you can store in a variable. Having other statements inside it, like the `println` calls in each case, does not change that: the whole `switch` counts as a single statement. If you forget a value of the `enum` in a classic `switch`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
 >
 > ```java
 > Shift shift = Shift.NIGHT;
@@ -199,7 +199,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 > // with shift = NIGHT it prints nothing
 > ```
 >
-> The second way to write it is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
+> The second way to write a `switch` is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
 >
 > ```java
 > Shift shift = Shift.NIGHT;
