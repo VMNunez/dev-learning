@@ -357,7 +357,7 @@ That is *why* `default` is effectively mandatory — with one exception at this 
 
 > **Exhaustive does not mean null-safe.** The compiler's coverage check accounts for the ordinary values of the selector type. As with the classic `switch` above, a `null` `day` still throws `NullPointerException` unless you write a `case null`; `default` alone does not handle it. Entry [04-methods.md](04-methods.md) will show where to reject a missing argument before it reaches this expression.
 
-**`yield` — when an arm needs more than one line.** An arrow arm normally ends in a single expression, which becomes the value. If you need several statements, wrap them in `{ }`. Inside that block, Java does not know which of the statements gives the value of the branch, so you have to say it yourself with the keyword `yield`:
+**`yield` — when an arm needs more than one line.** An arrow arm normally ends in a single expression, which becomes the value. If you need several statements, wrap them in `{ }`. Inside that block, Java does not know which value the branch should return, so you have to say it yourself with the keyword `yield`:
 
 ```java
 int dailyLimit = switch (day) {
