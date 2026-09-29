@@ -198,6 +198,7 @@ cannot settle.
 door wherever it assumes the other, and in both directions**: reads it believes were made on the cold
 door, a caller, hand-off or commit owner it believes exists on the inline one. So walk each step against
 every door's payload, state in the intro only what all doors give, and name each read at its step.
+**Also `REC-265`: a door's close-out and the component's own dispatches are steps too** — on a door that dispatches the branch alone the shell's self-report and tracker cell never run, and a dispatch the component makes turns nested; measure whether the runtime nests before pricing a redesign, and where a door skips a close-out, name who writes its state and where its evidence goes.
 
 **One creating commit is not only a reader's error — it is also an authoring *copy*, and the family
 is what names the foreign clause.** From `REC-139`. `REC-130` above dates a partition and reads a
