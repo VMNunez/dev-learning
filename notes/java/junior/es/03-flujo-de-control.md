@@ -464,7 +464,7 @@ El `for` ejecuta las tres partes de su cabecera en este orden:
 1. `int i = 0` fija la posición de inicio. Se ejecuta una sola vez, al entrar en el bucle.
 2. Comprueba la condición `i < week.length`. Si es falsa, el bucle se acaba.
 3. Si la condición `i < week.length` es verdadera, ejecuta el cuerpo del `for`.
-4. Al acabar el cuerpo, ejecuta el paso, `i++`, y vuelve al punto 2.
+4. Al acabar el cuerpo, ejecuta el paso, `i++`, y vuelve al punto 2. Los pasos 2, 3 y 4 se siguen repitiendo hasta que la condición sea falsa.
 
 Con `week` de tres elementos, `i` vale `0`, `1` y `2` en las tres pasadas. Cuando vale `3`, la condición `3 < 3` es falsa y el bucle termina. Por eso la primera vez que se ejecuta el cuerpo `i` vale `0`, no `1`: el paso solo se ejecuta después del cuerpo.
 

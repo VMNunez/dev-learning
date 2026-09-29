@@ -464,7 +464,7 @@ The `for` runs the three parts of its header in this order:
 1. `int i = 0` sets the starting position. It runs only once, when the loop is entered.
 2. It checks the condition `i < week.length`. If it is false, the loop ends.
 3. If the condition `i < week.length` is true, it runs the body of the `for`.
-4. When the body finishes, it runs the step, `i++`, and goes back to step 2.
+4. When the body finishes, it runs the step, `i++`, and goes back to step 2. Steps 2, 3 and 4 keep repeating until the condition is false.
 
 With a three-element `week`, `i` is `0`, `1` and `2` in the three passes. When it is `3`, the condition `3 < 3` is false and the loop ends. That is why the first time the body runs `i` is `0`, not `1`: the step only runs after the body.
 
