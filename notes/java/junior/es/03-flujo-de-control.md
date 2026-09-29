@@ -103,9 +103,14 @@ if (hours < 0 || hours > 24) {
 // hours = 0   imprime: Absent
 ```
 
-`hours < 0 || hours > 24` es `true` para los dos valores inválidos: tanto si `hours` es menor que 0, como `-3`, como si es mayor que 24, como `30`. Así que Java ejecuta la primera rama y no llega a las demás. Una cifra entre 0 y 24 continúa por las tres ramas normales. En una cadena `if / else if`, pon **primero los valores inválidos; después, los casos válidos del más específico al más general; y al final, el `else` para lo que quede.**
+`hours < 0 || hours > 24` es `true` para los dos valores inválidos: tanto si `hours` es menor que 0 como si es mayor que 24. Así que Java ejecuta la primera rama y no llega a las demás. Una cifra entre 0 y 24 continúa por las tres ramas normales. En una cadena `if / else if`, pon **primero los valores inválidos; después, los casos válidos del más específico al más general; y al final, el `else` para lo que quede.**
 
-> **¿Por qué no añadir la comprobación al `else` del final?** Porque Java nunca llega al final con `30`: la rama `hours > 8` ya se lo ha quedado. Una comprobación solo puede atrapar un valor que llegue hasta ella, y en una cadena un valor se detiene en la primera comprobación que sea `true`. Solo la parte de arriba de la cadena ve todos los valores.
+> **¿Por qué no poner la comprobación de valores inválidos en el `else` del final, en vez de al principio?** Porque con `30` Java nunca llegaría a ese `else`. Sigue el recorrido de `hours = 30` en la cadena original, la que no comprueba los valores inválidos:
+>
+> 1. Java comprueba `30 > 8`. Es `true`, así que ejecuta esa rama e imprime `Overtime`.
+> 2. Como ya ha encontrado una condición `true`, se salta todas las ramas de abajo, `else` incluido.
+>
+> Una comprobación solo puede detectar un valor que llegue hasta ella, y en una cadena `if / else if` Java se detiene en la primera condición que sea `true`. Por eso la comprobación de valores inválidos tiene que ir la primera: es la única posición por la que pasan todos los valores.
 
 ### Operador ternario
 

@@ -103,9 +103,14 @@ if (hours < 0 || hours > 24) {
 // hours = 0   prints: Absent
 ```
 
-`hours < 0 || hours > 24` is `true` for both invalid values: both when `hours` is less than 0, like `-3`, and when it is greater than 24, like `30`. So they stop at the first branch. A real value makes that test `false` and moves on to the same three branches as before, which now only ever see hours between 0 and 24. So the whole ordering rule for an `if / else if` chain is: **impossible values first, then the narrowest real case, widening as you go down, and the `else` last for whatever is left.**
+`hours < 0 || hours > 24` is `true` for both invalid values: both when `hours` is less than 0 and when it is greater than 24. So they stop at the first branch. A real value makes that test `false` and moves on to the same three branches as before, which now only ever see hours between 0 and 24. So the whole ordering rule for an `if / else if` chain is: **impossible values first, then the narrowest real case, widening as you go down, and the `else` last for whatever is left.**
 
-> **Why not add the check to the `else` at the bottom?** Because Java never reaches the bottom with `30`: the `hours > 8` branch has already claimed it. A check can only catch a value that gets as far as that check, and in a chain a value stops at the first test that is `true`. Only the top of the chain sees every value.
+> **Why not put the invalid-value check in the `else` at the end, instead of at the start?** Because with `30` Java would never reach that `else`. Follow `hours = 30` through the original chain, the one that does not check for invalid values:
+>
+> 1. Java tests `30 > 8`. It is `true`, so it runs that branch and prints `Overtime`.
+> 2. Since it has already found a `true` condition, it skips every branch below it, `else` included.
+>
+> A check can only catch a value that gets as far as that check, and in an `if / else if` chain Java stops at the first condition that is `true`. That is why the invalid-value check has to come first: it is the only position every value passes through.
 
 ### Ternary operator
 
