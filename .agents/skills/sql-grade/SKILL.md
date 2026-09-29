@@ -3,9 +3,9 @@ name: sql-grade
 description: >
   Grade one answered SQL exercise file and decide what happens next, WHENEVER Victor says he has
   finished answering it ("corrige el 02", "ya he respondido los ejercicios", "corrige el archivo de
-  joins", "grade the file"). This is Moment 4 of practice/sql/PLANNING.md and the only door to it —
-  Victor does not paste `MODE = review` into a new chat any more. The skill never grades anything
-  itself: it resolves the level and the file, refuses a partially answered file, and runs
+  joins", "grade the file"). This is Moment 4 of practice/sql/PLANNING.md and the normal door to it —
+  Victor pastes `MODE = review` into a new chat only when this skill reports it blocked. The skill
+  never grades anything itself: it resolves the level and the file, refuses a partially answered file, and runs
   notes/prompts/practice/sql/_internal/_sql-exercises-review.md in a COLD subagent, because that prompt
   was written for a fresh chat and this skill runs in the session where the concept may have just been
   explained to him. It then lights the traffic light — failures send him back to fixing, a clean score
@@ -76,13 +76,16 @@ say so and stop — there is nothing to score, and re-running would not change a
 
 ## 2 — Grade it in a cold subagent
 
-Dispatch **one** subagent per run, and give it no conversation context beyond this:
+Dispatch **one** subagent per run — of a kind that can itself dispatch a subagent, because the branch's
+Step 2a sends a second, nested one over its ✅ answers — and give it no conversation context beyond this:
 
 - the instruction to read and execute `notes/prompts/practice/sql/_internal/_sql-exercises-review.md`
   **in full, to EOF**, as its whole task;
 - the resolved `{LEVEL}`, `{FILE}`, `{TOPIC}` and `{PLAN}`;
 - nothing else. **Do not summarise the session, the exercises, or what Victor was taught.** That
   contamination is the entire reason this step is a subagent and not you.
+
+Take a `git status` just before dispatching: §3's `BLOCKED` row compares the tree against it.
 
 The prompt owns everything from here: the second cold pass before any marker is written, the
 `[Repaso]` exclusions, `PROGRESS.md`, the `{PLAN}` §3 row and its §2 checkboxes, the **doctrine's** §0
@@ -98,11 +101,13 @@ Read the subagent's verdict and take exactly one branch. **Print which branch yo
 
 | Verdict | What you do |
 |---|---|
+| First line `BLOCKED — segunda pasada no despachable` | **Stop.** Nothing was graded and nothing was written — confirm it: `{FILE}` holds no `✅ Corregido` dated today, and none of the four doc files §4 lists has changed since a `git status` you take just before the §2 dispatch. Say the file is still ungraded and why, and open the `FRIC-NNNN` row the durable-friction close-out owes a dispatch that failed, its evidence naming the runtime and whether that runtime offers nested dispatch at all — where it does not, the defect is this skill's design, not a transient failure. §4 then writes the tracker cell and nothing else: **no `.sql` command for Victor**, since nothing was graded. The shell's `MODE = review` in a new conversation still grades the same file, because its second pass is a first-level dispatch there; «cierra el step N» then closes a step it finishes. Never grade it yourself instead. |
 | Score **< 80%**, or any ❌ / ⚠️ | **Stop.** Name the failed concepts and the exercises they came from, straight from the new `MISTAKES.md` rows. Tell him to rewrite those answers in the file and say "corrige el 02" again. Offer the narrowed batch: `/sql-exercises` with `MODE = reinforce` and `FILE = {FILE}`. No close. |
 | **≥ 80%**, but `{PLAN}` §1 shows the step owns other files that are not yet scored | File done, step open. Name the next file and stop. No close. |
 | **≥ 80%** and this was the step's **last** unscored file | **Invoke the `sql-step-close` skill**, passing `{LEVEL}`, the step number, and every file of the step. Do not reproduce its work here. |
 
-**The counters move on every branch**, including the failing one — the subagent already wrote them.
+**The counters move on every scored branch**, including the failing one — the subagent already wrote
+them; only `BLOCKED`, which scored nothing, moves none.
 A 60% is real information about graded exercises, and a file that scored badly must not look like one
 nobody started. What a bad score blocks is the *step closing*, never the recording.
 
@@ -127,6 +132,22 @@ puts them on your side:
   the doctrine's §0 quick reference. Take the list from the subagent's report; it ends with the exact
   files it modified. This one is easy to miss because a close reads like a route-file change, and §0 is
   the first thing `sql-block-open` reads the next morning.
+- `notes/prompts/_internal/_run-tracker.md` — **only** the `Exercises` cell for `{LEVEL}` in
+  `## SQL exercise track`, rewritten after every return of the subagent, `BLOCKED` included, in the shape
+  that section defines: `X/Y steps closed — {outcome}`, both numbers read from `{PLAN}` §3 as the subagent
+  left it. Its own commit. Grading is what moves `X`, so the cell is this run's to keep true.
+
+**Before staging, check the returned list against what the score owes** — the one close-out check this
+door keeps. It names `PROGRESS.md` unless `{FILE}` is an `R{n}-repaso.sql`; `{PLAN}` whenever a
+first-pass exercise was scored; `MISTAKES.md` whenever the summary shows a ⚠️ or ❌; and
+`practice/sql/PLANNING.md` whenever a §3 row went to `closed ✅`. A file owed and missing from the list,
+or listed and absent from `git status`, is reported, and is a deviation of this run on the branch step
+that owed it (below) — unless the report states that skip under the branch's Step 4, which permits one.
+
+**No `_last-run-report-sql-exercises.md` on this door.** That report is the close-out of a run of the
+`sql-exercises` shell, and the shell never runs here — this skill hands the subagent the branch alone. The
+evidence this door leaves is this skill's own close-out: the `desvíos:` line, and the branch's
+`desvíos de la rama:` line, which that close-out records (below).
 
 **Victor commits himself** — hand him the commands in the standard two-block format (`git add` block,
 then `git commit` block), one command per block:
@@ -150,4 +171,11 @@ If `sql-step-close` ran, it reports its own commits; do not stage its files here
 | Route file | §3 step 0 → `closed ✅`, §2 checkboxes 8/9 marcados |
 | Doctrina §0 | 4d disparó — Current step → step 1, Done condition y Last updated reescritos (el `{PLAN}` no tiene §0) |
 | Branch taken | ≥ 80% y último archivo del step → `sql-step-close` invocado |
-| Commits | mine: MISTAKES.md, PROGRESS.md, PLANNING-junior.md, PLANNING.md (4d disparó) · yours: the `.sql` (commands below) |
+| Tracker | `SQL exercise track` → junior `Exercises`: `1/14 steps closed — step 0 closed (02 graded 9/10)` |
+| Commits | mine: MISTAKES.md, PROGRESS.md, PLANNING-junior.md, PLANNING.md (4d disparó), `_run-tracker.md` · yours: the `.sql` (commands below) |
+
+**The branch's `desvíos de la rama:` line is part of this run's deviation close-out.** Its steps are this
+ritual's declared work, run through §2, so each `<file> → <heading>` it names is a deviation of this run,
+logged under the shared deviation close-out above with `Scope: shared` — the step is written in a contract
+this skill executes, never in this file — and counted in this run's `desvíos:` line. `ninguno` adds
+nothing.

@@ -40,7 +40,10 @@ the role split. Correct isolation matters more than reproducing a historical mod
   failure, a runtime error and a session limit that kills a role mid-flight are the same case**: read
   whatever the role persisted, else resume it where the runtime allows, else re-dispatch it once — a
   prompt's own retry rule overrides that count — and only one that still returns no usable result is a
-  role that could not be dispatched. Silence is never acceptance.
+  role that could not be dispatched. Silence is never acceptance. **This binds a nested dispatch too** —
+  a dispatched role dispatching its own — and a component whose role nests names what its caller
+  receives when the inner dispatch cannot be made; whether a runtime nests at all is its mapping's fact,
+  below.
 - **A role that *returns* blocked after editing the tree is the other half of that case, and it is not
   the same half.** A dead role is handled above. A role that came back and said it could not finish has
   already written bytes into the target, and where the orchestrator's commit stages that target
@@ -82,6 +85,10 @@ dry-run outcomes.
 
 - Use the Agent/subagent facility available in Claude Code.
 - Map `deep`, `standard`, and `mechanical` to the strongest, balanced, and fastest capable models.
+- **Nested dispatch works where the dispatched agent's type carries the Agent tool** — measured
+  2026-09-29: a `general-purpose` subagent dispatched one of its own and got its reply back. Read-only
+  types (`Explore`, `Plan`) do not carry it, so a component whose role nests (`sql-grade` → the review
+  branch's Step 2a) is dispatched as `general-purpose`.
 - Existing `.claude/commands/` files are launch adapters, not sources of workflow truth.
 
 ### Codex
@@ -91,6 +98,7 @@ dry-run outcomes.
   validating one result before dispatching the next dependent role.
 - Do not invent model identifiers. Omit model overrides unless the runtime exposes an applicable
   model/reasoning option.
+- **Nested dispatch is unmeasured here.**
 - Existing `.codex/commands/` files are launch adapters, not sources of workflow truth.
 
 ## Authorship and commit boundary

@@ -174,6 +174,14 @@ verdict, no commentary, and no hint that they were already accepted. Ask it for 
 exercise: **correct** or **not correct, because <one clause>**. Nothing else — it is not reviewing
 style, not suggesting idiomatic alternatives, not grading the ⚠️ and ❌ ones.
 
+**On the `sql-grade` door you are yourself a subagent, so this dispatch is nested — and it is still
+owed.** Never answer the second pass yourself, not even "cold" in a fresh read: one grader confirming its
+own ✅ is exactly the case this step exists to prevent, whatever the door. If the dispatch cannot be made
+once `_agent-runtime-standard.md`'s dispatch ladder is exhausted, **stop here** — nothing has been
+written yet, since Steps 1 and 2 edit no file — and make the first line of your report
+`BLOCKED — segunda pasada no despachable`, with no score, no summary table and no modified-file list.
+This branch permits no single-agent fallback, on either door.
+
 Reconcile:
 - **Both say correct** → the ✅ stands and the exercise gets its marker in Step 2b.
 - **The subagent says not correct** → re-check that exercise yourself against the schema. If it is
@@ -562,6 +570,12 @@ your report with the exact list of what you modified, so whoever stages them doe
 - `practice/sql/MISTAKES.md` — only if Step 5 touched it.
 
 List only files actually modified. Do not list files you merely read.
+
+**Dispatched by `sql-grade`, add one last line after that list**: `desvíos de la rama: ninguno`, or the
+`` `_sql-exercises-review.md` → `<heading>` `` of each step whose text made you improvise, contradicted
+itself or was silent on what you met — or whose rule you did not follow, said plainly — copied verbatim. On this door the shell's final step — its
+self-report — does not run, so this line is the only evidence the branch's own text leaves; `sql-grade`
+records it. Reached through the shell's `MODE = review`, omit it: the shell's self-report carries that.
 
 ---
 

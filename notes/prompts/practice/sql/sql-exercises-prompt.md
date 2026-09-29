@@ -390,7 +390,7 @@ Do **not** open the other branch — it cannot apply to this run, and reading it
 executing a step from the wrong mode. If `MODE` resolved to neither value, the Resolution validation
 above has already stopped you.
 
-Then come back here for the final step below, which runs in both modes.
+Then come back here for the final step below, which runs in every mode.
 
 ---
 
@@ -400,6 +400,12 @@ Read `notes/prompts/_internal/_single-shot-self-report.md` and execute it in ful
 against this prompt's declared outputs in `notes/prompts/README.md`, the three bullets written to
 `notes/prompts/practice/sql/_internal/_last-run-report-sql-exercises.md`, its own commit, then the
 refinement step.
+
+**This step closes a run of this shell, and only that** — in every one of its three modes. The review
+branch's normal door, the `sql-grade` skill, dispatches the branch alone, so neither this shell nor this
+step runs there. That door writes no report: its evidence is the skill's own
+close-out, which records the branch's `desvíos de la rama:` line (`_sql-exercises-review.md` Step 6), and
+`sql-grade` §4 rewrites the `Exercises` cell below itself after every grading.
 
 **Two tracker cells, not one.** The shared close-out updates this prompt's row in
 `## Single-shot prompt executions` — that row records the *run*. It cannot answer how far along the

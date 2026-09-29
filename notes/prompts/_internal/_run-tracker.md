@@ -10,9 +10,10 @@ each prompt's `_last-run-report*.md`; this file stores concise operational state
 date, target/mode, outcome, and concise result, then commits report and tracker together. Victor never
 fills it by hand (though he may correct it).
 
-**One exception — the `coverage-bullet-add` skill** appends a stale flag to a `Plan` cell (see below).
-It is the only writer that is not a prompt close-out, because the debt it records is created in a daily
-session, where no prompt runs at all. It writes nothing else in this file.
+**Two exceptions, both skills.** The `coverage-bullet-add` skill appends a stale flag to a `Plan` cell
+(see below), because the debt it records is created in a daily session, where no prompt runs at all. The
+`sql-grade` skill rewrites the `Exercises` cell of `## SQL exercise track` (see there). Neither writes
+anything else in this file.
 
 **Two writers, one flag.** `coverage-prompt` writes the same flag, in the same accumulating form, for the
 plans its own run left behind — and on the `coverage-audit` row when its recalibration lands after that
@@ -96,8 +97,9 @@ The `Exercises` cell is a **summary**, written like a `Notes J/M/S` cell: `X/Y s
 last outcome, where Y is the step count in that level's `PLANNING-{LEVEL}.md` §3 and X the rows at
 `closed ✅`. Both numbers come from the plan, **never from counting `.sql` files on disk** — a level with
 no plan yet leaves the cell empty. `sql-exercises` writes it in its close-out, on every run including a
-`blocked` one; the three cells read left to right answer "route planned → route audited → how much of it
-I have actually drilled". There is deliberately no per-step table here: §3 of the plan already is one,
+`blocked` one, and the `sql-grade` skill after every return of its grading subagent, which runs the
+review branch alone and never that close-out. The three cells read left to right answer "route planned →
+route audited → how much of it I have actually drilled". There is deliberately no per-step table here: §3 of the plan already is one,
 and a second copy would only drift.
 
 A `SQL plan` cell carries the same ` · ⚠ stale` flag rules as a `Plan J/M/S` cell above: coverage that
@@ -171,8 +173,9 @@ One latest-run row per prompt: every single-shot prompt, plus the two route orch
 (`interview-prep-route` and, since 2026-09-06, `interview-prep-route-projects`), the two the tables
 above hold no execution cell for. Target/mode contains the configuration that
 identifies the work; prompts with no target use `global`. A row here records the **run**; where a prompt
-also has a progress cell above (`sql-exercises`, `simulation-review`), the two are written together and
-neither replaces the other.
+also has a progress cell above (`sql-exercises`, `simulation-review`), its close-out writes the two
+together and neither replaces the other; `sql-grade` writes the `sql-exercises` progress cell alone,
+since its grading door runs no close-out.
 
 | Prompt | Last run | Target / mode | Outcome | Result |
 |---|---|---|---|---|
