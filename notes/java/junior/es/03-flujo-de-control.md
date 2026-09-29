@@ -357,7 +357,7 @@ Con un selector `String`, necesitas `default` para cubrir cualquier texto no enu
 
 > **Exhaustivo no significa que admita `null`.** La comprobación del compilador cubre los valores normales del tipo del selector. Igual que en el `switch` clásico anterior, si `day` es `null` se lanza `NullPointerException`, salvo que escribas `case null`; `default` por sí solo no lo maneja. [04-metodos.md](04-metodos.md) enseñará dónde rechazar un argumento ausente antes de que llegue a esta expresión.
 
-**`yield` — cuando una rama necesita más de una línea.** Una rama con flecha normalmente termina en una única expresión, que pasa a ser el valor. Si necesitas varias sentencias, envuélvelas en `{ }` — y entonces hay que decirle a Java qué valor devolver, porque un bloque no tiene una regla de "última expresión". Esa palabra clave es `yield`:
+**`yield` — cuando una rama necesita más de una línea.** Una rama con flecha normalmente termina en una única expresión, que pasa a ser el valor. Si necesitas varias sentencias, envuélvelas en `{ }`. Dentro de ese bloque, Java no sabe cuál de las sentencias da el valor de la rama, así que tienes que indicarlo tú con la palabra clave `yield`:
 
 ```java
 int dailyLimit = switch (day) {
