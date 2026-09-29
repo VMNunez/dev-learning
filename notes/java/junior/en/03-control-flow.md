@@ -37,15 +37,9 @@ For now, `hours` is an `int` such as `10`, and `day` is a `String` such as `"SAT
 
 > 📖 Docs: [Baeldung — If-Else Statement in Java](https://www.baeldung.com/java-if-else) → read: "Syntax of If-Else" and "Example of If-Else If-Else" — the boolean condition and the chain form.
 
-Each timesheet entry needs a label based on its hours: if there are 10, the program must print `Overtime`; if there are 4, `Worked`, an ordinary working day. The problem is that Java runs lines from top to bottom, one after the other. If you write the two print lines in a row, both run, whatever the hours are:
+Each timesheet entry needs a label based on its hours: if there are 10, the program must print `Overtime`; if there are 4, `Worked`, an ordinary working day.
 
-```java
-// ❌ MAL — with hours = 4 it prints both labels
-System.out.println("Overtime");
-System.out.println("Worked");
-```
-
-What you need is for the program to choose only one of the two, depending on the value of `hours`. That is what `if / else if` does: Java evaluates its conditions from top to bottom, runs the first block whose condition is true, and skips the rest. If none matches, an `else` block runs when you provided one.
+What you need is for the program to know which label to show depending on the value of `hours`. That is what `if / else if` does: Java evaluates its conditions from top to bottom, runs the first block whose condition is true, and skips the rest. If none matches, an `else` block runs when you provided one.
 
 ```java
 if (hours > 8) {
