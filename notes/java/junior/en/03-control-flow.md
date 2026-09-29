@@ -199,7 +199,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 > // with shift = NIGHT it prints nothing
 > ```
 >
-> The second way to write a `switch` is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
+> The second way to write a `switch` is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value of the `enum`. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
 >
 > ```java
 > Shift shift = Shift.NIGHT;
