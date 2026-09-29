@@ -415,7 +415,21 @@ When you need to **produce a value** from several cases, or when the selector is
 
 Imagine you have the names of the days of the week stored in a single variable, `week`, and you want to print each of them on its own line. That variable is an **array**, a fixed-size list of values. Without a loop you would have to write one `System.out.println` per day, seven nearly identical lines, and a hundred if the array had a hundred elements. `for` repeats the same instruction for each element you want to walk through. In this section you will see two ways to write a `for`: the classic `for` and the enhanced `for` (also called _for-each_). Both can walk an array, and the enhanced `for` can also walk a `List`, a list that can change size. Before the code, you need to know how an array's positions and length are read.
 
-> **Introduction to arrays: the minimum you need to know to walk one with a loop.** An array stores several values of the same type in a fixed number of positions, and each position is reached by a number. The brackets in `String[]` say that `week` is an array of `String`. You can create it in two ways. The first is to write its values between braces, separated by commas: `String[] week = {"MONDAY", "TUESDAY", "WEDNESDAY"};`. The second is to state only how many positions it has, with `new` and the size between brackets, and fill them later: `String[] week = new String[3];`, whose three slots start out holding `null` (a `new int[3]` would start as three zeros instead, because an `int` cannot be `null`; that primitive-versus-reference split is [01-variables-types.md](01-variables-types.md)'s). You reach a slot by its **index** in square brackets, `week[0]`, and the counting starts at **zero**, so a sequence of three has indexes 0, 1 and 2 — never 3. You ask how many slots there are with `week.length`: a **field**, written with no parentheses, unlike `String.length()` and `List.size()`, which are methods. And "fixed-size" is literal — there is no `add()`, no `remove()`, and no way to grow a `String[3]` into a `String[4]`. That is the entire array vocabulary this chapter uses.
+> **Introduction to arrays: the minimum you need to know to walk one with a loop.** An array stores several values of the same type in a fixed number of positions, and each position is reached by a number. You can create it in two ways:
+>
+> ```java
+> String[] week = {"MONDAY", "TUESDAY", "WEDNESDAY"};   // 1. with its values
+> String[] names = new String[3];                        // 2. with only its size
+> ```
+>
+> The brackets in `String[]` say that the variable is an array of `String`. The first form writes its values between braces, separated by commas. The second states only how many positions it has, with `new` and the size between brackets, so you can fill them later. Its three positions start out holding `null`; those of `new int[3]` would start at zero, because an `int` cannot be `null` (the difference between primitives and references is explained in [01-variables-types.md](01-variables-types.md)).
+>
+> ```java
+> System.out.println(week[0]);       // MONDAY
+> System.out.println(week.length);   // 3
+> ```
+>
+> You reach an element by its **index**, between brackets: `week[0]`. The first index is **zero**, so an array of three elements has indexes 0, 1 and 2, never 3. `week.length` tells you how many positions it has; it is a **field**, with no parentheses, unlike the methods `String.length()` and `List.size()`. "Fixed size" means there is no `add()` or `remove()`, and you cannot turn a `String[3]` into a `String[4]`. That is all the array vocabulary this chapter needs.
 
 > **Why you are given only that much.** The interesting question about arrays is not their syntax, it is *when a fixed row of slots is still the right structure and when a resizable `List` replaces it* — and that question cannot be answered before you have the collection APIs to compare against. [10-collections.md](10-collections.md) answers it in full, and that is also where `List` itself — the `List<Employee>` introduced above — is properly taught. Here an array is deliberate scaffolding: the simplest concrete thing a loop can walk, so the loop stays the subject.
 
