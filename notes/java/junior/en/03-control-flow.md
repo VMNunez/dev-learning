@@ -166,7 +166,7 @@ switch (x) {                      // ❌
 
 On Java 25 the compiler shows **two** errors. The first says that using a `long` as the selector would only work with a new Java feature that, in version 25, is still being tested (what Java calls a _preview_) and is switched off. In practice it means a `long` does not work as a selector. The second says that `case 3` is an `int` constant and is not compatible with a `long` selector. You do not need to know more about that new feature: both errors go away with the same fix, which is to use a selector of a type marked ✅ in the selector-type table just before this example, such as `int`.
 
-The last row of the table refers to the objects that do not appear in the rows above it. The objects that can be selectors with ordinary constants are these: `String`, `Byte`, `Short`, `Character`, `Integer` and any `enum`. If the selector is any other object, you cannot write a fixed value after `case`, such as `case 5` or `case "MONDAY"`: the compiler rejects it, even when the value looks like it fits. That includes `Long`, the wrapper of `long`, because it is not on that list:
+The last row of the table refers to the objects that do not appear in the rows above it. The objects that can be selectors with ordinary constants are these: `String`, `Byte`, `Short`, `Character`, `Integer` and any `enum`. If the selector is any other object, you cannot write a fixed value after `case`, such as `case 5` or `case "MONDAY"`: the compiler rejects it, even when the value looks like it fits. That includes `Long`, the wrapper of `long`:
 
 ```java
 Long id = 5L;
@@ -178,9 +178,39 @@ switch (id) {                     // ❌
 
 With those objects, `switch` only works if you write a different kind of `case`, called a **type pattern**. For example, `case Employee e ->` means "if the selector is an `Employee`, enter this case and call it `e`". You do not need to write it yet, because every `case` in this chapter uses constants. How to check an object's type inside an `if`, with `instanceof`, is taught in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
 
-> **A `boolean` selector is not part of ordinary Java 25.** An `if/else` already gives you a direct way to choose between its two values. Primitive types such as `boolean` and `long` are being explored for pattern matching in [JEP 507](https://openjdk.org/jeps/507), but that feature is preview-only in Java 25. In this chapter, use `if/else` for a boolean choice and `switch` when one permitted selector has several named cases.
+> **A `boolean` cannot be the selector of a `switch`.** To choose between `true` and `false`, use `if/else`.
 
-> **`enum` is the selector `switch` was made for.** An `enum` is a type with a fixed list of named values, and [14-enums.md](14-enums.md) teaches it. With an `enum` the compiler knows the complete set of possible values, so in a **switch expression** (the form two sections below) it checks that you handled every one of them. It cannot infer a complete set from a few `String` case labels. The check does not run on a classic switch **statement**: leave out one constant there and the code compiles, and that value simply runs no case. When you later meet `14-enums.md`, this is the payoff to remember.
+> **An `enum` lets the compiler check that no case is missing in a `switch` expression.** An `enum` is a type with a fixed list of named values; [14-enums.md](14-enums.md) will teach it. For example, `enum Shift { MORNING, AFTERNOON, NIGHT }` defines a `Shift` type with only three possible values. A `switch` can be written in two forms, and the next two sections teach them in detail. The **classic `switch`**, with `case X:`, is a **statement**: it runs code but produces no value, just like the `if/else` in the ternary section. The **`switch` expression**, with `->`, does produce a value, which you store in a variable. The compiler knows the three values of `Shift` and checks that a `switch` expression covers all of them. If `NIGHT` is missing, it does not compile:
+>
+> ```java
+> Shift shift = Shift.NIGHT;
+>
+> // ❌ switch expression: NIGHT is missing
+> String start = switch (shift) {
+>     case MORNING -> "06:00";
+>     case AFTERNOON -> "14:00";
+> };
+> // error: the switch expression does not cover all possible input values
+> ```
+>
+> The classic `switch` does not require that check. If `NIGHT` is missing, the code compiles, and when `shift` is `NIGHT` no case runs: the program carries on at the line after the `switch` without printing anything.
+>
+> ```java
+> Shift shift = Shift.NIGHT;
+>
+> // compiles: NIGHT is missing, but a statement does not have to produce a value
+> switch (shift) {
+>     case MORNING:
+>         System.out.println("Starts at 06:00");
+>         break;
+>     case AFTERNOON:
+>         System.out.println("Starts at 14:00");
+>         break;
+> }
+> // with shift = NIGHT it prints nothing
+> ```
+>
+> With a `String` the compiler cannot make this check, because a `String` accepts any text.
 
 ### Classic switch (statement)
 

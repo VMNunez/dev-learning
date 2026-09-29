@@ -166,7 +166,7 @@ switch (x) {                      // ❌
 
 En Java 25 el compilador muestra **dos** errores. El primero dice que usar un `long` como selector solo funcionaría con una funcionalidad nueva de Java que en la versión 25 todavía está a prueba (lo que Java llama _preview_) y viene desactivada. En la práctica significa que un `long` no sirve como selector. El segundo dice que `case 3` es una constante `int` y no es compatible con un selector `long`. No necesitas saber más de esa funcionalidad nueva: los dos errores desaparecen con la misma corrección, que es usar un selector de un tipo marcado con ✅ en la tabla de tipos del selector, justo antes de este ejemplo, como `int`.
 
-La última fila de la tabla se refiere a los objetos que no aparecen en las filas de arriba. Los objetos que sí pueden ser selectores con constantes normales son estos: `String`, `Byte`, `Short`, `Character`, `Integer` y cualquier `enum`. Si el selector es cualquier otro objeto, no puedes escribir un valor fijo detrás de `case`, como `case 5` o `case "MONDAY"`: el compilador lo rechaza, aunque el valor parezca encajar. Eso incluye a `Long`, el wrapper de `long`, porque no está en esa lista:
+La última fila de la tabla se refiere a los objetos que no aparecen en las filas de arriba. Los objetos que sí pueden ser selectores con constantes normales son estos: `String`, `Byte`, `Short`, `Character`, `Integer` y cualquier `enum`. Si el selector es cualquier otro objeto, no puedes escribir un valor fijo detrás de `case`, como `case 5` o `case "MONDAY"`: el compilador lo rechaza, aunque el valor parezca encajar. Eso incluye a `Long`, el wrapper de `long`:
 
 ```java
 Long id = 5L;
@@ -176,11 +176,41 @@ switch (id) {                     // ❌
 // error: incompatible types: int cannot be converted to Long
 ```
 
-Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamado **patrón de tipo** (en inglés, _type pattern_). Por ejemplo, `case Employee e ->` significa «si el selector es un `Employee`, entra en este caso y llámalo `e`». No necesitas escribirlo todavía, porque en este capítulo todos los `case` usan constantes. Cómo comprobar el tipo de un objeto dentro de un `if`, con `instanceof`, se enseña en [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md).
+Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamado **patrón de tipo** (_type pattern_). Por ejemplo, `case Employee e ->` significa «si el selector es un `Employee`, entra en este caso y llámalo `e`». No necesitas escribirlo todavía, porque en este capítulo todos los `case` usan constantes. Cómo comprobar el tipo de un objeto dentro de un `if`, con `instanceof`, se enseña en [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md).
 
-> **Un selector `boolean` no forma parte del Java 25 habitual.** Un `if/else` ya permite elegir entre sus dos valores. Los tipos primitivos como `boolean` y `long` se están explorando para el pattern matching en [JEP 507](https://openjdk.org/jeps/507), pero esa funcionalidad solo está disponible como preview en Java 25. En este capítulo, usa `if/else` para elegir según un booleano y `switch` cuando un selector permitido tenga varios casos con nombre.
+> **Un `boolean` no puede ser el selector de un `switch`.** Para elegir entre `true` y `false`, usa `if/else`.
 
-> **Un `enum` permite comprobar que no falta ningún caso en una expresión `switch`.** Un `enum` es un tipo con una lista fija de valores con nombre; [14-enums.md](14-enums.md) lo enseñará. El compilador conoce todos esos valores y comprueba que una **expresión `switch`** los cubra. No puede hacer lo mismo con un `String`, que admite cualquier texto. En un `switch` clásico como **sentencia**, esa comprobación no se exige: puedes omitir una constante, el código compila y ese valor no ejecuta ningún caso.
+> **Un `enum` permite comprobar que no falta ningún caso en una expresión `switch`.** Un `enum` es un tipo con una lista fija de valores con nombre; [14-enums.md](14-enums.md) lo enseñará. Por ejemplo, `enum Shift { MORNING, AFTERNOON, NIGHT }` define un tipo `Shift` con solo tres valores posibles. Un `switch` se puede escribir de dos formas, y las dos secciones siguientes las enseñan en detalle. El **`switch` clásico**, con `case X:`, es una **sentencia**: ejecuta código pero no produce ningún valor, igual que el `if/else` del apartado del ternario. La **expresión `switch`**, con `->`, sí produce un valor, que guardas en una variable. El compilador conoce los tres valores de `Shift` y comprueba que una expresión `switch` los cubra todos. Si falta `NIGHT`, no compila:
+>
+> ```java
+> Shift shift = Shift.NIGHT;
+>
+> // ❌ expresión switch: falta NIGHT
+> String start = switch (shift) {
+>     case MORNING -> "06:00";
+>     case AFTERNOON -> "14:00";
+> };
+> // error: the switch expression does not cover all possible input values
+> ```
+>
+> En el `switch` clásico esa comprobación no se exige. Si falta `NIGHT`, el código compila, y cuando `shift` vale `NIGHT` no se ejecuta ningún caso: el programa sigue en la línea de después del `switch` sin imprimir nada.
+>
+> ```java
+> Shift shift = Shift.NIGHT;
+>
+> // compila: falta NIGHT, pero una sentencia no tiene que producir ningún valor
+> switch (shift) {
+>     case MORNING:
+>         System.out.println("Starts at 06:00");
+>         break;
+>     case AFTERNOON:
+>         System.out.println("Starts at 14:00");
+>         break;
+> }
+> // con shift = NIGHT no imprime nada
+> ```
+>
+> Con un `String` el compilador no puede hacer esta comprobación, porque un `String` admite cualquier texto.
 
 ### switch clásico (sentencia)
 
