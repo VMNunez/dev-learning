@@ -180,20 +180,9 @@ Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamad
 
 > **Un `boolean` no puede ser el selector de un `switch`.** Para elegir entre `true` y `false`, usa `if/else`.
 
-> **Un `enum` permite comprobar que no falta ningún caso en una expresión `switch`.** Un `enum` es un tipo con una lista fija de valores con nombre; [14-enums.md](14-enums.md) lo enseñará. Por ejemplo, `enum Shift { MORNING, AFTERNOON, NIGHT }` define un tipo `Shift` con solo tres valores posibles. Un `switch` se puede escribir de dos formas, y las dos secciones siguientes las enseñan en detalle. El **`switch` clásico**, con `case X:`, es una **sentencia**: ejecuta código pero no produce ningún valor, igual que el `if/else` del apartado del ternario. La **expresión `switch`**, con `->`, sí produce un valor, que guardas en una variable. El compilador conoce los tres valores de `Shift` y comprueba que una expresión `switch` los cubra todos. Si falta `NIGHT`, no compila:
+> **Un `enum` permite comprobar que no falta ningún caso en una expresión `switch`.** Un `enum` es un tipo con una lista fija de valores con nombre; [14-enums.md](14-enums.md) lo enseñará. Por ejemplo, `enum Shift { MORNING, AFTERNOON, NIGHT }` define un tipo `Shift` con solo tres valores posibles. Un `switch` se puede escribir de dos formas, y las dos secciones siguientes las enseñan en detalle.
 >
-> ```java
-> Shift shift = Shift.NIGHT;
->
-> // ❌ expresión switch: falta NIGHT
-> String start = switch (shift) {
->     case MORNING -> "06:00";
->     case AFTERNOON -> "14:00";
-> };
-> // error: the switch expression does not cover all possible input values
-> ```
->
-> En el `switch` clásico esa comprobación no se exige. Si falta `NIGHT`, el código compila, y cuando `shift` vale `NIGHT` no se ejecuta ningún caso: el programa sigue en la línea de después del `switch` sin imprimir nada.
+> La primera es el **`switch` clásico**, que se escribe con `case X:`. Es una **sentencia**: ejecuta código pero no produce ningún valor, igual que el `if/else`. Si olvidas un valor del `enum`, el compilador no avisa: el código compila, y cuando llega ese valor no se ejecuta ningún caso.
 >
 > ```java
 > Shift shift = Shift.NIGHT;
@@ -210,7 +199,20 @@ Con esos objetos, `switch` solo funciona si escribes otro tipo de `case`, llamad
 > // con shift = NIGHT no imprime nada
 > ```
 >
-> Con un `String` el compilador no puede hacer esta comprobación, porque un `String` admite cualquier texto.
+> La segunda es la **expresión `switch`**, que se escribe con `->`. Esta sí produce un valor, que guardas en una variable, así que el compilador exige que haya un caso para cada valor posible. Como conoce los tres valores de `Shift`, si falta `NIGHT` no compila:
+>
+> ```java
+> Shift shift = Shift.NIGHT;
+>
+> // ❌ expresión switch: falta NIGHT
+> String start = switch (shift) {
+>     case MORNING -> "06:00";
+>     case AFTERNOON -> "14:00";
+> };
+> // error: the switch expression does not cover all possible input values
+> ```
+>
+> Por eso, cuando el selector es un `enum`, es mejor usar la expresión `switch`. Si olvidas un valor, o si más adelante alguien añade uno nuevo al `enum`, el código no compila hasta que añades el caso que falta. Con un `String` el compilador no puede hacer esta comprobación, porque un `String` admite cualquier texto.
 
 ### switch clásico (sentencia)
 

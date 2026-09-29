@@ -180,20 +180,9 @@ With those objects, `switch` only works if you write a different kind of `case`,
 
 > **A `boolean` cannot be the selector of a `switch`.** To choose between `true` and `false`, use `if/else`.
 
-> **An `enum` lets the compiler check that no case is missing in a `switch` expression.** An `enum` is a type with a fixed list of named values; [14-enums.md](14-enums.md) will teach it. For example, `enum Shift { MORNING, AFTERNOON, NIGHT }` defines a `Shift` type with only three possible values. A `switch` can be written in two forms, and the next two sections teach them in detail. The **classic `switch`**, with `case X:`, is a **statement**: it runs code but produces no value, just like the `if/else` in the ternary section. The **`switch` expression**, with `->`, does produce a value, which you store in a variable. The compiler knows the three values of `Shift` and checks that a `switch` expression covers all of them. If `NIGHT` is missing, it does not compile:
+> **An `enum` lets the compiler check that no case is missing in a `switch` expression.** An `enum` is a type with a fixed list of named values; [14-enums.md](14-enums.md) will teach it. For example, `enum Shift { MORNING, AFTERNOON, NIGHT }` defines a `Shift` type with only three possible values. A `switch` can be written in two forms, and the next two sections teach them in detail.
 >
-> ```java
-> Shift shift = Shift.NIGHT;
->
-> // ❌ switch expression: NIGHT is missing
-> String start = switch (shift) {
->     case MORNING -> "06:00";
->     case AFTERNOON -> "14:00";
-> };
-> // error: the switch expression does not cover all possible input values
-> ```
->
-> The classic `switch` does not require that check. If `NIGHT` is missing, the code compiles, and when `shift` is `NIGHT` no case runs: the program carries on at the line after the `switch` without printing anything.
+> The first is the **classic `switch`**, written with `case X:`. It is a **statement**: it runs code but produces no value, just like `if/else`. If you forget a value of the `enum`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
 >
 > ```java
 > Shift shift = Shift.NIGHT;
@@ -210,7 +199,20 @@ With those objects, `switch` only works if you write a different kind of `case`,
 > // with shift = NIGHT it prints nothing
 > ```
 >
-> With a `String` the compiler cannot make this check, because a `String` accepts any text.
+> The second is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
+>
+> ```java
+> Shift shift = Shift.NIGHT;
+>
+> // ❌ switch expression: NIGHT is missing
+> String start = switch (shift) {
+>     case MORNING -> "06:00";
+>     case AFTERNOON -> "14:00";
+> };
+> // error: the switch expression does not cover all possible input values
+> ```
+>
+> That is why, when the selector is an `enum`, the `switch` expression is the better choice. If you forget a value, or someone later adds a new one to the `enum`, the code does not compile until you add the missing case. With a `String` the compiler cannot make this check, because a `String` accepts any text.
 
 ### Classic switch (statement)
 
