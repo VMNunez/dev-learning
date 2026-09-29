@@ -25,9 +25,9 @@
 
 En [01-variables-tipos.md](01-variables-tipos.md) aprendiste a guardar un valor en una variable y a calcular valores nuevos con expresiones. Una **expresión** es un trozo de código que Java ejecuta para obtener un valor: si `hours` vale `10`, la expresión `hours * 2` da `20`, y la expresión `hours > 8` da `true`. Ese segundo tipo, la expresión que da un `boolean`, es el que usa este capítulo para tomar decisiones. En [02-cadenas-de-texto.md](02-cadenas-de-texto.md) trabajaste con texto: convertiste los datos de un empleado —su nombre, su rol y sus horas trabajadas en una semana— en una línea de texto legible, y recuperaste esos mismos datos a partir de una línea de un CSV: partiste de un texto y lo transformaste en datos con los que poder trabajar, como las horas convertidas en un número con el que hacer cálculos. Allí apareció un bucle `for`, en la sección de `StringBuilder`, pero solo para explicar por qué unir texto con `+` muchas veces seguidas es costoso; cómo funciona el bucle se explica en este capítulo.
 
-Este capítulo sigue con el mismo ejemplo de los empleados para explicar las condiciones y los bucles. La diferencia está en cómo se cuentan las horas. En [02-cadenas-de-texto.md](02-cadenas-de-texto.md) cada empleado tenía un solo número, sus horas de toda la semana, por ejemplo `38.5`. Aquí las horas se separan por días, en un **parte de horas**: el registro donde cada empleado apunta cuántas horas ha trabajado cada día de la semana. Cada anotación del parte tiene tres datos: quién (un empleado), qué día (por ejemplo, `"SATURDAY"`) y cuántas horas (por ejemplo, `10`). Con ese registro, la empresa sabe quién ha hecho horas extra y quién ha faltado. Imagina que una anotación dice que una empleada trabajó 10 horas un sábado. Guardar `10` y `"SATURDAY"` no basta: el programa debe decidir si imprime `Overtime`, qué turno asigna y cuándo pasa a la siguiente persona. El **flujo de control** determina qué sentencias se ejecutan, en qué orden y cuántas veces.
+Este capítulo sigue con el mismo ejemplo de los empleados para explicar las condiciones y los bucles. La diferencia está en cómo se cuentan las horas. En [02-cadenas-de-texto.md](02-cadenas-de-texto.md) cada empleado tenía un solo número, sus horas de toda la semana, por ejemplo `38.5`. Aquí las horas se separan por días, en un **registro de horas** (en inglés, _timesheet_): la lista donde cada empleado apunta cuántas horas ha trabajado cada día de la semana. Cada anotación del registro tiene tres datos: quién (un empleado), qué día (por ejemplo, `"SATURDAY"`) y cuántas horas (por ejemplo, `10`). Con ese registro, la empresa sabe quién ha hecho horas extra y quién ha faltado. Imagina que una anotación dice que una empleada trabajó 10 horas un sábado. Guardar `10` y `"SATURDAY"` no basta: el programa debe decidir si imprime `Overtime`, qué turno asigna y cuándo pasa a la siguiente persona. El **flujo de control** determina qué sentencias se ejecutan, en qué orden y cuántas veces.
 
-Seguiremos con ese parte. Primero, `if / else` elige qué instrucciones ejecutar y el ternario elige un **valor**. Después, `switch` elige entre varios días; verás por qué la forma clásica puede continuar en el caso siguiente y cómo la expresión evita ese problema. Los bucles repetirán el trabajo para varios días o empleados. Al final, `break`, `continue` y `return` mostrarán tres formas distintas de salir antes de tiempo. En cada ejemplo, sigue esta pregunta: **¿qué línea se ejecuta después?**
+Seguiremos con ese registro. Primero, `if / else` elige qué instrucciones ejecutar y el ternario elige un **valor**. Después, `switch` elige entre varios días; verás por qué la forma clásica puede continuar en el caso siguiente y cómo la expresión evita ese problema. Los bucles repetirán el trabajo para varios días o empleados. Al final, `break`, `continue` y `return` mostrarán tres formas distintas de salir antes de tiempo. En cada ejemplo, sigue esta pregunta: **¿qué línea se ejecuta después?**
 
 Para seguir los ejemplos, lee `hours` como un `int` —por ejemplo, `10`— y `day` como un `String` —por ejemplo, `"SATURDAY"`. También aparecerán `Employee`, un objeto que representa a un empleado, y `List<Employee>`, una lista ordenada de empleados. `emp.getName()` y `emp.getHours()` consultan su nombre y sus horas; `emp.isActive()` comprueba si sigue activo, y `emp.setHours(0)` cambia sus horas a cero. Aquí solo necesitas entender qué hacen esas llamadas. Aprenderás a escribir métodos en [04-metodos.md](04-metodos.md), a construir la clase `Employee` en [06-poo-clases.md](06-poo-clases.md), a leer `<Employee>` en [09-genericos.md](09-genericos.md) y a distinguir las colecciones en [10-colecciones.md](10-colecciones.md). Algunas listas pueden crecer y otras no; ningún ejemplo de este capítulo exige que `employees` cambie de tamaño.
 
@@ -37,7 +37,7 @@ Para seguir los ejemplos, lee `hours` como un `int` —por ejemplo, `10`— y `d
 
 > 📖 Docs: [Baeldung — If-Else Statement in Java](https://www.baeldung.com/java-if-else) → leer: "Syntax of If-Else" y "Example of If-Else If-Else" — la condición booleana y la forma en cadena.
 
-Un parte con 10 horas debe indicar horas extra; uno con 4, una jornada normal. Si imprimes las dos etiquetas seguidas, aparecerán ambas. `if / else if` permite elegir: Java comprueba las condiciones de arriba abajo, ejecuta el primer bloque cuya condición sea `true` y omite los demás. Si ninguna es verdadera, ejecuta el bloque `else`, siempre que exista.
+Una anotación con 10 horas debe indicar horas extra; una con 4, una jornada normal. Si imprimes las dos etiquetas seguidas, aparecerán ambas. `if / else if` permite elegir: Java comprueba las condiciones de arriba abajo, ejecuta el primer bloque cuya condición sea `true` y omite los demás. Si ninguna es verdadera, ejecuta el bloque `else`, siempre que exista.
 
 ```java
 if (hours > 8) {
@@ -55,7 +55,7 @@ if (hours > 8) {
 
 ### Los valores imposibles van al principio de la cadena
 
-Acabas de ver por qué la condición de horas extra debe ir antes que la de cualquier jornada trabajada. La misma regla afecta a los valores que no deberían aceptarse: menos de 0 horas o más de 24 en un día. Pueden llegar por un error al rellenar el formulario o por un bug anterior. Si las ramas normales los aceptan, el parte mostrará un resultado incorrecto.
+Acabas de ver por qué la condición de horas extra debe ir antes que la de cualquier jornada trabajada. La misma regla afecta a los valores que no deberían aceptarse: menos de 0 horas o más de 24 en un día. Pueden llegar por un error al rellenar el formulario o por un bug anterior. Si las ramas normales los aceptan, el registro mostrará un resultado incorrecto.
 
 Prueba la primera cadena `if / else` con esos dos valores. Responde como si fueran válidos:
 
@@ -506,7 +506,7 @@ Para distinguirlas, comprueba qué parte del código abandonan y cuál es la sig
 
 La tercera columna indica la siguiente instrucción que se ejecuta. Tras `continue` o `break`, el método actual sigue desde otro punto. Tras `return`, termina y la ejecución vuelve al método que lo llamó. **`break` y `continue` cambian el recorrido dentro del método actual; `return` sale de él.**
 
-Las tres aparecen en el mismo parte de horas y en un solo método. La lista llega ordenada por horas semanales, de mayor a menor: cuando aparece un empleado con `0` horas, todos los siguientes también tienen `0`.
+Las tres aparecen en el mismo registro de horas y en un solo método. La lista llega ordenada por horas semanales, de mayor a menor: cuando aparece un empleado con `0` horas, todos los siguientes también tienen `0`.
 
 ```java
 String firstOvertimeName(List<Employee> employees) {
@@ -537,7 +537,7 @@ Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for
 
 Un `break` sin etiqueta sale del bucle más interno. Para salir de dos bucles anidados, escribe una **etiqueta** —un nombre seguido de `:`— antes del bucle exterior y úsala en `break outer;`.
 
-El parte de horas da un caso natural: una rejilla de empleados × días, y quieres detener toda la búsqueda en cuanto encuentres cualquier entrada sin aprobar. `isApproved(emp, day)` es una llamada de ejemplo que devuelve `true` cuando la entrada de ese empleado para ese día está aprobada.
+El registro de horas da un caso natural: una rejilla de empleados × días, y quieres detener toda la búsqueda en cuanto encuentres cualquier entrada sin aprobar. `isApproved(emp, day)` es una llamada de ejemplo que devuelve `true` cuando la entrada de ese empleado para ese día está aprobada.
 
 ```java
 outer:
@@ -602,4 +602,4 @@ for (Employee emp : employees) {
 
 ---
 
-Ya puedes seguir la ejecución de un parte de horas: las condiciones eligen ramas, los bucles repiten instrucciones y las salidas anticipadas cambian el punto en que continúa el programa. Has leído llamadas como `loadPage(page)`, `isApproved(emp, day)` y `firstOvertimeName(...)` sin tener que escribirlas. En [04-metodos.md](04-metodos.md) aprenderás a definir y llamar esos **métodos**, con los valores que reciben y devuelven.
+Ya puedes seguir la ejecución de un registro de horas: las condiciones eligen ramas, los bucles repiten instrucciones y las salidas anticipadas cambian el punto en que continúa el programa. Has leído llamadas como `loadPage(page)`, `isApproved(emp, day)` y `firstOvertimeName(...)` sin tener que escribirlas. En [04-metodos.md](04-metodos.md) aprenderás a definir y llamar esos **métodos**, con los valores que reciben y devuelven.
