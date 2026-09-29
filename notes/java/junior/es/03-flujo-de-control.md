@@ -419,10 +419,13 @@ Imagina que tienes los nombres de los días de la semana guardados en una sola v
 >
 > ```java
 > String[] week = {"MONDAY", "TUESDAY", "WEDNESDAY"};   // 1. con sus valores
-> String[] names = new String[3];                        // 2. solo con su tamaño
+> int[] weekHours = {8, 8, 6};                           // 1. con sus valores
+>
+> String[] names = new String[3];                        // 2. solo con su tamaño: null, null, null
+> int[] totals = new int[3];                             // 2. solo con su tamaño: 0, 0, 0
 > ```
 >
-> Los corchetes de `String[]` indican que la variable es un array de `String`. La primera forma escribe sus valores entre llaves, separados por comas. La segunda indica solo cuántas posiciones tiene, con `new` y el tamaño entre corchetes, para rellenarlas después. Con `new String[3]`, un array de `String`, sus tres posiciones empiezan con `null`. Con `new int[3]`, un array de `int`, empezarían con `0`, porque un `int` no puede ser `null`. Es lo que viste en [01-variables-tipos.md](01-variables-tipos.md), en la sección _Variables de referencia y `null`_: una variable de tipo primitivo, como un `int`, guarda el valor directamente, mientras que una variable de un objeto, como un `String`, guarda una referencia a la dirección de memoria donde está ese objeto. `null` significa que esa referencia todavía no apunta a ningún objeto.
+> Los corchetes de `String[]` e `int[]` indican que la variable es un array de `String` o de `int`. La primera forma escribe sus valores entre llaves, separados por comas. La segunda indica solo cuántas posiciones tiene, con `new` y el tamaño entre corchetes, para rellenarlas después. Con `new String[3]`, un array de `String`, sus tres posiciones empiezan con `null`. Con `new int[3]`, un array de `int`, empezarían con `0`, porque un `int` no puede ser `null`. Es lo que viste en [01-variables-tipos.md](01-variables-tipos.md), en la sección _Variables de referencia y `null`_: una variable de tipo primitivo, como un `int`, guarda el valor directamente, mientras que una variable de un objeto, como un `String`, guarda una referencia a la dirección de memoria donde está ese objeto. `null` significa que esa referencia todavía no apunta a ningún objeto.
 >
 > ```java
 > System.out.println(week[0]);       // MONDAY
