@@ -321,16 +321,26 @@ The `default` block is not required, but include it: it is your safety net for a
 
 ### Switch expression (Java 14+) — use this form
 
-The classic switch is a **statement**: it runs code and returns nothing. The switch **expression** produces a value, so you can assign it straight to a variable — the same statement-versus-expression distinction you met with the ternary above.
+The classic switch is a **statement**: it runs code and returns nothing. The switch **expression** produces a value, so you can assign it straight to a variable.
 
 It also removes fall-through: each arm uses `->` and runs exactly one thing, so no `break` exists and none is needed.
 
+The way to write it is to declare a variable and assign the whole `switch` to it, just as you would assign any other value:
+
+1. `String shift =` declares the variable that receives the result.
+2. `switch (day) { ... }` picks a branch based on the value of `day`.
+3. Each branch is written `case label -> value;`. The label goes to the left of the arrow, or several labels separated by commas. The value that `shift` receives if that branch matches goes to the right.
+4. The `switch` ends with `};`: the brace closes the `switch` and the semicolon closes the assignment, just like in `String name = "Ana";`.
+
 ```java
+String day = "SATURDAY";
+
 String shift = switch (day) {
     case "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" -> "Weekday";
     case "SATURDAY", "SUNDAY" -> "Weekend";
     default -> "Unknown";
 };
+// shift is "Weekend"
 ```
 
 **Exhaustiveness is enforced, and it is an error, not a warning.** A switch expression has to produce a value on *every* possible input — there is no such thing as "no branch matched, so the variable stays unassigned". So the compiler checks the arms cover everything and refuses to build otherwise:

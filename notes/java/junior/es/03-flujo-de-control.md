@@ -321,16 +321,26 @@ El bloque `default` no es obligatorio en esta sentencia, pero permite manejar un
 
 ### Expresión `switch` (Java 14+) — usa esta forma
 
-El `switch` clásico es una **sentencia**: ejecuta código y no produce ningún valor. La **expresión `switch`** (_switch expression_) sí produce un valor, así que puedes asignarlo directamente a una variable. Es la misma distinción entre sentencia y expresión que viste antes con el ternario.
+El `switch` clásico es una **sentencia**: ejecuta código y no produce ningún valor. La **expresión `switch`** (_switch expression_) sí produce un valor, así que puedes asignarlo directamente a una variable.
 
 También elimina el fall-through: cada rama usa `->` y ejecuta exactamente una cosa, así que no existe `break` ni hace falta.
 
+La forma de escribirla es declarar una variable y asignarle el `switch` entero, igual que le asignarías cualquier otro valor:
+
+1. `String shift =` declara la variable que recibe el resultado.
+2. `switch (day) { ... }` elige una rama según el valor de `day`.
+3. Cada rama se escribe `case etiqueta -> valor;`. A la izquierda de la flecha va la etiqueta, o varias separadas por comas. A la derecha va el valor que recibe `shift` si esa rama coincide.
+4. El `switch` termina con `};`: la llave cierra el `switch` y el punto y coma cierra la asignación, igual que en `String name = "Ana";`.
+
 ```java
+String day = "SATURDAY";
+
 String shift = switch (day) {
     case "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" -> "Weekday";
     case "SATURDAY", "SUNDAY" -> "Weekend";
     default -> "Unknown";
 };
+// shift vale "Weekend"
 ```
 
 **Una expresión `switch` debe cubrir todas las entradas posibles.** Cada ejecución tiene que producir un valor para la variable que recibe el resultado. Por eso el compilador rechaza una expresión en la que algún valor del selector no coincidiría con ninguna rama:
