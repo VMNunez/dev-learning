@@ -164,7 +164,7 @@ switch (x) {                      // ❌
 // error: constant label of type int is not compatible with switch selector type long
 ```
 
-En Java 25 el compilador muestra **dos** errores. El primero dice que usar un `long` como selector solo funcionaría con una funcionalidad nueva de Java que en la versión 25 todavía está a prueba (lo que Java llama _preview_) y viene desactivada. En la práctica significa que un `long` no sirve como selector. El segundo dice que `case 3` es una constante `int` y no es compatible con un selector `long`. No necesitas saber más de esa funcionalidad nueva: los dos errores desaparecen con la misma corrección, que es usar un selector de un tipo que la tabla admite, como `int`, o una cadena de `if/else`.
+En Java 25 el compilador muestra **dos** errores. El primero dice que usar un `long` como selector solo funcionaría con una funcionalidad nueva de Java que en la versión 25 todavía está a prueba (lo que Java llama _preview_) y viene desactivada. En la práctica significa que un `long` no sirve como selector. El segundo dice que `case 3` es una constante `int` y no es compatible con un selector `long`. No necesitas saber más de esa funcionalidad nueva: los dos errores desaparecen con la misma corrección, que es usar un selector de un tipo marcado con ✅ en la tabla de tipos del selector, justo antes de este ejemplo, como `int`, o una cadena de `if/else`.
 
 Un selector de tipo objeto solo se permite en la forma con patrones (`case String s ->`), nunca con etiquetas constantes. `Long id = 5L; switch (id) { case 5: ... }` falla con `incompatible types: int cannot be converted to Long`.
 
