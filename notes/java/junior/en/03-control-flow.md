@@ -118,7 +118,7 @@ String label = hours > 8 ? "Overtime" : "Normal";
 
 Use it only when both values are short and the condition is easy to read. If the line becomes hard to scan, use a regular `if/else`.
 
-> **Why a ternary and not an `if/else` here?** Because `if` is a **statement** and the ternary is an **expression**. A statement *does* something; an expression *produces a value*. Only an expression can sit on the right of an `=`, which is why `String label = if (...)` is not valid Java at all. This statement-versus-expression split is the exact same distinction that separates the two forms of `switch` — it is worth fixing in your head now, because it comes back in the `switch` section below.
+> **Why a ternary and not an `if/else` here?** Because `if` is a **statement** and the ternary is an **expression**. A statement *does* something: you use it to run blocks of code, like the `if/else`, which runs one block or another. An expression *produces a value*: you use it, for example, to assign that value to a variable. The ternary is an expression that assigns a value conditionally: it picks one of two values depending on the condition. Only an expression can sit on the right of an `=`, which is why `String label = if (...)` is not valid Java: it produces the compile error `illegal start of expression`. This statement-versus-expression split is the exact same distinction that separates the two forms of `switch` below.
 
 This is the same choice written with `if/else`, so you can see what the expression saves you:
 

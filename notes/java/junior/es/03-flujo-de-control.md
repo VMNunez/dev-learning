@@ -118,7 +118,7 @@ String label = hours > 8 ? "Overtime" : "Normal";
 
 Úsalo solo cuando ambos valores sean cortos y la condición sea fácil de leer. Si la línea se vuelve difícil de seguir de un vistazo, usa un `if/else` normal.
 
-> **¿Por qué un ternario y no un `if/else` aquí?** Porque `if` es una **sentencia** (statement) y el ternario es una **expresión** (expression). Una sentencia _hace_ algo; una expresión _produce un valor_. Solo una expresión puede colocarse a la derecha de un `=`, y por eso `String label = if (...)` directamente no es Java válido. Esta distinción entre sentencia y expresión es exactamente la misma que separa las dos formas de `switch` de más abajo — merece la pena fijarla ahora en la cabeza, porque vuelve a aparecer en la siguiente sección.
+> **¿Por qué un ternario y no un `if/else` aquí?** Porque `if` es una **sentencia** (statement) y el ternario es una **expresión** (expression). Una sentencia _hace_ algo: la usas para ejecutar bloques de código, como el `if/else`, que ejecuta un bloque u otro. Una expresión _produce un valor_: la usas, por ejemplo, para asignar ese valor a una variable. El ternario es una expresión que asigna un valor de forma condicional: elige uno de dos valores según la condición. Solo una expresión puede colocarse a la derecha de un `=`, y por eso `String label = if (...)` no es Java válido: produce el error de compilación `illegal start of expression`. Esta distinción entre sentencia y expresión es exactamente la misma que separa las dos formas de `switch` de más abajo.
 
 Esta es la misma elección escrita con `if/else`, para que veas lo que te ahorra la expresión:
 
