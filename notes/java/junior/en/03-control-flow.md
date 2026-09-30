@@ -617,7 +617,7 @@ Use the _for-each_ whenever you just need the items and do not need the index. I
 
 Use `while` or `do-while` when the exit condition depends on what happens in each iteration and you do not know how many iterations you will need. For example: asking for a day's hours until the user types a valid number, between 0 and 24, without knowing how many times they will get it wrong; downloading the employees page by page until an empty page arrives, which is the `do-while` example further down; or calling a service that does not respond again until it responds. In those cases, a `for` with a counter does not express well when the work should end.
 
-**`while`** checks the condition before running the body. If the condition is false from the start, the body does not run even once, so a `while` can run 0 times, and that is a normal outcome.
+**`while`** checks the condition before running the body. If the condition is false from the start, the body does not run even once, so a `while` can run 0 times.
 
 **`do-while`** runs the body first and then checks the condition, so the body runs at least once. It is useful when you have to do something before you know whether to continue. For example, to know whether a page of employees is empty, you first have to download it: the download goes in the body and the check goes in the condition.
 
@@ -641,9 +641,9 @@ do {
 } while (!batch.isEmpty());           // ← note the semicolon
 ```
 
-In the `do-while`, `loadPage(page)` stands for fetching one page of employees and `process(batch)` stands for handling that page; these are placeholder methods, not calls already defined in this chapter. On the first pass the code fetches page 0, processes it only if it contains employees, increments `page` to 1, and then tests whether the fetched page was empty. When an empty page arrives, no employees are processed and the loop stops after that pass. `batch` is declared before `do`, not inside the body, because of the scope rule from [01-variables-types.md](01-variables-types.md): a variable declared inside the `{ }` dies at the closing brace, and the `while (...)` test sits after that brace. Declare `batch` inside the body and the test fails with `cannot find symbol`.
+In the `do-while`, `loadPage(page)` stands for fetching one page of employees and `process(batch)` stands for handling that page; these are placeholder methods, not calls already defined in this chapter. On the first pass the code fetches page 0, processes it only if it contains employees, increments `page` to 1, and then tests whether the fetched page was empty. When an empty page arrives, no employees are processed and the loop stops after that pass. `batch` is declared before `do`, not inside the body, because of the scope rule from [01-variables-types.md](01-variables-types.md): a variable declared inside the `{ }` is no longer available after the closing brace, because that is where its scope ends, and the `while (...)` test sits after that brace. Declare `batch` inside the body and the test fails with `cannot find symbol`.
 
-> **The infinite loop — the one real hazard of `while`.** A `for` header puts the step right next to the condition, so forgetting it is hard. In a `while`, the step is an ordinary line buried somewhere in the body, and if you forget it — or an early `continue` jumps over it — the condition never changes and the loop runs forever. There is no error, no exception, no stack trace: the program never gets past the loop, and one processor core stays at 100%. The example below prints `MONDAY` over and over until you stop it; a loop with no output just looks frozen.
+> **A `while` with no progress becomes an infinite loop.** In a classic `for`, the increment is in the header; in a `while`, you have to write it inside the body. If you forget it or a `continue` skips it, `i` does not change and the condition stays true forever, so the loop never ends. The example prints `MONDAY` over and over until you stop the program. There is no compile error and no exception.
 > ```java
 > // ❌ MAL — i is never incremented; this never ends
 > int i = 0;

@@ -615,7 +615,7 @@ Usa el _for-each_ cuando necesites los elementos pero no su posición. También 
 
 Usa `while` o `do-while` cuando la condición de salida depende de lo que ocurra en cada iteración y no sabes cuántas iteraciones harán falta. Por ejemplo: pedir las horas de un día hasta que el usuario escriba un número válido, entre 0 y 24, sin saber cuántas veces se va a equivocar; descargar los empleados página a página hasta que llegue una página vacía, que es el ejemplo del `do-while` de más abajo; o volver a llamar a un servicio que no responde hasta que responda. En esos casos, un `for` con contador no expresa bien cuándo debe terminar el trabajo.
 
-**`while`** comprueba la condición antes de ejecutar el cuerpo. Si la condición es falsa desde el principio, el cuerpo no se ejecuta ninguna vez, así que es posible que un `while` se ejecute 0 veces, y eso es un resultado normal.
+**`while`** comprueba la condición antes de ejecutar el cuerpo. Si la condición es falsa desde el principio, el cuerpo no se ejecuta ninguna vez, así que es posible que un `while` se ejecute 0 veces.
 
 **`do-while`** ejecuta primero el cuerpo y después comprueba la condición, así que el cuerpo se ejecuta al menos una vez. Te sirve cuando tienes que hacer algo antes de saber si hay que seguir. Por ejemplo, para saber si una página de empleados está vacía, primero tienes que descargarla: la descarga va en el cuerpo y la comprobación va en la condición.
 
@@ -639,9 +639,9 @@ do {
 } while (!batch.isEmpty());           // ← fíjate en el punto y coma
 ```
 
-En el `do-while`, `loadPage(page)` representa la descarga de una página de empleados y `process(batch)` representa su procesamiento; son métodos de ejemplo, no llamadas definidas en este capítulo. En la primera pasada se descarga la página 0, se procesa solo si contiene empleados, se incrementa `page` a 1 y después se comprueba si la página descargada estaba vacía. Cuando llega una página vacía, no se procesa ningún empleado y el bucle termina tras esa pasada. `batch` se declara antes del `do`, no dentro del cuerpo, por la regla de alcance de [01-variables-tipos.md](01-variables-tipos.md): una variable declarada dentro de `{ }` deja de estar disponible al cerrar la llave, y la condición `while (...)` está después. Si declaras `batch` dentro del cuerpo, la condición falla con `cannot find symbol`.
+En el `do-while`, `loadPage(page)` representa la descarga de una página de empleados y `process(batch)` representa su procesamiento; son métodos de ejemplo, no llamadas definidas en este capítulo. En la primera pasada se descarga la página 0, se procesa solo si contiene empleados, se incrementa `page` a 1 y después se comprueba si la página descargada estaba vacía. Cuando llega una página vacía, no se procesa ningún empleado y el bucle termina tras esa pasada. `batch` se declara antes del `do`, no dentro del cuerpo, por la regla de alcance de [01-variables-tipos.md](01-variables-tipos.md): una variable declarada dentro de `{ }` deja de estar disponible al cerrar la llave, porque ahí termina su alcance (_scope_), y la condición `while (...)` está después. Si declaras `batch` dentro del cuerpo, la condición falla con `cannot find symbol`.
 
-> **Un `while` sin avance puede ejecutarse sin fin.** En un `for` clásico, el incremento está en la cabecera; en un `while`, debes escribirlo dentro del cuerpo. Si lo olvidas o un `continue` lo salta, `i` no cambia y la condición sigue siendo verdadera. El ejemplo imprime `MONDAY` una y otra vez hasta que detengas el programa. No aparece un error de compilación ni una excepción.
+> **Un `while` sin avance se convierte en un bucle infinito.** En un `for` clásico, el incremento está en la cabecera; en un `while`, debes escribirlo dentro del cuerpo. Si lo olvidas o un `continue` lo salta, `i` no cambia y la condición sigue siendo verdadera siempre, por lo que el bucle no termina nunca. El ejemplo imprime `MONDAY` una y otra vez hasta que detengas el programa. No aparece un error de compilación ni una excepción.
 >
 > ```java
 > // ❌ MAL — i nunca se incrementa; esto no termina nunca
