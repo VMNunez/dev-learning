@@ -15,6 +15,7 @@
   - [Elegir entre las cuatro formas de bucle](#elegir-entre-las-cuatro-formas-de-bucle)
 - [5. break, continue y return](#break-continue-y-return)
   - [`break` y `continue` con etiqueta: salir de un bucle que está dentro de otro](#break-y-continue-con-etiqueta-salir-de-un-bucle-que-está-dentro-de-otro)
+- [6. Lo que esto desbloquea](#lo-que-esto-desbloquea)
 
 # Flujo de control
 
@@ -984,4 +985,15 @@ for (Employee emp : employees) {
 
 ---
 
-Ya puedes seguir la ejecución de un registro de horas: las condiciones eligen ramas, los bucles repiten instrucciones y las salidas anticipadas cambian el punto en que continúa el programa. Has leído llamadas como `loadPage(page)`, `isApproved(emp, day)` y `firstOvertimeName(...)` sin tener que escribirlas. En [04-metodos.md](04-metodos.md) aprenderás a definir y llamar esos **métodos**, con los valores que reciben y devuelven. Allí verás también cómo un método comprueba, antes de nada, que no le ha llegado un valor `null`, para que sus `if`, bucles y `switch` no fallen con `NullPointerException`.
+## Lo que esto desbloquea
+
+Hasta el capítulo anterior, tu programa ejecutaba cada línea una sola vez, de arriba abajo. Con este archivo ya decide qué líneas se ejecutan, cuántas veces y cuándo parar. Lo has visto con el mismo registro de horas de principio a fin: una anotación con 10 horas se marca como horas extra, un sábado se clasifica como turno de fin de semana, y la búsqueda del primer empleado con horas extra se detiene en cuanto lo encuentra. En la práctica, ahora puedes:
+
+- Elegir qué código se ejecuta con `if / else`, comprobando primero los valores imposibles, y elegir entre dos valores con el operador ternario.
+- Clasificar un valor con `switch`: en la forma clásica, sin olvidar el `break` de cada caso, y con la expresión `switch`, que ejecuta solo el caso que coincide y guarda su resultado en una variable.
+- Recorrer un array o una colección con el _for-each_ cuando no necesitas el índice, y con el `for` clásico cuando sí lo necesitas, sin cometer el error off-by-one.
+- Repetir un trabajo con `while` cuando no sabes cuántas iteraciones harán falta, o con `do-while` cuando el cuerpo tiene que ejecutarse al menos una vez, sin crear un bucle infinito.
+- Cortar un bucle antes de tiempo con `continue`, `break` o `return`, sabiendo qué línea se ejecuta después de cada uno.
+- Salir de dos bucles a la vez con una etiqueta o, mejor, sacando los bucles a un método y saliendo con `return`.
+
+Lo que todavía no puedes hacer es escribir tus propios métodos. En este capítulo has leído llamadas como `loadPage(page)`, `isApproved(emp, day)` y `firstOvertimeName(...)`, pero no has escrito ninguna. [04-metodos.md](04-metodos.md) explica cómo definir y llamar un **método**, con los valores que recibe y el valor que devuelve. Allí verás también cómo un método comprueba, antes de nada, que no le ha llegado un valor `null`, para que sus `if`, bucles y `switch` no fallen con `NullPointerException`.

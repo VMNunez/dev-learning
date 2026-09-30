@@ -15,6 +15,7 @@
   - [Choosing between the four loop forms](#choosing-between-the-four-loop-forms)
 - [5. break, continue, and return](#break-continue-and-return)
   - [`break` and `continue` with a label: leaving a loop that sits inside another](#break-and-continue-with-a-label-leaving-a-loop-that-sits-inside-another)
+- [6. What this unlocks](#what-this-unlocks)
 
 # Control Flow
 
@@ -984,4 +985,15 @@ for (Employee emp : employees) {
 
 ---
 
-You can now trace how a timesheet runs: conditions choose branches, loops repeat instructions and early exits change the point where the program continues. You have read calls such as `loadPage(page)`, `isApproved(emp, day)` and `firstOvertimeName(...)` without having to write them. In [04-methods.md](04-methods.md) you will learn to define and call those **methods**, with the values they receive and return. There you will also see how a method checks, before anything else, that it has not received a `null` value, so that its `if`, loops and `switch` do not fail with `NullPointerException`.
+## What this unlocks
+
+Up to the previous chapter, your program ran each line once, from top to bottom. With this file it now decides which lines run, how many times, and when to stop. You have seen it with the same timesheet from start to finish: an entry with 10 hours is marked as overtime, a Saturday is classified as a weekend shift, and the search for the first employee with overtime stops as soon as it finds them. In practice, you can now:
+
+- Choose which code runs with `if / else`, checking the impossible values first, and choose between two values with the ternary operator.
+- Classify a value with `switch`: in the classic form, without forgetting each case's `break`, and with the `switch` expression, which runs only the matching case and stores its result in a variable.
+- Walk through an array or a collection with the _for-each_ when you do not need the index, and with the classic `for` when you do, without making the off-by-one error.
+- Repeat work with `while` when you do not know how many iterations you will need, or with `do-while` when the body has to run at least once, without creating an infinite loop.
+- Cut a loop short with `continue`, `break` or `return`, knowing which line runs after each one.
+- Leave two loops at once with a label or, better, by moving the loops into a method and leaving with `return`.
+
+What you cannot do yet is write your own methods. In this chapter you have read calls such as `loadPage(page)`, `isApproved(emp, day)` and `firstOvertimeName(...)`, but you have not written any. [04-methods.md](04-methods.md) explains how to define and call a **method**, with the values it receives and the value it returns. There you will also see how a method checks, before anything else, that it has not received a `null` value, so that its `if`, loops and `switch` do not fail with `NullPointerException`.
