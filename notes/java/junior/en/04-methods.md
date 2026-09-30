@@ -27,7 +27,7 @@
 
 [03-control-flow.md](03-control-flow.md) ended on calls to methods you could read but had not written yourself: `loadPage(page)`, `isApproved(emp, day)`, `firstOvertimeName(employees)`. Each of those calls invokes a **method**. The `main` that every runnable example sits inside and the `System.out.println` you have been calling since [00-intro-java.md](00-intro-java.md) are methods too. In this chapter we will see how a method is written, and the contract a caller has to satisfy before a call to it compiles at all.
 
-The chapter first takes a declaration apart and shows which of its parts the compiler checks at every call. Next it looks at what a method can hand back, including the `void` method that hands back no value. After that come the two ways one name can accept different arguments — overloading and varargs — and the rule the compiler follows to choose between them. Then you call methods on an object and on a class, see how packages and imports decide the name a class is reached by, and finish with the one argument the compiler cannot check for you: a `null` where a real value was required.
+The chapter first takes a method declaration apart and shows which of its parts the compiler checks at every call. Next it looks at what a method can hand back, and at what happens when a method is declared `void` and hands back no value. After that come the two ways one name can accept different arguments — overloading and varargs — and the rule the compiler follows to choose between them. Then you call methods on an object and on a class, see how packages and imports decide the name a class is reached by, and finish with the one argument the compiler cannot check for you: a `null` where a real value was required.
 
 ## Method declaration
 
