@@ -668,9 +668,13 @@ Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **
 | **Con una condición comprobada antes** — no sabes cuántas iteraciones hacen falta, y puede que no haga falta ninguna                      | `while`       | comprueba la condición antes de ejecutar el cuerpo, así que, si es falsa desde el principio, el cuerpo no se ejecuta ninguna vez             |
 | **Con una condición comprobada después** — no sabes cuántas iteraciones hacen falta, pero el cuerpo tiene que ejecutarse al menos una vez | `do-while`    | ejecuta el cuerpo antes de comprobar la condición, así que el cuerpo se ejecuta al menos una vez                                             |
 
-Para usar la tabla, empieza por la columna de la izquierda y busca la fila que describe tu caso. La columna del medio te dice qué bucle escribir, y la de la derecha, qué te asegura ese bucle. Las filas del `for` clásico y del `while` tienen algo en común: los dos comprueban la condición antes de cada iteración, así que los dos pueden no ejecutarse ninguna vez. Lo que los diferencia es qué hace que terminen. Usa el `for` clásico cuando sabes de antemano cuántas iteraciones harán falta, porque un contador las cuenta. Usa el `while` cuando no lo sabes y el bucle termina porque algo cambia durante el trabajo, por ejemplo, porque llega una página de empleados vacía.
-
-> **La forma del bucle comunica cómo vas a repetir el trabajo.** Puedes escribir un recorrido con índice como `while` o como `for`, pero quien lea el código entenderá antes tu intención si eliges la forma adecuada. `for (Employee emp : employees)` anuncia que recorrerás los elementos de la lista sin usar su posición; el cuerpo aún podría salir antes con `break` o `return`. `while (…)` anuncia que comprobarás una condición antes de cada pasada y que quizá no se ejecute ninguna.
+> **Elige el bucle que mejor transmite tu intención.** Casi siempre puedes hacer lo mismo con varios tipos de bucle: por ejemplo, un recorrido con índice se puede escribir con un `for` clásico o con un `while`. Pero cada tipo le dice algo distinto a quien lea tu código, antes de que lea el cuerpo:
+>
+> - `for (Employee emp : employees)` dice: «voy a recorrer los empleados de la lista y no necesito su índice».
+> - `for (int i = 0; i < week.length; i++)` dice: «voy a repetir esto un número conocido de veces, usando el índice `i`».
+> - `while (...)` dice: «voy a repetir esto mientras se cumpla una condición, y puede que no se ejecute ninguna vez».
+>
+> Por eso, aunque un `while` pueda hacer lo mismo que un `for`, elige el bucle que describe lo que quieres hacer: quien lea tu código entenderá tu intención sin tener que leer el cuerpo entero. El cuerpo todavía puede salir antes del bucle con `break` o `return`, que verás en la sección siguiente.
 
 ---
 

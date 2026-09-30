@@ -668,9 +668,13 @@ You have now seen the four kinds of loop. To choose between them, ask yourself *
 | **With a condition checked before** — you do not know how many iterations you need, and you may need none | `while` | it checks the condition before running the body, so, if it is false from the start, the body does not run even once |
 | **With a condition checked after** — you do not know how many iterations you need, but the body has to run at least once | `do-while` | it runs the body before checking the condition, so the body runs at least once |
 
-To use the table, start with the left column and find the row that describes your case. The middle column tells you which loop to write, and the right one, what that loop guarantees you. The classic `for` and `while` rows have something in common: both check the condition before each iteration, so both may not run even once. What separates them is what makes them end. Use the classic `for` when you know in advance how many iterations you will need, because a counter counts them. Use `while` when you do not know, and the loop ends because something changes during the work, for example, because an empty page of employees arrives.
-
-> **Every loop is convertible into every other one — that is not the point.** You can write a counted loop as a `while`, and an enhanced `for` as a classic `for`; the compiler literally does the second one for you. Choosing the right form is not about capability, it is about what the next reader can assume without reading the body. Seeing `for (Employee emp : employees)` tells them "every employee, exactly once, in order" before they read a single line inside. Seeing `while (…)` tells them "this may run zero times and the exit condition is somewhere below" — which is true information, and misleading when the loop was really just counting.
+> **Choose the loop that best conveys your intention.** You can almost always do the same thing with several kinds of loop: for example, a walk with an index can be written with a classic `for` or with a `while`. But each kind tells whoever reads your code something different, before they read the body:
+>
+> - `for (Employee emp : employees)` says: "I am going to walk through the employees in the list and I do not need their index".
+> - `for (int i = 0; i < week.length; i++)` says: "I am going to repeat this a known number of times, using the index `i`".
+> - `while (...)` says: "I am going to repeat this while a condition holds, and it may not run even once".
+>
+> So even though a `while` can do the same as a `for`, choose the loop that describes what you want to do: whoever reads your code will understand your intention without reading the whole body. The body can still leave the loop early with `break` or `return`, which you will see in the next section.
 
 ---
 
