@@ -33,7 +33,7 @@ El capítulo empieza desmontando la declaración de un método y mostrando cuál
 
 > Docs: https://www.baeldung.com/java-method-signature-return-type → leer la página completa: es corta y deja claro exactamente qué partes de una declaración forman la signature
 
-> **¿Dónde viven los métodos?** (TODO: LOS METODOS SIEMPRE VIVEN DENTRO...)dentro de una clase — no pueden existir fuera de una clase en Java. Los explicamos aquí antes de ver las clases completas porque ya los has encontrado en los ejemplos de control de flujo(TODO: PREFIERO QUE NOMBRES EL ARCHIVO). La estructura completa de una clase (campos, constructores, encapsulación(TODO: METODOS, ETC)) se cubre en [06-poo-clases.md](06-poo-clases.md).
+> **¿Dónde viven los métodos?** Los métodos siempre viven dentro de una clase: en Java no pueden existir fuera de una. Los explicamos aquí, antes de ver las clases completas, porque ya los has encontrado en los ejemplos de [03-flujo-de-control.md](03-flujo-de-control.md). La estructura completa de una clase (campos, constructores, métodos, encapsulación, etc.) se cubre en [06-poo-clases.md](06-poo-clases.md).
 
 Un método es un bloque de código con nombre que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte donde haga falta esa tarea.
 

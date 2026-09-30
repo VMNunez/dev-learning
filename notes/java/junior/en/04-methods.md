@@ -33,7 +33,7 @@ The chapter first takes a method declaration apart and shows which of its parts 
 
 > Docs: https://www.baeldung.com/java-method-signature-return-type → read the whole page: it is short and settles exactly which parts of a declaration make up the signature
 
-> **Where do methods live?** Always inside a class — they cannot exist outside a class in Java. We cover them here before classes because you have already seen them in the control flow examples. The full structure of a class (fields, constructors, encapsulation) is covered in [06-oop-classes.md](06-oop-classes.md).
+> **Where do methods live?** Methods always live inside a class: in Java they cannot exist outside one. We cover them here, before full classes, because you have already met them in the examples of [03-control-flow.md](03-control-flow.md). The full structure of a class (fields, constructors, methods, encapsulation, etc.) is covered in [06-oop-classes.md](06-oop-classes.md).
 
 A method is a named block of code that performs one specific task. You define it once and call it wherever that task has to be done.
 
