@@ -922,7 +922,7 @@ Lee la columna de la derecha como "el código que habrías tenido que escribir a
 > int score = scores.get("missing");   // NullPointerException — ¿pero dónde?
 > ```
 >
-> `get()` devuelve `null` para una clave que no existe, lo cual es un `Integer` legal. El problema está en la asignación a `int`: un `int` no tiene dónde meter `null`, así que el compilador ha añadido en silencio un `.intValue()`, y estás llamando a un método sobre `null`. Es decir: el fallo viene de guardar el resultado en un `int` en vez de en un `Integer` — con `Integer score = scores.get("missing");` no hay unboxing, `score` se queda a `null` y no hay excepción. El mensaje de Java desde la versión 14 lo explica exactamente así, nombrando un método que tú nunca escribiste:
+> `get()` devuelve `null` para una clave que no existe, lo cual es un `Integer` legal. El problema está en la asignación a `int`: un `int` no tiene dónde meter `null`, así que el compilador ha añadido en silencio un `.intValue()`, y estás llamando a un método sobre `null`. Es decir: el fallo viene de guardar el resultado en un `int` en vez de en un `Integer` — con `Integer score = scores.get("missing");` no hay unboxing, `score` se queda a `null` y no hay excepción. A partir de la versión 15, el mensaje que Java muestra por defecto lo explica exactamente así, nombrando un método que tú nunca escribiste:
 >
 > ```
 > java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()"
@@ -964,7 +964,7 @@ Nada distingue a 127 de 128 como _valor_, y la causa de que uno dé `true` y el 
 
 ### Métodos útiles de wrapper
 
-Los **métodos estáticos** pertenecen a la clase en sí, no a ningún objeto concreto — por eso los llamas sobre el nombre de la clase (`Integer.parseInt("42")`) sin crear un objeto con `new`. Los métodos estáticos se cubren en detalle en [04-metodos.md](04-metodos.md).
+Los **métodos estáticos** pertenecen a la clase en sí, no a ningún objeto concreto — por eso los llamas sobre el nombre de la clase (`Integer.parseInt("42")`) sin crear un objeto con `new`. Los métodos estáticos se cubren en detalle en [06-poo-clases.md](06-poo-clases.md).
 
 Estos métodos estáticos son útiles en el código del día a día:
 

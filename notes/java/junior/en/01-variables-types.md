@@ -917,7 +917,7 @@ Read the right-hand column as "the code you would have had to type by hand befor
 > int score = scores.get("missing");   // NullPointerException — but where?
 > ```
 >
-> `get()` returns `null` for a key that is not there, which is a legal `Integer`. The problem is the assignment to `int`: an `int` has nowhere to put `null`, so the compiler has quietly appended `.intValue()`, and you are calling a method on `null`. In other words: the failure comes from storing the result in an `int` rather than an `Integer` — with `Integer score = scores.get("missing");` there is no unboxing, `score` simply stays `null`, and nothing throws. Java's message since version 14 spells out exactly that, naming a method you never typed:
+> `get()` returns `null` for a key that is not there, which is a legal `Integer`. The problem is the assignment to `int`: an `int` has nowhere to put `null`, so the compiler has quietly appended `.intValue()`, and you are calling a method on `null`. In other words: the failure comes from storing the result in an `int` rather than an `Integer` — with `Integer score = scores.get("missing");` there is no unboxing, `score` simply stays `null`, and nothing throws. From version 15 on, the message Java prints by default spells out exactly that, naming a method you never typed:
 >
 > ```
 > java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()"
@@ -959,7 +959,7 @@ Nothing about 127 and 128 differs as a *value*, and the cause of one giving `tru
 
 ### Useful wrapper methods
 
-**Static methods** belong to the class itself, not to any specific object — that is why you call them on the class name (`Integer.parseInt("42")`) without creating an object with `new`. Static methods are covered in detail in [04-methods.md](04-methods.md).
+**Static methods** belong to the class itself, not to any specific object — that is why you call them on the class name (`Integer.parseInt("42")`) without creating an object with `new`. Static methods are covered in detail in [06-oop-classes.md](06-oop-classes.md).
 
 These static methods are genuinely useful in everyday code:
 
