@@ -705,7 +705,7 @@ System.out.println("End");
 
 The `7` is never checked because `break` leaves the loop at the `10`. `End` is printed, because it is after the loop and `break` only leaves the loop.
 
-`break` also lets you leave a classic `switch`. When it runs, the `switch` ends, and execution continues at the first line after the `switch`. It is the `break` you saw in the _Classic switch (statement)_ section:
+`break` also lets you leave a classic `switch`. When it runs, the `switch` ends, and execution continues at the first line after the `switch`. It is the `break` you saw in the _Classic switch_ section:
 
 ```java
 String day = "SATURDAY";
@@ -729,7 +729,7 @@ Without that `break`, execution would carry on into the next case and also print
 int[] weekHours = {8, 0, 10, 6};
 for (int hours : weekHours) {
     if (hours == 0) {
-        continue;                 // skips the println below and moves to the next day
+        continue;                 // with the 0: skips the rest of this iteration and continues with the one for 10
     }
     System.out.println("Worked " + hours + " hours");
 }

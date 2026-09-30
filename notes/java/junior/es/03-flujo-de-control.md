@@ -705,7 +705,7 @@ System.out.println("End");
 
 El `7` no se revisa porque `break` sale del bucle en el `10`. `End` sí se imprime, porque está después del bucle y `break` solo sale del bucle.
 
-`break` también sirve para salir de un `switch` clásico. Cuando se ejecuta, el `switch` termina, y la ejecución sigue en la primera línea que hay después del `switch`. Es el `break` que viste en la sección _switch clásico (sentencia)_:
+`break` también sirve para salir de un `switch` clásico. Cuando se ejecuta, el `switch` termina, y la ejecución sigue en la primera línea que hay después del `switch`. Es el `break` que viste en la sección _switch clásico_:
 
 ```java
 String day = "SATURDAY";
@@ -729,7 +729,7 @@ Sin ese `break`, la ejecución seguiría en el caso siguiente e imprimiría tamb
 int[] weekHours = {8, 0, 10, 6};
 for (int hours : weekHours) {
     if (hours == 0) {
-        continue;                 // se salta el println de abajo y pasa al día siguiente
+        continue;                 // con el 0: se salta el resto de esta iteración y continúa con la del 10
     }
     System.out.println("Worked " + hours + " hours");
 }
