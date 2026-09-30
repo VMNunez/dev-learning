@@ -14,7 +14,6 @@
 - [4. while y do-while](#while-y-do-while)
   - [Elegir entre las cuatro formas de bucle](#elegir-entre-las-cuatro-formas-de-bucle)
 - [5. break, continue y return](#break-continue-y-return)
-  - [`return` — sale del método, no del bucle](#return--sale-del-método-no-del-bucle)
   - [Break y continue etiquetados — escapar de bucles anidados](#break-y-continue-etiquetados--escapar-de-bucles-anidados)
 - [6. Guardas de null](#guardas-de-null)
 
@@ -776,7 +775,7 @@ for (Employee emp : employees) {
 
 En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `break` termina la búsqueda en cuanto encuentra el primer caso de horas extra.
 
-> **`continue` puede impedir que un `while` avance.** En un `while`, el `i++` es una línea más del cuerpo. `continue` se salta el resto del cuerpo y vuelve directamente a comprobar la condición, así que, si el `i++` está después del `continue`, también se lo salta. Entonces `i` no cambia, la condición sigue siendo verdadera y el bucle no termina nunca. Por ejemplo, este bucle intenta imprimir las horas de cada día, saltándose los días con `0`:
+> **`continue` puede impedir que un `while` avance.** En un `while`, el `i++` es una línea más del cuerpo. `continue` se salta el resto del cuerpo y vuelve directamente a comprobar la condición, así que, si el `i++` está después del `continue`, también se lo salta. Entonces `i` no cambia, la condición sigue siendo verdadera y el bucle no termina nunca: has creado un bucle infinito. Por ejemplo, este bucle intenta imprimir las horas de cada día, saltándose los días con `0`:
 >
 > ```java
 > int[] weekHours = {8, 0, 10};
@@ -797,7 +796,7 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 > Esto es lo que ocurre, iteración a iteración:
 >
 > 1. Con `i = 0`, `weekHours[0]` vale `8`: imprime `8` y el `i++` deja `i` en `1`.
-> 2. Con `i = 1`, `weekHours[1]` vale `0`: se ejecuta `continue`, que vuelve a la condición sin pasar por el `i++`. `i` sigue valiendo `1`.
+> 2. Con `i = 1`, `weekHours[1]` vale `0`: como `weekHours[1] == 0` es `true`, entra en el `if` y se ejecuta `continue`, que vuelve a la condición sin pasar por el `i++`. `i` sigue valiendo `1`.
 > 3. `1 < 3` sigue siendo `true`, `weekHours[1]` sigue valiendo `0` y se vuelve a ejecutar `continue`. El paso 3 se repite sin fin.
 >
 > El arreglo es poner el `i++` antes de cualquier `continue` que pueda saltárselo:
@@ -817,6 +816,24 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 > // 10
 > ```
 >
+> En un `do-while` pasa lo mismo. `continue` salta a la comprobación de la condición, que en un `do-while` está al final, en el `while (...)`, y se salta todo lo que queda del cuerpo, también el `i++`:
+>
+> ```java
+> // ❌ MAL — el mismo problema en un do-while
+> int i = 0;
+> do {
+>     if (weekHours[i] == 0) {
+>         continue;             // salta al while (...) del final sin pasar por el i++
+>     }
+>     System.out.println(weekHours[i]);
+>     i++;
+> } while (i < weekHours.length);
+> // 8
+> // (no imprime nada más, pero el programa sigue ejecutándose)
+> ```
+>
+> El arreglo es el mismo que en el `while`: pon el `i++` antes del `continue`.
+>
 > Con un `for` clásico este problema no existe: el `i++` está en la cabecera, y el `for` lo ejecuta siempre antes de la siguiente comprobación, también después de un `continue`:
 >
 > ```java
@@ -829,10 +846,6 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 > // 8
 > // 10
 > ```
-
-### `return` — sale del método, no del bucle
-
-`continue` solo afecta a su bucle. `break` termina su bucle o la sentencia `switch` que lo contiene. Ninguno termina el método. `return` sí lo termina, tanto si está dentro de un bucle como si aparece en un `if` o al principio del método. Una rama de una expresión `switch` debe entregar su valor con `yield` cuando usa un bloque; no puede usar `return` para salir del método.
 
 Para distinguirlas, comprueba qué parte del código abandonan y cuál es la siguiente instrucción que se ejecuta:
 

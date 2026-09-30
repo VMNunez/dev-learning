@@ -14,7 +14,6 @@
 - [4. while and do-while](#while-and-do-while)
   - [Choosing between the four loop forms](#choosing-between-the-four-loop-forms)
 - [5. break, continue, and return](#break-continue-and-return)
-  - [`return` — it leaves the method, not the loop](#return--it-leaves-the-method-not-the-loop)
   - [Labelled break and continue — escaping nested loops](#labelled-break-and-continue--escaping-nested-loops)
 - [6. Null guards](#null-guards)
 
@@ -776,7 +775,7 @@ for (Employee emp : employees) {
 
 In the example, `continue` skips the inactive employee and moves on to the next one. `break` ends the search as soon as it finds the first case of overtime.
 
-> **`continue` can stop a `while` from moving forward.** In a `while`, the `i++` is just another line of the body. `continue` skips the rest of the body and goes straight back to checking the condition, so, if the `i++` is after the `continue`, it skips that too. Then `i` does not change, the condition stays true and the loop never ends. For example, this loop tries to print each day's hours, skipping days with `0`:
+> **`continue` can stop a `while` from moving forward.** In a `while`, the `i++` is just another line of the body. `continue` skips the rest of the body and goes straight back to checking the condition, so, if the `i++` is after the `continue`, it skips that too. Then `i` does not change, the condition stays true and the loop never ends: you have created an infinite loop. For example, this loop tries to print each day's hours, skipping days with `0`:
 >
 > ```java
 > int[] weekHours = {8, 0, 10};
@@ -797,7 +796,7 @@ In the example, `continue` skips the inactive employee and moves on to the next 
 > This is what happens, iteration by iteration:
 >
 > 1. With `i = 0`, `weekHours[0]` is `8`: it prints `8` and `i++` sets `i` to `1`.
-> 2. With `i = 1`, `weekHours[1]` is `0`: `continue` runs and goes back to the condition without reaching `i++`. `i` is still `1`.
+> 2. With `i = 1`, `weekHours[1]` is `0`: since `weekHours[1] == 0` is `true`, it enters the `if` and `continue` runs, which goes back to the condition without reaching `i++`. `i` is still `1`.
 > 3. `1 < 3` is still `true`, `weekHours[1]` is still `0` and `continue` runs again. Step 3 repeats forever.
 >
 > The fix is to put the `i++` before any `continue` that could skip it:
@@ -817,6 +816,24 @@ In the example, `continue` skips the inactive employee and moves on to the next 
 > // 10
 > ```
 >
+> The same happens in a `do-while`. `continue` jumps to the condition check, which in a `do-while` is at the end, in the `while (...)`, and skips everything left in the body, including the `i++`:
+>
+> ```java
+> // ❌ MAL — the same problem in a do-while
+> int i = 0;
+> do {
+>     if (weekHours[i] == 0) {
+>         continue;             // jumps to the while (...) at the end without reaching i++
+>     }
+>     System.out.println(weekHours[i]);
+>     i++;
+> } while (i < weekHours.length);
+> // 8
+> // (prints nothing else, but the program keeps running)
+> ```
+>
+> The fix is the same as in the `while`: put the `i++` before the `continue`.
+>
 > A classic `for` does not have this problem: the `i++` is in the header, and the `for` always runs it before the next check, also after a `continue`:
 >
 > ```java
@@ -829,10 +846,6 @@ In the example, `continue` skips the inactive employee and moves on to the next 
 > // 8
 > // 10
 > ```
-
-### `return` — it leaves the method, not the loop
-
-`continue` is bounded by its loop, while `break` is bounded by its loop or classic `switch`. Neither ends the method. `return` is a statement of a different kind. It belongs to the **method**, it is legal almost anywhere inside one — in a loop, in an `if`, on the very first line, in a method with no loop at all — and when it runs the method is finished. (The one place it is *not* legal is inside a switch expression's arm, and you already know why: an arm has to produce a value for the switch, not walk out of the method. That is what `yield` is for.)
 
 The way to keep the three apart is to ask, of each, exactly *what is left behind* and *where execution lands next*:
 
