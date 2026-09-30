@@ -776,7 +776,59 @@ for (Employee emp : employees) {
 
 En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `break` termina la búsqueda en cuanto encuentra el primer caso de horas extra.
 
-> **`continue` puede impedir que un `while` avance.** Salta a la comprobación de la condición y omite el resto del cuerpo, incluido `i++` si está después. Si la condición depende de `i`, puede repetirse sin fin. En un `for` clásico, el paso de la cabecera sí se ejecuta antes de la siguiente comprobación. En un `while`, coloca el incremento antes de cualquier `continue` que pudiera saltárselo.
+> **`continue` puede impedir que un `while` avance.** En un `while`, el `i++` es una línea más del cuerpo. `continue` se salta el resto del cuerpo y vuelve directamente a comprobar la condición, así que, si el `i++` está después del `continue`, también se lo salta. Entonces `i` no cambia, la condición sigue siendo verdadera y el bucle no termina nunca. Por ejemplo, este bucle intenta imprimir las horas de cada día, saltándose los días con `0`:
+>
+> ```java
+> int[] weekHours = {8, 0, 10};
+>
+> // ❌ MAL — con el 0, continue se salta el i++ y el bucle no termina nunca
+> int i = 0;
+> while (i < weekHours.length) {
+>     if (weekHours[i] == 0) {
+>         continue;             // vuelve a la condición sin pasar por el i++
+>     }
+>     System.out.println(weekHours[i]);
+>     i++;
+> }
+> // 8
+> // (no imprime nada más, pero el programa sigue ejecutándose)
+> ```
+>
+> Esto es lo que ocurre, iteración a iteración:
+>
+> 1. Con `i = 0`, `weekHours[0]` vale `8`: imprime `8` y el `i++` deja `i` en `1`.
+> 2. Con `i = 1`, `weekHours[1]` vale `0`: se ejecuta `continue`, que vuelve a la condición sin pasar por el `i++`. `i` sigue valiendo `1`.
+> 3. `1 < 3` sigue siendo `true`, `weekHours[1]` sigue valiendo `0` y se vuelve a ejecutar `continue`. El paso 3 se repite sin fin.
+>
+> El arreglo es poner el `i++` antes de cualquier `continue` que pueda saltárselo:
+>
+> ```java
+> // ✅ BIEN — i++ se ejecuta antes de que continue pueda saltárselo
+> int i = 0;
+> while (i < weekHours.length) {
+>     int hours = weekHours[i];
+>     i++;
+>     if (hours == 0) {
+>         continue;
+>     }
+>     System.out.println(hours);
+> }
+> // 8
+> // 10
+> ```
+>
+> Con un `for` clásico este problema no existe: el `i++` está en la cabecera, y el `for` lo ejecuta siempre antes de la siguiente comprobación, también después de un `continue`:
+>
+> ```java
+> for (int i = 0; i < weekHours.length; i++) {
+>     if (weekHours[i] == 0) {
+>         continue;             // el for ejecuta el i++ igualmente
+>     }
+>     System.out.println(weekHours[i]);
+> }
+> // 8
+> // 10
+> ```
 
 ### `return` — sale del método, no del bucle
 

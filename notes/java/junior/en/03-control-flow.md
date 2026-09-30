@@ -776,7 +776,59 @@ for (Employee emp : employees) {
 
 In the example, `continue` skips the inactive employee and moves on to the next one. `break` ends the search as soon as it finds the first case of overtime.
 
-> **`continue` in a `while` is where the infinite loop bites.** `continue` jumps to the *condition check*, skipping everything left in the body — including your `i++` if it sits below the `continue`. In a classic `for` this is harmless, because the step lives in the header and still runs. In a `while` it hangs the program. Put the increment above any `continue`, or use a `for`.
+> **`continue` can stop a `while` from moving forward.** In a `while`, the `i++` is just another line of the body. `continue` skips the rest of the body and goes straight back to checking the condition, so, if the `i++` is after the `continue`, it skips that too. Then `i` does not change, the condition stays true and the loop never ends. For example, this loop tries to print each day's hours, skipping days with `0`:
+>
+> ```java
+> int[] weekHours = {8, 0, 10};
+>
+> // ❌ MAL — with the 0, continue skips i++ and the loop never ends
+> int i = 0;
+> while (i < weekHours.length) {
+>     if (weekHours[i] == 0) {
+>         continue;             // goes back to the condition without reaching i++
+>     }
+>     System.out.println(weekHours[i]);
+>     i++;
+> }
+> // 8
+> // (prints nothing else, but the program keeps running)
+> ```
+>
+> This is what happens, iteration by iteration:
+>
+> 1. With `i = 0`, `weekHours[0]` is `8`: it prints `8` and `i++` sets `i` to `1`.
+> 2. With `i = 1`, `weekHours[1]` is `0`: `continue` runs and goes back to the condition without reaching `i++`. `i` is still `1`.
+> 3. `1 < 3` is still `true`, `weekHours[1]` is still `0` and `continue` runs again. Step 3 repeats forever.
+>
+> The fix is to put the `i++` before any `continue` that could skip it:
+>
+> ```java
+> // ✅ BIEN — i++ runs before continue can skip it
+> int i = 0;
+> while (i < weekHours.length) {
+>     int hours = weekHours[i];
+>     i++;
+>     if (hours == 0) {
+>         continue;
+>     }
+>     System.out.println(hours);
+> }
+> // 8
+> // 10
+> ```
+>
+> A classic `for` does not have this problem: the `i++` is in the header, and the `for` always runs it before the next check, also after a `continue`:
+>
+> ```java
+> for (int i = 0; i < weekHours.length; i++) {
+>     if (weekHours[i] == 0) {
+>         continue;             // the for runs i++ anyway
+>     }
+>     System.out.println(weekHours[i]);
+> }
+> // 8
+> // 10
+> ```
 
 ### `return` — it leaves the method, not the loop
 
