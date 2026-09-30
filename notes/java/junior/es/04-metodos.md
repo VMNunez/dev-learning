@@ -127,7 +127,10 @@ public static double calculateTax(double price, double rate) {
 > de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón. La tercera es qué viaja físicamente
 > cuando le entregas un valor a `int a` — una copia, una referencia, y por qué "Java siempre es
 > pass-by-value" es la respuesta que buscan los entrevistadores; ese es el tema de
-> [05-modelo-de-memoria.md](05-modelo-de-memoria.md), y necesita el stack y el heap para poder explicarse
+> [05-modelo-de-memoria.md](05-modelo-de-memoria.md)(TODO: MEJORA LA REDACCION DE "La tercera es qué viaja físicamente
+> cuando le entregas un valor a `int a` — una copia, una referencia, y por qué "Java siempre es
+> pass-by-value" es la respuesta que buscan los entrevistadores; ese es el tema de
+> [05-modelo-de-memoria.md](05-modelo-de-memoria.md)"), y necesita el stack y el heap para poder explicarse
 > con sentido. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
 > llama sobre el nombre de la clase, no sobre un objeto". Eso es todo lo que este capítulo les pide.
 
