@@ -26,9 +26,9 @@ In [01-variables-types.md](01-variables-types.md) you learned to store a value i
 
 This chapter continues with the same employee example to explain conditions and loops. The difference is in how the hours are counted. In [02-strings.md](02-strings.md) each employee had a single number: the total hours worked in a week. Here the hours are split by day, in a **timesheet**: the list where each employee logs how many hours they worked on each day of the week. Each timesheet entry holds three pieces of data: who worked (an employee), which day they worked (for example, `"SATURDAY"`) and how many hours (for example, `10`). With that record, the company knows who has worked overtime and who has been absent. Suppose an entry says an employee worked 10 hours on a Saturday. Storing `10` and `"SATURDAY"` is not enough: the program has to decide three things. First, whether to print `Overtime`, because 10 hours go past a normal 8-hour day. Next, whether that day is a weekday or falls on the weekend, like this Saturday. Finally, when it is done with this entry and moves on to check the next employee's. **Control flow** decides which statements run, in what order, and how many times.
 
-First you will see `if / else`, which runs one block of code or another depending on whether a condition holds: for example, it prints `Overtime` only when `hours > 8` is `true`. Alongside it you will see the ternary operator, a short version of `if / else` meant for choosing a **value**, not a block of code: it checks the condition and returns the value before the colon if it holds, or the one after it if it does not. So `String label = hours > 8 ? "Overtime" : "Normal";` stores `"Overtime"` in `label` when `hours > 8` is `true`, and `"Normal"` when it is `false`. Next you will see `switch`, which compares the value of a variable with a list of possible values and runs the code of the case that matches: for example, depending on the value of `day`, it classifies the day as a weekday or a weekend day. It can be written in two ways. In the classic form, if you forget to write `break` at the end of a case, Java does not stop there: it keeps running the code of every case that comes after it, until it finds a `break` or reaches the end of the `switch`. That extra execution leads to bugs: for example, for a Saturday the `switch` prints `Weekend shift`, which is correct, and because the `break` is missing it carries on into the next case and also prints `Unknown day`, which is wrong. The second way to write a `switch` is the modern form, the `switch` expression. In it, Java runs only the case that matches, never moving on to the next ones, and the result of that case is stored directly in a variable: with `String shift = switch (day) { … };`, if `day` is `"SATURDAY"`, `shift` becomes `"Weekend"`. Up to this point, each decision is made on a single entry of the timesheet. But the timesheet has many entries: one per employee and day. So that you do not write the same `if` once for every entry, you will see **loops**, which repeat a block of code as many times as needed: for example, once for each employee in the list. Java has four kinds of loop —the classic `for`, the _for-each_, `while` and `do-while`— and each one decides in a different way when to exit the loop: the classic `for` exits when its condition stops holding, usually when a counter reaches a limit; the _for-each_, when there are no elements left in the list; `while` checks its condition before each repetition and exits when it is `false`; and `do-while` does the same but checks it afterwards, so it always runs at least once. Sometimes you do not need to wait for the loop to end by its normal rule: for example, if you are looking for the first employee with overtime, once you find them there is no point checking the rest. For those cases, at the end of the chapter you will see `break`, `continue` and `return`, three statements that cut the loop short, each in a different way: `continue` skips the rest of the current repetition and moves on to the next one, `break` leaves the loop, and `return` leaves the whole method.
+First you will see `if / else`, which runs one block of code or another depending on whether a condition holds: for example, it prints `Overtime` only when `hours > 8` is `true`. Alongside it you will see the ternary operator, a short version of `if / else` meant for choosing a **value**, not a block of code: it checks the condition and returns the value before the colon if it holds, or the one after it if it does not. So `String label = hours > 8 ? "Overtime" : "Normal";` stores `"Overtime"` in `label` when `hours > 8` is `true`, and `"Normal"` when it is `false`. Next you will see `switch`, which compares the value of a variable with a list of possible values and runs the code of the case that matches: for example, depending on the value of `day`, it classifies the day as a weekday or a weekend day. It can be written in two ways. In the classic form, if you forget to write `break` at the end of a case, Java does not stop there: it keeps running the code of every case that comes after it, until it finds a `break` or reaches the end of the `switch`. That extra execution leads to bugs: for example, for a Saturday the `switch` prints `Weekend shift`, which is correct, and because the `break` is missing it carries on into the next case and also prints `Unknown day`, which is wrong. The second way to write a `switch` is the modern form, the `switch` expression, written with arrows (`->`). With the arrow, Java runs only the case that matches, never moving on to the next ones, and the result of that case is stored directly in a variable: with `String shift = switch (day) { … };`, if `day` is `"SATURDAY"`, `shift` becomes `"Weekend"`. Up to this point, each decision is made on a single entry of the timesheet. But the timesheet has many entries: one per employee and day. So that you do not write the same `if` once for every entry, you will see **loops**, which repeat a block of code as many times as needed: for example, once for each employee in the list. Java has four kinds of loop —the classic `for`, the _for-each_, `while` and `do-while`— and each one decides in a different way when to exit the loop: the classic `for` exits when its condition stops holding, usually when a counter reaches a limit; the _for-each_, when there are no elements left in the list; `while` checks its condition before each repetition and exits when it is `false`; and `do-while` does the same but checks it afterwards, so it always runs at least once. Sometimes you do not need to wait for the loop to end by its normal rule: for example, if you are looking for the first employee with overtime, once you find them there is no point checking the rest. For those cases, at the end of the chapter you will see `break`, `continue` and `return`, three statements that cut the loop short, each in a different way: `continue` skips the rest of the current repetition and moves on to the next one, `break` leaves the loop, and `return` leaves the whole method.
 
-For now, `hours` is an `int` such as `10`, and `day` is a `String` such as `"SATURDAY"`. You met values and text in [01-variables-types.md](01-variables-types.md) and [02-strings.md](02-strings.md). Later examples also name `Employee` and `List<Employee>`. An `Employee` is an object that represents one worker and stores three pieces of data, called its **fields**: `name` (the worker's name), `hours` (the total hours they worked in the week) and `active` (whether they are still active in the company: `true` or `false`). A `List<Employee>` is an ordered sequence of workers. Read `emp.getName()` and `emp.getHours()` as requests for that worker's name and hours; `emp.isActive()` asks whether the worker is still active, and `emp.setHours(0)` changes the hours stored on that worker. These calls let you trace a branch or loop before you learn to write methods in the next chapter, [04-methods.md](04-methods.md). Entry [06-oop-classes.md](06-oop-classes.md) will show how to build the `Employee` class. Entry [09-generics.md](09-generics.md) will explain the `<Employee>` notation, and [10-collections.md](10-collections.md) will compare the different kinds of collection.
+To follow the examples, read `hours` as an `int` —for example, `10`— and `day` as a `String` —for example, `"SATURDAY"`. `Employee` and `List<Employee>` will also appear. `Employee` is an object that represents an employee and stores three pieces of data, called its **fields**: `name` (their name), `hours` (the total hours they worked in the week) and `active` (whether they are still active in the company: `true` or `false`). A `List<Employee>` is an ordered list of employees. `emp.getName()` and `emp.getHours()` ask for their name and their hours; `emp.isActive()` checks whether they are still active, and `emp.setHours(0)` changes their hours to zero. Here you only need to understand what those calls do. You will learn to write methods in [04-methods.md](04-methods.md), to build the `Employee` class in [06-oop-classes.md](06-oop-classes.md), to read `<Employee>` in [09-generics.md](09-generics.md) and to tell the collections apart in [10-collections.md](10-collections.md).
 
 ---
 
@@ -36,9 +36,9 @@ For now, `hours` is an `int` such as `10`, and `day` is a `String` such as `"SAT
 
 > 📖 Docs: [Baeldung — If-Else Statement in Java](https://www.baeldung.com/java-if-else) → read: "Syntax of If-Else" and "Example of If-Else If-Else" — the boolean condition and the chain form.
 
-Each timesheet entry needs a label based on its hours: if there are more than 8, the program must print `Overtime`; if there are between 1 and 8, `Worked`, an ordinary working day; and if there are 0, `Absent`.
+Each timesheet entry needs a label based on its hours: if there are more than 8, the program must print `Overtime`; if there are between 1 and 8, `Worked` (a normal working day); and if there are 0, `Absent`.
 
-What you need is for the program to know which label to show depending on the value of `hours`. That is what `if / else if` does: Java evaluates its conditions from top to bottom, runs the first block whose condition is true, and skips the rest. If none matches, an `else` block runs when you provided one.
+What you need is for the program to know which label to show depending on the value of `hours`. That is what `if / else if` does: Java checks the conditions from top to bottom, runs the first block whose condition is `true`, and skips the rest. If none is true, it runs the `else` block, provided one exists.
 
 ```java
 if (hours > 8) {
@@ -63,7 +63,7 @@ if (hours > 8) {
 
 ### Impossible values go at the top of the chain
 
-The callout **Why "the first true block wins" matters**, just above, put the two ordinary cases in the right order: overtime before worked. The same rule also decides where a value that should never happen goes. An **exceptional case** is an input the chain's normal branches were not written for. In a timesheet, that means hours below zero, or more than the 24 a day has. A value like that usually arrives through a typing mistake in a form or a bug in whatever produced it.
+You have just seen why the overtime condition must come before the one for any worked day. The same rule affects the values that should not be accepted at all: fewer than 0 hours or more than 24 in a day. They can arrive through a mistake when filling in the form or through an earlier bug. If the normal branches accept them, the timesheet will show an incorrect result.
 
 Here is the chain from the start of the `if / else` section again, unchanged, tested with one of those impossible values: `hours` is `-3`. It will print `Absent`, because `-3` is neither greater than 8 nor greater than 0: neither of the first two conditions holds, so Java runs the `else`:
 
@@ -102,7 +102,7 @@ if (hours < 0 || hours > 24) {
 // hours = 0   prints: Absent
 ```
 
-`hours < 0 || hours > 24` is `true` for both invalid values: both when `hours` is less than 0 and when it is greater than 24. So they stop at the first branch. A real value makes that test `false` and moves on to the same three branches as before, which now only ever see hours between 0 and 24. So the whole ordering rule for an `if / else if` chain is: **impossible values first, then the narrowest real case, widening as you go down, and the `else` last for whatever is left.**
+`hours < 0 || hours > 24` is `true` for both invalid values: both when `hours` is less than 0 and when it is greater than 24. So Java runs the first branch and never reaches the others. A number between 0 and 24 carries on through the three normal branches. In an `if / else if` chain, put **the invalid values first; then the valid cases, from the most specific to the most general; and the `else` last, for whatever is left.**
 
 ### Ternary operator
 
@@ -130,7 +130,7 @@ if (hours > 8) {
 }
 ```
 
-The `if/else` does not produce a value you can assign directly. That is why you declare `label` before the `if/else` block and assign it in each branch. If you remove the `else` from the block above, when `hours` is not greater than 8 no assignment runs and `label` is left without a value. The compiler catches it before the program ever runs: the first line that uses `label` after the `if` does not compile and gives the error `variable label might not have been initialized`. That is the rule from [01-variables-types.md](01-variables-types.md) that forbids reading a local variable before every path has assigned it. The ternary has no such gap, because it has no optional half: `hours > 8 ? "Overtime"` on its own does not compile (`error: : expected`). An expression always produces a value, so both values must be written, and `label` is declared and assigned in the same line.
+The `if/else` does not produce a value you can assign directly. That is why you declare `label` before the `if/else` block and assign it in each branch. If you remove the `else` from the block above, when `hours` is not greater than 8 no assignment runs and `label` is left without a value. The compiler catches it before the program ever runs: the first line that uses `label` after the `if` does not compile and gives the error `variable label might not have been initialized`. [01-variables-types.md](01-variables-types.md) explained that a local variable must receive a value on every possible path before you read it. The ternary requires both alternatives; `hours > 8 ? "Overtime"` does not compile (`error: : expected`). That way, the expression always produces a value and you can declare and assign `label` in a single line.
 
 ---
 
@@ -139,11 +139,11 @@ The `if/else` does not produce a value you can assign directly. That is why you 
 > 📖 Docs: [Baeldung — Java Switch Statement](https://www.baeldung.com/java-switch) → read it end to end; it walks the classic statement first and then the arrow-form switch expression.
 > 📖 Docs: [Baeldung — Guide to the `yield` Keyword in Java](https://www.baeldung.com/java-yield-switch) → read it for the multi-statement arm: `yield` is what hands a value back out of a `{ }` block.
 
-Use `switch` when you have many possible values for **one** variable. A chain of `if/else if` repeating `day.equals(...)` for each day of the week becomes hard to read — `switch` gives each value its own case and is easier to scan.
+Use `switch` when you compare **one** variable with several possible values. Repeating `day.equals(...)` in an `if/else if` chain for each day of the week makes the code hard to read. With `switch`, each value has its own case.
 
 ### What `switch` accepts — the exact scope
 
-`switch` is far pickier about its selector (the value in the parentheses) than `if` is about its condition, and the limits are not guessable. On Java 25 you can switch on:
+The value in the parentheses of a `switch` is called the **selector**. Unlike an `if` condition, which only needs to produce a `boolean`, the selector must be of one of the supported types. On Java 25 they are these:
 
 | Selector type | Allowed? | Note |
 |---|---|---|
@@ -152,7 +152,7 @@ Use `switch` when you have many possible values for **one** variable. A chain of
 | `String` | ✅ | since Java 7 |
 | an `enum` | ✅ | the best case — see below |
 | `long`, `float`, `double`, `boolean` | ❌ | rejected by the compiler |
-| any other object (`Employee`, `Object`…) | ✅ *only* with type patterns (Java 21+) | `case Employee e ->` — not constant labels |
+| any other object (`Employee`, `Object`…) | ✅ _only_ with patterns or `default` (Java 21+) | `case Employee e ->` — not constant labels |
 
 ```java
 long x = 3L;
@@ -175,13 +175,13 @@ switch (id) {                     // ❌
 // error: incompatible types: int cannot be converted to Long
 ```
 
-With those objects, `switch` only works if you write a different kind of `case`, called a **type pattern**. For example, `case Employee e ->` means "if the selector is an `Employee`, enter this case and call it `e`". You do not need to write it yet, because every `case` in this chapter uses constants. How to check an object's type inside an `if`, with `instanceof`, is taught in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
+With those objects, the `case` that works for you is a different kind of `case`, called a **type pattern**. For example, `case Employee e ->` means "if the selector is an `Employee`, enter this case and call it `e`". You do not need to write it yet, because every `case` in this chapter uses constants. How to check an object's type inside an `if`, with `instanceof`, is taught in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
 
 > **A `boolean` cannot be the selector of a `switch`.** To choose between `true` and `false`, use `if/else`.
 
 > **With an `enum` selector, use the `switch` expression: the compiler tells you when a case is missing.** An `enum` is a type with a fixed list of named values; [14-enums.md](14-enums.md) will teach it. For example, `enum Shift { MORNING, AFTERNOON, NIGHT }` defines a `Shift` type with only three possible values. A `switch` can be written in two forms, and the next two sections teach them in detail.
 >
-> The first way to write it is the **classic `switch`** (_switch statement_), written with `case X:`. It is a **statement**, just like `if/else`: the whole block, from `switch` to its last brace, runs code but produces no value you can store in a variable. Having other statements inside it, like the `println` calls in each case, does not change that: the whole `switch` counts as a single statement. If you forget a value of the `enum` in a classic `switch`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
+> The first way to write it is the **classic `switch`** (_switch statement_), which is normally written with `case X:`. It is a **statement**, just like `if/else`: the whole block, from `switch` to its last brace, runs code but produces no value you can store in a variable. Having other statements inside it, like the `println` calls in each case, does not change that: the whole `switch` counts as a single statement. If you forget a value of the `enum` in a classic `switch`, the compiler does not warn you: the code compiles, and when that value arrives no case runs.
 >
 > ```java
 > Shift shift = Shift.NIGHT;
@@ -198,7 +198,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 > // with shift = NIGHT it prints nothing
 > ```
 >
-> The second way to write a `switch` is the **`switch` expression**, written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value of the `enum`. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
+> The second way to write a `switch` is the **`switch` expression** (_switch expression_), which is normally written with `->`. This one does produce a value, which you store in a variable, so the compiler requires a case for every possible value of the `enum`. Since it knows the three values of `Shift`, if `NIGHT` is missing it does not compile:
 >
 > ```java
 > Shift shift = Shift.NIGHT;
@@ -217,7 +217,7 @@ With those objects, `switch` only works if you write a different kind of `case`,
 
 The classic form starts executing at the case whose label matches the value of the selector. If that case has instructions and does not end with `break`, Java carries on with the instructions of the next case, **even if its label does not match**. This behaviour is called **fall-through**: execution falls from one case to the next without a new comparison.
 
-The mechanism is worth stating plainly, because it explains everything else here: a `case` label is not the start of a separate block, it is only a **jump target**. Java jumps to the matching label and then keeps executing straight down through whatever follows it, labels included, until something stops it. `break` is that something.
+A `case` label does not start a separate block: it marks **where execution begins** when there is a match. From there Java carries on with the following statements, even if it meets another `case` label. In these examples, a `break` stops that run; otherwise, it continues to the end of the `switch`.
 
 Here is the bug that mechanism produces:
 
@@ -314,15 +314,15 @@ switch (day) {
 > // 4
 > ```
 
-The `default` block is not required, but include it: it is your safety net for a value nobody anticipated (a typo, a new day name added later), and without it an unmatched value simply does nothing at all — silently.
+The `default` block is not required in this statement, but it lets you handle an unexpected value, such as a misspelled day. Without it, a value that matches no case leaves the `switch` without running any branch.
 
 > **A `null` selector does not go to `default`.** This `switch (day)` has no `case null`, so a missing day throws `NullPointerException` before any ordinary case runs. This is a preview of [04-methods.md](04-methods.md), which explains where a method should reject missing input.
 
 ### Switch expression (Java 14+) — use this form
 
-The classic switch is a **statement**: it runs code and returns nothing. The switch **expression** produces a value, so you can assign it straight to a variable.
+The classic `switch` is a **statement**: it runs code and produces no value. The **`switch` expression** (_switch expression_) does produce a value, so you can assign it directly to a variable.
 
-It also removes fall-through: each arm uses `->` and runs exactly one thing, so no `break` exists and none is needed.
+Written with `->`, as in this chapter, it also removes fall-through: each branch runs only what is to the right of the arrow, so `break` is not needed. What removes fall-through is the arrow, not the fact that it is an expression: the arrow can also be used in a `switch` statement, and an expression written with `case X:` can indeed fall into the next case.
 
 The way to write it is to declare a variable and assign the whole `switch` to it, just as you would assign any other value:
 
@@ -342,21 +342,21 @@ String shift = switch (day) {
 // shift is "Weekend"
 ```
 
-**Exhaustiveness is enforced, and it is an error, not a warning.** A switch expression has to produce a value on *every* possible input — there is no such thing as "no branch matched, so the variable stays unassigned". So the compiler checks the arms cover everything and refuses to build otherwise:
+**A `switch` expression must cover every possible input.** Every run has to produce a value for the variable that receives the result. That is why the compiler rejects an expression in which some value of the selector would match no branch:
 
 ```java
-// ❌ MAL — no default, and these cases do not cover every String
+// ❌ MAL — no default, and String has infinitely many possible values
 String shift = switch (day) {
     case "MONDAY" -> "Weekday";
 };
 // error: the switch expression does not cover all possible input values
 ```
 
-That is *why* `default` is effectively mandatory — with one exception at this level: when the selector is an `enum` and your arms name every constant, the compiler already knows the set is complete and lets you omit `default` entirely. (A classic switch **statement** does not have this problem, because a statement produces nothing, so "nothing matched" is a legal outcome.)
+With a `String` selector, you need `default` to cover any text that is not listed. If the selector is an `enum` and you name all of its constants, you can omit `default`: the compiler knows no value is left uncovered. A classic `switch` statement does not have to produce a value and can finish without any case matching.
 
-> **Exhaustive does not mean null-safe.** The compiler's coverage check accounts for the ordinary values of the selector type. As with the classic `switch` above, a `null` `day` still throws `NullPointerException` unless you write a `case null`; `default` alone does not handle it. Entry [04-methods.md](04-methods.md) will show where to reject a missing argument before it reaches this expression.
+> **Exhaustive does not mean it accepts `null`.** The compiler's check covers the ordinary values of the selector's type. As in the classic `switch` above, if `day` is `null`, `NullPointerException` is thrown, unless you write `case null`; `default` on its own does not handle it. [04-methods.md](04-methods.md) will teach where to reject a missing argument before it reaches this expression.
 
-**`yield` — when an arm needs more than one line.** An arrow arm normally ends in a single expression, which becomes the value. If you need several statements, wrap them in `{ }`. Inside that block, Java does not know which value the branch should return, so you have to say it yourself with the keyword `yield`:
+**`yield` — when a branch needs more than one line.** A branch with an arrow normally ends in a single expression, which becomes the value. If you need several statements, wrap them in `{ }`. Inside that block, Java does not know which value the branch should return, so you have to say it yourself with the keyword `yield`:
 
 ```java
 int dailyLimit = switch (day) {
@@ -364,12 +364,12 @@ int dailyLimit = switch (day) {
     default -> {
         int base = 8;
         System.out.println("Working day: " + day);
-        yield base;                 // this is the value of the arm
+        yield base;                 // this is the value of the branch
     }
 };
 ```
 
-> **`yield` is not `return`.** `return` exits the whole *method*. `yield` exits only the switch arm and gives its value to the switch expression, and execution carries on with the next line of the same method. Writing `return base;` inside a switch expression does not compile at all (`attempt to return out of a switch expression`) — the two words look interchangeable and are not.
+> **`yield` is not `return`.** `return` exits the whole _method_. `yield` exits only the branch and hands its value to the `switch` expression; after that, the next line of the same method runs. Writing `return base;` inside a `switch` expression does not compile (`attempt to return out of a switch expression`): the two words are not interchangeable.
 >
 > The difference shows in the line that comes after the `switch`. With `yield`, that line runs. With `return`, the method ends and that line never runs:
 >
@@ -403,7 +403,7 @@ int dailyLimit = switch (day) {
 > // Weekend
 > ```
 
-When you need to **produce a value** from several cases, or when the selector is an `enum`, choose the `switch` expression. When you only need to perform an action, a `switch` statement also fits; the two forms answer different needs.
+When you need to **produce a value** from several cases, or when the selector is an `enum`, choose the `switch` expression (_switch expression_). When you only need to perform an action, a `switch` statement (_switch statement_) also fits; the two forms answer different needs.
 
 ---
 
@@ -439,7 +439,7 @@ Imagine you have the names of the days of the week stored in a single variable, 
 
 ### Classic for
 
-If the report must print each day's **position** beside its name, you need a number that moves from the first slot to the last. The classic `for` gives you that counter. Its header has three parts separated by semicolons, `(init; condition; step)`, and you control when the counter starts, stops, and moves.
+If the report must print each day's **position** beside its name, you need a number that moves from the first element to the last. The classic `for` gives you that counter. Its header has three parts separated by semicolons, `(init; condition; step)`, and you control where it starts, where it stops and how it advances.
 
 > **What is the "step"?** It is how much the counter moves on each iteration. `i++` is the most common step: it adds 1 to `i`. But you could use `i += 2` to go in twos, or `i--` to count backwards.
 
@@ -532,13 +532,13 @@ for (Employee emp : employees) {
 }
 ```
 
-`getEmployees()` is a placeholder for a method that supplies the employee list; [04-methods.md](04-methods.md) will show how a call supplies a value. The first loop prints the three day names in array order. The second prints one name for each employee in list order.
+`getEmployees()` stands for a method that provides the list of employees; [04-methods.md](04-methods.md) will explain how a call provides a value. The first loop prints the three days in array order. The second prints one name per employee, in list order.
 
 **The compiler turns the _for-each_ into another loop, and that explains its limits.** The _for-each_ is shorthand: before translating it into bytecode, `javac` (the Java compiler, the program that translates your source code into bytecode, as you saw in [00-intro-java.md](00-intro-java.md)) rewrites the _for-each_ as another loop. The loop it writes in its place depends on what the _for-each_ walks through. If it walks through an array, it turns it into a classic `for` with an index, like the one in the previous section. If it walks through a `List`, it turns it into a loop that uses an **iterator**.
 
-An **iterator** is an object that walks through a collection from start to end, one element at a time, and remembers where it is. It has two methods: `hasNext()` returns `true` if there are still elements left, and `next()` gives you the next element and moves forward one position. It works like a bookmark: it always marks where you are, and each `next()` turns to the next page. A list gives you its iterator when you call its `iterator()` method; in the diagram below that is `employees.iterator()`. With it, the loop asks `hasNext()` before each iteration, and while the answer is `true`, `next()` gives it the next employee. When none are left, `hasNext()` returns `false` and the loop ends. That loop is a `while`, which repeats its body while its condition is true and is explained further down this chapter.
+An **iterator** is an object that walks through a collection from start to end, one element at a time, and remembers where it is. It has two basic methods: `hasNext()` returns `true` if there are still elements left, and `next()` gives you the next element and moves forward one position. It works like a bookmark: it always marks where you are, and each `next()` turns to the next page. A list gives you its iterator when you call its `iterator()` method; in the diagram below that is `employees.iterator()`. With it, the loop asks `hasNext()` before each iteration, and while the answer is `true`, `next()` gives it the next employee. When none are left, `hasNext()` returns `false` and the loop ends. That loop is a classic `for` with the step part empty, because it is `next()`, inside the body, that advances. It does the same as a `while (it.hasNext())`; the `while` repeats its body while the condition is true and is explained further down in this chapter.
 
-Java calls **`Iterable`** ("something that can be walked through") any type that has that `iterator()` method, that is, any type able to give you an iterator. `List` is `Iterable`, and so is `Set` (a set: a collection that allows no duplicate elements and guarantees no order), because in Java every collection is `Iterable`. An array is not, which is why the compiler translates it into a classic `for` that uses an index. `Iterable` is an **interface**, a list of methods a type promises to have; interfaces are explained in [07-interfaces-abstract.md](07-interfaces-abstract.md). For this chapter, all you need is that the _for-each_ walks through an array or any type that is `Iterable`.
+Java calls **`Iterable`** ("something that can be walked through") any type that has that `iterator()` method, that is, any type able to give you an iterator. `List` is `Iterable`, and so is `Set` (a set: a collection that allows no duplicate elements and guarantees no order), because in Java every list and every set is `Iterable`. A `Map` (a collection of key-value pairs) is not; [10-collections.md](10-collections.md) explains how to walk through one. An array is not either, which is why the compiler translates it into a classic `for` that uses an index. `Iterable` is an **interface**, a list of methods a type promises to have; interfaces are explained in [07-interfaces-abstract.md](07-interfaces-abstract.md). For this chapter, all you need is that the _for-each_ walks through an array or any type that is `Iterable`.
 
 ```
 for (String day : week)          →   for (int i = 0; i < week.length; i++) {
@@ -546,9 +546,8 @@ for (String day : week)          →   for (int i = 0; i < week.length; i++) {
                                          ...
                                      }
 
-for (Employee e : employees)     →   Iterator<Employee> it = employees.iterator();
-   (anything Iterable, e.g. List)     while (it.hasNext()) {
-                                         Employee e = it.next();
+for (Employee e : employees)     →   for (Iterator<Employee> it = employees.iterator(); it.hasNext(); ) {
+   (anything Iterable, e.g. List)        Employee e = it.next();
                                          ...
                                      }
 ```
@@ -576,7 +575,7 @@ for (String day : week) {
 }
 ```
 
-The ❌ loop fails because of the translation you saw above. `javac` rewrites it as the classic `for` below, in which `day` is a local variable separate from `week[i]`: `day` holds a copy of the reference stored in `week[i]`. There is a reference in `week[i]` because `week` is an array of `String`, and `String` is an object: each position of an array of objects stores a reference that points to the object, not the object itself. In an array of `int`, each position would store the number directly. It is the same thing you saw when creating arrays, with `null` in a new `String[]` and `0` in an `int[]`. So when you change `day`, which is a local variable, you are not changing the array, as you saw with `a` and `b` in the code above.
+The ❌ loop fails because of the translation you saw above. `javac` rewrites it as the classic `for` below, in which `day` is a local variable separate from `week[i]`: `day` holds a copy of the reference stored in `week[i]`. There is a reference in `week[i]` because `week` is an array of `String`, and `String` is an object: each position of an array of objects stores a reference that points to the object, not the object itself. In an array of `int`, each position would store the number directly. So when you change `day`, which is a local variable, you are not changing the array, as you saw with `a` and `b` in the code above.
 
 ```java
 for (int i = 0; i < week.length; i++) {
@@ -603,9 +602,7 @@ for (int i = 0; i < week.length; i++) {
 }
 ```
 
-> **This is the value-versus-reference idea from [01-variables-types.md](01-variables-types.md), in loop form.** What gets copied is the *reference*, not the object. So reassigning `day` is invisible to the array — but calling a mutating method on the object it points at (`emp.setHours(0)`) **is** visible, because both the loop variable and the list element point at the same `Employee`. Reassign = no effect; mutate = effect.
-
-Use the _for-each_ whenever you just need the items and do not need the index. In Spring Boot, this is what you will write most of the time — though streams (covered in [13-streams-collectors.md](13-streams-collectors.md)) are even more concise for transforming collections.
+Use the _for-each_ when you need the elements but not their position. You will also find it in Spring Boot code. To transform collections you will see streams in [12-streams-lambdas.md](12-streams-lambdas.md).
 
 ---
 
@@ -640,7 +637,7 @@ do {
 } while (!batch.isEmpty());           // ← note the semicolon
 ```
 
-In the `do-while`, `loadPage(page)` stands for fetching one page of employees and `process(batch)` stands for handling that page; these are placeholder methods, not calls already defined in this chapter. On the first pass the code fetches page 0, processes it only if it contains employees, increments `page` to 1, and then tests whether the fetched page was empty. When an empty page arrives, no employees are processed and the loop stops after that pass. `batch` is declared before `do`, not inside the body, because of the scope rule from [01-variables-types.md](01-variables-types.md): a variable declared inside the `{ }` is no longer available after the closing brace, because that is where its scope ends, and the `while (...)` test sits after that brace. Declare `batch` inside the body and the test fails with `cannot find symbol`.
+In the `do-while`, `loadPage(page)` stands for fetching one page of employees and `process(batch)` stands for handling that page; these are example methods, not calls defined in this chapter. On the first pass the code fetches page 0, processes it only if it contains employees, increments `page` to 1, and then tests whether the fetched page was empty. When an empty page arrives, no employees are processed and the loop stops after that pass. `batch` is declared before `do`, not inside the body, because of the scope rule from [01-variables-types.md](01-variables-types.md): a variable declared inside the `{ }` is no longer available after the closing brace, because that is where its scope ends, and the `while (...)` test sits after that brace. Declare `batch` inside the body and the test fails with `cannot find symbol`.
 
 > **A `while` with no progress becomes an infinite loop.** In a classic `for`, the increment is in the header; in a `while`, you have to write it inside the body. If you forget it or a `continue` skips it, `i` does not change and the condition stays true forever, so the loop never ends. The example prints `MONDAY` over and over until you stop the program. There is no compile error and no exception.
 > ```java
@@ -650,9 +647,10 @@ In the `do-while`, `loadPage(page)` stands for fetching one page of employees an
 >     System.out.println(week[i]);
 > }
 > ```
-> To avoid an infinite loop, when you write the `while` condition, immediately write the line that will eventually make it false, *before* you write anything else in the body.
+>
+> To avoid an infinite loop, when you write the `while` condition, immediately write the line that will eventually make it false, _before_ you write anything else in the body.
 
-> **`do-while` ends in a semicolon — and only `do-while` does.** `} while (!batch.isEmpty());` — drop that `;` and you get `error: ';' expected`. The reason is that this `while` is the *tail* of a statement rather than the head of a block, so it terminates like any other statement. No other loop in Java needs a closing semicolon, which is exactly why this one is easy to forget.
+> **`do-while` needs a final semicolon.** In `} while (!batch.isEmpty());`, the `while (...)` closes the statement that began with `do`; that is why it takes a `;`. If you leave it out, the compiler shows `error: ';' expected`. The other loops take no semicolon after the closing brace.
 
 Choose `do-while` when the body must run at least once, for example to download the first page before checking whether there are results left. Use `while` to repeat something while a condition holds that may be false from the start; in that case, the body may not run even once. For example, to read a file line by line until the end: if the file is empty, there is no line to read.
 
@@ -679,7 +677,7 @@ You have now seen the four kinds of loop. To choose between them, ask yourself *
 
 ## break, continue, and return
 
-> 📖 Docs: [Baeldung — The Java `continue` and `break` Keywords](https://www.baeldung.com/java-continue-and-break) → read: "The break Statement" and "The continue Statement" — each shows its unlabeled form first, then its labeled one.
+> 📖 Docs: [Baeldung — The Java `continue` and `break` Keywords](https://www.baeldung.com/java-continue-and-break) → read the unlabeled forms first, then the labeled ones at the end.
 > 📖 Docs: [Baeldung — Labeled Breaks in Java: Useful Tool or Code Smell?](https://www.baeldung.com/java-labeled-break) → read it for the readability argument — when to extract a method instead.
 
 Sometimes you do not want to wait for a loop to end by its normal rule. For example, if you are looking for the first employee with overtime, once you find them there is no point checking the rest. For those cases, Java has three statements that cut execution short: `break`, `continue` and `return`. All three "stop" something, which is why they are often confused: the difference is what they stop and which line runs next. This is what each one stops:
@@ -853,7 +851,7 @@ This table sums up the three statements: which part of the code stops running wi
 |---|---|---|---|
 | `continue` | the rest of the current iteration | the loop's next condition check — in a classic `for`, after the step (`i++`) has run | inside a loop only |
 | `break` | the innermost enclosing loop or classic `switch` | the first line after that loop or `switch`, in the same method | inside a loop, or a classic `switch` |
-| `return` | the whole **method**, loop included | it leaves the method and runs the line that comes right after the **call** to that method | anywhere in a method, except inside a switch expression's arm |
+| `return` | the whole **method**, loop included | it leaves the method and runs the line that comes right after the **call** to that method | anywhere in a method, except inside a branch of a switch expression |
 
 To see all three together in one method, here is an example in which the method searches the timesheet for the name of the first active employee with overtime. The employee list arrives sorted by weekly hours, highest first. So, as soon as an employee with `0` hours appears, every employee after it also has `0`, and there is no need to keep searching:
 
@@ -893,7 +891,7 @@ Trace the three exits. The `continue` sends control back to the `for` header, wh
 
 ### `break` and `continue` with a label: leaving a loop that sits inside another
 
-When a loop sits inside another, a plain `break` only leaves the loop it is written in, the innermost loop, and the outer loop carries on with its next iteration. To leave both at once, you first have to give the outer loop a name. That name is called a **label**, and it is written on the line before the loop, followed by a colon, for example `outer:`.
+When a loop sits inside another, a plain `break` only leaves the loop it is written in, the innermost loop, and execution continues on the line right after the inner loop, still inside the same iteration of the outer loop. To leave both at once, you first have to give the outer loop a name. That name is called a **label**, and it is written on the line before the loop, followed by a colon, for example `outer:`.
 
 ```java
 outer:                               // the label: the name outer followed by a colon
@@ -931,7 +929,7 @@ outer:  for (emp : employees)  ◀──────────────┐
          and the outer loop would carry on with the next employee)
 ```
 
-`continue outer;` works the same way but skips to the outer loop's next iteration instead of leaving it — "this employee is a lost cause, move to the next employee" rather than "the next day":
+`continue outer;` does not leave the outer loop: it moves on to its next iteration. In this example, it jumps to the next employee as soon as it finds an unapproved day, instead of carrying on checking that employee's days:
 
 ```java
 int total = 0;
@@ -991,10 +989,10 @@ Up to the previous chapter, your program ran each line once, from top to bottom.
 
 - Choose which code runs with an `if / else` chain, putting the branch for impossible values first, then the valid branches, from the most specific to the most general, and finally the `else` for whatever is left.
 - Choose between two values with the ternary operator and store the result directly in a variable.
-- Classify a value with `switch`: in the classic form, without forgetting each case's `break`, and with the `switch` expression, which runs only the matching case and stores its result in a variable.
+- Classify a value with `switch`: in the classic form, without forgetting each case's `break`, and with the `switch` expression (_switch expression_) written with `->`, which runs only the matching case and stores its result in a variable.
 - Walk through an array or a collection with the _for-each_ when you do not need the index, and with the classic `for` when you do, without making the off-by-one error.
 - Repeat work with `while` when you do not know how many iterations you will need and you may need none, or with `do-while` when the body has to run at least once.
 - Cut a loop short with `continue`, `break` or `return`, knowing which line runs after each one.
 - Leave two loops at once with a label or, better, by moving the loops into a method and leaving with `return`.
 
-What you cannot do yet is write your own methods. In this chapter you have read calls such as `loadPage(page)`, `isApproved(emp, day)` and `firstOvertimeName(...)`, but you have not written any of those methods (what you would call functions in JavaScript). [04-methods.md](04-methods.md) explains how to define and call a **method**, with the values it receives and the value it returns. There you will also see how a method checks, before anything else, that it has not received a `null` value, so that its `if`, loops and `switch` do not fail with `NullPointerException`.
+What you cannot do yet is write your own methods. In this chapter you have read calls such as `loadPage(page)`, `isApproved(emp, day)` and `firstOvertimeName(...)`, but you have not written any of those methods. [04-methods.md](04-methods.md) explains how to define and call a **method**, the values it receives and the value it returns. There you will also see how a method checks, before anything else, that it has not received a `null` value, so that its `if`, loops and `switch` do not fail with `NullPointerException`.
