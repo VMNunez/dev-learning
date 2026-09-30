@@ -147,7 +147,7 @@ La sección de la declaración mostró el tipo de retorno como una tercera parte
 ```java
 public String getName() { return this.name; }   // devuelve un String
 public int getAge() { return this.age; }         // devuelve un int
-public boolean isActive() { return this.active; }// devuelve boolean — por convención (TODO:EL NOMBRE DEL METODO) empieza con "is"
+public boolean isActive() { return this.active; }// devuelve boolean — por convención, el nombre del método empieza con "is"
 public void save(Employee e) { ... }             // no devuelve nada
 public Employee findById(int id) { ... }         // devuelve un objeto
 public List<Employee> findAll() { ... }          // devuelve una colección

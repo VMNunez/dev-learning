@@ -134,7 +134,7 @@ public static double calculateTax(double price, double rate) {
 > object, that value is its reference, so what gets copied is the reference, not the whole object. It is a typical interview question, and
 > it is explained in [05-memory-model.md](05-memory-model.md), together with the stack and the heap, which
 > it takes to understand it. Until then, read `public` as "callable from anywhere" and `static` as "called
-> on the class name, not on an object". That is everything this chapter asks of them.
+> on the class name, not on an object". That is everything this chapter asks.
 
 ---
 
@@ -147,7 +147,7 @@ The declaration section showed the return type as one third of the call contract
 ```java
 public String getName() { return this.name; }   // returns a String
 public int getAge() { return this.age; }         // returns an int
-public boolean isActive() { return this.active; }// returns boolean — by convention starts with "is"
+public boolean isActive() { return this.active; }// returns boolean — by convention, the method name starts with "is"
 public void save(Employee e) { ... }             // returns nothing
 public Employee findById(int id) { ... }         // returns an object
 public List<Employee> findAll() { ... }          // returns a collection
