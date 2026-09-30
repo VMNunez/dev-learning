@@ -747,7 +747,7 @@ void printUntilOvertime(int[] weekHours) {
     for (int hours : weekHours) {
         if (hours > 8) {
             System.out.println("Overtime: " + hours);
-            return;               // sale del método entero: "End" no se imprime
+            return;               // "End" no se imprime porque ya ha salido del método printUntilOvertime
         }
         System.out.println("Normal: " + hours);
     }
