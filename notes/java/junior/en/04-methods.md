@@ -118,17 +118,22 @@ public static double calculateTax(double price, double rate) {
 }
 ```
 
-> **Three things visible in that declaration are deliberately not this chapter's.** The first is
-> `public`. It is an **access modifier**: the word that says *who is allowed to call* the method. The
-> full set (`public`, `private`, `protected`, and writing no access modifier at all) is settled in
+> **Three things visible in that declaration are deliberately not this chapter's.**
+
+> The first is `public`. It is an **access modifier**: the word that says *who is allowed to call* the
+> method. The full set (`public`, `private`, `protected`, and writing no access modifier at all) is settled in
 > [06-oop-classes.md](06-oop-classes.md), because visibility only becomes a real decision once a class
-> has a state worth hiding, that is, data each of its objects keeps. The second is `static`, a word you will see on some declarations below: it
-> changes whether you call the method on an object or on the class name, and it is also explained in
-> [06-oop-classes.md](06-oop-classes.md), for the same reason. The third is what exactly the method receives when you pass an argument to a
-> parameter: with a parameter such as `int a`, a copy of the value; with an object, a copy of its reference. It is the interview question
-> "Does Java pass arguments by value or by reference?", and the answer is that Java always passes them by
-> value (_pass-by-value_). It is explained in [05-memory-model.md](05-memory-model.md), because
-> understanding it takes the stack and the heap. Until then, read `public` as "callable from anywhere" and `static` as "called
+> has a state worth hiding, that is, data each of its objects keeps.
+
+> The second is `static`, a word you will see on some declarations below: it changes whether you call
+> the method on an object or on the class name, and it is also explained in
+> [06-oop-classes.md](06-oop-classes.md), for the same reason.
+
+> The third is what the method receives when you pass it an argument. The short answer is that it always
+> receives a copy, which is why Java is said to pass arguments by value (_pass-by-value_). With an
+> object, what gets copied is its reference, not the whole object. It is a typical interview question, and
+> it is explained in [05-memory-model.md](05-memory-model.md), together with the stack and the heap, which
+> it takes to understand it. Until then, read `public` as "callable from anywhere" and `static` as "called
 > on the class name, not on an object". That is everything this chapter asks of them.
 
 ---

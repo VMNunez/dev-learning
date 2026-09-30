@@ -129,11 +129,11 @@ public static double calculateTax(double price, double rate) {
 > verás en algunas declaraciones más abajo: cambia si llamas al método sobre un objeto o sobre el nombre
 > de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón.
 
-> (TODO: NECESITO UNA REDACCION CLARA Y SENCILLA DE ESTA TERCERA)La tercera es qué recibe exactamente el método cuando pasas un argumento a un
-> parámetro: con un parámetro como `int a`, una copia del valor; con un objeto, una copia de su referencia. Es la pregunta de entrevista
-> «¿Java pasa los argumentos por valor o por referencia?», y la respuesta es que Java siempre los pasa por
-> valor (_pass-by-value_). Se explica en [05-modelo-de-memoria.md](05-modelo-de-memoria.md), porque para
-> entenderla hacen falta el stack y el heap. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
+> La tercera es qué recibe el método cuando le pasas un argumento. La respuesta corta es que siempre
+> recibe una copia, y por eso se dice que Java pasa los argumentos por valor (_pass-by-value_). Con un
+> objeto, lo que se copia es su referencia, no el objeto entero. Es una pregunta típica de entrevista, y se
+> explica en [05-modelo-de-memoria.md](05-modelo-de-memoria.md), junto con el stack y el heap, que hacen
+> falta para entenderla. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
 > llama sobre el nombre de la clase, no sobre un objeto". Eso es todo lo que este capítulo les pide.
 
 ---
