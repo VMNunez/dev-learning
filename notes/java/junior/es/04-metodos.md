@@ -75,7 +75,8 @@ La sentencia `return` hace dos cosas a la vez: devuelve el valor a quien llamó 
 ```java
 public int add(int a, int b) {
     return a + b;
-    System.out.println("done");   // ❌ inalcanzable — el método ya se fue(TODO: EL METODO YA FINALIZO EN EL RETURN Y NO SE EJECUTA LA SIGUIENTE LINEA)
+    System.out.println("done");   // ❌ error: unreachable statement
+                                  //    el método ya finalizó en el return y nunca llegaría a ejecutar esta línea
 }
 ```
 

@@ -75,7 +75,8 @@ The `return` statement does two things at once: it hands the value back to whoev
 ```java
 public int add(int a, int b) {
     return a + b;
-    // System.out.println("done");   // ❌ unreachable — the method already left
+    System.out.println("done");   // ❌ error: unreachable statement
+                                  //    the method already finished at the return and would never reach this line
 }
 ```
 
