@@ -138,6 +138,8 @@ public static double calculateTax(double price, double rate) {
 
 ---
 
+TODO: ANTES DE TIPOS DE RETORNO TAL VEZ VENDRIA BIEN UNA SECCION DONDE SE PONGA ALGUNAS CONVENCIONES DE NOMBRES DE METODOS
+
 ## Tipos de retorno
 
 > Docs: https://www.baeldung.com/java-missing-return-statement → leer la página completa: cada ejemplo es una variante del error "no todos los caminos devuelven", que es la regla sobre la que se construye esta sección
