@@ -876,9 +876,20 @@ String firstOvertimeName(List<Employee> employees) {
 
 Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for`, que produce el siguiente `emp` — el bucle queda intacto y sigue corriendo. El `break` envía el control a la primera línea _después_ del bucle, que aquí es `return "none";` — el bucle terminó, el método no. Y `return emp.getName()` no hace ninguna de las dos cosas: el método se detiene en esa línea, `return "none";` no se alcanza, y el valor viaja de vuelta a quien escribió `String who = firstOvertimeName(team);`.
 
-> **`return;` sin nada detrás sigue siendo un `return`.** Un método declarado `void` — uno que promete no devolver nada — igualmente puede cortarse a sí mismo con un `return;` a secas. Salir de un método antes de tiempo, a propósito, antes de que haga su trabajo principal, es un patrón con nombre propio, y [04-metodos.md](04-metodos.md) lo enseña. El compilador exige la promesa en ambas direcciones: escribir `return algo;` en un método `void` falla con `error: incompatible types: unexpected return value`, y llegar al final de un método que prometía un valor sin devolver ninguno falla con `error: missing return statement`. _Qué_ promete un método — su tipo de retorno, sus parámetros, su signature — es el tema de [04-metodos.md](04-metodos.md), y es el siguiente capítulo precisamente porque acabas de conocer la sentencia que termina uno.
+> **`return;` sin nada detrás sigue siendo un `return`.** Un método declarado `void` — uno que promete no devolver nada — igualmente puede cortarse a sí mismo con un `return;` a secas. Salir de un método antes de tiempo, a propósito, antes de que haga su trabajo principal, es un patrón con nombre propio, y [04-metodos.md](04-metodos.md) lo enseña. El compilador exige la promesa en ambas direcciones: escribir `return algo;` en un método `void` falla con `error: incompatible types: unexpected return value`, y llegar al final de un método que prometía un valor sin devolver ninguno falla con `error: missing return statement`. _Qué_ promete un método — su tipo de retorno, sus parámetros, su signature — es el tema de [04-metodos.md](04-metodos.md).
 
-> **Cualquier cosa escrita después de `break`, `continue` o `return` en el mismo bloque no compila.** No es un aviso, ni código muerto que la JVM se salte en silencio: `error: unreachable statement`, y la compilación se detiene. Java se niega a conservar líneas que demostrablemente nunca pueden ejecutarse. Trátalo como un accidente útil más que como una molestia — cuando aparece mientras estás moviendo código de sitio, te está diciendo que la salida ocurre antes de lo que pensabas.
+> **El código escrito justo después de `break`, `continue` o `return`, en el mismo bloque, no compila.** Esa línea nunca podría ejecutarse, porque la ejecución siempre sale antes de llegar a ella. A una línea así se le llama **código muerto** (_dead code_), y Java no se limita a avisarte: lo trata como un error y la compilación se detiene. Por ejemplo:
+>
+> ```java
+> for (int hours : weekHours) {
+>     if (hours > 8) {
+>         return;
+>         System.out.println("Overtime");   // ❌ nunca se ejecutaría
+>     }
+> }
+> ```
+>
+> El compilador rechaza la línea del `println` con `error: unreachable statement` («sentencia inalcanzable»). Si te aparece este error mientras mueves código de sitio, te está diciendo que el `break`, `continue` o `return` está antes de lo que pensabas: la ejecución sale del bloque antes de llegar a esa línea.
 
 ### Break y continue etiquetados — escapar de bucles anidados
 

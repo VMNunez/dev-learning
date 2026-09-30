@@ -876,9 +876,20 @@ String firstOvertimeName(List<Employee> employees) {
 
 Trace the three exits. The `continue` sends control back to the `for` header, which produces the next `emp` — the loop is untouched and still running. The `break` sends control to the first line *after* the loop, which here is `return "none";` — the loop is over, the method is not. And `return emp.getName()` does neither of those: the method stops on that line, `return "none";` is never reached, and the value travels back out to whatever wrote `String who = firstOvertimeName(team);`.
 
-> **`return;` with nothing after it is still a `return`.** A method declared `void` — one that promises to hand nothing back — can still cut itself short with a bare `return;`. Leaving a method early on purpose, before it does its main work, is a pattern with its own name, and [04-methods.md](04-methods.md) teaches it. The compiler enforces the promise in both directions: writing `return something;` in a `void` method fails with `error: incompatible types: unexpected return value`, and reaching the end of a method that promised a value without returning one fails with `error: missing return statement`. *What* a method promises — its return type, its parameters, its signature — is [04-methods.md](04-methods.md)'s subject, and it is the next chapter precisely because you have now met the statement that ends one.
+> **`return;` with nothing after it is still a `return`.** A method declared `void` — one that promises to hand nothing back — can still cut itself short with a bare `return;`. Leaving a method early on purpose, before it does its main work, is a pattern with its own name, and [04-methods.md](04-methods.md) teaches it. The compiler enforces the promise in both directions: writing `return something;` in a `void` method fails with `error: incompatible types: unexpected return value`, and reaching the end of a method that promised a value without returning one fails with `error: missing return statement`. *What* a method promises — its return type, its parameters, its signature — is [04-methods.md](04-methods.md)'s subject.
 
-> **Anything written after `break`, `continue` or `return` in the same block does not compile.** Not a warning, and not dead code the JVM quietly skips: `error: unreachable statement`, and the build stops. Java refuses to keep lines that provably can never execute. Treat it as a useful accident rather than an annoyance — when it appears while you are moving code around, it is telling you the exit happens earlier than you thought it did.
+> **Code written right after `break`, `continue` or `return`, in the same block, does not compile.** That line could never run, because execution always leaves before reaching it. A line like that is called **dead code**, and Java does not just warn you: it treats it as an error and the compilation stops. For example:
+>
+> ```java
+> for (int hours : weekHours) {
+>     if (hours > 8) {
+>         return;
+>         System.out.println("Overtime");   // ❌ would never run
+>     }
+> }
+> ```
+>
+> The compiler rejects the `println` line with `error: unreachable statement`. If you get this error while moving code around, it is telling you that the `break`, `continue` or `return` comes earlier than you thought: execution leaves the block before reaching that line.
 
 ### Labelled break and continue — escaping nested loops
 
