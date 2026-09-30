@@ -944,6 +944,8 @@ for (Employee emp : employees) {
 }
 ```
 
+> **Labels are rarely used in real code.** A label works the same with three or more loops, one inside another: `break outer;` leaves all of them until it reaches the labelled loop. But a label is already rare with two loops, and with three or more it is rarer still: that many levels of loops inside loops make the code hard to read, and in a normal project it gets reorganised first. The usual approach is to move the loops into a method and leave with `return`, as the last callout of this section explains. Even so, you should be able to read a label, because it can appear in old code and in interview questions.
+
 > **A label is not a `goto`.** A `goto`, in older languages such as C, is a statement that jumps to any labelled line of the program, forwards or backwards. A Java label can name a statement: `break label;` exits that labelled statement, while `continue label;` requires the label to name a loop and starts its next iteration. Neither can jump backwards or into a block, so neither is an arbitrary `goto`. Interviewers ask about this precisely because people assume the worst.
 
 > **`break` vs returning from a method.** In Spring Boot services, it is more common to return early from a method than to use `break`. If you are checking a condition inside a loop and want to stop all work, `return` is usually cleaner than `break` — and it is the standard alternative to a labelled break: extract the nested loops into their own method and `return` from it, which exits every loop at once with no label needed. This is the `break outer` search from above, written that way:
