@@ -15,7 +15,6 @@
   - [Choosing between the four loop forms](#choosing-between-the-four-loop-forms)
 - [5. break, continue, and return](#break-continue-and-return)
   - [`break` and `continue` with a label: leaving a loop that sits inside another](#break-and-continue-with-a-label-leaving-a-loop-that-sits-inside-another)
-- [6. Null guards](#null-guards)
 
 # Control Flow
 
@@ -985,12 +984,4 @@ for (Employee emp : employees) {
 
 ---
 
-## Null guards
-
-> 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read: "What Is NullPointerException?" — only as a preview; the chapter that teaches it is [04-methods.md](04-methods.md).
-
-> **Forward reference — entry 04 owns null guards.** This chapter traces which statements run after a condition has a usable value. [04-methods.md](04-methods.md) explains where a method rejects a missing argument so that its `if`, loops, and `switch` can safely use it. Here, remember only that the classic `switch (day)` above throws if `day` is `null` and no `case null` handles it.
-
----
-
-You can now trace which lines run in a timesheet calculation: a condition chooses a branch, a loop repeats work, and an early exit decides where execution resumes. The examples already needed named pieces of work — `loadPage(page)`, `isApproved(emp, day)`, and `firstOvertimeName(...)` — but you have only read those calls, not learned how to design their contracts. [04-methods.md](04-methods.md) teaches you to define and call those reusable **methods**, including what each call accepts and returns.
+You can now trace how a timesheet runs: conditions choose branches, loops repeat instructions and early exits change the point where the program continues. You have read calls such as `loadPage(page)`, `isApproved(emp, day)` and `firstOvertimeName(...)` without having to write them. In [04-methods.md](04-methods.md) you will learn to define and call those **methods**, with the values they receive and return. There you will also see how a method checks, before anything else, that it has not received a `null` value, so that its `if`, loops and `switch` do not fail with `NullPointerException`.

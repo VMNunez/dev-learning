@@ -15,7 +15,6 @@
   - [Elegir entre las cuatro formas de bucle](#elegir-entre-las-cuatro-formas-de-bucle)
 - [5. break, continue y return](#break-continue-y-return)
   - [`break` y `continue` con etiqueta: salir de un bucle que está dentro de otro](#break-y-continue-con-etiqueta-salir-de-un-bucle-que-está-dentro-de-otro)
-- [6. Guardas de null](#guardas-de-null)
 
 # Flujo de control
 
@@ -985,12 +984,4 @@ for (Employee emp : employees) {
 
 ---
 
-## Guardas de null
-
-> 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → leer: "What Is NullPointerException?" — solo como avance; el capítulo que lo enseña es [04-metodos.md](04-metodos.md).
-
-> **Referencia futura — la entrada 04 enseña las guardas de `null`.** Este capítulo sigue qué sentencias se ejecutan cuando una condición recibe un valor utilizable. [04-metodos.md](04-metodos.md) explica dónde debe rechazar un método un argumento ausente para que sus `if`, bucles y `switch` puedan usarlo con seguridad. Aquí recuerda solo que el `switch (day)` clásico anterior lanza una excepción si `day` es `null` y no hay un `case null` que lo maneje.
-
----
-
-Ya puedes seguir la ejecución de un registro de horas: las condiciones eligen ramas, los bucles repiten instrucciones y las salidas anticipadas cambian el punto en que continúa el programa. Has leído llamadas como `loadPage(page)`, `isApproved(emp, day)` y `firstOvertimeName(...)` sin tener que escribirlas. En [04-metodos.md](04-metodos.md) aprenderás a definir y llamar esos **métodos**, con los valores que reciben y devuelven.
+Ya puedes seguir la ejecución de un registro de horas: las condiciones eligen ramas, los bucles repiten instrucciones y las salidas anticipadas cambian el punto en que continúa el programa. Has leído llamadas como `loadPage(page)`, `isApproved(emp, day)` y `firstOvertimeName(...)` sin tener que escribirlas. En [04-metodos.md](04-metodos.md) aprenderás a definir y llamar esos **métodos**, con los valores que reciben y devuelven. Allí verás también cómo un método comprueba, antes de nada, que no le ha llegado un valor `null`, para que sus `if`, bucles y `switch` no fallen con `NullPointerException`.
