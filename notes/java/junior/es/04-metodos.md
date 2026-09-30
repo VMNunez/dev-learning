@@ -105,7 +105,7 @@ public int getAgeOrZero(Integer age) {
 >
 > Ahora `getAgeOrZero(null)` devuelve `0` y `getAgeOrZero(30)` devuelve `30`. La diferencia con lo que haría Java por su cuenta es que este `0` lo has escrito tú, a propósito, y el nombre del método ya avisa de que es lo que devuelve cuando no hay edad.
 
-Más ejemplos:
+Más ejemplos(TODO: MAS EJEMPLSO DE METODOS , PERO DIFERENCIALO DE LO QUE ESTABAMOS VIENDO ANTE DE CUBRIR TODOS LOS CAMINOS PORQUE EN UN NINICIO PARECIA QUE TE REFERIAS A MAS EJEMPLOS DE ESO):
 
 ```java
 public void printName(String name) {
