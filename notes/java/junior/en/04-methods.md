@@ -92,7 +92,7 @@ public int getAgeOrZero(Integer age) {
 // error: missing return statement
 ```
 
-> **Why does the compiler refuse instead of just returning 0?** Because the caller wrote `int x = getAgeOrZero(null);` and the type system promised `x` would get an `int`. If Java silently invented a value, the promise would be kept with a number you never chose — exactly the kind of bug that static typing exists because of. The compiler traces every branch and, finding one that reaches the closing brace with nothing returned, stops the build. The fix is to return something on that path too, never to remove the return type.
+> **Why does the compiler refuse instead of just returning 0?** Because the caller wrote `int x = getAgeOrZero(null);` and the type system promised `x` would get an `int`. If Java silently invented a value, the promise would be kept with a number you never chose — exactly the kind of bug that is the reason static typing exists. The compiler traces every branch and, finding one that reaches the closing brace with nothing returned, stops the build. The fix is to return something on that path too, never to remove the return type.
 
 More examples:
 
