@@ -674,7 +674,7 @@ Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **
 > - `for (int i = 0; i < week.length; i++)` dice: «voy a repetir esto un número conocido de veces, usando el índice `i`».
 > - `while (...)` dice: «voy a repetir esto mientras se cumpla una condición, y puede que no se ejecute ninguna vez».
 >
-> Por eso, aunque un `while` pueda hacer lo mismo que un `for`, elige el bucle que describe lo que quieres hacer: quien lea tu código entenderá tu intención sin tener que leer el cuerpo entero. El cuerpo todavía puede salir antes del bucle con `break` o `return`, que verás en la sección siguiente.
+> Por eso, aunque un `while` pueda hacer lo mismo que un `for`, elige el bucle que describe lo que quieres hacer: quien lea tu código entenderá tu intención sin tener que leer el cuerpo entero.
 
 ---
 
@@ -683,7 +683,7 @@ Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **
 > 📖 Docs: [Baeldung — The Java `continue` and `break` Keywords](https://www.baeldung.com/java-continue-and-break) → leer primero las formas sin etiqueta, luego las etiquetadas al final.
 > 📖 Docs: [Baeldung — Labeled Breaks in Java: Useful Tool or Code Smell?](https://www.baeldung.com/java-labeled-break) → leer para el argumento de legibilidad — cuándo extraer un método en su lugar.
 
-`break`, `continue` y `return` interrumpen el recorrido normal del código, pero cada uno lleva la ejecución a un lugar distinto. `break` y `continue` funcionan en las cuatro formas de bucle que has visto. `break` también termina una sentencia `switch` clásica. Si escribes `continue` dentro de un `switch` que está en un bucle, continúas ese bucle. `return` termina el método completo.
+A veces no quieres esperar a que un bucle termine por su regla normal. Por ejemplo, si buscas el primer empleado con horas extra, cuando lo encuentras ya no tiene sentido revisar al resto. Para esos casos, Java tiene tres sentencias que cortan la ejecución antes de tiempo: `break`, `continue` y `return`. Las tres «paran» algo, y por eso se confunden a menudo: la diferencia está en qué paran y en qué línea se ejecuta después. `break` y `continue` funcionan en los cuatro tipos de bucle que has visto. `break` también termina un `switch` clásico, como viste en la sección de `switch`. `continue`, en cambio, no hace nada propio dentro de un `switch`: si lo escribes en un `switch` que está dentro de un bucle, pasa a la siguiente iteración de ese bucle. Esto es lo que para cada una:
 
 - **`break`** sale del bucle más interno o del `switch` clásico que lo contiene. Si sale de un bucle, ese bucle no tiene más iteraciones.
 - **`continue`** salta el resto de la iteración actual y va directamente a la siguiente.

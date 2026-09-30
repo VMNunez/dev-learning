@@ -674,7 +674,7 @@ You have now seen the four kinds of loop. To choose between them, ask yourself *
 > - `for (int i = 0; i < week.length; i++)` says: "I am going to repeat this a known number of times, using the index `i`".
 > - `while (...)` says: "I am going to repeat this while a condition holds, and it may not run even once".
 >
-> So even though a `while` can do the same as a `for`, choose the loop that describes what you want to do: whoever reads your code will understand your intention without reading the whole body. The body can still leave the loop early with `break` or `return`, which you will see in the next section.
+> So even though a `while` can do the same as a `for`, choose the loop that describes what you want to do: whoever reads your code will understand your intention without reading the whole body.
 
 ---
 
@@ -683,7 +683,7 @@ You have now seen the four kinds of loop. To choose between them, ask yourself *
 > 📖 Docs: [Baeldung — The Java `continue` and `break` Keywords](https://www.baeldung.com/java-continue-and-break) → read: "The break Statement" and "The continue Statement" — each shows its unlabeled form first, then its labeled one.
 > 📖 Docs: [Baeldung — Labeled Breaks in Java: Useful Tool or Code Smell?](https://www.baeldung.com/java-labeled-break) → read it for the readability argument — when to extract a method instead.
 
-Three statements cut execution short, and they are constantly confused with each other because all three "stop" something — the useful question is always *stop what, exactly*. Two of them are loop instructions: `break` and `continue` work in all four loop forms you have seen, and `break` additionally appears in a classic `switch` statement to stop fall-through (as you saw above). `continue` does nothing of its own in a `switch`: written inside a `switch` that sits in a loop, it continues that loop. The third, `return`, is not a loop instruction — it belongs to the method — and that difference is what the second half of this section is about.
+Sometimes you do not want to wait for a loop to end by its normal rule. For example, if you are looking for the first employee with overtime, once you find them there is no point checking the rest. For those cases, Java has three statements that cut execution short: `break`, `continue` and `return`. All three "stop" something, which is why they are often confused: the difference is what they stop and which line runs next. `break` and `continue` work in the four kinds of loop you have seen. `break` also ends a classic `switch`, as you saw in the `switch` section. `continue`, on the other hand, does nothing of its own inside a `switch`: if you write it in a `switch` that sits inside a loop, it moves on to the next iteration of that loop. This is what each one stops:
 
 - **`break`** exits the innermost loop or classic `switch` that contains it. When it exits a loop, no more iterations of that loop happen.
 - **`continue`** skips the rest of the current iteration and jumps straight to the next one.
