@@ -953,7 +953,7 @@ for (Employee emp : employees) {
 >
 > Neither of them can jump back to an arbitrary line or into another block. That is why they are not arbitrary jumps like `goto`'s in C.
 
-> **`break` vs returning from a method.** In Spring Boot services, it is more common to return early from a method than to use `break`. If you are checking a condition inside a loop and want to stop all work, `return` is usually cleaner than `break` — and it is the standard alternative to a labelled break: extract the nested loops into their own method and `return` from it, which exits every loop at once with no label needed. This is the `break outer` search from above, written that way:
+> **A small method can avoid a labelled `break`.** This is usually used for searches: you walk through several loops to find an element and, as soon as you find it, you no longer need to carry on. It is the most common way to solve this case in real code, much more than a `break` with a label; in Spring Boot services, for example, the norm is to leave the method with `return` as soon as you have the result. If the search must end when it finds a result, you can put the loops in a method and return that result with `return`. That way you leave both loops and the method at once. The search above can also be written like this:
 >
 > ```java
 > String firstBlocked(List<Employee> employees, String[] week) {

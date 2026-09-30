@@ -953,7 +953,7 @@ for (Employee emp : employees) {
 >
 > Ninguno de los dos puede saltar hacia atrás a una línea cualquiera ni meterse dentro de otro bloque. Por eso no son saltos arbitrarios como los de `goto` en C.
 
-> **Un método pequeño puede evitar un `break` etiquetado.** Si la búsqueda debe terminar al encontrar un resultado, puedes poner los bucles en un método y devolver ese resultado con `return`. Así sales de ambos bucles y del método a la vez. La búsqueda anterior también se puede escribir así:
+> **Un método pequeño puede evitar un `break` etiquetado.** Esto se suele usar para búsquedas: recorres varios bucles para encontrar un elemento y, en cuanto lo encuentras, ya no necesitas seguir. Es la forma más habitual de resolver este caso en el código real, mucho más que un `break` con etiqueta; en los servicios de Spring Boot, por ejemplo, lo normal es salir del método con `return` en cuanto se tiene el resultado. Si la búsqueda debe terminar al encontrar un resultado, puedes poner los bucles en un método y devolver ese resultado con `return`. Así sales de ambos bucles y del método a la vez. La búsqueda anterior también se puede escribir así:
 >
 > ```java
 > String firstBlocked(List<Employee> employees, String[] week) {
