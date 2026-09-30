@@ -951,7 +951,7 @@ for (Employee emp : employees) {
 > - `break outer;` leaves the loop that carries the label `outer`, and execution continues at the first line after that loop.
 > - `continue outer;` moves on to the next iteration of the loop that carries the label `outer`.
 >
-> Neither of them can jump back to an arbitrary line or into another block. That is why they are not arbitrary jumps like `goto`'s.
+> Neither of them can jump back to an arbitrary line or into another block. That is why they are not arbitrary jumps like `goto`'s in C.
 
 > **`break` vs returning from a method.** In Spring Boot services, it is more common to return early from a method than to use `break`. If you are checking a condition inside a loop and want to stop all work, `return` is usually cleaner than `break` — and it is the standard alternative to a labelled break: extract the nested loops into their own method and `return` from it, which exits every loop at once with no label needed. This is the `break outer` search from above, written that way:
 >

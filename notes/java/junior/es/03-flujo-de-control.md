@@ -951,7 +951,7 @@ for (Employee emp : employees) {
 > - `break outer;` sale del bucle que lleva la etiqueta `outer`, y la ejecución sigue en la primera línea que hay después de ese bucle.
 > - `continue outer;` pasa a la siguiente iteración del bucle que lleva la etiqueta `outer`.
 >
-> Ninguno de los dos puede saltar hacia atrás a una línea cualquiera ni meterse dentro de otro bloque. Por eso no son saltos arbitrarios como los de `goto`.
+> Ninguno de los dos puede saltar hacia atrás a una línea cualquiera ni meterse dentro de otro bloque. Por eso no son saltos arbitrarios como los de `goto` en C.
 
 > **Un método pequeño puede evitar un `break` etiquetado.** Si la búsqueda debe terminar al encontrar un resultado, puedes poner los bucles en un método y devolver ese resultado con `return`. Así sales de ambos bucles y del método a la vez. La búsqueda anterior también se puede escribir así:
 >
