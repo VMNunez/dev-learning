@@ -184,10 +184,10 @@ Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` 
 >
 > Aquí `return members;`, sin `this`, haría exactamente lo mismo: como ningún parámetro ni variable del método se llama `members`, Java entiende que hablas del campo. `this` solo se vuelve obligatorio cuando un parámetro tiene el mismo nombre que el campo, un caso que se explica en [06-poo-clases.md](06-poo-clases.md). En la llamada de abajo, `add("Ana")` no se ha llamado sobre una copia, sino sobre la misma lista que hay dentro de `team`, así que la lista del objeto ha cambiado sin que ningún método de `Team` haya decidido cambiarla. Controlar qué partes de un objeto se pueden leer o modificar desde fuera se llama **encapsulación**, y se explica en [06-poo-clases.md](06-poo-clases.md).
 
-Como `return` termina el método en el momento en que se ejecuta, puedes usarlo para tratar primero los casos especiales. El método comprueba al principio si está ante uno de ellos y, si lo está, devuelve su resultado y termina ahí. Así, cuando la ejecución llega al trabajo normal del método, que va al final, ya no se va a encontrar con casos especiales, y ese código no tiene que ir metido dentro de un `else`. Esta forma de escribir un método se llama **retorno anticipado** (_early return_, o _guard clause_), y la leerás en casi cualquier código real. Aparece sobre todo en los métodos de las clases de servicio de Spring Boot, que son las clases donde vive la lógica de negocio de una aplicación y que estudiarás en las notas de Spring Boot:
+Como `return` termina el método en el momento en que se ejecuta, puedes usarlo para tratar primero los casos especiales. El método comprueba al principio si está ante uno de ellos y, si lo está, devuelve su resultado y termina ahí. Así, cuando la ejecución llega al trabajo normal del método, ya no se va a encontrar con casos especiales, y ese código no tiene que ir metido dentro de un `else`. Esta forma de escribir un método se llama **retorno anticipado** (_early return_, o _guard clause_), y la leerás en casi cualquier código real. Aparece sobre todo en los métodos de las clases de servicio de Spring Boot, que son las clases donde vive la lógica de negocio de una aplicación y que estudiarás en las notas de Spring Boot:
 
 ```java
-// MAL — el trabajo real se desplaza a la derecha con cada condición nueva
+// MAL — el trabajo real se desplaza a la derecha con cada condición nueva TODO: O SE PONE EN UN ELSE
 public String describe(Employee e) {
     if (e != null) {
         if (e.isActive()) {
@@ -200,7 +200,7 @@ public String describe(Employee e) {
     }
 }
 
-// BIEN — resuelve los casos excepcionales y sal; el camino principal queda plano al final
+// BIEN — resuelve los casos excepcionales(TODO: PRIMERO Y SELE) y sal; el camino principal queda plano al final(TODO: NO ME GUSTA LO DE QUEDA PLANO AL FINAL)
 public String describe(Employee e) {
     if (e == null) return "unknown";
     if (!e.isActive()) return e.getName() + " (inactive)";
