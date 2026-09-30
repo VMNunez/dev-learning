@@ -993,7 +993,7 @@ Up to the previous chapter, your program ran each line once, from top to bottom.
 - Choose between two values with the ternary operator and store the result directly in a variable.
 - Classify a value with `switch`: in the classic form, without forgetting each case's `break`, and with the `switch` expression, which runs only the matching case and stores its result in a variable.
 - Walk through an array or a collection with the _for-each_ when you do not need the index, and with the classic `for` when you do, without making the off-by-one error.
-- Repeat work with `while` when you do not know how many iterations you will need, or with `do-while` when the body has to run at least once, without creating an infinite loop.
+- Repeat work with `while` when you do not know how many iterations you will need and you may need none, or with `do-while` when the body has to run at least once, without creating an infinite loop.
 - Cut a loop short with `continue`, `break` or `return`, knowing which line runs after each one.
 - Leave two loops at once with a label or, better, by moving the loops into a method and leaving with `return`.
 
