@@ -946,7 +946,12 @@ for (Employee emp : employees) {
 
 > **Las etiquetas se usan poco en el código real.** Una etiqueta funciona igual con tres o más bucles, uno dentro de otro: `break outer;` sale de todos ellos hasta llegar al bucle etiquetado. Pero ya es raro encontrar una etiqueta con dos bucles, y con tres o más lo es todavía más: tantos niveles de bucles dentro de bucles hacen el código difícil de leer, y en un proyecto normal se reorganiza antes. Lo habitual es sacar los bucles a un método y salir con `return`, como explica el último aviso de esta sección. Aun así, conviene que sepas leer una etiqueta, porque puede aparecer en código antiguo y en preguntas de entrevista.
 
-> **Una etiqueta no es un `goto`.** En lenguajes antiguos como C, `goto` permite saltar a una línea etiquetada en cualquier dirección. En Java, una etiqueta puede nombrar una sentencia: `break label;` sale de la sentencia etiquetada, mientras que `continue label;` exige que la etiqueta nombre un bucle y empieza su siguiente iteración. Ninguno permite saltar hacia atrás ni entrar en un bloque, así que no son saltos arbitrarios como `goto`. Los entrevistadores preguntan por ello precisamente porque suele suponerse lo contrario.
+> **Una etiqueta no es un `goto`.** En lenguajes como C existe la sentencia `goto`, que salta a cualquier línea del programa que tenga una etiqueta, esté antes o después. Java no tiene `goto`, y sus etiquetas son mucho más limitadas: en la práctica, solo sirven para decir de qué bucle salen `break` y `continue`.
+>
+> - `break outer;` sale del bucle que lleva la etiqueta `outer`, y la ejecución sigue en la primera línea que hay después de ese bucle.
+> - `continue outer;` pasa a la siguiente iteración del bucle que lleva la etiqueta `outer`.
+>
+> Ninguno de los dos puede saltar hacia atrás a una línea cualquiera ni meterse dentro de otro bloque. Por eso no son saltos arbitrarios como los de `goto`.
 
 > **Un método pequeño puede evitar un `break` etiquetado.** Si la búsqueda debe terminar al encontrar un resultado, puedes poner los bucles en un método y devolver ese resultado con `return`. Así sales de ambos bucles y del método a la vez. La búsqueda anterior también se puede escribir así:
 >
