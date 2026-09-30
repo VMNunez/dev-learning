@@ -184,10 +184,10 @@ Read that list as three groups, not six lines. `getAge()` and `isActive()` retur
 >
 > Here `return members;`, without `this`, would do exactly the same: since no parameter or variable of the method is called `members`, Java understands you mean the field. `this` only becomes required when a parameter has the same name as the field, a case explained in [06-oop-classes.md](06-oop-classes.md). In the call below, `add("Ana")` was not called on a copy, but on the very list inside `team`, so the object's list has changed without any method of `Team` deciding to change it. Controlling which parts of an object can be read or changed from the outside is called **encapsulation**, and it is explained in [06-oop-classes.md](06-oop-classes.md).
 
-Because `return` ends the method the moment it runs, you can use it to deal with the special cases first. The method checks at the start whether it is facing one of them and, if it is, returns its result and ends right there. That way, when execution reaches the method's normal work, which goes at the end, it will no longer run into special cases, and that code does not have to sit inside an `else`. This way of writing a method is called **early return** (or *guard clause*), and you will read it in almost any real codebase. It shows up above all in the methods of Spring Boot's service classes, which are the classes where an application's business logic lives and which you will study in the Spring Boot notes:
+Because `return` ends the method the moment it runs, you can use it to deal with the special cases first. The method checks at the start whether it is facing one of them and, if it is, returns its result and ends right there. That way, when execution reaches the method's normal work, it will no longer run into special cases, and that code does not have to sit inside an `else`. This way of writing a method is called **early return** (or *guard clause*), and you will read it in almost any real codebase. It shows up above all in the methods of Spring Boot's service classes, which are the classes where an application's business logic lives and which you will study in the Spring Boot notes:
 
 ```java
-// MAL — the real work drifts to the right with every new condition
+// MAL — with every new condition, the normal work ends up nested inside an if or an else, and moves further to the right
 public String describe(Employee e) {
     if (e != null) {
         if (e.isActive()) {
@@ -200,7 +200,7 @@ public String describe(Employee e) {
     }
 }
 
-// BIEN — handle the exceptional cases and get out; the main path stays flat at the end
+// BIEN — handles the special cases first and leaves with return; the normal work is not nested inside any if or else
 public String describe(Employee e) {
     if (e == null) return "unknown";
     if (!e.isActive()) return e.getName() + " (inactive)";
