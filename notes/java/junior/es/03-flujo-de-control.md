@@ -893,7 +893,7 @@ Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for
 
 ### `break` y `continue` con etiqueta: salir de un bucle que está dentro de otro
 
-Cuando un bucle está dentro de otro, un `break` normal solo sale del bucle en el que está escrito, el bucle más interno, y el bucle exterior sigue con su siguiente iteración. Para salir de los dos a la vez, primero tienes que ponerle un nombre al bucle exterior. Ese nombre se llama **etiqueta**, y se escribe en la línea anterior al bucle, seguido de dos puntos:
+Cuando un bucle está dentro de otro, un `break` normal solo sale del bucle en el que está escrito, el bucle más interno, y el bucle exterior sigue con su siguiente iteración. Para salir de los dos a la vez, primero tienes que ponerle un nombre al bucle exterior. Ese nombre se llama **etiqueta**, y se escribe en la línea anterior al bucle, seguido de dos puntos, por ejemplo `outer:`.
 
 ```java
 outer:                               // la etiqueta: el nombre outer seguido de dos puntos

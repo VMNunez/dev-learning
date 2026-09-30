@@ -893,7 +893,7 @@ Trace the three exits. The `continue` sends control back to the `for` header, wh
 
 ### `break` and `continue` with a label: leaving a loop that sits inside another
 
-When a loop sits inside another, a plain `break` only leaves the loop it is written in, the innermost loop, and the outer loop carries on with its next iteration. To leave both at once, you first have to give the outer loop a name. That name is called a **label**, and it is written on the line before the loop, followed by a colon:
+When a loop sits inside another, a plain `break` only leaves the loop it is written in, the innermost loop, and the outer loop carries on with its next iteration. To leave both at once, you first have to give the outer loop a name. That name is called a **label**, and it is written on the line before the loop, followed by a colon, for example `outer:`.
 
 ```java
 outer:                               // the label: the name outer followed by a colon
