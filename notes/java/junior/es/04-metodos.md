@@ -92,7 +92,18 @@ public int getAgeOrZero(Integer age) {
 // error: missing return statement
 ```
 
-> **¿Por qué el compilador se niega en lugar de devolver 0 sin más?** Porque el método declara que devuelve un `int`, y quien lo llama cuenta con ello: si escribe `int x = getAgeOrZero(null);`, espera que `x` reciba un `int` calculado por el método. Si Java devolviera por su cuenta un valor cualquiera, por ejemplo `0`, `x` acabaría valiendo `0` sin que tú lo hubieras decidido, y el programa seguiría funcionando con un dato falso sin avisarte. Ese es exactamente el tipo de bug por el que existe el tipado estático. El compilador recorre cada rama y, al encontrar una que llega a la llave de cierre sin devolver nada, detiene la compilación. La solución es devolver algo también en ese camino, nunca quitar el tipo de retorno.(TODO: AHORA PON EL CODIGO DE ANTES PERO ARREGLADO Y ASI LO VEO)
+> **¿Por qué el compilador se niega en lugar de devolver 0 sin más?** Porque el método declara que devuelve un `int`, y quien lo llama cuenta con ello: si escribe `int x = getAgeOrZero(null);`, espera que `x` reciba un `int` calculado por el método. Si Java devolviera por su cuenta un valor cualquiera, por ejemplo `0`, `x` acabaría valiendo `0` sin que tú lo hubieras decidido, y el programa seguiría funcionando con un dato falso sin avisarte. Ese es exactamente el tipo de bug por el que existe el tipado estático. El compilador recorre cada rama y, al encontrar una que llega a la llave de cierre sin devolver nada, detiene la compilación. La solución es devolver algo también en ese camino, nunca quitar el tipo de retorno:
+>
+> ```java
+> public int getAgeOrZero(Integer age) {
+>     if (age != null) {
+>         return age;
+>     }
+>     return 0;   // ✅ el camino que faltaba ahora también devuelve un int
+> }
+> ```
+>
+> Ahora `getAgeOrZero(null)` devuelve `0` y `getAgeOrZero(30)` devuelve `30`. La diferencia con lo que haría Java por su cuenta es que este `0` lo has escrito tú, a propósito, y el nombre del método ya avisa de que es lo que devuelve cuando no hay edad.
 
 Más ejemplos:
 
