@@ -705,7 +705,7 @@ System.out.println("End");
 
 The `7` is never checked because `break` leaves the loop at the `10`. `End` is printed, because it is after the loop and `break` only leaves the loop.
 
-In a classic `switch`, `break` does the same with the `switch`: it leaves it, and execution continues at the first line after it. It is the `break` you saw in the _Classic switch (statement)_ section:
+`break` also lets you leave a classic `switch`. When it runs, the `switch` ends, and execution continues at the first line after the `switch`. It is the `break` you saw in the _Classic switch (statement)_ section:
 
 ```java
 String day = "SATURDAY";

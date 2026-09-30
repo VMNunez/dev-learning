@@ -705,7 +705,7 @@ System.out.println("End");
 
 El `7` no se revisa porque `break` sale del bucle en el `10`. `End` sí se imprime, porque está después del bucle y `break` solo sale del bucle.
 
-En un `switch` clásico, `break` hace lo mismo con el `switch`: sale de él, y la ejecución sigue en la primera línea que hay después. Es el `break` que viste en la sección _switch clásico (sentencia)_:
+`break` también sirve para salir de un `switch` clásico. Cuando se ejecuta, el `switch` termina, y la ejecución sigue en la primera línea que hay después del `switch`. Es el `break` que viste en la sección _switch clásico (sentencia)_:
 
 ```java
 String day = "SATURDAY";
