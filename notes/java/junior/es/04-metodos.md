@@ -138,8 +138,6 @@ public static double calculateTax(double price, double rate) {
 
 ---
 
-TODO: ANTES DE TIPOS DE RETORNO TAL VEZ VENDRIA BIEN UNA SECCION DONDE SE PONGA ALGUNAS CONVENCIONES DE NOMBRES DE METODOS
-
 ## Tipos de retorno
 
 > Docs: https://www.baeldung.com/java-missing-return-statement → leer la página completa: cada ejemplo es una variante del error "no todos los caminos devuelven", que es la regla sobre la que se construye esta sección
@@ -155,7 +153,7 @@ public Employee findById(int id) { ... }         // devuelve un objeto de tipo E
 public List<Employee> findAll() { ... }          // devuelve una colección donde cada elemento es un Employee
 ```
 
-`this.name` lee el campo `name` del objeto sobre el que se llamó al método: `this` es la palabra de Java para ese objeto, y se enseña junto con los campos en [06-poo-clases.md](06-poo-clases.md). Los cuerpos `{ ... }` se han omitido porque aquí solo importan los tipos de retorno.
+`this.name` lee el campo `name` del objeto sobre el que se llamó al método: `this` es la palabra de Java para ese objeto, y se enseña junto con los campos en [06-poo-clases.md](06-poo-clases.md)(TODO: UN POCO MAS DE CLARIDAD EN LA PRIMERA FRASE). Los cuerpos `{ ... }` se han omitido porque aquí solo importan los tipos de retorno.
 
 Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` devuelven **primitivos**, así que quien llama recibe el valor en sí, un número o un `boolean`. `getName()`, `findById()` y `findAll()` devuelven **objetos** (`String`, `Employee`, `List<Employee>`), así que quien llama recibe una _referencia_ — la dirección de memoria de un objeto —, que es la misma distinción valor-frente-a-referencia que viste en [01-variables-tipos.md](01-variables-tipos.md). Exactamente qué se copia cuando un valor o una referencia cruza la llamada, y dónde vive mientras tanto el propio objeto, es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md). `void` no devuelve nada en absoluto, lo cual es una categoría aparte.
 
