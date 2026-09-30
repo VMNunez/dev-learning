@@ -123,8 +123,8 @@ public static double calculateTax(double price, double rate) {
 > full set (`public`, `private`, `protected`, and writing no access modifier at all) is settled in
 > [06-oop-classes.md](06-oop-classes.md), because visibility only becomes a real decision once a class
 > has a state worth hiding, that is, data each of its objects keeps. The second is `static`, a word you will see on some declarations below: it
-> changes whether you call the method on an object or on the class name, and it belongs to that same
-> chapter for the same reason. The third is what physically travels when you hand `int a` a value — a
+> changes whether you call the method on an object or on the class name, and it is also explained in
+> [06-oop-classes.md](06-oop-classes.md), for the same reason. The third is what physically travels when you hand `int a` a value — a
 > copy, a reference, and why "Java is always pass-by-value" is the answer interviewers are listening
 > for; that is [05-memory-model.md](05-memory-model.md)'s subject, and it needs the stack and the heap
 > to be worth explaining. Until then, read `public` as "callable from anywhere" and `static` as "called
