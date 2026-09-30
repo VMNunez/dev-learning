@@ -35,7 +35,7 @@ El capítulo empieza desmontando la declaración de un método y mostrando cuál
 
 > **¿Dónde viven los métodos?** Los métodos siempre viven dentro de una clase: en Java no pueden existir fuera de una. Los explicamos aquí, antes de ver las clases completas, porque ya los has encontrado en los ejemplos de [03-flujo-de-control.md](03-flujo-de-control.md). La estructura completa de una clase (campos, constructores, métodos, encapsulación, etc.) se cubre en [06-poo-clases.md](06-poo-clases.md).
 
-Un método es un bloque de código con nombre que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte donde haga falta esa tarea.
+Un método es un bloque de código con nombre(TODO: CON UN NOMBRE ESPECIFICO, CARACTERISTICO, UN NOMBRE QUE LO CARACTERIZA, QUE LO DEFINE,, ALGO ASI) que realiza una tarea concreta. Lo defines una vez y lo llamas desde cualquier parte donde haga falta esa tarea.
 
 ```java
 public int add(int a, int b) {
