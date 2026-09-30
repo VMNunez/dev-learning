@@ -769,7 +769,7 @@ for (Employee emp : employees) {
     if (!emp.isActive()) continue;          // sáltate este, sigue adelante
     if (emp.getHours() > 40) {
         System.out.println("Overtime: " + emp.getName());
-        break;                              // primer infractor encontrado — deja de buscar
+        break;                              // ya ha encontrado al primer empleado con horas extra: deja de buscar
     }
 }
 ```
