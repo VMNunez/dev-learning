@@ -173,7 +173,7 @@ Read that list as three groups, not six lines. `getAge()` and `isActive()` retur
 >     private List<String> members = new ArrayList<>();
 >
 >     public List<String> getMembers() {
->         return members;   // returns the reference to the list the object itself keeps
+>         return this.members;   // returns the reference to the list the object itself keeps
 >     }
 > }
 >
@@ -182,7 +182,7 @@ Read that list as three groups, not six lines. `getAge()` and `isActive()` retur
 > System.out.println(team.getMembers());   // [Ana]
 > ```
 >
-> `add("Ana")` was not called on a copy, but on the very list inside `team`, so the object's list has changed without any method of `Team` deciding to change it. Controlling which parts of an object can be read or changed from the outside is called **encapsulation**, and it is explained in [06-oop-classes.md](06-oop-classes.md). That is why a method like `findAll()`, which returns a collection, deserves the same attention: if it returns the list its object keeps, whoever calls it can change it.
+> Here `return members;`, without `this`, would do exactly the same: since no parameter or variable of the method is called `members`, Java understands you mean the field. `this` only becomes required when a parameter has the same name as the field, a case explained in [06-oop-classes.md](06-oop-classes.md). In the call below, `add("Ana")` was not called on a copy, but on the very list inside `team`, so the object's list has changed without any method of `Team` deciding to change it. Controlling which parts of an object can be read or changed from the outside is called **encapsulation**, and it is explained in [06-oop-classes.md](06-oop-classes.md). That is why a method like `findAll()`, which returns a collection, deserves the same attention: if it returns the list its object keeps, whoever calls it can change it.
 
 Because `return` exits the method on the spot, the natural shape for a method with a special case is to deal with it first and leave, instead of wrapping the real work in an `else`. This is the **early return** (or *guard clause*) pattern, and it is what you will read in almost every service method in a real codebase:
 

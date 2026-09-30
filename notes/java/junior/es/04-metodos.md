@@ -173,7 +173,7 @@ Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` 
 >     private List<String> members = new ArrayList<>();
 >
 >     public List<String> getMembers() {
->         return members;   // devuelve la referencia a la lista que guarda el propio objeto(TODO: AQUI NO SERIA THIS.MEMBERS?)
+>         return this.members;   // devuelve la referencia a la lista que guarda el propio objeto
 >     }
 > }
 >
@@ -182,7 +182,7 @@ Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` 
 > System.out.println(team.getMembers());   // [Ana]
 > ```
 >
-> `add("Ana")` no se ha llamado sobre una copia, sino sobre la misma lista que hay dentro de `team`, así que la lista del objeto ha cambiado sin que ningún método de `Team` haya decidido cambiarla. Controlar qué partes de un objeto se pueden leer o modificar desde fuera se llama **encapsulación**, y se explica en [06-poo-clases.md](06-poo-clases.md). Por eso un método como `findAll()`, que devuelve una colección, merece la misma atención: si devuelve la lista que guarda su objeto, quien lo llama puede modificarla.
+> Aquí `return members;`, sin `this`, haría exactamente lo mismo: como ningún parámetro ni variable del método se llama `members`, Java entiende que hablas del campo. `this` solo se vuelve obligatorio cuando un parámetro tiene el mismo nombre que el campo, un caso que se explica en [06-poo-clases.md](06-poo-clases.md). En la llamada de abajo, `add("Ana")` no se ha llamado sobre una copia, sino sobre la misma lista que hay dentro de `team`, así que la lista del objeto ha cambiado sin que ningún método de `Team` haya decidido cambiarla. Controlar qué partes de un objeto se pueden leer o modificar desde fuera se llama **encapsulación**, y se explica en [06-poo-clases.md](06-poo-clases.md). Por eso un método como `findAll()`, que devuelve una colección, merece la misma atención: si devuelve la lista que guarda su objeto, quien lo llama puede modificarla.
 
 Como `return` sale del método en el acto, la forma natural para un método con un caso especial es resolverlo primero y salir, en lugar de envolver el trabajo real en un `else`. Este es el patrón de **retorno anticipado** (_early return_, o _guard clause_), y es lo que leerás en casi todos los métodos de servicio de un código real:
 
