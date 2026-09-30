@@ -14,7 +14,7 @@
 - [4. while y do-while](#while-y-do-while)
   - [Elegir entre las cuatro formas de bucle](#elegir-entre-las-cuatro-formas-de-bucle)
 - [5. break, continue y return](#break-continue-y-return)
-  - [Break y continue etiquetados — escapar de bucles anidados](#break-y-continue-etiquetados--escapar-de-bucles-anidados)
+  - [`break` y `continue` con etiqueta: salir de un bucle que está dentro de otro](#break-y-continue-con-etiqueta-salir-de-un-bucle-que-está-dentro-de-otro)
 - [6. Guardas de null](#guardas-de-null)
 
 # Flujo de control
@@ -891,9 +891,9 @@ Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for
 >
 > El compilador rechaza la línea del `println` con `error: unreachable statement` («sentencia inalcanzable»). Si te aparece este error mientras mueves código de sitio, te está diciendo que el `break`, `continue` o `return` está antes de lo que pensabas: la ejecución sale del bloque antes de llegar a esa línea.
 
-### Break y continue etiquetados — escapar de bucles anidados
+### `break` y `continue` con etiqueta: salir de un bucle que está dentro de otro
 
-Un `break` sin etiqueta sale del bucle más interno. Para salir de dos bucles anidados, escribe una **etiqueta** —un nombre seguido de `:`— antes del bucle exterior y úsala en `break outer;`.
+Cuando un bucle está dentro de otro, un `break` normal solo sale del bucle en el que está escrito, el interior, y el bucle exterior sigue con su siguiente iteración. Para salir de los dos a la vez, escribe un nombre seguido de dos puntos justo antes del bucle exterior, por ejemplo `outer:`. Ese nombre se llama **etiqueta**. Después, `break outer;` sale del bucle que lleva esa etiqueta, y con él también del interior.
 
 El registro de horas da un caso natural: una rejilla de empleados × días, y quieres detener toda la búsqueda en cuanto encuentres cualquier entrada sin aprobar. `isApproved(emp, day)` es una llamada de ejemplo que devuelve `true` cuando la entrada de ese empleado para ese día está aprobada.
 

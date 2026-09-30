@@ -14,7 +14,7 @@
 - [4. while and do-while](#while-and-do-while)
   - [Choosing between the four loop forms](#choosing-between-the-four-loop-forms)
 - [5. break, continue, and return](#break-continue-and-return)
-  - [Labelled break and continue — escaping nested loops](#labelled-break-and-continue--escaping-nested-loops)
+  - [`break` and `continue` with a label: leaving a loop that sits inside another](#break-and-continue-with-a-label-leaving-a-loop-that-sits-inside-another)
 - [6. Null guards](#null-guards)
 
 # Control Flow
@@ -891,9 +891,9 @@ Trace the three exits. The `continue` sends control back to the `for` header, wh
 >
 > The compiler rejects the `println` line with `error: unreachable statement`. If you get this error while moving code around, it is telling you that the `break`, `continue` or `return` comes earlier than you thought: execution leaves the block before reaching that line.
 
-### Labelled break and continue — escaping nested loops
+### `break` and `continue` with a label: leaving a loop that sits inside another
 
-Plain `break` only ever exits **one** loop: the innermost one containing it. So the obvious question — "how do I break out of both loops at once?" — has its own syntax. You put a **label** (any name, followed by `:`) immediately before the outer loop, and then say which loop you mean: `break outer;`.
+When a loop sits inside another, a plain `break` only leaves the loop it is written in, the inner one, and the outer loop carries on with its next iteration. To leave both at once, write a name followed by a colon right before the outer loop, for example `outer:`. That name is called a **label**. Then `break outer;` leaves the loop that carries that label, and with it the inner one too.
 
 The timesheet gives a natural case: a grid of employees × days, and you want to stop the whole search the moment you find any unapproved entry. `isApproved(emp, day)` is a placeholder call that answers `true` when that employee's entry for that day is approved.
 
