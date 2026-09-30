@@ -35,7 +35,7 @@ The chapter first takes a method declaration apart and shows which of its parts 
 
 > **Where do methods live?** Methods always live inside a class: in Java they cannot exist outside one. We cover them here, before full classes, because you have already met them in the examples of [03-control-flow.md](03-control-flow.md). The full structure of a class (fields, constructors, methods, encapsulation, etc.) is covered in [06-oop-classes.md](06-oop-classes.md).
 
-A method is a named block of code that performs one specific task. You define it once and call it wherever that task has to be done.
+A method is a block of code that performs one specific task and carries a name that describes that task. You define it once and call it wherever that task has to be done.
 
 ```java
 public int add(int a, int b) {
