@@ -705,6 +705,24 @@ System.out.println("End");
 
 El `7` no se revisa porque `break` sale del bucle en el `10`. `End` sí se imprime, porque está después del bucle y `break` solo sale del bucle.
 
+En un `switch` clásico, `break` hace lo mismo con el `switch`: sale de él, y la ejecución sigue en la primera línea que hay después. Es el `break` que viste en la sección _switch clásico (sentencia)_:
+
+```java
+String day = "SATURDAY";
+switch (day) {
+    case "SATURDAY":
+        System.out.println("Weekend shift");
+        break;                    // sale del switch: el caso siguiente no se ejecuta
+    default:
+        System.out.println("Unknown day");
+}
+System.out.println("End");
+// Weekend shift
+// End
+```
+
+Sin ese `break`, la ejecución seguiría en el caso siguiente e imprimiría también `Unknown day`. Con él, sale del `switch` y continúa en `System.out.println("End")`.
+
 **`continue`** salta el resto de la iteración actual y va directamente a la siguiente. En este ejemplo, los días con `0` horas no se imprimen:
 
 ```java

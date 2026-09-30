@@ -705,6 +705,24 @@ System.out.println("End");
 
 The `7` is never checked because `break` leaves the loop at the `10`. `End` is printed, because it is after the loop and `break` only leaves the loop.
 
+In a classic `switch`, `break` does the same with the `switch`: it leaves it, and execution continues at the first line after it. It is the `break` you saw in the _Classic switch (statement)_ section:
+
+```java
+String day = "SATURDAY";
+switch (day) {
+    case "SATURDAY":
+        System.out.println("Weekend shift");
+        break;                    // leaves the switch: the next case does not run
+    default:
+        System.out.println("Unknown day");
+}
+System.out.println("End");
+// Weekend shift
+// End
+```
+
+Without that `break`, execution would carry on into the next case and also print `Unknown day`. With it, it leaves the `switch` and continues at `System.out.println("End")`.
+
 **`continue`** skips the rest of the current iteration and goes straight to the next one. In this example, days with `0` hours are not printed:
 
 ```java
