@@ -556,11 +556,11 @@ for (Employee e : employees)     →   Iterator<Employee> it = employees.iterato
 
 De estas dos traducciones se desprenden tres consecuencias:
 
-**1. La variable del bucle no te da el índice.** La traducción del array lleva un contador oculto, pero el _for-each_ no lo pone a disposición del cuerpo. La traducción con iterador entrega el elemento siguiente sin índice alguno. Si necesitas la posición, usa un `for` clásico sobre un array o sobre una `List` que permita el acceso por índice. [10-colecciones.md](10-colecciones.md) explica qué colecciones tienen posiciones; ese capítulo aún está pendiente.
+**1. La variable del bucle no te da el índice.** La traducción del array lleva un contador oculto, pero el _for-each_ no lo pone a disposición del cuerpo. La traducción con iterador entrega el elemento siguiente sin índice alguno. Si necesitas la posición, usa un `for` clásico sobre un array o sobre una `List` que permita el acceso por índice. [10-colecciones.md](10-colecciones.md) explica qué colecciones tienen posiciones.
 
-**2. Este bucle sirve para visitar elementos, no para cambiar la estructura de la colección.** La versión con `List` pide el elemento siguiente al iterador en cada pasada. Si eliminas directamente un empleado de ciertas listas mientras se usa ese iterador, una pasada posterior puede fallar. El fallo concreto y las formas seguras de eliminar elementos se explican en [10-colecciones.md](10-colecciones.md), que aún está pendiente. Por ahora, elige este bucle cuando solo necesites visitar a los empleados.
+**2. Este bucle sirve para recorrer elementos, no para cambiar la estructura de la colección.** La versión con `List` pide el elemento siguiente al iterador en cada iteración. Si eliminas directamente un empleado de ciertas listas mientras se usa ese iterador, una iteración posterior puede fallar. El fallo concreto y las formas seguras de eliminar elementos se explican en [10-colecciones.md](10-colecciones.md). Por ahora, elige este bucle cuando solo necesites recorrer los empleados.
 
-**3. Reasignar la variable del bucle no cambia el array.** En la reescritura, `String day = week[i]` copia la referencia del elemento a una variable local nueva en cada pasada. Si reasignas `day`, solo cambia esa variable; `week[i]` conserva su referencia anterior.
+**3. Reasignar la variable del bucle no cambia el array.** Si das un valor nuevo a la variable del _for-each_, el array no cambia. Por ejemplo, el primer bucle de abajo intenta pasar a minúsculas los días de `week`, y no lo consigue; el segundo sí:
 
 ```java
 // ❌ MAL — week queda sin cambios después
@@ -573,6 +573,24 @@ for (int i = 0; i < week.length; i++) {
     week[i] = week[i].toLowerCase();
 }
 ```
+
+El bucle ❌ falla por la traducción que viste arriba: `javac` lo reescribe como este `for` clásico, en el que `day` es una variable local distinta de `week[i]`:
+
+```java
+for (int i = 0; i < week.length; i++) {
+    String day = week[i];        // day recibe una copia de la referencia que guarda week[i]
+    day = day.toLowerCase();     // day pasa a apuntar a otro String; week[i] no cambia
+}
+```
+
+Esto es lo que ocurre en la primera iteración, con `week[0]` apuntando a `"MONDAY"`:
+
+1. `String day = week[0]` copia en `day` la referencia que guarda `week[0]`. Ahora las dos variables apuntan al mismo `"MONDAY"`.
+2. `day.toLowerCase()` no modifica `"MONDAY"`, porque un `String` no se puede cambiar una vez creado. Crea un `String` nuevo, `"monday"`, y devuelve su referencia. [02-cadenas-de-texto.md](02-cadenas-de-texto.md) explica por qué en su sección _Inmutabilidad_.
+3. `day = ...` guarda en `day` la referencia a `"monday"`. Solo cambia `day`; `week[0]` sigue apuntando a `"MONDAY"`.
+4. Al terminar la iteración, `day` deja de existir, y `"monday"` se pierde con ella.
+
+Lo mismo pasa con `week[1]` y `week[2]`, así que al acabar el bucle `week` sigue siendo `{"MONDAY", "TUESDAY", "WEDNESDAY"}`. El bucle ✅ funciona porque guarda el resultado en la propia posición del array, con `week[i] = ...`, y no en una copia.
 
 > **El bucle copia la referencia, no el objeto.** Es la misma regla de valores y referencias de [01-variables-tipos.md](01-variables-tipos.md). Reasignar `day` no modifica el array. En cambio, `emp.setHours(0)` sí modifica el objeto `Employee`: la variable local y el elemento de la lista siguen apuntando al mismo objeto. Distingue entre cambiar una referencia local y modificar el objeto compartido.
 

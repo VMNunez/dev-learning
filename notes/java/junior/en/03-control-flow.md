@@ -556,11 +556,11 @@ for (Employee e : employees)     →   Iterator<Employee> it = employees.iterato
 
 Three consequences follow directly from those two rewrites:
 
-**1. You cannot get the index from the loop variable.** The array translation has a hidden counter, but the _for-each_ does not expose it to your body. The iterator translation hands over the next element with no index at all. If you need the position, use a classic `for` over an array or a `List` that supports indexed access. [10-collections.md](10-collections.md) explains which collections have positions; that chapter is still pending.
+**1. You cannot get the index from the loop variable.** The array translation has a hidden counter, but the _for-each_ does not expose it to your body. The iterator translation hands over the next element with no index at all. If you need the position, use a classic `for` over an array or a `List` that supports indexed access. [10-collections.md](10-collections.md) explains which collections have positions.
 
-**2. The element loop is for visiting elements, not changing the collection's structure.** The `List` version asks its iterator for the next element on each pass. Removing an employee directly from some lists while that iterator is in use can make a later pass fail. The exact failure and the safe removal operations belong to [10-collections.md](10-collections.md), which is still pending. For now, choose this loop when you only need to visit the employees.
+**2. This loop is for walking through elements, not for changing the collection's structure.** The `List` version asks its iterator for the next element on each iteration. If you remove an employee directly from some lists while that iterator is in use, a later iteration can fail. The exact failure and the safe ways to remove elements are explained in [10-collections.md](10-collections.md). For now, choose this loop when you only need to walk through the employees.
 
-**3. Assigning to the loop variable changes nothing.** Look at the array rewrite: `String day = week[i]` **copies** the slot into a fresh local variable on every pass. Reassigning that local just points the copy somewhere else; the array slot is untouched.
+**3. Reassigning the loop variable does not change the array.** If you give the _for-each_ variable a new value, the array does not change. For example, the first loop below tries to turn the days in `week` into lowercase and fails; the second one succeeds:
 
 ```java
 // ❌ MAL — week is unchanged afterwards
@@ -573,6 +573,24 @@ for (int i = 0; i < week.length; i++) {
     week[i] = week[i].toLowerCase();
 }
 ```
+
+The ❌ loop fails because of the translation you saw above: `javac` rewrites it as this classic `for`, in which `day` is a local variable separate from `week[i]`:
+
+```java
+for (int i = 0; i < week.length; i++) {
+    String day = week[i];        // day receives a copy of the reference stored in week[i]
+    day = day.toLowerCase();     // day now points to another String; week[i] does not change
+}
+```
+
+This is what happens in the first iteration, with `week[0]` pointing to `"MONDAY"`:
+
+1. `String day = week[0]` copies into `day` the reference stored in `week[0]`. Both variables now point to the same `"MONDAY"`.
+2. `day.toLowerCase()` does not modify `"MONDAY"`, because a `String` cannot be changed once created. It creates a new `String`, `"monday"`, and returns its reference. [02-strings.md](02-strings.md) explains why in its _Immutability_ section.
+3. `day = ...` stores in `day` the reference to `"monday"`. Only `day` changes; `week[0]` still points to `"MONDAY"`.
+4. When the iteration ends, `day` stops existing, and `"monday"` is lost with it.
+
+The same happens with `week[1]` and `week[2]`, so when the loop ends `week` is still `{"MONDAY", "TUESDAY", "WEDNESDAY"}`. The ✅ loop works because it stores the result in the array position itself, with `week[i] = ...`, and not in a copy.
 
 > **This is the value-versus-reference idea from [01-variables-types.md](01-variables-types.md), in loop form.** What gets copied is the *reference*, not the object. So reassigning `day` is invisible to the array — but calling a mutating method on the object it points at (`emp.setHours(0)`) **is** visible, because both the loop variable and the list element point at the same `Employee`. Reassign = no effect; mutate = effect.
 
