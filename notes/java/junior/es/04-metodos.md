@@ -173,7 +173,7 @@ Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` 
 >     private List<String> members = new ArrayList<>();
 >
 >     public List<String> getMembers() {
->         return members;   // devuelve la referencia a la lista que guarda el propio objeto
+>         return members;   // devuelve la referencia a la lista que guarda el propio objeto(TODO: AQUI NO SERIA THIS.MEMBERS?)
 >     }
 > }
 >
