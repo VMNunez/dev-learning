@@ -76,7 +76,19 @@ its "Harvested from refined pairs" section took from the pairs Victor himself de
 note is read as a model, and no draft the pipeline may still rewrite is a reference. The texture, in short: open with
 the pain not the definition; one worked example carried through; ASCII diagrams for
 anything structural; real-world analogies; abundant `> blockquote` callouts (~one per non-obvious
-sub-concept); a sentence explaining how to read every table; exact error messages; MAL/BIEN examples.
+sub-concept); a sentence before or after every non-obvious table explaining how to read it, unless its headers
+already say what each column holds; exact error messages; MAL/BIEN examples.
+
+**On a note TODO route, run the harvested rules and checks over the passage you wrote.** Whenever you
+resolve a TODO in a **note** pair — `complete` or `refined` — or apply a correction Victor states in
+chat about one, run the rules and checks the note standard's **Harvested from refined pairs** judges
+at stage B and, on an `es/` passage, those it judges at stage C, over the passage you wrote and nothing
+else, before you report. Fix what fails inside that passage; report what needs more than it, since the
+passage is this route's bound. A wording Victor dictated — his TODO's own words, or his words in chat —
+outranks a check: leave it and report the check it fails. Name in your report each rule or check that
+drove a fix. No reviewer runs after these routes, and the prose they write is where Victor's second
+corrections land — that standard's "Reviewer checks" block says so, with the count (`REC-267`). The
+Q&A and project-bank routes are governed by their own standards and are outside this paragraph.
 
 ## Step 3 — Honour the bilingual en/es contract
 

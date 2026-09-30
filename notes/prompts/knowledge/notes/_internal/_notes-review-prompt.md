@@ -131,8 +131,8 @@ For each section of the file, check:
   not apply, so a section that passes the generic points above can still fail one; name the check in the
   trace when it drives a fix.
 - **Signature texture** — worked example carried through; ASCII diagram for anything structural;
-  analogy for abstract mechanisms; abundant `> blockquote` callouts; every table has a "how to read
-  it" sentence; exact error messages quoted; wrong-vs-right labelled. No section drops below its
+  analogy for abstract mechanisms; abundant `> blockquote` callouts; every non-obvious table is read
+  for the reader — by a sentence before or after it, or by headers that say what each column holds; exact error messages quoted; wrong-vs-right labelled. No section drops below its
   neighbours.
 - **Docs links** — file-level link present; each section links an exact sub-section (not a homepage);
   correct priority (Baeldung for Spring/Java, MDN for CSS/JS, angular.dev for Angular, jjwt for JWT);

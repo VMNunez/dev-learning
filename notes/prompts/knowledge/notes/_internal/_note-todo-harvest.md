@@ -245,8 +245,13 @@ Of the 13 `fuera`, 12 are `e8dcbb04`'s — which also carried Victor's own last 
 declaration, so the rule counts it there. Measured bias: 87 of the 230 style changes correct prose
 written during the refinement, so the draft's own figure sits at or below 14.3. Six rules repeat as
 `unapplied` across pairs, which the trend reading names mis-placement rather than a missing rule. The
-pass is **full but split**: Victor chose 2026-09-30 to classify now and defer its edits, so `REC-267`
-is `open` and names what it owes; the dispositions were written by the pass as usual.
+pass was **full but split**: Victor chose 2026-09-30 to classify first and resolve its edits under
+`REC-267` after it, the dispositions being written by the pass as usual. Of its eight new `missing`, the
+two commits cutting "pendiente" from a linked note became `HR-11`; the six cutting what the reader need
+not know or the chapter need not require stay no rule, since `00`, `01` and `03` keep that form approved
+(`_note-quality-standard.md` → `HR-11`). Its repeating `unapplied` were placed where the prose they corrected was written — 84 of the 218
+in prose the in-session TODO routes wrote during the refinement, which now run the harvested checks —
+and not relocated in the draft stages, since `03` is the first pair drafted under their placement.
 
 ## TODO rows
 

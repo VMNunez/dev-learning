@@ -402,10 +402,15 @@ Not every element fits every section, but a finished note visibly uses most of t
   section heading as a literal question. A callout's bold lead-in may be the question the callout
   answers: **Harvested from refined pairs** → `HR-9`, which settled on 2026-09-15 the dispute this
   clause carried over callouts (`REC-171`).
-- **Every comparison table gets a sentence on how to read it.** After any table, add a line that
-  explains what a non-obvious column or row actually means and how to use it — e.g. "The `Parent
-  class` column is what determines whether the compiler treats it as checked or unchecked." A table
-  Victor has to decode on his own is below standard.
+- **Every comparison table is read for the reader.** A line after the table, or the sentence leading
+  into it, explains what a non-obvious column or row actually means and how to use it
+  — e.g. "The `Parent class` column is what determines whether the compiler treats it as checked or
+  unchecked.", or "Esta tabla resume las tres sentencias: qué parte del código deja de ejecutarse con
+  cada una y qué línea se ejecuta justo después." (`java/junior/03`). Headers that already say what each
+  column holds discharge it for that column ("Qué decide cuántas veces se repite", "Qué te garantiza",
+  `03`). `03`'s refinement deleted three after-table readings: the loop table's moved into a new lead-in and
+  retitled headers, the statement table's into its lead-in alone, and the third, on the selector table, became a sentence after it that reads its last row. A
+  table Victor has to decode on his own is below standard.
 - **Show the exact error message.** When a mistake produces a specific compiler or runtime error,
   quote it verbatim (`unreported exception IOException; must be caught or declared to be thrown`,
   `Type argument int is not within bounds of type-variable E`). The real string is what he'll
@@ -755,6 +760,24 @@ scope names one.
   the verb — "se ve" repeats in that same approved paragraph — and a connector repeated in a paragraph
   that reasons rather than walks an order passes: "Por eso" opens two sentences of `02`'s `substring`
   paragraph and of two `01` callouts. Scope: all topics. Judged at stage C, and at stage B on the `en/`.
+- **`HR-11` — A linked note is never said to be unwritten.** A sentence or clause saying that a note it
+  points at is not written yet — "un capítulo todavía pendiente", "ese capítulo aún está pendiente",
+  both cut from `java/junior/03` — is cut, and the reference keeps only what **Sentence-level register** → "Forward
+  references are a whole plain sentence" gives it: what the reader will learn there, and where. It is a
+  claim about the tree that goes false the day that note lands, with no stage positioned to re-derive
+  it: the refined `00` still says "el archivo todavía no está escrito" of the `02` that now exists,
+  which is residue reported to Victor, not an approved counterexample. A preview callout saying what the
+  reader *has not studied yet* is about the reader, not the tree, and passes. The wider form this pass
+  also found — a sentence saying what the reader need not know here, or what this chapter or its
+  examples do not require — is **not a rule**: `03`'s refinement cut it six times ("Aquí no necesitas
+  conocer cómo los dispone la JVM en memoria", "Ese es todo el vocabulario de arrays que necesita este
+  capítulo"), and `00`, `01` and `03` itself keep it approved ("no necesitas aprender las instrucciones
+  individuales del bytecode", `00`; "Esa es toda la división primitivo-frente-a-referencia que necesitas
+  para esta página:", `01`; "No necesitas escribirlo todavía, porque en este capítulo todos los `case`
+  usan constantes.", `03`), so the side with more pairs keeps it and no stage cuts it
+  (`_note-todo-harvest.md` → "Disputes"). None of `03`'s cuts came from a TODO Victor wrote; both sides
+  rest on his declaring the pairs refined. Scope: all topics. Judged at stage B; stage C reports one it
+  meets and never cuts it, since the clause is content both languages carry.
 
 #### Examples
 
@@ -824,7 +847,9 @@ An example and deliberately not a rule: the same refined file introduces **lista
 **asignaciones compuestas** with no English name, so it stays an example after two pairs. `java/junior/02`
 asked a third time — "PONLO TAMBIEN EN INGLES ESE VACIO Y BLANCO", and the English name of text blocks —
 and still introduces **marcadores de posición** and **capacidad inicial** with none, so it stays an example
-after three.
+after three. `java/junior/03` asked a fourth time — ten `PONLO EN INGLES` markers, the two forms of
+`switch` and the _for-each_ among them — and still introduces **bucle** and **índice** with none, so it
+stays an example after four.
 
 **`HE-7` — a comparison that carries its own code is a heading** · no rule · `java/junior/00`
 
@@ -864,6 +889,19 @@ the wording repairs of the stage-C checks, and the rules judged at stage C, whil
 the register family reached `java/junior/01` and `02` both `unapplied`, and a rule breached on two pairs is
 read as mis-placed or mis-worded, not as a writer's lapse (`_note-todo-harvest.md` → "What each verdict
 produces") — the stage that writes the prose was the one stage never told to apply the check.
+
+**One writer outside the pipeline applies them too, and no reviewer runs after it.**
+`study-content-writer`'s TODO routes — a TODO on a `complete` pair or on a `refined` one, and a
+correction Victor states in chat — write note prose inside a daily session, and on `java/junior/03`,
+the first pair drafted under the placement above, the harvest pass measured 84 of its 218 `unapplied`
+changes correcting prose written during the refinement itself. Every commit of that refinement but the
+last, which applied the correctness read's fixes (`fuera`), went through those routes: Victor corrected
+a second time a passage written to answer his first correction. So those routes run the rules and
+checks judged at stage B, and on an `es/` passage those judged at stage C, over the passage they wrote
+and nothing else, reporting what one needs beyond it (`REC-267`). The six rules that pair repeated `unapplied` — the sentence-level
+register rules, native Spanish (`HC-4`), mechanism before behaviour, `HR-3`, `HR-4` and `HR-7` — keep
+the stages named on them, and the draft stages keep this placement: one pair drafted under it is not a
+trend, and three are what would move it again (`_note-todo-harvest.md` → "What is measured").
 
 - **`HC-1` — Supporting-term sweep** · stage B · enforces the Zero-assumption rule and its register
   restatement ("The zero-assumption rule covers supporting clauses") · built from `HE-1`, `HE-2`. In
@@ -1063,25 +1101,27 @@ not listed and keeps that default.
 |---|---|---|---|---|
 | `HR-1` — the index above the title | all topics | B; C for the `es/` anchors | `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
 | `HR-2` — a thing keeps its real name; an analogy never replaces it | all topics | B; C on the wording | `java/junior/01` · `java/junior/02` | — |
-| `HR-3` — name the referent the reader cannot see | all topics | C; B on the `en/` | `java/junior/01` · `java/junior/02` | — |
-| `HR-4` — a set of options says when each is used, and whether it is whole | all topics | B; C reports a missing member | `java/junior/01` · `java/junior/02` | — |
-| `HR-5` — what a paragraph reasons about is in view, and read | all topics | B | `java/junior/01` · `java/junior/02` | — |
-| `HR-6` — say it once in a file | all topics | B | `java/junior/01` · `java/junior/02` | — |
-| `HR-7` — an example is marked, concrete, and matches its sentence | all topics | B; C for the marker | `java/junior/01` · `java/junior/02` | — |
+| `HR-3` — name the referent the reader cannot see | all topics | C; B on the `en/` | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| `HR-4` — a set of options says when each is used, and whether it is whole | all topics | B; C reports a missing member | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| `HR-5` — what a paragraph reasons about is in view, and read | all topics | B | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| `HR-6` — say it once in a file | all topics | B | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| `HR-7` — an example is marked, concrete, and matches its sentence | all topics | B; C for the marker | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
 | `HR-8` — a section that re-covers or extends what was just read says what it adds | all topics | C; B where the sentence is missing | `java/junior/01` · `java/junior/02` | — |
-| `HR-9` — a callout's bold lead-in may be a question | all topics | B, C | `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
+| `HR-9` — a callout's bold lead-in may be a question | all topics | B, C | `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
 | `HR-10` — the steps of a sequence told in one paragraph open with different connectors | all topics | C; B on the `en/` | `java/junior/02` | — |
+| `HR-11` — a linked note is never said to be unwritten | all topics | B; C reports | `java/junior/03`, which it was derived from | — |
 | Format modes → the topic introduction is always conversational mode | all topics | B | `java/junior/00`, which it was derived from | — |
 | Persistent-plan pedagogical contract → introduction invariants 6 and 7, and the mechanism the file leans on placed early | all topics | B | `java/junior/00`, which they were derived from | — |
-| Sentence-level register → the seven rules and the literary flourish, the bold-lead-in rule's heading clause · `HC-4`, `HC-5`, `HC-6`, `HC-8`, `HC-9`; the consequence rule also `HC-7` | all topics | C; B for `HC-7` and `HC-8` | `java/junior/00`, which they were derived from · `java/junior/01` · `java/junior/02` | — |
-| Zero-assumption rule · `HC-1`, `HC-5` | all topics | B; C for `HC-5` | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
-| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3`, `HC-7`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
-| Anticipate-the-TODO pass · `HC-2`, `HC-3`, `HC-10`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
-| Signature elements → analogies, exact error messages, a sentence reading every non-obvious table, wrong-vs-right labels | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
+| Sentence-level register → the seven rules and the literary flourish, the bold-lead-in rule's heading clause · `HC-4`, `HC-5`, `HC-6`, `HC-8`, `HC-9`; the consequence rule also `HC-7` | all topics | C; B for `HC-7` and `HC-8` | `java/junior/00`, which they were derived from · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| Zero-assumption rule · `HC-1`, `HC-5` | all topics | B; C for `HC-5` | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3`, `HC-7`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| Anticipate-the-TODO pass · `HC-2`, `HC-3`, `HC-10`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| Signature elements → analogies, exact error messages, every non-obvious table read by a sentence or by its headers, wrong-vs-right labels | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03`, whose lead-ins and headers carry two table readings | — |
 | Signature elements → a section heading is never a literal question; on a callout's lead-in the clause was cut for `HR-9` on 2026-09-15 | all topics | B | pre-harvest origin | on a callout's lead-in: `java/junior/00`, `java/junior/01`, `java/junior/02` — settled, 3 to 1 |
 | The rest of the writing rules → link to other note files | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
-| Narrative thread → reference, don't re-teach | all topics | B | pre-harvest origin · `java/junior/02` | — |
-| Bilingual notes → the Spanish reads as native Spanish · `HC-4` | all topics | C | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
+| The rest of the writing rules → write in learning order, the problem before the concept | all topics | B | pre-harvest origin · `java/junior/03` | — |
+| Narrative thread → reference, don't re-teach | all topics | B | pre-harvest origin · `java/junior/02` · `java/junior/03` | — |
+| Bilingual notes → the Spanish reads as native Spanish · `HC-4` | all topics | C | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
 
 ---
 

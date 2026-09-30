@@ -124,14 +124,17 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
 - **Clarity** — the prose is easy to follow for a B1→B2 reader; no needlessly convoluted sentence.
   Technical English terms Victor will hear at work (*deploy, refactor, stack, edge case*) stay in
   English inside the Spanish prose — that is correct, not a calque.
-- **Callouts and tables** — `> blockquote` callouts read naturally in Spanish; every table still has
-  its "cómo leer esto" sentence in Spanish.
+- **Callouts and tables** — `> blockquote` callouts read naturally in Spanish; every table's reading —
+  the "cómo leer esto" sentence before or after it, or headers that say what each column holds — still
+  reads naturally in Spanish.
 - **Internal links match the plan's Spanish filenames** — every markdown link to a sibling note must be
   the `es/` path `{LINK_TARGETS}` declares for that number (e.g. `09-genericos.md`, not `09-generics.md`).
   Check each internal link against that table and fix any link carrying an English filename or a name
   the plan does not declare. **A link whose target the plan declares but nobody has written yet is
   correct, not broken**: the route reserves its filename precisely so a chapter can point forward at it,
-  and the prose around such a link says so. Cross-check the `notes/{TOPIC}/{LEVEL}/es/` listing to see
+  and the prose around such a link carries the standard's forward-reference marker — what the reader
+  will learn there — never that the chapter is unwritten (`HR-11`); where the prose says so, report it
+  and never cut it, since the English carries the same clause. Cross-check the `notes/{TOPIC}/{LEVEL}/es/` listing to see
   what exists today, but where the listing and the plan disagree the plan wins — report the mismatch,
   never "fix" a legitimate forward link into something that exists. This check covers **same-topic**
   sibling links only: a cross-topic link (`../../../{other-topic}/{LEVEL}/es/…`) has no `{LINK_TARGETS}`
