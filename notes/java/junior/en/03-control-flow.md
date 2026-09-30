@@ -615,7 +615,7 @@ Use the _for-each_ whenever you just need the items and do not need the index. I
 > 📖 Docs: [Baeldung — Java While Loop](https://www.baeldung.com/java-while-loop) → read it for the syntax and the "check before the body" order.
 > 📖 Docs: [Baeldung — Java Do-While Loop](https://www.baeldung.com/java-do-while-loop) → read it for the contrast with `while`: body first, condition second, always at least one run.
 
-Use `while` and `do-while` when you do not know how many iterations you need in advance. A `for` loop is better when you know the range: the `for` header keeps init, condition and step together on one line precisely *because* you know all three up front. When you do not — you are reading a file until it ends, retrying a call until it succeeds, asking a queue for the next item until it is empty — that header has nothing to hold, and `while` is the honest shape.
+Use `while` or `do-while` when the exit condition depends on what happens in each iteration and you do not know how many iterations you will need. For example: asking for a day's hours until the user types a valid number, between 0 and 24, without knowing how many times they will get it wrong; downloading the employees page by page until an empty page arrives, which is the `do-while` example further down; or calling a service that does not respond again until it responds. In those cases, a `for` with a counter does not express well when the work should end.
 
 **`while`** checks the condition first. If the condition is false from the start, the body never runs — zero times is a perfectly normal outcome.
 

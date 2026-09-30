@@ -613,7 +613,7 @@ Usa el _for-each_ cuando necesites los elementos pero no su posición. También 
 > 📖 Docs: [Baeldung — Java While Loop](https://www.baeldung.com/java-while-loop) → leer para la sintaxis y el orden "comprueba antes que el cuerpo".
 > 📖 Docs: [Baeldung — Java Do-While Loop](https://www.baeldung.com/java-do-while-loop) → leer para el contraste con `while`: primero el cuerpo, luego la condición, siempre al menos una ejecución.
 
-Usa `while` o `do-while` cuando la condición de salida depende de lo que ocurra en cada pasada y no sabes cuántas harán falta. Puede ser una lectura hasta el final de un fichero, una llamada que se reintenta o una cola que se vacía. En esos casos, un `for` con contador no expresa bien cuándo debe terminar el trabajo.
+Usa `while` o `do-while` cuando la condición de salida depende de lo que ocurra en cada iteración y no sabes cuántas iteraciones harán falta. Por ejemplo: pedir las horas de un día hasta que el usuario escriba un número válido, entre 0 y 24, sin saber cuántas veces se va a equivocar; descargar los empleados página a página hasta que llegue una página vacía, que es el ejemplo del `do-while` de más abajo; o volver a llamar a un servicio que no responde hasta que responda. En esos casos, un `for` con contador no expresa bien cuándo debe terminar el trabajo.
 
 **`while`** comprueba la condición primero. Si la condición es falsa desde el inicio, el cuerpo nunca se ejecuta — cero veces es un resultado perfectamente normal.
 
@@ -661,12 +661,12 @@ Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo 
 
 Ya has visto las cuatro formas. Elige según **qué controla la repetición**: un contador, los elementos que recorres o una condición que se comprueba antes o después.
 
-| Qué es la repetición                                                           | Forma                                 | El contrato que hace                                                                                           |
-| ------------------------------------------------------------------------------ | ------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Contada** — un número conocido de pasadas, y necesitas el número de posición | `for` clásico                         | escribes tú mismo init, condición y paso, así que el conteo es explícito y tuyo si te equivocas                |
-| **Recorrido de elementos** — visitar cada elemento, la posición es irrelevante | _for-each_ | el bucle te entrega cada elemento por turno; no hay índice que escribir, así que no hay off-by-one que cometer |
-| **Comprobada antes** — repite mientras algo se cumpla, posiblemente cero veces | `while`                               | la condición se comprueba _antes_ del cuerpo, así que cero ejecuciones es un resultado legal y normal          |
-| **Comprobada después** — repite mientras algo se cumpla, pero al menos una vez | `do-while`                            | el cuerpo se ejecuta _antes_ de la primera comprobación, así que una ejecución está garantizada                |
+| Qué es la repetición                                                           | Forma         | El contrato que hace                                                                                           |
+| ------------------------------------------------------------------------------ | ------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Contada** — un número conocido de pasadas, y necesitas el número de posición | `for` clásico | escribes tú mismo init, condición y paso, así que el conteo es explícito y tuyo si te equivocas                |
+| **Recorrido de elementos** — visitar cada elemento, la posición es irrelevante | _for-each_    | el bucle te entrega cada elemento por turno; no hay índice que escribir, así que no hay off-by-one que cometer |
+| **Comprobada antes** — repite mientras algo se cumpla, posiblemente cero veces | `while`       | la condición se comprueba _antes_ del cuerpo, así que cero ejecuciones es un resultado legal y normal          |
+| **Comprobada después** — repite mientras algo se cumpla, pero al menos una vez | `do-while`    | el cuerpo se ejecuta _antes_ de la primera comprobación, así que una ejecución está garantizada                |
 
 Lee primero la columna izquierda: describe la necesidad. La central indica el bucle que encaja y la derecha explica qué garantiza. Tanto el `while` como el `for` clásico comprueban la condición antes de cada pasada, incluida la primera. Elige el `for` cuando conoces y controlas un contador; usa `while` cuando esperas a que cambie una condición durante el trabajo. En el _for-each_, el bucle te entrega los elementos y no te da un índice.
 
