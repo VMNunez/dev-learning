@@ -122,7 +122,7 @@ public static double calculateTax(double price, double rate) {
 > `public`. Es un **modificador de acceso**: la palabra que dice _quién tiene permiso para llamar_ al
 > método. El conjunto completo (`public`, `private`, `protected` y no escribir ningún modificador de acceso) se resuelve en
 > [06-poo-clases.md](06-poo-clases.md), porque la visibilidad solo se convierte en una decisión real una
-> vez que una clase tiene estado que merezca la pena ocultar. La segunda es `static`, una palabra que
+> vez que una clase tiene(TODO: TIENE UN ESTADO O ESTADOS) estado que merezca la pena ocultar. La segunda es `static`, una palabra que
 > verás en algunas declaraciones más abajo: cambia si llamas al método sobre un objeto o sobre el nombre
 > de la clase, y pertenece a ese mismo capítulo por la misma razón. La tercera es qué viaja físicamente
 > cuando le entregas un valor a `int a` — una copia, una referencia, y por qué "Java siempre es
