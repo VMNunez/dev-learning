@@ -855,7 +855,7 @@ Esta tabla resume las tres sentencias: qué parte del código deja de ejecutarse
 | `break`    | el bucle más interno o el `switch` clásico que lo contiene | la primera línea después de ese bucle o `switch`, en el mismo método                                              | dentro de un bucle, o de un `switch` clásico                                       |
 | `return`   | el **método** entero, bucle incluido                       | sale del método y se ejecuta la línea que va justo después de la **llamada** a ese método                         | en cualquier parte de un método, excepto dentro de la rama de un switch expression |
 
-Para ver las tres juntas en un mismo método, este busca en el registro de horas el nombre del primer empleado activo con horas extra. La lista de empleados llega ordenada por horas semanales, de mayor a menor. Por eso, en cuanto aparece un empleado con `0` horas, todos los que vienen detrás también tienen `0`, y ya no hace falta seguir buscando:
+Para ver las tres juntas en un mismo método, tenemos un ejemplo en el que el método busca en el registro de horas el nombre del primer empleado activo con horas extra. La lista de empleados llega ordenada por horas semanales, de mayor a menor. Por eso, en cuanto aparece un empleado con `0` horas, todos los que vienen detrás también tienen `0`, y ya no hace falta seguir buscando:
 
 ```java
 String firstOvertimeName(List<Employee> employees) {
