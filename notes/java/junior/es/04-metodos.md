@@ -80,7 +80,7 @@ public int add(int a, int b) {
 }
 ```
 
-Que `return` salga del método de inmediato también se puede aprovechar: puedes escribir un `return` antes del final del método para terminarlo antes de tiempo, en cuanto ya tienes el resultado. Lo verás en la sección [Tipos de retorno](#tipos-de-retorno). Lo que no puedes hacer es dejar un camino sin `return`: si declaras un tipo de retorno distinto de `void`, **todos** los caminos de salida del método deben devolver un valor. Te olvidas de uno y el archivo no compila:
+Que `return` salga del método de inmediato también se puede aprovechar: puedes escribir un `return` antes del final del método para terminarlo antes de tiempo, en cuanto ya tienes el resultado. Lo verás en la sección [Tipos de retorno](#tipos-de-retorno). Lo que no puedes hacer es dejar un camino sin `return`: si declaras un tipo de retorno distinto de `void`, **todos** los caminos de salida del método deben devolver un valor(TODO: UN VALOR DE ESE TIPO). (TODO: SI TE OLVIDAS DE UNO )Te olvidas de uno y el archivo no compila:
 
 ```java
 public int getAgeOrZero(Integer age) {
