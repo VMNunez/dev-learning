@@ -149,8 +149,8 @@ public String getName() { return this.name; }   // returns a String
 public int getAge() { return this.age; }         // returns an int
 public boolean isActive() { return this.active; }// returns boolean — by convention, the method name starts with "is"
 public void save(Employee e) { ... }             // returns nothing
-public Employee findById(int id) { ... }         // returns an object
-public List<Employee> findAll() { ... }          // returns a collection
+public Employee findById(int id) { ... }         // returns an object of type Employee
+public List<Employee> findAll() { ... }          // returns a collection where each element is an Employee
 ```
 
 `this.name` reads the `name` field of the object the method was called on: `this` is Java's word for that object, and it is taught with fields in [06-oop-classes.md](06-oop-classes.md). The `{ ... }` bodies are left out because only the return types matter here.
