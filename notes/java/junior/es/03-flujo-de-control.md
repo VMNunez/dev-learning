@@ -651,7 +651,7 @@ En el `do-while`, `loadPage(page)` representa la descarga de una página de empl
 > }
 > ```
 >
-> El hábito que lo evita: cuando escribas la condición del `while`, escribe de inmediato la línea que en algún momento la hará falsa, _antes_ de escribir cualquier otra cosa en el cuerpo.
+> Para evitar un bucle infinito, cuando escribas la condición del `while`, escribe de inmediato la línea que en algún momento la hará falsa, _antes_ de escribir cualquier otra cosa en el cuerpo.
 
 > **`do-while` necesita un punto y coma final.** En `} while (!batch.isEmpty());`, el `while (...)` cierra la sentencia que empezó con `do`; por eso lleva `;`. Si lo omites, el compilador muestra `error: ';' expected`. Los otros bucles no llevan ese punto y coma después de la llave de cierre.
 

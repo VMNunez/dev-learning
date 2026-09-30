@@ -651,7 +651,7 @@ In the `do-while`, `loadPage(page)` stands for fetching one page of employees an
 >     System.out.println(week[i]);
 > }
 > ```
-> The habit that prevents it: when you write the `while` condition, immediately write the line that will eventually make it false, *before* you write anything else in the body.
+> To avoid an infinite loop, when you write the `while` condition, immediately write the line that will eventually make it false, *before* you write anything else in the body.
 
 > **`do-while` ends in a semicolon — and only `do-while` does.** `} while (!batch.isEmpty());` — drop that `;` and you get `error: ';' expected`. The reason is that this `while` is the *tail* of a statement rather than the head of a block, so it terminates like any other statement. No other loop in Java needs a closing semicolon, which is exactly why this one is easy to forget.
 
