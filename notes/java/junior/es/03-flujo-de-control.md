@@ -560,7 +560,15 @@ De estas dos traducciones se desprenden tres consecuencias:
 
 **2. Este bucle sirve para recorrer elementos, no para cambiar la estructura de la colección.** La versión con `List` pide el elemento siguiente al iterador en cada iteración. Si eliminas directamente un empleado de ciertas listas mientras se usa ese iterador, una iteración posterior puede fallar. El fallo concreto y las formas seguras de eliminar elementos se explican en [10-colecciones.md](10-colecciones.md). Por ahora, elige este bucle cuando solo necesites recorrer un array o una colección, sin añadir ni eliminar elementos.
 
-**3. Reasignar la variable del bucle no cambia el array.** Si das un valor nuevo a la variable del _for-each_, el array no cambia, porque esa variable guarda una copia de la referencia que hay en el array, no la posición del array. Con un `for` clásico sí puedes cambiarlo, porque asignas el valor nuevo directamente a una posición del array, con `week[i] = ...`. Por ejemplo, el primer bucle de abajo intenta pasar a minúsculas los días de `week`, y no lo consigue; el segundo sí:
+**3. Reasignar la variable del bucle no cambia el array.** Si das un valor nuevo a la variable del _for-each_, el array no cambia. El motivo es que esa variable, `day` en el ejemplo de abajo, es una variable aparte del array: en cada iteración, Java copia en `day` lo que hay en una posición del array. Pasa lo mismo que cuando copias una variable en otra:
+
+```java
+int a = 5;
+int b = a;   // b recibe una copia de lo que hay en a
+b = 10;      // cambia b; a sigue valiendo 5
+```
+
+Si después cambias `day`, cambias la copia, y la posición del array sigue guardando lo que tenía. Con un `for` clásico sí puedes cambiarlo, porque asignas el valor nuevo directamente a una posición del array, con `week[i] = ...`. Por ejemplo, el primer bucle de abajo intenta pasar a minúsculas los días de `week`, y no lo consigue; el segundo sí:
 
 ```java
 // ❌ MAL — week queda sin cambios después

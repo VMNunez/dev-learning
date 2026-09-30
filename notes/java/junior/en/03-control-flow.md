@@ -560,7 +560,15 @@ Three consequences follow directly from those two rewrites:
 
 **2. This loop is for walking through elements, not for changing the collection's structure.** The `List` version asks its iterator for the next element on each iteration. If you remove an employee directly from some lists while that iterator is in use, a later iteration can fail. The exact failure and the safe ways to remove elements are explained in [10-collections.md](10-collections.md). For now, choose this loop when you only need to walk through an array or a collection, without adding or removing elements.
 
-**3. Reassigning the loop variable does not change the array.** If you give the _for-each_ variable a new value, the array does not change, because that variable holds a copy of the reference stored in the array, not the array position itself. With a classic `for` you can change it, because you assign the new value directly to a position of the array, with `week[i] = ...`. For example, the first loop below tries to turn the days in `week` into lowercase and fails; the second one succeeds:
+**3. Reassigning the loop variable does not change the array.** If you give the _for-each_ variable a new value, the array does not change. The reason is that this variable, `day` in the example below, is a variable separate from the array: on each iteration, Java copies into `day` what is in one position of the array. It is the same as copying one variable into another:
+
+```java
+int a = 5;
+int b = a;   // b receives a copy of what is in a
+b = 10;      // b changes; a is still 5
+```
+
+If you then change `day`, you change the copy, and the array position still holds what it had. With a classic `for` you can change it, because you assign the new value directly to a position of the array, with `week[i] = ...`. For example, the first loop below tries to turn the days in `week` into lowercase and fails; the second one succeeds:
 
 ```java
 // ❌ MAL — week is unchanged afterwards
