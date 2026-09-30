@@ -92,7 +92,7 @@ public int getAgeOrZero(Integer age) {
 // error: missing return statement
 ```
 
-> **¿Por qué el compilador se niega en lugar de devolver 0 sin más?** Porque quien llama escribió `int x = getAgeOrZero(null);`, y el sistema de tipos prometió que `x` recibiría un `int`. Si Java inventara un valor en silencio, cumpliría la promesa con un número que tú nunca elegiste — exactamente la clase de bug (TODO: POR EL QUE)que el tipado estático existe para prevenir. El compilador recorre cada rama y, al encontrar una que llega a la llave de cierre sin devolver nada, detiene la compilación. La solución es devolver algo también en ese camino, nunca quitar el tipo de retorno.
+> **¿Por qué el compilador se niega en lugar de devolver 0 sin más?** Porque quien llama escribió `int x = getAgeOrZero(null);`, y el sistema de tipos prometió que `x` recibiría un `int`. Si Java inventara un valor en silencio, cumpliría la promesa con un número que tú nunca elegiste — exactamente el tipo de bug por el que existe el tipado estático. El compilador recorre cada rama y, al encontrar una que llega a la llave de cierre sin devolver nada, detiene la compilación. La solución es devolver algo también en ese camino, nunca quitar el tipo de retorno.
 
 Más ejemplos:
 
