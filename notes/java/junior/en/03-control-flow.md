@@ -987,7 +987,7 @@ for (Employee emp : employees) {
 
 ## What this unlocks
 
-Up to the previous chapter, your program ran each line once, from top to bottom. With this file it now decides which lines run, how many times, and when to stop. You have seen it with the same timesheet from start to finish: an entry with 10 hours is marked as overtime, a Saturday is classified as a weekend shift, and the search for the first employee with overtime stops as soon as it finds them. In practice, you can now:
+Up to the previous chapter, your program ran each line once, from top to bottom. With this file you have learned to decide which lines run, how many times, and when to stop. You have seen it with the same timesheet from start to finish: an entry with 10 hours is marked as overtime, a Saturday is classified as a weekend shift, and the search for the first employee with overtime stops as soon as it finds them. In practice, you can now:
 
 - Choose which code runs with `if / else`, checking the impossible values first, and choose between two values with the ternary operator.
 - Classify a value with `switch`: in the classic form, without forgetting each case's `break`, and with the `switch` expression, which runs only the matching case and stores its result in a variable.

@@ -987,7 +987,7 @@ for (Employee emp : employees) {
 
 ## Lo que esto desbloquea
 
-Hasta el capítulo anterior, tu programa ejecutaba cada línea una sola vez, de arriba abajo. Con este archivo ya decide qué líneas se ejecutan, cuántas veces y cuándo parar. Lo has visto con el mismo registro de horas de principio a fin: una anotación con 10 horas se marca como horas extra, un sábado se clasifica como turno de fin de semana, y la búsqueda del primer empleado con horas extra se detiene en cuanto lo encuentra. En la práctica, ahora puedes:
+Hasta el capítulo anterior, tu programa ejecutaba cada línea una sola vez, de arriba abajo. Con este archivo ya aprendiste a decidir qué líneas se ejecutan, cuántas veces y cuándo parar. Lo has visto con el mismo registro de horas de principio a fin: una anotación con 10 horas se marca como horas extra, un sábado se clasifica como turno de fin de semana, y la búsqueda del primer empleado con horas extra se detiene en cuanto lo encuentra. En la práctica, ahora puedes:
 
 - Elegir qué código se ejecuta con `if / else`, comprobando primero los valores imposibles, y elegir entre dos valores con el operador ternario.
 - Clasificar un valor con `switch`: en la forma clásica, sin olvidar el `break` de cada caso, y con la expresión `switch`, que ejecuta solo el caso que coincide y guarda su resultado en una variable.
