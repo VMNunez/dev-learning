@@ -153,7 +153,7 @@ public Employee findById(int id) { ... }         // devuelve un objeto de tipo E
 public List<Employee> findAll() { ... }          // devuelve una colección donde cada elemento es un Employee
 ```
 
-`this.name` lee el campo `name` del objeto sobre el que se llamó al método: `this` es la palabra de Java para ese objeto, y se enseña junto con los campos en [06-poo-clases.md](06-poo-clases.md)(TODO: UN POCO MAS DE CLARIDAD EN LA PRIMERA FRASE). Los cuerpos `{ ... }` se han omitido porque aquí solo importan los tipos de retorno.
+En estos ejemplos, `this.name` significa «el campo `name` del objeto sobre el que se ha llamado al método». Un campo es una variable que pertenece a un objeto y guarda uno de sus datos, como el nombre de un empleado. `this` es la palabra con la que Java se refiere a ese objeto. Los campos y `this` se explican a fondo en [06-poo-clases.md](06-poo-clases.md). Los cuerpos `{ ... }` se han omitido porque aquí solo importan los tipos de retorno.
 
 Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` devuelven **primitivos**, así que quien llama recibe el valor en sí, un número o un `boolean`. `getName()`, `findById()` y `findAll()` devuelven **objetos** (`String`, `Employee`, `List<Employee>`), así que quien llama recibe una _referencia_ — la dirección de memoria de un objeto —, que es la misma distinción valor-frente-a-referencia que viste en [01-variables-tipos.md](01-variables-tipos.md). Exactamente qué se copia cuando un valor o una referencia cruza la llamada, y dónde vive mientras tanto el propio objeto, es el tema de [05-modelo-de-memoria.md](05-modelo-de-memoria.md). `void` no devuelve nada en absoluto, lo cual es una categoría aparte.
 

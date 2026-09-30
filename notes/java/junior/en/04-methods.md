@@ -153,7 +153,7 @@ public Employee findById(int id) { ... }         // returns an object of type Em
 public List<Employee> findAll() { ... }          // returns a collection where each element is an Employee
 ```
 
-`this.name` reads the `name` field of the object the method was called on: `this` is Java's word for that object, and it is taught with fields in [06-oop-classes.md](06-oop-classes.md). The `{ ... }` bodies are left out because only the return types matter here.
+In these examples, `this.name` means "the `name` field of the object the method was called on". A field is a variable that belongs to an object and holds one of its pieces of data, such as an employee's name. `this` is the word Java uses to refer to that object. Fields and `this` are explained in full in [06-oop-classes.md](06-oop-classes.md). The `{ ... }` bodies are left out because only the return types matter here.
 
 Read that list as three groups, not six lines. `getAge()` and `isActive()` return **primitives**, so the caller receives the value itself, a number or a `boolean`. `getName()`, `findById()` and `findAll()` return **objects** (`String`, `Employee`, `List<Employee>`), so the caller receives a *reference* — the memory address of an object — which is the value-versus-reference split you met in [01-variables-types.md](01-variables-types.md). Exactly what is copied when a value or a reference crosses the call, and where the object itself lives meanwhile, is [05-memory-model.md](05-memory-model.md)'s subject. `void` returns nothing at all, which is a category of its own.
 
