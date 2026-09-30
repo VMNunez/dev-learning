@@ -577,7 +577,7 @@ for (String day : week) {
 }
 ```
 
-El bucle ❌ falla por la traducción que viste arriba. `javac` lo reescribe como el `for` clásico de abajo, en el que `day` es una variable local distinta de `week[i]`: `day` guarda una copia de la referencia que hay en `week[i]`, así que al cambiar `day`, que es una variable local, no estás cambiando el array, como viste con `a` y `b` en el código de arriba.
+El bucle ❌ falla por la traducción que viste arriba. `javac` lo reescribe como el `for` clásico de abajo, en el que `day` es una variable local distinta de `week[i]`: `day` guarda una copia de la referencia que hay en `week[i]`. En `week[i]` hay una referencia porque `week` es un array de `String`, y `String` es un objeto: cada posición de un array de objetos guarda una referencia que apunta al objeto, no el objeto en sí. En un array de `int`, cada posición guardaría el número directamente. Es lo mismo que viste al crear arrays, con `null` en un `String[]` nuevo y `0` en un `int[]`. Así que al cambiar `day`, que es una variable local, no estás cambiando el array, como viste con `a` y `b` en el código de arriba.
 
 ```java
 for (int i = 0; i < week.length; i++) {

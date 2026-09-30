@@ -577,7 +577,7 @@ for (String day : week) {
 }
 ```
 
-The ❌ loop fails because of the translation you saw above. `javac` rewrites it as the classic `for` below, in which `day` is a local variable separate from `week[i]`: `day` holds a copy of the reference stored in `week[i]`, so when you change `day`, which is a local variable, you are not changing the array, as you saw with `a` and `b` in the code above.
+The ❌ loop fails because of the translation you saw above. `javac` rewrites it as the classic `for` below, in which `day` is a local variable separate from `week[i]`: `day` holds a copy of the reference stored in `week[i]`. There is a reference in `week[i]` because `week` is an array of `String`, and `String` is an object: each position of an array of objects stores a reference that points to the object, not the object itself. In an array of `int`, each position would store the number directly. It is the same thing you saw when creating arrays, with `null` in a new `String[]` and `0` in an `int[]`. So when you change `day`, which is a local variable, you are not changing the array, as you saw with `a` and `b` in the code above.
 
 ```java
 for (int i = 0; i < week.length; i++) {
