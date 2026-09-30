@@ -558,9 +558,9 @@ Three consequences follow directly from those two rewrites:
 
 **1. You cannot get the index from the loop variable.** The array translation has a hidden counter, but the _for-each_ does not expose it to your body. The iterator translation hands over the next element with no index at all. If you need the position, use a classic `for` over an array or a `List` that supports indexed access. [10-collections.md](10-collections.md) explains which collections have positions.
 
-**2. This loop is for walking through elements, not for changing the collection's structure.** The `List` version asks its iterator for the next element on each iteration. If you remove an employee directly from some lists while that iterator is in use, a later iteration can fail. The exact failure and the safe ways to remove elements are explained in [10-collections.md](10-collections.md). For now, choose this loop when you only need to walk through the employees.
+**2. This loop is for walking through elements, not for changing the collection's structure.** The `List` version asks its iterator for the next element on each iteration. If you remove an employee directly from some lists while that iterator is in use, a later iteration can fail. The exact failure and the safe ways to remove elements are explained in [10-collections.md](10-collections.md). For now, choose this loop when you only need to walk through an array or a collection, without adding or removing elements.
 
-**3. Reassigning the loop variable does not change the array.** If you give the _for-each_ variable a new value, the array does not change. For example, the first loop below tries to turn the days in `week` into lowercase and fails; the second one succeeds:
+**3. Reassigning the loop variable does not change the array.** If you give the _for-each_ variable a new value, the array does not change. With a classic `for` you can change it, because you assign the new value directly to a position of the array, with `week[i] = ...`. For example, the first loop below tries to turn the days in `week` into lowercase and fails; the second one succeeds:
 
 ```java
 // ❌ MAL — week is unchanged afterwards

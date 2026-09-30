@@ -558,9 +558,9 @@ De estas dos traducciones se desprenden tres consecuencias:
 
 **1. La variable del bucle no te da el índice.** La traducción del array lleva un contador oculto, pero el _for-each_ no lo pone a disposición del cuerpo. La traducción con iterador entrega el elemento siguiente sin índice alguno. Si necesitas la posición, usa un `for` clásico sobre un array o sobre una `List` que permita el acceso por índice. [10-colecciones.md](10-colecciones.md) explica qué colecciones tienen posiciones.
 
-**2. Este bucle sirve para recorrer elementos, no para cambiar la estructura de la colección.** La versión con `List` pide el elemento siguiente al iterador en cada iteración. Si eliminas directamente un empleado de ciertas listas mientras se usa ese iterador, una iteración posterior puede fallar. El fallo concreto y las formas seguras de eliminar elementos se explican en [10-colecciones.md](10-colecciones.md). Por ahora, elige este bucle cuando solo necesites recorrer los empleados.
+**2. Este bucle sirve para recorrer elementos, no para cambiar la estructura de la colección.** La versión con `List` pide el elemento siguiente al iterador en cada iteración. Si eliminas directamente un empleado de ciertas listas mientras se usa ese iterador, una iteración posterior puede fallar. El fallo concreto y las formas seguras de eliminar elementos se explican en [10-colecciones.md](10-colecciones.md). Por ahora, elige este bucle cuando solo necesites recorrer un array o una colección, sin añadir ni eliminar elementos.
 
-**3. Reasignar la variable del bucle no cambia el array.** Si das un valor nuevo a la variable del _for-each_, el array no cambia. Por ejemplo, el primer bucle de abajo intenta pasar a minúsculas los días de `week`, y no lo consigue; el segundo sí:
+**3. Reasignar la variable del bucle no cambia el array.** Si das un valor nuevo a la variable del _for-each_, el array no cambia. Con un `for` clásico sí puedes cambiarlo, porque asignas el valor nuevo directamente a una posición del array, con `week[i] = ...`. Por ejemplo, el primer bucle de abajo intenta pasar a minúsculas los días de `week`, y no lo consigue; el segundo sí:
 
 ```java
 // ❌ MAL — week queda sin cambios después
