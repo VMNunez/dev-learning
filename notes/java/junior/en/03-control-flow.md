@@ -816,7 +816,7 @@ In the example, `continue` skips the inactive employee and moves on to the next 
 > // 10
 > ```
 >
-> The same happens in a `do-while`. `continue` jumps to the condition check, which in a `do-while` is at the end, in the `while (...)`, and skips everything left in the body, including the `i++`:
+> The same happens in a `do-while`. `continue` jumps to the condition check, which in a `do-while` is at the end.
 >
 > ```java
 > // ❌ MAL — the same problem in a do-while
@@ -847,7 +847,7 @@ In the example, `continue` skips the inactive employee and moves on to the next 
 > // 10
 > ```
 
-The way to keep the three apart is to ask, of each, exactly *what is left behind* and *where execution lands next*:
+This table sums up the three statements: which part of the code stops running with each one and which line runs right after.
 
 | Statement | What it leaves | Where execution lands next | Where it is legal |
 |---|---|---|---|

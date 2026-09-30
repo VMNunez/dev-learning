@@ -816,7 +816,7 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 > // 10
 > ```
 >
-> En un `do-while` pasa lo mismo. `continue` salta a la comprobación de la condición, que en un `do-while` está al final, en el `while (...)`, y se salta todo lo que queda del cuerpo, también el `i++`:
+> En un `do-while` pasa lo mismo. `continue` salta a la comprobación de la condición, que en un `do-while` está al final.
 >
 > ```java
 > // ❌ MAL — el mismo problema en un do-while
@@ -847,7 +847,7 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 > // 10
 > ```
 
-Para distinguirlas, comprueba qué parte del código abandonan y cuál es la siguiente instrucción que se ejecuta:
+Esta tabla resume las tres sentencias: qué parte del código deja de ejecutarse con cada una y qué línea se ejecuta justo después.
 
 | Sentencia  | Qué deja atrás                                             | Dónde aterriza la ejecución después                                                                               | Dónde es legal                                                                     |
 | ---------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
