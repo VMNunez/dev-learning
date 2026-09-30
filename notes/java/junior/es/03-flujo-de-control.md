@@ -893,7 +893,18 @@ Traza las tres salidas. El `continue` devuelve el control a la cabecera del `for
 
 ### `break` y `continue` con etiqueta: salir de un bucle que está dentro de otro
 
-Cuando un bucle está dentro de otro, un `break` normal solo sale del bucle en el que está escrito, el interior, y el bucle exterior sigue con su siguiente iteración. Para salir de los dos a la vez, escribe un nombre seguido de dos puntos justo antes del bucle exterior, por ejemplo `outer:`. Ese nombre se llama **etiqueta**. Después, `break outer;` sale del bucle que lleva esa etiqueta, y con él también del interior.
+Cuando un bucle está dentro de otro, un `break` normal solo sale del bucle en el que está escrito, el bucle más interno, y el bucle exterior sigue con su siguiente iteración. Para salir de los dos a la vez, primero tienes que ponerle un nombre al bucle exterior. Ese nombre se llama **etiqueta**, y se escribe en la línea anterior al bucle, seguido de dos puntos:
+
+```java
+outer:                               // la etiqueta: el nombre outer seguido de dos puntos
+for (Employee emp : employees) {     // el bucle exterior, que ahora se llama outer
+    for (String day : week) {        // el bucle más interno
+        // ...
+    }
+}
+```
+
+Después, dentro del bucle más interno, `break outer;` sale del bucle que lleva esa etiqueta, y con él también del bucle más interno.
 
 El registro de horas da un caso natural: una rejilla de empleados × días, y quieres detener toda la búsqueda en cuanto encuentres cualquier entrada sin aprobar. `isApproved(emp, day)` es una llamada de ejemplo que devuelve `true` cuando la entrada de ese empleado para ese día está aprobada.
 

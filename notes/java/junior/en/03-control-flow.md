@@ -893,7 +893,18 @@ Trace the three exits. The `continue` sends control back to the `for` header, wh
 
 ### `break` and `continue` with a label: leaving a loop that sits inside another
 
-When a loop sits inside another, a plain `break` only leaves the loop it is written in, the inner one, and the outer loop carries on with its next iteration. To leave both at once, write a name followed by a colon right before the outer loop, for example `outer:`. That name is called a **label**. Then `break outer;` leaves the loop that carries that label, and with it the inner one too.
+When a loop sits inside another, a plain `break` only leaves the loop it is written in, the innermost loop, and the outer loop carries on with its next iteration. To leave both at once, you first have to give the outer loop a name. That name is called a **label**, and it is written on the line before the loop, followed by a colon:
+
+```java
+outer:                               // the label: the name outer followed by a colon
+for (Employee emp : employees) {     // the outer loop, which is now called outer
+    for (String day : week) {        // the innermost loop
+        // ...
+    }
+}
+```
+
+Then, inside the innermost loop, `break outer;` leaves the loop that carries that label, and with it the innermost loop too.
 
 The timesheet gives a natural case: a grid of employees × days, and you want to stop the whole search the moment you find any unapproved entry. `isApproved(emp, day)` is a placeholder call that answers `true` when that employee's entry for that day is approved.
 
