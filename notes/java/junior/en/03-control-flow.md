@@ -664,9 +664,9 @@ You have now seen the four kinds of loop. To choose between them, ask yourself *
 | What decides how many times it repeats | Form | What it guarantees you |
 |---|---|---|
 | **With a counter** — you know how many iterations you need and you need each element's index | classic `for` | you write the starting value, the condition and the step yourself, so you control how many iterations the loop does and which index it uses in each one |
-| **Element traversal** — visit every item, position irrelevant | _for-each_ | the loop hands you each element in turn; there is no index to write, so no off-by-one to make |
-| **Pre-checked** — repeat while something holds, possibly zero times | `while` | the condition is tested *before* the body, so zero executions is a legal, normal outcome |
-| **Post-checked** — repeat while something holds, but at least once | `do-while` | the body runs *before* the first test, so one execution is guaranteed |
+| **With the elements** — you want to walk through every element of an array or a collection and you do not need its index | _for-each_ | the loop gives you each element, one after another, without you writing any index, so you cannot make an off-by-one error |
+| **With a condition checked before** — you do not know how many iterations you need, and you may need none | `while` | it checks the condition before running the body, so, if it is false from the start, the body does not run even once |
+| **With a condition checked after** — you do not know how many iterations you need, but the body has to run at least once | `do-while` | it runs the body before checking the condition, so the body runs at least once |
 
 How to read the table: the **middle** column is the answer, the **left** column is what you must be able to say about your own problem before you can pick it, and the right column is the check — if the contract in that row is not what your code actually promises, you chose wrong. Two rows are worth pressing on. The `while` row and the classic-`for` row are both pre-checked in mechanics (a `for` also tests before every pass, including the first); what separates them is *who owns the counter* — the `for` header holds init, condition and step together because you know all three in advance, and `while` is the honest shape when you do not. And the _for-each_ row is the only one where the loop, not you, supplies the values, which is why it is the default for arrays and collections and why it cannot give you an index.
 
