@@ -130,8 +130,8 @@ public static double calculateTax(double price, double rate) {
 > [06-oop-classes.md](06-oop-classes.md), for the same reason.
 
 > The third is what the method receives when you pass it an argument. The short answer is that it always
-> receives a copy, which is why Java is said to pass arguments by value (_pass-by-value_). With an
-> object, what gets copied is its reference, not the whole object. It is a typical interview question, and
+> receives a copy of the argument's value, which is why Java is said to pass arguments by value (_pass-by-value_). With an
+> object, that value is its reference, so what gets copied is the reference, not the whole object. It is a typical interview question, and
 > it is explained in [05-memory-model.md](05-memory-model.md), together with the stack and the heap, which
 > it takes to understand it. Until then, read `public` as "callable from anywhere" and `static` as "called
 > on the class name, not on an object". That is everything this chapter asks of them.

@@ -130,8 +130,8 @@ public static double calculateTax(double price, double rate) {
 > de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón.
 
 > La tercera es qué recibe el método cuando le pasas un argumento. La respuesta corta es que siempre
-> recibe una copia(TODO: UNA COPIA DE QUE), y por eso se dice que Java pasa los argumentos por valor (_pass-by-value_). Con un
-> objeto, lo que se copia es su referencia, no el objeto entero. Es una pregunta típica de entrevista, y se
+> recibe una copia del valor del argumento, y por eso se dice que Java pasa los argumentos por valor (_pass-by-value_). Con un
+> objeto, ese valor es su referencia, así que lo que se copia es la referencia, no el objeto entero. Es una pregunta típica de entrevista, y se
 > explica en [05-modelo-de-memoria.md](05-modelo-de-memoria.md), junto con el stack y el heap, que hacen
 > falta para entenderla. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
 > llama sobre el nombre de la clase, no sobre un objeto". Eso es todo lo que este capítulo les pide.
