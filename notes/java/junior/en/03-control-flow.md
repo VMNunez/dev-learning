@@ -729,7 +729,7 @@ Without that `break`, execution would carry on into the next case and also print
 int[] weekHours = {8, 0, 10, 6};
 for (int hours : weekHours) {
     if (hours == 0) {
-        continue;                 // with the 0: skips the rest of this iteration and continues with the one for 10
+        continue;                 // with the 0: skips the rest of this iteration and continues with the iteration for 10
     }
     System.out.println("Worked " + hours + " hours");
 }

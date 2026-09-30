@@ -729,7 +729,7 @@ Sin ese `break`, la ejecución seguiría en el caso siguiente e imprimiría tamb
 int[] weekHours = {8, 0, 10, 6};
 for (int hours : weekHours) {
     if (hours == 0) {
-        continue;                 // con el 0: se salta el resto de esta iteración y continúa con la del 10
+        continue;                 // con el 0: se salta el resto de esta iteración y continúa con la iteración del 10
     }
     System.out.println("Worked " + hours + " hours");
 }
