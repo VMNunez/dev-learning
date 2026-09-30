@@ -119,8 +119,8 @@ public static double calculateTax(double price, double rate) {
 ```
 
 > **Three things visible in that declaration are deliberately not this chapter's.** The first is
-> `public`. It is an **access modifier** — the word that says *who is allowed to call* the method — and
-> the full set (`public`, `private`, `protected`, and writing nothing at all) is settled in
+> `public`. It is an **access modifier**: the word that says *who is allowed to call* the method. The
+> full set (`public`, `private`, `protected`, and writing no access modifier at all) is settled in
 > [06-oop-classes.md](06-oop-classes.md), because visibility only becomes a real decision once a class
 > has state worth hiding. The second is `static`, a word you will see on some declarations below: it
 > changes whether you call the method on an object or on the class name, and it belongs to that same
