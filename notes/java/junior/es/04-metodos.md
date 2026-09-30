@@ -124,14 +124,11 @@ public static double calculateTax(double price, double rate) {
 > [06-poo-clases.md](06-poo-clases.md), porque la visibilidad solo se convierte en una decisión real una
 > vez que una clase tiene un estado que merezca la pena ocultar, es decir, datos que guarda cada uno de sus objetos. La segunda es `static`, una palabra que
 > verás en algunas declaraciones más abajo: cambia si llamas al método sobre un objeto o sobre el nombre
-> de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón. La tercera es qué viaja físicamente
-> cuando le entregas un valor a `int a` — una copia, una referencia, y por qué "Java siempre es
-> pass-by-value" es la respuesta que buscan los entrevistadores; ese es el tema de
-> [05-modelo-de-memoria.md](05-modelo-de-memoria.md)(TODO: MEJORA LA REDACCION DE "La tercera es qué viaja físicamente
-> cuando le entregas un valor a `int a` — una copia, una referencia, y por qué "Java siempre es
-> pass-by-value" es la respuesta que buscan los entrevistadores; ese es el tema de
-> [05-modelo-de-memoria.md](05-modelo-de-memoria.md)"), y necesita el stack y el heap para poder explicarse
-> con sentido. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
+> de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón. La tercera es qué recibe exactamente el método cuando pasas un argumento a un
+> parámetro: con un parámetro como `int a`, una copia del valor; con un objeto, una copia de su referencia. Es la pregunta de entrevista
+> «¿Java pasa los argumentos por valor o por referencia?», y la respuesta es que Java siempre los pasa por
+> valor (_pass-by-value_). Se explica en [05-modelo-de-memoria.md](05-modelo-de-memoria.md), porque para
+> entenderla hacen falta el stack y el heap. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
 > llama sobre el nombre de la clase, no sobre un objeto". Eso es todo lo que este capítulo les pide.
 
 ---
