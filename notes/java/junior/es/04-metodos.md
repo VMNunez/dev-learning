@@ -118,13 +118,18 @@ public static double calculateTax(double price, double rate) {
 }
 ```
 
-> **Tres cosas visibles en esa declaración quedan deliberadamente fuera de este capítulo.** La primera es
-> `public`. Es un **modificador de acceso**: la palabra que dice _quién tiene permiso para llamar_ al
+> **Tres cosas visibles en esa declaración quedan deliberadamente fuera de este capítulo.**
+
+> La primera es `public`. Es un **modificador de acceso**: la palabra que dice _quién tiene permiso para llamar_ al
 > método. El conjunto completo (`public`, `private`, `protected` y no escribir ningún modificador de acceso) se resuelve en
 > [06-poo-clases.md](06-poo-clases.md), porque la visibilidad solo se convierte en una decisión real una
-> vez que una clase tiene un estado que merezca la pena ocultar, es decir, datos que guarda cada uno de sus objetos. La segunda es `static`, una palabra que
+> vez que una clase tiene un estado que merezca la pena ocultar, es decir, datos que guarda cada uno de sus objetos.
+
+> La segunda es `static`, una palabra que
 > verás en algunas declaraciones más abajo: cambia si llamas al método sobre un objeto o sobre el nombre
-> de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón. La tercera es qué recibe exactamente el método cuando pasas un argumento a un
+> de la clase, y también se explica en [06-poo-clases.md](06-poo-clases.md), por la misma razón.
+
+> (TODO: NECESITO UNA REDACCION CLARA Y SENCILLA DE ESTA TERCERA)La tercera es qué recibe exactamente el método cuando pasas un argumento a un
 > parámetro: con un parámetro como `int a`, una copia del valor; con un objeto, una copia de su referencia. Es la pregunta de entrevista
 > «¿Java pasa los argumentos por valor o por referencia?», y la respuesta es que Java siempre los pasa por
 > valor (_pass-by-value_). Se explica en [05-modelo-de-memoria.md](05-modelo-de-memoria.md), porque para
