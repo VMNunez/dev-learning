@@ -120,7 +120,7 @@ public static double calculateTax(double price, double rate) {
 
 > **Tres cosas visibles en esa declaración quedan deliberadamente fuera de este capítulo.** La primera es
 > `public`. Es un **modificador de acceso** — la palabra que dice _quién tiene permiso para llamar_ al
-> método — y el conjunto completo (`public`, `private`, `protected`, y no escribir nada) se resuelve en
+> método — el conjunto completo (`public`, `private`, `protected`, y no escribir nada(TODO: NO ESCRIBIR NINGUN MODIFICADOR DE ACCESO)) se resuelve en
 > [06-poo-clases.md](06-poo-clases.md), porque la visibilidad solo se convierte en una decisión real una
 > vez que una clase tiene estado que merezca la pena ocultar. La segunda es `static`, una palabra que
 > verás en algunas declaraciones más abajo: cambia si llamas al método sobre un objeto o sobre el nombre
