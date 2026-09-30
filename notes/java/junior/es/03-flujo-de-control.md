@@ -991,7 +991,7 @@ Hasta el capítulo anterior, tu programa ejecutaba cada línea una sola vez, de 
 
 - Elegir qué código se ejecuta con una cadena `if / else`, poniendo primero la rama de los valores imposibles, después las ramas válidas, de la más específica a la más general, y al final el `else` para lo que quede.
 - Elegir entre dos valores con el operador ternario y guardar el resultado directamente en una variable.
-- Clasificar un valor con `switch`: en la forma clásica, sin olvidar el `break` de cada caso, y con la expresión `switch`, que ejecuta solo el caso que coincide y guarda su resultado en una variable.
+- Clasificar un valor con `switch`: en la forma clásica, sin olvidar el `break` de cada caso, y con la expresión `switch` (_switch expression_), que ejecuta solo el caso que coincide y guarda su resultado en una variable.
 - Recorrer un array o una colección con el _for-each_ cuando no necesitas el índice, y con el `for` clásico cuando sí lo necesitas, sin cometer el error off-by-one.
 - Repetir un trabajo con `while` cuando no sabes cuántas iteraciones harán falta, o con `do-while` cuando el cuerpo tiene que ejecutarse al menos una vez, sin crear un bucle infinito.
 - Cortar un bucle antes de tiempo con `continue`, `break` o `return`, sabiendo qué línea se ejecuta después de cada uno.
