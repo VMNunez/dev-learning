@@ -149,8 +149,8 @@ public String getName() { return this.name; }   // devuelve un String
 public int getAge() { return this.age; }         // devuelve un int
 public boolean isActive() { return this.active; }// devuelve boolean — por convención, el nombre del método empieza con "is"
 public void save(Employee e) { ... }             // no devuelve nada
-public Employee findById(int id) { ... }         // devuelve un objeto
-public List<Employee> findAll() { ... }          // devuelve una colección
+public Employee findById(int id) { ... }         // devuelve un objeto TODO: DE TIPO...
+public List<Employee> findAll() { ... }          // devuelve una colección TODO: UNA COLAECCION DONDE CADA ELEMENTO ES..
 ```
 
 `this.name` lee el campo `name` del objeto sobre el que se llamó al método: `this` es la palabra de Java para ese objeto, y se enseña junto con los campos en [06-poo-clases.md](06-poo-clases.md). Los cuerpos `{ ... }` se han omitido porque aquí solo importan los tipos de retorno.
