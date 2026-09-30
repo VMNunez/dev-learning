@@ -556,7 +556,7 @@ for (Employee e : employees)     →   Iterator<Employee> it = employees.iterato
 
 De estas dos traducciones se desprenden tres consecuencias:
 
-**1. La variable del bucle no te da el índice.** La traducción del array lleva un contador oculto, pero el `for` mejorado no lo pone a disposición del cuerpo. La traducción con iterador entrega el elemento siguiente sin índice alguno. Si necesitas la posición, usa un `for` clásico sobre un array o sobre una `List` que permita el acceso por índice. [10-colecciones.md](10-colecciones.md) explica qué colecciones tienen posiciones; ese capítulo aún está pendiente.
+**1. La variable del bucle no te da el índice.** La traducción del array lleva un contador oculto, pero el _for-each_ no lo pone a disposición del cuerpo. La traducción con iterador entrega el elemento siguiente sin índice alguno. Si necesitas la posición, usa un `for` clásico sobre un array o sobre una `List` que permita el acceso por índice. [10-colecciones.md](10-colecciones.md) explica qué colecciones tienen posiciones; ese capítulo aún está pendiente.
 
 **2. Este bucle sirve para visitar elementos, no para cambiar la estructura de la colección.** La versión con `List` pide el elemento siguiente al iterador en cada pasada. Si eliminas directamente un empleado de ciertas listas mientras se usa ese iterador, una pasada posterior puede fallar. El fallo concreto y las formas seguras de eliminar elementos se explican en [10-colecciones.md](10-colecciones.md), que aún está pendiente. Por ahora, elige este bucle cuando solo necesites visitar a los empleados.
 

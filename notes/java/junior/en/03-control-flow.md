@@ -556,7 +556,7 @@ for (Employee e : employees)     →   Iterator<Employee> it = employees.iterato
 
 Three consequences follow directly from those two rewrites:
 
-**1. You cannot get the index from the loop variable.** The array translation has a hidden counter, but the enhanced `for` does not expose it to your body. The iterator translation hands over the next element with no index at all. If you need the position, use a classic `for` over an array or a `List` that supports indexed access. [10-collections.md](10-collections.md) explains which collections have positions; that chapter is still pending.
+**1. You cannot get the index from the loop variable.** The array translation has a hidden counter, but the _for-each_ does not expose it to your body. The iterator translation hands over the next element with no index at all. If you need the position, use a classic `for` over an array or a `List` that supports indexed access. [10-collections.md](10-collections.md) explains which collections have positions; that chapter is still pending.
 
 **2. The element loop is for visiting elements, not changing the collection's structure.** The `List` version asks its iterator for the next element on each pass. Removing an employee directly from some lists while that iterator is in use can make a later pass fail. The exact failure and the safe removal operations belong to [10-collections.md](10-collections.md), which is still pending. For now, choose this loop when you only need to visit the employees.
 
