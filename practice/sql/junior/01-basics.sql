@@ -231,6 +231,7 @@ SELECT title, price FROM books WHERE price IS NOT NULL;
 -- #37 | WHERE — comparison on a different table ✅ Corregido 2026-07-22
 -- Get all orders placed after 2024-02-01. Show all columns.
 SELECT * FROM orders WHERE created_at::date > '2024-02-01';
+SELECT * FROM orders WHERE CAST(created_at AS DATE)> '2024-02-01';
 
 -- #38 | DISTINCT ON ✅ Corregido 2026-07-22
 -- Get the most recently published book per author. Show author_id, title, and year.
