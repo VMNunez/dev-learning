@@ -661,7 +661,7 @@ Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo 
 
 Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **qué decide cuántas veces se repite el bucle**, es decir, qué hace que el bucle termine. Hay tres respuestas posibles: un contador que llega a un límite, que ya no queden elementos por recorrer, o una condición que deja de cumplirse y que se comprueba antes o después de cada iteración.
 
-| Qué decide cuántas veces se repite                                  | Forma         | El contrato que hace                                                                                                                         |
+| Qué decide cuántas veces se repite                                                              | Forma         | Qué te garantiza                                                                              |
 | ----------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Con contador** — sabes cuántas iteraciones hacen falta y necesitas el índice de cada elemento | `for` clásico | escribes tú mismo el valor inicial, la condición y el paso, así que controlas cuántas iteraciones hace el bucle y qué índice usa en cada una |
 | **Recorrido de elementos** — visitar cada elemento, la posición es irrelevante                  | _for-each_    | el bucle te entrega cada elemento por turno; no hay índice que escribir, así que no hay off-by-one que cometer                               |

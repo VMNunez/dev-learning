@@ -661,7 +661,7 @@ Choose `do-while` when the body must run at least once, for example to download 
 
 You have now seen the four kinds of loop. To choose between them, ask yourself **what decides how many times the loop repeats**, that is, what makes the loop end. There are three possible answers: a counter that reaches a limit, no elements left to walk through, or a condition that stops holding and is checked before or after each iteration.
 
-| What decides how many times it repeats | Form | The contract it makes |
+| What decides how many times it repeats | Form | What it guarantees you |
 |---|---|---|
 | **With a counter** — you know how many iterations you need and you need each element's index | classic `for` | you write the starting value, the condition and the step yourself, so you control how many iterations the loop does and which index it uses in each one |
 | **Element traversal** — visit every item, position irrelevant | _for-each_ | the loop hands you each element in turn; there is no index to write, so no off-by-one to make |
