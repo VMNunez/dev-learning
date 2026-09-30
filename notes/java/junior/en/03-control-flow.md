@@ -659,11 +659,11 @@ Choose `do-while` when the body must run at least once, for example to download 
 
 ### Choosing between the four loop forms
 
-You have now seen the four kinds of loop. To choose between them, ask yourself **what decides how many times the loop repeats**: a counter, the elements you walk through, or a condition checked before or after each iteration.
+You have now seen the four kinds of loop. To choose between them, ask yourself **what decides how many times the loop repeats**, that is, what makes the loop end. There are three possible answers: a counter that reaches a limit, no elements left to walk through, or a condition that stops holding and is checked before or after each iteration.
 
 | What the repetition is | Form | The contract it makes |
 |---|---|---|
-| **Counted** — a known number of passes, and you need the position number | classic `for` | you write init, condition and step yourself, so the count is explicit and yours to get wrong |
+| **With a counter** — you know how many iterations you need and you need each element's index | classic `for` | you write the starting value, the condition and the step yourself, so you control how many iterations the loop does and which index it uses in each one |
 | **Element traversal** — visit every item, position irrelevant | _for-each_ | the loop hands you each element in turn; there is no index to write, so no off-by-one to make |
 | **Pre-checked** — repeat while something holds, possibly zero times | `while` | the condition is tested *before* the body, so zero executions is a legal, normal outcome |
 | **Post-checked** — repeat while something holds, but at least once | `do-while` | the body runs *before* the first test, so one execution is guaranteed |

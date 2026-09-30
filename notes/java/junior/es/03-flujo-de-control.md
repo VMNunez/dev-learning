@@ -659,14 +659,14 @@ Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo 
 
 ### Elegir entre las cuatro formas de bucle
 
-Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **qué decide cuántas veces se repite el bucle**: un contador, los elementos que recorres o una condición que se comprueba antes o después de cada iteración.
+Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **qué decide cuántas veces se repite el bucle**, es decir, qué hace que el bucle termine. Hay tres respuestas posibles: un contador que llega a un límite, que ya no queden elementos por recorrer, o una condición que deja de cumplirse y que se comprueba antes o después de cada iteración.
 
-| Qué es la repetición                                                           | Forma         | El contrato que hace                                                                                           |
-| ------------------------------------------------------------------------------ | ------------- | -------------------------------------------------------------------------------------------------------------- |
-| **Contada** — un número conocido de pasadas, y necesitas el número de posición | `for` clásico | escribes tú mismo init, condición y paso, así que el conteo es explícito y tuyo si te equivocas                |
-| **Recorrido de elementos** — visitar cada elemento, la posición es irrelevante | _for-each_    | el bucle te entrega cada elemento por turno; no hay índice que escribir, así que no hay off-by-one que cometer |
-| **Comprobada antes** — repite mientras algo se cumpla, posiblemente cero veces | `while`       | la condición se comprueba _antes_ del cuerpo, así que cero ejecuciones es un resultado legal y normal          |
-| **Comprobada después** — repite mientras algo se cumpla, pero al menos una vez | `do-while`    | el cuerpo se ejecuta _antes_ de la primera comprobación, así que una ejecución está garantizada                |
+| Qué es la repetición                                                                                                       | Forma         | El contrato que hace                                                                                                                         |
+| -------------------------------------------------------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Con contador** — sabes cuántas iteraciones hacen falta y necesitas el índice de cada elemento | `for` clásico | escribes tú mismo el valor inicial, la condición y el paso, así que controlas cuántas iteraciones hace el bucle y qué índice usa en cada una |
+| **Recorrido de elementos** — visitar cada elemento, la posición es irrelevante                                             | _for-each_    | el bucle te entrega cada elemento por turno; no hay índice que escribir, así que no hay off-by-one que cometer                               |
+| **Comprobada antes** — repite mientras algo se cumpla, posiblemente cero veces                                             | `while`       | la condición se comprueba _antes_ del cuerpo, así que cero ejecuciones es un resultado legal y normal                                        |
+| **Comprobada después** — repite mientras algo se cumpla, pero al menos una vez                                             | `do-while`    | el cuerpo se ejecuta _antes_ de la primera comprobación, así que una ejecución está garantizada                                              |
 
 Lee primero la columna izquierda: describe la necesidad. La central indica el bucle que encaja y la derecha explica qué garantiza. Tanto el `while` como el `for` clásico comprueban la condición antes de cada pasada, incluida la primera. Elige el `for` cuando conoces y controlas un contador; usa `while` cuando esperas a que cambie una condición durante el trabajo. En el _for-each_, el bucle te entrega los elementos y no te da un índice.
 
