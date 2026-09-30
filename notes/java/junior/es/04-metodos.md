@@ -80,7 +80,7 @@ public int add(int a, int b) {
 }
 ```
 
-Esa inmediatez es una herramienta, no solo una regla: la usas deliberadamente para salir antes de tiempo (ver §"Tipos de retorno"). Y trae consigo una obligación — si declaras un tipo de retorno distinto de `void`, **todos** los caminos de salida del método deben devolver un valor. Te olvidas de uno y el archivo no compila:
+Esa inmediatez es una herramienta, no solo una regla(TODO: NO ME GUSTA NADA "Esa inmediatez es una herramienta, no solo una regla"): la usas deliberadamente para salir antes de tiempo (ver §"Tipos de retorno"). Y trae consigo una obligación — si declaras un tipo de retorno distinto de `void`, **todos** los caminos de salida del método deben devolver un valor. Te olvidas de uno y el archivo no compila:
 
 ```java
 public int getAgeOrZero(Integer age) {
