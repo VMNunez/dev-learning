@@ -105,7 +105,7 @@ public int getAgeOrZero(Integer age) {
 >
 > Now `getAgeOrZero(null)` returns `0` and `getAgeOrZero(30)` returns `30`. The difference from what Java would do on its own is that you wrote this `0` yourself, on purpose, and the method's name already says that is what it returns when there is no age.
 
-More examples:
+Leaving exit paths behind now, here are two more methods to practise reading the four parts of a declaration: a `void` one, which returns nothing, and one that returns a `double`:
 
 ```java
 public void printName(String name) {
