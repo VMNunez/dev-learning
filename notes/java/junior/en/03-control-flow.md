@@ -655,7 +655,7 @@ In the `do-while`, `loadPage(page)` stands for fetching one page of employees an
 
 > **`do-while` ends in a semicolon — and only `do-while` does.** `} while (!batch.isEmpty());` — drop that `;` and you get `error: ';' expected`. The reason is that this `while` is the *tail* of a statement rather than the head of a block, so it terminates like any other statement. No other loop in Java needs a closing semicolon, which is exactly why this one is easy to forget.
 
-`do-while` is genuinely rare — reach for it only when the "run at least once" guarantee is the point (pagination, menu prompts, retry-then-check). In Spring Boot you will mostly use for-each loops and streams; `while` appears in algorithms and when consuming something until it is exhausted, such as reading a file line by line.
+Choose `do-while` when the body must run at least once, for example to download the first page before checking whether there are results left. Use `while` to read a file line by line until the end: if the file is empty, there is no line to read and the body must not run even once.
 
 ### Choosing between the four loop forms
 
