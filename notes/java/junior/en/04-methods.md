@@ -80,7 +80,7 @@ public int add(int a, int b) {
 }
 ```
 
-That immediacy is a tool, not just a rule: you use it deliberately to leave early (see §"Return types"). And it comes with an obligation — if you declare a return type other than `void`, **every** path out of the method must hand a value back. Miss one and the file does not compile:
+The fact that `return` leaves the method immediately can also be put to use: you can write a `return` before the end of the method to finish it early, as soon as you already have the result. You will see it in the section [Return types](#return-types). What you cannot do is leave a path without a `return`: if you declare a return type other than `void`, **every** path out of the method must hand a value back. Miss one and the file does not compile:
 
 ```java
 public int getAgeOrZero(Integer age) {
