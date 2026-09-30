@@ -906,7 +906,7 @@ for (Employee emp : employees) {     // el bucle exterior, que ahora se llama ou
 
 Después, dentro del bucle más interno, `break outer;` sale del bucle que lleva esa etiqueta, y con él también del bucle más interno.
 
-El registro de horas da un caso natural: una rejilla de empleados × días, y quieres detener toda la búsqueda en cuanto encuentres cualquier entrada sin aprobar. `isApproved(emp, day)` es una llamada de ejemplo que devuelve `true` cuando la entrada de ese empleado para ese día está aprobada.
+El registro de horas da un caso real. Quieres comprobar que todas las anotaciones están aprobadas, así que recorres los empleados y, para cada empleado, recorres los días de la semana. En cuanto encuentres una anotación sin aprobar, quieres detener toda la búsqueda, no solo la del empleado actual. `isApproved(emp, day)` es una llamada de ejemplo que devuelve `true` cuando la anotación de ese empleado para ese día está aprobada.
 
 ```java
 outer:

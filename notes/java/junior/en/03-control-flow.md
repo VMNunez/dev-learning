@@ -906,7 +906,7 @@ for (Employee emp : employees) {     // the outer loop, which is now called oute
 
 Then, inside the innermost loop, `break outer;` leaves the loop that carries that label, and with it the innermost loop too.
 
-The timesheet gives a natural case: a grid of employees × days, and you want to stop the whole search the moment you find any unapproved entry. `isApproved(emp, day)` is a placeholder call that answers `true` when that employee's entry for that day is approved.
+The timesheet gives a real case. You want to check that every entry is approved, so you walk through the employees and, for each employee, through the days of the week. As soon as you find an unapproved entry, you want to stop the whole search, not just the current employee's. `isApproved(emp, day)` is an example call that returns `true` when that employee's entry for that day is approved.
 
 ```java
 outer:
