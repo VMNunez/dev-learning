@@ -588,8 +588,8 @@ for (int i = 0; i < week.length; i++) {
 
 This is what happens in the first iteration, with `week[0]` pointing to `"MONDAY"`:
 
-1. `String day = week[0]` copies into `day` the reference stored in `week[0]`. Both variables now point to the same `"MONDAY"`.
-2. `day.toLowerCase()` does not modify `"MONDAY"`, because a `String` cannot be changed once created. It creates a new `String`, `"monday"`, and returns its reference. [02-strings.md](02-strings.md) explains why in its _Immutability_ section.
+1. `String day = week[0]` copies into `day` the reference stored in `week[0]`. Both variables now hold the same reference, which points to the same `"MONDAY"`.
+2. `day.toLowerCase()` does not modify `"MONDAY"`, because a `String` cannot be changed once created. It creates a new `String`, `"monday"`, and returns a new reference, which points to that new object. [02-strings.md](02-strings.md) explains why in its _Immutability_ section.
 3. `day = ...` stores in `day` the reference to `"monday"`. Only `day` changes; `week[0]` still points to `"MONDAY"`.
 4. When the iteration ends, `day` stops existing, and `"monday"` is lost with it.
 
