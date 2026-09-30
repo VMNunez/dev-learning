@@ -517,7 +517,7 @@ El mensaje de error te dice exactamente qué ha pasado: `Index 3` es el valor de
 > 📖 Docs: [Baeldung — The for-each Loop in Java](https://www.baeldung.com/java-for-each-loop) → leer: "Working" y "Pros and Cons" — las desventajas que se listan ahí son los límites que se explican abajo.
 > 📖 Docs: [JLS §14.14.2 — The enhanced for statement](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.14.2) → leer: las dos expansiones, una para un `Iterable` y otra para un array — la fuente del diagrama de reescritura de abajo.
 
-El `for` clásico obliga a escribir y controlar un índice. Si solo quieres recorrer cada elemento, ese índice sobra y puede causar el error off-by-one que acabas de ver. El `for` mejorado, también llamado _for-each_, entrega los elementos directamente, sin un límite numérico que tengas que calcular. Equivale al `for...of` de JavaScript.
+En el `for` clásico estás obligado a escribir tú mismo el índice: su valor inicial (`int i = 0`), la condición que lo detiene (`i < week.length`) y el paso que lo hace avanzar (`i++`). Si solo quieres recorrer cada elemento, ese índice sobra y puede causar el error off-by-one que acabas de ver. El `for` mejorado, también llamado _for-each_, te da cada elemento directamente, uno detrás de otro, sin que tengas que escribir un índice ni calcular dónde acaba el array. Equivale al `for...of` de JavaScript.
 
 Sintaxis: `for (Tipo variable : colección)` — se lee como "para cada elemento de este tipo en esta colección".
 

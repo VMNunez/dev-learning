@@ -517,7 +517,7 @@ The error message tells you exactly what happened: `Index 3` is the value of `i`
 > 📖 Docs: [Baeldung — The for-each Loop in Java](https://www.baeldung.com/java-for-each-loop) → read: "Working" and "Pros and Cons" — the drawbacks listed there are the limits explained below.
 > 📖 Docs: [JLS §14.14.2 — The enhanced for statement](https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.14.2) → read: the two expansions, one for an `Iterable` and one for an array — the source of the rewrite diagram below.
 
-The classic `for` forces you to write and control an index. If you only want to walk through each element, that index is unnecessary and can cause the off-by-one error you just saw. The enhanced `for`, also called _for-each_, hands you the elements directly, with no numeric limit for you to work out. It is equivalent to JavaScript's `for...of`.
+With the classic `for` you are forced to write the index yourself: its starting value (`int i = 0`), the condition that stops it (`i < week.length`) and the step that moves it forward (`i++`). If you only want to walk through each element, that index is unnecessary and can cause the off-by-one error you just saw. The enhanced `for`, also called _for-each_, gives you each element directly, one after another, without you having to write an index or work out where the array ends. It is equivalent to JavaScript's `for...of`.
 
 Syntax: `for (Type variable : collection)` — read as "for each item of this type in this collection".
 
