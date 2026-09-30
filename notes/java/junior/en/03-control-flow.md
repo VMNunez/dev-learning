@@ -685,9 +685,66 @@ You have now seen the four kinds of loop. To choose between them, ask yourself *
 
 Sometimes you do not want to wait for a loop to end by its normal rule. For example, if you are looking for the first employee with overtime, once you find them there is no point checking the rest. For those cases, Java has three statements that cut execution short: `break`, `continue` and `return`. All three "stop" something, which is why they are often confused: the difference is what they stop and which line runs next. This is what each one stops:
 
-- **`break`** exits the innermost loop or classic `switch` that contains it. When it exits a loop, no more iterations of that loop happen.
-- **`continue`** skips the rest of the current iteration and jumps straight to the next one.
-- **`return`** exits the entire **method**. The loop ends as a side effect, and so does everything that was going to run after the loop.
+**`break`** exits the innermost loop or classic `switch` that contains it. When it exits a loop, that loop has no more iterations, and execution continues at the first line after the loop. In this example, the loop checks each day's hours and stops at the first day with overtime:
+
+```java
+int[] weekHours = {8, 6, 10, 7};
+for (int hours : weekHours) {
+    if (hours > 8) {
+        System.out.println("Overtime: " + hours);
+        break;                    // leaves the loop: the 7 is never checked
+    }
+    System.out.println("Normal: " + hours);
+}
+System.out.println("End");
+// Normal: 8
+// Normal: 6
+// Overtime: 10
+// End
+```
+
+The `7` is never checked because `break` leaves the loop at the `10`. `End` is printed, because it is after the loop and `break` only leaves the loop.
+
+**`continue`** skips the rest of the current iteration and goes straight to the next one. In this example, days with `0` hours are not printed:
+
+```java
+int[] weekHours = {8, 0, 10, 6};
+for (int hours : weekHours) {
+    if (hours == 0) {
+        continue;                 // skips the println below and moves to the next day
+    }
+    System.out.println("Worked " + hours + " hours");
+}
+// Worked 8 hours
+// Worked 10 hours
+// Worked 6 hours
+```
+
+With the `0`, `continue` skips the `println` and the loop moves on to the `10`. The loop does not stop: it carries on until the last day.
+
+**`return`** exits the entire **method**. The loop ends as a side effect, and so does everything that was going to run after the loop. This is the same loop as the `break` example, inside a method and with `return` instead of `break`:
+
+```java
+void printUntilOvertime(int[] weekHours) {
+    for (int hours : weekHours) {
+        if (hours > 8) {
+            System.out.println("Overtime: " + hours);
+            return;               // leaves the whole method: "End" is not printed
+        }
+        System.out.println("Normal: " + hours);
+    }
+    System.out.println("End");
+}
+
+printUntilOvertime(new int[] {8, 6, 10, 7});
+// Normal: 8
+// Normal: 6
+// Overtime: 10
+```
+
+Unlike the `break` example, `End` is not printed: `return` leaves the whole method, so the line after the loop never runs.
+
+All three can appear together in the same loop:
 
 ```java
 for (Employee emp : employees) {
@@ -699,7 +756,7 @@ for (Employee emp : employees) {
 }
 ```
 
-Think of `break` as the emergency exit and `continue` as the skip button — and `return`, which comes next, as leaving the building altogether.
+In the example, `continue` skips the inactive employee and moves on to the next one. `break` ends the search as soon as it finds the first case of overtime.
 
 > **`continue` in a `while` is where the infinite loop bites.** `continue` jumps to the *condition check*, skipping everything left in the body — including your `i++` if it sits below the `continue`. In a classic `for` this is harmless, because the step lives in the header and still runs. In a `while` it hangs the program. Put the increment above any `continue`, or use a `for`.
 

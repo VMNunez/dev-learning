@@ -685,9 +685,66 @@ Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **
 
 A veces no quieres esperar a que un bucle termine por su regla normal. Por ejemplo, si buscas el primer empleado con horas extra, cuando lo encuentras ya no tiene sentido revisar al resto. Para esos casos, Java tiene tres sentencias que cortan la ejecución antes de tiempo: `break`, `continue` y `return`. Las tres «paran» algo, y por eso se confunden a menudo: la diferencia está en qué paran y en qué línea se ejecuta después. Esto es lo que para cada una:
 
-- **`break`** sale del bucle más interno o del `switch` clásico que lo contiene. Si sale de un bucle, ese bucle no tiene más iteraciones.
-- **`continue`** salta el resto de la iteración actual y va directamente a la siguiente.
-- **`return`** sale del **método** entero. El bucle termina como efecto secundario, y también todo lo que iba a ejecutarse después del bucle.
+**`break`** sale del bucle más interno o del `switch` clásico que lo contiene. Si sale de un bucle, ese bucle no tiene más iteraciones, y la ejecución sigue en la primera línea que hay después del bucle. En este ejemplo, el bucle revisa las horas de cada día y se detiene en el primer día con horas extra:
+
+```java
+int[] weekHours = {8, 6, 10, 7};
+for (int hours : weekHours) {
+    if (hours > 8) {
+        System.out.println("Overtime: " + hours);
+        break;                    // sale del bucle: el 7 ya no se revisa
+    }
+    System.out.println("Normal: " + hours);
+}
+System.out.println("End");
+// Normal: 8
+// Normal: 6
+// Overtime: 10
+// End
+```
+
+El `7` no se revisa porque `break` sale del bucle en el `10`. `End` sí se imprime, porque está después del bucle y `break` solo sale del bucle.
+
+**`continue`** salta el resto de la iteración actual y va directamente a la siguiente. En este ejemplo, los días con `0` horas no se imprimen:
+
+```java
+int[] weekHours = {8, 0, 10, 6};
+for (int hours : weekHours) {
+    if (hours == 0) {
+        continue;                 // se salta el println de abajo y pasa al día siguiente
+    }
+    System.out.println("Worked " + hours + " hours");
+}
+// Worked 8 hours
+// Worked 10 hours
+// Worked 6 hours
+```
+
+Con el `0`, `continue` se salta el `println` y el bucle pasa al `10`. El bucle no se detiene: sigue hasta el último día.
+
+**`return`** sale del **método** entero. El bucle termina como efecto secundario, y también todo lo que iba a ejecutarse después del bucle. Este es el mismo bucle del ejemplo de `break`, dentro de un método y con `return` en lugar de `break`:
+
+```java
+void printUntilOvertime(int[] weekHours) {
+    for (int hours : weekHours) {
+        if (hours > 8) {
+            System.out.println("Overtime: " + hours);
+            return;               // sale del método entero: "End" no se imprime
+        }
+        System.out.println("Normal: " + hours);
+    }
+    System.out.println("End");
+}
+
+printUntilOvertime(new int[] {8, 6, 10, 7});
+// Normal: 8
+// Normal: 6
+// Overtime: 10
+```
+
+A diferencia del ejemplo de `break`, `End` no se imprime: `return` sale del método entero, así que la línea que hay después del bucle no llega a ejecutarse.
+
+Las tres pueden aparecer juntas en el mismo bucle:
 
 ```java
 for (Employee emp : employees) {
@@ -699,7 +756,7 @@ for (Employee emp : employees) {
 }
 ```
 
-En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `break` termina la búsqueda en cuanto encuentra el primer caso de horas extra. `return`, que verás ahora, terminaría además el método que contiene el bucle.
+En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `break` termina la búsqueda en cuanto encuentra el primer caso de horas extra.
 
 > **`continue` puede impedir que un `while` avance.** Salta a la comprobación de la condición y omite el resto del cuerpo, incluido `i++` si está después. Si la condición depende de `i`, puede repetirse sin fin. En un `for` clásico, el paso de la cabecera sí se ejecuta antes de la siguiente comprobación. En un `while`, coloca el incremento antes de cualquier `continue` que pudiera saltárselo.
 
