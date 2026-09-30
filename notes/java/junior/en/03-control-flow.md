@@ -568,17 +568,12 @@ int b = a;   // b receives a copy of what is in a
 b = 10;      // b changes; a is still 5
 ```
 
-If you then change `day`, you change the copy, and the array position still holds what it had. With a classic `for` you can change it, because you assign the new value directly to a position of the array, with `week[i] = ...`. For example, the first loop below tries to turn the days in `week` into lowercase and fails; the second one succeeds:
+If you then change `day`, you change the copy, and the array position still holds what it had. With a classic `for` you can change it, because you assign the new value directly to a position of the array, with `week[i] = ...`. For example, this loop tries to turn the days in `week` into lowercase and fails:
 
 ```java
 // ❌ MAL — week is unchanged afterwards
 for (String day : week) {
     day = day.toLowerCase();
-}
-
-// ✅ BIEN — write back through the index
-for (int i = 0; i < week.length; i++) {
-    week[i] = week[i].toLowerCase();
 }
 ```
 
@@ -598,7 +593,16 @@ This is what happens in the first iteration, with `week[0]` pointing to `"MONDAY
 3. `day = ...` stores in `day` the reference to `"monday"`. Only `day` changes; `week[0]` still points to `"MONDAY"`.
 4. When the iteration ends, `day` stops existing, and `"monday"` is lost with it.
 
-The same happens with `week[1]` and `week[2]`, so when the loop ends `week` is still `{"MONDAY", "TUESDAY", "WEDNESDAY"}`. The ✅ loop works because it stores the result in the array position itself, with `week[i] = ...`, and not in a copy.
+The same happens with `week[1]` and `week[2]`, so when the loop ends `week` is still `{"MONDAY", "TUESDAY", "WEDNESDAY"}`.
+
+This other loop does succeed, because it stores the result in the array position itself, with `week[i] = ...`, and not in a copy:
+
+```java
+// ✅ BIEN — write back through the index
+for (int i = 0; i < week.length; i++) {
+    week[i] = week[i].toLowerCase();
+}
+```
 
 > **This is the value-versus-reference idea from [01-variables-types.md](01-variables-types.md), in loop form.** What gets copied is the *reference*, not the object. So reassigning `day` is invisible to the array — but calling a mutating method on the object it points at (`emp.setHours(0)`) **is** visible, because both the loop variable and the list element point at the same `Employee`. Reassign = no effect; mutate = effect.
 

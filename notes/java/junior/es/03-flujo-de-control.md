@@ -568,17 +568,12 @@ int b = a;   // b recibe una copia de lo que hay en a
 b = 10;      // cambia b; a sigue valiendo 5
 ```
 
-Si después cambias `day`, cambias la copia, y la posición del array sigue guardando lo que tenía. Con un `for` clásico sí puedes cambiarlo, porque asignas el valor nuevo directamente a una posición del array, con `week[i] = ...`. Por ejemplo, el primer bucle de abajo intenta pasar a minúsculas los días de `week`, y no lo consigue; el segundo sí:
+Si después cambias `day`, cambias la copia, y la posición del array sigue guardando lo que tenía. Con un `for` clásico sí puedes cambiarlo, porque asignas el valor nuevo directamente a una posición del array, con `week[i] = ...`. Por ejemplo, este bucle intenta pasar a minúsculas los días de `week`, y no lo consigue:
 
 ```java
 // ❌ MAL — week queda sin cambios después
 for (String day : week) {
     day = day.toLowerCase();
-}
-
-// ✅ BIEN — escribe de vuelta a través del índice
-for (int i = 0; i < week.length; i++) {
-    week[i] = week[i].toLowerCase();
 }
 ```
 
@@ -598,7 +593,16 @@ Esto es lo que ocurre en la primera iteración, con `week[0]` apuntando a `"MOND
 3. `day = ...` guarda en `day` la referencia a `"monday"`. Solo cambia `day`; `week[0]` sigue apuntando a `"MONDAY"`.
 4. Al terminar la iteración, `day` deja de existir, y `"monday"` se pierde con ella.
 
-Lo mismo pasa con `week[1]` y `week[2]`, así que al acabar el bucle `week` sigue siendo `{"MONDAY", "TUESDAY", "WEDNESDAY"}`. El bucle ✅ funciona porque guarda el resultado en la propia posición del array, con `week[i] = ...`, y no en una copia.
+Lo mismo pasa con `week[1]` y `week[2]`, así que al acabar el bucle `week` sigue siendo `{"MONDAY", "TUESDAY", "WEDNESDAY"}`.
+
+Este otro bucle sí lo consigue, porque guarda el resultado en la propia posición del array, con `week[i] = ...`, y no en una copia:
+
+```java
+// ✅ BIEN — escribe de vuelta a través del índice
+for (int i = 0; i < week.length; i++) {
+    week[i] = week[i].toLowerCase();
+}
+```
 
 > **El bucle copia la referencia, no el objeto.** Es la misma regla de valores y referencias de [01-variables-tipos.md](01-variables-tipos.md). Reasignar `day` no modifica el array. En cambio, `emp.setHours(0)` sí modifica el objeto `Employee`: la variable local y el elemento de la lista siguen apuntando al mismo objeto. Distingue entre cambiar una referencia local y modificar el objeto compartido.
 
