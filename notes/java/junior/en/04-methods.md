@@ -187,7 +187,7 @@ Read that list as three groups, not six lines. `getAge()` and `isActive()` retur
 Because `return` ends the method the moment it runs, you can use it to deal with the special cases first. The method checks at the start whether it is facing one of them and, if it is, returns its result and ends right there. That way, when execution reaches the method's normal work, it will no longer run into special cases, and that code does not have to sit inside an `else`. This way of writing a method is called **early return** (or *guard clause*), and you will read it in almost any real codebase. It shows up above all in the methods of Spring Boot's service classes, which are the classes where an application's business logic lives and which you will study in the Spring Boot notes:
 
 ```java
-// MAL — with every new condition, the normal work ends up nested inside an if or an else, and moves further to the right
+// MAL — with every new condition, the normal work ends up nested inside an if or an else
 public String describe(Employee e) {
     if (e != null) {
         if (e.isActive()) {
@@ -208,7 +208,7 @@ public String describe(Employee e) {
 }
 ```
 
-Both compile and both are correct; the second is the one that survives three more conditions being added. It also satisfies the "every path must return" rule visibly — the last line is unconditional, so there is no branch left that could fall off the end.
+Both compile and both return the same text for any value of `e`, `null` included. The difference shows when the method needs to check one more thing. In the first version, every new check adds another `if` with its `else`, and the code that was already there ends up nested inside it. In the second, one more line at the start is enough, for example `if (e.getAge() < 18) return e.getName() + " (minor)";`, and the rest of the method does not change. The second version also lets you see at a glance that it follows the rule you saw in the section _Method declaration_: if a method declares a return type other than `void`, every one of its exit paths must return a value of that type. Its last `return` sits inside no `if`, so it runs whenever execution reaches that line, and no path can reach the end of the method without having returned a value.
 
 ---
 
