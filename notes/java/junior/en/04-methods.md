@@ -166,7 +166,23 @@ Read that list as three groups, not six lines. `getAge()` and `isActive()` retur
 >
 > The second line tries to store the result of `printName` in `s`, but there is no result to store. What does happen when any method finishes, a `void` one included, is that the next line to run is the one that called it. That is why a `void` method can also finish early with a bare `return;`, the statement you met in [03-control-flow.md](03-control-flow.md): it carries no value, but it ends the method right there. Writing `return something;` in a `void` method, on the other hand, fails with `error: incompatible types: unexpected return value`.
 
-> **Returning an object gives the caller a reference to that same object, so the caller can change it.** If `getName()` returns the `String` field, the caller cannot hurt you: `String` is immutable, so there is nothing to change. But if a method returns its object's own `List` field, the caller can call `.add()` on that list from the outside, and the object's list changes with no method of its class involved. Deciding what a class lets the outside world reach is encapsulation, in [06-oop-classes.md](06-oop-classes.md); it is flagged here so the "returns a collection" line above does not read as harmless.
+> **If a method returns an object, whoever calls it receives a reference to that same object, not a copy, and can change it.** For example, `getName()` is a method that returns the `name` field, of type `String`, and a `String` is an object. Whoever calls `getName()` cannot change that name, because a `String` is immutable: once created, no method can change its text, as you saw in [02-strings.md](02-strings.md). With a list it is the opposite. Here `getMembers()` returns the `members` list that the `team` object itself keeps, and whoever calls the method changes it from the outside:
+>
+> ```java
+> public class Team {
+>     private List<String> members = new ArrayList<>();
+>
+>     public List<String> getMembers() {
+>         return members;   // returns the reference to the list the object itself keeps
+>     }
+> }
+>
+> Team team = new Team();
+> team.getMembers().add("Ana");            // adds "Ana" to the list inside team
+> System.out.println(team.getMembers());   // [Ana]
+> ```
+>
+> `add("Ana")` was not called on a copy, but on the very list inside `team`, so the object's list has changed without any method of `Team` deciding to change it. Controlling which parts of an object can be read or changed from the outside is called **encapsulation**, and it is explained in [06-oop-classes.md](06-oop-classes.md). That is why a method like `findAll()`, which returns a collection, deserves the same attention: if it returns the list its object keeps, whoever calls it can change it.
 
 Because `return` exits the method on the spot, the natural shape for a method with a special case is to deal with it first and leave, instead of wrapping the real work in an `else`. This is the **early return** (or *guard clause*) pattern, and it is what you will read in almost every service method in a real codebase:
 

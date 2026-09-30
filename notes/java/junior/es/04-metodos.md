@@ -166,7 +166,23 @@ Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` 
 >
 > La segunda línea intenta guardar en `s` el resultado de `printName`, pero no hay ningún resultado que guardar. Lo que sí pasa al terminar cualquier método, también uno `void`, es que la siguiente línea en ejecutarse es la que lo llamó. Por eso un método `void` también puede terminar antes de tiempo con un `return;` a secas, la sentencia que conociste en [03-flujo-de-control.md](03-flujo-de-control.md): no lleva ningún valor, pero termina el método en ese momento. En cambio, escribir `return something;` en un método `void` falla con `error: incompatible types: unexpected return value`.
 
-> **Devolver un objeto entrega a quien llama una referencia a ese mismo objeto, así que quien llama puede modificarlo.(TODO:MEJORA EL TITULO)** Si `getName()` (TODO: ES UN METODO QUE )devuelve el campo `String`(TODO: QUE ES UN OBJETO), quien llama (TODO: AL METODO) no puede hacerte daño: `String` es inmutable, así que no hay nada que cambiar. Pero si un método devuelve el campo `List` de su propio objeto(TODO: NO HE ENTENDIDO ESTA FRASE), quien llama(TODO: AL METODO) puede llamar a `.add()` sobre esa lista desde fuera, y la lista del objeto cambia sin que intervenga ningún método de su clase. Decidir a qué deja llegar una clase al mundo exterior es encapsulación(TODO: MEJORA LA FRASE), y se trata en [06-poo-clases.md](06-poo-clases.md); se señala aquí para que la línea "devuelve una colección" de arriba no se lea como inofensiva.(TODO: TAMPOCO ME GUSTA "se señala aquí para que la línea "devuelve una colección" de arriba no se lea como inofensiva.")
+> **Si un método devuelve un objeto, quien lo llama recibe una referencia a ese mismo objeto, no una copia, y puede modificarlo.** Por ejemplo, `getName()` es un método que devuelve el campo `name`, de tipo `String`, y un `String` es un objeto. Quien llama a `getName()` no puede cambiar ese nombre, porque un `String` es inmutable: una vez creado, ningún método puede modificar su texto, como viste en [02-cadenas-de-texto.md](02-cadenas-de-texto.md). Con una lista pasa lo contrario. Aquí `getMembers()` devuelve la lista `members` que guarda el propio objeto `team`, y quien llama al método la modifica desde fuera:
+>
+> ```java
+> public class Team {
+>     private List<String> members = new ArrayList<>();
+>
+>     public List<String> getMembers() {
+>         return members;   // devuelve la referencia a la lista que guarda el propio objeto
+>     }
+> }
+>
+> Team team = new Team();
+> team.getMembers().add("Ana");            // añade "Ana" a la lista que está dentro de team
+> System.out.println(team.getMembers());   // [Ana]
+> ```
+>
+> `add("Ana")` no se ha llamado sobre una copia, sino sobre la misma lista que hay dentro de `team`, así que la lista del objeto ha cambiado sin que ningún método de `Team` haya decidido cambiarla. Controlar qué partes de un objeto se pueden leer o modificar desde fuera se llama **encapsulación**, y se explica en [06-poo-clases.md](06-poo-clases.md). Por eso un método como `findAll()`, que devuelve una colección, merece la misma atención: si devuelve la lista que guarda su objeto, quien lo llama puede modificarla.
 
 Como `return` sale del método en el acto, la forma natural para un método con un caso especial es resolverlo primero y salir, en lugar de envolver el trabajo real en un `else`. Este es el patrón de **retorno anticipado** (_early return_, o _guard clause_), y es lo que leerás en casi todos los métodos de servicio de un código real:
 
