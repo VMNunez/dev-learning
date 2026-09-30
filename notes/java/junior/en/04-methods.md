@@ -1,17 +1,41 @@
+## Index of this note
+
+- [Methods](#methods)
+- [Method declaration](#method-declaration)
+- [Return types](#return-types)
+- [void vs Void](#void-vs-void)
+- [Method overloading](#method-overloading)
+  - [Which overload wins when several would fit](#which-overload-wins-when-several-would-fit)
+- [Varargs — variable number of arguments](#varargs--variable-number-of-arguments)
+  - [The same mechanism in the standard library](#the-same-mechanism-in-the-standard-library)
+- [Calling methods](#calling-methods)
+- [Packages and imports](#packages-and-imports)
+  - [The package name and the folder path match, one folder per dot](#the-package-name-and-the-folder-path-match-one-folder-per-dot)
+  - [Imports — using the simple name, resolved at compile time](#imports--using-the-simple-name-resolved-at-compile-time)
+  - [When two classes share a simple name](#when-two-classes-share-a-simple-name)
+- [`null`, `NullPointerException`, and where to reject a missing argument](#null-nullpointerexception-and-where-to-reject-a-missing-argument)
+  - [The real problem: the crash names the wrong line](#the-real-problem-the-crash-names-the-wrong-line)
+  - [The fix: reject the missing value at the boundary that requires it](#the-fix-reject-the-missing-value-at-the-boundary-that-requires-it)
+  - [Three rules for a `null` at a method boundary](#three-rules-for-a-null-at-a-method-boundary)
+- [Naming conventions](#naming-conventions)
+- [What this unlocks](#what-this-unlocks)
+
 # Methods
 
 > 📖 [Baeldung — Guide to Methods in Java](https://www.baeldung.com/java-methods) → read the full article
 > 📖 [Oracle Docs — Defining methods](https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html) (official reference)
 
+[03-control-flow.md](03-control-flow.md) ended on calls you could read but had not written yourself: `loadPage(page)`, `isApproved(emp, day)`, `firstOvertimeName(employees)`. Each of them is a **method**, and so are the `main` that every runnable example sits inside and the `System.out.println` you have been calling since [00-intro-java.md](00-intro-java.md). This chapter looks at that building block directly: how you write one, and the contract a caller has to satisfy before a call to it compiles at all.
+
+The chapter first takes a declaration apart and shows which of its parts the compiler checks at every call. Next it looks at what a method can hand back, including the `void` method that hands back no value. After that come the two ways one name can accept different arguments — overloading and varargs — and the rule the compiler follows to choose between them. Then you call methods on an object and on a class, see how packages and imports decide the name a class is reached by, and finish with the one argument the compiler cannot check for you: a `null` where a real value was required.
+
 ## Method declaration
 
 > Docs: https://www.baeldung.com/java-method-signature-return-type → read the whole page: it is short and settles exactly which parts of a declaration make up the signature
 
-In [03-control-flow.md](03-control-flow.md) every loop and `if` you wrote lived inside a `main` method — that `main` was itself a method, and so were the `System.out.println` calls it invoked. This note steps back and looks at that building block directly: what a method is made of, and how you write your own.
-
 > **Where do methods live?** Always inside a class — they cannot exist outside a class in Java. We cover them here before classes because you have already seen them in the control flow examples. The full structure of a class (fields, constructors, encapsulation) is covered in [06-oop-classes.md](06-oop-classes.md).
 
-A method is a named block of code that performs one specific task. You define it once and call it from anywhere in the program.
+A method is a named block of code that performs one specific task. You define it once and call it wherever that task has to be done.
 
 ```java
 public int add(int a, int b) {
@@ -28,9 +52,9 @@ accessModifier returnType methodName(parameters) {
 }
 ```
 
-Two words for the same slot, and Java people use them precisely, so learn the pair now. A **parameter** is the variable written in the declaration — `int a` above; it exists only inside the method. An **argument** is the actual value you hand over at the call site — the `3` in `add(3, 4)`. Parameters are the empty boxes; arguments are what you drop into them. Both words appear later in this file, and the compiler uses them in its error messages too.
+Two words for the same slot, and Java people use them precisely, so learn the pair now. A **parameter** is the variable written in the declaration — `int a` above; it exists only inside the method. An **argument** is the actual value you hand over at the call site — the `3` in `add(3, 4)`. When the call runs, each argument becomes the value of its parameter, in order: in `add(3, 4)`, `a` holds `3` and `b` holds `4`. Both words appear later in this file, and the compiler uses them in its error messages too.
 
-Those three parts are not decoration: together they are the **contract** the caller has to satisfy, and the compiler checks it call by call before your program ever runs. The parameter list fixes how many arguments you must supply and of what type; the name plus that list is what Java looks the method up by; and the return type decides what the call site is allowed to do with the result. Break any of the three and the file does not compile:
+Three of those four parts — the name, the parameter list and the return type — are not decoration: together they are the **contract** the caller has to satisfy, and the compiler checks it call by call before your program ever runs. The parameter list fixes how many arguments you must supply and of what type; the name plus that list is what Java looks the method up by; and the return type decides what the call site is allowed to do with the result. Break any of the three and the file does not compile (the messages name `Calculator` because that is the class these `add` examples live in, shown whole under §"Calling methods"):
 
 ```java
 public int add(int a, int b) { return a + b; }
@@ -100,7 +124,7 @@ public static double calculateTax(double price, double rate) {
 
 > Docs: https://www.baeldung.com/java-missing-return-statement → read the whole page: every example is a variant of the "not every path returns" error, which is the rule this section is built on
 
-The return type declares what kind of value the method hands back when it finishes. If a method computes nothing to give back — it just does something — its return type is `void`.
+The declaration section showed the return type as one third of the call contract. This section looks at what kinds of return type there are, and at what each one gives the line that made the call. The return type declares what kind of value the method hands back when it finishes. If a method computes nothing to give back — it just does something — its return type is `void`.
 
 ```java
 public String getName() { return this.name; }   // returns a String
@@ -111,11 +135,13 @@ public Employee findById(int id) { ... }         // returns an object
 public List<Employee> findAll() { ... }          // returns a collection
 ```
 
-Read that list as three groups, not six lines. The first three return **primitives** — a raw value gets copied back to the caller. The next two return **objects** (`Employee`, `List<Employee>`) — and what travels back is not the object but a *reference* to it, the same value-vs-reference split you met in [01-variables-types.md](01-variables-types.md): the caller ends up holding an arrow that points at the very same object the method was working on, never a copy of it. `void` returns nothing at all, which is a category of its own.
+`this.name` reads the `name` field of the object the method was called on: `this` is Java's word for that object, and it is taught with fields in [06-oop-classes.md](06-oop-classes.md). The `{ ... }` bodies are left out because only the return types matter here.
+
+Read that list as three groups, not six lines. `getAge()` and `isActive()` return **primitives**, so the caller receives the value itself, a number or a `boolean`. `getName()`, `findById()` and `findAll()` return **objects** (`String`, `Employee`, `List<Employee>`), so the caller receives a *reference* — the memory address of an object — which is the value-versus-reference split you met in [01-variables-types.md](01-variables-types.md). Exactly what is copied when a value or a reference crosses the call, and where the object itself lives meanwhile, is [05-memory-model.md](05-memory-model.md)'s subject. `void` returns nothing at all, which is a category of its own.
 
 > **What a `void` method actually gives back is control, and nothing else.** It is worth being precise, because "returns nothing" sounds like it returns some empty thing. There is no value at all — not `null`, not an empty object — so the call is a *statement*, never an expression you can read a value out of. `printName("Ana");` is a complete line; `String s = printName("Ana");` does not compile, and the compiler says `error: incompatible types: void cannot be converted to String`. What does come back is the one thing every call returns: the flow of execution, which resumes on the line after the call. That is also why a `void` method may still end early with a bare `return;` — the statement you met in [03-control-flow.md](03-control-flow.md) — since there is a jump to perform even when there is no value to carry: `return;` hands control back immediately, and writing `return something;` there fails with `error: incompatible types: unexpected return value`.
 
-> **Returning an object hands out a live arrow, and that has a consequence.** If `getName()` returns the `String` field, the caller cannot hurt you — `String` is immutable, so there is nothing to change. But if a method returns the internal `List` field, the caller can now call `.add()` on your object's own list from the outside, behind your back. The fix (a *defensive copy* — returning `new ArrayList<>(this.items)` instead) belongs with encapsulation and is covered in [06-oop-classes.md](06-oop-classes.md); flag it now so the "returns a collection" line above doesn't read as harmless.
+> **Returning an object gives the caller a reference to that same object, so the caller can change it.** If `getName()` returns the `String` field, the caller cannot hurt you: `String` is immutable, so there is nothing to change. But if a method returns its object's own `List` field, the caller can call `.add()` on that list from the outside, and the object's list changes with no method of its class involved. Deciding what a class lets the outside world reach is encapsulation, in [06-oop-classes.md](06-oop-classes.md); it is flagged here so the "returns a collection" line above does not read as harmless.
 
 Because `return` exits the method on the spot, the natural shape for a method with a special case is to deal with it first and leave, instead of wrapping the real work in an `else`. This is the **early return** (or *guard clause*) pattern, and it is what you will read in almost every service method in a real codebase:
 
@@ -155,14 +181,14 @@ Both compile and both are correct; the second is the one that survives three mor
 public void delete(Long id) { ... }  // returns nothing
 ```
 
-`Void` (uppercase) is a **class** — technically the wrapper class for `void`, just like `Integer` is the wrapper for `int`. Unlike `Integer`, it holds no useful value; it exists only so that generics can write `<Void>` when there is nothing to return. Why is it needed at all? Because in some places Java forces you to put a type between `<>` — for example `ResponseEntity<T>` or `Callable<T>` — and Java only accepts a class inside `<>`, never the `void` keyword:
+`Void` (uppercase) is a **class**. Its own documentation calls it an "uninstantiable placeholder class": it sits beside `void` the way `Integer` sits beside `int`, but no `Void` object can ever be created, so the only value a `Void`-typed variable or return can hold is `null`. It exists only so that a type can be written between `<>` when there is nothing to return. Why is it needed at all? Because in some places Java forces you to put a type between `<>`, and Java only accepts a class there, never a primitive and never the `void` keyword. It is the same rule that made [01-variables-types.md](01-variables-types.md) write `List<Integer>` and never `List<int>`; what the `<>` means is [09-generics.md](09-generics.md)'s subject:
 
 ```java
 ResponseEntity<Void>   // ✓ — Void is a class
 ResponseEntity<void>   // ✗ — void is a keyword, not valid inside < >
 ```
 
-> **Clearing up the confusion:** use `void` (lowercase) as the return type of a method. Use `Void` (uppercase) only when a generic forces you to put a type between the **angle brackets** — the `<>`, which most developers also call *diamonds* — and there is nothing real to return. The distinction has nothing to do with null — both mean "no value". The difference is purely context: `void` is the keyword for return types; `Void` is the class for when a generic demands a type.
+> **Clearing up the confusion:** use `void` (lowercase) as the return type of a method. Use `Void` (uppercase) only when a generic forces you to put a type between the **angle brackets** — the `<>` — and there is nothing real to return. The two differ in what the method must do at its end. A `void` method returns no value at all. A method declared to return `Void` still has to return something, like any method with a class as its return type, and `null` is the only value that type has, so it ends with `return null;`.
 
 > **Preview — Spring Boot:** The example below uses `ResponseEntity`, a Spring Boot class you haven't studied yet. Read it to see where `void` vs `Void` matters in practice — you'll implement this yourself in the Spring Boot notes.
 
@@ -185,7 +211,7 @@ public ResponseEntity<Void> delete(@PathVariable Long id){
 
 > Docs: https://www.baeldung.com/java-method-overload-override → read: "Method Overloading", especially "Type Promotion" and "Static Binding"
 
-Same method name, different parameters. Java picks the right version based on the arguments you pass:
+Some tasks come in several shapes: adding two `int`s, two `double`s, three `int`s. Without a way to share one name you would invent `addInts`, `addDoubles` and `addThreeInts`, and every caller would have to remember which is which. Java lets all of them be called `add`, because what identifies a method is its signature — the name *plus* the parameter types — not the name alone. That is **overloading**: several methods with the same name and different parameter lists. You have already called one overloaded method, `String.valueOf` in [02-strings.md](02-strings.md), which has one version per type it converts. Java picks the right version from the arguments you pass:
 
 ```java
 public int add(int a, int b) { return a + b; }
@@ -207,28 +233,33 @@ public double add(int a, int b) { return a + b; }   // ❌ same name, same param
 
 ### Which overload wins when several would fit
 
+> 📖 Docs: [JLS §15.12.2 — Compile-Time Step 2: Determine Method Signature](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.2) → read: the opening paragraphs, down to "The third phase allows overloading to be combined with variable arity methods" — the official statement of the three passes and of why they run in that order.
+
 The examples above matched exactly, so there was nothing to decide. The interesting case is `add(1, 2)` when no overload takes `(int, int)` — several could still accept the call, since an `int` can become a `long`, or an `Integer`, or an element of an `int...`. Java does not pick "the closest one" by feel; it runs three passes in a fixed order and stops at the first that produces a match:
 
 | Pass | What Java tries | Example that wins here |
 |---|---|---|
-| 1 | Exact match, or **widening** a primitive to a larger one | `add(long, long)` |
+| 1 | Exact match, or **widening** — a primitive to a larger one, or a reference to a more general type such as `Object` | `add(long, long)` |
 | 2 | **Boxing / unboxing** — wrapping the primitive in its wrapper class | `add(Integer, Integer)` |
 | 3 | **Varargs** — collecting the arguments into an array | `add(int...)` |
 
-Read the table top-down as a priority list, not as three independent options: if pass 1 finds a candidate, passes 2 and 3 never run, even when a "more obvious-looking" overload lives down there. So with `add(long, long)` and `add(Integer, Integer)` both declared, `add(1, 2)` calls the **`long`** version — widening beats boxing. The ordering is not arbitrary: widening a primitive is free at runtime, boxing allocates an object, and varargs allocates an array, so Java prefers the cheapest conversion it can get away with. The whole decision happens at **compile time**, purely from the declared types at the call site.
+Read the table top-down as a priority list, not as three independent options: if pass 1 finds a candidate, passes 2 and 3 never run, even when a "more obvious-looking" overload lives down there. So with `add(long, long)` and `add(Integer, Integer)` both declared, `add(1, 2)` calls the **`long`** version — widening beats boxing. The ordering is not arbitrary, and it is not about speed: boxing and varargs only arrived in Java 5, so the language placed them in later passes, which guarantees that every call that already compiled before Java 5 still selects the same method and never becomes ambiguous. The whole decision happens at **compile time**, purely from the declared types at the call site.
 
-The failure mode is two overloads that are equally good in the same pass, with neither reachable without a conversion the other also needs:
+One pass can also find several candidates at once. With `add(long, long)` and `add(double, double)` both declared, `add(1, 2)` fits both in pass 1, because an `int` widens to either. Java then keeps the **most specific** one: the candidate whose parameter types could all be passed on to the other candidate. A `long` can be passed where a `double` is expected, but not the other way round, so `add(long, long)` is more specific and wins. It is the same rule that made `String.valueOf(null)` in [02-strings.md](02-strings.md) pick `valueOf(char[])` over `valueOf(Object)`: every `char[]` is an `Object`, but not every `Object` is a `char[]`.
+
+The failure mode is two candidates in the same pass where neither is more specific than the other:
 
 ```java
 static void add(int a, long b) { }
 static void add(long a, int b) { }
 
-add(1, 2);   // ❌ neither is preferable — each needs one widening
+add(1, 2);   // ❌ both fit in pass 1, and neither is more specific: (int, long) cannot
+             //    be passed to (long, int), and (long, int) cannot be passed to (int, long)
 // error: reference to add is ambiguous
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```
 
-> **How to unstick an ambiguous call.** Do not delete an overload — make the call site say which one you mean by giving the arguments their exact declared types: `add(1, 2L)` picks `add(int, long)` with no conversion needed on the second argument, so pass 1 finds a single winner. The general lesson is that overload resolution reads *declared types*, never values, which is also why `add(1, 2)` and `add(x, y)` can resolve differently when `x` and `y` are declared `long`.
+> **How to unstick an ambiguous call.** Do not delete an overload — make the call site say which one you mean by giving the arguments their exact declared types: `add(1, 2L)` picks `add(int, long)` with no conversion needed on the second argument, so pass 1 finds a single winner. The general lesson is that overload resolution reads *declared types*, never values. With `int x = 1; long y = 2;`, the call `add(x, y)` passes the same numbers as the ambiguous `add(1, 2)` and still compiles, choosing `add(int, long)`, because the second argument is now declared `long`.
 
 > **Overloading vs overriding — don't confuse them.** They sound alike and both involve "two methods with the same name", but they are opposite ideas. **Overloading** (this section) is *one* class defining several versions of a method that differ in their parameters — the choice is made at compile time by the arguments you pass. **Overriding** is a *subclass* replacing a method it inherited from its parent, keeping the *exact same* parameters, to change the behaviour — the choice is made at run time by the object's real type. Rule of thumb: same name + different parameters + same class = overloading; same name + same parameters + subclass = overriding. Overriding is covered in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
 
@@ -238,11 +269,11 @@ add(1, 2);   // ❌ neither is preferable — each needs one widening
 
 > Docs: https://www.baeldung.com/java-varargs → read: "Use of Varargs" and "Rules"
 
-Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and Java collects them into an array internally. You will see this in utilities like `String.format()` — the same pattern as the `.formatted()` you saw in [01-variables-types.md](01-variables-types.md) — and in logging frameworks, where `log.info("User {} not found", id)` takes the message plus a varargs list of values to slot into each `{}`.
+Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and Java collects them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, and those three dots are varargs. You will also see it in `String.format()`, and in logging frameworks, where `log.info(...)` takes the message plus, once you pass more than two values, a varargs list of values to slot into each `{}`.
 
 > **Preview — logging:** `log` is not a Java language feature. It is an SLF4J logger, the logging library Spring Boot ships with, and the `{}` placeholder style is that library's own. It appears here only because it is the varargs API you will meet most often in a real backend — you will set it up properly in the Spring Boot notes.
 
-The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument.
+The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument. The same reasoning allows only one varargs parameter per method. Put it anywhere else and the declaration itself is rejected, before any call exists: `void f(int... a, int b)` fails with `error: varargs parameter must be the last parameter`.
 
 ```java
 public int sum(int... numbers) {
@@ -276,16 +307,16 @@ sum();                       // 0 — numbers.length == 0
 
 ### The same mechanism in the standard library
 
-> 📖 Docs: [Oracle Docs — Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Arbitrary Number of Arguments" — three paragraphs, and the `printf` signature at the end is the one you already use every day.
+> 📖 Docs: [Oracle Docs — Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Arbitrary Number of Arguments" — three paragraphs, ending on the `printf` signature, a third method built on the same `Object...` parameter.
 
-You have been calling varargs methods since your first `System.out.printf`, so it is worth opening the two you will meet most and seeing the `...` in their real declarations. Both are one mechanism, not two conventions that happen to look alike:
+`.formatted()` is not the only varargs method you will call constantly, so it is worth opening the two you will meet most and seeing the `...` in their real declarations. Both are one mechanism, not two conventions that happen to look alike:
 
 ```java
 public static String format(String format, Object... args)   // java.lang.String
 static <E> List<E> of(E... elements)                          // java.util.List
 ```
 
-`String.format("Hi %s, you have %d messages", name, count)` compiles into exactly one call with two arguments: the format `String`, and an `Object[]` of length 2 that Java built at the call site. `List.of("a", "b", "c")` is the same move — the three strings are boxed into an array and handed over as one parameter — which is the whole reason both accept "any number" without declaring hundreds of versions.
+`String.format("Hi %s, you have %d messages", name, count)` compiles into exactly one call with two arguments: the format `String`, and an `Object[]` of length 2 that Java built at the call site. `List.of` given eleven or more elements is the same move — the elements are collected into an array and handed over as one parameter — which is the whole reason both accept "any number" without declaring hundreds of versions.
 
 > **`List` and the `<E>` are not this chapter's, and you can read the line without them.** `List.of` appears here purely as a varargs declaration you will recognise. What a `List` actually is arrives in [10-collections.md](10-collections.md), and the `<E>` — a *type parameter*, the placeholder that lets one declaration work for `String`, `Integer` or anything else — is [09-generics.md](09-generics.md)'s. For now read `static <E> List<E> of(E... elements)` as "hand it any number of items of one type and get a list of them back".
 
@@ -293,13 +324,13 @@ There is one detail in `List.of` that ties this section back to the last one, an
 
 Because of pass 3. Overload resolution only reaches varargs after passes 1 and 2 have failed, so `List.of("a", "b")` matches the fixed two-parameter `of(E e1, E e2)` in pass 1 and stops there — no array is ever allocated. Only `List.of` with eleven or more elements falls through to the varargs version and pays for the array. The eleven extra declarations exist to make the common short calls free, and the resolution order from the previous section is what makes that optimisation invisible to you at the call site.
 
-> **This is why `sum(scores)` and `sum(1, 2, 3)` can both compile.** The array-passing shortcut earlier in this section is the same fact seen from the other end: pass 3 does not *convert* your arguments into an array so much as *accept* one, and if you already hold an `int[]` there is nothing left to build. One mechanism, two call shapes.
+> **This is why `sum(scores)` and `sum(1, 2, 3)` can both compile.** The array-passing shortcut earlier in this section is the same fact seen from the other end: passes 1 and 2 read `int... numbers` as the plain `int[]` parameter it is, so `sum(scores)` already matches there, and only a call whose array still has to be built falls through to pass 3. One mechanism, two call shapes.
 
 ---
 
 ## Calling methods
 
-> 📖 Docs: [Oracle Docs — Defining Methods](https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html) → read: "Naming a Method" and the two paragraphs above it on calling — then jump to [Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Parameter Names", which is the shadowing rule behind every `this.name = name;` you are about to see.
+> 📖 Docs: [Baeldung — Methods in Java](https://www.baeldung.com/java-methods) → read: "Calling a Method" — then jump to [Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Parameter Names", which is the shadowing rule behind every `this.name = name;` you are about to see.
 
 Before looking at how a method is called, let's put everything so far into one complete example — first the class with its methods, then how we use them from the outside:
 
@@ -333,7 +364,7 @@ public class Calculator {
 }
 ```
 
-Each method is now the right kind for what it does, and that is the point of the example: `add()` touches `this.name` and `this.history`, so it *must* be called on a particular calculator; `square()` touches nothing but its argument, so it is declared `static` and needs no object at all. What `static` actually means, and why that split is a design decision rather than a matter of taste, is settled in [06-oop-classes.md](06-oop-classes.md) — here it is only marking which of the two call shapes below each method takes.
+Each method is now the right kind for what it does, and that is the point of the example: `add()` touches `this.name` and `this.history`, so it *must* be called on a particular calculator; `square()` touches nothing but its argument, so it is declared `static` and needs no object at all. What `static` actually means, and why that split is a design decision rather than a matter of taste, is settled in [06-oop-classes.md](06-oop-classes.md) — here it is only marking which of the two call shapes below each method takes. In the constructor, `this.name = name;` copies the parameter `name` into the field of the same name: `this.name` is the field of the object being built, and the bare `name` is the parameter, which inside that constructor hides the field.
 
 > `List<String>` and `ArrayList` are Java's growable list — covered in full in [10-collections.md](10-collections.md). For now read it as "an array that can grow", and `history.add(...)` as "append one item to the end".
 
@@ -355,18 +386,21 @@ String result2 = "  hello  "
     .replace("HELLO", "HI");           // "HI"
 ```
 
-That last one is **method chaining**, and it works for a specific reason rather than by syntax magic. Each of those `String` methods returns a *new* `String` — `String` is immutable, so `trim()` cannot edit `"  hello  "` in place and instead produces `"hello"` as a separate object (the mechanism is worked through in [01-variables-types.md](01-variables-types.md): every "modification" of a String allocates a new one). Because the expression `"  hello  ".trim()` therefore *is* a `String`, you can put `.toUpperCase()` straight after it, and so on down the chain. Chaining is nothing more than calling a method on the value the previous call returned; it reads as one operation but is four calls creating four objects. Any method that returns an object can be chained the same way — this is exactly how `ResponseEntity.noContent().build()` above worked.
+That last one is **method chaining**, which [02-strings.md](02-strings.md) already used on `String`: a call can be chained onto another when the first one returns an object, and the chain stops at a method that returns an `int` or a `boolean`. Seen as a method rule, it is the return type at work. `"  hello  ".trim()` is declared to return `String`, so the whole expression *is* a `String` and `.toUpperCase()` can be called on it, and so on down the chain. It reads as one operation but is three calls, each creating a new `String`, because a `String` is never modified in place. The rule is not special to `String`: any method whose return type is an object can be chained the same way, and that is how `ResponseEntity.noContent().build()` in §"void vs Void" works.
 
 ---
 
 ## Packages and imports
 
-> 📖 Docs: [Oracle Docs — Creating and Using Packages](https://docs.oracle.com/javase/tutorial/java/package/packages.html) → read: "Creating a Package" — what a package is and why the reversed-domain naming exists.
+> 📖 Docs: [Oracle Docs — Creating and Using Packages](https://docs.oracle.com/javase/tutorial/java/package/packages.html) → read: the opening definition — what a package is and the three jobs it does.
+> 📖 Docs: [Oracle Docs — Naming a Package](https://docs.oracle.com/javase/tutorial/java/package/namingpkgs.html) → read: "Naming Conventions" — why package names start from a reversed internet domain.
 > 📖 Docs: [Oracle Docs — Using Package Members](https://docs.oracle.com/javase/tutorial/java/package/usepkgs.html) → read: "Referring to a Package Member by Its Qualified Name", "Importing a Package Member" and "Name Ambiguities" — the three cases below, in the compiler's own wording.
 
-A method has a name. So does the class holding it. Once a project grows past a handful of files those names start colliding: your `User` and the `User` some library ships are both called `User`, and Java has to be able to tell one from the other or it cannot compile a single call. That is the problem **packages** solve, and it is why every real Java file opens with a line you have been ignoring so far.
+A method has a name. So does the class holding it. Once a project grows past a handful of files those names start colliding: your `User` and the `User` some library ships are both called `User`, and Java has to be able to tell one from the other or it cannot compile a single call. That is the problem **packages** solve, and it is why every real Java file opens with a `package` line.
 
-A package is a **namespace** — a prefix that turns a short, reusable name into a globally unique one. You declare it on the first line of the file:
+> **You have met the `package` line once already.** [00-intro-java.md](00-intro-java.md) took it apart while reading the smallest runnable program: a package is the folder a class belongs to, written with dots instead of slashes; it works as the class's surname, so two classes with the same short name can coexist; and that makes it a **namespace**, a scope in which each name identifies exactly one thing. This section adds what that first look left out: the fully qualified name you can write in code, the `import` that saves you from writing it, the classes that need no import at all, and what the compiler does when two classes share a simple name.
+
+As a reminder of the shape, the package is declared on the first line of the file:
 
 ```java
 package com.victor.timetrack.service;
@@ -380,9 +414,9 @@ That class's real, unambiguous name is now `com.victor.timetrack.service.Project
 
 > **The `com.victor` prefix is an internet domain written backwards, and that convention has one job.** Packages are only useful if two organisations never accidentally choose the same one, so the convention is to start from a domain you control and reverse it: `victor.com` becomes `com.victor`. Nothing enforces it — the compiler accepts `package banana;` without complaint — but every library you will ever add follows it, which is why you read `org.springframework.stereotype`, `com.fasterxml.jackson.databind` and `java.util`. The reversal puts the most general part first so the whole tree sorts sensibly.
 
-### The package line and the folder structure are one fact written twice
+### The package name and the folder path match, one folder per dot
 
-The package declaration is not free-form: the folders on disk must mirror it, one folder per dot. This is what the TimeTrack backend actually looks like, and you can read each package name straight off its path:
+[00-intro-java.md](00-intro-java.md) stated the rule that the folder path and the package name always match. This is what it looks like across a whole project, the TimeTrack backend, where you can read each package name straight off its path:
 
 ```
 src/main/java/
@@ -400,22 +434,28 @@ src/main/java/
               └── config/, security/, util/   → same rule, one package each
 ```
 
-**File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/ProjectService.java`
+**File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/` (the tree above, trimmed to its folders)
 
 Read the path and the declaration together: everything after `src/main/java/` **is** the package name, with `/` swapped for `.`. Note also that `dto.request` is not a "sub-package" of `dto` in any technical sense — Java has no nesting relationship between packages, and `com.victor.timetrack.dto.request` gets no special access to `com.victor.timetrack.dto`. The dots only look like a hierarchy; to the compiler each package is a flat, independent name that happens to share a prefix with its neighbours.
 
-That path-equals-name rule is the mechanism behind an error you will hit the first time you drag a file between folders in IntelliJ and fix the `package` line by hand:
+You will break that match the first time you move a file between folders in IntelliJ's file explorer instead of through a refactoring. Say `ProjectService.java` is dragged from `controller/` to `service/`, and its first line still says:
 
 ```java
 // the file now sits in .../timetrack/service/ but its first line still says:
 package com.victor.timetrack.controller;
 ```
 
-Two different tools complain, at two different moments, and knowing which is which saves you the hunt. IntelliJ flags the file itself straight away, with `Package name 'com.victor.timetrack.controller' does not correspond to the file path 'com.victor.timetrack.service'`. The compiler says nothing about that line — it happens on the *other* side, in every file that tried to use the class under the name its folder implies: `error: cannot find symbol` on the type, or `error: package com.victor.timetrack.service does not exist` on the import. The class did not disappear; it is simply not at the address everyone is looking it up by.
+Two tools react, at two different moments, and knowing which is which saves you the hunt.
 
-> **Why does Java care where the file physically sits?** Because that is how it finds classes. When your code names `com.victor.timetrack.model.Project`, the compiler does not scan every file looking for a matching class — it converts the name into a path, `com/victor/timetrack/model/Project.class`, and looks exactly there. The lookup is a direct address translation, which is why it stays instant in a project with ten thousand classes, and why a file in the wrong folder is not "hard to find" but simply invisible. IntelliJ's **Refactor → Move** (`F6`) exists precisely to move the file and rewrite the line in one step; moving it in the file explorer and patching the line afterwards is how the mismatch happens in the first place.
+1. **IntelliJ flags the file straight away**, with `Package name 'com.victor.timetrack.controller' does not correspond to the file path 'com.victor.timetrack.service'`.
+2. **The build still succeeds at this point.** Maven hands `javac` every `.java` file under `src/main/java/` by its path, and `javac` takes a class's package from the `package` line, not from the folder. So the class is still `com.victor.timetrack.controller.ProjectService`, and every file that imports it under that name keeps compiling.
+3. **The compiler complains once you correct the line by hand** to `package com.victor.timetrack.service;`. Now every file that still imports the old name fails on its import line with `error: cannot find symbol`, and the message's `location: package com.victor.timetrack.controller` shows where it looked. The class did not disappear; it is no longer at the name those files look it up by.
 
-### Imports — a nickname, resolved at compile time
+IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves the file, rewrites its `package` line and rewrites every import of it, in one step.
+
+> **Why the folder matters if `javac` reads the package from the line.** Because compiled classes are found by their folder. `javac` writes every `.class` file into the folder its package names — `target/classes/com/victor/timetrack/model/Project.class` for `com.victor.timetrack.model.Project` — whatever folder the source sat in. When code names a class that is not among the files being compiled right now, such as a class inside a library's `.jar`, the compiler converts the name into that path and looks exactly there in each entry of the **classpath**, the list of folders and `.jar` files it was told to search. The JVM finds a class the same way when it loads it at runtime. That lookup is a direct translation from name to path, never a search through every file, which is why it stays instant in a project with ten thousand classes. Keeping your source folders in the same layout means you, IntelliJ and any tool that looks for a class by its name find the source where the compiled class will be.
+
+### Imports — using the simple name, resolved at compile time
 
 Fully qualified names are correct and unreadable. You *can* write code with them, and it compiles:
 
@@ -424,7 +464,7 @@ Fully qualified names are correct and unreadable. You *can* write code with them
 com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
 ```
 
-An **import** lets you use the simple name instead. It goes after the `package` line and before the class, and this is the real opening of the TimeTrack service you have already read twice in this file:
+An **import** lets you use the simple name instead. It goes after the `package` line and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
 
 ```java
 package com.victor.timetrack.service;
@@ -454,7 +494,7 @@ Three cases need no import at all, and knowing which is why `String` has never a
 | Classes in the **same package** | `ProjectService` using `AuthenticatedUserProvider` | Same namespace, so the simple name is already unambiguous |
 | A fully qualified use | `java.sql.Date now = ...` | You spelled the whole name, so there is nothing to translate |
 
-Read the table as three different reasons a simple name can already be unambiguous — they are not ranked, and you do not choose between them. The first row is the one to memorise: `java.lang` holds the classes no program can avoid, so the language hands them over for free. That is the entire reason `System.out.println` works in a file with no imports, and why `Integer.parseInt` back in [01-variables-types.md](01-variables-types.md) never needed one either. The second row is why `ProjectService` imports `Project` and `ProjectRepository` but never imports `AuthenticatedUserProvider` — that class lives in `com.victor.timetrack.service` as well.
+Read the table as three different reasons a simple name can already be unambiguous — they are not ranked, and you do not choose between them. The first row is the one to memorise: `java.lang` holds the classes no program can avoid, so the language hands them over for free. That is the entire reason `System.out.println` works in a file with no imports, and why `Integer.parseInt` back in [02-strings.md](02-strings.md) never needed one either. The second row is why `ProjectService` imports `Project` and `ProjectRepository` but never imports `AuthenticatedUserProvider` — that class lives in `com.victor.timetrack.service` as well.
 
 ### When two classes share a simple name
 
@@ -481,20 +521,20 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no 
 
 ## `null`, `NullPointerException`, and where to reject a missing argument
 
-> 📖 Docs: [Oracle Docs — `java.lang.NullPointerException`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/NullPointerException.html) → read: the "Implementation Note" at the bottom — it is two sentences, and it is the official statement that the modern message is computed for you rather than written by hand.
+> 📖 Docs: [Oracle Docs — `java.lang.NullPointerException`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/NullPointerException.html) → read: the `getMessage()` entry and its "Implementation Note" — two sentences, and the official statement that the modern message is computed for you rather than written by hand.
 > 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → read: the `requireNonNull(T obj, String message)` entry — "designed primarily for doing parameter validation in methods", which is exactly the use below.
 > 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read: the opening sections on where null values come from and on validating method arguments.
 
 [03-control-flow.md](03-control-flow.md) left you with the null guard — the plain `if (name != null)` that stops a crash — and deferred one question to this chapter, because it is not a question about `if` at all: **where** in a program should a missing value be rejected? That is a question about the contract between a method and its caller, which is what this whole chapter has been about, so it belongs here.
 
-`null` means "this reference points at no object". It is a legal value for any reference type — `String`, `Project`, `Integer`, an array — and never for a primitive; `int x = null;` does not compile, because an `int` variable holds a number directly and there is no "points at nothing" state for a number to be in. The failure happens the moment you **dereference** a `null` reference — that is, follow the arrow to reach something on the other end: calling a method on it, reading a field of it, indexing into it as an array. There is nothing at the other end, so the JVM stops the thread and throws a `NullPointerException`.
+As [01-variables-types.md](01-variables-types.md) showed, `null` means "this reference points at no object": it is a legal value for any reference type — `String`, `Project`, `Integer`, an array — and never for a primitive, which is why `int x = null;` does not compile. The failure happens the moment you **dereference** a `null` reference, that is, use the address it holds to reach the object there: calling a method on it, reading a field of it, indexing into it as an array. There is no object at that address, so the JVM throws a `NullPointerException`.
 
 ```java
 String name = null;
 name.toUpperCase();   // ❌ NullPointerException at runtime — the file compiles fine
 ```
 
-> **Why is this a runtime failure and not a compiler error?** Because the compiler tracks *types*, not *values*. It knows `name` is a `String`, and `String` has a `toUpperCase()`, so the call is type-correct and the file compiles. What it cannot know is which of the many paths through your program actually reaches that line, and with what value in the variable — `name` might be a database result, a request body field, a lookup that found nothing. Nullness is a property of the run, not of the type, so it is checked when the arrow is actually followed. And that is why nothing in the syntax warns you: the dangerous line looks exactly like the safe one.
+> **Why is this a runtime failure and not a compiler error?** Because the compiler tracks *types*, not *values*. It knows `name` is a `String`, and `String` has a `toUpperCase()`, so the call is type-correct and the file compiles. What it cannot know is which of the many paths through your program actually reaches that line, and with what value in the variable — `name` might be a database result, a request body field, a lookup that found nothing. Nullness is a property of the run, not of the type, so it is checked when the reference is actually used. And that is why nothing in the syntax warns you: the dangerous line looks exactly like the safe one.
 
 ### The real problem: the crash names the wrong line
 
@@ -526,9 +566,11 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String
 
 Read the two halves separately, because they answer different questions. The **message** answers *what went wrong*: `Cannot invoke "String.toLowerCase()" because "title" is null` — the method you tried to call, and the exact expression that was `null`. The **stack trace** below it answers *where you were*: the list of methods that were in progress, most recent first, so `slug` was running, called from `buildPage`, called from `main`.
 
+> **Each line of the trace is one frame: one method call that had started and not yet finished.** When `main` called `buildPage`, `main` did not end — it paused on line 10, waiting for the result. `buildPage` in turn paused on line 6 while `slug` ran. So at the moment of the crash three calls were open at once, and the trace lists them with the newest on top and the oldest, `main`, at the bottom. That is why the paragraph below can say a line is "two frames further down": it means two calls further back toward `main`. How the JVM keeps those paused calls — the call stack — is [05-memory-model.md](05-memory-model.md)'s subject, and reading long traces with several exceptions chained together is [11-exceptions.md](11-exceptions.md)'s.
+
 Now notice the trap. The trace's top line is `Report.java:3`, and that line is not wrong in any way — `slug` is a fine method that was handed a bad value. The mistake was made at line 9, two frames further down, and nothing in the report points at it. On a real backend those three frames are more like fifteen, spread over a controller, two services and a mapper, and the file the trace opens is a file you had no reason to suspect.
 
-> **The message is computed for you, and it is younger than most tutorials.** Before Java 14 that first line read exactly `java.lang.NullPointerException` and nothing else — no method name, no variable — so a line with three chained calls gave you no way to know which link was null. Modern Java walks the bytecode of the failing instruction to reconstruct a description of the expression that was `null`, which is why you now get `because "title" is null` for free. One wrinkle worth knowing: the name it prints depends on what the compiler recorded. With the debug information IntelliJ and Maven include by default you get the real name, `"title"`. Compiled without it, the same failure prints `because "<parameter1>" is null` — same mechanism, less to go on.
+> **The message is computed for you, and it is younger than most tutorials.** You already met this message form in [01-variables-types.md](01-variables-types.md), on the unboxing trap; here is where it comes from. It was added in Java 14 and switched on by default from Java 15. Before that, the first line read exactly `java.lang.NullPointerException` and nothing else — no method name, no variable — so a line with three chained calls gave you no way to know which link was null. Modern Java walks the bytecode of the failing instruction to reconstruct a description of the expression that was `null`, which is why you now get `because "title" is null` for free. One wrinkle worth knowing: the name it prints depends on what the compiler recorded. With the debug information IntelliJ and Maven include by default you get the real name, `"title"`. Compiled without it, the same failure prints `because "<parameter1>" is null` — same mechanism, less to go on.
 
 ### The fix: reject the missing value at the boundary that requires it
 
@@ -554,7 +596,9 @@ Exception in thread "main" java.lang.NullPointerException: title must not be nul
 	at Report2.main(Report2.java:13)
 ```
 
-Two things improved, and both matter more than they look. The message is now a sentence *you* wrote, naming the parameter that was missing instead of describing a method call that happens to have failed. And the trace is three lines long, with `Report2.main(Report2.java:13)` — the actual culprit, the line that passed the `null` — sitting right there as the second frame. You are not debugging any more; you are reading.
+Two things improved, and both matter more than they look. The message is now a sentence *you* wrote, naming the parameter that was missing instead of describing a method call that happens to have failed. And the trace is three lines long, with `Report2.main(Report2.java:13)` — the actual culprit, the line that passed the `null` — sitting right there as the frame directly under `buildPage`. You are not debugging any more; you are reading.
+
+> **What the trace can point at, and what it never can.** `Report2` is the same program as `Report` with `import java.util.Objects;` and a blank line added at the top and the check added as the first line of `buildPage`; those three extra lines are why the call in `main` moved from line 10 to line 13. A stack trace lists only calls that were still open, so it can never show the line that *stored* the `null` — line 9 in `Report`, line 12 in `Report2` — because that line had already finished. The closest any trace gets is the call that carried the `null` in, and both traces contain it (`Report.java:10` and `Report2.java:13`). What the check changes is which of your frames sits on top. Before, the top was `slug`, a method whose code was fine. Now it is `buildPage`, the method whose contract was broken, and the frame right under it is the caller that broke it: you start reading at the right place instead of one call too deep here, and many calls too deep in a real backend.
 
 > **`Objects.requireNonNull(x, "…")` is declared scaffolding in this chapter, and here is exactly what it does.** It is an ordinary `static` method in `java.util.Objects` that takes your value and a message. If the value is not `null` it hands it straight back and execution carries on as though the line were not there; if it *is* `null` it raises the `NullPointerException` with your message as its text. That is the whole behaviour, and it is all you need to read and write the line. What "raise" means mechanically — the `throw` keyword, what an exception object is, how it unwinds the stack, and when to catch one — is [11-exceptions.md](11-exceptions.md)'s subject and is not assumed here. Use the one-line form for now; the chapter that owns the machinery will come back for it.
 
@@ -573,32 +617,49 @@ public class InvalidPasswordException extends RuntimeException {
 }
 ```
 
-> **That snippet uses a constructor, and constructors are [06-oop-classes.md](06-oop-classes.md)'s.** Read it here only for *where the check sits*: on the way in, before the value is stored. Why the object-building boundary is the strongest one available — an object that could never be valid is refused before it exists, instead of failing later in whichever consumer happens to touch it first — is a rule about class invariants, and that is the chapter that states it. `extends RuntimeException` is [11-exceptions.md](11-exceptions.md)'s.
+> **That snippet uses a constructor, and constructors are [06-oop-classes.md](06-oop-classes.md)'s.** Read it here only for *where the check sits*: on the way in, before the value is stored. Why the object-building boundary is the strongest one available — an object that could never be valid is refused before it exists, instead of failing later in whichever consumer happens to touch it first — is a rule about class invariants, and that is the chapter that states it. `extends RuntimeException`, and the `super(message)` line that hands the message on to it, belong to defining an exception type of your own, which is [11-exceptions.md](11-exceptions.md)'s.
 
-### The three rules worth carrying out of this section
+### Three rules for a `null` at a method boundary
 
 Read these as one decision made in three places, not as a checklist:
 
 1. **Validate what you require, at the outermost method that requires it.** One check at the boundary beats five defensive checks downstream, because the downstream methods can then be written as if their arguments are always present — which is what makes `slug(String title)` above a two-line method instead of a four-line one.
-2. **Do not guard a value that is genuinely optional.** Absence is sometimes the correct answer — a middle name, a description nobody filled in — and rejecting it turns valid input into a crash. When absence is a normal outcome rather than a mistake, the tool is `Optional<T>` rather than a guard, and it is covered in [12-streams-lambdas.md](12-streams-lambdas.md).
+2. **Do not reject a value that is genuinely optional.** Absence is sometimes the correct answer — a middle name, a description nobody filled in — and rejecting it turns valid input into a crash. Handle it instead, the way `describe` in §"Return types" returns `"unknown"` for a `null` employee. And when absence is a normal *result* a method hands back, the tool is `Optional<T>` as the return type. [09-generics.md](09-generics.md) introduces it as that return contract, and [12-streams-lambdas.md](12-streams-lambdas.md) teaches the methods you call on one.
 3. **Never return `null` from a method to mean "nothing found".** You are then handing the caller the same trap this section is about, and the crash will name their line, not yours. Return an empty collection, an `Optional`, or reject the call — anything that cannot be dereferenced by accident.
 
 ---
 
 ## Naming conventions
 
-> Docs: https://www.baeldung.com/java-naming-conventions → read: "Methods" and "Variables"
+> Docs: https://www.baeldung.com/java-naming-conventions → read: "Method Naming Conventions" and "Variable Naming Conventions"
 > Docs: https://www.baeldung.com/java-pojo-javabeans-dto-vo → read: "JavaBeans" — the convention the callout below depends on
+
+A method's name is the one part of its signature a reader sees at every call site, so Java code follows a fixed set of naming habits, and some libraries depend on them:
 
 - Method names: `camelCase`, start with a verb — `getName()`, `save()`, `calculateTotal()`, `isActive()`
 - Boolean getters: start with `is` or `has` — `isActive()`, `hasRole()`, `isEmpty()`
 - Getters: `getName()`, `getAge()`
 - Setters: `setName(String name)`, `setAge(int age)`
 
-> **The get/set/is shape is not a style preference — libraries read it.** Java has a convention with a name, **JavaBeans**: a class with a no-argument constructor whose properties are reached through `getX()` / `setX()` / `isX()`. It matters because major libraries locate a property by *looking for those exact method names* at runtime. Jackson turns your object into JSON by finding `getName()` and publishing a `"name"` field — rename it to `fetchName()` and the field silently vanishes from the API response. JPA maps a `Project` row the same way. Lombok's `@Data`, which the TimeTrack DTOs use, exists precisely to generate this boilerplate for you: `@Data class ProjectResponse { private String name; }` compiles to a class with `getName()` and `setName()` already in it. So the convention is the contract three separate tools depend on, which is why breaking it produces bugs that look like magic.
+> **Preview — Spring Boot:** The callout below names three libraries you haven't studied yet: **Jackson**, which turns Java objects into JSON; **JPA** (with **Hibernate**, the implementation Spring Boot uses), which stores Java objects as database rows; and **Lombok**, which writes repetitive methods for you at compile time. Read it to see why the naming convention is more than style — you'll use all three in the Spring Boot notes.
+
+> **The get/set/is shape is not a style preference — libraries read it.** Java has a convention with a name, **JavaBeans**: a class with a no-argument constructor whose properties are reached through `getX()` / `setX()` / `isX()`. It matters because major libraries locate a property by *looking for those exact method names* at runtime. Jackson turns your object into JSON by finding `getName()` and publishing a `"name"` field — rename it to `fetchName()` and the field silently vanishes from the API response. JPA can do the same, but only for an entity whose mapping annotations sit on its getters; TimeTrack's `Project` puts `@Id` on the field, so Hibernate reads and writes its fields directly. Lombok's `@Data`, which the TimeTrack DTOs use, exists precisely to generate this boilerplate for you: `@Data class ProjectResponse { private String name; }` compiles to a class with `getName()` and `setName()` already in it. So the convention is a contract that tools like these depend on, which is why breaking it produces bugs that look like magic.
 >
 > **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
 
 Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors, `static`, the access modifiers this chapter kept deferring, and encapsulation, is the whole subject of [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you saw above becomes a proper class with state.
 
-But one file comes first, and it answers a question this chapter deliberately left standing. You now know the full **contract** of a call: the signature the caller has to match, which overload wins when several could, what a `Type...` parameter really receives, the name the class is reached by, and where a required argument must be rejected. What you do not know is what physically *crosses* that boundary when the call happens. When you write `buildPage(title)`, is the `String` copied? Is `Project` copied? Where does the guarded value actually live while `slug` is running, and how does Java know which line to come back to when it returns — the same stack trace you just read three times in the `null` section? [05-memory-model.md](05-memory-model.md) opens the method boundary and draws it: the stack and the heap, what a reference is, what gets copied into a parameter and what does not, and why "Java is always pass-by-value" is the sentence that settles every version of that argument.
+---
+
+## What this unlocks
+
+Up to the previous chapter you could read a call; now you can write the method behind it and predict whether a call to it compiles. In practice, you can now:
+
+- Read a declaration and say which parts form the signature, and why a call with the wrong number or types of arguments, or a result used as the wrong type, is rejected before the program runs.
+- Say what a method with no return value gives back to its caller: control, with no value.
+- Predict which overload a call selects, from its three passes and the most-specific rule, and fix an ambiguous call at the call site.
+- Write a `Type...` parameter, knowing it must be last and arrives in the body as an array, empty rather than `null` when no argument is passed.
+- Read a fully qualified name, and know what an `import` changes and what it never changes.
+- Reject a required `null` argument on entry to the method whose contract needs it, so the stack trace starts at the frame whose contract was broken.
+
+One file comes before the classes, and it answers a question this chapter deliberately left standing. You now know the full **contract** of a call: the signature the caller has to match, which overload wins when several could, what a `Type...` parameter really receives, the name the class is reached by, and where a required argument must be rejected. What you do not know is what physically *crosses* that boundary when the call happens. When you write `buildPage(title)`, is the `String` copied? When a method takes a `Project`, is the object copied? Where does the checked value actually live while `slug` is running, and how does Java know which line to come back to when it returns — the list of open calls you read in both stack traces of the `null` section? [05-memory-model.md](05-memory-model.md) opens the method boundary and draws it: the stack and the heap, what a reference is, what gets copied into a parameter and what does not, and why "Java is always pass-by-value" is the sentence that settles every version of that argument.
