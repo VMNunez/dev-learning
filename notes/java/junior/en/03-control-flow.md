@@ -855,9 +855,7 @@ This table sums up the three statements: which part of the code stops running wi
 | `break` | the innermost enclosing loop or classic `switch` | the first line after that loop or `switch`, in the same method | inside a loop, or a classic `switch` |
 | `return` | the whole **method**, loop included | it leaves the method and runs the line that comes right after the **call** to that method | anywhere in a method, except inside a switch expression's arm |
 
-Read the third column as "where the cursor goes": for `continue` and `break` it goes somewhere else in the *same* method, a few lines away, and the method carries on. For `return` it goes into a *different* method — the one that called this one — and this method never runs again. That is the difference in kind, and it is worth saying in one line: **`break` and `continue` reposition you inside the current piece of work; `return` ends the current piece of work and hands control back to whoever asked for it.**
-
-All three, on the same timesheet, in one method. The list arrives sorted by weekly hours, highest first, so once an employee with `0` hours appears, every employee after it also has `0`:
+To see all three together in one method, this one searches the timesheet for the name of the first active employee with overtime. The employee list arrives sorted by weekly hours, highest first. So, as soon as an employee with `0` hours appears, every employee after it also has `0`, and there is no need to keep searching:
 
 ```java
 String firstOvertimeName(List<Employee> employees) {

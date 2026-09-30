@@ -849,15 +849,13 @@ En el ejemplo, `continue` omite al empleado inactivo y sigue con el siguiente. `
 
 Esta tabla resume las tres sentencias: qué parte del código deja de ejecutarse con cada una y qué línea se ejecuta justo después.
 
-| Sentencia  | Qué deja atrás                                             | Dónde aterriza la ejecución después                                                                                                                               | Dónde es legal                                                                     |
-| ---------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `continue` | el resto de la iteración actual                            | la siguiente comprobación de condición del bucle — en un `for` clásico, después de que se ejecute el paso (`i++`)                                                 | solo dentro de un bucle                                                            |
-| `break`    | el bucle más interno o el `switch` clásico que lo contiene | la primera línea después de ese bucle o `switch`, en el mismo método                                                                                              | dentro de un bucle, o de un `switch` clásico                                       |
-| `return`   | el **método** entero, bucle incluido                       | sale del método y se ejecuta la línea que va justo después de la **llamada** a ese método | en cualquier parte de un método, excepto dentro de la rama de un switch expression |
+| Sentencia  | Qué deja atrás                                             | Dónde aterriza la ejecución después                                                                               | Dónde es legal                                                                     |
+| ---------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `continue` | el resto de la iteración actual                            | la siguiente comprobación de condición del bucle — en un `for` clásico, después de que se ejecute el paso (`i++`) | solo dentro de un bucle                                                            |
+| `break`    | el bucle más interno o el `switch` clásico que lo contiene | la primera línea después de ese bucle o `switch`, en el mismo método                                              | dentro de un bucle, o de un `switch` clásico                                       |
+| `return`   | el **método** entero, bucle incluido                       | sale del método y se ejecuta la línea que va justo después de la **llamada** a ese método                         | en cualquier parte de un método, excepto dentro de la rama de un switch expression |
 
-La tercera columna indica la siguiente instrucción que se ejecuta. Tras `continue` o `break`, el método actual sigue desde otro punto. Tras `return`, termina y la ejecución vuelve al método que lo llamó. **`break` y `continue` cambian el recorrido dentro del método actual; `return` sale de él.**
-
-Las tres aparecen en el mismo registro de horas y en un solo método. La lista llega ordenada por horas semanales, de mayor a menor: cuando aparece un empleado con `0` horas, todos los siguientes también tienen `0`.
+Para ver las tres juntas en un mismo método, este busca en el registro de horas el nombre del primer empleado activo con horas extra. La lista de empleados llega ordenada por horas semanales, de mayor a menor. Por eso, en cuanto aparece un empleado con `0` horas, todos los que vienen detrás también tienen `0`, y ya no hace falta seguir buscando:
 
 ```java
 String firstOvertimeName(List<Employee> employees) {
