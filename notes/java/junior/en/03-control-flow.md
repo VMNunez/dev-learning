@@ -659,7 +659,7 @@ Choose `do-while` when the body must run at least once, for example to download 
 
 ### Choosing between the four loop forms
 
-You have now seen all four, so here they are as one decision. The question that picks the form is never "which loop do I like" — it is **what the repetition promises**, and each form makes a different promise:
+You have now seen the four kinds of loop. To choose between them, ask yourself **what decides how many times the loop repeats**: a counter, the elements you walk through, or a condition checked before or after each iteration.
 
 | What the repetition is | Form | The contract it makes |
 |---|---|---|

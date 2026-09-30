@@ -659,7 +659,7 @@ Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo 
 
 ### Elegir entre las cuatro formas de bucle
 
-Ya has visto las cuatro formas. Elige según **qué controla la repetición**: un contador, los elementos que recorres o una condición que se comprueba antes o después.
+Ya has visto las cuatro formas de bucle. Para elegir entre ellas, pregúntate **qué decide cuántas veces se repite el bucle**: un contador, los elementos que recorres o una condición que se comprueba antes o después de cada iteración.
 
 | Qué es la repetición                                                           | Forma         | El contrato que hace                                                                                           |
 | ------------------------------------------------------------------------------ | ------------- | -------------------------------------------------------------------------------------------------------------- |
