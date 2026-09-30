@@ -655,7 +655,7 @@ En el `do-while`, `loadPage(page)` representa la descarga de una página de empl
 
 > **`do-while` necesita un punto y coma final.** En `} while (!batch.isEmpty());`, el `while (...)` cierra la sentencia que empezó con `do`; por eso lleva `;`. Si lo omites, el compilador muestra `error: ';' expected`. Los otros bucles no llevan ese punto y coma después de la llave de cierre.
 
-Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo para descargar la primera página antes de comprobar si quedan resultados. Usa `while` para repetir algo mientras se cumpla una condición que puede ser falsa desde el principio, cuando el cuerpo no debe ejecutarse ni una vez en ese caso. Por ejemplo, para leer un fichero línea a línea hasta el final: si el fichero está vacío, no hay ninguna línea que leer.
+Elige `do-while` cuando el cuerpo deba ejecutarse al menos una vez, por ejemplo para descargar la primera página antes de comprobar si quedan resultados. Usa `while` para repetir algo mientras se cumpla una condición que puede ser falsa desde el principio; en ese caso, el cuerpo puede no ejecutarse ni una vez. Por ejemplo, para leer un fichero línea a línea hasta el final: si el fichero está vacío, no hay ninguna línea que leer.
 
 ### Elegir entre las cuatro formas de bucle
 
