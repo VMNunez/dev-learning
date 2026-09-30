@@ -615,9 +615,9 @@ Usa el _for-each_ cuando necesites los elementos pero no su posición. También 
 
 Usa `while` o `do-while` cuando la condición de salida depende de lo que ocurra en cada iteración y no sabes cuántas iteraciones harán falta. Por ejemplo: pedir las horas de un día hasta que el usuario escriba un número válido, entre 0 y 24, sin saber cuántas veces se va a equivocar; descargar los empleados página a página hasta que llegue una página vacía, que es el ejemplo del `do-while` de más abajo; o volver a llamar a un servicio que no responde hasta que responda. En esos casos, un `for` con contador no expresa bien cuándo debe terminar el trabajo.
 
-**`while`** comprueba la condición primero. Si la condición es falsa desde el inicio, el cuerpo nunca se ejecuta — cero veces es un resultado perfectamente normal.
+**`while`** comprueba la condición antes de ejecutar el cuerpo. Si la condición es falsa desde el principio, el cuerpo no se ejecuta ninguna vez, así que es posible que un `while` se ejecute 0 veces, y eso es un resultado normal.
 
-**`do-while`** ejecuta el cuerpo primero, y comprueba la condición después. Esto garantiza al menos una ejecución — útil cuando tienes que hacer algo antes de poder siquiera saber si continuar: no puedes preguntar "¿estaba vacía esa página?" hasta que la has descargado.
+**`do-while`** ejecuta primero el cuerpo y después comprueba la condición, así que el cuerpo se ejecuta al menos una vez. Te sirve cuando tienes que hacer algo antes de saber si hay que seguir. Por ejemplo, para saber si una página de empleados está vacía, primero tienes que descargarla: la descarga va en el cuerpo y la comprobación va en la condición.
 
 ```java
 // while — comprueba primero, puede no ejecutarse nunca

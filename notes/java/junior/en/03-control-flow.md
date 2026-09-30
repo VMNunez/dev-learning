@@ -617,9 +617,9 @@ Use the _for-each_ whenever you just need the items and do not need the index. I
 
 Use `while` or `do-while` when the exit condition depends on what happens in each iteration and you do not know how many iterations you will need. For example: asking for a day's hours until the user types a valid number, between 0 and 24, without knowing how many times they will get it wrong; downloading the employees page by page until an empty page arrives, which is the `do-while` example further down; or calling a service that does not respond again until it responds. In those cases, a `for` with a counter does not express well when the work should end.
 
-**`while`** checks the condition first. If the condition is false from the start, the body never runs — zero times is a perfectly normal outcome.
+**`while`** checks the condition before running the body. If the condition is false from the start, the body does not run even once, so a `while` can run 0 times, and that is a normal outcome.
 
-**`do-while`** runs the body first, then checks the condition. This guarantees at least one execution — useful when you must do something before you can even know whether to continue: you cannot ask "was that page empty?" until you have fetched a page.
+**`do-while`** runs the body first and then checks the condition, so the body runs at least once. It is useful when you have to do something before you know whether to continue. For example, to know whether a page of employees is empty, you first have to download it: the download goes in the body and the check goes in the condition.
 
 ```java
 // while — check first, may never run
