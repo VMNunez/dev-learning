@@ -134,7 +134,7 @@ public static double calculateTax(double price, double rate) {
 > objeto, ese valor es su referencia, así que lo que se copia es la referencia, no el objeto entero. Es una pregunta típica de entrevista, y se
 > explica en [05-modelo-de-memoria.md](05-modelo-de-memoria.md), junto con el stack y el heap, que hacen
 > falta para entenderla. Hasta entonces, lee `public` como "llamable desde cualquier sitio" y `static` como "se
-> llama sobre el nombre de la clase, no sobre un objeto". Eso es todo lo que este capítulo les pide.
+> llama sobre el nombre de la clase, no sobre un objeto". Eso es todo lo que este capítulo pide.
 
 ---
 
@@ -147,7 +147,7 @@ La sección de la declaración mostró el tipo de retorno como una tercera parte
 ```java
 public String getName() { return this.name; }   // devuelve un String
 public int getAge() { return this.age; }         // devuelve un int
-public boolean isActive() { return this.active; }// devuelve boolean — por convención empieza con "is"
+public boolean isActive() { return this.active; }// devuelve boolean — por convención (TODO:EL NOMBRE DEL METODO) empieza con "is"
 public void save(Employee e) { ... }             // no devuelve nada
 public Employee findById(int id) { ... }         // devuelve un objeto
 public List<Employee> findAll() { ... }          // devuelve una colección
