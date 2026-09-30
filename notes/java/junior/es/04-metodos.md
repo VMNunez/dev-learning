@@ -187,7 +187,7 @@ Lee esa lista como tres grupos, no como seis líneas. `getAge()` e `isActive()` 
 Como `return` termina el método en el momento en que se ejecuta, puedes usarlo para tratar primero los casos especiales. El método comprueba al principio si está ante uno de ellos y, si lo está, devuelve su resultado y termina ahí. Así, cuando la ejecución llega al trabajo normal del método, ya no se va a encontrar con casos especiales, y ese código no tiene que ir metido dentro de un `else`. Esta forma de escribir un método se llama **retorno anticipado** (_early return_, o _guard clause_), y la leerás en casi cualquier código real. Aparece sobre todo en los métodos de las clases de servicio de Spring Boot, que son las clases donde vive la lógica de negocio de una aplicación y que estudiarás en las notas de Spring Boot:
 
 ```java
-// MAL — con cada condición nueva, el trabajo normal queda metido dentro de un if o de un else, y se desplaza más a la derecha
+// MAL — con cada condición nueva, el trabajo normal queda metido dentro de un if o de un else
 public String describe(Employee e) {
     if (e != null) {
         if (e.isActive()) {
@@ -208,7 +208,7 @@ public String describe(Employee e) {
 }
 ```
 
-Las dos compilan y las dos son correctas; la segunda es la que sobrevive cuando se añaden tres condiciones más. También cumple visiblemente la regla de "todo camino debe devolver" — la última línea es incondicional, así que no queda ninguna rama que pueda caer fuera del método sin devolver nada.
+Las dos compilan y las dos son correctas; la segunda es la que sobrevive cuando se añaden tres condiciones más(TODO: NO ME GUSTA LO DE QUE "la segunda es la que sobrevive cuando se añaden tres condiciones más"). También cumple visiblemente la regla de "todo camino debe devolver(TODO: COMPLETA LA FRASE)" — la última línea es incondicional, así que no queda ninguna rama que pueda caer fuera del método sin devolver nada(TODO: MEJORA LA REDACCION).
 
 ---
 
