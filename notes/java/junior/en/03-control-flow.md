@@ -989,7 +989,8 @@ for (Employee emp : employees) {
 
 Up to the previous chapter, your program ran each line once, from top to bottom. With this file you have learned to decide which lines run, how many times, and when to stop. You have seen it with the same timesheet from start to finish: an entry with 10 hours is marked as overtime, a Saturday is classified as a weekend shift, and the search for the first employee with overtime stops as soon as it finds them. In practice, you can now:
 
-- Choose which code runs with `if / else`, checking the impossible values first, and choose between two values with the ternary operator.
+- Choose which code runs with an `if / else` chain, putting the branch for impossible values first, then the valid branches, from the most specific to the most general, and finally the `else` for whatever is left.
+- Choose between two values with the ternary operator and store the result directly in a variable.
 - Classify a value with `switch`: in the classic form, without forgetting each case's `break`, and with the `switch` expression, which runs only the matching case and stores its result in a variable.
 - Walk through an array or a collection with the _for-each_ when you do not need the index, and with the classic `for` when you do, without making the off-by-one error.
 - Repeat work with `while` when you do not know how many iterations you will need, or with `do-while` when the body has to run at least once, without creating an infinite loop.
