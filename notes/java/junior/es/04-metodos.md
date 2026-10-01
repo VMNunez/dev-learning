@@ -801,7 +801,7 @@ static String slug(String title) {
 
 `buildPage` recibiría ese `null` y lo uniría con `+` a `"<h1>"` y `"</h1>"`. Al concatenar un `null`, Java escribe el texto `null`, así que la página mostraría `<h1>null</h1>`. El programa no falla, y nadie se da cuenta del error hasta que alguien ve la página. Por eso este resultado es peor que la excepción: la excepción, por lo menos, te avisa en el momento.
 
-La solución es saber **dónde** rechazar el `null`. Un método que no puede hacer su trabajo sin un argumento debería decirlo _al entrar_, antes de hacer cualquier otra cosa — esta es la forma de **guard clause** que ya conociste en §"Tipos de retorno", ahora aplicada al contrato del método en lugar de a su flujo de control. La frontera correcta es el método más externo que declara ese valor como obligatorio. En el ejemplo es `buildPage`, el punto de entrada público de esta pequeña funcionalidad: es el que tiene el contrato que dice "dame un título y te doy una página".
+La solución es saber **dónde** rechazar el `null`. Un método que no puede hacer su trabajo sin un argumento debería decirlo _al entrar_(TODO: NADA MAS COMENZAR EL METODO), antes de hacer cualquier otra cosa — esta es la forma de **guard clause**(TODO: ES LO QUE SE CONOCE COMO GUARD CLAUSE) que ya conociste en(TODO: ESTA MAL EL ENLACE) §"Tipos de retorno", ahora aplicada al contrato del método en lugar de a su flujo de control. La frontera correcta es el método más externo que declara ese valor como obligatorio. En el ejemplo es `buildPage`, el punto de entrada público de esta pequeña funcionalidad: es el que tiene el contrato que dice "dame un título y te doy una página".
 
 ```java
 import java.util.Objects;
