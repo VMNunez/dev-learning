@@ -14,7 +14,7 @@
   - [Los imports — usar el nombre simple, resuelto en tiempo de compilación](#los-imports--usar-el-nombre-simple-resuelto-en-tiempo-de-compilación)
   - [Cuando dos clases comparten el mismo nombre simple](#cuando-dos-clases-comparten-el-mismo-nombre-simple)
 - [`null`, `NullPointerException`, y dónde rechazar un argumento ausente en un método](#null-nullpointerexception-y-dónde-rechazar-un-argumento-ausente-en-un-método)
-  - [El problema real: el crash señala la línea equivocada](#el-problema-real-el-crash-señala-la-línea-equivocada)
+  - [La `NullPointerException` salta donde se usa el `null`, no donde apareció](#la-nullpointerexception-salta-donde-se-usa-el-null-no-donde-apareció)
   - [La solución: rechazar el valor ausente en la frontera que lo necesita](#la-solución-rechazar-el-valor-ausente-en-la-frontera-que-lo-necesita)
   - [Tres reglas para un `null` en la frontera de un método](#tres-reglas-para-un-null-en-la-frontera-de-un-método)
 - [Convenciones de nombres](#convenciones-de-nombres)
@@ -750,9 +750,9 @@ name.toUpperCase();   // ❌ NullPointerException en tiempo de ejecución — el
 
 > **¿Por qué esto es un fallo en tiempo de ejecución y no un error del compilador?** Porque el compilador rastrea _tipos_, no _valores_. Sabe que `name` es un `String`, y que `String` tiene un `toUpperCase()`, así que la llamada es correcta en cuanto a tipos y el archivo compila. Lo que no puede saber es cuál de los muchos caminos de tu programa llega realmente a esa línea, y con qué valor llega la variable. Por ejemplo, `name` podría ser el resultado de una petición a una base de datos, un campo del cuerpo de una petición HTTP, una búsqueda que no encontró nada, etc. Que una variable sea `null` o no depende de lo que pase al ejecutar el programa, no de su tipo, así que se comprueba en el momento en que se usa la variable. Y por eso nada en la sintaxis te avisa hasta que el programa se ejecuta y lanza la excepción.
 
-### El problema real: el crash señala la línea equivocada TODO: NO ME GUSTA EL TITULO
+### La `NullPointerException` salta donde se usa el `null`, no donde apareció
 
-La excepción en sí nunca es lo difícil. Lo difícil es que un `null` viaja en silencio, y el crash ocurre donde sea que se _use_ por primera vez — que puede estar a varios métodos de distancia de donde se _aceptó_ por primera vez(TODO: MEJORA LA EXPLICACION DE "La excepción en sí nunca es lo difícil. Lo difícil es que un `null` viaja en silencio, y el crash ocurre donde sea que se _use_ por primera vez — que puede estar a varios métodos de distancia de donde se _aceptó_ por primera vez").(TODO: ESTO ES UN EJEMPLO DONDE SE PUEDE VER...) Aquí está esa distancia, reducida a un tamaño que se puede ver de un vistazo:
+Lo difícil de una `NullPointerException` no es entender el error, sino encontrar de dónde viene el `null`. Un `null` puede pasar de un método a otro como argumento sin que nada falle, porque pasarlo no es usarlo. La excepción solo salta en el primer método que lo usa, y ese método puede estar a varias llamadas de distancia del sitio donde apareció el `null`. En este ejemplo se puede ver esa distancia con solo tres métodos: `main` crea el `null` en la línea 9, `buildPage` lo recibe y se lo pasa a `slug` sin usarlo, y `slug` es el que falla en la línea 3, al llamar a `toLowerCase()` sobre él:
 
 ```java
 public class Report {
