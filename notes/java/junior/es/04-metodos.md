@@ -532,7 +532,7 @@ Eso último es **method chaining** (encadenamiento de métodos), que [02-cadenas
 2. Como ese resultado es un `String`, se le puede llamar `.toUpperCase()`, que devuelve otro `String`: `"HELLO"`.
 3. Sobre ese `String` se llama `.replace("HELLO", "HI")`, que devuelve `"HI"`.
 
-Parece una sola operación, pero son tres llamadas, y cada una crea un `String` nuevo, porque un `String` nunca se modifica(TODO: ES INMUTABLE): sus métodos siempre devuelven uno nuevo(TODO: UN OBJETO STRING NUEVO). Esto no es algo propio de(TODO: EL METHOD CHAINING) `String`: cualquier método que devuelva un objeto se puede encadenar igual. Por ejemplo, `ResponseEntity.noContent().build()`, de la sección [void vs Void](#void-vs-void), funciona así.
+Parece una sola operación, pero son tres llamadas, y cada una crea un `String` nuevo, porque un `String` es inmutable: sus métodos siempre devuelven un objeto `String` nuevo. El method chaining no es algo propio de `String`: cualquier método que devuelva un objeto se puede encadenar igual. Por ejemplo, `ResponseEntity.noContent().build()`, de la sección [void vs Void](#void-vs-void), funciona así.
 
 ---
 

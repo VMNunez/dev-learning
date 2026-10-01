@@ -532,7 +532,7 @@ That last one is **method chaining**, which [02-strings.md](02-strings.md) alrea
 2. Since that result is a `String`, `.toUpperCase()` can be called on it, which returns another `String`: `"HELLO"`.
 3. On that `String`, `.replace("HELLO", "HI")` is called, which returns `"HI"`.
 
-It looks like a single operation, but it is three calls, and each one creates a new `String`, because a `String` is never modified: its methods always return a new one. This is not something special to `String`: any method that returns an object can be chained the same way. For example, `ResponseEntity.noContent().build()`, from the section [void vs Void](#void-vs-void), works like this.
+It looks like a single operation, but it is three calls, and each one creates a new `String`, because a `String` is immutable: its methods always return a new `String` object. Method chaining is not something special to `String`: any method that returns an object can be chained the same way. For example, `ResponseEntity.noContent().build()`, from the section [void vs Void](#void-vs-void), works like this.
 
 ---
 
