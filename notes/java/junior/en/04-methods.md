@@ -526,7 +526,13 @@ String result2 = "  hello  "
     .replace("HELLO", "HI");           // "HI"
 ```
 
-That last one is **method chaining**, which [02-strings.md](02-strings.md) already used on `String`: a call can be chained onto another when the first one returns an object, of any type, and the next call has to be a method that exists on that type. The chain stops when a method returns a primitive, like an `int` or a `boolean`, because primitives have no methods, or when it returns `void`, because there is nothing left to call on. Seen as a method rule, it is the return type at work. `"  hello  ".trim()` is declared to return `String`, so the whole expression *is* a `String` and `.toUpperCase()` can be called on it, and so on down the chain. It reads as one operation but is three calls, each creating a new `String`, because a `String` is never modified in place. The rule is not special to `String`: any method whose return type is an object can be chained the same way, and that is how `ResponseEntity.noContent().build()` in the section [void vs Void](#void-vs-void) works.
+That last one is **method chaining**, which [02-strings.md](02-strings.md) already used on `String`: a call can be chained onto another when the first one returns an object, of any type, and the next call has to be a method that exists on that type. The chain stops when a method returns a primitive, like an `int` or a `boolean`, because primitives have no methods, or when it returns `void`, because there is nothing left to call on. What makes the chain possible is the return type of each method. Follow the `result2` above step by step:
+
+1. `"  hello  ".trim()` returns a `String`: `"hello"`.
+2. Since that result is a `String`, `.toUpperCase()` can be called on it, which returns another `String`: `"HELLO"`.
+3. On that `String`, `.replace("HELLO", "HI")` is called, which returns `"HI"`.
+
+It looks like a single operation, but it is three calls, and each one creates a new `String`, because a `String` is never modified: its methods always return a new one. This is not something special to `String`: any method that returns an object can be chained the same way. For example, `ResponseEntity.noContent().build()`, from the section [void vs Void](#void-vs-void), works like this.
 
 ---
 
