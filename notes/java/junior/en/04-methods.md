@@ -788,7 +788,7 @@ Now notice the trap. The stack trace's top line is `Report.java:3`, and that lin
 
 ### The fix: reject the missing value at the boundary that requires it
 
-The lesson is not to fill your methods with `if (x != null)` checks. If each method simply skips its work when it receives a `null`, the program stops throwing the exception, but the error is still there and nothing warns you about it any more. For example, if `slug` checked `title` and returned `null` instead of failing:
+The fix is not to fill your methods with `if (x != null)` checks. If each method simply skips its work when it receives a `null`, the program stops throwing the exception, but the error is still there and nothing warns you about it any more. For example, if `slug` checked `title` and returned `null` instead of failing:
 
 ```java
 static String slug(String title) {
