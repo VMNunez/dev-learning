@@ -357,7 +357,7 @@ add(1, 2);   // ❌ both fit in pass 1, and neither is more specific:
 
 > Docs: https://www.baeldung.com/java-varargs → read: "Use of Varargs" and "Rules"
 
-Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and collect them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, those three dots are varargs. You will also see it in `String.format()` and in logging frameworks, libraries that write messages about what the program is doing. Their `log.info(...)` method accepts a variable number of values to fill the `{}` slots of its message.
+Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and collect them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, those three dots are varargs. You will also see it in `String.format()` and in logging frameworks, libraries that write messages about what the program is doing. Their `log.info(...)` method accepts a variable number of values.
 
 > **Preview — logging:** `log` is not a Java language feature. It is an SLF4J logger, the logging library Spring Boot ships with, and the `{}` placeholder style is that library's own. It appears here only because it is the varargs API you will meet most often in a real backend — you will set it up properly in the Spring Boot notes.
 
