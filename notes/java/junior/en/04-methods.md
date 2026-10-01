@@ -567,7 +567,7 @@ That class's real, unambiguous name is now `com.victor.timetrack.service.Project
 
 > **The `com.victor` prefix is an internet domain written backwards.** This convention prevents one specific problem: two companies or organisations unknowingly creating a package with the same name. Your code does not mix with other companies' code on its own: it meets it when you use libraries. Spring, Jackson and the other libraries your project adds are classes written by other companies or organisations, and when the application runs they are all loaded alongside yours, in the same program. If one of those libraries had a package called `service` with a `ProjectService` class inside, just like yours, Java could not tell one class from the other.
 >
-> The fix is to start the package with something that is already unique: an internet domain, because each domain has a single owner. And it is written backwards, starting with the most general part:
+> The fix is to start the package with something that is already unique: an internet domain, because each domain has a single owner. You do not need to have bought the domain, because Java checks nothing: in a company you use the company's domain, and in a personal project like TimeTrack a name that is yours and hard to repeat is enough, like `com.victor`. Only if you ever publish a library for others to use will you be asked to prove you control that name; for that people usually use the one from their GitHub account, like `io.github.vmnunez`. And it is written backwards, starting with the most general part:
 >
 > - `victor.com` → `com.victor`
 > - `springframework.org` → `org.springframework`, in packages like `org.springframework.stereotype`
