@@ -634,7 +634,7 @@ El **Refactor → Move** de IntelliJ (`F6`) existe precisamente para evitar eso:
 > 2. Busca esa ruta en cada entrada del **classpath**, que es la lista de carpetas y archivos `.jar` en los que Maven le dice que hay clases compiladas.
 > 3. La encuentra dentro del `.jar` de Spring, y con eso sabe que el nombre que usa `ProjectService` existe.
 >
-> La JVM encuentra una clase(TODO: IMAGINO QUE DE LAS MIAS, NO DE UNA LIBRERIA) de la misma manera cuando la necesita al ejecutar el programa. Ni `javac` ni la JVM recorren todos los archivos hasta dar con la clase: van directamente a la ruta que sale de su nombre. Por eso la búsqueda sigue siendo instantánea en un proyecto con diez mil clases.
+> La JVM encuentra las clases de la misma manera cuando las necesita al ejecutar el programa, y lo hace tanto con las tuyas como con las de una librería. Por ejemplo, para `com.victor.timetrack.model.Project` busca la ruta `com/victor/timetrack/model/Project.class` y la encuentra en `target/classes/`. Para `org.springframework.stereotype.Service` busca `org/springframework/stereotype/Service.class` y la encuentra en el `.jar` de Spring. Ni `javac` ni la JVM recorren todos los archivos hasta dar con la clase: van directamente a la ruta que sale de su nombre. Por eso la búsqueda sigue siendo instantánea en un proyecto con diez mil clases.
 >
 > Tu código fuente sigue la misma estructura por ese motivo, aunque `javac` no lo exija. Si `Project.java` está en `src/main/java/com/victor/timetrack/model/`, tiene dentro de `src/main/java/` la misma ruta que tendrá `Project.class` dentro de `target/classes/`. Así tú, IntelliJ y cualquier herramienta que busque una clase por su nombre sabéis dónde está su código fuente.
 
