@@ -622,7 +622,7 @@ El **Refactor → Move** de IntelliJ (`F6`) existe precisamente para evitar eso:
 >
 > Las clases de las librerías están guardadas de la misma forma. Una librería como Spring no llega a tu proyecto como código fuente, sino ya compilada, en archivos `.jar`. Un `.jar` es un archivo comprimido, parecido a un `.zip`, que contiene muchos archivos `.class` dentro de las carpetas de sus paquetes. Por ejemplo, el `ProjectService` real usa `org.springframework.stereotype.Service`, que pertenece a Spring y por tanto no está entre tus archivos `.java`. Su archivo está dentro de uno de los `.jar` de Spring, en `org/springframework/stereotype/Service.class`.
 >
-> Como todas las clases compiladas están guardadas así, para encontrar una basta con su nombre. Cuando `javac` compila `ProjectService` y llega al nombre `org.springframework.stereotype.Service`, hace lo siguiente:
+> Como todas las clases compiladas están guardadas así, para encontrar una basta con su nombre. Cuando `javac` compila `ProjectService`(TODO: ESTO SE SUPONE QUE ES UN EJEMPLO EN EL QUE EN EL PROJECTSERVICE SE USAR org.springframework.stereotype.Service?? ) y llega al nombre `org.springframework.stereotype.Service`, hace lo siguiente:
 >
 > 1. Convierte el nombre en una ruta: cambia los puntos por barras y añade `.class` al final, y obtiene `org/springframework/stereotype/Service.class`.
 > 2. Busca esa ruta en cada entrada del **classpath**, que es la lista de carpetas y archivos `.jar` en los que Maven le dice que hay clases compiladas.
