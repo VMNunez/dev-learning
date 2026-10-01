@@ -416,7 +416,7 @@ sum();                       // 0 — numbers.length == 0
 
 > 📖 Docs: [Oracle Docs — Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → read: "Arbitrary Number of Arguments" — three paragraphs, ending on the `printf` signature, a third method built on the same `Object...` parameter.
 
-At the start of this section you saw that `log.info(...)` accepts any number of values because it is declared with varargs. The Java standard library does the same in two methods you will use often, `String.format()` and `List.of()`. These are their real declarations, and both have the `...`:
+At the start of this section you saw that `.formatted()` and `log.info(...)` accept any number of values because they are declared with varargs. The Java standard library does the same in two other methods you will use often, `String.format()` and `List.of()`. These are their real declarations, and both have the `...`:
 
 ```java
 public static String format(String format, Object... args)   // java.lang.String
