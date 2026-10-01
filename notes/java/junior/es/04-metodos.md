@@ -389,7 +389,7 @@ int[] scores = {1, 2, 3};
 sum(scores);   // 6 — el array ES el parámetro varargs
 ```
 
-**Una llamada sin argumentos te da un array vacío, nunca `null`.** Aquí está la trampa: parece que "no se pasó nada", así que el instinto es hacer un null-check. Java garantiza en su lugar un array de longitud `0`, que es por lo que el `for (int n : numbers)` de `sum()` de arriba simplemente se ejecuta cero veces y devuelve `0` (TODO: CUANDO NO LE PASAMOS ARGUMENTOS )en lugar de lanzar una excepción.
+**Una llamada sin argumentos te da un array vacío, nunca `null`.** Aquí está la trampa: parece que "no se pasó nada", así que el instinto es hacer un null-check. Java garantiza en su lugar un array de longitud `0`, que es por lo que el `for (int n : numbers)` de `sum()` de arriba simplemente se ejecuta cero veces y devuelve `0` cuando no le pasamos argumentos, en lugar de lanzar una excepción.
 
 ```java
 sum();                       // 0 — numbers.length == 0

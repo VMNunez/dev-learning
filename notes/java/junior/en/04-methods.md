@@ -389,7 +389,7 @@ int[] scores = {1, 2, 3};
 sum(scores);   // 6 — the array IS the varargs parameter
 ```
 
-**A zero-argument call gives you an empty array, never `null`.** This is the trap: it looks like "nothing was passed", so the instinct is to null-check. Java guarantees an array of length `0` instead, which is why the `for (int n : numbers)` in `sum()` above simply runs zero times and returns `0` rather than throwing.
+**A zero-argument call gives you an empty array, never `null`.** This is the trap: it looks like "nothing was passed", so the instinct is to null-check. Java guarantees an array of length `0` instead, which is why the `for (int n : numbers)` in `sum()` above simply runs zero times and returns `0` when we pass it no arguments, rather than throwing.
 
 ```java
 sum();                       // 0 — numbers.length == 0
