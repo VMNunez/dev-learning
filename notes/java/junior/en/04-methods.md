@@ -396,7 +396,14 @@ sum();                       // 0 — numbers.length == 0
 // numbers == null           // ❌ never true; a null-check here is dead code
 ```
 
-> **Why an empty array instead of `null`?** Because that way the method always receives an array, whether you pass it zero values or many, and it can go through it the same way in every case. If a zero-argument call produced `null`, every varargs method would have to open with a defensive `if (numbers == null)` before it could go through the array, and forgetting it would mean a `NullPointerException`. Handing over an empty array makes the no-arguments case the same code path as every other case. `numbers` can only be `null` if you are the one passing a `null` in place of the array. For example, in `sum((int[]) null)` the `(int[])` says that this `null` takes the place of the whole array. In that case the for-each in `sum` throws a `NullPointerException`, because the `null` was put there by your call. In real code nobody writes `sum((int[]) null)` on purpose. What you can run into is passing an `int[]` variable that holds `null`, for example `int[] scores = null; sum(scores);`, and it fails the same way.
+> **Why an empty array instead of `null`?** Because that way the method always receives an array, whether you pass it zero values or many, and it can go through it the same way in every case. If a zero-argument call produced `null`, every varargs method would have to open with a defensive `if (numbers == null)` before it could go through the array, and forgetting it would mean a `NullPointerException`. Handing over an empty array makes the no-arguments case the same code path as every other case. `numbers` can only be `null` if you are the one passing a `null` in place of the array. For example, in `sum((int[]) null)` the `(int[])` says that this `null` takes the place of the whole array. In that case the for-each in `sum` throws a `NullPointerException`, because the `null` was put there by your call. In real code nobody writes `sum((int[]) null)` on purpose. What you can run into is passing `sum` an `int[]` variable that holds `null`, for example because its value came from another method that returned `null` instead of an array:
+>
+> ```java
+> int[] scores = null;   // the variable exists, but it points to no array
+> sum(scores);           // ❌ NullPointerException: numbers receives that null as it is
+> ```
+>
+> Java only creates the empty array when you call with no arguments, as in `sum()`. A variable that holds `null` reaches the method as it is, just like the `sum((int[]) null)` above.
 
 ### The same mechanism in the standard library
 
