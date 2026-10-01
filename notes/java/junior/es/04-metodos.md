@@ -330,7 +330,7 @@ static void add(int a, long b) { }
 static void add(long a, int b) { }
 
 add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específico: (int, long) no se
-             //    puede pasar a (long, int), y (long, int) no se puede pasar a (int, long)
+             //    puede pasar a (long, int), y (long, int) no se puede pasar a (int, long)TODO: POR QUE NO SE PUEDE PASAR, PORQUE LONG NO SE PUEDE PASAR A INT O POR QUE?
 // error: reference to add is ambiguous
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```
