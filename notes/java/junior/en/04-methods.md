@@ -611,7 +611,7 @@ package com.victor.timetrack.controller;
 From there, two tools warn you about the problem, IntelliJ and the compiler, and each one does so at a different moment. This is the order in which you will see it:
 
 1. **IntelliJ flags the file straight away**, with `Package name 'com.victor.timetrack.controller' does not correspond to the file path 'com.victor.timetrack.service'`.
-2. **The build still succeeds at this point.** Maven hands `javac` every `.java` file under `src/main/java/` by its path, and `javac` takes a class's package from the `package` line, not from the folder. So the class is still `com.victor.timetrack.controller.ProjectService`, and every file that imports it under that name keeps compiling.
+2. **The build still succeeds at this point.** Maven hands `javac` every `.java` file under `src/main/java/` by its path. To know which package a class belongs to, `javac` reads the `package` line of the file and does not look at which folder it is stored in. So the class is still `com.victor.timetrack.controller.ProjectService`, and every file that imports it under that name keeps compiling.
 3. **The compiler complains once you correct the line by hand** to `package com.victor.timetrack.service;`. Now every file that still imports the old name fails on its import line with `error: cannot find symbol`, and the message's `location: package com.victor.timetrack.controller` shows where it looked. The class did not disappear; it is no longer at the name those files look it up by.
 
 IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves the file, rewrites its `package` line and rewrites every import of it, in one step.
