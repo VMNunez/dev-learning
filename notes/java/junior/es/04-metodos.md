@@ -506,7 +506,7 @@ En esta clase hay dos tipos de métodos: los métodos de instancia, que se decla
 
 Qué significa `static` en realidad, y por qué esa división es una decisión de diseño y no una cuestión de gusto, lo verás en [06-poo-clases.md](06-poo-clases.md). Aquí te basta con saber que `static` decide cómo se llama al método: sobre un objeto, como `calc.add(3, 4)`, o directamente sobre la clase, como `Calculator.square(5)`. Las dos formas aparecen en el código de más abajo. En el constructor, `this.name = name;` copia el parámetro `name` que recibe el constructor en el campo `name` del objeto (del objeto, no de la clase: cada objeto tiene el suyo).
 
-> `List<String>` y `ArrayList` son la lista de longitud variable de Java — se cubren a fondo en [10-colecciones.md](10-colecciones.md). Por ahora léelo como "un array que puede crecer(TODO: O DECRECER)", y(TODO: Y QUE EL METODO ADD DE HISTORY.ADD SIRVE PARA ) `history.add(...)` como "añadir un elemento al final".
+> `List<String>` y `ArrayList` son la lista de longitud variable de Java — se cubren a fondo en [10-colecciones.md](10-colecciones.md). Por ahora léelo como "un array que puede crecer o decrecer". El método `add` de `history.add(...)` sirve para añadir un elemento al final de la lista. No es el `add()` de `Calculator`: es un método de la propia lista, que solo comparte nombre con él.
 
 Llamándolos:
 
