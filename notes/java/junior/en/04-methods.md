@@ -651,10 +651,10 @@ Fully qualified names are correct, but they are hard to read. You *can* write co
 
 ```java
 // ✅ legal, but hard to read, and it is not going to be written like this
-com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
+public java.util.List<com.victor.timetrack.dto.response.ProjectResponse> getAll() { ... }
 ```
 
-An **import** lets you use the simple name of the class instead. An import is written with the word `import`, followed by the fully qualified name of the class and a semicolon, for example `import com.victor.timetrack.model.Project;`. With this you will be able to use the simple name of the class, `Project`, in the rest of the file, without having to write `com.victor.timetrack.model.Project` every time. The import is placed after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
+An **import** lets you use the simple name of the class instead. An import is written with the word `import`, followed by the fully qualified name of the class and a semicolon, for example `import com.victor.timetrack.dto.response.ProjectResponse;`. With this you will be able to use the simple name of the class, `ProjectResponse`, in the rest of the file, without having to write `com.victor.timetrack.dto.response.ProjectResponse` every time. The import is placed after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
 
 ```java
 package com.victor.timetrack.service;
@@ -668,8 +668,7 @@ import java.util.List;
 
 @Service
 public class ProjectService {
-    // ✅ thanks to the imports above, writing List and ProjectResponse is enough here.
-    // Without them you would have to write java.util.List<com.victor.timetrack.dto.response.ProjectResponse>
+    // ✅ the same method as before: thanks to the imports above, writing List and ProjectResponse is enough
     public List<ProjectResponse> getAll() { ... }
 }
 ```
