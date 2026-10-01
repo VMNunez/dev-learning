@@ -647,7 +647,7 @@ El **Refactor → Move** de IntelliJ (`F6`) existe precisamente para evitar eso:
 
 ### Los imports — usar el nombre simple, resuelto en tiempo de compilación
 
-Los _fully qualified names_ son correctos, pero son difíciles de leer. _Puedes_ escribir código con ellos, y compila:
+Los _fully qualified names_ son correctos, pero son difíciles de leer. _Puedes_ escribir código con ellos(TODO: PONIENDOLOS DONDE SEA NECESARIO USAR UNA CLASE DE OTRO PAQUETE), y compila:
 
 ```java
 // ✅ legal, pero difícil de leer, y no se va a escribir así
