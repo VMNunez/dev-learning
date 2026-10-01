@@ -654,7 +654,7 @@ Los _fully qualified names_ son correctos, pero son difíciles de leer. _Puedes_
 com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
 ```
 
-Un **import** te deja usar el nombre simple de la clase en su lugar. Un import se escribe con la palabra `import`, seguida del _fully qualified name_ de la clase y de un punto y coma, por ejemplo `import com.victor.timetrack.model.Project;`. Se coloca después de la línea `package`, que define el nombre del paquete en el que te encuentras, y antes de la clase. Esta es la apertura del mismo `ProjectService`, reducida a cinco de sus doce imports:
+Un **import** te deja usar el nombre simple de la clase en su lugar. Un import se escribe con la palabra `import`, seguida del _fully qualified name_ de la clase y de un punto y coma, por ejemplo `import com.victor.timetrack.model.Project;`(TODO: CON ESTO VAS A PODER USAR EL NOMBRE SIMPLE DE LA CLASE PROJECT...). Se coloca después de la línea `package`, que define el nombre del paquete en el que te encuentras, y antes de la clase. Esta es la apertura del mismo `ProjectService`, reducida a cinco de sus doce imports:
 
 ```java
 package com.victor.timetrack.service;
