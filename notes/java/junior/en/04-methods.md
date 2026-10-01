@@ -579,7 +579,7 @@ That class's real, unambiguous name is now `com.victor.timetrack.service.Project
 
 ### Each part of the package name is a folder
 
-[00-intro-java.md](00-intro-java.md) already told you that the folder path and the package name always match. For example, the `ProjectService` class is stored in the folder `src/main/java/com/victor/timetrack/service/`, and that is why its first line is `package com.victor.timetrack.service;`. This is how it looks in every folder of the TimeTrack backend, with the package that matches each one:
+[00-intro-java.md](00-intro-java.md) already told you that the folder path and the package name always match. For example, the `ProjectService` class is stored in the folder `src/main/java/com/victor/timetrack/service/`, and that is why its first line is `package com.victor.timetrack.service;`. The `src/main/java/` at the start is not part of the package: it is the root folder where Maven, the tool that builds the project, looks for all the Java code. The package name starts counting from inside that folder. What Maven is and why it uses that folder you will see in [17-maven.md](17-maven.md). This is how it looks in every folder of the TimeTrack backend, with the package that matches each one:
 
 ```
 src/main/java/

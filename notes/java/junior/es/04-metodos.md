@@ -579,7 +579,7 @@ El nombre real y sin ambigüedad de esa clase es ahora `com.victor.timetrack.ser
 
 ### Cada parte del nombre del paquete es una carpeta
 
-[00-intro-java.md](00-intro-java.md) ya te contó que la ruta de carpetas y el nombre del paquete siempre coinciden. Por ejemplo, la clase `ProjectService` está guardada en la carpeta `src/main/java/com/victor/timetrack/service/`, y por eso su primera línea es `package com.victor.timetrack.service;`(TODO: PERO SE HA OMITIDO `src/main/java). Así se ve en todas las carpetas del backend de TimeTrack, con el paquete que corresponde a cada una:
+[00-intro-java.md](00-intro-java.md) ya te contó que la ruta de carpetas y el nombre del paquete siempre coinciden. Por ejemplo, la clase `ProjectService` está guardada en la carpeta `src/main/java/com/victor/timetrack/service/`, y por eso su primera línea es `package com.victor.timetrack.service;`. El `src/main/java/` del principio no forma parte del paquete: es la carpeta raíz donde Maven, la herramienta que compila el proyecto, busca todo el código Java. El nombre del paquete empieza a contarse desde dentro de esa carpeta. Qué es Maven y por qué usa esa carpeta lo verás en [17-maven.md](17-maven.md). Así se ve en todas las carpetas del backend de TimeTrack, con el paquete que corresponde a cada una:
 
 ```
 src/main/java/
