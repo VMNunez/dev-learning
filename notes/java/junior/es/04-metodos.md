@@ -788,7 +788,7 @@ Ahora fíjate en la trampa. La línea de arriba del stack trace es `Report.java:
 
 ### La solución: rechazar el valor ausente en la frontera que lo necesita
 
-La lección no es "añade más null-checks". Salpicar `if (x != null)` por cada método esconde el bug en lugar de reportarlo, y produce el segundo peor resultado posible: una página que renderiza `<h1>null</h1>` y nadie se da cuenta durante un mes.
+La lección no es "añade más null-checks". Salpicar (TODO: LLENAR LOS METODOS DE)`if (x != null)` por cada método esconde el bug en lugar de reportarlo, y produce el segundo peor resultado posible: una página que renderiza `<h1>null</h1>` y nadie se da cuenta durante un mes(TODO: QUIERO MAYOR CLARIDAD EN EL PARRAFO).
 
 La lección es **dónde**. Un método que no puede hacer su trabajo sin un argumento debería decirlo _al entrar_, antes de hacer cualquier otra cosa — esta es la forma de **guard clause** que ya conociste en §"Tipos de retorno", ahora aplicada al contrato del método en lugar de a su flujo de control. La frontera correcta es el método más externo que declara ese valor como obligatorio. En el ejemplo es `buildPage`, el punto de entrada público de esta pequeña funcionalidad: es el que tiene el contrato que dice "dame un título y te doy una página".
 
