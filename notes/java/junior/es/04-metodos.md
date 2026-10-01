@@ -689,7 +689,7 @@ Hay tres casos que no necesitan ningún import, y saber cuáles explica por qué
 | Clases en el **mismo paquete**              | `ProjectService` usa `AuthenticatedUserProvider` sin import, porque las dos clases están en el paquete `com.victor.timetrack.service` | Mismo namespace, así que el nombre simple ya es inequívoco    |
 | Usar directamente el _fully qualified name_ | `java.sql.Date now = ...`                                                                                                             | Escribiste el nombre entero, así que no hay nada que importar |
 
-La primera fila es la que hay que memorizar: `java.lang` contiene las clases que todos los programas usan, así que Java las importa por ti en todos los archivos. Por eso `System.out.println` y `Integer.parseInt` funcionan en un archivo sin imports. La segunda fila explica por qué `ProjectService` importa `Project` y `ProjectRepository` pero no `AuthenticatedUserProvider`: esa clase está en su mismo paquete, `com.victor.timetrack.service`.
+La primera fila es la que hay que memorizar(TODO: NO ME DIGAS QUE HAY QUE MEMORIZAR, SIMPLEMENTE DIME LO DE LA PRIMERA FILA): `java.lang` contiene las clases que todos los programas usan, así que Java las importa por ti en todos los archivos. Por eso `System.out.println` y `Integer.parseInt` funcionan en un archivo sin imports. La segunda fila explica por qué `ProjectService` importa `Project` y `ProjectRepository` pero no `AuthenticatedUserProvider`: esa clase está en su mismo paquete, `com.victor.timetrack.service`.TODO: LA TERCERA FILA...
 
 ### Cuando dos clases comparten el mismo nombre simple
 
