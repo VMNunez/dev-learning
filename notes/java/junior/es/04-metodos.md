@@ -693,7 +693,7 @@ La primera fila son las clases de `java.lang`, que son las que todos los program
 
 ### Cuando dos clases comparten el mismo nombre simple
 
-Tarde o temprano necesitarás tanto `java.util.Date` como `java.sql.Date` en un mismo archivo. Importar los dos no es una decisión que el compilador tome por ti — la rechaza directamente:
+Tarde o temprano necesitarás tanto `java.util.Date` como `java.sql.Date` en un mismo archivo. Importar los dos no es una decisión que el compilador tome por ti — la rechaza directamente(TODO: SI INTENTAS IMPORTAR LAS DOS EL COMPILADOR..):
 
 ```java
 import java.util.Date;
