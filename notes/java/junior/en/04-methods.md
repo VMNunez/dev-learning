@@ -499,7 +499,12 @@ public class Calculator {
 }
 ```
 
-This class has two kinds of method, instance and static, and each one is declared as one kind or the other depending on the data it uses: `add()` touches `this.name` and `this.history`, so it *must* be called on a particular calculator; `square()` touches nothing but its argument, so it is declared `static` and needs no object at all. What `static` actually means, and why that split is a design decision rather than a matter of taste, is settled in [06-oop-classes.md](06-oop-classes.md) — here it is only marking which of the two call shapes below each method takes. In the constructor, `this.name = name;` copies the parameter `name` into the field of the same name: `this.name` is the field of the object being built, and the bare `name` is the parameter, which inside that constructor hides the field.
+This class has two kinds of method, instance and static, and each one is declared as one kind or the other depending on the data it uses:
+
+- `add()` touches `this.name` and `this.history`, so it *must* be called on an instance of the class, that is, on a `Calculator` object already created. That is why it is an instance method.
+- `square()` touches nothing but its argument, that is, it needs no instance of the class and no particular object. That is why it is declared `static`: so it can be used directly on the class, as in `Calculator.square(5)`, without creating any object.
+
+What `static` actually means, and why that split is a design decision rather than a matter of taste, is settled in [06-oop-classes.md](06-oop-classes.md) — here it is only marking which of the two call shapes below each method takes. In the constructor, `this.name = name;` copies the parameter `name` into the field of the same name: `this.name` is the field of the object being built, and the bare `name` is the parameter, which inside that constructor hides the field.
 
 > `List<String>` and `ArrayList` are Java's growable list — covered in full in [10-collections.md](10-collections.md). For now read it as "an array that can grow", and `history.add(...)` as "append one item to the end".
 

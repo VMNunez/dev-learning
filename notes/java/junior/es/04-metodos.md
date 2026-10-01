@@ -499,7 +499,12 @@ public class Calculator {
 }
 ```
 
-En esta clase hay dos tipos de método, de instancia y estático, y cada uno se declara de un tipo u otro según los datos que usa: `add()` toca `this.name` y `this.history`, así que _tiene_ que llamarse sobre una calculadora en concreto(TODO: SOBRE UNA INSTANCIA DE LA CLASE, SOBRE UN OBJETO CREADO, POR LO QUE TIENE QUE SER UN METODO...); `square()` no toca nada más que su argumento(TODO: ES DECIR NO LE HACE FALTA UNA INSTACIA DE LA CLASE, NO LE HACE FALTA UN OBJETO CONCRETO), así que se declara `static` (TODO:PARA PODER USARLO...)y no necesita ningún objeto. Qué significa `static` en realidad, y por qué esa división es una decisión de diseño y no una cuestión de gusto, se resuelve en [06-poo-clases.md](06-poo-clases.md) — aquí solo marca cuál de las dos formas de llamar de abajo le toca a cada método. En el constructor, `this.name = name;` copia el parámetro `name` en el campo del mismo nombre: `this.name` es el campo del objeto que se está construyendo, y el `name` a secas es el parámetro, que dentro de ese constructor oculta al campo.
+En esta clase hay dos tipos de método, de instancia y estático, y cada uno se declara de un tipo u otro según los datos que usa:
+
+- `add()` toca `this.name` y `this.history`, así que _tiene_ que llamarse sobre una instancia de la clase, es decir, sobre un objeto `Calculator` ya creado. Por eso es un método de instancia.
+- `square()` no toca nada más que su argumento, es decir, no le hace falta una instancia de la clase ni ningún objeto concreto. Por eso se declara `static`: para poder usarlo directamente sobre la clase, como en `Calculator.square(5)`, sin crear ningún objeto.
+
+Qué significa `static` en realidad, y por qué esa división es una decisión de diseño y no una cuestión de gusto, se resuelve en [06-poo-clases.md](06-poo-clases.md) — aquí solo marca cuál de las dos formas de llamar de abajo le toca a cada método. En el constructor, `this.name = name;` copia el parámetro `name` en el campo del mismo nombre: `this.name` es el campo del objeto que se está construyendo, y el `name` a secas es el parámetro, que dentro de ese constructor oculta al campo.
 
 > `List<String>` y `ArrayList` son la lista redimensionable de Java — se cubren a fondo en [10-colecciones.md](10-colecciones.md). Por ahora léelo como "un array que puede crecer", y `history.add(...)` como "añadir un elemento al final".
 
