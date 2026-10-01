@@ -546,12 +546,12 @@ A method has a name. The class holding it has a name too. Once a project grows, 
 
 > **You have met the `package` line before.** [00-intro-java.md](00-intro-java.md) explained it with the smallest program that can be run in Java. A package is the folder a class belongs to, written with dots instead of slashes; it is a way of identifying the class, so two classes with the same name can coexist; and that makes the package a **namespace**, a scope in which each name identifies exactly one thing: inside a package, each class name corresponds to a single class.
 >
-> This section adds four things that first explanation left out:
+> This section adds three things that first explanation left out:
 >
 > 1. The **fully qualified name** of a class (often shortened to FQN): the class name with the package it belongs to in front, like `com.victor.timetrack.service.ProjectService`.
-> 2. The **`import`**: a line at the top of the file that lets you write just the class name, without the package in front.
-> 3. The classes used without any `import`, like `String`, because Java imports their package, `java.lang`, in every file.
-> 4. What the compiler does when you use two classes with the same name, like the two `User` classes above.
+>    - The **`import`** is the way to avoid writing that full name every time. It is a line at the top of the file, like `import com.victor.timetrack.service.ProjectService;`, that tells Java which class you mean when you later write just `ProjectService`.
+> 2. The classes used without any `import`, like `String`, because Java imports their package, `java.lang`, in every file.
+> 3. What the compiler does when you use two classes with the same name, like the two `User` classes above.
 
 Remember how it is written: the `package` line is the first line of code in the file, before the class.
 

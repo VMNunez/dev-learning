@@ -546,10 +546,10 @@ Un método tiene un nombre. También tiene nombre la clase que lo contiene. En c
 
 > **Ya has visto la línea `package` alguna vez.** [00-intro-java.md](00-intro-java.md) la explicó con el programa más pequeño que se puede ejecutar en Java. Un paquete es la carpeta a la que pertenece una clase, escrita con puntos en lugar de barras; es una forma de identificar la clase, de modo que dos clases con el mismo nombre pueden convivir; y eso convierte al paquete en un **namespace** (espacio de nombres), un ámbito en el que cada nombre identifica exactamente una cosa: dentro de un paquete, cada nombre de clase corresponde a una sola clase.
 >
-> Esta sección añade cuatro cosas que aquella primera explicación dejó fuera:
+> Esta sección añade tres cosas que aquella primera explicación dejó fuera:
 >
 > 1. El **nombre completamente cualificado** de una clase (en inglés _fully qualified name_, abreviado a menudo como FQN, que es como lo oirás habitualmente): el nombre de la clase con el paquete al que pertenece delante, como `com.victor.timetrack.service.ProjectService`.
->    2.(TODO: QUE ES EL IMPORT) El **`import`**: una línea al principio del archivo que te permite escribir solo el nombre de la clase, sin el paquete delante.
+>    - El **`import`** es la forma de no tener que escribir ese nombre completo cada vez. Es una línea al principio del archivo, como `import com.victor.timetrack.service.ProjectService;`, que le dice a Java a qué clase te refieres cuando después escribes solo `ProjectService`.
 > 2. Las clases que se usan sin ningún `import`, como `String`, porque Java importa su paquete, `java.lang`, en todos los archivos.
 > 3. Qué hace el compilador cuando usas dos clases con el mismo nombre, como los dos `User` de arriba.
 
