@@ -579,7 +579,7 @@ El nombre real y sin ambigüedad de esa clase es ahora `com.victor.timetrack.ser
 
 ### Cada parte del nombre del paquete es una carpeta
 
-[00-intro-java.md](00-intro-java.md) enunció la regla de que la ruta de carpetas y el nombre del paquete siempre coinciden. Así se ve a lo largo de todo un proyecto, el backend de TimeTrack, donde puedes leer cada nombre de paquete directamente de su ruta:
+[00-intro-java.md](00-intro-java.md) enunció la regla de que la ruta de carpetas y el nombre del paquete siempre coinciden. Así se ve a lo largo de todo un proyecto, el backend de TimeTrack, donde puedes leer cada nombre de paquete directamente de su rutaTODO: LO ENTIENDO PERO EXPLICA MEJOR:
 
 ```
 src/main/java/
