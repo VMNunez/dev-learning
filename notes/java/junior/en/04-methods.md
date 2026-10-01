@@ -544,7 +544,7 @@ It looks like a single operation, but it is three calls, and each one creates a 
 
 A method has a name. The class holding it has a name too. Once a project grows, those names start colliding: your `User` class and the `User` class some library ships are both called the same way, `User`, and Java has to be able to tell one from the other. If it cannot, the code does not compile, because Java does not know which of the two classes you mean. That is the problem **packages** solve, and it is why every real Java file opens with a `package` line.
 
-> **You have met the `package` line before.** [00-intro-java.md](00-intro-java.md) explained it with the smallest program that can be run: a package is the folder a class belongs to, written with dots instead of slashes; it is a way of identifying the class, so two classes with the same name can coexist; and that makes it a **namespace**, a scope in which each name identifies exactly one thing: inside a package, each class name corresponds to a single class.
+> **You have met the `package` line before.** [00-intro-java.md](00-intro-java.md) explained it with the smallest program that can be run in Java: a package is the folder a class belongs to, written with dots instead of slashes; it is a way of identifying the class, so two classes with the same name can coexist; and that makes the package a **namespace**, a scope in which each name identifies exactly one thing: inside a package, each class name corresponds to a single class.
 >
 > This section adds four things that first explanation left out:
 >
