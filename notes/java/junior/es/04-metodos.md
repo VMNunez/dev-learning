@@ -733,11 +733,11 @@ En [03-flujo-de-control.md](03-flujo-de-control.md), en la sección _if / else_,
 
 ```java
 if (name != null) {
-    System.out.println(name.toUpperCase());   // solo se ejecuta si name apunta a un String(TODO: SI NO ES NULL)
+    System.out.println(name.toUpperCase());   // solo se ejecuta si name no es null
 }
 ```
 
-Si `name` vale `null`, la condición `name != null` da `false` y Java se salta el bloque entero, así que `toUpperCase()` nunca se llama sobre `null`. Sin el `if`, esa llamada detendría el programa con una `NullPointerException`, el error que explican los párrafos siguientes. Ese archivo dejó para este capítulo cuándo hace falta esa comprobación(TODO: MEJORA "Ese archivo dejó para este capítulo cuándo hace falta esa comprobación"), porque eso no es en absoluto una pregunta sobre `if`(TODO: NO ME GUSTA ESA FRASE): **¿dónde**, en un programa, debe rechazarse un valor ausente? Es una pregunta sobre el contrato entre un método y quien lo llama, que es justo de lo que ha ido todo este capítulo, así que pertenece aquí.
+Si `name` vale `null`, la condición `name != null` da `false` y Java se salta el bloque entero, así que `toUpperCase()` nunca se llama sobre `null`. Sin el `if`, esa llamada detendría el programa con una `NullPointerException`, el error que explican los párrafos siguientes. [03-flujo-de-control.md](03-flujo-de-control.md) te enseñó a escribir esta comprobación, pero no en qué punto del programa hay que hacerla. Esa es la pregunta que responde esta sección: **¿dónde** hay que rechazar un argumento que llega como `null`? La respuesta no depende de cómo funciona `if`, sino del contrato entre un método y quien lo llama, que es justo de lo que trata todo este capítulo.
 
 Como mostró [01-variables-tipos.md](01-variables-tipos.md), `null` significa "esta referencia no apunta a ningún objeto": es un valor legal para cualquier tipo de referencia — `String`, `Project`, `Integer`, un array — y nunca para un primitivo, por lo que `int x = null;` no compila. El fallo ocurre en el momento en que **desreferencias** (_dereference_) una referencia `null`, es decir, usas la dirección que guarda para llegar al objeto que hay allí: llamar a un método sobre ella, leer un campo suyo, indexarla como un array. En esa dirección no hay ningún objeto, así que la JVM lanza una `NullPointerException`.
 
