@@ -229,7 +229,24 @@ ResponseEntity<Void>   // ✓ — Void is a class
 ResponseEntity<void>   // ✗ — void is a keyword, not valid inside < >
 ```
 
-> **Clearing up the confusion:** use `void` (lowercase) as the return type of a method. Use `Void` (uppercase) only when a generic forces you to put a type between the **angle brackets** — the `<>` — and there is nothing real to return. The two differ in what the method must do at its end. A `void` method returns no value at all. A method declared to return `Void` still has to return something, like any method with a class as its return type, and `null` is the only value that type has, so it ends with `return null;`.
+> **Clearing up the confusion:** use `void` (lowercase) as the return type of a method. Use `Void` (uppercase) only when a generic forces you to put a type between the **angle brackets** — the `<>` — and no value of that type exists to put there. In `ResponseEntity<Void>`, for example, the type between `<>` says what type the response body is, and a response with no body has no value to fill that place.
+>
+> The two also differ in how a method that uses them as its return type has to end. A `void` method returns no value, so it simply ends when it reaches its closing brace. `Void`, on the other hand, is a class, so the compiler applies to it the rule you saw in the section _Method declaration_: every exit path has to return a value of that type. You saw above that a `Void` object can never be created, so the only value the method can return is `null`, and that is why it has to end with `return null;`:
+>
+> ```java
+> // void: returns no value, so it needs no return
+> public void logDeletion(Long id) {
+>     System.out.println("Deleted project " + id);
+> }
+>
+> // Void: it is a class, so a value must be returned, and the only possible one is null
+> public Void logDeletionAsVoid(Long id) {
+>     System.out.println("Deleted project " + id);
+>     return null;
+> }
+> ```
+>
+> If you delete the `return null;` from `logDeletionAsVoid`, compilation fails with the same `missing return statement` error you saw in the section _Method declaration_. If you replace it with a bare `return;`, the kind you would write in a `void` method, it fails with `incompatible types: missing return value`, because a `return` with no value is only allowed in a `void` method. You will never declare a `Void` method by choice, because `void` does the same without forcing you to return anything. You will meet it when a generic fixes a method's return type for you, and then that `return null;` is mandatory.
 
 > **Preview — Spring Boot:** The example below uses `ResponseEntity`, a Spring Boot class you haven't studied yet. Read it to see where `void` vs `Void` matters in practice — you'll implement this yourself in the Spring Boot notes.
 

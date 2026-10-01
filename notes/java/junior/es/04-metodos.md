@@ -229,7 +229,24 @@ ResponseEntity<Void>   // ✓ — Void es una clase
 ResponseEntity<void>   // ✗ — void es una palabra clave, no válida dentro de < >
 ```
 
-> **Para aclarar la confusión:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets** — los `<>` — y no hay nada real que devolver(TODO: NO ME GUSTA "y no hay nada real que devolver"). Los dos se distinguen por lo que el método debe hacer al final. Un método `void` no devuelve ningún valor. Un método declarado con retorno `Void` sigue teniendo que devolver algo, como cualquier método cuyo tipo de retorno es una clase, y `null` es el único valor que tiene ese tipo, así que termina con `return null;`.(TODO: EXPLICA MEJOR ESTO)
+> **Para aclarar la confusión:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets** — los `<>` — y no existe ningún valor de ese tipo que poner ahí. En `ResponseEntity<Void>`, por ejemplo, el tipo entre `<>` indica de qué tipo es el cuerpo de la respuesta, y una respuesta sin cuerpo no tiene ningún valor que ocupe ese sitio.
+>
+> Los dos se distinguen también por cómo tiene que terminar un método que los usa como tipo de retorno. Un método `void` no devuelve ningún valor, así que termina sin más al llegar a su llave de cierre. `Void`, en cambio, es una clase, así que el compilador le aplica la regla que viste en la sección _Declaración de un método_: todos los caminos de salida tienen que devolver un valor de ese tipo. Ya viste arriba que nunca se puede crear un objeto `Void`, así que el único valor que el método puede devolver es `null`, y por eso tiene que terminar con `return null;`:
+>
+> ```java
+> // void: no devuelve ningún valor, así que no necesita ningún return
+> public void logDeletion(Long id) {
+>     System.out.println("Deleted project " + id);
+> }
+>
+> // Void: es una clase, así que hay que devolver un valor, y el único posible es null
+> public Void logDeletionAsVoid(Long id) {
+>     System.out.println("Deleted project " + id);
+>     return null;
+> }
+> ```
+>
+> Si borras el `return null;` de `logDeletionAsVoid`, la compilación falla con el mismo error `missing return statement` que viste en la sección _Declaración de un método_. Si lo cambias por un `return;` sin valor, como el que escribirías en un método `void`, falla con `incompatible types: missing return value`, porque un `return` sin valor solo está permitido en un método `void`. Nunca vas a declarar un método `Void` por elección propia, porque `void` hace lo mismo sin obligarte a devolver nada. Lo vas a encontrar cuando un genérico fije por ti el tipo de retorno de un método, y entonces ese `return null;` es obligatorio.
 
 > **Vista previa — Spring Boot:** El ejemplo de abajo usa `ResponseEntity`, una clase de Spring Boot que aún no has estudiado. Léelo para ver dónde importa la diferencia entre `void` y `Void` en la práctica — lo implementarás tú mismo en las notas de Spring Boot.
 
