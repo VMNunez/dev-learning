@@ -459,7 +459,7 @@ As we saw in the section [Method overloading](#method-overloading), overload res
 >
 > It works just like `sum(scores)`: the varargs parameter really is an array, so your array fits directly and Java uses it as it is. That said, `List.of` copies the elements into the list it returns, so if you later change `names[0]`, the list is still `[a, b]`.
 >
-> In practice, if you have loose values, pass them loose, as in `List.of("a", "b")`: with ten or fewer no array is created. Putting them into an array first just to call `List.of` would mean creating yourself the array the fixed versions exist to save. If you already have the array, pass it directly.
+> In practice, if you have loose values, pass them loose, as in `List.of("a", "b")`: with ten arguments or fewer no array is created. Putting them into an array first just to call `List.of` would mean creating the array yourself, and saving that array is the reason the fixed versions exist. If you already have the array, pass it directly.
 
 ---
 

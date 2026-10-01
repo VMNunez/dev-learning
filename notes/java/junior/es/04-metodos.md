@@ -459,7 +459,7 @@ Como vimos en la sección [Sobrecarga de métodos (overloading)](#sobrecarga-de-
 >
 > Funciona igual que `sum(scores)`: el parámetro varargs es en realidad un array, así que tu array encaja directamente y Java lo usa tal cual. Eso sí, `List.of` copia los elementos en la lista que devuelve, así que si después cambias `names[0]`, la lista sigue siendo `[a, b]`.
 >
-> En la práctica, si tienes valores sueltos, pásalos sueltos, como en `List.of("a", "b")`: con diez o menos (TODO:ARGUMENTOS)no se crea ningún array. Meterlos antes en un array solo para llamar a `List.of` sería crear tú el array(TODO: QUE ES EL MOTIVO POR EL QUE) que las versiones fijas existen para ahorrar. Si el array ya lo tienes, pásalo directamente.
+> En la práctica, si tienes valores sueltos, pásalos sueltos, como en `List.of("a", "b")`: con diez argumentos o menos no se crea ningún array. Meterlos antes en un array solo para llamar a `List.of` sería crear tú el array, y ahorrarse ese array es el motivo por el que existen las versiones fijas. Si el array ya lo tienes, pásalo directamente.
 
 ---
 
