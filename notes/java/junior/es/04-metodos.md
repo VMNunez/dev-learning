@@ -396,7 +396,7 @@ sum();                       // 0 — numbers.length == 0
 // numbers == null           // ❌ nunca es true; un null-check aquí es código muerto
 ```
 
-> **¿Por qué un array vacío en vez de `null`?** Porque todo el sentido de varargs es que el cuerpo del método no tenga que preocuparse de cómo lo llamaron. Si una llamada sin argumentos produjera `null`, cada método varargs tendría que abrir con un `if (numbers == null)` defensivo antes de poder recorrerlo, y olvidarlo significaría una `NullPointerException` en la llamada _más fácil_ de todas. Entregar un array vacío hace que el caso sin argumentos sea el mismo camino de código que cualquier otro caso. (Sí _puedes_ forzar un `null` pasándolo explícitamente — `sum((int[]) null)` — pero eso eres tú anulando la garantía, no Java rompiéndola.)
+> **¿Por qué un array vacío en vez de `null`?** Porque todo el sentido de varargs es que el cuerpo del método no tenga que preocuparse de cómo lo llamaron(TODO: MEJORA LA PRIMERA FRASE). Si una llamada sin argumentos produjera `null`, cada método varargs tendría que abrir con un `if (numbers == null)` defensivo antes de poder recorrerlo, y olvidarlo significaría una `NullPointerException` en la llamada _más fácil_ de todas. Entregar un array vacío hace que el caso sin argumentos sea el mismo camino de código que cualquier otro caso. (Sí _puedes_ forzar un `null` pasándolo explícitamente — `sum((int[]) null)` — pero eso eres tú anulando la garantía, no Java rompiéndola.)
 
 ### El mismo mecanismo en la librería estándar
 
