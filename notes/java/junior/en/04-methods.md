@@ -382,7 +382,7 @@ sum();               // 0
 
 Inside the method, `numbers` **is** an array. `int... numbers` and `int[] numbers` are the same parameter as far as the method body is concerned; the `...` only changes what you are allowed to write at the moment the method is called. Java builds the array for you at that moment and hands it over. Two consequences follow directly:
 
-**An array can be passed as the argument for the varargs parameter.** Normally you pass loose values, as in `sum(1, 2, 3)`, and Java puts them into a new array. But since the parameter is an `int[]`, it also accepts an array you already have. In that case Java builds no array at all: `numbers` receives yours directly. There is no need to take its values out one by one to pass them separately:
+**An array can be passed as the argument for the varargs parameter.** Normally you pass loose values, as in `sum(1, 2, 3)`, and Java puts them into a new array. But a varargs parameter really is an array: `int... numbers` is an `int[]`, just like the `add(int... numbers)` in the section [Method overloading](#method-overloading). That is why it also accepts an already-created array as the argument. In that case Java does not build any array from the one you passed; it uses that same array directly. There is no need to take its values out one by one to pass them separately:
 
 ```java
 int[] scores = {1, 2, 3};
