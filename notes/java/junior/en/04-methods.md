@@ -579,7 +579,7 @@ That class's real, unambiguous name is now `com.victor.timetrack.service.Project
 
 ### Each part of the package name is a folder
 
-[00-intro-java.md](00-intro-java.md) stated the rule that the folder path and the package name always match. This is what it looks like across a whole project, the TimeTrack backend, where you can read each package name straight off its path:
+[00-intro-java.md](00-intro-java.md) already told you that the folder path and the package name always match. For example, the `ProjectService` class is stored in the folder `src/main/java/com/victor/timetrack/service/`, and that is why its first line is `package com.victor.timetrack.service;`. This is how it looks in every folder of the TimeTrack backend, with the package that matches each one:
 
 ```
 src/main/java/
