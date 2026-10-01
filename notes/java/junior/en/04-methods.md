@@ -321,7 +321,7 @@ takesDouble(5L);   // ✓ prints 5.0 — Java converts the long to double on its
 takesLong(2.5);    // ❌ error: incompatible types: possible lossy conversion from double to long
 ```
 
-To fit `2.5` into a `long`, Java would have to drop the `.5`, and it only does that loss if you write the cast. So `add(long, long)` is more specific and wins. It is the same rule that made `String.valueOf(null)` in [02-strings.md](02-strings.md) pick `valueOf(char[])` over `valueOf(Object)`: every `char[]` is an `Object`, but not every `Object` is a `char[]`.
+To fit `2.5` into a `long`, Java would have to remove the `.5`, and it only does that loss if you write the cast. So `add(long, long)` is more specific and wins. It is the same rule that made `String.valueOf(null)` in [02-strings.md](02-strings.md) pick `valueOf(char[])` over `valueOf(Object)`: every `char[]` is an `Object`, but not every `Object` is a `char[]`.
 
 The failure mode is two candidates in the same pass where neither is more specific than the other:
 
