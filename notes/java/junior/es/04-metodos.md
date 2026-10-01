@@ -636,7 +636,7 @@ El **Refactor → Move** de IntelliJ (`F6`) existe precisamente para evitar eso:
 >
 > La JVM encuentra las clases de la misma manera cuando las necesita al ejecutar el programa, y lo hace tanto con las tuyas como con las de una librería. Por ejemplo, para `com.victor.timetrack.model.Project` busca la ruta `com/victor/timetrack/model/Project.class` y la encuentra en `target/classes/`. Para `org.springframework.stereotype.Service` busca `org/springframework/stereotype/Service.class` y la encuentra en el `.jar` de Spring. Ni `javac` ni la JVM recorren todos los archivos hasta dar con la clase: van directamente a la ruta que sale de su nombre. Por eso la búsqueda sigue siendo instantánea en un proyecto con diez mil clases.
 >
-> Tu código fuente sigue la misma estructura por ese motivo, aunque `javac` no lo exija. Por ejemplo, `Project.java` y `Project.class` tienen la misma ruta de carpetas, `com/victor/timetrack/model/`, y solo cambia la carpeta de la que parte cada uno:
+> Tu código fuente sigue la misma estructura por ese motivo(TODO: ES DECIR QUE LOS NOMBRES DE LOS PAQUETES COINCIDAN CON LA RUTA DE...), aunque `javac` no lo exija. Por ejemplo, `Project.java` y `Project.class` tienen la misma ruta de carpetas, `com/victor/timetrack/model/`, y solo cambia la carpeta de la que parte cada uno:
 >
 > ```
 > src/main/java/com/victor/timetrack/model/Project.java      ← código fuente
