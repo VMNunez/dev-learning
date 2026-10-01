@@ -719,7 +719,7 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ completamente cualif
 > Date today = new Date();   // ❌ error: reference to Date is ambiguous
 > ```
 >
-> El conflicto puede aparecer sin que tú cambies nada en el archivo: basta con que una librería añada, en una versión nueva, una clase con un nombre que ya usabas de otro paquete. IntelliJ escribe imports explícitos de un solo tipo por defecto, y solo los colapsa a partir de un umbral que puedes subir (`Settings → Editor → Code Style → Java → Imports`). Mantenlos explícitos: el bloque de imports entonces funciona también como un resumen honesto de lo que depende el archivo, que es lo primero que lees al abrir una clase que no conoces.
+> El conflicto puede aparecer sin que tú cambies nada en el archivo: basta con que una librería añada, en una versión nueva, una clase con un nombre que ya usabas de otro paquete. IntelliJ escribe imports explícitos de un solo tipo por defecto(TODO: DE UN SOLO TIPO?), y solo los colapsa a partir de un umbral que puedes subir (`Settings → Editor → Code Style → Java → Imports`). Mantenlos explícitos: el bloque de imports entonces funciona también como un resumen honesto de lo que depende el archivo, que es lo primero que lees al abrir una clase que no conoces.
 
 ---
 
