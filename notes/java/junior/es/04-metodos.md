@@ -548,7 +548,7 @@ Un método tiene un nombre. También tiene nombre la clase que lo contiene. En c
 >
 > Esta sección añade cuatro cosas que aquella primera explicación dejó fuera:
 >
-> 1. El **nombre completamente cualificado** (en inglés _fully qualified name_, abreviado a menudo como FQN, que es como lo oirás habitualmente) de una clase: su nombre con el paquete delante, como `com.victor.timetrack.service.ProjectService`. Puedes escribirlo así en el código.
+> 1. El **nombre completamente cualificado** de una clase (en inglés _fully qualified name_, abreviado a menudo como FQN, que es como lo oirás habitualmente): su nombre(TODO: EL NOMBRE DE LA CLASE CON EL ...) con el paquete(TODO: AL QUE PERTENECE) delante, como `com.victor.timetrack.service.ProjectService`.
 > 2. El **`import`**: una línea al principio del archivo que te permite escribir solo el nombre de la clase, sin el paquete delante.
 > 3. Las clases que se usan sin ningún `import`, como `String`, porque Java importa su paquete, `java.lang`, en todos los archivos.
 > 4. Qué hace el compilador cuando usas dos clases con el mismo nombre, como los dos `User` de arriba.
