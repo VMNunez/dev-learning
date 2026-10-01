@@ -575,7 +575,7 @@ El nombre real y sin ambigüedad de esa clase es ahora `com.victor.timetrack.ser
 >
 > Al ponerlo al revés, los paquetes se ordenan de lo general a lo concreto: primero `com`, dentro `com.victor`, dentro `com.victor.timetrack`, y así sucesivamente.
 >
-> Es una convención, no una regla del compilador: `package banana;` compila sin problema. Pero todas las librerías que vas a usar la siguen(TODO: NO ME GUSTA " Pero todas las librerías que vas a usar la siguen"). La excepción son las clases que vienen con el propio Java, como las de `java.util`, que usan el prefijo `java.`, reservado para ellas.
+> Es una convención, no una regla del compilador: `package banana;` compila sin problema. Aun así, es la forma estándar de nombrar paquetes, y la verás en Spring, en Jackson y en prácticamente cualquier librería que añadas a un proyecto. La excepción son las clases que vienen con el propio Java, como las de `java.util`, que usan el prefijo `java.`, reservado para ellas.
 
 ### El nombre del paquete y la ruta de carpetas coinciden, una carpeta por cada punto
 
