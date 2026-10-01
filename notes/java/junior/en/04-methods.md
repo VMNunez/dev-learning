@@ -364,7 +364,7 @@ log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");
 // the line that appears in the console ends in: Project 7 deleted by Ana at 10:42
 ```
 
-The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument. The same reasoning allows only one varargs parameter per method. If you put the varargs parameter anywhere else, the code fails at compile time: the declaration alone is enough, even before anything calls the method. For example, `void f(int... a, int b)` fails with `error: varargs parameter must be the last parameter`.
+The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument. The same reasoning is what makes Java allow only one varargs parameter per method. If you put the varargs parameter anywhere else, the code fails at compile time. For example, `void f(int... a, int b)` fails with `error: varargs parameter must be the last parameter`.
 
 ```java
 public int sum(int... numbers) {
