@@ -501,7 +501,7 @@ public class Calculator {
 
 En esta clase hay dos tipos de métodos: los métodos de instancia, que se declaran sin ninguna palabra especial, como `public int add(int a, int b)`, y los métodos estáticos, que usan la palabra clave `static` para declararlos, como `public static double square(double n)`. Cada uno se declara de un tipo u otro según los datos que usa:
 
-- `add()` toca `this.name` y `this.history`, así que _tiene_ que llamarse sobre una instancia de la clase, es decir, sobre un objeto `Calculator` ya creado. Por eso es un método de instancia.
+- `add()` toca `this.name` y `this.history`(TODO: DONDE THIS. HACE REFERENCIA A LOS CAMPOS DE LA CLASE QUE SE DECLARAN CUANDO S INSTANCIA EL OBJETO EN EL CONSTRUCTOR?????), así que _tiene_ que llamarse sobre una instancia de la clase, es decir, sobre un objeto `Calculator` ya creado. Por eso es un método de instancia.
 - `square()` no toca nada más que su argumento, es decir, no le hace falta una instancia de la clase ni ningún objeto concreto. Por eso se declara `static`: para poder usarlo directamente sobre la clase, como en `Calculator.square(5)`, sin crear ningún objeto.
 
 Qué significa `static` en realidad, y por qué esa división es una decisión de diseño y no una cuestión de gusto, se resuelve en [06-poo-clases.md](06-poo-clases.md) — aquí solo marca cuál de las dos formas de llamar de abajo le toca a cada método. En el constructor, `this.name = name;` copia el parámetro `name` en el campo del mismo nombre: `this.name` es el campo del objeto que se está construyendo, y el `name` a secas es el parámetro, que dentro de ese constructor oculta al campo.
