@@ -13,7 +13,7 @@
   - [Cada parte del nombre del paquete es una carpeta](#cada-parte-del-nombre-del-paquete-es-una-carpeta)
   - [Los imports — usar el nombre simple, resuelto en tiempo de compilación](#los-imports--usar-el-nombre-simple-resuelto-en-tiempo-de-compilación)
   - [Cuando dos clases comparten el mismo nombre simple](#cuando-dos-clases-comparten-el-mismo-nombre-simple)
-- [`null`, `NullPointerException`, y dónde rechazar un argumento ausente](#null-nullpointerexception-y-dónde-rechazar-un-argumento-ausente)
+- [`null`, `NullPointerException`, y dónde rechazar un argumento ausente en un método](#null-nullpointerexception-y-dónde-rechazar-un-argumento-ausente-en-un-método)
   - [El problema real: el crash señala la línea equivocada](#el-problema-real-el-crash-señala-la-línea-equivocada)
   - [La solución: rechazar el valor ausente en la frontera que lo necesita](#la-solución-rechazar-el-valor-ausente-en-la-frontera-que-lo-necesita)
   - [Tres reglas para un `null` en la frontera de un método](#tres-reglas-para-un-null-en-la-frontera-de-un-método)
@@ -723,13 +723,13 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ completamente cualif
 
 ---
 
-## `null`, `NullPointerException`, y dónde rechazar un argumento ausente(TODO: EN UN METODO)
+## `null`, `NullPointerException`, y dónde rechazar un argumento ausente en un método
 
 > 📖 Docs: [Oracle Docs — `java.lang.NullPointerException`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/NullPointerException.html) → leer: la entrada de `getMessage()` y su "Implementation Note" — son dos frases, y es la declaración oficial de que el mensaje moderno se calcula por ti en lugar de escribirse a mano.
 > 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → leer: la entrada `requireNonNull(T obj, String message)` — "designed primarily for doing parameter validation in methods", que es exactamente el uso de más abajo.
 > 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → leer: las secciones iniciales sobre de dónde vienen los valores null y sobre cómo validar los argumentos de un método.
 
-[03-flujo-de-control.md](03-flujo-de-control.md) te dejó con el guard de null(TODO: NO ME GUSTA QUE USES GUARD DE NULL, O LO TRADUCES AL INGLES O LO PONES EN ESPAÑOL O LAS DOS) — el simple `if (name != null)` que frena un crash — y aplazó una pregunta hasta este capítulo, porque no es en absoluto una pregunta sobre `if`: **¿dónde**, en un programa, debe rechazarse un valor ausente? Es una pregunta sobre el contrato entre un método y quien lo llama, que es justo de lo que ha ido todo este capítulo, así que pertenece aquí.
+[03-flujo-de-control.md](03-flujo-de-control.md) te dejó con la comprobación de `null` (en inglés, _null check_, que es como lo oirás habitualmente) — el simple `if (name != null)` que frena un crash — y aplazó una pregunta hasta este capítulo, porque no es en absoluto una pregunta sobre `if`: **¿dónde**, en un programa, debe rechazarse un valor ausente? Es una pregunta sobre el contrato entre un método y quien lo llama, que es justo de lo que ha ido todo este capítulo, así que pertenece aquí.
 
 Como mostró [01-variables-tipos.md](01-variables-tipos.md), `null` significa "esta referencia no apunta a ningún objeto": es un valor legal para cualquier tipo de referencia — `String`, `Project`, `Integer`, un array — y nunca para un primitivo, por lo que `int x = null;` no compila. El fallo ocurre en el momento en que **desreferencias** (_dereference_) una referencia `null`, es decir, usas la dirección que guarda para llegar al objeto que hay allí: llamar a un método sobre ella, leer un campo suyo, indexarla como un array. En esa dirección no hay ningún objeto, así que la JVM lanza una `NullPointerException`.
 

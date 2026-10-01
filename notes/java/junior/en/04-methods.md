@@ -13,7 +13,7 @@
   - [Each part of the package name is a folder](#each-part-of-the-package-name-is-a-folder)
   - [Imports — using the simple name, resolved at compile time](#imports--using-the-simple-name-resolved-at-compile-time)
   - [When two classes share a simple name](#when-two-classes-share-a-simple-name)
-- [`null`, `NullPointerException`, and where to reject a missing argument](#null-nullpointerexception-and-where-to-reject-a-missing-argument)
+- [`null`, `NullPointerException`, and where to reject a missing argument in a method](#null-nullpointerexception-and-where-to-reject-a-missing-argument-in-a-method)
   - [The real problem: the crash names the wrong line](#the-real-problem-the-crash-names-the-wrong-line)
   - [The fix: reject the missing value at the boundary that requires it](#the-fix-reject-the-missing-value-at-the-boundary-that-requires-it)
   - [Three rules for a `null` at a method boundary](#three-rules-for-a-null-at-a-method-boundary)
@@ -723,13 +723,13 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no 
 
 ---
 
-## `null`, `NullPointerException`, and where to reject a missing argument
+## `null`, `NullPointerException`, and where to reject a missing argument in a method
 
 > 📖 Docs: [Oracle Docs — `java.lang.NullPointerException`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/NullPointerException.html) → read: the `getMessage()` entry and its "Implementation Note" — two sentences, and the official statement that the modern message is computed for you rather than written by hand.
 > 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → read: the `requireNonNull(T obj, String message)` entry — "designed primarily for doing parameter validation in methods", which is exactly the use below.
 > 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read: the opening sections on where null values come from and on validating method arguments.
 
-[03-control-flow.md](03-control-flow.md) left you with the null guard — the plain `if (name != null)` that stops a crash — and deferred one question to this chapter, because it is not a question about `if` at all: **where** in a program should a missing value be rejected? That is a question about the contract between a method and its caller, which is what this whole chapter has been about, so it belongs here.
+[03-control-flow.md](03-control-flow.md) left you with the null check — the plain `if (name != null)` that stops a crash — and deferred one question to this chapter, because it is not a question about `if` at all: **where** in a program should a missing value be rejected? That is a question about the contract between a method and its caller, which is what this whole chapter has been about, so it belongs here.
 
 As [01-variables-types.md](01-variables-types.md) showed, `null` means "this reference points at no object": it is a legal value for any reference type — `String`, `Project`, `Integer`, an array — and never for a primitive, which is why `int x = null;` does not compile. The failure happens the moment you **dereference** a `null` reference, that is, use the address it holds to reach the object there: calling a method on it, reading a field of it, indexing into it as an array. There is no object at that address, so the JVM throws a `NullPointerException`.
 
