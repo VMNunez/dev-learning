@@ -493,13 +493,13 @@ public class Calculator {
     }
 
     // Método estático — depende solo de su argumento, así que no hace falta objeto
-    public static double square(double n) {
+    public static double 'square'(double n) {
         return n * n;
     }
 }
 ```
 
-Cada método es ahora del tipo correcto para lo que hace, y ese es el sentido del ejemplo: `add()` toca `this.name` y `this.history`, así que _tiene_ que llamarse sobre una calculadora en concreto; `square()` no toca nada más que su argumento, así que se declara `static` y no necesita ningún objeto. Qué significa `static` en realidad, y por qué esa división es una decisión de diseño y no una cuestión de gusto, se resuelve en [06-poo-clases.md](06-poo-clases.md) — aquí solo marca cuál de las dos formas de llamar de abajo le toca a cada método. En el constructor, `this.name = name;` copia el parámetro `name` en el campo del mismo nombre: `this.name` es el campo del objeto que se está construyendo, y el `name` a secas es el parámetro, que dentro de ese constructor oculta al campo.
+Cada método es ahora del tipo correcto para lo que hace, y ese es el sentido del ejemplo(TODO: NO ME GUSTA "Cada método es ahora del tipo correcto para lo que hace, y ese es el sentido del ejemplo"): `add()` toca `this.name` y `this.history`, así que _tiene_ que llamarse sobre una calculadora en concreto; `square()` no toca nada más que su argumento, así que se declara `static` y no necesita ningún objeto. Qué significa `static` en realidad, y por qué esa división es una decisión de diseño y no una cuestión de gusto, se resuelve en [06-poo-clases.md](06-poo-clases.md) — aquí solo marca cuál de las dos formas de llamar de abajo le toca a cada método. En el constructor, `this.name = name;` copia el parámetro `name` en el campo del mismo nombre: `this.name` es el campo del objeto que se está construyendo, y el `name` a secas es el parámetro, que dentro de ese constructor oculta al campo.
 
 > `List<String>` y `ArrayList` son la lista redimensionable de Java — se cubren a fondo en [10-colecciones.md](10-colecciones.md). Por ahora léelo como "un array que puede crecer", y `history.add(...)` como "añadir un elemento al final".
 
