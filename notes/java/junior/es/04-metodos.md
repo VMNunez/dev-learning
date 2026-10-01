@@ -409,7 +409,7 @@ sum();                       // 0 — numbers.length == 0
 
 > 📖 Docs: [Oracle Docs — Passing Information to a Method or a Constructor](https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html) → leer: "Arbitrary Number of Arguments" — tres párrafos, que terminan en la signature de `printf`, un tercer método construido sobre el mismo parámetro `Object...`.
 
-`.formatted()` no es el único método varargs que vas a llamar constantemente, así que vale la pena abrir los dos que más te vas a encontrar y ver el `...` en sus declaraciones reales. Los dos son un solo mecanismo, no dos convenciones que casualmente se parecen(TODO: NO ME GUSTA ESTE PARRAFO, ADEMAS NO HEMOS VISTO EN ESTE ARCHIVO TANTO DE .FORMATTED, HEMOS VISTO MAS DEL LOGGER NO?):
+Al principio de esta sección viste que `log.info(...)` acepta cualquier número de valores porque está declarado con varargs. En la librería estándar de Java pasa lo mismo con dos métodos que vas a usar a menudo, `String.format()` y `List.of()`. Estas son sus declaraciones reales, y en las dos aparece el `...`:
 
 ```java
 public static String format(String format, Object... args)   // java.lang.String
