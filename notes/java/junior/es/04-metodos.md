@@ -544,7 +544,14 @@ Parece una sola operación, pero son tres llamadas, y cada una crea un `String` 
 
 Un método tiene un nombre. También tiene nombre la clase que lo contiene. En cuanto un proyecto crece, esos nombres empiezan a chocar: tu clase `User` y la clase `User` que trae alguna librería se llaman las dos de la misma manera, `User`, y Java tiene que poder distinguir una de la otra. Si no puede, el código no compila, porque Java no sabe a cuál de las dos clases te refieres. Ese es el problema que resuelven los **paquetes** (_packages_), y por eso todo archivo Java real abre con una línea `package`.
 
-> **Ya has visto la línea `package` alguna vez.** [00-intro-java.md](00-intro-java.md) la explicó con el programa más pequeño que se puede ejecutar: un paquete es la carpeta a la que pertenece una clase, escrita con puntos en lugar de barras; es una forma de identificar la clase, de modo que dos clases con el mismo nombre pueden convivir; y eso lo convierte en un **namespace** (espacio de nombres), un ámbito en el que cada nombre identifica exactamente una cosa(TODO:UNA CLASE?). Esta sección añade lo que aquella primera mirada dejó fuera: el nombre completamente cualificado que puedes escribir en el código, el `import` que te ahorra escribirlo, las clases que no necesitan ningún import y lo que hace el compilador cuando dos clases comparten un nombre simple.(TODO: EXPLICA MEJOR " el nombre completamente cualificado que puedes escribir en el código, el `import` que te ahorra escribirlo, las clases que no necesitan ningún import y lo que hace el compilador cuando dos clases comparten un nombre simple.")
+> **Ya has visto la línea `package` alguna vez.** [00-intro-java.md](00-intro-java.md) la explicó con el programa más pequeño que se puede ejecutar: un paquete es la carpeta a la que pertenece una clase, escrita con puntos en lugar de barras; es una forma de identificar la clase, de modo que dos clases con el mismo nombre pueden convivir; y eso lo convierte en un **namespace** (espacio de nombres), un ámbito en el que cada nombre identifica exactamente una cosa: dentro de un paquete, cada nombre de clase corresponde a una sola clase.
+>
+> Esta sección añade cuatro cosas que aquella primera explicación dejó fuera:
+>
+> 1. El **nombre completamente cualificado** de una clase: su nombre con el paquete delante, como `com.victor.timetrack.service.ProjectService`. Puedes escribirlo así en el código.
+> 2. El **`import`**: una línea al principio del archivo que te permite escribir solo el nombre de la clase, sin el paquete delante.
+> 3. Las clases que se usan sin ningún `import`, como `String`, porque Java importa su paquete, `java.lang`, en todos los archivos.
+> 4. Qué hace el compilador cuando usas dos clases con el mismo nombre, como los dos `User` de arriba.
 
 Como recordatorio de la forma, el paquete se declara en la primera línea del archivo:
 
