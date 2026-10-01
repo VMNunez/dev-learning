@@ -752,7 +752,7 @@ name.toUpperCase();   // ❌ NullPointerException at runtime — the file compil
 
 ### A `NullPointerException` is thrown where the `null` is used, not where it appeared
 
-The hard part of a `NullPointerException` is not understanding the error, but finding where the `null` came from. A `null` can be passed from one method to another as an argument without anything failing, because passing it is not using it. The exception is only thrown in the first method that uses it, and that method can be several calls away from the place where the `null` appeared. This example shows that distance with just three methods: `main` creates the `null` on line 9, `buildPage` receives it and passes it on to `slug` without using it, and `slug` is the one that fails on line 3, when it calls `toLowerCase()` on it:
+The hard part of a `NullPointerException` is not understanding the error, but finding where the `null` came from. A `null` can be passed from one method to another as an argument without anything failing: as long as the `null` is only passed and not used, no error is thrown. The exception is thrown in the first method that uses it, and that method can be several calls away from the place where the `null` appeared. This example shows that distance with just three methods: `main` creates the `null` on line 9, `buildPage` receives it and passes it on to `slug` without using it, and `slug` is the one that fails on line 3, when it calls `toLowerCase()` on it:
 
 ```java
 public class Report {

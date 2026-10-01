@@ -752,7 +752,7 @@ name.toUpperCase();   // ❌ NullPointerException en tiempo de ejecución — el
 
 ### La `NullPointerException` salta donde se usa el `null`, no donde apareció
 
-Lo difícil de una `NullPointerException` no es entender el error, sino encontrar de dónde viene el `null`. Un `null` puede pasar de un método a otro como argumento sin que nada falle, porque pasarlo no es usarlo(TODO: PORQUE SI SE PASA PERO NO SE USAN NO VA A SALIR EL ERROR). La excepción solo salta en el primer método que lo usa, y ese método puede estar a varias llamadas de distancia del sitio donde apareció el `null`. En este ejemplo se puede ver esa distancia con solo tres métodos: `main` crea el `null` en la línea 9, `buildPage` lo recibe y se lo pasa a `slug` sin usarlo, y `slug` es el que falla en la línea 3, al llamar a `toLowerCase()` sobre él:
+Lo difícil de una `NullPointerException` no es entender el error, sino encontrar de dónde viene el `null`. Un `null` puede pasar de un método a otro como argumento sin que nada falle: mientras el `null` solo se pase y no se use, no salta ningún error. La excepción salta en el primer método que lo usa, y ese método puede estar a varias llamadas de distancia del sitio donde apareció el `null`. En este ejemplo se puede ver esa distancia con solo tres métodos: `main` crea el `null` en la línea 9, `buildPage` lo recibe y se lo pasa a `slug` sin usarlo, y `slug` es el que falla en la línea 3, al llamar a `toLowerCase()` sobre él:
 
 ```java
 public class Report {
