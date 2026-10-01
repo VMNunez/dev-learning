@@ -423,7 +423,16 @@ public static String format(String format, Object... args)   // java.lang.String
 static <E> List<E> of(E... elements)                          // java.util.List
 ```
 
-`String.format("Hi %s, you have %d messages", name, count)` compiles into exactly one call with two arguments: the format `String`, and an `Object[]` of length 2 that Java built at the call site. `List.of` given eleven or more elements is the same move — the elements are collected into an array and handed over as one parameter — which is the whole reason both accept "any number" without declaring hundreds of versions.
+`String.format("Hi %s, you have %d messages", name, count)` compiles into exactly one call with two arguments: the format `String`, and an `Object[]` of length 2 that Java built at the moment of the call. A `List.of` with eleven or more elements works the same way: the elements are put into an array and handed over as a single parameter. That is why both accept "any number" without declaring hundreds of versions.
+
+> **`String.format()` and `.formatted()` give the same result; what changes is what you call them on.**
+>
+> ```java
+> String.format("Project %d deleted by %s", 7, "Ana");   // "Project 7 deleted by Ana"
+> "Project %d deleted by %s".formatted(7, "Ana");        // "Project 7 deleted by Ana"
+> ```
+>
+> `String.format` is called on the `String` class, so the text with the `%d` and `%s` has to go as the first argument, and the values follow it, in the varargs parameter. `.formatted()` is called on the text itself, so it only receives the values, all of them in its varargs parameter. `.formatted()` arrived in Java 15 and does the same job as `String.format`, so in real code you will see both. Why one is called on the class and the other on a specific text (the difference between a `static` method and an instance method) you will see in [06-oop-classes.md](06-oop-classes.md).
 
 > **`List` and the `<E>` are not this chapter's, and you can read the line without them.** `List.of` appears here purely as a varargs declaration you will recognise. What a `List` actually is arrives in [10-collections.md](10-collections.md), and the `<E>` — a *type parameter*, the placeholder that lets one declaration work for `String`, `Integer` or anything else — is [09-generics.md](09-generics.md)'s. For now read `static <E> List<E> of(E... elements)` as "hand it any number of items of one type and get a list of them back".
 
