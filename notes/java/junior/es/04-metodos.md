@@ -229,7 +229,7 @@ ResponseEntity<Void>   // ✓ — Void es una clase
 ResponseEntity<void>   // ✗ — void es una palabra clave, no válida dentro de < >
 ```
 
-> **Para aclarar la confusión:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets** — los `<>` — y no hay nada real que devolver. Los dos se distinguen por lo que el método debe hacer al final. Un método `void` no devuelve ningún valor. Un método declarado con retorno `Void` sigue teniendo que devolver algo, como cualquier método cuyo tipo de retorno es una clase, y `null` es el único valor que tiene ese tipo, así que termina con `return null;`.
+> **Para aclarar la confusión:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets** — los `<>` — y no hay nada real que devolver(TODO: NO ME GUSTA "y no hay nada real que devolver"). Los dos se distinguen por lo que el método debe hacer al final. Un método `void` no devuelve ningún valor. Un método declarado con retorno `Void` sigue teniendo que devolver algo, como cualquier método cuyo tipo de retorno es una clase, y `null` es el único valor que tiene ese tipo, así que termina con `return null;`.(TODO: EXPLICA MEJOR ESTO)
 
 > **Vista previa — Spring Boot:** El ejemplo de abajo usa `ResponseEntity`, una clase de Spring Boot que aún no has estudiado. Léelo para ver dónde importa la diferencia entre `void` y `Void` en la práctica — lo implementarás tú mismo en las notas de Spring Boot.
 
