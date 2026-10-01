@@ -565,7 +565,17 @@ public class ProjectService {
 
 That class's real, unambiguous name is now `com.victor.timetrack.service.ProjectService`. Java calls that the **fully qualified name**: the package, which is `com.victor.timetrack.service`, the one declared on the first line; a dot; and the class's own name, `ProjectService`. `ProjectService` is its **simple name**. Both refer to the same class; the fully qualified one is what Java actually works with internally.
 
-> **The `com.victor` prefix is an internet domain written backwards, and that convention has a single purpose.** Packages are only useful if two companies or organisations never accidentally choose the same package, so the convention is to start from a domain you control and reverse it: `victor.com` becomes `com.victor`. Nothing enforces it — the compiler accepts `package banana;` without complaint — but every library you will ever add follows it, which is why you read `org.springframework.stereotype`, `com.fasterxml.jackson.databind` and `java.util`. The reversal puts the most general part first so the whole tree sorts sensibly.
+> **The `com.victor` prefix is an internet domain written backwards.** This convention prevents one specific problem: two companies or organisations unknowingly creating a package with the same name. If you and another company both created a package called `service` with a `ProjectService` class inside, Java could not tell one class from the other.
+>
+> The fix is to start the package with something that is already unique: an internet domain, because each domain has a single owner. And it is written backwards, starting with the most general part:
+>
+> - `victor.com` → `com.victor`
+> - `springframework.org` → `org.springframework`, in packages like `org.springframework.stereotype`
+> - `fasterxml.com` → `com.fasterxml`, in packages like `com.fasterxml.jackson.databind`
+>
+> Writing it backwards orders packages from general to specific: first `com`, inside it `com.victor`, inside that `com.victor.timetrack`, and so on.
+>
+> It is a convention, not a compiler rule: `package banana;` compiles without any problem. But every library you will use follows it. The exception is the classes that come with Java itself, like those in `java.util`, which use the `java.` prefix, reserved for them.
 
 ### The package name and the folder path match, one folder per dot
 

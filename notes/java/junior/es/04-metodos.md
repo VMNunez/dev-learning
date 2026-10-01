@@ -565,7 +565,17 @@ public class ProjectService {
 
 El nombre real y sin ambigüedad de esa clase es ahora `com.victor.timetrack.service.ProjectService`. Java llama a eso el **nombre completamente cualificado** (_fully qualified name_): el paquete, que es `com.victor.timetrack.service`, el que se declaró en la primera línea; un punto; y el nombre propio de la clase, `ProjectService`. El `ProjectService` es su **nombre simple** (_simple name_). Los dos se refieren a la misma clase; el completamente cualificado es con el que Java trabaja realmente por dentro.
 
-> **El prefijo `com.victor` es un dominio de internet escrito al revés, y esa convención tiene un único propósito.** Los paquetes solo sirven si dos empresas u organizaciones nunca eligen el mismo paquete por accidente, así que la convención es partir de un dominio que controlas y darle la vuelta: `victor.com` se convierte en `com.victor`. Nada lo obliga — el compilador acepta `package banana;` sin quejarse — pero toda librería que vayas a añadir alguna vez sigue esta convención, por eso lees `org.springframework.stereotype`, `com.fasterxml.jackson.databind` y `java.util`. Darle la vuelta pone primero la parte más general, para que todo el árbol se ordene con sentido.(TODO: LA VERDAD ES QUE NO ENTIENDO EL PARRAFO)
+> **El prefijo `com.victor` es un dominio de internet escrito al revés.** Esta convención evita un problema concreto: que dos empresas u organizaciones creen, sin saberlo, un paquete con el mismo nombre. Si tú y otra empresa creaseis los dos un paquete llamado `service` con una clase `ProjectService` dentro, Java no podría distinguir una clase de la otra.
+>
+> La solución es empezar el paquete por algo que ya es único: un dominio de internet, porque cada dominio tiene un solo dueño. Y se escribe al revés, empezando por la parte más general:
+>
+> - `victor.com` → `com.victor`
+> - `springframework.org` → `org.springframework`, en paquetes como `org.springframework.stereotype`
+> - `fasterxml.com` → `com.fasterxml`, en paquetes como `com.fasterxml.jackson.databind`
+>
+> Al ponerlo al revés, los paquetes se ordenan de lo general a lo concreto: primero `com`, dentro `com.victor`, dentro `com.victor.timetrack`, y así sucesivamente.
+>
+> Es una convención, no una regla del compilador: `package banana;` compila sin problema. Pero todas las librerías que vas a usar la siguen. La excepción son las clases que vienen con el propio Java, como las de `java.util`, que usan el prefijo `java.`, reservado para ellas.
 
 ### El nombre del paquete y la ruta de carpetas coinciden, una carpeta por cada punto
 
