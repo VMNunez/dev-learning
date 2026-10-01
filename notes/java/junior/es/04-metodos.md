@@ -382,7 +382,7 @@ sum();               // 0
 
 Dentro del método, `numbers` **es** un array. `int... numbers` e `int[] numbers` son el mismo parámetro en lo que respecta al cuerpo del método; el `...` solo cambia qué se permite escribir en el momento en que se llama al método. Java construye el array por ti en ese momento y te lo entrega. De ahí se siguen directamente dos consecuencias:
 
-**Un array se puede pasar como argumento para el parámetro varargs.** Normalmente pasas valores sueltos, como en `sum(1, 2, 3)`, y Java los mete en un array nuevo. Pero (TODO: HEMOS VISTO QUE)un parámetro varargs es en realidad un array: en el ejemplo de `sum(int... numbers)` de esta misma sección, `numbers` es un `int[]`. Por eso también acepta como argumento un array ya creado. En ese caso Java no construye ningún array a partir del que le has pasado, sino que usa directamente ese mismo. No hace falta sacar sus valores uno a uno para pasarlos por separado:
+**Un array se puede pasar como argumento para el parámetro varargs.** Normalmente pasas valores sueltos, como en `sum(1, 2, 3)`, y Java los mete en un array nuevo. Pero hemos visto que un parámetro varargs es en realidad un array: en el ejemplo de `sum(int... numbers)` de esta misma sección, `numbers` es un `int[]`. Por eso también acepta como argumento un array ya creado. En ese caso Java no construye ningún array a partir del que le has pasado, sino que usa directamente ese mismo. No hace falta sacar sus valores uno a uno para pasarlos por separado:
 
 ```java
 int[] scores = {1, 2, 3};
