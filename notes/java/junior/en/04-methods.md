@@ -380,7 +380,7 @@ sum(1, 2, 3, 4, 5);  // 15
 sum();               // 0
 ```
 
-Inside the method, `numbers` does not merely "behave like" an array — it **is** one. `int... numbers` and `int[] numbers` are the same parameter as far as the method body is concerned; the `...` only changes what the *call site* is allowed to look like. Java builds the array for you at the point of the call and hands it over. Two consequences follow directly, and both are things a junior gets wrong once:
+Inside the method, `numbers` **is** an array. `int... numbers` and `int[] numbers` are the same parameter as far as the method body is concerned; the `...` only changes what you are allowed to write at the moment the method is called. Java builds the array for you at that moment and hands it over. Two consequences follow directly, and both are things a junior gets wrong once:
 
 **An existing array can be passed straight in.** Since the parameter is an `int[]`, you may skip the collecting step and hand over an array you already have — no unpacking, no loop:
 
