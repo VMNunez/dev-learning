@@ -548,7 +548,7 @@ A method has a name. The class holding it has a name too. Once a project grows, 
 >
 > This section adds four things that first explanation left out:
 >
-> 1. The **fully qualified name** (often shortened to FQN) of a class: its name with the package in front, like `com.victor.timetrack.service.ProjectService`. You can write it that way in code.
+> 1. The **fully qualified name** of a class (often shortened to FQN): the class name with the package it belongs to in front, like `com.victor.timetrack.service.ProjectService`.
 > 2. The **`import`**: a line at the top of the file that lets you write just the class name, without the package in front.
 > 3. The classes used without any `import`, like `String`, because Java imports their package, `java.lang`, in every file.
 > 4. What the compiler does when you use two classes with the same name, like the two `User` classes above.
