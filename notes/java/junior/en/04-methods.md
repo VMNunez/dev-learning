@@ -636,7 +636,7 @@ IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves t
 >
 > The JVM finds classes the same way when it needs them while running the program, and it does so with your own classes as well as with a library's. For example, for `com.victor.timetrack.model.Project` it looks for the path `com/victor/timetrack/model/Project.class` and finds it in `target/classes/`. For `org.springframework.stereotype.Service` it looks for `org/springframework/stereotype/Service.class` and finds it in Spring's `.jar`. Neither `javac` nor the JVM goes through every file until it comes across the class: they go straight to the path its name gives. That is why the lookup stays instant in a project with ten thousand classes.
 >
-> Your source code follows the same layout for that reason, even though `javac` does not require it. For example, `Project.java` and `Project.class` have the same folder path, `com/victor/timetrack/model/`, and only the folder each one starts from changes:
+> Your source code follows the same layout for that reason, that is, the package names match the path of the folders the `.java` files are in, even though `javac` does not require it. For example, `Project.java` and `Project.class` have the same folder path, `com/victor/timetrack/model/`, and only the folder each one starts from changes:
 >
 > ```
 > src/main/java/com/victor/timetrack/model/Project.java      ← source code
