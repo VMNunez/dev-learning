@@ -620,9 +620,15 @@ IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves t
 >
 > It all starts at compile time. For each class it compiles, `javac` generates a `.class` file, which is that class already compiled, and stores it in the folder its package indicates. For example, the class `com.victor.timetrack.model.Project` is stored in `target/classes/com/victor/timetrack/model/Project.class`. The leading `target/classes/` is the folder where Maven puts everything it compiles. It does not matter which folder `Project.java` sat in: the folder of the `.class` is always decided by the package.
 >
-> Library classes are stored the same way. A library such as Spring does not reach your project as source code but already compiled, in `.jar` files. A `.jar` is a compressed file, much like a `.zip`, that holds many `.class` files inside the folders of their packages. For example, the real `ProjectService` uses `org.springframework.stereotype.Service`, which belongs to Spring and is therefore not among your `.java` files. Its file is inside one of Spring's `.jar` files, at `org/springframework/stereotype/Service.class`.
+> Library classes are stored the same way. A library such as Spring does not reach your project as source code but already compiled, in `.jar` files. A `.jar` is a compressed file, much like a `.zip`, that holds many `.class` files inside the folders of their packages. For example, the real `ProjectService` file has this `import` line:
 >
-> Because every compiled class is stored like that, its name is all it takes to find one. When `javac` compiles `ProjectService` and reaches the name `org.springframework.stereotype.Service`, it does the following:
+> ```java
+> import org.springframework.stereotype.Service;
+> ```
+>
+> `org.springframework.stereotype.Service` belongs to Spring, so it is not among your `.java` files. Its `.class` file is inside one of Spring's `.jar` files, at `org/springframework/stereotype/Service.class`.
+>
+> Because every compiled class is stored like that, its name is all it takes to find one. Staying with the same example, when `javac` compiles `ProjectService` and reaches that `import` line, it does the following with the name `org.springframework.stereotype.Service`:
 >
 > 1. It converts the name into a path: it swaps the dots for slashes and adds `.class` at the end, which gives `org/springframework/stereotype/Service.class`.
 > 2. It looks for that path in each entry of the **classpath**, the list of folders and `.jar` files where Maven tells it compiled classes are.

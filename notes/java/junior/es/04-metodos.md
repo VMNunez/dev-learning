@@ -620,9 +620,15 @@ El **Refactor → Move** de IntelliJ (`F6`) existe precisamente para evitar eso:
 >
 > Todo empieza al compilar. Por cada clase que compila, `javac` genera un archivo `.class`, que es esa clase ya compilada, y lo guarda en la carpeta que indica su paquete. Por ejemplo, la clase `com.victor.timetrack.model.Project` se guarda en `target/classes/com/victor/timetrack/model/Project.class`. El `target/classes/` del principio es la carpeta en la que Maven deja todo lo que compila. No importa en qué carpeta estuviera `Project.java`: la carpeta del `.class` la decide siempre el paquete.
 >
-> Las clases de las librerías están guardadas de la misma forma. Una librería como Spring no llega a tu proyecto como código fuente, sino ya compilada, en archivos `.jar`. Un `.jar` es un archivo comprimido, parecido a un `.zip`, que contiene muchos archivos `.class` dentro de las carpetas de sus paquetes. Por ejemplo, el `ProjectService` real usa `org.springframework.stereotype.Service`, que pertenece a Spring y por tanto no está entre tus archivos `.java`. Su archivo está dentro de uno de los `.jar` de Spring, en `org/springframework/stereotype/Service.class`.
+> Las clases de las librerías están guardadas de la misma forma. Una librería como Spring no llega a tu proyecto como código fuente, sino ya compilada, en archivos `.jar`. Un `.jar` es un archivo comprimido, parecido a un `.zip`, que contiene muchos archivos `.class` dentro de las carpetas de sus paquetes. Por ejemplo, el archivo real de `ProjectService` tiene esta línea de `import`:
 >
-> Como todas las clases compiladas están guardadas así, para encontrar una basta con su nombre. Cuando `javac` compila `ProjectService`(TODO: ESTO SE SUPONE QUE ES UN EJEMPLO EN EL QUE EN EL PROJECTSERVICE SE USAR org.springframework.stereotype.Service?? ) y llega al nombre `org.springframework.stereotype.Service`, hace lo siguiente:
+> ```java
+> import org.springframework.stereotype.Service;
+> ```
+>
+> `org.springframework.stereotype.Service` pertenece a Spring, así que no está entre tus archivos `.java`. Su archivo `.class` está dentro de uno de los `.jar` de Spring, en `org/springframework/stereotype/Service.class`.
+>
+> Como todas las clases compiladas están guardadas así, para encontrar una basta con su nombre. Siguiendo con el mismo ejemplo, cuando `javac` compila `ProjectService` y llega a esa línea de `import`, hace lo siguiente con el nombre `org.springframework.stereotype.Service`:
 >
 > 1. Convierte el nombre en una ruta: cambia los puntos por barras y añade `.class` al final, y obtiene `org/springframework/stereotype/Service.class`.
 > 2. Busca esa ruta en cada entrada del **classpath**, que es la lista de carpetas y archivos `.jar` en los que Maven le dice que hay clases compiladas.
