@@ -423,7 +423,7 @@ public static String format(String format, Object... args)   // java.lang.String
 static <E> List<E> of(E... elements)                          // java.util.List
 ```
 
-`String.format("Hi %s, you have %d messages", name, count)` compila en exactamente una llamada con dos argumentos: el `String` de formato, y un `Object[]` de longitud 2 que Java construyó en el momento de la llamada. Con un `List.of` de once elementos o más pasa lo mismo: los elementos se meten en un array y se entregan como un único parámetro. Por eso los dos aceptan "cualquier cantidad" sin declarar cientos de versiones.
+`String.format("Hi %s, you have %d messages", name, count)` compila en exactamente una llamada con dos argumentos: el `String` de formato, y un `Object[]` de longitud 2 que Java construyó en el momento de la llamada. Con un `List.of` de once elementos(TODO: NO DIGAS ONCE, PUEDES DECIR DE UNO O MAS ELEMENTOS) o más pasa lo mismo: los elementos se meten en un array y se entregan como un único parámetro. Por eso los dos aceptan "cualquier cantidad(TODO: DE PARAMETROS)" sin declarar cientos de versiones(TODO: DEL MISMO METODO).
 
 > **`String.format()` y `.formatted()` dan el mismo resultado; lo que cambia es sobre qué los llamas.**
 >
