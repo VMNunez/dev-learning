@@ -436,7 +436,17 @@ static <E> List<E> of(E... elements)                          // java.util.List
 
 > **In the declaration `static <E> List<E> of(E... elements)`, keep in mind that `List` and the `<E>` are not part of this chapter, although you can read the line without having studied these concepts in depth.** `List.of` appears here only to show the varargs in its declaration, `E... elements`. What a `List` actually is arrives in [10-collections.md](10-collections.md), and the `<E>` — a *type parameter* — is [09-generics.md](09-generics.md)'s. For now read `static <E> List<E> of(E... elements)` as "hand it any number of items of one type and get a list of them back".
 
-`List.of` has a detail that only makes sense with the three passes you saw in the section [Method overloading](#method-overloading). Java declares `of` **twelve** times: eleven fixed-arity versions from `of()` up to `of(E e1, ..., E e10)`, *plus* the varargs `of(E... elements)`. Why bother, when the varargs one alone would accept every call?
+`List.of` has a detail that only makes sense with the three passes you saw in the section [Method overloading](#method-overloading). `List` does not have a single `of` method, but twelve overloads with that name. Eleven take a fixed number of elements, from zero to ten, and the twelfth is the varargs version:
+
+```java
+static <E> List<E> of()                    // 0 elements
+static <E> List<E> of(E e1)                // 1 element
+static <E> List<E> of(E e1, E e2)          // 2 elements
+// and so on, one version for each number of elements, up to the one for 10 (e1 to e10)
+static <E> List<E> of(E... elements)       // any number of elements
+```
+
+Why so many versions, when the varargs one alone would accept every call?
 
 Because of pass 3. Overload resolution only reaches varargs after passes 1 and 2 have failed, so `List.of("a", "b")` matches the fixed two-parameter `of(E e1, E e2)` in pass 1 and stops there — no array is ever allocated. Only `List.of` with eleven or more elements falls through to the varargs version and pays for the array. The eleven extra declarations exist to make the common short calls free, and the resolution order from the previous section is what makes that optimisation invisible to you at the call site.
 
