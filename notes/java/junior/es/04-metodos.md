@@ -321,7 +321,7 @@ takesDouble(5L);   // ✓ imprime 5.0 — Java convierte el long en double por s
 takesLong(2.5);    // ❌ error: incompatible types: possible lossy conversion from double to long
 ```
 
-Para meter `2.5` en un `long`, Java tendría que tirar el `.5`, y esa pérdida solo la hace si tú escribes el cast. Así que `add(long, long)` es más específica y gana. Es la misma regla que hizo que `String.valueOf(null)` en [02-cadenas-de-texto.md](02-cadenas-de-texto.md) eligiera `valueOf(char[])` en lugar de `valueOf(Object)`: todo `char[]` es un `Object`, pero no todo `Object` es un `char[]`.
+Para meter `2.5` en un `long`, Java tendría que tirar(TODO: QUE QUITAR) el `.5`, y esa pérdida solo la hace si tú escribes el cast. Así que `add(long, long)` es más específica y gana. Es la misma regla que hizo que `String.valueOf(null)` en [02-cadenas-de-texto.md](02-cadenas-de-texto.md) eligiera `valueOf(char[])` en lugar de `valueOf(Object)`: todo `char[]` es un `Object`, pero no todo `Object` es un `char[]`.
 
 El modo de fallo son dos candidatos en la misma pasada donde ninguno es más específico que el otro:
 
