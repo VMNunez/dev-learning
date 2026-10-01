@@ -729,7 +729,7 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no 
 > 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → read: the `requireNonNull(T obj, String message)` entry — "designed primarily for doing parameter validation in methods", which is exactly the use below.
 > 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read: the opening sections on where null values come from and on validating method arguments.
 
-In [03-control-flow.md](03-control-flow.md), in the _if / else_ section, you saw the null check. It means asking whether a variable points at an object before using it:
+In [03-control-flow.md](03-control-flow.md), in the _if / else_ section, you saw the null check. It means asking whether a variable is `null` before using it:
 
 ```java
 if (name != null) {
