@@ -499,7 +499,7 @@ public class Calculator {
 }
 ```
 
-En esta clase hay dos tipos de método, de instancia y estático, y cada uno se declara de un tipo u otro según los datos que usa:
+En esta clase hay dos tipos de métodos, (TODO: METODOS DE INSTANCIA QUE SE DECLARAN COMOO... Y METODOS ESTATICOS QUE USAN... PARA DECLARARLOS)de instancia y estático, y cada uno se declara de un tipo u otro según los datos que usa:
 
 - `add()` toca `this.name` y `this.history`, así que _tiene_ que llamarse sobre una instancia de la clase, es decir, sobre un objeto `Calculator` ya creado. Por eso es un método de instancia.
 - `square()` no toca nada más que su argumento, es decir, no le hace falta una instancia de la clase ni ningún objeto concreto. Por eso se declara `static`: para poder usarlo directamente sobre la clase, como en `Calculator.square(5)`, sin crear ningún objeto.
