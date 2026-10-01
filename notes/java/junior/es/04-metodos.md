@@ -675,7 +675,11 @@ public class ProjectService {
 
 **Archivo:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/ProjectService.java`
 
-> **Un import no copia nada dentro de tu archivo, y no cuesta nada en tiempo de ejecución.(TODO: MEJORA EL TITULO)** Esta es la lectura errónea más común de la palabra clave(TODO:IMPORT), y viene directamente de JavaScript, donde `import { x } from './y'` trae un módulo y el bundler rastrea cada uno(TODO: EXPRESALO MEJOR Y SENCILLO). El `import` de Java es puro papeleo para el compilador(TODO: NO ME GUSTA LA EXPRESION): dice "en este archivo, cuando escribo `Project`, me refiero a `com.victor.timetrack.model.Project`". Para cuando el archivo se ha convertido en un `.class`, cada nombre dentro de él ya ha sido reescrito a su forma completamente cualificada(TODO: PONLO EN INGLES. ADEMAS IMAGINO QUE ESTO ES AL COMPILAR) y la línea de import ya no existe. Así que un import sin usar es un descuido de orden, nunca algo lento; `import java.util.*;` no "carga todo un paquete"; y borrar un import nunca puede cambiar lo que hace tu programa en tiempo de ejecución — solo si compila o no.(TODO: MEJORA LAULTIMA FRASE)
+> **Un `import` solo le sirve al compilador: no trae código a tu archivo ni cambia nada al ejecutar el programa.** Pensar lo contrario es el error más habitual con la palabra clave `import`, y viene de JavaScript. Allí, `import { x } from './y'` carga el código del archivo `./y` para que puedas usar `x`. El `import` de Java no carga nada. Solo le dice al compilador: "en este archivo, cuando escribo `ProjectResponse`, me refiero a `com.victor.timetrack.dto.response.ProjectResponse`". Al compilar, `javac` sustituye cada nombre simple por su _fully qualified name_, así que en el archivo `.class` ya no queda ninguna línea de import. De ahí salen tres consecuencias:
+>
+> - Un import que no se usa no hace más lento el programa. Solo es una línea que sobra.
+> - `import java.util.*;`, que es la forma de importar todas las clases del paquete `java.util` con una sola línea, no carga ninguna de ellas. Solo te deja usar el nombre simple de cualquiera.
+> - Borrar un import no cambia lo que hace el programa en runtime. Lo único que puede pasar es que el archivo deje de compilar.
 
 Hay tres casos que no necesitan ningún import, y saber cuáles explica por qué `String` nunca te ha pedido uno:
 

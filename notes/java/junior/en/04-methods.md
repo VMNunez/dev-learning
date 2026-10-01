@@ -654,7 +654,7 @@ Fully qualified names are correct, but they are hard to read. You *can* write co
 public java.util.List<com.victor.timetrack.dto.response.ProjectResponse> getAll() { ... }
 ```
 
-An **import** lets you use the simple name of the class instead. An import is written with the word `import`, followed by the fully qualified name of the class and a semicolon, for example `import com.victor.timetrack.dto.response.ProjectResponse;`. With this you will be able to use the simple name of the class, `ProjectResponse`, in the rest of the file, without having to write `com.victor.timetrack.dto.response.ProjectResponse` every time. The import is placed after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
+An **import** lets you use the simple name of the class instead. It is written with the word `import`, followed by the fully qualified name of the class and a semicolon, for example `import com.victor.timetrack.dto.response.ProjectResponse;`. With this you will be able to use the simple name of the class, `ProjectResponse`, in the rest of the file, without having to write `com.victor.timetrack.dto.response.ProjectResponse` every time. The import is placed after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
 
 ```java
 package com.victor.timetrack.service;
@@ -675,7 +675,11 @@ public class ProjectService {
 
 **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/service/ProjectService.java`
 
-> **An import does not copy anything into your file, and it costs nothing at runtime.** This is the single most common misreading of the keyword, and it comes straight from JavaScript, where `import { x } from './y'` genuinely pulls a module in and the bundler tracks every one. Java's `import` is pure bookkeeping for the compiler: it says "in this file, when I write `Project`, I mean `com.victor.timetrack.model.Project`". By the time the file has become a `.class`, every name inside it has already been rewritten to its fully qualified form and the import line no longer exists. So an unused import is untidy, never slow; `import java.util.*;` does not "load a whole package"; and deleting an import can never change what your program does at runtime — only whether it compiles.
+> **An `import` is only for the compiler: it brings no code into your file and changes nothing when the program runs.** Thinking otherwise is the most common mistake with the `import` keyword, and it comes from JavaScript. There, `import { x } from './y'` loads the code of the `./y` file so that you can use `x`. Java's `import` loads nothing. It only tells the compiler: "in this file, when I write `ProjectResponse`, I mean `com.victor.timetrack.dto.response.ProjectResponse`". When compiling, `javac` replaces every simple name with its fully qualified name, so no import line is left in the `.class` file. Three consequences follow:
+>
+> - An import that is not used does not make the program slower. It is just a line that is not needed.
+> - `import java.util.*;`, which is the way to import every class of the `java.util` package with a single line, loads none of them. It only lets you use the simple name of any of them.
+> - Deleting an import does not change what the program does at runtime. The only thing that can happen is that the file stops compiling.
 
 Three cases need no import at all, and knowing which is why `String` has never asked you for one:
 
