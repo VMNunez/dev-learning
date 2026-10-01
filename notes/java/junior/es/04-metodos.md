@@ -229,7 +229,7 @@ ResponseEntity<Void>   // ✓ — Void es una clase
 ResponseEntity<void>   // ✗ — void es una palabra clave, no válida dentro de < >
 ```
 
-> **Para aclarar la confusión:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets** — los `<>` — y no existe ningún valor de ese tipo que poner ahí(TODO: NO ME PARECE BIEN "y no existe ningún valor de ese tipo que poner ahí" TAL VEZ INCLUSO SE PUEDE OMITIR). En `ResponseEntity<Void>`(TODO: DE LA APP...), por ejemplo, el tipo entre `<>` indica de qué tipo es el cuerpo de la respuesta, y una respuesta sin cuerpo no tiene ningún valor que ocupe ese sitio.
+> **Para aclarar la confusión:** usa `void` (minúsculas) como tipo de retorno de un método. Usa `Void` (mayúsculas) solo cuando un genérico te obliga a poner un tipo entre los **angle brackets**, los `<>`. Por ejemplo, el método `delete` de tu proyecto TimeTrack, que verás un poco más abajo en esta misma sección, devuelve un `ResponseEntity<Void>`: el tipo entre `<>` indica de qué tipo es el cuerpo de la respuesta, y como esa respuesta no tiene cuerpo, no hay ningún valor que ocupe ese sitio.
 >
 > Los dos se distinguen también por cómo tiene que terminar un método que los usa como tipo de retorno. Un método `void` no devuelve ningún valor, así que termina sin más al llegar a su llave de cierre. `Void`, en cambio, es una clase, así que el compilador le aplica la regla que viste en la sección _Declaración de un método_: todos los caminos de salida tienen que devolver un valor de ese tipo. Como nunca se puede crear un objeto `Void`, el único valor que el método puede devolver es `null`, y por eso tiene que terminar con `return null;`:
 >

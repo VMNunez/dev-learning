@@ -229,9 +229,9 @@ ResponseEntity<Void>   // ✓ — Void is a class
 ResponseEntity<void>   // ✗ — void is a keyword, not valid inside < >
 ```
 
-> **Clearing up the confusion:** use `void` (lowercase) as the return type of a method. Use `Void` (uppercase) only when a generic forces you to put a type between the **angle brackets** — the `<>` — and no value of that type exists to put there. In `ResponseEntity<Void>`, for example, the type between `<>` says what type the response body is, and a response with no body has no value to fill that place.
+> **Clearing up the confusion:** use `void` (lowercase) as the return type of a method. Use `Void` (uppercase) only when a generic forces you to put a type between the **angle brackets**, the `<>`. For example, the `delete` method of your TimeTrack project, which you will see a little further down in this same section, returns a `ResponseEntity<Void>`: the type between `<>` says what type the response body is, and since that response has no body, there is no value to fill that place.
 >
-> The two also differ in how a method that uses them as its return type has to end. A `void` method returns no value, so it simply ends when it reaches its closing brace. `Void`, on the other hand, is a class, so the compiler applies to it the rule you saw in the section _Method declaration_: every exit path has to return a value of that type. You saw above that a `Void` object can never be created, so the only value the method can return is `null`, and that is why it has to end with `return null;`:
+> The two also differ in how a method that uses them as its return type has to end. A `void` method returns no value, so it simply ends when it reaches its closing brace. `Void`, on the other hand, is a class, so the compiler applies to it the rule you saw in the section _Method declaration_: every exit path has to return a value of that type. Since a `Void` object can never be created, the only value the method can return is `null`, and that is why it has to end with `return null;`:
 >
 > ```java
 > // void: returns no value, so it needs no return
