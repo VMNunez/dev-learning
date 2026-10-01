@@ -311,7 +311,17 @@ La llamada `add(1, 2)` podría encajar en cualquiera de ellas, porque Java sabe 
 
 Lee la tabla de arriba abajo como una lista de prioridad, no como tres opciones independientes: si en la pasada 1 encaja alguna versión de `add`, las pasadas 2 y 3 nunca se ejecutan, aunque en ellas también hubiera encajado otra versión. Así que, con `add(long, long)` y `add(Integer, Integer)` declaradas ambas, `add(1, 2)` llama a la versión **`long`** — widening le gana a boxing. Las dos conversiones las viste en [01-variables-tipos.md](01-variables-tipos.md): el widening, en la sección [Widening (automático)](01-variables-tipos.md#widening-automático), convierte un `int` en un primitivo más grande como `long` sin que escribas nada, y el boxing, en la sección [Autoboxing y unboxing](01-variables-tipos.md#autoboxing-y-unboxing), envuelve el `int` en un objeto `Integer`. El orden no es arbitrario, y no tiene que ver con la velocidad: boxing y varargs no llegaron hasta Java 5, así que el lenguaje los colocó en pasadas posteriores, lo que garantiza que toda llamada que ya compilaba antes de Java 5 siga funcionando, porque Java elige el mismo método que elegía antes. Toda la decisión ocurre en **tiempo de compilación**, únicamente a partir de los tipos declarados en el punto de la llamada.
 
-Una misma pasada también puede encontrar varios candidatos a la vez. Con `add(long, long)` y `add(double, double)` declaradas ambas, `add(1, 2)` encaja en las dos en la pasada 1, porque un `int` se amplía a cualquiera de ellos. Java se queda entonces con la **más específica**: el candidato cuyos tipos de parámetro podrían pasarse todos al otro candidato. Un `long` se puede pasar donde se espera un `double`, pero no al revés(TODO: PONME UN EJEMPLO CON NUMEROS TAMBIEN, QUE LO VEA), así que `add(long, long)` es más específica y gana. Es la misma regla que hizo que `String.valueOf(null)` en [02-cadenas-de-texto.md](02-cadenas-de-texto.md) eligiera `valueOf(char[])` en lugar de `valueOf(Object)`: todo `char[]` es un `Object`, pero no todo `Object` es un `char[]`.
+Una misma pasada también puede encontrar varios candidatos a la vez. Con `add(long, long)` y `add(double, double)` declaradas ambas, `add(1, 2)` encaja en las dos en la pasada 1, porque un `int` se amplía a cualquiera de ellos. Java se queda entonces con la **más específica**: el candidato cuyos tipos de parámetro podrían pasarse todos al otro candidato. Un `long` se puede pasar donde se espera un `double`, pero no al revés:
+
+```java
+static void takesDouble(double d) { System.out.println(d); }
+static void takesLong(long n) { System.out.println(n); }
+
+takesDouble(5L);   // ✓ imprime 5.0 — Java convierte el long en double por su cuenta (widening)
+takesLong(2.5);    // ❌ error: incompatible types: possible lossy conversion from double to long
+```
+
+Para meter `2.5` en un `long`, Java tendría que tirar el `.5`, y esa pérdida solo la hace si tú escribes el cast. Así que `add(long, long)` es más específica y gana. Es la misma regla que hizo que `String.valueOf(null)` en [02-cadenas-de-texto.md](02-cadenas-de-texto.md) eligiera `valueOf(char[])` en lugar de `valueOf(Object)`: todo `char[]` es un `Object`, pero no todo `Object` es un `char[]`.
 
 El modo de fallo son dos candidatos en la misma pasada donde ninguno es más específico que el otro:
 
