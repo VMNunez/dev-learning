@@ -281,7 +281,7 @@ add(1.5, 2.5);     // llama a la segunda versión — devuelve 4.0
 add(1, 2, 3);      // llama a la tercera versión — devuelve 6
 ```
 
-Java decide qué versión llamar mirando los **parámetros** — su número y sus tipos. El tipo de retorno no cuenta para esa decisión(TODO: NO FORMA PARTE DEL SIGNATURE). Si defines dos métodos con los mismos parámetros pero distinto tipo de retorno, Java no puede distinguirlos y el compilador rechaza el archivo antes incluso de ejecutarlo (TODO: FALLA EN TIEMPO DE COMPILACION). Cuando escribes `add(1, 2)` nunca indicas un tipo de retorno, así que los parámetros son la única señal que Java tiene (TODO: PARA PODER DISTINGUIR LOS METODOS).
+Java decide qué versión llamar mirando los **parámetros** — su número, sus tipos y su orden. El tipo de retorno no cuenta para esa decisión, porque no forma parte de la signature. Si defines dos métodos con los mismos parámetros pero distinto tipo de retorno, Java no puede distinguirlos y el código falla en tiempo de compilación, antes incluso de que el programa se ejecute. Cuando escribes `add(1, 2)` nunca indicas un tipo de retorno, así que los parámetros son la única señal que Java tiene para poder distinguir los métodos.
 
 ```java
 public int add(int a, int b) { return a + b; }

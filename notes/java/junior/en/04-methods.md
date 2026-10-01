@@ -281,7 +281,7 @@ add(1.5, 2.5);     // calls second version — returns 4.0
 add(1, 2, 3);      // calls third version — returns 6
 ```
 
-Java decides which version to call by looking at the **parameters** — their number and types. The return type does not count for that decision. If you define two methods with the same parameters but different return types, Java cannot tell them apart and the compiler rejects the file before it even runs — at the call site there is no way to know which of the two you want. When you write `add(1, 2)` you never state a return type, so the parameters are the only signal Java has — two methods sharing them would be indistinguishable.
+Java decides which version to call by looking at the **parameters** — their number, types and order. The return type does not count for that decision, because it is not part of the signature. If you define two methods with the same parameters but different return types, Java cannot tell them apart and the code fails at compile time, before the program even runs. When you write `add(1, 2)` you never state a return type, so the parameters are the only signal Java has to tell the methods apart.
 
 ```java
 public int add(int a, int b) { return a + b; }
