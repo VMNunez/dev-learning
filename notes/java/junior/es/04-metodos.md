@@ -403,7 +403,7 @@ sum();                       // 0 — numbers.length == 0
 > sum(scores);           // ❌ NullPointerException: numbers recibe ese null tal cual
 > ```
 >
-> Java solo crea el array vacío cuando llamas sin argumentos, como en `sum()`. Una variable que vale `null` llega al método tal cual, igual que el `sum((int[]) null)` de antes.
+> Java solo crea el array vacío cuando llamas sin argumentos, como en `sum()`. Una variable que vale `null` llega al método tal cual, igual que el `sum((int[]) null)` de antes.(TODO: POR LO QUE LANZARIA LA NULLPOINTEREXEPTION)
 
 ### El mismo mecanismo en la librería estándar
 
