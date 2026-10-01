@@ -553,7 +553,7 @@ Un método tiene un nombre. También tiene nombre la clase que lo contiene. En c
 > 3. Las clases que se usan sin ningún `import`, como `String`, porque Java importa su paquete, `java.lang`, en todos los archivos.
 > 4. Qué hace el compilador cuando usas dos clases con el mismo nombre, como los dos `User` de arriba.
 
-Como recordatorio de la forma, el paquete se declara en la primera línea del archivo:(TODO: MEJORA ESTA FRASE)
+Recuerda cómo se escribe: la línea `package` es la primera línea de código del archivo, antes de la clase.
 
 ```java
 package com.victor.timetrack.service;

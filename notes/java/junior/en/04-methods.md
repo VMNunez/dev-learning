@@ -553,7 +553,7 @@ A method has a name. The class holding it has a name too. Once a project grows, 
 > 3. The classes used without any `import`, like `String`, because Java imports their package, `java.lang`, in every file.
 > 4. What the compiler does when you use two classes with the same name, like the two `User` classes above.
 
-As a reminder of the shape, the package is declared on the first line of the file:
+Remember how it is written: the `package` line is the first line of code in the file, before the class.
 
 ```java
 package com.victor.timetrack.service;
