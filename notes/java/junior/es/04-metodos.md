@@ -719,7 +719,7 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ completamente cualif
 > Date today = new Date();   // ❌ error: reference to Date is ambiguous
 > ```
 >
-> El conflicto puede aparecer sin que tú cambies nada en el archivo: basta con que una librería añada, en una versión nueva, una clase con un nombre que ya usabas de otro paquete. IntelliJ escribe imports explícitos de un solo tipo por defecto(TODO: DE UN SOLO TIPO?), y solo los colapsa a partir de un umbral que puedes subir (`Settings → Editor → Code Style → Java → Imports`). Mantenlos explícitos: el bloque de imports entonces funciona también como un resumen honesto de lo que depende el archivo, que es lo primero que lees al abrir una clase que no conoces.
+> El conflicto puede aparecer sin que tú cambies nada en el archivo: basta con que una librería añada, en una versión nueva, una clase con un nombre que ya usabas de otro paquete. Por defecto, IntelliJ escribe un import por cada clase que usas (`import java.util.List;`, `import java.util.Map;`), que es lo que el mensaje de error del primer ejemplo de esta sección llama _single-type import_. Solo los junta en un único `import java.util.*;` cuando el archivo usa cinco o más clases del mismo paquete, y ese umbral lo puedes subir en `Settings → Editor → Code Style → Java → Imports` (la opción _Class count to use import with '*'_). Mantenlos explícitos: el bloque de imports entonces funciona también como un resumen honesto de lo que depende el archivo, que es lo primero que lees al abrir una clase que no conoces.
 
 ---
 
