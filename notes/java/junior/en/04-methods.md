@@ -599,7 +599,7 @@ src/main/java/
 
 **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/` (the tree above, trimmed to its folders)
 
-Read the path and the declaration together: everything after `src/main/java/` **is** the package name, with `/` swapped for `.`. Note also that `dto.request` is not a package inside the `dto` package, even though its `request/` folder does sit inside the `dto/` folder. To Java they are two independent packages: there is no nesting between packages, and `com.victor.timetrack.dto.request` gets no special access to `com.victor.timetrack.dto`. The dots only look like a hierarchy; to the compiler each package is a flat, independent name that happens to share a prefix with its neighbours.
+Read the path and the declaration together: everything after `src/main/java/` **is** the package name, with `/` swapped for `.`. Note also that `dto.request` is not a package inside the `dto` package, even though its `request/` folder does sit inside the `dto/` folder. To Java they are two independent packages: there is no nesting between packages. That is why a class in `com.victor.timetrack.dto.request` that wants to use a class from `com.victor.timetrack.dto` has to import it, just as if it were in any other package. Although the dots make them look like a hierarchy, to the compiler they are two different names that only share their beginning.
 
 You will break that match the first time you move a file between folders in IntelliJ's file explorer instead of through a refactoring. Say `ProjectService.java` is dragged from `controller/` to `service/`, and its first line still says:
 
