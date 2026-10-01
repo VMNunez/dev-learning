@@ -650,7 +650,7 @@ IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves t
 Fully qualified names are correct, but they are hard to read. You *can* write code with them, and it compiles:
 
 ```java
-// ✅ legal, and nobody writes this
+// ✅ legal, but hard to read, and it is not going to be written like this
 com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
 ```
 
