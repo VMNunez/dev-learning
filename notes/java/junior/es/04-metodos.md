@@ -450,7 +450,18 @@ static <E> List<E> of(E... elements)       // cualquier número de elementos
 
 Como vimos en la sección [Sobrecarga de métodos (overloading)](#sobrecarga-de-métodos-overloading), la resolución de sobrecargas solo llega a varargs después de que las pasadas 1 y 2 hayan fallado. Así que `List.of("a", "b")` encaja con `of(E e1, E e2)` en la pasada 1 y se queda ahí: `"a"` va directamente al parámetro `e1` y `"b"` a `e2`, sin que Java tenga que crear ningún array para meterlos, como haría con un varargs. Solo un `List.of` con once elementos o más llega hasta la versión varargs, y solo entonces Java crea un array con todos ellos. Crear un array gasta memoria y tiempo en cada llamada, así que las once versiones fijas existen para ahorrárselo a las llamadas cortas, que son las más habituales. Las pasadas, en cambio, no cuestan nada al ejecutar el programa: las hace el compilador una sola vez, al compilar, para decidir qué versión llama cada línea. Lo que se repite cada vez que se ejecuta la llamada es crear el array, y eso es lo único que estas versiones ahorran. Y como son las pasadas las que eligen la versión, tú escribes `List.of(...)` igual en todos los casos y no notas la diferencia de si se está usando una versión fija o la versión varargs.
 
-## (TODO: AQUI ME SURGE LA DUDA SI A LIST.OF LE PASAMOS DIRECTAMENTE COMO ARGUMENTO UN ARRAY DE DOS ELEMENTOS, POR EJEMPLO, IMAGINO QUE CAERIA EN EL VARARGS Y EL ARRAY YA ESTARIA CREADO? PARA PASARLE MENOS DE 11 ARGUMENTOS CONVIENE PASARLOS DIRECTAMENTE)
+> **Si a `List.of` le pasas un array que ya tienes, se usa la versión varargs y Java no crea otro array.**
+>
+> ```java
+> String[] names = {"a", "b"};
+> List<String> list = List.of(names);   // [a, b] — una lista con 2 elementos
+> ```
+>
+> Las pasadas 1 y 2 tratan `of(E... elements)` como un parámetro normal de tipo `E[]`, igual que `sum(scores)` encajaba con el parámetro `int[]` de `sum`. Un `String[]` encaja con `E[]` ya en la pasada 1. También encajaría con `of(E e1)`, tomando el array entero como un único elemento, pero entre las dos Java elige la más específica, `E[]`, con la regla que viste en la sección de sobrecarga. Así que Java le entrega `names` tal cual al parámetro `elements` y no construye ningún array nuevo para la llamada. Aun así, `List.of` copia los dos elementos dentro de la lista que devuelve: si después cambias `names[0]`, la lista sigue siendo `[a, b]`.
+>
+> En la práctica, si tienes valores sueltos, pásalos sueltos, como en `List.of("a", "b")`: con diez o menos no se crea ningún array. Meterlos antes en un array solo para llamar a `List.of` sería crear tú el array que las versiones fijas existen para ahorrar. Si el array ya lo tienes, pásalo directamente.
+
+---
 
 ## Llamar a métodos
 
