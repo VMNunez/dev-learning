@@ -366,7 +366,7 @@ log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");
 
 La sintaxis es `Tipo... nombre`, y debe ser el **último** parámetro del método. La razón es que Java tiene que saber dónde termina la lista de longitud variable: si un parámetro fijo viniera después, Java no podría distinguir qué argumento pertenece a la lista varargs y cuál es el siguiente argumento fijo. El mismo razonamiento es lo que hace que solo se permita un parámetro varargs por método. Si pones el parámetro varargs en cualquier otro sitio, el código falla en tiempo de compilación. Por ejemplo, `void f(int... a, int b)` falla con `error: varargs parameter must be the last parameter`, mientras que `void f(int a, int... b)` sí compila.
 
-Como el método no sabe de antemano cuántos valores le van a llegar, lo habitual es recorrerlos con un bucle, y por eso casi todos los métodos varargs tienen uno. Por ejemplo,(TODO: EN EL SIGUIENTE CODIGO) `sum` recorre los números con un for-each y va acumulando cada uno en `total`. El bucle no es obligatorio: como con cualquier array, también puedes leer una posición concreta con `numbers[0]`, siempre que haya llegado al menos un valor, o saber cuántos han llegado con `numbers.length`.
+Como el método no sabe de antemano cuántos valores le van a llegar, lo habitual es recorrerlos con un bucle, y por eso casi todos los métodos varargs tienen uno. Por ejemplo, en el siguiente código `sum` recorre los números con un for-each y va acumulando cada uno en `total`. El bucle no es obligatorio: como con cualquier array, también puedes leer una posición concreta con `numbers[0]`, siempre que haya llegado al menos un valor, o saber cuántos han llegado con `numbers.length`.
 
 ```java
 public int sum(int... numbers) {
