@@ -508,7 +508,7 @@ Qué significa `static` en realidad, y por qué esa división es una decisión d
 
 > `List<String>` y `ArrayList` son la lista de longitud variable de Java — se cubren a fondo en [10-colecciones.md](10-colecciones.md). Por ahora léelo como "un array que puede crecer o decrecer". El método `add` de `history.add(...)` sirve para añadir un elemento al final de la lista. No es el `add()` de `Calculator`: es un método de la propia lista, que viene con `List` y `ArrayList`.
 
-Llamándolos:(TODO: MEJORA LA FRASE)
+Así se llaman los métodos de `Calculator` desde fuera de la clase:
 
 ```java
 // Método de instancia — primero hay que crear un objeto
