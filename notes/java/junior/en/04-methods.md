@@ -654,7 +654,7 @@ Fully qualified names are correct, but they are hard to read. You *can* write co
 com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
 ```
 
-An **import** lets you use the simple name of the class instead. It goes after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
+An **import** lets you use the simple name of the class instead. An import is written with the word `import`, followed by the fully qualified name of the class and a semicolon, for example `import com.victor.timetrack.model.Project;`. It is placed after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
 
 ```java
 package com.victor.timetrack.service;
