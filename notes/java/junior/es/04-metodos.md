@@ -616,7 +616,21 @@ A partir de ahí, dos herramientas te avisan del problema, IntelliJ y el compila
 
 El **Refactor → Move** de IntelliJ (`F6`) existe precisamente para evitar eso: mueve el archivo, reescribe su línea `package` y reescribe todos los imports que lo referencian, en un solo paso.
 
-> **Por qué la carpeta en la que se encuentra la clase sigue siendo importante si `javac` lee el paquete de la línea `package`.** Porque el compilador y la JVM buscan cada clase ya compilada en la carpeta que corresponde a su paquete. `javac` escribe cada archivo `.class` en la carpeta que nombra su paquete — `target/classes/com/victor/timetrack/model/Project.class` para `com.victor.timetrack.model.Project` — sea cual sea la carpeta en la que estuviera el código fuente. Cuando el código nombra una clase que no está entre los archivos que se compilan ahora mismo(TODO: NO ME GUSTA "AHORA MISMO"), como una clase dentro del `.jar` de una librería(TODO: NO ENTIENDO LA FRASE DEL .JAR), el compilador convierte el nombre en esa ruta y mira exactamente ahí, en cada entrada del **classpath**(TODO: HASTA AQUI ESTOY PERDIDO E IMAGINO QUE LO QUE SIGUE DEL PARRAFO TAMBIEN), la lista de carpetas y archivos `.jar` en los que se le dijo que buscara. La JVM encuentra una clase de la misma manera cuando la carga en tiempo de ejecución. Esa búsqueda es una traducción directa de nombre a ruta, nunca un recorrido por todos los archivos, por eso sigue siendo instantánea en un proyecto con diez mil clases. Mantener tus carpetas de código fuente con la misma estructura significa que tú, IntelliJ y cualquier herramienta que busque una clase por su nombre encontráis el código fuente donde estará la clase compilada.
+> **Por qué la carpeta en la que se encuentra la clase sigue siendo importante si `javac` lee el paquete de la línea `package`.** Porque el compilador y la JVM buscan cada clase ya compilada en la carpeta que corresponde a su paquete.
+>
+> Todo empieza al compilar. Por cada clase que compila, `javac` genera un archivo `.class`, que es esa clase ya compilada, y lo guarda en la carpeta que indica su paquete. Por ejemplo, la clase `com.victor.timetrack.model.Project` se guarda en `target/classes/com/victor/timetrack/model/Project.class`. El `target/classes/` del principio es la carpeta en la que Maven deja todo lo que compila. No importa en qué carpeta estuviera `Project.java`: la carpeta del `.class` la decide siempre el paquete.
+>
+> Las clases de las librerías están guardadas de la misma forma. Una librería como Spring no llega a tu proyecto como código fuente, sino ya compilada, en archivos `.jar`. Un `.jar` es un archivo comprimido, parecido a un `.zip`, que contiene muchos archivos `.class` dentro de las carpetas de sus paquetes. Por ejemplo, el `ProjectService` real usa `org.springframework.stereotype.Service`, que pertenece a Spring y por tanto no está entre tus archivos `.java`. Su archivo está dentro de uno de los `.jar` de Spring, en `org/springframework/stereotype/Service.class`.
+>
+> Como todas las clases compiladas están guardadas así, para encontrar una basta con su nombre. Cuando `javac` compila `ProjectService` y llega al nombre `org.springframework.stereotype.Service`, hace lo siguiente:
+>
+> 1. Convierte el nombre en una ruta: cambia los puntos por barras y añade `.class` al final, y obtiene `org/springframework/stereotype/Service.class`.
+> 2. Busca esa ruta en cada entrada del **classpath**, que es la lista de carpetas y archivos `.jar` en los que Maven le dice que hay clases compiladas.
+> 3. La encuentra dentro del `.jar` de Spring, y con eso sabe que el nombre que usa `ProjectService` existe.
+>
+> La JVM encuentra una clase de la misma manera cuando la necesita al ejecutar el programa. Ni `javac` ni la JVM recorren todos los archivos hasta dar con la clase: van directamente a la ruta que sale de su nombre. Por eso la búsqueda sigue siendo instantánea en un proyecto con diez mil clases.
+>
+> Tu código fuente sigue la misma estructura por ese motivo, aunque `javac` no lo exija. Si `Project.java` está en `src/main/java/com/victor/timetrack/model/`, tiene dentro de `src/main/java/` la misma ruta que tendrá `Project.class` dentro de `target/classes/`. Así tú, IntelliJ y cualquier herramienta que busque una clase por su nombre sabéis dónde está su código fuente.
 
 ### Los imports — usar el nombre simple, resuelto en tiempo de compilación
 

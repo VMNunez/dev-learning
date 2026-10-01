@@ -616,7 +616,21 @@ From there, two tools warn you about the problem, IntelliJ and the compiler, and
 
 IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves the file, rewrites its `package` line and rewrites every import of it, in one step.
 
-> **Why the folder the class sits in still matters if `javac` reads the package from the `package` line.** Because the compiler and the JVM look for every compiled class in the folder that matches its package. `javac` writes every `.class` file into the folder its package names — `target/classes/com/victor/timetrack/model/Project.class` for `com.victor.timetrack.model.Project` — whatever folder the source sat in. When code names a class that is not among the files being compiled right now, such as a class inside a library's `.jar`, the compiler converts the name into that path and looks exactly there in each entry of the **classpath**, the list of folders and `.jar` files it was told to search. The JVM finds a class the same way when it loads it at runtime. That lookup is a direct translation from name to path, never a search through every file, which is why it stays instant in a project with ten thousand classes. Keeping your source folders in the same layout means you, IntelliJ and any tool that looks for a class by its name find the source where the compiled class will be.
+> **Why the folder the class sits in still matters if `javac` reads the package from the `package` line.** Because the compiler and the JVM look for every compiled class in the folder that matches its package.
+>
+> It all starts at compile time. For each class it compiles, `javac` generates a `.class` file, which is that class already compiled, and stores it in the folder its package indicates. For example, the class `com.victor.timetrack.model.Project` is stored in `target/classes/com/victor/timetrack/model/Project.class`. The leading `target/classes/` is the folder where Maven puts everything it compiles. It does not matter which folder `Project.java` sat in: the folder of the `.class` is always decided by the package.
+>
+> Library classes are stored the same way. A library such as Spring does not reach your project as source code but already compiled, in `.jar` files. A `.jar` is a compressed file, much like a `.zip`, that holds many `.class` files inside the folders of their packages. For example, the real `ProjectService` uses `org.springframework.stereotype.Service`, which belongs to Spring and is therefore not among your `.java` files. Its file is inside one of Spring's `.jar` files, at `org/springframework/stereotype/Service.class`.
+>
+> Because every compiled class is stored like that, its name is all it takes to find one. When `javac` compiles `ProjectService` and reaches the name `org.springframework.stereotype.Service`, it does the following:
+>
+> 1. It converts the name into a path: it swaps the dots for slashes and adds `.class` at the end, which gives `org/springframework/stereotype/Service.class`.
+> 2. It looks for that path in each entry of the **classpath**, the list of folders and `.jar` files where Maven tells it compiled classes are.
+> 3. It finds it inside Spring's `.jar`, and that tells it the name `ProjectService` uses exists.
+>
+> The JVM finds a class the same way when it needs one while running the program. Neither `javac` nor the JVM goes through every file until it comes across the class: they go straight to the path its name gives. That is why the lookup stays instant in a project with ten thousand classes.
+>
+> Your source code follows the same layout for that reason, even though `javac` does not require it. If `Project.java` is in `src/main/java/com/victor/timetrack/model/`, it has the same path inside `src/main/java/` that `Project.class` will have inside `target/classes/`. That way you, IntelliJ and any tool that looks for a class by its name know where its source code is.
 
 ### Imports — using the simple name, resolved at compile time
 
