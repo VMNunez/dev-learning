@@ -729,7 +729,15 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no 
 > 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → read: the `requireNonNull(T obj, String message)` entry — "designed primarily for doing parameter validation in methods", which is exactly the use below.
 > 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → read: the opening sections on where null values come from and on validating method arguments.
 
-[03-control-flow.md](03-control-flow.md) showed, in its **The condition must be a real `boolean`** callout, the null check: the plain `if (name != null)` that stops a crash. It deferred to this chapter when that check is needed, because that is not a question about `if` at all: **where** in a program should a missing value be rejected? That is a question about the contract between a method and its caller, which is what this whole chapter has been about, so it belongs here.
+In [03-control-flow.md](03-control-flow.md), in the _if / else_ section, you saw the null check. It means asking whether a variable points at an object before using it:
+
+```java
+if (name != null) {
+    System.out.println(name.toUpperCase());   // only runs if name points at a String
+}
+```
+
+If `name` is `null`, the condition `name != null` is `false` and Java skips the whole block, so `toUpperCase()` is never called on `null`. Without the `if`, that call would stop the program with a `NullPointerException`, the error the following paragraphs explain. That file deferred to this chapter when the check is needed, because that is not a question about `if` at all: **where** in a program should a missing value be rejected? That is a question about the contract between a method and its caller, which is what this whole chapter has been about, so it belongs here.
 
 As [01-variables-types.md](01-variables-types.md) showed, `null` means "this reference points at no object": it is a legal value for any reference type — `String`, `Project`, `Integer`, an array — and never for a primitive, which is why `int x = null;` does not compile. The failure happens the moment you **dereference** a `null` reference, that is, use the address it holds to reach the object there: calling a method on it, reading a field of it, indexing into it as an array. There is no object at that address, so the JVM throws a `NullPointerException`.
 

@@ -729,7 +729,15 @@ java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ completamente cualif
 > 📖 Docs: [Oracle Docs — `java.util.Objects.requireNonNull(T, String)`](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Objects.html) → leer: la entrada `requireNonNull(T obj, String message)` — "designed primarily for doing parameter validation in methods", que es exactamente el uso de más abajo.
 > 📖 Docs: [Baeldung — Avoid Check for Null Statement in Java](https://www.baeldung.com/java-avoid-null-check) → leer: las secciones iniciales sobre de dónde vienen los valores null y sobre cómo validar los argumentos de un método.
 
-[03-flujo-de-control.md](03-flujo-de-control.md) mostró, en su aviso(TODO: NO ME GUSTA "EN SU AVISO") **La condición tiene que ser un `boolean`**, la comprobación de `null` (en inglés, _null check_, que es como lo oirás habitualmente): el simple `if (name != null)` que frena un crash(TODO: NECESITO QUE SEAS MAS DIDACTICO). Y aplazó hasta este capítulo cuándo hace falta, porque eso no es en absoluto una pregunta sobre `if`: **¿dónde**, en un programa, debe rechazarse un valor ausente? Es una pregunta sobre el contrato entre un método y quien lo llama, que es justo de lo que ha ido todo este capítulo, así que pertenece aquí.
+En [03-flujo-de-control.md](03-flujo-de-control.md), en la sección _if / else_, viste la comprobación de `null` (en inglés, _null check_, que es como lo oirás habitualmente). Consiste en preguntar si una variable apunta a un objeto antes de usarla:
+
+```java
+if (name != null) {
+    System.out.println(name.toUpperCase());   // solo se ejecuta si name apunta a un String
+}
+```
+
+Si `name` vale `null`, la condición `name != null` da `false` y Java se salta el bloque entero, así que `toUpperCase()` nunca se llama sobre `null`. Sin el `if`, esa llamada detendría el programa con una `NullPointerException`, el error que explican los párrafos siguientes. Ese archivo dejó para este capítulo cuándo hace falta esa comprobación, porque eso no es en absoluto una pregunta sobre `if`: **¿dónde**, en un programa, debe rechazarse un valor ausente? Es una pregunta sobre el contrato entre un método y quien lo llama, que es justo de lo que ha ido todo este capítulo, así que pertenece aquí.
 
 Como mostró [01-variables-tipos.md](01-variables-tipos.md), `null` significa "esta referencia no apunta a ningún objeto": es un valor legal para cualquier tipo de referencia — `String`, `Project`, `Integer`, un array — y nunca para un primitivo, por lo que `int x = null;` no compila. El fallo ocurre en el momento en que **desreferencias** (_dereference_) una referencia `null`, es decir, usas la dirección que guarda para llegar al objeto que hay allí: llamar a un método sobre ella, leer un campo suyo, indexarla como un array. En esa dirección no hay ningún objeto, así que la JVM lanza una `NullPointerException`.
 
