@@ -654,7 +654,7 @@ Los _fully qualified names_ son correctos, pero son difíciles de leer. _Puedes_
 com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
 ```
 
-Un **import** te deja usar el nombre simple en su lugar. Va después de la línea `package` y antes de la clase. Esta es la apertura del mismo `ProjectService`, reducida a cinco de sus doce imports:
+Un **import** te deja usar el nombre (TODO: DE LA CLASE) simple en su lugar. Va después de la línea `package`(TODO: QUE DEFINE EL NOMBRE DEL PAQUETE EN EL QUE TE ENCUENTRAS) y antes de la clase. Esta es la apertura del mismo `ProjectService`, reducida a cinco de sus doce imports:
 
 ```java
 package com.victor.timetrack.service;
@@ -668,7 +668,7 @@ import java.util.List;
 
 @Service
 public class ProjectService {
-    public List<ProjectResponse> getAll() { ... }   // ✅ nombres simples de principio a fin
+    public List<ProjectResponse> getAll() { ... }   // ✅ nombres simples de principio a finTODO: NO ENTIENDO LO QUE QUIERES TRANSMITIR CON ESTE COMENTARIO
 }
 ```
 
