@@ -748,11 +748,11 @@ String name = null;
 name.toUpperCase();   // ❌ NullPointerException en tiempo de ejecución — el archivo compila sin problema
 ```
 
-> **¿Por qué esto es un fallo en tiempo de ejecución y no un error del compilador?** Porque el compilador rastrea _tipos_, no _valores_. Sabe que `name` es un `String`, y que `String` tiene un `toUpperCase()`, así que la llamada es correcta en cuanto a tipos y el archivo compila. Lo que no puede saber es cuál de los muchos caminos de tu programa llega realmente a esa línea, y con qué valor llega la variable. Por ejemplo, `name` podría ser el resultado de una petición a una base de datos, un campo del cuerpo de una petición HTTP, una búsqueda que no encontró nada, etc. Que una variable sea `null` o no depende de lo que pase al ejecutar el programa, no de su tipo, así que se comprueba en el momento en que se usa la variable. Y por eso nada en la sintaxis te avisa hasta que el programa se ejecuta y lanza la excepción: la línea peligrosa se ve exactamente igual que la segura.
+> **¿Por qué esto es un fallo en tiempo de ejecución y no un error del compilador?** Porque el compilador rastrea _tipos_, no _valores_. Sabe que `name` es un `String`, y que `String` tiene un `toUpperCase()`, así que la llamada es correcta en cuanto a tipos y el archivo compila. Lo que no puede saber es cuál de los muchos caminos de tu programa llega realmente a esa línea, y con qué valor llega la variable. Por ejemplo, `name` podría ser el resultado de una petición a una base de datos, un campo del cuerpo de una petición HTTP, una búsqueda que no encontró nada, etc. Que una variable sea `null` o no depende de lo que pase al ejecutar el programa, no de su tipo, así que se comprueba en el momento en que se usa la variable. Y por eso nada en la sintaxis te avisa hasta que el programa se ejecuta y lanza la excepción.
 
-### El problema real: el crash señala la línea equivocada
+### El problema real: el crash señala la línea equivocada TODO: NO ME GUSTA EL TITULO
 
-La excepción en sí nunca es lo difícil. Lo difícil es que un `null` viaja en silencio, y el crash ocurre donde sea que se _use_ por primera vez — que puede estar a varios métodos de distancia de donde se _aceptó_ por primera vez. Aquí está esa distancia, reducida a un tamaño que se puede ver de un vistazo:
+La excepción en sí nunca es lo difícil. Lo difícil es que un `null` viaja en silencio, y el crash ocurre donde sea que se _use_ por primera vez — que puede estar a varios métodos de distancia de donde se _aceptó_ por primera vez(TODO: MEJORA LA EXPLICACION DE "La excepción en sí nunca es lo difícil. Lo difícil es que un `null` viaja en silencio, y el crash ocurre donde sea que se _use_ por primera vez — que puede estar a varios métodos de distancia de donde se _aceptó_ por primera vez").(TODO: ESTO ES UN EJEMPLO DONDE SE PUEDE VER...) Aquí está esa distancia, reducida a un tamaño que se puede ver de un vistazo:
 
 ```java
 public class Report {
