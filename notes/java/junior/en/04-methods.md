@@ -360,13 +360,11 @@ add(1, 2);   // ❌ both fit in pass 1, and neither is more specific:
 Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and collect them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, those three dots are varargs. You will also see it in `String.format()` and in `log.info(...)`, a method of **SLF4J**, the logging library that Spring Boot includes in every project. `log.info(...)` writes a line to the console about what the application is doing, and each `{}` in its message is replaced, in order, with the values you pass after it. To be able to receive any number of values, it has a version declared with varargs: `info(String format, Object... arguments)`.
 
 ```java
-log.info("Project {} deleted by {} at {}", 7, "ana", "10:42");
-// the line that appears in the console ends in: Project 7 deleted by ana at 10:42
+log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");
+// the line that appears in the console ends in: Project 7 deleted by Ana at 10:42
 ```
 
-How `log` is created in a class you will see in the Spring Boot notes.
-
-The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument. The same reasoning allows only one varargs parameter per method. Put it anywhere else and the declaration itself is rejected, before any call exists: `void f(int... a, int b)` fails with `error: varargs parameter must be the last parameter`.
+The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument. The same reasoning allows only one varargs parameter per method. If you put the varargs parameter anywhere else, the code fails at compile time: the declaration alone is enough, even before anything calls the method. For example, `void f(int... a, int b)` fails with `error: varargs parameter must be the last parameter`.
 
 ```java
 public int sum(int... numbers) {

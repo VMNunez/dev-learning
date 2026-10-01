@@ -364,7 +364,7 @@ log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");
 // la línea que aparece en la consola termina en: Project 7 deleted by Ana at 10:42
 ```
 
-La sintaxis es `Tipo... nombre`, y debe ser el **último** parámetro del método. La razón es que Java tiene que saber dónde termina la lista de longitud variable: si un parámetro fijo viniera después, Java no podría distinguir qué argumento pertenece a la lista varargs y cuál es el siguiente argumento fijo. El mismo razonamiento permite un solo parámetro varargs por método. Ponlo en cualquier otro sitio y la propia declaración se rechaza, antes de que exista ninguna llamada(TODO: SI LO PONEMOS EN OTRO SITIO FALLARA EN TIEMPO DE COMPILACION): `void f(int... a, int b)` falla con `error: varargs parameter must be the last parameter`.
+La sintaxis es `Tipo... nombre`, y debe ser el **último** parámetro del método. La razón es que Java tiene que saber dónde termina la lista de longitud variable: si un parámetro fijo viniera después, Java no podría distinguir qué argumento pertenece a la lista varargs y cuál es el siguiente argumento fijo. El mismo razonamiento permite un solo parámetro varargs por método. Si pones el parámetro varargs en cualquier otro sitio, el código falla en tiempo de compilación: basta con la propia declaración, aunque nadie llame todavía al método. Por ejemplo, `void f(int... a, int b)` falla con `error: varargs parameter must be the last parameter`.
 
 ```java
 public int sum(int... numbers) {
