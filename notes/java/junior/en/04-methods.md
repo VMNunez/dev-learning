@@ -710,7 +710,7 @@ Date utilDate = new Date();                          // ✅ the imported one
 java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no ambiguity
 ```
 
-> **`import java.util.*;` is not a shortcut worth taking, and this rule is why.** A wildcard import brings in every class of a package under its simple name, so adding one is quietly volunteering for a clash with any other package imported the same way — and the clash can appear the day a *library upgrade* adds a class you never wrote, in code you never touched. IntelliJ writes explicit single-type imports by default and only collapses them past a threshold you can raise (`Settings → Editor → Code Style → Java → Imports`). Keep them explicit: the import block then doubles as an honest summary of what the file depends on, which is the first thing you read when you open an unfamiliar class.
+> **Using `import java.util.*;` is not recommended, because of the name conflict we have just seen.** A wildcard import brings in every class of a package under its simple name, so adding one is quietly volunteering for a clash with any other package imported the same way — and the clash can appear the day a *library upgrade* adds a class you never wrote, in code you never touched. IntelliJ writes explicit single-type imports by default and only collapses them past a threshold you can raise (`Settings → Editor → Code Style → Java → Imports`). Keep them explicit: the import block then doubles as an honest summary of what the file depends on, which is the first thing you read when you open an unfamiliar class.
 
 ---
 
