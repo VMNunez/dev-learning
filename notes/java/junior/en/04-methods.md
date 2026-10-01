@@ -457,7 +457,7 @@ As we saw in the section [Method overloading](#method-overloading), overload res
 > List<String> list = List.of(names);   // [a, b] — a list with 2 elements
 > ```
 >
-> Passes 1 and 2 treat `of(E... elements)` as an ordinary parameter of type `E[]`, just as `sum(scores)` matched the `int[]` parameter of `sum`. A `String[]` matches `E[]` already in pass 1. It would also match `of(E e1)`, taking the whole array as a single element, but between the two Java picks the more specific one, `E[]`, by the rule you saw in the overloading section. So Java hands `names` as it is to the `elements` parameter and builds no new array for the call. Even so, `List.of` copies the two elements into the list it returns: if you later change `names[0]`, the list is still `[a, b]`.
+> It works just like `sum(scores)`: the varargs parameter really is an array, so your array fits directly and Java uses it as it is. That said, `List.of` copies the elements into the list it returns, so if you later change `names[0]`, the list is still `[a, b]`.
 >
 > In practice, if you have loose values, pass them loose, as in `List.of("a", "b")`: with ten or fewer no array is created. Putting them into an array first just to call `List.of` would mean creating yourself the array the fixed versions exist to save. If you already have the array, pass it directly.
 

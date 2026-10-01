@@ -457,7 +457,7 @@ Como vimos en la sección [Sobrecarga de métodos (overloading)](#sobrecarga-de-
 > List<String> list = List.of(names);   // [a, b] — una lista con 2 elementos
 > ```
 >
-> Las pasadas 1 y 2 tratan `of(E... elements)` como un parámetro normal de tipo `E[]`, igual que `sum(scores)` encajaba con el parámetro `int[]` de `sum`. Un `String[]` encaja con `E[]` ya en la pasada 1. También encajaría con `of(E e1)`, tomando el array entero como un único elemento, pero entre las dos Java elige la más específica, `E[]`, con la regla que viste en la sección de sobrecarga. Así que Java le entrega `names` tal cual al parámetro `elements` y no construye ningún array nuevo para la llamada. Aun así, `List.of` copia los dos elementos dentro de la lista que devuelve: si después cambias `names[0]`, la lista sigue siendo `[a, b]`.(TODO: RESUMEN Y PON MUCHO MAS FACIL ESTE PARRAFO)
+> Funciona igual que `sum(scores)`: el parámetro varargs es en realidad un array, así que tu array encaja directamente y Java lo usa tal cual. Eso sí, `List.of` copia los elementos en la lista que devuelve, así que si después cambias `names[0]`, la lista sigue siendo `[a, b]`.
 >
 > En la práctica, si tienes valores sueltos, pásalos sueltos, como en `List.of("a", "b")`: con diez o menos no se crea ningún array. Meterlos antes en un array solo para llamar a `List.of` sería crear tú el array que las versiones fijas existen para ahorrar. Si el array ya lo tienes, pásalo directamente.
 
