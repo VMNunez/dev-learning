@@ -357,7 +357,14 @@ add(1, 2);   // ❌ both fit in pass 1, and neither is more specific:
 
 > Docs: https://www.baeldung.com/java-varargs → read: "Use of Varargs" and "Rules"
 
-Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and collect them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, those three dots are varargs. You will also see it in `String.format()` and in `log.info(...)`, a method of **SLF4J**, the logging library that Spring Boot includes in every project. `log.info(...)` writes a line to the console about what the application is doing, and each `{}` in its message is replaced, in order, with the values you pass after it. To be able to receive any number of values, it has a version declared with varargs: `info(String format, Object... arguments)`.
+Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and collect them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, those three dots are varargs.
+
+```java
+"Project %d deleted by %s at %s".formatted(7, "Ana", "10:42");
+// returns: "Project 7 deleted by Ana at 10:42"
+```
+
+You will also see it in `String.format()` and in `log.info(...)`, a method of **SLF4J**, the logging library that Spring Boot includes in every project. `log.info(...)` writes a line to the console about what the application is doing, and each `{}` in its message is replaced, in order, with the values you pass after it. To be able to receive any number of values, it has a version declared with varargs: `info(String format, Object... arguments)`.
 
 ```java
 log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");

@@ -357,7 +357,14 @@ add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específic
 
 > Docs: https://www.baeldung.com/java-varargs → leer: "Use of Varargs" y "Rules"
 
-Normalmente un método con dos parámetros exige exactamente dos argumentos. Varargs (`...`) te deja pasar cualquier cantidad en su lugar — cero, uno, cinco, tantos como quieras — y los recoge en un array internamente. Ya te has encontrado uno: [02-cadenas-de-texto.md](02-cadenas-de-texto.md) mostró que `.formatted()` se declara como `formatted(Object... args)`, que es la razón por la que acepta cualquier cantidad de valores, esos tres puntos son varargs//TODO: PODRIAS PONER ALGUN EJEMPLO CON EL FORMATTED IGUAL QUE HAS PUESTO CON EL LOG.INFO PARA ASI TENERLO A LA VISTA. También lo verás en `String.format()` y en `log.info(...)`, un método de **SLF4J**, la librería de logging que Spring Boot incluye en cada proyecto. `log.info(...)` escribe en la consola una línea sobre lo que va haciendo la aplicación, y cada `{}` de su mensaje se sustituye, por orden, por los valores que pasas detrás. Para poder recibir cualquier número de valores, tiene una versión declarada con varargs: `info(String format, Object... arguments)`.
+Normalmente un método con dos parámetros exige exactamente dos argumentos. Varargs (`...`) te deja pasar cualquier cantidad en su lugar — cero, uno, cinco, tantos como quieras — y los recoge en un array internamente. Ya te has encontrado uno: [02-cadenas-de-texto.md](02-cadenas-de-texto.md) mostró que `.formatted()` se declara como `formatted(Object... args)`, que es la razón por la que acepta cualquier cantidad de valores, esos tres puntos son varargs.
+
+```java
+"Project %d deleted by %s at %s".formatted(7, "Ana", "10:42");
+// devuelve: "Project 7 deleted by Ana at 10:42"
+```
+
+También lo verás en `String.format()` y en `log.info(...)`, un método de **SLF4J**, la librería de logging que Spring Boot incluye en cada proyecto. `log.info(...)` escribe en la consola una línea sobre lo que va haciendo la aplicación, y cada `{}` de su mensaje se sustituye, por orden, por los valores que pasas detrás. Para poder recibir cualquier número de valores, tiene una versión declarada con varargs: `info(String format, Object... arguments)`.
 
 ```java
 log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");
