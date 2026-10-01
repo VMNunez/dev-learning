@@ -396,7 +396,7 @@ sum();                       // 0 — numbers.length == 0
 // numbers == null           // ❌ never true; a null-check here is dead code
 ```
 
-> **Why an empty array instead of `null`?** Because the whole point of varargs is that the method body should not care how it was called. If a zero-argument call produced `null`, every varargs method would have to open with a defensive `if (numbers == null)` before it could loop, and forgetting it would mean a `NullPointerException` on the *easiest* call of all. Handing over an empty array makes the no-arguments case the same code path as every other case. (You *can* still force a `null` in by passing one explicitly — `sum((int[]) null)` — but that is you overriding the guarantee, not Java breaking it.)
+> **Why an empty array instead of `null`?** Because that way the method always receives an array, whether you pass it zero values or many, and it can go through it the same way in every case. If a zero-argument call produced `null`, every varargs method would have to open with a defensive `if (numbers == null)` before it could loop, and forgetting it would mean a `NullPointerException` on the *easiest* call of all. Handing over an empty array makes the no-arguments case the same code path as every other case. (You *can* still force a `null` in by passing one explicitly — `sum((int[]) null)` — but that is you overriding the guarantee, not Java breaking it.)
 
 ### The same mechanism in the standard library
 
