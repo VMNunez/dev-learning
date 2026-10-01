@@ -403,7 +403,7 @@ sum();                       // 0 — numbers.length == 0
 > sum(scores);           // ❌ NullPointerException: numbers receives that null as it is
 > ```
 >
-> Java only creates the empty array when you call with no arguments, as in `sum()`. A variable that holds `null` reaches the method as it is, just like the `sum((int[]) null)` above.
+> Java only creates the empty array when you call with no arguments, as in `sum()`. A variable that holds `null` reaches the method as it is, just like the `sum((int[]) null)` above, so the for-each in `sum` throws the `NullPointerException`.
 
 ### The same mechanism in the standard library
 
