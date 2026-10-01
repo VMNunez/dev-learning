@@ -337,7 +337,17 @@ add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específic
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```
 
-> **Cómo desatascar una llamada ambigua.** No borres ninguna sobrecarga(TODO: NO ELIMINAR METODOS) — haz que el punto de la llamada indique cuál quieres dando a los argumentos su tipo declarado exacto: `add(1, 2L)` elige `add(int, long)` sin necesitar conversión en el segundo argumento, así que la pasada 1 encuentra un único ganador. La lección general es que la resolución de sobrecargas lee _tipos declarados_, nunca valores(TODO: "La lección general es que la resolución de sobrecargas lee _tipos declarados_, nunca valores" ESO NO LO HE ENTENDIDO). Con `int x = 1; long y = 2;`, la llamada `add(x, y)` pasa los mismos números que la ambigua `add(1, 2)` y aun así compila, y elige `add(int, long)`, porque el segundo argumento ahora está declarado `long`.
+> **Cómo desatascar una llamada ambigua.** No elimines ninguno de los dos métodos. Lo que tienes que cambiar es la llamada: escribe los argumentos de forma que sus tipos coincidan exactamente con los parámetros de una de las versiones. `add(1, 2L)` pasa un `int` y un `long`, porque la `L` final hace que `2L` sea un literal de tipo `long`. Esa llamada encaja en `add(int, long)` sin ninguna conversión, y no encaja en `add(long, int)`, porque su segundo parámetro es `int` y un `long` no se puede pasar ahí sin un cast. Así la pasada 1 encuentra un único candidato.
+>
+> Esto funciona porque Java elige la versión mirando el **tipo con el que está declarado** cada argumento, nunca el valor que lleva dentro. La elección se hace en tiempo de compilación, antes de que el programa se ejecute, así que de cada argumento Java solo usa su tipo. Incluso cuando el valor está escrito en el código, como el `2` de `add(1, 2)`, Java solo mira que es un `int`. Lo ves con dos variables:
+>
+> ```java
+> int x = 1;
+> long y = 2;
+> add(x, y);   // ✓ compila y llama a add(int, long)
+> ```
+>
+> `add(x, y)` pasa los mismos números que la llamada ambigua `add(1, 2)`, y aun así compila, porque `y` está declarada como `long`. Que el `2` quepa de sobra en un `int` da igual: Java no mira el `2`, mira que `y` es un `long`.
 
 > **Overloading vs overriding — no los confundas.** Suenan parecido y ambas hablan de "dos métodos con el mismo nombre", pero son ideas opuestas. **Overloading** (esta sección) es _una_ clase que define varias versiones de un método que se diferencian en sus parámetros — la elección se hace en tiempo de compilación según los argumentos que pasas. **Overriding** es una _subclase_ que reemplaza un método que heredó de su padre, manteniendo _exactamente los mismos_ parámetros, para cambiar el comportamiento — la elección se hace en tiempo de ejecución según el tipo real del objeto. Regla práctica: mismo nombre + parámetros distintos + misma clase = overloading; mismo nombre + mismos parámetros + subclase = overriding. Overriding se cubre en [08-herencia-polimorfismo.md](08-herencia-polimorfismo.md).
 

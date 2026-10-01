@@ -337,7 +337,17 @@ add(1, 2);   // ❌ both fit in pass 1, and neither is more specific:
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```
 
-> **How to unstick an ambiguous call.** Do not delete an overload — make the call site say which one you mean by giving the arguments their exact declared types: `add(1, 2L)` picks `add(int, long)` with no conversion needed on the second argument, so pass 1 finds a single winner. The general lesson is that overload resolution reads *declared types*, never values. With `int x = 1; long y = 2;`, the call `add(x, y)` passes the same numbers as the ambiguous `add(1, 2)` and still compiles, choosing `add(int, long)`, because the second argument is now declared `long`.
+> **How to unstick an ambiguous call.** Do not remove either of the two methods. What you have to change is the call: write the arguments so that their types match the parameters of one of the versions exactly. `add(1, 2L)` passes an `int` and a `long`, because the trailing `L` makes `2L` a literal of type `long`. That call fits `add(int, long)` with no conversion, and it does not fit `add(long, int)`, because its second parameter is `int` and a `long` cannot be passed there without a cast. So pass 1 finds a single candidate.
+>
+> This works because Java picks the version by looking at the **type each argument is declared with**, never at the value it holds. The choice is made at compile time, before the program runs, so of each argument Java only uses its type. Even when the value is written in the code, like the `2` in `add(1, 2)`, Java only looks at the fact that it is an `int`. You can see it with two variables:
+>
+> ```java
+> int x = 1;
+> long y = 2;
+> add(x, y);   // ✓ compiles and calls add(int, long)
+> ```
+>
+> `add(x, y)` passes the same numbers as the ambiguous call `add(1, 2)`, and still compiles, because `y` is declared as `long`. That `2` would easily fit in an `int` does not matter: Java does not look at the `2`, it looks at the fact that `y` is a `long`.
 
 > **Overloading vs overriding — don't confuse them.** They sound alike and both involve "two methods with the same name", but they are opposite ideas. **Overloading** (this section) is *one* class defining several versions of a method that differ in their parameters — the choice is made at compile time by the arguments you pass. **Overriding** is a *subclass* replacing a method it inherited from its parent, keeping the *exact same* parameters, to change the behaviour — the choice is made at run time by the object's real type. Rule of thumb: same name + different parameters + same class = overloading; same name + same parameters + subclass = overriding. Overriding is covered in [08-inheritance-polymorphism.md](08-inheritance-polymorphism.md).
 
