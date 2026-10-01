@@ -687,7 +687,7 @@ Three cases need no import at all, and knowing which is why `String` has never a
 |---|---|---|
 | Classes in `java.lang` | `String`, `Integer`, `System`, `Object`, `Math` | Java imports `java.lang.*` into every file automatically |
 | Classes in the **same package** | `ProjectService` uses `AuthenticatedUserProvider` with no import, because both classes are in the `com.victor.timetrack.service` package | Same namespace, so the simple name is already unambiguous |
-| Using the fully qualified name directly | `java.sql.Date now = ...` | You spelled the whole name, so there is nothing to translate |
+| Using the fully qualified name directly | `java.sql.Date now = ...` | You spelled the whole name, so there is nothing to import |
 
 Read the table as three different reasons a simple name can already be unambiguous — they are not ranked, and you do not choose between them. The first row is the one to memorise: `java.lang` holds the classes no program can avoid, so the language hands them over for free. That is the entire reason `System.out.println` works in a file with no imports, and why `Integer.parseInt` back in [02-strings.md](02-strings.md) never needed one either. The second row is why `ProjectService` imports `Project` and `ProjectRepository` but never imports `AuthenticatedUserProvider` — that class lives in `com.victor.timetrack.service` as well.
 
