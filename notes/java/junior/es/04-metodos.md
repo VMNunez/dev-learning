@@ -293,7 +293,7 @@ public double add(int a, int b) { return a + b; }   // ❌ mismo nombre, mismos 
 
 > 📖 Docs: [JLS §15.12.2 — Compile-Time Step 2: Determine Method Signature](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.2) → leer: los párrafos iniciales, hasta "The third phase allows overloading to be combined with variable arity methods" — la exposición oficial de las tres pasadas y de por qué se ejecutan en ese orden.
 
-Los ejemplos de arriba coincidían de forma exacta, así que no había nada que decidir. El caso interesante es `add(1, 2)` cuando ninguna sobrecarga toma `(int, int)` — varias podrían aceptar la llamada de todos modos, porque un `int` puede convertirse en `long`, o en `Integer`, o en un elemento de un `int...`. Java no elige "la más parecida" a ojo; ejecuta tres pasadas en un orden fijo y se detiene en la primera que produce una coincidencia:
+Los ejemplos de arriba coincidían de forma exacta, así que no había nada que decidir. El caso interesante es `add(1, 2)` cuando ninguna sobrecarga toma `(int, int)` — varias podrían aceptar la llamada de todos modos, porque un `int` puede convertirse en `long`, o en `Integer`, o en un elemento de un `int...`. Java no elige "la más parecida" a ojo; ejecuta tres pasadas en un orden fijo y se detiene en la primera que produce una coincidencia:(TODO: MALISIMO EL PARRAFO, NO SE ENTIENDE)
 
 | Pasada | Qué intenta Java                                                                                                                    | Ejemplo que gana aquí   |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
