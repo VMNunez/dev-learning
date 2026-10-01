@@ -801,7 +801,7 @@ static String slug(String title) {
 
 `buildPage` would receive that `null` and join it with `+` to `"<h1>"` and `"</h1>"`. When you concatenate a `null`, Java writes the text `null`, so the page would show `<h1>null</h1>`. The program does not fail, and nobody notices the error until someone looks at the page. That is why this outcome is worse than the exception: the exception at least warns you at the moment it happens.
 
-The lesson is **where**. A method that cannot do its job without an argument should say so *on entry*, before doing anything else — this is the **guard clause** shape you already met under §"Return types", now applied to the method's contract rather than to its control flow. The right boundary is the outermost method that declares the value as required. In the example that is `buildPage`, the public entry point of this little feature: it is the one whose contract says "give me a title and I give you a page".
+The fix is knowing **where** to reject the `null`. A method that cannot do its job without an argument should say so *on entry*, before doing anything else — this is the **guard clause** shape you already met under §"Return types", now applied to the method's contract rather than to its control flow. The right boundary is the outermost method that declares the value as required. In the example that is `buildPage`, the public entry point of this little feature: it is the one whose contract says "give me a title and I give you a page".
 
 ```java
 import java.util.Objects;
