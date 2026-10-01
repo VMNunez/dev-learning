@@ -565,7 +565,7 @@ public class ProjectService {
 
 That class's real, unambiguous name is now `com.victor.timetrack.service.ProjectService`. Java calls that the **fully qualified name**: the package, which is `com.victor.timetrack.service`, the one declared on the first line; a dot; and the class's own name, `ProjectService`. `ProjectService` is its **simple name**. Both refer to the same class; the fully qualified one is what Java actually works with internally.
 
-> **The `com.victor` prefix is an internet domain written backwards.** This convention prevents one specific problem: two companies or organisations unknowingly creating a package with the same name. If you and another company both created a package called `service` with a `ProjectService` class inside, Java could not tell one class from the other.
+> **The `com.victor` prefix is an internet domain written backwards.** This convention prevents one specific problem: two companies or organisations unknowingly creating a package with the same name. Your code does not mix with other companies' code on its own: it meets it when you use libraries. Spring, Jackson and the other libraries your project adds are classes written by other companies or organisations, and when the application runs they are all loaded alongside yours, in the same program. If one of those libraries had a package called `service` with a `ProjectService` class inside, just like yours, Java could not tell one class from the other.
 >
 > The fix is to start the package with something that is already unique: an internet domain, because each domain has a single owner. And it is written backwards, starting with the most general part:
 >
