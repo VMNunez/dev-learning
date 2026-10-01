@@ -654,7 +654,7 @@ Fully qualified names are correct, but they are hard to read. You *can* write co
 com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
 ```
 
-An **import** lets you use the simple name instead. It goes after the `package` line and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
+An **import** lets you use the simple name of the class instead. It goes after the `package` line, which defines the name of the package you are in, and before the class. This is the opening of the same `ProjectService`, trimmed to five of its twelve imports:
 
 ```java
 package com.victor.timetrack.service;
@@ -668,7 +668,9 @@ import java.util.List;
 
 @Service
 public class ProjectService {
-    public List<ProjectResponse> getAll() { ... }   // ✅ simple names throughout
+    // ✅ thanks to the imports above, writing List and ProjectResponse is enough here.
+    // Without them you would have to write java.util.List<com.victor.timetrack.dto.response.ProjectResponse>
+    public List<ProjectResponse> getAll() { ... }
 }
 ```
 
