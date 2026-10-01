@@ -608,7 +608,7 @@ Romperás esa coincidencia la primera vez que muevas un archivo entre carpetas e
 package com.victor.timetrack.controller;
 ```
 
-Reaccionan dos herramientas, cada una en un momento distinto, y saber cuál es cuál te ahorra la búsqueda.(TODO: MEJORA ESA LINEA)
+A partir de ahí, dos herramientas te avisan del problema, IntelliJ y el compilador, y cada una lo hace en un momento distinto. Este es el orden en que lo vas a ver:
 
 1. **IntelliJ marca el archivo de inmediato**, con `Package name 'com.victor.timetrack.controller' does not correspond to the file path 'com.victor.timetrack.service'`.
 2. **La compilación sigue funcionando en este punto.** Maven le entrega a `javac` cada archivo `.java` de `src/main/java/` por su ruta, y `javac` toma el paquete de una clase de la línea `package`, no de la carpeta. Así que la clase sigue siendo `com.victor.timetrack.controller.ProjectService`, y todos los archivos que la importan con ese nombre siguen compilando.

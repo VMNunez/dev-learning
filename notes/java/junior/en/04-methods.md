@@ -608,7 +608,7 @@ You will break that match the first time you move a file between folders in Inte
 package com.victor.timetrack.controller;
 ```
 
-Two tools react, at two different moments, and knowing which is which saves you the hunt.
+From there, two tools warn you about the problem, IntelliJ and the compiler, and each one does so at a different moment. This is the order in which you will see it:
 
 1. **IntelliJ flags the file straight away**, with `Package name 'com.victor.timetrack.controller' does not correspond to the file path 'com.victor.timetrack.service'`.
 2. **The build still succeeds at this point.** Maven hands `javac` every `.java` file under `src/main/java/` by its path, and `javac` takes a class's package from the `package` line, not from the folder. So the class is still `com.victor.timetrack.controller.ProjectService`, and every file that imports it under that name keeps compiling.
