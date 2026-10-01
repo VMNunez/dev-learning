@@ -710,7 +710,16 @@ Date utilDate = new Date();                          // ✅ the imported one
 java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ fully qualified, no ambiguity
 ```
 
-> **Using `import java.util.*;` is not recommended, because of the name conflict we have just seen.** A wildcard import brings in every class of a package under its simple name, so adding one is quietly volunteering for a clash with any other package imported the same way — and the clash can appear the day a *library upgrade* adds a class you never wrote, in code you never touched. IntelliJ writes explicit single-type imports by default and only collapses them past a threshold you can raise (`Settings → Editor → Code Style → Java → Imports`). Keep them explicit: the import block then doubles as an honest summary of what the file depends on, which is the first thing you read when you open an unfamiliar class.
+> **Using `import java.util.*;` is not recommended, because of the name conflict we have just seen.** An import ending in `*`, called a wildcard import, lets you use the simple name of every class in that package. That is why it can cause conflicts: if you import two packages that way and both have a class with the same name, the compiler does not know which of the two you want. For example, `java.util` and `java.sql` each have a `Date` class:
+>
+> ```java
+> import java.util.*;
+> import java.sql.*;
+>
+> Date today = new Date();   // ❌ error: reference to Date is ambiguous
+> ```
+>
+> The conflict can appear without you changing anything in the file: it is enough for a library to add, in a new version, a class with a name you were already using from another package. IntelliJ writes explicit single-type imports by default and only collapses them past a threshold you can raise (`Settings → Editor → Code Style → Java → Imports`). Keep them explicit: the import block then doubles as an honest summary of what the file depends on, which is the first thing you read when you open an unfamiliar class.
 
 ---
 

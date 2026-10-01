@@ -710,7 +710,16 @@ Date utilDate = new Date();                          // ✅ el importado
 java.sql.Date sqlDate = new java.sql.Date(millis);   // ✅ completamente cualificado, sin ambigüedad
 ```
 
-> **No es recomendable usar `import java.util.*;`, por el conflicto de nombres que acabamos de ver.** Un import con comodín trae cada clase de un paquete bajo su nombre simple, así que añadir uno te apunta en silencio a un choque con cualquier otro paquete importado de la misma forma (TODO: MUY MAL " así que añadir uno te apunta en silencio a un choque con cualquier otro paquete importado de la misma forma")— y el choque puede aparecer el día que una _actualización de una librería_ añade una clase que tú nunca escribiste, en código que nunca tocaste(TODO: IMAGINO QUE TODO ESTO SE RESUMEN EN QUE NO ME CONVIENE ESCRIBIR EL...\* PORQUE ESO TRAE TODOS LOS NOMBRES SIMPLES DE TODAS LAS CLASES DEL PAQUETE Y PUEDE GENERAR CONFLICTOS). IntelliJ escribe imports explícitos de un solo tipo por defecto, y solo los colapsa a partir de un umbral que puedes subir (`Settings → Editor → Code Style → Java → Imports`). Mantenlos explícitos: el bloque de imports entonces funciona también como un resumen honesto de lo que depende el archivo, que es lo primero que lees al abrir una clase que no conoces.
+> **No es recomendable usar `import java.util.*;`, por el conflicto de nombres que acabamos de ver.** Un import terminado en `*` (en inglés _wildcard import_, que es como lo oirás habitualmente) te deja usar el nombre simple de todas las clases de ese paquete. Por eso puede generar conflictos: si importas así dos paquetes que tienen una clase con el mismo nombre, el compilador no sabe cuál de las dos quieres. Por ejemplo, `java.util` y `java.sql` tienen cada uno una clase `Date`:
+>
+> ```java
+> import java.util.*;
+> import java.sql.*;
+>
+> Date today = new Date();   // ❌ error: reference to Date is ambiguous
+> ```
+>
+> El conflicto puede aparecer sin que tú cambies nada en el archivo: basta con que una librería añada, en una versión nueva, una clase con un nombre que ya usabas de otro paquete. IntelliJ escribe imports explícitos de un solo tipo por defecto, y solo los colapsa a partir de un umbral que puedes subir (`Settings → Editor → Code Style → Java → Imports`). Mantenlos explícitos: el bloque de imports entonces funciona también como un resumen honesto de lo que depende el archivo, que es lo primero que lees al abrir una clase que no conoces.
 
 ---
 
