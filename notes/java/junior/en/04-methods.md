@@ -10,7 +10,7 @@
   - [The same mechanism in the standard library](#the-same-mechanism-in-the-standard-library)
 - [Calling methods](#calling-methods)
 - [Packages and imports](#packages-and-imports)
-  - [The package name and the folder path match, one folder per dot](#the-package-name-and-the-folder-path-match-one-folder-per-dot)
+  - [Each part of the package name is a folder](#each-part-of-the-package-name-is-a-folder)
   - [Imports — using the simple name, resolved at compile time](#imports--using-the-simple-name-resolved-at-compile-time)
   - [When two classes share a simple name](#when-two-classes-share-a-simple-name)
 - [`null`, `NullPointerException`, and where to reject a missing argument](#null-nullpointerexception-and-where-to-reject-a-missing-argument)
@@ -577,7 +577,7 @@ That class's real, unambiguous name is now `com.victor.timetrack.service.Project
 >
 > It is a convention, not a compiler rule: `package banana;` compiles without any problem, although it could end up causing problems: if a library also used a package called `banana`, you would be back to the name clash this convention prevents. That is why it is the standard way to name packages, and you will see it in Spring, in Jackson and in practically any library you add to a project. The exception is the classes that come with Java itself, like those in `java.util`, which use the `java.` prefix, reserved for them.
 
-### The package name and the folder path match, one folder per dot
+### Each part of the package name is a folder
 
 [00-intro-java.md](00-intro-java.md) stated the rule that the folder path and the package name always match. This is what it looks like across a whole project, the TimeTrack backend, where you can read each package name straight off its path:
 
