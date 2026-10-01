@@ -337,9 +337,9 @@ add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específic
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```
 
-> **Cómo desatascar una llamada ambigua.** No elimines ninguno de los dos métodos. Lo que tienes que cambiar es la llamada: escribe los argumentos de forma que sus tipos coincidan exactamente con los parámetros de una de las versiones. `add(1, 2L)` pasa un `int` y un `long`, porque la `L` final hace que `2L` sea un literal de tipo `long`. Esa llamada encaja en `add(int, long)` sin ninguna conversión, y no encaja en `add(long, int)`, porque su segundo parámetro es `int` y un `long` no se puede pasar ahí sin un cast. Así la pasada 1 encuentra un único candidato.
+> **Cómo desatascar una llamada ambigua.** No elimines ninguno de los métodos. Lo que tienes que cambiar es la llamada: escribe los argumentos de forma que sus tipos coincidan exactamente con los(TODO: CON LOS TIPOS DE LOS PARAMETROS) parámetros de una de las versiones. `add(1, 2L)` pasa un `int` y un `long`, porque la `L` final hace que `2L` sea un literal de tipo `long`. Esa llamada encaja en `add(int, long)` sin ninguna conversión, y no encaja en `add(long, int)`, porque su segundo parámetro es `int` y un `long` no se puede pasar ahí sin un cast. Así la pasada 1 encuentra un único candidato.
 >
-> Esto funciona porque Java elige la versión mirando el **tipo con el que está declarado** cada argumento, nunca el valor que lleva dentro. La elección se hace en tiempo de compilación, antes de que el programa se ejecute, así que de cada argumento Java solo usa su tipo. Incluso cuando el valor está escrito en el código, como el `2` de `add(1, 2)`, Java solo mira que es un `int`. Lo ves con dos variables:
+> Esto funciona porque Java elige la versión mirando el **tipo con el que está declarado** cada argumento, nunca el valor que lleva dentro. La elección se hace en tiempo de compilación, antes de que el programa se ejecute, así que de cada argumento Java solo usa su tipo. Incluso cuando el valor está escrito en el código, como el `2` de `add(1, 2)`, Java solo mira que es un `int`. Lo ves con dos variables(TODO: NECESITO QUE SEA MAS DIDACTICO EL PARRAFO. AQUI LO QUE ENTIENDO ES QUE SE TIENE EN CUENTA EL TIPO DE LOS ARGUMENTOS, PERO TAMPOCO ME QUEDA CLARO):
 >
 > ```java
 > int x = 1;
