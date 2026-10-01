@@ -647,7 +647,7 @@ IntelliJ's **Refactor → Move** (`F6`) exists to avoid exactly that: it moves t
 
 ### Imports — using the simple name, resolved at compile time
 
-Fully qualified names are correct and unreadable. You *can* write code with them, and it compiles:
+Fully qualified names are correct, but they are hard to read. You *can* write code with them, and it compiles:
 
 ```java
 // ✅ legal, and nobody writes this
