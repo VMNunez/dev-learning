@@ -506,7 +506,7 @@ This class has two kinds of methods: instance methods, which are declared with n
 
 What `static` actually means, and why that split is a design decision rather than a matter of taste, you will see in [06-oop-classes.md](06-oop-classes.md). Here it is enough to know that `static` decides how the method is called: on an object, like `calc.add(3, 4)`, or directly on the class, like `Calculator.square(5)`. Both forms appear in the code below. In the constructor, `this.name = name;` copies the parameter `name` that the constructor receives into the object's `name` field (the object's, not the class's: each object has its own).
 
-> `List<String>` and `ArrayList` are Java's variable-length list — covered in full in [10-collections.md](10-collections.md). For now read it as "an array that can grow or shrink". The `add` method in `history.add(...)` is used to append one item to the end of the list. It is not `Calculator`'s `add()`: it is a method of the list itself, which only shares its name.
+> `List<String>` and `ArrayList` are Java's variable-length list — covered in full in [10-collections.md](10-collections.md). For now read it as "an array that can grow or shrink". The `add` method in `history.add(...)` is used to append one item to the end of the list. It is not `Calculator`'s `add()`: it is a method of the list itself, which comes with `List` and `ArrayList`.
 
 Calling them:
 
