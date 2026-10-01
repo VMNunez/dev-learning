@@ -701,7 +701,7 @@ import java.sql.Date;   // ❌
 // error: a type with the same simple name is already defined by the single-type-import of Date
 ```
 
-Inside one file, a simple name always refers to one class. The fix is to import whichever you use most and spell the other one out in full at the two or three places it appears:
+Inside one file, a simple name always refers to one class. If two of the simple names match, as with `Date` here, the compiler would not know which of the two classes you mean when you write `Date`, and that is why it rejects the second import. The fix is to import whichever you use most and spell the other one out in full at the two or three places it appears:
 
 ```java
 import java.util.Date;
