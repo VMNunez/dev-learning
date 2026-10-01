@@ -293,7 +293,15 @@ public double add(int a, int b) { return a + b; }   // ❌ mismo nombre, mismos 
 
 > 📖 Docs: [JLS §15.12.2 — Compile-Time Step 2: Determine Method Signature](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.2) → leer: los párrafos iniciales, hasta "The third phase allows overloading to be combined with variable arity methods" — la exposición oficial de las tres pasadas y de por qué se ejecutan en ese orden.
 
-Los ejemplos de arriba coincidían de forma exacta, así que no había nada que decidir. El caso interesante es `add(1, 2)` cuando ninguna sobrecarga toma `(int, int)` — varias podrían aceptar la llamada de todos modos, porque un `int` puede convertirse en `long`, o en `Integer`, o en un elemento de un `int...`. Java no elige "la más parecida" a ojo; ejecuta tres pasadas en un orden fijo y se detiene en la primera que produce una coincidencia:(TODO: MALISIMO EL PARRAFO, NO SE ENTIENDE)
+En los ejemplos de arriba, cada llamada tenía una versión de `add` cuyos parámetros eran exactamente los tipos de sus argumentos: `add(1, 2)` pasa dos `int`, y existía `add(int a, int b)`. Así que Java no tenía nada que decidir. Ahora imagina una clase en la que ninguna versión de `add` recibe dos `int`, pero existen estas tres:
+
+```java
+public long add(long a, long b) { return a + b; }
+public int add(Integer a, Integer b) { return a + b; }
+public int add(int... numbers) { ... }
+```
+
+La llamada `add(1, 2)` podría encajar en cualquiera de ellas, porque Java sabe convertir un `int` de tres formas: en un `long`, en un objeto `Integer`, o en un elemento de un array `int[]`, que es lo que significa `int...` (lo verás en la sección _Varargs — número variable de argumentos_ de este mismo archivo). Para elegir una, Java no busca a ojo la que más se parece. Prueba esas tres formas de una en una, siempre en el mismo orden, y se queda con la primera que funciona. Cada uno de esos intentos se llama **pasada**:
 
 | Pasada | Qué intenta Java                                                                                                                    | Ejemplo que gana aquí   |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |

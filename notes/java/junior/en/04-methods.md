@@ -293,7 +293,15 @@ public double add(int a, int b) { return a + b; }   // ❌ same name, same param
 
 > 📖 Docs: [JLS §15.12.2 — Compile-Time Step 2: Determine Method Signature](https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.2) → read: the opening paragraphs, down to "The third phase allows overloading to be combined with variable arity methods" — the official statement of the three passes and of why they run in that order.
 
-The examples above matched exactly, so there was nothing to decide. The interesting case is `add(1, 2)` when no overload takes `(int, int)` — several could still accept the call, since an `int` can become a `long`, or an `Integer`, or an element of an `int...`. Java does not pick "the closest one" by feel; it runs three passes in a fixed order and stops at the first that produces a match:
+In the examples above, every call had a version of `add` whose parameters were exactly the types of its arguments: `add(1, 2)` passes two `int`s, and `add(int a, int b)` existed. So Java had nothing to decide. Now imagine a class in which no version of `add` takes two `int`s, but these three exist:
+
+```java
+public long add(long a, long b) { return a + b; }
+public int add(Integer a, Integer b) { return a + b; }
+public int add(int... numbers) { ... }
+```
+
+The call `add(1, 2)` could fit any of them, because Java knows three ways to convert an `int`: into a `long`, into an `Integer` object, or into an element of an `int[]` array, which is what `int...` means (you will see it in the section _Varargs — variable number of arguments_ of this same file). To pick one, Java does not look for the closest one by feel. It tries those three ways one at a time, always in the same order, and keeps the first one that works. Each of those attempts is called a **pass**:
 
 | Pass | What Java tries | Example that wins here |
 |---|---|---|
