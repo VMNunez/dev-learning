@@ -450,7 +450,12 @@ static <E> List<E> of(E... elements)       // cualquier número de elementos
 
 Como vimos en la sección [Sobrecarga de métodos (overloading)](#sobrecarga-de-métodos-overloading), la resolución de sobrecargas solo llega a varargs después de que las pasadas 1 y 2 hayan fallado. Así que `List.of("a", "b")` encaja con `of(E e1, E e2)` en la pasada 1 y se queda ahí: `"a"` va directamente al parámetro `e1` y `"b"` a `e2`, sin que Java tenga que crear ningún array para meterlos, como haría con un varargs. Solo un `List.of` con once elementos o más llega hasta la versión varargs, y solo entonces Java crea un array con todos ellos. Crear un array gasta memoria y tiempo en cada llamada, así que las once versiones fijas existen para ahorrárselo a las llamadas cortas, que son las más habituales. Las pasadas, en cambio, no cuestan nada al ejecutar el programa: las hace el compilador una sola vez, al compilar, para decidir qué versión llama cada línea. Lo que se repite cada vez que se ejecuta la llamada es crear el array, y eso es lo único que estas versiones ahorran. Y como son las pasadas las que eligen la versión, tú escribes `List.of(...)` igual en todos los casos y no notas la diferencia de si se está usando una versión fija o la versión varargs.
 
-> **Esta es la razón por la que `sum(scores)` y `sum(1, 2, 3)` pueden compilar los dos.** El atajo de pasar un array directamente, visto antes en esta sección, es el mismo hecho mirado desde el otro extremo: las pasadas 1 y 2 leen `int... numbers` como el parámetro `int[]` que en realidad es, así que `sum(scores)` ya encaja ahí, y solo cae a la pasada 3 una llamada cuyo array todavía hay que construir. Un solo mecanismo, dos formas de llamar.(TODO: NO ENTIENDO LO QUE QUIERES DECIR CON ESTE PARRAFO)
+> **Las pasadas también explican por qué `sum` acepta tanto un array como valores sueltos.** Ya viste que `int... numbers` es en realidad un parámetro `int[]`. Las pasadas 1 y 2 lo tratan así, como un parámetro normal de tipo `int[]`. Por eso cada forma de llamar a `sum` se resuelve en una pasada distinta:
+>
+> 1. `sum(scores)`: le pasas un `int[]`, que encaja con el parámetro `int[]` ya en la pasada 1. Java usa tu array tal cual y no crea ninguno.
+> 2. `sum(1, 2, 3)`: tres `int` sueltos no encajan con un único parámetro `int[]`, así que las pasadas 1 y 2 fallan. En la pasada 3, Java mete los tres valores en un array nuevo y llama a `sum` con él.
+>
+> Es lo mismo que acabas de ver con `List.of`: Java solo llega a la pasada 3 cuando las dos primeras fallan, y la pasada 3 es la única que crea un array.
 
 ---
 

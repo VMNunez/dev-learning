@@ -450,7 +450,12 @@ Why so many versions, when the varargs one alone would accept every call?
 
 As we saw in the section [Method overloading](#method-overloading), overload resolution only reaches varargs after passes 1 and 2 have failed. So `List.of("a", "b")` matches `of(E e1, E e2)` in pass 1 and stays there: `"a"` goes straight to the parameter `e1` and `"b"` to `e2`, without Java having to create any array to hold them, as it would with a varargs. Only a `List.of` with eleven or more elements reaches the varargs version, and only then does Java create an array with all of them. Creating an array costs memory and time on every call, so the eleven fixed versions exist to spare the short calls that cost, and the short calls are the most common ones. The passes, on the other hand, cost nothing when the program runs: the compiler does them once, at compile time, to decide which version each line calls. What repeats every time the call runs is creating the array, and that is the only thing these versions save. And since it is the passes that choose the version, you write `List.of(...)` the same way in every case and never notice whether a fixed version or the varargs version is being used.
 
-> **This is why `sum(scores)` and `sum(1, 2, 3)` can both compile.** The array-passing shortcut earlier in this section is the same fact seen from the other end: passes 1 and 2 read `int... numbers` as the plain `int[]` parameter it is, so `sum(scores)` already matches there, and only a call whose array still has to be built falls through to pass 3. One mechanism, two call shapes.
+> **The passes also explain why `sum` accepts both an array and loose values.** You already saw that `int... numbers` really is an `int[]` parameter. Passes 1 and 2 treat it that way, as an ordinary parameter of type `int[]`. That is why each way of calling `sum` is resolved in a different pass:
+>
+> 1. `sum(scores)`: you pass an `int[]`, which matches the `int[]` parameter already in pass 1. Java uses your array as it is and creates none.
+> 2. `sum(1, 2, 3)`: three loose `int`s do not match a single `int[]` parameter, so passes 1 and 2 fail. In pass 3, Java puts the three values into a new array and calls `sum` with it.
+>
+> It is the same thing you just saw with `List.of`: Java only reaches pass 3 when the first two fail, and pass 3 is the only one that creates an array.
 
 ---
 
