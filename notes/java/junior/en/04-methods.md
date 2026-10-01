@@ -788,7 +788,18 @@ Now notice the trap. The stack trace's top line is `Report.java:3`, and that lin
 
 ### The fix: reject the missing value at the boundary that requires it
 
-The lesson is not "add more null checks". Sprinkling `if (x != null)` down every method hides the bug instead of reporting it, and produces the second-worst outcome: a page that renders `<h1>null</h1>` and nobody notices for a month.
+The lesson is not to fill your methods with `if (x != null)` checks. If each method simply skips its work when it receives a `null`, the program stops throwing the exception, but the error is still there and nothing warns you about it any more. For example, if `slug` checked `title` and returned `null` instead of failing:
+
+```java
+static String slug(String title) {
+    if (title == null) {
+        return null;   // ❌ skips its work, but the null keeps going
+    }
+    return title.toLowerCase().replace(' ', '-');
+}
+```
+
+`buildPage` would receive that `null` and join it with `+` to `"<h1>"` and `"</h1>"`. When you concatenate a `null`, Java writes the text `null`, so the page would show `<h1>null</h1>`. The program does not fail, and nobody notices the error until someone looks at the page. That is why this outcome is worse than the exception: the exception at least warns you at the moment it happens.
 
 The lesson is **where**. A method that cannot do its job without an argument should say so *on entry*, before doing anything else — this is the **guard clause** shape you already met under §"Return types", now applied to the method's contract rather than to its control flow. The right boundary is the outermost method that declares the value as required. In the example that is `buildPage`, the public entry point of this little feature: it is the one whose contract says "give me a title and I give you a page".
 

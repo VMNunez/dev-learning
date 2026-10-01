@@ -788,7 +788,18 @@ Ahora fíjate en la trampa. La línea de arriba del stack trace es `Report.java:
 
 ### La solución: rechazar el valor ausente en la frontera que lo necesita
 
-La lección no es "añade más null-checks". Salpicar (TODO: LLENAR LOS METODOS DE)`if (x != null)` por cada método esconde el bug en lugar de reportarlo, y produce el segundo peor resultado posible: una página que renderiza `<h1>null</h1>` y nadie se da cuenta durante un mes(TODO: QUIERO MAYOR CLARIDAD EN EL PARRAFO).
+La lección no es llenar los métodos de comprobaciones `if (x != null)`. Si cada método se limita a saltarse su trabajo cuando recibe un `null`, el programa deja de lanzar la excepción, pero el error sigue ahí y ya nada te avisa de él. Por ejemplo, si `slug` comprobara `title` y devolviera `null` en lugar de fallar:
+
+```java
+static String slug(String title) {
+    if (title == null) {
+        return null;   // ❌ se salta su trabajo, pero el null sigue su camino
+    }
+    return title.toLowerCase().replace(' ', '-');
+}
+```
+
+`buildPage` recibiría ese `null` y lo uniría con `+` a `"<h1>"` y `"</h1>"`. Al concatenar un `null`, Java escribe el texto `null`, así que la página mostraría `<h1>null</h1>`. El programa no falla, y nadie se da cuenta del error hasta que alguien ve la página. Por eso este resultado es peor que la excepción: la excepción, por lo menos, te avisa en el momento.
 
 La lección es **dónde**. Un método que no puede hacer su trabajo sin un argumento debería decirlo _al entrar_, antes de hacer cualquier otra cosa — esta es la forma de **guard clause** que ya conociste en §"Tipos de retorno", ahora aplicada al contrato del método en lugar de a su flujo de control. La frontera correcta es el método más externo que declara ese valor como obligatorio. En el ejemplo es `buildPage`, el punto de entrada público de esta pequeña funcionalidad: es el que tiene el contrato que dice "dame un título y te doy una página".
 
