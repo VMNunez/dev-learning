@@ -329,8 +329,10 @@ El modo de fallo son dos candidatos en la misma pasada donde ninguno es más esp
 static void add(int a, long b) { }
 static void add(long a, int b) { }
 
-add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específico: (int, long) no se
-             //    puede pasar a (long, int), y (long, int) no se puede pasar a (int, long)TODO: POR QUE NO SE PUEDE PASAR, PORQUE LONG NO SE PUEDE PASAR A INT O POR QUE?
+add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específico:
+             //    (int, long) no se puede pasar a (long, int), porque su segundo parámetro es long
+             //    y un long no se puede pasar donde se espera un int sin escribir un cast;
+             //    (long, int) no se puede pasar a (int, long) por lo mismo, en el primer parámetro
 // error: reference to add is ambiguous
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```

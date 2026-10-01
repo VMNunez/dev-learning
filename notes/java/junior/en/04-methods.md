@@ -329,8 +329,10 @@ The failure mode is two candidates in the same pass where neither is more specif
 static void add(int a, long b) { }
 static void add(long a, int b) { }
 
-add(1, 2);   // ❌ both fit in pass 1, and neither is more specific: (int, long) cannot
-             //    be passed to (long, int), and (long, int) cannot be passed to (int, long)
+add(1, 2);   // ❌ both fit in pass 1, and neither is more specific:
+             //    (int, long) cannot be passed to (long, int), because its second parameter is long
+             //    and a long cannot be passed where an int is expected without writing a cast;
+             //    (long, int) cannot be passed to (int, long) for the same reason, in the first parameter
 // error: reference to add is ambiguous
 //   both method add(int,long) in Calculator and method add(long,int) in Calculator match
 ```
