@@ -575,7 +575,7 @@ That class's real, unambiguous name is now `com.victor.timetrack.service.Project
 >
 > Writing it backwards orders packages from general to specific: first `com`, inside it `com.victor`, inside that `com.victor.timetrack`, and so on.
 >
-> It is a convention, not a compiler rule: `package banana;` compiles without any problem, although it could end up causing problems: if a library also used a `banana` package, you would be back to the name clash this convention prevents. That is why it is the standard way to name packages, and you will see it in Spring, in Jackson and in practically any library you add to a project. The exception is the classes that come with Java itself, like those in `java.util`, which use the `java.` prefix, reserved for them.
+> It is a convention, not a compiler rule: `package banana;` compiles without any problem, although it could end up causing problems: if a library also used a package called `banana`, you would be back to the name clash this convention prevents. That is why it is the standard way to name packages, and you will see it in Spring, in Jackson and in practically any library you add to a project. The exception is the classes that come with Java itself, like those in `java.util`, which use the `java.` prefix, reserved for them.
 
 ### The package name and the folder path match, one folder per dot
 
