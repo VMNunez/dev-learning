@@ -360,13 +360,11 @@ add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específic
 Normalmente un método con dos parámetros exige exactamente dos argumentos. Varargs (`...`) te deja pasar cualquier cantidad en su lugar — cero, uno, cinco, tantos como quieras — y los recoge en un array internamente. Ya te has encontrado uno: [02-cadenas-de-texto.md](02-cadenas-de-texto.md) mostró que `.formatted()` se declara como `formatted(Object... args)`, que es la razón por la que acepta cualquier cantidad de valores, esos tres puntos son varargs. También lo verás en `String.format()` y en `log.info(...)`, un método de **SLF4J**, la librería de logging que Spring Boot incluye en cada proyecto. `log.info(...)` escribe en la consola una línea sobre lo que va haciendo la aplicación, y cada `{}` de su mensaje se sustituye, por orden, por los valores que pasas detrás. Para poder recibir cualquier número de valores, tiene una versión declarada con varargs: `info(String format, Object... arguments)`.
 
 ```java
-log.info("Project {} deleted by {} at {}", 7, "ana", "10:42");
-// la línea que aparece en la consola termina en: Project 7 deleted by ana at 10:42
+log.info("Project {} deleted by {} at {}", 7, "Ana", "10:42");
+// la línea que aparece en la consola termina en: Project 7 deleted by Ana at 10:42
 ```
 
-Cómo se crea `log` en una clase lo verás en las notas de Spring Boot.
-
-La sintaxis es `Tipo... nombre`, y debe ser el **último** parámetro del método. La razón es que Java tiene que saber dónde termina la lista de longitud variable: si un parámetro fijo viniera después, Java no podría distinguir qué argumento pertenece a la lista varargs y cuál es el siguiente argumento fijo. El mismo razonamiento permite un solo parámetro varargs por método. Ponlo en cualquier otro sitio y la propia declaración se rechaza, antes de que exista ninguna llamada: `void f(int... a, int b)` falla con `error: varargs parameter must be the last parameter`.
+La sintaxis es `Tipo... nombre`, y debe ser el **último** parámetro del método. La razón es que Java tiene que saber dónde termina la lista de longitud variable: si un parámetro fijo viniera después, Java no podría distinguir qué argumento pertenece a la lista varargs y cuál es el siguiente argumento fijo. El mismo razonamiento permite un solo parámetro varargs por método. Ponlo en cualquier otro sitio y la propia declaración se rechaza, antes de que exista ninguna llamada(TODO: SI LO PONEMOS EN OTRO SITIO FALLARA EN TIEMPO DE COMPILACION): `void f(int... a, int b)` falla con `error: varargs parameter must be the last parameter`.
 
 ```java
 public int sum(int... numbers) {
