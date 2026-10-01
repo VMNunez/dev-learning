@@ -701,7 +701,7 @@ import java.sql.Date;   // ❌
 // error: a type with the same simple name is already defined by the single-type-import of Date
 ```
 
-Dentro de un archivo, un nombre simple significa exactamente una clase, siempre(TODO: EL NOMBRE SIMPLE SIEMPRE SE REFIERE A UNA CLASE). La solución es importar el que más uses y escribir el otro completo en los dos o tres sitios donde aparezca:
+Dentro de un archivo, el nombre simple siempre se refiere a una clase. La solución es importar el que más uses y escribir el otro completo en los dos o tres sitios donde aparezca:
 
 ```java
 import java.util.Date;
