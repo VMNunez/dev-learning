@@ -380,9 +380,9 @@ sum(1, 2, 3, 4, 5);  // 15
 sum();               // 0
 ```
 
-Dentro del método, `numbers` **es** un array. `int... numbers` e `int[] numbers` son el mismo parámetro en lo que respecta al cuerpo del método; el `...` solo cambia qué se permite escribir en el momento en que se llama al método. Java construye el array por ti en ese momento y te lo entrega. De ahí se siguen directamente dos consecuencias, y ambas son cosas que un junior falla al menos una vez:
+Dentro del método, `numbers` **es** un array. `int... numbers` e `int[] numbers` son el mismo parámetro en lo que respecta al cuerpo del método; el `...` solo cambia qué se permite escribir en el momento en que se llama al método. Java construye el array por ti en ese momento y te lo entrega. De ahí se siguen directamente dos consecuencias:
 
-**Un array ya existente se puede pasar directamente.** Como el parámetro es un `int[]`, puedes saltarte el paso de recolectar y entregar un array que ya tengas — sin desempaquetar, sin bucle:
+**Un array ya existente se puede pasar directamente.** Como el parámetro es un `int[]`, puedes saltarte el paso de recolectar y entregar un array que ya tengas — sin desempaquetar, sin bucle:(TODO: MAL EXPLICADO)
 
 ```java
 int[] scores = {1, 2, 3};
