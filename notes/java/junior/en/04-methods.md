@@ -565,7 +565,7 @@ public class ProjectService {
 
 That class's real, unambiguous name is now `com.victor.timetrack.service.ProjectService`. Java calls that the **fully qualified name**: the package, which is `com.victor.timetrack.service`, the one declared on the first line; a dot; and the class's own name, `ProjectService`. `ProjectService` is its **simple name**. Both refer to the same class; the fully qualified one is what Java actually works with internally.
 
-> **The `com.victor` prefix is an internet domain written backwards, and that convention has one job.** Packages are only useful if two organisations never accidentally choose the same one, so the convention is to start from a domain you control and reverse it: `victor.com` becomes `com.victor`. Nothing enforces it — the compiler accepts `package banana;` without complaint — but every library you will ever add follows it, which is why you read `org.springframework.stereotype`, `com.fasterxml.jackson.databind` and `java.util`. The reversal puts the most general part first so the whole tree sorts sensibly.
+> **The `com.victor` prefix is an internet domain written backwards, and that convention has a single purpose.** Packages are only useful if two companies or organisations never accidentally choose the same package, so the convention is to start from a domain you control and reverse it: `victor.com` becomes `com.victor`. Nothing enforces it — the compiler accepts `package banana;` without complaint — but every library you will ever add follows it, which is why you read `org.springframework.stereotype`, `com.fasterxml.jackson.databind` and `java.util`. The reversal puts the most general part first so the whole tree sorts sensibly.
 
 ### The package name and the folder path match, one folder per dot
 
