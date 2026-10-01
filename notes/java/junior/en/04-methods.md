@@ -359,7 +359,14 @@ add(1, 2);   // ❌ both fit in pass 1, and neither is more specific:
 
 Normally a method with two parameters demands exactly two arguments. Varargs (`...`) let you pass any number instead — zero, one, five, as many as you like — and collect them into an array internally. You have already met one: [02-strings.md](02-strings.md) showed that `.formatted()` is declared `formatted(Object... args)`, which is why it accepts any number of values, those three dots are varargs. You will also see it in `String.format()` and in logging frameworks, libraries that write messages about what the program is doing. Their `log.info(...)` method accepts a variable number of values.
 
-> **Preview — logging:** `log` is not a Java language feature. It is an SLF4J logger, the logging library Spring Boot ships with, and the `{}` placeholder style is that library's own. It appears here only because it is the varargs API you will meet most often in a real backend — you will set it up properly in the Spring Boot notes.
+> **Preview — `log.info(...)` comes from a logging library, not from Java.** `log` is an object from **SLF4J**, a logging library that Spring Boot includes in every project without you having to add it. `log.info(...)` writes a line of text to the console, with the date, the time and the `INFO` level in front, so that you can follow what the application is doing while it runs. Its first argument is the message, and each `{}` in the message is a slot that SLF4J replaces, in order, with the values you pass after it:
+>
+> ```java
+> log.info("Project {} deleted by {} at {}", 7, "ana", "10:42");
+> // the line that appears in the console ends in: Project 7 deleted by ana at 10:42
+> ```
+>
+> To accept any number of values, SLF4J declares a version of `info` with varargs, `info(String format, Object... arguments)`, and that is why it appears in this section: it is the varargs method you will meet most often in a real backend. How `log` is created in a class you will see in the Spring Boot notes.
 
 The syntax is `Type... name`, and it must be the **last** parameter of the method. The reason is that Java has to know where the variable-length list ends: if a fixed parameter came after it, Java could not tell which argument belongs to the varargs list and which is the next fixed argument. The same reasoning allows only one varargs parameter per method. Put it anywhere else and the declaration itself is rejected, before any call exists: `void f(int... a, int b)` fails with `error: varargs parameter must be the last parameter`.
 

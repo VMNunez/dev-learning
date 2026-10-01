@@ -359,7 +359,14 @@ add(1, 2);   // ❌ los dos encajan en la pasada 1, y ninguno es más específic
 
 Normalmente un método con dos parámetros exige exactamente dos argumentos. Varargs (`...`) te deja pasar cualquier cantidad en su lugar — cero, uno, cinco, tantos como quieras — y los recoge en un array internamente. Ya te has encontrado uno: [02-cadenas-de-texto.md](02-cadenas-de-texto.md) mostró que `.formatted()` se declara como `formatted(Object... args)`, que es la razón por la que acepta cualquier cantidad de valores, esos tres puntos son varargs. También lo verás en `String.format()` y en los frameworks de logging, librerías que escriben mensajes sobre lo que va haciendo el programa. Su método `log.info(...)` acepta un número variable de valores.
 
-> **Vista previa — logging(TODO: MEJORA EL TITULO ADEMAS, NO ENTIENDO NADA DEL PARRAFO,DEBES SER MAS CLARO Y DIDACTICO PARA UN JUNIOR):** `log` no es una característica del lenguaje Java. Es un logger de SLF4J, la librería de logging que Spring Boot trae de serie, y el estilo de placeholder `{}` es de esa propia librería. Aparece aquí solo porque es la API con varargs que más te vas a encontrar en un backend real — la configurarás como es debido en las notas de Spring Boot.
+> **Vista previa — `log.info(...)` viene de una librería de logging, no de Java.** `log` es un objeto de **SLF4J**, una librería de logging que Spring Boot incluye en cada proyecto sin que tengas que añadirla tú. `log.info(...)` escribe una línea de texto en la consola, con la fecha, la hora y el nivel `INFO` delante, para que puedas seguir lo que va haciendo la aplicación mientras funciona. Su primer argumento es el mensaje, y cada `{}` del mensaje es un hueco que SLF4J sustituye, por orden, por los valores que pasas detrás:
+>
+> ```java
+> log.info("Project {} deleted by {} at {}", 7, "ana", "10:42");
+> // la línea que aparece en la consola termina en: Project 7 deleted by ana at 10:42
+> ```
+>
+> Para aceptar cualquier número de valores, SLF4J declara una versión de `info` con varargs, `info(String format, Object... arguments)`, y por eso aparece en esta sección: es el método con varargs que más te vas a encontrar en un backend real. Cómo se crea `log` en una clase lo verás en las notas de Spring Boot.
 
 La sintaxis es `Tipo... nombre`, y debe ser el **último** parámetro del método. La razón es que Java tiene que saber dónde termina la lista de longitud variable: si un parámetro fijo viniera después, Java no podría distinguir qué argumento pertenece a la lista varargs y cuál es el siguiente argumento fijo. El mismo razonamiento permite un solo parámetro varargs por método. Ponlo en cualquier otro sitio y la propia declaración se rechaza, antes de que exista ninguna llamada: `void f(int... a, int b)` falla con `error: varargs parameter must be the last parameter`.
 
