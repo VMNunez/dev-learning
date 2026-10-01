@@ -499,7 +499,7 @@ public class Calculator {
 }
 ```
 
-This class has two kinds of method, instance and static, and each one is declared as one kind or the other depending on the data it uses:
+This class has two kinds of methods: instance methods, which are declared with no special keyword, like `public int add(int a, int b)`, and static methods, which use the `static` keyword to declare them, like `public static double square(double n)`. Each one is declared as one kind or the other depending on the data it uses:
 
 - `add()` touches `this.name` and `this.history`, so it *must* be called on an instance of the class, that is, on a `Calculator` object already created. That is why it is an instance method.
 - `square()` touches nothing but its argument, that is, it needs no instance of the class and no particular object. That is why it is declared `static`: so it can be used directly on the class, as in `Calculator.square(5)`, without creating any object.
