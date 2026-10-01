@@ -450,7 +450,7 @@ static <E> List<E> of(E... elements)       // cualquier número de elementos
 
 Como vimos en la sección [Sobrecarga de métodos (overloading)](#sobrecarga-de-métodos-overloading), la resolución de sobrecargas solo llega a varargs después de que las pasadas 1 y 2 hayan fallado. Así que `List.of("a", "b")` encaja con `of(E e1, E e2)` en la pasada 1 y se queda ahí: `"a"` va directamente al parámetro `e1` y `"b"` a `e2`, sin que Java tenga que crear ningún array para meterlos, como haría con un varargs. Solo un `List.of` con once elementos o más llega hasta la versión varargs, y solo entonces Java crea un array con todos ellos. Crear un array gasta memoria y tiempo en cada llamada, así que las once versiones fijas existen para ahorrárselo a las llamadas cortas, que son las más habituales. Las pasadas, en cambio, no cuestan nada al ejecutar el programa: las hace el compilador una sola vez, al compilar, para decidir qué versión llama cada línea. Lo que se repite cada vez que se ejecuta la llamada es crear el array, y eso es lo único que estas versiones ahorran. Y como son las pasadas las que eligen la versión, tú escribes `List.of(...)` igual en todos los casos y no notas la diferencia de si se está usando una versión fija o la versión varargs.
 
----
+## (TODO: AQUI ME SURGE LA DUDA SI A LIST.OF LE PASAMOS DIRECTAMENTE COMO ARGUMENTO UN ARRAY DE DOS ELEMENTOS, POR EJEMPLO, IMAGINO QUE CAERIA EN EL VARARGS Y EL ARRAY YA ESTARIA CREADO? PARA PASARLE MENOS DE 11 ARGUMENTOS CONVIENE PASARLOS DIRECTAMENTE)
 
 ## Llamar a métodos
 
