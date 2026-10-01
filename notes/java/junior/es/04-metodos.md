@@ -651,10 +651,10 @@ Los _fully qualified names_ son correctos, pero son difíciles de leer. _Puedes_
 
 ```java
 // ✅ legal, pero difícil de leer, y no se va a escribir así
-com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();
+com.victor.timetrack.model.Project project = new com.victor.timetrack.model.Project();//TODO: ESTE EJEMPLO ESCRIBELO PERO CON EL   public List<ProjectResponse> getAll() { ... } QUE ES LO QUE ESTAS USANDO EN EL EJEMPLO DE ABAJO
 ```
 
-Un **import** te deja usar el nombre simple de la clase en su lugar. Un import se escribe con la palabra `import`, seguida del _fully qualified name_ de la clase y de un punto y coma, por ejemplo `import com.victor.timetrack.model.Project;`. Con esto vas a poder usar el nombre simple de la clase, `Project`, en el resto del archivo, sin tener que escribir `com.victor.timetrack.model.Project` cada vez. El import se coloca después de la línea `package`, que define el nombre del paquete en el que te encuentras, y antes de la clase. Esta es la apertura del mismo `ProjectService`, reducida a cinco de sus doce imports:
+Un **import** te deja usar el nombre simple de la clase en su lugar. Un import se escribe con la palabra `import`, seguida del _fully qualified name_ de la clase y de un punto y coma, por ejemplo `import com.victor.timetrack.model.Project;//TODO: ESTE EJEMPLO ESCRIBELO PERO CON EL   public List<ProjectResponse> getAll() { ... } QUE ES LO QUE ESTAS USANDO EN EL EJEMPLO DE ABAJO`. Con esto vas a poder usar el nombre simple de la clase, `Project`, en el resto del archivo, sin tener que escribir `com.victor.timetrack.model.Project` cada vez. El import se coloca después de la línea `package`, que define el nombre del paquete en el que te encuentras, y antes de la clase. Esta es la apertura del mismo `ProjectService`, reducida a cinco de sus doce imports:
 
 ```java
 package com.victor.timetrack.service;
