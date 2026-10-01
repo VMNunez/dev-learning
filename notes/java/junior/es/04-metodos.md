@@ -567,7 +567,7 @@ El nombre real y sin ambigüedad de esa clase es ahora `com.victor.timetrack.ser
 
 > **El prefijo `com.victor` es un dominio de internet escrito al revés.** Esta convención evita un problema concreto: que dos empresas u organizaciones creen, sin saberlo, un paquete con el mismo nombre. Tu código no se mezcla por sí solo con el de otras empresas: se junta con él cuando usas librerías. Spring, Jackson y el resto de librerías que añade tu proyecto son clases escritas por otras empresas u organizaciones, y al ejecutar la aplicación todas se cargan junto a las tuyas, en el mismo programa. Si una de esas librerías tuviera un paquete llamado `service` con una clase `ProjectService` dentro, igual que el tuyo, Java no podría distinguir una clase de la otra.
 >
-> La solución es empezar el paquete por algo que ya es único: un dominio de internet, porque cada dominio tiene un solo dueño. Y se escribe al revés, empezando por la parte más general:
+> La solución es empezar el paquete por algo que ya es único: un dominio de internet, porque cada dominio tiene un solo dueño(TODO: OK PERO YO NO TENGO COMPRADO UN DOMINIO VICTOR.COM). Y se escribe al revés, empezando por la parte más general:
 >
 > - `victor.com` → `com.victor`
 > - `springframework.org` → `org.springframework`, en paquetes como `org.springframework.stereotype`
