@@ -788,7 +788,7 @@ Ahora fíjate en la trampa. La línea de arriba del stack trace es `Report.java:
 
 ### La solución: rechazar el valor ausente en la frontera que lo necesita
 
-La lección no es llenar los métodos de comprobaciones `if (x != null)`. Si cada método se limita a saltarse su trabajo cuando recibe un `null`, el programa deja de lanzar la excepción, pero el error sigue ahí y ya nada te avisa de él. Por ejemplo, si `slug` comprobara `title` y devolviera `null` en lugar de fallar:
+La lección (TODO: LA LECCION NO ME GUSTA)no es llenar los métodos de comprobaciones `if (x != null)`. Si cada método se limita a saltarse su trabajo cuando recibe un `null`, el programa deja de lanzar la excepción, pero el error sigue ahí y ya nada te avisa de él. Por ejemplo, si `slug` comprobara `title` y devolviera `null` en lugar de fallar:
 
 ```java
 static String slug(String title) {
