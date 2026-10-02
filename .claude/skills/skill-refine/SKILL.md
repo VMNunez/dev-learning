@@ -122,12 +122,12 @@ recoverable from its `Disposition`; a self-approved bad edit is not.
 **and** `.agents/skills/{name}/SKILL.md`. The mirror invariant is not a follow-up task: both files are
 written before anything is staged, and `diff` proves it.
 
-4b. **The growth brake.** `_system-map.md` §13 measures `Declared steps · contract size` per block, and
-that is the skills' health budget — the prompts' `~500 lines` proxy has no skill equivalent, but the
-instrument does. Recount the edited skill's block cell and write it. **If the edit made the file longer,
-the reviewer must have named what comes out** — a stale caveat, a duplicated instruction, a spent
-incident. One-in-one-out above the line, exactly as `_pipeline-self-report.md` sets it. A bucket that
-only fills is how a ritual stops being executable.
+4b. **The growth brake.** A skill has no `~500 lines` proxy, so measure the edit, never the map: report
+`git diff --numstat` on the `.claude/` mirror and any numbered or lettered step added or removed; write
+no `_system-map.md` §13 cell — a sweep's job (`_session-rules.md` → "The map is also verified on read,
+not only on write"). **If the edit made the file longer, the reviewer must have named what comes out** —
+a stale caveat, a duplicated instruction, a spent incident. One-in-one-out above the line, exactly as
+`_pipeline-self-report.md` sets it. A bucket that only fills is how a ritual stops being executable.
 
 4c. Invoke `map-sync` (trigger: a change) for the rows this edit moves. Its verdict rides in this same
 commit, `maps unaffected` included.
@@ -165,7 +165,7 @@ Rule on the **ritual**, never on a row, and take one of three verdicts:
 | Verdict | What it licenses |
 |---|---|
 | `kept` | Write `ruled YYYY-MM-DD — kept` to **every** row naming that ritual at once. No edit. |
-| `thinned` | Cut the step that costs and does not give. It is an edit like any other: steps 2–5 in full, cold reviewer included, both mirrors, `map-sync`, §13 recounted. `Status` becomes `ruled YYYY-MM-DD — thinned: {what was cut}` on every row naming it. |
+| `thinned` | Cut the step that costs and does not give. It is an edit like any other: steps 2–5 in full, cold reviewer included, both mirrors, `map-sync`. `Status` becomes `ruled YYYY-MM-DD — thinned: {what was cut}` on every row naming it. |
 | `deleted` | **Stop and report.** Removing a ritual outright is what `REC-054` reserves, and it stays Victor's. Rows stay `open`. |
 
 **What is not being judged.** The rows record what Victor observed; whether the complaint is justified is
@@ -179,7 +179,7 @@ Four lines at most. No preamble.
 ```
 skill-refine · {skill} · {breached step}
 cold reviewer: approve-with-tightening
-aplicado en los dos adaptadores · §13 recontada · maps unaffected
+aplicado en los dos adaptadores · +2/-2 líneas, pasos ±0 · maps unaffected
 SBRC-0003, SBRC-0007 → fixed in a1b2c3d4
 desvíos: ninguno
 ```
