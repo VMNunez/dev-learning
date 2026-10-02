@@ -9,7 +9,7 @@
 
 -- ================================================================
 -- SETUP — Paste and run this section first in pgAdmin
--- FIRST: In pgAdmin, create a database called 'practice_bookstore' if you haven't already.
+-- FIRST: In pgAdmin, create a database called 'practice_junior_02_execution_order_set_ops' if you haven't already.
 -- Open that database, then run this entire block inside it.
 -- You can re-run it at any time to reset the data to its original state.
 -- ================================================================
