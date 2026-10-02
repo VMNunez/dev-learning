@@ -844,9 +844,9 @@ In the example you wrote the check with `Objects.requireNonNull`, but it is not 
 >
 > The `throw` keyword is what throws the exception by hand, and it is explained in [11-exceptions.md](11-exceptions.md). Here you only need to see that the `if` does the same thing with more code. Even so, `requireNonNull` is usually preferred, for three advantages:
 >
-> 1. **It takes one line instead of three.** If a method has to check four parameters, with `if` that is twelve lines before it starts its work; with `requireNonNull`, four.
-> 2. **Its name says what it is for.** `requireNonNull` reads as "this value is required". An `if (title == null)` only says what is being checked, and you have to read its block to know what happens when it is true.
-> 3. **It returns the value.** Because it hands back the same value you pass it, you can check it and store it in a variable on the same line:
+> 1. **It takes one line instead of three.** If a method has to check four parameters, with `if` that is twelve lines; with `requireNonNull`, four.
+> 2. **Its name states its intent.** `requireNonNull` says in the method's own name what it wants to do: require that the value is not `null`. With an `if`, on the other hand, you have to read the condition and its block to know what it wants to do.
+> 3. **`requireNonNull` returns the value.** Because the method hands back the same value you pass it, you can check it and store it in a variable on the same line:
 >
 > ```java
 > String checkedTitle = Objects.requireNonNull(title, "title must not be null");

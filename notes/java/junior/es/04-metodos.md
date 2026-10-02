@@ -845,8 +845,8 @@ En el ejemplo has hecho la comprobación con `Objects.requireNonNull`, pero no e
 > La palabra clave `throw` es la que lanza la excepción a mano, y se explica en [11-excepciones.md](11-excepciones.md). Aquí solo necesitas ver que el `if` hace lo mismo con más código. Aun así, normalmente se prefiere `requireNonNull`, por tres ventajas:
 >
 > 1. **Ocupa una línea en vez de tres.** Si un método tiene que comprobar cuatro parámetros, con `if` serían doce líneas; con `requireNonNull`, cuatro.
-> 2. **Su nombre dice para qué está.** `requireNonNull` se lee como "este valor es obligatorio". Un `if (title == null)` solo dice qué se comprueba, y tienes que leer su bloque para saber qué pasa cuando se cumple.(TODO: EL PUNTO 2 ME PARECE MAL EXPRESADO. REQUIRENONNULL EXPRESA SU INTENCION EN EL MISMO NOMBRE DEL METODO MIENTRAS QUE IF TENDRIAMOS QUE LEER LOS BLOQUES CONDICIONALES PARA SABER LO QUE QUIERE HACER)
-> 3. **Devuelve el valor(TODO: REQUIRENOTNULL).** (TODO: COMO EL METODO..)Como te devuelve el mismo valor que le pasas, puedes comprobarlo y guardarlo en una variable en la misma línea:
+> 2. **Su nombre expresa su intención.** `requireNonNull` dice en el propio nombre del método lo que quiere hacer: exigir que el valor no sea `null`. Con un `if`, en cambio, tienes que leer la condición y su bloque para saber lo que quiere hacer.
+> 3. **`requireNonNull` devuelve el valor.** Como el método te devuelve el mismo valor que le pasas, puedes comprobarlo y guardarlo en una variable en la misma línea:
 >
 > ```java
 > String checkedTitle = Objects.requireNonNull(title, "title must not be null");
