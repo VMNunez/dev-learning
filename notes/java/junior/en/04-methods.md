@@ -852,7 +852,7 @@ In the example you wrote the check with `Objects.requireNonNull`, but it is not 
 > String checkedTitle = Objects.requireNonNull(title, "title must not be null");
 > ```
 >
-> Checking and storing at once is the form you will meet most often in real code, especially in constructors, which store in the object the values they receive: `this.field = Objects.requireNonNull(field, "…");`. TimeTrack uses it exactly there:
+> Checking and storing at once is the form you will meet most often in real code, especially in constructors, which store in the object the values they receive: `this.field = Objects.requireNonNull(field, "…");`. TimeTrack uses it exactly like this:
 
 **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/exception/InvalidPasswordException.java`
 
@@ -867,7 +867,7 @@ public class InvalidPasswordException extends RuntimeException {
 }
 ```
 
-> **That snippet uses a constructor, and constructors are [06-oop-classes.md](06-oop-classes.md)'s.** Read it here only for *where the check sits*: on the way in, before the value is stored. Why the object-building boundary is the strongest one available — an object that could never be valid is refused before it exists, instead of failing later in whichever consumer happens to touch it first — is a rule about class invariants, and that is the chapter that states it. `extends RuntimeException`, and the `super(message)` line that hands the message on to it, belong to defining an exception type of your own, which is [11-exceptions.md](11-exceptions.md)'s.
+> **That snippet uses a constructor, which you will see in [06-oop-classes.md](06-oop-classes.md).** Here, just notice where the check is: on the same line that stores `field` in the object, so the object never gets to store a `null`. `extends RuntimeException` and `super(message)` are used to create an exception type of your own, and they are explained in [11-exceptions.md](11-exceptions.md).
 
 ### Three rules for a `null` at a method boundary
 

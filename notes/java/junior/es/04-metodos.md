@@ -867,7 +867,7 @@ public class InvalidPasswordException extends RuntimeException {
 }
 ```
 
-> **Ese fragmento usa un constructor, y los constructores son de [06-poo-clases.md](06-poo-clases.md).** Léelo aquí solo por _dónde se sitúa la comprobación_: al entrar, antes de guardar el valor. Por qué la frontera de construir el objeto es la más fuerte disponible — un objeto que nunca podría ser válido se rechaza antes de existir, en lugar de fallar más tarde en el consumidor que sea que lo toque primero — es una regla sobre invariantes de clase, y ese es el capítulo que la enuncia. `extends RuntimeException`, y la línea `super(message)` que le pasa el mensaje, pertenecen a definir un tipo de excepción propio, que es tema de [11-excepciones.md](11-excepciones.md).(TODO: TE HAS ENROLLADO DEMASIADO EN ESTE PARRAFO)
+> **Ese fragmento usa un constructor, que verás en [06-poo-clases.md](06-poo-clases.md).** Aquí solo fíjate en dónde está la comprobación: en la misma línea que guarda `field` en el objeto, así que el objeto nunca llega a guardar un `null`. `extends RuntimeException` y `super(message)` sirven para crear un tipo de excepción propio, y se explican en [11-excepciones.md](11-excepciones.md).
 
 ### Tres reglas para un `null` en la frontera de un método
 
