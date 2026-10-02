@@ -867,7 +867,7 @@ public class InvalidPasswordException extends RuntimeException {
 }
 ```
 
-> **Ese fragmento usa un constructor, que verás en [06-poo-clases.md](06-poo-clases.md).** Aquí solo fíjate en dónde está la comprobación(TODO: DE NOT NULL): en la misma línea que guarda `field` en el objeto, así que el objeto nunca llega a guardar un `null`. `extends RuntimeException` y `super(message)` sirven para crear un tipo de excepción propio, y se explican en [11-excepciones.md](11-excepciones.md).
+> **Ese fragmento usa un constructor, que verás en [06-poo-clases.md](06-poo-clases.md).** Aquí solo fíjate en dónde está la comprobación de que el valor no es `null`: en la misma línea que guarda `field` en el objeto, así que el objeto nunca llega a guardar un `null`. `extends RuntimeException` y `super(message)` sirven para crear un tipo de excepción propio, y se explican en [11-excepciones.md](11-excepciones.md).
 
 ### Tres reglas para un `null` en la frontera de un método
 

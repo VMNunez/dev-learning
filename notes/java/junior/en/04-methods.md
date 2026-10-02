@@ -867,7 +867,7 @@ public class InvalidPasswordException extends RuntimeException {
 }
 ```
 
-> **That snippet uses a constructor, which you will see in [06-oop-classes.md](06-oop-classes.md).** Here, just notice where the check is: on the same line that stores `field` in the object, so the object never gets to store a `null`. `extends RuntimeException` and `super(message)` are used to create an exception type of your own, and they are explained in [11-exceptions.md](11-exceptions.md).
+> **That snippet uses a constructor, which you will see in [06-oop-classes.md](06-oop-classes.md).** Here, just notice where the check that the value is not `null` is: on the same line that stores `field` in the object, so the object never gets to store a `null`. `extends RuntimeException` and `super(message)` are used to create an exception type of your own, and they are explained in [11-exceptions.md](11-exceptions.md).
 
 ### Three rules for a `null` at a method boundary
 
