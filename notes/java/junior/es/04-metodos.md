@@ -966,6 +966,6 @@ El siguiente capítulo, antes de llegar a las clases, responde a una pregunta qu
 
 - Cuando escribes `buildPage(title)`, ¿el método recibe una copia del `String` de la variable `title`, o ese mismo `String`?
 - Cuando un método recibe un `Project` y lo modifica, ¿cambia también el `Project` que tenía el código que llamó al método?
-- ¿Cómo sabe Java a qué línea tiene que volver cuando un método termina? Es la lista de métodos sin terminar que viste en los stack traces de la sección del `null`.
+- ¿Cómo sabe Java a qué línea tiene que volver cuando un método termina? Es la lista de métodos sin terminar que viste en los stack traces de la sección del `null`TODO: SI TODO SON PREGUNTAS, NO ME GUSTA QUE AFIRMES " Es la lista de métodos sin terminar que viste en los stack traces de la sección del `null`".
 
 [05-modelo-de-memoria.md](05-modelo-de-memoria.md) responde a esas preguntas. Explica dónde guarda Java las variables y los objetos mientras el programa se ejecuta (el stack y el heap), qué es una referencia, qué se copia cuando pasas un argumento a un método y qué no, y por qué se dice que en Java los argumentos siempre se pasan por valor (en inglés, _pass-by-value_, que es como lo oirás habitualmente).
