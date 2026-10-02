@@ -830,7 +830,29 @@ En el ejemplo has hecho la comprobación con `Objects.requireNonNull`, pero no e
 
 > **`Objects.requireNonNull(valor, "mensaje")` te devuelve `valor` si no es `null`, y si lo es, lanza una `NullPointerException` con tu mensaje.** Es un método `static` normal y corriente de `java.util.Objects` que recibe tu valor y un mensaje. Por ejemplo, en la línea de `buildPage`, `Objects.requireNonNull(title, "title must not be null")`, el valor es `title` y el mensaje es `"title must not be null"`. Si el valor no es `null`, te lo devuelve tal cual y la ejecución sigue como si esa línea no estuviera; si _es_ `null`, lanza la `NullPointerException` con tu mensaje como texto. Con esto ya puedes leer y escribir esta línea. Lo que pasa por dentro cuando Java lanza una excepción lo verás en [11-excepciones.md](11-excepciones.md): la palabra clave `throw`, qué es un objeto excepción, cómo la excepción va saliendo de un método a otro hasta que alguien la captura, y cuándo conviene capturarla. Hasta entonces, usa `Objects.requireNonNull` tal como aparece aquí, en una sola línea al principio del método.
 
-> **¿Por qué preferirlo sobre `if (title == null) { ... }`?** No hay nada malo con el `if` — los dos son equivalentes. Pero `requireNonNull` tiene tres ventajas sobre el `if`: es una línea en vez de tres, así que un constructor que valida cuatro parámetros sigue siendo legible; el nombre expresa la _intención_ ("esto es obligatorio") donde un `if` solo expresa un mecanismo; y **devuelve el valor**, lo que te deja validar y asignar en una sola expresión — `this.field = Objects.requireNonNull(field, "…");`. Esa forma de asignación es la que te vas a encontrar más a menudo, porque en código real el sitio más claro para validar es el constructor de un objeto. TimeTrack lo usa exactamente ahí:(TODO: EXPLICA MEJOR EL PARRAFO)
+> **¿Por qué preferirlo sobre `if (title == null) { ... }`?** Los dos hacen lo mismo: si `title` es `null`, lanzan una `NullPointerException` con tu mensaje y el método no sigue. Así se escribe cada uno:
+>
+> ```java
+> // Con un if: tres líneas
+> if (title == null) {
+>     throw new NullPointerException("title must not be null");
+> }
+>
+> // Con requireNonNull: una línea
+> Objects.requireNonNull(title, "title must not be null");
+> ```
+>
+> La palabra clave `throw` es la que lanza la excepción a mano, y se explica en [11-excepciones.md](11-excepciones.md). Aquí solo necesitas ver que el `if` hace lo mismo con más código. Aun así, normalmente se prefiere `requireNonNull`, por tres ventajas:
+>
+> 1. **Ocupa una línea en vez de tres.** Si un método tiene que comprobar cuatro parámetros, con `if` serían doce líneas antes de empezar su trabajo; con `requireNonNull`, cuatro.
+> 2. **Su nombre dice para qué está.** `requireNonNull` se lee como "este valor es obligatorio". Un `if (title == null)` solo dice qué se comprueba, y tienes que leer su bloque para saber qué pasa cuando se cumple.
+> 3. **Devuelve el valor.** Como te devuelve el mismo valor que le pasas, puedes comprobarlo y guardarlo en una variable en la misma línea:
+>
+> ```java
+> String checkedTitle = Objects.requireNonNull(title, "title must not be null");
+> ```
+>
+> Comprobar y guardar a la vez es la forma que más vas a encontrar en código real, sobre todo en los constructores, que guardan en el objeto los valores que reciben: `this.field = Objects.requireNonNull(field, "…");`. TimeTrack lo usa exactamente ahí:
 
 **Archivo:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/exception/InvalidPasswordException.java`
 
