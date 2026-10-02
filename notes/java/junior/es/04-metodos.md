@@ -893,7 +893,7 @@ Ya has visto dónde y cómo comprobar que un argumento no es `null`. Estas tres 
 
 Cuando lees una llamada como `employee.getName()`, del método solo ves su nombre y los argumentos que le pasas: no ves qué tipo devuelve ni qué código ejecuta. Por eso en Java los nombres de los métodos siguen unas convenciones fijas, para que el nombre te diga qué hace el método. Además, algunas librerías dependen de estas convenciones para funcionar, como verás un poco más abajo en esta sección. Estas son las convenciones:
 
-- Nombres de métodos: `camelCase`, empiezan con un verbo — `getName()`, `save()`, `calculateTotal()`, `isActive()`
+- Nombres de métodos:(TODO: SE ESCRIBEN EN CAMELCASE ES DECIR PALABRAS JUNTAS PRIMERA PALABRA MINUSCULA LA SIGUIENTE EN MAYUSTULA...) `camelCase`(TODO: LOS NOMBRES EMPIEZAN), empiezan con un verbo — `getName()`, `save()`, `calculateTotal()`, `isActive()`
 - Getters booleanos: empiezan con `is` o `has` — `isActive()`, `hasRole()`, `isEmpty()`
 - Getters: `getName()`, `getAge()`
 - Setters: `setName(String name)`, `setAge(int age)`
