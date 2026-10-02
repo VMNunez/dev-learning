@@ -35,7 +35,7 @@ in pgAdmin step by step before the SETUP is run, then adds the row.
 | Database | Schema | Files that run in it | Created |
 |---|---|---|---|
 | `practice_basics_v1` | v1 (legacy, `01-basics.sql`'s own) | `junior/01-basics.sql` only — the one name outside the convention, kept because its SETUP cannot rebuild it on an empty database, so never drop or rename it | before 2026-09-30 (was `learning`, renamed 2026-09-30) |
-| `practice_junior_02_execution_order_set_ops` | canonical bookstore | `junior/02-execution-order-set-ops.sql` | pending — being created 2026-10-02 |
+| `practice_junior_02_execution_order_set_ops` | canonical bookstore | `junior/02-execution-order-set-ops.sql` | 2026-10-02 |
 
 **Target:** pass the SQL half of a technical screening at NTT Data / Capgemini / Indra, and write the
 report queries TimeTrack needs without looking anything up.
