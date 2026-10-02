@@ -103,8 +103,10 @@ Before starting, read:
 > title and its `Audit note`, so a sentence sending the reader to an entry for a concept the plan
 > assigns to a *different* entry is a defect even though the link resolves — "covered in detail in
 > `04-methods.md`" when the plan moved static methods to entry 06. Fix it to the entry the plan
-> assigns today, and drop a **cross-file** anchor — `§"Heading"`, `§Heading` or ``§`member` `` — the
-> row does not account for; an anchor into `{FILE}` itself is unaffected. Where the row that owns the
+> assigns today, and drop a section named after a **cross-file** reference — a `#anchor` in the link,
+> the section's name beside it, or the `§"Heading"`, `§Heading` or ``§`member` `` shorthand of a note
+> written before the standard's `HR-13` — that the row does not account for; a section of `{FILE}`
+> itself is unaffected. Where the row that owns the
 > concept is `{FILE}`'s own entry, the fix is to drop the link and refer to this file's own section in
 > prose. You still never open the target to decide this: the row is the evidence.
 
@@ -149,8 +151,8 @@ For each section of the file, check:
   preview callout; links to sibling notes carry a one-sentence reminder; every same-topic internal link
   resolves to a `{LINK_TARGETS}` row, and no claim about a sibling's content rests on a file outside
   `{READABLE_SIBLINGS}`. **Every claim about what a target teaches also matches that row's assigned
-  concepts** — the entry named is the one the plan assigns the concept to today, and any `§"Heading"`
-  anchor is one the row accounts for.
+  concepts** — the entry named is the one the plan assigns the concept to today, and any section named
+  in that file is one the row accounts for.
 - **Narrative seams** — the file opens by picking up the thread from the previous file (not a cold
   definition) and closes by handing off to the next; where a sibling uses a shared example domain, this
   file stays consistent with it. Read the `{READABLE_SIBLINGS}` neighbours to check the seams; where the

@@ -122,10 +122,11 @@ the full standard in English.
 > row carries that entry's title and its `Audit note`, so the entry you send the reader to for a
 > concept is the entry the plan assigns that concept to **today** — never the file that happens to
 > hold it on disk, and never the one you remember. "Static methods are covered in `04-methods.md`"
-> passes the filename test and is false the moment the plan assigns static methods to entry 06. An
-> anchor after a **cross-file** reference — `§"Heading"`, `§Heading` or ``§`member` `` — is legal only
-> where the row accounts for that section; otherwise name the file alone, and an anchor into `{FILE}`
-> itself is unaffected. Where the row that owns the concept is `{FILE}`'s own entry, the fix is to drop
+> passes the filename test and is false the moment the plan assigns static methods to entry 06. A
+> section named after a **cross-file** reference — its name beside the link, never a `#anchor` on a link
+> to another file and never the `§` shorthand (the standard's `HR-13`) — is legal only where the row
+> accounts for that section; otherwise name the file alone, and a section of `{FILE}` itself is
+> unaffected. Where the row that owns the concept is `{FILE}`'s own entry, the fix is to drop
 > the link and refer to this file's own section in prose. This is not a licence to open the target —
 > the row is what you check, not the note.
 
@@ -311,7 +312,7 @@ The English reviewer (B) audits this file next, but do not lean on that — hand
 - No example or concept duplicates an admissible sibling; every forward/cross-topic reference is marked,
   and every same-topic internal link resolves to a `{LINK_TARGETS}` row — **and the sentence around it
   agrees with that row**: the concept you send the reader there for is one the row assigns to that
-  entry, and any `§"Heading"` anchor names a section that row accounts for.
+  entry, and any section you name in that file is one that row accounts for.
 - TASK's `Learning outcome`, every `Must answer`, declared `Prerequisites`, and `Handoff` are
   substantively satisfied. Bullet coverage alone is not a pass.
 - If this is the topic introduction, every introduction invariant from the standard is present.

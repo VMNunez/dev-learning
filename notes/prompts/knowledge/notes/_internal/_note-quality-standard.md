@@ -645,11 +645,13 @@ padding around the explanation he was looking for.
   link, while the plan assigns static methods to entry 06 — the link is fine and the sentence is
   false. So resolve the concept against the plan's own statement of what that entry teaches — its
   title, and any `Audit note` recording that a section moved — and write the entry the plan assigns it
-  to today. An anchor that follows a **cross-file** reference — `§"Heading"`, `§Heading` or
-  ``§`member` `` — is legal only where the plan assigns that concept to the entry named; otherwise
-  name the file alone. An anchor into this same file is unaffected: it points at a section you can
-  see. **When the entry the plan assigns the concept to is this file itself, the reference is not
-  re-aimed but removed** — point at this file's own section in prose, with no link. For a
+  to today. A section named after a **cross-file** reference — a `#anchor` in the link, the section's
+  name beside it, or the `§"Heading"`, `§Heading` or ``§`member` `` shorthand of a note written before
+  `HR-13`, which no stage writes — is legal only where the plan assigns that concept to the entry named;
+  otherwise name the file alone. A section of this same file is unaffected: it points at a section you
+  can see. **When the entry the plan assigns the concept to is this file itself, the reference is not
+  re-aimed but removed** — point at this file's own section, by name or by its own `#anchor` (`HR-13`),
+  with no link to another file. For a
   **cross-topic** reference the owning entry comes the same way, from that topic's own
   `notes-plan-{LEVEL}.md`; where that topic has no plan, name the file without claiming what it
   teaches. This binds every sentence a pipeline stage writes or audits in the file in front of it.
@@ -711,8 +713,33 @@ scope names one.
   en este archivo, en su aviso **Dinero — nunca `double` ni `float`**". "De arriba" and "de abajo" stay
   for the block beside the sentence ("los ejemplos de abajo" over the three fragments that follow it, in
   `02`), and a far reference that also says what it points at stays ("lo que ya te enseñó el diagrama
-  del principio: una variable `String` no guarda las letras…", `01`). Scope: all topics. Judged at stage
-  C on the `es/` and at stage B on the `en/`.
+  del principio: una variable `String` no guarda las letras…", `01`). **A noun that leaves out what it is
+  of, or a "quien llama" with nothing called, is the same gap as the pronoun.** `java/junior/04` turned
+  "terminó con llamadas que sabías leer" into "terminó con llamadas a métodos que sabías leer",
+  "desmontando una declaración" into "desmontando la declaración de un método", "el **contrato** que quien
+  llama tiene que cumplir" into "…que quien llama al método tiene que cumplir", "Nada de lo que venga
+  después se ejecuta" into "Nada de lo que venga después del `return` se ejecuta", "aceptan "cualquier
+  cantidad" sin declarar cientos de versiones" into "aceptan cualquier cantidad de argumentos sin declarar
+  cientos de versiones del mismo método", and the comment "// devuelve un objeto" into "// devuelve un
+  objeto de tipo Employee". The test is the question his TODOs put to the noun — "A METODOS", "DEL
+  RETURN", "UNA COPIA DE QUE", "DE ELLOS DE QUIEN?" — and where the sentence does not answer it, the
+  complement is written in. A pronoun that supplies it passes ("quien lo llama", `04`), so does a
+  sentence that names what is called ("y es quien llama el que tiene que juntarlos", after
+  `calcularTotal(quantity, unitPrice)`, `00`), and so does a noun whose complement the same sentence or
+  the one before it in the same paragraph gives, with nothing else it could be of: "…que quien llama al
+  método tiene que cumplir […]. La lista de parámetros fija cuántos argumentos debes entregar en el
+  momento de la llamada" (`04`, the second in the words of his own TODO). The sentence that opens a
+  paragraph carries its own complement — "desmontando una declaración" opened one, after a paragraph
+  whose last sentence said "cómo se escribe un método" — and so does a noun that could be of more than
+  one thing: "cualquier cantidad" stood beside "elementos", "parámetro" and "argumentos". That the
+  section is about the thing is not enough: each form above sat in a section about methods. The two "en el punto de la llamada" the
+  refined `04` keeps are not this case — he replaced that phrase where he marked it ("EN EL MOMENTO QUE
+  SE LLAMA AL METODO"), and they are residue (`HC-4`). **A reference into another file names the section it
+  means, not a callout inside it**: "mostró, en su aviso **La condición tiene que ser un `boolean`**",
+  written of `03` during `04`'s refinement, became "En [03-flujo-de-control.md](03-flujo-de-control.md),
+  en la sección _if / else_, viste…", while the `01` reference above names a callout of its own file,
+  under the section that holds it. Scope: all topics. Judged at stage C on the `es/` and at stage B on
+  the `en/`.
 - **`HR-4` — A set of options says when each is used, and whether it is whole.** When a section presents
   members of a set the reader chooses between — types, the constants of an enum, the directions of a
   conversion, the right and the wrong form of a line — it gives the members the reader will use, says
@@ -798,6 +825,64 @@ scope names one.
   (`_note-todo-harvest.md` → "Disputes"). None of `03`'s cuts came from a TODO Victor wrote; both sides
   rest on his declaring the pairs refined. Scope: all topics. Judged at stage B; stage C reports one it
   meets and never cuts it, since the clause is content both languages carry.
+- **`HR-12` — A term the trade says in English is given in English.** In the `es/` prose a term Spanish
+  teams say in English is, where the note introduces it, either left in English — "en runtime", "**guard
+  clause**", "stack trace", "frame", "Los _fully qualified names_" (`java/junior/04`), with a Spanish
+  gloss beside it where one helps ("el _stack_, o pila", `01`; "**signature** (o **firma**)", `04`) — or
+  written in Spanish with the English name beside it: "**sobrecarga** (_overloading_)" (`04`). Where the
+  English is the name he will hear, a clause says so: "la comprobación de `null` (en inglés, _null check_,
+  que es como lo oirás habitualmente)" (`04`), "_cláusula de guarda_ (en inglés, _guard clause_ — es el
+  nombre con el que la vas a encontrar en el código y en cualquier revisión)" (`01`). That clause is a
+  claim about usage and is written only where it is true: `04`'s correctness read cut it from "por valor
+  (en inglés, _pass-by-value_, que es como lo oirás habitualmente)", written during the refinement, and
+  left "(_pass-by-value_)". Once a term has been given both ways the note goes on in either — `04` writes
+  "doce sobrecargas", "paquete" and "contrato" bare after their first mention — unless the Spanish is a
+  rendering nobody says: at each later "completamente cualificado" he asked for the English again ("Los
+  _fully qualified names_", `04`). What is not written is a
+  name nobody says, made of half of each: "el guard de null" was rejected (`04`). An English term inside
+  an ordinary Spanish phrase is the first form and passes — "herramienta de build" (`00`), "clases
+  wrapper" (`01`, `04`), "la regla de shadowing" (`04`). The rule is Victor's, stated on 2026-10-01 after
+  five refined pairs had asked for it one term at a time: "CUANDO UN TERMINO SE SUELE USAR EN INGLES, NO
+  HACE FALTA TRADUCCION AL ESPAÑOL, O SE TRADUCE PERO SE INDICA QUE HABITUALMENTE SE USA LA PALABRA
+  […]". A term a Spanish team says in Spanish needs no
+  English name — **lista** and **excepción** (`00`), **bucle** (`02`), **índice** (`03`) and "campo" (`04`)
+  stay as those files have them — which is the condition `HE-6` lacked while it stayed an example: "every
+  term in both languages" rejected what he approved, and "the terms said in English" does not. Which side
+  a term falls on is the writer's judgement of how it is said at work, the one `_session-rules.md` →
+  "Language rules" already asks of a session. The rule adds an English name or leaves one in place, and
+  never removes a Spanish term: a term a refined pair introduces in Spanish alone and Victor did not mark
+  — **marcadores de posición** (`02`) is one a team may well say in English — is not a counterexample and
+  not text a stage rewrites, and the rule does not reach back into a frozen pair. Giving the English name
+  is rendering, not content: the `en/` already carries the term, so stage T writes it and nothing is owed
+  to the English; the clause about usage is the one part that is a claim, so a pipeline stage
+  gives the name and leaves the clause out (`_notes-translate-prompt.md`: "a claim the English does not
+  carry is content, and is reported"); every one in the refined pairs was written by the in-session
+  route. Scope: all topics, `es/` prose. Judged at stage C; stage T applies it as it writes.
+- **`HR-13` — A section is named in words, with a link where the reader should be able to follow it,
+  never with `§`.** The `§"Heading"` shorthand is not written in a note: the `java/junior/04` draft
+  carried it six times, Victor read it as a link that is not one (`NO ES UN ENLACE ESTO DE "§"Llamar a
+  métodos""`, "ESTA MAL EL ENLACE"), its refinement removed every one, and neither the drafts of the four
+  pairs harvested before it nor any refined pair carries it. Three notes written before the pipeline
+  still do — `java/junior/06` and `08`, `spring-boot/junior/01`, all `pending` — and stage B rewrites it
+  there when it audits them. What replaced it is a link to the section's anchor — "Lo verás en la sección [Tipos de
+  retorno](#tipos-de-retorno)", and across files "en la sección [Widening
+  (automático)](01-variables-tipos.md#widening-automático)" — or the section's name with no link: "la
+  regla que viste en la sección _Declaración de un método_" (`04`), "la sección _Tipos por categoría_, más
+  arriba en este archivo" (`01`), "las dos etapas de la sección «Del código fuente al bytecode»" (`00`),
+  "en [01-variables-tipos.md](01-variables-tipos.md), en la sección _Variables de referencia y `null`_"
+  (`03`). A section beside the sentence is still pointed at by position ("la sección siguiente", `00`,
+  `01`, `03`; `HR-3`). An anchor is the slug of the heading in that file's own language, as in the index
+  (`HR-1`): in the `es/` a link into this same file carries the Spanish heading's slug. Across files a
+  pipeline stage writes the file's link followed by the section's name, and never a `#anchor` on that
+  link: stage T renders the `es/` without the target open, so it cannot re-slug one, stage C cannot check
+  one, and none of the five harvested drafts carries an anchor in its body. A `#anchor` on a cross-file
+  link is written only by the in-session route, with the target open in both languages, as in `04`; a
+  stage that meets one whose section the plan assigns to that entry leaves it as written and reports it, because nothing re-derives an anchor when the target's
+  heading changes. A section named in another file
+  is one the plan assigns to that entry, in whichever of these forms it is written (**The rest of the
+  writing rules** → "Which entry owns the concept"). A `§` inside the title of a cited document — "JLS
+  §15.12.2" — is that document's own numbering and stays. Scope: all topics. Judged at stage B, and at
+  stage C on the `es/` anchors and on a `§` shorthand it meets, which it reports.
 
 #### Examples
 
@@ -851,7 +936,7 @@ two versions of the pair, `[…]` marking a cut.
 > mismo objeto en memoria para literales de texto idénticos, así que ese caso concreto sí apunta al
 > mismo sitio, aunque la regla general siga sin ser esa.
 
-**`HE-6` — the English name beside the Spanish one** · no rule · `java/junior/00`
+**`HE-6` — the English name beside the Spanish one** · `HR-12` · `java/junior/00`
 
 > Antes: […] cualquiera puede abrir la pestaña de red y llamar al endpoint directamente. / Para un
 > desglose preciso de la JVM frente al JRE y el JDK que instalaste, mira […]
@@ -860,16 +945,11 @@ two versions of the pair, `[…]` marking a cut.
 > directamente […] / El **JDK** (_Java Development Kit_, «kit de desarrollo de Java») es lo que
 > instalaste […]. El **JRE** (_Java Runtime Environment_, «entorno de ejecución de Java») es […]
 
-An example and deliberately not a rule: the same refined file introduces **lista**, **excepción** and
-**regla de negocio** with no English name, so "every term in both languages" would reject what he approved.
-`java/junior/01` asked for the same twice — "el _stack_, o pila" in place of "la pila (*stack*)", and
-"_cláusula de guarda_ (en inglés, _guard clause_ — …)" — and still introduces **sobrecarga de operadores** and
-**asignaciones compuestas** with no English name, so it stays an example after two pairs. `java/junior/02`
-asked a third time — "PONLO TAMBIEN EN INGLES ESE VACIO Y BLANCO", and the English name of text blocks —
-and still introduces **marcadores de posición** and **capacidad inicial** with none, so it stays an example
-after three. `java/junior/03` asked a fourth time — ten `PONLO EN INGLES` markers, the two forms of
-`switch` and the _for-each_ among them — and still introduces **bucle** and **índice** with none, so it
-stays an example after four.
+For four pairs an example and deliberately not a rule, since each refined file also introduces terms with
+no English name (**lista**, **excepción** and **regla de negocio** in `00`, **bucle** in `02`, **índice** in
+`03`) and "every term in both languages" would have rejected what he approved. `java/junior/04` asked a
+fifth time — nineteen quotes on one row, fifteen of them asking for the English name — and Victor stated
+the condition himself, which is `HR-12`.
 
 **`HE-7` — a comparison that carries its own code is a heading** · no rule · `java/junior/00`
 
@@ -920,8 +1000,13 @@ a second time a passage written to answer his first correction. So those routes 
 checks judged at stage B, and on an `es/` passage those judged at stage C, over the passage they wrote
 and nothing else, reporting what one needs beyond it (`REC-267`). The six rules that pair repeated `unapplied` — the sentence-level
 register rules, native Spanish (`HC-4`), mechanism before behaviour, `HR-3`, `HR-4` and `HR-7` — keep
-the stages named on them, and the draft stages keep this placement: one pair drafted under it is not a
-trend, and three are what would move it again (`_note-todo-harvest.md` → "What is measured").
+the stages named on them, and the draft stages keep this placement: two pairs drafted under it (`03`,
+`04`) are not a trend, and three are what would move it again (`_note-todo-harvest.md` → "What is
+measured"). `java/junior/04` was also the first pair refined with these routes running the checks, and it
+measured the share `03` had — 153 of the 401 corrections whose passage could be located fell on prose
+written during the refinement — so that placement alone did not move it; **Sentence-level register** →
+"Every passage is written to the clarity bar from its first draft" (`REC-270`) is the answer given on
+that evidence, and the next pair is its first measurement.
 
 - **`HC-1` — Supporting-term sweep** · stage B · enforces the Zero-assumption rule and its register
   restatement ("The zero-assumption rule covers supporting clauses") · built from `HE-1`, `HE-2`. In
@@ -1047,7 +1132,9 @@ trend, and three are what would move it again (`_note-todo-harvest.md` → "What
   that can skip their right operand and the two traps, the four groups being the section's own list) and "Cuándo usar cada uno — la regla práctica" (`01`). So do "Cuál de los tres es más
   barato de encontrar" under "Fallos en tiempo de compilación frente a fallos en runtime" (`00`), whose
   parent names the three, "Tabla resumen" (`00`), which names what the section is, and the closing "Lo que
-  esto desbloquea" (`02`), which names the section's job. A heading is never a question (`HR-9`). Stage B rewrites the English heading and its
+  esto desbloquea" (`02`, `03`), which names the section's job — `04` retitled its own closing "Qué sabes
+  hacer después de este capítulo" at Victor's TODO, one pair to two, so the heading still passes
+  (`_note-todo-harvest.md` → "Disputes"). A heading is never a question (`HR-9`). Stage B rewrites the English heading and its
   index entry; stage C reports a Spanish heading and never rewrites it (`HC-5`).
 - **`HC-9` — A phrase that stands in for a claim** · stage C · enforces Sentence-level register → "One
   idea per sentence; at most one em-dash aside", on the sentence whose verb has to be found · built from
@@ -1120,28 +1207,31 @@ not listed and keeps that default.
 | Rule | Scope | Judged at | Supported by | Contradicted by |
 |---|---|---|---|---|
 | `HR-1` — the index above the title | all topics | B; C for the `es/` anchors | `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
-| `HR-2` — a thing keeps its real name; an analogy never replaces it | all topics | B; C on the wording | `java/junior/01` · `java/junior/02` | — |
-| `HR-3` — name the referent the reader cannot see | all topics | C; B on the `en/` | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| `HR-4` — a set of options says when each is used, and whether it is whole | all topics | B; C reports a missing member | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| `HR-2` — a thing keeps its real name; an analogy never replaces it | all topics | B; C on the wording | `java/junior/01` · `java/junior/02` · `java/junior/04` | — |
+| `HR-3` — name the referent the reader cannot see | all topics | C; B on the `en/` | `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
+| `HR-4` — a set of options says when each is used, and whether it is whole | all topics | B; C reports a missing member | `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
 | `HR-5` — what a paragraph reasons about is in view, and read | all topics | B | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| `HR-6` — say it once in a file | all topics | B | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| `HR-7` — an example is marked, concrete, and matches its sentence | all topics | B; C for the marker | `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| `HR-8` — a section that re-covers or extends what was just read says what it adds | all topics | C; B where the sentence is missing | `java/junior/01` · `java/junior/02` | — |
+| `HR-6` — say it once in a file | all topics | B | `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
+| `HR-7` — an example is marked, concrete, and matches its sentence | all topics | B; C for the marker | `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
+| `HR-8` — a section that re-covers or extends what was just read says what it adds | all topics | C; B where the sentence is missing | `java/junior/01` · `java/junior/02` · `java/junior/04` | — |
 | `HR-9` — a callout's bold lead-in may be a question | all topics | B, C | `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
 | `HR-10` — the steps of a sequence told in one paragraph open with different connectors | all topics | C; B on the `en/` | `java/junior/02` | — |
 | `HR-11` — a linked note is never said to be unwritten | all topics | B; C reports | `java/junior/03`, which it was derived from | — |
+| `HR-12` — a term the trade says in English is given in English | all topics, `es/` prose | C; T as it writes | `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04`, where Victor stated it | — |
+| `HR-13` — a section is named in words, with a link where it helps, never with `§` | all topics | B; C for the `es/` anchors | `java/junior/04`, which it was derived from | — |
 | Format modes → the topic introduction is always conversational mode | all topics | B | `java/junior/00`, which it was derived from | — |
 | Persistent-plan pedagogical contract → introduction invariants 6 and 7, and the mechanism the file leans on placed early | all topics | B | `java/junior/00`, which they were derived from | — |
-| Sentence-level register → the seven rules and the literary flourish, the bold-lead-in rule's heading clause · `HC-4`, `HC-5`, `HC-6`, `HC-8`, `HC-9`; the consequence rule also `HC-7` | all topics | C; B for `HC-7` and `HC-8` | `java/junior/00`, which they were derived from · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| Zero-assumption rule · `HC-1`, `HC-5` | all topics | B; C for `HC-5` | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3`, `HC-7`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
-| Anticipate-the-TODO pass · `HC-2`, `HC-3`, `HC-10`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| Sentence-level register → the seven rules and the literary flourish, the bold-lead-in rule's heading clause · `HC-4`, `HC-5`, `HC-6`, `HC-8`, `HC-9`; the consequence rule also `HC-7` | all topics | C; B for `HC-7` and `HC-8` | `java/junior/00`, which they were derived from · `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
+| Zero-assumption rule · `HC-1`, `HC-5` | all topics | B; C for `HC-5` | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
+| Second-order completeness → mechanism, confusable pairs, exact scope, JavaScript anchor · `HC-3`, `HC-7`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
+| Anticipate-the-TODO pass · `HC-2`, `HC-3`, `HC-10`, `HC-11` | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
 | Signature elements → analogies, exact error messages, every non-obvious table read by a sentence or by its headers, wrong-vs-right labels | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03`, whose lead-ins and headers carry two table readings | — |
 | Signature elements → a section heading is never a literal question; on a callout's lead-in the clause was cut for `HR-9` on 2026-09-15 | all topics | B | pre-harvest origin | on a callout's lead-in: `java/junior/00`, `java/junior/01`, `java/junior/02` — settled, 3 to 1 |
-| The rest of the writing rules → link to other note files | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` | — |
+| Signature elements → one worked example carried through the whole section | all topics | B | pre-harvest origin · `java/junior/04` | — |
+| The rest of the writing rules → link to other note files | all topics | B | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/04` | — |
 | The rest of the writing rules → write in learning order, the problem before the concept | all topics | B | pre-harvest origin · `java/junior/03` | — |
 | Narrative thread → reference, don't re-teach | all topics | B | pre-harvest origin · `java/junior/02` · `java/junior/03` | — |
-| Bilingual notes → the Spanish reads as native Spanish · `HC-4` | all topics | C | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` | — |
+| Bilingual notes → the Spanish reads as native Spanish · `HC-4` | all topics | C | pre-harvest origin · `java/junior/00` · `java/junior/01` · `java/junior/02` · `java/junior/03` · `java/junior/04` | — |
 
 ---
 

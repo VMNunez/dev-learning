@@ -117,9 +117,12 @@ native Spanish**, not a word-for-word calque of the English.
   `notes-plan-{LEVEL}.md`, fall back to its `es/` listing only where no plan exists, and say in your
   report which of the two you used. Prose-only references with no markdown link stay prose-only.
   **You translate the sentence around the link; you do not re-aim it.** If the English claims a target
-  teaches a concept `{LINK_TARGETS}` assigns to a different row — or anchors a section that row does
-  not account for — carry the sentence across as written and **report it**: the English is canonical
-  and the fix belongs in `en/`, so silently correcting it in `es/` would split the pair.
+  teaches a concept `{LINK_TARGETS}` assigns to a different row — or names a section of that file the
+  row does not account for — carry the sentence across as written and **report it**: the English is
+  canonical and the fix belongs in `en/`, so silently correcting it in `es/` would split the pair.
+  A `#anchor` on a link into this same file takes the slug of the Spanish heading it points at in this `es/` (the
+  standard's `HR-13`); one on a link to another file you leave as the existing `es/` has it, or carry
+  across and report where there is none, since you do not have that file's Spanish headings.
 - **Prose is native Spanish.** Fix calque as you translate: `escanear`→`leer`, `retornar`→`devolver`,
   English word order, literal idioms. Translate structural labels: `Purpose:`→`Propósito:`,
   `File:`→`Archivo:`; `Docs:` stays. Technical English terms Victor hears at work (*deploy, refactor,

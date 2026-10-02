@@ -143,8 +143,10 @@ For each `##`/`###` section, judge the Spanish as a standalone study text:
   carrying an English filename that ships here is one no later stage will catch.
   **The filename is one claim; the sentence around it is another.** `{PLAN}` says what each entry is
   assigned to teach, so where the prose sends the reader to an entry for a concept the plan assigns
-  elsewhere — or carries a **cross-file** anchor (`§"Heading"`, `§Heading`, ``§`member` ``) that entry
-  does not own — **report it and do not rewrite it**. An anchor into this same file is unaffected.
+  elsewhere — or names a section of another file (a `#anchor` in the link, the section's name beside
+  it, or the `§"Heading"`, `§Heading`, ``§`member` `` shorthand of a note written before the standard's
+  `HR-13`) that entry does not own — **report it and do not rewrite it**. A section of this same file is
+  unaffected.
   That sentence exists in `en/` too, the English is canonical, and repairing only the Spanish half
   splits the pair.
 - **Index anchors** — every entry of the index above the title links a heading that exists in this

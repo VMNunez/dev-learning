@@ -223,7 +223,7 @@ form. `Completed` and `Refined` are the two commits the pass read. `missing` is 
 | java/junior/01 | 2c6287be | e98302c6 | 2026-09-15 | REC-171 | 74 (new 51) | 165 | 9 | 22.9 | 57 % | full |
 | java/junior/02 | f0d94430 | 47e6a18d | 2026-09-15 | REC-171 | 189 (new 4) | 216 | 4 | 50.3 | 70 % | full |
 | java/junior/03 | aeb3b068 | e8dcbb04 | 2026-09-30 | REC-267 | 12 (new 8) | 218 | 13 | 23.0 | 64 % | full |
-| java/junior/04 | 4f6328c5 | cc994e29 | 2026-10-02 | REC-271 | 28 (new 23) | 417 | 12 | 45.8 | 60 % | full |
+| java/junior/04 | 4f6328c5 | cc994e29 | 2026-10-02 | REC-271 | 28 (new 19) | 417 | 12 | 45.8 | 60 % | full |
 
 `java/junior/00` has no `NTH` rows — its TODOs were resolved before this sink existed — so its TODO count
 is **no medible**, and its pass classified from the two versions, their diff and the standard alone.
@@ -265,10 +265,12 @@ correct prose written during the refinement, so the draft's own figure sits at o
 on the in-session TODO routes: the placement did not move it. `unapplied` dominates as on `03`, and two
 post-harvest pairs are still not the three the trend reading asks for; the change already made on this
 pair's evidence is `REC-270` (the passage as the unit, from the first draft), and `05` is the first pair
-drafted under it. Of the 28 `missing`, 23 are new: the 19 of `termino-traducido-no-usado`, which `HE-6`
-had held four times as an example and never as a rule until Victor stated its condition in chat on
+drafted under it. Of the 28 `missing`, 19 are new: 15 of the 19 of `termino-traducido-no-usado`, which
+`HE-6` had held four times as an example and never as a rule until Victor stated its condition in chat on
 2026-10-01, and the 4 of `enlace-no-navegable`, the `§"Heading"` shorthand the draft carried six times
-and no earlier draft had, taken from the standard's own cross-file anchor clause. The other five quotes
+and the four harvested drafts before it never had, taken from the standard's own cross-file anchor
+clause; the other four of that first row ask for the term said in Spanish ("FALLA EN TIEMPO DE
+COMPILACION", "DE LONGITUD VARIABLE", "ES INMUTABLE"), which `HR-2` already answers. The other five quotes
 — his own wording put up for validation, one example generalised, two paragraphs reordered or merged —
 produce nothing: one pair, no shared form. Among the `unapplied`, the two largest rows,
 `referencia-ambigua` and `clausula-sin-explicar` (141 quotes), share a form `HR-3` named only for
