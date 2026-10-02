@@ -965,7 +965,7 @@ Up to the previous chapter you could read a call to a method, such as `loadPage(
 The next chapter, before you get to classes, answers a question this chapter has left open on purpose. You already know what a call has to satisfy to compile, but you do not know what happens to the values when the call is made. For example:
 
 - When you write `buildPage(title)`, does the method receive a copy of the `String` in the `title` variable, or that same `String`?
-- When a method receives a `Project` and changes it, does the caller's `Project` change too?
+- When a method receives a `Project` and changes it, does the `Project` held by the code that called the method change too?
 - How does Java know which line to go back to when a method finishes? It is the list of unfinished methods you saw in the stack traces of the `null` section.
 
 [05-memory-model.md](05-memory-model.md) answers those questions. It explains where Java keeps variables and objects while the program runs (the stack and the heap), what a reference is, what is copied when you pass an argument to a method and what is not, and why it is said that Java always passes arguments by value (*pass-by-value*).
