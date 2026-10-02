@@ -953,7 +953,7 @@ Esos getters y setters son tu primera pista de un patrón mayor: los métodos ra
 
 ## Qué sabes hacer después de este capítulo
 
-Hasta el capítulo anterior podías leer una llamada(TODO: UNA LLAMADA A QUE); ahora puedes escribir el método que hay detrás y predecir si una llamada a él compila(TODO: MEJORA ESTA FRASE). En la práctica, ahora puedes:
+Hasta el capítulo anterior podías leer una llamada a un método, como `loadPage(page)`, pero no escribir el método al que llama. Ahora sabes escribir ese método y, antes de ejecutar nada, saber si una llamada a él compila o no. En la práctica, ahora puedes:
 
 - Leer una declaración y decir qué partes forman la signature, y por qué el compilador rechaza, antes de que el programa se ejecute, una llamada con el número o los tipos de argumentos equivocados, o con el resultado usado como un tipo equivocado.
 - Decir qué devuelve a quien lo llama un método sin valor de retorno: control, sin ningún valor.

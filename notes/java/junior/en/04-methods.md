@@ -953,7 +953,7 @@ Those getters and setters are your first hint of a bigger pattern: methods rarel
 
 ## What you can do after this chapter
 
-Up to the previous chapter you could read a call; now you can write the method behind it and predict whether a call to it compiles. In practice, you can now:
+Up to the previous chapter you could read a call to a method, such as `loadPage(page)`, but not write the method it calls. Now you know how to write that method and, before running anything, tell whether a call to it compiles or not. In practice, you can now:
 
 - Read a declaration and say which parts form the signature, and why a call with the wrong number or types of arguments, or a result used as the wrong type, is rejected before the program runs.
 - Say what a method with no return value gives back to its caller: control, with no value.
