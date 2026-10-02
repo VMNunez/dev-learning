@@ -89,7 +89,7 @@ audits it together with the level-neutral doctrine (`practice/sql/PLANNING.md`).
 
 | Level | SQL plan | sql-plan-audit | Exercises |
 |---|---|---|---|
-| junior | 2026-08-28 — completed (14 steps · 15 files · 209 first-pass · 151/151 bullets assigned; SHA 39aa0cfc unchanged — no coverage drift, so no step/target/status moved; 13 of 15 cold-review findings applied, 7 of them BLOCKING: two done conditions that passed without the step being drilled (Steps 11, 12), three `**Focus:**`/`**Concepts:**` lines naming unclaimed or not-yet-taught scope (Steps 1, 3, 4), Step 2's two same-`TOPIC` runs sharing a `none` FOCUS, and Step 0's stale "batch already written" paragraph; 2 deferred → coverage finding, see report) | 2026-08-28 — completed — `SCOPE = full`; fingerprint matched (route not stale); no new step owed (151/151 bullets, 18/18 sections already claimed); doctrine §0 gained its writer statement (and the finding that `Current branch`/`Blocked on` have none), invariant 9 now cites the exercise prompt's `## Configuration` block instead of a stale copy missing `LEVEL`, §11 closure count 207→209, the TimeTrack file list corrected to three files, Moment 2b's 60/40 split handed back to the prompt; route: one §2 field completed; history gate passed | 0/14 steps closed |
+| junior | 2026-08-28 — completed (14 steps · 15 files · 209 first-pass · 151/151 bullets assigned; SHA 39aa0cfc unchanged — no coverage drift, so no step/target/status moved; 13 of 15 cold-review findings applied, 7 of them BLOCKING: two done conditions that passed without the step being drilled (Steps 11, 12), three `**Focus:**`/`**Concepts:**` lines naming unclaimed or not-yet-taught scope (Steps 1, 3, 4), Step 2's two same-`TOPIC` runs sharing a `none` FOCUS, and Step 0's stale "batch already written" paragraph; 2 deferred → coverage finding, see report) | 2026-08-28 — completed — `SCOPE = full`; fingerprint matched (route not stale); no new step owed (151/151 bullets, 18/18 sections already claimed); doctrine §0 gained its writer statement (and the finding that `Current branch`/`Blocked on` have none), invariant 9 now cites the exercise prompt's `## Configuration` block instead of a stale copy missing `LEVEL`, §11 closure count 207→209, the TimeTrack file list corrected to three files, Moment 2b's 60/40 split handed back to the prompt; route: one §2 field completed; history gate passed | 0/14 steps closed — 2026-10-02 practice run: Step 0 batch (10) written in `02-execution-order-set-ops.sql`, awaiting answers |
 | middle | | | |
 | senior | | | |
 
@@ -191,5 +191,5 @@ since its grading door runs no close-out.
 | simulation-generator-prompt | | | pending | |
 | simulation-review-prompt | | | pending | |
 | simulator-prompt | | | pending | |
-| sql-exercises-prompt | | | pending | |
+| sql-exercises-prompt | 2026-10-02 | junior · `practice` · `basics` (Step 0) · `COUNT = 10` | completed | 10 first-pass exercises written to new `practice/sql/junior/02-execution-order-set-ops.sql` with the canonical SETUP block; `PROGRESS.md` `Corrected` raised to 40/50; route fingerprint stale, `/sql-plan junior` owed |
 | tracker-prompt | | | pending | |
