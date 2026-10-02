@@ -964,7 +964,7 @@ Up to the previous chapter you could read a call to a method, such as `loadPage(
 
 The next chapter, before you get to classes, answers a question this chapter has left open on purpose. You already know what a call has to satisfy to compile, but you do not know what happens to the values when the call is made. For example:
 
-- When you write `buildPage(title)`, does the method receive a copy of the `String` or the same `String`?
+- When you write `buildPage(title)`, does the method receive a copy of the `String` in the `title` variable, or that same `String`?
 - When a method receives a `Project` and changes it, does the caller's `Project` change too?
 - How does Java know which line to go back to when a method finishes? It is the list of unfinished methods you saw in the stack traces of the `null` section.
 
