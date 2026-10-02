@@ -503,6 +503,26 @@ pairs** → "Evidence", below. **The `unapplied` column is what protects these s
 here and breached anyway is harvested as a *breach of it*, never as a new eighth rule saying the same
 thing.
 
+**Every passage is written to the clarity bar from its first draft, and the unit is the passage, not the
+sentence** (`REC-270`, 2026-10-02). The rules below and the literary flourish after them, plus `HR-3`,
+`HR-6` and `HC-4`, are not a checklist run sentence by sentence after the prose exists; together they are
+the bar a passage — a paragraph, a list item, a callout — is drafted to, the bar Victor's "necesito más
+claridad" TODOs set: one idea per sentence, the referent the reader cannot see named (`HR-3`), the one
+worked example the section already carries (**Signature elements**), no phrase that only works in English
+and no figure that carries the claim (`HC-4`), and nothing said twice in a file (`HR-6`) — each with the
+scope and the exceptions its own text states, which this paragraph neither narrows nor widens. Before a
+passage is handed on, read it whole as its reader would; where any sentence in it fails one of those
+rules, **rewrite the passage, never only that sentence** — a patch keeps the dense prose around it, and he
+then marks the same passage again. It binds every writer of note prose: stage A writing the `en/`, stage T
+writing the `es/` (rendering, inside its own fence), and the in-session TODO route over the passage it
+rewrites (`_session-rules.md` → `Detail standard` points here). It moves no check: each rule it bundles
+stays judged at the stage that rule names. Its evidence is `java/junior/04`, drafted under every rule below and
+completed on 2026-09-30, which then took 282 TODO passes on its `es/` in three days — 27 `NTH` rows, the
+same passage often marked again after its first fix — and Victor's statement once his corrections were
+answered by rewriting whole passages: *"cuando te digo: necesito mayor claridad. lo haces muchisisisismo
+mejor. te acercas mucho mas a mi forma de redactar"*, with the instruction that the first generation of a
+note carry that clarity too.
+
 - **A bold lead-in is a plain statement of the fact, never a metaphor or a riddle.** The bold sentence
   that opens a paragraph is the one Victor reads to decide what the paragraph is about, so it has to
   survive being read alone. `**main es la puerta, y la JVM solo conoce una puerta.**` and
