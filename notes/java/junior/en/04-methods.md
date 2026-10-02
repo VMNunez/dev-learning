@@ -891,7 +891,7 @@ You have already seen where and how to check that an argument is not `null`. The
 > Docs: https://www.baeldung.com/java-naming-conventions → read: "Method Naming Conventions" and "Variable Naming Conventions"
 > Docs: https://www.baeldung.com/java-pojo-javabeans-dto-vo → read: "JavaBeans" — the convention the callout below depends on
 
-A method's name is the one part of its signature a reader sees at every call site, so Java code follows a fixed set of naming habits, and some libraries depend on them:
+When you read a call like `employee.getName()`, all you see of the method is its name and the arguments you pass it: you do not see what type it returns or what code it runs. That is why method names in Java follow a fixed set of conventions, so that the name tells you what the method does. On top of that, some libraries depend on these conventions to work, as you will see a little further down in this section. These are the conventions:
 
 - Method names: `camelCase`, start with a verb — `getName()`, `save()`, `calculateTotal()`, `isActive()`
 - Boolean getters: start with `is` or `has` — `isActive()`, `hasRole()`, `isEmpty()`
