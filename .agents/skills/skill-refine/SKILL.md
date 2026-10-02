@@ -75,8 +75,7 @@ crossed. **Count by exact string match**, never by what the rows appear to be ab
 - The rows carry no falsifiable `Evidence` clause.
 
 1c. Read the target `SKILL.md` **end to end**, in `.claude/skills/`. State `N lines, read to EOF`. The
-Read tool truncates past 2000 lines in silence, and every judgement below depends on having the whole
-file — condition 4 in particular cannot be answered from an excerpt.
+Read tool truncates past 2000 lines in silence, and every judgement below depends on the whole file.
 
 ## 2 — Draft the edit
 
@@ -135,22 +134,23 @@ commit, `maps unaffected` included.
 
 ## 5 — Dispositions, commit, report
 
-5a. Set `Disposition` to `fixed in <hash>` on every row that fed the edit. Rows are otherwise immutable.
-
-5b. One commit, fixed prefix so the whole loop is auditable and reversible by one grep:
+5a. The refinement commit, fixed prefix so the whole loop is auditable and reversible by one grep:
 
 ```
 refactor(skills): auto-refine {skill} — {breached step}
 ```
 
-It stages both mirrors, `_skill-breach-log.md`, and whatever `map-sync` touched. Run `git status`
+It stages both mirrors and whatever `map-sync` touched, never `_skill-breach-log.md`. Run `git status`
 immediately before staging and immediately before committing; unstage anything else. **If either mirror
 or the map cannot be written, commit nothing** — leave the rows `open` and report it. A half-applied
 refinement is worse than none: it puts the two adapters out of sync, which nothing announces.
 
+5b. Read that commit's hash from `git log`, never from memory, and set `Disposition` to `fixed in <hash>`
+on every row that fed the edit. Commit `_skill-breach-log.md` alone, as a second commit —
+`docs(skills): auto-refine {skill} — dispositions` — never by amending the first, which rewrites its hash.
+
 5c. Record the gate in the report, one line: `cold reviewer: approve | approve-with-tightening | reject`.
-It is the only trace the gate ran at all. An applied edit with no such line is indistinguishable on disk
-from a self-approval, and a later reader must treat it as one.
+It is the only trace the gate ran at all: an applied edit without it must be read as a self-approval.
 
 ## 6 — Ruling route: `REC-054` (c), bounded by its own verdict
 
