@@ -898,11 +898,26 @@ Cuando lees una llamada como `employee.getName()`, del método solo ves su nombr
 - Getters: `getName()`, `getAge()`
 - Setters: `setName(String name)`, `setAge(int age)`
 
-> **Vista previa — tres librerías de Spring Boot que aparecen en el siguiente aviso.** El siguiente aviso, **La forma get/set/is no es una preferencia de estilo — las librerías la leen**, nombra tres librerías que aún no has estudiado: **Jackson**, que convierte objetos Java en JSON; **JPA** (_Jakarta Persistence API_, que antes se llamaba _Java Persistence API_), que define cómo se guardan objetos Java como filas de una base de datos: qué anotaciones usas, como `@Id`, y qué debe hacer cada una. JPA solo define esas reglas; la librería que las cumple y hace el trabajo es **Hibernate**, que escribe las consultas SQL por ti y convierte cada fila en un objeto, y es la que Spring Boot usa por defecto para guardar y leer tus objetos en la base de datos; y **Lombok**, que escribe por ti métodos repetitivos en tiempo de compilación. Ese aviso explica por qué estas librerías necesitan que sigas la convención de nombres: estas librerías buscan tus métodos por su nombre, así que si un método no se llama como ellas esperan, no lo encuentran. Usarás las tres en las notas de Spring Boot.
-
-> **La forma get/set/is no es una preferencia de estilo — las librerías la leen.** Java tiene una convención con nombre propio, **JavaBeans**: una clase con un constructor sin argumentos cuyas propiedades se alcanzan mediante `getX()` / `setX()` / `isX()`. Importa porque las librerías principales localizan una propiedad _buscando exactamente esos nombres de método_ en tiempo de ejecución. Jackson convierte tu objeto en JSON encontrando `getName()` y publicando un campo `"name"` — renómbralo a `fetchName()` y el campo desaparece en silencio de la respuesta de la API. JPA puede hacer lo mismo, pero solo con una entidad cuyas anotaciones de mapeo estén sobre sus getters; el `Project` de TimeTrack pone `@Id` sobre el campo, así que Hibernate lee y escribe sus campos directamente. El `@Data` de Lombok, que usan los DTOs de TimeTrack, existe precisamente para generarte este boilerplate: `@Data class ProjectResponse { private String name; }` compila a una clase que ya trae `getName()` y `setName()`. Así que la convención es un contrato del que dependen herramientas como estas, y por eso romperla produce bugs que parecen magia.(TODO: ESTE PARRAFO SE PUEDE AGRUPAR CON EL ANTERIOR Y EXPLICAR CLARO Y SENCILLO)
+> **Algunas librerías de Spring Boot buscan tus métodos por su nombre, así que la convención get/set/is no es solo una cuestión de estilo.** Java tiene una convención con nombre propio, **JavaBeans**: una clase con un constructor sin argumentos, cuyas propiedades se leen con `getX()` o `isX()` y se modifican con `setX()`. Hay librerías que, mientras el programa se ejecuta, buscan exactamente esos nombres para encontrar las propiedades de tus objetos. Estas son las tres que usarás en las notas de Spring Boot:
+>
+> - **Jackson** convierte objetos Java en JSON. Por cada método `getX()` que encuentra, escribe un campo `"x"` en el JSON: con `getName()` escribe `"name"`. Si llamas a ese método `fetchName()`, Jackson no lo encuentra, y el campo `"name"` desaparece de la respuesta de la API sin ningún error.
+> - **JPA** (_Jakarta Persistence API_, que antes se llamaba _Java Persistence API_) define cómo se guardan objetos Java como filas de una base de datos: qué anotaciones usas, como `@Id`, y qué debe hacer cada una. JPA solo define esas reglas; la librería que las cumple y hace el trabajo es **Hibernate**, que escribe las consultas SQL por ti y convierte cada fila en un objeto, y es la que Spring Boot usa por defecto para guardar y leer tus objetos en la base de datos. Hibernate solo usa los getters y setters si pones las anotaciones encima de ellos. Si las pones encima de los campos, como hace la clase `Project` de TimeTrack con `@Id`, lee y escribe los campos directamente, y los nombres de los métodos no le importan.
+> - **Lombok** escribe por ti métodos repetitivos mientras se compila tu código. Por ejemplo, la anotación `@Data` genera los getters y setters de todos los campos de una clase, siguiendo la convención. La usan los DTO de TimeTrack, las clases que definen los datos que devuelve la API:
 >
 > **Archivo:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
+>
+> ```java
+> @Data
+> public class ProjectResponse {
+>     private Long id;
+>     private String name;
+>     private String description;
+>     private boolean active;
+>     private LocalDateTime createdAt;
+> }
+> ```
+>
+> En el código no aparece ningún método, pero al compilar, la clase ya tiene `getId()`, `getName()`, `setName()`, `isActive()` y el resto. Como siguen la convención, Jackson los encuentra y convierte cada `ProjectResponse` en JSON. Por eso, si no sigues la convención, estas librerías no encuentran tus métodos y fallan sin avisar.
 
 Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los _campos_ de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores, `static`, los modificadores de acceso que este capítulo ha ido aplazando, y la encapsulación, es el tema entero de [06-poo-clases.md](06-poo-clases.md), donde el `Calculator` que viste arriba se convierte en una clase completa con estado.
 

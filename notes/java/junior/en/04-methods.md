@@ -898,11 +898,26 @@ When you read a call like `employee.getName()`, all you see of the method is its
 - Getters: `getName()`, `getAge()`
 - Setters: `setName(String name)`, `setAge(int age)`
 
-> **Preview — three Spring Boot libraries that appear in the next callout.** The next callout, **The get/set/is shape is not a style preference — libraries read it**, names three libraries you haven't studied yet: **Jackson**, which turns Java objects into JSON; **JPA** (*Jakarta Persistence API*, formerly called *Java Persistence API*), which defines how Java objects are stored as database rows: which annotations you use, such as `@Id`, and what each one must do. JPA only defines those rules; the library that follows them and does the work is **Hibernate**, which writes the SQL queries for you and turns each row into an object, and it is the one Spring Boot uses by default to save and read your objects in the database; and **Lombok**, which writes repetitive methods for you at compile time. That callout explains why these libraries need you to follow the naming convention: these libraries look your methods up by name, so if a method is not named the way they expect, they do not find it. You'll use all three in the Spring Boot notes.
-
-> **The get/set/is shape is not a style preference — libraries read it.** Java has a convention with a name, **JavaBeans**: a class with a no-argument constructor whose properties are reached through `getX()` / `setX()` / `isX()`. It matters because major libraries locate a property by *looking for those exact method names* at runtime. Jackson turns your object into JSON by finding `getName()` and publishing a `"name"` field — rename it to `fetchName()` and the field silently vanishes from the API response. JPA can do the same, but only for an entity whose mapping annotations sit on its getters; TimeTrack's `Project` puts `@Id` on the field, so Hibernate reads and writes its fields directly. Lombok's `@Data`, which the TimeTrack DTOs use, exists precisely to generate this boilerplate for you: `@Data class ProjectResponse { private String name; }` compiles to a class with `getName()` and `setName()` already in it. So the convention is a contract that tools like these depend on, which is why breaking it produces bugs that look like magic.
+> **Some Spring Boot libraries look your methods up by name, so the get/set/is convention is not just a matter of style.** Java has a convention with a name, **JavaBeans**: a class with a no-argument constructor, whose properties are read with `getX()` or `isX()` and changed with `setX()`. Some libraries, while the program runs, look for exactly those names to find the properties of your objects. These are the three you will use in the Spring Boot notes:
+>
+> - **Jackson** turns Java objects into JSON. For each `getX()` method it finds, it writes an `"x"` field into the JSON: with `getName()` it writes `"name"`. If you call that method `fetchName()`, Jackson does not find it, and the `"name"` field disappears from the API response without any error.
+> - **JPA** (*Jakarta Persistence API*, formerly called *Java Persistence API*) defines how Java objects are stored as database rows: which annotations you use, such as `@Id`, and what each one must do. JPA only defines those rules; the library that follows them and does the work is **Hibernate**, which writes the SQL queries for you and turns each row into an object, and it is the one Spring Boot uses by default to save and read your objects in the database. Hibernate only uses the getters and setters if you put the annotations on them. If you put them on the fields, as TimeTrack's `Project` class does with `@Id`, it reads and writes the fields directly, and the method names do not matter to it.
+> - **Lombok** writes repetitive methods for you while your code compiles. For example, the `@Data` annotation generates the getters and setters for every field of a class, following the convention. TimeTrack's DTOs use it — the classes that define the data the API returns:
 >
 > **File:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/dto/response/ProjectResponse.java`
+>
+> ```java
+> @Data
+> public class ProjectResponse {
+>     private Long id;
+>     private String name;
+>     private String description;
+>     private boolean active;
+>     private LocalDateTime createdAt;
+> }
+> ```
+>
+> No method appears in the code, but once compiled, the class already has `getId()`, `getName()`, `setName()`, `isActive()` and the rest. Because they follow the convention, Jackson finds them and turns each `ProjectResponse` into JSON. That is why, if you do not follow the convention, these libraries do not find your methods and fail without warning.
 
 Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors, `static`, the access modifiers this chapter kept deferring, and encapsulation, is the whole subject of [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you saw above becomes a proper class with state.
 
