@@ -914,7 +914,9 @@ Cuando lees una llamada como `employee.getName()`, del método solo ves su nombr
 >       public Long getId() { return id; }
 >       public void setId(Long id) { this.id = id; }
 >
->       public String getName() { return name; }(TODO: PERO EN GETNAME Y SETNAME NO HAS PUESTO NINGUNA ANOTACION)
+>       // getName() y setName() no necesitan ninguna anotación: como @Id está en un getter, Hibernate
+>       // usa los getters y setters para todas las propiedades, y guarda name en una columna name
+>       public String getName() { return name; }
 >       public void setName(String name) { this.name = name; }   // si se llamara changeName(), la aplicación no arrancaría
 >   }
 >

@@ -914,6 +914,8 @@ When you read a call like `employee.getName()`, all you see of the method is its
 >       public Long getId() { return id; }
 >       public void setId(Long id) { this.id = id; }
 >
+>       // getName() and setName() need no annotation: because @Id is on a getter, Hibernate
+>       // uses the getters and setters for every property, and stores name in a name column
 >       public String getName() { return name; }
 >       public void setName(String name) { this.name = name; }   // if it were called changeName(), the application would not start
 >   }
