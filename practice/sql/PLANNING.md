@@ -18,6 +18,21 @@ route's to say, not this file's.
 > 2026-07-22 by leaving it alone and starting `02-execution-order-set-ops.sql` with the canonical
 > schema. Every file from `02-` on ships its own canonical SETUP block: one file, one schema.
 
+### Local practice databases — the registry
+
+Every PostgreSQL database created in pgAdmin **for practice** is recorded here, the day it is created,
+so the next session knows what already exists instead of asking or guessing. Names use `practice_*`
+and an underscore, never a hyphen (no quoting in SQL). Project databases (`timetrack`) belong to their
+project and are not listed. **Writer:** the session that guides the creation — a new row in the same
+session, committed directly with this file; a database dropped later keeps its row with `dropped
+YYYY-MM-DD`. When a new exercise file needs a database that is not here, the session guides its creation
+in pgAdmin step by step before the SETUP is run, then adds the row.
+
+| Database | Schema | Files that run in it | Created |
+|---|---|---|---|
+| `practice_basics_v1` | v1 (legacy, `01-basics.sql`'s own) | `junior/01-basics.sql` only — its SETUP cannot rebuild it on an empty database, so never drop it | before 2026-09-30 (was `learning`, renamed 2026-09-30) |
+| `practice_bookstore` | canonical bookstore | every bookstore file from `junior/02-` on — never run its SETUP inside `practice_basics_v1`, it starts with `DROP TABLE ... CASCADE` | pending — being created 2026-10-02 for `02-execution-order-set-ops.sql` |
+
 **Target:** pass the SQL half of a technical screening at NTT Data / Capgemini / Indra, and write the
 report queries TimeTrack needs without looking anything up.
 
