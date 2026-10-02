@@ -894,7 +894,7 @@ You have already seen where and how to check that an argument is not `null`. The
 When you read a call like `employee.getName()`, all you see of the method is its name and the arguments you pass it: you do not see what type it returns or what code it runs. That is why method names in Java follow a fixed set of conventions, so that the name tells you what the method does. On top of that, some libraries depend on these conventions to work, as you will see a little further down in this section. These are the conventions:
 
 - Method names: written in `camelCase`, that is, with the words joined together, the first one in lowercase and each of the following ones starting with a capital letter (`calculateTotal`). Names start with a verb, because a method does something — `getName()`, `save()`, `calculateTotal()`, `isActive()`
-- Boolean getters: start with `is` when they ask whether the object is in a state or has a quality (`isActive()`, `isEmpty()`), and with `has` when they ask whether the object has something (`hasRole()`)
+- Boolean getters: start with `is` when they ask whether the object is in a state or has a quality (`isActive()`, `isEmpty()`), and with `has` when they ask whether the object has something (`hasRole()`, `hasChildren()`)
 - Getters: `getName()`, `getAge()`
 - Setters: `setName(String name)`, `setAge(int age)`
 
