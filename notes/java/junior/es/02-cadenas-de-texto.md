@@ -621,7 +621,7 @@ public String buildReport(List<Employee> employees) {
 
 La versión `MAL` se comporta bien con un solo usuario, así que no falla en pruebas: solo produce texto mezclado cuando llegan peticiones a la vez, es decir, en producción. El hábito que evita el problema: **un builder es siempre una variable local, nunca un campo de una clase.**
 
-> **La otra mitad de esta historia, la de la recolección de basura, se ve más adelante.** [05-modelo-de-memoria.md](05-modelo-de-memoria.md) vuelve a este mismo bucle una vez explicados el heap y el recolector de basura, y detalla lo que le cuesta al programa dejar "999 objetos abandonados".
+> **La otra mitad de esta historia, la de la recolección de basura, se ve más adelante.** [05-modelo-de-memoria.md](05-modelo-de-memoria.md) explica qué son el heap y el recolector de basura, y qué pasa en memoria con cada uno de los objetos `String` que el bucle con `+=` de esta sección deja abandonados.
 
 ---
 

@@ -622,7 +622,7 @@ public String buildReport(List<Employee> employees) {
 
 The `MAL` version behaves correctly with a single user, so it does not fail in testing: it only produces mixed-up text when requests arrive at the same time — that is, in production. The habit that avoids the problem: **a builder is always a local variable, never a field on a class.**
 
-> **The other half of this story, the garbage-collection one, comes later.** [05-memory-model.md](05-memory-model.md) comes back to this same loop once the heap and the garbage collector have been explained, and details what leaving "999 abandoned objects" costs the program. Everything you need to make the right choice is on this page; that file explains what the machine does with the wrong one.
+> **The other half of this story, the garbage-collection one, comes later.** [05-memory-model.md](05-memory-model.md) explains what the heap and the garbage collector are, and what happens in memory to each of the `String` objects that the `+=` loop of this section leaves abandoned.
 
 ---
 
