@@ -19,7 +19,7 @@
   - [Two ways to check that an argument is not `null`](#two-ways-to-check-that-an-argument-is-not-null)
   - [Three rules for working with `null` in methods](#three-rules-for-working-with-null-in-methods)
 - [Naming conventions](#naming-conventions)
-- [What this unlocks](#what-this-unlocks)
+- [What you can do after this chapter](#what-you-can-do-after-this-chapter)
 
 # Methods
 
@@ -945,13 +945,13 @@ When you read a call like `employee.getName()`, all you see of the method is its
 > }
 > ```
 >
-> No method appears in the code, but once compiled, the class already has `getId()`, `getName()`, `setName()`, `isActive()` and the rest. Because they follow the convention, Jackson finds them and turns each `ProjectResponse` into JSON. That is why, if you do not follow the convention, these libraries do not find your methods and fail without warning.
+> No method appears in the code, but once compiled, the class already has `getId()`, `getName()`, `setName()`, `isActive()` and the rest, which Lombok generates. Because they follow the convention, Jackson finds them and turns each `ProjectResponse` into JSON. That is why, if you do not follow the convention, these libraries do not find your methods and fail without warning.
 
-Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors, `static`, the access modifiers this chapter kept deferring, and encapsulation, is the whole subject of [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you saw above becomes a proper class with state.
+Those getters and setters are your first hint of a bigger pattern: methods rarely live alone — they wrap the *fields* of a class and guard how the outside world reads and changes them. That coupling of fields and methods, plus constructors, `static`, the access modifiers, and encapsulation, is the whole subject of [06-oop-classes.md](06-oop-classes.md), where the `Calculator` you saw above becomes a proper class with state.
 
 ---
 
-## What this unlocks
+## What you can do after this chapter
 
 Up to the previous chapter you could read a call; now you can write the method behind it and predict whether a call to it compiles. In practice, you can now:
 

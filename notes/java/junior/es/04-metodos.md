@@ -19,7 +19,7 @@
   - [Dos formas de comprobar que un argumento no es `null`](#dos-formas-de-comprobar-que-un-argumento-no-es-null)
   - [Tres reglas para trabajar con `null` en los métodos](#tres-reglas-para-trabajar-con-null-en-los-métodos)
 - [Convenciones de nombres](#convenciones-de-nombres)
-- [Lo que esto desbloquea](#lo-que-esto-desbloquea)
+- [Qué sabes hacer después de este capítulo](#qué-sabes-hacer-después-de-este-capítulo)
 
 # Métodos
 
@@ -945,13 +945,13 @@ Cuando lees una llamada como `employee.getName()`, del método solo ves su nombr
 > }
 > ```
 >
-> En el código no aparece ningún método, pero al compilar, la clase ya tiene `getId()`, `getName()`, `setName()`, `isActive()` y el resto(TODO:GENERADO POR LOMBOK). Como siguen la convención, Jackson los encuentra y convierte cada `ProjectResponse` en JSON. Por eso, si no sigues la convención, estas librerías no encuentran tus métodos y fallan sin avisar.
+> En el código no aparece ningún método, pero al compilar, la clase ya tiene `getId()`, `getName()`, `setName()`, `isActive()` y el resto, que genera Lombok. Como siguen la convención, Jackson los encuentra y convierte cada `ProjectResponse` en JSON. Por eso, si no sigues la convención, estas librerías no encuentran tus métodos y fallan sin avisar.
 
 Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los _campos_ de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores, `static`, los modificadores de acceso, y la encapsulación, es el tema entero de [06-poo-clases.md](06-poo-clases.md), donde el `Calculator` que viste arriba se convierte en una clase completa con estado.
 
 ---
 
-## Lo que esto desbloquea TODO: MEJOR EL TITULO
+## Qué sabes hacer después de este capítulo
 
 Hasta el capítulo anterior podías leer una llamada; ahora puedes escribir el método que hay detrás y predecir si una llamada a él compila. En la práctica, ahora puedes:
 
