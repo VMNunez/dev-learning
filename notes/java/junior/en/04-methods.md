@@ -955,7 +955,7 @@ Those getters and setters are your first hint of a bigger pattern: methods rarel
 
 Up to the previous chapter you could read a call to a method, such as `loadPage(page)`, but not write the method it calls. Now you know how to write that method and, before running anything, tell whether a call to it compiles or not. In practice, you can now:
 
-- Read a declaration and say which parts form the signature, and why a call with the wrong number or types of arguments, or a result used as the wrong type, is rejected before the program runs.
+- Read a method's declaration and say which parts form its signature: its name and the type and order of its parameters, as in `add(int, int)`. You also know why the compiler rejects a call before the program runs: because you pass a different number of arguments from the one the method declares (`add(3)`), because an argument is not of the type it asks for (`add("3", "4")`), or because you store the result in a variable of another type (`String s = add(3, 4);`).
 - Say what a method with no return value gives back to its caller: control, with no value.
 - Predict which overload a call selects, from its three passes and the most-specific rule, and fix an ambiguous call at the call site.
 - Write a `Type...` parameter, knowing it must be last and arrives in the body as an array, empty rather than `null` when no argument is passed.
