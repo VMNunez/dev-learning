@@ -945,13 +945,13 @@ Cuando lees una llamada como `employee.getName()`, del método solo ves su nombr
 > }
 > ```
 >
-> En el código no aparece ningún método, pero al compilar, la clase ya tiene `getId()`, `getName()`, `setName()`, `isActive()` y el resto. Como siguen la convención, Jackson los encuentra y convierte cada `ProjectResponse` en JSON. Por eso, si no sigues la convención, estas librerías no encuentran tus métodos y fallan sin avisar.
+> En el código no aparece ningún método, pero al compilar, la clase ya tiene `getId()`, `getName()`, `setName()`, `isActive()` y el resto(TODO:GENERADO POR LOMBOK). Como siguen la convención, Jackson los encuentra y convierte cada `ProjectResponse` en JSON. Por eso, si no sigues la convención, estas librerías no encuentran tus métodos y fallan sin avisar.
 
-Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los _campos_ de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores, `static`, los modificadores de acceso que este capítulo ha ido aplazando, y la encapsulación, es el tema entero de [06-poo-clases.md](06-poo-clases.md), donde el `Calculator` que viste arriba se convierte en una clase completa con estado.
+Esos getters y setters son tu primera pista de un patrón mayor: los métodos rara vez viven solos — envuelven los _campos_ de una clase y controlan cómo el mundo exterior los lee y los modifica. Ese acoplamiento entre campos y métodos, junto con los constructores, `static`, los modificadores de acceso, y la encapsulación, es el tema entero de [06-poo-clases.md](06-poo-clases.md), donde el `Calculator` que viste arriba se convierte en una clase completa con estado.
 
 ---
 
-## Lo que esto desbloquea
+## Lo que esto desbloquea TODO: MEJOR EL TITULO
 
 Hasta el capítulo anterior podías leer una llamada; ahora puedes escribir el método que hay detrás y predecir si una llamada a él compila. En la práctica, ahora puedes:
 
