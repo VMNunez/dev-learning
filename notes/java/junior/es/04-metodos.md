@@ -956,7 +956,7 @@ Esos getters y setters son tu primera pista de un patrón mayor: los métodos ra
 Hasta el capítulo anterior podías leer una llamada a un método, como `loadPage(page)`, pero no escribir el método al que llama. Ahora sabes escribir ese método y, antes de ejecutar nada, saber si una llamada a él compila o no. En la práctica, ahora puedes:
 
 - Leer la declaración de un método y decir qué partes forman su signature: su nombre y el tipo y el orden de sus parámetros, como en `add(int, int)`. También sabes por qué el compilador rechaza una llamada antes de que el programa se ejecute: porque le pasas un número de argumentos distinto del que declara el método (`add(3)`), porque un argumento no es del tipo que pide (`add("3", "4")`), o porque guardas el resultado en una variable de otro tipo (`String s = add(3, 4);`).
-- Decir qué devuelve a quien lo llama un método sin valor de retorno: control, sin ningún valor.
+- Decir qué devuelve a quien lo llama un método sin valor de retorno: control, sin ningún valor.(TODO: FATAL EXPLICADO, CERO CLARIDAD)
 - Predecir qué sobrecarga elige una llamada, a partir de sus tres pasadas y de la regla de la más específica, y arreglar una llamada ambigua en el punto de la llamada.
 - Escribir un parámetro `Type...`, sabiendo que debe ir el último y que llega al cuerpo como un array, vacío y no `null` cuando no se pasa ningún argumento.
 - Leer un nombre completamente cualificado, y saber qué cambia un `import` y qué no cambia nunca.
