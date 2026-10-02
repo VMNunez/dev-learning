@@ -891,7 +891,7 @@ Ya has visto dónde y cómo comprobar que un argumento no es `null`. Estas tres 
 > Docs: https://www.baeldung.com/java-naming-conventions → leer: "Method Naming Conventions" y "Variable Naming Conventions"
 > Docs: https://www.baeldung.com/java-pojo-javabeans-dto-vo → leer: "JavaBeans" — la convención de la que depende el callout de abajo
 
-El nombre de un método es la única parte de su signature que un lector ve en cada punto de llamada, así que el código Java sigue un conjunto fijo de hábitos de nombres, y algunas librerías dependen de ellos:
+El nombre de un método es la única parte de su signature que un lector ve en cada punto de llamada, así que el código Java sigue un conjunto fijo de hábitos de nombres, y algunas librerías dependen de ellos:(TODO: MEJORA LA FRASE)
 
 - Nombres de métodos: `camelCase`, empiezan con un verbo — `getName()`, `save()`, `calculateTotal()`, `isActive()`
 - Getters booleanos: empiezan con `is` o `has` — `isActive()`, `hasRole()`, `isEmpty()`
