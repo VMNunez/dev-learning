@@ -852,7 +852,7 @@ En el ejemplo has hecho la comprobación con `Objects.requireNonNull`, pero no e
 > String checkedTitle = Objects.requireNonNull(title, "title must not be null");
 > ```
 >
-> Comprobar y guardar a la vez es la forma que más vas a encontrar en código real, sobre todo en los constructores, que guardan en el objeto los valores que reciben: `this.field = Objects.requireNonNull(field, "…");`. TimeTrack lo usa exactamente ahí:
+> Comprobar y guardar a la vez es la forma que más vas a encontrar en código real, sobre todo en los constructores, que guardan en el objeto los valores que reciben: `this.field = Objects.requireNonNull(field, "…");`. TimeTrack lo usa exactamente así:
 
 **Archivo:** `projects/07-timetrack/backend/timetrack/src/main/java/com/victor/timetrack/exception/InvalidPasswordException.java`
 
@@ -867,7 +867,7 @@ public class InvalidPasswordException extends RuntimeException {
 }
 ```
 
-> **Ese fragmento usa un constructor, y los constructores son de [06-poo-clases.md](06-poo-clases.md).** Léelo aquí solo por _dónde se sitúa la comprobación_: al entrar, antes de guardar el valor. Por qué la frontera de construir el objeto es la más fuerte disponible — un objeto que nunca podría ser válido se rechaza antes de existir, en lugar de fallar más tarde en el consumidor que sea que lo toque primero — es una regla sobre invariantes de clase, y ese es el capítulo que la enuncia. `extends RuntimeException`, y la línea `super(message)` que le pasa el mensaje, pertenecen a definir un tipo de excepción propio, que es tema de [11-excepciones.md](11-excepciones.md).
+> **Ese fragmento usa un constructor, y los constructores son de [06-poo-clases.md](06-poo-clases.md).** Léelo aquí solo por _dónde se sitúa la comprobación_: al entrar, antes de guardar el valor. Por qué la frontera de construir el objeto es la más fuerte disponible — un objeto que nunca podría ser válido se rechaza antes de existir, en lugar de fallar más tarde en el consumidor que sea que lo toque primero — es una regla sobre invariantes de clase, y ese es el capítulo que la enuncia. `extends RuntimeException`, y la línea `super(message)` que le pasa el mensaje, pertenecen a definir un tipo de excepción propio, que es tema de [11-excepciones.md](11-excepciones.md).(TODO: TE HAS ENROLLADO DEMASIADO EN ESTE PARRAFO)
 
 ### Tres reglas para un `null` en la frontera de un método
 
