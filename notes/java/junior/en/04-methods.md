@@ -17,7 +17,7 @@
   - [A `NullPointerException` is thrown where the `null` is used, not where it appeared](#a-nullpointerexception-is-thrown-where-the-null-is-used-not-where-it-appeared)
   - [The fix: reject the missing value at the boundary that requires it](#the-fix-reject-the-missing-value-at-the-boundary-that-requires-it)
   - [Two ways to check that an argument is not `null`](#two-ways-to-check-that-an-argument-is-not-null)
-  - [Three rules for a `null` at a method boundary](#three-rules-for-a-null-at-a-method-boundary)
+  - [Three rules for working with `null` in methods](#three-rules-for-working-with-null-in-methods)
 - [Naming conventions](#naming-conventions)
 - [What this unlocks](#what-this-unlocks)
 
@@ -869,9 +869,9 @@ public class InvalidPasswordException extends RuntimeException {
 
 > **That snippet uses a constructor, which you will see in [06-oop-classes.md](06-oop-classes.md).** Here, just notice where the check that the value is not `null` is: on the same line that stores `field` in the object, so the object never gets to store a `null`. `extends RuntimeException` and `super(message)` are used to create an exception type of your own, and they are explained in [11-exceptions.md](11-exceptions.md).
 
-### Three rules for a `null` at a method boundary
+### Three rules for working with `null` in methods
 
-Read these as one decision made in three places, not as a checklist:
+You have already seen where and how to check that an argument is not `null`. These three rules sum up what to do with a `null` in your methods: where to reject it, when to accept it, and what to return instead.
 
 1. **Validate what you require, at the outermost method that requires it.** One check at the boundary beats five defensive checks downstream, because the downstream methods can then be written as if their arguments are always present — which is what makes `slug(String title)` above a two-line method instead of a four-line one.
 2. **Do not reject a value that is genuinely optional.** Absence is sometimes the correct answer — a middle name, a description nobody filled in — and rejecting it turns valid input into a crash. Handle it instead, the way `describe` in §"Return types" returns `"unknown"` for a `null` employee. And when absence is a normal *result* a method hands back, the tool is `Optional<T>` as the return type. [09-generics.md](09-generics.md) introduces it as that return contract, and [12-streams-lambdas.md](12-streams-lambdas.md) teaches the methods you call on one.
