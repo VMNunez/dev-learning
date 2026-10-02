@@ -16,6 +16,7 @@
 - [`null`, `NullPointerException`, y dónde rechazar un argumento ausente en un método](#null-nullpointerexception-y-dónde-rechazar-un-argumento-ausente-en-un-método)
   - [La `NullPointerException` salta donde se usa el `null`, no donde apareció](#la-nullpointerexception-salta-donde-se-usa-el-null-no-donde-apareció)
   - [La solución: rechazar el valor ausente en la frontera que lo necesita](#la-solución-rechazar-el-valor-ausente-en-la-frontera-que-lo-necesita)
+  - [Dos formas de comprobar que un argumento no es `null`](#dos-formas-de-comprobar-que-un-argumento-no-es-null)
   - [Tres reglas para un `null` en la frontera de un método](#tres-reglas-para-un-null-en-la-frontera-de-un-método)
 - [Convenciones de nombres](#convenciones-de-nombres)
 - [Lo que esto desbloquea](#lo-que-esto-desbloquea)
@@ -823,7 +824,9 @@ Exception in thread "main" java.lang.NullPointerException: title must not be nul
 
 Con la comprobación en `buildPage`, el informe mejora en dos cosas. La primera es el mensaje: ahora es la frase que escribiste tú en `requireNonNull`, `title must not be null`, y dice directamente qué parámetro faltaba. Antes describía la llamada que había fallado dentro de `slug`, y tenías que deducir tú qué regla se había incumplido. La segunda es el stack trace. Su primera línea es `Objects.requireNonNull`. Justo debajo está `Report2.buildPage`, el método que necesitaba el título y recibió `null`. Y debajo de este está `Report2.main(Report2.java:13)`, la línea que le pasó ese `null` a `buildPage`. Es la misma llamada que la línea 10 de `Report`, porque `Report2` es lo mismo que `Report`, pero con tres líneas más: el `import java.util.Objects;`, una línea en blanco y la comprobación con `Objects.requireNonNull`. Lo que el stack trace nunca muestra es la línea que generó el `null`. Un stack trace solo muestra los métodos que no habían terminado cuando ocurre el fallo, y de cada uno, la línea en la que estaba en pausa, así que una línea que ya se había ejecutado no puede aparecer. Sin la comprobación, el stack trace te llevaba a `slug`, un método cuyo código estaba bien. Con la comprobación, te lleva directamente a la llamada que generó el fallo.
 
-//TODO: ESTO PARECE UNA SECCION DONDE VAMOS A COMPROBAR LAS FORMAS DECOMPROBAR EL NOT NULL
+### Dos formas de comprobar que un argumento no es `null`
+
+En el ejemplo has hecho la comprobación con `Objects.requireNonNull`, pero no es la única forma de escribirla: también puedes usar un `if (title == null) { ... }`. Esta sección explica qué hace exactamente `requireNonNull`, por qué normalmente se prefiere al `if` y dónde lo vas a encontrar en código real.
 
 > **`Objects.requireNonNull(valor, "mensaje")` te devuelve `valor` si no es `null`, y si lo es, lanza una `NullPointerException` con tu mensaje.** Es un método `static` normal y corriente de `java.util.Objects` que recibe tu valor y un mensaje. Por ejemplo, en la línea de `buildPage`, `Objects.requireNonNull(title, "title must not be null")`, el valor es `title` y el mensaje es `"title must not be null"`. Si el valor no es `null`, te lo devuelve tal cual y la ejecución sigue como si esa línea no estuviera; si _es_ `null`, lanza la `NullPointerException` con tu mensaje como texto. Con esto ya puedes leer y escribir esta línea. Lo que pasa por dentro cuando Java lanza una excepción lo verás en [11-excepciones.md](11-excepciones.md): la palabra clave `throw`, qué es un objeto excepción, cómo la excepción va saliendo de un método a otro hasta que alguien la captura, y cuándo conviene capturarla. Hasta entonces, usa `Objects.requireNonNull` tal como aparece aquí, en una sola línea al principio del método.
 

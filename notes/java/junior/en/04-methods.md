@@ -16,6 +16,7 @@
 - [`null`, `NullPointerException`, and where to reject a missing argument in a method](#null-nullpointerexception-and-where-to-reject-a-missing-argument-in-a-method)
   - [A `NullPointerException` is thrown where the `null` is used, not where it appeared](#a-nullpointerexception-is-thrown-where-the-null-is-used-not-where-it-appeared)
   - [The fix: reject the missing value at the boundary that requires it](#the-fix-reject-the-missing-value-at-the-boundary-that-requires-it)
+  - [Two ways to check that an argument is not `null`](#two-ways-to-check-that-an-argument-is-not-null)
   - [Three rules for a `null` at a method boundary](#three-rules-for-a-null-at-a-method-boundary)
 - [Naming conventions](#naming-conventions)
 - [What this unlocks](#what-this-unlocks)
@@ -822,6 +823,10 @@ Exception in thread "main" java.lang.NullPointerException: title must not be nul
 ```
 
 With the check in `buildPage`, the report improves in two ways. The first is the message: it is now the sentence you wrote in `requireNonNull`, `title must not be null`, and it says directly which parameter was missing. Before, it described the call that had failed inside `slug`, and you had to work out for yourself which rule had been broken. The second is the stack trace. Its first line is `Objects.requireNonNull`. Right below it is `Report2.buildPage`, the method that needed the title and received `null`. And below that is `Report2.main(Report2.java:13)`, the line that passed that `null` to `buildPage`. It is the same call as line 10 of `Report`, because `Report2` is the same as `Report`, but with three more lines: `import java.util.Objects;`, a blank line, and the check with `Objects.requireNonNull`. What the stack trace never shows is the line that created the `null`. A stack trace only shows the methods that had not finished when the failure happens, and for each one, the line where it was paused, so a line that had already run cannot appear. Without the check, the stack trace took you to `slug`, a method whose code was fine. With the check, it takes you straight to the call that caused the failure.
+
+### Two ways to check that an argument is not `null`
+
+In the example you wrote the check with `Objects.requireNonNull`, but it is not the only way to write it: you can also use an `if (title == null) { ... }`. This section explains exactly what `requireNonNull` does, why it is usually preferred over the `if`, and where you will find it in real code.
 
 > **`Objects.requireNonNull(value, "message")` gives you `value` back if it is not `null`, and if it is, throws a `NullPointerException` with your message.** It is an ordinary `static` method in `java.util.Objects` that takes your value and a message. For example, in the line in `buildPage`, `Objects.requireNonNull(title, "title must not be null")`, the value is `title` and the message is `"title must not be null"`. If the value is not `null` it hands it straight back and execution carries on as though the line were not there; if it *is* `null` it raises the `NullPointerException` with your message as its text. With this you can already read and write this line. What happens inside when Java throws an exception is covered in [11-exceptions.md](11-exceptions.md): the `throw` keyword, what an exception object is, how the exception leaves one method after another until something catches it, and when it is worth catching. Until then, use `Objects.requireNonNull` as it appears here, on a single line at the start of the method.
 
