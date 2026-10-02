@@ -869,9 +869,9 @@ public class InvalidPasswordException extends RuntimeException {
 
 > **Ese fragmento usa un constructor, que verás en [06-poo-clases.md](06-poo-clases.md).** Aquí solo fíjate en dónde está la comprobación de que el valor no es `null`: en la misma línea que guarda `field` en el objeto, así que el objeto nunca llega a guardar un `null`. `extends RuntimeException` y `super(message)` sirven para crear un tipo de excepción propio, y se explican en [11-excepciones.md](11-excepciones.md).
 
-### Tres reglas para un `null` en la frontera de un método
+### Tres reglas para un `null` en la frontera de un método(TODO: NO ME GUSTA EL TITULO)
 
-Léelas como una sola decisión tomada en tres sitios, no como una checklist:
+Léelas como una sola decisión tomada en tres sitios, no como una checklist:(TODO: NO ME GUSTA LA FRASE)
 
 1. **Valida lo que necesitas, en el método más externo que lo necesita.** Una comprobación en la frontera vale más que cinco comprobaciones defensivas repartidas por los métodos que se llaman después, porque esos métodos se pueden escribir entonces como si sus argumentos siempre estuvieran presentes — lo que hace que `slug(String title)`, de arriba, sea un método de dos líneas en lugar de uno de cuatro.
 2. **No rechaces un valor que de verdad es opcional.** A veces la ausencia es la respuesta correcta — un segundo nombre, una descripción que nadie rellenó — y rechazarla convierte una entrada válida en un crash. Trátala en su lugar, como hace `describe` en §"Tipos de retorno", que devuelve `"unknown"` para un empleado `null`. Y cuando la ausencia es un _resultado_ normal que un método devuelve, la herramienta es `Optional<T>` como tipo de retorno. [09-genericos.md](09-genericos.md) lo presenta como ese contrato de retorno, y [12-streams-lambdas.md](12-streams-lambdas.md) enseña los métodos que se llaman sobre uno.
