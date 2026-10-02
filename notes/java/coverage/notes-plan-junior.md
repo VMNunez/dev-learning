@@ -263,7 +263,7 @@ Handoff: The call contract is now clear, but not what physically crosses it; ent
 
 ## 05 — References, the call stack, and memory
 
-Status: pending
+Status: complete
 
 Studied: pending
 
@@ -297,9 +297,9 @@ Must answer:
 
 Coverage concepts:
 
-- [ ] Java pass-by-value — every argument is copied; for an object the copied value is a reference, so a method can mutate that object but cannot replace the caller's variable
-- [ ] Call stack and method returns — each call creates a frame holding its local state, and returning or throwing removes frames toward the caller
-- [ ] Object aliasing — two references can point to the same mutable object, so a change through one reference is visible through the other
+- [x] Java pass-by-value — every argument is copied; for an object the copied value is a reference, so a method can mutate that object but cannot replace the caller's variable
+- [x] Call stack and method returns — each call creates a frame holding its local state, and returning or throwing removes frames toward the caller
+- [x] Object aliasing — two references can point to the same mutable object, so a change through one reference is visible through the other
 
 Audit note: the pass-by-value duplicate in `04-methods.md` was removed by entry 04's 2026-08-27 audit, which left a forward reference to this file; this file is the owner. `### Why `result += name` in a loop is wasteful — the whole point, finally explained` re-teaches entry 02's `StringBuilder` bullet and is reduced to a one-sentence reference to `02-strings.md`. Two further defects, both from the 2026-08-21 renumber: the file closes with `## How this closes out the Java notes`, which declares the whole topic finished and hands off to Spring Boot from chapter five — it must become a handoff to entry 06, in the plan's own words: references are now understood in isolation, and entry 06 uses them to build classes whose state stays valid — and its prose still cites the pre-renumber numbering ("files 04–06", "file 07", "file 01") while three passages refer to `11-exceptions.md` as a chapter already read. All of it is corrected in both languages.
 
