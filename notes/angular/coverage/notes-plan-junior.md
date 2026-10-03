@@ -33,10 +33,11 @@ Must answer:
 - Which sections does this introduction itself walk through, in what order, and why does each one have to come before the next?
 - What is a single-page application, what work does Angular do in one that would otherwise be written by hand against the DOM, and what kind of product is it used to build?
 - What does Angular own between main.ts, application state, browser events, and the DOM?
+- Which few traits recur in every chapter — a tree of components, templates the build compiles and type-checks, dependencies handed over by an injector, signals for state beside Observables for asynchronous events, and a current spelling beside the older one maintained code still uses — and what does each mean in one sentence before its chapter teaches it?
 - Where does the Angular application stop and the Spring Boot API begin — what does each own, and what travels between them?
 - Which JavaScript, TypeScript, and React knowledge transfers directly, and where does Angular impose a different framework-level mental model?
-- Why does the route from 01 through 27 start with bootstrap, one component and the state its template reacts to, grow into a component tree with directives, styles, dependencies and a lifetime, put the display formatters before the remote data and streams whose pages need them, then take forms, then navigation with its guards and interceptors, and only afterwards turn to rendering cost, delivery, tests, debugging, and legacy code?
-- What must already be settled before chapter 01 is readable at all — what a TypeScript decorator is, what the CLI put in `src/` and which of those files chapter 01 opens, what the words "standalone" and "provider" name before they are taught, and how the dev server is started and stopped?
+- Why does the route from 01 through 27 start with bootstrap, one component and the state its template reacts to, let that template branch and loop over it, grow into a component tree with directives, styles, dependencies and a lifetime, return to signals for effects and service-owned state only once injection and lifetime exist, put the display formatters before the remote data and streams whose pages need them, then take forms, then navigation with its guards and interceptors, and only afterwards turn to rendering cost, delivery, tests, debugging, and legacy code?
+- What must already be settled before chapter 01 is readable at all — what a TypeScript decorator is, what the Angular CLI is and what `ng new`, `ng serve`, `ng generate`, `ng build` and `ng test` each do in one clause apiece, what the CLI put in `src/` and which of those files chapter 01 opens, what the words "standalone" and "provider" name before they are taught, and how the dev server is started and stopped?
 
 Coverage concepts: none
 
@@ -70,6 +71,7 @@ Prerequisites: 00
 Must answer:
 
 - How does the browser get from `index.html` to `main.ts` to the root component's element on the page?
+- What does the CLI's build do to `main.ts` and everything it imports, templates included, before the browser receives any of it, and where does a build error appear as opposed to an error in the browser console?
 - What runs first in a standalone Angular application?
 - How does bootstrapApplication() connect the root component and application providers?
 - What does it mean for a capability to be registered *at bootstrap*, and which parts of the running application can reach something registered there?
@@ -110,12 +112,14 @@ Prerequisites: 01
 
 Must answer:
 
+- Which files does `ng generate component` create, and what does each one hold?
 - How do the component class, its template, its styles, and its `imports` become one UI unit, and what does the build report when the template uses something `imports` does not list?
 - What is the difference between rendering a value as text with `{{ }}` and assigning it to a property with `[]`, and how do you tell which one a given target needs?
 - Why does `[attr.x]` exist at all, and what happens when a plain `[x]` binding targets an ARIA attribute that has no DOM property behind it?
 - Why does the template only name a handler inside `()` and leave the behaviour to the class, what is `$event` when the handler does need the event, and how does `(keyup.enter)` say which keystroke it handles without the class inspecting that object?
+- How is a template reference variable declared and handed to a handler, and what does it hold — the DOM element on a plain element, and a component instance or a directive when it sits on one, which chapters 05 and 09 return to?
 - When is a template reference variable enough for an interaction, and what marks the point where the value should become state in the class instead?
-- Which members does the template read and which only the class itself, what does the build do with a `private` member the template uses, and why does a component's `public` surface matter to code outside it — code that chapter 09 shows reaching the instance through a view query?
+- Which members does the template read and which only the class itself, what does the build do with a `private` member the template uses, and why does a component's `public` surface matter to code outside it — code that reaches the instance through a view query, which chapter 09 shows, or by injecting the component itself, named here in one clause?
 
 Coverage concepts:
 
@@ -248,7 +252,7 @@ Prerequisites: 02, 03, 04
 
 Must answer:
 
-- How does a parent's template place a child — what are the child's `selector` and its entry in the parent's `imports` for, and what does the build report when that entry is missing?
+- How does a parent's template place a child — what are the child's `selector` and its entry in the parent's `imports` for, what does the build report when that entry is missing, and what does a template reference variable on the child's tag give the parent's template?
 - How does a parent hand data to a child, how does the child read it, and why is an optional `input()` whose value is absent handled explicitly instead of given a default that reads as real data?
 - What does `input.required()` change about *when* a missing value fails, and where does that failure appear?
 - How does a child tell its parent that something happened without knowing what the parent will do about it, and what does the parent's handler receive?
@@ -290,7 +294,7 @@ Pending additions: none
 
 Narrative role: Separate the component, which owns a view, from the attribute directive, which adds behaviour to an element someone else wrote — and name that element, the host, which the style chapter after this one keeps returning to.
 
-Learning outcome: Victor can decide whether a behaviour needs a component or an attribute directive, write a directive that reads and changes its host through host bindings and listeners, and recognise the built-in attribute directives he has already been using.
+Learning outcome: Victor can decide whether a behaviour needs a component or an attribute directive, write a directive that reads and changes its host through host bindings and listeners, and say what the built-in attribute directives of later chapters — `ngClass`/`ngStyle` in 07, the form directives in 15, `routerLink` in 17 — have in common with the one he wrote.
 
 Prerequisites: 02, 03, 05
 
@@ -324,7 +328,7 @@ Action: audit
 English: notes/angular/junior/en/07-component-styles.md
 Spanish: notes/angular/junior/es/07-estilos-componentes.md
 
-Depends on: 02, 05, 06
+Depends on: 02, 03, 05, 06
 
 Pending additions: none
 
@@ -332,7 +336,7 @@ Narrative role: Establish where presentation belongs: bindings that switch a cla
 
 Learning outcome: Victor can apply conditional classes and styles, locate a component's CSS, explain why a component rule does not style a child component's internal elements, style the host itself, and decide which rules belong in the global stylesheet.
 
-Prerequisites: 02, 05, 06
+Prerequisites: 02, 03, 05, 06
 
 Must answer:
 
@@ -370,7 +374,7 @@ Action: audit
 English: notes/angular/junior/en/08-dependency-injection.md
 Spanish: notes/angular/junior/es/08-inyeccion-dependencias.md
 
-Depends on: 01, 02, 05
+Depends on: 01, 02, 05, 06
 
 Pending additions: none
 
@@ -378,18 +382,20 @@ Narrative role: Explain the injector graph before lifecycle work, so services, c
 
 Learning outcome: Victor can resolve class and non-class dependencies, compare injection styles, configure each provider recipe, predict from the component tree whether consumers share an instance, and say when an injection context exists and what a failure inside one costs the application.
 
-Prerequisites: 01, 02, 05
+Prerequisites: 01, 02, 05, 06
 
 Must answer:
 
+- What is a service, what does `@Injectable({ providedIn: 'root' })` declare about it, and what does a component give up by constructing that collaborator itself with `new`?
 - How does an injector turn a requested token into an instance or configured value?
 - How is a value that has no class — a configuration object, a string — requested from the injector, and what does `InjectionToken<T>` supply that a class type supplies for free?
-- When a component asks for a dependency, where does Angular look first and in what order — its own `providers`, its ancestors', then root — and which components see a provider declared on one component?
+- When a component asks for a dependency, where does Angular look first and in what order — its own `providers`, its ancestors', then root — which components see a provider declared on one component, and which two names does the documentation, and chapter 19 after it, give those chains: the element injector for the components and the environment injector for root?
 - How do root and component provider locations change lifetime and shared mutable state, and what belongs in the bootstrap `providers` of chapter 01 rather than in a component's?
 - When do useValue, useClass, useFactory, and useExisting create, compute, or alias a dependency?
 - When should maintained code use constructor injection, and why does current code normally prefer `inject()`?
 - Why does `inject()` work in a field initializer and throw in a method, and how is the dependency carried into the method instead?
-- Who catches an exception thrown while the injector is building a root singleton, and what does the user see when nobody does?
+- What does a directive or component receive when it injects `ElementRef` — the wrapper whose `nativeElement` is its host's DOM node — and why did chapter 06 reach the host through `host` metadata first?
+- Who catches an exception thrown while the injector is building a root singleton, what does the user see when nobody does, why does the same blank page return on every reload when the throw comes from persisted state such as `localStorage`, and what shape of code — a call that can return a safe value — keeps that read from failing the bootstrap?
 
 Coverage concepts:
 
@@ -407,7 +413,7 @@ Coverage concepts:
 - [ ] `InjectionToken` — inject typed configuration or other non-class dependencies through a token rather than a class type
 - [ ] Configured provider recipes — recognise `useValue`, `useClass`, `useFactory`, and `useExisting`, including that `useExisting` aliases an existing provider rather than creating another class instance
 
-Audit note: Absorb the component-provider material currently in 01 and retain service, injector, token, recipe, and scope material here.
+Audit note: Absorb the component-provider material currently in 01 and retain service, injector, token, recipe, and scope material here. Split `localStorage in a service`: its field-initializer read is the worked case for the root-singleton question and stays here, and its `effect()` write-back moves to 10. Move `Duplicate check pattern` to 16, beside the duplicate check 15 hands over. `Smart / dumb component pattern` and `Service method design — full object vs individual parameters` carry no coverage bullet at this level; keep either only where an example here needs it.
 
 Rationale: The assigned concepts form the single learning unit "Dependency injection and provider scope": one construction model, read from the token requested to the instance returned. Provider scope needs the component tree of chapter 05, because "which consumers share an instance" is a question about ancestors. The injection-context bullet names `takeUntilDestroyed()` only as an example of an API built on `inject()`; this chapter borrows that one fact and chapter 14 teaches the operator itself.
 
@@ -440,8 +446,9 @@ Must answer:
 
 - Why are constructor and ngOnInit not interchangeable?
 - When a parent passes a new value to an input after the first render, which hook runs, what does `SimpleChanges` hold for each input that changed, and why does `ngOnInit` not run again — for the signal inputs of chapter 05 and for the legacy decorator inputs previewed here before chapter 27 revisits their syntax?
+- What is a view query — what do `viewChild()` and the `@ViewChild` decorator of maintained code ask Angular for, what can the locator be (a template reference name, a component or directive class), and why would the class need a handle on something in its own template?
 - When are view queries safe, and how do query type and static timing affect that answer?
-- When a template reference sits on a component's host element, what does the query return by default, and how does `read` ask for the DOM node — or for `TemplateRef` or `ViewContainerRef`, each named and defined in one clause and neither taught at this level — from that same element instead?
+- When a template reference sits on a component's host element, what does the query return by default, and how does `read` ask for the DOM node — as the `ElementRef` of chapter 08 — or for `TemplateRef` or `ViewContainerRef`, each named and defined in one clause and neither taught at this level — from that same element instead?
 - Which work needs the rendered DOM, such as measuring an element or placing initial focus, and what does `afterNextRender` guarantee that a lifecycle hook does not, given that hooks also run when a component is rendered on a server, where there is no DOM to read?
 - How do DestroyRef and ngOnDestroy prevent timers, listeners, and other resources from outliving a view, and why is subscription cleanup deferred until Observables are taught in chapter 14?
 
@@ -501,7 +508,7 @@ Coverage concepts:
 - [ ] `asReadonly()` — expose a service's writable signal as a read-only handle so consumers stay reactive while the service's own methods remain the only writers
 - [ ] Deriving the lookup rather than the predicate — answer a per-key question by deriving the whole lookup structure once, because `computed()` takes no arguments by design and a parameterised method cannot be memoised
 
-Audit note: Absorb the `effect()` sections and the localStorage-initialisation pattern from 03.
+Audit note: Absorb the `effect()` sections and the localStorage-initialisation pattern from 03, and the `effect()` write-back of the `localStorage in a service` section from 08.
 
 Rationale: Each of the six needs something chapter 03 did not have: an effect is created in the injection context of 08 and destroyed with the owner of 09, and `asReadonly()` and the snapshot bullet are about state that lives in an injected service. The `effect()` cleanup bullet stays with `effect()` rather than with subscriptions because it is the effect's own contract, and the note demonstrates it with a timer or listener rather than a stream. The coverage section's remaining bullet — derived state outliving a reload — is assigned to 12, because it cannot be shown before a loading state exists.
 
@@ -565,7 +572,7 @@ Action: audit
 English: notes/angular/junior/en/12-http.md
 Spanish: notes/angular/junior/es/12-http.md
 
-Depends on: 01, 03, 08
+Depends on: 01, 03, 04, 08, 09
 
 Pending additions: none
 
@@ -573,7 +580,7 @@ Narrative role: Connect state to the backend through one-request HTTP streams wh
 
 Learning outcome: Victor can issue a typed HttpClient request, construct immutable parameters, explain cold execution, handle success and failure in `subscribe()`, read an `HttpErrorResponse`, and model loading, empty, error, success, and refetch states without one of them hiding another.
 
-Prerequisites: 01, 03, 08
+Prerequisites: 01, 03, 04, 08, 09
 
 Must answer:
 
@@ -601,7 +608,7 @@ Coverage concepts:
 
 Audit note: Move the RxJS operator sections (`map`, `tap`, `switchMap`, `debounceTime`, `forkJoin`, `combineLatest`) and Observable-vs-Promise to 13, `catchError` and `takeUntilDestroyed` to 14, "What is DestroyRef?" to 09, HTTP interceptors to 21, and environment configuration to 23; retain HttpClient, request construction, `subscribe` callbacks, and the loading/error/data pattern here.
 
-Rationale: The assigned concepts are one request followed from the call to the state the page renders for it. Three placements differ from the coverage sections. `subscribe()` callbacks comes from the RxJS section because a page cannot represent an error state without the error callback. The derived-state bullet comes from the Signals section because it needs a loading state, which does not exist before this chapter. And the interceptor bullets left for 21 on 2026-10-03: an interceptor's shared response handling is an RxJS pipeline (14) and its session-expiry rule needs the router and the one-time notice (17, 18), none of which the reader has here. `provideHttpClient()` names interceptors only as one of its `with...()` features.
+Rationale: The assigned concepts are one request followed from the call to the state the page renders for it. The page renders those states with the blocks of chapter 04, and its first load starts at a point on the timeline of chapter 09. Three placements differ from the coverage sections. `subscribe()` callbacks comes from the RxJS section because a page cannot represent an error state without the error callback. The derived-state bullet comes from the Signals section because it needs a loading state, which does not exist before this chapter. And the interceptor bullets left for 21 on 2026-10-03: an interceptor's shared response handling is an RxJS pipeline (14) and its session-expiry rule needs the router and the one-time notice (17, 18), none of which the reader has here. `provideHttpClient()` names interceptors only as one of its `with...()` features.
 
 Handoff: One request, one subscription, one set of states. Chapter 13 generalises the Observable into pipelines that transform, combine, and replace requests.
 
@@ -654,7 +661,7 @@ Coverage concepts:
 - [ ] `concatMap()` vs `exhaustMap()` — queue ordered inner work with `concatMap()` and ignore new triggers with `exhaustMap()` while current work is active, especially for writes and form submissions
 - [ ] Search pipeline operators — combine `debounceTime()`, `distinctUntilChanged()`, and `switchMap()` to avoid premature, duplicate, and stale requests
 
-Audit note: Move this file's `toSignal()`/`fromSignal()` sections to 14 and absorb the operator and Observable-vs-Promise sections from 12; this chapter keeps composition and flattening only.
+Audit note: Move this file's `toSignal()` sections to 14 and absorb the operator and Observable-vs-Promise sections from 12; this chapter keeps composition and flattening only. The file's `fromSignal()` section moves nowhere at this level: the signal-to-Observable direction is owned by the middle bullet `toSignal()` vs `toObservable()`, and the function the section imports does not exist under that name — angular.dev's RxJS interop guide names it `toObservable()`. Chapter 14 may name `toObservable()` in one clause as the opposite direction and no more.
 
 Rationale: One mental model: values over time passing through operators, and the four policies for inner work that overlaps. How a stream ends — error, completion, unsubscribe — and who subscribes to it are a second model and were given chapter 14 on 2026-10-03, when the RxJS material reached eighteen bullets. The `$` naming bullet comes from the legacy coverage section because this is the first chapter whose variables carry the suffix, and a convention used for fourteen chapters before it is explained is a term used before it is taught. "Wrong for a save" borrows one fact, that cancelling does not un-send a write, which chapter 14 traces in full; the "route value" half of the `switchMap()` bullet is exercised in chapter 18, where a route parameter is the stream.
 
@@ -709,7 +716,7 @@ Audit note: Absorb the `async` pipe section from 11, the `catchError` and `takeU
 
 Rationale: Every concept here is about a stream's ending or its owner. The in-flight cancellation bullet comes from the HTTP coverage section but is taught here because both things that cancel a request — an operator from 13 and the teardown this chapter teaches — are known only at this point. This is the chapter that pays three earlier debts: the `takeUntilDestroyed()` mention of 08, the subscription cleanup deferred by 09, and the `async` pipe deferred by 11.
 
-Handoff: Every page so far has read data. Writing it starts with a form, so chapter 15 builds one — and chapter 16 will read that form's changes as exactly the kind of stream this chapter just closed.
+Handoff: Requests so far have sent values the code already held. The values a user types arrive through a form, so chapter 15 builds one — and chapter 16 will read that form's changes as exactly the kind of stream this chapter just closed.
 
 ## 15 — Reactive forms: the control model and validation
 
@@ -737,7 +744,7 @@ Prerequisites: 02, 04, 06, 08
 Must answer:
 
 - How do FormControl, FormGroup, FormArray, and FormBuilder describe the form's shape, and what does FormBuilder change other than the amount of typing?
-- How is the control tree bound to the template — `ReactiveFormsModule` in `imports`, `[formGroup]`, `formControlName` — and what does each directive link to what?
+- How is the control tree bound to the template — `ReactiveFormsModule` in `imports`, `[formGroup]`, `formControlName` — what does each directive link to what, and how does `(ngSubmit)` on the `<form>` hand a submit attempt to a method of the class?
 - What does a typed form know about each control's value and nullability, and what invalid state does a cast hide?
 - When is a dynamic list of controls a FormArray rather than a FormGroup with invented keys?
 - Which rules do the built-in validators express, and what does a failed one leave on the control for the template to read?
@@ -761,7 +768,7 @@ Coverage concepts:
 - [ ] Validation display state — combine invalid state with `touched` or submit state so errors are helpful without appearing before interaction
 - [ ] `markAllAsTouched()` — surface all invalid controls after a submit attempt without changing whether the form is valid
 
-Audit note: Move the `reset()`, `patchValue()`, `dirty`, `setErrors()`, `onSubmit`, and duplicate-check sections to 16 and the input-event sections (`(input)` vs `(change)` vs `(keyup)`, `$event.target.value`) to 02; retain the control model, template binding, validators, error display, and `FormArray` here.
+Audit note: Move the `reset()`, `patchValue()`, `dirty`, `setErrors()`, and duplicate-check sections and the body of the `onSubmit` handler to 16, and the input-event sections (`(input)` vs `(change)` vs `(keyup)`, `$event.target.value`) to 02; retain the control model, template binding with its `(ngSubmit)` binding, validators, error display, and `FormArray` here.
 
 Rationale: The form's shape and the rules over that shape are one unit: a validator is declared on a node of the tree and its error lands on that node, which is exactly why a cross-field rule has to move up to the group. Running the form — values, submission, server errors, change streams — was split into 16 on 2026-10-03, when the forms material reached nineteen bullets. `touched` is taught here because validation display is the first thing that reads it; `dirty` waits for 16, where the form's saved baseline is taught. The form directives are read as the attribute directives of 06, and `FormBuilder` is obtained through the injection of 08.
 
@@ -793,15 +800,15 @@ Prerequisites: 12, 13, 14, 15
 Must answer:
 
 - What does `setValue()` demand that `patchValue()` does not, and which of the two tells you that an edit form and its model have drifted apart?
-- What does the submit handler do, in order — `(ngSubmit)`, the check on `invalid`, the value it reads — and why is disabling the button not the validation?
+- What does the submit handler that chapter 15 bound with `(ngSubmit)` do, in order — `markAllAsTouched()` and the check on `invalid`, the value it reads, the request it sends — and why is disabling the button not the validation?
 - Why are disabled controls absent from form.value, and when is getRawValue() correct?
 - What does `dirty` record, what clears it, and why is it the right question to ask before discarding a form?
 - When must an error be attached with `setErrors()` because no validator function can compute it, and when does the next validator run overwrite it?
 - How should backend validation errors return to the relevant controls, and why does the client's own validation not make the server's redundant?
 - What does `reset()` restore, and how can it wipe a server error the user has not read yet?
 - What does `valueChanges` emit and when, and how does a dependent field or a filter become one pipeline instead of a handler on each input?
-- Why does a `setValue()`, `reset()`, or `disable()` made by the code reach a `valueChanges` subscriber exactly like typing does, and when is `emitEvent: false` the fix?
-- Which changes does `valueChanges` never report, and what does subscribing to a control's `events` make observable — `touched`, for instance — that was not observable before?
+- Why does a `setValue()`, `reset()`, or `disable()` made by the code reach a `valueChanges` or `statusChanges` subscriber exactly like typing does, and when is `emitEvent: false` the fix?
+- Which changes does `valueChanges` never report, what does subscribing to a control's `events` make observable — `touched`, for instance — that was not observable before, and why does a handler that answers a `TouchedChangeEvent` by calling `markAsUntouched()` need `{ emitEvent: false }` so that it does not answer its own change?
 
 Coverage concepts:
 
@@ -815,7 +822,7 @@ Coverage concepts:
 - [ ] `emitEvent: false` — a programmatic change through `setValue`, `patchValue`, `reset`, `enable` or `disable` emits on `valueChanges` and `statusChanges` exactly like a user edit, so a subscriber written to react to typing also fires on the form's own housekeeping unless those calls suppress the event
 - [ ] The control event stream — `AbstractControl.events` emits one typed stream of `ValueChangeEvent`, `StatusChangeEvent`, `PristineChangeEvent` and `TouchedChangeEvent`, which is what makes an interaction state like `touched` observable at all: `valueChanges` never reports it, so a side effect that marks a field touched can only be answered by subscribing to the control's events, and `markAsUntouched({ emitEvent: false })` is what keeps that answer from re-entering
 
-Audit note: Absorb the `patchValue()`, `reset()`, `dirty`, `setErrors()`, `onSubmit`, and duplicate-check sections from 15.
+Audit note: Absorb the `patchValue()`, `reset()`, `dirty`, `setErrors()`, and duplicate-check sections and the body of the `onSubmit` handler from 15, and the `Duplicate check pattern` section — the service-side lookup that check calls — from 08.
 
 Rationale: These nine concepts are the form in motion rather than at rest, and they share one thread: every one of them is about a value or a state that changes after the form was built, and about who is told. The server-validation bullets need the `HttpErrorResponse` of 12; the three change-stream bullets need the Observable model of 13 and the cleanup of 14.
 
@@ -888,7 +895,7 @@ Action: create
 English: notes/angular/junior/en/18-url-view-state.md
 Spanish: notes/angular/junior/es/18-estado-vista-url.md
 
-Depends on: 03, 08, 14, 17
+Depends on: 03, 08, 13, 14, 17
 
 Pending additions: none
 
@@ -896,19 +903,20 @@ Narrative role: Make the URL the source of truth for a routed page: identity in 
 
 Learning outcome: Victor can declare and read route and query parameters safely, decide which state belongs in the URL and which must be handed over once, return the user somewhere real with or without in-app history, and explain why a deep link that works on the dev server fails on a static host.
 
-Prerequisites: 03, 08, 14, 17
+Prerequisites: 03, 08, 13, 14, 17
 
 Must answer:
 
 - How does a routed component learn which resource it is showing, and how is the `:id` segment declared in the route and filled in by a link?
 - What type does `paramMap.get()` return whatever the model declares, and how does a conversion that no longer matches the identifier fail without an error?
 - When is a snapshot enough, and when must the same component instance react to a later parameter change — in which navigation does the router keep that instance, against the general rule of chapter 17 that a navigation destroys the routed component?
+- When the `:id` changes while the previous resource's request is still in flight, how does piping `paramMap` through the `switchMap()` of chapter 13 drop the stale response, and what does a `subscribe()` nested inside the `paramMap` subscription show instead?
 - What separates a query parameter from a route parameter, and how does a link set one declaratively so the destination page can be reproduced from its URL?
 - Why is a query parameter untrusted, and what does the page render when an unrecognised value is asserted into the filter union instead of rejected?
-- Which state has to go in the URL because the routed component and its signals are destroyed on navigation, and how is the view rebuilt from it on return?
+- Which state has to go in the URL because the routed component and its signals are destroyed on navigation, how does the page put it there from code when the user typed it (`Router.navigate()` with `queryParams`) rather than clicked a link, and how is the view rebuilt from it on return?
 - Why is "your session expired" an event to hand over once through a service rather than a flag in the query string, and what goes wrong on a reload or from a bookmark when it is put in the URL?
 - Why go back through `Location` instead of linking to one fixed page, when does `Location.back()` leave the application entirely, and how does a back control know it has somewhere in-app to return to?
-- When the browser asks the server for `/login` directly, which file is it asking for, what must the host answer and with which status, why did the dev server never show the problem, and what does `HashLocationStrategy` trade to avoid it?
+- When the browser asks the server for `/login` directly, which file is it asking for, what must the host answer and with which status, why must that answer be a rewrite and not a redirect to `/`, why did the dev server never show the problem, and what does `HashLocationStrategy` trade to avoid it?
 
 Coverage concepts:
 
@@ -1002,7 +1010,7 @@ Prerequisites: 08, 10, 16, 17, 18, 19
 
 Must answer:
 
-- What is a functional guard — when does the router call it, what does it receive, how is it attached to a route, and how does it reach a service?
+- What is a functional guard — when does the router call it, what does it receive, what may it return — a boolean or a `UrlTree`, directly or through a Promise or an Observable when the answer needs a question to the user — what does the router do while it waits, how is it attached to a route, and how does it reach a service?
 - What does a guard read to decide — where does the application keep who is signed in?
 - Why should a guard return a `UrlTree` rather than calling `Router.navigate()` itself?
 - If several guards sit on one route, which of them has to agree, and why is that worth keeping authentication and authorisation apart?
@@ -1063,6 +1071,7 @@ Must answer:
 - Why must an interceptor clone a request before adding a header, and what happens when it tries to change the original?
 - Which failures belong to a cross-cutting interceptor and which must remain visible to the feature that made the call, and how does an interceptor that sends its own request avoid intercepting itself without end?
 - Why is a `401` an expired session only on a request that carried a token, and what does the user see on the login page when the interceptor treats the login call's own `401` the same way?
+- Once the interceptor has decided the session expired, what does it do — clear the signed-in state of chapter 20, send the user to the login page, leave the one-time notice of chapter 18 — and why should the error still be rethrown to the caller that made the request?
 - How does an interceptor differ from the guards of chapter 20 in what it sees and in when it runs?
 
 Coverage concepts:
@@ -1090,7 +1099,7 @@ Action: audit
 English: notes/angular/junior/en/22-change-detection.md
 Spanish: notes/angular/junior/es/22-deteccion-cambios.md
 
-Depends on: 03, 05, 11, 12, 14
+Depends on: 03, 05, 10, 11, 12, 14
 
 Pending additions: none
 
@@ -1098,7 +1107,7 @@ Narrative role: Explain how Angular schedules and narrows rendering checks, and 
 
 Learning outcome: Victor can predict Default and OnPush checks, with and without Zone.js, explain signal notifications and immutable inputs, and say what a template expression costs on every check depending on whether anything caches it.
 
-Prerequisites: 03, 05, 11, 12, 14
+Prerequisites: 03, 05, 10, 11, 12, 14
 
 Must answer:
 
@@ -1106,7 +1115,7 @@ Must answer:
 - In an application without Zone.js, what tells Angular to check a view, and which update that used to appear on screen no longer does?
 - Which concrete notifications mark an OnPush view for checking, and why does mutating an input object in place leave that view stale?
 - How does a signal read in a template notify that view?
-- Why does a method called from a template re-run on every check while a computed signal returns a stored value, and what does that cost inside a loop?
+- Why does a method called from a template re-run on every check while a computed signal returns a stored value, what does that cost inside a loop, and how does the memoised lookup of chapter 10 make that per-item call cheap?
 - Why can Angular skip a pure pipe for an unchanged value or reference while an impure pipe runs on every check?
 
 Coverage concepts:
@@ -1117,7 +1126,9 @@ Coverage concepts:
 - [ ] Template method calls vs `computed()` — recognise that a function called from a template re-runs on every change detection because it caches nothing, while a computed signal returns its stored value until a source signal changes, so a per-item call inside a loop repeats the whole scan on every check
 - [ ] Pure vs impure pipes — prefer a pure pipe whose transform is skipped while primitive values or object references stay unchanged, and recognise that an impure pipe runs on every change-detection cycle
 
-Rationale: The checking mechanism and the cost of a template expression are the same subject read from two ends: once the reader knows when a view is checked, the method-call and impure-pipe costs stop being rules to memorise and become consequences. The chapter reads back three things taught earlier and re-prices them here rather than reteaching them: `computed()` and the immutable-update rule from chapter 03, the pipe from chapter 11, and the `async` pipe of chapter 14 as one of the notifications. The Zone.js bullet is about established applications; the zoneless question is added because angular.dev states that new applications are zoneless by default from Angular v21, so the application Victor creates today behaves differently from the one he will be asked to maintain.
+Audit note: The file's `ChangeDetectorRef — manual control` section is owned by the middle bullet `ChangeDetectorRef`, not by this level. Keep `markForCheck()` only as one named notification in the `OnPush` answer; `detectChanges()` and `detach()` move nowhere at this level.
+
+Rationale: The checking mechanism and the cost of a template expression are the same subject read from two ends: once the reader knows when a view is checked, the method-call and impure-pipe costs stop being rules to memorise and become consequences. The chapter reads back four things taught earlier and re-prices them here rather than reteaching them: `computed()` and the immutable-update rule from chapter 03, the memoised lookup of chapter 10 as the repair for the per-item call, the pipe from chapter 11, and the `async` pipe of chapter 14 as one of the notifications. The Zone.js bullet is about established applications; the zoneless question is added because angular.dev states that new applications are zoneless by default from Angular v21, so the application Victor creates today behaves differently from the one he will be asked to maintain.
 
 Handoff: Runtime rendering is now predictable on the developer's machine. Chapter 23 turns to what changes when the application is built and shipped to a browser the developer does not control.
 
@@ -1286,8 +1297,9 @@ Prerequisites: 03, 08, 12, 17, 23, 25
 Must answer:
 
 - Before touching a maintained feature, which of the commands chapter 23 found do you run first, and what does each one's output tell you?
-- Which evidence locates a compiler, injection, router, network, state, or rendering failure?
-- How do you trace one maintained feature before deciding where to edit?
+- What do a build error's file, line and message point at; what does an `NG0…` runtime error code identify and where is it looked up; and how is a `No provider found` injection error read back to the token and to the place that should have provided it?
+- How are the router's own events made visible while a navigation misbehaves, and what do a request's status, payload and response in the Network panel settle before any code is opened?
+- Starting from the URL of a broken screen, which file do you open first and what does each next one answer — the route entry, the page component, the service it injects, the request, the state the response lands in, the template branch that renders it, and the spec?
 - How do you infer route, state, service, HTTP, template, and test ownership when a maintained workspace uses different folder names?
 
 Coverage concepts:
@@ -1314,7 +1326,7 @@ Action: audit
 English: notes/angular/junior/en/27-legacy-angular.md
 Spanish: notes/angular/junior/es/27-angular-legacy.md
 
-Depends on: 02, 03, 04, 05, 08, 13, 15
+Depends on: 01, 02, 03, 04, 05, 08, 10, 13, 14, 15
 
 Pending additions: none
 
@@ -1322,11 +1334,12 @@ Narrative role: Translate the modern models already learned into the NgModule, d
 
 Learning outcome: Victor can read and safely modify legacy Angular without treating its syntax as the default for new features.
 
-Prerequisites: 02, 03, 04, 05, 08, 13, 15
+Prerequisites: 01, 02, 03, 04, 05, 08, 10, 13, 14, 15
 
 Must answer:
 
 - How do NgModule declarations, imports, exports, and providers map to standalone responsibilities?
+- Where does a module-based application start — `bootstrapModule(AppModule)` in `main.ts` and the module's `bootstrap` array — against the `bootstrapApplication()` of chapter 01?
 - How do `@Input()`/`@Output()` with `EventEmitter` differ from `input()`/`output()` in how a value is read and how a change is noticed?
 - What must `*ngIf` and `*ngFor` have imported that `@if` and `@for` do not, and how is the `else` branch written?
 - What does `trackBy` take that `track` does not, and what happens to the DOM when it is missing?
