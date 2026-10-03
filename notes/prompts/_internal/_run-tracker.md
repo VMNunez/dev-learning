@@ -186,7 +186,7 @@ since its grading door runs no close-out.
 | hr-screen-prompt | | | pending | |
 | interview-prep-route-prompt | | | pending | |
 | interview-prep-route-projects-prompt | | | pending | |
-| linkedin-prompt | | | pending | |
+| linkedin-prompt | 2026-10-03 | `global` | completed | every section drafted to chat, nothing stored: two headlines, about, the Sagatech entry, three projects (`07-timetrack`, `06-hr-portal`, `04-meal-finder`; `05-task-manager` left out as repeating 06 and 07), skills with `JWT` added to the next tier, `Jasmine` struck — named `Vitest` · `TestBed` instead, no sourced bullet fails the Project-bullet spec, open-to-work settings and three posts; `origin/main`'s project 07 README still predates the deploy, reported as a push-and-merge precondition |
 | profile-readme-prompt | | | pending | |
 | simulation-generator-prompt | | | pending | |
 | simulation-review-prompt | | | pending | |
