@@ -7,7 +7,7 @@ Generated: 2026-10-03
 
 ## 00 — SQL and relational databases
 
-Status: pending
+Status: complete
 
 Studied: pending
 
