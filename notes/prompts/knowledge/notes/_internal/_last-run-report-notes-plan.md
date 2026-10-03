@@ -17,8 +17,7 @@ Status: open
 - **Failures & retries** — Required dispatches: 1. Actual: 1. Re-dispatches: 0. The runtime denied
   one tool call: the reviewer's preferred fix was a `git mv` renumbering five English notes, and the
   harness permission classifier blocked it. No file moved, as `git status` confirmed. The reviewer's
-  own fallback was applied instead: keep the order and rewrite the 08, 10 and 11 handoffs plus 00's
-  route question. Filename order still equals study order. The reorder is left for Victor to authorise.
+  own fallback was applied first. Victor then authorised the move, and the reorder landed in `04e0365b`: 5 English-only renumbers, bytes unchanged, no inbound links outside the plan.
 - **Rule friction and rule breaches** — No breach and no deviation. Guard 2 was met with an empty
   unowned population: every one of the 14 English notes is plan-owned, and none was read end to end.
   As on 2026-09-16, that is not evidence for `BRCH-0002`/`BRCH-0003`, so their dispositions are
