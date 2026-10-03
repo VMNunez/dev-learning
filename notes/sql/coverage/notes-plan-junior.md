@@ -2,8 +2,8 @@
 
 Plan status: current
 Coverage: notes/sql/coverage/junior.md
-Coverage SHA-256: 39aa0cfca364e978c00a6944700fac5d0c59e3db819e84b600993c04aaf2ebeb
-Generated: 2026-08-28
+Coverage SHA-256: bded1b85a539ffa92212b5bd3bbc2112a4e2933ecbadf7fde4c454aaf859b90c
+Generated: 2026-10-03
 
 ## 00 — SQL and relational databases
 
@@ -31,12 +31,13 @@ Prerequisites: none
 Must answer:
 
 - What persistence and shared-data problems does a relational database solve beyond JavaScript or TypeScript objects in one process?
-- What is the difference between SQL, PostgreSQL, a database, a schema, a table, a row, and a column?
-- What does declarative mean, and how does PostgreSQL turn a requested result into an execution plan?
+- What is the difference between SQL, PostgreSQL, a database, a schema (the namespace such as `public` that holds tables, as opposed to the informal sense of a database's design), a table, a row, and a column?
+- What does declarative mean, how does PostgreSQL turn a requested result into an execution plan, and how does declaring a result differ from computing it with a JavaScript loop or a `.filter`/`.map`/`.reduce` chain?
+- Which traits run through every later chapter — a result is an unordered set of rows, NULL marks a missing value rather than being one, and the database itself enforces declared rules — and where does each first become decisive?
 - How does SQL fit between Angular, Spring Boot, JDBC or an ORM, and PostgreSQL?
 - What is this introduction about to cover, section by section, and why do those sections come in that order?
-- How do I actually run a statement and read its result before chapter 01 assumes I can — which client, against which database, how do I create and seed the practice database the later chapters query, and what does a rejected statement look like?
-- What does each chapter from 01 through 16 contribute, and why is that route ordered from structure to querying, mutation, reliability, analysis, and review?
+- How do I actually run a statement and read its result before chapter 01 assumes I can — which client, against which database, how do I create and seed the practice database the later chapters query, and what does a rejected statement look like — and which minimum forms and terms must already be readable when chapter 01 opens: evaluating a bare `SELECT <expression>;`, reading one column definition `name TYPE` inside a CREATE TABLE, and NULL as the marker for no value (its three-valued logic left to chapter 04)?
+- What does each chapter from 01 through 16 contribute, and why is the route ordered from structure to querying, changing data, nested queries, performance, multi-statement reliability, named and analytical queries, the PostgreSQL dialect, and finally review and inherited databases?
 
 Coverage concepts:
 
@@ -63,7 +64,7 @@ Depends on: 00
 
 Pending additions: none
 
-Narrative role: Establish how PostgreSQL represents a single value — what each type guarantees, and how exactness and scale survive an expression built out of those values.
+Narrative role: Establish how PostgreSQL represents a single value — what each type guarantees, how a value is converted from one type to another, and how exactness and scale survive an expression built out of those values.
 
 Learning outcome: Victor can choose a justified PostgreSQL type for any junior column and predict the exactness, scale, and time semantics of both a stored value and a computed one.
 
@@ -75,6 +76,7 @@ Must answer:
 - If VARCHAR(n) and TEXT store and perform identically in PostgreSQL, what is left to choose between them?
 - Why are NUMERIC and floating point different for money, and why can integer division discard a fraction?
 - Why does a fixed-length CHAR column report a length that does not match what was stored?
+- How do `::` and standard CAST convert a value, and when must you write one?
 - Why does two-argument ROUND reject a double precision value, and where does the cast belong?
 - How does the scale of an expression's result come out of its operands, so a rounding rule has to wrap the whole expression rather than one part of it?
 - Why is that scale rule shown here on a plain arithmetic expression, and where does the same rule reappear once the expression is a report total?
@@ -89,6 +91,7 @@ Coverage concepts:
 - [ ] Integer identity columns vs `SERIAL` — `GENERATED ... AS IDENTITY` is the SQL-standard PostgreSQL choice for generated integer keys; `SERIAL` is legacy shorthand that creates a separate sequence and default, while `BIGINT`/`BIGSERIAL` widen the range
 - [ ] `NUMERIC(p,s)` vs `FLOAT` — choose exact fixed-precision decimals for money and approximated floating-point values for measurements that tolerate representation error
 - [ ] Integer division and explicit casts — integer divided by integer truncates the fractional part in PostgreSQL; cast an operand to `NUMERIC` when the result must retain decimals
+- [ ] `::` cast operator — `created_at::date` converts a timestamp to a date; `'5'::int` converts a string to an integer; shorter PostgreSQL syntax for standard SQL `CAST(value AS type)`; used constantly in `WHERE` and `JOIN` conditions involving dates
 - [ ] `ROUND(value, n)` — rounds to a given number of decimal places, but only for `NUMERIC`; PostgreSQL has no two-argument `ROUND` for `double precision`, so a computed average usually needs an explicit cast before a report can round it
 - [ ] Scale of an expression's result — `NUMERIC` scale propagates outwards through an expression, and a literal fallback carries its own, so `COALESCE(SUM(x), 0)` answers with the summed column's scale when rows exist and with scale 0 when none do; a rounding rule must therefore wrap the whole expression rather than one of its operands
 - [ ] `DATE` vs `TIMESTAMP` / `TIMESTAMPTZ` — use `DATE` for a calendar value with no time of day, `TIMESTAMP` for a local wall-clock value, and `TIMESTAMPTZ` for an instant shared across time zones
@@ -97,7 +100,7 @@ Coverage concepts:
   not generally treat an unquoted integer `1` as a boolean
 - [ ] `JSONB` recognition — stores validated JSON in a binary representation that supports PostgreSQL operators and indexes; keep relational columns for stable fields that need ordinary constraints and joins
 
-Rationale: One mental model: what a value actually is in PostgreSQL — every bullet is either a guarantee one type makes, or the way that guarantee survives being combined into an expression.
+Rationale: One mental model: what a value actually is in PostgreSQL — every bullet is either a guarantee one type makes, the way a value is converted into another type, or the way that guarantee survives being combined into an expression.
 
 Handoff: With the vocabulary of values settled, chapter 02 declares the tables that hold them and the keys, constraints, and cardinality rules that keep them consistent.
 
@@ -134,6 +137,8 @@ Must answer:
 - Why does the foreign key belong on the many side, and how does a junction table model many-to-many data?
 - How do UNIQUE, composite uniqueness, NOT NULL, CHECK, and CHECK with NULL differ?
 - How do NO ACTION, RESTRICT, CASCADE, and SET NULL change parent deletion, and when does the ON UPDATE form of the same action ever fire?
+- What do the minimal single-row INSERT and UPDATE used here to watch a default apply or a constraint reject a row look like, before chapter 08 teaches both in full?
+- Why does a UNIQUE column accept several NULLs, what does NULLS NOT DISTINCT change, and what does it mean that RESTRICT cannot be deferred?
 - Why can adding a constraint to a populated table fail, and in what order do the two statements have to run?
 - Which insert, update, and delete anomalies does normalization prevent?
 
@@ -234,7 +239,7 @@ Depends on: 00, 01, 03
 
 Pending additions: none
 
-Narrative role: Teach WHERE as a three-valued truth test: precedence, unknown, pattern matching, membership, deliberate defaults, and safe timestamp ranges. Relocation the audit owes: the existing file's `### Casting with ::` section teaches the cast operator, which this plan assigns to entry 14 — use `::` here with a one-line forward marker instead of teaching it.
+Narrative role: Teach WHERE as a three-valued truth test: precedence, unknown, pattern matching, membership, deliberate defaults, and safe timestamp ranges. Relocation the audit owes: the existing file's `### Casting with ::` section teaches the cast operator, which this plan assigns to entry 01 — use `::` here with a one-line reminder linking back to entry 01 instead of teaching it again.
 
 Learning outcome: Victor can write correctly grouped filters and predict how TRUE, FALSE, UNKNOWN, NULL, membership lists, patterns, and time boundaries affect each row.
 
@@ -280,7 +285,7 @@ Action: audit
 English: notes/sql/junior/en/05-order-by-limit.md
 Spanish: notes/sql/junior/es/05-order-by-limit.md
 
-Depends on: 00, 03, 04
+Depends on: 00, 01, 03, 04
 
 Pending additions: none
 
@@ -288,7 +293,7 @@ Narrative role: Establish that a result set has no inherent order, then control 
 
 Learning outcome: Victor can produce deterministic sorted pages and choose UNION, UNION ALL, INTERSECT, or EXCEPT while satisfying their column and type rules.
 
-Prerequisites: entries 00, 03, 04
+Prerequisites: entries 00, 01, 03, 04
 
 Must answer:
 
@@ -346,6 +351,7 @@ Must answer:
 - When do INNER, LEFT, RIGHT, FULL OUTER, CROSS, and self joins apply?
 - How does LEFT JOIN plus right-side IS NULL find missing relationships?
 - Why can moving a right-side condition from ON to WHERE turn a LEFT JOIN into an inner join?
+- How do you chain three or more tables so every ON follows the intended key path, and how does a missing or wrong condition become an accidental Cartesian product?
 - Why is DISTINCT not a valid blind repair for apparent duplicates, and how do aliases prevent ambiguity?
 - How do I tell whether a request needs a join or the UNION of chapter 05, when both get described as combining two tables?
 
@@ -382,7 +388,7 @@ Action: audit
 English: notes/sql/junior/en/07-aggregates.md
 Spanish: notes/sql/junior/es/07-agregados.md
 
-Depends on: 00, 03, 04, 06
+Depends on: 00, 01, 03, 04, 05, 06
 
 Pending additions: none
 
@@ -390,11 +396,12 @@ Narrative role: Collapse detail rows into trustworthy summaries while preserving
 
 Learning outcome: Victor can choose aggregates, form legal groups keyed on the right column, keep zero-match groups, repair a count inflated by a legitimate join multiplication, and write conditional aggregation with CASE or FILTER.
 
-Prerequisites: entries 00, 03, 04, 06
+Prerequisites: entries 00, 01, 03, 04, 05, 06
 
 Must answer:
 
 - Why do COUNT(*) and COUNT(column) differ, and what do all aggregates return for empty input?
+- Why do SUM, AVG, MIN, and MAX skip NULL inputs, and why can AVG(column) differ from SUM(column) / COUNT(*)?
 - Why does COUNT(*) report 1 for a group that has nothing after a LEFT JOIN, and which column has to be counted instead?
 - When is an inflated count a legitimate join multiplication that COUNT(DISTINCT ...) repairs, rather than a broken query?
 - Which selected expressions must be grouped or aggregated, and what limited functional-dependency exception does PostgreSQL recognise?
@@ -451,13 +458,14 @@ Pending additions: none
 
 Narrative role: Create, update, and remove rows safely through explicit targets, bounded predicates, returned values, bulk insertion, truncation choices, and atomic conflict handling.
 
-Learning outcome: Victor can predict and verify the affected rows of INSERT, UPDATE, DELETE, TRUNCATE, and ON CONFLICT statements, keep runtime values bound separately from SQL structure, and explain why only the constraint — never a preceding SELECT — decides uniqueness.
+Learning outcome: Victor can predict and verify the affected rows of INSERT, UPDATE, DELETE, TRUNCATE, and ON CONFLICT statements, keep runtime values bound separately from SQL structure, explain why only the constraint — never a preceding SELECT — decides uniqueness, and realign an identity sequence that explicit-id inserts left behind.
 
 Prerequisites: entries 00, 01, 02, 03, 04
 
 Must answer:
 
 - How do target columns, generated identity, defaults, nullability, multi-row VALUES, and INSERT SELECT determine a valid insert?
+- Why does inserting rows that carry their own ids — copied from another table or restored from a data-only dump — leave the sequence behind, so the next generated key collides with an existing row, and how does setval realign it?
 - How does RETURNING avoid a second query after INSERT, UPDATE, or DELETE?
 - How do you prove the intended row set with a matching SELECT before running an UPDATE or DELETE?
 - When do DELETE and TRUNCATE differ in filtering, locking, and identity restart, and how does that row-level contrast complete the DROP comparison started in chapter 02?
@@ -470,6 +478,7 @@ Coverage concepts:
 - [ ] `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty
 - [ ] Multi-row `INSERT` — supply several value tuples in one statement so the rows are inserted in a single round trip and a single implicit transaction
 - [ ] `INSERT ... SELECT` — populate a table from the result of a query, matching target columns to result columns by position and compatible type
+- [ ] Sequence drift after explicit-id inserts — rows copied or inserted with their own ids do not advance the column's sequence, so the next generated key collides with an existing row; realign it with `setval` past the current maximum, which a data-only `pg_dump` emits for each sequence it copies
 - [ ] `RETURNING` — obtain generated or changed values from a PostgreSQL data-modification statement without a second query
 - [ ] `UPDATE ... SET ... WHERE` — always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
 - [ ] `DELETE FROM ... WHERE` — always include `WHERE` or every row is deleted; always verify the affected rows with a matching `SELECT` before running `DELETE` on production data
@@ -480,9 +489,9 @@ Coverage concepts:
 - [ ] Constraint vs application-side uniqueness check — a `SELECT` that finds no duplicate followed by an `INSERT` is two statements, so a concurrent session can pass the same check and both rows land; only the constraint decides atomically, which makes the application check a friendlier error message rather than the guarantee, and makes `ON CONFLICT` one concrete way of handling the constraint's verdict
 - [ ] Bound parameters — keep SQL structure separate from runtime values through prepared-statement or framework placeholders, preserving correct typing and reusable statement structure
 
-Rationale: One mental model: a statement that changes rows, judged by the exact set of rows it affects and by what the database — not the application — guarantees while it runs.
+Rationale: One mental model: a statement that changes rows, judged by the exact set of rows it affects and by what the database — not the application — guarantees, or leaves undone, while it runs.
 
-Handoff: Several mutations can represent one business action, so chapter 09 first develops the reusable nested query shapes the later data work depends on.
+Handoff: INSERT … SELECT and the SELECT that proves a DELETE's rows already put one query to work inside another statement; chapter 09 makes that nesting a tool of its own.
 
 ## 09 — Subqueries and existence tests
 
@@ -571,7 +580,7 @@ Coverage concepts:
 
 Rationale: One mental model: an index is an optional access path whose value is settled by evidence, and every rule here is about when the engine can and cannot use it.
 
-Handoff: Performance changes must not weaken correctness; chapter 11 groups related statements inside explicit transaction boundaries.
+Handoff: Reads are now correct and their cost can be measured; chapter 11 returns to the writes of chapter 08 and makes several of them succeed or fail together inside an explicit transaction.
 
 ## 11 — Transactions
 
@@ -598,6 +607,7 @@ Prerequisites: entries 00, 02, 08
 
 Must answer:
 
+- How do BEGIN, COMMIT, and ROLLBACK delimit one unit of work, and which of them does Spring's @Transactional issue for you?
 - Why can autocommit leave a multi-statement business operation partially applied?
 - What do Atomicity, Consistency, Isolation, and Durability each guarantee without treating constraints or serial execution as magic?
 - How do SAVEPOINT and ROLLBACK TO undo only part of a transaction?
@@ -617,7 +627,7 @@ Coverage concepts:
 
 Rationale: One mental model: a transaction is the unit the database makes all-or-nothing, and every rule here follows from where its boundaries are drawn.
 
-Handoff: With correctness across statements established, chapter 12 names and reuses multi-step read logic through CTEs and views.
+Handoff: With multi-statement writes made safe, chapter 12 goes back to reading and names the stages of a complex query — the nested shapes of chapter 09 — through CTEs and views.
 
 ## 12 — CTEs and views
 
@@ -698,7 +708,7 @@ Coverage concepts:
 
 Rationale: One mental model: a window is the set of related rows a calculation may see without the result collapsing to one row per group — and ranking is what that model is for at junior level.
 
-Handoff: The analytical toolkit is complete; chapter 14 collects the PostgreSQL-specific casting and date syntax the earlier chapters kept reaching for, and marks its portability boundaries.
+Handoff: The analytical toolkit is complete; chapter 14 collects the PostgreSQL-specific date syntax the earlier chapters kept reaching for, and marks its portability boundaries.
 
 ## 14 — PostgreSQL specifics
 
@@ -713,20 +723,20 @@ Action: audit
 English: notes/sql/junior/en/14-postgresql-specifics.md
 Spanish: notes/sql/junior/es/14-particularidades-de-postgresql.md
 
-Depends on: 00, 01, 03, 04, 07
+Depends on: 00, 01, 03, 04, 07, 10, 11
 
 Pending additions: none
 
-Narrative role: Consolidate the PostgreSQL-specific casting and date syntax already grounded in querying, filtering, and grouping, and state where each one stops being portable. Relocation the audit owes: the existing file's `## STRING_AGG` section belongs to entry 07 under this plan, and the cast operator this chapter now owns is currently taught in `04-where.md` — move each concept once, so neither lands twice.
+Narrative role: Consolidate the PostgreSQL-specific date syntax already grounded in querying, filtering, and grouping, and state where each construct — including the `::` cast of chapter 01 — stops being portable. Relocation the audit owes: the existing file's `## STRING_AGG` section belongs to entry 07 under this plan — move it once, so it does not land twice.
 
-Learning outcome: Victor can use casts, DATE_TRUNC, EXTRACT, transaction-time NOW, CURRENT_DATE, and INTERVAL while explaining their index and portability consequences.
+Learning outcome: Victor can use DATE_TRUNC, EXTRACT, transaction-time NOW, CURRENT_DATE, and INTERVAL while explaining their index and portability consequences, and say which of chapter 01's two casting forms is portable.
 
-Prerequisites: entries 00, 01, 03, 04, 07
+Prerequisites: entries 00, 01, 03, 04, 07, 10, 11
 
 Must answer:
 
 - When is coupling to a vendor extension worth it, and what makes a construct portable in the first place?
-- How does :: relate to standard CAST, and when can casting a column prevent a simple index condition?
+- When can casting a column with the `::` of chapter 01, or wrapping it in a date function, prevent a simple index condition?
 - How do DATE_TRUNC and EXTRACT answer different reporting questions?
 - Why do NOW and CURRENT_DATE both freeze at the start of the transaction, and what exactly differs between them?
 - How does INTERVAL build a relative date range on top of the date types of chapter 01?
@@ -734,13 +744,12 @@ Must answer:
 Coverage concepts:
 
 - [ ] Standard SQL vs vendor extensions — prefer portable constructs for transferable query logic and use PostgreSQL-specific syntax deliberately when its benefit justifies the coupling
-- [ ] `::` cast operator — `created_at::date` converts a timestamp to a date; `'5'::int` converts a string to an integer; shorter PostgreSQL syntax for standard SQL `CAST(value AS type)`; used constantly in `WHERE` and `JOIN` conditions involving dates
 - [ ] `DATE_TRUNC('month', date)` — truncates a timestamp to the start of the month; used to `GROUP BY` month in reports; `DATE_TRUNC('year', ...)` works the same way for yearly grouping
 - [ ] `EXTRACT` — returns one date/time field such as year, month, or hour for filtering or reporting; use it deliberately because applying a function to an indexed column can prevent a simple index condition
 - [ ] `NOW()` vs `CURRENT_DATE` — both are fixed at the start of the current transaction rather than re-read per statement, so neither advances inside a long transaction; the difference is the returned type, a full timestamp against a date with no time component
 - [ ] `INTERVAL` — `NOW() - INTERVAL '30 days'` filters recent data; used in `WHERE` clauses and CTEs for relative date ranges; `INTERVAL '1 month'` works with months and years
 
-Rationale: One mental model: PostgreSQL's own shorthand for casting and date arithmetic, each judged by what it buys and what portability it costs.
+Rationale: One mental model: PostgreSQL's own shorthand for date arithmetic, each construct judged by what it buys and what portability it costs.
 
 Handoff: Chapter 15 turns all preceding mechanisms into a repeatable construction and review workflow.
 
@@ -772,7 +781,7 @@ Must answer:
 - How do you define result grain, tables, join paths, filters, grouping, and ordering before writing syntax?
 - How does inspecting a small sample and an expected row count after each stage locate the first wrong transformation?
 - Which control queries verify report totals at the intended grain?
-- How do you review Cartesian products, row multiplication hidden by DISTINCT, NULL predicates, unsafe mutation scope, date boundaries, and unstable pagination?
+- How do you review Cartesian products, row multiplication hidden by DISTINCT, NULL predicates, unsafe mutation scope, date boundaries, and unstable pagination — and what replaces a large OFFSET when deep pages become slow?
 
 Coverage concepts:
 
