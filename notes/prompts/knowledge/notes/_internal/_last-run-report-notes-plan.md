@@ -2,7 +2,7 @@
 
 Date: 2026-10-03
 Target: Angular / junior / update
-Status: open
+Status: applied in a4e8f944
 
 - **Plan vs reality** — The delta was 24 new bullets and 1 reworded one, 10 of them in routing, and it
   did not fit the 18-entry route: the reconciled draft had 25 entries and the committed plan has 28.
@@ -22,13 +22,16 @@ Status: open
 - **Rule friction and rule breaches** — One deviation, `BRCH-0004`: `Required plan format` names no
   field for the section moves an entry owes, so the plan commit `2738c480` wrote them under
   `Existing-content migration:`, the label this plan had carried since 2026-09-04. `notes-audit`
-  forwards only `Audit note` in `LINK_TARGETS`, so 26 lines were readable by no stage; the close-out
-  relabelled them in `2a81400d`. Guard 2 was met on a non-empty population — the 4 unowned `_legacy`
+  forwards only `Audit note` in `LINK_TARGETS`, so 26 lines reached neither stage A's task, stage T,
+  nor any sibling entry's run; the close-out relabelled them in `2a81400d`. (Stages B and C are handed
+  the entry itself, so "readable by no stage", as the `BRCH-0004` row words it, overstates.) Guard 2 was met on a non-empty population — the 4 unowned `_legacy`
   notes were read end to end — so `BRCH-0002` and `BRCH-0003` advance to `confirmed 2/3`. Friction,
   not routed: the configuration gives `MODE` no default and the launcher makes it optional; the run
   took `update` (condition 3: no output differed).
-- **Verdict** — change worth considering: name `Audit note` in `Required plan format` as the one
-  label for an entry's section moves. `REC-248` stays open in the ledger. The prompt is 501 lines,
-  at the smoke alarm; its largest section is `Planning algorithm`.
+- **Verdict** — change applied: `Required plan format` now names `Audit note` as the one optional
+  entry field and its position. `REC-248` stays open in the ledger. The prompt is 501 lines, at the
+  smoke alarm, net-neutral after the edit (+3, −3); its largest section is `Planning algorithm`.
+  cold reviewer: approve-with-tightening
+  maps unaffected.
   map: verified — `README.md` interface-index row and catalogue row for `/notes-plan`,
   `_system-map.md` §7 `notes-plan-{LEVEL}.md` row.
