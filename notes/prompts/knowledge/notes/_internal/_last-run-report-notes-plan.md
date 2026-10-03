@@ -1,28 +1,32 @@
 # Last run report — notes-plan-prompt
 
-Date: 2026-09-16
-Target: Java / junior / update
+Date: 2026-10-03
+Target: SQL / junior / update
 Status: open
 
-- **Plan vs reality** — Delta was two bullets and mapped cleanly (refined 02 as a pending addition, pending
-  17). The cold reviewer's two blocking findings were again outside the delta, in entries 06 and 07 that
-  two earlier committed runs (2026-08-26, 2026-08-28) had passed under the same deep review. Its
-  must-answer coverage list named two assigned concepts no question commissions (06 identity vs value
-  equality, 10 `ArrayList`/`HashSet`/`HashMap`) — third consecutive run reproducing the Security run's
-  parked candidate, so it was filed as `REC-248` per that report's instruction. Evidence: the reviewer's
-  read of the whole plan, not slice traces.
-- **Report discipline** — One reviewer, one round; complete acceptance proof. One factual error in its
-  return (145 bullets; the coverage has 132), not used. Its heading-based claims (05 duplicate section,
-  03 `## Null guards`, 04 sections gone) were checked against disk before being applied.
-- **Failures & retries** — None. Required dispatches: 1; actual: 1; re-dispatches: 0.
-- **Rule friction and rule breaches** — No breach. Guard 2 met with an empty unowned population (no
-  `## Unassigned existing notes`, every file on disk plan-named, middle/senior empty), 0 notes read — not
-  evidence for `BRCH-0002`/`BRCH-0003`, dispositions unchanged. One friction point: the plan format has no
-  example of a non-`none` `Pending additions` list, and this plan is the first to carry one; written as a
-  blank line plus bullets, which guard 14 of `notes-audit` can compare but no validator parses. Recorded,
-  not routed (condition 3: no output would differ). Reviewer advisory on frozen entry 00 applied only to
-  the factual audit-note clause; its two must-answer additions were declined because a refined pair cannot
-  be rewritten to meet them and invariant 7's gap is already recorded there.
-- **Verdict** — change worth considering: `REC-248` (mechanical must-answer coverage gate before the
-  cold review), open in the ledger, not drafted this run. Prompt is 499 lines, at the smoke alarm, largest
-  section `Planning algorithm`. map: verified — `README.md` interface-index row for `/notes-plan`.
+- **Plan vs reality** — The delta was one bullet (sequence drift, routed to 08). The cold reviewer's
+  blocking findings were again outside the delta. They sat in entries 00, 02, 07 and 14, and in the
+  08→12 handoffs, of a plan that a deep review passed and that was committed on 2026-08-28. 5 of its
+  15 corrections were assigned bullets with no `Must answer` question commissioning them. That makes
+  four consecutive runs reproducing `REC-248`, and the evidence was added to that row (`d0d08200`).
+  Evidence: the reviewer's read of the whole plan. After the fixes, the mechanical re-check came back
+  clean: 152/152 exact, no forward dependency, entry number = file prefix.
+- **Report discipline** — One reviewer, one round, with complete acceptance proof (5 inputs read to
+  EOF, 17 entries, intro and prerequisite verdicts). Nothing was trimmed. Its claims about headings
+  were checked against `headings.txt` before being applied.
+- **Failures & retries** — Required dispatches: 1. Actual: 1. Re-dispatches: 0. The runtime denied
+  one tool call: the reviewer's preferred fix was a `git mv` renumbering five English notes, and the
+  harness permission classifier blocked it. No file moved, as `git status` confirmed. The reviewer's
+  own fallback was applied instead: keep the order and rewrite the 08, 10 and 11 handoffs plus 00's
+  route question. Filename order still equals study order. The reorder is left for Victor to authorise.
+- **Rule friction and rule breaches** — No breach and no deviation. Guard 2 was met with an empty
+  unowned population: every one of the 14 English notes is plan-owned, and none was read end to end.
+  As on 2026-09-16, that is not evidence for `BRCH-0002`/`BRCH-0003`, so their dispositions are
+  unchanged. One piece of friction: Planning step 6 makes renumbering a standing requirement, but it
+  says nothing for a runtime that refuses the file move. That cost nothing here, because the fallback
+  kept the numbering equal to the order. It is recorded and not routed (condition 3: no output
+  differed).
+- **Verdict** — change worth considering: `REC-248`, open in the ledger and not drafted in this run.
+  The prompt is 501 lines, at the smoke alarm; its largest section is `Planning algorithm`.
+  map: verified — `README.md` interface-index row and catalogue row for `/notes-plan`, `_system-map.md`
+  §7 `notes-plan-{LEVEL}.md` row.
