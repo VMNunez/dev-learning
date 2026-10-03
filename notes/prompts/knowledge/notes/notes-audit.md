@@ -121,7 +121,8 @@ before dispatch and pass both to every stage:
   reuse a convention or an example domain from, or verify a claim against.** Where two carry the same
   convention, the `refined` one is the stronger precedent: Victor froze it himself.
 - `LINK_TARGETS` — every entry's number, title, `English:` path and `Spanish:` path, each tagged with
-  its `Status:` **and any `Audit note` the entry carries**. The plan owns
+  its `Status:`, **any `Audit note` the entry carries, and its assigned `Coverage concepts` with the
+  checkbox prefix stripped**. The plan owns
   a filename from the moment it declares it, so **every row here is a legal link target, including one
   whose file does not exist yet** — that is exactly what the standard's forward-reference marker is
   for. Nothing outside this table may be linked **within this topic and level**; a cross-topic link
