@@ -40,9 +40,7 @@ that pass — say so in the summary; a fix that was never triaged may have been 
 
 This is the task-level twin of the `step-complete` skill. That one fires on a **learning-plan step**
 (PLANNING §15 / project 07's learning plan) and touches three files. This one fires on a **backlog
-task** and touches five, because a backlog task is a *concept Victor did not plan to learn* — it came
-out of a review — so it has to be pushed back into the planning and coverage artefacts that never
-anticipated it.
+task** and touches five.
 
 **Do not edit Victor's project code here.** The fix is already written, by him. This ritual only
 touches documentation and coverage.
@@ -60,6 +58,14 @@ aggregate rewritten in the database teaches a persistence concept (`spring-boot`
 expresses it (`sql`), and each of those is a separate bullet in a separate file. Steps 1, 1a and 2 all
 take a **list**, and the report table carries one row per concept. Naming only the headline concept is
 the common failure: the others are demonstrated in the same commit and silently leave no trace.
+
+**Several tasks that finish together are one run of this ritual, not one run per task.** Quote every
+task line, keep each concept attached to the task that taught it, and classify each task by kind on its
+own — a batch can mix them. Every step that applies to any of them then runs **once**, over all their
+concepts and all their fixes' diffs — steps 1, 1a and 2 invoke their skill once — and the batch lands
+the commits `## Commits` gives a single close. Step 5 still writes **one ledger line per task**, and
+the report says which task each concept row belongs to. A close that begins after this run has reported
+is a new run, and invokes all three skills again.
 
 Five kinds of task exist, and they close differently:
 
@@ -250,10 +256,8 @@ Outside a daily session the only thing that repairs this
 table is `plan-audit` (`MODE = new` authors it, a G2 pass rewrites it), so a run of closes that never
 touches it leaves the pointer dated to the first one.
 
-**Inside a daily session §0 has two writers, this ritual and `step-complete`** (partition added
-2026-08-11, `REC-091`; this section used to claim it was the only one, and so did the other ritual —
-both were wrong). Both fire in the 08:00 block, so a morning that closes a task *and* finishes a step
-runs them back to back:
+**Inside a daily session §0 has two writers, this ritual and `step-complete`** (`REC-091`). Both fire in
+the 08:00 block, so a morning that closes a task *and* finishes a step runs them back to back:
 
 - **Read §0 as it stands before writing it**, never as the pre-session state. Whether a step closed
   earlier this morning is settled by **one command**, because §15's `✅` markers are undated and
@@ -332,10 +336,8 @@ route cells stay exactly as `step-complete` or step 3b left them today.
 
 ## 4 — PROGRESS.md: status only, never the concept
 
-**The concept does not go in PROGRESS.md** (changed 2026-08-03: its per-technology concept lists were
-deleted because they duplicated the coverage files without evidence). Step 1 put the concept on the
-coverage checklist and step 1a marked it — that is its only home. Never re-create a `## Angular`-style
-list of concepts here.
+**The concept does not go in PROGRESS.md.** Step 1 put the concept on the coverage checklist and step 1a
+marked it — that is its only home. Never re-create a `## Angular`-style list of concepts here.
 
 This ritual updates **one** thing in PROGRESS.md: the `Professional level by topic` row's
 practical-evidence cell, when this fix gives that table real evidence — a backlog task closed against a
@@ -444,9 +446,7 @@ not raised unless that command ran to completion and the task line records what 
 or, where Victor pasted the output himself, that the run was his.** An aborted run is byte-identical to a
 clean empty one, and that record is the only thing separating them; a quoted **hit** is self-evidencing and
 owes nothing here — step 2b's `grep -rn` sweep is exactly that case. It licenses no run of its own: the
-rule above still holds. (2026-08-30, project 02: a shell cut a 71-second test-environment setup short, its
-`Tests 0 passed` was written up as a completed empty run, and the task cost a full triage cycle before
-closing as a false positive — `REC-185`.) And the **testing scope is not this close's to re-derive**:
+rule above still holds (`REC-185`). And the **testing scope is not this close's to re-derive**:
 `notes/prompts/_internal/_session-rules.md` → "Testing rules" owns it — in 01–06, and for components in
 07, missing tests, empty specs and weak assertions are never a finding, while a broken spec and a broken
 test command are.
