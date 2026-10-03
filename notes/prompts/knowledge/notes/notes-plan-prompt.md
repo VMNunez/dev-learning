@@ -68,9 +68,7 @@ assumed to belong there.
 3. Stop on `main`.
 4. Execute the run-start decision table in `_pipeline-self-report.md` against this prompt's
    `_internal/_last-run-report-notes-plan.md` if it exists. Never restate the shared `Status:` meanings
-   or apply a surfaced finding inside the run it would affect. This is
-   the trigger that keeps an earlier run's finding from rotting — three of this prompt's ledger entries
-   came out of `notes-plan` runs.
+   or apply a surfaced finding inside the run it would affect.
 5. Stop if `COVERAGE` is missing or differs from the topic section in `GLOBAL_MIRROR`.
 6. Read `VERIFY` but never stop on it, and never classify it into a stored status. Its verdict is
    history: an open `gaps` verdict, a `superseded` one, missing findings, or no `VERIFY` file at all
@@ -371,8 +369,7 @@ Rules:
 - **The header block is written spaced, in seven field groups**, exactly as the template shows: `Status`,
   then `Studied`, then `Pending study`, then `Action`, then `English` with `Spanish`, then `Depends on`,
   then `Pending additions` — one blank line between groups, none inside a group. `English` with `Spanish`
-  is the only pair that shares a group; `Studied` and `Pending study` were split apart on 2026-08-27
-  because a study date and the sections that date does not cover are read one at a time, not as a block.
+  is the only pair that shares a group.
   The grouping is the reading aid that makes a long plan scannable, so it is a format requirement, not a
   preference: never collapse an entry's header into a compact block, and never remove a blank line that
   already separates two groups. A run that rewrites an entry for any other reason writes that entry's header spaced;
@@ -393,6 +390,9 @@ Rules:
 - Every `Must answer` item is a learner question, not a restatement of a coverage bullet.
 - At junior, entry `00` satisfies the complete introduction contract for both `create` and `audit`.
 - A missing Spanish file does not change `Action`; the notes pipeline creates or synchronises it.
+- `Audit note:` is the one optional entry field, written between `Coverage concepts` and `Rationale`. It
+  is where an entry records which sections of its existing file move to another entry and which it
+  absorbs. `notes-audit` forwards that exact label to every stage inside `LINK_TARGETS`, and no synonym.
 - No coverage bullet may be absent, duplicated, paraphrased, or assigned across levels.
 - Omit `## Legacy notes requiring split` when empty. If it is non-empty, the run is blocked and no
   relocation or selected plan commit occurs; the proposed plan and routing map are still reported.
