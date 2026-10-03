@@ -181,7 +181,7 @@ since its grading door runs no close-out.
 |---|---|---|---|---|
 | code-review-prompt | | | pending | |
 | cover-letter-prompt | | | pending | |
-| cv-prompt | | | pending | |
+| cv-prompt | 2026-10-03 | `create` · `PROJECTS = auto` → `07-timetrack`, `06-hr-portal` | completed | one-page Spanish master CV saved outside the repo to `job-search/master/cv-2026-10.md`; two projects featured; `Jasmine` struck — named `Vitest` · `TestBed` instead; `Mockito` left out as undefended until project 07 Step 8 closes; no sourced bullet fails the Project-bullet spec |
 | evidence-intake-prompt | | | pending | |
 | hr-screen-prompt | | | pending | |
 | interview-prep-route-prompt | | | pending | |

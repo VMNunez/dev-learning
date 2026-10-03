@@ -1,0 +1,10 @@
+# Last run report — cv-prompt
+
+Date: 2026-10-03 · `MODE = create` · `PROJECTS = auto` (resolved: `07-timetrack`, `06-hr-portal`) · `PHONE = auto` · `CAMBRIDGE = in progress (B1→B2)`, `EDUCATION` and `LOCATION` given in-run
+Status: rejected
+
+External paths (preflight passed before the first write): inputs `C:\Users\Victor\Documents\main\job-search\internship-daw.md` and `archive\currículum.pdf` (`master\` was empty) · output `C:\Users\Victor\Documents\main\job-search\master\cv-2026-10.md`.
+
+1. **Config vs reality** — the invocation gave `MODE` and `PROJECTS` only. `CAMBRIDGE` has no `auto` and was asked; `EDUCATION` and `LOCATION` were asked with it instead of being read as `auto`, because the only CV in `job-search/` is a 2024 archive — and Victor's answers differed from it on both, so `auto` would have shipped two stale personal facts. Not a prompt bug: `master/` is empty only on a first `create`, and it now holds a current CV for the next `auto` to read. `PROJECTS = auto` shipped two projects: every remaining candidate is tutorial-genre under the heuristic and shows no skill 07 does not already show.
+2. **Rule friction and rule breaches** — no rule breached. Close-out verified this mode's one declared output, `master/cv-2026-10.md`, by mtime from this run; Step 7 is tailor-only. Friction, cost only: (a) neither the prompt nor the launcher says what an omitted config field means — one batched question; (b) project 07 has no `cv-bullets.md` entry, its portfolio gate not having run, so its three bullets are README-drafted and outside the Project-bullet spec; (c) `Mockito`, which Step 2's example table shows, was left out as undefended — project 07 holds one JUnit + AssertJ validation test class and no Mockito until its §15 Step 8 closes.
+3. **Verdict** — candidate rejected, condition 1: Step 2's four-column skills table sits beside source 8's "los PDFs bonitos con columnas o cajas de texto a menudo fallan el parseo ATS", but no parse failure was observed this run and the quote governs the layout of the PDF template, which this prompt does not produce; handed to Victor as a paste-time note. Prompt is 357 lines, under budget.
