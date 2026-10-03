@@ -238,11 +238,11 @@ Before sending, verify all five are present:
 - [ ] **`## Archivo(s) afectado(s)`** — every file the change touches, linked, before any theory.
 - [ ] **Simple layer, its three parts** — (a) what happens today, quoting the real code and
       contrasting the place that already does it right; (b) why that is a problem, as a visible
-      effect in a literal block: `METHOD /path`, the request and response bodies, a
-      `hoy -> / correcto ->` contrast; (c) what the task asks, in one sentence. **Any term from the
-      language or the framework is defined from zero the first time it appears, in street words,
-      metaphor first and real name second — or it is moved to the technical layer.** Writing
-      *unboxing*, *wrapper*, *binding* or *preflight* as if already known is the defect.
+      effect in a literal `hoy -> / correcto ->` block: `METHOD /path` with its request and
+      response bodies, or on a screen what the person clicks and sees; (c) what the task asks, in
+      one sentence. **Any term from the language or the framework (*signal*, *binding*), and every
+      name inside a quoted line, is defined from zero the first time it appears, in street words,
+      metaphor first and real name second — or it is moved to the technical layer.**
 - [ ] **Technical layer, its four parts** — 1. the mechanism as a numbered execution trace, naming
       the step where the defect enters; 2. why it is invisible from the frame Victor would open,
       including the second-order trap; 3. the general principle in one quotable line; 4. one or two
