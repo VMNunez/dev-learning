@@ -155,7 +155,7 @@ the top 3 most prominently, so ordering is what matters here:
 3. Java
 
 **Next tier (add all of these):**
-PostgreSQL, TypeScript, SQL, Docker, REST APIs, Git, Maven
+PostgreSQL, TypeScript, SQL, Docker, REST APIs, JWT, Git, Maven
 
 **Also add:**
 JUnit, Vitest, TestBed, Angular Material, RxJS, HTML, CSS, Spring Security, Hibernate
