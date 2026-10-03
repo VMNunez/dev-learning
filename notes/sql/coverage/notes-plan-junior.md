@@ -37,7 +37,7 @@ Must answer:
 - How does SQL fit between Angular, Spring Boot, JDBC or an ORM, and PostgreSQL?
 - What is this introduction about to cover, section by section, and why do those sections come in that order?
 - How do I actually run a statement and read its result before chapter 01 assumes I can — which client, against which database, how do I create and seed the practice database the later chapters query, and what does a rejected statement look like — and which minimum forms and terms must already be readable when chapter 01 opens: evaluating a bare `SELECT <expression>;`, reading one column definition `name TYPE` inside a CREATE TABLE, and NULL as the marker for no value (its three-valued logic left to chapter 04)?
-- What does each chapter from 01 through 16 contribute, and why is the route ordered from structure to querying, changing data, nested queries, performance, multi-statement reliability, named and analytical queries, the PostgreSQL dialect, and finally review and inherited databases?
+- What does each chapter from 01 through 16 contribute, and why is the route ordered from structure to querying, changing data safely, deeper querying, performance, the PostgreSQL dialect, and finally review and inherited databases?
 
 Coverage concepts:
 
@@ -250,7 +250,7 @@ Must answer:
 - Why does WHERE keep only TRUE, and how can a condition and its own negation both drop the same row?
 - Why does = NULL never become TRUE, and how does UNKNOWN flow through NOT, AND, OR, and WHERE?
 - Why does WHERE reject a column alias that ORDER BY accepts, given the execution order previewed in chapter 03, and what has to be written in its place?
-- Why can NOT IN return no rows when NULL is present, and why is the correlated NOT EXISTS alternative deferred to chapter 09?
+- Why can NOT IN return no rows when NULL is present, and why is the correlated NOT EXISTS alternative deferred to chapter 10?
 - When do COALESCE and NULLIF express a deliberate contract rather than hide missing data, and why is NULLIF's division guard shown here on a plain division rather than on the aggregate form of chapter 07?
 - How do LIKE, ILIKE, %, _, IN, and operator precedence change a predicate?
 - Why is a half-open timestamp range safer and more index-friendly than an inclusive date-only upper bound?
@@ -491,54 +491,9 @@ Coverage concepts:
 
 Rationale: One mental model: a statement that changes rows, judged by the exact set of rows it affects and by what the database — not the application — guarantees, or leaves undone, while it runs.
 
-Handoff: INSERT … SELECT and the SELECT that proves a DELETE's rows already put one query to work inside another statement; chapter 09 makes that nesting a tool of its own.
+Handoff: Several mutations can represent one business action, so chapter 09 groups them inside explicit transaction boundaries that succeed or fail together.
 
-## 09 — Subqueries and existence tests
-
-Status: pending
-
-Studied: pending
-
-Pending study: none
-
-Action: audit
-
-English: notes/sql/junior/en/09-subqueries.md
-Spanish: notes/sql/junior/es/09-subconsultas.md
-
-Depends on: 00, 03, 04, 06, 07
-
-Pending additions: none
-
-Narrative role: Nest queries when one result supplies a value, table, or existence relationship to another query without accidentally changing cardinality.
-
-Learning outcome: Victor can choose scalar, derived-table, correlated, IN, EXISTS, JOIN, or pre-aggregation forms according to result shape, NULL semantics, and readability.
-
-Prerequisites: entries 00, 03, 04, 06, 07
-
-Must answer:
-
-- What row and column shape may WHERE, FROM, and scalar SELECT subqueries return?
-- Why can a correlated subquery repeat work per outer row while an uncorrelated scalar subquery may be evaluated once?
-- How do IN and EXISTS express different semantics without relying on a universal speed rule?
-- When does a JOIN multiply rows that EXISTS would only test for presence?
-- Why does NOT EXISTS remain safe when the compared subquery column can contain NULL?
-
-Coverage concepts:
-
-- [ ] Subquery in `WHERE` — `WHERE price > (SELECT AVG(price) FROM books)` — you cannot use `AVG` directly in `WHERE`; the subquery runs first and its result is used by the outer query
-- [ ] Subquery in `FROM` (derived table) — a query used as a table; must have an alias; used to filter on an aggregated result because `WHERE` cannot use aggregate functions
-- [ ] Scalar subquery in `SELECT` — must return at most one row and one column; an uncorrelated scalar subquery can be evaluated once, while a correlated one may require work for each outer row
-- [ ] `IN` vs `EXISTS` — choose from result semantics and null behaviour rather than a universal speed rule: `IN` compares with a set of values, while correlated `EXISTS` asks whether at least one matching row exists; PostgreSQL may optimise either into a similar plan
-- [ ] Correlated subquery — references a column from the outer row and expresses a per-row relationship; compare it with `EXISTS`, a join, or pre-aggregation when the repeated relationship is hard to read or slow
-- [ ] `NOT IN` with `NULL` — if the subquery or list contains `NULL`, comparisons can become `UNKNOWN` and `NOT IN` may return no rows; use `NOT EXISTS` with a correlated equality when nullability is possible
-- [ ] Subquery vs `JOIN` — choose the form that expresses the required result cardinality clearly; a join can multiply rows while `EXISTS` only tests presence, and PostgreSQL can often optimise equivalent formulations similarly
-
-Rationale: One mental model: a query used as a value, as a table, or as a truth test inside another query — and the cardinality consequence each of those three uses carries.
-
-Handoff: Subqueries can express the right result and still perform poorly; chapter 10 introduces the evidence and access structures used to investigate that cost.
-
-## 10 — Performance basics
+## 09 — Transactions
 
 Status: pending
 
@@ -548,52 +503,8 @@ Pending study: none
 
 Action: audit
 
-English: notes/sql/junior/en/10-indexes.md
-Spanish: notes/sql/junior/es/10-indices.md
-
-Depends on: 00, 02, 03, 04, 05, 06
-
-Pending additions: none
-
-Narrative role: Introduce B-tree indexes, foreign-key indexing, sargable predicates, and EXPLAIN as evidence for access-path decisions.
-
-Learning outcome: Victor can explain index read/write trade-offs, identify plausible candidates, recognise Seq Scan and Index Scan in EXPLAIN, and avoid predicates that prevent a normal B-tree from narrowing the scan.
-
-Prerequisites: entries 00, 02, 03, 04, 05, 06
-
-Must answer:
-
-- How does an auxiliary B-tree access structure reduce row visits, and what storage and write work maintains it?
-- Which primary and unique keys are indexed automatically, and why are referencing foreign keys not?
-- Why can a sequential scan be reasonable for a small table or a weakly selective predicate?
-- How do functions on indexed columns and leading-wildcard patterns affect sargability?
-- What can EXPLAIN show before any index is added?
-
-Coverage concepts:
-
-- [ ] What an index is — an auxiliary access structure that can speed reads at the cost of storage and write maintenance; B-tree is PostgreSQL's common ordered index, while other index methods serve different operators
-- [ ] When to add an index — columns frequently used in `WHERE`, `JOIN ON`, or `ORDER BY` on large tables; when you see a `Seq Scan` on a large table in `EXPLAIN` output
-- [ ] Foreign-key indexes — PostgreSQL indexes the referenced primary or unique key but not the referencing foreign-key columns automatically; add an index when joins or parent deletes need to find dependent rows efficiently
-- [ ] When NOT to index — avoid indexes without a measured access pattern, especially on small tables or frequently updated columns; low cardinality alone is not decisive because a partial or composite index can still be selective
-- [ ] `EXPLAIN` — shows the query plan and whether an index is being used; `Seq Scan` means every row is read; `Index Scan` means the index was used; run this when a query is slow before adding an index
-- [ ] Sargable predicates — compare an indexed column directly to a compatible value or range when possible; wrapping the column in a function or starting a pattern with `%` can prevent a normal B-tree index from narrowing the scan
-
-Rationale: One mental model: an index is an optional access path whose value is settled by evidence, and every rule here is about when the engine can and cannot use it.
-
-Handoff: Reads are now correct and their cost can be measured; chapter 11 returns to the writes of chapter 08 and makes several of them succeed or fail together inside an explicit transaction.
-
-## 11 — Transactions
-
-Status: pending
-
-Studied: pending
-
-Pending study: none
-
-Action: audit
-
-English: notes/sql/junior/en/11-transactions.md
-Spanish: notes/sql/junior/es/11-transacciones.md
+English: notes/sql/junior/en/09-transactions.md
+Spanish: notes/sql/junior/es/09-transacciones.md
 
 Depends on: 00, 02, 08
 
@@ -627,9 +538,9 @@ Coverage concepts:
 
 Rationale: One mental model: a transaction is the unit the database makes all-or-nothing, and every rule here follows from where its boundaries are drawn.
 
-Handoff: With multi-statement writes made safe, chapter 12 goes back to reading and names the stages of a complex query — the nested shapes of chapter 09 — through CTEs and views.
+Handoff: With changes made safe across statements, chapter 10 returns to reading and nests one query inside another — the shape that INSERT … SELECT and the verifying SELECT of chapter 08 already used.
 
-## 12 — CTEs and views
+## 10 — Subqueries and existence tests
 
 Status: pending
 
@@ -639,10 +550,55 @@ Pending study: none
 
 Action: audit
 
-English: notes/sql/junior/en/12-ctes-and-views.md
-Spanish: notes/sql/junior/es/12-ctes-y-vistas.md
+English: notes/sql/junior/en/10-subqueries.md
+Spanish: notes/sql/junior/es/10-subconsultas.md
 
-Depends on: 00, 03, 06, 07, 09
+Depends on: 00, 03, 04, 06, 07
+
+Pending additions: none
+
+Narrative role: Nest queries when one result supplies a value, table, or existence relationship to another query without accidentally changing cardinality.
+
+Learning outcome: Victor can choose scalar, derived-table, correlated, IN, EXISTS, JOIN, or pre-aggregation forms according to result shape, NULL semantics, and readability.
+
+Prerequisites: entries 00, 03, 04, 06, 07
+
+Must answer:
+
+- What row and column shape may WHERE, FROM, and scalar SELECT subqueries return?
+- Why can a correlated subquery repeat work per outer row while an uncorrelated scalar subquery may be evaluated once?
+- How do IN and EXISTS express different semantics without relying on a universal speed rule?
+- When does a JOIN multiply rows that EXISTS would only test for presence?
+- Why does NOT EXISTS remain safe when the compared subquery column can contain NULL?
+
+Coverage concepts:
+
+- [ ] Subquery in `WHERE` — `WHERE price > (SELECT AVG(price) FROM books)` — you cannot use `AVG` directly in `WHERE`; the subquery runs first and its result is used by the outer query
+- [ ] Subquery in `FROM` (derived table) — a query used as a table; must have an alias; used to filter on an aggregated result because `WHERE` cannot use aggregate functions
+- [ ] Scalar subquery in `SELECT` — must return at most one row and one column; an uncorrelated scalar subquery can be evaluated once, while a correlated one may require work for each outer row
+- [ ] `IN` vs `EXISTS` — choose from result semantics and null behaviour rather than a universal speed rule: `IN` compares with a set of values, while correlated `EXISTS` asks whether at least one matching row exists; PostgreSQL may optimise either into a similar plan
+- [ ] Correlated subquery — references a column from the outer row and expresses a per-row relationship; compare it with `EXISTS`, a join, or pre-aggregation when the repeated relationship is hard to read or slow
+- [ ] `NOT IN` with `NULL` — if the subquery or list contains `NULL`, comparisons can become `UNKNOWN` and `NOT IN` may return no rows; use `NOT EXISTS` with a correlated equality when nullability is possible
+- [ ] Subquery vs `JOIN` — choose the form that expresses the required result cardinality clearly; a join can multiply rows while `EXISTS` only tests presence, and PostgreSQL can often optimise equivalent formulations similarly
+
+Rationale: One mental model: a query used as a value, as a table, or as a truth test inside another query — and the cardinality consequence each of those three uses carries.
+
+Handoff: Nested queries get hard to read as they stack up, so chapter 11 names each stage with a CTE and saves reusable queries as views.
+
+## 11 — CTEs and views
+
+Status: pending
+
+Studied: pending
+
+Pending study: none
+
+Action: audit
+
+English: notes/sql/junior/en/11-ctes-and-views.md
+Spanish: notes/sql/junior/es/11-ctes-y-vistas.md
+
+Depends on: 00, 03, 06, 07, 10
 
 Pending additions: none
 
@@ -650,7 +606,7 @@ Narrative role: Name query stages within one statement and save reusable query d
 
 Learning outcome: Victor can structure multiple CTEs in dependency order and create a view whose live underlying query is reusable like a table.
 
-Prerequisites: entries 00, 03, 06, 07, 09
+Prerequisites: entries 00, 03, 06, 07, 10
 
 Must answer:
 
@@ -666,9 +622,9 @@ Coverage concepts:
 
 Rationale: One mental model: giving a query a name — for one statement or for the whole database — without that name ever storing rows.
 
-Handoff: Reusable, named report inputs now make it practical to calculate per-group values without collapsing the detail rows, which is chapter 13.
+Handoff: Reusable, named report inputs now make it practical to calculate per-group values without collapsing the detail rows, which is chapter 12.
 
-## 13 — Window functions
+## 12 — Window functions
 
 Status: pending
 
@@ -678,10 +634,10 @@ Pending study: none
 
 Action: audit
 
-English: notes/sql/junior/en/13-window-functions.md
-Spanish: notes/sql/junior/es/13-funciones-de-ventana.md
+English: notes/sql/junior/en/12-window-functions.md
+Spanish: notes/sql/junior/es/12-funciones-de-ventana.md
 
-Depends on: 00, 03, 05, 07, 12
+Depends on: 00, 03, 05, 07, 11
 
 Pending additions: none
 
@@ -689,7 +645,7 @@ Narrative role: Calculate per-group values, above all rankings, while keeping ev
 
 Learning outcome: Victor can define a partition and its order, choose ROW_NUMBER or RANK by how each treats ties, explain why OVER keeps rows GROUP BY would collapse, and pick between DISTINCT ON and the window form for one row per group.
 
-Prerequisites: entries 00, 03, 05, 07, 12
+Prerequisites: entries 00, 03, 05, 07, 11
 
 Must answer:
 
@@ -708,7 +664,51 @@ Coverage concepts:
 
 Rationale: One mental model: a window is the set of related rows a calculation may see without the result collapsing to one row per group — and ranking is what that model is for at junior level.
 
-Handoff: The analytical toolkit is complete; chapter 14 collects the PostgreSQL-specific date syntax the earlier chapters kept reaching for, and marks its portability boundaries.
+Handoff: The analytical toolkit is complete; chapter 13 asks what all these queries cost and introduces the evidence and access structures used to investigate it.
+
+## 13 — Performance basics
+
+Status: pending
+
+Studied: pending
+
+Pending study: none
+
+Action: audit
+
+English: notes/sql/junior/en/13-indexes.md
+Spanish: notes/sql/junior/es/13-indices.md
+
+Depends on: 00, 02, 03, 04, 05, 06
+
+Pending additions: none
+
+Narrative role: Introduce B-tree indexes, foreign-key indexing, sargable predicates, and EXPLAIN as evidence for access-path decisions.
+
+Learning outcome: Victor can explain index read/write trade-offs, identify plausible candidates, recognise Seq Scan and Index Scan in EXPLAIN, and avoid predicates that prevent a normal B-tree from narrowing the scan.
+
+Prerequisites: entries 00, 02, 03, 04, 05, 06
+
+Must answer:
+
+- How does an auxiliary B-tree access structure reduce row visits, and what storage and write work maintains it?
+- Which primary and unique keys are indexed automatically, and why are referencing foreign keys not?
+- Why can a sequential scan be reasonable for a small table or a weakly selective predicate?
+- How do functions on indexed columns and leading-wildcard patterns affect sargability?
+- What can EXPLAIN show before any index is added?
+
+Coverage concepts:
+
+- [ ] What an index is — an auxiliary access structure that can speed reads at the cost of storage and write maintenance; B-tree is PostgreSQL's common ordered index, while other index methods serve different operators
+- [ ] When to add an index — columns frequently used in `WHERE`, `JOIN ON`, or `ORDER BY` on large tables; when you see a `Seq Scan` on a large table in `EXPLAIN` output
+- [ ] Foreign-key indexes — PostgreSQL indexes the referenced primary or unique key but not the referencing foreign-key columns automatically; add an index when joins or parent deletes need to find dependent rows efficiently
+- [ ] When NOT to index — avoid indexes without a measured access pattern, especially on small tables or frequently updated columns; low cardinality alone is not decisive because a partial or composite index can still be selective
+- [ ] `EXPLAIN` — shows the query plan and whether an index is being used; `Seq Scan` means every row is read; `Index Scan` means the index was used; run this when a query is slow before adding an index
+- [ ] Sargable predicates — compare an indexed column directly to a compatible value or range when possible; wrapping the column in a function or starting a pattern with `%` can prevent a normal B-tree index from narrowing the scan
+
+Rationale: One mental model: an index is an optional access path whose value is settled by evidence, and every rule here is about when the engine can and cannot use it.
+
+Handoff: With access paths and their limits understood, chapter 14 collects the PostgreSQL-specific date syntax the earlier chapters kept reaching for, and marks its portability boundaries.
 
 ## 14 — PostgreSQL specifics
 
@@ -723,7 +723,7 @@ Action: audit
 English: notes/sql/junior/en/14-postgresql-specifics.md
 Spanish: notes/sql/junior/es/14-particularidades-de-postgresql.md
 
-Depends on: 00, 01, 03, 04, 07, 10, 11
+Depends on: 00, 01, 03, 04, 07, 09, 13
 
 Pending additions: none
 
@@ -731,7 +731,7 @@ Narrative role: Consolidate the PostgreSQL-specific date syntax already grounded
 
 Learning outcome: Victor can use DATE_TRUNC, EXTRACT, transaction-time NOW, CURRENT_DATE, and INTERVAL while explaining their index and portability consequences, and say which of chapter 01's two casting forms is portable.
 
-Prerequisites: entries 00, 01, 03, 04, 07, 10, 11
+Prerequisites: entries 00, 01, 03, 04, 07, 09, 13
 
 Must answer:
 
@@ -766,7 +766,7 @@ Action: create
 English: notes/sql/junior/en/15-query-workflow-and-review.md
 Spanish: notes/sql/junior/es/15-flujo-de-trabajo-y-revision-de-sql.md
 
-Depends on: 00, 02, 03, 04, 05, 06, 07, 08, 10
+Depends on: 00, 02, 03, 04, 05, 06, 07, 08, 13
 
 Pending additions: none
 
@@ -774,7 +774,7 @@ Narrative role: Consolidate SQL into a professional workflow that begins from re
 
 Learning outcome: Victor can translate a business question into staged SQL, predict and test row counts and edge cases, review mutations and pagination safely, and explain each clause in an interview.
 
-Prerequisites: entries 00, 02, 03, 04, 05, 06, 07, 08, 10
+Prerequisites: entries 00, 02, 03, 04, 05, 06, 07, 08, 13
 
 Must answer:
 
