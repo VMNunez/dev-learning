@@ -468,10 +468,10 @@ Everything below lands on the **active branch** (`main` only receives merges via
 - `notes/**/coverage/*.md` — handled by `coverage-bullet-add` and `coverage-mark`, which commit their own
   writes under the standing `notes/` authorization. Do not re-stage those files here; if both skills ran in
   the same close, they fold the authoring and the marking into one coverage commit.
-- **`PROGRESS.md` rides in that coverage commit** when step 1 or 1a wrote anything — those skills edit the
-  `Coverage demonstrated` table and commit the file with their write. So make this ritual's own evidence-cell
-  edit (step 4) **before** invoking them, and let their commit carry it. Only when step 1 and 1a both wrote
-  nothing does PROGRESS.md take a commit of its own here.
+- **`PROGRESS.md` — two tables, a commit each.** The `Coverage demonstrated` recount rides in that coverage
+  commit: those skills edit that table and commit the file with their write. This ritual's evidence-cell edit
+  (step 4) is made where the walk reaches it and takes a commit of its own, whatever step 1 and 1a wrote.
+  When step 4 is n/a, PROGRESS.md takes no commit here.
 - `PROJECT-BACKLOG.md` — authorized 2026-07-29. It is written by `review-audit`, by `backlog-task-open`
   (the `⏸ Deferred` marker and a raised incidental finding) and by this skill, never by Victor, so the
   authorship boundary puts it on your side. Its own atomic commit, separate from the coverage one — and
