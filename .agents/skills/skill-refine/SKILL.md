@@ -63,7 +63,7 @@ start: a human has to sit between the edit and its next use.
 ## 1 — Breach route: resolve, then test the bar
 
 1a. Read `_skill-breach-log.md`. Resolve the target skill and the exact `Breached step` string that
-crossed. **Count by exact string match**, never by what the rows appear to be about.
+crossed. **Count by exact string match**, `fixed` rows included, never by what the rows appear to be about.
 
 1b. **Refuse and stop if any of these hold**, leaving every row `open`:
 
@@ -126,8 +126,8 @@ written before anything is staged, and `diff` proves it.
 `git diff --numstat` on the `.claude/` mirror and any numbered or lettered step added or removed; write
 no `_system-map.md` §13 cell — a sweep's job (`_session-rules.md` → "The map is also verified on read,
 not only on write"). **If the edit made the file longer, the reviewer must have named what comes out** —
-a stale caveat, a duplicated instruction, a spent incident. One-in-one-out above the line, exactly as
-`_pipeline-self-report.md` sets it. A bucket that only fills is how a ritual stops being executable.
+a stale caveat, a duplicated instruction, a spent incident. A bucket that only fills is how a ritual
+stops being executable.
 
 4c. Invoke `map-sync` (trigger: a change) for the rows this edit moves. Its verdict rides in this same
 commit, `maps unaffected` included.
@@ -146,7 +146,8 @@ or the map cannot be written, commit nothing** — leave the rows `open` and rep
 refinement is worse than none: it puts the two adapters out of sync, which nothing announces.
 
 5b. Read that commit's hash from `git log`, never from memory, and set `Disposition` to `fixed in <hash>`
-on every row that fed the edit. Commit `_skill-breach-log.md` alone, as a second commit —
+on every `open` row that fed the edit, and to `recurred — see SBRC-NNNN` on every `fixed` row 1a counted,
+naming the earliest of those `open` rows. Commit `_skill-breach-log.md` alone, as a second commit —
 `docs(skills): auto-refine {skill} — dispositions` — never by amending the first, which rewrites its hash.
 
 5c. Record the gate in the report, one line: `cold reviewer: approve | approve-with-tightening | reject`.
