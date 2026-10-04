@@ -314,13 +314,14 @@ close made false:
   Neither ritual silently reverts the other; when the invariant and the qualifier cannot both hold, the
   invariant wins and the report says the qualifier was dropped.
 - **Current branch** — only if the close ends the branch's work per §22. Same condition in every file
-  that states it; a step closing in the same session does not change it.
+  that states it; neither a step closing in the same session nor a branch **cut** in it changes it. A
+  close that ends no branch reports a cell naming a branch the session is not on, with the active one,
+  and leaves it, adding no §22 row — a new §22 branch is a plan change, G2's (`plan-audit` · `MODE = review`).
 - **Phase** — only if the close moved the project across a phase boundary, which a backlog fix almost
   never does. Say "unchanged" rather than skipping it silently.
 
-A close that legitimately moves none of these still updates `Last updated`. State which cells you
-changed, and say "no other cell moved" rather than staying silent — silence here is indistinguishable
-from having skipped the step.
+State which cells you changed, and say "no other cell moved" rather than staying silent — silence here
+is indistinguishable from having skipped the step.
 
 **Open-task counts live outside §0 too, and they are yours in the same edit.** PLANNING states how many
 tasks are open in more than one place — §0's `Current step` cell, and §22's *Immediate action* prose,
