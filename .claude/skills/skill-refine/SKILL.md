@@ -74,8 +74,8 @@ crossed. **Count by exact string match**, `fixed` rows included, never by what t
   not a text defect, until a second row proves otherwise. Condition 2 decides this, not you.
 - The rows carry no falsifiable `Evidence` clause.
 
-1c. Read the target `SKILL.md` **end to end**, in `.claude/skills/`. State `N lines, read to EOF`. The
-Read tool truncates past 2000 lines in silence, and every judgement below depends on the whole file.
+1c. Read the target `SKILL.md` **end to end**, in `.claude/skills/`. State `N lines, read to EOF`: every
+judgement below depends on the whole file — condition 4 first: a finding it now covers goes to 5d.
 
 ## 2 — Draft the edit
 
@@ -102,8 +102,7 @@ optional:
 3. The drafted replacement.
 4. The scratch path it persists findings and verdict to as it works.
 5. **The whole `SKILL.md`, to be read end to end.** Condition 4 asks whether the text already handles
-   this somewhere the run failed to look, and no excerpt can answer that. A reviewer given slices
-   approves near-duplicates and contradictions it had no way to see.
+   this somewhere the run failed to look, and no excerpt can answer that.
 
 It returns one verdict — **approve / approve-with-tightening / reject** — answering: does the edit clear
 all four bar conditions; is every fact in it correct; is this already stated elsewhere in the file, or
@@ -126,8 +125,7 @@ written before anything is staged, and `diff` proves it.
 `git diff --numstat` on the `.claude/` mirror and any numbered or lettered step added or removed; write
 no `_system-map.md` §13 cell — a sweep's job (`_session-rules.md` → "The map is also verified on read,
 not only on write"). **If the edit made the file longer, the reviewer must have named what comes out** —
-a stale caveat, a duplicated instruction, a spent incident. A bucket that only fills is how a ritual
-stops being executable.
+a stale caveat, a duplicated instruction, a spent incident.
 
 4c. Invoke `map-sync` (trigger: a change) for the rows this edit moves. Its verdict rides in this same
 commit, `maps unaffected` included.
@@ -152,6 +150,13 @@ naming the earliest of those `open` rows. Commit `_skill-breach-log.md` alone, a
 
 5c. Record the gate in the report, one line: `cold reviewer: approve | approve-with-tightening | reject`.
 It is the only trace the gate ran at all: an applied edit without it must be read as a self-approval.
+
+5d. **A finding the file already covers is dismissed, not drafted — at one row only.** When 1c shows
+condition 4 failing, skip steps 2–5c and set the row to `dismissed — condition 4: reason`, the reason
+quoting the line that covers it and naming the commit that added it. No reviewer: the gate guards an
+edit, and there is none. Commit `_skill-breach-log.md` alone, `docs(skills): breach log — {SBRC-NNNN}
+dismissed, {reason}`. A string 1a counted at two or more rows is never dismissed here
+(`_pipeline-self-report.md` → "The breach log"): it takes steps 2–3 or stays `open`.
 
 ## 6 — Ruling route: `REC-054` (c), bounded by its own verdict
 
@@ -186,5 +191,5 @@ desvíos: ninguno
 ```
 
 A run that refused states the reason in one line instead — the failed bar condition, the `shared` scope,
-the session cap, or the reject — and says the rows stay `open`. The `desvíos:` line is printed on every
-route, including a refusal.
+the session cap, or the reject — and says the rows stay `open`, or on a 5d dismissal names the row and
+its `dismissed — condition 4`. The `desvíos:` line is printed on every route, including a refusal.
