@@ -85,10 +85,11 @@ chat about one, run the rules and checks the note standard's **Harvested from re
 at stage B and, on an `es/` passage, those it judges at stage C, over the passage you wrote and nothing
 else, before you report. Fix what fails inside that passage; report what needs more than it, since the
 passage is this route's bound. A wording Victor dictated — his TODO's own words, or his words in chat —
-outranks a check: leave it and report the check it fails. Name in your report each rule or check that
-drove a fix. No reviewer runs after these routes, and the prose they write is where Victor's second
-corrections land — that standard's "Reviewer checks" block says so, with the count (`REC-267`). The
-Q&A and project-bank routes are governed by their own standards and are outside this paragraph.
+outranks a check: leave it and report the check it fails. It does not outrank a fact: where it would
+make the note state something false, or contradict what the same note teaches, write the true form that
+still does what he asked, and report what was false with its evidence. Name in your report each rule or
+check that drove a fix. No reviewer runs after these routes (`REC-267`). The Q&A and project-bank routes
+are governed by their own standards and are outside this paragraph.
 
 ## Step 3 — Honour the bilingual en/es contract
 
@@ -319,9 +320,7 @@ report.
 ## What this skill does NOT do
 
 It does not write `PROGRESS.md`. Its refining routes hand the `## Authoring progress` rows and the
-project table to
-`authoring-progress-recount`, which owns and commits them — which is why this skill's trigger still
-excludes that file even though refining a pair now moves it.
+project table to `authoring-progress-recount`, which owns and commits them.
 It does not write `_note-quality-standard.md`. It is the harvest's primary writer and the one that says
 which passes are owed, and neither role reaches the standard: an owed pass is stated on the `cosecha:`
 line and performed by hand under the sink's procedure; only the edits it makes go through the ledger's
