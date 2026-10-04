@@ -102,14 +102,17 @@ parent is now complete too.
 ## 2 — Extract the step's concepts, and update PROGRESS.md *status*
 
 **`notes/prompts/strategy/tracking/_internal/_concept-extraction-standard.md` step 3 owns which field
-holds the concepts, per PLANNING format. Read it rather than assuming a field name** — this ritual and `progress-update` must extract from the
-same place or the two records diverge. For project 07 (Format B) that means the step's
-`**New concepts:**` line, **plus** its `**Concept learned:**` line on the minority of steps that carry
-one, and **never** `**Review concepts:**`, which names concepts an earlier step already introduced.
+holds the concepts, per PLANNING format. Read it rather than assuming a field name.** For project 07
+(Format B) that means the step's `**New concepts:**` line, **plus** its `**Concept learned:**` line on
+the minority of steps that carry one, and **never** `**Review concepts:**`, which names concepts an
+earlier step already introduced.
 
 Hold that list — steps 3 and 4 consume it. Write each concept as **one specific thing**, key syntax in
-backticks: never group two concepts. A step whose extraction comes back empty is a defect in the plan,
-not a step with no concepts: say so and stop rather than closing with nothing to record.
+backticks: never group two concepts. An empty extraction is a defect in the plan, not a step with no
+concepts — **say so and repair it here rather than stopping**: resolve step 3's diff range now, write
+the concepts that diff shows and `**Review concepts:**` does not name as a `**Concept learned:**` line
+under the step — the standard's retrospective field, written as step 1's note — and extract from it.
+Stop only when that leaves nothing to write.
 
 **PROGRESS.md is status only — it is not where the concepts go** (changed 2026-08-03: the
 per-technology concept lists were deleted because they duplicated the coverage files without
@@ -203,11 +206,8 @@ Pass it the **concept itself, not a technology label you attached to it** — a 
 question, and handing it over is how an access-control concept ends up under `spring-boot` when
 `notes/security/` owns it.
 
-This is a deliberate change (2026-07-30): a step close used to only ever *flag* a missing bullet and leave
-it for `/coverage`. It now authors it, because the concepts a project teaches are exactly the ones the
-curriculum should absorb — a step that discovers a real concept and leaves no bullet behind is the gap this
-ritual exists to close. Authoring stays inside the skill, under the coverage standard's contract; this
-ritual never writes a bullet inline.
+Authoring stays inside the skill, under the coverage standard's contract; this ritual never writes a
+bullet inline.
 
 **3b — Mark it as demonstrated.** **Invoke the `coverage-mark` skill** with the same concepts, **the topic
 `coverage-bullet-add` reported in 3a** (not a technology label, and not a topic re-derived here — the bullet
