@@ -269,7 +269,9 @@ the path pattern or contract stated by its assigned machinery source.
 
 ### 2A — one `analyst`, tier `standard`, per prompt family
 
-One family is one directory containing runnable prompts and its `_internal/` components. The analyst:
+One family is one directory containing runnable prompts and its `_internal/` components — or, where a
+track is executed by a skill alone, a directory holding only `_internal/` components
+(`practice/exercises/`). The analyst:
 
 1. Counts every assigned file's lines, reads every file to the real EOF, and begins with one
    `N lines, read to EOF` line per file.

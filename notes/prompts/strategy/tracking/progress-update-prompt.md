@@ -88,6 +88,7 @@ contract each project subagent follows and the shape of what it returns.
 | `## Projects` | `step-complete` (the `Status` cell) · `plan-audit` (registers a new project's row) | measures and reports (D5) |
 | `Practice completed` → `Exercise route` | `sql-exercises` (both branches) · `sql-grade` · `sql-step-close` · `sql-plan` (seeds the rows) | measures and reports (D3) |
 | `Practice completed` → `Timed simulations` | `simulation-review` | measures and reports (D4) |
+| `Practice completed` → `Short exercises` | `practice-session`'s cold grader (`_practice-review-prompt.md`) | **not measured yet** — no detector reads this table; `REC-275` (b) owes one |
 | The **legend prose** of any section — its `—` / `*` legends and the sentences stating a table's counting rule | nobody automatic — **Victor, by hand** | measures one class of it and reports it to him (D11) |
 | `Useful resources`, the header prose | nobody automatic — Victor edits them by hand | untouched |
 
