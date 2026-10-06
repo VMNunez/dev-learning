@@ -97,11 +97,16 @@ three counts, so the reach of the check is read off the line rather than assumed
 `.claude/skills/` and `.agents/skills/` hold the same files with the same content (compared line-ending-normalised, because `core.autocrlf` decides
 whether a working-tree file holds CRLF or LF, not its author); that every
 `notes/{topic}/coverage/{LEVEL}.md` and its section of `notes/coverage/{LEVEL}.md` carry the same
-bullets; that each plan's `Plan status` agrees with its `Coverage SHA-256` — in all three shapes that
+bullets; that each plan's `Plan status` agrees with its `Coverage SHA-256` — in three of the four shapes that
 contract takes: a topic's `notes-plan-{LEVEL}.md`, a SQL route's `PLANNING-{LEVEL}.md`, and a simulation
 route, which fingerprints a **manifest** of every coverage file in its §1 rather than one file and also
 carries a `Progress snapshot` of `PROGRESS.md` and a `Level status`, so a moved snapshot reports rather
-than fails; that a `verify-{LEVEL}.md` claiming `complete` or `gaps` against a moved digest is reported
+than fails. The fourth shape is **not read by this script at all** (`REC-276`, 2026-10-06): a
+short-exercise plan, `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, carries the same two
+header lines, and they are checked only by `validate-practice-plan.py` in that family's `_internal/` —
+one route per call, when the `practice-session` flow runs it (its catalogue row below), never from this
+script — so a short-exercise plan claiming `current` over a moved digest passes here in silence. It
+also checks that a `verify-{LEVEL}.md` claiming `complete` or `gaps` against a moved digest is reported
 under the schema's own word for that state, `superseded`; and that every path a
 prompt, skill, **launcher** or adapter names resolves — against the repository root, against
 `notes/prompts/`, or, for the `_internal/` root only, against the citing file's **own** directory, all
@@ -121,7 +126,13 @@ carried 36 path references while sitting outside the only check that reads them 
 out, and there are **two**, not one: this validator, whose "paths" are regex literals rather than
 claims, and `.claude/hooks/log-skill-run.ps1`, which builds its single path with `Join-Path` rather
 than writing it whole — so neither would be measured by a pattern anyway, and both are proofread by
-hand. The path **roots** it recognises are a second such list — `notes`, `practice`, `projects`,
+hand. **A third script stays out too, and not for that reason** (`REC-276`, 2026-10-06):
+`validate-practice-plan.py`, in `practice/exercises/_internal/`, sits under `notes/prompts/` but the
+scan takes `*.md` files only, so the three path templates it writes whole — a topic's coverage file,
+its notes plan and its exercise plan — are read by no check even though the path pattern would match
+each. A citation **of** it is invisible as well: that pattern ends in `md`, `ps1` or `sql`, so the
+`.py` path `_practice-plan-prompt.md` tells the planner to run is never resolved. Both directions are
+proofread by hand. The path **roots** it recognises are a second such list — `notes`, `practice`, `projects`,
 `personal` and the relative `knowledge`, `strategy`, `system`, `_internal` — so a folder under
 `notes/prompts/` is unchecked until it is named there. `system` and `_internal` were both missing
 until the same date: that put every `system/…` path in this file and in `_system-map.md` outside the
@@ -255,7 +266,7 @@ live route even though the file it would fail is machinery. Ordinary manual runs
 ## Prompts you launch vs. internal pieces you never touch
 
 Most files in this folder are `.md` prompt-system artifacts, but **not every Markdown file is
-something you run**; the validator is the one `.ps1` utility. One filename rule separates runnable
+something you run**; the general validator is a `.ps1` utility, and short-exercise plans also have a read-only Python validator. One filename rule separates runnable
 Markdown entry points from internal Markdown:
 
 > **A leading `_` means "never launch this".** No underscore, and it is yours to run.
@@ -444,9 +455,10 @@ prompt that has never breached or worked around a step has no such file.
 `_sql-plan-standard.md`, `_sql-exercise-seeds.md`, `_sql-exercises-practice.md`,
 `_sql-exercises-review.md`,
 `_simulation-plan-standard.md`,
-`practice/exercises/_internal/_practice-standard.md` and `_practice-review-prompt.md` (the short-exercise track's
-contract and its cold grader's brief — a family with no runnable prompt, executed by the `practice-session` skill
-alone; added 2026-10-05, `REC-274`),
+`practice/exercises/_internal/_practice-standard.md` and `_practice-review-prompt.md`, plus `_practice-plan-prompt.md` and `validate-practice-plan.py` (the short-exercise track's
+contract, its cold grader's brief, its internal planner and that planner's read-only route checker — a
+family with no runnable prompt, executed by the `practice-session` skill alone; added 2026-10-05,
+`REC-274`, the planner and its checker 2026-10-06, `REC-276`),
 `_shared-context.md`, `_batch-mode.md`, `_job-market-evidence.md`,
 `strategy/apply/_internal/_application-evidence.md` (its presentation counterpart, source 8 of
 `_application-standard.md` — quoted sources for project count, ATS parsing and recruiter scan time;
@@ -620,7 +632,7 @@ down a flat list of ten files — and a fourth since 2026-10-05, which holds no 
 | `practice/sql/` | the SQL exercise track — plan auditor, exercise generator/grader, its standard and run reports | the 12:30 SQL block |
 | `practice/simulations/` | timed technical tests — the generator that writes specs, the reviewer that grades them | practising a take-home (stage 3) |
 | `practice/interview/` | live interview training — technical mock, HR call, code critique | rehearsing stages 2–4 |
-| `practice/exercises/` | short graded exercises beyond SQL — **no runnable prompt**: only the standard and the cold grader's brief, both executed by the `practice-session` skill | never launched — say you want to practise, in session |
+| `practice/exercises/` | short graded exercises beyond SQL — **no runnable prompt**: only the standard, the internal planner with its read-only route checker, and the cold grader's brief, all executed by the `practice-session` skill | never launched — say you want to practise, in session |
 
 | Prompt | What it does | Reads | Generates / updates |
 |--------|--------------|-------|---------------------|
@@ -630,8 +642,10 @@ down a flat list of ten files — and a fourth since 2026-10-05, which holds no 
 | `practice/sql/_internal/_sql-exercise-seeds.md` | *Internal.* Per-topic **structure and concrete exercise ideas** for `sql-exercises` Step 3 — the traps worth building a question around and each topic's Challenge. A run reads **only its own topic's block**. Scope still comes from `coverage-junior.md`, never from here. Not runnable. | — | — |
 | `practice/sql/sql-plan-audit.md` | **Orchestrator.** Audits **and extends** the doctrine (`PLANNING.md`) and one level's route (`PLANNING-{LEVEL}.md`) against `_sql-plan-standard.md` — four cold specialists (learning-design · coverage-and-steps · counts-and-truth · loop-and-fence), each fenced to the file its `Edits` column names, history gate, single commit. `coverage-and-steps` writes the new steps for coverage sections nothing claims yet, so the plan grows as SQL grows. It never writes a route from nothing (that is `sql-plan-prompt`) and never recomputes the fingerprint. The plan it maintains covers **exercises only** — notes, Q&A and simulations are separate tracks Victor runs himself. | `_sql-plan-standard.md`, both plan files, `notes/sql/coverage/{LEVEL}.md`, `ROADMAP.md`, `PROGRESS.md`, `sql-exercises-prompt.md`, the exercise files (as evidence, never edited) | `practice/sql/PLANNING.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` |
 | `practice/sql/sql-exercises-prompt.md` | `practice` mode: generates SQL exercises for the current step. `review` mode: grades my answers, scores them, and logs every ⚠️/❌ concept. `reinforce` mode: extra `[Repaso]` practice over a file I name, counted against nothing and safe on a closed step. Config is exactly five keys — `MODE`, `TOPIC`, `LEVEL`, `COUNT`, `FILE`; focus and review come from the step in `PLANNING-{LEVEL}.md`, never pasted. **Writes no notes and no Q&A** — those are separate tracks. | `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` (the step: topic, count, focus), `notes/sql/coverage/{LEVEL}.md`, `PROGRESS.md`, the exercise files `practice/sql/{LEVEL}/NN-name.sql` | **Mode-conditional — the close-out checks only its own mode's list.** `practice` / `reinforce` mode: `practice/sql/{LEVEL}/NN-name.sql` and the `Corrected` cells of `PROGRESS.md` → `Exercise route` (the file's row and the level roll-up — its practice branch Step 5). `review` mode: `practice/sql/MISTAKES.md`, the SQL table in `PROGRESS.md`, `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` — §1 counts, §3 statuses and the §2 `[x]` bullets, the progress fields the planner only preserves — and, **only when the run closes a step**, the doctrine `practice/sql/PLANNING.md` §0's live values (its 4d). Naming the other mode's file as "not applicable" is required; silently counting it as satisfied is not. |
-| `practice/exercises/_internal/_practice-standard.md` | *Internal.* The **whole contract of the short-exercise track** the `practice-session` skill executes: the route derived from a topic's notes plan, the batch (two entries, sizing, one objective, composition, difficulty), the per-attempt history and the states derived from it, the proposal order, the `PROGRESS.md` projection and each topic's environment-and-grading section — java junior today. Not runnable. | — | — |
-| `practice/exercises/_internal/_practice-review-prompt.md` | *Internal.* The **cold grader** `practice-session` dispatches: grades one answered batch, or verifies its fixes, against the standard; refuses a partial batch; says why each failure failed; never edits a batch file. Not runnable. | the standard, the batch folder, `practice/exercises/ATTEMPTS.md` and `INDEX.md`, and the `Coverage concepts` heads of the notes plan the index names | `practice/exercises/ATTEMPTS.md` rows; the route's row in `PROGRESS.md` → `### Short exercises` |
+| `practice/exercises/_internal/_practice-standard.md` | *Internal.* The **whole contract of the short-exercise track** the `practice-session` skill executes: the persistent topic-level exercise plans mapped to coverage and notes-plan prerequisites, the batch (two entries, sizing, one objective, composition, difficulty), the per-attempt history and the states derived from it, the proposal order, the `PROGRESS.md` projection and each topic's environment-and-grading section — java junior today. Not runnable. | — | — |
+| `practice/exercises/_internal/_practice-plan-prompt.md` | *Internal.* Plans or reconciles one enabled topic and level, with concrete exercise IDs, tasks, criteria and files; checks source digests and preserves published IDs/history; one cold route reviewer before publication. Executed by `practice-session`, no launcher. | standard, selected coverage, notes plan, existing exercise plan, INDEX, ATTEMPTS | `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, INDEX projection; hands a needed recount to the cold grader |
+| `practice/exercises/_internal/validate-practice-plan.py` | *Internal utility.* Python 3 standard-library, read-only scope/fingerprint/ID/dependency checks for one route, plus — given `--baseline` on a reconciliation — that no published row was deleted or rewritten; never judges exercise quality. Run by planning and before generation/recounts; separate from the existing PowerShell validator. | selected coverage, notes plan, exercise plan | PASS/FAIL and totals in stdout; writes nothing |
+| `practice/exercises/_internal/_practice-review-prompt.md` | *Internal.* The **cold grader** `practice-session` dispatches: grades one answered batch, verifies its fixes, or recounts a current route, against the standard; refuses a partial batch; says why each failure failed; never edits a batch file. Not runnable. | the standard, persistent exercise plan and source digests, the batch folder/snapshot except in recount mode, `practice/exercises/ATTEMPTS.md` and `INDEX.md`, and the notes-plan heads | `practice/exercises/ATTEMPTS.md` rows; the route's row in `PROGRESS.md` → `### Short exercises` |
 | `practice/simulations/_internal/_simulation-plan-standard.md` | *Internal.* The doctrine/route split, evidence and readiness inputs, route schema, timed-verdict/correction/reinforcement semantics, freshness contract, and fourteen cross-file invariants. Not runnable. | — | — |
 | `practice/simulations/simulation-plan-prompt.md` | **Orchestrator.** Turns selected-level coverage plus demonstrated readiness into an ordered Angular / Spring Boot / SQL route. Coverage is the ceiling; project, progress and closed-SQL-step evidence decide what is ready. Preserves attempt history and uses one cold route reviewer. | `_simulation-plan-standard.md`, selected-level topic coverage, `_shared-context.md`, `PROGRESS.md`, `ROADMAP.md`, SQL doctrine/route, existing specs, TRACKER, MISTAKES | `practice/simulations/PLANNING.md` when missing; `practice/simulations/{LEVEL}/PLANNING-{LEVEL}.md` |
 | `practice/simulations/simulation-generator-prompt.md` | Materialises the current route step; focus, difficulty, time, track, and path come only from the selected-level route. | simulation doctrine + selected route, standard, existing specs, TRACKER; SQL §8/§8c rule + SQL route §3 mapping | planned `practice/simulations/{type}/NN-*.md`; TRACKER row/count; route generation/state; doctrine/route §0 |
@@ -950,6 +964,15 @@ bank inventory. Authoring, refinement and study are deliberately separate states
    steps; its route-driven `simulation-generator` independently rechecks the same §8c rule against the
    SQL route §3
 7. after the last step: `progress-update`, then `roadmap-review` — then `sql-plan` for the next level
+
+**The short-exercise track (on demand)**
+1. Ask to plan a topic and level: `practice-session` executes its internal planner, grounding every
+   task in coverage and notes-plan prerequisites and publishing after cold review. Java junior is
+   enabled first; other environments remain REC-275's scope. No exercise source is created yet.
+2. Ask to practise: the skill validates the saved plan, selects eligible tasks and generates only
+   the current batch. Missing/stale plans are reconciled first; missing/stale sources are reported.
+3. Answer, ask for correction, repair failures and later solve different variants. Planned task
+   completion is reported separately from concept exposure and unaided consolidation.
 
 **The timed-simulation track**
 1. `progress-update` — repair its drift first; readiness cannot be planned from a stale level matrix

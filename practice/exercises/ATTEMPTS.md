@@ -6,5 +6,5 @@ closed vocabularies and the states derived from these rows are `_practice-standa
 that file. `First result` is immutable; `Fix verified` is the only cell that changes after insertion, and
 no row is ever deleted. Every figure in `PROGRESS.md` → `### Short exercises` is recounted from here.
 
-| ID | Date | Route | Block | Concept | Batch | Ex | Kind | First result | Why | Help | Fix verified |
-|---|---|---|---|---|---|---|---|---|---|---|---|
+| ID | Date | Route | Block | Concept | Batch | Ex | Kind | First result | Why | Help | Fix verified | Plan ID |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|

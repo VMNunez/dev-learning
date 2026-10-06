@@ -3,8 +3,9 @@
 **What this governs.** The short, untimed, graded exercises Victor asks for in his own words ("vamos a
 practicar", "hazme ejercicios de streams") for the practical topics beyond SQL. One mechanism for every
 topic, taking a topic and a level; built 2026-10-05 from `REC-274`, java junior first. It is executed by
-one skill, `practice-session`, and one cold grader, `_practice-review-prompt.md` beside this file. Hand-written
-only: no run and no skill edits this file.
+one skill, `practice-session`, through three components beside this file: the planner
+`_practice-plan-prompt.md`, its read-only checker `validate-practice-plan.py`, and the cold grader
+`_practice-review-prompt.md`. Hand-written only: no run and no skill edits this file.
 
 **What it is not.** The SQL exercise track (`practice/sql/`, its own doctrine and four skills) is left
 as it is and is never migrated here. A timed test under exam conditions is `practice/simulations/`; an
@@ -23,7 +24,8 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 
 | File | Writer | Notes |
 |---|---|---|
-| `practice/exercises/INDEX.md` | `practice-session` (derivation only, §B) | the route: one table per topic and level, each block linked to its note |
+| `practice/exercises/{topic}/{level}/PLANNING-{level}.md` | `practice-session` planning route (§B) | persistent reviewed tasks; no exercise source files |
+| `practice/exercises/INDEX.md` | `practice-session` planning route (§B) | navigation projected from the plans, each block linked to its note |
 | `practice/exercises/ATTEMPTS.md` | the cold grader only (§D) | the per-attempt history; every count anywhere is derived from it |
 | `practice/exercises/{topic}/{level}/{YYYY-MM-DD}-{slug}/` | `practice-session` writes the batch `README.md` and each exercise file's statement and skeleton; **Victor writes the answers** | one folder per batch, never reused |
 | `PROGRESS.md` → `### Short exercises` | the cold grader (§G) | cells only, recounted from the history |
@@ -31,45 +33,92 @@ bullet, and never reads a missing `✅` as "never practised" or as a reason to p
 Nothing is written into a note: a `refined` pair is frozen, and the index is what links a block to it.
 
 **Commits follow authorship.** Everything inside a batch folder is Victor's commit — statement and
-answer share a file, as in the SQL track — and is never staged by the agent or co-authored. `INDEX.md`,
+answer share a file, as in the SQL track — and is never staged by the agent or co-authored. The per-level exercise plans, `INDEX.md`,
 `ATTEMPTS.md` and `PROGRESS.md` are system-written and the agent commits them directly (authorized by
-Victor 2026-10-05; `_session-rules.md` carries the boundary).
+Victor 2026-10-05, the plans 2026-10-06; `_session-rules.md` carries the boundary).
 
 ---
 
-## B — The route is derived, not planned
+## B — A persistent exercise plan per topic and level
 
-A topic's route at a level is **its notes plan read as blocks**: `notes/{topic}/coverage/notes-plan-{LEVEL}.md`
-already holds the prerequisite order, the bullets each chapter claims and a coverage fingerprint, so a
-second planner would be a second opinion about the same order.
+**Scope comes from coverage; grouping and prerequisite order come from the notes plan; practical
+tasks come from the exercise plan.** Neither notes nor coverage is authored by this track.
 
-- **Block** = one notes-plan entry (`## NN — Title`), in entry order. Its **concepts** are the bullets of
-  that entry's `Coverage concepts:` list; a concept's identity is the bullet's **head** — the text before
-  the first ` — `, copied verbatim, with the plan's `- [ ]` / `- [x]` checkbox and any evidence marker
-  stripped: both are state, and state is never part of an identity.
-- **`INDEX.md` row** = block number, title, the entry's `Spanish:` path, its `Depends on:`, the count of
-  its bullets, and `In route` (`yes`, or `no — <reason>` where §H excludes the block). One line under
-  the table states the in-route totals — blocks and concepts — which are §G's two denominators.
-- **Fingerprint.** Each table states the notes plan's own `Coverage SHA-256` at derivation. When the
-  plan's value differs, or its entry list or any entry's bullet count no longer matches the table's — a
-  remap between entries moves bullets under an unchanged digest — the table is **re-derived in place**
-  before anything is generated — mechanical, no reviewer, reported in one line.
-- **A re-derivation never touches `ATTEMPTS.md`.** History rows keep the block and head they were
-  written with. A head no in-route block of the plan holds any more is an **orphan**: the recount (§G)
-  reports it and counts it in no cell, and it is never deleted or rewritten. The recount matches a row
-  to a block by its head, wherever the plan holds that head today; a row's `Block` is only the record
-  of where the head sat when the row was written, so a head a remap moved between entries keeps its
-  attempts. The index stores a count per
-  block, never the heads, so every check of *which* heads a block holds reads the notes plan named on
-  the table's `Notes plan:` line.
-- A note's `Status:` is read live from the notes plan and never stored here. A block may be practised
-  before its note is refined, or written at all; the batch says which state the note is in.
-- A plan that reads `Plan status: stale`, or a topic with no notes plan at that level, has no route:
-  say so in one line and name `/notes-plan {topic} {level}`. A requested batch is still served (§C).
+The route is `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, written by the planning
+route of `practice-session`, executing `_practice-plan-prompt.md` beside this standard. The same
+mechanism supports junior, middle and senior; an environment in §H must support the selected pair
+before a plan or a batch is served. Create a level only when it is enabled and requested; never
+copy junior tasks into another level or pre-create empty trees. SQL retains its separate system.
 
-**First pass.** A block's first pass is complete when every concept of the block has one attempt of kind
-`first` that is not `void`. It is finite by construction. Everything after it — variants, integration,
-requested extras — is practice on top of the route and never moves the first-pass figure.
+### Plan contract
+
+- Header: `Plan status: current`, `Topic:`, `Level:`, `Coverage:`, `Coverage SHA-256:`,
+  `Notes plan:`, `Notes structure SHA-256:`, `Generated:`. Recompute the coverage digest using
+  `_coverage-standard.md`'s scope-byte algorithm, stripping evidence markers before comparing;
+  never trust the notes plan's stored digest alone. The notes plan must be current and match it.
+- Blocks follow the notes-plan entries and carry their number, title, Spanish note path and
+  `Depends on`. All selected-level coverage bullets appear exactly once in the concept table, under
+  the heading `## Concept mapping`: `Concept ID | Block | Coverage head | Disposition | Reason`. The head is verbatim text before
+  the first ` — `, without state/evidence markers. IDs are stable within this route. Disposition
+  is `included`, `excluded`, or `retired` for a concept coverage no longer holds (below); every
+  exclusion needs a concrete environment/scope reason.
+  Earlier-level concepts may be prerequisites, never new selected-level targets.
+- The exercise table, under `## Exercise inventory`, is
+  `ID | Block | Concepts | Kind | Difficulty | After | File | Task | Pass condition | State`.
+  In both tables separators are written `|---|` unspaced and a literal `|` inside a cell as `&#124;`
+  — the checker reads both literally.
+  `Concepts` lists concept IDs separated by commas; every active included concept needs a `first`
+  exercise and a distinct later `variant`. `integration` joins two or three already-attempted
+  concepts; plan at least one per included block where its concepts admit a meaningful short task.
+  Explain any exception. Difficulty is `foundation`, `transfer` or `integration`. `After` lists
+  prior exercise IDs or `none`. Tasks state a concrete coding, diagnosis or API-use problem;
+  "practise concept X" is not a task. Pass conditions specify observable evidence and edge cases,
+  never a worked solution. Quantity follows the tasks, not a uniform quota per block.
+- `File` reserves an exact basename inside a future batch folder, matching §H. The batch date and
+  slug are allocated when Victor sits down to answer. No source files or full statements are
+  generated during planning. The first plan must show all intended tasks, including transfers
+  and integrations, not just a list of headings or totals. `State` is `active` or `retired` only;
+  attempted/passed counts are derived from the history, never copied into the plan.
+- `INDEX.md` is navigation and a projection, one section per route: the lines `Exercise plan:`,
+  `Active planned exercises:`, `Notes plan:`, `Coverage SHA-256:`, `Notes structure SHA-256:` and
+  `Derived:` (date), then one row per block — `Block | Title | Note | Depends on | Bullets | In route`
+  — where `Bullets` counts the block's bullets and `In route` is `yes`, or `no — <reason>` where §H
+  excludes the block, and one line of in-route totals, which are §G's two denominators. It never
+  owns task design.
+- Notes structure digest: SHA-256 of UTF-8 JSON, `ensure_ascii=False`, compact separators, no final
+  newline, over the ordered list of `[number,title,Spanish,Depends on,[full coverage bullets]]`.
+  Strip checkbox and evidence markers from bullets; exclude note prose and all status/study fields.
+  `validate-practice-plan.py` beside this standard implements both digests and route checks.
+
+### Freshness and preservation
+
+Before planning or generating, validate both sources and the exercise plan. A changed concept's
+description, a same-count remap, dependency, note path or order changes its source digest. Study
+checkboxes and project evidence do not. An absent/stale exercise plan goes through planning first;
+generation never silently substitutes an improvised route. Missing/stale notes plans name
+`/notes-plan {topic} {level}` and stop planned generation. An explicitly requested off-route concept
+may still be served as `extra` in a supported environment, reported as outside the planned route.
+
+A replan preserves existing IDs and all history. Never renumber, delete or repurpose a published
+exercise or concept ID. Preserve an unchanged task's whole row; retire a changed task and append its
+replacement under a fresh ID. A row whose `After` names a retired ID is a changed task too: retire it
+and append its replacement, pointed at the new prerequisite — the checker rejects an active row that
+depends on a retired one. Its earlier attempts remain concept evidence and pass no new ID. Retain removed concept definitions as `retired` dictionary rows outside
+the current concept denominator. Notes-block remaps update the current concept mapping without
+changing the head identity; published task rows keep their historical block. No batch folder is edited.
+The planner reports additions, retirements and unchanged tasks and refreshes digests only after the
+mapping has been reconciled and reviewed. It does not infer success for new IDs from old exercises.
+
+### Completion
+
+The existing concept first-pass measure remains: every included concept in the block has one
+non-`void` `first` attempt. This measures exposure, not completion of the exercise plan.
+**A planned exercise is passed** when an attempt carrying its `Plan ID` has result `✅`, or a failing
+attempt has a verified fix date. `void` and unlinked (`Plan ID: —`) attempts never pass an ID.
+The plan is completed only when all active IDs are passed and no active ID has a later unresolved
+failure. Report `planned passed / active total` separately from concept first-pass and consolidation.
+Extra reviews do not increase the target. Retired IDs remain historical and count toward no active
+target; an attempt without a Plan ID remains concept evidence but never fulfils a task.
 
 ---
 
@@ -95,26 +144,37 @@ override. A requested batch is a first-class attempt in every count.
   more than 8 exercises.
 - **One objective.** Every batch states a single checkable objective in its `README.md` — "transform a
   list with a stream without opening the notes" — never the topic's name.
-- **Composition.** Roughly three fifths new first-pass concepts of the target block, one fifth variants
-  of concepts whose last attempt failed and whose fix is verified, one fifth variants of concepts
-  answered correctly longest ago. With no history, all first-pass. A target block with fewer
-  unattempted concepts than its share fills the rest from the next in-route block in index order whose
-  `Depends on` blocks all have attempts, and the batch shrinks rather than spill past that. A batch never repeats an earlier
-  statement: a variant changes the data, the framing or the combination, so an earlier solution does not
-  answer it.
+- **Composition.** Use the active plan rows in table order, respecting `After` prerequisites.
+  Roughly three fifths of the time budget advances unpassed planned tasks; the rest revisits failures
+  and correctly answered concepts oldest first. With no history use eligible planned tasks only.
+  A prerequisite task needs a non-void attempt; a planned variant additionally needs a different
+  batch from its first exercise. Integrations require attempts on all their concepts. Never emit a
+  plan ID already present in an ungraded batch: resume that batch, or choose other eligible work.
+  Shrink to fit the time budget; do not fill space by inventing counted tasks. At route completion,
+  serve adaptive reviews as unplanned variants/integrations with `Plan ID: —`.
+  A specific request narrows the selection; it may override prerequisite order with one warning,
+  but cannot turn an integration with unattempted concepts into a valid integration: serve a first
+  planned task for those concepts instead. A requested repeat is an unplanned variant, never a new
+  counted ID. Every variant changes data, framing or the combination so old code is not an answer.
 - **Difficulty adapts.** A failure the grader attributed to `prerequisite: <head>` sends the next batch
-  to that prerequisite. Two consecutive unaided `✅` on a concept raise it: harder variant, or combined
-  with a neighbour in an integration exercise. A concept is not served a third equivalent exercise.
+  to that prerequisite. Two consecutive unaided `✅` on a concept select its next planned transfer/integration where eligible;
+  after those tasks are passed, use an unplanned harder variant, or combine it
+  with a neighbour in an integration exercise. A concept is not served a third equivalent exercise. Adaptation never rewrites a planned task
+  or waives its pass condition; prerequisite remediation has `Plan ID: —`.
 - **Integration exercises** join two or three already-attempted concepts in one small task. Untimed,
   with feedback, one file — that is the line that keeps them out of `practice/simulations/`.
 
 **Batch `README.md`** — header lines `Topic:`, `Level:`, `Block:`, `Date:`, `Objective:`, `Time budget:`,
-`Note:` (the block's Spanish note path and its live `Status:`), then one table: `Ex | Kind | Block |
-Concept | File`. `Kind` is `first`, `variant`, `integration` or `extra`; `Block` is the block that holds
+`Note:` (the block's Spanish note path and its live `Status:`), then `Exercise plan:` (path),
+then one table: `Ex | Plan ID | Kind | Block | Concept | File`. `Plan ID` is an active planned ID or
+`—` for adaptive reviews/extras. Copy the selected task and pass condition into each statement;
+instantiate data and context without changing their scope. Resolve concept IDs to verbatim heads.
+For each planned row preserve its Task, Pass condition and head list in a `Plan snapshot` section
+of the batch README, so grading an existing attempt remains possible after source changes. `Kind` is `first`, `variant`, `integration` or `extra`; `Block` is the block that holds
 the row's concept — a batch routinely mixes blocks, since variants return from earlier ones — the
 highest-numbered of them on an integration row, and `—` on an `extra` outside any block; `Concept` is
 the bullet head (several, `+`-joined, on an integration row). The header's `Block:` is the target
-block only. The grader copies `Kind`, `Block` and `Concept` from this table into the history.
+block only. The grader copies `Plan ID`, `Kind`, `Block` and `Concept` from this table into the history.
 
 **Earlier solutions stay out of the way by construction**: each batch is its own folder, the new batch
 never names an earlier one, and the no-repeat rule above is what makes looking back useless.
@@ -140,13 +200,17 @@ nothing else. It is the track's only primary state.
 | `Why` | on `⚠️`/`❌` only: `concept` · `prerequisite: <head>` · `api` (knew the idea, not the call) · `reading` (answered a different question) · `careless`; `—` otherwise |
 | `Help` | what Victor **said** he used: `notes` · `hint` · `feedback` · `ai`; `—` when he declared none. Never inferred, never asked for |
 | `Fix verified` | `—` on `✅` and `void` · `pending` on `⚠️`/`❌` · the date a later run verified his corrected answer |
+| `Plan ID` | planned ID from the batch table, or `—`; immutable |
 
 Rules:
 
 - **`First result` is immutable.** A corrected answer moves `Fix verified` and nothing else; the first
   attempt is the evidence, exactly as a timed verdict is in the simulation track.
 - **A defective exercise is `void`**, never his failure: an ambiguous statement, a skeleton that cannot
-  compile as given, a head the row's `Block` does not hold in the notes plan — on an integration row, a head no in-route block holds. The grader says what was wrong with the
+  compile as given, a planned row whose ID, heads, task or criteria do not match its saved plan snapshot and retained
+  plan row. Grade existing batches against their generation-time contract, not a later block remap.
+  An unplanned row (`Plan ID: —`) is graded against its own statement and declared heads; current orphan heads
+  are reported and excluded from recounts rather than making a historically valid exercise void. The grader says what was wrong with the
   exercise; a `void` row counts in no figure and the concept is still owed its first pass.
 - **`Why` is mandatory on a failure**, because §C's adaptation reads it. A grader that cannot tell
   writes `concept` and says so in its report.
@@ -187,8 +251,8 @@ comments on the choice he makes instead.
    `practice/simulations/MISTAKES.md`, `practice/interview/MISTAKES.md`, every project's
    `PROJECT-BACKLOG.md`, and the active project's current `PLANNING.md` step. "Not recorded" is never read as "not known".
 3. **The history**: concepts owing a fix (named in one line, never a gate), failures by recency, the
-   time since each attempted concept was last seen, and the first block in `INDEX.md` order whose first
-   pass is incomplete and whose `Depends on` blocks all have attempts.
+   time since each attempted concept was last seen, and the first block in plan order with eligible unpassed active tasks. `Depends on` blocks
+   need attempts; `After` and later-batch variant rules still apply.
 4. **Order of preference** between candidates: prerequisite first, then recent failures, then pending
    review, then new content — and never the absence of a coverage `✅`.
 
@@ -205,13 +269,19 @@ está definido") and the next candidate that has one is proposed instead.
 
 | Cell | Recount, from `ATTEMPTS.md`, `INDEX.md` and the heads of the notes plan the index names |
 |---|---|
-| `Blocks first-passed` | blocks `In route: yes` whose every concept has a non-`void` `first` row / blocks `In route: yes` |
+| `Blocks first-passed` | blocks `In route: yes` whose every included concept has a non-`void` `first` row / blocks `In route: yes` |
 | `Concepts attempted` | distinct heads of in-route blocks with a non-`void` row / the sum of `Bullets` over in-route blocks |
 | `Consolidated` | distinct heads in state *consolidated* (§E) / the same denominator |
 | `Owing a fix` | the count of concepts in that state — a number, never a percentage |
 
+The planned passed/active total (§B) is returned in the session and grading reports, not added to
+this table; the concept first-pass cells do not claim plan completion. If sources/plan are stale,
+the grader still records and verifies existing answers, but leaves the projection unchanged, reports
+`recount pending — replan`, and the planning route invokes the grader in `recount` mode after repair.
+A recount writes no attempts and reuses §G; the planner never invents grades.
+
 The three share cells are written `n/N (p%)`. The grader rewrites the affected row after every run that
-appended or changed a history row, and adds the row on a route's first such run. `extra`
+appended or changed a history row, and adds the row on a route's first such run (or on an explicit `recount`). `extra`
 rows and orphaned heads enter no cell; the grader's report states how many of each exist. A route with
 no table in `INDEX.md` has no row. The legend prose beside the table has no automatic writer.
 
@@ -227,10 +297,12 @@ need rendering, angular and spring-boot need a small base app with isolated atte
 
 ### java — junior
 
-- **Shape.** One standalone file per exercise, `ExNN.java`, holding the statement as its opening comment
-  block and a compilable skeleton — `public class ExNN` with a `main` — with `// Your answer:` marking
+- **Shape.** One standalone file per exercise, `ExNN.java`, using the planned basename (adaptive work uses `ExExtraNN.java`), holding the statement as its opening comment
+  block and a compilable skeleton — a public class matching the basename with a `main` — with `// Your answer:` marking
   where he writes. No package line, no build tool, no dependency beyond the JDK.
-- **How he runs it.** With the JDK's single-file source launcher, from the batch folder. The agent never
+- **How he runs it.** Normally with the JDK's single-file source launcher, from the batch folder.
+  Block 00 may explicitly ask him to compile with `javac` and run the resulting class with `java`
+  to observe source versus bytecode; both are JDK tools, with no build project. The agent never
   runs his work.
 - **Evidence of execution.** The file is the evidence. Where the statement asks for observable output,
   it prints an `// Expected output:` block, and he pastes what his run printed under a `// My output:`

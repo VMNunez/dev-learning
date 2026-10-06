@@ -1,9 +1,9 @@
 ---
 name: practice-session
 description: >
-  Open, generate and grade a batch of short practice exercises for the practical topics beyond SQL,
+  Plan, open, generate and grade a batch of short practice exercises for the practical topics beyond SQL,
   WHENEVER Victor asks to practise in his own words ("vamos a hacer ejercicios de repaso de práctica",
-  "quiero practicar", "hazme ejercicios de streams", "ejercicios de java") or says a batch is ready
+  "quiero practicar", "hazme ejercicios de streams", "ejercicios de java") or asks to create/update a topic-level exercise plan ("planifica los ejercicios de java junior"), or says a batch is ready
   ("listo, corrige los ejercicios", "ya he hecho el lote", "he corregido los fallos"). He never types a
   command: naming no topic makes it propose what to practise and why, from his goal and his history;
   naming a topic, a block or a concept generates exactly that, with no proposal and no counter-suggestion.
@@ -43,7 +43,17 @@ the default. **Never comment on what he chooses to practise or for how long.**
 **Never write his answers and never run his code.** The exercise files are his from the moment they are
 generated: the statement and the skeleton are written once, at generation, and never touched again.
 
-Take exactly one of the two routes, from what he said.
+Take the route matching his request. A planning-only request uses Route 0. A practice request uses
+Route 1, which plans first if necessary. A grading request uses Route 2.
+
+---
+
+## Route 0 — he wants a persistent exercise plan
+
+Resolve topic and level from his request, level defaulting to junior. Execute
+`notes/prompts/practice/exercises/_internal/_practice-plan-prompt.md` completely. Its review gate,
+validation, preservation and publication rules govern this path. Report the path, totals, exclusions
+and review result; commit the accepted plan and INDEX. Do not generate an exercise batch.
 
 ---
 
@@ -61,18 +71,18 @@ Take exactly one of the two routes, from what he said.
 **The topic must have an environment section** in standard §H. If it has none, say so in one line, name
 the topics that do, and stop — on the proposal path, propose the next candidate that has one instead.
 
-### 1b — The route is current, or is re-derived
+### 1b — Require the persistent plan
 
-Open `practice/exercises/INDEX.md` and the topic's `notes/{topic}/coverage/notes-plan-{LEVEL}.md`. If the
-index has no table for this route, or its fingerprint, entry list or any entry's bullet count no longer
-matches the plan, derive
-the table as standard §B states and say so in one line. Never touch `practice/exercises/ATTEMPTS.md`
-here. A stale or missing notes plan is reported in one line with `/notes-plan {topic} {level}`; a
-requested batch is still served, as `extra` where no block can be resolved.
+Open `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, its topic coverage, notes plan,
+INDEX and ATTEMPTS. Validate the route under standard §B, including actual source digests, not just
+the notes plan's stored fingerprint. On an absent/stale exercise plan execute Route 0's planner
+and continue only after acceptance. On missing/stale sources, report the owner and stop planned
+generation. An explicitly requested off-route extra follows §C and does not create a counted ID.
+An unsupported topic/level never enters this route or silently falls back to Java junior.
 
 ### 1c — Compose the batch
 
-From `ATTEMPTS.md` and the index, under standard §C: size from the time he stated (30 minutes when he
+From the persistent plan, `ATTEMPTS.md` and existing batch manifests, under standard §C: size from the time he stated (30 minutes when he
 stated none), one checkable objective, the composition split, the difficulty adaptation read off the
 `Why` column, and the no-repeat rule. If a concept is owing a fix (standard §E), name it in one line —
 "tienes pendiente corregir `X` del lote `Y`" — and continue; it is never a gate.
@@ -81,12 +91,13 @@ stated none), one checkable objective, the composition split, the difficulty ada
 
 One new folder, `practice/exercises/{topic}/{level}/{YYYY-MM-DD}-{slug}/` (a second batch the same day
 takes a different slug): the `README.md` in the exact shape standard §C gives, and one exercise file per
-row in the shape the topic's §H section gives. Statements are written in English, like all code and
+row in the shape the topic's §H section gives, using the planned basename. Copy its ID, task,
+criteria and concept heads into the batch snapshot; adaptive exercises use `Plan ID: —`. Statements are written in English, like all code and
 technical files. Nothing else is written, and no earlier batch is named in it.
 
 ### 1e — Hand over
 
-Print the objective, the table, the block's Spanish note path with its live `Status:`, and how the
+Print the plan path, passed/active planned tasks, the objective, the table, the block's Spanish note path with its live `Status:`, and how the
 topic's §H says he runs a file. Then stop: he answers on his own, and says when it is ready.
 
 ---
@@ -106,7 +117,7 @@ One cold subagent at the `deep` reasoning tier, as `notes/prompts/_internal/_age
 maps that tier — a grader with its own return contract, not that standard's `reviewer` role — handed
 **only**: the instruction to read and execute
 `notes/prompts/practice/exercises/_internal/_practice-review-prompt.md` in full, to EOF, as its whole task, and
-`{ROUTE}`, `{BATCH}`, `{MODE}`, `{HELP}`. **Do not summarise the session, the exercises, or what he was
+`{ROUTE}`, `{BATCH}`, `{MODE}`, `{HELP}`. For the planner's `recount` call, pass the route and `MODE=recount`, with no batch or help input. **Do not summarise the session, the exercises, or what he was
 taught.** Take a `git status` just before dispatching.
 
 Never grade it yourself — not when the dispatch fails, not for a one-exercise batch. A dispatch that
@@ -123,9 +134,11 @@ corrected code. Then exactly one line of next step:
 | any `⚠️` / `❌` | he rewrites those answers in the same files and says they are corrected — that run is `verify` |
 | all `✅`, or `VERIFIED` with none left `pending` | nothing owed; a later batch will bring variants |
 | `void` rows | say which exercise was defective and why; it is not his failure and the concept is still owed |
+| `recount pending — replan` in the report | the grade is recorded and the `PROGRESS.md` row was not recounted; name the stale source and its owner (`/notes-plan {topic} {level}`, then asking to plan) — the planner triggers the recount |
 
-Check the grader's returned file list against `git status`: it is `practice/exercises/ATTEMPTS.md` and
-`PROGRESS.md`, or nothing. Anything else modified is a deviation of this run. Each line of its
+Check the grader's returned file list against `git status`: a subset of
+`practice/exercises/ATTEMPTS.md` and `PROGRESS.md` — both after a grade or verify on current sources,
+the history alone when the recount was deferred, `PROGRESS.md` alone in `recount` — or nothing. Anything else modified is a deviation of this run. Each line of its
 `desvíos de la rama:` is one too, logged under the shared deviation close-out with `Scope: shared`.
 
 ---
@@ -135,12 +148,14 @@ Check the grader's returned file list against `git status`: it is `practice/exer
 Per the shared session rules, on the **active branch**, `git status` right before each `git add` and
 each `git commit`, so no file of a batch folder is staged alongside a system file.
 
-**You commit yourself** (authorized 2026-10-05 — system-written, never Victor's):
+**You commit yourself** (authorized 2026-10-05, the exercise plans 2026-10-06 — system-written, never Victor's):
 
-- `practice/exercises/INDEX.md`, when 1b derived a table — `docs(practice): derive the {topic} {level} route`
+- `practice/exercises/{topic}/{level}/PLANNING-{level}.md` + `practice/exercises/INDEX.md`,
+  after an accepted planning/reconciliation run — `docs(practice): plan the {topic} {level} exercises`
 - `practice/exercises/ATTEMPTS.md` + `PROGRESS.md`, after a grader run that wrote —
   `docs(practice): grade {batch} — n/m`, or `docs(practice): verify the fixes of {batch} — n/m` on a
-  `verify` run
+  `verify` run — or `PROGRESS.md` alone after a planner-triggered `recount` that changed the row:
+  `docs(practice): recount {topic} {level}`
 
 **Victor commits himself** — the whole batch folder, statements and answers together. Hand him the two
 blocks (`git add`, then `git commit`), one command per block, **after a `grade` run and again after a
@@ -152,7 +167,9 @@ generation: `docs(practice): {topic} {slug} — n/m`, then `docs(practice): fix 
 
 ## Report back
 
-Route 1:
+Route 0: plan path, counts, exclusions, reconciliation delta, validation and cold-review verdict.
+
+Route 1 includes the plan path and `Plan: passed/active tasks` alongside:
 
 ```
 Práctica: java junior · bloque 10 — Collections, hashing, and ordering · 30 min · 5 ejercicios

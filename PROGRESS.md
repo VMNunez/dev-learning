@@ -295,9 +295,11 @@ and Senior banks keep their own denominators.
 
 Short, untimed, graded exercises for the practical topics beyond SQL, asked for in session and graded
 by a cold reviewer. Recounted after every grading run from `practice/exercises/ATTEMPTS.md` (one row per
-exercise graded) against `practice/exercises/INDEX.md` (the route, derived from each topic's notes
-plan). **Practised in an exercise is not applied in a project**: nothing here writes or reads a coverage
-`✅`, and these figures are never added to `Coverage demonstrated`.
+exercise graded) against the per-topic, per-level exercise plans linked from
+`practice/exercises/INDEX.md`. Planned-task completion is reported separately in practice sessions;
+the first-pass figures below measure concept exposure, not completion of those plans. **Practised in an
+exercise is not applied in a project**: nothing here writes or reads a coverage `✅`, and these figures
+are never added to `Coverage demonstrated`.
 
 - **Blocks first-passed** — blocks of the route whose every concept has been exercised once. Finite: it
   is the route's first pass, and review variants never move it.
@@ -308,7 +310,7 @@ plan). **Practised in an exercise is not applied in a project**: nothing here wr
 - **Owing a fix** — concepts whose last failed attempt has not had its correction verified. A number,
   not a share.
 
-A route gains its row on its first graded batch; java junior's was seeded when the track was built. A
+A route gains its row on its first graded batch or recount; java junior's was seeded when the track was built. A
 topic absent from this table has no graded batch yet, and usually no practice environment defined.
 
 | Route | Blocks first-passed | Concepts attempted | Consolidated | Owing a fix |
