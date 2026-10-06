@@ -1,7 +1,9 @@
 # Short practice exercises — persistent planner
 
-Internal component executed by `practice-session`, never a public slash command. Receives one
-`{TOPIC}` and `{LEVEL}`. Creates or reconciles that route under `_practice-standard.md` §B.
+Internal component executed by `practice-session`, never a public slash command. Receives exactly one
+`{TOPIC}` and one `{LEVEL}` — never `all` or a list, and never several routes in one run, in sequence or
+in parallel (Victor, 2026-10-06, `REC-279`); handed more than one, it plans none and returns that each
+route needs its own run. Creates or reconciles that route under `_practice-standard.md` §B.
 It writes plans and navigation only; statements, skeletons, answers and grades belong to other routes.
 
 1. Read the standard to EOF, the selected-level topic coverage and notes plan to EOF, the existing

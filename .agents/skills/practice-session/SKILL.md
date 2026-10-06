@@ -50,7 +50,10 @@ Route 1, which plans first if necessary. A grading request uses Route 2.
 
 ## Route 0 — he wants a persistent exercise plan
 
-Resolve topic and level from his request, level defaulting to junior. Execute
+Resolve topic and level from his request, level defaulting to junior. **One route per request**
+(`REC-279`): if he names several topics or levels, or `all`, plan only the first he named that
+standard §H supports — for `all`, the first in §H order — and name the rest in one line, each owing
+its own later request; never plan two in one run, in sequence or in parallel. Execute
 `notes/prompts/practice/exercises/_internal/_practice-plan-prompt.md` completely. Its review gate,
 validation, preservation and publication rules govern this path. Report the path, totals, exclusions
 and review result; commit the accepted plan and INDEX. Do not generate an exercise batch.
