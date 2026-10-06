@@ -1,16 +1,19 @@
 # Practice index — every route, each block linked to its note
 
-The route of the short-exercise track, one table per topic and level. **Derived, never planned and never
-edited by hand**: `practice-session` writes each table from that topic's notes plan, under
-`notes/prompts/practice/exercises/_internal/_practice-standard.md` §B, and re-derives it when the plan's
-fingerprint, entry list or any entry's bullet count moves. A re-derivation never touches `ATTEMPTS.md` beside this file. A note's
-status is not stored here — it is read live from the notes plan.
+Navigation for the short-exercise track. `practice-session` writes this projection after a
+reviewed plan under `notes/prompts/practice/exercises/_internal/_practice-standard.md` §B.
+Coverage defines scope, the notes plan groups it, and each topic-level exercise plan owns its tasks.
+The tables link blocks to notes; they never substitute for the exercise inventories. Note status
+is read live. Future routes use the same topic/level layout when their environment is enabled.
 
 ## java — junior
 
+Exercise plan: [Java junior](java/junior/PLANNING-junior.md)
+Active planned exercises: 269
+Notes structure SHA-256: 7ce0128dc0f8cf59aca6b22f2663bef9f9dd785e4acef79d79b74d259424f5e2
 Notes plan: notes/java/coverage/notes-plan-junior.md
 Coverage SHA-256: bad12930637587f5cce0f4c3bad990572d29c6e9c4ea340a6e4a2627a188508a
-Derived: 2026-10-05
+Derived: 2026-10-06
 
 | Block | Title | Note | Depends on | Bullets | In route |
 |---|---|---|---|---|---|
