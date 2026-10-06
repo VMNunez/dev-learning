@@ -205,8 +205,10 @@ The orchestrator enumerates, from disk rather than from either map:
   `README.md`, `_internal/` directories, and filenames beginning with `_`; assert that this set equals
   the canonical targets referenced by both launcher catalogues;
 - every internal `*-prompt.md`, `*-standard.md`, and `*-rationale.md`, plus the three SQL branch/seed
-  components (`_sql-exercises-practice.md`, `_sql-exercises-review.md`, `_sql-exercise-seeds.md`) and
-  the coverage ownership contract (`_topic-ownership.md`);
+  components (`_sql-exercises-practice.md`, `_sql-exercises-review.md`, `_sql-exercise-seeds.md`),
+  the coverage ownership contract (`_topic-ownership.md`), and the short-exercise route checker
+  `practice/exercises/_internal/validate-practice-plan.py` — an internal component of that family,
+  read to EOF as machinery and never run, since its oracle is a live route (`REC-277`);
 - the root contracts `_session-rules.md`, `_agent-runtime-standard.md`, `_batch-mode.md`,
   `_external-path-preflight.md`, `_pipeline-self-report.md`, `_single-shot-self-report.md`, and
   `_recommendation-ledger.md`, `_recommendation-ledger-closed.md` and

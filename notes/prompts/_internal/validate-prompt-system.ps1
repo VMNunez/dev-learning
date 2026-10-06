@@ -476,13 +476,18 @@ $proposedPathCiters = @(
 # THE SCANNED POPULATION IS ITSELF AN EXEMPTION LIST (REC-172 (vi)): a machinery file left out of
 # it is not checked, and nothing says so. Both launcher catalogues were outside until 2026-08-27
 # while carrying 35 path references between them - in the very files invariants 5 and 6 already
-# treat as machinery, which is the asymmetry that named the hole. `.ps1` files stay out and this is
-# the published limit, not an oversight. There are TWO tracked machinery scripts, not one: this
+# treat as machinery, which is the asymmetry that named the hole. Scripts stay out and this is the
+# published limit, not an oversight. There are THREE tracked machinery scripts. Two are `.ps1`: this
 # validator, whose "paths" are regex literals with `(`, `|` and `\` in them, so scanning it would
 # measure its own patterns rather than its claims; and `.claude/hooks/log-skill-run.ps1`, the
 # `PostToolUse` hook that writes the `_skill-runs.md` counter, which builds its one path with
-# `Join-Path` rather than writing it whole, so no pattern here would see it either. Both files'
-# prose citations are proofread by hand instead.
+# `Join-Path` rather than writing it whole, so no pattern here would see it either. The third,
+# `practice/exercises/_internal/validate-practice-plan.py` (REC-276), stays out for a different
+# reason: it writes its three path templates whole and the pattern would match them, but the scan
+# below takes `*.md` only - and scanning it would still check none of them, since the loop skips
+# every reference carrying `{}` as a placeholder. A citation OF it is unchecked too - `$referencePathPattern` ends in
+# `md|ps1|sql`, so the `.py` path `_practice-plan-prompt.md` tells the planner to run is never
+# resolved. All three files' path citations, and the citations of the third, are proofread by hand.
 $sqlExerciseReferences = [System.Collections.Generic.List[object]]::new()
 $proposedPathReports = [System.Collections.Generic.List[string]]::new()
 $referenceScan = @()
@@ -1164,7 +1169,12 @@ foreach ($topic in $topicCoverageRoots) {
     }
 }
 
-# The same `Coverage SHA-256` contract lives in two shapes the loop above cannot reach.
+# The same `Coverage SHA-256` contract lives in three more shapes the loop above cannot reach, and
+# this script reads two of them: the SQL route below and the simulation route after it. The third,
+# a short-exercise plan (`practice/exercises/{topic}/{level}/PLANNING-{level}.md`), carries the same
+# header lines and is checked only by `validate-practice-plan.py`, one route per call, when
+# `practice-session` runs it - so a short-exercise plan claiming `current` over a moved digest
+# passes here in silence (REC-276, published in README.md).
 foreach ($routePlan in Get-ChildItem -LiteralPath (Join-Path $RepositoryRoot 'practice\sql') -Recurse -File -Filter 'PLANNING-*.md') {
     $routeName = $routePlan.FullName.Substring($RepositoryRoot.Length + 1).Replace('\', '/')
     $routeText = [System.IO.File]::ReadAllText($routePlan.FullName)
