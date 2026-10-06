@@ -3,7 +3,7 @@ name: practice-session
 description: >
   Plan, open, generate and grade a batch of short practice exercises for the practical topics beyond SQL,
   WHENEVER Victor asks to practise in his own words ("vamos a hacer ejercicios de repaso de práctica",
-  "quiero practicar", "hazme ejercicios de streams", "ejercicios de java") or asks to create/update a topic-level exercise plan ("planifica los ejercicios de java junior"), or says a batch is ready
+  "quiero practicar", "hazme ejercicios de streams", "ejercicios de java"), asks for reinforcement on something he is unsure of ("refuerzo de Optional", "no me siento seguro con equals y hashCode"), or asks to create/update a topic-level exercise plan ("planifica los ejercicios de java junior"), or says a batch is ready
   ("listo, corrige los ejercicios", "ya he hecho el lote", "he corregido los fallos"). He never types a
   command: naming no topic makes it propose what to practise and why, from his goal and his history;
   naming a topic, a block or a concept generates exactly that, with no proposal and no counter-suggestion.
@@ -64,6 +64,14 @@ and review result; commit the accepted plan and INDEX. Do not generate an exerci
 - **He named something** — a topic, a block ("el bloque de colecciones"), or a concept ("`Optional`").
   That is the batch (standard §C). No proposal, no reason asked for, no alternative offered. `{LEVEL}` is
   what he said, else `junior`.
+- **He asked for reinforcement** — he is unsure of something and says so ("refuerzo de X", "no me
+  siento seguro con X"). The batch is that concept or those concepts under standard §C's reinforcement
+  entry: no proposal, no planned row spent. A thing too vague to resolve to a concept head is matched
+  to the closest head(s) of the route and named in one line, never asked about.
+  Reinforcement on SQL is the SQL track's own `reinforce` mode, which works on a file, not a concept:
+  name `/sql-exercises` with `MODE = reinforce`, the `TOPIC` and the `FILE` of the
+  `practice/sql/{LEVEL}/` file whose step in `PLANNING-{LEVEL}.md` covers that concept, and generate
+  nothing here.
 - **He named nothing** — choose under standard §F, reading the files it lists, and open the reply with
   **one line**: what, and why. Then carry straight on to 1b; the proposal is not a question. If it lands
   on SQL, say `vamos con el SQL` is the door, generate nothing and end at the report.
@@ -77,22 +85,24 @@ Open `practice/exercises/{topic}/{level}/PLANNING-{level}.md`, its topic coverag
 INDEX and ATTEMPTS. Validate the route under standard §B, including actual source digests, not just
 the notes plan's stored fingerprint. On an absent/stale exercise plan execute Route 0's planner
 and continue only after acceptance. On missing/stale sources, report the owner and stop planned
-generation. An explicitly requested off-route extra follows §C and does not create a counted ID.
+generation. A reinforcement request is not planned generation: it continues on the published plan's
+heads, and the grader excludes any that turn out orphaned (§D). An explicitly requested off-route extra follows §C and does not create a counted ID.
 An unsupported topic/level never enters this route or silently falls back to Java junior.
 
 ### 1c — Compose the batch
 
 From the persistent plan, `ATTEMPTS.md` and existing batch manifests, under standard §C: size from the time he stated (30 minutes when he
 stated none), one checkable objective, the composition split, the difficulty adaptation read off the
-`Why` column, and the no-repeat rule. If a concept is owing a fix (standard §E), name it in one line —
+`Why` column, and the no-repeat rule — or, on a reinforcement request, §C's reinforcement entry,
+which replaces all of these but the size and the objective. If a concept is owing a fix (standard §E), name it in one line —
 "tienes pendiente corregir `X` del lote `Y`" — and continue; it is never a gate.
 
 ### 1d — Write the batch
 
 One new folder, `practice/exercises/{topic}/{level}/{YYYY-MM-DD}-{slug}/` (a second batch the same day
 takes a different slug): the `README.md` in the exact shape standard §C gives, and one exercise file per
-row in the shape the topic's §H section gives, using the planned basename. Copy its ID, task,
-criteria and concept heads into the batch snapshot; adaptive exercises use `Plan ID: —`. Statements are written in English, like all code and
+row in the shape the topic's §H section gives, using the planned basename, or §H's unplanned one. Copy its ID, task,
+criteria and concept heads into the batch snapshot; unplanned rows (adaptive, extra, reinforce) use `Plan ID: —`. Statements are written in English, like all code and
 technical files. Nothing else is written, and no earlier batch is named in it.
 
 ### 1e — Hand over

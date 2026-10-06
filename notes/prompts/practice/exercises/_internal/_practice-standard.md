@@ -127,10 +127,12 @@ target; an attempt without a Plan ID remains concept evidence but never fulfils 
 **Generated on the day it is answered, never in advance** (the SQL rule of 2026-08-04). Declaring a note
 refined generates nothing.
 
-**Two entries, one component.** Called **with** a topic, a block or a single concept, the batch is that —
+**Three entries, one component.** Called **with** a topic, a block or a single concept, the batch is that —
 no proposal first, no reason asked for, no counter-suggestion; wanting to is sufficient. Called
 **without**, §F chooses and the batch opens with one line saying what and why, which Victor may always
-override. A requested batch is a first-class attempt in every count.
+override. A requested batch is a first-class attempt in every count. Called **as reinforcement** — Victor
+says he is unsure of something ("refuerzo de X", "no me siento seguro con X") — the batch follows the
+reinforcement entry below instead (`REC-278`, 2026-10-06).
 
 - **What a request fixes.** Only *what* is practised. Size, objective, composition and difficulty below
   still apply. A requested concept whose prerequisite block has no attempt is served as asked, with at
@@ -163,14 +165,24 @@ override. A requested batch is a first-class attempt in every count.
   or waives its pass condition; prerequisite remediation has `Plan ID: —`.
 - **Integration exercises** join two or three already-attempted concepts in one small task. Untimed,
   with feedback, one file — that is the line that keeps them out of `practice/simulations/`.
+- **Reinforcement** serves only the concept or concepts he names, each a head of an included concept of
+  the route — anything else follows the `extra` rule above. Every row is kind `reinforce`, `Plan ID: —`:
+  it never serves, reserves or spends a planned row, needs no `After` prerequisite, and has no
+  composition split. Size and the one objective apply as above, and a whole batch may stay on one
+  concept: the third-equivalent limit does not apply, but no exercise repeats another of the batch or an
+  earlier batch's exercise on that concept — each changes data, framing or the mistake it targets, so
+  old code is not an answer. A failure the grader attributes to
+  `prerequisite: <head>` is named in one line and may be reinforced next on his word, never on its own.
+  It is graded cold like any batch, never moves planned completion (§B) or `Blocks first-passed` (§G),
+  and counts toward *consolidated* only as §E states.
 
 **Batch `README.md`** — header lines `Topic:`, `Level:`, `Block:`, `Date:`, `Objective:`, `Time budget:`,
 `Note:` (the block's Spanish note path and its live `Status:`), then `Exercise plan:` (path),
 then one table: `Ex | Plan ID | Kind | Block | Concept | File`. `Plan ID` is an active planned ID or
-`—` for adaptive reviews/extras. Copy the selected task and pass condition into each statement;
+`—` for adaptive reviews, extras and reinforcement. Copy the selected task and pass condition into each statement;
 instantiate data and context without changing their scope. Resolve concept IDs to verbatim heads.
 For each planned row preserve its Task, Pass condition and head list in a `Plan snapshot` section
-of the batch README, so grading an existing attempt remains possible after source changes. `Kind` is `first`, `variant`, `integration` or `extra`; `Block` is the block that holds
+of the batch README, so grading an existing attempt remains possible after source changes. `Kind` is `first`, `variant`, `integration`, `extra` or `reinforce`; `Block` is the block that holds
 the row's concept — a batch routinely mixes blocks, since variants return from earlier ones — the
 highest-numbered of them on an integration row, and `—` on an `extra` outside any block; `Concept` is
 the bullet head (several, `+`-joined, on an integration row). The header's `Block:` is the target
@@ -195,7 +207,7 @@ nothing else. It is the track's only primary state.
 | `Concept` | the bullet head(s), verbatim from the batch table |
 | `Batch` | the batch folder name |
 | `Ex` | the exercise number in that batch |
-| `Kind` | `first` · `variant` · `integration` · `extra` |
+| `Kind` | `first` · `variant` · `integration` · `extra` · `reinforce` |
 | `First result` | `✅` · `⚠️` (works, with a real defect) · `❌` · `void` |
 | `Why` | on `⚠️`/`❌` only: `concept` · `prerequisite: <head>` · `api` (knew the idea, not the call) · `reading` (answered a different question) · `careless`; `—` otherwise |
 | `Help` | what Victor **said** he used: `notes` · `hint` · `feedback` · `ai`; `—` when he declared none. Never inferred, never asked for |
@@ -228,7 +240,7 @@ Derived per concept, from the rows above and never stored:
 - **owing a fix** — its latest failing row has `Fix verified: pending`.
 - **fixed** — that row carries a date. A fix made after reading the feedback proves he can repair it,
   not that he can produce it.
-- **consolidated** — a row of kind `variant` or `integration` from a **later batch** than the concept's
+- **consolidated** — a row of kind `variant`, `integration` or `reinforce` from a **later batch** than the concept's
   first row (a higher `ATT` id under a different `Batch`; a second batch on the same day counts),
   with `First result: ✅` and `Help: —`. Only this state lowers a concept's priority in §F. A fix and a
   later unaided variant are two different pieces of evidence and are never added together.
@@ -297,7 +309,7 @@ need rendering, angular and spring-boot need a small base app with isolated atte
 
 ### java — junior
 
-- **Shape.** One standalone file per exercise, `ExNN.java`, using the planned basename (adaptive work uses `ExExtraNN.java`), holding the statement as its opening comment
+- **Shape.** One standalone file per exercise, `ExNN.java`, using the planned basename (unplanned work — adaptive reviews, extras and reinforcement — uses `ExExtraNN.java`), holding the statement as its opening comment
   block and a compilable skeleton — a public class matching the basename with a `main` — with `// Your answer:` marking
   where he writes. No package line, no build tool, no dependency beyond the JDK.
 - **How he runs it.** Normally with the JDK's single-file source launcher, from the batch folder.

@@ -304,8 +304,8 @@ are never added to `Coverage demonstrated`.
 - **Blocks first-passed** — blocks of the route whose every concept has been exercised once. Finite: it
   is the route's first pass, and review variants never move it.
 - **Concepts attempted** — distinct concepts with at least one graded attempt.
-- **Consolidated** — concepts later solved again in a different exercise, correctly and with no help
-  declared. A fix made after reading the feedback does not count here; only this figure says a concept
+- **Consolidated** — concepts later solved again in a different exercise — a variant, an integration or
+  a reinforcement exercise from a later batch — correctly and with no help declared. A fix made after reading the feedback does not count here; only this figure says a concept
   can be produced cold.
 - **Owing a fix** — concepts whose last failed attempt has not had its correction verified. A number,
   not a share.
