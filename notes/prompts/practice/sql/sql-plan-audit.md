@@ -93,10 +93,12 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   matches neither returns `0`, which `counts-and-truth` would then write into the plan as real:
   ```
   grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' practice/sql/{LEVEL}/NN-name.sql   → written
-  grep -cE '^--.*✅ Corregido' practice/sql/{LEVEL}/NN-name.sql                      → scored
+  grep -cE '^--.*(✅ Corregido|❌ Revisado)' practice/sql/{LEVEL}/NN-name.sql         → scored
   ```
-  The marker always sits **at the end of the exercise's header line**, one per exercise, in both header
-  formats (`_sql-exercises-review.md` Step 2b forbids it on a line of its own). If scored > written for
+  The markers always sit **at the end of the exercise's header line**, in both header formats —
+  `✅ Corregido` on an accepted answer, `❌ Revisado` on a graded one not accepted, and both, in that
+  order, once a rewrite passes — never on a line of their own (`_sql-exercises-review.md` Step 2b), so
+  `grep -c` counts each graded exercise once. If scored > written for
   any file, the count is wrong: stop and report it rather than propagating it.
 - `grep -n "✅\|⏳\|done\|in progress" practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` → the status baseline for the gate.
 - **The route's own count rows, copied verbatim**: its §1 file table and its §3 progress table. These

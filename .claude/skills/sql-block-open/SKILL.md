@@ -3,8 +3,8 @@ name: sql-block-open
 description: >
   Orient the daily 12:30 SQL block before a single query is written, WHENEVER Victor opens it ("vamos
   con el SQL", "abro el bloque de SQL", "¿por dónde iba en SQL?", "what's next in SQL"). It reads
-  practice/sql/PLANNING.md §0, the level's route file, the current exercise file, MISTAKES.md and the
-  notes plan, and answers the questions the block always starts with: which step is open, which file,
+  practice/sql/PLANNING.md §0, the level's route file, the current exercise file and its PROGRESS.md
+  row, MISTAKES.md and the notes plan, and answers the questions the block always starts with: which step is open, which file,
   how many exercises are still unanswered, which Moment comes next, and whether this step's study note
   is worth reading first or still needs /notes-audit. The failure mode this exists for is the
   block starting with ten minutes of re-reading a 1000-line plan, or worse, starting on the wrong file
@@ -45,6 +45,8 @@ line and name the skill that owns the repair — `sql-grade` for counters, `sql-
 - `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §2 and §3 — the current step and its real status. If this
   file does not exist, stop and say: "No existe la ruta de {LEVEL}. Corre `/sql-plan {LEVEL}`."
 - the current exercise file itself — the ground truth, and the only thing that cannot be stale.
+- `PROGRESS.md` → `### Exercise route` — only the current file's row in the `{LEVEL}` detail table, for
+  its `Status` (step 1).
 - `practice/sql/MISTAKES.md` — the `## Open` rows, and the most recent `## Fricción` ones (what cost
   him time without ever being graded wrong).
 - `notes/sql/coverage/notes-plan-{LEVEL}.md` — only the entry that claims this step's coverage bullets,
@@ -58,10 +60,13 @@ returns `0`:
 
 ```
 grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' {FILE}   → written
-grep -cE '^--.*✅ Corregido' {FILE}                      → graded
+grep -cE '^--.*(✅ Corregido|❌ Revisado)' {FILE}         → graded
+grep -cE '^--.*✅ Corregido' {FILE}                      → accepted
 ```
 
-Unanswered = written, minus those with at least one non-comment SQL line under their header.
+Unanswered = written, minus those with at least one non-comment SQL line under their header. Graded
+minus accepted = graded and not accepted — owed a rewrite while the file's `PROGRESS.md` row is not
+`closed ✅` (a `[Repaso]` one always is).
 
 ---
 
@@ -74,7 +79,8 @@ Exactly one, derived from the counts — never a menu of options:
 | does not exist yet, or 0 written | **Moment 2** — generate: `/sql-exercises`, `MODE = practice`, `TOPIC = <the step's>` |
 | written > answered | **Moment 3** — answer them in pgAdmin. This is the normal case, and it needs no tool |
 | all answered, some ungraded | **Moment 4** — say "corrige el {NN}" and `sql-grade` takes it |
-| all graded, step's files all scored | **Moment 5** — already automatic; if it did not run, say so as a finding |
+| all graded, some not accepted, and the file's `PROGRESS.md` row is not `closed ✅` | **Moment 3 again** — rewrite the N answers marked `❌ Revisado`, then "corrige el {NN}" |
+| all graded, step's files all scored | **Moment 5** — already automatic; if it did not run, say so as a finding. Answers left `❌ Revisado` in a closed file are not owed here: they come back at the next revision point |
 
 If the SETUP block of the file has never been run in pgAdmin, mention it once — every file from `02-` on
 carries its own canonical schema, and a query against a schema that is not loaded fails for a reason
@@ -165,7 +171,8 @@ Ojo: el bloque SETUP de este archivo trae el esquema canónico; ejecútalo si no
 ```
 
 **The pace estimate is a measurement, not a target.** Derive it from this file's own history — graded
-exercises over the sessions that produced them, from the `-- ✅ Corregido` dates — and print it in
+exercises over the sessions that produced them, from each graded header's **first** marker date —
+`❌ Revisado` or `✅ Corregido`, the later one on a rewritten answer being a re-grade — and print it in
 parentheses. With no history yet, write `(sin histórico)` rather than guessing a number. The block is
 60 minutes and Stage 2 is a timed test, so a track that never mentions the clock trains no pacing at
 all; but the estimate never becomes a quota, and a block that runs slower than it is not a finding.

@@ -209,7 +209,7 @@ him a second command for it.
 | Conceptos sin bullet | ninguno (o: `NULLS FIRST` no está en el coverage — decide con `/coverage sql junior`) |
 | `/notes-plan` | n/a — un drill marker no cambia el digest |
 | Doctrina §0 | verificada, `Last updated` corregido |
-| PROGRESS.md | filas `Total` cuadran (29 = 20+9); `Corrected` total en blanco, correcto |
+| PROGRESS.md | filas `Total` cuadran (30 = 20+10); `Corrected` total en blanco, correcto |
 | Punto de repaso | R1 disponible (span 0–1) — `TOPIC = R1` cuando te apetezca |
 | Gate | ninguno (o: Step 13 cerrado → **G3 toca ya** — `/progress-update MODE = active`, cierra con drift report vacío; luego G4 `/roadmap-review`) |
 | Desbloqueado (ruta §3) | SELECT/WHERE/ORDER BY + set ops. Una simulación puede pedirte hasta ahí |

@@ -77,7 +77,7 @@ it narrows that list.
    would then be written into the plan as real:
    ```
    grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' {file}   → written
-   grep -cE '^--.*✅ Corregido' {file}                      → scored
+   grep -cE '^--.*(✅ Corregido|❌ Revisado)' {file}         → scored
    ```
    If `scored > written` for any file, stop and report it rather than propagating it.
 3. Stop on `main`.

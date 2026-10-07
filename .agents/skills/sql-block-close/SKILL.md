@@ -48,8 +48,12 @@ formats live on disk, and a pattern matching neither returns `0`:
 
 ```
 grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' {FILE}   → written
-grep -cE '^--.*✅ Corregido' {FILE}                      → graded
+grep -cE '^--.*(✅ Corregido|❌ Revisado)' {FILE}         → graded
+grep -cE '^--.*✅ Corregido' {FILE}                      → accepted
 ```
+
+Graded minus accepted is what `sql-block-open`'s "Moment 3 again" row reads, together with the file's
+`Status` in `PROGRESS.md` → `### Exercise route` (that one row, nothing else of the file).
 
 Answered = headers with at least one non-comment SQL line under them. For **today's** delta, compare
 against the last committed version: `git show HEAD:{FILE}` counted the same way. Uncommitted answers

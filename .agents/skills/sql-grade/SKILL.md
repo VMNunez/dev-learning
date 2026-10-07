@@ -33,9 +33,9 @@ breach log"; do not restate or widen that trigger here.
 Victor finished answering an exercise file. Walk steps 0–4 in order. If a step genuinely does not
 apply, **say so in the report table** rather than skipping it silently.
 
-**Do not edit his `.sql` answers.** Not to fix a query, not to tidy formatting. The grader writes
-`-- ✅ Corregido` markers and nothing else; a wrong answer stays wrong on disk until he rewrites it.
-That is the record.
+**Do not edit his `.sql` answers.** Not to fix a query, not to tidy formatting. The grader appends
+header markers — `✅ Corregido` on an accepted answer, `❌ Revisado` on a graded one it did not accept —
+and nothing else; a wrong answer stays wrong on disk until he rewrites it. That is the record.
 
 ---
 
@@ -50,6 +50,8 @@ That is the record.
   that is a disambiguation, not a ritual question.
 - `{TOPIC}` — the `TOPIC` of the `{PLAN}` §2 step that owns `{FILE}`. It is read from the plan, never
   guessed from the filename.
+- that step's `{PLAN}` §3 status **before** grading — §3 needs to know whether the step was already
+  `closed ✅`.
 
 Quote the resolved file back to him in one line before doing anything.
 
@@ -62,15 +64,21 @@ returns `0`, which would then be graded as a perfect empty file:
 
 ```
 grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' {FILE}   → written
-grep -cE '^--.*✅ Corregido' {FILE}                      → already graded
+grep -cE '^--.*(✅ Corregido|❌ Revisado)' {FILE}         → already graded
+grep -cE '^--.*✅ Corregido' {FILE}                      → settled
 ```
 
-An exercise is answered when at least one non-comment SQL line sits between its header and the next.
+An exercise is answered when at least one non-comment SQL line sits between its header and the next,
+and ungraded when its header carries neither marker.
 **If any ungraded exercise has no answer, stop** and name them: "Faltan por responder: 7, 9, 12."
 Grading a partial file records a score against work never attempted, and the score is permanent.
 
-Already-graded exercises are **skipped, never re-graded**. If every exercise already carries a marker,
-say so and stop — there is nothing to score, and re-running would not change a number.
+Settled exercises (`✅ Corregido`) are **skipped, never re-graded**. A `❌ Revisado` one without it is
+graded again only while `{FILE}`'s row in `PROGRESS.md` → `### Exercise route` is not `closed ✅` — that
+is the `< 80%` loop, and the branch counts it as a re-grade, moving no counter for it; in a file that
+already scored ≥ 80% it is skipped too and comes back at the next revision point — except a `[Repaso]`
+one, which is always graded again, since rewriting a drill is its point. If nothing is left to
+grade, say so and stop — there is nothing to score, and re-running would not change a number.
 
 ---
 
@@ -101,10 +109,17 @@ Read the subagent's verdict and take exactly one branch. **Print which branch yo
 
 | Verdict | What you do |
 |---|---|
-| First line `BLOCKED — segunda pasada no despachable` | **Stop.** Nothing was graded and nothing was written — confirm it: `{FILE}` holds no `✅ Corregido` dated today, and none of the four doc files §4 lists has changed since a `git status` you take just before the §2 dispatch. Say the file is still ungraded and why, and open the `FRIC-NNNN` row the durable-friction close-out owes a dispatch that failed, its evidence naming the runtime and whether that runtime offers nested dispatch at all — where it does not, the defect is this skill's design, not a transient failure. §4 then writes the tracker cell and nothing else: **no `.sql` command for Victor**, since nothing was graded. The shell's `MODE = review` in a new conversation still grades the same file, because its second pass is a first-level dispatch there; «cierra el step N» then closes a step it finishes. Never grade it yourself instead. |
+| First line `BLOCKED — segunda pasada no despachable` | **Stop.** Nothing was graded and nothing was written — confirm it: `{FILE}` holds no `✅ Corregido` or `❌ Revisado` dated today, and none of the four doc files §4 lists has changed since a `git status` you take just before the §2 dispatch. Say the file is still ungraded and why, and open the `FRIC-NNNN` row the durable-friction close-out owes a dispatch that failed, its evidence naming the runtime and whether that runtime offers nested dispatch at all — where it does not, the defect is this skill's design, not a transient failure. §4 then writes the tracker cell and nothing else: **no `.sql` command for Victor**, since nothing was graded. The shell's `MODE = review` in a new conversation still grades the same file, because its second pass is a first-level dispatch there; «cierra el step N» then closes a step it finishes. Never grade it yourself instead. |
 | Score **< 80%** | **Stop.** Name the failed concepts and the exercises they came from, straight from the `MISTAKES.md` rows this run opened or incremented. Tell him to rewrite those answers in the file and say "corrige el 02" again. Offer the narrowed batch: `/sql-exercises` with `MODE = reinforce` and `FILE = {FILE}`. No close. |
-| **≥ 80%**, but `{PLAN}` §1 shows the step owns other files that are not yet scored | File done, step open. Name the next file and stop. No close. |
-| **≥ 80%** and this was the step's **last** unscored file | **Invoke the `sql-step-close` skill**, passing `{LEVEL}`, the step number, and every file of the step. Do not reproduce its work here. |
+| **≥ 80%**, and the step's `{PLAN}` §3 row is still open after the subagent's 4c — another of its files, or another run of this one, is still owed | File done for now, step open. Name what is owed next — the next file, or the next run of this one — and stop. No close. |
+| **≥ 80%**, and the subagent's 4c set the step's `{PLAN}` §3 row to `closed ✅` in this run | **Invoke the `sql-step-close` skill**, passing `{LEVEL}`, the step number, and every file of the step. Do not reproduce its work here. |
+
+**A step already `closed ✅` before this run** (the status §0 noted) takes neither ≥ 80% branch,
+whatever the score: a closed step is never reopened and never closed twice (doctrine invariant 14), and
+the subagent has left its §3 row as it was. Name the `MISTAKES.md` rows this run closed and each failed
+concept, which comes back at the next revision point — with no rewrite instruction, the same as a
+failure inside a file that scored ≥ 80%. Only a `[Repaso]` batch still takes the `< 80%` row, as stated
+below.
 
 **A ⚠️ or ❌ inside a first-pass file that scored ≥ 80% blocks neither ≥ 80% branch.** A step closes
 on its one scored done condition and nothing else (doctrine §3, `_sql-plan-standard.md` B5), and the
@@ -114,8 +129,9 @@ failed concept in one line, from the rows this run opened or incremented, and sa
 next revision point (none follows the capstone) — **without** the rewrite-and-regrade instruction of the
 `< 80%` branch, which is that branch's alone.
 
-**The counters move on every scored branch**, including the failing one — the subagent already wrote
-them; only `BLOCKED`, which scored nothing, moves none.
+**The counters move on every scored branch**, including the failing one, for every exercise graded
+there for the first time — the subagent already wrote them; a re-grade moves none, and neither does
+`BLOCKED`, which scored nothing.
 A 60% is real information about graded exercises, and a file that scored badly must not look like one
 nobody started. What a bad score blocks is the *step closing*, never the recording.
 
@@ -146,8 +162,10 @@ puts them on your side:
   left it. Its own commit. Grading is what moves `X`, so the cell is this run's to keep true.
 
 **Before staging, check the returned list against what the score owes** — the one close-out check this
-door keeps. It names `PROGRESS.md` unless `{FILE}` is an `R{n}-repaso.sql`; `{PLAN}` whenever a
-first-pass exercise was scored; `MISTAKES.md` whenever the summary shows a ⚠️ or ❌; and
+door keeps. It names `PROGRESS.md` whenever an exercise was graded for the first time or the file's
+status moved, unless `{FILE}` is an `R{n}-repaso.sql`; `{PLAN}` whenever a first-pass exercise was graded
+for the first time or its §3 status moved — a run of re-grades alone that moves neither the file's
+`PROGRESS.md` row nor a §3 status owes neither file; `MISTAKES.md` whenever the summary shows a ⚠️ or ❌; and
 `practice/sql/PLANNING.md` whenever a §3 row went to `closed ✅`. A file owed and missing from the list,
 or listed and absent from `git status`, is reported, and is a deviation of this run on the branch step
 that owed it (below) — unless the report states that skip under the branch's Step 4, which permits one.
@@ -175,7 +193,7 @@ If `sql-step-close` ran, it reports its own commits; do not stage its files here
 | Answered check | 10/10 answered, 0 already graded |
 | Score | 9/10 (90%) — segunda pasada: 9 ✅ confirmados, 0 revertidos |
 | MISTAKES.md | 1 fila abierta (`NULLS LAST`), 0 cerradas |
-| PROGRESS.md | junior roll-up 29/200, fila del archivo 10/10, filas `Total` recalculadas |
+| PROGRESS.md | junior roll-up 30/209, fila del archivo 10/10, filas `Total` recalculadas |
 | Route file | §3 step 0 → `closed ✅`, §2 checkboxes 8/9 marcados |
 | Doctrina §0 | 4d disparó — Current step → step 1, Done condition y Last updated reescritos (el `{PLAN}` no tiene §0) |
 | Branch taken | ≥ 80% y último archivo del step → `sql-step-close` invocado; el ⚠️ de `NULLS LAST` no bloquea el cierre — vuelve en el próximo punto de repaso |

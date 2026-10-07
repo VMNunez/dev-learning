@@ -43,8 +43,22 @@ and exclude it from the score, exactly like an unanswered one — the score must
 not a growing pile of work already validated. This mirrors the studied-content-is-final rule in
 `notes/prompts/knowledge/interview-prep/_internal/_interview-prep-standard.md`.
 
-If **every** exercise in the file carries the marker, print
+If **every** exercise in the file is settled — it carries `✅ Corregido`, or it is a failure the third
+rule below skips — print
 "Todo este archivo ya está corregido. Nada que revisar." and stop — do not run Steps 3–6.
+
+**Third, recognise a re-grade.** An exercise whose header carries `❌ Revisado YYYY-MM-DD` and no
+`✅ Corregido` was graded by an earlier run and not accepted (Step 2b). Open `PROGRESS.md` →
+`### Exercise route` and read `{FILE}`'s row in the `{LEVEL}` detail table:
+- **`closed ✅`** — the file already scored ≥ 80%, so this failure is not owed a rewrite here: it comes
+  back at the next revision point from its `MISTAKES.md` row. Skip it like a settled exercise and list
+  it as `❌ (pendiente de repaso)`, out of the score — **unless it is a `[Repaso]` exercise**, which is
+  re-graded as below: a drill's failures are what its rewrite is for, and it moves no counter anyway.
+- **anything else** — it is the `< 80%` loop: review it again, since Victor may have rewritten it, and
+  score it in this run like any other answer. It is a **re-grade**: the run that first graded it
+  already counted it, so it moves no counter in Step 4. Mark it `(re-corrección)` in the summary and
+  state the split in one line: "N ejercicios corregidos por primera vez, M re-corregidos (no mueven
+  contadores)."
 
 Then, for each remaining exercise:
 - Answer present: review it.
@@ -185,7 +199,8 @@ This branch permits no single-agent fallback, on either door.
 Reconcile:
 - **Both say correct** → the ✅ stands and the exercise gets its marker in Step 2b.
 - **The subagent says not correct** → re-check that exercise yourself against the schema. If it is
-  right, downgrade the answer to ⚠️ or ❌, give the correction in the summary, and **write no marker**.
+  right, downgrade the answer to ⚠️ or ❌, give the correction in the summary, and **write no `✅`
+  marker** — Step 2b gives it `❌ Revisado` like any other failure.
   If the subagent is wrong, keep the ✅ and say so in one line: "Segunda pasada discrepó en el #N; la
   revisé y la respuesta es correcta porque […]".
 
@@ -202,26 +217,38 @@ come back through review anyway; the ✅ ones never do.
 
 **This is the only step that edits the exercise file, and it edits nothing but these marker lines.**
 The file it edits is {FILE}. If the review ran off a paste whose exercises do not match what is on
-disk, skip this step and print: "No escribo marcadores: el texto pegado no coincide con [FILE]."
+disk, skip this step and print: "No escribo marcadores: el texto pegado no coincide con [FILE]." —
+and then **move no counter and no status in Step 4** either: with no marker written, the next run cannot
+tell these exercises were graded, and counting them now would count them twice.
 
-For every exercise marked **✅ Correct** in Step 2, append the marker **to the end of that exercise's
-header line** — never on a line of its own, so the file stays scannable and the answer keeps its own
-line. It goes on the header in both formats:
+For every exercise marked **✅ Correct** in Step 2, append ` ✅ Corregido <date>` **to the end of that
+exercise's header line** — never on a line of its own, so the file stays scannable and the answer keeps
+its own line. It goes on the header in both formats:
 
 ```sql
 -- #39 | WHERE — NOT BETWEEN ✅ Corregido 2026-07-22
 -- Exercise 41 [Standard]: LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
 ```
 
-Use today's real date. Do **not** add the marker to ⚠️ Partial or ❌ Wrong answers — those still need
-work, and they must come back through review once corrected. Do not add it to unanswered exercises.
-Never modify Victor's queries, never reformat, never touch anything but these appended lines.
+For every exercise marked **⚠️ Partial** or **❌ Wrong** whose header carries no marker yet, append
+` ❌ Revisado <date>` the same way. It says *graded, not accepted*: the exercise still needs work and
+comes back through review once rewritten, and the marker is what lets that later run see a re-grade
+(Step 1) instead of a first grading, and lets every count read *graded* off the file. **Markers are only
+ever appended**: a re-graded exercise that fails again gets nothing new, and one that now passes keeps
+its `❌ Revisado` and gains ` ✅ Corregido <date>` after it.
+
+```sql
+-- Exercise 3 [Standard]: WHERE vs HAVING ❌ Revisado 2026-10-07 ✅ Corregido 2026-10-09
+```
+
+Use today's real date. Do not add either marker to unanswered exercises. Never modify Victor's queries,
+never reformat, never touch anything but these appended markers.
 
 Why this exists: without it, every review run re-grades the whole file from #01, the score silently
 mixes old validated work with the new batch, and there is no record in the file itself of what has
 been settled. The marker is what makes an exercise file resumable.
 
-**Print the count:** "Marcados como corregidos: N ejercicios."
+**Print the count:** "Marcados: N corregidos, M revisados sin aceptar."
 
 ---
 
@@ -314,6 +341,15 @@ or state explicitly which one you skipped and why.
 > them in the summary, log their failures in `MISTAKES.md` — they just move no counter. State the split
 > in one line: "N ejercicios puntuados, M de ellos de repaso (no cuentan para el paso)."
 >
+> **A re-grade moves no counter either, and a closed step is never set back.** An exercise is counted
+> once, by the run that first grades it; one Step 1 recognised as a re-grade is left out of every figure
+> 4b and 4c move — `Corrected`, `Route progress`, the file's `First-pass / target`, the {PLAN} §1 and §3
+> scored counts. Statuses still follow this run's score, so a
+> re-grade can close a file or step that is not closed — the exit of the `< 80%` rewrite loop — but a
+> step row already reading `closed ✅`, and the file rows of that step, keep it whatever this run scored
+> (doctrine invariant 14): its failures go to Step 5 and return at the next revision point. A file row of
+> a step still open follows the run's score, so the second run of a two-run file can set it back.
+>
 > **Revision-point files (`R{n}-repaso.sql`) are the one exception, and it is deliberate.** Run **4a**
 > (nothing to do since 2026-08-03) and **Step 5** — closing the redeemed `MISTAKES.md`
 > rows *is* the purpose of the batch. **Skip 4b, 4c and 4d entirely**: a repaso batch is uncounted
@@ -356,10 +392,11 @@ placeholders, never copy an example number into PROGRESS.md.
 
 - **Corrected** = graded over *written*, `[Repaso]` and extra batches included. Its denominator is
   raised by the practice branch when the batch is written (Branch A, Step 5); here you raise only its
-  **numerator**, by every exercise you just graded — repaso ones too.
+  **numerator**, by every exercise you just graded for the first time — repaso ones too, re-grades never.
 - **Route progress** = first-pass exercises graded across the whole level route, `[Repaso]` and extra
-  batches excluded (same rule as the counting note at the top of Step 4). Add this batch's first-pass
-  count to the cell's current numerator; never recount the whole route from scratch.
+  batches excluded (same rule as the counting notes at the top of Step 4). Add this run's first-pass
+  exercises graded for the first time to the cell's current numerator; never recount the whole route
+  from scratch.
 - **Target** = the sum of the `First-pass target` column of `{PLAN}` §1. It changes only when the
   route itself is replanned — if you find it disagreeing with §1, fix it and say so in 4e.
 - **Steps closed** = steps whose done condition is met, i.e. the ones you would mark in §3. A step
@@ -369,10 +406,12 @@ placeholders, never copy an example number into PROGRESS.md.
 **Table 2 — the per-file detail, one row per file.** Find the row **whose `File` cell names `{FILE}`**
 — match on the file, never on a prose cell. Update its `Corrected`, `First-pass / target` and `Status`:
 
-- Status: `closed ✅` if score ≥ 80%; `in progress ⏳` if score < 80%; leave `not created` untouched
-  for files that do not exist yet.
-- `Corrected`: graded over written **in this file**, repaso included.
-- `First-pass / target`: this file's first-pass scored count over its §1 first-pass target.
+- Status: `closed ✅` if score ≥ 80%; `in progress ⏳` if score < 80% — except that once the file's
+  step reads `closed ✅` in `{PLAN}` §3, its rows keep `closed ✅`; leave `not created` untouched for
+  files that do not exist yet.
+- `Corrected`: graded over written **in this file**, repaso included — each exercise once.
+- `First-pass / target`: this file's first-pass scored count over its §1 first-pass target — each
+  exercise once.
 
 **Every file of the route has its own row, including the ones not written yet** — `sql-plan` seeds them
 all when it plans the level. Never collapse pending files into a summary row: the point of the table is
@@ -394,10 +433,10 @@ reverted, which is worth knowing before writing into it.
 
 Open `{PLAN}` (`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`). Find the row in its §3 table for the step this {TOPIC} belongs to —
 **the `{PLAN}` §2 step that claims {TOPIC} gives the step number** (at junior the shell's path table
-carries it too, in its `Route step` column). Update its **Scored / target** cell with
-the number of exercises this run actually graded ≥ 80%, and its **Status** cell:
+carries it too, in its `Route step` column). Raise its **Scored / target** cell by the first-pass
+exercises this run graded for the first time, and set its **Status** cell:
 - score ≥ 80% **and** the step's target reached → `closed ✅`
-- otherwise → `in progress ⏳`
+- otherwise → `in progress ⏳` — unless the row already reads `closed ✅`, which it keeps
 
 The three status values are exactly `not started`, `in progress ⏳` and `closed ✅`. `done ✅` is the
 legacy route's spelling and is never written into a `{PLAN}` §3 row.
