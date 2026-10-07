@@ -108,6 +108,16 @@ promotes lands there and never here, which is what stops this file growing again
    re-litigating a settled adjudication is the loop, not the check. The instances, the shapes that
    produce a fourth round, and the two tests before splitting are in
    `_recommendation-resolution-doctrine.md` → "Step 3".
+   **Before the closure, every real defect the resolution found is opened as its own row — in the same
+   turn, without asking Victor.** That covers what step 1 measured outside the fix's scope and what the
+   reviewer returned as *considered and not opened*, once verified against a quoted sentence on disk: a
+   finding that passes the scope test above and the bar in `_recommendation-resolution-doctrine.md` →
+   "An incidental finding is evidence, not automatically a row" becomes an `open` row with the evidence
+   that falsifies it, through the validator and in a commit of its own; only one that fails the bar stays
+   in the closed line. A `residue:` clause never carries open work by itself — it cites the row it was
+   opened as. Stated by Victor 2026-10-07, after `REC-272` closed with two real defects parked as residue
+   and he had to ask for `REC-280` and `REC-281`: *"si debes escribir alguna rec, lo haces, no quiero
+   tener que pedirlo yo"*.
 4. **Collapse the row into `## Closed` in `_recommendation-ledger-closed.md`** — only a `sweep: complete` review returning `approve` or
    `approve-with-tightening` may reach this step; `reject` and every incomplete sweep leave the row
    open under step 3. The one-line closure carries the ID, what the item was,

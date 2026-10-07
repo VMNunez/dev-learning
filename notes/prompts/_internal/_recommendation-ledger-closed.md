@@ -12,7 +12,8 @@ it replaces and the words `no closing round`; every use is counted on the valida
 records what the gate did; it never stands for a gate that was not run, and it annotates a closure
 already on disk rather than routing a live resolution to step 4. Beyond those fields a **rejected**
 item keeps its reason, because that reason is the only thing stopping the next analysis re-raising it,
-and a **residue** clause names work the item left open. The reviewer field starts at `REC-107` and the
+and a **residue** clause names work the item left open — always by the `REC-NNN` that work was opened as
+in the same session (the ledger's step 3 → "Before the closure"), never as open work parked here alone. The reviewer field starts at `REC-107` and the
 two-map field at the first item collapsed after 2026-08-07; earlier lines are not retrofitted. On disk that
 second field becomes continuous at `REC-058`, and that is the number `validate-prompt-system.ps1`
 invariant 9 enforces — it reads every line here against this schema and fails the run on a missing
