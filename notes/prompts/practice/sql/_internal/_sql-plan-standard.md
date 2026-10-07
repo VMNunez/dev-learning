@@ -57,7 +57,7 @@ Its two inputs, and it never invents beyond them:
 |---|---------|--------------|
 | 0 | Session quick reference | Current level · current step · current branch · done condition · next revision point · blocked on · last updated. Seven rows, no prose — it is the first thing read in a session, and the level row is what tells the reader which route file the other six refer to. **Which seven rows exist is the doctrine's; the values of five of them are not** — *current level, current step, done condition, next revision point* and *last updated* are rewritten by the closing ritual, and this file is not their author. Section E carries the split. **`Current branch` and `Blocked on` have no writer anywhere in the machinery**: state that as a finding, and do not invent one for them. |
 | 1 | Inputs | The two files above and what each owns, plus the doctrine/route split. |
-| 2 | The step loop | Every moment of a step, with its trigger and the exact config to paste. Exercise prompts only. |
+| 2 | The step loop | Every moment of a step, with its trigger and the exact config to paste. Exercise prompts only. The grading moment points to `_sql-exercises-review.md` Steps 1 and 2b for marker and re-grade behaviour, under Section E's fence. |
 | 3 | Done-condition format | The closed list of testable formats. |
 | 4 | What to update when a step closes | Every file that moves, marked *automated* (a prompt does it) or *manual*. |
 | 7 | Branch and commit rules | Which branch, who commits what, atomicity. |
@@ -65,7 +65,7 @@ Its two inputs, and it never invents beyond them:
 | 8c | Simulation readiness | The rule only: a test may demand techniques of `closed ✅` steps and no others, and a cross-track consumer reads the selected level's route. **Which technique each step unlocks, and which are unlocked today, live in that level's route §3 as a column of its step table and are never restated here** — a second copy here is what makes a route reorder require a doctrine edit. Readiness only — see the exception in "What this plan is NOT". |
 | 9 | Quality gates | Which quality prompt runs at which checkpoint, and the hard prerequisite chain. |
 | 10 | Consistency invariants | The mechanical cross-checks in Section D. |
-| 11 | Closure | What makes the whole track finished, level by level. |
+| 11 | Closure | What makes the whole track finished, level by level: all first-pass exercises graded and every step's scored done condition met. The ≥ 80% threshold belongs to the review score, never to the definition of a scored exercise (invariant 3). |
 | Z | Out of scope | One line each: notes, Q&A, simulations — run separately, not planned here. |
 
 **§5, §6 and §8 are deliberately absent.** They were the doctrine's three level-specific sections and
@@ -118,7 +118,7 @@ composition.
 A revision batch is **extra**: it never counts toward a step's target and never flips a status.
 Without that rule the plan starts congratulating itself for repetition.
 
-**B5 — A step ends when its exercises are scored, and this track writes no interview questions.**
+**B5 — A step ends on its one done condition, and this track writes no interview questions.**
 A step closes on its one scored done condition and nothing else.
 
 **No step carries a question of any kind** (amended 2026-08-04). Two versions of this preceded the rule
@@ -217,8 +217,11 @@ checks. Aligned 2026-07-22.
    form of "a revision batch is extra" (B4). A plan that lets them into the step table has started
    counting repaso as progress.
 3. **Counts, and the three that are never conflated** — *written* (the statement exists), *answered* (a
-   query is under it), *scored* (a review run graded it); only **scored** moves a status, and a plan
-   reporting answered work as scored claims progress that never happened. Per-step counts for a shared
+   query is under it), *scored* (a review run graded it, at any verdict, counted once). **Scored is not
+   accepted**: the ≥ 80% review score is a done-condition threshold, not an exercise-count filter.
+   Only grading moves a status; reaching the scored target alone does not close a step. A re-grade can
+   satisfy the done condition without increasing a count, and a closed step stays closed (invariant 14).
+   A plan reporting answered work as scored claims progress that never happened. Per-step counts for a shared
    file sum to that file's target, the route's §3 totals match its §1, and both match the exercise files
    on disk and `PROGRESS.md`'s `## Practice completed` → `### Exercise route` (that level's roll-up row
    and its own detail table — never another level's).
@@ -306,6 +309,7 @@ format or quality bar — except exactly what a row's third column below license
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
 | Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: the readiness *rule* only** — that a test may demand techniques of `closed ✅` steps and no others, and that the consumer reads the selected level's route §3. Never the mapping (route §3's column), never the config, never the format. |
 | The route §3 readiness column and its status line | `sql-plan-prompt.md` (writes the column when it authors a step) · `sql-step-close` (rewrites the status line when a step closes) · `sql-plan-audit.md` (specialist 3 audits under invariant 16 and repairs a status line that disagrees with its own §3 table, the same licence it has for the derived `Total` rows) | — that they exist and what each must hold; never which steps are closed today, which only a scored close moves |
+| Grading markers and re-grade/skip policy | `_sql-exercises-review.md` Steps 1 and 2b | that grading records a verdict on the exercise header, and a pointer to those steps; never a second marker specification or a blanket skip-on-any-marker rule. Invariant 3 owns what the scored count means. |
 
 **Structure and values split inside the doctrine exactly as they do inside the route** (the third row
 above): the planner writes the route's progress *fields* and only a scored exercise moves their values,

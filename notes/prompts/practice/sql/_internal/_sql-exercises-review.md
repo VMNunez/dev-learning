@@ -314,7 +314,7 @@ so the trigger is the *last* topic of the step, never the first:
 
 | Point | Fires when this step closes | i.e. the review run whose {TOPIC} is | Not on |
 |-------|-----------------------------|--------------------------------------|--------|
-| R1 | Step 1 — `03-joins.sql` reaches 22 scored | `joins` (the **second** run) | the first `joins` run |
+| R1 | Step 1 — `03-joins.sql` | `joins` (the **second** run) | the first `joins` run |
 | R2 | Step 4 — `06-nulls.sql` | `nulls` | — |
 | R3 | Step 7 — `09-window-functions.sql` | `window-functions` | — |
 | R4 | Step 10 — `12-data-types-ddl.sql` | `ddl` | `data-types`, which is only the first of that step's two runs |

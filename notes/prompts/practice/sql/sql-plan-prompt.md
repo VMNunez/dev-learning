@@ -183,11 +183,12 @@ log for the whole track: a concept failed at junior and re-failed at middle is o
 
 ## Status is read, never invented
 
-A step's status belongs to the exercise track, not to this planner. `sql-exercises` in `review` mode is
-what moves a step to closed, and only a **scored** count does it.
+A step's status belongs to the exercise track, not to this planner. Grading moves it under the scored
+done condition, never from a count alone (`STANDARD` invariant 3).
 
-- Derive each status from the Guard 2 counts and the existing `PLAN`: `not started` · `in progress ⏳` ·
-  `closed ✅`.
+- Preserve each recorded status from the existing `PLAN`: `not started` · `in progress ⏳` · `closed ✅`.
+  The Guard 2 counts cannot establish a passing review score; report a missing or contradictory status
+  for the grading owner rather than inventing a close. A newly planned step starts `not started`.
 - **Never downgrade one.** A step marked closed before this run is still closed after it, whatever the
   reconciliation did to its bullet set. Renumbered or reworded is fine; unmarked or downgraded is a
   failure, and the history gate below catches it.
@@ -247,6 +248,9 @@ Generated: YYYY-MM-DD
 
 ## §1 — Exercise files
 
+*Scored* means graded by a review run at any verdict, counted once (`_sql-plan-standard.md` invariant 3).
+The ≥ 80% review score belongs to the done condition; it is not a per-exercise counting threshold.
+
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
 | `01-basics.sql` | 0 | 40 | 40 | 20 | 20 | closed |
@@ -255,7 +259,7 @@ Generated: YYYY-MM-DD
 
 | File | Point | Span (steps) | Fires when | Status |
 |------|-------|--------------|------------|--------|
-| `R1-repaso.sql` | R1 | 0–1 | Step 1 closes (`03-joins.sql` scored) | sin crear |
+| `R1-repaso.sql` | R1 | 0–1 | Step 1 closes (its `Review:` condition passes on `03-joins.sql`) | sin crear |
 
 **The `Fires when` column is required, not decorative** (`STANDARD` A2 §1): it is the trigger, and
 doctrine §0's *Next revision point* row, invariant 6 and `sql-exercises`'s `R{n}` resolution all read
@@ -391,5 +395,5 @@ Report level, coverage fingerprint, the `VERIFY` verdict as read (never prescrib
 until zero gaps), migration outcome, step count, exercise-file count, total first-pass exercises,
 assigned/unassigned bullet counts, checked/unchecked bullet counts, closed steps preserved, every closed
 step carrying `Pending additions` with its count, revision-point cadence verdict, ceiling verdict,
-dependency-order verdict, mirror parity, cold-review completion, history-gate verdict, any `DOCTRINE`
-finding left for `sql-plan-audit`, and commit or `dry-run`.
+dependency-order verdict, mirror parity, cold-review completion, history-gate verdict, any missing or contradictory
+step status left for the grading run, any `DOCTRINE` finding left for `sql-plan-audit`, and commit or `dry-run`.

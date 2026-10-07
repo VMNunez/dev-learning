@@ -95,10 +95,9 @@ Gather the ground truth the specialists check the plan against. Counts, never co
   grep -cE '^-- (Exercise [0-9]+ \[|#[0-9]+ \|)' practice/sql/{LEVEL}/NN-name.sql   → written
   grep -cE '^--.*(✅ Corregido|❌ Revisado)' practice/sql/{LEVEL}/NN-name.sql         → scored
   ```
-  The markers always sit **at the end of the exercise's header line**, in both header formats —
-  `✅ Corregido` on an accepted answer, `❌ Revisado` on a graded one not accepted, and both, in that
-  order, once a rewrite passes — never on a line of their own (`_sql-exercises-review.md` Step 2b), so
-  `grep -c` counts each graded exercise once. If scored > written for
+  Both markers always sit **at the end of the exercise's header line**, in both header formats, never on
+  a line of their own — a rewritten answer can carry the two on that one line
+  (`_sql-exercises-review.md` Step 2b) — so `grep -c` counts each graded exercise once. If scored > written for
   any file, the count is wrong: stop and report it rather than propagating it.
 - `grep -n "✅\|⏳\|done\|in progress" practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` → the status baseline for the gate.
 - **The route's own count rows, copied verbatim**: its §1 file table and its §3 progress table. These
@@ -148,8 +147,8 @@ For each, launch a fresh `role-appropriate` subagent, `reasoning tier: deep`, `e
 |---|---------|------|-------|------------|
 | 1 | `learning-design` | **Section B** (all ten) · **Section C** (every step has every field) | route §2 | doctrine §2, §3, §7 · route §2 · `ROADMAP.md` (for B2) |
 | 2 | `coverage-and-steps` | **Invariants 1, 2, 10, 14** · **B10** | route §1, §2, its out-of-scope list | `notes/sql/coverage/{LEVEL}.md` · doctrine §Z · the Phase 1 section list |
-| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15, 16** | route §1, §2, §3 · doctrine §0 · **never `PROGRESS.md`** | `PROGRESS.md` · **the Phase 1 snapshot** |
-| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **Section E** | **the doctrine — any section** · route header (metadata only) | `sql-exercises-prompt.md`, `sql-plan-prompt.md` |
+| 3 | `counts-and-truth` | **Invariants 3, 4, 5, 11, 13, 15, 16** · **Section E's grading-markers row, for route prose only** | route §1, §2, §3 · doctrine §0 · **never `PROGRESS.md`** | `PROGRESS.md` · **the Phase 1 snapshot** |
+| 4 | `loop-and-fence` | **Section A1 and A2** — every section present **and satisfying its own "Must contain" column**, row by row, not merely non-empty · **Invariants 6, 7, 8, 9, 12** · **invariant 3's definition, for doctrine prose only** · **Section E** | **the doctrine — any section** · route header (metadata only) | `sql-exercises-prompt.md`, `sql-plan-prompt.md`, `_sql-exercises-review.md` Steps 1 and 2b |
 
 **The `Edits` column is a fence, not a hint.** Two files are open and four specialists run against them;
 a specialist writing outside its column is how the doctrine acquires a level-specific sentence. #1 and
@@ -169,6 +168,14 @@ yields to the ownership fence, because the fix belongs to a prompt that sees §1
 may add a missing row, a missing column or a missing field, and it may recompute a `Total` from the rows
 above; it may never lower a numerator, reset a `40/40`, or flip a `closed ✅` back. A figure that looks
 wrong is a finding against the grading run, not a cell to correct.
+
+**The route prose that defines the three counts or says what moves a status — §1's definitions and §3's
+lead-in — is structure too, and #3 corrects it.** A sentence reading *scored* as a per-exercise ≥ 80%
+verdict, or a status as following from the scored count alone, is rewritten to invariant 3 — graded at
+any verdict, counted once, the ≥ 80% belonging to the review score — and a sentence saying a graded or
+marked exercise is skipped is rewritten to point at `_sql-exercises-review.md` Steps 1 and 2b, which own
+that policy (Section E).
+Neither rewrite changes a recorded figure.
 
 **The invariant numbers are the standard's Section D numbers, and Section D is numbered identically to
 the plan's own §10** — they were two different numbering schemes until 2026-07-22, which handed
@@ -193,6 +200,11 @@ that step's `**Pending additions:**` and moves on. Extending the route is this p
 graded work is nobody's.
 
 **Specialist 4 enforces the scope fence.** It is the one that keeps this plan about exercises:
+- Check the doctrine's grading moment, its closure section and every other sentence that says what
+  closes a step or moves a status against invariant 3 and Section E: graded is not accepted, ≥ 80%
+  qualifies the review score and not each scored exercise, and a scored count alone closes nothing.
+  Replace marker/skip rules with a pointer to `_sql-exercises-review.md` Steps 1 and 2b. The same two checks over the route's §1
+  and §3 prose are specialist 3's, stated with its fence above — the route is not yours to edit.
 - Every prompt the plan tells Victor to run must **exist at that path** and its pasted config must use
   **that prompt's real keys** — open `sql-exercises-prompt.md` and compare key by key. A moved prompt
   or an invented key is a dead instruction that fails silently.
