@@ -217,10 +217,10 @@ exercise never counts toward the junior route, and a junior file never appears i
 
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| **Junior** | 40/50 (80%) | 20/209 (10%) | 0/14 |
+| **Junior** | 40/50 (80%) | 20/210 (10%) | 0/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
-| **Total** | — | **20/209 (10%)** | **0/14** |
+| **Total** | — | **20/210 (10%)** | **0/14** |
 
 The `Total` row spans levels, so today its route figure equals Junior — the only planned route. It
 exists so the number stays honest the day a second route appears: middle exercises add to the total
@@ -250,15 +250,15 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | 3 | `05-join-pitfalls.sql` | — | 0/12 | not created |
 | 4 | `06-nulls.sql` | — | 0/12 | not created |
 | 5 | `07-subqueries-ctes.sql` | — | 0/16 | not created |
-| 6 | `08-dates-strings.sql` | — | 0/12 | not created |
-| 7 | `09-window-functions.sql` | — | 0/12 | not created |
-| 8 | `10-dml-transactions.sql` | — | 0/16 | not created |
+| 6 | `08-dml-transactions.sql` | — | 0/16 | not created |
+| 7 | `09-dates-strings.sql` | — | 0/12 | not created |
+| 8 | `10-window-functions.sql` | — | 0/12 | not created |
 | 9 | `11-schema-design.sql` | — | 0/15 | not created |
-| 10 | `12-data-types-ddl.sql` | — | 0/16 | not created |
+| 10 | `12-data-types-ddl.sql` | — | 0/17 | not created |
 | 11 | `13-indexes.sql` | — | 0/12 | not created |
 | 12 | `14-live-database.sql` | — | 0/12 | not created |
 | 13 | `15-report-queries.sql` | — | 0/8 | not created |
-| **Total** | **15 files** | — | **20/209 (10%)** | **0/14 steps closed** |
+| **Total** | **15 files** | — | **20/210 (10%)** | **0/14 steps closed** |
 
 #### Middle — `practice/sql/middle/`
 
