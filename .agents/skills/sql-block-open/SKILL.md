@@ -82,9 +82,29 @@ Exactly one, derived from the counts — never a menu of options:
 | all graded, some not accepted, and the file's `PROGRESS.md` row is not `closed ✅` | **Moment 3 again** — rewrite the N answers marked `❌ Revisado`, then "corrige el {NN}" |
 | all graded, step's files all scored | **Moment 5** — already automatic; if it did not run, say so as a finding. Answers left `❌ Revisado` in a closed file are not owed here: they come back at the next revision point |
 
-If the SETUP block of the file has never been run in pgAdmin, mention it once — every file from `02-` on
-carries its own canonical schema, and a query against a schema that is not loaded fails for a reason
-that has nothing to do with SQL.
+**Mention once what the current file itself says it needs before a query can run** — a database that
+does not exist, or tables that are not loaded, fail a query for a reason that has nothing to do with
+SQL. Read it off the file's own header, everything above its first `-- EXERCISES:` banner, and say only
+what that header carries:
+
+- **The database** — the name quoted on its `-- FIRST:` line.
+- **The SETUP block** — a `-- SETUP` banner means the file ships one, and the line says to run it inside
+  that database. A header with a `-- FIRST:` line and no `-- SETUP` banner has nothing to run first, and
+  the line says so instead, so he does not go looking for a block that is not there.
+
+A header carrying neither gets no `Ojo:` line: the opener reports what a file declares and derives
+nothing a file does not say. That is step 0's *prefer the file over the plan*, applied to the schema —
+which files ship a SETUP block, and on which schema, is the generator's decision per topic
+(`_sql-exercises-practice.md` Step 2), written into each file as it is created, so no rule about "every
+file" is stated from here. The opener cannot see pgAdmin, so the line is conditional («si aún no lo has
+hecho», «si aún no existe»), never a claim that something is missing. A file that does not exist yet has
+no header, so no line is printed for it — the generator's closing message names both when it creates the
+file. A file that exists with 0 written is read like any other.
+
+```
+Ojo: este archivo corre en la base de datos `{name}`; ejecuta su bloque SETUP dentro de ella si aún no lo has hecho
+Ojo: este archivo corre en la base de datos `{name}`, créala si aún no existe; no trae bloque SETUP, no hay nada que ejecutar antes
+```
 
 ---
 
@@ -167,7 +187,7 @@ Archivo: practice/sql/junior/02-execution-order-set-ops.sql — 10 escritos, 3 r
 Siguiente: Moment 3 — responder los 7 que faltan en pgAdmin (~35 min al ritmo de este archivo)
 Teoría: la nota de este step (05-order-by-limit) sigue `pending` — `/notes-audit TOPIC=sql LEVEL=junior NOTE=05`
 Ayer te frenó: `NULLS LAST` — abriste la nota para decidir dónde caen los NULL
-Ojo: el bloque SETUP de este archivo trae el esquema canónico; ejecútalo si no lo has hecho hoy
+Ojo: este archivo corre en la base de datos `practice_junior_02_execution_order_set_ops`; ejecuta su bloque SETUP dentro de ella si aún no lo has hecho
 ```
 
 **The pace estimate is a measurement, not a target.** Derive it from this file's own history — graded
