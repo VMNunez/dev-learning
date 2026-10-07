@@ -173,7 +173,7 @@ files returns and which forecloses the ambiguity branch outright: an ambiguity n
 **Also `REC-266`: a row saying step 1 owes Victor an *intent* is first measured against the definers — the
 doctrine's single scored done condition and its §8b revision mechanism had already ruled, and neither option the row
 offered was it; and a row inserted at the head of a table stales every ordinal below it (`REC-265`'s `BLOCKED` row
-pointed `[Repaso]` batches at "the first branch").**
+pointed `[Repaso]` batches at "the first branch").** **Also `REC-282`: test each offered option for a deadlock before choosing** — "a re-grade moves no status" would have left every < 80% step with nothing able to close it — **and a fix that adds a marker re-greps every reader of the old one, worked examples included.**
 
 **"Already in your context" is never available to a cold role, and an edit that adds a *read*
 re-reads the fence above it.** From `REC-138`. `roadmap-review`'s Reviewer 1 was fenced to the
