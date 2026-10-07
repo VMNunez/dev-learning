@@ -170,6 +170,10 @@ settled by the priority definition in the format owner, here `_review-standard.m
 affect the portfolio verdict.)" inside the `**Low**` bullet itself, which no grep of the two arguing
 files returns and which forecloses the ambiguity branch outright: an ambiguity needs a distinction
 *neither* file states.
+**Also `REC-266`: a row saying step 1 owes Victor an *intent* is first measured against the definers — the
+doctrine's single scored done condition and its §8b revision mechanism had already ruled, and neither option the row
+offered was it; and a row inserted at the head of a table stales every ordinal below it (`REC-265`'s `BLOCKED` row
+pointed `[Repaso]` batches at "the first branch").**
 
 **"Already in your context" is never available to a cold role, and an edit that adds a *read*
 re-reads the fence above it.** From `REC-138`. `roadmap-review`'s Reviewer 1 was fenced to the
