@@ -3,9 +3,9 @@
 Plan status: current
 Level: junior
 Coverage: notes/sql/coverage/junior.md
-Coverage SHA-256: 39aa0cfca364e978c00a6944700fac5d0c59e3db819e84b600993c04aaf2ebeb
+Coverage SHA-256: bded1b85a539ffa92212b5bd3bbc2112a4e2933ecbadf7fde4c454aaf859b90c
 Doctrine: practice/sql/PLANNING.md
-Generated: 2026-08-28
+Generated: 2026-10-08
 
 **This file is the junior route.** The level-neutral half — the step loop, the done-condition formats,
 the closing ritual, the branch rules, the revision mechanism, the quality gates, the invariants, the
@@ -18,7 +18,12 @@ no coverage drift — the fingerprint was unchanged — and spent itself on the 
 seven blocking corrections landed, none of which any bullet count could have seen (two done conditions
 that passed without the step being drilled, three `**Focus:**`/`**Concepts:**` lines naming scope this
 level does not claim or does not yet teach, and a paragraph telling the reader Step 0's batch was
-already written when it had been deleted).
+already written when it had been deleted). The 2026-10-08 run restamped the fingerprint over the
+152-bullet file: the one new bullet, `Sequence drift after explicit-id inserts`, had already been claimed
+by Step 10 when `sql-plan-audit` ran on 2026-10-07, which may not restamp a digest itself. Its cold route
+review moved four Step 0 bullets that need a join or an error message to be drilled into Steps 1 and 12,
+replaced the done conditions of Steps 10 and 11 with scored ones, and narrowed five `**Focus:**` and
+`**Concepts:**` lines that reached scope a later step teaches.
 
 ---
 
@@ -83,9 +88,9 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 > **One file, one schema (rule adopted 2026-07-22).** `01-basics.sql` keeps the old thin schema and is
 > closed at 40 exercises; everything from `02-` on carries the canonical bookstore schema in its own
 > SETUP block. **Three files legitimately do not** — `12-data-types-ddl.sql`, `14-live-database.sql`
-> and `15-report-queries.sql` work against the **TimeTrack** model, and their done conditions name its
-> tables (noted 2026-08-28, when the rule and the conditions were found to contradict each other on
-> paper). The reason is the same in all three and is the point of those steps: Step 10's deliverable is
+> and `15-report-queries.sql` work against the **TimeTrack** model (noted 2026-08-28, when the rule and
+> the done conditions of the day were found to contradict each other on paper; since 2026-10-08 no done
+> condition names a TimeTrack table — Steps 10 and 12 close on `Review:`, the capstone on `Timed:`). The reason is the same in all three and is the point of those steps: Step 10's deliverable is
 > a schema written from a blank editor precisely because `ddl-auto` has been generating TimeTrack's for
 > him, Step 12 reads an inherited database rather than a seeded one, and the capstone writes the report
 > queries TimeTrack needs. "One file, one schema" is a rule against *mixing* schemas inside one file,
@@ -150,7 +155,7 @@ dentro del archivo de un step, donde inflarían su cuenta y ensuciarían su nota
 | `R1-repaso.sql` | R1 | 0–1 | cierra el Step 1 — su done condition `Review:` pasa sobre `03-joins.sql` | sin crear |
 | `R2-repaso.sql` | R2 **hard checkpoint** | 2–4 | cierra el Step 4 — su done condition `Review:` pasa sobre `06-nulls.sql` | sin crear |
 | `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 — su done condition `Review:` pasa sobre `09-dates-strings.sql` | sin crear |
-| `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 — su done condition `pgAdmin:` pasa sobre `12-data-types-ddl.sql` (run 2 de DDL) | sin crear |
+| `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 — su done condition `Review:` pasa sobre `12-data-types-ddl.sql` | sin crear |
 | `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 — su done condition `Review:` pasa sobre `14-live-database.sql` | sin crear |
 
 Lo que dispara un punto es el **cierre** del step, no que su archivo esté *scored*: un archivo corregido
@@ -223,7 +228,7 @@ and its done condition tests only the other run — so Steps 2, 9 and 10 were re
 sizes, every run within the 12 ceiling and no step's target moved.
 
 **The screening floor, if the clock runs out** (added 2026-08-28). 190 first-pass exercises remain
-against an applications window that opens in August 2026, so the route states which part of itself is
+while the August–September 2026 applications window is already open, so the route states which part of itself is
 not optional: **Steps 0–6** — the five topics `ROADMAP.md`'s Stage-1 → Stage-2 switch gate names
 verbatim (joins · aggregation · subqueries/CTEs · NULL handling · DML basics), now consecutive.
 Everything after that is post-gate: `ROADMAP.md` says in as many words that window functions, indexes
@@ -274,7 +279,7 @@ explained against.
 - `practice/sql/junior/02-execution-order-set-ops.sql` — 10, **escritas y sin responder**. Se generó el
   2026-07-22, se borró el 2026-08-04 sin responder y se regeneró el 2026-10-02: los 10 enunciados están
   en disco y ninguno tiene respuesta todavía.
-**Coverage:** `Querying basics`, `Ordering and pagination`, `Set operations`, `Filtering and NULL handling` (its four non-`NULL` bullets: alias visibility in `WHERE`, `LIKE`/`ILIKE`, `IN` vs `OR`, and `BETWEEN` ranges — every bullet about three-valued logic is Step 4)
+**Coverage:** `Querying basics`, `Ordering and pagination`, `Set operations`, `Filtering and NULL handling` (its four non-`NULL` bullets: alias visibility in `WHERE`, `LIKE`/`ILIKE`, `IN` vs `OR`, and `BETWEEN` ranges — every bullet about three-valued logic is Step 4) — except the three join-dependent bullets (qualified column references, `SELECT *` vs named columns, `UNION` vs `JOIN`), which are Step 1's, and quoted identifiers, which is Step 12's
 **Reinforces:** — (first step)
 **Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(hecho: el lote se regeneró el 2026-10-02)*
 **Focus:** SQL execution order and alias visibility, `CASE WHEN` in `SELECT`, `UNION`/`UNION ALL`/`INTERSECT`/`EXCEPT`, `NULLS FIRST`/`NULLS LAST` and non-deterministic `LIMIT`, stable ordering and `OFFSET` pagination
@@ -306,15 +311,12 @@ existía.)
 **Coverage bullets:**
 
 - [ ] `SELECT`, `FROM`, and column aliases — `SELECT` defines the result expressions, `FROM` supplies rows, and `AS` names a result expression without changing the source column
-- [ ] Qualified column references — use `alias.column` when more than one input exposes the same name and whenever qualification makes a multi-table query unambiguous
 - [ ] SQL execution order — `FROM + JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`; the foundation for understanding why aliases work in `ORDER BY` but not in `WHERE` or `HAVING`
 - [ ] `WHERE` operators and precedence — comparisons, `NOT`, `AND`, and `OR` build row predicates; `NOT` binds before `AND`, and `AND` before `OR`, so use parentheses whenever the intended grouping is not immediately obvious
 - [ ] Computed expressions — arithmetic and string expressions can produce derived result columns; give them aliases and account for operand types such as integer division
-- [ ] `SELECT *` vs named columns — specify the required columns in application code; `SELECT *` can fetch unnecessary data and makes the result shape change whenever the schema changes
 - [ ] `CASE WHEN` in `SELECT` — derive one output value per row from ordered conditions
 - [ ] `SELECT DISTINCT` — removes duplicate rows from the result; PostgreSQL treats `NULL` as a duplicate and keeps only one; use to explore unique values in a column
 - [ ] `DISTINCT ON` — PostgreSQL-specific; keeps one row per group while returning multiple columns; the column inside `DISTINCT ON (...)` must be the leftmost column in `ORDER BY`
-- [ ] SQL string literals vs quoted identifiers — single quotes delimit values, while double quotes delimit case-sensitive or otherwise special identifiers; unquoted PostgreSQL identifiers fold to lowercase
 - [ ] `ORDER BY` with `NULLS FIRST` / `NULLS LAST` — PostgreSQL treats `NULL` as the largest value by default; `ASC` puts `NULL` last, `DESC` puts `NULL` first; override with `NULLS FIRST` or `NULLS LAST`
 - [ ] No guaranteed row order without `ORDER BY` — a result set is an unordered set, so `GROUP BY`, an index scan, or insertion order can make rows look sorted while the engine stays free to return them differently on the next run; an order a caller depends on has to be stated, never inherited from how the rows happened to be produced ✅ 07-timetrack
 - [ ] Multi-column sorting — PostgreSQL resolves `ORDER BY` keys from left to right, so later keys break ties from earlier ones and each key can choose `ASC` or `DESC` ✅ 07-timetrack
@@ -324,7 +326,6 @@ existía.)
 - [ ] `FETCH FIRST n ROWS ONLY` — the SQL-standard row-limiting clause, written as `OFFSET n ROWS FETCH NEXT m ROWS ONLY`; PostgreSQL accepts both it and `LIMIT`, but Oracle and other engines a consultancy account may run accept only the standard form
 - [ ] `UNION` vs `UNION ALL` — remove duplicates across compatible result sets or retain every row and avoid unnecessary duplicate elimination
 - [ ] `UNION` column rules — align column counts and compatible types across branches while taking result column names from the first query
-- [ ] `UNION` vs `JOIN` — a union stacks rows from two result sets that share a shape, while a join widens each row with columns from a related table; "combine two tables" is ambiguous and picking the wrong one produces a result of the wrong shape, not merely the wrong size
 - [ ] `INTERSECT` and `EXCEPT` — `INTERSECT` keeps rows present in both results and `EXCEPT` keeps rows from the first result that are absent from the second; both remove duplicates unless `ALL` is requested
 - [ ] `WHERE` cannot use aliases — `WHERE` runs before `SELECT`, so column aliases do not exist yet; you must repeat the expression rather than use the alias
 - [ ] `LIKE` vs `ILIKE` — `LIKE` is case-sensitive; `ILIKE` is PostgreSQL-specific and case-insensitive; `%` matches any sequence of characters, `_` matches exactly one character
@@ -347,12 +348,12 @@ original ten hand-written statements were deleted on 2026-07-22: they were never
 carried the old thin schema, so regenerating gets the canonical one and the current exercise format
 (`-- Your answer:` + `-- ✅ Corregido` markers) instead of perpetuating the legacy format into a
 second file.
-**Coverage:** `JOINs` (every bullet except `ON` vs `WHERE` with an outer join, which is Step 3)
+**Coverage:** `JOINs` (every bullet except `ON` vs `WHERE` with an outer join, which is Step 3), plus `Querying basics` (`Qualified column references`, `SELECT *` vs named columns) and `Set operations` (`UNION` vs `JOIN`) — the three Step 0 bullets that need a join to be drilled
 **Reinforces:** Step 0 — execution order (`FROM + JOIN` runs first, which is why the join happens before `WHERE`)
 **Moment 2 config:** run 1 — *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**: `TOPIC = joins`, `COUNT = 11`
-**Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows, LEFT JOIN + IS NULL as an anti-join.
+**Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows, LEFT JOIN + IS NULL as an anti-join, qualified column references, named columns instead of `SELECT *` across joined tables.
 **Moment 2 config:** run 2 — *(append)* — **rango `#12–#22`**: `TOPIC = joins`, `COUNT = 11`
-**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, CROSS JOIN, JOIN cardinality and predicting row multiplication.
+**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, CROSS JOIN, JOIN cardinality and predicting row multiplication, `UNION` vs `JOIN` — stacking rows against widening them.
 
 **Concepts:** Run 1 builds the foundation — `INNER JOIN` (two tables, named columns, aliases, three tables, combined
 with `WHERE` / `ORDER BY` / `LIMIT`) and `LEFT JOIN` (keeping unmatched rows, and the `IS NULL`
@@ -395,6 +396,9 @@ Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 es
 - [ ] Self JOIN — assign separate aliases to one table so rows from that table can be related or compared with each other
 - [ ] `CROSS JOIN` — produces every combination of the two inputs; use it only when a Cartesian product is intentional and recognise a missing join condition as the accidental version
 - [ ] Table aliases in JOINs — `FROM books b JOIN authors a ON b.author_id = a.id`; makes queries readable and is required when two joined tables share a column name
+- [ ] Qualified column references — use `alias.column` when more than one input exposes the same name and whenever qualification makes a multi-table query unambiguous
+- [ ] `SELECT *` vs named columns — specify the required columns in application code; `SELECT *` can fetch unnecessary data and makes the result shape change whenever the schema changes
+- [ ] `UNION` vs `JOIN` — a union stacks rows from two result sets that share a shape, while a join widens each row with columns from a related table; "combine two tables" is ambiguous and picking the wrong one produces a result of the wrong shape, not merely the wrong size
 
 **Pending additions:** none
 
@@ -416,7 +420,7 @@ of a technical test.
 **Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets about aggregating over a `LEFT JOIN` are Step 3)
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
 **Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 9` — **rango `#01–#09`**
-**Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input, the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT`
+**Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input (`COUNT` → `0`, the others → `NULL`; recognise the `NULL` — `COALESCE` is Step 4's), the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT`
 **Moment 2 config:** run 2 — `TOPIC = group-by`, `COUNT = 5` *(append al mismo archivo)* — **rango `#10–#14`**
 **Focus:** `HAVING` vs `WHERE`, conditional aggregation with `CASE WHEN` and `FILTER (WHERE ...)`, `STRING_AGG`
 
@@ -462,7 +466,7 @@ which is the follow-up question after a join answer lands.
 **Concepts:** condition in `ON` vs in `WHERE`, the `WHERE` filter that silently turns a `LEFT JOIN` into an
 `INNER JOIN`, fan-out inflating `SUM`, `COUNT(*)` returning 1 instead of 0 after a `LEFT JOIN`,
 `COUNT(DISTINCT)` as the repair for a legitimate multiplication, `GROUP BY` after a `LEFT JOIN`,
-accidental cross joins, `NULL` in a join key, deliberate `CROSS JOIN`.
+accidental cross joins, deliberate `CROSS JOIN`.
 
 **Why it sits after aggregation, not next to joins.** Every item on that list is an aggregate: fan-out
 is a wrong `SUM`, the `COUNT(*)`/`COUNT(column)` trap is a wrong count, `COUNT(DISTINCT)` is a wrong
@@ -498,7 +502,7 @@ describing one he has not met — and `NOT IN` with a `NULL` is a standard scree
 **Focus:** none — the whole topic
 
 **Concepts:** `NULL = NULL`, `IS NULL` vs `= NULL`, `AND`/`OR` truth tables, a predicate and its own
-negation both dropping the same row, `NOT IN` with a `NULL` in the subquery, `COALESCE`, `NULLIF` and
+negation both dropping the same row, `NOT IN` with a `NULL` in a literal list (the subquery form waits for Step 5), `COALESCE`, `NULLIF` and
 division by zero.
 
 > **`NOT EXISTS` is named here but not drilled here** (2026-08-28). The `NOT IN` with `NULL` bullet is
@@ -539,7 +543,7 @@ last of the four *query-side* topics `ROADMAP.md` calls test-relevant (joins · 
 NULL handling · subqueries/CTEs), so from here on a timed test can ask a whole realistic query.
 **Exercises:** `practice/sql/junior/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
-**Reinforces:** Step 3 — aggregating in a derived table before the join is the real repair for the fan-out `COUNT(DISTINCT)` only patched; Step 2 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
+**Reinforces:** Step 3 — aggregating in a derived table before the join is the real repair for the fan-out `COUNT(DISTINCT)` only patched; Step 2 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see; Step 4 — `NOT EXISTS` is the repair for the `NOT IN`-with-`NULL` trap that step could only recognise
 **Moment 2 config:** run 1 — `TOPIC = subqueries`, `COUNT = 8`
 **Focus:** none — the whole subquery half of the section
 **Moment 2 config:** run 2 — `TOPIC = ctes`, `COUNT = 8` *(append al mismo archivo)*
@@ -645,8 +649,7 @@ the post-gate half ahead of window functions and the capstone because a live exe
 `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` to a `DATE`, standard SQL vs vendor extensions,
 `||` concatenation, `SUBSTRING`, `TRIM`, `UPPER`/`LOWER`, `REPLACE`, `LENGTH`.
 
-**This step owns the whole `PostgreSQL specifics` coverage section** — Step 12 uses the same prompt
-`TOPIC` family but claims different coverage bullets.
+**This step owns the whole `PostgreSQL specifics` and `Common string functions` coverage sections.**
 
 **Coverage bullets:**
 
@@ -719,9 +722,9 @@ and met the `NULL` it treats specially (Step 4) — and it is late because a scr
 **Coverage:** `Schema design`
 **Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint and in a `CHECK`; Step 6 — a constraint violation is the race an application check cannot win, and `ON CONFLICT` is how you handle its verdict
 **Moment 2 config:** run 1 — `TOPIC = schema-design`, `COUNT = 10`
-**Focus:** primary and foreign keys, primary key vs `UNIQUE`, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check
+**Focus:** primary and foreign keys, primary key vs `UNIQUE`, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check — constraints read from the SETUP schema and triggered with Step 6's `INSERT`/`UPDATE`/`DELETE`, never written with `CREATE TABLE`/`ALTER TABLE` (Step 10)
 **Moment 2 config:** run 2 — `TOPIC = normalization`, `COUNT = 5` *(append al mismo archivo)*
-**Focus:** one-to-many and many-to-many modelling, natural vs surrogate keys, normalization and the anomalies it prevents, reading a relational schema
+**Focus:** one-to-many and many-to-many modelling, natural vs surrogate keys, normalization and the anomalies it prevents — the update/insert/delete anomaly only, no 1NF/2NF/3NF by name (middle) — reading a relational schema, by reading the schema rather than writing DDL
 
 **Concepts:** primary and foreign keys, primary key vs `UNIQUE`, which side of a 1:N carries the FK,
 composite keys on a junction table, `ON DELETE` and `ON UPDATE` behaviour, `NOT NULL` / `UNIQUE` /
@@ -770,7 +773,7 @@ same run teaches.
 **Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`; Step 6 — its `INSERT` leaves the generated `id` out, and sequence drift is what supplying it anyway leaves behind
 **Moment 2 config:** run 1 — `TOPIC = data-types`, `COUNT = 12`
 **Focus:** none — the whole `Data types` section
-**Moment 2 config:** run 2 — `TOPIC = ddl`, `COUNT = 5` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
+**Moment 2 config:** run 2 — `TOPIC = ddl`, `COUNT = 5` *(append al mismo archivo)*
 **Focus:** none — the whole `Schema operations` section
 
 **Concepts:** `NUMERIC` vs `FLOAT`, `TIMESTAMP` vs `TIMESTAMPTZ`, `DATE` for a business day, `VARCHAR` vs `TEXT`,
@@ -805,23 +808,14 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 
 **Pending additions:** none
 
-**Done:** `pgAdmin: after 12-data-types-ddl.sql runs on an empty database, SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('users', 'projects', 'time_entries') returns exactly three rows: users, projects and time_entries`
+**Done:** `Review: sql-grade scores ≥ 80% on 12-data-types-ddl.sql`
 
-> **The condition tests run 2 (`ddl`) and only it.** None of run 1's twelve `Data types` bullets needs
-> one of the three tables it names — eleven are type choices and expression behaviour, and sequence
-> drift is an `INSERT` and a `setval` against a table of the exercise's own — and doctrine §3 allows a
-> step exactly one done condition, so the DDL run is what closes the step, and run 1 is verified by its
-> own `sql-grade` pass on the way there rather than by the gate. Stated rather than left implicit
-> (2026-08-28).
->
-> **The query filters by name on purpose** (2026-10-07). This file has no shared setup block, so an
-> exercise that needs a table defines its own, and sequence drift cannot be shown without one. Listing
-> the whole `public` schema would therefore return those scratch tables next to the three that matter,
-> and "returns users, projects and time_entries" would be a verdict two readers could give differently
-> (B6). Until that date this note said run 1 "produces no schema", which the new bullet made false.
+> **The done condition was a `pgAdmin:` check that three named tables exist until 2026-10-08.** Three
+> bare `CREATE TABLE` statements passed it, so the twelve exercises of the `data-types` run gated
+> nothing (B6), and running the whole file was fragile — the populated-table `SET NOT NULL` failure and
+> the sequence-drift collision are errors by design. The scored format covers both runs.
 
-> Revision point **R4** (doctrine §8b) fires here, on the run-2 `pgAdmin:` condition above rather than
-> on a grading score — it is the only point in the route triggered by a non-`Review:` done condition.
+> Revision point **R4** (doctrine §8b) fires here, on the `Review:` condition above.
 > Its span is Steps 8–10: window functions, schema design and DDL — the first post-gate query topic and
 > the two modelling steps. (Re-derived 2026-10-07 under `REC-288`: until DML and transactions moved to
 > Step 6, this span was DML, transactions, schema design and DDL.)
@@ -860,12 +854,12 @@ column, when not to index, non-sargable predicates, leading-wildcard `LIKE`, rea
 
 **Pending additions:** none
 
-**Done:** `pgAdmin: after the generate_series seed block at the top of 13-indexes.sql loads 100000 rows into time_entries spread over 1000 distinct work_date values, EXPLAIN SELECT id FROM time_entries WHERE work_date = DATE '2026-08-01' returns Seq Scan before CREATE INDEX and Index Scan after`
+**Done:** `Review: sql-grade scores ≥ 80% on 13-indexes.sql`
 
-> The seed block is part of this file, not an assumption about the database: without it nobody else can
-> run this condition and get a verdict (B6). The predicate is pinned to a selective value and a narrow
-> select list on purpose — a `SELECT *` over a low-cardinality column can legitimately stay a `Seq Scan`
-> after the index, which would fail the step for being right about PostgreSQL.
+> **The done condition was a `pgAdmin:` `EXPLAIN` check over a seeded `time_entries` until 2026-10-08.**
+> Two readers could grade it differently — ~100 matching rows spread across pages normally plan as a
+> `Bitmap Heap Scan`, not the `Index Scan` it named — and it presumed a `time_entries` seed this file's
+> bookstore schema does not carry. The scored format is the one every other query step uses (B6).
 
 ---
 
@@ -883,17 +877,16 @@ requirement against a schema and this is the step that teaches you to read one y
 > a label rather than a dependency.
 
 **Exercises:** `practice/sql/junior/14-live-database.sql` — 12
-**Coverage:** `Working with an existing database`
+**Coverage:** `Working with an existing database`, plus `Querying basics` (`SQL string literals vs quoted identifiers` — the case-folding rule behind `relation "Users" does not exist`)
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
 **Moment 2 config:** `TOPIC = live-database`, `COUNT = 12`
 **Focus:** none — the whole topic
 
-**Concepts:** `psql` basics (`\dt`, `\d`, `\l`, `\i`), `information_schema` and catalog views, the `public`
-schema and `search_path`, roles and `GRANT`/`REVOKE`, recognising triggers and stored procedures in an
-inherited database. Then the exact text of the eight errors a junior must recognise on sight, SQLSTATE
-codes (`23505`, `23503`, `23502`, `23514`), and PostgreSQL refusing implicit casts.
-
-The one step where you deliberately leave pgAdmin: a server does not have a GUI, and interviewers ask.
+**Concepts:** pgAdmin's object browser, `information_schema` and catalog views, the `public` schema and
+`search_path`, roles and `GRANT`/`REVOKE`, recognising triggers and stored procedures in an inherited
+database, quoted identifiers and case folding. Then the error text and SQLSTATE of each class the two
+error bullets name (`23505`, `23503`, `23502`, `23514`, failed casts, missing or ambiguous names), and
+PostgreSQL refusing implicit casts.
 
 **Coverage bullets:**
 
@@ -904,6 +897,7 @@ The one step where you deliberately leave pgAdmin: a server does not have a GUI,
 - [ ] `GRANT` and `REVOKE` recognition — understand that roles receive object privileges such as `SELECT`, `INSERT`, `UPDATE`, and `DELETE`, and that application connections should not require superuser access
 - [ ] Stored-procedure recognition — maintained databases can expose named server-side routines; writing complex procedural SQL is project-specific rather than a junior floor
 - [ ] Trigger recognition — DML can automatically execute trigger logic that is not visible in the application statement, so inspect triggers when an insert, update, or delete has unexpected side effects
+- [ ] SQL string literals vs quoted identifiers — single quotes delimit values, while double quotes delimit case-sensitive or otherwise special identifiers; unquoted PostgreSQL identifiers fold to lowercase
 
 **Pending additions:** none
 
@@ -914,10 +908,6 @@ The one step where you deliberately leave pgAdmin: a server does not have a GUI,
 > before a single exercise of this step was answered. It tested that a database was present, not that
 > the step had been drilled — and it is what fires R5. The scored format is the one every other query
 > step uses and is testable by someone else (B6).
->
-> ⚠️ **`psql` is not installed** — Victor works in pgAdmin. The step's point stands (a server has no GUI,
-> and interviewers ask), but its `psql` exercises need the client installed first. That is a
-> prerequisite of the step, not of its done condition, which is why it no longer sits in the gate.
 
 > Revision point **R5** (doctrine §8b) fires here, over two files rather than three: the capstone that
 > follows is itself the integration pass over everything, so a third file in this span would drill the
@@ -934,7 +924,7 @@ under time pressure, which is the one thing drilling topic by topic never produc
 **Coverage:** `Query workflow and SQL review`
 **Reinforces:** Steps 1, 2 and 5 above all — a report query is a join whose grain is chosen first, a `GROUP BY` over it, and a CTE or derived table when the aggregate has to be computed before it is filtered; this is the integration step and it composes every earlier one
 **Moment 2 config:** `TOPIC = report-queries`, `COUNT = 8`
-**Focus:** none — the whole topic
+**Focus:** report queries from prose (grain first, join path, zero-row groups, control-query check), plus finding and fixing the defect in a given statement — a missing join condition, `= NULL`, a date range losing its boundary rows, an unbounded `UPDATE`/`DELETE`, an `OFFSET` page with no tie-breaker, a value concatenated where a placeholder belongs
 
 The prompt's `report-queries` topic already builds its own TimeTrack setup block (`users`, `projects`,
 `time_entries`) instead of the bookstore, marks every exercise Challenge, and states a 10-minute
