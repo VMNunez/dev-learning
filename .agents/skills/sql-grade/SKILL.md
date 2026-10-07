@@ -8,8 +8,8 @@ description: >
   never grades anything itself: it resolves the level and the file, refuses a partially answered file, and runs
   notes/prompts/practice/sql/_internal/_sql-exercises-review.md in a COLD subagent, because that prompt
   was written for a fresh chat and this skill runs in the session where the concept may have just been
-  explained to him. It then lights the traffic light — failures send him back to fixing, a clean score
-  on a step's last file hands off to sql-step-close. The failure mode this exists for is a grader that
+  explained to him. It then lights the traffic light — a score under 80% sends him back to fixing, 80%
+  or more on a step's last file hands off to sql-step-close. The failure mode this exists for is a grader that
   remembers teaching the answer, and a file that scores well and closes nothing. Do NOT use it to
   generate exercises (that is /sql-exercises MODE = practice or reinforce), to grade a simulation (that
   is simulation-review), or to close a step directly (that is sql-step-close, which this one calls).
@@ -102,18 +102,26 @@ Read the subagent's verdict and take exactly one branch. **Print which branch yo
 | Verdict | What you do |
 |---|---|
 | First line `BLOCKED — segunda pasada no despachable` | **Stop.** Nothing was graded and nothing was written — confirm it: `{FILE}` holds no `✅ Corregido` dated today, and none of the four doc files §4 lists has changed since a `git status` you take just before the §2 dispatch. Say the file is still ungraded and why, and open the `FRIC-NNNN` row the durable-friction close-out owes a dispatch that failed, its evidence naming the runtime and whether that runtime offers nested dispatch at all — where it does not, the defect is this skill's design, not a transient failure. §4 then writes the tracker cell and nothing else: **no `.sql` command for Victor**, since nothing was graded. The shell's `MODE = review` in a new conversation still grades the same file, because its second pass is a first-level dispatch there; «cierra el step N» then closes a step it finishes. Never grade it yourself instead. |
-| Score **< 80%**, or any ❌ / ⚠️ | **Stop.** Name the failed concepts and the exercises they came from, straight from the new `MISTAKES.md` rows. Tell him to rewrite those answers in the file and say "corrige el 02" again. Offer the narrowed batch: `/sql-exercises` with `MODE = reinforce` and `FILE = {FILE}`. No close. |
+| Score **< 80%** | **Stop.** Name the failed concepts and the exercises they came from, straight from the `MISTAKES.md` rows this run opened or incremented. Tell him to rewrite those answers in the file and say "corrige el 02" again. Offer the narrowed batch: `/sql-exercises` with `MODE = reinforce` and `FILE = {FILE}`. No close. |
 | **≥ 80%**, but `{PLAN}` §1 shows the step owns other files that are not yet scored | File done, step open. Name the next file and stop. No close. |
 | **≥ 80%** and this was the step's **last** unscored file | **Invoke the `sql-step-close` skill**, passing `{LEVEL}`, the step number, and every file of the step. Do not reproduce its work here. |
+
+**A ⚠️ or ❌ inside a first-pass file that scored ≥ 80% blocks neither ≥ 80% branch.** A step closes
+on its one scored done condition and nothing else (doctrine §3, `_sql-plan-standard.md` B5), and the
+subagent has already set the §3 row on exactly that rule. The failure is not dropped: its `MISTAKES.md`
+row stays open, and the next revision point takes its focus from those rows (doctrine §8b). So name each
+failed concept in one line, from the rows this run opened or incremented, and say it comes back at the
+next revision point (none follows the capstone) — **without** the rewrite-and-regrade instruction of the
+`< 80%` branch, which is that branch's alone.
 
 **The counters move on every scored branch**, including the failing one — the subagent already wrote
 them; only `BLOCKED`, which scored nothing, moves none.
 A 60% is real information about graded exercises, and a file that scored badly must not look like one
 nobody started. What a bad score blocks is the *step closing*, never the recording.
 
-A **`[Repaso]` batch** (a `reinforce` run, or an `R{n}-repaso.sql` file) can never take the third
-branch. It moves no counter and closes nothing by design; say "Lote de repaso: no cuenta para ningún
-paso" and end at the first branch instead.
+A **`[Repaso]` batch** (a `reinforce` run, or an `R{n}-repaso.sql` file) never takes either ≥ 80%
+branch, whatever it scores. It moves no counter and closes nothing by design; say "Lote de repaso: no
+cuenta para ningún paso" and take the `< 80%` branch, whatever it scored.
 
 ---
 
@@ -170,7 +178,7 @@ If `sql-step-close` ran, it reports its own commits; do not stage its files here
 | PROGRESS.md | junior roll-up 29/200, fila del archivo 10/10, filas `Total` recalculadas |
 | Route file | §3 step 0 → `closed ✅`, §2 checkboxes 8/9 marcados |
 | Doctrina §0 | 4d disparó — Current step → step 1, Done condition y Last updated reescritos (el `{PLAN}` no tiene §0) |
-| Branch taken | ≥ 80% y último archivo del step → `sql-step-close` invocado |
+| Branch taken | ≥ 80% y último archivo del step → `sql-step-close` invocado; el ⚠️ de `NULLS LAST` no bloquea el cierre — vuelve en el próximo punto de repaso |
 | Tracker | `SQL exercise track` → junior `Exercises`: `1/14 steps closed — step 0 closed (02 graded 9/10)` |
 | Commits | mine: MISTAKES.md, PROGRESS.md, PLANNING-junior.md, PLANNING.md (4d disparó), `_run-tracker.md` · yours: the `.sql` (commands below) |
 

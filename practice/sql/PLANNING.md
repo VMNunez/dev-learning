@@ -321,7 +321,7 @@ they hand off in one direction — you never invoke `sql-step-close` yourself:
 | Skill | Fires when | What it owns |
 |---|---|---|
 | `sql-block-open` | you start the 12:30 block | read-only orientation: current step, unanswered exercises, open `MISTAKES.md` rows, which Moment is next. Writes nothing. |
-| `sql-grade` | you finished answering a file | grades it, then the traffic light: failures → back to fixing; clean → hands off to `sql-step-close` **only if this was the step's last file** |
+| `sql-grade` | you finished answering a file | grades it, then the traffic light: under 80% → back to fixing; 80% or more → hands off to `sql-step-close` **only if this was the step's last file** |
 | `sql-step-close` | handed the step by `sql-grade` | the closing ritual below, end to end, without asking anything |
 | `sql-block-close` | you end the block, whatever state it is in | the `## Fricción` rows of `MISTAKES.md` and where tomorrow starts. Writes no counter and closes no step. |
 
