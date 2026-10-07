@@ -284,6 +284,10 @@ member you are adding. **And a `{TEMPLATE}` in a path is a claim at every value 
 over** — the same fix cited `coverage/{LEVEL}.md` for evidence markers that exist only in `junior.md`,
 so pin the path to the value that holds or verify all of them; a template is the cheapest way to
 assert two things you never checked.
+**Also `REC-272`: a name *derived* from a template is the same claim, and the value that breaks it is fixed
+at the convention's owner, not only in the consumer** — `R1-repaso.sql`'s capital needed SQL quoting under
+the registry's literal "file name with underscores", and a consumer that both adds "lowercased" and cedes
+disagreements to the owner hands the owner's literal reading the win.
 
 **A rule written in a standard is not a rule that runs, and "the sibling family already does this" is
 a claim about *disk*, not about text.** From `REC-180`'s identity half. The row's whole framing was that
