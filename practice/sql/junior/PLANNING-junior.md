@@ -30,21 +30,31 @@ count each file ends at**.
 ### Exercise files — `practice/sql/junior/`
 
 One file per topic, numbered in study order, inside the level's own directory (every level takes one;
-no level is flat). "Done" counts are what exists on `main` today.
+no level is flat). The counts are what exists **on disk, on the active branch**, today — study
+material follows the working branch (doctrine §7) and reaches `main` only by merge, so `main` can lag
+behind this table. (Corrected 2026-10-07: this used to say "what exists on `main`".)
 
 **Three counts, never conflated.**
 - *Written* = the prompt generated the statement.
 - *Answered* = the query is written under it. A file full of unanswered statements is worth nothing.
-- *Scored* = a `review` run has graded it ≥ 80%. **Only this one advances a step.**
-  `01-basics.sql` is the completed case — all 40 answers carry a `-- ✅ Corregido` marker, but only its
-  20 first-pass exercises count toward Step 0's target.
+- *Scored* = a grading run (`sql-grade`) has graded it — **at any verdict, and counted once**: an
+  exercise graded wrong is scored, and one graded again after a rewrite is not counted a second time.
+  **Scored is not accepted.** The ≥ 80% in a `Review:` done condition is the threshold on a grading
+  run's *score*, never a filter on which exercises count. **Only grading moves a status, and reaching
+  the scored target alone does not close a step** — its done condition does; a re-grade can pass that
+  condition without raising this count, and a closed step stays closed (doctrine invariant 14).
+  `01-basics.sql` is the completed case — all 40 answers are graded, but only its 20 first-pass
+  exercises count toward Step 0's target. (Corrected 2026-10-07: this used to define *scored* as
+  "graded ≥ 80%", which turned a per-run threshold into a per-exercise verdict.)
 
 **A file is generated on the day it is answered, not before** (2026-08-04). `02-execution-order-set-ops.sql`
 sat for two weeks with 10 statements *written* and 0 *answered*, which is worth exactly nothing: a batch
 that is not answered while its concepts are fresh is a batch that gets re-read cold later. It was
 deleted rather than left standing, exactly as `03-joins.sql` was on 2026-07-22, and its row below stays
 in the route with its target intact — the route declares the file, the file exists when the block that
-answers it starts. Run `/sql-exercises` when you sit down to answer, not in advance.
+answers it starts. Run `/sql-exercises` when you sit down to answer, not in advance. (`02-` was
+regenerated on 2026-10-02 and is on disk again — 10 written, 0 answered — which is what its row below
+records since 2026-10-07; `03-joins.sql` is still not on disk.)
 - *Target* = the **first-pass** exercises the step needs. **Review batches (Moment 2b) are extra and
   uncounted** — a file legitimately grows past its target forever, and that is not drift.
 
@@ -55,7 +65,7 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | File | Step(s) | Written | Answered | Scored | First-pass target | Status |
 |------|---------|---------|----------|--------|-------------------|--------|
 | `01-basics.sql` | 0 | 40 *(20 review)* | 40 | **20** *(+20 review, uncounted)* | 20 | **closed** — all 40 answers graded correct on 2026-07-22 (40/40), of which the 20 first-pass ones are what the Scored column counts. Legacy schema (v1); no more exercises are added here |
-| `02-execution-order-set-ops.sql` | 0 | 0 | 0 | 0 | 10 | deleted 2026-08-04 — to regenerate on the day it is answered |
+| `02-execution-order-set-ops.sql` | 0 | 10 | 0 | 0 | 10 | written, not answered — regenerated 2026-10-02 after the 2026-08-04 deletion; nothing to grade until its 10 statements are answered (Moment 3) |
 | `03-joins.sql` | 1 | 0 | 0 | 0 | 22 | deleted 2026-07-22 — to regenerate |
 | `04-aggregates.sql` | 2 | 0 | 0 | 0 | 14 | to create |
 | `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
@@ -65,7 +75,7 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | `09-window-functions.sql` | 7 | 0 | 0 | 0 | 12 | to create |
 | `10-dml-transactions.sql` | 8 | 0 | 0 | 0 | 16 | to create |
 | `11-schema-design.sql` | 9 | 0 | 0 | 0 | 15 | to create |
-| `12-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 16 | to create |
+| `12-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 17 | to create |
 | `13-indexes.sql` | 11 | 0 | 0 | 0 | 12 | to create |
 | `14-live-database.sql` | 12 | 0 | 0 | 0 | 12 | to create |
 | `15-report-queries.sql` | 13 | 0 | 0 | 0 | 8 | to create |
@@ -83,10 +93,11 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 > why the file numbers no longer match the step numbers — the mapping is this table, and the prompt's
 > path table was updated to match.
 
-**First-pass total when the track is done: 209 exercises across 15 files.** Review batches add on top
-and are deliberately not budgeted. Track-wide today: **40 written**, all of them in `01-basics.sql`, 40 answered, 20 first-pass scored —
-those 40/40/20 figures belong to that file alone and are not the route's totals. Every other file of
-the route is still to generate.
+**First-pass total when the track is done: 210 exercises across 15 files.** Review batches add on top
+and are deliberately not budgeted. Track-wide today: **50 written** — 40 in `01-basics.sql` and 10 in
+`02-execution-order-set-ops.sql` — and 40 answered and graded, all of them in `01-basics.sql`, of which
+only its 20 first-pass exercises count: the route stands at **20 first-pass scored of 210**, and the
+other 20 are that file's review batch. Every file from `03-` on is still to generate.
 
 **Two header formats exist, and that is deliberate.** The prompt handles both — do not "fix" either
 one by hand.
@@ -94,8 +105,8 @@ one by hand.
 *Legacy* — `01-basics.sql` only, written before the prompt existed. (the old `02-joins.sql`, now renumbered `03-joins.sql`, was the other one;
 it was deleted and will be regenerated in the current format, so `01-basics.sql` is the last file that
 will ever carry this.)
-The answer goes directly under the description, and the correction marker goes at the end of the
-header line:
+The answer goes directly under the description, and grading records its verdict on the header line
+(the example is a graded exercise):
 
 ```sql
 -- #07 | LEFT JOIN — finding missing data ✅ Corregido 2026-07-22
@@ -116,10 +127,15 @@ SELECT ...
 Appending to a legacy file leaves it **mixed**, and the prompt warns you and asks before doing it —
 answer yes; a mixed file is expected and correctly handled. `review` mode reads both (legacy answers
 are the SQL lines between one `-- #NN |` and the next), so the 40 answered exercises in `01-basics.sql`
-will score normally. **Both formats carry the `-- ✅ Corregido` marker** — it is just a comment line,
-so a graded legacy exercise is skipped as settled exactly like a current-format one (corrected
-2026-07-22; this file used to claim otherwise, which cost `01-basics.sql` its markers on the first
-review run).
+will score normally. **Grading records its verdict on the exercise's header line in both formats.**
+Which marker records which verdict, and when an already-marked exercise is graded again or left alone,
+is owned by `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` — Step 2b for the markers,
+Step 1 for the re-grade and skip policy — and is not restated here. (Corrected 2026-10-07: this
+paragraph used to say every marked exercise is skipped as settled, which is not the policy — an
+exercise graded and not accepted is marked too, and can come back through grading. The one point of the
+2026-07-22 correction it replaces stands: a legacy-format exercise is marked exactly like a
+current-format one, and claiming otherwise is what cost `01-basics.sql` its markers on the first
+review run.)
 
 ### Revision files — `practice/sql/junior/R{n}-repaso.sql`
 
@@ -131,11 +147,14 @@ dentro del archivo de un step, donde inflarían su cuenta y ensuciarían su nota
 
 | Archivo | Punto | Span (steps) | Dispara cuando | Estado |
 |---------|-------|--------------|----------------|--------|
-| `R1-repaso.sql` | R1 | 0–1 | cierra el Step 1 (`03-joins.sql` scored) | sin crear |
-| `R2-repaso.sql` | R2 **hard checkpoint** | 2–4 | cierra el Step 4 (`06-nulls.sql` scored) | sin crear |
-| `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 (`09-window-functions.sql` scored) | sin crear |
+| `R1-repaso.sql` | R1 | 0–1 | cierra el Step 1 — su done condition `Review:` pasa sobre `03-joins.sql` | sin crear |
+| `R2-repaso.sql` | R2 **hard checkpoint** | 2–4 | cierra el Step 4 — su done condition `Review:` pasa sobre `06-nulls.sql` | sin crear |
+| `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 — su done condition `Review:` pasa sobre `09-window-functions.sql` | sin crear |
 | `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 — su done condition `pgAdmin:` pasa sobre `12-data-types-ddl.sql` (run 2 de DDL) | sin crear |
-| `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 — su done condition `Terminal:` pasa sobre `14-live-database.sql` | sin crear |
+| `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 — su done condition `Review:` pasa sobre `14-live-database.sql` | sin crear |
+
+Lo que dispara un punto es el **cierre** del step, no que su archivo esté *scored*: un archivo corregido
+entero por debajo del 80% tiene todo su target scored y no cierra nada (§1, tercera definición).
 
 **Los dos hard checkpoints son R2 y R3** — los que la doctrina §8b declara no saltables. R2 cierra el
 núcleo de screening (Steps 1–4, lo que pregunta una ronda rápida) y R3 cierra el bloque que va justo
@@ -165,11 +184,15 @@ other, and front-loads what a screening asks first.
 
 **Step sizing:** a step is a handful of 12:30 sessions, never weeks. **No single generation run asks
 for more than 12 exercises, and no step targets more than 22** — that ceiling is why schema design is
-split across Steps 9 and 10 instead of being one 36-exercise block. Any step targeting more than 12 is
+split across Steps 9 and 10 instead of being one 32-exercise block. Any step targeting more than 12 is
 split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (7 + 7), 5 (8 + 8), 8 (8 + 8), 9 (8 + 7) and
-10 (8 + 8) — which also keeps each batch's difficulty split meaningful. In Steps 9 and 10 the split is
-doubly motivated: each is over the per-run ceiling *and* covers two distinct coverage sections, so the
-two runs fall on the section boundary rather than at an arbitrary halfway point.
+10 (9 + 8) — which also keeps each batch's difficulty split meaningful. In four of them the cut is not
+an arbitrary halfway point either: Steps 8 and 10 each claim two coverage sections, so their runs fall
+on the section boundary, and Steps 5 and 9 each claim a single section with a seam of its own
+(subqueries | CTEs and views, constraints | modelling), which their two `TOPIC`s follow. (Corrected
+2026-10-07: this used to say Step 9 covered two coverage sections, which stopped being true when its
+two older sections were merged into the one `Schema design` it claims today, and it gave the undivided
+block as 36 exercises where Steps 9 and 10 sum to 15 + 17.)
 
 **Step 0 is the one step above the 22 ceiling, at 30, and it is a legacy artefact rather than a
 precedent.** Its first 20 exercises in `01-basics.sql` were hand-written before the exercise prompt
@@ -182,9 +205,11 @@ scored exercise that drilled that bullet, so a step with 15 bullets and 12 exerc
 checked — it would sit at 100% scored with three bullets it never touched. Steps 2, 9 and 10 were raised
 to 14, 15 and 14 on 2026-08-03 for exactly that reason, when the recalibrated coverage file gave them
 more scope than their inherited flat target of 12, and Step 10 again to 16 on 2026-08-28 when coverage
-grew by two bullets that both landed on it. The rest of the route already satisfied the rule.
+grew by two bullets that both landed on it, and to 17 on 2026-10-07 when `Sequence drift after
+explicit-id inserts` joined the `Data types` section it claims whole. The rest of the route already
+satisfied the rule.
 
-**The screening floor, if the clock runs out** (added 2026-08-28). 189 first-pass exercises remain
+**The screening floor, if the clock runs out** (added 2026-08-28). 190 first-pass exercises remain
 against an applications window that opens in August 2026, so the route states which part of itself is
 not optional: **Steps 0–5, plus Step 8 (DML and transactions)** — the five topics `ROADMAP.md`'s
 Stage-1 → Stage-2 switch gate names verbatim (joins · aggregation · subqueries/CTEs · NULL handling ·
@@ -230,11 +255,12 @@ explained against.
 **Exercises:** dos archivos, uno por esquema.
 - `practice/sql/junior/01-basics.sql` — **cerrado**: 40 respondidas (20 first-pass #01–#20 + 20 de repaso
   #21–#40), **40/40 correctas** el 2026-07-22. Esquema v1 (el viejo). No se le añade nada más.
-- `practice/sql/junior/02-execution-order-set-ops.sql` — 10, **sin crear**. Se generó el 2026-07-22 y se borró el
-  2026-08-04 sin responder: se regenera con `/sql-exercises` el día que se conteste, no antes.
+- `practice/sql/junior/02-execution-order-set-ops.sql` — 10, **escritas y sin responder**. Se generó el
+  2026-07-22, se borró el 2026-08-04 sin responder y se regeneró el 2026-10-02: los 10 enunciados están
+  en disco y ninguno tiene respuesta todavía.
 **Coverage:** `Querying basics`, `Ordering and pagination`, `Set operations`, `Filtering and NULL handling` (its four non-`NULL` bullets: alias visibility in `WHERE`, `LIKE`/`ILIKE`, `IN` vs `OR`, and `BETWEEN` ranges — every bullet about three-valued logic is Step 4)
 **Reinforces:** — (first step)
-**Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(pendiente: el lote se regenera el día que se responda)*
+**Moment 2 config:** `TOPIC = basics`, `COUNT = 10`  *(hecho: el lote se regeneró el 2026-10-02)*
 **Focus:** SQL execution order and alias visibility, `CASE WHEN` in `SELECT`, `UNION`/`UNION ALL`/`INTERSECT`/`EXCEPT`, `NULLS FIRST`/`NULLS LAST` and non-deterministic `LIMIT`, stable ordering and `OFFSET` pagination
 
 **Concepts:** covered across both batches — `SELECT`, `WHERE` (`AND`/`OR`/`IN`/`NOT IN`/`LIKE`/
@@ -249,13 +275,17 @@ Still missing before this step closes — the ten remaining exercises target exa
 - `CASE WHEN` in `SELECT`
 - `UNION` vs `UNION ALL`, `INTERSECT`, `EXCEPT`
 - `NULLS FIRST` / `NULLS LAST`, and why `LIMIT` without `ORDER BY` is non-deterministic
-- Keyset pagination vs deep `OFFSET`
+- Stable ordering and `OFFSET` pagination (corrected 2026-10-07: this line used to read "keyset
+  pagination vs deep `OFFSET`", which no coverage bullet of this step names and the `**Focus:**` line
+  above never asked for)
 
-**Moment 2 está pendiente, no hecho.** El run del 2026-07-22 escribió las 10 sentencias, pero el
-archivo se borró el 2026-08-04 sin responder ninguna (§1), así que hay que **relanzarlo**: el bloque
-empieza en Moment 2, con `/sql-exercises`, `MODE = practice`, `TOPIC = basics`, que regenera el archivo
-con su bloque SETUP. El config de arriba es el que se pasa. (Este párrafo decía lo contrario hasta el
-2026-08-28 y contradecía las otras tres menciones del mismo archivo en este fichero.)
+**Moment 2 está hecho; lo pendiente es Moment 3.** El run del 2026-07-22 escribió las 10 sentencias y
+el archivo se borró el 2026-08-04 sin responder ninguna; el 2026-10-02 se **regeneró** con
+`/sql-exercises`, `MODE = practice`, `TOPIC = basics`, con su bloque SETUP y sus 10 enunciados. El
+bloque empieza por tanto en Moment 3 — responderlos —, y el config de arriba queda como registro de lo
+que se pasó: relanzarlo ya no es el siguiente paso. (Corregido el 2026-10-07 contra el archivo en
+disco; este párrafo ya se había corregido en sentido contrario el 2026-08-28, cuando el archivo no
+existía.)
 
 **Coverage bullets:**
 
@@ -303,11 +333,11 @@ carried the old thin schema, so regenerating gets the canonical one and the curr
 second file.
 **Coverage:** `JOINs` (every bullet except `ON` vs `WHERE` with an outer join, which is Step 3)
 **Reinforces:** Step 0 — execution order (`FROM + JOIN` runs first, which is why the join happens before `WHERE`)
-**Moment 2 config — run 1** *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**:
+**Moment 2 config:** run 1 — *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**:
 `TOPIC = joins`, `COUNT = 11`
 **Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows,
 LEFT JOIN + IS NULL as an anti-join.
-**Moment 2 config — run 2** *(append)* — **rango `#12–#22`**: `TOPIC = joins`, `COUNT = 11`
+**Moment 2 config:** run 2 — *(append)* — **rango `#12–#22`**: `TOPIC = joins`, `COUNT = 11`
 **Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, CROSS JOIN, JOIN cardinality and predicting row
 multiplication.
 
@@ -315,8 +345,14 @@ multiplication.
 with `WHERE` / `ORDER BY` / `LIMIT`) and `LEFT JOIN` (keeping unmatched rows, and the `IS NULL`
 anti-join). Run 2 covers the rest: `RIGHT JOIN` and why it is rewritable as a `LEFT`,
 `FULL OUTER JOIN`, self join, `CROSS JOIN` and the missing join condition as its accidental version,
-`USING` vs `NATURAL JOIN` and why `NATURAL` is banned in real codebases, and predicting join
-cardinality before writing the query.
+and predicting join cardinality before writing the query.
+
+> **`USING` and `NATURAL JOIN` left this list on 2026-10-07.** Neither has a coverage bullet at any
+> level, so drilling them would invent scope — the ruling Step 4 records for `IS DISTINCT FROM`. They
+> had already left run 2's `**Focus:**` line on 2026-08-28, which kept them out of the first-pass
+> batch; but a revision point or a `reinforce` run that finds neither open mistakes nor friction rows
+> falls back on the `**Concepts:**` that appeared in the fewest exercises, so a name left here still
+> reached a batch — R1's first of all.
 
 > **`EXISTS` / `NOT EXISTS` are deliberately not drilled here** (removed 2026-08-28). They read as
 > join vocabulary, but they are correlated subqueries: their bullets belong to Step 5 (`IN` vs
@@ -325,9 +361,10 @@ cardinality before writing the query.
 > subquery exercises four steps before the syntax is taught. The anti-join itself is still drilled in
 > run 1, through the `LEFT JOIN ... IS NULL` bullet that is genuinely this step's.
 
-> **Two runs, un solo `TOPIC`.** Es el único step así, y por eso cada run declara su **rango de
-> ejercicios**: es el único dato en disco con el que el prompt puede saber cuál de los dos le estás
-> pidiendo. El prompt elige el primer rango que aún no esté escrito entero.
+> **Two runs, un solo `TOPIC`.** Solo este step y el Step 2 (`group-by` dos veces) son así, y por eso
+> en ambos cada run declara su **rango de ejercicios**: es el único dato en disco con el que el prompt
+> puede saber cuál de los dos le estás pidiendo. El prompt elige el primer rango que aún no esté
+> escrito entero. (Hasta el 2026-10-07 esto decía que este era el único step así.)
 
 Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 escribe el esquema canónico
 él mismo y no hay prompt de esquema legacy que contestar.
@@ -365,9 +402,9 @@ of a technical test.
 **Exercises:** `practice/sql/junior/04-aggregates.sql` — 14 (two runs of 7)
 **Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets about aggregating over a `LEFT JOIN` are Step 3)
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
-**Moment 2 config — run 1:** `TOPIC = group-by`, `COUNT = 7` — **rango `#01–#07`**
+**Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 7` — **rango `#01–#07`**
 **Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input, the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT`
-**Moment 2 config — run 2:** `TOPIC = group-by`, `COUNT = 7` *(append al mismo archivo)* — **rango `#08–#14`**
+**Moment 2 config:** run 2 — `TOPIC = group-by`, `COUNT = 7` *(append al mismo archivo)* — **rango `#08–#14`**
 **Focus:** `HAVING` vs `WHERE`, conditional aggregation with `CASE WHEN` and `FILTER (WHERE ...)`, `STRING_AGG`
 
 **Concepts:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, `SUM`
@@ -492,9 +529,9 @@ fully open until Step 8 closes — Step 5 opens the query half of it, not the wh
 **Exercises:** `practice/sql/junior/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
 **Reinforces:** Step 3 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
-**Moment 2 config — run 1:** `TOPIC = subqueries`, `COUNT = 8`
+**Moment 2 config:** run 1 — `TOPIC = subqueries`, `COUNT = 8`
 **Focus:** none — the whole subquery half of the section
-**Moment 2 config — run 2:** `TOPIC = ctes`, `COUNT = 8` *(append al mismo archivo)*
+**Moment 2 config:** run 2 — `TOPIC = ctes`, `COUNT = 8` *(append al mismo archivo)*
 **Focus:** none — the whole CTE and view half of the section
 
 **Concepts:** subquery in `WHERE` / `FROM` / `SELECT`, `IN` vs `EXISTS`, subquery vs `JOIN`, correlated subqueries
@@ -569,9 +606,17 @@ question, never as the opener.
 **Moment 2 config:** `TOPIC = window-functions`, `COUNT = 12`
 **Focus:** none — the whole topic
 
-**Concepts:** `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `LAG`/`LEAD`, `SUM() OVER (PARTITION BY ...)`, why a window
-function cannot appear in `WHERE`, window vs `GROUP BY`, `DISTINCT ON` vs `ROW_NUMBER() = 1`, the
-default frame, "the second highest value".
+**Concepts:** `ROW_NUMBER`, `RANK` vs `ROW_NUMBER` on ties, `SUM() OVER (PARTITION BY ...)`, why a window
+function cannot appear in `WHERE`, window vs `GROUP BY`, `DISTINCT ON` vs `ROW_NUMBER() = 1`, one row
+and the top N rows per group, "the second highest value".
+
+> **`DENSE_RANK`, `LAG`/`LEAD` and window frames are deliberately not drilled here** (removed from this
+> list 2026-10-07). All three are bullets of `notes/sql/coverage/middle.md` — `DENSE_RANK()` vs
+> `RANK()`, `LAG()` and `LEAD()`, `Window frames` — so they are middle's to claim, not this step's to
+> drill. The first-pass batch never generated them: `**Focus:**` is `none — the whole topic`, and the
+> topic is scoped by the four junior bullets below. What the names did here was reach a revision
+> batch, whose last-resort focus is the `**Concepts:**` that appeared in the fewest exercises — which
+> would have been exactly these three.
 
 **Coverage bullets:**
 
@@ -597,9 +642,9 @@ needs Step 7's `ROW_NUMBER()`, so it cannot precede either — and it is where S
 **Exercises:** `practice/sql/junior/10-dml-transactions.sql` — 16 (two runs of 8)
 **Coverage:** `DML — modifying data`, `Transactions`
 **Reinforces:** Step 2 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 7 — `ROW_NUMBER()` is how you delete duplicates keeping one
-**Moment 2 config — run 1:** `TOPIC = dml`, `COUNT = 8`
+**Moment 2 config:** run 1 — `TOPIC = dml`, `COUNT = 8`
 **Focus:** none — the whole `DML — modifying data` section
-**Moment 2 config — run 2:** `TOPIC = transactions`, `COUNT = 8` *(append al mismo archivo)*
+**Moment 2 config:** run 2 — `TOPIC = transactions`, `COUNT = 8` *(append al mismo archivo)*
 **Focus:** none — the whole `Transactions` section
 
 **Concepts:** `INSERT` (single, multi-row, `INSERT ... SELECT`, `RETURNING`), insert order with foreign keys,
@@ -641,9 +686,9 @@ and met the `NULL` it treats specially (Step 4) — and it is late because a scr
 **Exercises:** `practice/sql/junior/11-schema-design.sql` — 15 (runs of 8 and 7)
 **Coverage:** `Schema design`
 **Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint and in a `CHECK`; Step 8 — a constraint violation is the race an application check cannot win, and `ON CONFLICT` is how you handle its verdict
-**Moment 2 config — run 1:** `TOPIC = schema-design`, `COUNT = 8`
+**Moment 2 config:** run 1 — `TOPIC = schema-design`, `COUNT = 8`
 **Focus:** primary and foreign keys, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check
-**Moment 2 config — run 2:** `TOPIC = normalization`, `COUNT = 7` *(append al mismo archivo)*
+**Moment 2 config:** run 2 — `TOPIC = normalization`, `COUNT = 7` *(append al mismo archivo)*
 **Focus:** one-to-many and many-to-many modelling, natural vs surrogate keys, normalization and the anomalies it prevents, reading a relational schema
 
 **Concepts:** primary and foreign keys, primary key vs `UNIQUE`, which side of a 1:N carries the FK,
@@ -681,21 +726,24 @@ reading a schema's grain, and storing each fact once so an update cannot leave t
 
 ---
 
-### Step 10 — Data types and DDL (0 scored / 16 target)
+### Step 10 — Data types and DDL (0 scored / 17 target)
 
 **Why here:** it writes by hand the constraints Step 9 only reasoned about, so it needs that step
 first; putting DDL before modelling would produce syntax with nothing to say about why the column is
-`NOT NULL`.
-**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 16 (two runs of 8)
+`NOT NULL`. Its `Data types` half is not what places it: nothing there needs more than Step 8 —
+sequence drift is that step's `INSERT` given an explicit `id`, against the identity column this same
+run teaches.
+**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 17 (runs of 9 and 8)
 **Coverage:** `Data types`, `Schema operations`
-**Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`
-**Moment 2 config — run 1:** `TOPIC = data-types`, `COUNT = 8`
+**Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`; Step 8 — its `INSERT` leaves the generated `id` out, and sequence drift is what supplying it anyway leaves behind
+**Moment 2 config:** run 1 — `TOPIC = data-types`, `COUNT = 9`
 **Focus:** none — the whole `Data types` section
-**Moment 2 config — run 2:** `TOPIC = ddl`, `COUNT = 8` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
+**Moment 2 config:** run 2 — `TOPIC = ddl`, `COUNT = 8` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
 **Focus:** none — the whole `Schema operations` section
 
 **Concepts:** `NUMERIC` vs `FLOAT`, `TIMESTAMP` vs `TIMESTAMPTZ`, `DATE` for a business day, `VARCHAR` vs `TEXT`,
-`CHAR(n)` padding, `SERIAL` vs `IDENTITY`, `BOOLEAN`, `JSONB` vs a real table, integer division and
+`CHAR(n)` padding, `SERIAL` vs `IDENTITY`, a sequence left behind by explicit-id inserts and its
+`setval` repair, `BOOLEAN`, `JSONB` vs a real table, integer division and
 explicit casts, `ROUND` on `NUMERIC` and how a `NUMERIC` scale propagates out of an expression. Then
 writing `CREATE TABLE` / `ALTER TABLE` / `DROP` and `DEFAULT` by hand, and the two-statement order a
 constraint added to a table that already holds rows forces.
@@ -708,6 +756,7 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 - [ ] `VARCHAR(n)` vs `TEXT` — both have identical storage performance in PostgreSQL; `VARCHAR(n)` documents an intended maximum length; `TEXT` is for content with no meaningful upper limit; the practical difference is intent, not performance
 - [ ] `CHAR(n)` blank padding — a fixed-length column stores every shorter value padded with trailing spaces, then ignores those spaces when comparing and when reporting `length()`; expect it in inherited Oracle and legacy schemas rather than choosing it for new columns
 - [ ] Integer identity columns vs `SERIAL` — `GENERATED ... AS IDENTITY` is the SQL-standard PostgreSQL choice for generated integer keys; `SERIAL` is legacy shorthand that creates a separate sequence and default, while `BIGINT`/`BIGSERIAL` widen the range
+- [ ] Sequence drift after explicit-id inserts — rows copied or inserted with their own ids do not advance the column's sequence, so the next generated key collides with an existing row; realign it with `setval` past the current maximum, which a data-only `pg_dump` emits for each sequence it copies
 - [ ] `NUMERIC(p,s)` vs `FLOAT` — choose exact fixed-precision decimals for money and approximated floating-point values for measurements that tolerate representation error ✅ 07-timetrack
 - [ ] Integer division and explicit casts — integer divided by integer truncates the fractional part in PostgreSQL; cast an operand to `NUMERIC` when the result must retain decimals
 - [ ] `ROUND(value, n)` — rounds to a given number of decimal places, but only for `NUMERIC`; PostgreSQL has no two-argument `ROUND` for `double precision`, so a computed average usually needs an explicit cast before a report can round it
@@ -724,12 +773,20 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 
 **Pending additions:** none
 
-**Done:** `pgAdmin: after 12-data-types-ddl.sql runs on an empty database, SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' returns users, projects and time_entries`
+**Done:** `pgAdmin: after 12-data-types-ddl.sql runs on an empty database, SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('users', 'projects', 'time_entries') returns exactly three rows: users, projects and time_entries`
 
-> **The condition tests run 2 (`ddl`) and only it.** Run 1's eleven `Data types` bullets are query-side
-> and produce no schema, and doctrine §3 allows a step exactly one done condition — so the DDL run is
-> what closes the step, and run 1 is verified by its own `sql-grade` pass on the way there rather than
-> by the gate. Stated rather than left implicit (2026-08-28).
+> **The condition tests run 2 (`ddl`) and only it.** None of run 1's twelve `Data types` bullets needs
+> one of the three tables it names — eleven are type choices and expression behaviour, and sequence
+> drift is an `INSERT` and a `setval` against a table of the exercise's own — and doctrine §3 allows a
+> step exactly one done condition, so the DDL run is what closes the step, and run 1 is verified by its
+> own `sql-grade` pass on the way there rather than by the gate. Stated rather than left implicit
+> (2026-08-28).
+>
+> **The query filters by name on purpose** (2026-10-07). This file has no shared setup block, so an
+> exercise that needs a table defines its own, and sequence drift cannot be shown without one. Listing
+> the whole `public` schema would therefore return those scratch tables next to the three that matter,
+> and "returns users, projects and time_entries" would be a verdict two readers could give differently
+> (B6). Until that date this note said run 1 "produces no schema", which the new bullet made false.
 
 > Revision point **R4** (doctrine §8b) fires here, on the run-2 `pgAdmin:` condition above rather than
 > on a grading score — it is the only point in the route triggered by a non-`Review:` done condition.
@@ -749,9 +806,15 @@ where a junior's first indexes actually come from.
 **Moment 2 config:** `TOPIC = indexes`, `COUNT = 12`
 **Focus:** none — the whole topic
 
-**Concepts:** what an index is and its write cost, why PostgreSQL does not index a foreign key column, when not to
-index, composite index column order, non-sargable predicates, leading-wildcard `LIKE`, `EXPLAIN` vs
-`EXPLAIN ANALYZE`, estimated vs actual rows, when a `Seq Scan` is correct, the join node types.
+**Concepts:** what an index is and its write cost, when to add one, why PostgreSQL does not index a foreign key
+column, when not to index, non-sargable predicates, leading-wildcard `LIKE`, reading `EXPLAIN` for a
+`Seq Scan` against an `Index Scan`, when a `Seq Scan` is correct.
+
+> **Composite-index column order, `EXPLAIN ANALYZE` with estimated vs actual rows, and the join node
+> types are deliberately not drilled here** (removed from this list 2026-10-07). They are middle's
+> `Query diagnosis` bullets — `Composite-index design`, `EXPLAIN ANALYZE`, `Plan operators and row
+> estimates` — and this level's `EXPLAIN` bullet stops at telling a `Seq Scan` from an `Index Scan`,
+> which is also all the done condition below asks for. Same ruling, and same reason, as Step 7's.
 
 **Coverage bullets:**
 
@@ -785,6 +848,7 @@ against a schema, and this is the step that teaches you to read one you did not 
 > The position is bought by the error half and by the capstone adjacency, not by them, and this file
 > used to claim otherwise ("needs a query vocabulary wide enough to know what to look for"), which was
 > a label rather than a dependency.
+
 **Exercises:** `practice/sql/junior/14-live-database.sql` — 12
 **Coverage:** `Working with an existing database`
 **Reinforces:** Step 9 — every error message here is a constraint from that step firing
@@ -868,12 +932,17 @@ for the four classic failures — join, predicate, mutation and pagination.
 
 ## §3 — Progress
 
-Status is driven by the **scored** count (§1's third definition), never the written or merely answered
-one. A row moves to `closed ✅` only after a `review` run has graded it.
+**Only grading moves a status** — never the written count, never the merely answered one, and never the
+scored count on its own: *scored* (§1's third definition) is graded at any verdict, counted once, so a
+step can have its whole first-pass target scored and still be open. A row moves to `closed ✅` when its
+step's done condition (§2) passes and not before — for a `Review:` step, a `sql-grade` run scoring
+≥ 80%, the threshold being on the run's score and not on the count. A re-grade can pass that condition
+without raising the count, and a row that reads `closed ✅` is never set back (doctrine invariant 14).
+(Corrected 2026-10-07: this used to say status is driven by the scored count.)
 
 | Step | Topic | Exercises file | Scored / target | Status | Técnicas que desbloquea al cerrar |
 |------|-------|----------------|-----------------|--------|-----------------------------------|
-| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: sin crear)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
+| 0 | Querying basics | `01-basics.sql` + `02-execution-order-set-ops.sql` | 20 / 30 *(01: 20/20 closed, 40/40 correct 2026-07-22 incl. 20 repaso; 02: 0/10, escrito el 2026-10-02 y sin responder)* | in progress ⏳ | `SELECT`/`WHERE`/`ORDER BY`, orden de ejecución, operaciones de conjuntos |
 | 1 | JOINs | `03-joins.sql` | 0 / 22 | not started | JOINs de todo tipo |
 | 2 | Aggregates and grouping | `04-aggregates.sql` | 0 / 14 | not started | `GROUP BY` / `HAVING` / agregados |
 | 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started | Diagnóstico de fan-out y multiplicación de filas |
@@ -883,12 +952,12 @@ one. A row moves to `closed ✅` only after a `review` run has graded it.
 | 7 | Window functions | `09-window-functions.sql` | 0 / 12 | not started | Window functions |
 | 8 | DML and transactions | `10-dml-transactions.sql` | 0 / 16 | not started | DML y transacciones |
 | 9 | Schema design | `11-schema-design.sql` | 0 / 15 | not started | Diseño de esquema y normalización |
-| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 16 | not started | Tipos y DDL escrito a mano |
+| 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 17 | not started | Tipos y DDL escrito a mano |
 | 11 | Indexes and query plans | `13-indexes.sql` | 0 / 12 | not started | Índices y planes de ejecución |
 | 12 | Live database and errors | `14-live-database.sql` | 0 / 12 | not started | — |
 | 13 | Report queries (capstone) | `15-report-queries.sql` | 0 / 8 | not started | — |
 
-**20 of 209 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
+**20 of 210 first-pass exercises scored** (Step 0's `#01–#20`, all correct), plus a
 20-exercise review batch that does not count. `PROGRESS.md` holds the
 authoritative status; this table is the at-a-glance copy. Both are updated by the doctrine §4 ritual, in
 the same commit. Review batches never change a row here.
@@ -912,7 +981,7 @@ cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
 
 ## Out of scope at this level
 
-**None — every one of the 151 bullets in `notes/sql/coverage/junior.md` is claimed by exactly one step.**
+**None — every one of the 152 bullets in `notes/sql/coverage/junior.md` is claimed by exactly one step.**
 The exclusions this plan used to carry disappeared with the 2026-08-03 coverage recalibration rather
 than being reversed: the old `Programmable database objects` section, deliberately skipped, was rewritten
 into two *recognition* bullets inside `Working with an existing database` (`Stored-procedure recognition`

@@ -1,22 +1,23 @@
 # SQL Learning Plan
 
 **Purpose:** the compass for the 12:30 SQL block, built to the same contract as a project
-`PLANNING.md`. `notes/sql/coverage/{LEVEL}.md` says *what* must be learned; this file says *in what order*,
+`PLANNING.md`. `notes/sql/coverage/{LEVEL}.md` says *what* must be learned; this plan — this doctrine plus
+the level's route file (§1) — says *in what order*,
 *which files it produces*, *how many exercises each one gets*, *which prompt runs at which moment*,
 *what to update when a step closes*, and *when the whole track is finished*.
 
 **Database:** PostgreSQL (local, pgAdmin). **Schema:** the canonical bookstore schema defined in
 `notes/prompts/practice/sql/sql-exercises-prompt.md` (`authors`, `publishers`, `genres`, `books`,
 `customers`, `orders`, `order_items`, `reviews`) — that prompt is the single source of truth for it.
-Three files switch to the **TimeTrack** model instead — `12-data-types-ddl.sql`, `14-live-database.sql`
-and `15-report-queries.sql` — for the reason the route gives in its §1 (a schema written from a blank
-editor, an inherited database, and the report queries TimeTrack needs). Which files those are is the
-route's to say, not this file's.
+A route may put some of its files on a different model instead. Which files those are, and why,
+is the route's to say in its §1, not this file's: no list of
+them is kept here, because a copy here is what a route change would leave false.
 
 > ⚠️ **`01-basics.sql` carries an older, thinner schema** (`order_books` with no `quantity` or
 > `unit_price`, `authors.nationality`, `books.year`) and is **closed** because of it — resolved
 > 2026-07-22 by leaving it alone and starting `02-execution-order-set-ops.sql` with the canonical
-> schema. Every file from `02-` on ships its own canonical SETUP block: one file, one schema.
+> schema. From `02-` on every file carries exactly one schema of its own — which one is the route §1's
+> to say, and how the file sets it up is the exercise prompt's: one file, one schema (invariant 11).
 
 ### Local practice databases — the registry
 
@@ -49,24 +50,23 @@ report queries TimeTrack needs without looking anything up.
 (`_sql-exercises-review.md` step 4d, repaired by `sql-step-close`), never by hand at the start of a
 session; `sql-plan-audit` reconciles them against the route (invariants 5 and 6) and corrects them, and
 `sql-block-open` reports a stale §0 without repairing it. **`Current branch` and `Blocked on` have no
-writer anywhere in the machinery** — they are maintained by hand or not at all.
+dedicated writer in the machinery** (standard A1): their corrections by a session or an audit are
+manual reconciliation, not an automatic refresh on every close.
 
 | | |
 |---|---|
 | **Current level** | junior — route file `practice/sql/junior/PLANNING-junior.md` (the six rows below refer to it) |
-| **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` sin crear, target 30) |
+| **Current step** | Step 0 — Querying basics (`01-basics.sql` cerrado con 20 first-pass; `02-execution-order-set-ops.sql` escrito el 2026-10-02 con 10 enunciados sin responder; target 30) |
 | **Current branch** | the active feature branch (study materials follow it — see §7) |
 | **Done condition** | `Review: sql-grade scores ≥ 80% on 02-execution-order-set-ops.sql` |
-| **Next revision point** | R1 (route §1) — fires when Step 1 closes and `03-joins.sql` is scored |
-| **Blocked on** | nothing. `02-execution-order-set-ops.sql` está sin crear: el bloque empieza en Moment 2 — `/sql-exercises` con `MODE = practice` y `TOPIC = basics`, que lo genera con su bloque SETUP. Se genera el día que se responde, no antes. |
-| **Last updated** | 2026-08-04 |
+| **Next revision point** | R1 (route §1) — fires when Step 1 closes, i.e. when its `Review:` done condition passes on `03-joins.sql` |
+| **Blocked on** | nothing. `02-execution-order-set-ops.sql` ya está en disco (generado el 2026-10-02, 10 enunciados, ninguno respondido): el bloque empieza en Moment 3 — responderlos en pgAdmin, en su base `practice_junior_02_execution_order_set_ops` — y pasa a Moment 4 (`sql-grade`) cuando los diez tengan respuesta. No hay que relanzar Moment 2. |
+| **Last updated** | 2026-10-07 |
 
 ---
 
 ## Section 1 — How this plan relates to the hub files
 
-| File | Role here |
-|------|-----------|
 **The two inputs, and this plan never invents beyond them:**
 
 | File | Role here |
@@ -78,8 +78,8 @@ writer anywhere in the machinery** — they are maintained by hand or not at all
 
 | File | Role here |
 |------|-----------|
-| `PROGRESS.md` (SQL section) | **What** has been learned. Authoritative status; the level's route §3 is the at-a-glance copy. |
-| **This file** | **In what order**, with which files, how many exercises, which prompt, and what "done" means. |
+| `PROGRESS.md` → `## Practice completed` → `### Exercise route` | **How much** of the route is done — never a concept list, which lives in the coverage file. Authoritative figures; the level's route §3 is the at-a-glance copy. |
+| **This plan** (this doctrine + the level's route) | **In what order**, with which files, how many exercises, which prompt, and what "done" means. |
 
 **The plan is two files, and the split is by level-neutrality.** *This* file is the **doctrine**: the
 step loop, the done-condition formats, the closing ritual, the branch rules, the revision mechanism, the
@@ -97,13 +97,16 @@ is downstream of coverage exactly like a project `PLANNING.md` is.
 
 ## Section 2 — The step loop: exactly when to run each prompt
 
-Every step runs the same five moments. **The prompts run in a separate conversation, never in the
-daily 12:30 session.** Each moment states the trigger, the prompt, and the config to paste.
+Every step runs Moments 1–5, with Moment 2b for revision or reinforcement; Moment 6 closes the block.
+Generation prompts run in a separate conversation. Grading and closure use the in-session skills
+named below. Each moment states its trigger and the prompt config or skill to invoke.
 
-> **The pasted config has exactly five keys — `MODE`, `TOPIC`, `LEVEL`, `COUNT`, `FILE` — and `sql-exercises-prompt.md`
-> says in as many words: do not add keys.** `MODE` and `TOPIC` are required; `LEVEL`, `COUNT` and `FILE` are
-> optional overrides (`LEVEL` blank means `junior`, and it is what selects the route file — pin it on any
-> non-junior run). **`FOCUS` and `REVIEW` are not pasted keys**: the prompt derives them from the
+> **The pasted config uses only the keys of `sql-exercises-prompt.md`'s own `## Configuration` block —
+> and that prompt says in as many words: do not add keys.** Read the complete key set there rather
+> than copying it here (invariant 9). `MODE` and `TOPIC` are always required;
+> `LEVEL`, `COUNT` and `FILE` are optional overrides (`LEVEL` blank means `junior`, and it is what selects
+> the route file — pin it on any non-junior run), **with the one exception the prompt states itself:
+> `MODE = reinforce` requires `FILE`**. **`FOCUS` and `REVIEW` are not pasted keys**: the prompt derives them from the
 > route §2 step whose `TOPIC` matches, which is why every step below still states its focus — it is read
 > from the plan, not typed into the chat. Pasting `FOCUS = …` is a dead instruction.
 
@@ -116,11 +119,12 @@ daily 12:30 session.** Each moment states the trigger, the prompt, and the confi
 
 ### Moment 2 — Generate the exercises  ▶ RUN A PROMPT
 
-**Trigger:** immediately after Moment 1, with the exercise file still empty.
+**Trigger:** after Moment 1, when the selected run's exercises have not yet been written.
 **Prompt:** `notes/prompts/practice/sql/sql-exercises-prompt.md` — paste into a **new chat**.
 
 ```
 MODE  = practice
+LEVEL = <the level of the selected route>
 TOPIC = <the step's TOPIC, given per step in the route §2>
 COUNT = <the step's COUNT, given per step in the route §2 — never the default>
 ```
@@ -128,16 +132,8 @@ COUNT = <the step's COUNT, given per step in the route §2 — never the default
 The step's focus travels with the step, not with the paste: the prompt looks up the route §2 entry for that
 `TOPIC` and reads its **`**Focus:**`** line from there.
 
-**Nothing else is added to the paste — nothing.** Since 2026-07-22 the prompt's own path table matches
-the route §1 file for file, and the two rules that used to be pasted by hand are derived instead:
-- the **new-concept rule** ("every exercise must introduce a concept not already drilled in this file")
-  is what `{REVIEW} = no` means, and the prompt applies it on every first-pass batch;
-- the **cross-topic rule** (one Challenge combining an earlier topic, two from Step 5 on) is read off
-  the step's `**Reinforces:**` line.
-
-A rule you have to remember to paste is a rule that eventually does not get pasted. If the prompt ever
-asks where to save, or hands back a batch that ignores one of these, the plan and the prompt have
-drifted — fix the prompt, not the run.
+The prompt resolves the file from route §1 and reads the step's `**Reinforces:**` line. Exercise
+content, difficulty and file format belong to `sql-exercises-prompt.md`; no extra rule is pasted here.
 
 ---
 
@@ -163,31 +159,33 @@ dos triggers estés atendiendo:
 
 ```
 MODE  = practice
-TOPIC = R2
+LEVEL = <the level of the selected route>
+TOPIC = <the revision point declared in that route's §1>
 ```
 
 El prompt reconoce los puntos de repaso de la ruta, abre `practice/sql/MISTAKES.md`, coge las filas
 abiertas cuyo `Step` cae en el span del punto, las ordena por `Times` descendente y **eso** es el foco.
 Escribe en `practice/sql/{LEVEL}/R{n}-repaso.sql`, su propio archivo. Si el span no tiene filas abiertas
-el punto se dispara igual y el foco pasa a los conceptos del span menos ejercitados.
+el punto se dispara igual y el foco pasa primero a sus filas de `## Fricción`, y solo sin ellas a los
+conceptos del span menos ejercitados (§8b).
 
-**Revisita voluntaria de un tema** — `TOPIC` es el tema, y el modo dedicado es `reinforce`:
+**Revisita voluntaria de un tema** — `TOPIC` es el tema, `FILE` el archivo que quieres repasar, y el
+modo dedicado es `reinforce`. `FILE` es **obligatorio** en este modo — nada en la ruta lo elige, y sin él
+el prompt se para con un error en vez de derivar uno:
 
 ```
 MODE  = reinforce
-TOPIC = <the topic being revisited>
+LEVEL = <the level of the selected route>
+TOPIC = <the topic of the file being revisited>
+FILE  = <the file being revisited — required in this mode>
 ```
 
 `reinforce` corre la misma rama que `practice` pero con `{REVIEW} = yes` desde el principio. Pegar
 `MODE = practice` sobre un archivo que ya tiene escrito su target first-pass también acaba en un lote
 de repaso — el guard "target already met" del prompt te lo ofrece — pero por la puerta larga.
 
-**Again, nothing else is pasted — and this is the part that changed.** A review batch used to require
-two hand-typed lines (*"deliberate repetition is the point"*, *"skip Intro"*), because the prompt's
-difficulty split was fixed at 25/50/25 with no notion of a review batch. It is not fixed any more: the
-prompt derives `{REVIEW} = yes`, applies its own review-batch difficulty split (its rule, not this
-plan's), labels the exercises `[Repaso]`, and excludes them from the step's target — all of it
-automatically.
+The prompt owns the content, difficulty and file format of these batches. The plan records only
+their topic, count and focus; they remain outside the step's first-pass target.
 
 `{REVIEW} = yes` is derived from **una de cuatro cosas**, nunca de una clave pegada a mano:
 - `MODE = reinforce` — siempre;
@@ -204,13 +202,11 @@ exercises that re-covered the same ground at the same difficulty, buying three g
 its hour, and the line that would have fixed it was one nobody remembered to type.
 
 **Review runs do not advance a step.** They are not counted in the route §1's targets and never flip a status in
-the route §3 — a step closes on its first-pass exercises alone. Review is maintenance on ground
-already taken.
+the route §3 — a step's target is its first-pass exercises alone, and what closes it is its done
+condition (§3). Review is maintenance on ground already taken.
 
-**They come labelled.** The prompt writes `-- Exercise N [Repaso]:` instead of
-`[Intro]/[Standard]/[Challenge]`, so the file itself records which batch was first-pass and which was
-review. Without that marker, six months from now nothing distinguishes them — and the review-mode score
-silently mixes both.
+How a file distinguishes a first-pass batch from a review batch is defined by
+`sql-exercises-prompt.md`; this plan does not duplicate that format.
 
 ---
 
@@ -230,18 +226,17 @@ runs the grading prompt in a cold subagent.
 
 What it does, beyond printing a score:
 
-- **Writes `-- ✅ Corregido <fecha>`** under every answer it accepts, and **skips anything already
-  marked** on later runs. So the score always measures the new batch, never a growing pile of
-  already-validated work, and the file itself records what is settled.
+- **Records its verdict on the header line of every exercise it grades**, so the file itself is the
+  record of what has been graded. Which marker records which verdict, and when an already-marked
+  exercise is graded again or left alone, are owned by
+  `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` — Step 2b for the markers, Step 1 for
+  the re-grade and skip policy — and are not restated here.
 - **Updates `PROGRESS.md`** — the level roll-up, the file's row, and the recomputed `Total` rows.
-- **Updates the level's route file** — the step's §3 row and its §2 coverage checkboxes — **and this
-  doctrine's §0** when the step closes (§0 is a section of *this* file, not of the route).
-- **Re-checks every answer it accepted** with a cold subagent before writing any marker, and prints
-  "Segunda pasada: N ✅ confirmados, M revertidos". A marker is permanent, so it is not written on a
-  single grader's word.
-- **Logs every ⚠️ and ❌ in `practice/sql/MISTAKES.md`**, one row per concept, and closes the rows this
-  run redeemed. It does **not** write to `notes/sql/` or `notes/interview-prep/` — those tracks are
-  not planned here (§Z).
+- **Updates the level's route file** — the file's §1 row, the step's §3 row and its §2 coverage
+  checkboxes — **and this doctrine's §0** when the step closes (step 4d of the grading prompt; §0 is a
+  section of *this* file, not of the route, and `sql-grade` commits it).
+- **Logs every ⚠️ and ❌ in `practice/sql/MISTAKES.md`** — its `## Open` and `## Closed` tables, which
+  that same prompt's Step 5 owns — and closes the rows this run redeemed.
 
 **The counters move at any score.** A 60% is real information about twelve graded exercises, and
 withholding it would make a badly-scored file look like one nobody started. What a bad score blocks is
@@ -262,8 +257,8 @@ asked for. The one thing to check is its report table — a skipped item is stat
 
 ### Moment 6 — End the block  ▶ RUN A SKILL
 
-**Trigger:** the hour is over, in whatever state the file is. **This is not Moment 5**: a step closes
-thirteen times at junior, a block ends every day, and almost always mid-file.
+**Trigger:** Victor ends the block, in whatever state the file is. **This is not Moment 5**: a step closes
+once per step of the route, a block ends every day, and almost always mid-file.
 **Skill:** `sql-block-close`. Say "cierro el bloque" and nothing else.
 
 It writes exactly one thing — the **`## Fricción` rows of `MISTAKES.md`**: the concepts that cost you
@@ -292,24 +287,7 @@ person can run it and get the same verdict without asking how you feel about the
 
 **Every step closes on exactly one condition, and it is machine-checkable.** The capstone uses the
 `Timed:` format; every other step uses one of the first three. Nothing outside this list closes a step —
-a note being written or a question being added to the Q&A bank is a different track (§Z) and never a
-done condition here.
-
-> **The `Aloud:` format was removed on 2026-08-03, and with it the two-condition rule.** Every step used
-> to need a second condition — its exit question, answered aloud from memory — on the argument that a
-> score measures queries written with time to think, which does not distinguish recognising a concept
-> from recalling it. That argument is sound, but it describes **retrieval practice, which is the
-> `simulator` and interview-prep track's job** (§Z), not this one. Keeping it here bought nothing the
-> Q&A bank does not already do, and it put a manual, unautomatable gate in the middle of a ritual that
-> is otherwise fully mechanical — which is exactly how a ritual stops being run.
->
-> **And the `**Q&A seed:**` line that replaced it was removed on 2026-08-04.** The exit questions had
-> survived as inert seed lines in the route §2, on the argument that a good question should not be lost.
-> The cost was that the planner still had to *write an interview question per step* — question-authoring
-> inside a track whose entire subject is exercises, done without the interview-prep standard, without
-> its cold review, and owed to nobody once written. This track generates exercises, grades them and
-> tracks them; the questions are `/interview-prep-audit`'s output and are produced there, from the
-> coverage file, when Victor decides to (§Z). No step carries a question of any kind.
+the other tracks are outside this plan (§Z).
 
 ---
 
@@ -321,12 +299,13 @@ they hand off in one direction — you never invoke `sql-step-close` yourself:
 | Skill | Fires when | What it owns |
 |---|---|---|
 | `sql-block-open` | you start the 12:30 block | read-only orientation: current step, unanswered exercises, open `MISTAKES.md` rows, which Moment is next. Writes nothing. |
-| `sql-grade` | you finished answering a file | grades it, then the traffic light: under 80% → back to fixing; 80% or more → hands off to `sql-step-close` **only if this was the step's last file** |
+| `sql-grade` | you finished answering a file | grades it; under 80% → back to fixing; hands off to `sql-step-close` only when this was the step's last file **and its own done condition passes** |
 | `sql-step-close` | handed the step by `sql-grade` | the closing ritual below, end to end, without asking anything |
 | `sql-block-close` | you end the block, whatever state it is in | the `## Fricción` rows of `MISTAKES.md` and where tomorrow starts. Writes no counter and closes no step. |
 
 **Two of these close different things, and conflating them is the mistake to avoid.** A *step* closes
-when its exercises are scored — rarely, thirteen times at junior. A *block* ends every single day,
+when its done condition (§3) passes — rarely, once per step of the route, and never merely because its
+exercises are scored (invariant 3). A *block* ends every single day,
 almost always mid-file. `sql-block-close` exists because everything between those two events used to be
 lost: the grader records only what came back ⚠️/❌, so a concept that cost twenty minutes and then came
 out right scored ✅ and vanished. That concept is the one that stalls an interview, and §8b's revision
@@ -334,23 +313,28 @@ points now read it (`## Fricción`) when a span has no graded failures left.
 
 `sql-grade` does not re-implement grading: it runs
 `notes/prompts/practice/sql/_internal/_sql-exercises-review.md` **in a cold subagent**, which is where
-Steps 4a–4e below actually happen. That isolation is not decoration — the prompt was written for a fresh
+that prompt's Steps 4a–4e — the automated writes listed below — actually happen. That isolation is not decoration — the prompt was written for a fresh
 chat, and a skill runs inside the session where the concept may have just been explained to you. A
 grader that remembers teaching you the answer is not a grader.
 
 **What a close touches, and who writes it:**
+
+The grading run also updates **`practice/sql/MISTAKES.md`** *(automated, by the grading subagent)* —
+its `## Open` and `## Closed` sections are owned by `_sql-exercises-review.md` Step 5. The separate
+block close owns only `## Fricción`; neither row format is defined here.
 
 1. **`PROGRESS.md`** *(automated, by the grading subagent)* — `## Practice completed` → `### Exercise
    route`: the level's roll-up row, the file's row in the level table, and the recomputed `Total` rows of
    both. **No concept list.** It was deleted on 2026-08-03 because it was an evidence-free second copy of
    the coverage file; the *what* lives on the coverage bullets, the *how many* lives here. Do not
    re-create it.
-2. **The level's route file** `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` *(automated)* — the step's row in
-   §3, **the readiness status line under that same table** (written by `sql-step-close`) and its
-   `**Coverage bullets:**` checkboxes in §2 — plus **this doctrine's §0**, refreshed when the
-   step closes (step 4d of the grading prompt; `sql-step-close` verifies and repairs what it left). (The junior
-   route was migrated out of this file on 2026-08-03; §5, §6 and §8 here are pointers now, and every one
-   of those edits lands in `practice/sql/junior/PLANNING-junior.md`.)
+2. **The level's route file** `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` *(automated)* — the file's row in
+   §1, the step's row in §3, **the readiness status line under that same table** (written by
+   `sql-step-close`) and its `**Coverage bullets:**` checkboxes in §2 — plus **this doctrine's §0**,
+   refreshed when the step closes (step 4d of the grading prompt; `sql-step-close` verifies and repairs
+   what it left, and `sql-grade` commits the file). (The junior route was migrated out of this file on
+   2026-08-03; §5, §6 and §8 here are pointers now, and every one of those edits lands in the level's
+   route file.)
 3. **`notes/sql/coverage/{LEVEL}.md`** *(automated, by `sql-step-close`)* — every bullet the step's graded
    exercises actually drilled gets the marker **`✅ sql:{file-slug}`**, e.g.
    `✅ sql:02-execution-order-set-ops`. This is deliberately **not** the `✅ NN-slug` project marker that
@@ -364,31 +348,37 @@ grader that remembers teaching you the answer is not a grader.
 **Nothing in this ritual asks you a question.** If a step cannot close, the skill says why and stops; it
 never blocks waiting for an answer.
 
-5. **The commit** *(manual — Victor runs it; the exercise file is his authorship, §7)* — one atomic
-   commit carrying the exercise file and everything the four items above moved. Commit message:
-   `docs: close SQL step N — <topic>`.
+5. **The commits** — split by authorship (§7), never one commit. **The exercise file** *(manual)* is
+   Victor's: `sql-grade` hands him its two commands and he runs them. **Everything the four items above
+   moved** *(automated)* was written by the ritual, so the skill that wrote it — or dispatched the write —
+   commits it itself, one atomic commit per concern: `sql-grade` the grading run's files, `sql-step-close`
+   its own, the close under `docs: close SQL step N — <topic>`.
 
-**Then, once that commit is in, run G1b (§9) *(manual)*: `sql-plan-audit`, `SCOPE = full`.** It is the only thing
-that checks this file, and the moment right after a step closes is when it has just become least true —
-§0 still points at the step you finished, and the route's §1 and §3 have just moved. It comes after the commit, not
+**Then, once those commits are in, run G1b (§9) *(manual)*: `sql-plan-audit`, `SCOPE = full`, `LEVEL = {level}`.** It is the only thing
+that checks this file, and the moment right after a step closes is when it has just moved the most —
+§0 and the route's §1 and §3 have all just been rewritten. It comes after the commits, not
 before, so it audits the numbers the ritual actually wrote.
 
 ---
 
 ## Section 5 — Every file this plan produces
 
-**Moved 2026-08-03 → `practice/sql/junior/PLANNING-junior.md` §1.** The file inventory is level-specific,
+**Moved 2026-08-03 → `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §1** (junior's was the route migrated
+that day). The file inventory is level-specific,
 so it lives in the level's own route file, one per level. This doctrine keeps only what is true whichever
-level is being drilled; the three counts (*written* / *answered* / *scored*), the target rule and the
-"a revision batch is extra" rule are defined in §8b and applied there.
+level is being drilled: the three counts (*written* / *answered* / *scored*) and the first-pass target
+rule are defined in invariant 3 (§10), the "a revision batch is extra" rule in §8b, and all three are
+applied in the route.
 
 ---
 
 ## Section 6 — The steps
 
-**Moved 2026-08-03 → `practice/sql/junior/PLANNING-junior.md` §2.** The step route is level-specific.
-The *shape* of a step — its required fields, the `**Moment 2 config:**` and `**Focus:**` lines the
-exercise prompt greps for, the done-condition formats it must use — is doctrine and stays here (§2, §3);
+**Moved 2026-08-03 → `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §2** (junior's was the route migrated
+that day). The step route is level-specific.
+What every step must carry for the loop to run — the `**Moment 2 config:**` and `**Focus:**` lines the
+exercise prompt greps for, the done-condition formats it must use — is doctrine and stays here (§2, §3,
+invariant 9);
 which steps exist, in what order and why, belongs to the level.
 
 ---
@@ -405,15 +395,22 @@ on whatever feature branch the morning project block is on.
   `fix/backend-backlog` carried a 20-exercise `01-basics.sql` while `main` had 40, plus the whole of
   the old `02-joins.sql` — resolved by merging `main` into the branch (G0).
   Check with `git log --oneline main -1 -- practice/sql/` against your branch before starting.
-- Exercise files are **Victor's authorship** → Claude never commits them, only prints the commands.
-- Commits stay atomic: the exercise file and its `PROGRESS.md` update are one commit.
+- Exercise files are **Victor's authorship** → no skill or prompt ever stages or commits them; the skill
+  that touched one (`sql-grade`, `sql-block-close`) prints the two commands and he runs them.
+- Everything the track's prompts and skills write — this doctrine, the route files, `MISTAKES.md`,
+  `PROGRESS.md`, the coverage drill markers — is **not** his to commit: the skill or prompt that wrote
+  it, or dispatched the write, commits it itself (§4, item 5).
+- Commits stay atomic: one commit per concern, and a `.sql` file is never staged alongside a tracking
+  file.
 
 ---
 
 ## Section 8 — Progress tracking
 
-**Moved 2026-08-03 → `practice/sql/junior/PLANNING-junior.md` §3.** Status is per level, driven by the
-**scored** count and by nothing else. `PROGRESS.md` → `## Practice completed` → `### Exercise route`
+**Moved 2026-08-03 → `practice/sql/{LEVEL}/PLANNING-{LEVEL}.md` §3** (junior's was the route migrated
+that day). Status is per level, and **only grading moves it**: a step's row closes when its done
+condition (§3) passes — never on the written or the answered count, and not on the *scored* count alone
+(invariant 3). `PROGRESS.md` → `## Practice completed` → `### Exercise route`
 holds the authoritative figures; each level's route §3 is its at-a-glance copy.
 
 ---
@@ -426,9 +423,9 @@ both halves of that: *when* revision happens, and *what* it drills.
 
 ### The cadence — one revision point every 3 exercise files
 
-Fixed, never left to judgement. A revision point fires when the third file since the previous one has
-been **scored**, and it re-drills the concepts of those three files. Every point is decided up front,
-nothing invented mid-session.
+Fixed, never left to judgement. The route declares at least one revision point per three exercise
+files. Each point fires when its route §1 trigger passes — the named step's done condition, never a
+scored count alone — and re-drills its declared span. Every point is decided up front.
 
 **Which points exist, what each one spans and what fires it, live in the level's route §1 — never
 here.** That table is the single source, because a route that reorders its steps must not require an
@@ -486,8 +483,7 @@ cronómetro no enseña nada. Esto se apunta aquí porque es un hecho sobre tu co
 sobre los tests: por eso la §Z le concede a esta sección su única excepción.
 
 **La regla:** un test SQL solo puede exigir técnicas de steps **cerrados** (`closed ✅` en la §3 de la
-ruta). La técnica más dura del test es la del step cerrado más alto, y el `FOCUS` natural es el tema de
-ese step — lo que acabas de cerrar es lo que menos veces has usado bajo presión.
+ruta). Ninguna técnica de un step abierto queda disponible por haber generado o respondido sus ejercicios.
 
 **Qué técnica desbloquea cada step, y cuáles están cerradas hoy, viven en la §3 de la ruta del nivel —
 nunca aquí.** Esa tabla es la fuente única: lleva una columna de técnicas por fila, de modo que
@@ -502,7 +498,7 @@ solo dice contra qué steps se puede tirar.
 
 **Quién la mantiene:** la columna de técnicas la escribe `sql-plan-prompt` al autorar el step; la línea
 de estado la reescribe `sql-step-close` en el mismo commit en que el step pasa a `closed ✅`.
-`sql-plan-audit` no la escribe: la audita bajo el invariante 16.
+`sql-plan-audit` la audita bajo el invariante 16 y corrige una línea de estado que contradiga su propia tabla.
 
 ---
 
@@ -515,18 +511,18 @@ prompt at the point where the file it *reads* has just become accurate, and befo
 | Gate | Trigger | Prompt + config | Why exactly here |
 |------|---------|-----------------|------------------|
 | **G0 — Branch sync** ✅ 2026-07-22 | Before the first SQL session on any branch | *(no prompt — `git merge main` into the branch)* | Appending to a stale file loses exercises at merge time. Done once on `fix/backend-backlog`; re-check on every future branch. |
-| **G1 — Step ritual** | Every step's done conditions pass | *(no prompt — the §4 ritual, by hand)* | The `step-complete` skill only covers project steps and will not fire for SQL. Without this, every later gate reads a stale `PROGRESS.md`. |
-| **G1b — Plan al día** | Right after G1, when a step closes · when `notes/sql/coverage/{LEVEL}.md` grows (i.e. after G2) · when `sql-exercises-prompt.md` changes | `notes/prompts/practice/sql/sql-plan-audit.md` · `SCOPE = full` (`SCOPE = extend` when the only trigger was new coverage sections) | This file is the one that rots fastest — every closed step, every new coverage section and every prompt change leaves it slightly less true, and nothing else audits it. It runs *after* G1 so it reads the status G1 has just made accurate, and before the next step starts building on a stale plan. Safe to run repeatedly: a clean plan comes back unchanged. |
-| **G1c — Replan tras extender** | Only when G1b's last line says `⚠ /sql-plan {LEVEL} owed` — i.e. its extension engine added or re-pointed a step | `notes/prompts/practice/sql/sql-plan-prompt.md` · `LEVEL = {level}`, `MODE = update` | The audit may not refresh the route's `Coverage SHA-256` (a digest refreshed without remapping the bullets destroys the staleness signal) and may not write `PROGRESS.md` (invariant 15 is audited there, never repaired). So a run that grows the route leaves two things only the planner can close: the fingerprint and the projection's rows for the new files. Skip it and every `/sql-exercises` run warns "ruta desactualizada" forever, over a route that is in fact current. Not owed when G1b reports nothing added. |
-| **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before Step 0; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
-| **G3 — PROGRESS accurate** | After **Step 13** closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` · `MODE = active` (its dedicated SQL subagent counts the exercise files in committed history) | Measures the whole `Exercise route` section in one pass, catching anything the per-step ritual missed. **It reports that drift, it does not repair it** — auditor since 2026-08-05: a mismatch is fixed by the section's owner (`sql-exercises MODE = review` §4b, or `sql-step-close` for a `Total` row that no longer adds up), and the gate closes on a **clean drift report**, not on the run happening. Must precede G4. |
+| **G1 — Step ritual** | The step's done condition passes | *(automatic — `sql-grade` hands off to `sql-step-close`, §4)* | The SQL closing ritual updates and checks the tracking files before later gates consume them. |
+| **G1b — Plan al día** | Right after G1, when a step closes · when `notes/sql/coverage/{LEVEL}.md` grows (i.e. after G2) · when `sql-exercises-prompt.md` changes | `notes/prompts/practice/sql/sql-plan-audit.md` · `LEVEL = {level}`, `SCOPE = full` (`SCOPE = extend` when the only trigger was new coverage sections) | This file is the one that rots fastest — every closed step, every new coverage section and every prompt change leaves it slightly less true, and nothing else audits it. It runs *after* G1 so it reads the status G1 has just made accurate, and before the next step starts building on a stale plan. Safe to run repeatedly: a clean plan comes back unchanged. |
+| **G1c — Replan owed** | When the audit reports `/sql-plan {LEVEL} owed`: the route grew, was re-pointed, or its coverage fingerprint is stale (invariant 12) | `notes/prompts/practice/sql/sql-plan-prompt.md` · `LEVEL = {level}`, `MODE = update` | Only the planner refreshes the fingerprint and re-syncs the route's projection in `PROGRESS.md`. A stale fingerprint requires a replan even when the audit added no step; the audit preserves that signal. |
+| **G2 — Coverage refresh** ✅ 2026-07-18 | Once, before the selected route's first step; again if a real job posting reveals a gap | `notes/prompts/knowledge/coverage/coverage-prompt.md` · `TOPIC = sql`, `LEVEL = {level}`, `MODE = update` (logged in `notes/prompts/_internal/_run-tracker.md`) | Coverage is the root of this plan. Refresh it *before* building on it, not after. |
+| **G3 — PROGRESS accurate** | After the selected route's final step closes | `notes/prompts/strategy/tracking/progress-update-prompt.md` · `MODE = active` (its dedicated SQL subagent counts the exercise files in committed history) | Measures the whole `Exercise route` section in one pass, catching anything the per-step ritual missed. **It reports that drift, it does not repair it** — auditor since 2026-08-05: a mismatch is fixed by the section's owner (`sql-exercises MODE = review` §4b, or `sql-step-close` for a `Total` row that no longer adds up), and the gate closes on a **clean drift report**, not on the run happening. Must precede G4. |
 | **G4 — Roadmap resync** | After G3 | `notes/prompts/strategy/tracking/roadmap-review-prompt.md` | The roadmap's SQL gate can only be marked cleared once `PROGRESS.md` says the track is finished. |
 
 **The mandatory revision checkpoints are not gates here — they are the revision points declared in the
 level's route §1**, on the §8b cadence, and that table is the only place they are scheduled from.
 
 **Prerequisite chain (hard — a gate run out of order gives a wrong answer, not just a late one):**
-`G0 → G2 → steps (G1 then G1b each, plus G1c when G1b extended the route, with the route's revision
+`G0 → G2 → steps (G1 then G1b each, plus G1c when a replan is owed, with the route's revision
 points firing on the §8b cadence) → G3 → G4`.
 G0 before anything because a stale branch corrupts the exercise files themselves. **G1 before G1b**
 because `sql-plan-audit` audits §0 and the level's route §1 and §3 against `PROGRESS.md` — run it first and it faithfully
@@ -553,14 +549,19 @@ Cross-checks between sections. Verify these whenever this plan is edited:
    table, and every file in that table belongs to a step. **Los `R{n}-repaso.sql` son la excepción
    declarada**: viven en su propia tabla de la ruta §1, pertenecen a un punto de repaso y no a un step, y ningún
    step puede nombrarlos.
-3. **Exercise counts** — every step in the route §2 states a count; the per-step counts for a shared file sum to
-   that file's first-pass target in the route §1; the route §3's totals match the route §1's. A file whose *written* count exceeds
-   its target is not a violation — that is a review batch (Moment 2b) and is expected.
+3. **Exercise counts** — *written* means the statement exists; *answered* means a query is under it;
+   *scored* means a review run graded it, at any verdict, counted once. **Scored is not accepted:**
+   the ≥ 80% review score is a done-condition threshold, never an exercise-count filter. Only grading
+   moves a status; reaching the scored target alone does not close a step. A re-grade can satisfy the
+   done condition without increasing a count, and a closed step stays closed (invariant 14).
+   Every step in route §2 states a count; per-step counts for a shared file sum to its first-pass
+   target in route §1. Route §3 totals match §1, the exercise files on disk and that level's
+   `PROGRESS.md` → `## Practice completed` → `### Exercise route` figures. Review batches are extra
+   (Moment 2b), so a written count above the first-pass target is expected.
 4. **Step sizing** — no generation run asks for more than 12 exercises and no step targets more than
-   22; anything above 12 is split into two runs (a file's total may be higher when several steps
-   write into it). **One recorded exception, not to be repeated:** Step 0 targets 30, because its
-   first 20 exercises pre-date the exercise prompt (hand-written, never a generation run) and the
-   schema change split the rest into a second file — see the route §2, step sizing.
+   22; anything above 12 is split into runs (a file's total may be higher when several steps
+   write into it). Any preserved legacy exception is documented in its level's route §2 and never
+   used as a precedent for a new step.
 5. **§0 vs the route §3** — the Current step in §0 is the first step row in the route §3 that is not ✅. Every row of that
    table is a step: nothing else is tracked there.
 6. **§0 Next revision point vs the route** — the Next revision point in §0 is a real point from the
@@ -607,9 +608,7 @@ Cross-checks between sections. Verify these whenever this plan is edited:
       section that replaced it, or removed with its route §1 and §3 rows — never left claiming a name that
       is not in `notes/sql/coverage/{LEVEL}.md`.
 
-    Only exercise steps are added this way. A new coverage section never adds a note, Q&A or
-    simulation task to this plan — those tracks run separately, on their own prompts, and pick the
-    new section up on their own runs.
+    Only exercise steps are added this way; the scope fence is §Z.
 
 11. **One artefact, one schema** — an exercise file whose SETUP block no longer matches the canonical
     schema in `sql-exercises-prompt.md` is **closed, not extended**: the next numbered file starts
@@ -666,19 +665,21 @@ Cross-checks between sections. Verify these whenever this plan is edited:
 
 ## Section 11 — Closure
 
-The SQL track is finished only when every box is ticked. A failed condition means going back, not
-shipping.
+Apply this checklist to each level's route. That level is finished only when every condition holds;
+completion of one level does not claim completion of another. A failed condition keeps it open.
+The dated checks below preserve the recorded branch-sync and coverage runs; verify their applicability
+again for the selected route and current branch.
 
 ```
 - [x] practice/sql/ is current on the working branch (G0) — 2026-07-22
 - [x] coverage-prompt TOPIC=sql has run — notes/sql/coverage/{LEVEL}.md current (G2) — 2026-07-18
-- [ ] Steps 0–13 all closed, each with its §4 ritual (G1) run by `sql-step-close`: scored condition met
-- [ ] Every first-pass exercise the level's route §1 declares is answered and scored ≥ 80% (review
-      batches are extra and uncounted) — 209 at junior (the route §1 total)
+- [ ] Every step in the selected route §3 is closed, with its own §2 done condition met and its §4 ritual run (G1)
+- [ ] Every first-pass exercise declared by that route §1 has been graded, at any verdict and counted once;
+      each Review done condition meets its review-score threshold (≥ 80%), never a per-exercise filter
 - [ ] Every revision point the route §1 declares fired on cadence — no stale open rows in MISTAKES.md
-- [ ] Capstone timed condition met: 3 report queries from prose, under 10 minutes each
+- [ ] The selected route's capstone Timed done condition is met exactly as written in its §2
 - [ ] progress-update has run **and its SQL drift report came back empty** — the `Exercise route` tables
-      reflect all 14 steps, and anything the report named was repaired by the owner it named (G3)
+      reflect every step of the selected route, and anything the report named was repaired by its owner (G3)
 - [ ] roadmap-review has run — the SQL gate in ROADMAP.md is marked cleared (G4)
 ```
 
@@ -688,21 +689,9 @@ shipping.
 
 **Not planned here — three separate tracks, each with its own prompt and its own schedule:**
 
-- **SQL notes** (`notes/sql/`) — run `/notes-audit` when Victor decides to. This plan never schedules a
-  note, never lists a note file, and no step closes on one.
-- **SQL interview Q&A** (`notes/interview-prep/`) — run `/interview-prep-audit` when Victor decides to,
-  and only then. Since 2026-08-03 this track owns something this one used to keep: **retrieval from
-  memory**; since 2026-08-04 it owns the questions themselves. **No step here carries a question**, not
-  as a done condition and not as an inert seed: this plan generates exercises, gets them graded and
-  tracks the route, and that is its whole subject. A question worth asking about SQL is derived from
-  `notes/sql/coverage/{LEVEL}.md` by that track's own prompt, against its own standard — never drafted
-  here on the side. No ritual reports a question as pending and no skill offers to run
-  `/interview-prep-audit` off the back of a closed step.
-- **SQL simulations** (`practice/simulations/`) — run the simulation prompts. Same rule, **con una
-  excepción acotada: §8c**, que fija la regla de readiness — un test solo exige técnicas de steps
-  cerrados — y manda leer el mapeo en la §3 de la ruta del nivel. Eso es un hecho sobre tu conocimiento
-  de SQL y esta es la única regla que lo dice. El formato del test, su banco y su tracker siguen siendo
-  del otro track.
+- **SQL notes** — `notes/prompts/knowledge/notes/notes-audit.md`, run separately when Victor decides.
+- **SQL interview Q&A** — `notes/prompts/knowledge/interview-prep/interview-prep-audit.md`, run separately when Victor decides.
+- **SQL simulations** — `notes/prompts/practice/simulations/simulation-generator-prompt.md` and `simulation-review-prompt.md`, run separately; §8c owns only the readiness rule.
 
 **Coverage sections deliberately excluded from the steps** are level-specific, so they are listed in
 the level's own route, under its *Out of scope at this level* section — one entry per bullet, each with
