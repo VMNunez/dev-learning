@@ -209,11 +209,11 @@ that owns {TOPIC} already declares them:
    carries the same number in its `Route step` column and is quicker to read; §1/§2 decide if they differ.
 2. That step's **`**Coverage:**`** line lists its coverage sections, verbatim. Those are the sections
    to read — all of them.
-3. When the step carries two runs with different TOPICs (Steps 5, 8, 9, 10), the run's own
+3. When the step carries two runs with different TOPICs (Steps 5, 6, 9, 10), the run's own
    **`**Focus:**`** line narrows the scope *within* those sections — that is where a half-section
    split lives (Step 5 run 1 is the subquery half of `Subqueries, CTEs, and views`; Step 9 run 2 is
-   the 1NF/2NF/3NF items of `Schema design — modelling decisions`). The `Focus` resolution above
-   already applies; this note only says where the narrowing comes from.
+   the modelling half of `Schema design`, whose `**Focus:**` line names its items). The `Focus`
+   resolution above already applies; this note only says where the narrowing comes from.
 
 `{PLAN}` is the single source for all three of `COUNT`, `Focus` and `Coverage` —
 the same rule `sql-exercises-prompt.md` states for paths and order: **on any disagreement the plan

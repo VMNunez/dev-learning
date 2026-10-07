@@ -299,8 +299,8 @@ Then proceed to Steps 4 and 5.
 **Score ≥ 80%:**
 "Listo para marcar {TOPIC} como sólido. Pasamos al siguiente tema."
 Find {TOPIC} in the study order below. The next topic is the one immediately to the right.
-basics → joins → group-by → join-pitfalls → nulls → subqueries → ctes → dates-strings
-→ window-functions → dml → transactions → schema-design → normalization → data-types → ddl
+basics → joins → group-by → join-pitfalls → nulls → subqueries → ctes → dml
+→ transactions → dates-strings → window-functions → schema-design → normalization → data-types → ddl
 → indexes → live-database → report-queries
 Print: "Siguiente tema: [next topic]. Ejecuta el prompt en modo practice con TOPIC = [next topic]."
 If {TOPIC} is report-queries (the last topic): print "Has completado todos los temas SQL. Revisa
@@ -316,7 +316,7 @@ so the trigger is the *last* topic of the step, never the first:
 |-------|-----------------------------|--------------------------------------|--------|
 | R1 | Step 1 — `03-joins.sql` | `joins` (the **second** run) | the first `joins` run |
 | R2 | Step 4 — `06-nulls.sql` | `nulls` | — |
-| R3 | Step 7 — `09-window-functions.sql` | `window-functions` | — |
+| R3 | Step 7 — `09-dates-strings.sql` | `dates-strings` | — |
 | R4 | Step 10 — `12-data-types-ddl.sql` | `ddl` | `data-types`, which is only the first of that step's two runs |
 | R5 | Step 12 — `14-live-database.sql` | `live-database` | — |
 

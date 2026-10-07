@@ -50,9 +50,9 @@ FILE  = practice/sql/junior/01-basics.sql
         practice/sql/junior/05-join-pitfalls.sql
         practice/sql/junior/06-nulls.sql
         practice/sql/junior/07-subqueries-ctes.sql
-        practice/sql/junior/08-dates-strings.sql
-        practice/sql/junior/09-window-functions.sql
-        practice/sql/junior/10-dml-transactions.sql
+        practice/sql/junior/08-dml-transactions.sql
+        practice/sql/junior/09-dates-strings.sql
+        practice/sql/junior/10-window-functions.sql
         practice/sql/junior/11-schema-design.sql
         practice/sql/junior/12-data-types-ddl.sql
         practice/sql/junior/13-indexes.sql
@@ -108,10 +108,10 @@ of those routes is kept here, so §1 is read directly and nothing cross-checks i
 | nulls | practice/sql/junior/06-nulls.sql | 4 |
 | subqueries | practice/sql/junior/07-subqueries-ctes.sql | 5 |
 | ctes | practice/sql/junior/07-subqueries-ctes.sql *(appends)* | 5 |
-| dates-strings | practice/sql/junior/08-dates-strings.sql | 6 |
-| window-functions | practice/sql/junior/09-window-functions.sql | 7 |
-| dml | practice/sql/junior/10-dml-transactions.sql | 8 |
-| transactions | practice/sql/junior/10-dml-transactions.sql *(appends)* | 8 |
+| dml | practice/sql/junior/08-dml-transactions.sql | 6 |
+| transactions | practice/sql/junior/08-dml-transactions.sql *(appends)* | 6 |
+| dates-strings | practice/sql/junior/09-dates-strings.sql | 7 |
+| window-functions | practice/sql/junior/10-window-functions.sql | 8 |
 | schema-design | practice/sql/junior/11-schema-design.sql | 9 |
 | normalization | practice/sql/junior/11-schema-design.sql *(appends)* | 9 |
 | data-types | practice/sql/junior/12-data-types-ddl.sql | 10 |
@@ -136,11 +136,12 @@ against the canonical one.
 `[Repaso]`, repetition allowed, and **not** counted against the step's first-pass target.
 
 **Steps in the route's §2 sometimes carry two runs.** Two cases, and they are disambiguated differently:
-- **Two runs with different `TOPIC`s** (Steps 5, 8, 9, 10) — the run is chosen by the `TOPIC` you were
+- **Two runs with different `TOPIC`s** (Steps 5, 6, 9, 10) — the run is chosen by the `TOPIC` you were
   given. Nothing to decide.
-- **Two runs with the same `TOPIC`** (Step 1: `joins` twice) — every such run states its **exercise
-  range** in the plan (`run 1 → #01–#11`, `run 2 → #12–#22`). Pick by the written count on disk: the
-  first run whose range is not yet fully written. State which run you picked and why in one line
+- **Two runs with the same `TOPIC`** (Step 1: `joins` twice; Step 2: `group-by` twice) — every such
+  run states its **exercise range** in the plan (`run 1 → #01–#11`, `run 2 → #12–#22`). Pick by the
+  written count on disk: the first run whose range is not yet fully written. State which run you
+  picked and why in one line
   ("Run 2: el archivo ya tiene 11 ejercicios").
 
 A **Moment 2b reinforcement block** is never picked by this rule — it is picked only when it is the
@@ -244,7 +245,7 @@ Validation:
 - `TOPIC = all` is practice mode only; it walks every topic in the order below, resolving each one's COUNT and FOCUS from its own route §2 step. See `notes/prompts/_internal/_batch-mode.md`. Review mode stays one file at a time.
 
 Topic order (study order, and also the file-number order): basics, joins, group-by, join-pitfalls,
-nulls, subqueries, ctes, dates-strings, window-functions, dml, transactions, schema-design,
+nulls, subqueries, ctes, dml, transactions, dates-strings, window-functions, schema-design,
 normalization, data-types, ddl, indexes, live-database, report-queries. This order, the file
 numbering and the step numbering are kept in sync with `{PLAN}` — that file is the
 source of truth. Four pairs of topics deliberately share one file, the second appending to the first
@@ -292,8 +293,8 @@ step numbers**: Step 0 alone spans files `01` and `02`, because one file carries
 
 ```
 01 basics ─ 02 execution-order+set-ops ─ 03 joins ─ 04 aggregates ─ 05 join-pitfalls
-  ─ 06 nulls ─ 07 subqueries+ctes ─ 08 dates-strings ─ 09 window-functions
-  ─ 10 dml+transactions ─ 11 schema-design+normalization ─ 12 data-types+ddl
+  ─ 06 nulls ─ 07 subqueries+ctes ─ 08 dml+transactions ─ 09 dates-strings
+  ─ 10 window-functions ─ 11 schema-design+normalization ─ 12 data-types+ddl
   ─ 13 indexes ─ 14 live-database ─ 15 report-queries
 ```
 
@@ -305,6 +306,8 @@ Why this order and not the coverage file's order:
   join-pitfalls cannot precede group-by.
 - **NULLs after aggregation** — the surprises already met (a `LEFT JOIN` producing nulls, `AVG`
   skipping them) get their mechanism explained rather than described.
+- **DML right after subqueries and CTEs** — it is the fifth topic of `ROADMAP.md`'s Stage-1 → Stage-2
+  gate, so the five gate topics land consecutively (Steps 1–6) and every post-gate topic follows them.
 - **date functions before window functions** — a live exercise stalls on `DATE_TRUNC` first, and every
   monthly report is `GROUP BY DATE_TRUNC('month', ...)`.
 

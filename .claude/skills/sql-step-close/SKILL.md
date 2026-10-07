@@ -166,7 +166,7 @@ so it names exactly the `closed ✅` set (standard invariant 16) — this skill 
 
 ```
 Desbloqueado: JOINs + GROUP BY + HAVING. Una simulación SQL puede pedirte hasta agregación sobre join;
-todavía no window functions (Step 7).
+todavía no window functions (Step 8).
 ```
 
 **This is the only line in the track that connects it to Stage 2**, and it exists because of a real
