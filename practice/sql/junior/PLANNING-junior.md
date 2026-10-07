@@ -71,9 +71,9 @@ in `02-execution-order-set-ops.sql` — a step's target is the sum of its files'
 | `05-join-pitfalls.sql` | 3 | 0 | 0 | 0 | 12 | to create |
 | `06-nulls.sql` | 4 | 0 | 0 | 0 | 12 | to create |
 | `07-subqueries-ctes.sql` | 5 | 0 | 0 | 0 | 16 | to create |
-| `08-dates-strings.sql` | 6 | 0 | 0 | 0 | 12 | to create |
-| `09-window-functions.sql` | 7 | 0 | 0 | 0 | 12 | to create |
-| `10-dml-transactions.sql` | 8 | 0 | 0 | 0 | 16 | to create |
+| `08-dml-transactions.sql` | 6 | 0 | 0 | 0 | 16 | to create |
+| `09-dates-strings.sql` | 7 | 0 | 0 | 0 | 12 | to create |
+| `10-window-functions.sql` | 8 | 0 | 0 | 0 | 12 | to create |
 | `11-schema-design.sql` | 9 | 0 | 0 | 0 | 15 | to create |
 | `12-data-types-ddl.sql` | 10 | 0 | 0 | 0 | 17 | to create |
 | `13-indexes.sql` | 11 | 0 | 0 | 0 | 12 | to create |
@@ -149,16 +149,21 @@ dentro del archivo de un step, donde inflarían su cuenta y ensuciarían su nota
 |---------|-------|--------------|----------------|--------|
 | `R1-repaso.sql` | R1 | 0–1 | cierra el Step 1 — su done condition `Review:` pasa sobre `03-joins.sql` | sin crear |
 | `R2-repaso.sql` | R2 **hard checkpoint** | 2–4 | cierra el Step 4 — su done condition `Review:` pasa sobre `06-nulls.sql` | sin crear |
-| `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 — su done condition `Review:` pasa sobre `09-window-functions.sql` | sin crear |
+| `R3-repaso.sql` | R3 **hard checkpoint** | 5–7 | cierra el Step 7 — su done condition `Review:` pasa sobre `09-dates-strings.sql` | sin crear |
 | `R4-repaso.sql` | R4 | 8–10 | cierra el Step 10 — su done condition `pgAdmin:` pasa sobre `12-data-types-ddl.sql` (run 2 de DDL) | sin crear |
 | `R5-repaso.sql` | R5 | 11–12 | cierra el Step 12 — su done condition `Review:` pasa sobre `14-live-database.sql` | sin crear |
 
 Lo que dispara un punto es el **cierre** del step, no que su archivo esté *scored*: un archivo corregido
 entero por debajo del 80% tiene todo su target scored y no cierra nada (§1, tercera definición).
 
+(Re-derivado el 2026-10-07 por `REC-288`, que adelantó DML y transacciones al Step 6: R3 y R4 conservan
+spans de tres archivos — `07`–`09` y `10`–`12` — pero R3 lo dispara ahora `09-dates-strings.sql`, no
+`09-window-functions.sql`, y R4 abarca ventanas, diseño de esquema y DDL en vez de DML, diseño y DDL.)
+
 **Los dos hard checkpoints son R2 y R3** — los que la doctrina §8b declara no saltables. R2 cierra el
 núcleo de screening (Steps 1–4, lo que pregunta una ronda rápida) y R3 cierra el bloque que va justo
-detrás (subqueries, fechas y ventanas). Ninguno espera a que un tema *parezca* oxidado, y ninguno se
+detrás (subqueries y CTEs, DML y transacciones, fechas y texto) — los dos últimos temas del gate
+Stage-1 → Stage-2 de `ROADMAP.md` y el primer step posterior a él. Ninguno espera a que un tema *parezca* oxidado, y ninguno se
 salta porque el siguiente step tenga prisa. R5 abarca dos steps en vez de tres por la excepción de
 doctrina §8b: el capstone (`15-report-queries.sql`) es él mismo la pasada de integración, así que no
 lleva punto detrás.
@@ -185,9 +190,9 @@ other, and front-loads what a screening asks first.
 **Step sizing:** a step is a handful of 12:30 sessions, never weeks. **No single generation run asks
 for more than 12 exercises, and no step targets more than 22** — that ceiling is why schema design is
 split across Steps 9 and 10 instead of being one 32-exercise block. Any step targeting more than 12 is
-split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (7 + 7), 5 (8 + 8), 8 (8 + 8), 9 (8 + 7) and
-10 (9 + 8) — which also keeps each batch's difficulty split meaningful. In four of them the cut is not
-an arbitrary halfway point either: Steps 8 and 10 each claim two coverage sections, so their runs fall
+split into runs of 12 or fewer — Steps 1 (11 + 11), 2 (9 + 5), 5 (8 + 8), 6 (8 + 8), 9 (10 + 5) and
+10 (12 + 5) — which also keeps each batch's difficulty split meaningful. In four of them the cut is not
+an arbitrary halfway point either: Steps 6 and 10 each claim two coverage sections, so their runs fall
 on the section boundary, and Steps 5 and 9 each claim a single section with a seam of its own
 (subqueries | CTEs and views, constraints | modelling), which their two `TOPIC`s follow. (Corrected
 2026-10-07: this used to say Step 9 covered two coverage sections, which stopped being true when its
@@ -209,13 +214,24 @@ grew by two bullets that both landed on it, and to 17 on 2026-10-07 when `Sequen
 explicit-id inserts` joined the `Data types` section it claims whole. The rest of the route already
 satisfied the rule.
 
+**The same rule holds per run, not only per step** (2026-10-07). A run's `**Focus:**` — or its own
+`TOPIC` — confines it to one half of the step's bullets, so a run with fewer exercises than its half
+claims has the step-level problem in miniature: the step's total can be right while one run sits at
+100% scored with bullets it was never allowed to touch. The splits were 7 + 7, 8 + 7 and 9 + 8 for
+halves of 9 + 5, 10 + 5 and 12 + 5 bullets — Step 10's `data-types` run asked 9 exercises of 12 bullets,
+and its done condition tests only the other run — so Steps 2, 9 and 10 were re-cut to their halves'
+sizes, every run within the 12 ceiling and no step's target moved.
+
 **The screening floor, if the clock runs out** (added 2026-08-28). 190 first-pass exercises remain
 against an applications window that opens in August 2026, so the route states which part of itself is
-not optional: **Steps 0–5, plus Step 8 (DML and transactions)** — the five topics `ROADMAP.md`'s
-Stage-1 → Stage-2 switch gate names verbatim (joins · aggregation · subqueries/CTEs · NULL handling ·
-DML basics). Everything after that is post-gate: `ROADMAP.md` says in as many words that window
-functions, indexes and PostgreSQL specifics are *not worth delaying simulations for*. This changes no
-step's position — it says which steps may not be traded away when the calendar bites.
+not optional: **Steps 0–6** — the five topics `ROADMAP.md`'s Stage-1 → Stage-2 switch gate names
+verbatim (joins · aggregation · subqueries/CTEs · NULL handling · DML basics), now consecutive.
+Everything after that is post-gate: `ROADMAP.md` says in as many words that window functions, indexes
+and PostgreSQL specifics are *not worth delaying simulations for*. The floor says which steps may not be
+traded away when the calendar bites; the order is what makes them arrive first. (Corrected 2026-10-07,
+`REC-288`: DML and transactions was Step 8, drilled after dates/strings and window functions, so the
+floor read "Steps 0–5, plus Step 8" and 24 post-gate exercises and the R3 hard checkpoint stood in
+front of the gate. It moved to Step 6; dates and strings became Step 7 and window functions Step 8.)
 
 Step 1 is the only step at the 22 ceiling, deliberately: JOINs is the single most-tested SQL topic at
 junior level, so it gets the widest first-pass batch in the route. (The ten hand-written statements the
@@ -267,7 +283,7 @@ explained against.
 `ILIKE`/`NOT LIKE`/`BETWEEN`/`NOT BETWEEN`/`IS NOT NULL`), `ORDER BY` (single, multiple, by alias),
 `LIMIT`/`OFFSET`/`FETCH`, `DISTINCT`, `DISTINCT ON`, expressions and aliases, concatenation, `LENGTH()`.
 Those last two appeared incidentally in `01-basics.sql` as expression practice; their coverage bullets
-(`||` string concatenation, `LENGTH`) belong to Step 6 and are checked there, not here.
+(`||` string concatenation, `LENGTH`) belong to Step 7 and are checked there, not here.
 
 Still missing before this step closes — the ten remaining exercises target exactly these:
 - SQL execution order (`FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT`) and where an
@@ -333,13 +349,10 @@ carried the old thin schema, so regenerating gets the canonical one and the curr
 second file.
 **Coverage:** `JOINs` (every bullet except `ON` vs `WHERE` with an outer join, which is Step 3)
 **Reinforces:** Step 0 — execution order (`FROM + JOIN` runs first, which is why the join happens before `WHERE`)
-**Moment 2 config:** run 1 — *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**:
-`TOPIC = joins`, `COUNT = 11`
-**Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows,
-LEFT JOIN + IS NULL as an anti-join.
+**Moment 2 config:** run 1 — *(archivo nuevo: genera el setup block canónico)* — **rango `#01–#11`**: `TOPIC = joins`, `COUNT = 11`
+**Focus:** INNER JOIN across two and three tables, table aliases, LEFT JOIN keeping unmatched rows, LEFT JOIN + IS NULL as an anti-join.
 **Moment 2 config:** run 2 — *(append)* — **rango `#12–#22`**: `TOPIC = joins`, `COUNT = 11`
-**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, CROSS JOIN, JOIN cardinality and predicting row
-multiplication.
+**Focus:** RIGHT JOIN, FULL OUTER JOIN, self join, CROSS JOIN, JOIN cardinality and predicting row multiplication.
 
 **Concepts:** Run 1 builds the foundation — `INNER JOIN` (two tables, named columns, aliases, three tables, combined
 with `WHERE` / `ORDER BY` / `LIMIT`) and `LEFT JOIN` (keeping unmatched rows, and the `IS NULL`
@@ -399,12 +412,12 @@ Nada más que añadir a la pegada: el archivo ya no existe, así que el run 1 es
 **Why here:** it needs the join from Step 1, because the surface a screening asks you to aggregate is
 almost never a single table — and with joins + aggregation you can already answer the second question
 of a technical test.
-**Exercises:** `practice/sql/junior/04-aggregates.sql` — 14 (two runs of 7)
+**Exercises:** `practice/sql/junior/04-aggregates.sql` — 14 (runs of 9 and 5)
 **Coverage:** `Aggregates and grouping` (the pure-aggregation half — the three bullets about aggregating over a `LEFT JOIN` are Step 3)
 **Reinforces:** Step 1 — a join is the surface `GROUP BY` almost always sits on top of
-**Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 7` — **rango `#01–#07`**
+**Moment 2 config:** run 1 — `TOPIC = group-by`, `COUNT = 9` — **rango `#01–#09`**
 **Focus:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, aggregates on empty input, the `GROUP BY` rule, grouping by an id rather than a display name, `GROUP BY` with `NULL`, `GROUP BY` vs `SELECT DISTINCT`
-**Moment 2 config:** run 2 — `TOPIC = group-by`, `COUNT = 7` *(append al mismo archivo)* — **rango `#08–#14`**
+**Moment 2 config:** run 2 — `TOPIC = group-by`, `COUNT = 5` *(append al mismo archivo)* — **rango `#10–#14`**
 **Focus:** `HAVING` vs `WHERE`, conditional aggregation with `CASE WHEN` and `FILTER (WHERE ...)`, `STRING_AGG`
 
 **Concepts:** `COUNT(*)` vs `COUNT(column)`, `SUM`/`AVG`/`MIN`/`MAX` ignoring `NULL`, `SUM`
@@ -524,18 +537,21 @@ patches — and the real repair is aggregating in a derived table before joining
 `FROM` and is taught here for the first time; and it is the
 last of the four *query-side* topics `ROADMAP.md` calls test-relevant (joins · aggregation ·
 NULL handling · subqueries/CTEs), so from here on a timed test can ask a whole realistic query.
-The fifth item on that list, **DML basics, is Step 8**, so the Stage-1 → Stage-2 switch gate is not
-fully open until Step 8 closes — Step 5 opens the query half of it, not the whole gate.
 **Exercises:** `practice/sql/junior/07-subqueries-ctes.sql` — 16 (two runs of 8)
 **Coverage:** `Subqueries, CTEs, and views`
-**Reinforces:** Step 3 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
+**Reinforces:** Step 3 — aggregating in a derived table before the join is the real repair for the fan-out `COUNT(DISTINCT)` only patched; Step 2 — a subquery in `FROM` is how you filter on an aggregate `WHERE` cannot see
 **Moment 2 config:** run 1 — `TOPIC = subqueries`, `COUNT = 8`
 **Focus:** none — the whole subquery half of the section
 **Moment 2 config:** run 2 — `TOPIC = ctes`, `COUNT = 8` *(append al mismo archivo)*
 **Focus:** none — the whole CTE and view half of the section
 
 **Concepts:** subquery in `WHERE` / `FROM` / `SELECT`, `IN` vs `EXISTS`, subquery vs `JOIN`, correlated subqueries
-and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`.
+and when to rewrite one as `EXISTS`, a join or pre-aggregation, `WITH` and chained CTEs, `CREATE VIEW`.
+
+> **Step 5 opens the query half of the gate, not the whole gate.** The fifth topic on `ROADMAP.md`'s
+> list, DML basics, is Step 6, directly after this one, so the Stage-1 → Stage-2 switch is not open
+> until Step 6 closes. (Moved out of `**Why here:**` on 2026-10-07, which Section C keeps to one
+> sentence of placement reason; this is a caveat about the gate, not a reason for the position.)
 
 **Coverage bullets:**
 
@@ -555,17 +571,75 @@ and why they do not scale, `WITH` and chained CTEs, `CREATE VIEW`.
 
 ---
 
-### Step 6 — Date and string functions (0 scored / 12 target)
+### Step 6 — DML and transactions (0 scored / 16 target)
+
+**Why here:** DML basics is the fifth topic `ROADMAP.md`'s Stage-1 → Stage-2 switch gate names, so it
+follows the query half of that gate (Step 5) directly instead of waiting behind post-gate topics — and
+nothing in it needs more than Step 5: finding duplicates is Step 2's `HAVING COUNT(*) > 1`, deleting
+them keeping one is a Step 5 subquery, and it is where SQL meets the Spring Boot `@Transactional` the
+interviewer will actually ask about.
+**Exercises:** `practice/sql/junior/08-dml-transactions.sql` — 16 (two runs of 8)
+**Coverage:** `DML — modifying data`, `Transactions`
+**Reinforces:** Step 2 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 5 — `DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)` is how you delete duplicates keeping one
+**Moment 2 config:** run 1 — `TOPIC = dml`, `COUNT = 8`
+**Focus:** none — the whole `DML — modifying data` section
+**Moment 2 config:** run 2 — `TOPIC = transactions`, `COUNT = 8` *(append al mismo archivo)*
+**Focus:** none — the whole `Transactions` section
+
+**Concepts:** `INSERT` (single, multi-row, `INSERT ... SELECT`, `RETURNING`), insert order with foreign keys,
+`UPDATE`/`DELETE` and the missing-`WHERE` catastrophe, `DELETE` vs `TRUNCATE`, `ON CONFLICT`
+upsert, finding duplicates and deleting them keeping one with a subquery
+(`DELETE ... WHERE id NOT IN (SELECT MIN(id) ... GROUP BY ...)`). Then `BEGIN`/`COMMIT`/`ROLLBACK`,
+autocommit, ACID, `SAVEPOINT`, the aborted-transaction state, isolation levels, and the link to
+`@Transactional` in Spring Boot.
+
+One step because in practice you learn transactions by wrapping a destructive `UPDATE` in one.
+
+> **Moved from Step 8 on 2026-10-07** (`REC-288`, ruled by Victor). It used to sit after dates/strings
+> and window functions, held there by one claim: that deleting duplicates keeping one needs
+> `ROW_NUMBER()`. That was a `**Concepts:**` item with no coverage bullet, and the subquery form above
+> needs nothing past Step 5 — `MIN(id)` over a primary key is never `NULL`, so Step 4's `NOT IN` trap
+> does not fire. The `ROW_NUMBER()` form is now a Step 8 Challenge that reinforces this step.
+
+**Coverage bullets:**
+
+- [ ] `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty ✅ 07-timetrack
+- [ ] Multi-row `INSERT` — supply several value tuples in one statement so the rows are inserted in a single round trip and a single implicit transaction
+- [ ] `INSERT ... SELECT` — populate a table from the result of a query, matching target columns to result columns by position and compatible type
+- [ ] `RETURNING` — obtain generated or changed values from a PostgreSQL data-modification statement without a second query
+- [ ] `UPDATE ... SET ... WHERE` — always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
+- [ ] `DELETE FROM ... WHERE` — always include `WHERE` or every row is deleted; always verify the affected rows with a matching `SELECT` before running `DELETE` on production data
+- [ ] `DELETE` vs `TRUNCATE` — `DELETE` supports `WHERE` and processes matching rows; `TRUNCATE` removes all rows with a stronger table lock and resets sequences only when `RESTART IDENTITY` is requested; choose deliberately rather than treating either as universally safe
+- [ ] `ON CONFLICT` (upsert) — `INSERT ... ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name` — atomic insert-or-update; avoids the race condition of a `SELECT` + `INSERT` pair; `EXCLUDED` refers to the values that would have been inserted
+- [ ] `BEGIN` / `COMMIT` / `ROLLBACK` — groups multiple statements so they either all succeed or all fail; `ROLLBACK` undoes everything since `BEGIN`; the SQL-level mechanism that `@Transactional` wraps in Spring Boot
+- [ ] Autocommit and explicit transaction boundaries — outside an explicit transaction, clients commonly commit each successful statement separately, so `BEGIN` or the framework transaction boundary is required when several statements must succeed or fail together
+- [ ] ACID properties — Atomicity is all-or-nothing, Consistency preserves declared invariants from one valid state to another, Isolation controls interference between concurrent transactions, and Durability preserves committed work
+- [ ] `SAVEPOINT` — a named checkpoint inside a transaction; `ROLLBACK TO name` undoes only the work since that checkpoint without ending the transaction
+- [ ] Transaction failure state — after a PostgreSQL statement errors inside a transaction, later statements are rejected until `ROLLBACK` or `ROLLBACK TO SAVEPOINT` clears the failed state
+- [ ] Transaction isolation — controls which concurrent changes a transaction can observe; recognise PostgreSQL `READ COMMITTED` as the default and choose stronger guarantees only for a concrete consistency need
+
+**Pending additions:** none
+
+**Done:** `Review: sql-grade scores ≥ 80% on 08-dml-transactions.sql`
+
+> **This closes the Stage-1 → Stage-2 gate.** Steps 1–6 are the five topics `ROADMAP.md` names; from
+> here on every step is post-gate.
+
+---
+
+### Step 7 — Date and string functions (0 scored / 12 target)
 
 **Why here:** its scalar half (`||`, `TRIM`, `SUBSTRING`, `::`) is drillable from Step 0 and is not what
-places it — what places it is the half that earns the step: `GROUP BY DATE_TRUNC('month', ...)` is
-grouping by an expression, and cannot be written before Step 2. It comes before window functions and
-the capstone because a live exercise stalls on a raw `TIMESTAMP` long before it stalls on `ROW_NUMBER`.
-**Exercises:** `practice/sql/junior/08-dates-strings.sql` — 12
+places it — the half that earns the step is `GROUP BY DATE_TRUNC('month', ...)`, grouping by an
+expression, which cannot be written before Step 2 — and it waits for the gate (Step 6) because
+`ROADMAP.md` counts PostgreSQL specifics among what is *not worth delaying simulations for*, then opens
+the post-gate half ahead of window functions and the capstone because a live exercise stalls on a raw
+`TIMESTAMP` long before it stalls on `ROW_NUMBER`.
+**Exercises:** `practice/sql/junior/09-dates-strings.sql` — 12
 **Coverage:** `PostgreSQL specifics`, `Common string functions`
 **Reinforces:** Step 2 — `GROUP BY DATE_TRUNC('month', ...)` is `GROUP BY` on an expression instead of a column
 **Moment 2 config:** `TOPIC = dates-strings`, `COUNT = 12`
-**Focus:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` arithmetic, `::` casting a `TIMESTAMP` in `WHERE` and `JOIN` conditions — the string functions ride along as the Intro half of the batch
+**Focus:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` arithmetic, `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` in `WHERE` and `JOIN` conditions, standard SQL vs vendor extensions — the string functions ride along as the Intro half of the batch
 
 **Concepts:** `DATE_TRUNC` and grouping by month, `EXTRACT`, `INTERVAL` and date arithmetic,
 `NOW()` vs `CURRENT_DATE`, `::` casting a `TIMESTAMP` to a `DATE`, standard SQL vs vendor extensions,
@@ -591,24 +665,29 @@ the capstone because a live exercise stalls on a raw `TIMESTAMP` long before it 
 
 **Pending additions:** none
 
-**Done:** `Review: sql-grade scores ≥ 80% on 08-dates-strings.sql`
+**Done:** `Review: sql-grade scores ≥ 80% on 09-dates-strings.sql`
+
+> Revision point **R3** (doctrine §8b) fires here: subqueries and CTEs, DML and transactions, and dates
+> now sit on a core that has had months to decay — R3 is the hard checkpoint over the last two gate
+> topics and the first post-gate step — and the mistake log is the only honest record of what slipped.
 
 ---
 
-### Step 7 — Window functions (0 scored / 12 target)
+### Step 8 — Window functions (0 scored / 12 target)
 
 **Why here:** a window is only explainable against what `GROUP BY` collapses (Step 2) and against
 execution order (Step 0) — and it is asked *after* the core in a screening, as the "and can you also…"
-question, never as the opener.
-**Exercises:** `practice/sql/junior/09-window-functions.sql` — 12
+question, never as the opener, which is why it sits behind the whole gate (Steps 1–6).
+**Exercises:** `practice/sql/junior/10-window-functions.sql` — 12
 **Coverage:** `Window functions`
-**Reinforces:** Step 2 — a window keeps the rows `GROUP BY` collapses; Step 0 — `DISTINCT ON` and execution order explain why a window cannot sit in `WHERE`
+**Reinforces:** Step 2 — a window keeps the rows `GROUP BY` collapses; Step 0 — execution order explains why a window cannot sit in `WHERE`, and `DISTINCT ON` is the PostgreSQL form `ROW_NUMBER() = 1` is set against; Step 6 — `ROW_NUMBER()` is the window form of deleting duplicates keeping one, rewriting that step's `NOT IN (SELECT MIN(id) ...)`
 **Moment 2 config:** `TOPIC = window-functions`, `COUNT = 12`
 **Focus:** none — the whole topic
 
 **Concepts:** `ROW_NUMBER`, `RANK` vs `ROW_NUMBER` on ties, `SUM() OVER (PARTITION BY ...)`, why a window
 function cannot appear in `WHERE`, window vs `GROUP BY`, `DISTINCT ON` vs `ROW_NUMBER() = 1`, one row
-and the top N rows per group, "the second highest value".
+and the top N rows per group, "the second highest value", and — as a Challenge over Step 6 — deleting
+duplicates keeping one with `ROW_NUMBER()`.
 
 > **`DENSE_RANK`, `LAG`/`LEAD` and window frames are deliberately not drilled here** (removed from this
 > list 2026-10-07). All three are bullets of `notes/sql/coverage/middle.md` — `DENSE_RANK()` vs
@@ -627,68 +706,21 @@ and the top N rows per group, "the second highest value".
 
 **Pending additions:** none
 
-**Done:** `Review: sql-grade scores ≥ 80% on 09-window-functions.sql`
-
-> Revision point **R3** (doctrine §8b) fires here: subqueries, dates and windows now sit on a core that
-> has had months to decay, and the mistake log is the only honest record of what slipped.
-
----
-
-### Step 8 — DML and transactions (0 scored / 16 target)
-
-**Why here:** finding duplicates needs Step 2's `HAVING COUNT(*) > 1` and deleting them keeping one
-needs Step 7's `ROW_NUMBER()`, so it cannot precede either — and it is where SQL meets the Spring Boot
-`@Transactional` the interviewer will actually ask about.
-**Exercises:** `practice/sql/junior/10-dml-transactions.sql` — 16 (two runs of 8)
-**Coverage:** `DML — modifying data`, `Transactions`
-**Reinforces:** Step 2 — `GROUP BY ... HAVING COUNT(*) > 1` is the duplicate-finding query; Step 7 — `ROW_NUMBER()` is how you delete duplicates keeping one
-**Moment 2 config:** run 1 — `TOPIC = dml`, `COUNT = 8`
-**Focus:** none — the whole `DML — modifying data` section
-**Moment 2 config:** run 2 — `TOPIC = transactions`, `COUNT = 8` *(append al mismo archivo)*
-**Focus:** none — the whole `Transactions` section
-
-**Concepts:** `INSERT` (single, multi-row, `INSERT ... SELECT`, `RETURNING`), insert order with foreign keys,
-`UPDATE`/`DELETE` and the missing-`WHERE` catastrophe, `DELETE` vs `TRUNCATE`, `ON CONFLICT`
-upsert, finding and deleting duplicates. Then `BEGIN`/`COMMIT`/`ROLLBACK`, autocommit, ACID,
-`SAVEPOINT`, the aborted-transaction state, isolation levels, and the link to `@Transactional` in
-Spring Boot.
-
-One step because in practice you learn transactions by wrapping a destructive `UPDATE` in one.
-
-**Coverage bullets:**
-
-- [ ] `INSERT INTO ... VALUES (...)` — adds rows to a table; skip `id` (generated by `SERIAL`), columns with `DEFAULT` values, and nullable columns you want to leave empty ✅ 07-timetrack
-- [ ] Multi-row `INSERT` — supply several value tuples in one statement so the rows are inserted in a single round trip and a single implicit transaction
-- [ ] `INSERT ... SELECT` — populate a table from the result of a query, matching target columns to result columns by position and compatible type
-- [ ] `RETURNING` — obtain generated or changed values from a PostgreSQL data-modification statement without a second query
-- [ ] `UPDATE ... SET ... WHERE` — always include `WHERE` or every row in the table is updated; one of the most common catastrophic mistakes in junior code
-- [ ] `DELETE FROM ... WHERE` — always include `WHERE` or every row is deleted; always verify the affected rows with a matching `SELECT` before running `DELETE` on production data
-- [ ] `DELETE` vs `TRUNCATE` — `DELETE` supports `WHERE` and processes matching rows; `TRUNCATE` removes all rows with a stronger table lock and resets sequences only when `RESTART IDENTITY` is requested; choose deliberately rather than treating either as universally safe
-- [ ] `ON CONFLICT` (upsert) — `INSERT ... ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name` — atomic insert-or-update; avoids the race condition of a `SELECT` + `INSERT` pair; `EXCLUDED` refers to the values that would have been inserted
-- [ ] `BEGIN` / `COMMIT` / `ROLLBACK` — groups multiple statements so they either all succeed or all fail; `ROLLBACK` undoes everything since `BEGIN`; the SQL-level mechanism that `@Transactional` wraps in Spring Boot
-- [ ] Autocommit and explicit transaction boundaries — outside an explicit transaction, clients commonly commit each successful statement separately, so `BEGIN` or the framework transaction boundary is required when several statements must succeed or fail together
-- [ ] ACID properties — Atomicity is all-or-nothing, Consistency preserves declared invariants from one valid state to another, Isolation controls interference between concurrent transactions, and Durability preserves committed work
-- [ ] `SAVEPOINT` — a named checkpoint inside a transaction; `ROLLBACK TO name` undoes only the work since that checkpoint without ending the transaction
-- [ ] Transaction failure state — after a PostgreSQL statement errors inside a transaction, later statements are rejected until `ROLLBACK` or `ROLLBACK TO SAVEPOINT` clears the failed state
-- [ ] Transaction isolation — controls which concurrent changes a transaction can observe; recognise PostgreSQL `READ COMMITTED` as the default and choose stronger guarantees only for a concrete consistency need
-
-**Pending additions:** none
-
-**Done:** `Review: sql-grade scores ≥ 80% on 10-dml-transactions.sql`
+**Done:** `Review: sql-grade scores ≥ 80% on 10-window-functions.sql`
 
 ---
 
 ### Step 9 — Schema design: constraints and modelling (0 scored / 15 target)
 
-**Why here:** a constraint is only meaningful once you have written the `UPDATE` it blocks (Step 8)
+**Why here:** a constraint is only meaningful once you have written the `UPDATE` it blocks (Step 6)
 and met the `NULL` it treats specially (Step 4) — and it is late because a screening asks you to
 *query* first and to *model* second, usually only in the second interview.
-**Exercises:** `practice/sql/junior/11-schema-design.sql` — 15 (runs of 8 and 7)
+**Exercises:** `practice/sql/junior/11-schema-design.sql` — 15 (runs of 10 and 5)
 **Coverage:** `Schema design`
-**Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint and in a `CHECK`; Step 8 — a constraint violation is the race an application check cannot win, and `ON CONFLICT` is how you handle its verdict
-**Moment 2 config:** run 1 — `TOPIC = schema-design`, `COUNT = 8`
-**Focus:** primary and foreign keys, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check
-**Moment 2 config:** run 2 — `TOPIC = normalization`, `COUNT = 7` *(append al mismo archivo)*
+**Reinforces:** Step 4 — `NULL` in a `UNIQUE` constraint and in a `CHECK`; Step 6 — a constraint violation is the race an application check cannot win, and `ON CONFLICT` is how you handle its verdict
+**Moment 2 config:** run 1 — `TOPIC = schema-design`, `COUNT = 10`
+**Focus:** primary and foreign keys, primary key vs `UNIQUE`, `ON DELETE` / `ON UPDATE`, `NOT NULL`, `UNIQUE`, composite uniqueness, `CHECK` with `NULL`, constraint vs application-side check
+**Moment 2 config:** run 2 — `TOPIC = normalization`, `COUNT = 5` *(append al mismo archivo)*
 **Focus:** one-to-many and many-to-many modelling, natural vs surrogate keys, normalization and the anomalies it prevents, reading a relational schema
 
 **Concepts:** primary and foreign keys, primary key vs `UNIQUE`, which side of a 1:N carries the FK,
@@ -729,16 +761,16 @@ reading a schema's grain, and storing each fact once so an update cannot leave t
 ### Step 10 — Data types and DDL (0 scored / 17 target)
 
 **Why here:** it writes by hand the constraints Step 9 only reasoned about, so it needs that step
-first; putting DDL before modelling would produce syntax with nothing to say about why the column is
-`NOT NULL`. Its `Data types` half is not what places it: nothing there needs more than Step 8 —
-sequence drift is that step's `INSERT` given an explicit `id`, against the identity column this same
-run teaches.
-**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 17 (runs of 9 and 8)
+first — DDL before modelling would produce syntax with nothing to say about why the column is
+`NOT NULL` — while its `Data types` half is not what places it, since nothing there needs more than
+Step 6: sequence drift is that step's `INSERT` given an explicit `id`, against the identity column this
+same run teaches.
+**Exercises:** `practice/sql/junior/12-data-types-ddl.sql` — 17 (runs of 12 and 5)
 **Coverage:** `Data types`, `Schema operations`
-**Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`; Step 8 — its `INSERT` leaves the generated `id` out, and sequence drift is what supplying it anyway leaves behind
-**Moment 2 config:** run 1 — `TOPIC = data-types`, `COUNT = 9`
+**Reinforces:** Step 9 — every constraint from that step is now written by hand in `CREATE TABLE`; Step 6 — its `INSERT` leaves the generated `id` out, and sequence drift is what supplying it anyway leaves behind
+**Moment 2 config:** run 1 — `TOPIC = data-types`, `COUNT = 12`
 **Focus:** none — the whole `Data types` section
-**Moment 2 config:** run 2 — `TOPIC = ddl`, `COUNT = 8` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
+**Moment 2 config:** run 2 — `TOPIC = ddl`, `COUNT = 5` *(append al mismo archivo; **este run es el que cierra el paso y dispara R4**)*
 **Focus:** none — the whole `Schema operations` section
 
 **Concepts:** `NUMERIC` vs `FLOAT`, `TIMESTAMP` vs `TIMESTAMPTZ`, `DATE` for a business day, `VARCHAR` vs `TEXT`,
@@ -790,8 +822,9 @@ Written, not queried: the deliverable is a schema you can produce from a blank e
 
 > Revision point **R4** (doctrine §8b) fires here, on the run-2 `pgAdmin:` condition above rather than
 > on a grading score — it is the only point in the route triggered by a non-`Review:` done condition.
-> Its span is Steps 8–10: DML, transactions, schema design and DDL, the whole build-and-modify half of
-> the level.
+> Its span is Steps 8–10: window functions, schema design and DDL — the first post-gate query topic and
+> the two modelling steps. (Re-derived 2026-10-07 under `REC-288`: until DML and transactions moved to
+> Step 6, this span was DML, transactions, schema design and DDL.)
 
 ---
 
@@ -814,7 +847,7 @@ column, when not to index, non-sargable predicates, leading-wildcard `LIKE`, rea
 > types are deliberately not drilled here** (removed from this list 2026-10-07). They are middle's
 > `Query diagnosis` bullets — `Composite-index design`, `EXPLAIN ANALYZE`, `Plan operators and row
 > estimates` — and this level's `EXPLAIN` bullet stops at telling a `Seq Scan` from an `Index Scan`,
-> which is also all the done condition below asks for. Same ruling, and same reason, as Step 7's.
+> which is also all the done condition below asks for. Same ruling, and same reason, as Step 8's.
 
 **Coverage bullets:**
 
@@ -840,8 +873,8 @@ column, when not to index, non-sargable predicates, leading-wildcard `LIKE`, rea
 
 **Why here:** its error half is Step 9's constraints firing — `23505`, `23503`, `23502` and `23514` are
 that step's `UNIQUE`, foreign key, `NOT NULL` and `CHECK` returning a verdict, so those must already be
-understood. And it sits immediately before the capstone on purpose: the capstone hands you a requirement
-against a schema, and this is the step that teaches you to read one you did not write.
+understood — and it sits immediately before the capstone on purpose, because the capstone hands you a
+requirement against a schema and this is the step that teaches you to read one you did not write.
 
 > **Its inspection half could genuinely have been drilled earlier** (B3, noted 2026-08-28) —
 > `information_schema`, `search_path`, `\dt` and `GRANT`/trigger recognition need nothing past Step 0.
@@ -948,9 +981,9 @@ without raising the count, and a row that reads `closed ✅` is never set back (
 | 3 | JOIN pitfalls | `05-join-pitfalls.sql` | 0 / 12 | not started | Diagnóstico de fan-out y multiplicación de filas |
 | 4 | NULL and three-valued logic | `06-nulls.sql` | 0 / 12 | not started | Manejo de `NULL`, `NOT IN` con nulos |
 | 5 | Subqueries, CTEs, views | `07-subqueries-ctes.sql` | 0 / 16 | not started | Subconsultas, CTEs, vistas |
-| 6 | Date and string functions | `08-dates-strings.sql` | 0 / 12 | not started | Funciones de fecha y texto, `DATE_TRUNC` |
-| 7 | Window functions | `09-window-functions.sql` | 0 / 12 | not started | Window functions |
-| 8 | DML and transactions | `10-dml-transactions.sql` | 0 / 16 | not started | DML y transacciones |
+| 6 | DML and transactions | `08-dml-transactions.sql` | 0 / 16 | not started | DML y transacciones |
+| 7 | Date and string functions | `09-dates-strings.sql` | 0 / 12 | not started | Funciones de fecha y texto, `DATE_TRUNC` |
+| 8 | Window functions | `10-window-functions.sql` | 0 / 12 | not started | Window functions |
 | 9 | Schema design | `11-schema-design.sql` | 0 / 15 | not started | Diseño de esquema y normalización |
 | 10 | Data types and DDL | `12-data-types-ddl.sql` | 0 / 17 | not started | Tipos y DDL escrito a mano |
 | 11 | Indexes and query plans | `13-indexes.sql` | 0 / 12 | not started | Índices y planes de ejecución |
@@ -974,8 +1007,9 @@ significa que ese step no desbloquea ninguna técnica sobre la que un test pueda
 cerrar el **Step 2**: basics + joins + `GROUP BY` ya es un examen real.
 
 > ⚠️ **Los cinco tests que ya están en el banco (`practice/simulations/sql/` 01–05) están bloqueados.**
-> Se escribieron antes de que existiera este plan y **los cinco piden window functions**, o sea el Step 7
-> de esta ruta. No los abras hasta que cierre: no es que salgan mal, es que no se pueden empezar.
+> Se escribieron antes de que existiera este plan y **los cinco piden window functions**, o sea el Step 8
+> de esta ruta (Step 7 hasta el 2026-10-07, cuando `REC-288` adelantó DML y transacciones al Step 6). No
+> los abras hasta que cierre: no es que salgan mal, es que no se pueden empezar.
 
 ---
 

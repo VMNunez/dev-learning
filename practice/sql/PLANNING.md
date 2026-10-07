@@ -126,7 +126,7 @@ named below. Each moment states its trigger and the prompt config or skill to in
 MODE  = practice
 LEVEL = <the level of the selected route>
 TOPIC = <the step's TOPIC, given per step in the route §2>
-COUNT = <the step's COUNT, given per step in the route §2 — never the default>
+COUNT = <blank — the prompt reads the step's own COUNT from the route §2; type a number only to override it>
 ```
 
 The step's focus travels with the step, not with the paste: the prompt looks up the route §2 entry for that
@@ -152,8 +152,8 @@ every concept is drilled once and never returns. Left to the optional trigger al
 only when Victor notices it — and a forgotten concept does not feel rusty, it feels learned. The
 mistake log is the objective substitute for that feeling.
 
-**Prompt:** the same `sql-exercises-prompt.md`, `MODE = practice`. Lo que pegas depende de cuál de los
-dos triggers estés atendiendo:
+**Prompt:** the same `sql-exercises-prompt.md` — `MODE = practice` at a revision point, `MODE = reinforce`
+for a voluntary revisit. Lo que pegas depende de cuál de los dos triggers estés atendiendo:
 
 **Punto de repaso de §8b (obligatorio)** — `TOPIC` es el punto, no un tema:
 
@@ -233,8 +233,9 @@ What it does, beyond printing a score:
   the re-grade and skip policy — and are not restated here.
 - **Updates `PROGRESS.md`** — the level roll-up, the file's row, and the recomputed `Total` rows.
 - **Updates the level's route file** — the file's §1 row, the step's §3 row and its §2 coverage
-  checkboxes — **and this doctrine's §0** when the step closes (step 4d of the grading prompt; §0 is a
-  section of *this* file, not of the route, and `sql-grade` commits it).
+  checkboxes — **and this doctrine's §0** when the step closes (step 4d of the grading prompt, which
+  `sql-step-close` then verifies and repairs in Moment 5; §0 is a section of *this* file, not of the
+  route, and `sql-grade` commits it).
 - **Logs every ⚠️ and ❌ in `practice/sql/MISTAKES.md`** — its `## Open` and `## Closed` tables, which
   that same prompt's Step 5 owns — and closes the rows this run redeemed.
 
@@ -385,8 +386,8 @@ which steps exist, in what order and why, belongs to the level.
 
 ## Section 7 — Branch and commit rules
 
-Study materials follow the **active branch** — no direct commits to `main` (`CLAUDE.md`, changed
-2026-07-14). There is no dedicated SQL branch: `practice/sql/` and `PROGRESS.md` commit
+Study materials follow the **active branch** — no direct commits to `main` (the shared session rules,
+`notes/prompts/_internal/_session-rules.md`, changed 2026-07-14). There is no dedicated SQL branch: `practice/sql/` and `PROGRESS.md` commit
 on whatever feature branch the morning project block is on.
 
 - **Before any SQL session, check the branch has the latest `practice/sql/`.** A feature branch cut
