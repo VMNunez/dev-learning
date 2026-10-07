@@ -26,7 +26,7 @@ exercise file, named `practice_{level}_{file name with underscores}`** — `juni
 → `practice_junior_02_execution_order_set_ops`: the level because every route numbers its files from `01`,
 the number to find it at a glance, and its own database because each file's SETUP seeds its own data, so
 a shared one would silently answer an older file's queries against a newer file's rows (Victor,
-2026-10-02). Underscores only, never a hyphen (no quoting in SQL). Project databases (`timetrack`) belong to their
+2026-10-02). Underscores only, never a hyphen, and lowercase — `R1-repaso.sql` → `practice_junior_r1_repaso` (no quoting in SQL). Project databases (`timetrack`) belong to their
 project and are not listed. **Writer:** the session that guides the creation — a new row in the same
 session, committed directly with this file; a database dropped later keeps its row with `dropped
 YYYY-MM-DD`. When a new exercise file needs a database that is not here, the session guides its creation

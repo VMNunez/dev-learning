@@ -101,6 +101,19 @@ the file, not the schedule.
 
 Skip this step if the file already exists.
 
+**Every new file names its own database, `{DATABASE}`, whatever its topic.** `practice/sql/PLANNING.md` →
+`### Local practice databases — the registry` gives each exercise file its own PostgreSQL database,
+because each file's SETUP seeds its own data and a shared one would answer an older file's queries
+against a newer file's rows. Derive the name from the resolved values, never from another file's:
+`practice_{LEVEL}_` followed by `{FILE}`'s file name without `.sql`, hyphens turned into underscores and
+lowercased — the registry's own reason for underscores (no quoting in SQL) is also why `R1-repaso.sql`
+gives `practice_junior_r1_repaso`, never `…_R1_repaso`. `junior/02-execution-order-set-ops.sql` →
+`practice_junior_02_execution_order_set_ops`. The registry owns the convention: on any disagreement it
+wins and this paragraph is the thing to fix. The name goes on the file's first instruction line, in the
+form `-- FIRST: In pgAdmin, create a database called '{DATABASE}' if you haven't already.` — inside the
+SETUP banner on a file that has one, inside the header comment on a self-contained file that does not
+(its exercises still create tables, so they need a database of their own just as much).
+
 **Revision-point files (`R{n}-repaso.sql`) always ship the canonical bookstore setup block**, even when
 their span includes `01-basics.sql`, which carries the old v1 schema. One file, one schema: re-express
 the failed v1 concepts against the canonical columns rather than reviving a schema that is closed. If a
@@ -109,13 +122,15 @@ concept cannot be re-expressed (it depended on a v1-only column), drop it and sa
 **Self-contained topics — no bookstore setup block:** for `schema-design`, `normalization`,
 `data-types` and `ddl`, do NOT generate the bookstore setup block. Each exercise in these topics
 carries its own table definitions. For a new file of one of these topics, generate only the
-header comment and the `-- EXERCISES: {TOPIC}` banner, then go straight to Step 3.
+header comment — carrying the `{DATABASE}` line above — and the `-- EXERCISES: {TOPIC}` banner, then go
+straight to Step 3.
 
 **`report-queries` uses the TimeTrack model, not the bookstore.** Generate a setup block with
 `users`, `projects` and `time_entries` mirroring `projects/07-timetrack` (a `Role` enum on users, an
 `EntryStatus` of DRAFT/SUBMITTED/APPROVED/REJECTED on entries, `hours NUMERIC(5,2)`, `work_date DATE`),
 seeded across at least 6 distinct months and including a project with zero entries so a `LEFT JOIN`
-report has an empty group to preserve.
+report has an empty group to preserve. Its SETUP banner carries the `{DATABASE}` line exactly as the
+bookstore banner below does.
 
 The rest of this step applies to the bookstore-based topics: `basics`, `joins`, `join-pitfalls`,
 `group-by`, `nulls`, `subqueries`, `ctes`, `dates-strings`, `window-functions`, `dml`, `transactions`,
@@ -127,7 +142,7 @@ Format:
 ```sql
 -- ================================================================
 -- SETUP — Paste and run this section first in pgAdmin
--- FIRST: In pgAdmin, create a database called 'practice_bookstore' if you haven't already.
+-- FIRST: In pgAdmin, create a database called '{DATABASE}' if you haven't already.
 -- Open that database, then run this entire block inside it.
 -- You can re-run it at any time to reset the data to its original state.
 -- ================================================================
@@ -345,10 +360,19 @@ For a **new file**: write the complete file (setup block + exercises).
 For **append**: read the existing file, then append the new exercises after the last line. Do not modify any existing content.
 
 After saving, print the message matching the case:
-- New file, bookstore-based topic: "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Ábrelo en pgAdmin, ejecuta el bloque SETUP primero, y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
+- New file with a SETUP block (the bookstore-based topics, `R{n}-repaso.sql` and `report-queries`): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Ábrelo en pgAdmin conectado a la base de datos `{DATABASE}`, ejecuta el bloque SETUP primero, y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
 - New file, self-contained topic (schema-design, normalization, data-types, ddl — the same four as
-  Step 2): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Cada ejercicio es independiente — no hay bloque SETUP. Ábrelo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
+  Step 2): "Listo. {COUNT} ejercicios guardados en [path]. Total en el archivo: {COUNT}. Cada ejercicio es independiente — no hay bloque SETUP. Ábrelo en pgAdmin conectado a la base de datos `{DATABASE}` y escribe tus respuestas después de cada '-- Your answer:'. Luego pégalo en el modo review."
 - Append: "Listo. {COUNT} ejercicios añadidos a [path]. Total en el archivo: {N+COUNT}. Abre el archivo en pgAdmin y escribe tus respuestas después de cada '-- Your answer:' nuevo. Luego pégalo en el modo review."
+
+**On a new file, check the registry before printing.** Read `practice/sql/PLANNING.md` →
+`### Local practice databases — the registry` — the one read this branch makes in that file, and only on
+this path. When its table has no row for `{DATABASE}`, or only one marked `dropped`, add one line to the message:
+"La base de datos `{DATABASE}` aún no existe en el registro: antes de ejecutar nada del archivo te guío
+paso a paso para crearla en pgAdmin, y al terminar queda registrada." The
+guidance and the registry row are not this run's outputs: the registry names their writer — the session
+that guides the creation, step by step, then adds the row — and they follow once this run has closed. An
+append prints neither line, because its file already has its database.
 
 ### Step 5 — Raise the `Corrected` denominator in PROGRESS.md
 
