@@ -155,6 +155,9 @@ that falsifies it the row is a **restoration**, not a ruling.
 `2a54d95c` swapped the platform adapter's filename for `_session-rules.md` inside "it is already injected
 into your context", true of the adapter and false of the file it now only points at, so `log -S` on the current wording returns the rename;
 search the pre-image's wording too before calling a clause false from birth.
+**Also `REC-291`: a justification false from birth can have left a *licence* behind it** — `_sql-plan-standard.md` A2's "plus any blocked-bank warning" existed only to carry the claim that the
+bank's five tests needed window functions, so the licence is retired with the reason; and where the copy that must go sits in a pipeline-owned file, the removal rule is written into the section the
+specialist editing that file is dispatched to read (invariant 16, not the preamble or A2) — a rule true in a section no editor reads is applied by nobody.
 
 **A clause about an artefact's *state* is not a clause about the *verdict* that reads it, and a
 runnable that cedes the computation cannot be the site of a partition defect.** From `REC-130`,
