@@ -299,15 +299,24 @@ checks. Aligned 2026-07-22.
 
 16. **Readiness lives in the route, and it is complete.** Every non-`R{n}` row of the route §3 carries a
     technique cell — `—` only where the step unlocks nothing a test could be gated on, and never blank —
-    and the readiness status line below the table names **exactly** the set of `closed ✅` steps in that
-    table, no more and no fewer. The doctrine §8c holds the rule and no mapping of its own. Without this
-    the mapping is unchecked wherever it sits: it was step-numbered in the doctrine until 2026-08-28, and
-    moving it to the route closed the reorder problem while leaving nothing to catch a stale copy.
+    and the readiness status line below the table holds two things: **exactly** the set of `closed ✅`
+    steps in that table, no more and no fewer, and the **first-test gate** — one sentence naming the step
+    of that table whose close makes a realistic first test possible. The doctrine §8c holds the rule and
+    no mapping of its own. Without this the mapping is unchecked wherever it sits: it was step-numbered
+    in the doctrine until 2026-08-28, and moving it to the route closed the reorder problem while leaving
+    nothing to catch a stale copy.
+    **The gate is part of the line, and a rewrite of the closed set carries it over.** Which step it
+    names is decided with the route's order, never by a ritual that records a close. While that step is
+    open the sentence stands as written; once it reads `closed ✅` the line says the gate is met and
+    still names the step, because a line with no gate cannot be told from one that lost it and the
+    simulation track reads the gate here. A line that has lost its gate fails this invariant and is
+    repaired by **restoring** the sentence the route last carried, from the route file's own history —
+    never by choosing a step; where that history holds none, the absence is reported.
     **The readiness block speaks in techniques and steps, and names no spec of a simulation bank.** A
     sentence under the §3 table saying which specs are blocked, or what any one of them demands, is
     **removed, not corrected**: that is test content (Section E), the simulation route records it per
-    test, and a copy here has no reader that checks it against the specs. The first-test gate stays — it
-    names the step whose close makes a realistic first test possible, not a spec.
+    test, and a copy here has no reader that checks it against the specs. The first-test gate is not
+    such a sentence — it names a step, not a spec.
 
 ---
 
@@ -329,7 +338,7 @@ format or quality bar — except exactly what a row's third column below license
 | The mistake log | `practice/sql/MISTAKES.md` — **two owners, split by section**: `_sql-exercises-review.md` step 5 writes `## Open` and `## Closed`, the graded gaps (`sql-grade` commits the file) · `sql-block-close` writes `## Fricción` and only that, the friction no grading run can see | that revision points read it, which ritual owns which section, and which section a mechanism the doctrine owns reads — naming a section is pointing at its owner; what a row must contain, the row format, the column definitions and the quality bar stay outside (naming a column as the sort key of a mechanism the doctrine owns is not a definition) |
 | Notes, interview Q&A | their own prompts, run separately by Victor | one line in §Z. Nothing else. |
 | Simulations — what a test contains, its format, its time limit, the bank, the tracker | `simulation-generator-prompt.md` · `simulation-review-prompt.md` | one line in §Z **plus §8c: the readiness *rule* only** — that a test may demand techniques of `closed ✅` steps and no others, and that the consumer reads the selected level's route §3. Never the mapping (route §3's column), never the config, never the format, and never what one spec demands or which spec a step blocks (invariant 16). |
-| The route §3 readiness column and its status line | `sql-plan-prompt.md` (writes the column when it authors a step) · `sql-step-close` (rewrites the status line when a step closes) · `sql-plan-audit.md` (specialist 3 audits under invariant 16 and repairs a status line that disagrees with its own §3 table, the same licence it has for the derived `Total` rows, and removes a per-spec claim written beside it) | — that they exist and what each must hold; never which steps are closed today, which only a scored close moves |
+| The route §3 readiness column and its status line | `sql-plan-prompt.md` (writes the column when it authors a step) · `sql-step-close` (rewrites the status line's closed set when a step closes, carrying its first-test gate over — never choosing, moving or dropping it) · `sql-plan-audit.md` (specialist 3 audits under invariant 16 and repairs a status line that disagrees with its own §3 table, the same licence it has for the derived `Total` rows, restores from the route's history a first-test gate the line has lost, and removes a per-spec claim written beside it) | — that they exist and what each must hold; never which steps are closed today, which only a scored close moves |
 | Grading markers and re-grade/skip policy | `_sql-exercises-review.md` Steps 1 and 2b | that grading records a verdict on the exercise header, and a pointer to those steps; never a second marker specification or a blanket skip-on-any-marker rule. Invariant 3 owns what the scored count means. |
 
 **Structure and values split inside the doctrine exactly as they do inside the route** (the third row

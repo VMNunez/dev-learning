@@ -234,7 +234,8 @@ graded work is nobody's.
   *content* (format, time limit, bank, tracker, config) does not. Check §8c states the rule but not the
   content, and that it holds **no technique-to-step table of its own**: that mapping is a column of the
   level route's §3 step table, and the route's own readiness status line is what must name exactly the
-  `closed ✅` set of that same table — invariant 16, checked and repaired by specialist 3, who owns §3.
+  `closed ✅` set of that same table and carry the route's first-test gate — invariant 16, checked and
+  repaired by specialist 3, who owns §3.
   A specialist that removes §8c wholesale has failed this check, not passed it; so has one that
   restores a step-numbered mapping into it.
 

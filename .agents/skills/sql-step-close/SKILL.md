@@ -160,16 +160,33 @@ None of these is a question, and none blocks the close.
 
 ## 5 — What this step just unlocked
 
-Read the technique column of the **route §3** table in `{PLAN}` and say, in one line, which techniques
-are now available given the steps that read `closed ✅` — and therefore what a simulation may ask for
-today. **Doctrine §8c holds the rule, never the mapping**; the mapping is that column, so a reordered
-route stays true without a doctrine edit. Then rewrite the readiness status line under that same table
-so it names exactly the `closed ✅` set (standard invariant 16) — this skill is its writer:
+Read the technique column of the **route §3** table in `{PLAN}`, and the **first-test gate** in the
+readiness status line under it — the sentence naming the step whose close makes a realistic first test
+possible. Say, in one line, which techniques are now available given the steps that read `closed ✅`,
+and therefore what a simulation may ask for today: **nothing yet while the gate's step is still open**,
+whatever is already unlocked. **Doctrine §8c holds the rule, never the mapping**; the mapping is that
+column, so a reordered route stays true without a doctrine edit.
+
+Then rewrite the readiness status line under that same table — this skill is its writer. The line holds
+two things (standard invariant 16), and only the first is yours to change:
+
+- **The closed set** — exactly the steps that read `closed ✅`, with what they unlock. Rewritten on
+  every close.
+- **The first-test gate** — **carried over; never chosen, moved or dropped.** While its step is open,
+  the sentence stays as the route has it. Once its step is in the closed set, say the gate is met and
+  keep the step it names: a line with no gate cannot be told from one that lost it, and
+  `/simulation-plan` reads the gate off this line. If the line you are rewriting carries no gate
+  sentence at all, write none — which step it names is a route decision, never this ritual's — and
+  report the absence, naming `/sql-plan-audit {LEVEL}` as the run that checks it (invariant 16).
 
 ```
-Desbloqueado: JOINs + GROUP BY + HAVING. Una simulación SQL puede pedirte hasta agregación sobre join;
-todavía no window functions (Step 8).
+Desbloqueado (Steps 0–1): SELECT/WHERE/ORDER BY, operaciones de conjuntos, JOINs. Todavía no GROUP BY
+(Step 2). El primer test toca al cerrar el Step 2: basics + joins + GROUP BY ya es un examen real.
 ```
+
+The steps and the gate sentence above are junior's, as an example — read the real ones off the route.
+With the gate's step closed, its sentence becomes `Gate del primer test (Step 2): cumplido.` and the
+line may then say what a simulation can ask for.
 
 **This is the only line in the track that connects it to Stage 2**, and it exists because of a real
 asymmetry: a step closes on a score obtained in pgAdmin, with the notes reachable and no clock, while
@@ -214,5 +231,5 @@ him a second command for it.
 | PROGRESS.md | filas `Total` cuadran (30 = 20+10); `Corrected` total en blanco, correcto |
 | Punto de repaso | R1 disponible (span 0–1) — `TOPIC = R1` cuando te apetezca |
 | Gate | ninguno (o: Step 13 cerrado → **G3 toca ya** — `/progress-update MODE = active`, cierra con drift report vacío; luego G4 `/roadmap-review`) |
-| Desbloqueado (ruta §3) | SELECT/WHERE/ORDER BY + set ops. Una simulación puede pedirte hasta ahí |
+| Desbloqueado (ruta §3) | SELECT/WHERE/ORDER BY + set ops. Ninguna simulación todavía: el gate del primer test (Step 2) sigue abierto, arrastrado tal cual (o: `la ruta no trae gate del primer test — no se inventa; /sql-plan-audit junior`) |
 | Nivel | junior sigue abierto — 13 steps por delante |
