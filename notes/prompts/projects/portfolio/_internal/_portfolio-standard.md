@@ -92,7 +92,7 @@ what the scope exists for.
 | Architecture & Patterns | structure + layered architecture; controllers/services | angular routes/config/components | the API contract itself — the DTO ↔ interface pair, and how one request crosses the boundary |
 | Security & Auth | security folder + JWT filter — **skip if the project has no auth** | angular guards/interceptors — same skip | the auth flow end to end, as one story: login, token storage, expiry, what each side trusts |
 | Business Rules | service logic + validation | form validation, UI state rules, what the screen forbids | the PLANNING.md §8 rules **both** sides enforce, and what happens where they disagree |
-| Technical Decisions | DTOs, HTTP status choices, `application.properties` | Angular tradeoffs — state, routing strategy, change detection | PLANNING.md §20 tradeoffs that span the tiers, the shared error format, `docker-compose.yml` (deployment is configuration and a tradeoff, not application structure — placed here by ruling, and unfalsified: the only full-stack project has it planned for a later step and not yet on disk) |
+| Technical Decisions | DTOs, HTTP status choices, `application.properties` | Angular tradeoffs — state, routing strategy, change detection | PLANNING.md §20 tradeoffs that span the tiers, the shared error format, `docker-compose.yml` and hosted deployment configuration — Render / Neon / Netlify on `07-timetrack`, including per-environment variables and the frontend API URL. These stay in `global` because the decisions connect the API, database and browser across local and hosted environments; source the actual compose file, backend `Dockerfile` + properties, frontend environment files + build configuration, and the hosted settings recorded in PLANNING.md's deployment step (provider dashboards are not repository config files) |
 | Testing | `src/test/java` — **skip if the project has none** | `**/*.spec.ts` — same skip | — |
 
 **"None" includes a tree holding only the generated stub.** A Spring Initializr project ships
@@ -236,9 +236,10 @@ Otherwise apply:
 - **Resolved-but-unchecked tasks.** Every `[ ]` counts as open. For each open High/Medium task, glance
   at the real code — if it looks already done, flag it ("task X marked open but appears resolved —
   check it off in the backlog and re-run"). Never silently treat it as done.
-- **Unfilled visual placeholders.** Scan the global README for `*(screenshot — … — to be added)*` /
-  `*(GIF — …)*` placeholders. If any remain, **downgrade a ✅ to ⚠️** and list them — a README full of
-  unfilled visuals is not recruiter-ready.
+- **Unfilled visual or demo placeholders.** Scan the global README for
+  `*(screenshot — … — to be added)*` / `*(GIF — …)*`, and its `## Live demo` section for
+  `*(password — to be added)*`. If any remain, **downgrade a ✅ to ⚠️** and list them — missing
+  visuals or a demo password still to be supplied leave the README unfinished for a recruiter.
 
 > Unchecked tasks count as open even if the code is already fixed — the verdict reads the backlog
 > directly. Before running the gate, tasks already fixed should be checked off (✅) in the backlog.

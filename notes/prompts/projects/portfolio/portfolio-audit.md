@@ -675,9 +675,9 @@ auto-fix):
 - **Resolved-but-unchecked tasks.** The verdict counts every `[ ]` as open. For each open High/Medium
   task, glance at the real code — if it looks already done, flag it: "task X marked open but appears
   resolved — check it off in the backlog and re-run if so". Never silently treat it as done.
-- **Unfilled visual placeholders.** Scan the global README for `*(screenshot — … — to be added)*` /
-  `*(GIF — … )*` placeholders. A README full of unfilled visuals is not recruiter-ready — if any
-  remain, downgrade a ✅ to ⚠️ and list them.
+- **Unfilled visual or demo placeholders.** Run the standard's Check 2 placeholder scan over the
+  global README — screenshot / GIF placeholders, plus `*(password — to be added)*` under
+  `## Live demo`. If any remain, downgrade a ✅ to ⚠️ and list them.
 
 ### Phase 3 — CV bullet + GitHub description (orchestrator)
 
