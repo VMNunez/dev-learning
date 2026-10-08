@@ -44,6 +44,8 @@ PLAN = [notes/{topic}/coverage/notes-plan-{LEVEL}.md]
 NOTE = [two-digit entry number]
 TASK = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact Spanish headings that were appended]
+ES_AUTHORED = [none | paired English/Spanish headings A authored from an es/ TODO,
+        with the original marker's wording choices — metadata, never English note prose]
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` — the authority the internal-link check runs against, both for filenames and for
         what each entry teaches, including entries whose file does not exist yet]
@@ -191,7 +193,10 @@ must-answer question, prerequisites, handoff, and any applicable introduction in
 gap in that trace blocks the status change and commit; return it to the English author/reviewer stage.
 **So does every sentence you report under the internal-link claim check** (`REC-269`), outside a
 section `SCOPE = append-only` freezes: the English carries the same false claim and its repair is
-English-side, so committing would ship it in both files. One in frozen prose is reported and never
+English-side, so committing would ship it in both files. **In an `ES_AUTHORED` section the source
+is Spanish instead:** still block the status change and commit, and report the Spanish heading,
+sentence and plan evidence for A's Spanish-first repair; never rewrite the claim here. B then
+reviews its derived English before T and C run again. One in frozen prose is reported and never
 blocks — no stage may repair it, and Victor fixes it as a TODO (`_note-quality-standard.md` → "Which
 entry owns the concept").
 

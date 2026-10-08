@@ -57,6 +57,9 @@ READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is c
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` it carries — the complete set of filenames you may link, including entries not
         written yet, and the authority on what each one teaches]
+ES_AUTHORED = [none | paired English/Spanish headings retained from an earlier A pass this run,
+        with the original marker's wording choices; default none on the first pass]
+SOURCE_REPAIRS = [none | defects returned by B, T or C in those sections, with text and evidence]
 
 REWRITE_MODE = [standard | first-pass | append-only]
        → standard (default): existing prose is final unless marked with a TODO, unless TASK
@@ -78,7 +81,7 @@ REWRITE_MODE = [standard | first-pass | append-only]
          content Victor has not validated yet. After the run, the file is validated — use standard
          from then on.
 
-Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, and REWRITE_MODE wherever
+Use TOPIC, LEVEL, FILE, TASK, READABLE_SIBLINGS, LINK_TARGETS, ES_AUTHORED, SOURCE_REPAIRS, and REWRITE_MODE wherever
 the prompt refers to their placeholders.
 
 ---
@@ -158,6 +161,14 @@ in the direction of the file carrying it"), because his TODOs are usually correc
 prose itself and routing them through English destroys the wording he asked for. So for those sections
 — and *only* those sections — you write Spanish into the `es/`, then bring `{FILE}` into line with it.
 Every other byte of the `es/` remains stage T's.
+
+**The Spanish-first direction holds through your whole pass, not only Step 1.** Keep every section
+whose Spanish you authored, including those received in `ES_AUTHORED`, as the source for its English.
+Any later check or `SOURCE_REPAIRS` requiring a change there is repaired in that Spanish section
+first, then rendered into English; never improve its derived English independently. A source repair
+may change only the named defective passage and the structure that correction requires, keeping the
+original TODO's wording choices unless a verified false fact requires correction, which you report.
+In `append-only` mode both inputs are `none` and this exception licenses no frozen edit.
 
 Do not edit any `coverage/*.md` file, or any sibling note's body — admissible or not — if you notice a
 gap that belongs elsewhere, mention it in the summary instead of acting on it.
@@ -239,6 +250,9 @@ clear that marker once resolved.
 
 Name in your summary, per TODO, which language you authored and which sections of the `es/` you wrote
 directly — stage T freezes exactly those and re-syncs everything else.
+Return them as paired exact English/Spanish headings, including any parent section that contains
+the repaired passage, with the original marker's wording choices. Retain received entries even when
+their TODO markers are already gone; update both headings in this list if a repair renamed them.
 
 ## Step 2 — Quality audit of this file (rule 2)
 
@@ -365,6 +379,8 @@ the Step 1 exception — and report:
   needs this to know what to (re)translate in the `es/`.
 - Which TODOs you resolved, and for each: the language you authored it in, and whether the `es/`
   section is now frozen for stage T (it is, whenever you wrote the Spanish directly).
+- The complete retained `ES_AUTHORED` list and `SOURCE_REPAIRS` disposition, including the Spanish
+  repair and its derived English; unresolved repairs block the handoff under All-or-nothing below.
 - In `append-only` mode you resolve none, and that bullet is replaced by the one Step 1 mandates: every
   marker **seen** in the frozen prose, with its heading, its language and **its text quoted verbatim**.
   That quote is the whole payload the harvest cannot reconstruct from anywhere else, so a marker

@@ -39,14 +39,24 @@ TOPIC = [one registered topic from `../../coverage/_internal/_topic-ownership.md
 FILE  = [exact en/ file path just authored, e.g. notes/java/junior/en/11-exceptions.md]
 TASK  = [complete selected persistent-plan entry]
 SCOPE = [full | append-only — with append-only, list the exact headings the author appended]
+ES_AUTHORED = [none | paired English/Spanish headings of sections A authored from an es/ TODO,
+        with the original marker's wording choices; standalone, obtain this from A's report]
 READABLE_SIBLINGS = [the en/ and es/ paths of the plan entries whose Status is complete or refined
         — the ONLY sibling prose you may open]
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` it carries — the complete set of filenames this file may link, including entries
         not written yet, and the authority on what each one teaches]
 
-Use TOPIC, FILE, TASK, SCOPE, READABLE_SIBLINGS, and LINK_TARGETS wherever the prompt refers to their
+Use TOPIC, FILE, TASK, SCOPE, ES_AUTHORED, READABLE_SIBLINGS, and LINK_TARGETS wherever the prompt refers to their
 placeholders.
+
+> **`ES_AUTHORED` overrides every direct-fix instruction in its named English sections.**
+> Their source is Spanish, which T will leave untouched. Read and audit them normally, but change
+> no byte there: report each failing check with the English heading, offending text, evidence and
+> required correction as `Spanish-source repairs`. Any such repair makes your verdict `BLOCKED`;
+> the orchestrator returns it to A for Spanish-first repair and re-derivation before reviewing again.
+> Never open or edit the Spanish counterpart yourself. `SCOPE = append-only` still wins for frozen
+> existing prose: its issues are reported as frozen and request no repair.
 
 > **`SCOPE = append-only` overrides every "fix it directly" instruction below for existing prose.**
 > Victor has refined this file and declared it final; the run exists only to add coverage that arrived
@@ -173,7 +183,8 @@ reference documentation instead of a chapter capable of teaching the planned out
 ## Fix, don't just report
 
 Where a check fails, **fix it directly** in `{FILE}` — you are the last English quality pass before
-translation, not an advisor. Preserve the author's correct work; only change what misses the bar. Keep
+translation, not an advisor — except in `ES_AUTHORED` sections, whose repairs you return as above.
+Preserve the author's correct work; only change what misses the bar. Keep
 code blocks and `Purpose:`/`Docs:` labels intact unless a `File:` path is invalid.
 
 If the file is genuinely already at bar, change nothing and record it as PASS — do not rewrite good
@@ -187,6 +198,10 @@ from your finished English; the Spanish reviewer (C) then commits.
 
 Report your **verdict** for this file:
 - `PASS` (no changes needed) or `FIXED` (with a short bullet list of what you corrected and why).
+  Use `BLOCKED` when `Spanish-source repairs` remain, even if you fixed other sections.
+- `Spanish-source repairs: none` or each repair required in an `ES_AUTHORED` section; name any
+  other English sections you already changed on a `BLOCKED` return. Standalone, stop before T/C
+  until A has repaired the source and a new B review clears this list.
 - The **"N lines, read to EOF"** line for `{FILE}`.
 - The **section-by-section trace** (every heading → PASS or the fix).
 - The siblings you opened, each shown to be in `{READABLE_SIBLINGS}`, and every internal link you

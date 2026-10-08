@@ -36,11 +36,13 @@ LEVEL = [junior | middle | senior]
 FILE  = [exact en/ file path (the canonical source), e.g. notes/java/junior/en/11-exceptions.md]
 
 SCOPE = [full | append-only — with append-only, list the exact English headings that were appended]
+ES_AUTHORED = [none | paired English/Spanish headings A authored from an es/ TODO,
+        with the original marker's wording choices]
 LINK_TARGETS = [every plan entry's number, title, en/ path and es/ path, with its Status and any
         `Audit note` — the authority on every sibling's Spanish filename, including entries whose file
         does not exist yet, and on what each one teaches]
 
-Use TOPIC, LEVEL, FILE, SCOPE, and LINK_TARGETS wherever the prompt refers to their placeholders.
+Use TOPIC, LEVEL, FILE, SCOPE, ES_AUTHORED, and LINK_TARGETS wherever the prompt refers to their placeholders.
 
 > **`SCOPE = append-only`: the `es/` file is FROZEN.** Victor refined it and declared it final, and this
 > run exists only to add coverage that arrived later. Translate **only the appended English headings

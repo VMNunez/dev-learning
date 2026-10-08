@@ -227,16 +227,19 @@ Dispatch `_notes-write-prompt.md` with:
 - the complete pedagogical contract: narrative role, learning outcome, prerequisites, every
   must-answer question, and handoff;
 - `REWRITE_MODE = first-pass` for `create`, `append-only` for a `refined` entry, otherwise `standard`;
+- `ES_AUTHORED = none` and `SOURCE_REPAIRS = none` on the first pass; a later A dispatch receives
+  the retained list and any source repairs as specified below;
 - `READABLE_SIBLINGS` and `LINK_TARGETS` as resolved above — the author reads sibling prose only from
   the first list and links only rows of the second.
 
 It must author or audit only the selected English file — plus, under its Step 1 exception, the `es/`
 sections where it resolved a TODO Victor wrote there — cover every assigned concept, avoid sibling
 level scope, and report a section trace plus `N lines, read to EOF`. Keep the `es/` sections its report
-names as written directly as `ES_AUTHORED`, by their `es/` headings, or `none` when it wrote none —
+names as written directly as `ES_AUTHORED`, by paired exact English/Spanish headings and the original
+markers' wording choices, or `none` when it wrote none —
 always `none` in append-only mode, where its Step 1 resolves nothing. When the trace gate re-dispatches
 Stage A, keep the sections the first report named as well: the second run finds their markers already
-cleared and cannot name them. Stages T and C are owed that list
+cleared and cannot name them. Stages B, T and C are owed that list
 below: T freezes those sections and C keeps his wording only when told, and neither can find them on
 its own.
 
@@ -249,10 +252,23 @@ entry, including the exact assigned coverage bullets and pedagogical contract, a
 criteria, plus `READABLE_SIBLINGS` and `LINK_TARGETS`, plus `SCOPE = append-only` with the appended
 section headings when the entry is `refined` — it checks duplication, seams and references against the
 first list alone, and never clears a forward reference by opening a file outside it.
+Pass `ES_AUTHORED` on every B dispatch, including the trace-gate retry and the claim-mismatch repair.
+It audits those English sections but returns `Spanish-source repairs` instead of changing them.
 It must fix the file, verify every bullet is substantively covered, verify that the
 learning outcome and must-answer questions are achieved without undeclared prerequisites, enforce
 the introduction invariant when applicable, reject unassigned higher-level expansion, and return a
 section trace, pedagogical-contract trace, and EOF proof.
+
+**Spanish-source repair gate.** A B return with `Spanish-source repairs` stops before T/C. Re-dispatch
+A once with its original inputs, retained `ES_AUTHORED`, and `SOURCE_REPAIRS` naming each defect,
+text and evidence; A repairs the Spanish first and derives the English again, preserving the original
+markers' wording choices. This A invocation edits only those named source passages and their English
+renderings; its original rewrite mode does not reopen the rest of the file. Keep B's finished changes
+elsewhere. Merge A's returned section pairs into
+the retained list, replacing renamed pairs, then re-dispatch B with that list and its original inputs.
+An unresolved repair or a second B request leaves the entry pending and the run blocked, with the
+changed spans reported and no pair commit. This is the same single content-repair allowance used
+below for T/C claim mismatches, not another retry for each stage; trace-only retries do not spend it.
 
 ## Stage T — translator
 
@@ -306,10 +322,12 @@ contract, verifies both files exist, changes only the selected status, then comm
 Spanish file, and plan atomically. A structural pedagogical gap blocks completion and returns the
 entry to the English stages, as does a claim mismatch stage T or stage C reports against
 `LINK_TARGETS` in prose this run may change (one in an append-only run's frozen prose is reported, never
-repaired — "Append-only mode" item 1) — the sentence is `en/`-canonical and false at write time, so it is repaired by one
+repaired — "Append-only mode" item 1). **In an `ES_AUTHORED` section its source is Spanish:** use
+the Spanish-source repair gate above, then run B → T → C again; never send it to a B-only repair
+whose changed English T would fail to mirror. Else the sentence is `en/`-canonical and false at write time, so it is repaired by one
 re-dispatch of Stage B, naming each reported sentence, not carried into the commit. **The repair runs
-where the mismatch is reported, and every stage after B runs again behind it** (`REC-269`): a mismatch
-stage T reports goes to Stage B **before** Stage C is dispatched, and a mismatch stage C reports has
+where the mismatch is reported, and every stage after B runs again behind it** (`REC-269`): an ordinary mismatch
+stage T reports goes to Stage B **before** Stage C is dispatched, and an ordinary mismatch stage C reports has
 stopped C short of its status change and commit. Either way B's corrected English then owes Stage T
 again — resumed with the headings B changed where the runtime allows, else re-dispatched with its first
 dispatch's inputs, in append-only mode after the sections T appended are removed from the `es/` — the
@@ -358,7 +376,8 @@ the sibling-admissibility resolution — how many entries were admitted as `READ
 `LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
 against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` —
 dependency gate, pedagogical-contract gate, intro-contract gate when applicable, the `ES_AUTHORED`
-sections relayed to stages T and C (or `none`) with T's `frozen` trace entry for each, four stage results,
+sections relayed to stages B, T and C (or `none`) with T's `frozen` trace entry for each, any
+Spanish-source repair and its disposition, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
 verdict, concept checkbox transitions, status transition, studied-state transition, and commit.
 **Report every false-fact correction stage A made in existing prose** — the old text, the new text and
