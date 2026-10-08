@@ -307,9 +307,10 @@ PLANNING should record the answer. (Example: nothing in §8 forbids a manager ap
 The code is not violating a rule; the rule does not exist. Segregation of duties may well be the right
 answer — but the fix is a decision in §8, then code, not a High that blocks portfolio-ready today.)
 
-**The orchestrator decides this, not the slice reviewer.** A reviewer sees one slice and cannot know
-whether the plan speaks to the issue elsewhere; the orchestrator has read PLANNING and holds every table.
-So it **overrides the reviewer's grade in both directions** — up, when a reviewer under-grades a real
+**The orchestrator decides this, not the slice reviewer.** A reviewer sees one slice, and of the plan
+only the sections that slice needs, so it cannot know whether the plan speaks to the issue elsewhere; the
+orchestrator holds every table and, for a row no invariant settles, searches the plan for the issue
+before it grades (`review-audit.md` Step 5). So it **overrides the reviewer's grade in both directions** — up, when a reviewer under-grades a real
 contract break (this happened on 2026-07-14: `getById` came back Medium and was raised to High), and down
 is not needed, because a reviewer's High that turns out to rest on a silent plan becomes a Medium
 "decide and document". Record the reason in the task line so the grade is auditable.

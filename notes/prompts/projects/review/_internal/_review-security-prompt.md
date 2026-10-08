@@ -8,8 +8,8 @@ the orchestrator to merge into the backlog. **Severity is graded, never automati
 finding becomes a **High** task, while one resting only on a plan that is silent becomes the **Medium
 "decide and document"** task — the test is `_review-standard.md`'s **What "confirmed" means**, which
 sits inside the one section of it this reviewer already reads. Every row is graded by that test, and
-the orchestrator — the only reader holding the whole plan and every slice's table — arbitrates the
-final grade in both directions. It does **not** edit any file and does **not** commit.
+the orchestrator — which holds every slice's table and searches the plan beyond the sections this
+reviewer reads before it grades — arbitrates the final grade in both directions. It does **not** edit any file and does **not** commit.
 
 Skip it for Angular projects 01–06 — they have no backend, so there is no server-side attack surface to
 audit. (They still get a frontend review and a backlog; they just never get this pass.)

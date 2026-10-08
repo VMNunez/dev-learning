@@ -324,6 +324,16 @@ what the next run's gate reads — then move on. Never treat a silent or partial
 Then merge the verified tables into one prioritized task list per the standard's
 task/priority/effort rules:
 - Every confirmed **security** finding → a **High** task, carrying which endpoint/area it hits.
+  **Search the plan before you grade a row on it.** Whether a row breaks a contract `PLANNING.md`
+  makes, or rests only on its silence, turns on sections beyond the ones any one slice read, and no
+  table carries that: a reviewer read its own slice's sections, and Step 0 gave you only what the
+  slice map and the unbuilt-step list needed. So for every security row a universal invariant does
+  not already settle, and every frontend-security storage row — the standard has you grade those,
+  whatever priority they arrived with — list the plan's headings once (`grep -n '^#'`), grep the plan
+  for the row's own terms (the endpoint, the rule, the stored item), and read by line offset the
+  sections either one points at — sections, never the plan end to end. The plan is *silent* only when
+  that search finds no section ruling on the issue. Name the section you graded against, or the terms
+  that found nothing, in the task line: that is the reason the standard has you record.
 - Every **correctness** finding on a normal path → **High**; edge-path → Medium; latent → Low. Each task
   carries the trigger so Victor can reproduce it.
 - Every **missing planned test** or **untested §8 business rule** → **High**; weak assertion / missing
