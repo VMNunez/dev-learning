@@ -317,7 +317,7 @@ mid-audit.
 
 ## Phase 5 — The handoff this run cannot perform itself
 
-Two of this pipeline's outputs are deliberately incomplete, and the run is not finished until it says
+Three outcomes leave work this pipeline is fenced from doing, and the run is not finished until it says
 so **in its last line to Victor**, not only inside the self-report:
 
 - **Specialist 2 wrote or re-pointed a step.** The route now maps coverage that the header's
@@ -326,14 +326,16 @@ so **in its last line to Victor**, not only inside the self-report:
   runs, every `/sql-exercises` run prints "ruta desactualizada" and the route percentage is computed
   over the old file list.
 - **The digest was already stale on arrival** and specialist 2 could not claim every new bullet.
+- **Specialist 3 reported the projection broken or stale** (invariant 15) — the same `/sql-plan {LEVEL}`
+  re-sync Phase 2 hands it to.
 
-In either case close with exactly one line:
+In any of these cases close with exactly one line, keeping only the clauses that apply:
 
 ```text
-⚠ /sql-plan {LEVEL} owed — N steps added/re-pointed · digest stale · PROGRESS.md not seeded for M new files
+⚠ /sql-plan {LEVEL} owed — N steps added/re-pointed · digest stale · PROGRESS.md projection stale (M rows)
 ```
 
-If neither applies, close with `route and projection consistent — nothing owed`. **This is the gap the
+If none applies, close with `route and projection consistent — nothing owed`. **This is the gap the
 prompt existed with until 2026-08-04:** the audit could grow the route and nothing in the chain said the
 planner had to run again, so a remapped route kept warning it was stale for weeks and the projection
 quietly described a route that no longer existed. The order is `/sql-plan` → `/sql-plan-audit` →
