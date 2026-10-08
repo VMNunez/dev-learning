@@ -47,8 +47,9 @@ and a clean G6 (`progress-update`), and it is the last gate that reads the proje
 > `progress-update MODE = all` run**: `MODE = active` audits the active project alone, so its scope line
 > can never name a completed one and can never close its G6 — which is the normal case under recipe B.
 > The READMEs must be correct and PROGRESS.md accurate.
-> Before running, check off (✅) any backlog tasks you have already fixed — the verdict counts unchecked
-> tasks as open even if the code is done.
+> Before running, close any backlog task you have already fixed — in a daily session, where
+> `backlog-task-close` collapses it into the backlog's `## Closed` ledger. The verdict counts every
+> `[ ]` task as open even if the code is done.
 >
 > **A project with an incomplete step owes none of the three.** Check 1 returns ❌ Not ready
 > without reading `PROJECT-BACKLOG.md` at all; the CV bullet G6 underwrites is never drafted, because
@@ -672,9 +673,10 @@ of the date test; a Check 3 stop is a Check 2 stop in every respect, so print no
 
 **Two quick sanity scans before you finalize the verdict** (report each as a one-line note, do not
 auto-fix):
-- **Resolved-but-unchecked tasks.** The verdict counts every `[ ]` as open. For each open High/Medium
+- **Resolved-but-open tasks.** The verdict counts every `[ ]` as open. For each open High/Medium
   task, glance at the real code — if it looks already done, flag it: "task X marked open but appears
-  resolved — check it off in the backlog and re-run if so". Never silently treat it as done.
+  resolved — pick it up in a daily session (`backlog-task-open` confirms it, `backlog-task-close`
+  retires it) and re-run if so". Never silently treat it as done.
 - **Unfilled visual or demo placeholders.** Run the standard's Check 2 placeholder scan over the
   global README — screenshot / GIF placeholders, plus `*(password — to be added)*` under
   `## Live demo`. If any remain, downgrade a ✅ to ⚠️ and list them.

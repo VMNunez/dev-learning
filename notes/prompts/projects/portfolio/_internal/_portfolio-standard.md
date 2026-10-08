@@ -233,16 +233,19 @@ Otherwise apply:
 - Open **Low** tasks do not affect the verdict — ignore them.
 
 **Two sanity scans before the verdict is final** (report each as a one-line note, never auto-fix):
-- **Resolved-but-unchecked tasks.** Every `[ ]` counts as open. For each open High/Medium task, glance
+- **Resolved-but-open tasks.** Every `[ ]` counts as open. For each open High/Medium task, glance
   at the real code — if it looks already done, flag it ("task X marked open but appears resolved —
-  check it off in the backlog and re-run"). Never silently treat it as done.
+  pick it up in a daily session (`backlog-task-open` confirms it, `backlog-task-close` retires it) and
+  re-run"). Never silently treat it as done.
 - **Unfilled visual or demo placeholders.** Scan the global README for
   `*(screenshot — … — to be added)*` / `*(GIF — …)*`, and its `## Live demo` section for
   `*(password — to be added)*`. If any remain, **downgrade a ✅ to ⚠️** and list them — missing
   visuals or a demo password still to be supplied leave the README unfinished for a recruiter.
 
-> Unchecked tasks count as open even if the code is already fixed — the verdict reads the backlog
-> directly. Before running the gate, tasks already fixed should be checked off (✅) in the backlog.
+> A `[ ]` task counts as open even if the code is already fixed — the verdict reads the backlog
+> directly. A fixed task is not checked off by hand: it leaves `## Tasks` when the in-session
+> `backlog-task-close` skill collapses it into the `## Closed` ledger (`_review-standard.md` owns that
+> lifecycle), so tasks already fixed are closed that way before the gate runs.
 
 ### Check 3 — PROGRESS accuracy (from the drift report)
 Only if Checks 1 and 2 both passed without stopping **and the verdict Check 2 computed is not ❌ Not

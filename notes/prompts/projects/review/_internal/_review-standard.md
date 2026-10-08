@@ -503,8 +503,8 @@ above level but necessary — necessity wins, always.
 
 This is deliberately the same judgement the in-session `backlog-task-open` skill makes when Victor
 picks a task up, and the duplication is the point: this pass keeps out-of-gate work out of the backlog
-in the first place, and that one re-checks the survivors against `PLANNING.md`, the `## Closed` ledger
-and the session history — three sources this pass reads partially or not at all. Neither replaces the
+in the first place, and that one re-checks the survivors against the code and the session
+history — two sources this pass holds partially or not at all. Neither replaces the
 other, and a task tagged `⬆` here is still triaged there.
 
 **PROJECT-BACKLOG.md** contains: a **per-tier "Last Reviewed" line** (see the gate above — `backend` and

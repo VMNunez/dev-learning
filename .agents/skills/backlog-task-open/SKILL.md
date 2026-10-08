@@ -4,8 +4,10 @@ description: >
   Validate a task from the active project's PROJECT-BACKLOG.md against its real project context BEFORE
   any teaching or fixing starts — the moment Victor picks one up ("sigamos con otra tarea", "vamos con
   la del @Transactional", "next backlog task", or he names one from the list). The backlog is written by
-  `review-audit`, which reads the code but reads **PLANNING.md only in slices** and never the `## Closed`
-  ledger, so a finding can be correct about the code and still wrong about the project: it can contradict
+  `review-audit`, a cold pipeline in which no reader holds the whole project: the slice reviewers that
+  read the code see **PLANNING.md only in slices** and never the backlog, the orchestrator that reads the
+  `## Closed` ledger and the level evidence never reads the full source, and none of them has the session
+  history — so a finding can be correct about the code and still wrong about the project: it can contradict
   a documented decision, under-state its real scope, or be right in the abstract but wrong for a junior
   portfolio project two months from interviews. The failure mode this exists for is spending a full teach-solve-close cycle on a false
   positive, or fixing the two call sites the review listed while a third breaks the build. It ends with
@@ -37,10 +39,13 @@ This is the twin of `backlog-task-close`. That one fires when the fix works and 
 into coverage / README / PLANNING / PROGRESS. This one fires **first**, and exists because the two
 artifacts have different blind spots:
 
-> `review-audit` reads the **code**. It reads `PLANNING.md` only in slices, it cannot see a decision
-> deliberately made in an earlier session or recorded in the `## Closed` ledger, and its own level-fit
-> pass judges the concept from the coverage files alone. Every task it writes is a *hypothesis about
-> the code*, not a ruling about the project.
+> `review-audit` splits the project across cold readers, and no one of them holds it whole. The slice
+> reviewers that read the **code** read `PLANNING.md` only in slices and never open the backlog. The
+> orchestrator that merges their findings does read the `## Closed` ledger before it writes a task, and
+> its level-fit pass reads `PROGRESS.md`'s two level tables, the coverage files and
+> `_shared-context.md` — but it holds findings tables, not the code: it never reads the full source.
+> And none of them has the session history, so a decision an earlier session made and no file records
+> reaches nobody. Every task it writes is a *hypothesis about the code*, not a ruling about the project.
 
 Run it **inline, in the session** — not as a cold subagent. The whole value here is holding the code,
 the plan, the closed ledger and Victor's goals in one context at once; a cold agent would have to
@@ -48,7 +53,7 @@ re-derive all of it and would still miss the session history.
 
 ---
 
-## 1 — Read the task and the three things the reviewer could not
+## 1 — Read the task and what no reviewer held at once
 
 Quote the task line verbatim first, so what is being judged is on screen.
 
@@ -104,8 +109,8 @@ Then read, in this order — **all six, before forming any opinion**:
 
    **A task already tagged `⬆ {level} — reason`** was judged above-level-but-necessary by
    `review-audit`'s own level-fit pass. That is a prior verdict, not a conclusion: it was reached
-   without `PLANNING.md`, without the `## Closed` ledger and without the session history, so re-run the
-   necessity test here with those three in hand. Agreeing is the normal outcome — but the tag is
+   from findings tables — without the full source and without the session history — so re-run the
+   necessity test here with the code and the session in hand. Agreeing is the normal outcome — but the tag is
    exactly the kind of claim that goes stale, and this is the pass that holds the evidence to check it.
    Keep the tag verbatim if it holds; if the necessity no longer stands, say so and route the task as
    "valid, wrong moment".
@@ -186,8 +191,8 @@ looked at again, which is the cost this whole pass exists to avoid.
   **Do not move the line into the backlog's `## Beyond the current gate` section.** That section is
   `review-audit`'s, for findings it parked *before* they ever became tasks; `⏸ Deferred` is this
   skill's, for a task that already exists and that Victor has now looked at. Same idea, two owners, and
-  collapsing them would hide which judgement was made — a parked finding was never triaged against
-  `PLANNING.md` or the ledger, a deferred one was.
+  collapsing them would hide which judgement was made — a parked finding was never triaged in session,
+  against the code and the `PLANNING.md` section that governs it; a deferred one was.
 - **Dropped** → to the ledger via `backlog-task-close`, as a `DECISION, no code change` line whose
   `→` tail says *why it will never be right for this project*. That line is what stops the next
   `review-audit` re-raising it.

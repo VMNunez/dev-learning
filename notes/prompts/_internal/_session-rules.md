@@ -626,11 +626,14 @@ Everything else in this list is step-scoped and would be false mid-step, so it s
 
 (The platform's `backlog-task-open` skill fires on this event. Added 2026-08-01.)
 
-A backlog task is written by `review-audit`, which reads the **code** but reads `PLANNING.md` only in
-slices, and never the closed ledger or Victor's level and interview target. So every task is a
+A backlog task is written by `review-audit`, a cold pipeline in which no reader holds the whole project:
+the slice reviewers that read the **code** read `PLANNING.md` only in slices and never the backlog, the
+orchestrator that reads the `## Closed` ledger and the level evidence never reads the full source, and
+none of them has the session history. So every task is a
 *hypothesis about the code*, not a ruling about the project, and it is validated before anything is
 taught or written: read the code it names, the PLANNING section that governs it, the `## Closed` ledger,
-every other consumer of the thing being changed, and the other open tasks. Reach one of **five**
+every other consumer of the thing being changed, whether the concept is at Victor's level, and the other
+open tasks. Reach one of **five**
 verdicts — valid as written, valid with a corrected scope, valid but the wrong moment, already resolved
 by later work, or a false positive — and state the evidence for it.
 
