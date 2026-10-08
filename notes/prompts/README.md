@@ -801,10 +801,12 @@ Each generated file, with who writes it and who depends on it:
   the whole bank.
 - **`practice/sql/{LEVEL}/PLANNING-{LEVEL}.md`** — written by `sql-plan-prompt`, audited and extended by
   `sql-plan-audit` — both refreshing §1's `Written`/`Answered`, a snapshot of disk no reader decides
-  from — and advanced by `sql-grade`'s subagent (§1 scored counts, §3 statuses, §2 `[x]` bullets)
+  from — and advanced by `sql-grade`'s subagent (§1 scored counts, §3 statuses, §2 `[x]` bullets) and
+  by `sql-step-close` (the readiness status line under §3, on every close)
   → read by `sql-exercises` (every run takes its topic, count and focus from the
-  current step), and by `roadmap-review` (§3's statuses, through §2's `**Coverage:**` lines, for
-  ROADMAP's SQL table). *This is the SQL track's contract, the same role a project's `PLANNING.md`
+  current step), by `roadmap-review` (§3's statuses, through §2's `**Coverage:**` lines, for
+  ROADMAP's SQL table), and by `simulation-plan` and `simulation-generator` (§3's technique column
+  and closed steps — the complete reader list is `_system-map.md` §7). *This is the SQL track's contract, the same role a project's `PLANNING.md`
   plays, and its `Coverage SHA-256` is what says whether it still maps the whole checklist.*
 - **`practice/sql/PLANNING.md`** — the level-neutral **doctrine** (step loop, done-condition formats,
   closing ritual, revision mechanism, gates, invariants), whose **rules** are written by
