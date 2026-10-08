@@ -206,6 +206,7 @@ door wherever it assumes the other, and in both directions**: reads it believes 
 door, a caller, hand-off or commit owner it believes exists on the inline one. So walk each step against
 every door's payload, state in the intro only what all doors give, and name each read at its step.
 **Also `REC-265`: a door's close-out and the component's own dispatches are steps too** — on a door that dispatches the branch alone the shell's self-report and tracker cell never run, and a dispatch the component makes turns nested; measure whether the runtime nests before pricing a redesign, and where a door skips a close-out, name who writes its state and where its evidence goes.
+**Also `REC-297`: where the doors differ only in what the *caller* has left uncommitted, order the caller before writing a rule per door** — a ritual that edits files its invoking skill also wrote meets a dirty tree on one door and a clean one on the other, and a commit rule keyed on the door or on the diff then makes the ritual's own commit impossible on the normal door; moving the caller's commits ahead of the hand-off gives every door one tree, and the diff key is kept only as the guard for the abnormal one.
 
 **One creating commit is not only a reader's error — it is also an authoring *copy*, and the family
 is what names the foreign clause.** From `REC-139`. `REC-130` above dates a partition and reads a
