@@ -301,6 +301,10 @@ disagreements to the owner hands the owner's literal reading the win.
 file from `02-` on carries its own canonical schema" outlived a generator that had since split the family
 three ways; a reader that already opens the artefact reads the fact off what the artefact declares and
 states no rule about the family, and the worked example in the same file is a second site of the claim.
+**Also `REC-305`: a gate's definer predicting that gate's own outcome over such a family is the same
+universal, and the pipeline's own output is what falsifies it** — `review-audit` said neither signal
+could fire on 01–06 until the fix campaign its backlogs generated wrote the `## Closed` lines one signal
+reads; delete the prediction rather than refresh it, and keep only what a stop must say.
 **Also `REC-294`: a template a ritual used to *say* becomes, the day a fix makes that ritual the *writer* of
 the line, the shape of what it overwrites** — `sql-step-close`'s spoken readiness line, reused as the
 write template for a route paragraph that also carried the first-test gate, would have dropped the gate on
