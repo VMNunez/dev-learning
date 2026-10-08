@@ -299,6 +299,10 @@ disagreements to the owner hands the owner's literal reading the win.
 file from `02-` on carries its own canonical schema" outlived a generator that had since split the family
 three ways; a reader that already opens the artefact reads the fact off what the artefact declares and
 states no rule about the family, and the worked example in the same file is a second site of the claim.
+**Also `REC-294`: a template a ritual used to *say* becomes, the day a fix makes that ritual the *writer* of
+the line, the shape of what it overwrites** — `sql-step-close`'s spoken readiness line, reused as the
+write template for a route paragraph that also carried the first-test gate, would have dropped the gate on
+the first close; reconcile such a template with the paragraph on disk, sentence by sentence.
 
 **A rule written in a standard is not a rule that runs, and "the sibling family already does this" is
 a claim about *disk*, not about text.** From `REC-180`'s identity half. The row's whole framing was that
