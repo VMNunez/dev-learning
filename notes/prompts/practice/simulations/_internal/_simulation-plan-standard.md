@@ -97,6 +97,13 @@ Rules:
 - `Spec` is an existing admitted path or a planned two-digit path. No two rows share a path.
 - `Focus` names 3–7 exact selected-level coverage bullets or concise clauses traceable to them.
 - `Prerequisites` name evidence/gates, not vague confidence.
+- **On a SQL row, `Prerequisites` names the SQL route §3 steps the spec demands, and no file outside
+  this route states SQL readiness per test.** A spec demands a technique only where one of its mandatory
+  `Queries to write` cannot be met without it, read off the `Evaluation` line that scores that query. A
+  line accepting alternatives — a subquery *or* a window function — is met by any one of them, so it
+  gates on the alternative whose step closes first; `Bonus` items are attempted only with time left
+  over and gate nothing. The SQL route says what each step unlocks and which steps are closed, never
+  which spec that blocks (invariant 6 holds the limit; this is how one spec is measured against it).
 - A balanced junior route normally contains Angular, Spring Boot, and SQL. A blocked track remains
   visible with its gate; it is not silently replaced by extra work from an easier track.
 - Existing pending specs are reused when they fit. The plan does not generate duplicates just to own
