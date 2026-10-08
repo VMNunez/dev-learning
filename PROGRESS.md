@@ -217,10 +217,10 @@ exercise never counts toward the junior route, and a junior file never appears i
 
 | Level | Corrected | Route progress | Steps closed |
 |---|---|---|---|
-| **Junior** | 40/50 (80%) | 20/210 (10%) | 0/14 |
+| **Junior** | 40/50 (80%) | 20/216 (9%) | 0/14 |
 | **Middle** | — | — | — |
 | **Senior** | — | — | — |
-| **Total** | — | **20/210 (10%)** | **0/14** |
+| **Total** | — | **20/216 (9%)** | **0/14** |
 
 The `Total` row spans levels, so today its route figure equals Junior — the only planned route. It
 exists so the number stays honest the day a second route appears: middle exercises add to the total
@@ -244,21 +244,21 @@ collapsed "12 files pending" row would hide exactly what is left to do. A row ap
 | Step | File | Corrected | First-pass / target | Status |
 |---|---|---|---|---|
 | 0 | `01-basics.sql` | 40/40 | 20/20 | closed ✅ — graded 2026-07-22; 20 first-pass + 20 `[Repaso]`, only the first-pass ones move the route |
-| 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | not started — file deleted 2026-08-04, to regenerate |
-| 1 | `03-joins.sql` | — | 0/22 | not started — file deleted 2026-07-22, to regenerate |
-| 2 | `04-aggregates.sql` | — | 0/14 | not created |
-| 3 | `05-join-pitfalls.sql` | — | 0/12 | not created |
-| 4 | `06-nulls.sql` | — | 0/12 | not created |
-| 5 | `07-subqueries-ctes.sql` | — | 0/16 | not created |
-| 6 | `08-dml-transactions.sql` | — | 0/16 | not created |
-| 7 | `09-dates-strings.sql` | — | 0/12 | not created |
-| 8 | `10-window-functions.sql` | — | 0/12 | not created |
-| 9 | `11-schema-design.sql` | — | 0/15 | not created |
-| 10 | `12-data-types-ddl.sql` | — | 0/17 | not created |
-| 11 | `13-indexes.sql` | — | 0/12 | not created |
-| 12 | `14-live-database.sql` | — | 0/12 | not created |
-| 13 | `15-report-queries.sql` | — | 0/8 | not created |
-| **Total** | **15 files** | — | **20/210 (10%)** | **0/14 steps closed** |
+| 0 | `02-execution-order-set-ops.sql` | 0/10 | 0/10 | not started |
+| 1 | `03-joins.sql` | — | 0/22 | not started |
+| 2 | `04-aggregates.sql` | — | 0/20 | not started |
+| 3 | `05-join-pitfalls.sql` | — | 0/12 | not started |
+| 4 | `06-nulls.sql` | — | 0/12 | not started |
+| 5 | `07-subqueries-ctes.sql` | — | 0/16 | not started |
+| 6 | `08-dml-transactions.sql` | — | 0/16 | not started |
+| 7 | `09-dates-strings.sql` | — | 0/12 | not started |
+| 8 | `10-window-functions.sql` | — | 0/12 | not started |
+| 9 | `11-schema-design.sql` | — | 0/15 | not started |
+| 10 | `12-data-types-ddl.sql` | — | 0/17 | not started |
+| 11 | `13-indexes.sql` | — | 0/12 | not started |
+| 12 | `14-live-database.sql` | — | 0/12 | not started |
+| 13 | `15-report-queries.sql` | — | 0/8 | not started |
+| **Total** | **15 files** | — | **20/216 (9%)** | **0/14 steps closed** |
 
 #### Middle — `practice/sql/middle/`
 
