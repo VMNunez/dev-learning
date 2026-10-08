@@ -189,6 +189,11 @@ If the Spanish is genuinely already native and at bar, change nothing and record
 Before committing, report a pedagogical-contract trace covering the learning outcome, every
 must-answer question, prerequisites, handoff, and any applicable introduction invariant. A structural
 gap in that trace blocks the status change and commit; return it to the English author/reviewer stage.
+**So does every sentence you report under the internal-link claim check** (`REC-269`), outside a
+section `SCOPE = append-only` freezes: the English carries the same false claim and its repair is
+English-side, so committing would ship it in both files. One in frozen prose is reported and never
+blocks — no stage may repair it, and Victor fixes it as a TODO (`_note-quality-standard.md` → "Which
+entry owns the concept").
 
 ## Finish
 

@@ -65,9 +65,11 @@ the role split. Correct isolation matters more than reproducing a historical mod
 - **A `reviewer` is dispatched with a scratch path, writes each finding there as it reaches it, and
   writes its verdict there before returning** — never holding its judgement in context to the end; the
   orchestrator reads that path when the reviewer dies. A persisted file is the verdict only if it
-  carries the `N lines, read to EOF` proof and one of the three verdict tokens; anything else is a
-  partial return and takes the ladder above, never an approval. On a final review gate this is the one
-  dispatch failure that destroys work already done: it runs once, and nothing downstream recovers it.
+  carries the `N lines, read to EOF` proof and one of the verdict tokens its own prompt defines (for a
+  self-report or ledger reviewer, the three: `approve`, `approve-with-tightening`, `reject`); anything
+  else is a partial return and takes the ladder above, never an approval. On a final review gate this is
+  the one dispatch failure that destroys work already done: it runs once, and nothing downstream
+  recovers it.
 
 ## Runnable close-out contract
 

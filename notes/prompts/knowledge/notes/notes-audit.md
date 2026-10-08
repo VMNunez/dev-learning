@@ -293,9 +293,32 @@ It reads Spanish independently, fixes quality, verifies that Spanish alone achie
 contract, verifies both files exist, changes only the selected status, then commits the English file,
 Spanish file, and plan atomically. A structural pedagogical gap blocks completion and returns the
 entry to the English stages, as does a claim mismatch stage T or stage C reports against
-`LINK_TARGETS` — the sentence is `en/`-canonical and false at write time, so it is repaired by one
-re-dispatch of Stage B, not carried into the commit. It must run `git status`
+`LINK_TARGETS` in prose this run may change (one in an append-only run's frozen prose is reported, never
+repaired — "Append-only mode" item 1) — the sentence is `en/`-canonical and false at write time, so it is repaired by one
+re-dispatch of Stage B, naming each reported sentence, not carried into the commit. **The repair runs
+where the mismatch is reported, and every stage after B runs again behind it** (`REC-269`): a mismatch
+stage T reports goes to Stage B **before** Stage C is dispatched, and a mismatch stage C reports has
+stopped C short of its status change and commit. Either way B's corrected English then owes Stage T
+again — resumed with the headings B changed where the runtime allows, else re-dispatched with its first
+dispatch's inputs, in append-only mode after the sections T appended are removed from the `es/` — the
+only span this run wrote there; never a whole-file restore, which would also erase a marker Victor left
+uncommitted — and only then is Stage C dispatched over that `es/`. A mismatch still reported after that
+one repair leaves the entry pending and stops the run. It must run `git status`
 immediately before staging and committing and stage exact paths only.
+
+**A Stage C that dies after persisting its verdict has finished its judgement, not failed it**
+(`REC-269`). When its persisted return — the section trace, the pedagogical-contract trace, the EOF
+proof and its `PASS`/`FIXED` verdict — passes the trace gate below with no structural gap and no
+mismatch that blocks under the rule above (one in frozen prose does not), and its plan edits are only
+the ones listed above, the orchestrator lands the commit C never made: the same three paths, the same
+message, the same `git status` discipline, re-running the append-only freeze proof first in that mode.
+That is the first rung of `_agent-runtime-standard.md`'s dead-role ladder — read whatever the role
+persisted — and not the single-agent fallback this prompt forbids, because every judgement the commit
+records is C's and committing makes none. A persisted structural gap or blocking mismatch is C's verdict
+too and is disposed of as above, never re-asked of C; any other persisted state the gate cannot accept
+takes the rest of that ladder, resume or one re-dispatch of Stage C, with entry `{NOTE}` of `PLAN` first
+restored to its `HEAD` text — no earlier stage writes it, so whatever that entry holds beyond `HEAD` is
+the dead stage's; the rest of the file is not this run's to reset.
 
 Commit:
 
