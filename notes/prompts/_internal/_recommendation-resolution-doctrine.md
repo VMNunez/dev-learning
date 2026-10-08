@@ -158,6 +158,7 @@ search the pre-image's wording too before calling a clause false from birth.
 **Also `REC-291`: a justification false from birth can have left a *licence* behind it** — `_sql-plan-standard.md` A2's "plus any blocked-bank warning" existed only to carry the claim that the
 bank's five tests needed window functions, so the licence is retired with the reason; and where the copy that must go sits in a pipeline-owned file, the removal rule is written into the section the
 specialist editing that file is dispatched to read (invariant 16, not the preamble or A2) — a rule true in a section no editor reads is applied by nobody.
+**Also `REC-264`: a justification of the form *X never reads Y*, written about a pipeline of several roles, is measured per role and re-founded per role** — `review-audit`'s orchestrator reads the ledger its slice reviewers never open, so the clause was false of one and true of the other — **and the sentence that re-founds it is checked against every definer describing that role, not only its procedure**: three sibling prompts said the orchestrator held the whole plan while its steps name sections, so the repair states neither (`REC-304`).
 
 **A clause about an artefact's *state* is not a clause about the *verdict* that reads it, and a
 runnable that cedes the computation cannot be the site of a partition defect.** From `REC-130`,
