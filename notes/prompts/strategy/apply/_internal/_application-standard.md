@@ -75,7 +75,9 @@ Before generating anything, read these files:
 
 8. `notes/prompts/strategy/apply/_internal/_application-evidence.md` — the **presentation evidence**:
    quoted sources, each with its URL and `Captured:` month, for how many projects a document features,
-   how an ATS parses a bullet, and how long a recruiter actually reads a CV. It is the sibling of
+   how an ATS parses a bullet, and how long a recruiter actually reads a CV — plus a section of its own,
+   `## Cover letters and recruiter messages`, which `cover-letter-prompt.md` alone reads and which
+   separates its quotes from the criteria derived from them (`REC-188`). It is the sibling of
    source 2's coverage-side counterpart (`_job-market-evidence.md`), which is scoped to *what a junior
    is asked to know* and is **not** read by this family. Read it as the **floor for presentation
    claims**: where a quoted source there contradicts a rule stated below, the source wins and the rule

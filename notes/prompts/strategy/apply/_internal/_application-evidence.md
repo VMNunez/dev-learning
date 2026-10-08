@@ -3,7 +3,9 @@
 **Purpose.** Presentation decisions should be anchored to what the 2026 market and its parsers
 *actually do*, not only to what a model believes they do. This file holds that ground truth for the
 apply family: quoted text from real sources about how many projects a document features, how an ATS
-parses a bullet, how long a recruiter actually reads a CV, and what a project entry must contain.
+parses a bullet, how long a recruiter actually reads a CV, and what a project entry must contain — and,
+in its own section read by `cover-letter-prompt.md` alone, whether a cover letter is still read and how
+a letter and a recruiter message must be shaped.
 `_application-standard.md` reads it as a **source**, so the five prompts that read that standard
 inherit it without being edited one by one.
 
@@ -23,7 +25,10 @@ belongs here and never there.
 - A **partial extract never proves an absence.** These sources are consumer-facing career articles,
   not studies; several are behind 403s. A rule missing from this file is not thereby refuted.
 - **Quote, do not invent.** Only text that actually appears at the URL is written here. Every entry
-  carries its `Captured:` month and whether it is a `full article` or a `web-search extract`.
+  carries its `Captured:` month and whether it is a `full article` or a `web-search extract`. **One block
+  is the labelled exception**: `## Cover letters and recruiter messages` → "Derived criteria" states
+  conclusions, each naming the quote it follows from or marked `reasoning — no source`, and it is never
+  cited as evidence.
 
 **Evidence quality note.** The sources below were captured **2026-08** by direct fetch, except where
 marked. Four fetches failed and are recorded under `## Failed captures` rather than dropped, because a
@@ -226,9 +231,227 @@ What recurs across the fetched sources, and what it means for `_application-stan
 
 ---
 
+## Cover letters and recruiter messages
+
+**Scope and reader.** Everything above measures **CVs and portfolios**; this section measures the two
+documents `cover-letter-prompt.md` produces — the formal *carta de presentación* and the short recruiter
+message — and nothing else reads it. `cover-letter-prompt` declares the project-selection heuristic out
+of its scope, so the CV-scoped sections above do not bind it, and this one binds no other prompt. Added
+2026-10-08 (`REC-188`). The population is the whole prompt, not the one line `REC-187` walked past.
+
+**Two layers, kept apart on purpose.** The quoted evidence below obeys this file's `Quote, do not
+invent` rule like every other entry. Beneath it, **Derived criteria** states what a good letter or
+message must satisfy, and it is **not evidence**: each criterion either names the quote it follows from
+or is marked `reasoning — no source`. A reasoned criterion is legitimate; it is simply never cited as
+founded, which is the one confusion this file exists to prevent.
+
+All quotes below were fetched and then checked character for character against the downloaded page text
+on 2026-10-08. Spanish sources carry more weight here for the same reason as above.
+
+### Quoted evidence
+
+#### airesume.guru — ¿La carta de presentación ha muerto en 2026? · full article
+
+URL: https://airesume.guru/es/blog/carta-de-presentacion-ha-muerto-2026
+Published 2026-07-17 · Captured: 2026-10 · scope: Spain and Latin America
+
+> "No, la carta de presentación no ha muerto en 2026, pero ya no es obligatoria por defecto."
+
+> "En España y Latinoamérica es un documento opcional"
+
+> "cuando la leen, cuenta."
+
+Listed among the cases to skip it: "Solo enviarías una plantilla genérica." On technical roles:
+
+> "Para la mayoría de puestos de desarrollo o producto, tu portfolio, tu GitHub, las pruebas técnicas y
+> las recomendaciones pesan mucho más que el texto."
+
+On length, reading and order:
+
+> "Los reclutadores ojean las primeras frases y dedican menos de un minuto al conjunto."
+
+> "Apunta a 250 a 400 palabras, media página o tres cuartos, en tres párrafos ajustados: por qué este
+> puesto concreto, una prueba concreta y un cierre limpio. Pon el encaje al frente para que la parte que
+> de verdad se lee haga el trabajo. En portales como InfoJobs el límite ronda los 2000 caracteres."
+
+The page is a vendor's (it sells a letter generator) and cites no study for the reading claim.
+
+#### capgemini.com — Proceso de selección (Spain) · full page, primary source
+
+URL: https://www.capgemini.com/es-es/talento/trabaja-en-capgemini/proceso-seleccion/
+Modified 2025-12-04 · Captured: 2026-10
+
+> "Es obligatorio proporcionar tu CV al enviar tu solicitud. Sin embargo, enviar una carta de
+> presentación es opcional."
+
+The only entry in this file written by **one of the target companies themselves** rather than about the
+market. One company, not the market: it settles Capgemini and nothing else.
+
+#### jobrise.io — Carta de presentación sin experiencia (2026) · full article
+
+URL: https://jobrise.io/es/blog/carta-presentacion-sin-experiencia-2026/
+Published 2026-05-20 · Captured: 2026-10
+
+> "Para puestos muy técnicos, puede que algunas empresas apenas la lean. Pero para prácticas, roles
+> junior, atención al cliente, marketing, administración, ventas, recursos humanos, diseño, comunicación
+> o puestos trainee, una carta bien hecha puede marcar diferencia."
+
+> "Mínimo: 200 palabras. Ideal: 250 a 400 palabras."
+
+> "Si tu carta ocupa más de una página, probablemente sobra texto."
+
+> "En tecnología, la carta debe ser concreta. Si aplicas a junior developer, data analyst trainee, QA
+> tester o soporte técnico, menciona proyectos, repositorios, lenguajes y herramientas."
+
+> "Si tu carta sirve igual para BBVA, Inditex, Glovo y una clínica dental, es demasiado genérica."
+
+> "La carta no debe ser un resumen plano de tu CV."
+
+> "Si suena demasiado perfecta, puede parecer genérica."
+
+Its structure lists, in order, greeting · the role and the specific motivation · skills, studies or
+projects · the connection with the company · a close asking for an interview.
+
+#### kickresume.com — ¿Cuánto debe durar una carta de presentación? · full article
+
+URL: https://www.kickresume.com/es/centro-orientacion/cuanto-debe-durar-una-carta-de-presentacion/
+Published 2023-03-02, modified 2026-06-09 · Captured: 2026-10
+
+> "entre 250 y 400 palabras"
+
+> "Si estás al inicio de tu carrera y solicitas un puesto junior en el que se espera que no tengas
+> experiencia práctica, escribir unas 200 palabras es perfectamente aceptable."
+
+> "nunca debe superar una página"
+
+> "Como sugieren los estudios y las investigaciones, los reclutadores suelen dedicar menos de 30
+> segundos a echar un vistazo a tu carta"
+
+**Flagged:** the 30 seconds is attributed to "los estudios" and the page names none. It is the only
+reading-time figure found for a letter, and it is an unsourced claim, not a measurement.
+
+Its structure orders the achievements-and-skills paragraph before the why-this-company one, as jobrise
+does.
+
+#### kanbox.io — Cómo contactar a un reclutador en LinkedIn · full article
+
+URL: https://www.kanbox.io/es/blog/contactar-reclutador-linkedin
+Published 2026-04-09 · Captured: 2026-10
+
+> "Mantenlo por debajo de 150 palabras para mensajes directos y por debajo de 300 caracteres para
+> invitaciones."
+
+> "Los primeros mensajes directos deben tener entre 80 y 150 palabras."
+
+> "Nunca adjuntes un CV en el primer mensaje"
+
+Among the asks it offers: "una indicación hacia la persona adecuada o un enlace a tu CV. Facilita el sí."
+
+**Its 300-character figure for invitations is contradicted by LinkedIn's own page below** for a free
+account; the platform's statement about its own limit wins.
+
+#### linkedin.com — Personalize invitations to connect · platform help page
+
+URL: https://www.linkedin.com/help/linkedin/answer/46662
+Captured: 2026-10
+
+> "You can add a personalized message to up to three connection requests per month"
+
+> "Each message can be up to 200 characters"
+
+> "LinkedIn Premium members can send unlimited personalized invitations to all their connection
+> requests (connection request limits may still apply)"
+
+A platform fact, not career advice — the strongest kind of source this file holds.
+
+#### resumego.net — Cover Letters: Just How Important Are They? · full article, field experiment
+
+URL: https://resumego.net/research/cover-letters
+Published 2020-01-21, modified 2023-01-17 · Captured: 2026-10 · US job boards
+
+7,287 fictitious applications, July 2019 to January 2020:
+
+> "applications that included cover letters tailored specifically to the job at hand had a 53% higher
+> callback rate than applications with no cover letter at all"
+
+> "the overwhelming majority (87%) of hiring professionals do read cover letters"
+
+The only **experiment** in this section — the others are surveys or advice. Anglophone and pre-AI, so it
+says what a tailored letter was worth, not what it is worth to a Spanish consultancy in 2026.
+
+#### novoresume.com — Cover Letter Statistics · full article
+
+URL: https://novoresume.com/career-blog/cover-letter-statistics
+Published 2026-03-04, modified 2026-08-03 · Captured: 2026-10
+
+> "About 60% of the HR professionals we surveyed read cover letters, and 21.3% read the letter before
+> the resume. The read rate depends on the reader: only 22.9% of HR managers skip cover letters, while
+> 52.8% of agency recruiters do."
+
+Its own survey of "200+ HR professionals". The reader split is the finding that matters here: the
+in-house hiring manager reads, the agency recruiter mostly does not.
+
+### Not usable, or absent
+
+- **Search-only figures** — "55% of Spanish recruiters value a personalised letter", "77% prefer
+  candidates who send one", "63% discard a candidate over a generic letter", "92% of Spanish-speaking
+  recruiters prefer 250-400 words", "Spanish recruiters spend 7 seconds on a letter". Each was reported
+  by a search synthesis, none was fetched, and none is quoted here.
+- **NTT DATA** — a search for its Spanish application FAQ returned no page stating whether a letter is
+  asked for. Absent, not refuting.
+- **keepcoding.io**, *Empleabilidad programador junior en España* (2025-11-07) — fetched; it says nothing
+  about cover letters or recruiter messages. Its one relevant sentence, "A los reclutadores les interesa
+  tu portafolio de proyectos antes que cualquier brillante currículum", was reported by the fetch and not
+  checked against the page text, so it is not quoted as evidence.
+
+### Derived criteria — not evidence
+
+What a good letter or message must satisfy, derived from the quotes above. **A line naming a source is
+founded on that quote; a line marked `reasoning — no source` is a judgement this file does not found.**
+
+- **CL-1 · The prompt earns its place, conditionally.** A letter is optional in Spain and at Capgemini,
+  weighs less than portfolio, GitHub and technical tests for development roles, and is skipped by most
+  agency recruiters — but a tailored one beat no letter by 53% on callbacks, and "cuando la leen,
+  cuenta". So write one when the offer asks for it or when it can be tailored, never as a reflex. ←
+  airesume, capgemini, novoresume, resumego.
+- **CL-2 · Generic is worse than nothing extra.** The letter must name what this offer asks and match it
+  to a specific project; one that would serve any company fails. ← jobrise ("BBVA, Inditex, Glovo"),
+  airesume ("Solo enviarías una plantilla genérica"), resumego (the gain is measured for *tailored*
+  letters).
+- **CL-3 · Length for a junior: about 200-250 words, never over one page** — which also fits the ~2000
+  characters a portal like InfoJobs allows. The general band is 250-400; 200 is the stated junior figure
+  and jobrise's floor. ← kickresume, jobrise, airesume.
+- **CL-4 · Write for a skim, with the fit in the opening lines.** Recruiters skim the first sentences;
+  the two figures for the whole read (under 30 seconds, under a minute) are both unsourced on their own
+  pages, so **no number is cited**. ← airesume ("ojean las primeras frases", "Pon el encaje al frente"),
+  kickresume (flagged).
+- **CL-5 · Three to six short paragraphs; four is inside the band.** ← kickresume ("entre 250 y 400
+  palabras y entre 3 y 6 párrafos cortos"), airesume ("tres párrafos ajustados").
+- **CL-6 · For a tech role, the evidence is projects, repositories, languages and tools** — concrete,
+  not a summary of the CV. ← jobrise (both quotes).
+- **CL-7 · Order: the sources disagree, so no order is founded.** airesume puts "por qué este puesto
+  concreto" first and the proof second; jobrise and kickresume put skills and projects before the
+  why-this-company paragraph. What all three share is CL-4: the fit is stated early. `reasoning — no
+  source` for any fixed order.
+- **CL-8 · A message that sounds too polished reads as generic.** ← jobrise ("Si suena demasiado
+  perfecta"). The no-buzzword voice rule is the standard's and is not founded here.
+- **CL-9 · A first direct message stays short — 80-150 words at most** — and the prompt's 5-6 lines sit
+  inside or below that. ← kanbox.
+- **CL-10 · A LinkedIn connection note is a different, harder limit: 200 characters on a free account,
+  three a month.** A recruiter who is not yet a connection can only be reached that way without
+  Premium, so a 5-6 line message cannot travel there. ← linkedin.com (platform), over kanbox's 300.
+- **CL-11 · No CV attached or pasted into a first message.** ← kanbox. One link is offered as a
+  legitimate ask by the same source, so "no links dump" means no *dump*, not no link.
+- **CL-12 · Two drafted versions, forward-looking framing.** `reasoning — no source` — both are the
+  prompt's own workflow and voice, not claims about how a letter is read.
+
+---
+
 ## Assertions in `_application-standard.md` this file bears on
 
-**This table describes the standard as it stands after 2026-08-31.** A row marked `Resolved` names an
+**This table describes the standard as it stands after 2026-08-31, and `cover-letter-prompt.md` as it
+stands after 2026-10-08** — every row naming that prompt is ruled by the Derived criteria `CL-N` it cites,
+so the criterion and not this cell is where the reasoning lives. A row marked `Resolved` names an
 assertion this file's first fill contradicted and whose text was corrected in the same commit — kept so
 a later run can see what was changed and why, and never read as a rule still to be repaired. Every
 other row is live: the assertion is still in the file, and its status is what a run must respect.
@@ -247,9 +470,19 @@ other row is live: the assertion is still in the file, and its status is what a 
 | tutorial-genre projects rank lower | standard, Project-selection heuristic | **Founded 2026-09-01** — archisacademy: "Un perfil de GitHub lleno de clones de tutoriales y aplicaciones de lista de tareas a medio terminar apenas es mejor que no tener portfolio". It had stood **unfounded** since 2026-08, when the only page naming the exclusion returned 403 |
 | CV written in Spanish | standard, Voice rules | **Unfounded** — cvapp.es was checked for it and says nothing; see `REC-182` |
 | CV fits one page | `cv-prompt`, and the standard throughout | **Founded** — "una página para menos de 7 años de experiencia" |
-| a recruiter reads a cover letter "in 20 seconds" | `cover-letter-prompt.md` Step / ~250-word rule | **Out of scope, deliberately** — every source here measures *CVs*, not cover letters, and a partial extract never proves an absence. Found by this file's own sweep on 2026-08-31 and left standing, unfounded and uncontradicted, rather than corrected by analogy to the CV figure. **`REC-188` opened the same day** to source the cover letter properly — that row's population is the whole prompt, not this one line |
+| a recruiter reads a cover letter "in 20 seconds" | `cover-letter-prompt.md`, MODE = letter | **Unfounded — removed.** `Resolved 2026-10-08` (`REC-188`): the two figures found for a letter (under 30 seconds, under a minute) are both unsourced on their own pages, so no number replaced it; the prompt now says only to write for a skim with the fit up front (CL-4) |
+| letter "under ~250 words" | `cover-letter-prompt.md`, MODE = letter | **Founded as 200-250 for a junior** (CL-3): 250-400 in general, ~200 stated for a junior, 200 as a floor. `Resolved 2026-10-08`: the open-ended "under" gained the 200 floor |
+| one page | `cover-letter-prompt.md`, MODE = letter | **Founded** (CL-3) — "nunca debe superar una página" |
+| four short paragraphs | `cover-letter-prompt.md`, MODE = letter | **Founded as inside a 3-6 band** (CL-5) |
+| fixed order Opening / Why them / Why you / Close | `cover-letter-prompt.md`, MODE = letter | **Reasoned, not founded** (CL-7) — the sources order it both ways; left standing, uncontradicted |
+| tailored to the offer, never mail-merge; concrete evidence over adjectives | `cover-letter-prompt.md`, shared rules + Why them | **Founded** (CL-2, CL-6), and the strongest finding in the section — the only measured gain is for a tailored letter |
+| when to run it: an offer asks, or a direct approach | `cover-letter-prompt.md`, intro | **Founded** (CL-1) — optional in Spain and at Capgemini, worth it only tailored |
+| message "5-6 lines maximum" | `cover-letter-prompt.md`, MODE = message | **Reasoned, compatible** (CL-9) — at or under the 80-150 words one source gives a first direct message; stricter than the evidence, not contradicted |
+| a message fits any LinkedIn channel | `cover-letter-prompt.md`, MODE = message | **Contradicted for a connection note** (CL-10) — 200 characters on a free account, three a month (LinkedIn Help). `Resolved 2026-10-08`: the mode now also drafts a counted ≤200-character note |
+| no CV pasted in the body; no links dump | `cover-letter-prompt.md`, MODE = message | **Founded for the CV** (CL-11); one link is a legitimate ask in the same source, so the *dump* is what the rule forbids |
+| two drafted versions; forward-looking framing | `cover-letter-prompt.md` | **Out of scope** (CL-12) — the prompt's own workflow and voice, not a claim about how a letter is read |
 
 ---
 
-*Sources captured 2026-08. Feed new ones by fetching the page and quoting it — never from a search
-synthesis alone, which is how the weakest entry above got in.*
+*Sources captured 2026-08, the cover-letter section 2026-10. Feed new ones by fetching the page and
+quoting it — never from a search synthesis alone, which is how the weakest entry above got in.*

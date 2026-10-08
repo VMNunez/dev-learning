@@ -8,11 +8,15 @@
 Use in a **separate conversation**. Fill in the configuration block, then paste the offer at the end.
 
 Run this when an offer asks for a cover letter, or when you want to write directly to a recruiter. The
-output is ready-to-send Spanish text — no rewriting, just copy it.
+output is ready-to-send Spanish text — no rewriting, just copy it. A letter is optional in Spain — and
+Capgemini says so of its own process — and only a tailored one has a measured gain over sending none,
+so this is not a step to run on every application (source 8 → "Cover letters and recruiter messages",
+CL-1).
 
 Two modes:
 - **`letter`** — a formal one-page cover letter (for offers that ask for a *carta de presentación*)
-- **`message`** — a short 5–6 line message to send a recruiter on LinkedIn or by email
+- **`message`** — a short 5–6 line message to send a recruiter on LinkedIn or by email, plus a
+  ≤200-character note for a LinkedIn connection request
 
 > **▶ Run first:** `progress-update`, and its drift repaired, not merely run — it audits `PROGRESS.md`, it does not repair it. Optional: `cv-prompt` `tailor` first,
 > so the letter/message and the CV tell the same story for that offer.
@@ -47,7 +51,10 @@ CONTACTO = [recruiter name if you have one — used to open the message | blank]
 First read `notes/prompts/strategy/apply/_internal/_application-standard.md` — the shared application standard.
 From it, a cover letter uses the **sources to read** (`notes/prompts/_internal/_session-rules.md`, `notes/prompts/_internal/_shared-context.md`,
 `PROGRESS.md`, `ROADMAP.md`, the optional `notes/cv/cv-bullets.md`, your existing CV in
-`job-search`, and `notes/coverage/junior.md` for defensibility), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
+`job-search`, `notes/coverage/junior.md` for defensibility, and source 8's
+`notes/prompts/strategy/apply/_internal/_application-evidence.md` → **`## Cover letters and recruiter
+messages` only** — the evidence and the `CL-N` criteria this prompt's length, structure and message rules
+cite; the CV-scoped sections above it do not bind a letter), the **keyword awareness**, the **Spanish / no-buzzword voice**, and the
 **defensibility rule** (the bullet format and project-selection heuristic are CV/LinkedIn machinery —
 a ≤250-word letter has neither). This prompt does not repeat those rules — it adds only the
 cover-letter flow on top.
@@ -86,8 +93,10 @@ Structure (one page, four short paragraphs):
 4. **Close** — a short, confident sign-off with a clear next step (availability for an interview). No
    begging, no over-thanking.
 
-Keep it under ~250 words. A junior cover letter that a recruiter reads in 20 seconds beats a full page
-they skim.
+Keep it to about 200–250 words, never past one page — the junior end of the band source 8 records
+(CL-3). Write it for a skim: recruiters read the first lines and glance at the rest, so the fit with the
+offer goes in the opening (CL-4). No reading-time figure is cited, because none found for a letter is
+sourced.
 
 ---
 
@@ -105,6 +114,11 @@ For a LinkedIn message, InMail, or a short email to a recruiter. Rules:
 
 Draft **two versions**: the recommended one first, and a slightly warmer/more direct alternative. Mark
 the recommended one.
+
+Then draft one **LinkedIn connection note** of **at most 200 characters, counted, with the count
+printed**: who you are, the proof point and the ask, in one or two sentences. A recruiter who is not yet a
+connection can only be reached that way from a free account, which caps the note at 200 characters and
+three a month (source 8, CL-10); the 5–6 line versions are for a connection, an InMail or an email.
 
 ---
 
