@@ -1065,8 +1065,11 @@ everything commits on the branch you're on — is simpler to remember than a spl
   merge is named here because it is performed on ordinary project branches, by whoever is merging
   rather than by machinery work; `notes/prompts/README.md` still owns the rest of that script's
   trigger list, and this bullet adds no other entry to it.
-- SQL block (12:30): work in `practice/sql/` on the active branch, commit there, and update the SQL
-  section of `PROGRESS.md` in the same commit — do not wait for `progress-update-prompt`.
+- SQL block (12:30): work in `practice/sql/` on the active branch and commit there. The SQL section of
+  `PROGRESS.md` (`## Practice completed` → `### Exercise route`) moves as the track runs — never left for
+  `progress-update-prompt` — and is written by the prompt or skill that moved it and committed by it, or
+  by the skill that dispatched the write (`sql-grade`, for its cold subagent), never in the same commit
+  as a `.sql` file, which is Victor's: `practice/sql/PLANNING.md` §7 owns the split.
 - The SQL section in PROGRESS.md tracks which topics exist in `practice/sql/` and their status:
   solid ✅ (score ≥ 80% in review) or in progress ⏳. Read it at the start of a SQL session to know
   which topic is next.
@@ -1074,7 +1077,9 @@ everything commits on the branch you're on — is simpler to remember than a spl
 ### PROGRESS.md updates
 
 - Update PROGRESS.md when a learning plan step is completed — not on every commit, not just at session end (see "After every learning plan step is completed")
-- For SQL: update the SQL section immediately after a topic review gives a clear result
+- For SQL: the SQL section moves with the track itself — when a route is planned, a batch generated and
+  a file graded — never deferred to a step's close, whose ritual only repairs a `Total` that no longer
+  adds up (see the SQL block bullet under "Study materials follow the active branch")
 - Commit PROGRESS.md from the root of the repo, not from inside the project folder
 - **Authoring is recorded when the prose is finished, not when the block closes.** `## Authoring progress`
   is `authoring-progress-recount`'s, and it is invoked by whatever finished the prose — `/notes-audit`,

@@ -131,10 +131,13 @@ do not restate it. A §0 rewritten from scratch here is a §0 that lost the clos
 
 Also already written by the grading run. Your job is the part that silently rots: **recompute the
 `Total` rows** of both the roll-up and the level table in `## Practice completed` → `### Exercise route`
-and confirm they equal the sum of their columns. A `Total` row that no longer adds up is a structural
-finding — report it as one.
+and confirm they equal the sum of their columns. **A `Total` cell that no longer adds up is rewritten
+to that sum, and reported as a structural finding with its old and new value** — the row is derived,
+so its right value is never a judgement, and some writer skipped the recompute its own step owes. That
+cell is the whole of your licence: a row above it that looks wrong is reported, never edited, because
+what it should hold is the grading run's to compute.
 
-The **`Corrected` total cell stays blank** by design (2026-08-03). Do not fill it in.
+The **`Corrected` total cell stays `—`** by design (2026-08-03). Do not fill it in.
 
 **No concept list.** It was deleted on 2026-08-03. The *what* lives on the coverage bullets, the *how
 many* lives here. Never re-create it.
@@ -217,8 +220,8 @@ Run `git status` right before each `git add` and each `git commit`.
 - `notes/sql/coverage/{LEVEL}.md` + `notes/coverage/{LEVEL}.md` — one commit, both mirrors together;
   splitting them is how a mirror drifts. `docs(coverage): mark N SQL junior bullets drilled by {FILE}`
 - **The close itself** — one commit, `docs: close SQL step N — <topic>`: `{PLAN}`, whose readiness
-  status line step 5 rewrote, plus `practice/sql/PLANNING.md` and `PROGRESS.md` if step 2 or 3 fixed
-  anything.
+  status line step 5 rewrote, plus `practice/sql/PLANNING.md` if step 2 fixed anything and
+  `PROGRESS.md` if step 3 rewrote a `Total` cell.
 
 **Those three are files the grading run also writes, and its writes are committed before you start, on
 either door**: `sql-grade` commits them and only then hands you the step (its §4), and the legacy
@@ -243,7 +246,7 @@ him a second command for it.
 | Conceptos sin bullet | ninguno (o: `NULLS FIRST` no está en el coverage — decide con `/coverage sql junior`) |
 | `/notes-plan` | n/a — un drill marker no cambia el digest |
 | Doctrina §0 | verificada, `Last updated` corregido |
-| PROGRESS.md | filas `Total` cuadran (30 = 20+10); `Corrected` total en blanco, correcto |
+| PROGRESS.md | filas `Total` cuadran (30 = 20+10); `Corrected` total en `—`, correcto (o: `Total` del roll-up reescrito 29 → 30 — un escritor no lo recalculó) |
 | Punto de repaso | R1 disponible (span 0–1) — `TOPIC = R1` cuando te apetezca |
 | Gate | ninguno (o: Step 13 cerrado → **G3 toca ya** — `/progress-update MODE = active`, cierra con drift report vacío; luego G4 `/roadmap-review`) |
 | Desbloqueado (ruta §3) | SELECT/WHERE/ORDER BY + set ops. Ninguna simulación todavía: el gate del primer test (Step 2) sigue abierto, arrastrado tal cual (o: `la ruta no trae gate del primer test — no se inventa; /sql-plan-audit junior`) |

@@ -201,8 +201,9 @@ the later ones audit it like any other fix. No column is widened for a ruling, a
 to edit another's section.
 
 **`PROGRESS.md` is read-only for this pipeline.** Invariant 15 is audited here, never repaired here: the
-standard's Section E gives the route's projection to `sql-plan-prompt` (seeds and re-syncs it) and
-`sql-exercises-prompt` (moves the counts). #3 reports a broken or stale projection as a finding — naming
+standard's Section E gives the route's projection to its writers — `sql-plan-prompt` (seeds and
+re-syncs it), `sql-exercises-prompt` (moves the counts) and `sql-step-close` step 3 (a `Total` cell that
+no longer adds up, no other cell). #3 reports a broken or stale projection as a finding — naming
 the level and the exact rows that disagree with the route's §1 — and closes with "run `/sql-plan
 {LEVEL}` to re-sync the projection". This is the one place where the "findings are fixed in place" rule
 yields to the ownership fence, because the fix belongs to a prompt that sees §1 as its own output.

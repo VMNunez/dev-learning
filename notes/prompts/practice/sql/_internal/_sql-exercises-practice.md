@@ -401,8 +401,13 @@ level, written or not. You are flipping its `Corrected` cell from `—` to a rea
 If the row is genuinely missing, add it in step order with its `{PLAN}` §1 target and say so: the plan
 and PROGRESS.md disagree about the route, which is worth surfacing. If `## Practice completed` does not exist, do not invent a layout — say so and carry on.
 
-PROGRESS.md commits on the active branch, in the **same commit** as the `.sql` file — the exercises and
-the count they created are one logical change. The `.sql` file is Victor's work, so print the commands
+**Two commits, split by authorship, never one** (`practice/sql/PLANNING.md` §7). When this step wrote
+anything, `PROGRESS.md` was written by this run, so **you commit it yourself**, on the active branch, in a commit of its own —
+`docs(sql): raise Corrected for {FILE} — +{COUNT}` — with `git status` right before staging and right
+before committing, and no `.sql` file staged. Read `git diff HEAD -- PROGRESS.md` first: a diff holding
+anything besides the two cells, the `Total` rows and any missing row this step wrote carries another run's unfinished
+work, so leave the file unstaged and say so rather than publish that work under this commit. The `.sql`
+file is Victor's work, so for it print his two commands, `git add` and `git commit` in separate blocks,
 rather than running them.
 
 ---
