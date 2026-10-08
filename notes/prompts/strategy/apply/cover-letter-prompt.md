@@ -9,8 +9,8 @@ Use in a **separate conversation**. Fill in the configuration block, then paste 
 
 Run this when an offer asks for a cover letter, or when you want to write directly to a recruiter. The
 output is ready-to-send Spanish text — no rewriting, just copy it. A letter is optional in Spain — and
-Capgemini says so of its own process — and only a tailored one has a measured gain over sending none,
-so this is not a step to run on every application (source 8 → "Cover letters and recruiter messages",
+Capgemini says so of its own process — and the one measured gain on record is for a tailored letter
+over sending none, so this is not a step to run on every application (source 8 → "Cover letters and recruiter messages",
 CL-1).
 
 Two modes:
@@ -93,8 +93,8 @@ Structure (one page, four short paragraphs):
 4. **Close** — a short, confident sign-off with a clear next step (availability for an interview). No
    begging, no over-thanking.
 
-Keep it to about 200–250 words, never past one page — the junior end of the band source 8 records
-(CL-3). Write it for a skim: recruiters read the first lines and glance at the rest, so the fit with the
+Keep it to about 200–250 words, never past one page — 200 is the junior floor source 8 founds, and the
+250 cap is a convention for brevity rather than a sourced figure (CL-3). Write it for a skim: recruiters read the first lines and glance at the rest, so the fit with the
 offer goes in the opening (CL-4). No reading-time figure is cited, because none found for a letter is
 sourced.
 
@@ -104,7 +104,8 @@ sourced.
 
 For a LinkedIn message, InMail, or a short email to a recruiter. Rules:
 
-- **5–6 lines maximum.** A recruiter reads it on a phone between other messages.
+- **5–6 lines maximum** — stricter than the 80–150 words source 8 gives a first direct message, and kept
+  as a convention for brevity (CL-9).
 - Open with the contact's name if `CONTACTO` is set; else a neutral "Hola,".
 - One line on who you are + your stack (junior Angular + Spring Boot).
 - One line connecting to the role or their company.
@@ -116,9 +117,9 @@ Draft **two versions**: the recommended one first, and a slightly warmer/more di
 the recommended one.
 
 Then draft one **LinkedIn connection note** of **at most 200 characters, counted, with the count
-printed**: who you are, the proof point and the ask, in one or two sentences. A recruiter who is not yet a
-connection can only be reached that way from a free account, which caps the note at 200 characters and
-three a month (source 8, CL-10); the 5–6 line versions are for a connection, an InMail or an email.
+printed**: who you are, the proof point and the ask, in one or two sentences. LinkedIn caps that note at
+200 characters, and at three personalised notes a month without Premium (source 8, CL-10); the 5–6 line
+versions are for someone already connected, an InMail or an email.
 
 ---
 

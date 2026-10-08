@@ -261,7 +261,11 @@ Published 2026-07-17 · Captured: 2026-10 · scope: Spain and Latin America
 
 > "cuando la leen, cuenta."
 
-Listed among the cases to skip it: "Solo enviarías una plantilla genérica." On technical roles:
+Its when-to-send table, one row:
+
+> "Solo enviarías una plantilla genérica Sáltala; la plantilla resta más que la ausencia"
+
+On technical roles:
 
 > "Para la mayoría de puestos de desarrollo o producto, tu portfolio, tu GitHub, las pruebas técnicas y
 > las recomendaciones pesan mucho más que el texto."
@@ -309,20 +313,37 @@ Published 2026-05-20 · Captured: 2026-10
 
 > "Si suena demasiado perfecta, puede parecer genérica."
 
-Its structure lists, in order, greeting · the role and the specific motivation · skills, studies or
-projects · the connection with the company · a close asking for an interview.
+On a junior's framing and voice:
+
+> "Cuando no tienes experiencia laboral, tu carta no debe intentar fingir que la tienes."
+
+> "Lo que busca no es perfección, sino señales de potencial."
+
+> "Nada de frases vacías tipo “soy una persona proactiva y con muchas ganas de aprender” sin pruebas."
+
+> "Mal ejemplo: “Me dirijo a ustedes para expresar mi profundo interés en formar parte de su prestigiosa
+> empresa, donde espero poder desarrollarme profesionalmente”. Suena genérico."
+
+On a short message where the form allows one:
+
+> "Si el formulario tiene espacio para mensaje, usa una versión corta de 5 a 7 líneas."
+
+> "La estructura más segura es esta: Saludo breve. Primer párrafo con el puesto y tu motivación
+> específica. Segundo párrafo con habilidades, estudios o proyectos relacionados. Tercer párrafo con
+> conexión con la empresa. Cierre con llamada a entrevista."
+
+(The page renders those five as a numbered list.) Like the other consumer pages here, it is a vendor's.
 
 #### kickresume.com — ¿Cuánto debe durar una carta de presentación? · full article
 
 URL: https://www.kickresume.com/es/centro-orientacion/cuanto-debe-durar-una-carta-de-presentacion/
 Published 2023-03-02, modified 2026-06-09 · Captured: 2026-10
 
-> "entre 250 y 400 palabras"
+> "tu carta de presentación nunca debe superar una página. En la mayoría de los casos, eso significa
+> entre 250 y 400 palabras y entre 3 y 6 párrafos cortos"
 
 > "Si estás al inicio de tu carrera y solicitas un puesto junior en el que se espera que no tengas
 > experiencia práctica, escribir unas 200 palabras es perfectamente aceptable."
-
-> "nunca debe superar una página"
 
 > "Como sugieren los estudios y las investigaciones, los reclutadores suelen dedicar menos de 30
 > segundos a echar un vistazo a tu carta"
@@ -330,8 +351,7 @@ Published 2023-03-02, modified 2026-06-09 · Captured: 2026-10
 **Flagged:** the 30 seconds is attributed to "los estudios" and the page names none. It is the only
 reading-time figure found for a letter, and it is an unsourced claim, not a measurement.
 
-Its structure orders the achievements-and-skills paragraph before the why-this-company one, as jobrise
-does.
+> "La estructura importa: introducción → logros → adecuación a la empresa → cierre."
 
 #### kanbox.io — Cómo contactar a un reclutador en LinkedIn · full article
 
@@ -347,8 +367,8 @@ Published 2026-04-09 · Captured: 2026-10
 
 Among the asks it offers: "una indicación hacia la persona adecuada o un enlace a tu CV. Facilita el sí."
 
-**Its 300-character figure for invitations is contradicted by LinkedIn's own page below** for a free
-account; the platform's statement about its own limit wins.
+**Its 300-character figure for invitations is contradicted by LinkedIn's own page below**, which states
+200; the platform's statement about its own limit wins.
 
 #### linkedin.com — Personalize invitations to connect · platform help page
 
@@ -413,14 +433,18 @@ founded on that quote; a line marked `reasoning — no source` is a judgement th
   weighs less than portfolio, GitHub and technical tests for development roles, and is skipped by most
   agency recruiters — but a tailored one beat no letter by 53% on callbacks, and "cuando la leen,
   cuenta". So write one when the offer asks for it or when it can be tailored, never as a reflex. ←
-  airesume, capgemini, novoresume, resumego.
-- **CL-2 · Generic is worse than nothing extra.** The letter must name what this offer asks and match it
-  to a specific project; one that would serve any company fails. ← jobrise ("BBVA, Inditex, Glovo"),
-  airesume ("Solo enviarías una plantilla genérica"), resumego (the gain is measured for *tailored*
-  letters).
-- **CL-3 · Length for a junior: about 200-250 words, never over one page** — which also fits the ~2000
+  airesume, capgemini, novoresume, resumego. **What no fetched source measures is the question the row
+  asked first: whether Spanish consultancies read a letter.** Every read rate here is anglophone; the
+  Spanish evidence shows only that it is optional.
+- **CL-2 · Generic is worse than none.** The letter must name what this offer asks and match it to a
+  specific project; one that would serve any company fails. ← jobrise ("BBVA, Inditex, Glovo"),
+  airesume ("la plantilla resta más que la ausencia"). resumego's one quoted result is for a *tailored*
+  letter; its generic-letter group's result was not captured, so nothing here says what a generic one is
+  worth against none.
+- **CL-3 · Length for a junior: at least 200 words, never over one page** — which also fits the ~2000
   characters a portal like InfoJobs allows. The general band is 250-400; 200 is the stated junior figure
-  and jobrise's floor. ← kickresume, jobrise, airesume.
+  and jobrise's floor. ← kickresume, jobrise, airesume. **The 250 ceiling is `reasoning — no source`**:
+  no source caps a junior letter there, and the prompt keeps it as a convention for brevity.
 - **CL-4 · Write for a skim, with the fit in the opening lines.** Recruiters skim the first sentences;
   the two figures for the whole read (under 30 seconds, under a minute) are both unsourced on their own
   pages, so **no number is cited**. ← airesume ("ojean las primeras frases", "Pon el encaje al frente"),
@@ -429,21 +453,28 @@ founded on that quote; a line marked `reasoning — no source` is a judgement th
   palabras y entre 3 y 6 párrafos cortos"), airesume ("tres párrafos ajustados").
 - **CL-6 · For a tech role, the evidence is projects, repositories, languages and tools** — concrete,
   not a summary of the CV. ← jobrise (both quotes).
-- **CL-7 · Order: the sources disagree, so no order is founded.** airesume puts "por qué este puesto
-  concreto" first and the proof second; jobrise and kickresume put skills and projects before the
-  why-this-company paragraph. What all three share is CL-4: the fit is stated early. `reasoning — no
-  source` for any fixed order.
-- **CL-8 · A message that sounds too polished reads as generic.** ← jobrise ("Si suena demasiado
-  perfecta"). The no-buzzword voice rule is the standard's and is not founded here.
-- **CL-9 · A first direct message stays short — 80-150 words at most** — and the prompt's 5-6 lines sit
-  inside or below that. ← kanbox.
-- **CL-10 · A LinkedIn connection note is a different, harder limit: 200 characters on a free account,
-  three a month.** A recruiter who is not yet a connection can only be reached that way without
-  Premium, so a 5-6 line message cannot travel there. ← linkedin.com (platform), over kanbox's 300.
+- **CL-7 · Order: contested, so no order is founded.** airesume puts "por qué este puesto concreto" first
+  and the proof second; kickresume ("introducción → logros → adecuación a la empresa → cierre") and
+  jobrise put skills and projects before the company paragraph — two of three against the prompt's Why
+  them before Why you, and none arguing against it. What all three share is CL-4: the fit is stated
+  early. `reasoning — no source` for any fixed order.
+- **CL-8 · No empty phrases and no stock opening; too polished reads as generic.** ← jobrise ("Nada de
+  frases vacías", the "Me dirijo a ustedes…" bad example, "Si suena demasiado perfecta"). This founds the
+  prompt's no-buzzword rule and its "No *Me dirijo a ustedes*" for a letter; the standard's banned list
+  itself is not founded here.
+- **CL-9 · A first direct message stays short — 80-150 words at most.** ← kanbox. The prompt's 5-6 lines
+  sit inside or below that, and close to jobrise's "5 a 7 líneas" — which is about an application form's
+  message field, so it supports the figure by analogy only.
+- **CL-10 · A LinkedIn connection note is a different, harder limit: 200 characters, and three
+  personalised notes a month without Premium.** ← linkedin.com (platform), over kanbox's 300. That a
+  recruiter who is not yet a connection is reached this way, and that a 5-6 line message cannot travel
+  there, is `reasoning — no source`: the page says nothing about non-connections or InMail.
 - **CL-11 · No CV attached or pasted into a first message.** ← kanbox. One link is offered as a
   legitimate ask by the same source, so "no links dump" means no *dump*, not no link.
-- **CL-12 · Two drafted versions, forward-looking framing.** `reasoning — no source` — both are the
-  prompt's own workflow and voice, not claims about how a letter is read.
+- **CL-12 · Forward-looking framing: do not fake experience, show potential.** ← jobrise ("tu carta no
+  debe intentar fingir que la tienes", "señales de potencial").
+- **CL-13 · Two drafted versions.** `reasoning — no source` — the prompt's own workflow, not a claim
+  about how a letter is read.
 
 ---
 
@@ -471,16 +502,18 @@ other row is live: the assertion is still in the file, and its status is what a 
 | CV written in Spanish | standard, Voice rules | **Unfounded** — cvapp.es was checked for it and says nothing; see `REC-182` |
 | CV fits one page | `cv-prompt`, and the standard throughout | **Founded** — "una página para menos de 7 años de experiencia" |
 | a recruiter reads a cover letter "in 20 seconds" | `cover-letter-prompt.md`, MODE = letter | **Unfounded — removed.** `Resolved 2026-10-08` (`REC-188`): the two figures found for a letter (under 30 seconds, under a minute) are both unsourced on their own pages, so no number replaced it; the prompt now says only to write for a skim with the fit up front (CL-4) |
-| letter "under ~250 words" | `cover-letter-prompt.md`, MODE = letter | **Founded as 200-250 for a junior** (CL-3): 250-400 in general, ~200 stated for a junior, 200 as a floor. `Resolved 2026-10-08`: the open-ended "under" gained the 200 floor |
+| letter "under ~250 words" | `cover-letter-prompt.md`, MODE = letter | **Floor founded, ceiling reasoned** (CL-3): 200 is the stated junior figure and a floor; no source caps a junior letter at 250, which stays as a convention. `Resolved 2026-10-08`: the open-ended "under" gained the 200 floor |
 | one page | `cover-letter-prompt.md`, MODE = letter | **Founded** (CL-3) — "nunca debe superar una página" |
 | four short paragraphs | `cover-letter-prompt.md`, MODE = letter | **Founded as inside a 3-6 band** (CL-5) |
-| fixed order Opening / Why them / Why you / Close | `cover-letter-prompt.md`, MODE = letter | **Reasoned, not founded** (CL-7) — the sources order it both ways; left standing, uncontradicted |
-| tailored to the offer, never mail-merge; concrete evidence over adjectives | `cover-letter-prompt.md`, shared rules + Why them | **Founded** (CL-2, CL-6), and the strongest finding in the section — the only measured gain is for a tailored letter |
-| when to run it: an offer asks, or a direct approach | `cover-letter-prompt.md`, intro | **Founded** (CL-1) — optional in Spain and at Capgemini, worth it only tailored |
-| message "5-6 lines maximum" | `cover-letter-prompt.md`, MODE = message | **Reasoned, compatible** (CL-9) — at or under the 80-150 words one source gives a first direct message; stricter than the evidence, not contradicted |
+| fixed order Opening / Why them / Why you / Close | `cover-letter-prompt.md`, MODE = letter | **Contested** (CL-7) — two of three sources put the proof before the company paragraph, one the reverse, and none argues against either; left standing pending Victor's ruling |
+| tailored to the offer, never mail-merge; concrete evidence over adjectives | `cover-letter-prompt.md`, shared rules + Why them | **Founded** (CL-2, CL-6), and the strongest finding in the section — the one measured gain on record is for a tailored letter |
+| no buzzwords; no "Me dirijo a ustedes" opening | `cover-letter-prompt.md`, shared rules + Opening | **Founded** (CL-8) — jobrise's empty-phrase rule and its own bad example of that exact opening |
+| when to run it: an offer asks, or a direct approach | `cover-letter-prompt.md`, intro | **Founded** (CL-1) — optional in Spain and at Capgemini, and the one measured gain is for a tailored letter; whether Spanish consultancies read one is not measured by any source here |
+| message "5-6 lines maximum" | `cover-letter-prompt.md`, MODE = message | **Reasoned, compatible** (CL-9) — at or under the 80-150 words one source gives a first direct message, and close to another's "5 a 7 líneas" for a form field (analogy only); stricter than the evidence, not contradicted |
 | a message fits any LinkedIn channel | `cover-letter-prompt.md`, MODE = message | **Contradicted for a connection note** (CL-10) — 200 characters on a free account, three a month (LinkedIn Help). `Resolved 2026-10-08`: the mode now also drafts a counted ≤200-character note |
 | no CV pasted in the body; no links dump | `cover-letter-prompt.md`, MODE = message | **Founded for the CV** (CL-11); one link is a legitimate ask in the same source, so the *dump* is what the rule forbids |
-| two drafted versions; forward-looking framing | `cover-letter-prompt.md` | **Out of scope** (CL-12) — the prompt's own workflow and voice, not a claim about how a letter is read |
+| forward-looking framing | `cover-letter-prompt.md`, shared rules | **Founded** (CL-12) — "no debe intentar fingir que la tienes"; "señales de potencial" |
+| two drafted versions | `cover-letter-prompt.md`, MODE = message | **Out of scope** (CL-13) — the prompt's own workflow, not a claim about how a letter is read |
 
 ---
 
