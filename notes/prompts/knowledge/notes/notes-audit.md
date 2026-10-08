@@ -169,8 +169,7 @@ It binds every stage of this run:
    **The TODO ban is a routing rule, not a dead end** (2026-08-22): a TODO Victor wrote on a refined pair
    is admissible work — see "The `refined` freeze" in `notes-plan-prompt.md` — but it belongs to the daily
    session, where `study-content-writer` resolves it in the language of the file carrying it. This
-   pipeline stays out because a four-stage cold run is the wrong instrument for a corrected sentence, and
-   because the Spanish-side resolution it would require is exactly what stage T is built to overwrite.
+   pipeline stays out because a four-stage cold run is the wrong instrument for a corrected sentence.
    Report the markers you saw and name that route.
    **Reporting them is no longer all you owe them.** A marker you may not resolve is still Victor's own
    measurement of his prose bar, and until it is rowed it exists only in a report the next run overwrites.
@@ -231,8 +230,15 @@ Dispatch `_notes-write-prompt.md` with:
 - `READABLE_SIBLINGS` and `LINK_TARGETS` as resolved above — the author reads sibling prose only from
   the first list and links only rows of the second.
 
-It must author or audit only the selected English file, cover every assigned concept, avoid sibling
-level scope, and report a section trace plus `N lines, read to EOF`.
+It must author or audit only the selected English file — plus, under its Step 1 exception, the `es/`
+sections where it resolved a TODO Victor wrote there — cover every assigned concept, avoid sibling
+level scope, and report a section trace plus `N lines, read to EOF`. Keep the `es/` sections its report
+names as written directly as `ES_AUTHORED`, by their `es/` headings, or `none` when it wrote none —
+always `none` in append-only mode, where its Step 1 resolves nothing. When the trace gate re-dispatches
+Stage A, keep the sections the first report named as well: the second run finds their markers already
+cleared and cannot name them. Stages T and C are owed that list
+below: T freezes those sections and C keeps his wording only when told, and neither can find them on
+its own.
 
 If it cannot finish, stop without translation and leave the entry pending.
 
@@ -252,7 +258,10 @@ section trace, pedagogical-contract trace, and EOF proof.
 
 Dispatch `_notes-translate-prompt.md` for the final English file and the resolved Spanish path, with
 `LINK_TARGETS`: the plan's `Spanish:` column is where a sibling's Spanish filename comes from, not an
-`ES_DIR` listing, which cannot name a file the route has not written yet. Add
+`ES_DIR` listing, which cannot name a file the route has not written yet — and with `ES_AUTHORED`, the
+sections `_notes-translate-prompt.md` → "Sections whose Spanish was authored directly are FROZEN"
+leaves byte-for-byte and marks `frozen` in its trace, re-syncing everything else; without the list T
+re-syncs those sections from the English and overwrites the wording Victor asked for. Add
 `SCOPE = append-only` with the appended English headings when the entry is `refined` — it then appends
 only their Spanish counterparts and re-syncs nothing else. In that mode its ordinary STOP on an
 unresolved `es/` TODO marker does not apply: a refined pair is expected to carry markers this pipeline
@@ -267,6 +276,9 @@ Dispatch `_notes-review-es-prompt.md` for the resolved paths, with:
 - `PLAN`;
 - `NOTE`;
 - `LINK_TARGETS`, whose `Spanish:` column is the authority its internal-link check runs against;
+- `ES_AUTHORED`, the sections stage A wrote in Spanish to resolve a TODO Victor left there —
+  `_notes-review-es-prompt.md` → "A wording Victor asked for outranks your judgement" binds the
+  choices his marker specified, and the prose around them stays C's to polish;
 - permission to mark every successfully incorporated assigned concept `[x]` and then change only this
   entry's `Status: pending` to `Status: complete` when no `[ ]` remains — or, in append-only mode, to
   mark only the consumed additions `[x]` and clear those same bullets from `Pending additions` while
@@ -345,7 +357,8 @@ Report branch, topic, level, note, resolved paths, action, assigned-concept coun
 the sibling-admissibility resolution — how many entries were admitted as `READABLE_SIBLINGS`, how many
 `LINK_TARGETS` rows are declared but unwritten, every claim mismatch stage T or stage C reported
 against `LINK_TARGETS`, and every orphan file found in `EN_DIR`/`ES_DIR` —
-dependency gate, pedagogical-contract gate, intro-contract gate when applicable, four stage results,
+dependency gate, pedagogical-contract gate, intro-contract gate when applicable, the `ES_AUTHORED`
+sections relayed to stages T and C (or `none`) with T's `frozen` trace entry for each, four stage results,
 coverage confirmation, learning-outcome verdict, must-answer verdict, prerequisite verdict, handoff
 verdict, concept checkbox transitions, status transition, studied-state transition, and commit.
 **Report every false-fact correction stage A made in existing prose** — the old text, the new text and
